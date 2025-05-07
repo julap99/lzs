@@ -2,7 +2,7 @@
 import { useThemeStore } from "~/stores/theme";
 
 useHead({
-  title: "Niise",
+  title: "New Agihan Sistem (NAS)",
   description: "Home page",
   htmlAttrs: {
     lang: "en",
@@ -27,7 +27,7 @@ onMounted(() => {
   document.documentElement.setAttribute("data-theme", theme);
   // Ensure it's saved in localStorage
   localStorage.setItem("theme", theme);
-  
+
   console.log("Theme applied:", theme);
 });
 </script>

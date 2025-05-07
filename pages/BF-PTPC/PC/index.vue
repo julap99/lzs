@@ -4,7 +4,6 @@
   </div>
 </template>
 
-F
 <script>
 export default {
   name: "BF-PTPC-PC",

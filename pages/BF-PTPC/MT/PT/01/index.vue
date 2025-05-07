@@ -3,7 +3,7 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card>
-      <template #header> Jana Senarai Nama dan Jumlah Bantuan</template>
+      <template #header> Senarai Nama dan Jumlah Bantuan Ageing > 60 hari</template>
       <template #body>
         <rs-table
           class="mt-8"
@@ -24,7 +24,7 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PTPC/MT-AG/02/${data.text}`)"
+              @click="navigateTo(`/BF-PTPC/MT/AG/02/${data.text}`)"
             >
               Lebih
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
@@ -40,14 +40,14 @@
 import { ref } from "vue";
 
 definePageMeta({
-  title: "Jana Senarai Nama dan Jumlah Bantuan",
+  title: "Senarai Nama dan Jumlah Bantuan Ageing > 60 hari",
 });
 
 const breadcrumb = ref([
   {
-    name: "Jana Senarai Nama dan Jumlah Bantuan",
+    name: "Senarai Nama dan Jumlah Bantuan Ageing > 60 hari",
     type: "current",
-    path: "/BF-PTPC/MT-AG/01",
+    path: "/BF-PTPC/MT/PT/01",
   },
 ]);
 

@@ -23,14 +23,14 @@ export default defineNuxtConfig({
     pageTransition: { name: "page", mode: "out-in" },
   },
   head: {
-    title: "Niise",
+    title: "NAS",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
         hid: "description",
         name: "description",
-        content: "Niise",
+        content: "Nas",
       },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
@@ -60,8 +60,8 @@ export default defineNuxtConfig({
       type: "module",
     },
     manifest: {
-      name: "Niise",
-      short_name: "Niise",
+      name: "NAS",
+      short_name: "NAS",
       theme_color: "#00A59A",
       background_color: "#FAFAFA",
       display: "standalone",

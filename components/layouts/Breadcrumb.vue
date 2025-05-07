@@ -25,8 +25,6 @@ const breadcrumb = computed(() => {
     return props.items;
   }
 
-  console.log("props.items: ", props.items);
-
   // Fallback to route-based breadcrumb if useRouteFallback is true
   if (props.useRouteFallback) {
     let breadcrumb = null;
@@ -58,8 +56,6 @@ const breadcrumb = computed(() => {
 
   return null;
 });
-
-console.log("breadcrumb: ", breadcrumb.value);
 
 // Get title from page meta
 const title = computed(() => {
