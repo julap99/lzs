@@ -1,0 +1,18 @@
+.formkit-label-color {
+  @apply block mb-1 font-bold text-sm;
+}
+
+.formkit-input-color {
+  @apply w-16 h-10 cursor-pointer rounded-lg mb-2 border-none appearance-none bg-transparent;
+}
+
+.formkit-input-color::-webkit-color-swatch {
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+.formkit-input-color::-moz-color-swatch {
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}

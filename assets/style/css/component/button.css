@@ -1,0 +1,320 @@
+/* RS Button  */
+.button {
+  @apply w-fit rounded-lg flex justify-center items-center h-fit;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Enhanced hover effect with slight 3D transition */
+.button[class*="button-"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button[class*="button-"]:active {
+  transform: translateY(0px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button[class*="button-"]:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Primary Button - Blue with yellow accent */
+.button.button-primary {
+  @apply bg-primary text-white;
+  box-shadow: 0 2px 4px rgba(var(--color-primary), 0.3), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--color-primary), 0.8);
+}
+
+.button.button-primary:hover::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgb(var(--active-menu-border));
+  animation: slide-in 0.3s ease forwards;
+}
+
+@keyframes slide-in {
+  0% { transform: scaleX(0); opacity: 0; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+
+.button.button-secondary {
+  @apply bg-secondary text-white;
+  box-shadow: 0 2px 4px rgba(var(--color-secondary), 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--color-secondary), 0.8);
+}
+
+.button.button-success {
+  @apply bg-success text-white;
+  box-shadow: 0 2px 4px rgba(var(--color-success), 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--color-success), 0.8);
+}
+
+.button.button-info {
+  @apply bg-info text-white;
+  box-shadow: 0 2px 4px rgba(var(--color-info), 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--color-info), 0.8);
+}
+
+.button.button-warning {
+  @apply bg-warning text-white;
+  box-shadow: 0 2px 4px rgba(var(--color-warning), 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--color-warning), 0.8);
+}
+
+.button.button-danger {
+  @apply bg-danger text-white;
+  box-shadow: 0 2px 4px rgba(var(--color-danger), 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--color-danger), 0.8);
+}
+
+/* Updated outline buttons */
+.button[class*="outline-"]:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.button.outline-primary {
+  @apply border border-primary text-primary;
+  box-shadow: 0 1px 3px rgba(var(--color-primary), 0.1);
+}
+
+.button.outline-primary:hover {
+  @apply bg-primary/5;
+  box-shadow: 0 3px 6px rgba(var(--color-primary), 0.2);
+  transform: translateY(-1px);
+}
+
+.button.outline-secondary {
+  @apply border border-secondary text-secondary;
+  box-shadow: 0 1px 3px rgba(var(--color-secondary), 0.1);
+}
+
+.button.outline-secondary:hover {
+  @apply bg-secondary/5;
+  box-shadow: 0 3px 6px rgba(var(--color-secondary), 0.2);
+  transform: translateY(-1px);
+}
+
+.button.outline-success {
+  @apply border border-success text-success;
+  box-shadow: 0 1px 3px rgba(var(--color-success), 0.1);
+}
+
+.button.outline-success:hover {
+  @apply bg-success/5;
+  box-shadow: 0 3px 6px rgba(var(--color-success), 0.2);
+  transform: translateY(-1px);
+}
+
+.button.outline-info {
+  @apply border border-info text-info;
+  box-shadow: 0 1px 3px rgba(var(--color-info), 0.1);
+}
+
+.button.outline-info:hover {
+  @apply bg-info/5;
+  box-shadow: 0 3px 6px rgba(var(--color-info), 0.2);
+  transform: translateY(-1px);
+}
+
+.button.outline-warning {
+  @apply border border-warning text-warning;
+  box-shadow: 0 1px 3px rgba(var(--color-warning), 0.1);
+}
+
+.button.outline-warning:hover {
+  @apply bg-warning/5;
+  box-shadow: 0 3px 6px rgba(var(--color-warning), 0.2);
+  transform: translateY(-1px);
+}
+
+.button.outline-danger {
+  @apply border border-danger text-danger;
+  box-shadow: 0 1px 3px rgba(var(--color-danger), 0.1);
+}
+
+.button.outline-danger:hover {
+  @apply bg-danger/5;
+  box-shadow: 0 3px 6px rgba(var(--color-danger), 0.2);
+  transform: translateY(-1px);
+}
+
+.button[class*="text-"]:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.button.texts-primary {
+  @apply text-primary;
+  position: relative;
+}
+
+.button.texts-primary:hover {
+  @apply bg-primary/10;
+}
+
+.button.texts-primary:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(var(--color-primary));
+  transition: width 0.3s ease;
+}
+
+.button.texts-primary:hover:after {
+  width: 100%;
+}
+
+.button.texts-secondary {
+  @apply text-secondary;
+  position: relative;
+}
+
+.button.texts-secondary:hover {
+  @apply bg-secondary/10;
+}
+
+.button.texts-secondary:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(var(--color-secondary));
+  transition: width 0.3s ease;
+}
+
+.button.texts-secondary:hover:after {
+  width: 100%;
+}
+
+.button.texts-success {
+  @apply text-success;
+  position: relative;
+}
+
+.button.texts-success:hover {
+  @apply bg-success/10;
+}
+
+.button.texts-success:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(var(--color-success));
+  transition: width 0.3s ease;
+}
+
+.button.texts-success:hover:after {
+  width: 100%;
+}
+
+.button.texts-info {
+  @apply text-info;
+  position: relative;
+}
+
+.button.texts-info:hover {
+  @apply bg-info/10;
+}
+
+.button.texts-info:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(var(--color-info));
+  transition: width 0.3s ease;
+}
+
+.button.texts-info:hover:after {
+  width: 100%;
+}
+
+.button.texts-warning {
+  @apply text-warning;
+  position: relative;
+}
+
+.button.texts-warning:hover {
+  @apply bg-warning/10;
+}
+
+.button.texts-warning:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(var(--color-warning));
+  transition: width 0.3s ease;
+}
+
+.button.texts-warning:hover:after {
+  width: 100%;
+}
+
+.button.texts-danger {
+  @apply text-danger;
+  position: relative;
+}
+
+.button.texts-danger:hover {
+  @apply bg-danger/10;
+}
+
+.button.texts-danger:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(var(--color-danger));
+  transition: width 0.3s ease;
+}
+
+.button.texts-danger:hover:after {
+  width: 100%;
+}
+
+.button-sm {
+  @apply text-xs;
+  padding: var(--padding-btn);
+}
+
+.button-md {
+  @apply text-sm;
+  padding: var(--padding-btn);
+}
+
+.button-lg {
+  @apply text-base;
+  padding: var(--padding-btn);
+}

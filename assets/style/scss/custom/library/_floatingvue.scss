@@ -1,0 +1,19 @@
+.v-popper--theme-dropdown .v-popper__inner {
+  background: rgb(var(--bg-2)) !important;
+  border: 0px !important;
+  color: rgb(var(--text-color)) !important;
+}
+
+// Disable arrow
+.v-popper__arrow-container {
+  display: none;
+}
+
+// .v-popper--theme-my-theme .v-popper__inner {
+//   background: #fff000;
+//   color: black;
+//   padding: 24px;
+//   border-radius: 6px;
+//   border: 1px solid #ddd;
+//   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+// }

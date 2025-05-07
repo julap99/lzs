@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model audit {
+  auditID          Int       @id @default(autoincrement())
+  auditIP          String?   @db.VarChar(255)
+  auditURL         String?   @db.VarChar(255)
+  auditURLMethod   String?   @db.VarChar(255)
+  auditURLPayload  String?   @db.VarChar(255)
+  auditCreatedDate DateTime? @db.DateTime(0)
+}
+
+model lookup {
+  lookupID           Int       @id @default(autoincrement())
+  lookupOrder        Int?
+  lookupTitle        String?   @db.VarChar(255)
+  lookupRefCode      String?   @db.VarChar(255)
+  lookupValue        String?   @db.VarChar(255)
+  lookupType         String?   @db.VarChar(255)
+  lookupStatus       String?   @db.VarChar(255)
+  lookupCreatedDate  DateTime? @db.DateTime(0)
+  lookupModifiedDate DateTime? @db.DateTime(0)
+}
+
+model role {
+  roleID           Int        @id @default(autoincrement())
+  roleName         String?    @db.VarChar(255)
+  roleDescription  String?    @db.VarChar(255)
+  roleStatus       String?    @db.VarChar(255)
+  roleCreatedDate  DateTime?  @db.DateTime(0)
+  roleModifiedDate DateTime?  @db.DateTime(0)
+  userrole         userrole[]
+}
+
+model user {
+  userID           Int        @id @default(autoincrement())
+  userSecretKey    String?    @db.VarChar(255)
+  userUsername     String?    @db.VarChar(255)
+  userPassword     String?    @db.VarChar(255)
+  userFullName     String?    @db.VarChar(255)
+  userEmail        String?    @db.VarChar(255)
+  userPhone        String?    @db.VarChar(255)
+  userStatus       String?    @db.VarChar(255)
+  userCreatedDate  DateTime?  @db.DateTime(0)
+  userModifiedDate DateTime?  @db.DateTime(0)
+  userrole         userrole[]
+}
+
+model userrole {
+  userRoleID          Int      @id @default(autoincrement())
+  userRoleUserID      Int      @default(0)
+  userRoleRoleID      Int      @default(0)
+  userRoleCreatedDate DateTime @db.DateTime(0)
+  role                role     @relation(fields: [userRoleRoleID], references: [roleID], onDelete: NoAction, onUpdate: NoAction, map: "FK_userrole_role")
+  user                user     @relation(fields: [userRoleUserID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "FK_userrole_user")
+
+  @@index([userRoleRoleID], map: "FK_userrole_role")
+  @@index([userRoleUserID], map: "FK_userrole_user")
+}
+
+model customer {
+  cust_id               Int       @id @default(autoincrement())
+  cust_name             String?   @db.VarChar(255)
+  cust_username         String?   @db.VarChar(255)
+  cust_ic_number        String?   @db.VarChar(255)
+  cust_address          String?   @db.VarChar(255)
+  cust_dob              DateTime? @db.Date
+  cust_gender           String?   @db.VarChar(255)
+  cust_status           Int?
+  cust_created_datetime DateTime? @db.DateTime(0)
+}

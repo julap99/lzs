@@ -1,0 +1,7 @@
+.formkit-inner-dropzone {
+  @apply w-full;
+}
+
+.formkit-dropzone {
+  @apply border-2 border-[rgb(var(--fk-border-color))] border-dashed p-6 active:bg-[rgb(var(--bg-1))];
+}

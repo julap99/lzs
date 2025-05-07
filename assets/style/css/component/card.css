@@ -1,0 +1,19 @@
+/* RS Card Component */
+.card {
+  @apply mb-6;
+  background-color: rgb(var(--bg-2));
+  border-radius: var(--rounded-box);
+  box-shadow: var(--box-shadow);
+}
+
+.card .card-header {
+  @apply text-xl p-5 font-medium;
+}
+
+.card .card-body {
+  @apply px-5 pb-5;
+}
+
+.card .card-footer {
+  @apply px-5 pb-5;
+}

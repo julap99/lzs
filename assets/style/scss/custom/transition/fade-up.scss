@@ -1,0 +1,12 @@
+// Animation for transition fade
+.fade-up-enter-active,
+.fade-up-leave-active {
+  transition: transform 0.4s cubic-bezier(0.17, 0.67, 0.84, 0.79),
+    opacity 0.3s linear;
+}
+
+.fade-up-enter-from,
+.fade-up-leave-to {
+  opacity: 0;
+  transform: translateY(-10%);
+}
