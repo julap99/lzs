@@ -8,28 +8,28 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "BF-PTPC-MT-AG",
+            title: "MT-AG",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PTPC/MT/AG/01",
             child: [],
             meta: {},
           },
           {
-            title: "BF-PTPC-MT-PT",
+            title: "MT-PT",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PTPC/MT/PT/01",
             child: [],
             meta: {},
           },
           {
-            title: "BF-PTPC-MT-TK",
+            title: "MT-TK",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PTPC/DA",
             child: [],
             meta: {},
           },
           {
-            title: "BF-PTPC-MT-TI",
+            title: "MT-TI",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PTPC/PE",
             child: [],
@@ -43,21 +43,21 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "BF-PTPC-PC-BE",
+            title: "PC-BE",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PTPC/MT/01",
             child: [],
             meta: {},
           },
           {
-            title: "BF-PTPC-PC-AA",
+            title: "PC-AA",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PTPC/PC",
             child: [],
             meta: {},
           },
           {
-            title: "BF-PTPC-PC-TO",
+            title: "PC-TO",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PTPC/DA",
             child: [],
