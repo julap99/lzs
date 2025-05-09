@@ -24,7 +24,7 @@ export default [
           {
             title: "MT-TK",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PTPC/DA",
+            path: "/BF-PTPC/MT/TK/01",
             child: [],
             meta: {},
           },
