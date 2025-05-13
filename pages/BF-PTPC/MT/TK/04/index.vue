@@ -14,14 +14,6 @@
         <div class="mb-6 p-4 bg-gray-50 rounded-lg">
           <h3 class="text-lg font-medium mb-4">Maklumat Aktiviti</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="md:col-span-2">
-              <p class="text-sm text-gray-600">Keterangan Aktiviti</p>
-              <p class="font-medium">
-                Proses pengesahan dan penutupan rasmi jumlah tunai kaunter oleh PKP
-                selepas petugas kaunter selesai membuat kiraan. Proses ini mengesahkan
-                bahawa jumlah tunai akhir padan dengan baki sistem dan rekod agihan.
-              </p>
-            </div>
             <div>
               <p class="text-sm text-gray-600">Nama PKP</p>
               <p class="font-medium">{{ currentUserName }}</p>
@@ -602,6 +594,8 @@ const handleFinalConfirm = async () => {
     processing.value = false;
     showFinalConfirmationModal.value = false;
     isCompleted.value = true;
+
+    router.push("/BF-PTPC/MT/TK/01");
   }, 1500);
 };
 

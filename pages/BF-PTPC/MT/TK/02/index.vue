@@ -14,13 +14,6 @@
         <div class="mb-6 p-4 bg-gray-50 rounded-lg">
           <h3 class="text-lg font-medium mb-4">Maklumat Aktiviti</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="md:col-span-2">
-              <p class="text-sm text-gray-600">Keterangan Aktiviti</p>
-              <p class="font-medium">
-                Proses mengesahkan jumlah wang tunai yang diterima daripada PKP dan
-                merekodkan penerimaan secara sistematik di dalam NAS.
-              </p>
-            </div>
             <div>
               <p class="text-sm text-gray-600">Nama EKP</p>
               <p class="font-medium">{{ currentUserName }}</p>
@@ -337,10 +330,7 @@ const handleConfirm = async () => {
     showConfirmationModal.value = false;
     isCompleted.value = true;
 
-    // Show success message for 2 seconds, then redirect
-    setTimeout(() => {
-      router.push("/BF-PTPC/MT/TK/03");
-    }, 2000);
+    router.push("/BF-PTPC/MT/TK/03");
   }, 1500);
 };
 

@@ -14,13 +14,6 @@
         <div class="mb-6 p-4 bg-gray-50 rounded-lg">
           <h3 class="text-lg font-medium mb-4">Maklumat Aktiviti</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="md:col-span-2">
-              <p class="text-sm text-gray-600">Keterangan Aktiviti</p>
-              <p class="font-medium">
-                Proses merekod dan mengagihkan wang tunai dari tabung agihan utama ke
-                setiap kaunter untuk tujuan agihan bantuan tunai harian.
-              </p>
-            </div>
             <div>
               <p class="text-sm text-gray-600">Nama PKP</p>
               <p class="font-medium">{{ currentUserName }}</p>
@@ -108,51 +101,79 @@
                 </h4>
               </div>
 
-              <div
-                v-for="(kaunter, index) in formData.agihanKaunter"
-                :key="index"
-                class="md:col-span-2 p-3 border border-gray-200 rounded-md mb-2"
-              >
+              <!-- Kaunter 1 -->
+              <div class="md:col-span-2 p-3 border border-gray-200 rounded-md mb-2">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
                     type="text"
-                    :name="`namaEKP${index}`"
-                    label="Nama EKP"
-                    v-model="kaunter.namaEKP"
+                    name="namaEKP0"
+                    label="Nama EKP (Kaunter 1)"
+                    v-model="formData.agihanKaunter[0].namaEKP"
                     :disabled="isCompleted"
                   />
 
                   <FormKit
                     type="number"
-                    :name="`jumlahAgihan${index}`"
+                    name="jumlahAgihan0"
                     label="Jumlah Agihan (RM)"
                     validation="min:0"
                     :validation-messages="{
                       min: 'Jumlah tidak boleh negatif',
                     }"
-                    v-model="kaunter.jumlahAgihan"
+                    v-model="formData.agihanKaunter[0].jumlahAgihan"
                     :disabled="isCompleted"
                   />
                 </div>
+              </div>
 
-                <div class="mt-2 flex justify-end" v-if="!isCompleted">
-                  <rs-button
-                    v-if="index > 0"
-                    variant="danger-outline"
-                    size="sm"
-                    @click="removeKaunter(index)"
-                  >
-                    <Icon name="mdi:trash-can-outline" size="1rem" class="mr-1" />
-                    Buang
-                  </rs-button>
+              <!-- Kaunter 2 -->
+              <div class="md:col-span-2 p-3 border border-gray-200 rounded-md mb-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="text"
+                    name="namaEKP1"
+                    label="Nama EKP (Kaunter 2)"
+                    v-model="formData.agihanKaunter[1].namaEKP"
+                    :disabled="isCompleted"
+                  />
+
+                  <FormKit
+                    type="number"
+                    name="jumlahAgihan1"
+                    label="Jumlah Agihan (RM)"
+                    validation="min:0"
+                    :validation-messages="{
+                      min: 'Jumlah tidak boleh negatif',
+                    }"
+                    v-model="formData.agihanKaunter[1].jumlahAgihan"
+                    :disabled="isCompleted"
+                  />
                 </div>
               </div>
 
-              <div class="md:col-span-2 flex justify-center" v-if="!isCompleted">
-                <rs-button variant="secondary" size="sm" @click="addKaunter">
-                  <Icon name="mdi:plus" size="1rem" class="mr-1" />
-                  Tambah Kaunter
-                </rs-button>
+              <!-- Kaunter 3 -->
+              <div class="md:col-span-2 p-3 border border-gray-200 rounded-md mb-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="text"
+                    name="namaEKP2"
+                    label="Nama EKP (Kaunter 3)"
+                    v-model="formData.agihanKaunter[2].namaEKP"
+                    :disabled="isCompleted"
+                  />
+
+                  <FormKit
+                    type="number"
+                    name="jumlahAgihan2"
+                    label="Jumlah Agihan (RM)"
+                    validation="min:0"
+                    :validation-messages="{
+                      min: 'Jumlah tidak boleh negatif',
+                    }"
+                    v-model="formData.agihanKaunter[2].jumlahAgihan"
+                    :disabled="isCompleted"
+                  />
+                </div>
               </div>
 
               <div class="md:col-span-2">
@@ -309,7 +330,11 @@ const formData = ref({
   masaRekod: currentTime.value,
   namaPKP: currentUserName.value,
   jumlahPembukaanTunai: null,
-  agihanKaunter: [{ namaEKP: "", jumlahAgihan: null }],
+  agihanKaunter: [
+    { namaEKP: "", jumlahAgihan: null },
+    { namaEKP: "", jumlahAgihan: null },
+    { namaEKP: "", jumlahAgihan: null },
+  ],
   catatan: "",
 });
 
@@ -330,17 +355,6 @@ const remainingBalance = computed(() => {
 const isNegativeBalance = computed(() => {
   return parseFloat(remainingBalance.value) < 0;
 });
-
-const addKaunter = () => {
-  formData.value.agihanKaunter.push({
-    namaEKP: "",
-    jumlahAgihan: null,
-  });
-};
-
-const removeKaunter = (index) => {
-  formData.value.agihanKaunter.splice(index, 1);
-};
 
 const navigateBack = () => {
   router.back();
@@ -363,7 +377,6 @@ const handleConfirm = async () => {
     isCompleted.value = true;
 
     // Show success message for 2 seconds, then redirect
-
     router.push(`/BF-PTPC/MT/TK/02`);
   }, 1500);
 };

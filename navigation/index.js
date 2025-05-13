@@ -29,9 +29,9 @@ export default [
             meta: {},
           },
           {
-            title: "MT-TI",
+            title: "MT-TT",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PTPC/PE",
+            path: "/BF-PTPC/MT/TT/01",
             child: [],
             meta: {},
           },
