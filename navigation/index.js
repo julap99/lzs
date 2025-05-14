@@ -82,6 +82,82 @@ export default [
   },
 
   {
+    header: "BF-PRF",
+    description: "Profiling",
+    child: [
+      {
+        title: "BF-PRF-MP",
+        icon: "iconamoon:component-fill",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "BF-PRF-KF",
+        icon: "iconamoon:component-fill",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "BF-PRF-AS",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "AS-QS",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/QS/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "AS-QB",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "AS-FR",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/FR/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "AS-UP",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "AS-KA",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "BF-PRF-OR",
+        icon: "iconamoon:component-fill",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "BF-PRF-TP",
+        icon: "iconamoon:component-fill",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "BF-PRF-PL",
+        icon: "iconamoon:component-fill",
+        child: [],
+        meta: {},
+      },
+    ],
+  },
+
+  {
     header: "Utama",
     description: "",
     child: [
