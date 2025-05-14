@@ -124,6 +124,7 @@ export default [
           {
             title: "AS-UP",
             icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/UP/01",
             child: [],
             meta: {},
           },

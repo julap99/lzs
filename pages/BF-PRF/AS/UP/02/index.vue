@@ -1290,7 +1290,7 @@ const breadcrumb = ref([
 ]);
 
 const processing = ref(false);
-const currentSection = ref(2);
+const currentSection = ref(1);
 
 const currentStepA = ref(1);
 const totalStepsA = 7;
@@ -1354,7 +1354,7 @@ const prevSection = () => {
 const submitForm = () => {
   processing.value = true;
   setTimeout(() => {
-    navigateTo(`/BF-PRF/AS/FR/03`);
+    navigateTo(`/BF-PRF/AS/UP/04`);
   }, 1000);
 };
 </script>
