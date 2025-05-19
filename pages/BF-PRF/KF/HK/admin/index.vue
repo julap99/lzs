@@ -34,6 +34,12 @@
           <template v-slot:kadarBerbayar="data"> RM {{ data.text }} </template>
           <template v-slot:kadarPercuma="data"> RM {{ data.text }} </template>
 
+          <template v-slot:status="data">
+            <rs-badge :variant="getStatusVariant(data.text)">
+              {{ data.text }}
+            </rs-badge>
+          </template>
+
           <template v-slot:tindakan="data">
             <rs-button
               variant="primary"

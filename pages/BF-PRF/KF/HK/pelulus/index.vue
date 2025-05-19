@@ -108,8 +108,6 @@ const kifayahLimits = ref([
     kadarPercuma: 1000.0,
     tarikhMulaBerkuatkuasa: "2025-01-01",
     status: "Menunggu Kelulusan",
-    createdBy: "Ahmad bin Ali",
-    createdAt: "2025-05-15T10:30:00",
     tindakan: 1,
   },
   {
@@ -119,8 +117,6 @@ const kifayahLimits = ref([
     kadarPercuma: 600.0,
     tarikhMulaBerkuatkuasa: "2025-01-01",
     status: "Menunggu Kelulusan",
-    createdBy: "Siti binti Abu",
-    createdAt: "2025-05-16T14:45:00",
     tindakan: 2,
   },
   {
@@ -130,8 +126,6 @@ const kifayahLimits = ref([
     kadarPercuma: 300.0,
     tarikhMulaBerkuatkuasa: "2025-01-01",
     status: "Menunggu Kelulusan",
-    createdBy: "Ali bin Hassan",
-    createdAt: "2025-05-10T09:15:00",
     tindakan: 3,
   },
 ]);

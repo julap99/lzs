@@ -86,13 +86,7 @@ export default [
     description: "Profiling",
     child: [
       {
-        title: "BF-PRF-MP",
-        icon: "iconamoon:component-fill",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Mengurus Konfigurasi",
+        title: "Konfigurasi",
         icon: "iconamoon:component-fill",
         child: [
           {
@@ -119,7 +113,6 @@ export default [
           {
             title: "Multidimensi",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/KF/MD/01",
             child: [
               {
                 title: "Admin",
@@ -139,23 +132,30 @@ export default [
             meta: {},
           },
           {
-            title: "KF-RUU",
+            title: "Kelulusan Data",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/KF/HK/01",
-            child: [],
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/RUU/admin",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/RUU/pelulus",
+                child: [],
+                meta: {},
+              },
+            ],
             meta: {},
           },
           {
-            title: "KF-SHI",
+            title: "Household / Infividu",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/KF/HK/01",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "KF-AT",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/KF/HK/01",
+            path: "/BF-PRF/KF/SHI",
             child: [],
             meta: {},
           },
@@ -203,21 +203,31 @@ export default [
         meta: {},
       },
       {
-        title: "BF-PRF-OR",
+        title: "Organisasi",
         icon: "iconamoon:component-fill",
-        child: [],
+        child: [
+          {
+            title: "Pendaftaran Profil",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/TP/PP/01",
+            child: [],
+            meta: {},
+          },
+        ],
         meta: {},
       },
       {
-        title: "BF-PRF-TP",
+        title: "Third Party",
         icon: "iconamoon:component-fill",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "BF-PRF-PL",
-        icon: "iconamoon:component-fill",
-        child: [],
+        child: [
+          {
+            title: "Pendaftaran Profil",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/TP/PP/01",
+            child: [],
+            meta: {},
+          },
+        ],
         meta: {},
       },
     ],
@@ -265,8 +275,15 @@ export default [
       {
         title: "Penyelenggaraan kod",
         icon: "iconamoon:component-fill",
-        path: "/BF-PRF/KF/MD/admin",
-        child: [],
+        child: [
+          {
+            title: "Admin",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PS/PK/admin",
+            child: [],
+            meta: {},
+          },
+        ],
         meta: {},
       },
     ],
