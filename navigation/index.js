@@ -92,9 +92,74 @@ export default [
         meta: {},
       },
       {
-        title: "BF-PRF-KF",
+        title: "Mengurus Konfigurasi",
         icon: "iconamoon:component-fill",
-        child: [],
+        child: [
+          {
+            title: "Had Kifayah",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/HK/admin",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/HK/pelulus",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
+          {
+            title: "Multidimensi",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/KF/MD/01",
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/MD/admin",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/MD/pelulus",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
+          {
+            title: "KF-RUU",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/KF/HK/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "KF-SHI",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/KF/HK/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "KF-AT",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/KF/HK/01",
+            child: [],
+            meta: {},
+          },
+        ],
         meta: {},
       },
       {

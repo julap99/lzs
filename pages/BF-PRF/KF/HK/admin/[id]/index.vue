@@ -1,0 +1,511 @@
+<template>
+  <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+
+    <rs-card class="mt-4">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Butiran Konfigurasi Had Kifayah</h2>
+          <div class="flex gap-2">
+            <rs-button
+              variant="primary-outline"
+              @click="navigateTo('/BF-PRF/KF/HK/admin')"
+            >
+              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="openEditModal"
+              v-if="configData.status !== 'Menunggu Kelulusan'"
+              :disabled="hasPendingChanges"
+            >
+              <Icon name="mdi:pencil" class="mr-1" /> Kemaskini
+            </rs-button>
+          </div>
+        </div>
+      </template>
+
+      <template #body>
+        <!-- Current Configuration -->
+        <div class="mb-8">
+          <h3 class="text-lg font-medium mb-4">Konfigurasi Semasa</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p class="text-sm text-gray-500">Kategori</p>
+              <p class="font-medium">{{ configData.category }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Kategori Isi Rumah</p>
+              <p class="font-medium">{{ configData.householdType }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Kadar Berbayar</p>
+              <p class="font-medium">
+                RM {{ formatCurrency(configData.paidHouseRate) }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Kadar Percuma</p>
+              <p class="font-medium">
+                RM {{ formatCurrency(configData.freeHouseRate) }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Tarikh Mula Kuat Kuasa</p>
+              <p class="font-medium">
+                {{ formatDate(configData.effectiveDate) }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Status</p>
+              <rs-badge :variant="getStatusVariant(configData.status)">
+                {{ configData.status }}
+              </rs-badge>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Changes (if any) -->
+        <div v-if="hasPendingChanges" class="border-t pt-6">
+          <h3 class="text-lg font-medium mb-4">Perubahan Menunggu Kelulusan</h3>
+          <div
+            class="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-4"
+          >
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="text-sm text-gray-500">Kategori</p>
+                <p class="font-medium">
+                  {{ pendingChanges.category }}
+                  <span
+                    v-if="pendingChanges.category !== configData.category"
+                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
+                  >
+                    Perubahan
+                  </span>
+                </p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Kategori Isi Rumah</p>
+                <p class="font-medium">
+                  {{ pendingChanges.householdType }}
+                  <span
+                    v-if="
+                      pendingChanges.householdType !== configData.householdType
+                    "
+                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
+                  >
+                    Perubahan
+                  </span>
+                </p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Kadar Berbayar</p>
+                <p class="font-medium">
+                  RM {{ formatCurrency(pendingChanges.paidHouseRate) }}
+                  <span
+                    v-if="
+                      pendingChanges.paidHouseRate !== configData.paidHouseRate
+                    "
+                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
+                  >
+                    {{
+                      getChangeDirection(
+                        configData.paidHouseRate,
+                        pendingChanges.paidHouseRate
+                      )
+                    }}
+                  </span>
+                </p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Kadar Percuma</p>
+                <p class="font-medium">
+                  RM {{ formatCurrency(pendingChanges.freeHouseRate) }}
+                  <span
+                    v-if="
+                      pendingChanges.freeHouseRate !== configData.freeHouseRate
+                    "
+                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
+                  >
+                    {{
+                      getChangeDirection(
+                        configData.freeHouseRate,
+                        pendingChanges.freeHouseRate
+                      )
+                    }}
+                  </span>
+                </p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Tarikh Mula Kuat Kuasa</p>
+                <p class="font-medium">
+                  {{ formatDate(pendingChanges.effectiveDate) }}
+                  <span
+                    v-if="
+                      pendingChanges.effectiveDate !== configData.effectiveDate
+                    "
+                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
+                  >
+                    Perubahan
+                  </span>
+                </p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Status</p>
+                <rs-badge variant="warning"> Menunggu Kelulusan </rs-badge>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-4">
+            <rs-button
+              variant="danger-outline"
+              size="sm"
+              @click="cancelPendingChanges"
+              :loading="isCancelling"
+            >
+              Batalkan Permohonan
+            </rs-button>
+          </div>
+        </div>
+
+        <!-- Change History -->
+        <div class="border-t pt-6 mt-6">
+          <h3 class="text-lg font-medium mb-4">Sejarah Perubahan</h3>
+          <rs-table
+            :data="changeHistory"
+            :options="{
+              variant: 'default',
+              hover: true,
+            }"
+          >
+            <template v-slot:changes="data">
+              <div v-for="change in data.text" :key="change.field" class="mb-1">
+                <span class="font-medium">{{ change.field }}:</span>
+                <span
+                  v-if="change.oldValue !== null"
+                  class="text-gray-600 line-through mr-2"
+                >
+                  {{ change.oldValue }}
+                </span>
+                <span class="text-primary-600 font-medium">
+                  {{ change.newValue }}
+                </span>
+              </div>
+            </template>
+          </rs-table>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Edit Modal -->
+    <rs-modal
+      v-model="showEditModal"
+      :title="isEditing ? 'Kemaskini Had Kifayah' : 'Tambah Had Kifayah'"
+      size="lg"
+      position="center"
+      @close="resetForm"
+    >
+      <FormKit
+        type="form"
+        @submit="submitForm"
+        :actions="false"
+        v-model="formData"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormKit
+            type="select"
+            name="category"
+            label="Kategori Kadar Had Kifayah"
+            validation="required"
+            :options="kategoriOptions"
+            placeholder="Pilih kategori"
+            :validation-messages="{
+              required: 'Kategori adalah wajib',
+            }"
+          />
+
+          <FormKit
+            type="select"
+            name="householdType"
+            label="Kategori Isi Rumah"
+            validation="required"
+            :options="householdOptions"
+            placeholder="Pilih kategori isi rumah"
+            :validation-messages="{
+              required: 'Kategori isi rumah adalah wajib',
+            }"
+          />
+
+          <FormKit
+            type="number"
+            name="paidHouseRate"
+            label="Kadar Kifayah Rumah Berbayar (RM)"
+            validation="required|min:0"
+            step="0.01"
+            :validation-messages="{
+              required: 'Kadar rumah berbayar adalah wajib',
+              min: 'Nilai tidak boleh negatif',
+            }"
+          />
+
+          <FormKit
+            type="number"
+            name="freeHouseRate"
+            label="Kadar Kifayah Rumah Percuma (RM)"
+            validation="required|min:0"
+            step="0.01"
+            :validation-messages="{
+              required: 'Kadar rumah percuma adalah wajib',
+              min: 'Nilai tidak boleh negatif',
+            }"
+          />
+
+          <FormKit
+            type="date"
+            name="effectiveDate"
+            label="Tarikh Mula Kuat Kuasa"
+            validation="required"
+            :validation-messages="{
+              required: 'Tarikh mula adalah wajib',
+            }"
+          />
+
+          <div
+            class="bg-yellow-50 p-3 rounded border border-yellow-200 col-span-2"
+          >
+            <p class="text-yellow-800 text-sm">
+              <Icon name="material-symbols:info-outline" class="mr-1" />
+              Perhatian: Semua perubahan akan melalui proses kelulusan terlebih
+              dahulu sebelum dikuat kuasa.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-4">
+          <rs-button
+            variant="primary-outline"
+            @click="showEditModal = false"
+            type="button"
+            :disabled="isSubmitting"
+          >
+            Batal
+          </rs-button>
+          <rs-button variant="primary" type="submit" :loading="isSubmitting">
+            {{ isSubmitting ? "Menghantar..." : "Hantar Untuk Kelulusan" }}
+          </rs-button>
+        </div>
+      </FormKit>
+
+      <template #footer></template>
+    </rs-modal>
+  </div>
+</template>
+
+<script setup>
+const route = useRoute();
+const router = useRouter();
+
+const id = route.params.id;
+
+const breadcrumb = ref([
+  {
+    name: "Profiling",
+    type: "link",
+    path: "/BF-PRF/KF/HK/admin",
+  },
+  {
+    name: "Konfigurasi Had Kifayah",
+    type: "link",
+    path: "/BF-PRF/KF/HK/admin",
+  },
+  {
+    name: "Butiran Konfigurasi",
+    type: "current",
+    path: `/BF-PRF/KF/HK/admin/${id}`,
+  },
+]);
+
+// Data
+const configData = ref({
+  id: parseInt(id),
+  category: "Utama",
+  householdType: "Ketua Keluarga",
+  paidHouseRate: 1200.0,
+  freeHouseRate: 1000.0,
+  effectiveDate: "2025-01-01",
+  status: "Aktif",
+});
+
+const pendingChanges = ref(null);
+const isCancelling = ref(false);
+const changeHistory = ref([
+  {
+    date: "2025-03-15",
+    changedBy: "Ahmad bin Ali",
+    changes: [
+      { field: "Kadar Berbayar", oldValue: "RM 200.00", newValue: "RM 250.00" },
+      {
+        field: "Tarikh Mula",
+        oldValue: "15 Mac 2025",
+        newValue: "1 April 2025",
+      },
+    ],
+    status: "Tidak Diluluskan",
+  },
+  {
+    date: "2025-01-10",
+    changedBy: "Siti binti Abu",
+    changes: [{ field: "Status", oldValue: "Tidak Aktif", newValue: "Aktif" }],
+    status: "Diluluskan",
+  },
+  {
+    date: "2024-12-01",
+    changedBy: "System",
+    changes: [
+      {
+        field: "Rekod dicipta",
+        oldValue: null,
+        newValue: "Konfigurasi baharu",
+      },
+    ],
+    status: "Diluluskan",
+  },
+]);
+
+// Form state
+const showEditModal = ref(false);
+const isEditing = ref(false);
+const isSubmitting = ref(false);
+const formData = ref({
+  id: null,
+  category: "",
+  householdType: "",
+  paidHouseRate: 0,
+  freeHouseRate: 0,
+  effectiveDate: "",
+});
+
+// Options
+const kategoriOptions = [
+  { label: "Utama", value: "Utama" },
+  { label: "Tambahan", value: "Tambahan" },
+];
+
+const householdOptions = [
+  { label: "Ketua Keluarga", value: "Ketua Keluarga" },
+  {
+    label: "Dewasa Bekerja (18 tahun ke atas)",
+    value: "Dewasa Bekerja (18 tahun ke atas)",
+  },
+  {
+    label: "Dewasa Tidak Bekerja (18 tahun ke atas)",
+    value: "Dewasa Tidak Bekerja (18 tahun ke atas)",
+  },
+  { label: "Anak (Bawah 18 tahun)", value: "Anak (Bawah 18 tahun)" },
+  { label: "Bayi (Bawah 2 tahun)", value: "Bayi (Bawah 2 tahun)" },
+];
+
+// Computed
+const hasPendingChanges = computed(() => {
+  return pendingChanges.value !== null;
+});
+
+// Methods
+const openEditModal = () => {
+  isEditing.value = true;
+  formData.value = {
+    ...configData.value,
+    paidHouseRate: parseFloat(configData.value.paidHouseRate),
+    freeHouseRate: parseFloat(configData.value.freeHouseRate),
+    effectiveDate: formatDateForPicker(configData.value.effectiveDate),
+  };
+  showEditModal.value = true;
+};
+
+const submitForm = async () => {
+  isSubmitting.value = true;
+
+  try {
+    // Validate form data
+    if (!formData.value.category || !formData.value.householdType) {
+      throw new Error("Sila isi semua medan yang diperlukan");
+    }
+
+    // Create pending changes
+    pendingChanges.value = {
+      ...formData.value,
+      status: "Menunggu Kelulusan",
+    };
+
+    alert("Permohonan kemaskini telah dihantar untuk kelulusan");
+    showEditModal.value = false;
+  } catch (error) {
+    alert("Ralat semasa menyimpan perubahan");
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+const cancelPendingChanges = async () => {
+  isCancelling.value = true;
+  try {
+    // In real app, call API to cancel pending changes
+    pendingChanges.value = null;
+    alert("Permohonan kemaskini telah dibatalkan");
+  } catch (error) {
+    alert("Gagal membatalkan permohonan");
+  } finally {
+    isCancelling.value = false;
+  }
+};
+
+const resetForm = () => {
+  formData.value = {
+    id: null,
+    category: "",
+    householdType: "",
+    paidHouseRate: 0,
+    freeHouseRate: 0,
+    effectiveDate: "",
+  };
+  isEditing.value = false;
+};
+
+// Helper functions
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return new Date(dateString).toLocaleDateString("ms-MY", options);
+};
+
+const formatDateForPicker = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toISOString().split("T")[0];
+};
+
+const formatCurrency = (value) => {
+  if (value === undefined || value === null) return "0.00";
+  return parseFloat(value).toFixed(2);
+};
+
+const getStatusVariant = (status) => {
+  switch (status) {
+    case "Aktif":
+      return "success";
+    case "Tidak Aktif":
+      return "danger";
+    case "Menunggu Kelulusan":
+      return "warning";
+    default:
+      return "default";
+  }
+};
+
+const getChangeDirection = (oldValue, newValue) => {
+  if (newValue > oldValue) return "↑ Naik";
+  if (newValue < oldValue) return "↓ Turun";
+  return "Tiada perubahan";
+};
+</script>
