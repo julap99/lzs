@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Kelulusan Kemaskini Profil</h2>
+          <h2 class="text-xl font-semibold">Kelulusan Kemaskini Profil (EOAD)</h2>
           <div class="flex items-center space-x-2">
             <rs-badge variant="warning">Menunggu Kelulusan</rs-badge>
             <span class="text-sm text-gray-500"

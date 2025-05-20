@@ -10,55 +10,24 @@
       </template>
 
       <template #body>
-        <!-- Progress Steps -->
+        <!-- Progress indicator -->
         <div class="mb-6">
-          <ol class="flex items-center w-full">
-            <template v-for="(step, index) in formSteps" :key="index">
-              <li
-                class="flex items-center"
-                :class="{ 'flex-auto': index < formSteps.length - 1 }"
-              >
-                <div
-                  class="flex items-center justify-center w-8 h-8 rounded-full shrink-0"
-                  :class="{
-                    'bg-blue-600 text-white': currentStep > index,
-                    'bg-blue-100 text-blue-600': currentStep === index,
-                    'bg-gray-100 text-gray-600': currentStep < index,
-                  }"
-                >
-                  <span v-if="currentStep > index">
-                    <Icon name="mdi:check" size="1rem" />
-                  </span>
-                  <span v-else>{{ index + 1 }}</span>
-                </div>
-                <span
-                  class="ml-2 text-sm font-medium hidden md:inline"
-                  :class="{
-                    'text-blue-600': currentStep >= index,
-                    'text-gray-500': currentStep < index,
-                  }"
-                >
-                  {{ step.label }}
-                </span>
-                <div
-                  v-if="index < formSteps.length - 1"
-                  class="flex-auto border-t mx-4"
-                  :class="{
-                    'border-blue-600': currentStep > index,
-                    'border-gray-200': currentStep <= index,
-                  }"
-                ></div>
-              </li>
-            </template>
-          </ol>
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              class="bg-primary h-2.5 rounded-full"
+              :style="`width: ${(currentStep / totalStep) * 100}%`"
+            ></div>
+          </div>
         </div>
 
         <!-- Form Section -->
         <div class="mb-6">
           <FormKit type="form" :actions="false" @submit="handleSubmit">
             <!-- Step 1: Maklumat Peribadi Asnaf -->
-            <div v-if="currentStep === 0">
-              <h3 class="text-lg font-medium mb-4">Maklumat Peribadi Asnaf</h3>
+            <div v-if="currentStep === 1">
+              <h3 class="text-lg font-medium mb-4">
+                A) Maklumat Peribadi Asnaf
+              </h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="select"
@@ -88,7 +57,7 @@
                 <FormKit
                   type="text"
                   name="name"
-                  label="Nama Ketua Keluarga"
+                  label="Nama"
                   validation="required"
                   v-model="formData.personalInfo.name"
                   :validation-messages="{
@@ -128,66 +97,41 @@
                     required: 'No Akaun Bank adalah wajib',
                   }"
                 />
+              </div>
 
-                <FormKit
-                  type="select"
-                  name="maritalStatus"
-                  label="Status Perkahwinan"
-                  validation="required"
-                  :options="maritalStatusOptions"
-                  placeholder="Pilih status"
-                  v-model="formData.personalInfo.maritalStatus"
-                  :validation-messages="{
-                    required: 'Status Perkahwinan adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="select"
-                  name="healthStatus"
-                  label="Status Kesihatan"
-                  validation="required"
-                  :options="healthStatusOptions"
-                  placeholder="Pilih status kesihatan"
-                  v-model="formData.personalInfo.healthStatus"
-                  :validation-messages="{
-                    required: 'Status Kesihatan adalah wajib',
-                  }"
-                />
-
-                <div v-if="isMuallaf">
-                  <FormKit
-                    type="date"
-                    name="islamDate"
-                    label="Tarikh Masuk Islam"
-                    validation="required"
-                    v-model="formData.personalInfo.islamDate"
-                    :validation-messages="{
-                      required: 'Tarikh Masuk Islam adalah wajib',
-                    }"
-                  />
-                </div>
-
-                <div v-if="isMuallaf">
-                  <FormKit
-                    type="date"
-                    name="kfamDate"
-                    label="Tarikh Masuk KFAM"
-                    validation="required"
-                    v-model="formData.personalInfo.kfamDate"
-                    :validation-messages="{
-                      required: 'Tarikh Masuk KFAM adalah wajib',
-                    }"
-                  />
-                </div>
+              <div class="flex justify-end">
+                <rs-button type="submit" variant="primary" @click="nextStep"
+                  >Seterusnya ke Maklumat Kesihatan</rs-button
+                >
               </div>
             </div>
 
             <!-- Step 2: Maklumat Pasangan -->
-            <div v-if="currentStep === 1">
-              <h3 class="text-lg font-medium mb-4">Maklumat Pasangan</h3>
+            <div v-if="currentStep === 2">
+              <h3 class="text-lg font-medium mb-4">B) Maklumat Pasangan</h3>
 
-              <div v-if="hasSpouse" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="select"
+                name="status_perkahwinan"
+                label="11. Status Perkahwinan"
+                :options="[
+                  '-- pilih --',
+                  'Berkahwin',
+                  'Bujang',
+                  'Janda',
+                  'Ibu Tinggal',
+                  'Bapa Tinggal',
+                  'Duda',
+                  'Balu',
+                ]"
+                validation="required"
+                v-model="statusKahwin"
+              />
+
+              <div
+                v-if="statusKahwin == 'Berkahwin'"
+                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
                 <FormKit
                   type="select"
                   name="spouseIdType"
@@ -222,75 +166,31 @@
                     required: 'Nama adalah wajib',
                   }"
                 />
-
-                <FormKit
-                  type="tel"
-                  name="spousePhone"
-                  label="No Telefon Pasangan"
-                  validation="required"
-                  v-model="formData.spouseInfo.phone"
-                  :validation-messages="{
-                    required: 'No Telefon adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="text"
-                  name="spouseBankName"
-                  label="Nama Bank Pasangan"
-                  v-model="formData.spouseInfo.bankName"
-                />
-
-                <FormKit
-                  type="text"
-                  name="spouseBankAccount"
-                  label="No Akaun Bank Pasangan"
-                  v-model="formData.spouseInfo.bankAccount"
-                />
-
-                <FormKit
-                  type="select"
-                  name="spouseHealthStatus"
-                  label="Status Kesihatan Pasangan"
-                  validation="required"
-                  :options="healthStatusOptions"
-                  placeholder="Pilih status kesihatan"
-                  v-model="formData.spouseInfo.healthStatus"
-                  :validation-messages="{
-                    required: 'Status Kesihatan adalah wajib',
-                  }"
-                />
-
-                <div v-if="isMuallaf">
-                  <FormKit
-                    type="date"
-                    name="spouseIslamDate"
-                    label="Tarikh Masuk Islam Pasangan"
-                    v-model="formData.spouseInfo.islamDate"
-                  />
-                </div>
-
-                <div v-if="isMuallaf">
-                  <FormKit
-                    type="date"
-                    name="spouseKfamDate"
-                    label="Tarikh Masuk KFAM Pasangan"
-                    v-model="formData.spouseInfo.kfamDate"
-                  />
-                </div>
               </div>
 
               <div v-else class="bg-gray-50 p-4 rounded-lg">
                 <p>
-                  Tiada maklumat pasangan diperlukan berdasarkan status perkahwinan yang
-                  dipilih.
+                  Tiada maklumat pasangan diperlukan berdasarkan status
+                  perkahwinan yang dipilih.
                 </p>
+              </div>
+
+              <div class="flex justify-between gap-3 mt-6">
+                <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="prevStep"
+                  >Kembali</rs-button
+                >
+                <rs-button type="submit" variant="primary" @click="nextStep"
+                  >Seterusnya</rs-button
+                >
               </div>
             </div>
 
             <!-- Step 3: Maklumat Alamat -->
-            <div v-if="currentStep === 2">
-              <h3 class="text-lg font-medium mb-4">Maklumat Alamat</h3>
+            <div v-if="currentStep === 3">
+              <h3 class="text-lg font-medium mb-4">C) Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="md:col-span-2">
                   <FormKit
@@ -355,7 +255,9 @@
                 </div>
 
                 <div
-                  v-if="formData.addressInfo.residenceStatus === 'milik-sendiri'"
+                  v-if="
+                    formData.addressInfo.residenceStatus === 'milik-sendiri'
+                  "
                   class="md:col-span-2"
                 >
                   <FormKit
@@ -419,13 +321,23 @@
                   />
                 </div>
               </div>
+
+              <div class="flex justify-between gap-3 mt-6">
+                <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="prevStep"
+                  >Kembali</rs-button
+                >
+                <rs-button type="submit" variant="primary" @click="nextStep"
+                  >Seterusnya</rs-button
+                >
+              </div>
             </div>
 
-            <!-- Step 4: Maklumat Tanggungan Sedang Bersekolah -->
-            <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">
-                Maklumat Tanggungan Sedang Bersekolah
-              </h3>
+            <!-- Step 4: Maklumat Tanggungan  -->
+            <div v-if="currentStep === 4">
+              <h3 class="text-lg font-medium mb-4">D) Maklumat Tanggungan</h3>
 
               <div
                 v-for="(dependent, index) in formData.schoolDependents"
@@ -433,7 +345,9 @@
                 class="mb-8 p-4 border border-gray-200 rounded-lg"
               >
                 <div class="flex justify-between items-center mb-4">
-                  <h4 class="text-md font-medium">Tanggungan #{{ index + 1 }}</h4>
+                  <h4 class="text-md font-medium">
+                    Tanggungan #{{ index + 1 }}
+                  </h4>
                   <button
                     type="button"
                     @click="removeSchoolDependent(index)"
@@ -469,10 +383,10 @@
                   <FormKit
                     type="select"
                     :name="`schoolDependent${index}EducationLevel`"
-                    label="Tahun/Tingkatan"
+                    label="Status"
                     validation="required"
                     :options="educationLevelOptions"
-                    placeholder="Pilih tahap pendidikan"
+                    placeholder="Pilih status"
                     v-model="dependent.educationLevel"
                     :validation-messages="{
                       required: 'Tahap pendidikan adalah wajib',
@@ -480,459 +394,41 @@
                   />
 
                   <FormKit
-                    type="radio"
-                    :name="`schoolDependent${index}Hostel`"
-                    label="Asrama"
-                    :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'T' },
-                    ]"
-                    v-model="dependent.hostel"
-                  />
-
-                  <FormKit
-                    type="date"
+                    type="text"
                     :name="`schoolDependent${index}IslamDate`"
-                    label="Tarikh Masuk Islam"
+                    label="Pendapatan (Jika bekerja)"
                     v-model="dependent.islamDate"
                   />
-
-                  <FormKit
-                    type="select"
-                    :name="`schoolDependent${index}HealthStatus`"
-                    label="Status Kesihatan"
-                    validation="required"
-                    :options="healthStatusOptions"
-                    placeholder="Pilih status kesihatan"
-                    v-model="dependent.healthStatus"
-                    :validation-messages="{
-                      required: 'Status kesihatan adalah wajib',
-                    }"
-                  />
-                </div>
-              </div>
-
-              <div class="flex justify-center mt-4">
-                <rs-button variant="secondary" @click="addSchoolDependent" type="button">
-                  <Icon name="mdi:plus" class="mr-1" size="1rem" />
-                  Tambah Tanggungan Bersekolah
-                </rs-button>
-              </div>
-            </div>
-
-            <!-- Step 5: Maklumat Tanggungan Tidak Bersekolah -->
-            <div v-if="currentStep === 4">
-              <h3 class="text-lg font-medium mb-4">
-                Maklumat Tanggungan Tidak Bersekolah
-              </h3>
-
-              <div
-                v-for="(dependent, index) in formData.nonSchoolDependents"
-                :key="index"
-                class="mb-8 p-4 border border-gray-200 rounded-lg"
-              >
-                <div class="flex justify-between items-center mb-4">
-                  <h4 class="text-md font-medium">Tanggungan #{{ index + 1 }}</h4>
-                  <button
-                    type="button"
-                    @click="removeNonSchoolDependent(index)"
-                    class="text-red-500 hover:text-red-700"
-                  >
-                    <Icon name="mdi:delete" size="1.25rem" />
-                  </button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormKit
-                    type="text"
-                    :name="`nonSchoolDependent${index}Name`"
-                    label="Nama"
-                    validation="required"
-                    v-model="dependent.name"
-                    :validation-messages="{
-                      required: 'Nama adalah wajib',
-                    }"
-                  />
-
-                  <FormKit
-                    type="text"
-                    :name="`nonSchoolDependent${index}IdNumber`"
-                    label="No Kad Pengenalan"
-                    validation="required"
-                    v-model="dependent.idNumber"
-                    :validation-messages="{
-                      required: 'No Kad Pengenalan adalah wajib',
-                    }"
-                  />
-
-                  <FormKit
-                    type="select"
-                    :name="`nonSchoolDependent${index}Relationship`"
-                    label="Hubungan"
-                    validation="required"
-                    :options="relationshipOptions"
-                    placeholder="Pilih hubungan"
-                    v-model="dependent.relationship"
-                    :validation-messages="{
-                      required: 'Hubungan adalah wajib',
-                    }"
-                  />
-
-                  <FormKit
-                    type="number"
-                    :name="`nonSchoolDependent${index}Age`"
-                    label="Umur"
-                    validation="required|number|min:0"
-                    v-model="dependent.age"
-                    :validation-messages="{
-                      required: 'Umur adalah wajib',
-                      number: 'Sila masukkan nombor yang sah',
-                      min: 'Umur mestilah nilai positif',
-                    }"
-                  />
-
-                  <FormKit
-                    type="date"
-                    :name="`nonSchoolDependent${index}IslamDate`"
-                    label="Tarikh Masuk Islam"
-                    v-model="dependent.islamDate"
-                  />
-
-                  <FormKit
-                    type="select"
-                    :name="`nonSchoolDependent${index}HealthStatus`"
-                    label="Status Kesihatan"
-                    validation="required"
-                    :options="healthStatusOptionsExtended"
-                    placeholder="Pilih status kesihatan"
-                    v-model="dependent.healthStatus"
-                    :validation-messages="{
-                      required: 'Status kesihatan adalah wajib',
-                    }"
-                  />
-
-                  <FormKit
-                    type="radio"
-                    :name="`nonSchoolDependent${index}LivingWithFamily`"
-                    label="Tinggal Bersama Keluarga"
-                    :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'T' },
-                    ]"
-                    v-model="dependent.livingWithFamily"
-                  />
-
-                  <div class="md:col-span-2">
-                    <FormKit
-                      type="textarea"
-                      :name="`nonSchoolDependent${index}Notes`"
-                      label="Catatan"
-                      v-model="dependent.notes"
-                    />
-                  </div>
                 </div>
               </div>
 
               <div class="flex justify-center mt-4">
                 <rs-button
                   variant="secondary"
-                  @click="addNonSchoolDependent"
+                  @click="addSchoolDependent"
                   type="button"
                 >
                   <Icon name="mdi:plus" class="mr-1" size="1rem" />
-                  Tambah Tanggungan Tidak Bersekolah
+                  Tambah Tanggungan
                 </rs-button>
               </div>
-            </div>
 
-            <!-- Step 6: Maklumat Perakuan Asnaf -->
-            <div v-if="currentStep === 5">
-              <h3 class="text-lg font-medium mb-4">Maklumat Perakuan Asnaf</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="md:col-span-2">
-                  <FormKit
-                    type="radio"
-                    name="hasLZSRelationship"
-                    label="Hubungan kekeluargaan dengan kakitangan LZS?"
-                    :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'T' },
-                    ]"
-                    v-model="formData.declaration.hasLZSRelationship"
-                  />
-                </div>
-
-                <div
-                  v-if="formData.declaration.hasLZSRelationship === 'Y'"
-                  class="md:col-span-2"
+              <div class="flex justify-between gap-3 mt-6">
+                <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="prevStep"
+                  >Kembali</rs-button
                 >
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormKit
-                      type="text"
-                      name="lzsStaffName"
-                      label="Nama Kakitangan"
-                      validation="required"
-                      v-model="formData.declaration.staffName"
-                      :validation-messages="{
-                        required: 'Nama kakitangan adalah wajib',
-                      }"
-                    />
-
-                    <FormKit
-                      type="text"
-                      name="lzsStaffPosition"
-                      label="Jawatan"
-                      validation="required"
-                      v-model="formData.declaration.staffPosition"
-                      :validation-messages="{
-                        required: 'Jawatan adalah wajib',
-                      }"
-                    />
-
-                    <FormKit
-                      type="text"
-                      name="lzsStaffOffice"
-                      label="Pejabat"
-                      validation="required"
-                      v-model="formData.declaration.staffOffice"
-                      :validation-messages="{
-                        required: 'Pejabat adalah wajib',
-                      }"
-                    />
-
-                    <FormKit
-                      type="text"
-                      name="lzsStaffRelationship"
-                      label="Hubungan"
-                      validation="required"
-                      v-model="formData.declaration.relationship"
-                      :validation-messages="{
-                        required: 'Hubungan adalah wajib',
-                      }"
-                    />
-                  </div>
-                </div>
-
-                <div class="md:col-span-2">
-                  <FormKit
-                    type="date"
-                    name="declarationDate"
-                    label="Tarikh Perakuan"
-                    validation="required"
-                    v-model="formData.declaration.date"
-                    :validation-messages="{
-                      required: 'Tarikh perakuan adalah wajib',
-                    }"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 7: Maklumat Pengesahan Asnaf dan Tanggungan -->
-            <div v-if="currentStep === 6">
-              <h3 class="text-lg font-medium mb-4">
-                Maklumat Pengesahan Asnaf dan Tanggungan
-              </h3>
-              <div class="mb-4 p-4 bg-blue-50 rounded-lg">
-                <p class="text-sm text-blue-700">
-                  * Pengesahan boleh dibuat oleh: Wakil Rakyat / Penghulu / Ketua Kampung
-                  / Ketua Penduduk / Nazir Masjid / Pengerusi Surau / Penolong Amil / Guru
-                  Pembimbing Asnaf Muallaf / Eksekutif LZS / Ketua Operasi Agihan Daerah
-                  LZS / Ketua Jabatan LZS / Pengurus LZS / Ketua Cawangan LZS.
-                </p>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="md:col-span-2">
-                  <FormKit
-                    type="textarea"
-                    name="verificationComments"
-                    label="Ulasan"
-                    validation="required"
-                    v-model="formData.verification.comments"
-                    :validation-messages="{
-                      required: 'Ulasan adalah wajib',
-                    }"
-                  />
-                </div>
-
-                <FormKit
-                  type="text"
-                  name="verifierName"
-                  label="Nama"
-                  validation="required"
-                  v-model="formData.verification.name"
-                  :validation-messages="{
-                    required: 'Nama adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="text"
-                  name="verifierPosition"
-                  label="Jawatan"
-                  validation="required"
-                  v-model="formData.verification.position"
-                  :validation-messages="{
-                    required: 'Jawatan adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="tel"
-                  name="verifierPhone"
-                  label="No Telefon"
-                  validation="required"
-                  v-model="formData.verification.phone"
-                  :validation-messages="{
-                    required: 'No Telefon adalah wajib',
-                  }"
-                />
-              </div>
-            </div>
-
-            <!-- Step 8: Maklumat Pendapatan Ketua Keluarga dan Isi Rumah -->
-            <div v-if="currentStep === 7">
-              <h3 class="text-lg font-medium mb-4">
-                Maklumat Pendapatan Ketua Keluarga dan Isi Rumah
-              </h3>
-              <div class="mb-4 p-4 bg-blue-50 rounded-lg">
-                <p class="text-sm text-blue-700">* Sila lampirkan slip gaji/pendapatan</p>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="text"
-                  name="familyHeadName"
-                  label="Nama Ketua Keluarga"
-                  validation="required"
-                  v-model="formData.income.familyHeadName"
-                  :validation-messages="{
-                    required: 'Nama ketua keluarga adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="text"
-                  name="familyHeadIdNumber"
-                  label="No Kad Pengenalan Ketua Keluarga"
-                  validation="required"
-                  v-model="formData.income.familyHeadIdNumber"
-                  :validation-messages="{
-                    required: 'No Kad Pengenalan adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="radio"
-                  name="employmentStatus"
-                  label="Status Pekerjaan"
-                  :options="[
-                    { label: 'Bekerja', value: 'Bekerja' },
-                    { label: 'Tidak Bekerja', value: 'Tidak Bekerja' },
-                  ]"
-                  validation="required"
-                  v-model="formData.income.employmentStatus"
-                  :validation-messages="{
-                    required: 'Status pekerjaan adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="select"
-                  name="incomeSource"
-                  label="Sumber Pendapatan"
-                  validation="required"
-                  :options="incomeSourceOptions"
-                  placeholder="Pilih sumber pendapatan"
-                  v-model="formData.income.incomeSource"
-                  :validation-messages="{
-                    required: 'Sumber pendapatan adalah wajib',
-                  }"
-                />
-
-                <div v-if="formData.income.employmentStatus === 'Bekerja'">
-                  <FormKit
-                    type="select"
-                    name="employmentSector"
-                    label="Sektor Pekerjaan"
-                    :options="employmentSectorOptions"
-                    placeholder="Pilih sektor pekerjaan"
-                    v-model="formData.income.employmentSector"
-                  />
-                </div>
-
-                <div v-if="formData.income.employmentStatus === 'Bekerja'">
-                  <FormKit
-                    type="text"
-                    name="jobType"
-                    label="Jenis Pekerjaan"
-                    v-model="formData.income.jobType"
-                  />
-                </div>
-
-                <div v-if="formData.income.employmentStatus === 'Bekerja'">
-                  <FormKit
-                    type="select"
-                    name="positionStatus"
-                    label="Status Jawatan"
-                    :options="positionStatusOptions"
-                    placeholder="Pilih status jawatan"
-                    v-model="formData.income.positionStatus"
-                  />
-                </div>
-
-                <div v-if="formData.income.employmentStatus === 'Bekerja'">
-                  <FormKit
-                    type="text"
-                    name="employerName"
-                    label="Nama Majikan"
-                    v-model="formData.income.employerName"
-                  />
-                </div>
-
-                <FormKit
-                  type="number"
-                  name="incomeAmount"
-                  label="Pendapatan (RM)"
-                  validation="required|number|min:0"
-                  v-model="formData.income.incomeAmount"
-                  :validation-messages="{
-                    required: 'Pendapatan adalah wajib',
-                    number: 'Sila masukkan nombor yang sah',
-                    min: 'Pendapatan mestilah nilai positif',
-                  }"
-                />
-
-                <FormKit
-                  type="date"
-                  name="incomeDeclarationDate"
-                  label="Tarikh Perakuan"
-                  validation="required"
-                  v-model="formData.income.declarationDate"
-                  :validation-messages="{
-                    required: 'Tarikh perakuan adalah wajib',
-                  }"
-                />
-              </div>
-
-              <!-- File upload for income slip -->
-              <div class="mt-6">
-                <FormKit
-                  type="file"
-                  name="incomeSlip"
-                  label="Lampiran Slip Gaji/Pendapatan"
-                  help="Sila muat naik slip gaji/pendapatan"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  :validation-messages="{
-                    required: 'Slip gaji/pendapatan adalah wajib',
-                  }"
-                />
+                <rs-button type="submit" variant="primary" @click="handleSubmit"
+                  >Hantar Permohonan</rs-button
+                >
               </div>
             </div>
           </FormKit>
-        </div> </template
-    ></rs-card>
+        </div>
+      </template></rs-card
+    >
   </div>
 </template>
 
@@ -957,19 +453,8 @@ const breadcrumb = ref([
   },
 ]);
 
-const currentStep = ref(0);
-
-// Form steps
-const formSteps = ref([
-  { label: "Maklumat Peribadi" },
-  { label: "Maklumat Pasangan" },
-  { label: "Maklumat Alamat" },
-  { label: "Tanggungan Bersekolah" },
-  { label: "Tanggungan Tidak Bersekolah" },
-  { label: "Perakuan Asnaf" },
-  { label: "Pengesahan" },
-  { label: "Pendapatan" },
-]);
+const currentStep = ref(1);
+const totalStep = 5;
 
 // Form data structure
 const formData = ref({
@@ -1037,6 +522,8 @@ const formData = ref({
   },
 });
 
+const statusKahwin = ref(null);
+
 // Options for select fields
 const idTypeOptions = [
   { label: "Kad Pengenalan", value: "ic" },
@@ -1072,9 +559,10 @@ const residenceStatusOptions = [
 ];
 
 const educationLevelOptions = [
-  { label: "Pra Sekolah", value: "pre-school" },
-  { label: "Tahun 1", value: "year-1" },
-  { label: "Tahun 2", value: "year-2" },
+  { label: "Sekolah", value: "sekolah" },
+  { label: "Tidak Bersekolah", value: "tidak-bersekolah" },
+  { label: "Bekerja", value: "bekerja" },
+  { label: "Tidak Bekerja", value: "tidak-bekerja" },
   // Add more education levels as needed
 ];
 
@@ -1169,6 +657,17 @@ const handleSubmit = () => {
   // Handle form submission
   console.log("Form submitted:", formData.value);
   // Add your submission logic here (API call, etc.)
+
+
+  navigateTo("/BF-PRF/AS/FR/04")
+};
+
+const prevStep = () => {
+  currentStep.value--;
+};
+
+const nextStep = () => {
+  currentStep.value++;
 };
 
 // Watchers

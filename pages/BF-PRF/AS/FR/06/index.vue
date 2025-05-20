@@ -179,7 +179,7 @@ const submitForm = () => {
     console.log("Form submitted:", formData.value);
 
     // Navigate after submission
-    navigateTo("/BF-PRF/AS/FR/01");
+    navigateTo("/BF-PRF/AS/FR/07");
     processing.value = false;
   }, 1000);
 };

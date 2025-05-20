@@ -682,12 +682,12 @@
           :actions="false"
         >
           <h3 class="text-lg font-semibold mb-4">
-            B. Maklumat Peibadi Tanggungan
+            B. Maklumat Peribadi Tanggungan
           </h3>
 
           <!-- A. Maklumat Peibadi Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">A. Maklumat Peibadi Tanggungan</h4>
+            <h4 class="font-medium mb-3">A. Maklumat Peribadi Tanggungan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -1290,7 +1290,7 @@ const breadcrumb = ref([
 ]);
 
 const processing = ref(false);
-const currentSection = ref(2);
+const currentSection = ref(1);
 
 const currentStepA = ref(1);
 const totalStepsA = 7;

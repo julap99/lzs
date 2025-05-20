@@ -90,7 +90,6 @@
                 type="select"
                 name="documentStatus"
                 label="Status Semak Dokumen"
-                validation="required"
                 :options="documentStatusOptions"
                 v-model="formData.documentStatus"
                 :validation-messages="{
@@ -102,7 +101,6 @@
                 type="text"
                 name="reviewedBy"
                 label="Disemak oleh"
-                validation="required"
                 v-model="formData.reviewedBy"
                 :validation-messages="{
                   required: 'Nama penyemak adalah wajib',
@@ -113,7 +111,6 @@
                 type="date"
                 name="reviewDate"
                 label="Tarikh Semakan"
-                validation="required"
                 v-model="formData.reviewDate"
                 :validation-messages="{
                   required: 'Tarikh semakan adalah wajib',
