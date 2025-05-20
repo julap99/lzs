@@ -234,6 +234,48 @@ export default [
   },
 
   {
+    header: "BF-BTN",
+    description: "Pengurusan Bantuan",
+    child: [
+      {
+        title: "Konfigurasi",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Selenggara",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/KB/SB/01",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Permohonan",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Bantuan Bulk",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/PB/BP/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Pembatalan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/PB/BTLB/01",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+    ],
+  },
+
+  {
     header: "BF-PA",
     description: "Pengurusan Penolong Amil",
     child: [
