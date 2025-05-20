@@ -43,14 +43,20 @@
         <!-- Success Message - Only shown after approval -->
         <div v-if="isApproved" class="mb-6">
           <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
+            <Icon
+              name="mdi:check-circle"
+              class="text-green-500"
+              size="1.5rem"
+            />
             <p class="text-green-600 font-medium">Bantuan telah disahkan</p>
           </div>
         </div>
 
         <!-- Form Section - Always shown -->
         <div class="mb-6">
-          <h3 class="text-lg font-medium mb-2">Maklumat Arahan Pindahan Tunai</h3>
+          <h3 class="text-lg font-medium mb-2">
+            Maklumat Arahan Pindahan Tunai
+          </h3>
           <FormKit type="form" :actions="false" @submit="handleSubmit">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
@@ -174,7 +180,9 @@
       <template #body>
         <p class="mb-4">Adakah anda pasti untuk sahkan bantuan ini?</p>
         <div class="bg-gray-50 p-4 rounded-lg">
-          <p class="font-medium">Jumlah Bantuan: {{ bantuanDetails.jumlahBantuan }}</p>
+          <p class="font-medium">
+            Jumlah Bantuan: {{ bantuanDetails.jumlahBantuan }}
+          </p>
           <p class="text-sm text-gray-600">
             Pastikan jumlah bantuan adalah betul sebelum disahkan.
           </p>
@@ -211,9 +219,14 @@ const approving = ref(false);
 const showConfirmationModal = ref(false);
 const breadcrumb = ref([
   {
-    name: "Jana Senarai Nama dan Jumlah Bantuan",
+    name: "Pengurusan Tunai",
     type: "link",
-    path: "/BF-PTPC/MT/AG/01",
+    path: `/BF-PTPC/MT/AG/01`,
+  },
+  {
+    name: "Agihan Lain",
+    type: "link",
+    path: `/BF-PTPC/MT/AG/01`,
   },
   {
     name: "Sahkan Jumlah Tunai",

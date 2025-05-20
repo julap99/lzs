@@ -48,7 +48,11 @@
         <!-- Success Message - Only shown after completion -->
         <div v-if="isCompleted" class="mb-6">
           <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
+            <Icon
+              name="mdi:check-circle"
+              class="text-green-500"
+              size="1.5rem"
+            />
             <p class="text-green-600 font-medium">
               Pemulangan tunai berjaya disahkan dan diterima
             </p>
@@ -57,7 +61,9 @@
 
         <!-- Form Section - Always shown -->
         <div class="mb-6">
-          <h3 class="text-lg font-medium mb-2">Maklumat Penerimaan Pemulangan Tunai</h3>
+          <h3 class="text-lg font-medium mb-2">
+            Maklumat Penerimaan Pemulangan Tunai
+          </h3>
           <FormKit type="form" :actions="false" @submit="handleSubmit">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
@@ -196,8 +202,8 @@
             }}
           </p>
           <p class="text-sm text-gray-600">
-            Pastikan jumlah yang diterima adalah tepat dan sepadan dengan jumlah yang
-            telah disahkan untuk pemulangan.
+            Pastikan jumlah yang diterima adalah tepat dan sepadan dengan jumlah
+            yang telah disahkan untuk pemulangan.
           </p>
         </div>
       </template>
@@ -237,9 +243,14 @@ const processing = ref(false);
 const showConfirmationModal = ref(false);
 const breadcrumb = ref([
   {
-    name: "Senarai Pemulangan Tunai",
+    name: "Pengurusan Tunai",
     type: "link",
-    path: "/BF-PTPC/MT/PT/01",
+    path: `/BF-PTPC/MT/PT/01`,
+  },
+  {
+    name: "Pemulangan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/PT/01`,
   },
   {
     name: "Terima & Sahkan Pemulangan Tunai (Kewangan)",

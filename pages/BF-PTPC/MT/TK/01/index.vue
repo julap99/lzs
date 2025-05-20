@@ -287,19 +287,19 @@ const processing = ref(false);
 const showConfirmationModal = ref(false);
 const breadcrumb = ref([
   {
-    name: "Dashboard",
-    type: "link",
-    path: "/dashboard",
-  },
-  {
     name: "Pengurusan Tunai",
     type: "link",
-    path: "/pengurusan-tunai",
+    path: `/BF-PTPC/MT/TK/01`,
+  },
+  {
+    name: "Tunai Kaunter",
+    type: "link",
+    path: `/BF-PTPC/MT/TK/01`,
   },
   {
     name: "Opening & Agihan Tunai ke Kaunter",
     type: "current",
-    path: "/pengurusan-tunai/opening-agihan",
+    path: "/BF-PTPC/MT/TK/01",
   },
 ]);
 

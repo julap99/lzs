@@ -42,14 +42,20 @@
         <!-- Success Message - Only shown after approval -->
         <div v-if="isApproved" class="mb-6">
           <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
+            <Icon
+              name="mdi:check-circle"
+              class="text-green-500"
+              size="1.5rem"
+            />
             <p class="text-green-600 font-medium">Bantuan telah disahkan</p>
           </div>
         </div>
 
         <!-- Details Section (formerly Form) -->
         <div class="mb-6">
-          <h3 class="text-lg font-medium mb-4">Maklumat Arahan Pindahan Tunai</h3>
+          <h3 class="text-lg font-medium mb-4">
+            Maklumat Arahan Pindahan Tunai
+          </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <p class="text-sm text-gray-600">Daerah</p>
@@ -62,7 +68,9 @@
             </div>
 
             <div>
-              <p class="text-sm text-gray-600">Nama Pegawai LZS Yang Diberi Kuasa</p>
+              <p class="text-sm text-gray-600">
+                Nama Pegawai LZS Yang Diberi Kuasa
+              </p>
               <p class="font-medium">{{ transferDetails.officerName }}</p>
             </div>
 
@@ -127,7 +135,9 @@
       <template #body>
         <p class="mb-4">Adakah anda pasti untuk sahkan bantuan ini?</p>
         <div class="bg-gray-50 p-4 rounded-lg">
-          <p class="font-medium">Jumlah Bantuan: {{ bantuanDetails.jumlahBantuan }}</p>
+          <p class="font-medium">
+            Jumlah Bantuan: {{ bantuanDetails.jumlahBantuan }}
+          </p>
           <p class="text-sm text-gray-600">
             Pastikan jumlah bantuan adalah betul sebelum disahkan.
           </p>
@@ -163,6 +173,16 @@ const isApproved = ref(false);
 const approving = ref(false);
 const showConfirmationModal = ref(false);
 const breadcrumb = ref([
+  {
+    name: "Pengurusan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/AG/01`,
+  },
+  {
+    name: "Agihan Lain",
+    type: "link",
+    path: `/BF-PTPC/MT/AG/01`,
+  },
   {
     name: "Sahkan Jumlah Tunai (PKP)",
     type: "current",

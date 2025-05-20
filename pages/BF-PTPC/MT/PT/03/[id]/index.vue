@@ -42,8 +42,14 @@
         <!-- Success Message - Only shown after completion -->
         <div v-if="isCompleted" class="mb-6">
           <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
-            <p class="text-green-600 font-medium">Pengeluaran tunai berjaya direkodkan</p>
+            <Icon
+              name="mdi:check-circle"
+              class="text-green-500"
+              size="1.5rem"
+            />
+            <p class="text-green-600 font-medium">
+              Pengeluaran tunai berjaya direkodkan
+            </p>
           </div>
         </div>
 
@@ -185,7 +191,9 @@
       position="center"
     >
       <template #body>
-        <p class="mb-4">Adakah anda pasti untuk mengesahkan pengeluaran tunai ini?</p>
+        <p class="mb-4">
+          Adakah anda pasti untuk mengesahkan pengeluaran tunai ini?
+        </p>
         <div class="bg-gray-50 p-4 rounded-lg">
           <p class="font-medium">
             Jumlah Tunai:
@@ -232,9 +240,14 @@ const processing = ref(false);
 const showConfirmationModal = ref(false);
 const breadcrumb = ref([
   {
-    name: "Senarai Bantuan Tidak Dituntut",
+    name: "Pengurusan Tunai",
     type: "link",
-    path: "/BF-PTPC/MT/PT/01",
+    path: `/BF-PTPC/MT/PT/01`,
+  },
+  {
+    name: "Pemulangan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/PT/01`,
   },
   {
     name: "Keluarkan Tunai (PKP)",
@@ -298,7 +311,7 @@ const handleConfirm = async () => {
     // Show success message for 2 seconds, then redirect
     setTimeout(() => {
       router.push(`/BF-PTPC/MT/PT/04/${route.params.id}`);
-    }, 2000);
+    }, 500);
   }, 1500);
 };
 

@@ -38,7 +38,11 @@
         <!-- Success Message - Only shown after completion -->
         <div v-if="isCompleted" class="mb-6">
           <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
+            <Icon
+              name="mdi:check-circle"
+              class="text-green-500"
+              size="1.5rem"
+            />
             <p class="text-green-600 font-medium">
               Pengesahan closing kaunter berjaya direkodkan
             </p>
@@ -112,14 +116,22 @@
               />
 
               <div class="md:col-span-2">
-                <h4 class="text-base font-medium mb-2 mt-2">Status Pengesahan</h4>
+                <h4 class="text-base font-medium mb-2 mt-2">
+                  Status Pengesahan
+                </h4>
                 <div class="flex items-center p-3 bg-blue-50 rounded-md mb-4">
                   <div class="mr-4">
-                    <Icon name="mdi:cash-check" class="text-blue-600" size="1.5rem" />
+                    <Icon
+                      name="mdi:cash-check"
+                      class="text-blue-600"
+                      size="1.5rem"
+                    />
                   </div>
                   <div>
                     <p class="text-sm text-gray-600">Baki Sepatutnya</p>
-                    <p class="font-medium">RM {{ formatCurrency(expectedBalance) }}</p>
+                    <p class="font-medium">
+                      RM {{ formatCurrency(expectedBalance) }}
+                    </p>
                   </div>
                   <div class="mx-4 text-gray-400">
                     <Icon name="mdi:arrow-right" size="1.5rem" />
@@ -129,7 +141,9 @@
                     <p class="font-medium">
                       RM
                       {{
-                        formData.jumlahBaki ? formatCurrency(formData.jumlahBaki) : "0.00"
+                        formData.jumlahBaki
+                          ? formatCurrency(formData.jumlahBaki)
+                          : "0.00"
                       }}
                     </p>
                   </div>
@@ -203,17 +217,26 @@
       position="center"
     >
       <template #body>
-        <p class="mb-4">Adakah anda pasti untuk mengesahkan closing kaunter ini?</p>
+        <p class="mb-4">
+          Adakah anda pasti untuk mengesahkan closing kaunter ini?
+        </p>
         <div class="bg-gray-50 p-4 rounded-lg">
-          <p class="font-medium">Nama Kaunter: {{ counterDetails.idKaunter }}</p>
+          <p class="font-medium">
+            Nama Kaunter: {{ counterDetails.idKaunter }}
+          </p>
           <p class="font-medium">
             Baki Sepatutnya: RM {{ formatCurrency(expectedBalance) }}
           </p>
           <p class="font-medium">
             Baki Dikira: RM
-            {{ formData.jumlahBaki ? formatCurrency(formData.jumlahBaki) : "0.00" }}
+            {{
+              formData.jumlahBaki ? formatCurrency(formData.jumlahBaki) : "0.00"
+            }}
           </p>
-          <p class="font-medium" :class="{ 'text-red-600': !isBalanceMatching }">
+          <p
+            class="font-medium"
+            :class="{ 'text-red-600': !isBalanceMatching }"
+          >
             Status: {{ isBalanceMatching ? "Padan" : "Tidak Padan" }}
           </p>
           <p v-if="!isBalanceMatching" class="text-sm text-red-600 mt-2">
@@ -260,6 +283,16 @@ const processing = ref(false);
 const showConfirmationModal = ref(false);
 const breadcrumb = ref([
   {
+    name: "Pengurusan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/TK/01`,
+  },
+  {
+    name: "Tunai Kaunter",
+    type: "link",
+    path: `/BF-PTPC/MT/TK/01`,
+  },
+  {
     name: "Kira Tunai & Sahkan Jumlah Closing mengikut Kaunter (EKP)",
     type: "current",
     path: "/BF-PTPC/MT/TK/03",
@@ -291,7 +324,9 @@ const formattedCurrentDate = computed(() => {
 });
 
 const expectedBalance = computed(() => {
-  return counterDetails.value.jumlahDiterima - counterDetails.value.jumlahDiagih;
+  return (
+    counterDetails.value.jumlahDiterima - counterDetails.value.jumlahDiagih
+  );
 });
 
 const formData = ref({

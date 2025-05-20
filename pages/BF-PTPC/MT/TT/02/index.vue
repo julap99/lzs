@@ -25,8 +25,8 @@
             <div>
               <p class="text-sm text-gray-600">Keterangan</p>
               <p class="font-medium">
-                Pemohon hadir secara fizikal ke cawangan untuk mengambil bantuan yang
-                telah diluluskan.
+                Pemohon hadir secara fizikal ke cawangan untuk mengambil bantuan
+                yang telah diluluskan.
               </p>
             </div>
           </div>
@@ -35,8 +35,14 @@
         <!-- Verification Result - Only shown after semak -->
         <div v-if="verificationAttempted" class="mb-6">
           <div class="flex items-center gap-2 mb-4" v-if="asnafVerified">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
-            <p class="text-green-600 font-medium">Rekod pemohon ditemui dalam sistem</p>
+            <Icon
+              name="mdi:check-circle"
+              class="text-green-500"
+              size="1.5rem"
+            />
+            <p class="text-green-600 font-medium">
+              Rekod pemohon ditemui dalam sistem
+            </p>
           </div>
           <div class="flex items-center gap-2 mb-4" v-else>
             <Icon name="mdi:alert-circle" class="text-red-500" size="1.5rem" />
@@ -55,10 +61,9 @@
                 type="text"
                 name="noKadPengenalan"
                 label="No. Kad Pengenalan"
-                validation="required|length:12"
+                validation="required"
                 :validation-messages="{
                   required: 'No. Kad Pengenalan adalah wajib',
-                  length: 'No. Kad Pengenalan mestilah 12 digit',
                 }"
                 :disabled="processing"
                 v-model="formData.noKadPengenalan"
@@ -70,11 +75,7 @@
                   variant="primary-outline"
                   class=""
                   @click="verifyAsnaf"
-                  :disabled="
-                    processing ||
-                    !formData.noKadPengenalan ||
-                    formData.noKadPengenalan.length !== 12
-                  "
+                  :disabled="processing || !formData.noKadPengenalan"
                 >
                   <span v-if="processing">
                     <Icon name="eos-icons:loading" class="mr-1" size="1rem" />
@@ -155,19 +156,19 @@ const asnafVerified = ref(false);
 const verificationAttempted = ref(false);
 const breadcrumb = ref([
   {
-    name: "Dashboard",
+    name: "Pengurusan Tunai",
     type: "link",
-    path: "/dashboard",
+    path: `/BF-PTPC/MT/TT/01`,
   },
   {
-    name: "Pengurusan Bantuan",
+    name: "Agih Tunai Kaunter",
     type: "link",
-    path: "/pengurusan-bantuan",
+    path: `/BF-PTPC/MT/TT/01`,
   },
   {
-    name: "Mohon Untuk Ambil Tunai",
+    name: "Mohon Untuk Ambil Tunai (EKP)",
     type: "current",
-    path: "/pengurusan-bantuan/ambil-tunai",
+    path: "/BF-PTPC/MT/TT/02",
   },
 ]);
 
@@ -200,7 +201,7 @@ const navigateBack = () => {
 };
 
 const verifyAsnaf = () => {
-  if (!formData.value.noKadPengenalan || formData.value.noKadPengenalan.length !== 12) {
+  if (!formData.value.noKadPengenalan) {
     return;
   }
 
@@ -213,12 +214,9 @@ const verifyAsnaf = () => {
 
     // Simulated verification logic
     // In a real application, this would be an API call to check the database
-    if (formData.value.noKadPengenalan === "000000000000") {
-      asnafVerified.value = true;
-      formData.value.namaAsnaf = "Muhammad bin Ibrahim"; // Simulated name from system
-    } else {
-      asnafVerified.value = false;
-    }
+
+    asnafVerified.value = true;
+    formData.value.namaAsnaf = "Muhammad bin Ibrahim"; // Simulated name from system
   }, 1000);
 };
 

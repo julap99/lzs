@@ -1,85 +1,87 @@
 export default [
-  // {
-  //   header: "BF-PTPC",
-  //   description: "Pengurusan Tunai dan Petty Cash",
-  //   child: [
-  //     {
-  //       title: "BF-PTPC-MT",
-  //       icon: "iconamoon:component-fill",
-  //       child: [
-  //         {
-  //           title: "MT-AG",
-  //           icon: "iconamoon:arrow-right-2-duotone",
-  //           path: "/BF-PTPC/MT/AG/01",
-  //           child: [],
-  //           meta: {},
-  //         },
-  //         {
-  //           title: "MT-PT",
-  //           icon: "iconamoon:arrow-right-2-duotone",
-  //           path: "/BF-PTPC/MT/PT/01",
-  //           child: [],
-  //           meta: {},
-  //         },
-  //         {
-  //           title: "MT-TK",
-  //           icon: "iconamoon:arrow-right-2-duotone",
-  //           path: "/BF-PTPC/MT/TK/01",
-  //           child: [],
-  //           meta: {},
-  //         },
-  //         {
-  //           title: "MT-TT",
-  //           icon: "iconamoon:arrow-right-2-duotone",
-  //           path: "/BF-PTPC/MT/TT/01",
-  //           child: [],
-  //           meta: {},
-  //         },
-  //       ],
-  //       meta: {},
-  //     },
-  //     {
-  //       title: "BF-PTPC-PC",
-  //       icon: "iconamoon:component-fill",
-  //       child: [
-  //         {
-  //           title: "PC-BE",
-  //           icon: "iconamoon:arrow-right-2-duotone",
-  //           path: "/BF-PTPC/MT/01",
-  //           child: [],
-  //           meta: {},
-  //         },
-  //         {
-  //           title: "PC-AA",
-  //           icon: "iconamoon:arrow-right-2-duotone",
-  //           path: "/BF-PTPC/PC",
-  //           child: [],
-  //           meta: {},
-  //         },
-  //         {
-  //           title: "PC-TO",
-  //           icon: "iconamoon:arrow-right-2-duotone",
-  //           path: "/BF-PTPC/DA",
-  //           child: [],
-  //           meta: {},
-  //         },
-  //       ],
-  //       meta: {},
-  //     },
-  //     {
-  //       title: "BF-PTPC-DA",
-  //       icon: "iconamoon:component-fill",
-  //       chile: [],
-  //       meta: {},
-  //     },
-  //     {
-  //       title: "BF-PTPC-PE",
-  //       icon: "iconamoon:component-fill",
-  //       chile: [],
-  //       meta: {},
-  //     },
-  //   ],
-  // },
+  {
+    header: "BF-PTPC",
+    description: "Pengurusan Tunai dan Petty Cash",
+    child: [
+      {
+        title: "Mengurus Tunai",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Agihan Lain",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PTPC/MT/AG/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Pemulangan Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PTPC/MT/PT/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Tunai Kaunter",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PTPC/MT/TK/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Agih Tunai Kaunter",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PTPC/MT/TT/01",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Petty Cash",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Mengurus Petty Cash",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PTPC/PC/BE/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Tunai Dilapangan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PTPC/PC/TD/01",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+    ],
+  },
+
+  {
+    header: "BF-TNI",
+    description: "Pengurusan Tunai",
+    child: [
+      {
+        title: "Mengurus Tunai",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Kemasukan Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/MT/KT/01",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+    ],
+  },
 
   {
     header: "BF-PRF",

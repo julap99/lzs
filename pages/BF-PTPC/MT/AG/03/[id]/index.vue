@@ -43,11 +43,13 @@
               ARAHAN PINDAHAN WANG UNTUK TUJUAN AGIHAN BANTUAN
             </p>
 
-            <p class="mb-4">Dengan segala hormatnya, perkara di atas adalah dirujuk.</p>
+            <p class="mb-4">
+              Dengan segala hormatnya, perkara di atas adalah dirujuk.
+            </p>
 
             <p class="mb-4">
-              2. Dimaklumkan bahawa pihak Lembaga Zakat Selangor (LZS) ingin mengarahkan
-              pindahan wang sejumlah
+              2. Dimaklumkan bahawa pihak Lembaga Zakat Selangor (LZS) ingin
+              mengarahkan pindahan wang sejumlah
               <span class="font-semibold"
                 >RM{{ formatCurrency(transferDetails.jumlahPindahan) }}</span
               >
@@ -56,8 +58,8 @@
             </p>
 
             <p class="mb-4">
-              3. Berikut adalah butiran pegawai LZS yang diberi kuasa untuk menguruskan
-              transaksi ini:
+              3. Berikut adalah butiran pegawai LZS yang diberi kuasa untuk
+              menguruskan transaksi ini:
             </p>
 
             <div class="pl-6 mb-4">
@@ -66,7 +68,9 @@
                 No. Kad Pengenalan:
                 {{ formatIC(transferDetails.noKadPengenalanPegawai) }}
               </p>
-              <p class="mb-1">No. Telefon: {{ transferDetails.noTelefonPegawai }}</p>
+              <p class="mb-1">
+                No. Telefon: {{ transferDetails.noTelefonPegawai }}
+              </p>
             </div>
 
             <p class="mb-4">
@@ -75,7 +79,8 @@
             </p>
 
             <p class="mb-4">
-              5. Kerjasama pihak tuan/puan dalam melancarkan proses ini amatlah dihargai.
+              5. Kerjasama pihak tuan/puan dalam melancarkan proses ini amatlah
+              dihargai.
             </p>
           </div>
 
@@ -102,8 +107,12 @@
           </rs-button>
 
           <div class="flex gap-4">
-            <rs-button variant="primary-outline" @click="goBack"> Kembali </rs-button>
-            <rs-button variant="primary" @click="proceedToNext"> Teruskan </rs-button>
+            <rs-button variant="primary-outline" @click="goBack">
+              Kembali
+            </rs-button>
+            <rs-button variant="primary" @click="proceedToNext">
+              Teruskan
+            </rs-button>
           </div>
         </div>
       </template>
@@ -126,14 +135,14 @@ const { generatePDF } = usePDF();
 
 const breadcrumb = ref([
   {
-    name: "Jana Senarai Nama dan Jumlah Bantuan",
+    name: "Pengurusan Tunai",
     type: "link",
-    path: "/BF-PTPC/MT/AG/01",
+    path: `/BF-PTPC/MT/AG/01`,
   },
   {
-    name: "Sahkan Jumlah Tunai",
+    name: "Agihan Lain",
     type: "link",
-    path: `/BF-PTPC/MT/AG/02/${route.params.id}`,
+    path: `/BF-PTPC/MT/AG/01`,
   },
   {
     name: "Surat Arahan Pindaan Wang",
@@ -197,10 +206,9 @@ const generateReference = () => {
 };
 
 const downloadPDF = () => {
-  const documentTitle = `Surat_Arahan_Pindahan_Wang_${formatDate(new Date()).replace(
-    /\//g,
-    "-"
-  )}`;
+  const documentTitle = `Surat_Arahan_Pindahan_Wang_${formatDate(
+    new Date()
+  ).replace(/\//g, "-")}`;
 
   // This would use the composable to generate and download PDF
   generatePDF(documentTitle, transferDetails.value);

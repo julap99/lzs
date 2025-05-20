@@ -5,7 +5,9 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Terima & Sahkan Tunai di Kaunter (EKP)</h2>
+          <h2 class="text-xl font-semibold">
+            Terima & Sahkan Tunai di Kaunter (EKP)
+          </h2>
         </div>
       </template>
 
@@ -36,7 +38,11 @@
         <!-- Success Message - Only shown after completion -->
         <div v-if="isCompleted" class="mb-6">
           <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
+            <Icon
+              name="mdi:check-circle"
+              class="text-green-500"
+              size="1.5rem"
+            />
             <p class="text-green-600 font-medium">
               Penerimaan tunai di kaunter berjaya disahkan dan direkodkan
             </p>
@@ -118,14 +124,24 @@
               />
 
               <div class="md:col-span-2">
-                <h4 class="text-base font-medium mb-2 mt-2">Status Pengesahan</h4>
+                <h4 class="text-base font-medium mb-2 mt-2">
+                  Status Pengesahan
+                </h4>
                 <div class="flex items-center p-3 bg-blue-50 rounded-md mb-4">
                   <div class="mr-4">
-                    <Icon name="mdi:cash-check" class="text-blue-600" size="1.5rem" />
+                    <Icon
+                      name="mdi:cash-check"
+                      class="text-blue-600"
+                      size="1.5rem"
+                    />
                   </div>
                   <div>
-                    <p class="text-sm text-gray-600">Jumlah Sepatutnya (Dari Agihan)</p>
-                    <p class="font-medium">RM {{ counterDetails.jumlahAgihan }}</p>
+                    <p class="text-sm text-gray-600">
+                      Jumlah Sepatutnya (Dari Agihan)
+                    </p>
+                    <p class="font-medium">
+                      RM {{ counterDetails.jumlahAgihan }}
+                    </p>
                   </div>
                   <div class="mx-4 text-gray-400">
                     <Icon name="mdi:arrow-right" size="1.5rem" />
@@ -205,9 +221,13 @@
       position="center"
     >
       <template #body>
-        <p class="mb-4">Adakah anda pasti untuk mengesahkan penerimaan tunai ini?</p>
+        <p class="mb-4">
+          Adakah anda pasti untuk mengesahkan penerimaan tunai ini?
+        </p>
         <div class="bg-gray-50 p-4 rounded-lg">
-          <p class="font-medium">Nama Kaunter: {{ counterDetails.idKaunter }}</p>
+          <p class="font-medium">
+            Nama Kaunter: {{ counterDetails.idKaunter }}
+          </p>
           <p class="font-medium">
             Jumlah Sepatutnya: RM {{ counterDetails.jumlahAgihan }}
           </p>
@@ -261,7 +281,17 @@ const processing = ref(false);
 const showConfirmationModal = ref(false);
 const breadcrumb = ref([
   {
-    name: "Terima & Sahkan Tunai di Kaunte (EKP)r",
+    name: "Pengurusan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/TK/01`,
+  },
+  {
+    name: "Tunai Kaunter",
+    type: "link",
+    path: `/BF-PTPC/MT/TK/01`,
+  },
+  {
+    name: "Terima & Sahkan Tunai di Kaunter (EKP)",
     type: "current",
     path: "/BF-PTPC/MT/TK/02",
   },

@@ -26,7 +26,10 @@
             </div>
             <div>
               <p class="text-sm text-gray-600">Status Agihan</p>
-              <p class="font-medium text-lg" :class="bantuanDetails.statusClass">
+              <p
+                class="font-medium text-lg"
+                :class="bantuanDetails.statusClass"
+              >
                 {{ bantuanDetails.status }}
               </p>
             </div>
@@ -40,7 +43,11 @@
         <!-- Success Message - Only shown after completion -->
         <div class="mb-6">
           <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
+            <Icon
+              name="mdi:check-circle"
+              class="text-green-500"
+              size="1.5rem"
+            />
             <p class="text-green-600 font-medium">
               Pengagihan bantuan tunai berjaya direkodkan
             </p>
@@ -57,9 +64,15 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <p class="text-sm text-blue-700">Slip penerimaan telah dijana</p>
+                <p class="text-sm text-blue-700">
+                  Slip penerimaan telah dijana
+                </p>
                 <div class="flex mt-2">
-                  <rs-button @click="printReceipt" variant="primary-outline" class="mr-2">
+                  <rs-button
+                    @click="printReceipt"
+                    variant="primary-outline"
+                    class="mr-2"
+                  >
                     <Icon name="mdi:printer" class="mr-1" />
                     Cetak Slip
                   </rs-button>
@@ -73,8 +86,14 @@
               <div>
                 <p class="text-sm text-blue-700">Status Notifikasi</p>
                 <div class="flex items-center mt-2">
-                  <Icon name="mdi:check-circle" class="text-green-500 mr-1" size="1rem" />
-                  <span class="text-green-600 font-medium">Notifikasi Dihantar</span>
+                  <Icon
+                    name="mdi:check-circle"
+                    class="text-green-500 mr-1"
+                    size="1rem"
+                  />
+                  <span class="text-green-600 font-medium"
+                    >Notifikasi Dihantar</span
+                  >
                 </div>
                 <p class="text-xs text-gray-600 mt-1">
                   SMS & Emel dihantar kepada {{ formData.namaPemohon }} pada
@@ -85,7 +104,9 @@
 
             <!-- Preview of receipt -->
             <div class="mt-4 border border-gray-200 rounded-lg p-4 bg-white">
-              <h4 class="text-center font-semibold mb-4">Pratonton Slip Penerimaan</h4>
+              <h4 class="text-center font-semibold mb-4">
+                Pratonton Slip Penerimaan
+              </h4>
               <div class="receipt-preview">
                 <div class="text-center mb-4">
                   <h5 class="font-bold">SLIP PENERIMAAN BANTUAN</h5>
@@ -101,7 +122,9 @@
                       </tr>
                       <tr>
                         <td class="py-1 font-medium">Tarikh & Masa:</td>
-                        <td>{{ formData.tarikhAgihan }} {{ formData.masaAgihan }}</td>
+                        <td>
+                          {{ formData.tarikhAgihan }} {{ formData.masaAgihan }}
+                        </td>
                       </tr>
                       <tr>
                         <td class="py-1 font-medium">Nama Penerima:</td>
@@ -127,7 +150,9 @@
                       </tr>
                       <tr>
                         <td class="py-1 font-medium">Jumlah Diterima:</td>
-                        <td class="font-bold">RM {{ formData.jumlahDigunakan }}</td>
+                        <td class="font-bold">
+                          RM {{ formData.jumlahDigunakan }}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -135,7 +160,8 @@
                   <div class="mt-6 text-center">
                     <div class="border-t border-gray-300 pt-4 mt-4">
                       <p class="text-xs">
-                        Ini adalah cetakan komputer. Tandatangan tidak diperlukan.
+                        Ini adalah cetakan komputer. Tandatangan tidak
+                        diperlukan.
                       </p>
                       <p class="text-xs">
                         Sila simpan slip ini sebagai bukti penerimaan bantuan.
@@ -175,7 +201,9 @@
         </p>
         <div class="bg-gray-50 p-4 rounded-lg">
           <p class="font-medium">Nama Pemohon: {{ formData.namaPemohon }}</p>
-          <p class="font-medium">No. Kad Pengenalan: {{ formData.noKadPengenalan }}</p>
+          <p class="font-medium">
+            No. Kad Pengenalan: {{ formData.noKadPengenalan }}
+          </p>
           <p class="font-medium">
             Jenis Bantuan: {{ getJenisBantuanLabel(formData.jenisBantuan) }}
           </p>
@@ -186,8 +214,8 @@
             Jumlah Diagihkan: RM {{ formData.jumlahDigunakan || "0.00" }}
           </p>
           <p class="text-sm text-gray-600 mt-2">
-            Pastikan butiran penerima dan jumlah yang diagihkan adalah tepat sebelum
-            mengesahkan.
+            Pastikan butiran penerima dan jumlah yang diagihkan adalah tepat
+            sebelum mengesahkan.
           </p>
         </div>
       </template>
@@ -277,8 +305,8 @@
             <div class="mt-8 text-center">
               <div class="border-t border-gray-300 pt-4 mt-4">
                 <p class="text-xs mb-1">
-                  Ini adalah cetakan komputer yang dijana oleh Sistem Bantuan Asnaf
-                  Sejahtera (BatuNAS).
+                  Ini adalah cetakan komputer yang dijana oleh Sistem Bantuan
+                  Asnaf Sejahtera (BatuNAS).
                 </p>
                 <p class="text-xs">
                   Sila simpan slip ini sebagai bukti penerimaan bantuan.
@@ -323,19 +351,19 @@ const notificationTimestamp = ref("");
 
 const breadcrumb = ref([
   {
-    name: "Dashboard",
+    name: "Pengurusan Tunai",
     type: "link",
-    path: "/dashboard",
+    path: `/BF-PTPC/MT/TT/01`,
   },
   {
-    name: "Pengurusan Bantuan",
+    name: "Agih Tunai Kaunter",
     type: "link",
-    path: "/pengurusan-bantuan",
+    path: `/BF-PTPC/MT/TT/01`,
   },
   {
     name: "Terima Bantuan & Slip Penerimaan Bantuan & Notifikasi",
     type: "current",
-    path: "/pengurusan-bantuan/sahkan-agih",
+    path: "/BF-PTPC/MT/TT/04",
   },
 ]);
 
@@ -480,7 +508,9 @@ const printReceiptFromModal = () => {
 
   // Prepare printing
   const printWindow = window.open("", "_blank");
-  printWindow.document.write("<html><head><title>Slip Penerimaan Bantuan</title>");
+  printWindow.document.write(
+    "<html><head><title>Slip Penerimaan Bantuan</title>"
+  );
   printWindow.document.write("<style>");
   printWindow.document.write(`
     body { font-family: Arial, sans-serif; padding: 20px; }

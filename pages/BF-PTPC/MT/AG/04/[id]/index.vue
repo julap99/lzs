@@ -164,6 +164,16 @@ const approving = ref(false);
 const showConfirmationModal = ref(false);
 const breadcrumb = ref([
   {
+    name: "Pengurusan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/AG/01`,
+  },
+  {
+    name: "Agihan Lain",
+    type: "link",
+    path: `/BF-PTPC/MT/AG/01`,
+  },
+  {
     name: "Sahkan Jumlah Tunai (KC)",
     type: "current",
     path: `/BF-PTPC/MT/AG/04/${route.params.id}`,

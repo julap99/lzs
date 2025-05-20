@@ -44,13 +44,15 @@
 
             <p>
               Dengan sukacitanya kami ingin memaklumkan bahawa
-              <span class="font-medium">permohonan bantuan kewangan</span> anda telah
-              <span class="font-medium">DILULUSKAN</span> dan kini
+              <span class="font-medium">permohonan bantuan kewangan</span> anda
+              telah <span class="font-medium">DILULUSKAN</span> dan kini
               <span class="font-medium">SEDIA UNTUK DITUNTUT</span>.
             </p>
 
             <!-- Applicant Info -->
-            <div class="my-4 p-4 bg-gray-50 rounded-lg border-l-4 border-green-700">
+            <div
+              class="my-4 p-4 bg-gray-50 rounded-lg border-l-4 border-green-700"
+            >
               <h4 class="text-base font-medium mb-2">Maklumat Pemohon:</h4>
               <div class="grid grid-cols-1 gap-2">
                 <div>
@@ -125,8 +127,8 @@
                     3
                   </div>
                   <p>
-                    Tunjukkan e-mel ini atau nombor rujukan permohonan kepada pegawai
-                    kaunter.
+                    Tunjukkan e-mel ini atau nombor rujukan permohonan kepada
+                    pegawai kaunter.
                   </p>
                 </div>
               </div>
@@ -138,18 +140,22 @@
                   >
                     4
                   </div>
-                  <p>Tandatangan borang pengesahan penerimaan bantuan di kaunter.</p>
+                  <p>
+                    Tandatangan borang pengesahan penerimaan bantuan di kaunter.
+                  </p>
                 </div>
               </div>
             </div>
 
             <!-- Important Note -->
-            <div class="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg">
+            <div
+              class="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg"
+            >
               <p class="font-medium">NOTA PENTING:</p>
               <p>
                 Bantuan ini boleh dituntut dalam tempoh
-                <span class="font-medium">30 hari</span> dari tarikh e-mel ini. Sila
-                tuntut bantuan anda sebelum
+                <span class="font-medium">30 hari</span> dari tarikh e-mel ini.
+                Sila tuntut bantuan anda sebelum
                 <span class="font-medium">{{ tamatTempoh }}</span
                 >.
               </p>
@@ -162,8 +168,8 @@
             <p>
               Sila hubungi talian bantuan kami di
               <span class="font-medium">03-8000 8000</span> atau e-mel
-              <span class="font-medium">bantuan@nas.gov.my</span> jika anda mempunyai
-              sebarang pertanyaan.
+              <span class="font-medium">bantuan@nas.gov.my</span> jika anda
+              mempunyai sebarang pertanyaan.
             </p>
 
             <p class="mt-4">Terima kasih.</p>
@@ -178,10 +184,12 @@
 
           <div class="bg-gray-100 p-4 text-sm text-gray-600 text-center">
             <p>
-              E-mel ini dijana secara automatik oleh sistem NAS. Sila jangan balas e-mel
-              ini.
+              E-mel ini dijana secara automatik oleh sistem NAS. Sila jangan
+              balas e-mel ini.
             </p>
-            <p>© 2025 Sistem Nasional Agihan Sosial (NAS). Hak Cipta Terpelihara.</p>
+            <p>
+              © 2025 Sistem Nasional Agihan Sosial (NAS). Hak Cipta Terpelihara.
+            </p>
           </div>
         </div>
 
@@ -209,19 +217,19 @@ const route = useRoute();
 const router = useRouter();
 const breadcrumb = ref([
   {
-    name: "Dashboard",
+    name: "Pengurusan Tunai",
     type: "link",
-    path: "/dashboard",
+    path: `/BF-PTPC/MT/TT/01`,
   },
   {
-    name: "Pengurusan Bantuan",
+    name: "Agih Tunai Kaunter",
     type: "link",
-    path: "/pengurusan-bantuan",
+    path: `/BF-PTPC/MT/TT/01`,
   },
   {
     name: "Terima Notifikasi Penerimaan Bantuan",
     type: "current",
-    path: "/pengurusan-bantuan/notifikasi-penerimaan",
+    path: "/BF-PTPC/MT/TT/01",
   },
 ]);
 

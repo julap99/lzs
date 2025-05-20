@@ -3,7 +3,9 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card>
-      <template #header> Senarai Nama dan Jumlah Bantuan Ageing > 60 hari</template>
+      <template #header>
+        Senarai Nama dan Jumlah Bantuan Ageing > 60 hari</template
+      >
       <template #body>
         <rs-table
           class="mt-8"
@@ -41,6 +43,16 @@ definePageMeta({
 });
 
 const breadcrumb = ref([
+  {
+    name: "Pengurusan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/PT/01`,
+  },
+  {
+    name: "Pemulangan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/PT/01`,
+  },
   {
     name: "Senarai Nama dan Jumlah Bantuan Ageing > 60 hari",
     type: "current",
@@ -219,7 +231,11 @@ const data = ref([
 const criteria = ref([
   {
     label: "Nama Asnaf",
-    options: ["Ahmad bin Abdullah", "Siti binti Aminah", "Mohd Razak bin Ismail"],
+    options: [
+      "Ahmad bin Abdullah",
+      "Siti binti Aminah",
+      "Mohd Razak bin Ismail",
+    ],
   },
   {
     label: "Jenis Bantuan",

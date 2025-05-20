@@ -45,6 +45,16 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
+    name: "Pengurusan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/AG/01`,
+  },
+  {
+    name: "Agihan Lain",
+    type: "link",
+    path: `/BF-PTPC/MT/AG/01`,
+  },
+  {
     name: "Senarai Nama dan Jumlah Bantuan",
     type: "current",
     path: "/BF-PTPC/MT/AG/01",
@@ -177,7 +187,11 @@ const data = ref([
 const criteria = ref([
   {
     label: "Nama Asnaf",
-    options: ["Ahmad bin Abdullah", "Siti binti Aminah", "Mohd Razak bin Ismail"],
+    options: [
+      "Ahmad bin Abdullah",
+      "Siti binti Aminah",
+      "Mohd Razak bin Ismail",
+    ],
   },
   {
     label: "Jenis Bantuan",

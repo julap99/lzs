@@ -5,7 +5,9 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Pengesahan Closing Kaunter oleh PKP</h2>
+          <h2 class="text-xl font-semibold">
+            Pengesahan Closing Kaunter oleh PKP
+          </h2>
         </div>
       </template>
 
@@ -25,7 +27,9 @@
             <div>
               <p class="text-sm text-gray-600">Nama & ID Cawangan</p>
               <p class="font-medium">
-                {{ branchDetails.namaCawangan }} ({{ branchDetails.idCawangan }})
+                {{ branchDetails.namaCawangan }} ({{
+                  branchDetails.idCawangan
+                }})
               </p>
             </div>
             <div>
@@ -38,7 +42,11 @@
         <!-- Success Message - Only shown after completion -->
         <div v-if="isCompleted" class="mb-6">
           <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
+            <Icon
+              name="mdi:check-circle"
+              class="text-green-500"
+              size="1.5rem"
+            />
             <p class="text-green-600 font-medium">
               Pengesahan closing kaunter berjaya direkodkan
             </p>
@@ -47,34 +55,52 @@
 
         <!-- Counter List Section -->
         <div class="mb-6">
-          <h3 class="text-lg font-medium mb-4">Senarai Kaunter & Status Closing</h3>
+          <h3 class="text-lg font-medium mb-4">
+            Senarai Kaunter & Status Closing
+          </h3>
 
           <div class="overflow-x-auto">
             <table class="min-w-full bg-white border border-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                  <th
+                    class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                  >
                     ID Kaunter
                   </th>
-                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                  <th
+                    class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                  >
                     Nama EKP
                   </th>
-                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                  <th
+                    class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                  >
                     Jumlah Diterima (RM)
                   </th>
-                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                  <th
+                    class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                  >
                     Jumlah Diagih (RM)
                   </th>
-                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                  <th
+                    class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                  >
                     Baki Sepatutnya (RM)
                   </th>
-                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                  <th
+                    class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                  >
                     Baki Dikira (RM)
                   </th>
-                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                  <th
+                    class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                  >
                     Status
                   </th>
-                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                  <th
+                    class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                  >
                     Tindakan
                   </th>
                 </tr>
@@ -85,7 +111,8 @@
                   :key="counter.idKaunter"
                   :class="{
                     'bg-blue-50':
-                      selectedCounter && selectedCounter.idKaunter === counter.idKaunter,
+                      selectedCounter &&
+                      selectedCounter.idKaunter === counter.idKaunter,
                   }"
                 >
                   <td class="border px-4 py-2">{{ counter.idKaunter }}</td>
@@ -106,8 +133,10 @@
                     <span
                       class="font-medium rounded-full px-3 py-1 text-sm"
                       :class="{
-                        'bg-green-100 text-green-800': counter.status === 'Padan',
-                        'bg-red-100 text-red-800': counter.status === 'Tidak Padan',
+                        'bg-green-100 text-green-800':
+                          counter.status === 'Padan',
+                        'bg-red-100 text-red-800':
+                          counter.status === 'Tidak Padan',
                         'bg-yellow-100 text-yellow-800':
                           counter.status === 'Belum Disahkan',
                       }"
@@ -118,7 +147,8 @@
                   <td class="border px-4 py-2">
                     <rs-button
                       v-if="
-                        !counter.closingDisahkan && counter.status !== 'Belum Disahkan'
+                        !counter.closingDisahkan &&
+                        counter.status !== 'Belum Disahkan'
                       "
                       variant="primary"
                       size="sm"
@@ -131,7 +161,9 @@
                       class="text-green-600 font-medium text-sm"
                       >Disahkan</span
                     >
-                    <span v-else class="text-gray-400 text-sm">Menunggu EKP</span>
+                    <span v-else class="text-gray-400 text-sm"
+                      >Menunggu EKP</span
+                    >
                   </td>
                 </tr>
               </tbody>
@@ -151,7 +183,9 @@
             </div>
             <div>
               <p class="text-sm text-gray-600">Baki Tunai Seluruh Tabung</p>
-              <p class="font-medium">RM {{ formatCurrency(branchSummary.bakiTunai) }}</p>
+              <p class="font-medium">
+                RM {{ formatCurrency(branchSummary.bakiTunai) }}
+              </p>
             </div>
             <div>
               <p class="text-sm text-gray-600">Status Closing</p>
@@ -159,7 +193,8 @@
                 class="font-medium"
                 :class="{
                   'text-green-600': branchSummary.statusClosing === 'Lengkap',
-                  'text-yellow-600': branchSummary.statusClosing === 'Dalam Proses',
+                  'text-yellow-600':
+                    branchSummary.statusClosing === 'Dalam Proses',
                   'text-red-600': branchSummary.statusClosing === 'Tertangguh',
                 }"
               >
@@ -254,8 +289,13 @@
         </div>
 
         <!-- Form Actions - Only visible when no counter is selected -->
-        <div v-if="!selectedCounter && !isCompleted" class="mt-6 flex justify-end gap-4">
-          <rs-button variant="primary-outline" @click="navigateBack"> Kembali </rs-button>
+        <div
+          v-if="!selectedCounter && !isCompleted"
+          class="mt-6 flex justify-end gap-4"
+        >
+          <rs-button variant="primary-outline" @click="navigateBack">
+            Kembali
+          </rs-button>
 
           <rs-button
             variant="primary"
@@ -284,29 +324,42 @@
       position="center"
     >
       <template #body>
-        <p class="mb-4">Adakah anda pasti untuk mengesahkan closing kaunter ini?</p>
+        <p class="mb-4">
+          Adakah anda pasti untuk mengesahkan closing kaunter ini?
+        </p>
         <div class="bg-gray-50 p-4 rounded-lg">
-          <p class="font-medium">Nama Kaunter: {{ selectedCounter?.idKaunter }}</p>
+          <p class="font-medium">
+            Nama Kaunter: {{ selectedCounter?.idKaunter }}
+          </p>
           <p class="font-medium">Nama EKP: {{ selectedCounter?.namaEKP }}</p>
           <p class="font-medium">
             Baki Sepatutnya: RM
             {{
-              selectedCounter ? formatCurrency(selectedCounter.expectedBalance) : "0.00"
+              selectedCounter
+                ? formatCurrency(selectedCounter.expectedBalance)
+                : "0.00"
             }}
           </p>
           <p class="font-medium">
             Baki Dikira: RM
-            {{ selectedCounter ? formatCurrency(selectedCounter.jumlahBaki) : "0.00" }}
+            {{
+              selectedCounter
+                ? formatCurrency(selectedCounter.jumlahBaki)
+                : "0.00"
+            }}
           </p>
           <p
             class="font-medium"
             :class="{
-              'text-red-600': selectedCounter && selectedCounter.status === 'Tidak Padan',
+              'text-red-600':
+                selectedCounter && selectedCounter.status === 'Tidak Padan',
             }"
           >
             Status: {{ selectedCounter?.status }}
           </p>
-          <p class="font-medium">Verifikasi PKP: {{ formData.statusVerifikasi }}</p>
+          <p class="font-medium">
+            Verifikasi PKP: {{ formData.statusVerifikasi }}
+          </p>
           <p
             v-if="selectedCounter && selectedCounter.status === 'Tidak Padan'"
             class="text-sm text-red-600 mt-2"
@@ -314,7 +367,8 @@
             Amaran: Jumlah baki dikira tidak sama dengan baki sepatutnya!
           </p>
           <p class="text-sm text-gray-600 mt-2">
-            Pastikan status verifikasi yang dipilih adalah tepat sebelum mengesahkan.
+            Pastikan status verifikasi yang dipilih adalah tepat sebelum
+            mengesahkan.
           </p>
         </div>
       </template>
@@ -346,7 +400,9 @@
       position="center"
     >
       <template #body>
-        <p class="mb-4">Adakah anda pasti untuk mengesahkan closing semua kaunter?</p>
+        <p class="mb-4">
+          Adakah anda pasti untuk mengesahkan closing semua kaunter?
+        </p>
         <div class="bg-gray-50 p-4 rounded-lg">
           <p class="font-medium">Cawangan: {{ branchDetails.namaCawangan }}</p>
           <p class="font-medium">Jumlah Kaunter: {{ counters.length }}</p>
@@ -360,8 +416,8 @@
             {{ formatCurrency(branchSummary.bakiTunai) }}
           </p>
           <p class="text-sm text-gray-600 mt-2">
-            Tindakan ini akan menyelesaikan proses closing untuk hari ini dan merekodkan
-            log untuk tujuan audit.
+            Tindakan ini akan menyelesaikan proses closing untuk hari ini dan
+            merekodkan log untuk tujuan audit.
           </p>
         </div>
       </template>
@@ -403,6 +459,16 @@ const showFinalConfirmationModal = ref(false);
 const selectedCounter = ref(null);
 
 const breadcrumb = ref([
+  {
+    name: "Pengurusan Tunai",
+    type: "link",
+    path: `/BF-PTPC/MT/TK/01`,
+  },
+  {
+    name: "Tunai Kaunter",
+    type: "link",
+    path: `/BF-PTPC/MT/TK/01`,
+  },
   {
     name: "Pengesahan Closing Kaunter oleh PKP",
     type: "current",
