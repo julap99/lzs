@@ -1,5 +1,19 @@
 export default [
   {
+    header: "BF-DP",
+    description: "Dashboard & Pelaporan",
+    child: [
+      {
+        title: "Tracking & Monitoring",
+        icon: "iconamoon:component-fill",
+        path: "/BF-DP/ST/02",
+        child: [],
+        meta: {},
+      },
+    ],
+  },
+
+  {
     header: "BF-PTPC",
     description: "Pengurusan Tunai dan Petty Cash",
     child: [
