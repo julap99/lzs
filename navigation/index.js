@@ -389,6 +389,20 @@ export default [
     ],
   },
 
+  {
+    header: "BF-ADN",
+    description: "Pengurusan Aduan",
+    child: [
+      {
+        title: "Daftar Aduan",
+        icon: "iconamoon:component-fill",
+        path: "/BF-ADN/PA/DA/01",
+        child: [],
+        meta: {},
+      },
+    ],
+  },
+
   // {
   //   header: "Utama",
   //   description: "",
