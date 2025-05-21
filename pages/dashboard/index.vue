@@ -1,383 +1,450 @@
 <script setup>
 definePageMeta({
-  title: "Dashboard",
+  title: "Admin Dashboard",
   middleware: ["auth"],
   requiresAuth: true,
-  breadcrumb: [
-    {
-      name: "Dashboard",
-      path: "/",
-    },
-  ],
 });
 
-// Data baru untuk lapangan terbang teratas
-const topAirports = ref([
+const breadcrumb = ref([
   {
-    rank: 1,
-    name: "Lapangan Terbang Antarabangsa Kuala Lumpur (KLIA)",
-    visitors: 62000000,
-  },
-  {
-    rank: 2,
-    name: "Lapangan Terbang Antarabangsa Kota Kinabalu",
-    visitors: 9000000,
-  },
-  { rank: 3, name: "Lapangan Terbang Antarabangsa Penang", visitors: 8000000 },
-  { rank: 4, name: "Lapangan Terbang Antarabangsa Kuching", visitors: 5500000 },
-  {
-    rank: 5,
-    name: "Lapangan Terbang Antarabangsa Langkawi",
-    visitors: 3000000,
+    name: "Dashboard",
+    type: "current",
+    path: "/",
   },
 ]);
 
-// Data baru untuk kad ringkasan pantas
-const quickSummary = ref([
-  { title: "Jumlah Pelawat", value: "15.0 Juta", icon: "ic:outline-people" },
+// Welcome Message
+const currentTime = ref(new Date());
+const greeting = computed(() => {
+  const hour = currentTime.value.getHours();
+  if (hour < 12) return "Selamat Pagi";
+  if (hour < 18) return "Selamat Petang";
+  return "Selamat Malam";
+});
+
+// Update time every minute
+onMounted(() => {
+  setInterval(() => {
+    currentTime.value = new Date();
+  }, 60000);
+});
+
+// Format date
+const formattedDate = computed(() => {
+  return currentTime.value.toLocaleDateString('ms-MY', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+});
+
+// Pending Tasks Data
+const pendingTasks = ref([
   {
-    title: "Pendapatan Pelancongan",
-    value: "RM 92.36 Bilion",
-    icon: "ic:outline-attach-money",
+    id: 1,
+    title: "Review Zakat Applications",
+    description: "15 new applications pending review",
+    priority: "high",
+    dueDate: "2024-03-20",
+    category: "Applications",
+    status: "pending",
   },
   {
-    title: "Tempoh Penginapan Purata",
-    value: "6.4 Hari",
-    icon: "ic:outline-hotel",
+    id: 2,
+    title: "Monthly Report Submission",
+    description: "Q1 2024 financial report due",
+    priority: "medium",
+    dueDate: "2024-03-25",
+    category: "Reports",
+    status: "pending",
   },
   {
-    title: "Kepuasan Pelancong",
+    id: 3,
+    title: "Staff Training Session",
+    description: "New system training for team leads",
+    priority: "low",
+    dueDate: "2024-03-28",
+    category: "Training",
+    status: "pending",
+  },
+]);
+
+// Key Metrics Data
+const keyMetrics = ref([
+  {
+    title: "Total Applications",
+    value: "1,234",
+    icon: "ic:baseline-document-scanner",
+    change: "positive",
+    description: "+12.3% from last month",
+  },
+  {
+    title: "Pending Reviews",
+    value: "156",
+    icon: "ic:baseline-pending-actions",
+    change: "warning",
+    description: "15 require immediate attention",
+  },
+  {
+    title: "Completed Tasks",
+    value: "892",
+    icon: "ic:baseline-task-alt",
+    change: "positive",
+    description: "+8.7% from last month",
+  },
+  {
+    title: "Team Performance",
     value: "94%",
-    icon: "ic:outline-sentiment-satisfied",
+    icon: "ic:baseline-trending-up",
+    change: "positive",
+    description: "Above target",
   },
 ]);
 
-// Data Pelawat Malaysia
-const visitorData = ref([
+// Recent Activities
+const recentActivities = ref([
   {
-    name: "Pelawat Tempatan",
-    data: [5200000, 5800000, 4500000, 5200000, 7500000, 8200000],
+    id: 1,
+    action: "New application submitted",
+    user: "Ahmad bin Abdullah",
+    time: "10 minutes ago",
+    type: "application",
   },
   {
-    name: "Pelawat Asing",
-    data: [3200000, 3800000, 2500000, 3100000, 5500000, 6800000],
+    id: 2,
+    action: "Report approved",
+    user: "Sarah binti Ismail",
+    time: "1 hour ago",
+    type: "approval",
   },
-]);
-
-// Data Pelawat Asing mengikut Negeri
-const foreignVisitorsByState = ref([
-  { state: "Selangor", visitors: 1500000 },
-  { state: "Pulau Pinang", visitors: 1200000 },
-  { state: "Johor", visitors: 1000000 },
-  { state: "Sabah", visitors: 800000 },
-  { state: "Sarawak", visitors: 600000 },
-  { state: "Melaka", visitors: 500000 },
-  { state: "Kedah", visitors: 400000 },
-  { state: "Negeri Sembilan", visitors: 300000 },
-  { state: "Perak", visitors: 250000 },
-  { state: "Terengganu", visitors: 200000 },
-  { state: "Kelantan", visitors: 150000 },
-  { state: "Pahang", visitors: 100000 },
-  { state: "Perlis", visitors: 50000 },
-]);
-
-// Lapangan Terbang Keberangkatan Teratas
-const departureData = ref([
-  { airport: "JFK", departures: 1500 },
-  { airport: "LHR", departures: 1200 },
-  { airport: "CDG", departures: 1000 },
-  { airport: "DXB", departures: 800 },
-  { airport: "SIN", departures: 600 },
-]);
-
-// Data Pelancong Berulang
-const repeatVisitorsData = ref([
-  { category: "1-2 kali", percentage: 45 },
-  { category: "3-5 kali", percentage: 30 },
-  { category: "6-10 kali", percentage: 15 },
-  { category: ">10 kali", percentage: 10 },
-]);
-
-// Data Negara Asal Pelancong Asing Teratas
-const topVisitorCountries = ref([
-  { country: "Singapura", visitors: 1500000 },
-  { country: "Indonesia", visitors: 1200000 },
-  { country: "China", visitors: 1000000 },
-  { country: "Thailand", visitors: 800000 },
-  { country: "India", visitors: 600000 },
-]);
-
-// Data Pendapatan Pelancongan Mengikut Tahun (Baru)
-const tourismRevenueData = ref([
   {
-    name: "Pendapatan (RM Bilion)",
-    data: [65.1, 72.8, 43.2, 58.9, 78.6, 92.36],
+    id: 3,
+    action: "Training completed",
+    user: "Team Alpha",
+    time: "2 hours ago",
+    type: "training",
   },
 ]);
 
-const chartOptionsVisitors = computed(() => ({
-  chart: { height: 350, type: "line" },
-  stroke: { curve: "smooth", width: 2 },
-  xaxis: { categories: ["2018", "2019", "2020", "2021", "2022", "2023"] },
-  yaxis: { title: { text: "Bilangan Pelawat" } },
-}));
-
-const chartOptionsForeignVisitors = computed(() => ({
-  chart: { type: "bar" },
-  plotOptions: { bar: { horizontal: true } },
-  xaxis: { categories: foreignVisitorsByState.value.map((item) => item.state) },
-}));
-
-const chartOptionsDeparture = computed(() => ({
-  chart: { type: "bar" },
-  plotOptions: { bar: { horizontal: true } },
-  xaxis: { categories: departureData.value.map((item) => item.airport) },
-}));
-
-const chartOptionsRepeatVisitors = computed(() => ({
-  chart: { type: "pie" },
-  labels: repeatVisitorsData.value.map((item) => item.category),
-  responsive: [
-    {
+// Chart Data for Task Distribution
+const taskDistributionData = ref({
+  series: [40, 25, 15, 12, 8],
+  options: {
+    chart: {
+      type: 'donut',
+      height: 350
+    },
+    labels: ['Applications', 'Reports', 'Training', 'Meetings', 'Other'],
+    colors: ['#005aad', '#8dc73d', '#f18d20', '#e55345', '#7a7a7a'],
+    legend: {
+      position: 'bottom'
+    },
+    responsive: [{
       breakpoint: 480,
       options: {
         chart: {
-          width: 200,
+          width: 200
         },
         legend: {
-          position: "bottom",
-        },
-      },
-    },
-  ],
-}));
-
-const chartOptionsTopCountries = computed(() => ({
-  chart: { type: "bar" },
-  plotOptions: {
-    bar: { horizontal: false, columnWidth: "55%", endingShape: "rounded" },
-  },
-  dataLabels: { enabled: false },
-  stroke: { show: true, width: 2, colors: ["transparent"] },
-  xaxis: { categories: topVisitorCountries.value.map((item) => item.country) },
-  yaxis: { title: { text: "Bilangan Pelawat" } },
-  fill: { opacity: 1 },
-  tooltip: {
-    y: {
-      formatter: function (val) {
-        return val.toLocaleString() + " pelawat";
-      },
-    },
-  },
-}));
-
-// Konfigurasi carta untuk pendapatan pelancongan (Baru)
-const chartOptionsRevenue = computed(() => ({
-  chart: { height: 350, type: "area" },
-  stroke: { curve: "smooth", width: 2 },
-  xaxis: { categories: ["2018", "2019", "2020", "2021", "2022", "2023"] },
-  yaxis: { title: { text: "Pendapatan (RM Bilion)" } },
-  dataLabels: { enabled: false },
-  fill: { 
-    type: "gradient",
-    gradient: {
-      shadeIntensity: 1,
-      opacityFrom: 0.7,
-      opacityTo: 0.3,
+          position: 'bottom'
+        }
+      }
+    }],
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '70%',
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              label: 'Total Tasks',
+              formatter: function (w) {
+                return w.globals.seriesTotals.reduce((a, b) => a + b, 0)
+              }
+            }
+          }
+        }
+      }
     }
-  },
-}));
-
-onMounted(() => {
-  // Sebarang logik yang diperlukan semasa pemasangan
+  }
 });
+
+// Chart Options
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: "bottom",
+    },
+  },
+};
 </script>
 
 <template>
   <div>
-    <LayoutsBreadcrumb />
-    <!-- Kad Ringkasan Pantas -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-      <rs-card
-        v-for="(item, index) in quickSummary"
+    <LayoutsBreadcrumb :items="breadcrumb" />
+
+    <!-- Welcome Section -->
+    <div class="mb-6">
+      <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">
+              {{ greeting }}, Admin
+            </h1>
+            <p class="text-gray-600 mt-1">
+              {{ formattedDate }}
+            </p>
+          </div>
+          <div class="mt-4 md:mt-0">
+            <div class="flex items-center gap-2 text-gray-600">
+              <Icon name="ic:baseline-access-time" class="text-lg" />
+              <span>{{ currentTime.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' }) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+      <div
+        v-for="(metric, index) in keyMetrics"
         :key="index"
-        class="transition-all duration-300 hover:shadow-lg"
+        class="group"
       >
-        <div class="pt-5 pb-3 px-5 flex items-center gap-4">
+        <div class="relative bg-white rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md">
+          <!-- Subtle Background Pattern -->
           <div
-            class="p-5 flex justify-center items-center bg-primary/20 rounded-2xl transition-all duration-300 hover:bg-primary/30"
+            class="absolute inset-0 opacity-[0.03]"
+            :class="{
+              'bg-success': metric.change === 'positive',
+              'bg-warning': metric.change === 'warning',
+              'bg-danger': metric.change === 'negative',
+            }"
           >
-            <Icon class="text-primary text-3xl" :name="item.icon"></Icon>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-transparent via-current to-transparent"></div>
           </div>
-          <div class="flex-1 truncate">
-            <span class="block font-bold text-2xl leading-tight text-primary">
-              {{ item.value }}
-            </span>
-            <span class="text-sm font-medium text-gray-600">
-              {{ item.title }}
-            </span>
-          </div>
-        </div>
-      </rs-card>
-    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <!-- Gambaran Keseluruhan Pelawat Malaysia -->
-      <rs-card class="col-span-1 lg:col-span-2">
-        <template #header>
-          <h2 class="text-xl font-bold text-primary">
-            Gambaran Keseluruhan Pelawat
-          </h2>
-        </template>
-        <template #body>
-          <client-only>
-            <VueApexCharts
-              width="100%"
-              height="350"
-              type="line"
-              :options="chartOptionsVisitors"
-              :series="visitorData"
-            ></VueApexCharts>
-          </client-only>
-        </template>
-      </rs-card>
-
-      <!-- Pelawat Asing mengikut Negeri -->
-      <rs-card>
-        <template #header>
-          <h2 class="text-lg font-semibold text-primary">
-            Pelawat Asing mengikut Negeri
-          </h2>
-        </template>
-        <template #body>
-          <client-only>
-            <VueApexCharts
-              width="100%"
-              height="300"
-              type="bar"
-              :options="chartOptionsForeignVisitors"
-              :series="[
-                { data: foreignVisitorsByState.map((item) => item.visitors) },
-              ]"
-            ></VueApexCharts>
-          </client-only>
-        </template>
-      </rs-card>
-
-      <!-- Pelancong Berulang -->
-      <rs-card>
-        <template #header>
-          <h2 class="text-lg font-semibold text-primary">
-            Kekerapan Lawatan Pelancong
-          </h2>
-        </template>
-        <template #body>
-          <client-only>
-            <VueApexCharts
-              width="100%"
-              height="300"
-              type="pie"
-              :options="chartOptionsRepeatVisitors"
-              :series="repeatVisitorsData.map((item) => item.percentage)"
-            ></VueApexCharts>
-          </client-only>
-        </template>
-      </rs-card>
-    </div>
-
-    <!-- Negara Asal Pelancong Asing Teratas -->
-    <rs-card class="mb-6">
-      <template #header>
-        <h2 class="text-xl font-bold text-primary">
-          Negara Asal Pelancong Asing Teratas
-        </h2>
-      </template>
-      <template #body>
-        <client-only>
-          <VueApexCharts
-            width="100%"
-            height="350"
-            type="bar"
-            :options="chartOptionsTopCountries"
-            :series="[
-              {
-                name: 'Pelawat',
-                data: topVisitorCountries.map((item) => item.visitors),
-              },
-            ]"
-          ></VueApexCharts>
-        </client-only>
-      </template>
-    </rs-card>
-
-    <!-- Pendapatan Pelancongan Mengikut Tahun (Baru) -->
-    <rs-card class="mb-6">
-      <template #header>
-        <h2 class="text-xl font-bold text-primary">
-          Trend Pendapatan Pelancongan (2018-2023)
-        </h2>
-      </template>
-      <template #body>
-        <client-only>
-          <VueApexCharts
-            width="100%"
-            height="350"
-            type="area"
-            :options="chartOptionsRevenue"
-            :series="tourismRevenueData"
-          ></VueApexCharts>
-        </client-only>
-      </template>
-    </rs-card>
-
-    <rs-card class="mb-6">
-      <template #header>
-        <h2 class="text-xl font-bold text-primary">
-          Lapangan Terbang Teratas dengan Pelawat Terbanyak
-        </h2>
-      </template>
-      <template #body>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Kedudukan
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Nama Lapangan Terbang
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Jumlah Pelawat
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr
-                v-for="airport in topAirports"
-                :key="airport.rank"
-                class="hover:bg-gray-50 transition-colors duration-200"
+          <div class="relative p-5">
+            <!-- Header with Icon -->
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="p-2.5 rounded-lg transition-all duration-300"
+                :class="{
+                  'bg-success/5 group-hover:bg-success/10': metric.change === 'positive',
+                  'bg-warning/5 group-hover:bg-warning/10': metric.change === 'warning',
+                  'bg-danger/5 group-hover:bg-danger/10': metric.change === 'negative',
+                }"
               >
-                <td class="px-6 py-4 whitespace-nowrap font-medium">
-                  {{ airport.rank }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ airport.name }}</td>
-                <td
-                  class="px-6 py-4 whitespace-nowrap font-semibold text-primary"
+                <Icon
+                  :name="metric.icon"
+                  class="text-xl"
+                  :class="{
+                    'text-success': metric.change === 'positive',
+                    'text-warning': metric.change === 'warning',
+                    'text-danger': metric.change === 'negative',
+                  }"
+                />
+              </div>
+              <div
+                class="text-xs font-medium px-2 py-1 rounded-full"
+                :class="{
+                  'bg-success/5 text-success': metric.change === 'positive',
+                  'bg-warning/5 text-warning': metric.change === 'warning',
+                  'bg-danger/5 text-danger': metric.change === 'negative',
+                }"
+              >
+                {{ metric.description }}
+              </div>
+            </div>
+
+            <!-- Metric Value -->
+            <div class="space-y-1">
+              <h3 class="text-sm font-medium text-gray-500">
+                {{ metric.title }}
+              </h3>
+              <div class="flex items-baseline gap-2">
+                <p
+                  class="text-3xl font-semibold tracking-tight"
+                  :class="{
+                    'text-success': metric.change === 'positive',
+                    'text-warning': metric.change === 'warning',
+                    'text-danger': metric.change === 'negative',
+                  }"
                 >
-                  {{ airport.visitors.toLocaleString() }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  {{ metric.value }}
+                </p>
+                <div
+                  class="flex items-center text-xs font-medium"
+                  :class="{
+                    'text-success': metric.change === 'positive',
+                    'text-warning': metric.change === 'warning',
+                    'text-danger': metric.change === 'negative',
+                  }"
+                >
+                  <Icon
+                    :name="metric.change === 'positive' ? 'ic:baseline-trending-up' : 'ic:baseline-trending-down'"
+                    class="w-3.5 h-3.5 mr-0.5"
+                  />
+                  <span>12.3%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Accent -->
+          <div
+            class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-current to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            :class="{
+              'text-success': metric.change === 'positive',
+              'text-warning': metric.change === 'warning',
+              'text-danger': metric.change === 'negative',
+            }"
+          ></div>
         </div>
-      </template>
-    </rs-card>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Pending Tasks -->
+      <div class="lg:col-span-2">
+        <rs-card>
+          <template #header>
+            <div class="flex justify-between items-center">
+              <h2 class="text-xl font-bold text-primary">Pending Tasks</h2>
+              <div class="flex gap-2">
+                <button class="button texts-primary button-sm">View All</button>
+                <button class="button outline-primary button-sm">
+                  Add Task
+                </button>
+              </div>
+            </div>
+          </template>
+          <template #body>
+            <div class="space-y-4">
+              <div
+                v-for="task in pendingTasks"
+                :key="task.id"
+                class="p-4 rounded-lg border border-gray-200 hover:border-primary/50 transition-all duration-300"
+              >
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3 class="font-semibold text-gray-800">
+                      {{ task.title }}
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-1">
+                      {{ task.description }}
+                    </p>
+                    <div class="flex items-center gap-4 mt-2">
+                      <span
+                        class="text-xs px-2 py-1 rounded-full"
+                        :class="{
+                          'bg-danger/10 text-danger': task.priority === 'high',
+                          'bg-warning/10 text-warning':
+                            task.priority === 'medium',
+                          'bg-info/10 text-info': task.priority === 'low',
+                        }"
+                      >
+                        {{ task.priority }}
+                      </span>
+                      <span class="text-xs text-gray-500">
+                        Due: {{ task.dueDate }}
+                      </span>
+                      <span class="text-xs text-gray-500">
+                        {{ task.category }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex gap-2">
+                    <button class="button texts-primary button-sm">View</button>
+                    <button class="button outline-primary button-sm">
+                      Complete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </rs-card>
+      </div>
+
+      <!-- Task Distribution & Recent Activities -->
+      <div class="space-y-6">
+        <!-- Task Distribution -->
+        <rs-card>
+          <template #header>
+            <h2 class="text-lg font-semibold text-primary">
+              Task Distribution
+            </h2>
+          </template>
+          <template #body>
+            <div class="h-64">
+              <client-only>
+                <VueApexCharts
+                  type="donut"
+                  :options="taskDistributionData.options"
+                  :series="taskDistributionData.series"
+                />
+              </client-only>
+            </div>
+          </template>
+        </rs-card>
+
+        <!-- Recent Activities -->
+        <rs-card>
+          <template #header>
+            <h2 class="text-lg font-semibold text-primary">
+              Recent Activities
+            </h2>
+          </template>
+          <template #body>
+            <div class="space-y-4">
+              <div
+                v-for="activity in recentActivities"
+                :key="activity.id"
+                class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-300"
+              >
+                <div
+                  class="p-2 rounded-full"
+                  :class="{
+                    'bg-primary/10': activity.type === 'application',
+                    'bg-success/10': activity.type === 'approval',
+                    'bg-info/10': activity.type === 'training',
+                  }"
+                >
+                  <Icon
+                    :name="
+                      {
+                        application: 'ic:baseline-document-scanner',
+                        approval: 'ic:baseline-check-circle',
+                        training: 'ic:baseline-school',
+                      }[activity.type]
+                    "
+                    class="text-lg"
+                    :class="{
+                      'text-primary': activity.type === 'application',
+                      'text-success': activity.type === 'approval',
+                      'text-info': activity.type === 'training',
+                    }"
+                  />
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-800">
+                    {{ activity.action }}
+                  </p>
+                  <p class="text-xs text-gray-500">{{ activity.user }}</p>
+                  <p class="text-xs text-gray-400 mt-1">{{ activity.time }}</p>
+                </div>
+              </div>
+            </div>
+          </template>
+        </rs-card>
+      </div>
+    </div>
   </div>
 </template>

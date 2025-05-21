@@ -1,5 +1,47 @@
 export default [
   {
+    header: "Utama",
+    description: "",
+    child: [
+      {
+        title: "Dashboard",
+        icon: "iconamoon:component-fill",
+        path: "/dashboard",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "Analytics",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "R1",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/analytics/R1",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "R2",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/analytics/R2",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "R3",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/analytics/R3",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+    ],
+  },
+
+  {
     header: "BF-DP",
     description: "Dashboard & Pelaporan",
     child: [

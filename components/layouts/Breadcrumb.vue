@@ -78,7 +78,7 @@ async function navigateMenu(path) {
     <nav aria-label="Breadcrumb" class="mb-4">
       <ol class="flex items-center text-sm">
         <li class="flex items-center">
-          <NuxtLink to="/" class="text-gray-500 hover:text-gray-700">
+          <NuxtLink to="/dashboard" class="text-gray-500 hover:text-gray-700">
             <Icon name="mdi:home" size="16" />
           </NuxtLink>
         </li>
