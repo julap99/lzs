@@ -77,6 +77,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Tunai Kaunter",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/MT/TK/01",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
