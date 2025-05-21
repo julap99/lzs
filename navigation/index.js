@@ -84,6 +84,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Tunai Dilapangan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/MT/TD/01",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
