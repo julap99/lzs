@@ -6,19 +6,19 @@
 
 <script>
 definePageMeta({
-  title: "Report 2",
+  title: "Analytic A3",
 });
 
 const breadcrumb = ref([
   {
     name: "Analytics",
     type: "link",
-    path: "/analytics/R2",
+    path: "/analytics/R3",
   },
   {
-    name: "Report 2",
+    name: "Analytic A3",
     type: "current",
-    path: "/analytics/R2",
+    path: "/analytics/A3",
   },
 ]);
 </script>

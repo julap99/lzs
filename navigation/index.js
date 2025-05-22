@@ -15,23 +15,51 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "R1",
+            title: "A1",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/analytics/R1",
+            path: "/analytics/A1",
             child: [],
             meta: {},
           },
           {
-            title: "R2",
+            title: "A2",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/analytics/R2",
+            path: "/analytics/A2",
             child: [],
             meta: {},
           },
           {
-            title: "R3",
+            title: "A3",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/analytics/R3",
+            path: "/analytics/A3",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Reports",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Prestasi Agihan Disember",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/reports/R1",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Bilangan Keseluruhan Asnaf / Bilangan Asnaf Aktif",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/reports/R2",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Bantuan Asasi Bulanan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/reports/R3",
             child: [],
             meta: {},
           },
@@ -49,6 +77,20 @@ export default [
         title: "Tracking & Monitoring",
         icon: "iconamoon:component-fill",
         path: "/BF-DP/ST/02",
+        child: [],
+        meta: {},
+      },
+    ],
+  },
+
+  {
+    header: "BF-ADN",
+    description: "Pengurusan Aduan",
+    child: [
+      {
+        title: "Daftar Aduan",
+        icon: "iconamoon:component-fill",
+        path: "/BF-ADN/PA/DA/01",
         child: [],
         meta: {},
       },
@@ -426,20 +468,6 @@ export default [
             meta: {},
           },
         ],
-        meta: {},
-      },
-    ],
-  },
-
-  {
-    header: "BF-ADN",
-    description: "Pengurusan Aduan",
-    child: [
-      {
-        title: "Daftar Aduan",
-        icon: "iconamoon:component-fill",
-        path: "/BF-ADN/PA/DA/01",
-        child: [],
         meta: {},
       },
     ],

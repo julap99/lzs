@@ -63,6 +63,10 @@ const props = defineProps({
       direction: "asc",
     }),
   },
+  groupedRows: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // Default varaiable
@@ -610,7 +614,30 @@ watch(
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="groupedRows">
+            <template v-for="(bantuan, i) in dataTable">
+              <tr class="font-bold bg-slate-100">
+                <td :rowspan="2" class="align-middle">{{ bantuan.nama }}</td>
+                <td>Bil</td>
+                <td>{{ bantuan.rows[0].fakir }}</td>
+                <td>{{ bantuan.rows[0].miskin }}</td>
+                <td>{{ bantuan.rows[0].muallaf }}</td>
+                <td>{{ bantuan.rows[0].gharim }}</td>
+                <td>{{ bantuan.rows[0].fisabillillah }}</td>
+                <td>{{ bantuan.rows[0].total }}</td>
+              </tr>
+              <tr class="bg-white">
+                <td>RM</td>
+                <td>{{ bantuan.rows[1].fakir }}</td>
+                <td>{{ bantuan.rows[1].miskin }}</td>
+                <td>{{ bantuan.rows[1].muallaf }}</td>
+                <td>{{ bantuan.rows[1].gharim }}</td>
+                <td>{{ bantuan.rows[1].fisabillillah }}</td>
+                <td>{{ bantuan.rows[1].total }}</td>
+              </tr>
+            </template>
+          </tbody>
+          <tbody v-else>
             <tr
               :class="{
                 'border-y border-[rgb(var(--border-color))]':
