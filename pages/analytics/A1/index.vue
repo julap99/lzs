@@ -3,8 +3,8 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 
 // Breadcrumb
 const breadcrumb = ref([
-  { name: "Analytics", type: "link", path: "/analytics/R1" },
-  { name: "Report 1", type: "current", path: "/analytics/R1" },
+  { name: "Analytics", type: "link", path: "/analytics/A1" },
+  { name: "Analytic 1", type: "current", path: "/analytics/A1" },
 ]);
 
 // Dummy data based on the provided image

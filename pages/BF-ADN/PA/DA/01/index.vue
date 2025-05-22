@@ -217,15 +217,6 @@ const handleCancel = () => {
                 validation-visibility="dirty"
                 help="Format: xxx-xxxxxxx"
               />
-
-              <FormKit
-                v-model="formData.statusPerkahwinan"
-                label="Status Perkahwinan"
-                type="select"
-                :options="statusPerkahwinanOptions"
-                validation="required"
-                validation-visibility="dirty"
-              />
             </div>
 
             <div class="space-y-4">
@@ -270,15 +261,6 @@ const handleCancel = () => {
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  v-model="formData.jenisKediaman"
-                  label="Jenis Kediaman"
-                  type="select"
-                  :options="jenisKediamanOptions"
-                  validation="required"
-                  validation-visibility="dirty"
-                />
-
                 <FormKit
                   v-model="formData.daerah"
                   label="Daerah"

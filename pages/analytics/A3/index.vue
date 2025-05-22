@@ -1,6 +1,8 @@
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
+
+    <img src="@/assets/img/analytic2.jpeg" alt="Analytic A2" />
   </div>
 </template>
 

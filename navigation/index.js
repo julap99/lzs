@@ -35,11 +35,24 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "A4",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/analytics/A4",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "A5",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/analytics/A5",
+            child: [],
+          },
         ],
         meta: {},
       },
       {
-        title: "Reports",
+        title: "Pelaporan",
         icon: "iconamoon:component-fill",
         child: [
           {
