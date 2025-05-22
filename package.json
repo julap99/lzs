@@ -49,7 +49,7 @@
     "@vueup/vue-quill": "^1.0.0",
     "@vueuse/core": "^9.5.0",
     "@vueuse/nuxt": "^9.5.0",
-    "apexcharts": "^3.36.0",
+    "apexcharts": "3.41.0",
     "chart.js": "^3.9.1",
     "codemirror": "^6.0.1",
     "cross-env": "^7.0.3",
@@ -77,10 +77,11 @@
     "vue-sweetalert2": "^5.0.5",
     "vue-toastification": "^2.0.0-rc.5",
     "vue-window-size": "^1.0.8",
-    "vue3-apexcharts": "^1.4.1",
+    "vue3-apexcharts": "1.4.4",
     "vue3-click-away": "^1.2.4",
     "vue3-dropzone": "^2.0.1",
     "vue3-recaptcha-v2": "^2.0.2",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "xlsx": "^0.18.5"
   }
 }

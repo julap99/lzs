@@ -63,6 +63,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Prestasi Agihan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/reports/R4",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },

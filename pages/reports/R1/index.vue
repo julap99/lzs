@@ -5,9 +5,31 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex flex-col gap-1">
-          <h1 class="text-xl font-bold uppercase text-center">
-            Laporan Prestasi Agihan Disember 2024
-          </h1>
+          <div class="flex justify-between items-center">
+            <h1 class="text-xl font-bold uppercase text-center flex-1">
+              Laporan Prestasi Agihan Disember 2024
+            </h1>
+            <div class="flex gap-2">
+              <rs-button
+                variant="primary-outline"
+                size="sm"
+                @click="downloadExcel"
+                class="flex items-center"
+              >
+                <Icon name="mdi:microsoft-excel" class="mr-1" size="15" />
+                Excel
+              </rs-button>
+              <rs-button
+                variant="primary"
+                size="sm"
+                @click="downloadPDF"
+                class="flex items-center"
+              >
+                <Icon name="mdi:file-pdf-box" class="mr-1" size="15" />
+                PDF
+              </rs-button>
+            </div>
+          </div>
         </div>
       </template>
       <template #body>
@@ -15,7 +37,10 @@
         <div class="bg-white rounded-md shadow-sm border border-gray-100 mb-4">
           <div class="flex items-center gap-3 px-3 py-2">
             <div class="flex items-center gap-1.5">
-              <Icon name="ic:baseline-filter-list" class="text-gray-400 text-sm" />
+              <Icon
+                name="ic:baseline-filter-list"
+                class="text-gray-400 text-sm"
+              />
               <span class="text-xs font-medium text-gray-500">Filter</span>
             </div>
             <div class="flex-1 flex items-center gap-2">
@@ -79,7 +104,8 @@
                     "
                     class="px-2 py-1.5 text-xs hover:bg-gray-50 cursor-pointer"
                     :class="{
-                      'bg-primary/5 text-primary': selectedKategori === kategori.value,
+                      'bg-primary/5 text-primary':
+                        selectedKategori === kategori.value,
                     }"
                   >
                     {{ kategori.label }}
@@ -113,7 +139,8 @@
                     "
                     class="px-2 py-1.5 text-xs hover:bg-gray-50 cursor-pointer"
                     :class="{
-                      'bg-primary/5 text-primary': selectedJenis === jenis.value,
+                      'bg-primary/5 text-primary':
+                        selectedJenis === jenis.value,
                     }"
                   >
                     {{ jenis.label }}
@@ -122,7 +149,11 @@
               </div>
             </div>
             <div class="flex items-center gap-1.5">
-              <rs-button @click="resetFilters" variant="primary-outline" size="sm">
+              <rs-button
+                @click="resetFilters"
+                variant="primary-outline"
+                size="sm"
+              >
                 <Icon name="ic:baseline-refresh" class="text-xs" />
                 Reset
               </rs-button>
@@ -137,14 +168,44 @@
           >
             <thead class="sticky top-0 z-10 bg-gray-100">
               <tr>
-                <th class="border px-4 py-2 text-left align-middle whitespace-nowrap">Nama Bantuan</th>
-                <th class="border px-4 py-2 text-center align-middle whitespace-nowrap"> </th>
-                <th class="border px-4 py-2 text-right align-middle whitespace-nowrap">Fakir</th>
-                <th class="border px-4 py-2 text-right align-middle whitespace-nowrap">Miskin</th>
-                <th class="border px-4 py-2 text-right align-middle whitespace-nowrap">Muallaf</th>
-                <th class="border px-4 py-2 text-right align-middle whitespace-nowrap">Gharim</th>
-                <th class="border px-4 py-2 text-right align-middle whitespace-nowrap">Fisabillillah</th>
-                <th class="border px-4 py-2 text-right align-middle whitespace-nowrap">Total</th>
+                <th
+                  class="border px-4 py-2 text-left align-middle whitespace-nowrap"
+                >
+                  Nama Bantuan
+                </th>
+                <th
+                  class="border px-4 py-2 text-center align-middle whitespace-nowrap"
+                ></th>
+                <th
+                  class="border px-4 py-2 text-right align-middle whitespace-nowrap"
+                >
+                  Fakir
+                </th>
+                <th
+                  class="border px-4 py-2 text-right align-middle whitespace-nowrap"
+                >
+                  Miskin
+                </th>
+                <th
+                  class="border px-4 py-2 text-right align-middle whitespace-nowrap"
+                >
+                  Muallaf
+                </th>
+                <th
+                  class="border px-4 py-2 text-right align-middle whitespace-nowrap"
+                >
+                  Gharim
+                </th>
+                <th
+                  class="border px-4 py-2 text-right align-middle whitespace-nowrap"
+                >
+                  Fisabillillah
+                </th>
+                <th
+                  class="border px-4 py-2 text-right align-middle whitespace-nowrap"
+                >
+                  Total
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -157,22 +218,54 @@
                   >
                     {{ bantuan.nama }}
                   </th>
-                  <td class="border px-4 py-2 text-center font-bold text-blue-700 bg-blue-50">Bil</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[0].fakir }}</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[0].miskin }}</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[0].muallaf }}</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[0].gharim }}</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[0].fisabillillah }}</td>
-                  <td class="border px-4 py-2 text-right font-bold">{{ bantuan.rows[0].total }}</td>
+                  <td
+                    class="border px-4 py-2 text-center font-bold text-blue-700 bg-blue-50"
+                  >
+                    Bil
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[0].fakir }}
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[0].miskin }}
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[0].muallaf }}
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[0].gharim }}
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[0].fisabillillah }}
+                  </td>
+                  <td class="border px-4 py-2 text-right font-bold">
+                    {{ bantuan.rows[0].total }}
+                  </td>
                 </tr>
                 <tr class="hover:bg-blue-50 transition">
-                  <td class="border px-4 py-2 text-center font-bold text-green-700 bg-green-50">RM</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[1].fakir }}</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[1].miskin }}</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[1].muallaf }}</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[1].gharim }}</td>
-                  <td class="border px-4 py-2 text-right">{{ bantuan.rows[1].fisabillillah }}</td>
-                  <td class="border px-4 py-2 text-right font-bold">{{ bantuan.rows[1].total }}</td>
+                  <td
+                    class="border px-4 py-2 text-center font-bold text-green-700 bg-green-50"
+                  >
+                    RM
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[1].fakir }}
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[1].miskin }}
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[1].muallaf }}
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[1].gharim }}
+                  </td>
+                  <td class="border px-4 py-2 text-right">
+                    {{ bantuan.rows[1].fisabillillah }}
+                  </td>
+                  <td class="border px-4 py-2 text-right font-bold">
+                    {{ bantuan.rows[1].total }}
+                  </td>
                 </tr>
               </template>
             </tbody>
@@ -185,6 +278,8 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
+import { jsPDF } from "jspdf";
+import * as XLSX from "xlsx";
 
 const breadcrumb = [
   {
@@ -227,19 +322,19 @@ const jenisOptions = [
 
 // Get unique bantuan names for filter
 const uniqueBantuan = computed(() => {
-  return [...new Set(tableData.value.map(item => item.nama))];
+  return [...new Set(tableData.value.map((item) => item.nama))];
 });
 
 // Filtered table data
 const filteredTableData = computed(() => {
-  return tableData.value.filter(bantuan => {
+  return tableData.value.filter((bantuan) => {
     // Filter by bantuan name
     if (selectedBantuan.value && bantuan.nama !== selectedBantuan.value) {
       return false;
     }
 
     // Filter by kategori and jenis
-    const hasMatchingRow = bantuan.rows.some(row => {
+    const hasMatchingRow = bantuan.rows.some((row) => {
       if (selectedJenis.value && row.type !== selectedJenis.value) {
         return false;
       }
@@ -605,4 +700,144 @@ const tableData = ref([
     ],
   },
 ]);
+
+// Download functions
+const downloadPDF = () => {
+  const doc = new jsPDF({
+    orientation: "landscape",
+    unit: "mm",
+    format: "a4",
+  });
+
+  // Add title
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("Laporan Prestasi Agihan Disember 2024", 148.5, 20, {
+    align: "center",
+  });
+
+  // Add table headers
+  const headers = [
+    "Nama Bantuan",
+    "Jenis",
+    "Fakir",
+    "Miskin",
+    "Muallaf",
+    "Gharim",
+    "Fisabillillah",
+    "Total",
+  ];
+
+  let yPosition = 30;
+  const startX = 10;
+  const colWidth = 35;
+
+  // Add headers
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  headers.forEach((header, index) => {
+    doc.text(header, startX + index * colWidth, yPosition);
+  });
+
+  // Add table data
+  doc.setFont("helvetica", "normal");
+  yPosition += 10;
+
+  filteredTableData.value.forEach((bantuan) => {
+    // Add bantuan name
+    doc.text(bantuan.nama, startX, yPosition);
+    yPosition += 7;
+
+    // Add Bil row
+    doc.text("Bil", startX + colWidth, yPosition);
+    doc.text(bantuan.rows[0].fakir || "", startX + 2 * colWidth, yPosition);
+    doc.text(bantuan.rows[0].miskin || "", startX + 3 * colWidth, yPosition);
+    doc.text(bantuan.rows[0].muallaf || "", startX + 4 * colWidth, yPosition);
+    doc.text(bantuan.rows[0].gharim || "", startX + 5 * colWidth, yPosition);
+    doc.text(
+      bantuan.rows[0].fisabillillah || "",
+      startX + 6 * colWidth,
+      yPosition
+    );
+    doc.text(bantuan.rows[0].total || "", startX + 7 * colWidth, yPosition);
+    yPosition += 7;
+
+    // Add RM row
+    doc.text("RM", startX + colWidth, yPosition);
+    doc.text(bantuan.rows[1].fakir || "", startX + 2 * colWidth, yPosition);
+    doc.text(bantuan.rows[1].miskin || "", startX + 3 * colWidth, yPosition);
+    doc.text(bantuan.rows[1].muallaf || "", startX + 4 * colWidth, yPosition);
+    doc.text(bantuan.rows[1].gharim || "", startX + 5 * colWidth, yPosition);
+    doc.text(
+      bantuan.rows[1].fisabillillah || "",
+      startX + 6 * colWidth,
+      yPosition
+    );
+    doc.text(bantuan.rows[1].total || "", startX + 7 * colWidth, yPosition);
+    yPosition += 10;
+
+    // Add new page if needed
+    if (yPosition > 180) {
+      doc.addPage();
+      yPosition = 20;
+    }
+  });
+
+  // Save the PDF
+  doc.save("Laporan_Prestasi_Agihan_Disember_2024.pdf");
+};
+
+const downloadExcel = () => {
+  // Prepare data for Excel
+  const excelData = [];
+
+  // Add headers
+  excelData.push([
+    "Nama Bantuan",
+    "Jenis",
+    "Fakir",
+    "Miskin",
+    "Muallaf",
+    "Gharim",
+    "Fisabillillah",
+    "Total",
+  ]);
+
+  // Add data rows
+  filteredTableData.value.forEach((bantuan) => {
+    // Add Bil row
+    excelData.push([
+      bantuan.nama,
+      "Bil",
+      bantuan.rows[0].fakir || "",
+      bantuan.rows[0].miskin || "",
+      bantuan.rows[0].muallaf || "",
+      bantuan.rows[0].gharim || "",
+      bantuan.rows[0].fisabillillah || "",
+      bantuan.rows[0].total || "",
+    ]);
+
+    // Add RM row
+    excelData.push([
+      "",
+      "RM",
+      bantuan.rows[1].fakir || "",
+      bantuan.rows[1].miskin || "",
+      bantuan.rows[1].muallaf || "",
+      bantuan.rows[1].gharim || "",
+      bantuan.rows[1].fisabillillah || "",
+      bantuan.rows[1].total || "",
+    ]);
+  });
+
+  // Create worksheet
+  const ws = XLSX.utils.aoa_to_sheet(excelData);
+
+  // Create workbook
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Laporan Prestasi Agihan");
+
+  // Save file
+  XLSX.writeFile(wb, "Laporan_Prestasi_Agihan_Disember_2024.xlsx");
+};
 </script>
