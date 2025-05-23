@@ -11,6 +11,13 @@ export default [
         meta: {},
       },
       {
+        title: "Dashboard 2",
+        icon: "iconamoon:component-fill",
+        path: "/dashboard/dashboard2",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Analytics",
         icon: "iconamoon:component-fill",
         child: [

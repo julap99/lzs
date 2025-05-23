@@ -193,7 +193,7 @@ const chartOptions = {
         <div class="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
             <h1 class="text-2xl font-bold text-gray-800">
-              {{ greeting }}, Admin
+              {{ greeting }}, Admin 123
             </h1>
             <p class="text-gray-600 mt-1">
               {{ formattedDate }}
