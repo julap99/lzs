@@ -621,19 +621,21 @@ export default [
   },
 
   // Kitchen Sink
-  {
-    header: "Kitchen Sink",
-    description: "",
-    child: [
-      {
-        title: "Components",
-        icon: "ic:outline-dashboard",
-        path: "/kitchen-sink",
-        meta: {},
-      },
-    ],
-    meta: {},
-  },
+  // {
+  //   header: "Kitchen Sink",
+  //   description: "",
+  //   child: [
+  //     {
+  //       title: "Components",
+  //       icon: "ic:outline-dashboard",
+  //       path: "/kitchen-sink",
+  //       meta: {},
+  //     },
+  //   ],
+  //   meta: {},
+  // },
+
+
   {
     header: "Fungsi",
     description: "",
