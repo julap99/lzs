@@ -53,6 +53,7 @@ const formData = reactive({
   range: 50,
   file: null,
   toggle: false,
+  singleCheckbox: false,
 });
 
 const options = [
@@ -526,13 +527,26 @@ const options = [
           Gunakan <code>checkbox</code> sebagai jenis input untuk pilihan
           berbilang.
         </p>
-        <FormKit
-          type="checkbox"
-          name="checkbox"
-          label="Pilihan"
-          :options="options"
-          v-model="formData.checkbox"
-        />
+
+        <div class="space-y-4">
+          <FormKit
+            type="checkbox"
+            name="checkbox"
+            :options="[
+              { label: 'Pilihan oweasds', value: '1' },
+              { label: 'Pilihan asdasdakscj', value: '2' },
+              { label: 'Pilihan 1uo3oanbdfojsnd', value: '3' },
+            ]"
+            v-model="formData.checkbox"
+          />
+
+          <div class="mt-4">
+            <p class="text-sm text-gray-600 mb-2">
+              Nilai dipilih (berbilang): {{ formData.checkbox }}
+            </p>
+          </div>
+        </div>
+
         <div class="flex justify-end mt-4">
           <button
             class="text-sm border border-slate-200 py-1 px-3 rounded-lg"
@@ -559,20 +573,28 @@ const options = [
               <NuxtScrollbar style="max-height: 300px">
                 <pre id="codeCheckbox" class="language-html shadow-none">
                   <code>
+                      &lt;!-- Checkbox berbilang dengan pilihan --&gt;
                       &lt;FormKit
-                      type="checkbox"
-                      name="checkbox"
-                      label="Pilihan"
-                      :options="options"
-                      v-model="formData.checkbox"
+                        type="checkbox"
+                        name="checkbox"
+                        label="Pilihan"
+                        :options="[
+                          { label: 'Pilihan 1', value: '1' },
+                          { label: 'Pilihan 2', value: '2' },
+                          { label: 'Pilihan 3', value: '3' },
+                        ]"
+                        v-model="formData.checkbox"
+                        class="custom-checkbox-group"
                       /&gt;
-
-                      // In script setup:
-                      const options = [
-                          { label: 'Option 1', value: '1' },
-                          { label: 'Option 2', value: '2' },
-                          { label: 'Option 3', value: '3' },
-                      ];
+                      
+                      &lt;!-- Checkbox tunggal --&gt;
+                      &lt;FormKit
+                        type="checkbox"
+                        name="singleCheckbox"
+                        label="Saya setuju dengan terma dan syarat"
+                        v-model="formData.singleCheckbox"
+                        class="custom-checkbox-group"
+                      /&gt;
                   </code>
                 </pre>
               </NuxtScrollbar>
@@ -592,10 +614,14 @@ const options = [
         <FormKit
           type="radio"
           name="radio"
-          label="Pilihan"
           :options="options"
           v-model="formData.radio"
         />
+        <div class="mt-4">
+          <p class="text-sm text-gray-600 mb-2">
+            Nilai dipilih: {{ formData.radio }}
+          </p>
+        </div>
         <div class="flex justify-end mt-4">
           <button
             class="text-sm border border-slate-200 py-1 px-3 rounded-lg"
@@ -945,8 +971,55 @@ const options = [
   transition: opacity 0.5s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.fade-leave-to,
+.fade-enter-from {
   opacity: 0;
+}
+
+/* Custom Checkbox Styling */
+:deep(.custom-checkbox-group) {
+  .formkit-options {
+    @apply space-y-3;
+  }
+
+  .formkit-option {
+    @apply flex items-center hover:text-primary transition-colors duration-200;
+  }
+
+  .formkit-inner {
+    @apply relative flex items-center justify-center h-5 w-5 mr-3 rounded-md 
+           border-2 border-gray-300 bg-white transition-all duration-200 
+           focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30 
+           hover:border-primary/60;
+  }
+
+  input[type="checkbox"] {
+    @apply absolute opacity-0 h-0 w-0;
+  }
+
+  input[type="checkbox"]:checked + .formkit-inner {
+    @apply bg-primary border-primary;
+  }
+
+  input[type="checkbox"]:checked + .formkit-inner::after {
+    content: "";
+    @apply absolute block w-1.5 h-3 border-solid border-white border-r-2 border-b-2 transform rotate-45 -translate-y-px;
+  }
+
+  input[type="checkbox"]:focus + .formkit-inner {
+    @apply ring-2 ring-primary/30;
+  }
+
+  input[type="checkbox"]:disabled + .formkit-inner {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  input[type="checkbox"]:disabled ~ .formkit-label {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .formkit-label {
+    @apply text-sm font-medium cursor-pointer select-none;
+  }
 }
 </style>

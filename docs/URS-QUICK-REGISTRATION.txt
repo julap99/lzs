@@ -1,0 +1,266 @@
+**Product Requirements Document (PRD)**
+
+**Project Name:** NAS - Emergency Cash Assistance (Quick Registration + Tunai/eWallet)
+**Phase:** Full End-to-End Assistance Flow (EKP, PKP, Pemohon)
+**Module:** Quick Registration, Application, Investigation, Approval, Disbursement, Notification
+
+---
+
+### ✅ **PHASE 1: QUICK REGISTRATION (PENDAFTARAN PANTAS)**
+
+#### Page 1: Carian Profil Asnaf (EKP)
+
+**Purpose:** Semak kewujudan profil sebelum bantuan boleh dimohon.
+
+**Fields:**
+
+* No Kad Pengenalan / No Polis / No Tentera / No Pasport (Search Field)
+
+**User Role:** EKP (Kaunter)
+**Action:**
+
+* Jika profil wujud: autofill → terus ke permohonan bantuan.
+* Jika tiada profil: → redirect ke borang pendaftaran pantas.
+
+**System:**
+
+* NAS semak ID secara real-time dalam pangkalan data.
+
+**UX Details:**
+
+* Real-time status ("profil dijumpai / tidak dijumpai")
+* \[Button] Daftar Pantas (Jika tidak dijumpai)
+
+---
+
+#### Page 2: Borang Pendaftaran Pantas Perseorangan
+
+**Purpose:** Cip profil minimum jika tiada dalam sistem.
+
+**Who:** EKP/Pendaftar NAS
+**When:** Sebelum permohonan bantuan dibuat jika tiada profil
+**How:** Isi borang + simpan + terus ke permohonan
+
+**Fields:**
+
+* Nama, No KP, Tarikh Lahir
+* Jantina, Status Perkahwinan
+* Alamat penuh (Negeri, Daerah, Poskod, Kariah)
+* No Telefon, Emel
+* Tempoh menetap di Selangor
+* Pekerjaan, Pendapatan
+* Nama Waris, No Telefon Waris
+* Maklumat Bank: Nama Bank, No Akaun, Cara Bayaran (Tunai/Akaun/Cek), Sebab jika Tunai
+* Tanggungan: (Nama, No KP/Sijil Lahir, Hubungan, Umur, Status (Sekolah/Bekerja dsb.), Kos Saraan, Pendapatan, Kesihatan)
+
+**System Features:**
+
+* Validasi wajib + jejak audit + ID profil dijana
+* Butang Simpan & Teruskan Permohonan Bantuan
+
+**UX Details:**
+
+* Tab navigasi ringkas: Maklumat Pemohon / Tanggungan / Bank
+* Floating Save button
+
+---
+
+### ✅ **PHASE 2: PERMOHONAN BANTUAN (PERMOHONAN APPLICATION MODE)**
+
+#### Page 3: Borang Permohonan Bantuan
+
+**Purpose:** Memohon bantuan tunai kecemasan selepas daftar
+
+**Who:** EKP bersama pemohon
+**When:** Selepas profil wujud
+**How:** Isi borang jenis bantuan kecemasan + dokumen sokongan
+
+**Fields:**
+
+* Nama Pemohon (readonly)
+* No KP (readonly)
+* Tarikh Permohonan (auto)
+* Jenis Bantuan (dropdown): Bantuan Kecemasan (Fakir / Miskin / Muallaf / Gharimin)
+* Keterangan Permohonan (textarea)
+* Jumlah Dimohon (RM)
+* Catatan EKP (textarea)
+* Upload Dokumen Sokongan (bil elektrik, slip ubat, dll.)
+* \[Button] Hantar untuk Siasatan
+
+**System:**
+
+* Simpan status permohonan sebagai "Dalam Siasatan"
+
+**UX Details:**
+
+* Komponen dropdown bantuan berdasarkan status asnaf
+* Komponen upload file PDF/IMG
+
+---
+
+### ✅ **PHASE 3: SIASATAN & CADANGAN BANTUAN (EKP)**
+
+#### Page 4: Temubual EKP (Bancian/Siasatan Lisan)
+
+**Purpose:** EKP sahkan maklumat pemohon secara lisan
+
+**Who:** EKP (Kaunter)
+**When:** Selepas permohonan dihantar
+**How:** Isi borang temubual ringkas + nilai cadangan bantuan
+
+**Fields:**
+
+* Checkbox Soal Selidik:
+
+  * Tinggal di Selangor?
+  * Status perkahwinan?
+  * Tanggungan?
+  * Masih bekerja?
+  * Pasangan bekerja?
+  * Status kesihatan diri/pasangan?
+  * Rumah sewa / milik?
+  * Keperluan mendesak?
+* Syor Bantuan Kecemasan: Ya/Tidak
+* Jenis Bantuan (dropdown): sama seperti di atas
+* Jumlah Dicadangkan (RM)
+* Catatan (EKP)
+* Upload tambahan dokumen jika perlu
+* \[Button] Hantar untuk Kelulusan
+
+**System:**
+
+* Simpan & tukar status ke "Menunggu Kelulusan"
+
+**UX Details:**
+
+* Dual-pane: Kiri = Maklumat Pemohon, Kanan = Borang Siasatan
+
+---
+
+### ✅ **PHASE 4: KELULUSAN (PKP)**
+
+#### Page 5: Semakan & Kelulusan Bantuan
+
+**Purpose:** PKP buat keputusan lulus/tolak berdasarkan cadangan EKP
+
+**Who:** PKP
+**When:** Selepas siasatan selesai
+**How:** Lihat butiran + semak baki peti besi + tindakan
+
+**Fields:**
+
+* Ringkasan Permohonan:
+
+  * Nama Pemohon, No KP
+  * Jenis Bantuan, Jumlah Dicadangkan
+  * Catatan EKP
+  * Slip/Dokumen
+* Paparan Peti Besi:
+
+  * ID Peti Besi, Jenis Akaun
+  * Baki Semasa, Float Minimum
+* Keputusan:
+
+  * \[Button] Luluskan / Tolak
+  * Jika Tolak: Masukkan Sebab Penolakan
+
+**System:**
+
+* Simpan keputusan + log ID PKP, masa, dan status
+* Kemaskini status: "Diluluskan / Ditolak"
+
+**UX Details:**
+
+* Status penanda warna: Menunggu / Diluluskan / Ditolak
+
+---
+
+### ✅ **PHASE 5: SAHKAN PENGELUARAN (PKP)**
+
+#### Page 6: Sahkan Pengeluaran Tunai (Peti Besi)
+
+**Purpose:** Keluarkan tunai dan serahkan kepada EKP
+
+**Who:** PKP
+**When:** Selepas kelulusan
+**How:** Pilih permohonan diluluskan + semak + klik "Sahkan"
+
+**Fields:**
+
+* Nama EKP / No Kaunter
+* Jumlah Diluluskan
+* Tarikh & Masa Serahan
+* ID Peti Besi, Jenis Akaun
+* Slip Rekod Pengeluaran
+
+**System:**
+
+* Kemaskini baki automatik
+* Hantar PA ke SAP
+
+**UX Details:**
+
+* UI modal ringkas dengan butiran slip dan baki tunai semasa
+
+---
+
+### ✅ **PHASE 6: SERAH & TERIMA TUNAI (EKP + PEMOHON)**
+
+#### Page 7: EKP Terima & Serah Tunai
+
+**Purpose:** EKP sahkan terima dari PKP dan agih kepada pemohon
+
+**Who:** EKP
+**Fields:**
+
+* ID Permohonan, Nama Pemohon, No KP
+* Jumlah Tunai Diagihkan
+* Lokasi Serahan (dropdown)
+* Tarikh & Masa
+* \[Button] Sahkan Agihan
+
+**System:**
+
+* Tukar status kepada "Telah Diagih"
+* Jana Slip Penerimaan
+
+---
+
+#### Page 8: Pemohon Tandatangan & Slip
+
+**Who:** Pemohon
+**Fields:**
+
+* Paparan Slip Bantuan
+* Tandatangan: Manual / Digital Input
+* \[Button] Cetak Slip
+
+---
+
+### ✅ **PHASE 7: NOTIFIKASI & JEJAK AUDIT**
+
+#### Page 9: Notifikasi Selesai Agihan (Auto)
+
+**Purpose:** Memberi notifikasi kepada pemohon secara automatik
+
+**Fields:**
+
+* Nama Pemohon, No KP
+* Jenis Bantuan, Lokasi Serahan
+* Jumlah Tunai Diagih
+* Tarikh & Masa
+
+**System:**
+
+* Audit trail lengkap dihantar ke sistem log
+* Emel + notifikasi dalam dashboard
+
+---
+
+### FINAL NOTE:
+
+All fields above are **fact-checked** from the URS and matched to respective business process activities:
+
+* BF-NAS-BTN-PB-MB-01 (Permohonan)
+* BF-BTN-PB-BET-01 to BF-BET-08 (Tunai Agihan)
+* BF-NAS-PRF-AS-QS (Pendaftaran Pantas)

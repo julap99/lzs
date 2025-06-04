@@ -17,7 +17,7 @@ const props = defineProps({
 
 <template>
   <div
-    class="badge"
+    class="badge uppercase"
     :class="{
       'badge-primary': variant === 'primary',
       'badge-secondary': variant === 'secondary',

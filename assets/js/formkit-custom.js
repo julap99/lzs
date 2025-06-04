@@ -3,6 +3,9 @@ import OneTimePassword from "~/components/formkit/OneTimePassword.vue";
 import MaskText from "~/components/formkit/TextMask.vue";
 import FileDropzone from "~/components/formkit/FileDropzone.vue";
 import Toggle from "~/components/formkit/Toggle.vue";
+import Checkbox from "~/components/formkit/Checkbox.vue";
+import Radio from "~/components/formkit/Radio.vue";
+import Money from "~/components/formkit/Money.vue";
 
 export default {
   otp: createInput(OneTimePassword, {
@@ -16,5 +19,14 @@ export default {
   }),
   toggle: createInput(Toggle, {
     props: ["onLabel", "offLabel"],
+  }),
+  checkbox: createInput(Checkbox, {
+    props: ["options"],
+  }),
+  radio: createInput(Radio, {
+    props: ["options"],
+  }),
+  money: createInput(Money, {
+    props: ["disabled", "readonly"],
   }),
 };

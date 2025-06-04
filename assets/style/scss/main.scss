@@ -2,8 +2,8 @@
    Notes: This file is the main entry point for the SCSS stylesheet.
   ================================================================================*/
 
-/* Import DM Sans font from Google Fonts */
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
+/* Import Inter font from Google Fonts - Following UI/UX Design Specifications v0.2 */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 html,
 body {
@@ -11,12 +11,21 @@ body {
 }
 
 #__nuxt {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Inter", sans-serif; /* Updated to Inter as per specifications */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
-  letter-spacing: -0.5px; /* Changed from -2px to -0.5px for better readability */
-  font-size: 14px;
+  letter-spacing: 0; /* Reset letter spacing for Inter */
+  font-size: 14px; /* Body text size as per specifications */
+  line-height: 1.5; /* Minimum line height as per specifications */
+}
+
+/* LZS Corporate Color Variables - Following UI/UX Design Specifications */
+:root {
+  --color-primary: 0, 90, 173; /* #005AAD - LZS Primary Blue */
+  --color-secondary: 141, 199, 61; /* #8DC73D - LZS Secondary Green */
+  --color-accent: 255, 242, 0; /* #FFF200 - LZS Accent Yellow */
+  --color-error: 211, 47, 47; /* #D32F2F - Error Red */
 }
 
 // svg.icon{

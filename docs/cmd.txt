@@ -1,0 +1,27 @@
+based on @URS-QUICK-REGISTRATION.txt, start implement by creating the content pages in @QS-1 , to make a complete flow and using suitable component, proper ui ux, and must achieve all requirement, phase by phase acorrding to @URS-QUICK-REGISTRATION.txt .
+
+- you may refer the look or functionalties of component that has in @kitchen-sink and pritize the use of component that are exist in this project codebase. 
+- make sure plan and run phase 1 first and let me review by run and let me test the pages. 
+- make sure to follow guideline in pdf  ui ux, and then dont miss out anything from the requirement.
+- make sure to use proper font heirachy, proper font, proper padding, propper layout that is ux ui priotized and be creative dont stuck with old design, okay?
+
+must follow all requirement, follow all guideline.
+
+
+Begin implementation by carefully analyzing the requirements specified 
+in @URS-QUICK-REGISTRATION.txt and initiate development by crafting the corresponding content 
+pages within @QS-1, following a structured, phase-by-phase approach to ensure complete coverage 
+and alignment with the documented functional and non-functional requirements. For every screen, 
+interaction, and user journey in Phase 1, prioritize the usage of existing components already available 
+within the @kitchen-sink project to maintain consistency, reduce development time, and ensure tested UI behaviors 
+are leveraged, while also aligning tightly with the project's established codebase and component architecture. 
+In each phase—starting with Phase 1—ensure that the UI/UX follows the PDF design guidelines precisely, applying c
+orrect font hierarchy, using the designated font family, ensuring generous and consistent padding, logical spacing,
+ accessible layout structuring, and overall fluidity in navigation and responsiveness, all while being visually modern, 
+ user-centric, and creatively refined beyond outdated design patterns. Don’t hardcode or force legacy layouts; instead, 
+ interpret the user needs and requirements imaginatively while still adhering strictly to the provided documentation and standards.
+ Once Phase 1 is implemented, make it fully functional and ready for hands-on testing and review, allowing iterative refinement 
+ before proceeding to subsequent phases, ensuring the development process remains agile, testable, and tightly scoped to the 
+ expectations laid out in both the URS document and the UI/UX PDF.
+
+ ui must follow @UI UX Design Specifications v0.2 Draft.md to be exact so can match the document

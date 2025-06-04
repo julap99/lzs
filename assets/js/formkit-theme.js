@@ -15,7 +15,7 @@ const boxClassification = {
   wrapper: "formkit-wrapper-box",
   help: "formkit-help-box",
   input: "formkit-input-box",
-  label: "formkit-label-box",
+  // label: "formkit-label-box",
   message: "formkit-message-box",
 };
 const buttonClassification = {
@@ -86,6 +86,7 @@ export default {
   week: textClassification,
   otp: OtpClassification,
   mask: textClassification,
+  money: textClassification,
   dropzone: {
     ...textClassification,
     inner: "formkit-inner-dropzone",
