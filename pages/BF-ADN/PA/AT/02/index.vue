@@ -259,7 +259,7 @@ const handleAcceptTask = () => {
 
 const navigateToTask = () => {
   // Navigate to task management page
-  router.push(`/BF-ADN/PA/TM/01/${aduanData.value.noAduan}`);
+  router.push(`/BF-ADN/PA/TS/02`);
 };
 
 onMounted(() => {

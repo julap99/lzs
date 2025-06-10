@@ -162,6 +162,16 @@
                     validation="required"
                     validation-visibility="dirty"
                   />
+
+                  <FormKit
+                    v-if="siasatanData.perluKemaskini === 'perlu'"
+                    v-model="siasatanData.pegawaiBaru"
+                    type="select"
+                    label="Pegawai Baru"
+                    :options="senaraiPegawai"
+                    validation="required"
+                    validation-visibility="dirty"
+                  />
                 </div>
 
                 <!-- Buttons -->
@@ -263,6 +273,7 @@ const siasatanData = ref({
   perluKemaskini: "",
   tahapKeperluanBaru: "",
   catatanKemaskini: "",
+  pegawaiBaru: "",
 });
 
 const tahapKeperluanOptions = computed(() => {
@@ -334,6 +345,14 @@ const confirmSubmit = async () => {
   // Navigate to next step
   router.push("/BF-ADN/PA/TS/03");
 };
+
+// Add officer list data
+const senaraiPegawai = [
+  { label: "En Ali - EOAD", value: "ali_eoad" },
+  { label: "Pn Aliah - EOAD", value: "aliah_eoad" },
+  { label: "En Abu - SSU", value: "abu_ssu" },
+  { label: "En Ahmad - EJ", value: "ahmad_ej" },
+];
 </script>
 
 <style lang="scss" scoped></style>
