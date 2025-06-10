@@ -223,8 +223,22 @@ export default [
     child: [
       {
         title: "Daftar Aduan",
-        icon: "iconamoon:component-fill",
+        icon: "iconamoon:file-document",
         path: "/BF-ADN/PA/DA/01",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "Agih Tugas",
+        icon: "iconamoon:calendar-2",
+        path: "/BF-ADN/PA/AT/01",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "Tugasan Saya",
+        icon: "iconamoon:calendar-2",
+        path: "/BF-ADN/PA/TS/01",
         child: [],
         meta: {},
       },
@@ -634,7 +648,6 @@ export default [
   //   ],
   //   meta: {},
   // },
-
 
   {
     header: "Fungsi",
