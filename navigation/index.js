@@ -438,6 +438,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Sahkan Pemulangan Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pemulangan-tunai/senarai-sah",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
