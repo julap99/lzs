@@ -315,6 +315,13 @@ export default [
     description: "Pengurusan Tunai",
     child: [
       {
+        title: "Dashboard",
+        icon: "iconamoon:component-fill",
+        path: "/BF-TNI/dashboard",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Peti Besi",
         icon: "iconamoon:component-fill",
         child: [
@@ -355,6 +362,55 @@ export default [
           },
         ],
         meta: {},
+      },
+      {
+        title: "Opening Akaun",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Buka Operasi",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/opening-akaun/buka-operasi",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Terima & Sahkan Penerimaan Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/opening-akaun/terima-sah-penerimaan-tunai",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Closing Tunai",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Rekod Baki Akhir & Serahan Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/closing-tunai/rekod-baki-akhir-serahan-tunai",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Eksekutif (PKP)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/closing-tunai/eksekutif",
+            child: [
+              {
+                title: "Terima & Sahkan Penerimaan Tunai",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-TNI/closing-tunai/eksekutif/terima-sah-penerimaan-tunai",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
+        ],
       },
 
       // {
