@@ -448,6 +448,28 @@ export default [
         ],
         meta: {},
       },
+      {
+        title: "Tambah Nilai Tunai",
+        icon: "iconamoon:component-fill",
+        path: "/BF-TNI/tambah-nilai-tunai",
+        child: [
+          {
+            title: "Mohon Tambah Nilai Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/tambah-nilai-tunai/mohon-tambah-nilai-tunai",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Peti Besi",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/tambah-nilai-tunai/senarai-peti-besi-perlu-tambah-nilai",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
 
       // {
       //   title: "Mengurus Tunai",
