@@ -412,6 +412,35 @@ export default [
           },
         ],
       },
+      {
+        title: "Pemulangan Tunai",
+        icon: "iconamoon:component-fill",
+        path: "/BF-TNI/pemulangan-tunai",
+        child: [
+          {
+            title: "Permohonan Baharu",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pemulangan-tunai/permohonan-baharu",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Permohonan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pemulangan-tunai/senarai",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Kelulusan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pemulangan-tunai/kelulusan",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
 
       // {
       //   title: "Mengurus Tunai",
