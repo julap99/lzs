@@ -624,6 +624,55 @@ export default [
         ],
         meta: {},
       },
+      {
+        title: "Konfigurasi",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Jawatan PA",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/KF/KJ",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Elaun",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/KF/KE",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Mesyuarat/Program",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/KF/MP",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Pengurusan Elaun",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Bancian/Asnaf Review/Bantuan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/PE/AB/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Mesyuarat/Program",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/PE/MP/01",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
     ],
   },
 
