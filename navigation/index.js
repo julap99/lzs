@@ -412,6 +412,64 @@ export default [
           },
         ],
       },
+      {
+        title: "Pemulangan Tunai",
+        icon: "iconamoon:component-fill",
+        path: "/BF-TNI/pemulangan-tunai",
+        child: [
+          {
+            title: "Permohonan Baharu",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pemulangan-tunai/permohonan-baharu",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Permohonan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pemulangan-tunai/senarai",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Kelulusan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pemulangan-tunai/kelulusan",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Sahkan Pemulangan Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pemulangan-tunai/senarai-sah",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Tambah Nilai Tunai",
+        icon: "iconamoon:component-fill",
+        path: "/BF-TNI/tambah-nilai-tunai",
+        child: [
+          {
+            title: "Mohon Tambah Nilai Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/tambah-nilai-tunai/mohon-tambah-nilai-tunai",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Peti Besi",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/tambah-nilai-tunai/senarai-peti-besi-perlu-tambah-nilai",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
 
       // {
       //   title: "Mengurus Tunai",
