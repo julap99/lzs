@@ -501,6 +501,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Family Tree",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/FR/07",
+            child: [],
+            meta: {},
+          },
           // {
           //   title: "AS-KA",
           //   icon: "iconamoon:arrow-right-2-duotone",
