@@ -343,7 +343,7 @@ const confirmSubmit = async () => {
   }
 
   // Navigate to next step
-  router.push("/BF-ADN/PA/TS/03");
+  router.push("/BF-ADN/PA/TS/04");
 };
 
 // Add officer list data

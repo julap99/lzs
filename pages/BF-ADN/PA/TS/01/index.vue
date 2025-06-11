@@ -16,17 +16,26 @@
             hover: true,
           }"
         >
+          <template v-slot:kategoriAduan="data">
+            <rs-badge
+              :variant="getKategoriAduanVariant(data.text)"
+              size="sm"
+              class="w-4 h-4 rounded-full"
+              :title="data.text"
+            >
+            </rs-badge>
+          </template>
           <template v-slot:status="data">
             <rs-badge :variant="getStatusVariant(data.text)" size="sm">
               {{ data.text }}
             </rs-badge>
           </template>
-          <template v-slot:pernyataanMasalah="data">
+          <template v-slot:SLA="data">
             <rs-badge
-              :variant="getPernyataanMasalahVariant(data.text)"
+              :variant="getSLAVariant(data.text)"
               size="sm"
               class="w-4 h-4 rounded-full"
-              :title="data.text"
+              :title="formatSLA(data.text)"
             />
           </template>
           <template v-slot:tarikhAduan="data">
@@ -82,18 +91,21 @@ const breadcrumb = ref([
 
 const data = ref([
   {
-    noAduan: "ADN-2024-001",
-    namaAduan: "Aduan Keselamatan",
-    pernyataanMasalah:
-      "Terputus Bekalan Makanan/Tiada Tempat Tinggal (Kelas 1/Merah)",
+    noRujukan: "ADN-2024-001",
+    namaIndividu: "Ahmad bin Abdullah",
+    kategoriAduan: 1,
+    lokasi: "Kuala Lumpur",
+    SLA: 24,
     tarikhAduan: "2024-03-15",
     status: "Sedang Diproses",
     aksi: "ADN-2024-001",
   },
   {
-    noAduan: "ADN-2024-003",
-    namaAduan: "Aduan Infrastruktur",
-    pernyataanMasalah: "Terputus Bekalan Makanan/Tiada Tempat Tinggal (Kelas 1/Merah)",
+    noRujukan: "ADN-2024-003",
+    namaIndividu: "Siti binti Hassan",
+    kategoriAduan: 2,
+    lokasi: "Selangor",
+    SLA: 25,
     tarikhAduan: "2024-03-13",
     status: "Belum Selesai",
     aksi: "ADN-2024-003",
@@ -102,16 +114,12 @@ const data = ref([
 
 const criteria = ref([
   {
-    label: "Nama Aduan",
-    options: ["Aduan Keselamatan", "Aduan Kebersihan", "Aduan Infrastruktur"],
+    label: "Kategori Aduan",
+    options: ["Keselamatan", "Kebersihan", "Infrastruktur"],
   },
   {
-    label: "Pernyataan Masalah",
-    options: [
-      "Terputus Bekalan Makanan/Tiada Tempat Tinggal (Kelas 1/Merah)",
-      "Masih Ada Bekalan Makanan/Mempunyai Tempat Tinggal/Tiada Sumber Pendapatan (Kelas 2/Kuning)",
-      "Pendapatan Berkurangan/Keperluan Lain (Kelas 3/Hijau)",
-    ],
+    label: "SLA",
+    options: ["1", "2", "3"],
   },
   {
     label: "Status",
@@ -136,11 +144,34 @@ const getStatusVariant = (status) => {
   return variants[status] || "default";
 };
 
-const getPernyataanMasalahVariant = (pernyataan) => {
-  if (pernyataan.includes("Kelas 1/Merah")) return "danger";
-  if (pernyataan.includes("Kelas 2/Kuning")) return "warning";
-  if (pernyataan.includes("Kelas 3/Hijau")) return "success";
-  return "default";
+const getKategoriAduanVariant = (kategoriAduan) => {
+  const variants = {
+    1: "danger",
+    2: "warning",
+    3: "success",
+  };
+  return variants[kategoriAduan] || "default";
+};
+
+const getSLAVariant = (sla) => {
+  const variants = {
+    25: "success",
+    24: "warning",
+    50: "danger",
+  };
+  return variants[sla] || "default";
+};
+
+const calculateSLAHours = (tarikhAduan) => {
+  const now = new Date();
+  const aduanDate = new Date(tarikhAduan);
+  const diffTime = Math.abs(now - aduanDate);
+  return Math.ceil(diffTime / (1000 * 60 * 60));
+};
+
+const formatSLA = (tarikhAduan) => {
+  const hours = calculateSLAHours(tarikhAduan);
+  return `${hours} jam`;
 };
 
 const formatDate = (date) => {
@@ -155,9 +186,9 @@ const performSearch = () => {
   filteredData.value = data.value.filter((item) => {
     return (
       (!selectedCriteria.value.kriteria1 ||
-        item.namaAduan.includes(selectedCriteria.value.kriteria1)) &&
+        item.kategoriAduan.includes(selectedCriteria.value.kriteria1)) &&
       (!selectedCriteria.value.kriteria2 ||
-        item.pernyataanMasalah.includes(selectedCriteria.value.kriteria2)) &&
+        item.kelas.includes(selectedCriteria.value.kriteria2)) &&
       (!selectedCriteria.value.kriteria3 ||
         item.status.includes(selectedCriteria.value.kriteria3))
     );

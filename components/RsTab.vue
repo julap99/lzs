@@ -25,13 +25,27 @@ const props = defineProps({
 // Slots
 const slots = useSlots();
 
-const tabs = ref(slots.default().map((tab) => tab.props));
-const selectedTitle = ref(tabs.value[0]["title"]);
+// Initialize tabs with null check
+const tabs = ref([]);
+const selectedTitle = ref('');
 
-tabs.value.forEach((tab) => {
-  if (typeof tab.active !== "undefined") {
-    selectedTitle.value = tab.title;
-  }
+// Wait for next tick to ensure slots are available
+onMounted(() => {
+  nextTick(() => {
+    const defaultSlots = slots.default?.();
+    if (defaultSlots) {
+      tabs.value = defaultSlots.map((tab) => tab.props || {});
+      // Set initial selected title
+      if (tabs.value.length > 0) {
+        selectedTitle.value = tabs.value[0].title || '';
+        // Check for active tab
+        const activeTab = tabs.value.find(tab => tab.active);
+        if (activeTab) {
+          selectedTitle.value = activeTab.title;
+        }
+      }
+    }
+  });
 });
 
 provide("selectedTitle", selectedTitle);
