@@ -1339,9 +1339,9 @@ const handleSubmit = async () => {
     toast.success("Permohonan berjaya dihantar");
     
     // Wait for 2 seconds before navigating
-    // setTimeout(() => {
-    //   router.push("/BF-PRF/AS/FR/04");
-    // }, 2000);
+    setTimeout(() => {
+      router.push("/BF-PRF/AS/FR/04");
+    }, 2000);
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);

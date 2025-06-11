@@ -609,6 +609,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Pendaftaran Pantas Pukal",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/QB/01",
+            child: [],
+            meta: {},
+          },
           // {
           //   title: "AS-QB",
           //   icon: "iconamoon:arrow-right-2-duotone",
