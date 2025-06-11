@@ -346,6 +346,13 @@ export default [
             ],
             meta: {},
           },
+          {
+            title: "Terima & Sahkan Penerimaan Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/peti-besi/terima-sah-penerimaan-tunai",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
