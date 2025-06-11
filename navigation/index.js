@@ -530,17 +530,24 @@ export default [
         title: "Asnaf",
         icon: "iconamoon:component-fill",
         child: [
-          {
-            title: "Pendaftaran Pantas (Single)",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/QS/01",
-            child: [],
-            meta: {},
-          },
+          // {
+          //   title: "Pendaftaran Pantas (Single)",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-PRF/AS/QS/01",
+          //   child: [],
+          //   meta: {},
+          // },
           {
             title: "Pendaftaran Pantas (Single) v2",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/QS-1/carian-profil",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Pendaftaran Pantas Perseorangan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/QS/01",
             child: [],
             meta: {},
           },
