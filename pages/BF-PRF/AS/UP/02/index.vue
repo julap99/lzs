@@ -21,8 +21,9 @@
             <div
               v-for="step in stepsA"
               :key="step.id"
-              class="text-center flex-1"
+              class="text-center flex-1 cursor-pointer hover:text-primary transition-colors"
               :class="{ 'font-semibold': currentStepA >= step.id }"
+              @click="currentStepA = step.id"
             >
               {{ step.label }}
             </div>
@@ -660,8 +661,9 @@
             <div
               v-for="step in stepsB"
               :key="step.id"
-              class="text-center flex-1"
+              class="text-center flex-1 cursor-pointer hover:text-primary transition-colors"
               :class="{ 'font-semibold': currentStepB >= step.id }"
+              @click="currentStepB = step.id"
             >
               {{ step.label }}
             </div>
