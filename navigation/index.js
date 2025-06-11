@@ -246,68 +246,68 @@ export default [
   },
 
   // BF-PTPC
-  {
-    header: "BF-PTPC",
-    description: "Pengurusan Tunai dan Petty Cash",
-    child: [
-      {
-        title: "Mengurus Tunai",
-        icon: "iconamoon:component-fill",
-        child: [
-          {
-            title: "Agihan Lain",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PTPC/MT/AG/01",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Pemulangan Tunai",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PTPC/MT/PT/01",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Tunai Kaunter",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PTPC/MT/TK/01",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Agih Tunai Kaunter",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PTPC/MT/TT/01",
-            child: [],
-            meta: {},
-          },
-        ],
-        meta: {},
-      },
-      {
-        title: "Petty Cash",
-        icon: "iconamoon:component-fill",
-        child: [
-          {
-            title: "Mengurus Petty Cash",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PTPC/PC/BE/01",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Tunai Dilapangan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PTPC/PC/TD/01",
-            child: [],
-            meta: {},
-          },
-        ],
-        meta: {},
-      },
-    ],
-  },
+  // {
+  //   header: "BF-PTPC",
+  //   description: "Pengurusan Tunai dan Petty Cash",
+  //   child: [
+  //     {
+  //       title: "Mengurus Tunai",
+  //       icon: "iconamoon:component-fill",
+  //       child: [
+  //         {
+  //           title: "Agihan Lain",
+  //           icon: "iconamoon:arrow-right-2-duotone",
+  //           path: "/BF-PTPC/MT/AG/01",
+  //           child: [],
+  //           meta: {},
+  //         },
+  //         {
+  //           title: "Pemulangan Tunai",
+  //           icon: "iconamoon:arrow-right-2-duotone",
+  //           path: "/BF-PTPC/MT/PT/01",
+  //           child: [],
+  //           meta: {},
+  //         },
+  //         {
+  //           title: "Tunai Kaunter",
+  //           icon: "iconamoon:arrow-right-2-duotone",
+  //           path: "/BF-PTPC/MT/TK/01",
+  //           child: [],
+  //           meta: {},
+  //         },
+  //         {
+  //           title: "Agih Tunai Kaunter",
+  //           icon: "iconamoon:arrow-right-2-duotone",
+  //           path: "/BF-PTPC/MT/TT/01",
+  //           child: [],
+  //           meta: {},
+  //         },
+  //       ],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Petty Cash",
+  //       icon: "iconamoon:component-fill",
+  //       child: [
+  //         {
+  //           title: "Mengurus Petty Cash",
+  //           icon: "iconamoon:arrow-right-2-duotone",
+  //           path: "/BF-PTPC/PC/BE/01",
+  //           child: [],
+  //           meta: {},
+  //         },
+  //         {
+  //           title: "Tunai Dilapangan",
+  //           icon: "iconamoon:arrow-right-2-duotone",
+  //           path: "/BF-PTPC/PC/TD/01",
+  //           child: [],
+  //           meta: {},
+  //         },
+  //       ],
+  //       meta: {},
+  //     },
+  //   ],
+  // },
 
   // BF-TNI
   {
@@ -315,33 +315,69 @@ export default [
     description: "Pengurusan Tunai",
     child: [
       {
-        title: "Mengurus Tunai",
+        title: "Peti Besi",
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Kemasukan Tunai",
+            title: "Konfigurasi",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-TNI/MT/KT/01",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Tunai Kaunter",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-TNI/MT/TK/01",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Tunai Dilapangan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-TNI/MT/TD/01",
-            child: [],
+            child: [
+              {
+                title: "Senarai",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-TNI/peti-besi/konfigurasi/senarai",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Tambah",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-TNI/peti-besi/konfigurasi/tambah",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Surat Arahan",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-TNI/peti-besi/konfigurasi/surat-arahan",
+                child: [],
+                meta: {},
+              },
+            ],
             meta: {},
           },
         ],
         meta: {},
       },
+
+      // {
+      //   title: "Mengurus Tunai",
+      //   icon: "iconamoon:component-fill",
+      //   child: [
+      //     {
+      //       title: "Kemasukan Tunai",
+      //       icon: "iconamoon:arrow-right-2-duotone",
+      //       path: "/BF-TNI/MT/KT/01",
+      //       child: [],
+      //       meta: {},
+      //     },
+      //     {
+      //       title: "Tunai Kaunter",
+      //       icon: "iconamoon:arrow-right-2-duotone",
+      //       path: "/BF-TNI/MT/TK/01",
+      //       child: [],
+      //       meta: {},
+      //     },
+      //     {
+      //       title: "Tunai Dilapangan",
+      //       icon: "iconamoon:arrow-right-2-duotone",
+      //       path: "/BF-TNI/MT/TD/01",
+      //       child: [],
+      //       meta: {},
+      //     },
+      //   ],
+      //   meta: {},
+      // },
     ],
   },
 

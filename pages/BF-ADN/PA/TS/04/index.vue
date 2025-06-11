@@ -381,7 +381,7 @@ const getProfileButtonText = () => {
 };
 
 const navigateToProfile = () => {
-  router.push("/BF-PRF/AS/FR/01");
+  router.push("/BF-PRF/AS/FR/02");
 };
 
 const handleSimpanSerah = async () => {
