@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Pendaftaran Awal Calon Penolong Amil
+            Pra Pendaftaran Calon Penolong Amil
           </h2>
         </div>
       </template>
@@ -24,62 +24,148 @@
             @submit="handleSubmit"
             :actions="false"
           >
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Nombor Kad Pengenalan -->
-              <FormKit
-                type="text"
-                name="noKadPengenalan"
-                label="Nombor Kad Pengenalan"
-                placeholder="Contoh: 901231012345"
-                help="Masukkan nombor kad pengenalan tanpa tanda sengkang (-)"
-                validation="required|length:12"
-                :validation-messages="{
-                  required: 'Nombor kad pengenalan diperlukan',
-                  length: 'Nombor kad pengenalan mesti 12 digit',
-                }"
-              />
+            <!-- Dynamic Forms Container -->
+            <div v-for="(form, index) in forms" :key="index" class="mb-8 p-4 border rounded-lg relative">
+              <!-- Remove Form Button -->
+              <button 
+                v-if="forms.length > 1"
+                type="button"
+                class="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                @click="removeForm(index)"
+              >
+                <Icon name="mdi:delete" size="1.25rem" />
+              </button>
 
-              <!-- Nama Calon -->
-              <FormKit
-                type="text"
-                name="namaCalonPenolongAmil"
-                label="Nama Calon"
-                placeholder="Masukkan nama penuh"
-                validation="required"
-                :validation-messages="{
-                  required: 'Nama calon diperlukan',
-                }"
-              />
+              <h3 class="text-lg font-semibold mb-4">Borang Calon {{ index + 1 }}</h3>
 
-              <!-- Emel -->
-              <FormKit
-                type="email"
-                name="emel"
-                label="Emel"
-                placeholder="contoh@email.com"
-                validation="required|email"
-                :validation-messages="{
-                  required: 'Emel diperlukan',
-                  email: 'Format emel tidak sah',
-                }"
-              />
+              <!-- Personal Information Section -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Nombor Kad Pengenalan -->
+                <FormKit
+                  type="text"
+                  :name="`forms.${index}.noKadPengenalan`"
+                  label="Nombor Kad Pengenalan"
+                  placeholder="Contoh: 901231012345"
+                  help="Masukkan nombor kad pengenalan tanpa tanda sengkang (-)"
+                  validation="required|length:12"
+                  :validation-messages="{
+                    required: 'Nombor kad pengenalan diperlukan',
+                    length: 'Nombor kad pengenalan mesti 12 digit',
+                  }"
+                />
 
-              <!-- Kategori Penolong Amil -->
+                <!-- Nama Calon -->
+                <FormKit
+                  type="text"
+                  :name="`forms.${index}.namaCalonPenolongAmil`"
+                  label="Nama Calon"
+                  placeholder="Masukkan nama penuh"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Nama calon diperlukan',
+                  }"
+                />
+
+                <!-- Emel -->
+                <FormKit
+                  type="email"
+                  :name="`forms.${index}.emel`"
+                  label="Emel"
+                  placeholder="contoh@email.com"
+                  validation="required|email"
+                  :validation-messages="{
+                    required: 'Emel diperlukan',
+                    email: 'Format emel tidak sah',
+                  }"
+                />
+
+                <!-- No Telefon -->
+                <FormKit
+                  type="tel"
+                  :name="`forms.${index}.noTelefon`"
+                  label="No Telefon"
+                  placeholder="Contoh: 0123456789"
+                  validation="required|matches:/^[0-9]{10,11}$/"
+                  :validation-messages="{
+                    required: 'No telefon diperlukan',
+                    matches: 'Format no telefon tidak sah',
+                  }"
+                />
+
+                <!-- Kategori Penolong Amil -->
+                <FormKit
+                  type="select"
+                  :name="`forms.${index}.kategoriPenolongAmil`"
+                  label="Kategori Penolong Amil"
+                  placeholder="Pilih kategori"
+                  validation="required"
+                  :options="[
+                    { label: 'Fitrah', value: 'FITRAH' },
+                    { label: 'Padi', value: 'PADI' },
+                    { label: 'Kariah', value: 'KARIAH' },
+                    { label: 'Komuniti', value: 'KOMUNITI' },
+                  ]"
+                  :validation-messages="{
+                    required: 'Kategori diperlukan',
+                  }"
+                />
+              </div>
+
+              <!-- Document Upload Section -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="md:col-span-2 text-md font-semibold mb-4">Dokumen Diperlukan</h4>
+                
+                <!-- Kad Pengenalan Upload -->
+                <FormKit
+                  type="file"
+                  :name="`forms.${index}.kadPengenalanFile`"
+                  label="Salinan Kad Pengenalan"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila muat naik salinan kad pengenalan',
+                  }"
+                  help="Format yang diterima: JPG, JPEG, PNG, PDF"
+                />
+
+                <!-- Gambar Calon Upload -->
+                <FormKit
+                  type="file"
+                  :name="`forms.${index}.gambarCalon`"
+                  label="Gambar Calon"
+                  accept=".jpg,.jpeg,.png"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila muat naik gambar calon',
+                  }"
+                  help="Format yang diterima: JPG, JPEG, PNG"
+                />
+              </div>
+            </div>
+
+            <!-- Add Form Button -->
+            <div class="flex justify-center mb-6">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="addForm"
+                class="flex items-center"
+              >
+                <Icon name="material-symbols:add-circle" class="mr-2" />
+                Tambah Calon
+              </rs-button>
+            </div>
+
+            <!-- Supporting Documents Upload -->
+            <div class="mt-6 p-4 border rounded-lg">
+              <h3 class="text-lg font-semibold mb-4">Surat Sokongan</h3>
               <FormKit
-                type="select"
-                name="kategoriPenolongAmil"
-                label="Kategori Penolong Amil"
-                placeholder="Pilih kategori"
-                validation="required"
-                :options="[
-                  { label: 'Fitrah', value: 'FITRAH' },
-                  { label: 'Padi', value: 'PADI' },
-                  { label: 'Kariah', value: 'KARIAH' },
-                  { label: 'Komuniti', value: 'KOMUNITI' },
-                ]"
-                :validation-messages="{
-                  required: 'Kategori diperlukan',
-                }"
+                type="file"
+                name="suratSokongan"
+                label="Muat Naik Surat Sokongan"
+                accept=".pdf,.doc,.docx"
+                multiple
+                help="Format yang diterima: PDF, DOC, DOCX"
               />
             </div>
 
@@ -89,9 +175,8 @@
                 type="submit"
                 variant="primary"
                 :loading="isSubmitting"
-                @click="handleSubmit"
               >
-                Daftar Calon
+                Hantar
               </rs-button>
             </div>
           </FormKit>
@@ -116,7 +201,7 @@
             />
           </div>
           <p class="mb-2">
-            Pendaftaran awal calon penolong amil berjaya dihantar.
+            Pra Pendaftaran Calon Penolong Amil berjaya dihantar.
           </p>
           <p class="text-gray-600">
             Sila maklumkan kepada calon untuk log masuk ke dalam sistem bagi
@@ -140,7 +225,7 @@
 import { ref } from "vue";
 
 definePageMeta({
-  title: "Pendaftaran Awal Calon Penolong Amil",
+  title: "Pra Pendaftaran Calon Penolong Amil",
   description: "Pendaftaran awal maklumat calon penolong amil oleh PIC Masjid",
 });
 
@@ -155,7 +240,6 @@ const breadcrumb = ref([
     type: "link",
     path: "/BF-PA/PP/PM/01",
   },
-
   {
     name: "Pra Daftar Penolong Amil",
     type: "current",
@@ -163,7 +247,8 @@ const breadcrumb = ref([
   },
 ]);
 
-// Form submission state
+// Form management
+const forms = ref([{}]);
 const isSubmitting = ref(false);
 const showSuccessModal = ref(false);
 
@@ -176,19 +261,32 @@ const currentMasjid = ref({
   noTelefon: "013-9876543",
 });
 
+// Add new form
+const addForm = () => {
+  forms.value.push({});
+};
+
+// Remove form
+const removeForm = (index) => {
+  forms.value.splice(index, 1);
+};
+
 // Form submission handler
 const handleSubmit = async (formData) => {
   try {
     isSubmitting.value = true;
 
-    // Mock API call - would be replaced with actual API call
-    // await new Promise((resolve) => setTimeout(resolve, 1500));
+    // Process form data
+    const processedData = {
+      forms: formData.forms.map(form => ({
+        ...form,
+        masjidId: currentMasjid.value.kodMasjid,
+        namaMasjid: currentMasjid.value.namaMasjid,
+      })),
+      suratSokongan: formData.suratSokongan,
+    };
 
-    console.log("Submitted form data:", {
-      ...formData,
-      masjidId: currentMasjid.value.kodMasjid,
-      namaMasjid: currentMasjid.value.namaMasjid,
-    });
+    console.log("Submitted form data:", processedData);
 
     // Show success modal after submission
     showSuccessModal.value = true;
@@ -201,10 +299,6 @@ const handleSubmit = async (formData) => {
 };
 
 // Navigation and modal handlers
-const goBack = () => {
-  navigateTo("/BF-PA/PP/PM/01");
-};
-
 const handleModalClose = () => {
   showSuccessModal.value = false;
   navigateTo("/BF-PA/PP/PD/02");
