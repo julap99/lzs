@@ -103,7 +103,6 @@
                 <rs-button
                   variant="primary"
                   @click="navigateNext"
-                  :disabled="profileExists"
                 >
                   {{ profileExists ? "Kemaskini Profil" : "Pendaftaran Baru" }}
                 </rs-button>
@@ -196,7 +195,7 @@ const performSearch = async () => {
 const navigateNext = () => {
   if (profileExists.value) {
     // Navigate to update profile page
-    // navigateTo("/BF-PRF/AS/FR/02");
+    navigateTo("/BF-PRF/AS/UP/02");
   } else {
     // Navigate to new registration page
     navigateTo("/BF-PRF/AS/FR/02");
