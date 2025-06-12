@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Kelulusan Lantikan Penolong Amil (Ketua JPPA)
+            Kelulusan Lantikan Penolong Amil (Ketua Divisyen)
           </h2>
         </div>
       </template>
@@ -16,7 +16,7 @@
           <!-- Application Summary & Status -->
           <div class="mb-6">
             <div class="flex justify-between items-center mb-3">
-              <h3 class="font-medium">Ringkasan Permohonan</h3>
+              <h3 class="font-medium">Maklumat Tapisan Jabatan Pengurusan Risiko</h3>
               <span
                 class="px-3 py-1 text-sm font-medium rounded-full"
                 :class="getStatusClass(application.status)"
@@ -39,7 +39,7 @@
                   <p class="font-medium">{{ application.masjidName }}</p>
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500">PIC Masjid</p>
+                  <p class="text-sm text-gray-500">Wakil Institusi</p>
                   <p class="font-medium">{{ application.picName }}</p>
                 </div>
               </div>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="md:col-span-2">
                   <p class="text-sm text-gray-500 mb-1">
-                    Catatan dari PIC Masjid
+                    Catatan dari Wakil Institusi
                   </p>
                   <p class="text-gray-700">
                     {{ application.notes || "Tiada catatan" }}
@@ -91,7 +91,7 @@
 
           <!-- Document Preview Section -->
           <div class="mb-6">
-            <h3 class="font-medium mb-3">Dokumen Surat Pengesahan Lantikan</h3>
+            <h3 class="font-medium mb-3">Dokumen Surat Tapisan Jabatan Pengurusan Risiko</h3>
             <div class="border border-gray-200 rounded-md">
               <div
                 class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center"
@@ -124,8 +124,7 @@
                   />
                 </div>
                 <p class="text-sm">
-                  Klik butang "Lihat Dokumen" untuk melihat surat pengesahan
-                  lantikan
+                  Klik butang "Lihat Dokumen" untuk melihat Surat Tapisan Jabatan Pengurusan Risiko
                 </p>
               </div>
               <div class="p-3 bg-gray-50 text-sm text-gray-500">
@@ -181,6 +180,52 @@
             </div>
           </div>
 
+          <!-- JPPA Approval Section -->
+          <div class="mb-6">
+            <h3 class="font-medium mb-3">Keputusan Ketua JPPA</h3>
+            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+              <div class="mb-3">
+                <p class="text-sm text-gray-500">Keputusan Lulusan</p>
+                <p class="font-medium">
+                  <span
+                    class="px-2 py-1 text-sm font-medium rounded-md"
+                    :class="
+                      application.jppaApproval.recommendation === 'approve'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    "
+                  >
+                    {{
+                      application.jppaApproval.recommendation === "approve"
+                        ? "Lulus"
+                        : "Tidak Disokong"
+                    }}
+                  </span>
+                </p>
+              </div>
+              <div class="mb-3">
+                <p class="text-sm text-gray-500">Ulasan/Justifikasi</p>
+                <p class="text-gray-700">
+                  {{ application.jppaApproval.comments }}
+                </p>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Diluluskan Oleh</p>
+                  <p class="font-medium">
+                    {{ application.jppaApproval.reviewedBy }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Tarikh Lulus</p>
+                  <p class="font-medium">
+                    {{ application.jppaApproval.reviewedAt }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Manager Approval Form -->
           <FormKit
             type="form"
@@ -189,35 +234,7 @@
             :actions="false"
           >
             <div class="mb-6">
-              <h3 class="font-medium mb-3">Keputusan Ketua JPPA</h3>
-
-              <div class="mb-4">
-                <FormKit
-                  type="radio"
-                  name="decision"
-                  label="Keputusan Permohonan"
-                  :options="[
-                    { label: 'Lulus', value: 'approve' },
-                    { label: 'Tolak', value: 'reject' },
-                  ]"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Keputusan permohonan diperlukan',
-                  }"
-                />
-              </div>
-
-              <FormKit
-                type="textarea"
-                name="comments"
-                label="Ulasan / Justifikasi"
-                placeholder="Masukkan ulasan dan justifikasi keputusan"
-                validation="required"
-                :validation-messages="{
-                  required: 'Ulasan diperlukan',
-                }"
-                rows="4"
-              />
+              <h3 class="font-medium mb-3">Keputusan Ketua Divisyen</h3>
 
               <div class="mt-4">
                 <FormKit
@@ -238,12 +255,18 @@
                 Kembali
               </rs-button>
               <rs-button
+                variant="danger"
+                @click="handleReject"
+              >
+                Tolak
+              </rs-button>
+              <rs-button
                 type="submit"
                 variant="primary"
                 :loading="isSubmitting"
                 @click="handleSubmit"
               >
-                Hantar Keputusan
+                Lulus
               </rs-button>
             </div>
           </FormKit>
@@ -251,10 +274,10 @@
       </template>
     </rs-card>
 
-    <!-- Success Modal -->
+    <!-- Success Modal for Submission -->
     <rs-modal
       v-model="showSuccessModal"
-      title="Keputusan Berjaya Dihantar"
+      title="Kelulusan Berjaya Dihantar"
       size="md"
       position="center"
     >
@@ -268,22 +291,102 @@
             />
           </div>
           <p class="mb-2">
-            Keputusan lantikan Penolong Amil berjaya direkodkan.
+            Kelulusan lantikan Penolong Amil berjaya direkodkan.
           </p>
           <p class="text-gray-600">
-            Status permohonan telah dikemaskini kepada
-            {{
-              approvalData.decision === "approve"
-                ? '"Diluluskan"'
-                : '"Ditolak"'
-            }}.
+            Status permohonan telah dikemaskini kepada "Diluluskan".
           </p>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-center">
           <rs-button variant="primary" @click="handleModalClose">
-            Tutup
+            Kembali ke Senarai
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Success Modal for Rejection -->
+    <rs-modal
+      v-model="showRejectSuccessModal"
+      title="Permohonan Ditolak"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <Icon
+              name="material-symbols:check-circle"
+              class="text-red-500"
+              size="48"
+            />
+          </div>
+          <p class="mb-2">
+            Permohonan lantikan Penolong Amil telah ditolak.
+          </p>
+          <p class="text-gray-600">
+            Status permohonan telah dikemaskini kepada "Ditolak".
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center">
+          <rs-button variant="primary" @click="handleRejectModalClose">
+            Kembali ke Senarai
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmModal"
+      :title="isRejecting ? 'Pengesahan Tolak' : 'Pengesahan Lulus'"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div>
+          <p class="mb-4">
+            {{ isRejecting 
+              ? 'Adakah anda pasti untuk menolak permohonan lantikan Penolong Amil ini?'
+              : 'Adakah anda pasti untuk meluluskan permohonan lantikan Penolong Amil ini?'
+            }}
+          </p>
+          <p class="text-gray-600 text-sm">
+            {{ isRejecting 
+              ? 'Selepas ditolak, permohonan ini tidak boleh dihantar semula. Notifikasi akan dihantar kepada calon.'
+              : 'Selepas diluluskan, permohonan ini adalah muktamad. Notifikasi akan dihantar kepada semua pihak yang berkaitan.'
+            }}
+          </p>
+          <div class="mt-4">
+            <FormKit
+              type="textarea"
+              name="remarks"
+              :label="isRejecting ? 'Sebab Penolakan' : 'Ulasan / Justifikasi'"
+              :placeholder="isRejecting ? 'Masukkan sebab penolakan permohonan' : 'Masukkan ulasan dan justifikasi kelulusan'"
+              validation="required"
+              :validation-messages="{
+                required: isRejecting ? 'Sila masukkan sebab penolakan' : 'Sila masukkan ulasan',
+              }"
+              rows="3"
+              v-model="remarks"
+            />
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end space-x-3">
+          <rs-button variant="outline" @click="showConfirmModal = false">
+            Batal
+          </rs-button>
+          <rs-button 
+            :variant="isRejecting ? 'danger' : 'primary'" 
+            @click="confirmSubmission"
+          >
+            {{ isRejecting ? 'Tolak' : 'Lulus' }}
           </rs-button>
         </div>
       </template>
@@ -329,48 +432,6 @@
         </div>
       </template>
     </rs-modal>
-
-    <!-- Confirmation Modal -->
-    <rs-modal
-      v-model="showConfirmModal"
-      title="Pengesahan Keputusan"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div>
-          <p class="mb-4">
-            Adakah anda pasti untuk menghantar keputusan
-            <span
-              class="font-medium"
-              :class="
-                approvalData.decision !== 'approve'
-                  ? 'text-green-600'
-                  : 'text-red-600'
-              "
-            >
-              {{ approvalData.decision !== "approve" ? "LULUS" : "TOLAK" }}
-            </span>
-            bagi permohonan lantikan Penolong Amil ini?
-          </p>
-          <p class="text-gray-600 text-sm">
-            Selepas dihantar, keputusan ini adalah muktamad dan tiada lagi
-            perubahan boleh dibuat. Notifikasi akan dihantar kepada semua pihak
-            yang berkaitan. Penolong amil akan menerima Kad Tauliah.
-          </p>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-end space-x-3">
-          <rs-button variant="outline" @click="showConfirmModal = false">
-            Batal
-          </rs-button>
-          <rs-button variant="primary" @click="confirmSubmission">
-            Hantar
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
   </div>
 </template>
 
@@ -380,7 +441,7 @@ import { ref } from "vue";
 definePageMeta({
   title: "Kelulusan Lantikan Penolong Amil",
   description:
-    "Semakan dan kelulusan permohonan lantikan penolong amil oleh Ketua JPPA",
+    "Semakan dan kelulusan permohonan lantikan penolong amil oleh Ketua Divisyen",
 });
 
 const breadcrumb = ref([
@@ -397,7 +458,7 @@ const breadcrumb = ref([
   {
     name: "Kelulusan Lantikan",
     type: "current",
-    path: "/BF-PA/JPPA/PS/04",
+    path: "/BF-PA/JPPA/PS/05",
   },
 ]);
 
@@ -407,9 +468,9 @@ const application = ref({
   applicationDate: "12/05/2025",
   masjidName: "Masjid Wilayah Persekutuan",
   picName: "Mohd Razak bin Ibrahim",
-  status: "Menunggu Kelulusan Pengurus",
+  status: "Menunggu Kelulusan Ketua Divisyen",
   uploadDate: "12/05/2025, 14:32",
-  documentName: "Surat_Pengesahan_Lantikan_Ahmad_bin_Abdullah.pdf",
+  documentName: "Surat_Tapisan_Jabatan_Pengurusan_Risiko.pdf",
   notes:
     "Calon telah melengkapkan semua syarat dan berkelayakan untuk dilantik sebagai Penolong Amil Fitrah.",
   candidate: {
@@ -425,24 +486,30 @@ const application = ref({
     reviewedBy: "Sarah binti Hamid",
     reviewedAt: "15/05/2025, 10:45",
   },
+  jppaApproval: {
+    recommendation: "approve",
+    comments:
+      "Setelah meneliti sokongan dari Eksekutif JPPA dan dokumen yang dikemukakan, saya bersetuju untuk menyokong permohonan ini. Calon memenuhi semua kriteria yang ditetapkan.",
+    reviewedBy: "Dr. Azman bin Abdul Rahman",
+    reviewedAt: "16/05/2025, 14:30",
+  },
 });
 
 // Form submission state
 const isSubmitting = ref(false);
 const showSuccessModal = ref(false);
+const showRejectSuccessModal = ref(false);
 const showConfirmModal = ref(false);
 const showDocumentModal = ref(false);
-const approvalData = ref({
-  decision: "",
-  comments: "",
-});
+const isRejecting = ref(false);
+const remarks = ref('');
 
-// Get current JPPA manager info (would be fetched from API/store in real app)
+// Get current division head info (would be fetched from API/store in real app)
 const currentUser = ref({
-  name: "Dr. Azman bin Abdul Rahman",
-  position: "Ketua JPPA",
-  department: "Jabatan Pengurusan Penolong Amil",
-  email: "azman@jppa.gov.my",
+  name: "Dato' Haji Ismail bin Abdullah",
+  position: "Ketua Divisyen",
+  department: "Bahagian Pengurusan Zakat",
+  email: "ismail@jpa.gov.my",
 });
 
 // Helper functions
@@ -458,8 +525,8 @@ const getCategoryLabel = (value) => {
 
 const getStatusClass = (status) => {
   const statusClasses = {
-    "Menunggu Sokongan JPPA": "bg-yellow-100 text-yellow-800",
-    "Menunggu Kelulusan Pengurus": "bg-blue-100 text-blue-800",
+    "Menunggu Kelulusan Ketua Divisyen": "bg-yellow-100 text-yellow-800",
+    "Menunggu Kelulusan Ketua JPPA": "bg-blue-100 text-blue-800",
     Diluluskan: "bg-green-100 text-green-800",
     "Tidak Disokong": "bg-red-100 text-red-800",
     Ditolak: "bg-red-100 text-red-800",
@@ -480,7 +547,12 @@ const downloadDocument = () => {
 // Form submission handlers
 const handleSubmit = async (formData) => {
   // Store approval data and show confirmation modal
-  approvalData.value = formData;
+  isRejecting.value = false;
+  showConfirmModal.value = true;
+};
+
+const handleReject = () => {
+  isRejecting.value = true;
   showConfirmModal.value = true;
 };
 
@@ -489,25 +561,36 @@ const confirmSubmission = async () => {
     isSubmitting.value = true;
     showConfirmModal.value = false;
 
-    // Mock API call - would be replaced with actual API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    if (isRejecting.value) {
+      // Handle rejection
+      console.log("Rejected application:", {
+        remarks: remarks.value,
+        timestamp: new Date().toISOString(),
+      });
+      
+      // Update application status
+      application.value.status = "Ditolak";
+      
+      // Show rejection success modal
+      showRejectSuccessModal.value = true;
+    } else {
+      // Handle submission
+      console.log("Submitted approval data:", {
+        remarks: remarks.value,
+        applicationId: application.value.referenceNo,
+        approvedBy: currentUser.value.name,
+        approvedAt: new Date().toISOString(),
+      });
 
-    console.log("Submitted approval data:", {
-      ...approvalData.value,
-      applicationId: application.value.referenceNo,
-      approvedBy: currentUser.value.name,
-      approvedAt: new Date().toISOString(),
-    });
+      // Update application status
+      application.value.status = "Diluluskan";
 
-    // Update application status based on decision
-    application.value.status =
-      approvalData.value.decision === "approve" ? "Diluluskan" : "Ditolak";
-
-    // Show success modal after submission
-    showSuccessModal.value = true;
+      // Show submission success modal
+      showSuccessModal.value = true;
+    }
   } catch (error) {
-    console.error("Error submitting approval:", error);
-    alert("Ralat semasa menghantar keputusan. Sila cuba lagi.");
+    console.error("Error processing approval:", error);
+    alert("Ralat semasa memproses kelulusan. Sila cuba lagi.");
   } finally {
     isSubmitting.value = false;
   }
@@ -520,6 +603,15 @@ const goBack = () => {
 
 const handleModalClose = () => {
   showSuccessModal.value = false;
-  navigateTo("/BF-PA/PP/PD/06");
+  navigateTo("/BF-PA/PP/PD");
+};
+
+const handleRejectModalClose = () => {
+  showRejectSuccessModal.value = false;
+  navigateTo("/BF-PA/PP/PD");
 };
 </script>
+
+<style scoped>
+/* Add your styles here */
+</style>

@@ -819,7 +819,7 @@ export default [
           {
             title: "Pra Daftar Penolong Amil",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/PD/01",
+            path: "/BF-PA/PP/PD",
             child: [],
             meta: {},
           },
