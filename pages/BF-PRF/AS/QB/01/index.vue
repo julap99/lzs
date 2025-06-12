@@ -6,8 +6,60 @@
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Isi Borang Permohonan Online</h2>
+            <rs-button 
+              variant="secondary" 
+              @click="showExportModal = true"
+            >
+              <Icon name="mdi:export" class="mr-1" size="1rem" />
+              Eksport
+            </rs-button>
           </div>
         </template>
+  
+        <!-- Export Modal -->
+        <rs-modal
+          v-model="showExportModal"
+          title="Eksport Data"
+          size="md"
+        >
+          <template #body>
+            <div class="p-4">
+              <FormKit
+                type="form"
+                :actions="false"
+                @submit="handleExport"
+              >
+                <FormKit
+                  type="file"
+                  name="exportFile"
+                  label="Upload File"
+                  accept=".xlsx,.xls,.csv"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Please upload a file',
+                  }"
+                  v-model="exportFile"
+                />
+              </FormKit>
+            </div>
+          </template>
+          <template #footer>
+            <div class="flex justify-end gap-2">
+              <rs-button
+                variant="secondary"
+                @click="showExportModal = false"
+              >
+                Tidak
+              </rs-button>
+              <rs-button
+                variant="primary"
+                @click="handleExport"
+              >
+                Ya
+              </rs-button>
+            </div>
+          </template>
+        </rs-modal>
   
         <template #body>
           <!-- Form Section -->
@@ -195,17 +247,39 @@
   });
   
   const breadcrumb = ref([
-    {
-      name: "Dashboard",
-      type: "link",
-      path: "/dashboard",
-    },
+    // {
+    //   name: "Dashboard",
+    //   type: "link",
+    //   path: "/dashboard",
+    // },
     {
       name: "Borang Permohonan",
       type: "current",
       path: "/BF-PRF/AS/QS/02",
     },
   ]);
+  
+  // Export modal state
+  const showExportModal = ref(false);
+  const exportFile = ref(null);
+
+  const handleExport = async () => {
+    try {
+      if (!exportFile.value) {
+        toast.error("Please upload a file first");
+        return;
+      }
+
+      // Add your export logic here
+      console.log("Exporting file:", exportFile.value);
+      
+      toast.success("File exported successfully");
+      showExportModal.value = false;
+    } catch (error) {
+      toast.error("Error exporting file");
+      console.error("Export error:", error);
+    }
+  };
   
   // Form data structure
   const formData = ref({
