@@ -602,28 +602,168 @@
         <FormKit
           v-if="currentStepA === 7"
           type="form"
-          @submit="submitForm"
+          @submit="nextStepA"
           :actions="false"
           id="sectionG"
         >
           <h3 class="text-lg font-semibold mb-4">
-            G. Pengesahan Perakuan (Ketua Keluarga/Pasangan Sahaja)
+            G. Pengesahan
           </h3>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit
-              type="text"
-              name="no_kad_pengesahan"
-              label="1. No Kad Pengenalan"
-              validation="required"
-            />
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
+            <div class="flex flex-col gap-2">
+              <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
+              <FormKit
+                type="radio"
+                name="dibantu_penolong_amil"
+                :options="['Ya', 'Tidak']"
+                validation="required"
+                v-model="dibantuPenolongAmil"
+              />
+            </div>
 
-            <FormKit
-              type="date"
-              name="tarikh_pengesahan"
-              label="2. Tarikh"
-              validation="required"
-            />
+            <div v-if="dibantuPenolongAmil === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <FormKit
+                type="text"
+                name="nama_penolong_amil_bantuan"
+                label="Nama Penolong Amil"
+                validation="required"
+              />
+              <FormKit
+                type="text"
+                name="kariah_bantuan"
+                label="Kariah"
+                validation="required"
+              />
+
+              <FormKit
+                type="date"
+                name="tarikh_bantuan"
+                label="Tarikh Bantuan"
+                validation="required"
+              />
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">2. Maklumat Perakuan Pemohon</h4>
+            <div class="flex flex-col gap-2">
+              <label class="font-medium">Hubungan kekeluargaan dengan kakitangan LZS?</label>
+              <FormKit
+                type="radio"
+                name="hubungan_kakitangan_lzs"
+                :options="['Ya', 'Tidak']"
+                validation="required"
+                v-model="hubunganKakitanganLZS"
+              />
+            </div>
+
+            <div v-if="hubunganKakitanganLZS === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <FormKit
+                type="text"
+                name="nama_kakitangan"
+                label="Nama Kakitangan"
+                validation="required"
+              />
+
+              <FormKit
+                type="text"
+                name="jawatan_kakitangan"
+                label="Jawatan"
+                validation="required"
+              />
+
+              <FormKit
+                type="text"
+                name="pejabat_kakitangan"
+                label="Pejabat"
+                validation="required"
+              />
+
+              <FormKit
+                type="text"
+                name="hubungan_kakitangan"
+                label="Hubungan"
+                validation="required"
+              />
+
+              <FormKit
+                type="date"
+                name="tarikh_perakuan"
+                label="Tarikh Perakuan"
+                validation="required"
+              />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <rs-button type="submit" variant="primary" @click="nextStepA"
+              >Seterusnya ke Pengesahan Bermastautin</rs-button
+            >
+          </div>
+        </FormKit>
+
+        <!-- Section H Form - Pengesahan Bermastautin -->
+        <FormKit
+          v-if="currentStepA === 8"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionH"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            H. Pengesahan Bermastautin
+          </h3>
+
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">Maklumat Pengesahan Permastautin</h4>
+            <p class="text-sm text-gray-600 mb-4">
+              *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="textarea"
+                name="ulasan_pengesahan"
+                label="Ulasan"
+                validation="required"
+              />
+
+              <FormKit
+                type="text"
+                name="nama_pengesah"
+                label="Nama"
+                validation="required"
+              />
+
+              <FormKit
+                type="text"
+                name="jawatan_pengesah"
+                label="Jawatan"
+                validation="required"
+              />
+
+              <FormKit
+                type="text"
+                name="no_telefon_pengesah"
+                label="No Telefon"
+                validation="required"
+              />
+
+              <FormKit
+                type="date"
+                name="tarikh_pengesahan_permastautin"
+                label="Tarikh Pengesahan"
+                validation="required"
+              />
+            </div>
           </div>
 
           <div class="flex justify-end gap-3 mt-6">
@@ -639,16 +779,16 @@
           </div>
         </FormKit>
 
-        <!-- Section H Form -->
+        <!-- Section I Form -->
         <FormKit
-          v-if="currentStepA === 8"
+          v-if="currentStepA === 9"
           type="form"
           @submit="submitForm"
           :actions="false"
-          id="sectionH"
+          id="sectionI"
         >
           <h3 class="text-lg font-semibold mb-4">
-            H. Maklumat Penolong Amil (login sebagai penolong amil)
+            I. Maklumat Penolong Amil (login sebagai penolong amil)
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1342,8 +1482,10 @@ const processing = ref(false);
 const currentSection = ref(1);
 
 const currentStepA = ref(1);
-const totalStepsA = 8;
+const totalStepsA = 9;
 const healthStatus = ref("");
+const dibantuPenolongAmil = ref("");
+const hubunganKakitanganLZS = ref("");
 
 const stepsA = [
   { id: 1, label: "Maklumat Peribadi" },
@@ -1353,7 +1495,8 @@ const stepsA = [
   { id: 5, label: "Pinjaman" },
   { id: 6, label: "Pemilikan" },
   { id: 7, label: "Pengesahan" },
-  { id: 8, label: "Penolong Amil" },
+  { id: 8, label: "Pengesahan Bermastautin" },
+  { id: 9, label: "Penolong Amil" },
 ];
 
 const currentStepB = ref(1);
