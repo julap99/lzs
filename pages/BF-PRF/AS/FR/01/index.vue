@@ -129,12 +129,17 @@ const profileExists = ref(false);
 
 const breadcrumb = ref([
   {
-    name: "Pendaftaran Asnaf",
+    name: "Profiling",
     type: "link",
     path: "/BF-PRF/AS/FR/01",
   },
   {
-    name: "Carian Profil",
+    name: "Asnaf",
+    type: "link",
+    path: "/BF-PRF/AS/FR/01",
+  },
+  {
+    name: "Pendaftaran Lengkap",
     type: "current",
     path: "/BF-PRF/AS/FR/01",
   },

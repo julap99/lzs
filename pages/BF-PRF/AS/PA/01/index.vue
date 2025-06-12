@@ -98,6 +98,11 @@ const breadcrumb = ref([
     path: "/BF-PRF/AS/PA/01",
   },
   {
+    name: "Asnaf",
+    type: "link",
+    path: "/BF-PRF/AS/PA/01",
+  },
+  {
     name: "Penilaian Awal",
     type: "current",
     path: "/BF-PRF/AS/PA/01",

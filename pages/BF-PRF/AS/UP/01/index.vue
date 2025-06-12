@@ -82,7 +82,17 @@ const searchCompleted = ref(false);
 
 const breadcrumb = ref([
   {
-    name: "Carian Profil",
+    name: "Profiling",
+    type: "link",
+    path: "/BF-PRF/AS/UP/01",
+  },
+  {
+    name: "Asnaf",
+    type: "link",
+    path: "/BF-PRF/AS/UP/01",
+  },
+  {
+    name: "Kemaskini Profil",
     type: "current",
     path: "/BF-PRF/AS/FR/01",
   },
