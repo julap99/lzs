@@ -212,22 +212,6 @@
 
                 <FormKit
                   type="select"
-                  name="assistanceType"
-                  label="Jenis Bantuan (jika login as kaunter, option yang akan dilihat hanya Bencana)"
-                  validation="required"
-                  :options="[
-                    { label: 'Bencana', value: 'bencana' },
-                    { label: 'Express', value: 'express' }
-                  ]"
-                  placeholder="Pilih jenis bantuan"
-                  v-model="formData.personalInfo.assistanceType"
-                  :validation-messages="{
-                    required: 'Jenis bantuan adalah wajib'
-                  }"
-                />
-
-                <FormKit
-                  type="select"
                   name="maritalStatus"
                   label="Status Perkahwinan"
                   validation="required"
@@ -242,6 +226,23 @@
                   v-model="formData.personalInfo.maritalStatus"
                   :validation-messages="{
                     required: 'Status perkahwinan adalah wajib'
+                  }"
+                />
+
+                <FormKit
+                  type="select"
+                  name="assistanceType"
+                  label="Saluran Bantuan (jika login as kaunter, option yang akan dilihat hanya Bencana)"
+                  validation="required"
+                  :options="[
+                    { label: 'Bencana', value: 'bencana' },
+                    { label: 'Tunai Kaunter(Express)', value: 'express' },
+                    { label: 'Tunai Lapangan)', value: 'lapangan' },
+                  ]"
+                  placeholder="Pilih bantuan"
+                  v-model="formData.personalInfo.assistanceType"
+                  :validation-messages="{ 
+                    required: 'Jenis bantuan adalah wajib'
                   }"
                 />
 
@@ -1027,7 +1028,7 @@
                   />
                 </div>
               </div>
-
+              
               <div class="flex justify-center mt-4">
                 <rs-button
                   variant="secondary"
@@ -1037,6 +1038,180 @@
                   <Icon name="mdi:plus" class="mr-1" size="1rem" />
                   Tambah Waris
                 </rs-button>
+              </div>
+
+              <div class="flex justify-between gap-3 mt-6">
+                <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="prevStep"
+                  >Kembali</rs-button
+                >
+                <rs-button type="submit" variant="primary" @click="nextStep"
+                  >Seterusnya ke Pengesahan</rs-button
+                >
+              </div>
+            </div>
+
+            <!-- Step 8: Pengesahan -->
+            <div v-if="currentStep === 8">
+              <h3 class="text-lg font-medium mb-4">H) Pengesahan</h3>
+
+              <div class="mb-6">
+                <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
+                <div class="flex flex-col gap-2">
+                  <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
+                  <FormKit
+                    type="radio"
+                    name="dibantu_penolong_amil"
+                    :options="['Ya', 'Tidak']"
+                    validation="required"
+                    v-model="formData.verification.dibantuPenolongAmil"
+                  />
+                </div>
+
+                <div v-if="formData.verification.dibantuPenolongAmil === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <FormKit
+                    type="text"
+                    name="nama_penolong_amil_bantuan"
+                    label="Nama Penolong Amil"
+                    validation="required"
+                    v-model="formData.verification.namaPenolongAmil"
+                  />
+                  <FormKit
+                    type="text"
+                    name="kariah_bantuan"
+                    label="Kariah"
+                    validation="required"
+                    v-model="formData.verification.kariahBantuan"
+                  />
+
+                  <FormKit
+                    type="date"
+                    name="tarikh_bantuan"
+                    label="Tarikh Bantuan"
+                    validation="required"
+                    v-model="formData.verification.tarikhBantuan"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <h4 class="font-medium mb-3">2. Maklumat Perakuan Pemohon</h4>
+                <div class="flex flex-col gap-2">
+                  <label class="font-medium">Hubungan kekeluargaan dengan kakitangan LZS?</label>
+                  <FormKit
+                    type="radio"
+                    name="hubungan_kakitangan_lzs"
+                    :options="['Ya', 'Tidak']"
+                    validation="required"
+                    v-model="formData.verification.hubunganKakitanganLZS"
+                  />
+                </div>
+
+                <div v-if="formData.verification.hubunganKakitanganLZS === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <FormKit
+                    type="text"
+                    name="nama_kakitangan"
+                    label="Nama Kakitangan"
+                    validation="required"
+                    v-model="formData.verification.namaKakitangan"
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="jawatan_kakitangan"
+                    label="Jawatan"
+                    validation="required"
+                    v-model="formData.verification.jawatanKakitangan"
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="pejabat_kakitangan"
+                    label="Pejabat"
+                    validation="required"
+                    v-model="formData.verification.pejabatKakitangan"
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="hubungan_kakitangan"
+                    label="Hubungan"
+                    validation="required"
+                    v-model="formData.verification.hubunganKakitangan"
+                  />
+
+                  <FormKit
+                    type="date"
+                    name="tarikh_perakuan"
+                    label="Tarikh Perakuan"
+                    validation="required"
+                    v-model="formData.verification.tarikhPerakuan"
+                  />
+                </div>
+              </div>
+
+              <div class="flex justify-between gap-3 mt-6">
+                <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="prevStep"
+                  >Kembali</rs-button
+                >
+                <rs-button type="submit" variant="primary" @click="nextStep"
+                  >Seterusnya ke Maklumat Pengesah Bermastautin</rs-button
+                >
+              </div>
+            </div>
+
+            <!-- Step 9: Maklumat Pengesah Bermastautin -->
+            <div v-if="currentStep === 9">
+              <h3 class="text-lg font-medium mb-4">I) Maklumat Pengesah Bermastautin</h3>
+              <p class="text-sm text-gray-600 mb-4">
+                *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="textarea"
+                  name="ulasan_pengesahan"
+                  label="Ulasan"
+                  validation="required"
+                  v-model="formData.verification.ulasanPengesahan"
+                />
+
+                <FormKit
+                  type="text"
+                  name="nama_pengesah"
+                  label="Nama"
+                  validation="required"
+                  v-model="formData.verification.namaPengesah"
+                />
+
+                <FormKit
+                  type="text"
+                  name="jawatan_pengesah"
+                  label="Jawatan"
+                  validation="required"
+                  v-model="formData.verification.jawatanPengesah"
+                />
+
+                <FormKit
+                  type="text"
+                  name="no_telefon_pengesah"
+                  label="No Telefon"
+                  validation="required"
+                  v-model="formData.verification.noTelefonPengesah"
+                />
+
+                <FormKit
+                  type="date"
+                  name="tarikh_pengesahan_permastautin"
+                  label="Tarikh Pengesahan"
+                  validation="required"
+                  v-model="formData.verification.tarikhPengesahanPermastautin"
+                />
               </div>
 
               <div class="flex justify-between gap-3 mt-6">
@@ -1084,7 +1259,7 @@ const breadcrumb = ref([
 ]);
 
 const currentStep = ref(1);
-const totalStep = 7;
+const totalStep = 9;
 
 // Form data structure
 const formData = ref({
@@ -1149,10 +1324,21 @@ const formData = ref({
     date: "",
   },
   verification: {
-    comments: "",
-    name: "",
-    position: "",
-    phone: "",
+    dibantuPenolongAmil: "",
+    namaPenolongAmil: "",
+    kariahBantuan: "",
+    tarikhBantuan: "",
+    hubunganKakitanganLZS: "",
+    namaKakitangan: "",
+    jawatanKakitangan: "",
+    pejabatKakitangan: "",
+    hubunganKakitangan: "",
+    tarikhPerakuan: "",
+    ulasanPengesahan: "",
+    namaPengesah: "",
+    jawatanPengesah: "",
+    noTelefonPengesah: "",
+    tarikhPengesahanPermastautin: ""
   },
   income: {
     familyHeadName: "",

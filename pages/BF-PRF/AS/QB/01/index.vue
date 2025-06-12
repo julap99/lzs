@@ -8,18 +8,18 @@
             <h2 class="text-xl font-semibold">Isi Borang Permohonan Online</h2>
             <rs-button 
               variant="secondary" 
-              @click="showExportModal = true"
+              @click="showImportModal = true"
             >
-              <Icon name="mdi:export" class="mr-1" size="1rem" />
-              Eksport
+              <Icon name="mdi:import" class="mr-1" size="1rem" />
+              Import
             </rs-button>
           </div>
         </template>
   
-        <!-- Export Modal -->
+        <!-- Import Modal -->
         <rs-modal
-          v-model="showExportModal"
-          title="Eksport Data"
+          v-model="showImportModal"
+          title="Import Data"
           size="md"
         >
           <template #body>
@@ -27,35 +27,35 @@
               <FormKit
                 type="form"
                 :actions="false"
-                @submit="handleExport"
+                @submit="handleImport"
               >
                 <FormKit
                   type="file"
-                  name="exportFile"
+                  name="importFile"
                   label="Upload File"
                   accept=".xlsx,.xls,.csv"
                   validation="required"
                   :validation-messages="{
                     required: 'Please upload a file',
                   }"
-                  v-model="exportFile"
+                  v-model="importFile"
                 />
               </FormKit>
             </div>
           </template>
           <template #footer>
             <div class="flex justify-end gap-2">
-              <rs-button
-                variant="secondary"
-                @click="showExportModal = false"
+              <!-- <rs-button -->
+                <!-- variant="secondary"
+                @click="showImportModal = false"
               >
-                Tidak
-              </rs-button>
+                Tidak -->
+              <!-- </rs-button> -->
               <rs-button
                 variant="primary"
-                @click="handleExport"
+                @click="handleImport"
               >
-                Ya
+                Import
               </rs-button>
             </div>
           </template>
@@ -259,26 +259,78 @@
     },
   ]);
   
-  // Export modal state
-  const showExportModal = ref(false);
-  const exportFile = ref(null);
+  // import modal state
+  const showImportModal = ref(false);
+  const importFile = ref(null);
 
-  const handleExport = async () => {
+  const handleImport = async () => {
     try {
-      if (!exportFile.value) {
+      if (!importFile.value) {
         toast.error("Please upload a file first");
         return;
       }
 
-      // Add your export logic here
-      console.log("Exporting file:", exportFile.value);
+      // Generate and fill 5 fake applicants
+      formData.value.applicants = generateFakeApplicants(5);
       
-      toast.success("File exported successfully");
-      showExportModal.value = false;
+      toast.success("Data Berjaya di Import");
+      showImportModal.value = false;
     } catch (error) {
-      toast.error("Error exporting file");
-      console.error("Export error:", error);
+      toast.error("Error importing file");
+      console.error("Import error:", error);
     }
+  };
+  
+  // Function to generate fake Malaysian IC number
+  const generateFakeIC = () => {
+    const year = Math.floor(Math.random() * (99 - 50) + 50); // Random year between 50-99
+    const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+    const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+    const random = String(Math.floor(Math.random() * 9999)).padStart(4, '0');
+    return `${year}${month}${day}-${random}`;
+  };
+
+  // Function to generate fake Malaysian phone number
+  const generateFakePhone = () => {
+    const prefixes = ['010', '011', '012', '013', '014', '016', '017', '018', '019'];
+    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const number = String(Math.floor(Math.random() * 10000000)).padStart(7, '0');
+    return `${prefix}-${number}`;
+  };
+
+  // Function to generate fake bank account
+  const generateFakeBankAccount = () => {
+    return String(Math.floor(Math.random() * 10000000000)).padStart(10, '0');
+  };
+
+  // Function to generate fake applicants
+  const generateFakeApplicants = (count) => {
+    const banks = ['Maybank', 'CIMB Bank', 'Public Bank', 'RHB Bank', 'AmBank', 'Hong Leong Bank'];
+    const asnafCategories = ['fakir', 'miskin', 'amil', 'muallaf', 'riqab', 'gharimin', 'fisabilillah', 'ibnus-sabil'];
+    const helpCodes = ['A001', 'B002', 'C003', 'D004', 'E005'];
+    
+    const firstNames = ['Ahmad', 'Mohammad', 'Siti', 'Nur', 'Aisyah', 'Ali', 'Fatimah', 'Hassan'];
+    const lastNames = ['bin Abdullah', 'binti Ismail', 'bin Omar', 'binti Ahmad', 'bin Hassan'];
+    
+    const addresses = [
+      'No 123, Jalan Merdeka, Taman Perdana, 50000 Kuala Lumpur',
+      'No 45, Jalan Sultan Ismail, Taman Tun Dr Ismail, 60000 Kuala Lumpur',
+      'No 78, Jalan Pahang, Taman Melawati, 53100 Kuala Lumpur',
+      'No 12, Jalan Ipoh, Taman Setapak, 53000 Kuala Lumpur',
+      'No 34, Jalan Gombak, Taman Melati, 53100 Kuala Lumpur'
+    ];
+
+    return Array.from({ length: count }, () => ({
+      newIC: generateFakeIC(),
+      name: `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`,
+      phone: generateFakePhone(),
+      address: addresses[Math.floor(Math.random() * addresses.length)],
+      bankName: banks[Math.floor(Math.random() * banks.length)],
+      bankAccount: generateFakeBankAccount(),
+      asnafCategory: asnafCategories[Math.floor(Math.random() * asnafCategories.length)],
+      helpCode: helpCodes[Math.floor(Math.random() * helpCodes.length)],
+      supportDoc: null
+    }));
   };
   
   // Form data structure
@@ -313,9 +365,9 @@
       toast.success("Permohonan berjaya dihantar");
       
       // Wait for 2 seconds before navigating
-      setTimeout(() => {
+      // setTimeout(() => {
         router.push("/BF-PRF/AS/FR/04");
-      }, 2000);
+      // }, 2000);
     } catch (error) {
       toast.error("Ralat! Permohonan tidak berjaya dihantar");
       console.error("Submission error:", error);
