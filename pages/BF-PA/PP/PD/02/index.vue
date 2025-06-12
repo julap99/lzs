@@ -6,509 +6,226 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Lengkapkan Maklumat Peribadi dan Perkhidmatan
+            Tapisan Lantikan Penolong Amil
           </h2>
         </div>
       </template>
 
       <template #body>
         <div class="p-4">
-          <p class="mb-4 text-gray-700">
-            Sila lengkapkan maklumat peribadi dan perkhidmatan anda sebagai
-            penolong amil:
-          </p>
+          <!-- Maklumat Calon Penolong Amil -->
+          <div class="mb-6">
+            <h3 class="font-medium mb-3">Maklumat Calon Penolong Amil</h3>
+            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Nombor Kad Pengenalan</p>
+                  <p class="font-medium">
+                    {{ application.candidate.noKadPengenalan }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Nama Calon</p>
+                  <p class="font-medium">
+                    {{ application.candidate.namaCalonPenolongAmil }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Emel</p>
+                  <p class="font-medium">{{ application.candidate.emel }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Kategori Penolong Amil</p>
+                  <p class="font-medium">
+                    {{
+                      getCategoryLabel(
+                        candidateInfo.kategoriPenolongAmil
+                      )
+                    }}
+                  </p>
+                </div>
+              </div>
 
-          <!-- Progress Steps -->
+              <!-- Document Preview Section for Salinan Kad Pengenalan and Gambar Calon -->
+              <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Salinan Kad Pengenalan -->
+                <div>
+                  <h4 class="font-medium mb-3">Salinan Kad Pengenalan</h4>
+                  <div class="border border-gray-200 rounded-md">
+                    <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
+                      <div class="flex items-center">
+                        <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
+                        <span>{{ application.documentSalinanKadPengenalan }}</span>
+                      </div>
+                      <rs-button size="sm" variant="primary-outline" @click="previewDocument('salinanKadPengenalan')">
+                        <Icon name="heroicons:eye" class="mr-1" size="16" />
+                        Lihat Dokumen
+                      </rs-button>
+                    </div>
+                    <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
+                      <div class="mb-2">
+                        <Icon name="heroicons:document" size="48" class="text-gray-400" />
+                      </div>
+                      <p class="text-sm">Klik butang "Lihat Dokumen" untuk melihat Salinan Kad Pengenalan</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                      Dimuat naik oleh {{ application.candidate.namaCalonPenolongAmil }} pada {{ application.uploadDate }}
+                    </div>
+                  </div>
+                </div>
 
-          <!-- FormKit Form -->
+                <!-- Gambar Calon -->
+                <div>
+                  <h4 class="font-medium mb-3">Gambar Calon</h4>
+                  <div class="border border-gray-200 rounded-md">
+                    <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
+                      <div class="flex items-center">
+                        <Icon name="heroicons:photo" class="text-blue-600 mr-2" size="20" />
+                        <span>{{ application.documentGambarCalon }}</span>
+                      </div>
+                      <rs-button size="sm" variant="primary-outline" @click="previewDocument('gambarCalon')">
+                        <Icon name="heroicons:eye" class="mr-1" size="16" />
+                        Lihat Dokumen
+                      </rs-button>
+                    </div>
+                    <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
+                      <div class="mb-2">
+                        <Icon name="heroicons:photo" size="48" class="text-gray-400" />
+                      </div>
+                      <p class="text-sm">Klik butang "Lihat Dokumen" untuk melihat Gambar Calon</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                      Dimuat naik oleh {{ application.candidate.namaCalonPenolongAmil }} pada {{ application.uploadDate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Maklumat Wakil Institusi -->
+          <div class="mb-6">
+            <h3 class="font-medium mb-3">Maklumat Wakil Institusi</h3>
+            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">No. Rujukan</p>
+                  <p class="font-medium">{{ application.referenceNo }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Tarikh Permohonan</p>
+                  <p class="font-medium">{{ application.applicationDate }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Masjid</p>
+                  <p class="font-medium">{{ application.masjidName }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Wakil Institusi</p>
+                  <p class="font-medium">{{ application.picName }}</p>
+                </div>
+                <div class="md:col-span-2">
+                  <p class="text-sm text-gray-500 mb-1">Catatan dari Wakil Institusi</p>
+                  <p class="text-gray-700">
+                    {{ application.notes || "Tiada catatan" }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Document Preview Section for Surat Sokongan -->
+              <div class="mt-6">
+                <h4 class="font-medium mb-3">Surat Sokongan</h4>
+                <div class="border border-gray-200 rounded-md">
+                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
+                    <div class="flex items-center">
+                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
+                      <span>{{ application.documentSuratSokongan }}</span>
+                    </div>
+                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('suratSokongan')">
+                      <Icon name="heroicons:eye" class="mr-1" size="16" />
+                      Lihat Dokumen
+                    </rs-button>
+                  </div>
+                  <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
+                    <div class="mb-2">
+                      <Icon name="heroicons:document" size="48" class="text-gray-400" />
+                    </div>
+                    <p class="text-sm">Klik butang "Lihat Dokumen" untuk melihat Surat Sokongan</p>
+                  </div>
+                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                    Dimuat naik oleh {{ application.picName }} pada {{ application.uploadDate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document Upload Section -->
           <FormKit
             type="form"
-            id="detailsForm"
+            id="documentUploadForm"
             @submit="handleSubmit"
             :actions="false"
           >
-            <!-- Step 1: Maklumat Peribadi -->
-            <div v-if="currentStep === 1">
-              <h3 class="text-lg font-medium mb-4">Maklumat Peribadi</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Nama Penuh -->
-                <FormKit
-                  type="text"
-                  name="namaPenuh"
-                  label="Nama Penuh"
-                  placeholder="Masukkan nama penuh"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Nama penuh diperlukan',
-                  }"
-                  :value="userData.namaPenuh"
-                />
-
-                <!-- No Kad Pengenalan -->
-                <FormKit
-                  type="text"
-                  name="noKadPengenalan"
-                  label="No. Kad Pengenalan"
-                  placeholder="Contoh: 901231012345"
-                  validation="required|length:12"
-                  :validation-messages="{
-                    required: 'No. kad pengenalan diperlukan',
-                    length: 'No. kad pengenalan mesti 12 digit',
-                  }"
-                  :value="userData.noKadPengenalan"
-                  disabled
-                />
-
-                <!-- Tarikh Lahir -->
-                <FormKit
-                  type="date"
-                  name="tarikhLahir"
-                  label="Tarikh Lahir"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Tarikh lahir diperlukan',
-                  }"
-                  :value="userData.tarikhLahir"
-                  @input="calculateAge"
-                />
-
-                <!-- Umur -->
-                <FormKit
-                  type="number"
-                  name="umur"
-                  label="Umur"
-                  validation="required|min:18"
-                  :validation-messages="{
-                    required: 'Umur diperlukan',
-                    min: 'Umur minimum adalah 18 tahun',
-                  }"
-                  :value="userData.umur"
-                  disabled
-                />
-
-                <!-- Jenis Pengenalan -->
-                <FormKit
-                  type="select"
-                  name="jenisPengenalan"
-                  label="Jenis Pengenalan"
-                  :options="[
-                    { label: 'MyKad', value: 'MYKAD' },
-                    { label: 'MyPR', value: 'MYPR' },
-                    { label: 'Lain-lain', value: 'OTHERS' },
-                  ]"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Jenis pengenalan diperlukan',
-                  }"
-                  :value="userData.jenisPengenalan"
-                />
-
-                <!-- Pekerjaan Semasa -->
-                <FormKit
-                  type="text"
-                  name="pekerjaanSemasa"
-                  label="Pekerjaan Semasa"
-                  placeholder="Masukkan pekerjaan semasa"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Pekerjaan semasa diperlukan',
-                  }"
-                  :value="userData.pekerjaanSemasa"
-                />
-
-                <!-- Kelulusan Akademik -->
-                <FormKit
-                  type="select"
-                  name="kelulusanAkademik"
-                  label="Kelulusan Akademik"
-                  :options="[
-                    { label: 'SPM', value: 'SPM' },
-                    { label: 'STPM/Diploma', value: 'STPM_DIPLOMA' },
-                    { label: 'Ijazah Sarjana Muda', value: 'DEGREE' },
-                    { label: 'Ijazah Sarjana', value: 'MASTERS' },
-                    { label: 'PhD', value: 'PHD' },
-                    { label: 'Lain-lain', value: 'OTHERS' },
-                  ]"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Kelulusan akademik diperlukan',
-                  }"
-                  :value="userData.kelulusanAkademik"
-                />
-
-                <!-- Emel -->
-                <FormKit
-                  type="email"
-                  name="emel"
-                  label="Emel"
-                  placeholder="contoh@email.com"
-                  validation="required|email"
-                  :validation-messages="{
-                    required: 'Emel diperlukan',
-                    email: 'Format emel tidak sah',
-                  }"
-                  :value="userData.emel"
-                />
-
-                <!-- No Telefon -->
-                <FormKit
-                  type="tel"
-                  name="noTelefon"
-                  label="No. Telefon"
-                  placeholder="Contoh: 0123456789"
-                  validation="required|length:10,12"
-                  :validation-messages="{
-                    required: 'No. telefon diperlukan',
-                    length: 'No. telefon mesti antara 10-12 digit',
-                  }"
-                  :value="userData.noTelefon"
-                />
-              </div>
-
-              <!-- Alamat -->
-              <div class="mt-6">
-                <h4 class="font-medium mb-3">Alamat</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormKit
-                    type="textarea"
-                    name="alamat"
-                    label="Alamat Lengkap"
-                    placeholder="Masukkan alamat lengkap"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Alamat diperlukan',
-                    }"
-                    :value="userData.alamat"
-                  />
-
-                  <div class="grid grid-cols-1 gap-6">
-                    <FormKit
-                      type="text"
-                      name="poskod"
-                      label="Poskod"
-                      placeholder="Contoh: 50000"
-                      validation="required|length:5"
-                      :validation-messages="{
-                        required: 'Poskod diperlukan',
-                        length: 'Poskod mesti 5 digit',
-                      }"
-                      :value="userData.poskod"
-                    />
-
-                    <FormKit
-                      type="select"
-                      name="negeri"
-                      label="Negeri"
-                      :options="[
-                        { label: 'Wilayah Persekutuan', value: 'WP' },
-                        { label: 'Selangor', value: 'SGR' },
-                        { label: 'Johor', value: 'JHR' },
-                        { label: 'Kedah', value: 'KDH' },
-                        { label: 'Kelantan', value: 'KTN' },
-                        { label: 'Melaka', value: 'MLK' },
-                        { label: 'Negeri Sembilan', value: 'NSN' },
-                        { label: 'Pahang', value: 'PHG' },
-                        { label: 'Pulau Pinang', value: 'PNG' },
-                        { label: 'Perak', value: 'PRK' },
-                        { label: 'Perlis', value: 'PLS' },
-                        { label: 'Sabah', value: 'SBH' },
-                        { label: 'Sarawak', value: 'SWK' },
-                        { label: 'Terengganu', value: 'TRG' },
-                      ]"
-                      validation="required"
-                      :validation-messages="{
-                        required: 'Negeri diperlukan',
-                      }"
-                      :value="userData.negeri"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 2: Maklumat Perkhidmatan -->
-            <div v-if="currentStep === 2">
-              <h3 class="text-lg font-medium mb-4">Maklumat Perkhidmatan</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Kategori Amil -->
-                <FormKit
-                  type="select"
-                  name="kategoriAmil"
-                  label="Kategori Amil"
-                  :options="[
-                    { label: 'Fitrah', value: 'FITRAH' },
-                    { label: 'Padi', value: 'PADI' },
-                    { label: 'Kariah', value: 'KARIAH' },
-                    { label: 'Komuniti', value: 'KOMUNITI' },
-                  ]"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Kategori amil diperlukan',
-                  }"
-                  :value="userData.kategoriAmil"
-                  @input="updateJawatanAmil"
-                />
-
-                <!-- Jawatan Amil Komuniti (if applicable) -->
-                <FormKit
-                  v-if="userData.kategoriAmil === 'KOMUNITI'"
-                  type="select"
-                  name="jawatanAmilKomuniti"
-                  label="Jawatan Amil Komuniti"
-                  :options="[
-                    { label: 'Pengerusi', value: 'PENGERUSI' },
-                    { label: 'Setiausaha', value: 'SETIAUSAHA' },
-                    { label: 'Bendahari', value: 'BENDAHARI' },
-                    { label: 'Ahli Jawatankuasa', value: 'AJK' },
-                  ]"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Jawatan amil komuniti diperlukan',
-                  }"
-                  :value="userData.jawatanAmilKomuniti"
-                />
-
-                <!-- Jawatan dalam masjid/surau -->
-                <FormKit
-                  type="select"
-                  name="jawatanMasjid"
-                  label="Jawatan Dalam Masjid/Surau"
-                  :options="[
-                    { label: 'Pengerusi', value: 'PENGERUSI' },
-                    { label: 'Imam', value: 'IMAM' },
-                    { label: 'Bilal', value: 'BILAL' },
-                    { label: 'Siak', value: 'SIAK' },
-                    { label: 'AJK', value: 'AJK' },
-                    { label: 'Kariah', value: 'KARIAH' },
-                    { label: 'Tiada', value: 'NONE' },
-                  ]"
-                  :value="userData.jawatanMasjid"
-                />
-
-                <!-- Nama Bank -->
-                <FormKit
-                  type="select"
-                  name="namaBank"
-                  label="Nama Bank"
-                  :options="[
-                    { label: 'Maybank', value: 'MAYBANK' },
-                    { label: 'CIMB', value: 'CIMB' },
-                    { label: 'Bank Islam', value: 'BIMB' },
-                    { label: 'RHB', value: 'RHB' },
-                    { label: 'Bank Rakyat', value: 'RAKYAT' },
-                    { label: 'Public Bank', value: 'PUBLIC' },
-                    { label: 'Hong Leong Bank', value: 'HLB' },
-                    { label: 'AmBank', value: 'AMBANK' },
-                    { label: 'Affin Bank', value: 'AFFIN' },
-                    { label: 'Bank Muamalat', value: 'MUAMALAT' },
-                  ]"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Nama bank diperlukan',
-                  }"
-                  :value="userData.namaBank"
-                />
-
-                <!-- No Akaun Bank -->
-                <FormKit
-                  type="text"
-                  name="noAkaunBank"
-                  label="No. Akaun Bank"
-                  placeholder="Masukkan nombor akaun bank"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'No. akaun bank diperlukan',
-                  }"
-                  :value="userData.noAkaunBank"
-                />
-              </div>
-
-              <!-- Maklumat Waris -->
-              <div class="mt-6">
-                <h4 class="font-medium mb-3">Maklumat Waris</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <!-- Nama Waris -->
-                  <FormKit
-                    type="text"
-                    name="namaWaris"
-                    label="Nama Waris"
-                    placeholder="Masukkan nama waris"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Nama waris diperlukan',
-                    }"
-                    :value="userData.namaWaris"
-                  />
-
-                  <!-- No Kad Pengenalan Waris -->
-                  <FormKit
-                    type="text"
-                    name="noKPWaris"
-                    label="No. Kad Pengenalan Waris"
-                    placeholder="Contoh: 901231012345"
-                    validation="required|length:12"
-                    :validation-messages="{
-                      required: 'No. kad pengenalan waris diperlukan',
-                      length: 'No. kad pengenalan mesti 12 digit',
-                    }"
-                    :value="userData.noKPWaris"
-                  />
-
-                  <!-- Hubungan dengan Waris -->
-                  <FormKit
-                    type="select"
-                    name="hubunganWaris"
-                    label="Hubungan dengan Waris"
-                    :options="[
-                      { label: 'Suami', value: 'HUSBAND' },
-                      { label: 'Isteri', value: 'WIFE' },
-                      { label: 'Anak', value: 'CHILD' },
-                      { label: 'Ibu', value: 'MOTHER' },
-                      { label: 'Bapa', value: 'FATHER' },
-                      { label: 'Adik-beradik', value: 'SIBLING' },
-                      { label: 'Lain-lain', value: 'OTHERS' },
-                    ]"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Hubungan dengan waris diperlukan',
-                    }"
-                    :value="userData.hubunganWaris"
-                  />
-
-                  <!-- No Telefon Waris -->
-                  <FormKit
-                    type="tel"
-                    name="noTelefonWaris"
-                    label="No. Telefon Waris"
-                    placeholder="Contoh: 0123456789"
-                    validation="required|length:10,12"
-                    :validation-messages="{
-                      required: 'No. telefon waris diperlukan',
-                      length: 'No. telefon mesti antara 10-12 digit',
-                    }"
-                    :value="userData.noTelefonWaris"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 3: Muatnaik Dokumen -->
-            <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">
-                Muatnaik Dokumen Sokongan
+            <div class="mb-6">
+              <h3 class="font-medium mb-3">
+                Muat Naik Surat Tapisan Jabatan Pengurusan Risiko
               </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Salinan Kad Pengenalan -->
-                <div class="border rounded-lg p-4">
-                  <h4 class="font-medium mb-2">Salinan Kad Pengenalan</h4>
-                  <p class="text-sm text-gray-600 mb-4">
-                    Sila muatnaik salinan depan dan belakang kad pengenalan
-                    anda.
-                  </p>
-                  <FormKit
-                    type="file"
-                    name="salinanKadPengenalan"
-                    label="Muatnaik Kad Pengenalan"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Salinan kad pengenalan diperlukan',
-                    }"
-                  />
-                  <div v-if="userData.salinanKadPengenalan" class="mt-2">
-                    <p class="text-sm text-gray-600">
-                      Fail dimuat naik: {{ userData.salinanKadPengenalan }}
-                    </p>
-                  </div>
-                </div>
 
-                <!-- Gambar -->
-                <div class="border rounded-lg p-4">
-                  <h4 class="font-medium mb-2">Gambar</h4>
-                  <p class="text-sm text-gray-600 mb-4">
-                    Sila muatnaik gambar berukuran pasport dengan latar belakang
-                    biru.
-                  </p>
-                  <FormKit
-                    type="file"
-                    name="gambar"
-                    label="Muatnaik Gambar"
-                    accept=".jpg,.jpeg,.png"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Gambar diperlukan',
-                    }"
-                  />
-                  <div v-if="userData.gambar" class="mt-2">
-                    <p class="text-sm text-gray-600">
-                      Fail dimuat naik: {{ userData.gambar }}
-                    </p>
-                  </div>
-                </div>
+              <FormKit
+                type="file"
+                name="suratPengesahan"
+                label="Surat Tapisan"
+                help="Format dokumen: PDF atau JPEG sahaja (Maksimum 5MB)"
+                accept=".pdf,.jpg,.jpeg"
+                validation="required|mime:application/pdf,image/jpeg,image/jpg|size:5000000"
+                :validation-messages="{
+                  required: 'Surat tapisan lantikan diperlukan',
+                  mime: 'Format fail tidak sah. Sila muat naik fail PDF atau JPEG sahaja',
+                  size: 'Saiz fail melebihi had maksimum 5MB',
+                }"
+              />
 
-                <!-- Penyata Bank -->
-                <div class="border rounded-lg p-4">
-                  <h4 class="font-medium mb-2">Penyata Bank</h4>
-                  <p class="text-sm text-gray-600 mb-4">
-                    Sila muatnaik penyata bank yang menunjukkan nama dan nombor
-                    akaun anda.
-                  </p>
-                  <FormKit
-                    type="file"
-                    name="penyataBank"
-                    label="Muatnaik Penyata Bank"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Penyata bank diperlukan',
-                    }"
-                  />
-                  <div v-if="userData.penyataBank" class="mt-2">
-                    <p class="text-sm text-gray-600">
-                      Fail dimuat naik: {{ userData.penyataBank }}
-                    </p>
-                  </div>
-                </div>
+              <div class="mt-4">
+                <FormKit
+                  type="checkbox"
+                  name="confirmationCheck"
+                  label="Saya mengesahkan bahawa dokumen yang dimuat naik telah disahkan dan ditandatangani oleh pihak masjid"
+                  validation="accepted"
+                  :validation-messages="{
+                    accepted: 'Sila sahkan dokumen telah disahkan',
+                  }"
+                />
               </div>
             </div>
 
-            <!-- Navigation Buttons -->
-            <div class="mt-8 flex justify-between">
+            <!-- Submit Buttons -->
+            <div class="mt-6 flex justify-end space-x-3">
+              <rs-button variant="outline" @click="goBack"> Kembali </rs-button>
               <rs-button
-                v-if="currentStep > 1"
-                variant="primary-outline"
-                @click="currentStep--"
+                variant="danger"
+                @click="handleReject"
               >
-                Kembali
+                Tolak
               </rs-button>
-              <div class="flex gap-3">
-                <rs-button
-                  v-if="currentStep < 3"
-                  variant="primary"
-                  @click="nextStep"
-                >
-                  Seterusnya
-                </rs-button>
-                <rs-button
-                  v-if="currentStep === 3"
-                  variant="primary"
-                  type="submit"
-                  :loading="isSubmitting"
-                  @click="submitForm"
-                >
-                  Simpan & Sahkan
-                </rs-button>
-              </div>
+              <rs-button
+                type="submit"
+                variant="primary"
+                :loading="isSubmitting"
+                @click="handleSubmit"
+              >
+                Telah Disahkan & Hantar ke JPPA
+              </rs-button>
             </div>
           </FormKit>
         </div>
       </template>
     </rs-card>
 
-    <!-- Success Modal -->
+    <!-- Success Modal for Submission -->
     <rs-modal
       v-model="showSuccessModal"
-      title="Maklumat Berjaya Disimpan"
+      title="Pengesahan Berjaya Dihantar"
       size="md"
       position="center"
     >
@@ -522,18 +239,102 @@
             />
           </div>
           <p class="mb-2">
-            Maklumat peribadi dan perkhidmatan anda telah berjaya disimpan.
+            Surat Tapisan Lantikan Penolong Amil berjaya dimuat naik dan dihantar.
           </p>
           <p class="text-gray-600">
-            Permohonan anda akan disemak oleh pihak pengurusan. Anda akan
-            dimaklumkan melalui e-mel mengenai status permohonan anda.
+            Status permohonan telah dikemaskini kepada "Menunggu Sokongan JPPA".
           </p>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-center">
           <rs-button variant="primary" @click="handleModalClose">
-            Terus ke skrin PIC masjid memuat naik dokumen sokongan
+            Tutup
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Success Modal for Rejection -->
+    <rs-modal
+      v-model="showRejectSuccessModal"
+      title="Permohonan Ditolak"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <Icon
+              name="material-symbols:check-circle"
+              class="text-red-500"
+              size="48"
+            />
+          </div>
+          <p class="mb-2">
+            Permohonan lantikan Penolong Amil telah ditolak.
+          </p>
+          <p class="text-gray-600">
+            Status permohonan telah dikemaskini kepada "Ditolak".
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center">
+          <rs-button variant="primary" @click="handleRejectModalClose">
+            Kembali ke Senarai
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmModal"
+      :title="isRejecting ? 'Pengesahan Tolak' : 'Pengesahan Hantar'"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div>
+          <p class="mb-4">
+            {{ isRejecting 
+              ? 'Adakah anda pasti untuk menolak permohonan lantikan Penolong Amil ini?'
+              : 'Adakah anda pasti untuk menghantar permohonan lantikan Penolong Amil ini kepada JPPA?'
+            }}
+          </p>
+          <p class="text-gray-600 text-sm">
+            {{ isRejecting 
+              ? 'Selepas ditolak, permohonan ini tidak boleh dihantar semula. Notifikasi akan dihantar kepada calon.'
+              : 'Selepas dihantar, anda tidak boleh lagi mengemaskini maklumat sehingga tindakan diambil oleh pihak JPPA.'
+            }}
+          </p>
+          <div class="mt-4">
+            <FormKit
+              type="textarea"
+              name="remarks"
+              :label="isRejecting ? 'Sebab Penolakan' : 'Catatan'"
+              :placeholder="isRejecting ? 'Masukkan sebab penolakan permohonan' : 'Masukkan catatan tambahan (jika ada)'"
+              validation="required"
+              :validation-messages="{
+                required: isRejecting ? 'Sila masukkan sebab penolakan' : 'Sila masukkan catatan',
+              }"
+              rows="3"
+              v-model="remarks"
+            />
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end space-x-3">
+          <rs-button variant="outline" @click="showConfirmModal = false">
+            Batal
+          </rs-button>
+          <rs-button 
+            :variant="isRejecting ? 'danger' : 'primary'" 
+            @click="confirmSubmission"
+          >
+            {{ isRejecting ? 'Tolak' : 'Hantar' }}
           </rs-button>
         </div>
       </template>
@@ -542,152 +343,171 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref } from "vue";
 
 definePageMeta({
-  title: "Lengkapkan Maklumat Penolong Amil",
-  description: "Lengkapkan maklumat peribadi dan perkhidmatan penolong amil",
+  title: "Pengesahan Lantikan Penolong Amil",
+  description:
+    "Pengesahan dan muat naik dokumen lantikan penolong amil oleh Wakil Institusi",
 });
 
 const breadcrumb = ref([
   {
     name: "Penolong Amil",
     type: "link",
-    path: "/BF-PA/PP/PA/01",
+    path: "/BF-PA/PP/PM/01",
   },
   {
-    name: "Maklumat Peribadi (Penolong Amil)",
+    name: "Pendaftaran",
+    type: "link",
+    path: "/BF-PA/PP/PM/01",
+  },
+  {
+    name: "Tapisan Lantikan",
     type: "current",
-    path: "/BF-PA/PP/PA/02",
+    path: "/BF-PA/PP/PM/02",
   },
 ]);
 
-// Steps configuration
-const steps = ref([
-  { id: 1, title: "Maklumat Peribadi" },
-  { id: 2, title: "Maklumat Perkhidmatan" },
-  { id: 3, title: "Muatnaik Dokumen" },
-]);
-
-const currentStep = ref(1);
-
-// User data state
-const userData = ref({
-  // Pre-filled from registration
-  namaPenuh: "",
-  noKadPengenalan: "",
-  emel: "",
-  kategoriAmil: "",
-
-  // New fields to complete
-  tarikhLahir: "",
-  umur: "",
-  jenisPengenalan: "MYKAD",
-  pekerjaanSemasa: "",
-  kelulusanAkademik: "",
-  noTelefon: "",
-  alamat: "",
-  poskod: "",
-  negeri: "",
-  jawatanAmilKomuniti: "",
-  jawatanMasjid: "",
-  namaBank: "",
-  noAkaunBank: "",
-  namaWaris: "",
-  noKPWaris: "",
-  hubunganWaris: "",
-  noTelefonWaris: "",
-  salinanKadPengenalan: "",
-  gambar: "",
-  penyataBank: "",
+// Mock candidate data (would be fetched from API in real app)
+const application = ref({
+  referenceNo: "PA-2025-0542",
+  applicationDate: "12/05/2025",
+  masjidName: "Masjid Wilayah Persekutuan",
+  picName: "Mohd Razak bin Ibrahim",
+  picPhone: "0123456789",
+  picEmail: "razak@masjid.gov.my",
+  uploadDate: "12/05/2025, 14:32",
+  documentSalinanKadPengenalan: "Salinan_Kad_Pengenalan.pdf",
+  documentGambarCalon: "Gambar_Calon.jpg",
+  documentSuratSokongan: "Surat_Sokongan.pdf",
+  candidate: {
+    namaCalonPenolongAmil: "Ahmad bin Abdullah",
+    noKadPengenalan: "901231012345",
+    emel: "ahmad@email.com",
+    noTelefon: "0123456789"
+  }
 });
+const candidateInfo = ref({
+  noKadPengenalan: "901231012345",
+  namaCalonPenolongAmil: "Ahmad bin Abdullah",
+  emel: "ahmad@email.com",
+  kategoriPenolongAmil: "FITRAH",
+  status: "Belum Disemak",
+});
+
 
 // Form submission state
 const isSubmitting = ref(false);
 const showSuccessModal = ref(false);
+const showRejectSuccessModal = ref(false);
+const showConfirmModal = ref(false);
+const uploadedDocument = ref(null);
+const isRejecting = ref(false);
+const remarks = ref('');
 
-// Fetch pre-filled data on component mount
-onMounted(async () => {
-  try {
-    // In a real app, this would fetch data from an API
-    // Simulating API call with mock data
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Mock pre-filled data from registration
-    userData.value = {
-      ...userData.value,
-      namaPenuh: "Muhammad Aiman bin Abdullah",
-      noKadPengenalan: "901231012345",
-      emel: "aiman@email.com",
-      kategoriAmil: "FITRAH",
-    };
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-  }
+// Get current masjid info (would be fetched from API/store in real app)
+const currentMasjid = ref({
+  namaMasjid: "Masjid Wilayah Persekutuan",
+  kodMasjid: "MSJ-KUL-001",
+  namaPIC: "Mohd Razak bin Ibrahim",
+  emel: "razak@masjid.gov.my",
+  noTelefon: "013-9876543",
 });
 
-// Calculate age based on date of birth
-const calculateAge = (date) => {
-  if (!date) return;
-
-  const birthDate = new Date(date);
-  const today = new Date();
-
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDiff = today.getMonth() - birthDate.getMonth();
-
-  if (
-    monthDiff < 0 ||
-    (monthDiff === 0 && today.getDate() < birthDate.getDate())
-  ) {
-    age--;
-  }
-
-  userData.value.umur = age;
+// Helper functions
+const getCategoryLabel = (value) => {
+  const categories = {
+    FITRAH: "Fitrah",
+    PADI: "Padi",
+    KARIAH: "Kariah",
+    KOMUNITI: "Komuniti",
+  };
+  return categories[value] || value;
 };
 
-// Update jawatan fields based on kategori
-const updateJawatanAmil = (value) => {
-  userData.value.kategoriAmil = value;
-  if (value !== "KOMUNITI") {
-    userData.value.jawatanAmilKomuniti = "";
-  }
+const getStatusClass = (status) => {
+  const statusClasses = {
+    "Belum Disemak": "bg-yellow-100 text-yellow-800",
+    "Menunggu Sokongan JPPA": "bg-blue-100 text-blue-800",
+    Diluluskan: "bg-green-100 text-green-800",
+    Ditolak: "bg-red-100 text-red-800",
+  };
+  return statusClasses[status] || "bg-gray-100 text-gray-800";
 };
 
-// Form navigation
-const handleStepChange = (step) => {
-  currentStep.value = step;
+// Form submission handlers
+const handleSubmit = async (formData) => {
+  // Show confirmation modal before proceeding
+  isRejecting.value = false;
+  showConfirmModal.value = true;
+  uploadedDocument.value = formData;
 };
 
-const nextStep = () => {
-  if (currentStep.value < steps.value.length) {
-    currentStep.value++;
-  }
+const handleReject = () => {
+  isRejecting.value = true;
+  showConfirmModal.value = true;
 };
 
-// Form submission
-const submitForm = async () => {
+const confirmSubmission = async () => {
   try {
     isSubmitting.value = true;
+    showConfirmModal.value = false;
 
-    // Simulate API call
-    // await new Promise((resolve) => setTimeout(resolve, 1500));
+    if (isRejecting.value) {
+      // Handle rejection
+      console.log("Rejected application:", {
+        remarks: remarks.value,
+        timestamp: new Date().toISOString(),
+      });
+      
+      // Update candidate status
+      candidateInfo.value.status = "Ditolak";
+      
+      // Show rejection success modal
+      showRejectSuccessModal.value = true;
+    } else {
+      // Handle submission
+      console.log("Submitted document data:", {
+        ...uploadedDocument.value,
+        remarks: remarks.value,
+        masjidId: currentMasjid.value.kodMasjid,
+        namaMasjid: currentMasjid.value.namaMasjid,
+        timestamp: new Date().toISOString(),
+      });
 
-    console.log("Submitted form data:", userData.value);
+      // Update candidate status
+      candidateInfo.value.status = "Menunggu Sokongan JPPA";
 
-    // Show success modal
-    showSuccessModal.value = true;
+      // Show submission success modal
+      showSuccessModal.value = true;
+    }
   } catch (error) {
-    console.error("Error submitting form:", error);
-    alert("Ralat semasa menyimpan maklumat. Sila cuba lagi.");
+    console.error("Error processing form:", error);
+    alert("Ralat semasa memproses permohonan. Sila cuba lagi.");
   } finally {
     isSubmitting.value = false;
   }
 };
 
 // Navigation and modal handlers
+const goBack = () => {
+  navigateTo("/BF-PA/PP/PD");
+};
+
 const handleModalClose = () => {
   showSuccessModal.value = false;
   navigateTo("/BF-PA/PP/PD/03");
 };
+
+const handleRejectModalClose = () => {
+  showRejectSuccessModal.value = false;
+  navigateTo("/BF-PA/PP/PD");
+};
+
+// Update the script section to include new document preview function
+const previewDocument = (documentType) => {
+  // TODO: Implement document preview logic based on documentType
+  console.log(`Previewing ${documentType} document`)
+}
 </script>

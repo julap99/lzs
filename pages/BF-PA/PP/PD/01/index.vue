@@ -21,7 +21,6 @@
           <FormKit
             type="form"
             id="registrationForm"
-            @submit="handleSubmit"
             :actions="false"
           >
             <!-- Dynamic Forms Container -->
@@ -228,25 +227,6 @@
                   }"
                 />
               </div>
-
-              <!-- Supporting Documents Upload -->
-              <div class="mt-6 p-4 border rounded-lg">
-                <h3 class="text-lg font-semibold mb-4">Surat Sokongan</h3>
-                <FormKit
-                  type="file"
-                  name="suratSokongan"
-                  label="Muat Naik Surat Sokongan"
-                  accept=".pdf,.doc,.docx"
-                  multiple
-                  help="Format yang diterima: PDF, DOC, DOCX"
-                  :classes="{
-                    fileItem: 'flex items-center justify-between p-2 bg-white rounded border',
-                    fileRemove: 'text-red-500 hover:text-red-700 p-1',
-                    fileRemoveIcon: 'mdi:delete',
-                    fileRemoveText: 'sr-only'
-                  }"
-                />
-              </div>
             </div>
 
             <!-- Add Form Button -->
@@ -262,12 +242,38 @@
               </rs-button>
             </div>
 
+            <!-- Supporting Documents Upload -->
+            <div class="mt-6 p-4 border rounded-lg">
+              <h3 class="text-lg font-semibold mb-4">Surat Sokongan</h3>
+              <FormKit
+                type="file"
+                name="suratSokongan"
+                label="Muat Naik Surat Sokongan"
+                accept=".pdf,.doc,.docx"
+                multiple
+                help="Format yang diterima: PDF, DOC, DOCX"
+                :classes="{
+                  fileItem: 'flex items-center justify-between p-2 bg-white rounded border',
+                  fileRemove: 'text-red-500 hover:text-red-700 p-1',
+                  fileRemoveIcon: 'mdi:delete',
+                  fileRemoveText: 'sr-only'
+                }"
+              />
+            </div>
+
             <!-- Submit Button -->
             <div class="mt-6 flex justify-end space-x-3">
               <rs-button
-                type="submit"
+                type="button"
+                variant="primary-outline"
+                @click="goBack"
+              >
+                Kembali
+              </rs-button>
+              <rs-button
+                type="button"
                 variant="primary"
-                :loading="isSubmitting"
+                @click="handleHantar"
               >
                 Hantar
               </rs-button>
@@ -454,36 +460,19 @@ const getKomunitiInstitusiOptions = (jenis) => {
   return komunitiInstitusiOptions[jenis] || [];
 };
 
-// Form submission handler
-const handleSubmit = async (formData) => {
-  try {
-    isSubmitting.value = true;
-
-    // Process form data
-    const processedData = {
-      forms: formData.forms.map(form => ({
-        ...form,
-        masjidId: currentMasjid.value.kodMasjid,
-        namaMasjid: currentMasjid.value.namaMasjid,
-      })),
-      suratSokongan: formData.suratSokongan,
-    };
-
-    console.log("Submitted form data:", processedData);
-
-    // Show success modal after submission
-    showSuccessModal.value = true;
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    alert("Ralat semasa pendaftaran. Sila cuba lagi.");
-  } finally {
-    isSubmitting.value = false;
-  }
-};
-
 // Navigation and modal handlers
 const handleModalClose = () => {
   showSuccessModal.value = false;
+  navigateTo("/BF-PA/PP/PD/02");
+};
+
+const goBack = () => {
+  navigateTo("/BF-PA/PP/PD");
+};
+
+// Simple function to handle Hantar button click
+const handleHantar = () => {
+  window.alert("Pendaftaran Calon Penolong Amil telah berjaya dihantar");
   navigateTo("/BF-PA/PP/PD/02");
 };
 
