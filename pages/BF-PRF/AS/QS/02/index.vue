@@ -212,22 +212,6 @@
 
                 <FormKit
                   type="select"
-                  name="assistanceType"
-                  label="Jenis Bantuan (jika login as kaunter, option yang akan dilihat hanya Bencana)"
-                  validation="required"
-                  :options="[
-                    { label: 'Bencana', value: 'bencana' },
-                    { label: 'Express', value: 'express' }
-                  ]"
-                  placeholder="Pilih jenis bantuan"
-                  v-model="formData.personalInfo.assistanceType"
-                  :validation-messages="{
-                    required: 'Jenis bantuan adalah wajib'
-                  }"
-                />
-
-                <FormKit
-                  type="select"
                   name="maritalStatus"
                   label="Status Perkahwinan"
                   validation="required"
@@ -242,6 +226,22 @@
                   v-model="formData.personalInfo.maritalStatus"
                   :validation-messages="{
                     required: 'Status perkahwinan adalah wajib'
+                  }"
+                />
+
+                <FormKit
+                  type="select"
+                  name="assistanceType"
+                  label="Jenis Bantuan (jika login as kaunter, option yang akan dilihat hanya Bencana)"
+                  validation="required"
+                  :options="[
+                    { label: 'Bencana', value: 'bencana' },
+                    { label: 'Express', value: 'express' }
+                  ]"
+                  placeholder="Pilih jenis bantuan"
+                  v-model="formData.personalInfo.assistanceType"
+                  :validation-messages="{
+                    required: 'Jenis bantuan adalah wajib'
                   }"
                 />
 
