@@ -93,22 +93,97 @@
                 />
 
                 <!-- Kategori Penolong Amil -->
-                <FormKit
-                  type="select"
-                  :name="`forms.${index}.kategoriPenolongAmil`"
-                  label="Kategori Penolong Amil"
-                  placeholder="Pilih kategori"
-                  validation="required"
-                  :options="[
-                    { label: 'Fitrah', value: 'FITRAH' },
-                    { label: 'Padi', value: 'PADI' },
-                    { label: 'Kariah', value: 'KARIAH' },
-                    { label: 'Komuniti', value: 'KOMUNITI' },
-                  ]"
-                  :validation-messages="{
-                    required: 'Kategori diperlukan',
-                  }"
-                />
+                <div class="md:col-span-2">
+                  <h4 class="text-sm font-medium mb-2">Kategori Penolong Amil</h4>
+                  <div class="space-y-2">
+                    <!-- Fitrah -->
+                    <FormKit
+                      type="checkbox"
+                      :name="`forms.${index}.kategori.fitrah`"
+                      value="FITRAH"
+                      label="Fitrah"
+                      :label-class="'ml-2'"
+                      :input-class="'formkit-checkbox'"
+                      v-model="forms[index].kategori.fitrah"
+                    />
+
+                    <!-- Padi -->
+                    <FormKit
+                      type="checkbox"
+                      :name="`forms.${index}.kategori.padi`"
+                      value="PADI"
+                      label="Padi"
+                      :label-class="'ml-2'"
+                      :input-class="'formkit-checkbox'"
+                      v-model="forms[index].kategori.padi"
+                    />
+
+                    <!-- Kariah -->
+                    <div class="space-y-2">
+                      <FormKit
+                        type="checkbox"
+                        :name="`forms.${index}.kategori.kariah`"
+                        value="KARIAH"
+                        label="Kariah"
+                        :label-class="'ml-2'"
+                        :input-class="'formkit-checkbox'"
+                        v-model="forms[index].kategori.kariah"
+                      />
+                      <div v-if="forms[index].kategori.kariah" class="ml-6">
+                        <FormKit
+                          type="select"
+                          :name="`forms.${index}.kariah.institusi`"
+                          label="Institusi"
+                          placeholder="Pilih institusi"
+                          :options="kariahInstitusiOptions"
+                          validation="required"
+                          :validation-messages="{
+                            required: 'Sila pilih institusi',
+                          }"
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Komuniti -->
+                    <div class="space-y-2">
+                      <FormKit
+                        type="checkbox"
+                        :name="`forms.${index}.kategori.komuniti`"
+                        value="KOMUNITI"
+                        label="Komuniti"
+                        :label-class="'ml-2'"
+                        :input-class="'formkit-checkbox'"
+                        v-model="forms[index].kategori.komuniti"
+                      />
+                      <div v-if="forms[index].kategori.komuniti" class="ml-6 space-y-4">
+                        <FormKit
+                          type="select"
+                          :name="`forms.${index}.komuniti.jenis`"
+                          label="Jenis"
+                          placeholder="Pilih jenis"
+                          :options="komunitiJenisOptions"
+                          validation="required"
+                          v-model="forms[index].komuniti.jenis"
+                          :validation-messages="{
+                            required: 'Sila pilih jenis',
+                          }"
+                        />
+                        <FormKit
+                          v-if="forms[index].komuniti.jenis"
+                          type="select"
+                          :name="`forms.${index}.komuniti.institusi`"
+                          label="Institusi"
+                          placeholder="Pilih institusi"
+                          :options="getKomunitiInstitusiOptions(forms[index].komuniti.jenis)"
+                          validation="required"
+                          :validation-messages="{
+                            required: 'Sila pilih institusi',
+                          }"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- Document Upload Section -->
@@ -126,6 +201,12 @@
                     required: 'Sila muat naik salinan kad pengenalan',
                   }"
                   help="Format yang diterima: JPG, JPEG, PNG, PDF"
+                  :classes="{
+                    fileItem: 'flex items-center justify-between p-2 bg-white rounded border',
+                    fileRemove: 'text-red-500 hover:text-red-700 p-1',
+                    fileRemoveIcon: 'mdi:delete',
+                    fileRemoveText: 'sr-only'
+                  }"
                 />
 
                 <!-- Gambar Calon Upload -->
@@ -139,6 +220,31 @@
                     required: 'Sila muat naik gambar calon',
                   }"
                   help="Format yang diterima: JPG, JPEG, PNG"
+                  :classes="{
+                    fileItem: 'flex items-center justify-between p-2 bg-white rounded border',
+                    fileRemove: 'text-red-500 hover:text-red-700 p-1',
+                    fileRemoveIcon: 'mdi:delete',
+                    fileRemoveText: 'sr-only'
+                  }"
+                />
+              </div>
+
+              <!-- Supporting Documents Upload -->
+              <div class="mt-6 p-4 border rounded-lg">
+                <h3 class="text-lg font-semibold mb-4">Surat Sokongan</h3>
+                <FormKit
+                  type="file"
+                  name="suratSokongan"
+                  label="Muat Naik Surat Sokongan"
+                  accept=".pdf,.doc,.docx"
+                  multiple
+                  help="Format yang diterima: PDF, DOC, DOCX"
+                  :classes="{
+                    fileItem: 'flex items-center justify-between p-2 bg-white rounded border',
+                    fileRemove: 'text-red-500 hover:text-red-700 p-1',
+                    fileRemoveIcon: 'mdi:delete',
+                    fileRemoveText: 'sr-only'
+                  }"
                 />
               </div>
             </div>
@@ -154,19 +260,6 @@
                 <Icon name="material-symbols:add-circle" class="mr-2" />
                 Tambah Calon
               </rs-button>
-            </div>
-
-            <!-- Supporting Documents Upload -->
-            <div class="mt-6 p-4 border rounded-lg">
-              <h3 class="text-lg font-semibold mb-4">Surat Sokongan</h3>
-              <FormKit
-                type="file"
-                name="suratSokongan"
-                label="Muat Naik Surat Sokongan"
-                accept=".pdf,.doc,.docx"
-                multiple
-                help="Format yang diterima: PDF, DOC, DOCX"
-              />
             </div>
 
             <!-- Submit Button -->
@@ -222,7 +315,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 definePageMeta({
   title: "Pra Pendaftaran Calon Penolong Amil",
@@ -248,7 +341,21 @@ const breadcrumb = ref([
 ]);
 
 // Form management
-const forms = ref([{}]);
+const forms = ref([{
+  kategori: {
+    fitrah: false,
+    padi: false,
+    kariah: false,
+    komuniti: false
+  },
+  kariah: {
+    institusi: ''
+  },
+  komuniti: {
+    jenis: '',
+    institusi: ''
+  }
+}]);
 const isSubmitting = ref(false);
 const showSuccessModal = ref(false);
 
@@ -263,12 +370,88 @@ const currentMasjid = ref({
 
 // Add new form
 const addForm = () => {
-  forms.value.push({});
+  forms.value.push({
+    kategori: {
+      fitrah: false,
+      padi: false,
+      kariah: false,
+      komuniti: false
+    },
+    kariah: {
+      institusi: ''
+    },
+    komuniti: {
+      jenis: '',
+      institusi: ''
+    }
+  });
 };
 
 // Remove form
 const removeForm = (index) => {
   forms.value.splice(index, 1);
+};
+
+// Kariah Institusi Options
+const kariahInstitusiOptions = [
+  { label: 'Masjid Kariah', value: 'MASJID_KARIAH' },
+  { label: 'Masjid Al-Khairiyah', value: 'MASJID_AL_KHAIRIYAH' },
+  { label: 'Taman Seri Gombak', value: 'TAMAN_SERI_GOMBAK' },
+  { label: 'Masjid Damansara Perdana', value: 'MASJID_DAMANSARA_PERDANA' },
+  { label: 'Masjid Bandar Utama', value: 'MASJID_BANDAR_UTAMA' },
+  { label: 'Batang Kali', value: 'BATANG_KALI' },
+  { label: 'Masjid Kg Delek', value: 'MASJID_KG_DELEK' },
+  { label: 'Masjid Bandar Sultan Suleiman', value: 'MASJID_BANDAR_SULTAN_SULEIMAN' },
+  { label: 'Masjid As-Saadah', value: 'MASJID_AS_SAADAH' },
+  { label: 'Bandar Sultan Suleiman', value: 'BANDAR_SULTAN_SULEIMAN' },
+  { label: 'Masjid Bandar Seri Putra', value: 'MASJID_BANDAR_SERI_PUTRA' },
+  { label: 'Masjid Sultan Haji Ahmad Shah', value: 'MASJID_SULTAN_HAJI_AHMAD_SHAH' },
+  { label: 'UIAM', value: 'UIAM' },
+  { label: 'Masjid Puncak Alam', value: 'MASJID_PUNCAK_ALAM' },
+  { label: 'Masjid Saujana KLIA', value: 'MASJID_SAUJANA_KLIA' },
+];
+
+// Komuniti Jenis Options
+const komunitiJenisOptions = [
+  { label: 'Pembangunan Sosial', value: 'PEMBANGUNAN_SOSIAL' },
+  { label: 'Pembangunan Ekonomi', value: 'PEMBANGUNAN_EKONOMI' },
+  { label: 'Pembangunan Pendidikan', value: 'PEMBANGUNAN_PENDIDIKAN' },
+  { label: 'Pembangunan Insan', value: 'PEMBANGUNAN_INSAN' },
+  { label: 'Pembangunan Institusi Agama', value: 'PEMBANGUNAN_INSTITUSI_AGAMA' },
+];
+
+// Komuniti Institusi Options by Jenis
+const komunitiInstitusiOptions = {
+  PEMBANGUNAN_SOSIAL: [
+    { label: 'Masjid dan Surau', value: 'MASJID_DAN_SURAU' },
+    { label: 'Pusat Khidmat Masyarakat', value: 'PUSAT_KHIDMAT_MASYARAKAT' },
+    { label: 'Pertubuhan Bukan Kerajaan (NGO)', value: 'NGO' },
+  ],
+  PEMBANGUNAN_EKONOMI: [
+    { label: 'Pusat Latihan dan Kemahiran', value: 'PUSAT_LATIHAN_KEMAHIRAN' },
+    { label: 'Koperasi Asnaf', value: 'KOPERASI_ASNAF' },
+    { label: 'Program Usahawan Asnaf', value: 'PROGRAM_USAHAWAN_ASNAF' },
+  ],
+  PEMBANGUNAN_PENDIDIKAN: [
+    { label: 'Sekolah Agama Rakyat', value: 'SEKOLAH_AGAMA_RAKYAT' },
+    { label: 'Sekolah Tahfiz', value: 'SEKOLAH_TAHFIZ' },
+    { label: 'Sekolah Integrasi Islam', value: 'SEKOLAH_INTEGRASI_ISLAM' },
+  ],
+  PEMBANGUNAN_INSAN: [
+    { label: 'Pusat Pemulihan Dadah', value: 'PUSAT_PEMULIHAN_DADAH' },
+    { label: 'Pusat Perlindungan Wanita dan Kanak-Kanak', value: 'PUSAT_PERLINDUNGAN' },
+    { label: 'Pusat Khidmat Psikososial', value: 'PUSAT_KHIDMAT_PSIKOSOSIAL' },
+  ],
+  PEMBANGUNAN_INSTITUSI_AGAMA: [
+    { label: 'Sekolah Agama dan Pendidikan', value: 'SEKOLAH_AGAMA_PENDIDIKAN' },
+    { label: 'Maahad Tahfiz', value: 'MAAHAD_TAHFIZ' },
+    { label: 'Sekolah Rendah Integrasi Islam', value: 'SEKOLAH_RENDAH_INTEGRASI' },
+  ],
+};
+
+// Helper function to get Komuniti Institusi options based on selected Jenis
+const getKomunitiInstitusiOptions = (jenis) => {
+  return komunitiInstitusiOptions[jenis] || [];
 };
 
 // Form submission handler
@@ -303,4 +486,72 @@ const handleModalClose = () => {
   showSuccessModal.value = false;
   navigateTo("/BF-PA/PP/PD/02");
 };
+
+// Watch for isSubmitting changes
+watch(isSubmitting, (newValue) => {
+  if (!newValue && showSuccessModal.value) {
+    navigateTo("/BF-PA/PP/PD/02");
+  }
+});
 </script>
+
+<style scoped>
+.custom-checkbox-group {
+  :deep(.formkit-options) {
+    @apply space-y-3;
+  }
+
+  :deep(.formkit-option) {
+    @apply flex items-center hover:text-primary transition-colors duration-200;
+  }
+
+  :deep(.formkit-inner) {
+    @apply relative flex items-center justify-center h-5 w-5 mr-3 rounded-md 
+           border-2 border-gray-300 bg-white transition-all duration-200 
+           focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30 
+           hover:border-primary/60;
+  }
+
+  :deep(input[type="checkbox"]) {
+    @apply absolute opacity-0 h-0 w-0;
+  }
+
+  :deep(input[type="checkbox"]:checked + .formkit-inner) {
+    @apply bg-primary border-primary;
+  }
+
+  :deep(input[type="checkbox"]:checked + .formkit-inner::after) {
+    content: "";
+    @apply absolute block w-1.5 h-3 border-solid border-white border-r-2 border-b-2 transform rotate-45 -translate-y-px;
+  }
+
+  :deep(input[type="checkbox"]:focus + .formkit-inner) {
+    @apply ring-2 ring-primary/30;
+  }
+
+  :deep(input[type="checkbox"]:disabled + .formkit-inner) {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  :deep(input[type="checkbox"]:disabled ~ .formkit-label) {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  :deep(.formkit-label) {
+    @apply text-sm font-medium cursor-pointer select-none;
+  }
+}
+
+/* Hide the remove text and show only the icon */
+:deep(.formkit-file-remove-text) {
+  display: none !important;
+}
+
+:deep(.formkit-file-remove) {
+  @apply flex items-center justify-center;
+}
+
+:deep(.formkit-file-remove-icon) {
+  @apply text-xl;
+}
+</style>

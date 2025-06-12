@@ -10,42 +10,6 @@
       </template>
 
       <template #body>
-        <!-- Info Details Section -->
-        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-          <h3 class="text-lg font-medium mb-4">Keterangan Aktiviti</h3>
-          <p>Semak Kewujudan Profil Asnaf</p>
-
-          <h4 class="text-md font-medium mt-3 mb-2">Kaedah/Operasi:</h4>
-          <ol class="list-decimal ml-5 space-y-1">
-            <li>
-              Pemohon akan memasukkan maklumat No Kad Pengenalan (baru) / No Polis / No
-              Tentera / No Pasport semasa login
-            </li>
-            <li>
-              NAS akan menyemak kewujudan profil dengan menggunakan maklumat yang
-              dimasukkan
-            </li>
-          </ol>
-        </div>
-
-        <!-- Success Message - Only shown after search with results -->
-        <div v-if="searchCompleted && profileFound" class="mb-6">
-          <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:check-circle" class="text-green-500" size="1.5rem" />
-            <p class="text-green-600 font-medium">Profil ditemui dalam sistem</p>
-          </div>
-        </div>
-
-        <!-- Not Found Message -->
-        <div v-if="searchCompleted && !profileFound" class="mb-6">
-          <div class="flex items-center gap-2 mb-4">
-            <Icon name="mdi:alert-circle" class="text-amber-500" size="1.5rem" />
-            <p class="text-amber-600 font-medium">
-              Tiada profil ditemui untuk ID yang dimasukkan
-            </p>
-          </div>
-        </div>
-
         <!-- Form Section -->
         <div class="mb-6">
           <h3 class="text-lg font-medium mb-4">Carian Profil</h3>
@@ -100,6 +64,52 @@
             </div>
           </FormKit>
         </div>
+
+        <!-- Search Result Section -->
+        <div v-if="searchCompleted" class="mt-6">
+          <rs-card
+            :variant="profileExists ? 'success' : 'warning'"
+            class="mb-4"
+          >
+            <template #body>
+              <div class="flex items-center">
+                <div class="mr-4">
+                  <Icon
+                    :name="
+                      profileExists ? 'mdi:check-circle' : 'mdi:alert-circle'
+                    "
+                    size="2rem"
+                    :class="profileExists ? 'text-green-600' : 'text-amber-600'"
+                  />
+                </div>
+                <div>
+                  <h3 class="text-lg font-medium">
+                    {{
+                      profileExists ? "Profil Ditemui" : "Profil Tidak Ditemui"
+                    }}
+                  </h3>
+                  <p class="text-sm mt-1">
+                    {{
+                      profileExists
+                        ? "Profil bagi ID yang dimasukkan telah dijumpai dalam sistem."
+                        : "Tiada profil ditemui bagi ID yang dimasukkan."
+                    }}
+                  </p>
+                </div>
+              </div>
+            </template>
+            <template #footer>
+              <div class="flex justify-end">
+                <rs-button
+                  variant="primary"
+                  @click="navigateNext"
+                >
+                  {{ profileExists ? "Kemaskini Profil" : "Pendaftaran Baru" }}
+                </rs-button>
+              </div>
+            </template>
+          </rs-card>
+        </div>
       </template>
     </rs-card>
   </div>
@@ -113,30 +123,28 @@ definePageMeta({
   title: "Carian Profil",
 });
 
-const route = useRoute();
-const router = useRouter();
 const processing = ref(false);
 const searchCompleted = ref(false);
-const profileFound = ref(false);
+const profileExists = ref(false);
 
 const breadcrumb = ref([
   {
-    name: "Dashboard",
+    name: "Profiling",
     type: "link",
-    path: "/dashboard",
+    path: "/BF-PRF/AS/FR/01",
   },
   {
     name: "Carian Profil",
     type: "current",
-    path: "/carian-profil",
+    path: "/BF-PRF/AS/FR/01",
   },
 ]);
 
 const idTypeOptions = [
   { label: "No. Kad Pengenalan", value: "ic" },
   { label: "No. Polis", value: "police" },
-  { label: "No. Tentera", value: "military" },
-  { label: "No. Pasport", value: "passport" },
+  { label: "No. Tentera", value: "army" },
+  { label: "No. Passport", value: "passport" },
 ];
 
 const formData = ref({
@@ -144,56 +152,16 @@ const formData = ref({
   idNumber: "",
 });
 
-// Sample profile data - in real app, this would come from API
-const profileData = ref({
-  name: "Ahmad bin Abdullah",
-  idNumber: "880101-12-1234",
-  address: "No. 123, Jalan Masjid, Kampung Baru, 50300 Kuala Lumpur",
-  phone: "012-3456789",
-  status: "Aktif",
-  category: "Fakir",
-});
-
 const getPlaceholder = () => {
   switch (formData.value.idType) {
     case "ic":
       return "Contoh: 880101121234";
-    case "police":
-      return "Masukkan No. Polis";
-    case "military":
-      return "Masukkan No. Tentera";
-    case "passport":
-      return "Masukkan No. Pasport";
+    case "org":
+      return "Masukkan No. Organisasi";
+    case "rujukan":
+      return "Masukkan No. Rujukan";
     default:
       return "Sila pilih jenis ID dahulu";
-  }
-};
-
-const getIdLabel = () => {
-  switch (formData.value.idType) {
-    case "ic":
-      return "No. Kad Pengenalan";
-    case "police":
-      return "No. Polis";
-    case "military":
-      return "No. Tentera";
-    case "passport":
-      return "No. Pasport";
-    default:
-      return "ID";
-  }
-};
-
-const getStatusClass = () => {
-  switch (profileData.value.status) {
-    case "Aktif":
-      return "bg-green-100 text-green-800";
-    case "Tidak Aktif":
-      return "bg-red-100 text-red-800";
-    case "Dalam Semakan":
-      return "bg-amber-100 text-amber-800";
-    default:
-      return "bg-gray-100 text-gray-800";
   }
 };
 
@@ -213,19 +181,25 @@ const validateAndSearch = () => {
 
 const performSearch = async () => {
   processing.value = true;
+  searchCompleted.value = false;
 
-  // Simulate API call to search for profile
+  // Simulate API call to search for profile with randomized result
   setTimeout(() => {
     processing.value = false;
+    // Randomize whether profile exists or not (50% chance)
+    profileExists.value = Math.random() >= 0.5;
     searchCompleted.value = true;
-
-    navigateTo(`/BF-PRF/AS/QS/02`);
   }, 1000);
 };
 
-const viewFullProfile = () => {
-  // Navigate to full profile page (in real app)
-  router.push(`/profil/${formData.value.idType}/${formData.value.idNumber}`);
+const navigateNext = () => {
+  if (profileExists.value) {
+    // Navigate to update profile page
+    navigateTo("/BF-PRF/AS/UP/02");
+  } else {
+    // Navigate to new registration page
+    navigateTo("/BF-PRF/AS/QS/02");
+  }
 };
 
 const handleSubmit = (data) => {

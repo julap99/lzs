@@ -633,7 +633,56 @@
               @click="prevStepA"
               >Kembali</rs-button
             >
-            <rs-button type="submit" variant="primary" @click="nextSection"
+            <rs-button type="submit" variant="primary" @click="nextStepA"
+              >Seterusnya ke Maklumat Penolong Amil</rs-button
+            >
+          </div>
+        </FormKit>
+
+        <!-- Section H Form -->
+        <FormKit
+          v-if="currentStepA === 8"
+          type="form"
+          @submit="submitForm"
+          :actions="false"
+          id="sectionH"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            H. Maklumat Penolong Amil (login sebagai penolong amil)
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="nama_penolong_amil"
+              label="51. Nama Penolong Amil"
+              validation="required"
+            />
+
+            <FormKit
+              type="select"
+              name="jenis_permohonan"
+              label="52. Jenis Permohonan"
+              :options="['Baru', 'Review']"
+              validation="required"
+            />
+
+            <FormKit
+              type="date"
+              name="tarikh_proses"
+              label="53. Tarikh Proses"
+              validation="required"
+            />
+          </div>
+
+          <div class="flex justify-end gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <rs-button type="submit" variant="primary" @click="nextStepA"
               >Seterusnya</rs-button
             >
           </div>
@@ -1293,7 +1342,7 @@ const processing = ref(false);
 const currentSection = ref(1);
 
 const currentStepA = ref(1);
-const totalStepsA = 7;
+const totalStepsA = 8;
 const healthStatus = ref("");
 
 const stepsA = [
@@ -1304,6 +1353,7 @@ const stepsA = [
   { id: 5, label: "Pinjaman" },
   { id: 6, label: "Pemilikan" },
   { id: 7, label: "Pengesahan" },
+  { id: 8, label: "Penolong Amil" },
 ];
 
 const currentStepB = ref(1);
