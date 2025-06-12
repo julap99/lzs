@@ -767,6 +767,13 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
+            title: "Mohon Bantuan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/PB/mohon-bantuan",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Bantuan Bulk",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/PB/BP/01",

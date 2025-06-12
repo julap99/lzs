@@ -4,6 +4,8 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 const showConfirmModal = ref(false);
+const showRegistrationModal = ref(false);
+const registrationType = ref('');
 
 definePageMeta({
   title: "Hantar Aduan",
@@ -166,7 +168,29 @@ const handleSubmit = () => {
     return;
   }
 
+  // Check if user needs registration
+  if (formData.value.isWakil === 'diri_sendiri' && 
+      (formData.value.penyataanMasalah === 'kelas_2' || formData.value.penyataanMasalah === 'kelas_3')) {
+    registrationType.value = formData.value.penyataanMasalah === 'kelas_2' ? 'quick' : 'full';
+    showRegistrationModal.value = true;
+    return;
+  }
+
   showConfirmModal.value = true;
+};
+
+const handleRegistrationConfirm = () => {
+  showRegistrationModal.value = false;
+  // Redirect based on registration type
+  if (registrationType.value === 'quick') {
+    router.push('/BF-ADN/PA/DA/quick-registration');
+  } else {
+    router.push('/BF-ADN/PA/DA/full-registration');
+  }
+};
+
+const handleRegistrationCancel = () => {
+  showRegistrationModal.value = false;
 };
 
 const handleConfirm = () => {
@@ -216,24 +240,6 @@ const getCurrentLocation = () => {
           :actions="false"
           class="space-y-8"
         >
-          <!-- Aduan Untuk -->
-          <div class="bg-gray-50 p-6 rounded-lg">
-            <h2 class="text-lg font-semibold mb-4">Aduan Untuk</h2>
-            <FormKit
-              v-model="formData.isWakil"
-              type="radio"
-              :options="[
-                { label: 'Diri sendiri', value: 'diri_sendiri' },
-                { label: 'Orang lain (wakil)', value: 'wakil' },
-              ]"
-              :classes="{
-                fieldset: 'border-0 !p-0',
-                legend: '!font-semibold !text-sm mb-0',
-                options: '!flex !flex-col gap-4 mt-3',
-              }"
-            />
-          </div>
-
           <!-- Maklumat Individu Dibantu -->
           <div class="space-y-6">
             <div class="flex items-center gap-2">
@@ -415,6 +421,24 @@ const getCurrentLocation = () => {
                     accept=".jpg,.jpeg,.png,.pdf"
                     help="Format yang diterima: JPG, PNG, PDF"
                   />
+
+                  <!-- Aduan Untuk -->
+                  <div class="bg-gray-50 p-6 rounded-lg">
+                    <h2 class="text-lg font-semibold mb-4">Aduan Untuk</h2>
+                    <FormKit
+                      v-model="formData.isWakil"
+                      type="radio"
+                      :options="[
+                        { label: 'Diri sendiri', value: 'diri_sendiri' },
+                        { label: 'Orang lain (wakil)', value: 'wakil' },
+                      ]"
+                      :classes="{
+                        fieldset: 'border-0 !p-0',
+                        legend: '!font-semibold !text-sm mb-0',
+                        options: '!flex !flex-col gap-4 mt-3',
+                      }"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -493,6 +517,24 @@ const getCurrentLocation = () => {
       <template #default>
         <p class="text-center mb-6">
           Adakah anda pasti untuk menghantar aduan ini?
+        </p>
+      </template>
+    </rs-modal>
+
+    <rs-modal
+      v-model="showRegistrationModal"
+      title="Pendaftaran"
+      :show-close="true"
+      @close="handleRegistrationCancel"
+      position="center"
+      ok-title="OK"
+      :ok-callback="handleRegistrationConfirm"
+      cancel-title="Batal"
+      :cancel-callback="handleRegistrationCancel"
+    >
+      <template #default>
+        <p class="text-center mb-6">
+          Untuk meneruskan aduan ini, anda perlu membuat pendaftaran terlebih dahulu.
         </p>
       </template>
     </rs-modal>
