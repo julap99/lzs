@@ -616,6 +616,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Penilaian Awal",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/PA/01",
+            child: [],
+            meta: {},
+          },
           // {
           //   title: "AS-QB",
           //   icon: "iconamoon:arrow-right-2-duotone",

@@ -213,7 +213,7 @@
                 <FormKit
                   type="select"
                   name="assistanceType"
-                  label="Jenis Bantuan"
+                  label="Jenis Bantuan (jika login as kaunter, option yang akan dilihat hanya Bencana)"
                   validation="required"
                   :options="[
                     { label: 'Bencana', value: 'bencana' },
@@ -1072,7 +1072,7 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Dashboard",
+    name: "Profiling",
     type: "link",
     path: "/dashboard",
   },
@@ -1339,9 +1339,9 @@ const handleSubmit = async () => {
     toast.success("Permohonan berjaya dihantar");
     
     // Wait for 2 seconds before navigating
-    setTimeout(() => {
+    // setTimeout(() => {
       router.push("/BF-PRF/AS/FR/04");
-    }, 2000);
+    // }, 2000);
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);

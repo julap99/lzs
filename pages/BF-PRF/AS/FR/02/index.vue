@@ -1373,6 +1373,8 @@ const stepsB = [
 const nextStepA = () => {
   if (currentStepA.value < totalStepsA) {
     currentStepA.value++;
+  } else if (currentStepA.value === totalStepsA) {
+    navigateTo(`/BF-PRF/AS/PA/01`);
   }
 };
 

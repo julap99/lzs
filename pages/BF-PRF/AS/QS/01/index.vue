@@ -129,9 +129,9 @@ const profileExists = ref(false);
 
 const breadcrumb = ref([
   {
-    name: "Profiling",
+    name: "Pendaftaran Pantas Perseorangan",
     type: "link",
-    path: "/BF-PRF/AS/FR/01",
+    path: "/BF-PRF/AS/QS/01",
   },
   {
     name: "Carian Profil",
