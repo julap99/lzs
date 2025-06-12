@@ -71,6 +71,15 @@
                 Edit
               </rs-button>
               <rs-button
+                v-if="value.status === 'Belum Diterima'"
+                variant="success"
+                size="sm"
+                class="!px-2 !py-1"
+                @click="confirmReceipt(value)"
+              >
+                Sahkan Penerimaan
+              </rs-button>
+              <rs-button
                 variant="info"
                 size="sm"
                 class="!px-2 !py-1"
@@ -132,6 +141,14 @@ const requests = ref([
     status: "Draft",
     tindakan: 2,
   },
+  {
+    id: "REQ-003",
+    tarikhPermohonan: "2024-03-19T14:45:00",
+    lokasiAkaun: "Peti Besi B-789",
+    jumlahDipohon: 10000.0,
+    status: "Belum Diterima",
+    tindakan: 3,
+  },
 ]);
 
 // Methods
@@ -149,9 +166,7 @@ const handleRequestClick = (request) => {
 };
 
 const editRequest = (request) => {
-  navigateTo(
-    `/BF-TNI/tambah-nilai-tunai/mohon-tambah-nilai-tunai/form`
-  );
+  navigateTo(`/BF-TNI/tambah-nilai-tunai/mohon-tambah-nilai-tunai/form`);
 };
 
 const viewRequest = (request) => {
@@ -160,11 +175,17 @@ const viewRequest = (request) => {
   );
 };
 
+const confirmReceipt = (request) => {
+  // TODO: Implement API call to confirm receipt
+  console.log("Confirming receipt for request:", request.id);
+};
+
 // Helper functions
 const getStatusVariant = (status) => {
   const variants = {
     Draft: "warning",
     "Menunggu Proses": "info",
+    "Belum Diterima": "warning",
     Selesai: "success",
     Ditolak: "danger",
   };

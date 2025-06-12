@@ -218,10 +218,7 @@ const handleKeluarkanArahan = (value) => {
 };
 
 const handleSuratArahan = (value) => {
-  // Implement download PDF logic
-  console.log("Downloading surat arahan for:", value.id);
-
-  navigateTo(`/BF-TNI/tambah-nilai-tunai/keluarkan-arahan/${value.id}`);
+  navigateTo(`/BF-TNI/tambah-nilai-tunai/surat-arahan/${value.id}`);
 };
 
 // Helper functions
