@@ -473,7 +473,8 @@ export default [
       {
         title: "Pengeluaran Tunai Kaunter",
         icon: "iconamoon:component-fill",
-        path: "/BF-TNI/tambah-nilai-tunai",
+        path: "/BF-TNI/pengeluaran-tunai-kaunter",
+
         child: [
           {
             title: "Permohonan (EKP)",
@@ -486,6 +487,36 @@ export default [
             title: "Kelulusan (PKP/PIC)",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-TNI/pengeluaran-tunai-kaunter/kelulusan",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Tunai Dilapangan",
+        icon: "iconamoon:component-fill",
+        path: "/BF-TNI/tunai-dilapangan",
+        child: [
+          {
+            title: "Permohonan Baru",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/tunai-dilapangan/permohonan-baru",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Permohonan Saya",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/tunai-dilapangan/senarai-permohonan-saya",
+
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Kelulusan Permohonan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/tunai-dilapangan/kelulusan",
             child: [],
             meta: {},
           },
@@ -735,6 +766,13 @@ export default [
         title: "Permohonan",
         icon: "iconamoon:component-fill",
         child: [
+          {
+            title: "Mohon Bantuan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/PB/mohon-bantuan",
+            child: [],
+            meta: {},
+          },
           {
             title: "Bantuan Bulk",
             icon: "iconamoon:arrow-right-2-duotone",

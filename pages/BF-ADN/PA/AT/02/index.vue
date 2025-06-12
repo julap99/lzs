@@ -80,6 +80,47 @@
                 <p class="text-sm text-gray-500 mb-2">Ringkasan Aduan</p>
                 <p class="text-gray-700">{{ aduanData.ringkasanAduan }}</p>
               </div>
+              <div>
+                <p class="text-sm text-gray-500 mb-2">SLA</p>
+                <div class="w-full md:w-1/3">
+                  <div v-if="aduanData.pernyataanMasalah.includes('Kelas 1/Merah')" 
+                       class="p-4 rounded-lg border border-red-200 bg-red-50">
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                      <p class="font-medium text-red-700">Kelas 1 (Merah)</p>
+                    </div>
+                    <p class="text-sm text-red-600">Dalam masa 24 jam</p>
+                    <div class="mt-2 pt-2 border-t border-red-200">
+                      <p class="text-sm text-red-700">Baki Masa:</p>
+                      <p class="text-lg font-semibold text-red-700">{{ getRemainingTime }}</p>
+                    </div>
+                  </div>
+                  <div v-else-if="aduanData.pernyataanMasalah.includes('Kelas 2/Kuning')"
+                       class="p-4 rounded-lg border border-yellow-200 bg-yellow-50">
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                      <p class="font-medium text-yellow-700">Kelas 2 (Kuning)</p>
+                    </div>
+                    <p class="text-sm text-yellow-600">Dalam masa 3 hari</p>
+                    <div class="mt-2 pt-2 border-t border-yellow-200">
+                      <p class="text-sm text-yellow-700">Baki Masa:</p>
+                      <p class="text-lg font-semibold text-yellow-700">{{ getRemainingTime }}</p>
+                    </div>
+                  </div>
+                  <div v-else-if="aduanData.pernyataanMasalah.includes('Kelas 3/Hijau')"
+                       class="p-4 rounded-lg border border-green-200 bg-green-50">
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                      <p class="font-medium text-green-700">Kelas 3 (Hijau)</p>
+                    </div>
+                    <p class="text-sm text-green-600">Dalam masa 5 hari</p>
+                    <div class="mt-2 pt-2 border-t border-green-200">
+                      <p class="text-sm text-green-700">Baki Masa:</p>
+                      <p class="text-lg font-semibold text-green-700">{{ getRemainingTime }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -171,7 +212,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
@@ -240,6 +281,9 @@ const formatDate = (date) => {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
   });
 };
 
@@ -261,6 +305,10 @@ const navigateToTask = () => {
   // Navigate to task management page
   router.push(`/BF-ADN/PA/TS/02`);
 };
+
+const getRemainingTime = computed(() => {
+  return '10 jam';
+});
 
 onMounted(() => {
   // In real application, fetch aduan data based on route.params.id

@@ -46,6 +46,17 @@ export default defineNuxtConfig({
   },
   formkit: {
     defaultConfig: true,
+    config: {
+      inputs: {
+        signature: {
+          type: 'input',
+          props: {
+            type: 'text',
+            placeholder: 'Masukkan tandatangan digital penerima...'
+          }
+        }
+      }
+    }
   },
   pwa: {
     registerType: "autoUpdate",

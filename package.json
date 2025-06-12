@@ -29,6 +29,7 @@
     "@davestewart/nuxt-scrollbar": "^1.0.0",
     "@formkit/addons": "^1.0.0",
     "@formkit/auto-animate": "^0.7.0",
+    "@formkit/inputs": "^1.6.9",
     "@formkit/nuxt": "^1.0.0",
     "@formkit/pro": "^0.115.3",
     "@formkit/themes": "^1.0.0",
@@ -81,6 +82,7 @@
     "vue3-click-away": "^1.2.4",
     "vue3-dropzone": "^2.0.1",
     "vue3-recaptcha-v2": "^2.0.2",
+    "vue3-signature-pad": "^1.0.7",
     "vuedraggable": "^4.1.0",
     "xlsx": "^0.18.5"
   }
