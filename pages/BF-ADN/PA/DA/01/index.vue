@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -27,12 +27,14 @@ const formData = ref({
   isWakil: false,
 
   // Maklumat Individu Dibantu
-  namaPenuh: "",
+  jenisID: "",
   noKadPengenalan: "",
+  namaPenuh: "",
   emel: "",
   noTelefon: "",
   alamatBaris1: "",
   alamatBaris2: "",
+  negeri: "Selangor",
   daerah: "",
   kariah: "",
   lokasi: {
@@ -67,20 +69,110 @@ const penyataanMasalahOptions = [
   },
 ];
 
+const jenisIDOptions = [
+  { label: "MyKad (IC)", value: "mykad" },
+  { label: "Passport", value: "passport" },
+  { label: "MyTentera", value: "mytentera" },
+  { label: "MyPolis", value: "mypolis" },
+  { label: "Lain-lain", value: "lain" },
+];
+
+const daerahOptions = [
+  { label: "Petaling", value: "petaling" },
+  { label: "Klang", value: "klang" },
+  { label: "Hulu Langat", value: "hulu_langat" },
+  { label: "Sepang", value: "sepang" },
+  { label: "Gombak", value: "gombak" },
+  { label: "Kuala Selangor", value: "kuala_selangor" },
+  { label: "Hulu Selangor", value: "hulu_selangor" },
+  { label: "Sabak Bernam", value: "sabak_bernam" },
+];
+
+const kariahOptions = ref([]);
+
+const updateKariahOptions = (daerah) => {
+  switch (daerah) {
+    case "petaling":
+      kariahOptions.value = [
+        {
+          label: "Kariah Masjid Sultan Salahuddin Abdul Aziz Shah",
+          value: "msaas",
+        },
+        { label: "Kariah Masjid Al-Hidayah", value: "alhidayah" },
+      ];
+      break;
+    case "klang":
+      kariahOptions.value = [
+        { label: "Kariah Masjid Sultan Suleiman", value: "mss" },
+        { label: "Kariah Masjid Al-Hidayah Klang", value: "ahk" },
+      ];
+      break;
+    default:
+      kariahOptions.value = [];
+  }
+};
+
+watch(
+  () => formData.value.daerah,
+  (newDaerah) => {
+    updateKariahOptions(newDaerah);
+    formData.value.kariah = "";
+  }
+);
+
 const handleSubmit = () => {
+  // Validate ID number based on selected ID type
+  const idType = formData.value.jenisID;
+  const idNumber = formData.value.noKadPengenalan;
+
+  let isValid = true;
+  let errorMessage = "";
+
+  switch (idType) {
+    case "mykad":
+      if (!/^\d{12}$/.test(idNumber)) {
+        isValid = false;
+        errorMessage = "Nombor MyKad mestilah 12 digit";
+      }
+      break;
+    case "passport":
+      if (!/^[A-Z0-9]{6,12}$/.test(idNumber)) {
+        isValid = false;
+        errorMessage = "Format passport tidak sah";
+      }
+      break;
+    case "mytentera":
+      if (!/^[A-Z0-9]{6,12}$/.test(idNumber)) {
+        isValid = false;
+        errorMessage = "Format MyTentera tidak sah";
+      }
+      break;
+    case "mypolis":
+      if (!/^[A-Z0-9]{6,12}$/.test(idNumber)) {
+        isValid = false;
+        errorMessage = "Format MyPolis tidak sah";
+      }
+      break;
+    case "lain":
+      if (!idNumber) {
+        isValid = false;
+        errorMessage = "Sila masukkan nombor ID";
+      }
+      break;
+  }
+
+  if (!isValid) {
+    alert(errorMessage);
+    return;
+  }
+
   showConfirmModal.value = true;
 };
 
 const handleConfirm = () => {
   console.log("Form submitted:", formData.value);
   showConfirmModal.value = false;
-
-  // Navigate based on form type
-  // if (formData.value.isWakil) {
   router.push("/BF-ADN/PA/DA/02");
-  // } else {
-  //   router.push("/BF-ADN/PA/DA/03");
-  // }
 };
 
 const handleCancel = () => {
@@ -157,20 +249,36 @@ const getCurrentLocation = () => {
                 <h3 class="text-md font-medium text-gray-700">
                   Maklumat Peribadi
                 </h3>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Jenis ID & Nombor -->
+                  <div class="space-y-2">
+                    <FormKit
+                      v-model="formData.jenisID"
+                      type="select"
+                      label="Jenis ID"
+                      :options="jenisIDOptions"
+                      validation="required"
+                      validation-visibility="dirty"
+                    />
+                  </div>
+
+                  <FormKit
+                    v-model="formData.noKadPengenalan"
+                    label="Nombor ID"
+                    type="text"
+                    validation="required"
+                    validation-visibility="dirty"
+                    :validation-messages="{
+                      required: 'Nombor ID diperlukan',
+                    }"
+                  />
+
                   <FormKit
                     v-model="formData.namaPenuh"
                     label="Nama Penuh"
                     type="text"
                     validation="required"
-                    validation-visibility="dirty"
-                  />
-
-                  <FormKit
-                    v-model="formData.noKadPengenalan"
-                    label="No. Kad Pengenalan"
-                    type="text"
-                    validation="required|length:12"
                     validation-visibility="dirty"
                   />
 
@@ -211,11 +319,21 @@ const getCurrentLocation = () => {
                     type="text"
                   />
 
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormKit
+                      v-model="formData.negeri"
+                      label="Negeri"
+                      type="text"
+                      :disabled="true"
+                      validation="required"
+                      validation-visibility="dirty"
+                    />
+
                     <FormKit
                       v-model="formData.daerah"
                       label="Daerah"
-                      type="text"
+                      type="select"
+                      :options="daerahOptions"
                       validation="required"
                       validation-visibility="dirty"
                     />
@@ -223,9 +341,11 @@ const getCurrentLocation = () => {
                     <FormKit
                       v-model="formData.kariah"
                       label="Kariah"
-                      type="text"
+                      type="select"
+                      :options="kariahOptions"
                       validation="required"
                       validation-visibility="dirty"
+                      :disabled="!formData.daerah"
                     />
                   </div>
 
@@ -262,7 +382,7 @@ const getCurrentLocation = () => {
                 <div class="space-y-4">
                   <div class="space-y-2">
                     <span class="text-md font-medium text-foreground"
-                      >Penyataan Masalah</span
+                      >Tahap Keperluan Bantuan</span
                     >
                     <FormKit
                       v-model="formData.penyataanMasalah"
@@ -280,7 +400,7 @@ const getCurrentLocation = () => {
 
                   <FormKit
                     v-model="formData.ringkasanAduan"
-                    label="Ringkasan Aduan"
+                    label="Penyataan Masalah"
                     type="textarea"
                     rows="4"
                     validation="required"
