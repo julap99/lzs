@@ -793,16 +793,30 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
-              type="text"
+              type="select"
               name="nama_penolong_amil"
-              label="51. Nama Penolong Amil"
+              label="Nama Penolong Amil"
+              :options="[
+                'Ahmad bin Abdullah',
+                'Siti binti Mohamed',
+                'Mohd Ali bin Hassan',
+                'Nurul Huda binti Ismail',
+                'Abdul Rahman bin Omar',
+                'Fatimah binti Ahmad',
+                'Mohd Yusof bin Ibrahim',
+                'Aminah binti Abdullah',
+                'Hassan bin Mohamed',
+                'Noraini binti Ali'
+              ]"
+              placeholder="Pilih nama penolong amil"
               validation="required"
             />
 
             <FormKit
               type="select"
               name="jenis_permohonan"
-              label="52. Jenis Permohonan"
+              label="Jenis Permohonan"
+              placeholder="Pilih jenis permohonan"
               :options="['Baru', 'Review']"
               validation="required"
             />
@@ -810,7 +824,7 @@
             <FormKit
               type="date"
               name="tarikh_proses"
-              label="53. Tarikh Proses"
+              label="Tarikh Proses"
               validation="required"
             />
           </div>

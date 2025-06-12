@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Penilaian Awal</h2>
+          <h2 class="text-xl font-semibold">Penilaian Awal(akan dipaparkan sekiranya saluran bantuan adalah selain bencana)</h2>
         </div>
       </template>
 

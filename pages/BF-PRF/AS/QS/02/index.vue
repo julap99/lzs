@@ -210,24 +210,42 @@
                   }"
                 />
 
-                <FormKit
-                  type="select"
-                  name="maritalStatus"
-                  label="Status Perkahwinan"
-                  validation="required"
-                  :options="[
-                    { label: 'Bujang', value: 'bujang' },
-                    { label: 'Berkahwin', value: 'berkahwin' },
-                    { label: 'Bercerai', value: 'bercerai' },
-                    { label: 'Duda', value: 'duda' },
-                    { label: 'Janda', value: 'janda' }
-                  ]"
-                  placeholder="Pilih status perkahwinan"
-                  v-model="formData.personalInfo.maritalStatus"
-                  :validation-messages="{
-                    required: 'Status perkahwinan adalah wajib'
-                  }"
-                />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="select"
+                    name="maritalStatus"
+                    label="Status Perkahwinan"
+                    validation="required"
+                    :options="[
+                      { label: 'Bujang', value: 'bujang' },
+                      { label: 'Berkahwin', value: 'berkahwin' },
+                      { label: 'Bercerai', value: 'bercerai' },
+                      { label: 'Duda', value: 'duda' },
+                      { label: 'Janda', value: 'janda' }
+                    ]"
+                    placeholder="Pilih status perkahwinan"
+                    v-model="formData.personalInfo.maritalStatus"
+                    :validation-messages="{
+                      required: 'Status perkahwinan adalah wajib'
+                    }"
+                  />
+
+                  <FormKit
+                    type="select"
+                    name="polygamyStatus"
+                    label="Status Poligami"
+                    validation="required"
+                    :options="[
+                      { label: 'Tidak', value: 'tidak' },
+                      { label: 'Ya', value: 'ya' }
+                    ]"
+                    placeholder="Pilih status poligami"
+                    v-model="formData.personalInfo.polygamyStatus"
+                    :validation-messages="{
+                      required: 'Status poligami adalah wajib'
+                    }"
+                  />
+                </div>
 
                 <FormKit
                   type="select"
@@ -247,18 +265,28 @@
                 />
 
                 <FormKit
+                  v-if="formData.personalInfo.assistanceType === 'bencana'"
                   type="select"
-                  name="polygamyStatus"
-                  label="Status Poligami"
+                  name="location"
+                  label="Lokasi Bencana"
                   validation="required"
                   :options="[
-                    { label: 'Tidak', value: 'tidak' },
-                    { label: 'Ya', value: 'ya' }
+                    { label: 'Gombak', value: 'gombak' },
+                    { label: 'Hulu Langat', value: 'hulu-langat' },
+                    { label: 'Hulu Selangor', value: 'hulu-selangor' },
+                    { label: 'Klang', value: 'klang' },
+                    { label: 'Kuala Langat', value: 'kuala-langat' },
+                    { label: 'Kuala Selangor', value: 'kuala-selangor' },
+                    { label: 'Petaling', value: 'petaling' },
+                    { label: 'Sabak Bernam', value: 'sabak-bernam' },
+                    { label: 'Sepang', value: 'sepang' },
+                    { label: 'Shah Alam', value: 'shah-alam' },
+                    { label: 'Tiada di lokasi bencana', value: 'tiada-bencana' },
                   ]"
-                  placeholder="Pilih status poligami"
-                  v-model="formData.personalInfo.polygamyStatus"
+                  placeholder="Pilih lokasi bencana"
+                  v-model="formData.personalInfo.disasterLocation"
                   :validation-messages="{
-                    required: 'Status poligami adalah wajib'
+                    required: 'Lokasi bencana adalah wajib'
                   }"
                 />
               </div>
@@ -1072,12 +1100,29 @@
 
                 <div v-if="formData.verification.dibantuPenolongAmil === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <FormKit
-                    type="text"
+                    type="select"
                     name="nama_penolong_amil_bantuan"
                     label="Nama Penolong Amil"
                     validation="required"
+                    :options="[
+                      { label: 'Ahmad bin Abdullah', value: 'ahmad_abdullah' },
+                      { label: 'Mohd Ali bin Hassan', value: 'mohd_ali_hassan' },
+                      { label: 'Siti Aminah binti Omar', value: 'siti_aminah_omar' },
+                      { label: 'Abdul Rahman bin Ismail', value: 'abdul_rahman_ismail' },
+                      { label: 'Nor Azizah binti Yusof', value: 'nor_azizah_yusof' },
+                      { label: 'Mohd Fadzil bin Ibrahim', value: 'mohd_fadzil_ibrahim' },
+                      { label: 'Fatimah binti Ahmad', value: 'fatimah_ahmad' },
+                      { label: 'Zulkifli bin Mohd', value: 'zulkifli_mohd' },
+                      { label: 'Nurul Huda binti Kamal', value: 'nurul_huda_kamal' },
+                      { label: 'Mohd Hafiz bin Abdullah', value: 'mohd_hafiz_abdullah' }
+                    ]"
+                    placeholder="Pilih nama penolong amil"
                     v-model="formData.verification.namaPenolongAmil"
+                    :validation-messages="{
+                      required: 'Nama penolong amil adalah wajib'
+                    }"
                   />
+
                   <FormKit
                     type="text"
                     name="kariah_bantuan"
@@ -1159,9 +1204,14 @@
                   @click="prevStep"
                   >Kembali</rs-button
                 >
-                <rs-button type="submit" variant="primary" @click="nextStep"
-                  >Seterusnya ke Maklumat Pengesah Bermastautin</rs-button
-                >
+                <div class="flex gap-3">
+                  <rs-button type="button" variant="secondary" @click="handleSave"
+                    >Simpan</rs-button
+                  >
+                  <rs-button type="submit" variant="primary" @click="handleSubmit"
+                    >Hantar Permohonan</rs-button
+                  >
+                </div>
               </div>
             </div>
 
@@ -1281,6 +1331,7 @@ const formData = ref({
     dateOfBirth: "",
     gender: "",
     assistanceType: "",
+    disasterLocation: "",
     polygamyStatus: "",
   },
   healthInfo: {
@@ -1540,6 +1591,19 @@ const prevStep = () => {
 
 const nextStep = () => {
   currentStep.value++;
+};
+
+const handleSave = async () => {
+  try {
+    // Handle form saving
+    console.log("Form saved:", formData.value);
+    // Add your save logic here (API call, etc.)
+
+    toast.success("Permohonan berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Permohonan tidak berjaya disimpan");
+    console.error("Save error:", error);
+  }
 };
 
 // Watchers
