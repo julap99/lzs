@@ -1205,11 +1205,8 @@
                   >Kembali</rs-button
                 >
                 <div class="flex gap-3">
-                  <rs-button type="button" variant="secondary" @click="handleSave"
-                    >Simpan</rs-button
-                  >
-                  <rs-button type="submit" variant="primary" @click="handleSubmit"
-                    >Hantar Permohonan</rs-button
+                  <rs-button type="submit" variant="primary" @click="nextStep"
+                    >Seterusnya ke Pengesahan Bermastautin</rs-button
                   >
                 </div>
               </div>
@@ -1271,9 +1268,111 @@
                   @click="prevStep"
                   >Kembali</rs-button
                 >
-                <rs-button type="submit" variant="primary" @click="handleSubmit"
-                  >Hantar Permohonan</rs-button
+                <rs-button type="submit" variant="primary" @click="nextStep"
+                  >Seterusnya ke Penilaian Awal</rs-button
                 >
+              </div>
+            </div>
+
+            <!-- Step 10: Penilaian Awal -->
+            <div v-if="currentStep === 10">
+              <h3 class="text-lg font-medium mb-4">J) Penilaian Awal</h3>
+              <div class="space-y-6">
+                <!-- Question 1 -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    1. Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?*
+                  </label>
+                  <FormKit
+                    type="radio"
+                    v-model="formData.initialAssessment.komitmenTinggi"
+                    :options="[
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'T' }
+                    ]"
+                    validation="required"
+                    validation-label="Jawapan"
+                  />
+                </div>
+
+                <!-- Question 2 -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    2. Apakah keperluan tuan/puan mendesak sekarang ini?*
+                  </label>
+                  <FormKit
+                    type="checkbox"
+                    v-model="formData.initialAssessment.keperluanMendesak"
+                    :options="[
+                      { label: 'Perubatan Kritikal', value: 'perubatan', disabled: isTidakMendesakSelected },
+                      { label: 'Bencana', value: 'bencana', disabled: isTidakMendesakSelected },
+                      { label: 'Kematian', value: 'kematian', disabled: isTidakMendesakSelected },
+                      { label: 'Konflik Keluarga (tiada tempat bergantung)', value: 'konflik', disabled: isTidakMendesakSelected },
+                      { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah', disabled: isTidakMendesakSelected },
+                      { label: 'Selain dari di atas', value: 'lain', disabled: isTidakMendesakSelected },
+                      { label: 'Tidak mendesak', value: 'tidakMendesak' }
+                    ]"
+                    validation="required|min:1"
+                    validation-label="Jawapan"
+                    validation-messages="{
+                      required: 'Sila pilih sekurang-kurangnya satu jawapan',
+                      min: 'Sila pilih sekurang-kurangnya satu jawapan'
+                    }"
+                    @input="handleKeperluanChange"
+                  />
+
+                  <!-- Additional input for "Selain dari di atas" -->
+                  <div v-if="showLainInput" class="mt-4">
+                    <FormKit
+                      type="text"
+                      v-model="formData.initialAssessment.lainKeperluan"
+                      label="Sila nyatakan keperluan lain:"
+                      validation="required"
+                      validation-label="Keperluan lain"
+                      validation-messages="{
+                        required: 'Sila nyatakan keperluan lain'
+                      }"
+                    />
+                  </div>
+                </div>
+
+                <!-- File Upload Section -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    3. Muat naik dokumen sokongan (PDF, JPG, PNG)*
+                  </label>
+                  <FormKit
+                    type="file"
+                    v-model="formData.initialAssessment.documents"
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
+                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                    validation-label="Dokumen"
+                    validation-messages="{
+                      required: 'Sila muat naik sekurang-kurangnya satu dokumen',
+                      max: 'Saiz fail tidak boleh melebihi 5MB',
+                      mime: 'Format fail tidak dibenarkan'
+                    }"
+                  />
+                </div>
+
+                <div class="flex justify-between gap-3 mt-6">
+                  <rs-button
+                    type="button"
+                    variant="primary-outline"
+                    @click="prevStep"
+                    >Kembali</rs-button
+                  >
+                  <div class="flex gap-3">
+                    <rs-button type="button" variant="secondary" @click="handleSave"
+                      >Simpan</rs-button
+                    >
+                    <rs-button type="submit" variant="primary" @click="handleSubmit"
+                      >Hantar Permohonan</rs-button
+                    >
+                  </div>
+                </div>
               </div>
             </div>
           </FormKit>
@@ -1309,7 +1408,7 @@ const breadcrumb = ref([
 ]);
 
 const currentStep = ref(1);
-const totalStep = 9;
+const totalStep = 10;
 
 // Form data structure
 const formData = ref({
@@ -1416,6 +1515,12 @@ const formData = ref({
     dependentsCount: ""
   },
   heirs: [],
+  initialAssessment: {
+    komitmenTinggi: '',
+    keperluanMendesak: [],
+    lainKeperluan: '',
+    documents: [],
+  },
 });
 
 const statusKahwin = ref(null);
@@ -1501,6 +1606,14 @@ const isMuallaf = computed(() => {
   // Logic to determine if applicant is muallaf
   // This might need to be adjusted based on your actual requirements
   return false;
+});
+
+const isTidakMendesakSelected = computed(() => {
+  return formData.value.initialAssessment.keperluanMendesak.includes('tidakMendesak');
+});
+
+const showLainInput = computed(() => {
+  return formData.value.initialAssessment.keperluanMendesak.includes('lain');
 });
 
 // Methods
@@ -1603,6 +1716,18 @@ const handleSave = async () => {
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya disimpan");
     console.error("Save error:", error);
+  }
+};
+
+const handleKeperluanChange = (value) => {
+  // If "Tidak mendesak" is selected, clear all other selections
+  if (value.includes('tidakMendesak')) {
+    formData.value.initialAssessment.keperluanMendesak = ['tidakMendesak'];
+  }
+  
+  // If "Selain dari di atas" is unselected, clear the additional input
+  if (!value.includes('lain')) {
+    formData.value.initialAssessment.lainKeperluan = '';
   }
 };
 

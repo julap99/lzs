@@ -69,6 +69,27 @@
             </div>
           </div>
 
+          <!-- File Upload Section -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">
+              3. Muat naik dokumen sokongan (PDF, JPG, PNG)*
+            </label>
+            <FormKit
+              type="file"
+              v-model="formData.documents"
+              multiple
+              accept=".pdf,.jpg,.jpeg,.png"
+              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
+              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              validation-label="Dokumen"
+              validation-messages="{
+                required: 'Sila muat naik sekurang-kurangnya satu dokumen',
+                max: 'Saiz fail tidak boleh melebihi 5MB',
+                mime: 'Format fail tidak dibenarkan'
+              }"
+            />
+          </div>
+
           <!-- Next Button -->
           <div class="flex justify-end mt-6">
             <rs-button variant="primary" @click="handleNext">
@@ -113,6 +134,7 @@ const formData = ref({
   komitmenTinggi: '',
   keperluanMendesak: [],
   lainKeperluan: '',
+  documents: [],
 });
 
 // Computed property to check if "Tidak mendesak" is selected

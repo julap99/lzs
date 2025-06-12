@@ -648,13 +648,13 @@ export default [
           //   child: [],
           //   meta: {},
           // },
-          {
-            title: "Pendaftaran Pantas (Single) v2",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/QS-1/carian-profil",
-            child: [],
-            meta: {},
-          },
+          // {
+          //   title: "Pendaftaran Pantas (Single) v2",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-PRF/AS/QS-1/carian-profil",
+          //   child: [],
+          //   meta: {},
+          // },
           {
             title: "Pendaftaran Pantas Perseorangan",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -670,6 +670,13 @@ export default [
             meta: {},
           },
           {
+            title: "Pendaftaran Lengkap",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/FR/01",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Penilaian Awal",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/PA/01",
@@ -681,14 +688,7 @@ export default [
           //   icon: "iconamoon:arrow-right-2-duotone",
           //   child: [],
           //   meta: {},
-          // },
-          {
-            title: "Pendaftaran Lengkap",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/FR/01",
-            child: [],
-            meta: {},
-          },
+          // },          
           {
             title: "Kemaskini",
             icon: "iconamoon:arrow-right-2-duotone",

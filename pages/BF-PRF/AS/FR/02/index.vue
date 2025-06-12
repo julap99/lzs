@@ -783,7 +783,7 @@
         <FormKit
           v-if="currentStepA === 9"
           type="form"
-          @submit="submitForm"
+          @submit="nextStepA"
           :actions="false"
           id="sectionI"
         >
@@ -837,8 +837,121 @@
               >Kembali</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Seterusnya</rs-button
+              >Seterusnya ke Penilaian Awal</rs-button
             >
+          </div>
+        </FormKit>
+
+        <!-- Section J Form - Penilaian Awal -->
+        <FormKit
+          v-if="currentStepA === 10"
+          type="form"
+          @submit="submitForm"
+          :actions="false"
+          id="sectionJ"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            J. Penilaian Awal
+          </h3>
+
+          <div class="space-y-6">
+            <!-- Question 1 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                1. Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?*
+              </label>
+              <FormKit
+                type="radio"
+                name="komitmen_tinggi"
+                :options="[
+                  { label: 'Ya', value: 'Y' },
+                  { label: 'Tidak', value: 'T' }
+                ]"
+                validation="required"
+                validation-label="Jawapan"
+              />
+            </div>
+
+            <!-- Question 2 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                2. Apakah keperluan tuan/puan mendesak sekarang ini?*
+              </label>
+              <FormKit
+                type="checkbox"
+                name="keperluan_mendesak"
+                :options="[
+                  { label: 'Perubatan Kritikal', value: 'perubatan' },
+                  { label: 'Bencana', value: 'bencana' },
+                  { label: 'Kematian', value: 'kematian' },
+                  { label: 'Konflik Keluarga (tiada tempat bergantung)', value: 'konflik' },
+                  { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah' },
+                  { label: 'Selain dari di atas', value: 'lain' },
+                  { label: 'Tidak mendesak', value: 'tidakMendesak' }
+                ]"
+                validation="required|min:1"
+                validation-label="Jawapan"
+                validation-messages="{
+                  required: 'Sila pilih sekurang-kurangnya satu jawapan',
+                  min: 'Sila pilih sekurang-kurangnya satu jawapan'
+                }"
+              />
+
+              <!-- Additional input for "Selain dari di atas" -->
+              <div v-if="showLainInput" class="mt-4">
+                <FormKit
+                  type="text"
+                  name="lain_keperluan"
+                  label="Sila nyatakan keperluan lain:"
+                  validation="required"
+                  validation-label="Keperluan lain"
+                  validation-messages="{
+                    required: 'Sila nyatakan keperluan lain'
+                  }"
+                />
+              </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                3. Muat naik dokumen sokongan (PDF, JPG, PNG)*
+              </label>
+              <FormKit
+                type="file"
+                name="dokumen_sokongan"
+                multiple
+                accept=".pdf,.jpg,.jpeg,.png"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                validation-label="Dokumen"
+                validation-messages="{
+                  required: 'Sila muat naik sekurang-kurangnya satu dokumen',
+                  max: 'Saiz fail tidak boleh melebihi 5MB',
+                  mime: 'Format fail tidak dibenarkan'
+                }"
+              />
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+              <rs-button
+                type="button"
+                variant="primary-outline"
+                @click="prevStepA"
+                >Kembali</rs-button
+              >
+              <rs-button
+                type="submit"
+                variant="primary"
+                @click="submitForm"
+                :disabled="processing"
+              >
+                <span v-if="processing">
+                  <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
+                </span>
+                <span v-else>Hantar Permohonan</span>
+              </rs-button>
+            </div>
           </div>
         </FormKit>
       </template>
@@ -1473,7 +1586,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useToast } from "vue-toastification";
 
 definePageMeta({
   title: "Borang Permohonan Lengkap",
@@ -1496,7 +1610,7 @@ const processing = ref(false);
 const currentSection = ref(1);
 
 const currentStepA = ref(1);
-const totalStepsA = 9;
+const totalStepsA = 10;
 const healthStatus = ref("");
 const dibantuPenolongAmil = ref("");
 const hubunganKakitanganLZS = ref("");
@@ -1511,6 +1625,7 @@ const stepsA = [
   { id: 7, label: "Pengesahan" },
   { id: 8, label: "Pengesahan Bermastautin" },
   { id: 9, label: "Penolong Amil" },
+  { id: 10, label: "Penilaian Awal" },
 ];
 
 const currentStepB = ref(1);
@@ -1519,13 +1634,16 @@ const totalStepsB = 5;
 const healthStatusTanggungan = ref("");
 const paymentMethod = ref("");
 
-const stepsB = [
-  { id: 1, label: "Maklumat Peribadi Tangungan" },
-  { id: 2, label: "Pendidikan" },
-  { id: 3, label: "Kesihatan" },
-  { id: 4, label: "Kemahiran" },
-  { id: 5, label: "Pekerjaan" },
-];
+const showLainInput = computed(() => {
+  return formData.value.keperluanMendesak?.includes('lain');
+});
+
+const formData = ref({
+  komitmenTinggi: '',
+  keperluanMendesak: [],
+  lainKeperluan: '',
+  documents: [],
+});
 
 const nextStepA = () => {
   if (currentStepA.value < totalStepsA) {
@@ -1562,9 +1680,10 @@ const prevSection = () => {
 
 const submitForm = () => {
   processing.value = true;
-  setTimeout(() => {
+
+  // setTimeout(() => {
     navigateTo(`/BF-PRF/AS/FR/03`);
-  }, 1000);
+  // }, 1000);
 };
 </script>
 
