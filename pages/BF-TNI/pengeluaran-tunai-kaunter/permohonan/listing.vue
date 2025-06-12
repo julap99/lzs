@@ -1,10 +1,13 @@
 <template>
   <div>
-    <rs-card>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+
+    <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Senarai Bantuan Tunai Bulanan</h2>
           <rs-button variant="primary-outline" @click="navigateToSearch">
+            <Icon name="material-symbols:arrow-back" class="mr-1" size="15" />
             Kembali ke Carian
           </rs-button>
         </div>
@@ -12,18 +15,42 @@
 
       <template #body>
         <!-- Applicant Info Summary -->
-        <div v-if="applicantInfo" class="mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <span class="font-medium">No Kad Pengenalan Pemohon:</span>
-              <span class="ml-2">{{ applicantInfo.icNumber }}</span>
+        <rs-card v-if="applicantInfo" class="mb-6">
+          <template #header>
+            <div class="flex justify-between items-center">
+              <h3 class="text-lg font-semibold">Maklumat Pemohon</h3>
             </div>
-            <div>
-              <span class="font-medium">Nama Pemohon:</span>
-              <span class="ml-2">{{ applicantInfo.name }}</span>
+          </template>
+
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >No Kad Pengenalan Pemohon</label
+                >
+                <p class="mt-1">{{ applicantInfo.icNumber }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Nama Pemohon</label
+                >
+                <p class="mt-1">{{ applicantInfo.name }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Status Asnaf / Kelayakan</label
+                >
+                <p class="mt-1">{{ applicantInfo.asnafStatus }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Kategori Asnaf</label
+                >
+                <p class="mt-1">{{ applicantInfo.asnafCategory }}</p>
+              </div>
             </div>
-          </div>
-        </div>
+          </template>
+        </rs-card>
 
         <!-- BTB Listing Table -->
         <rs-table
@@ -31,38 +58,58 @@
           :key="tableKey"
           :pageSize="10"
           :showNoColumn="true"
-          :columns="[
-            { key: 'paNumber', label: 'No PA' },
-            { key: 'receiptDate', label: 'Tarikh Terimaan' },
-            { key: 'amount', label: 'Jumlah Bantuan (RM)' },
-            { key: 'category', label: 'Kategori Bantuan' },
-            { key: 'status', label: 'Status Bantuan' },
-            { key: 'actions', label: 'Tindakan' },
-          ]"
           :options="{
             variant: 'default',
-            hover: true,
           }"
         >
-          <template v-slot:amount="data: TableSlotData">
-            {{ formatAmount(data.value.amount) }}
+          <template v-slot:noPA="data">
+            {{ data.text }}
           </template>
-          <template v-slot:actions="data: TableSlotData">
+          <template v-slot:jumlah="data">
+            RM {{ formatAmount(parseFloat(data.text)) }}
+          </template>
+          <template v-slot:status="data: { value: BTBRecord }">
+            <rs-badge :variant="getStatusVariant(data.value.status)">
+              {{ data.value.status }}
+            </rs-badge>
+          </template>
+          <template v-slot:tindakan="data: { value: BTBRecord }">
             <div class="flex gap-2">
               <rs-button
                 v-if="data.value.status === 'Belum Permohonan'"
+                variant="primary"
                 size="sm"
                 @click="handleCashWithdrawal(data.value)"
               >
+                <Icon name="material-symbols:payments" class="mr-1" size="15" />
                 Mohon Pengeluaran Tunai
               </rs-button>
               <rs-button
                 v-if="data.value.status === 'Diluluskan'"
+                variant="success"
                 size="sm"
                 @click="handleConfirmDisbursement(data.value)"
               >
+                <Icon
+                  name="material-symbols:check-circle"
+                  class="mr-1"
+                  size="15"
+                />
                 Sahkan Agihan
               </rs-button>
+              <!-- <rs-button
+                v-if="['Ditolak', 'Telah Diagih'].includes(data.value.status)"
+                variant="secondary"
+                size="sm"
+                @click="handleViewDetails(data.value)"
+              >
+                <Icon
+                  name="material-symbols:visibility"
+                  class="mr-1"
+                  size="15"
+                />
+                Lihat Butiran
+              </rs-button> -->
             </div>
           </template>
         </rs-table>
@@ -87,11 +134,12 @@ interface ApplicantInfo {
 }
 
 interface BTBRecord {
-  paNumber: string;
-  receiptDate: string;
-  amount: number;
-  category: string;
+  noPA: string;
+  tarikhResit: string;
+  jumlah: number;
+  kategori: string;
   status: string;
+  tindakan: number;
 }
 
 interface TableSlotData {
@@ -105,6 +153,24 @@ const route = useRoute();
 const tableKey = ref(0);
 const applicantInfo = ref<ApplicantInfo | null>(null);
 const btbList = ref<BTBRecord[]>([]);
+
+const breadcrumb = ref([
+  {
+    name: "Pengeluaran Tunai Kaunter",
+    type: "link",
+    path: "/BF-TNI/pengeluaran-tunai-kaunter",
+  },
+  {
+    name: "Permohonan",
+    type: "link",
+    path: "/BF-TNI/pengeluaran-tunai-kaunter/permohonan",
+  },
+  {
+    name: "Senarai Bantuan Tunai Bulanan",
+    type: "current",
+    path: "/BF-TNI/pengeluaran-tunai-kaunter/permohonan/listing",
+  },
+]);
 
 // Helper functions
 const formatAmount = (amount: number) => {
@@ -122,30 +188,56 @@ const formatDate = (date: string) => {
   });
 };
 
+const getStatusVariant = (status: string) => {
+  switch (status) {
+    case "Belum Permohonan":
+      return "warning";
+    case "Tunggu Kelulusan":
+      return "info";
+    case "Diluluskan":
+      return "success";
+    case "Ditolak":
+      return "danger";
+    case "Telah Diagih":
+      return "default";
+    default:
+      return "default";
+  }
+};
+
 // Navigation handlers
 const navigateToSearch = () => {
-  router.push('/BF-TNI/pengeluaran-tunai-kaunter/permohonan/search');
+  router.push("/BF-TNI/pengeluaran-tunai-kaunter/permohonan");
 };
 
 const handleCashWithdrawal = (record: BTBRecord) => {
   router.push(
-    `/BF-TNI/pengeluaran-tunai-kaunter/permohonan/form/${record.paNumber}`
+    `/BF-TNI/pengeluaran-tunai-kaunter/permohonan/form/${record.noPA}`
   );
 };
 
 const handleConfirmDisbursement = (record: BTBRecord) => {
   router.push(
-    `/BF-TNI/pengeluaran-tunai-kaunter/permohonan/sahkan/${record.paNumber}`
+    `/BF-TNI/pengeluaran-tunai-kaunter/permohonan/sahkan/${record.noPA}`
+  );
+};
+
+const handleViewDetails = (record: BTBRecord) => {
+  router.push(
+    `/BF-TNI/pengeluaran-tunai-kaunter/permohonan/view/${record.noPA}`
   );
 };
 
 // Load data
 onMounted(async () => {
   const icNumber = route.query.icNumber as string;
-  if (!icNumber) {
-    router.push('/BF-TNI/pengeluaran-tunai-kaunter/permohonan/search');
-    return;
-  }
+
+  console.log("route query: ", route.query);
+
+  // if (!icNumber) {
+  //   router.push('/BF-TNI/pengeluaran-tunai-kaunter/permohonan/search');
+  //   return;
+  // }
 
   try {
     // TODO: Implement API call to fetch applicant info and BTB list
@@ -159,18 +251,44 @@ onMounted(async () => {
 
     btbList.value = [
       {
-        paNumber: "PA-2024-001",
-        receiptDate: new Date().toISOString(),
-        amount: 1000.0,
-        category: "Bantuan Bulanan",
+        noPA: "PA-2024-001",
+        tarikhResit: new Date().toISOString(),
+        jumlah: 1000.0,
+        kategori: "Bantuan Bulanan",
         status: "Belum Permohonan",
+        tindakan: 1,
       },
       {
-        paNumber: "PA-2024-002",
-        receiptDate: new Date().toISOString(),
-        amount: 500.0,
-        category: "Bantuan Khas",
+        noPA: "PA-2024-002",
+        tarikhResit: new Date().toISOString(),
+        jumlah: 500.0,
+        kategori: "Bantuan Khas",
+        status: "Tunggu Kelulusan",
+        tindakan: 2,
+      },
+      {
+        noPA: "PA-2024-003",
+        tarikhResit: new Date().toISOString(),
+        jumlah: 750.0,
+        kategori: "Bantuan Bulanan",
         status: "Diluluskan",
+        tindakan: 3,
+      },
+      {
+        noPA: "PA-2024-004",
+        tarikhResit: new Date().toISOString(),
+        jumlah: 300.0,
+        kategori: "Bantuan Khas",
+        status: "Ditolak",
+        tindakan: 4,
+      },
+      {
+        noPA: "PA-2024-005",
+        tarikhResit: new Date().toISOString(),
+        jumlah: 1200.0,
+        kategori: "Bantuan Bulanan",
+        status: "Telah Diagih",
+        tindakan: 5,
       },
     ];
 
@@ -183,4 +301,4 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 // Add any custom styles here
-</style> 
+</style>

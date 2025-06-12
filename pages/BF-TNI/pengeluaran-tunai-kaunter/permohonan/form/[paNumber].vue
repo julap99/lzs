@@ -44,7 +44,9 @@
         <rs-card v-if="btbInfo" class="mb-6">
           <template #header>
             <div class="flex justify-between items-center">
-              <h3 class="text-lg font-semibold">Maklumat Bantuan Tunai Bulanan</h3>
+              <h3 class="text-lg font-semibold">
+                Maklumat Bantuan Tunai Bulanan
+              </h3>
             </div>
           </template>
 
@@ -100,7 +102,7 @@
               placeholder="Masukkan lokasi pengeluaran"
               validation="required"
               :validation-messages="{
-                required: 'Lokasi pengeluaran diperlukan'
+                required: 'Lokasi pengeluaran diperlukan',
               }"
             />
             <FormKit
@@ -110,7 +112,7 @@
               placeholder="Masukkan masa pengeluaran"
               validation="required"
               :validation-messages="{
-                required: 'Masa pengeluaran diperlukan'
+                required: 'Masa pengeluaran diperlukan',
               }"
             />
           </div>
@@ -118,22 +120,23 @@
           <div class="mb-6">
             <h4 class="text-md font-semibold mb-2">Nota:</h4>
             <ul class="list-disc list-inside text-sm text-gray-600">
-              <li>Pemohon perlu hadir ke lokasi pengeluaran pada tarikh dan masa yang ditetapkan</li>
+              <li>
+                Pemohon perlu hadir ke lokasi pengeluaran pada tarikh dan masa
+                yang ditetapkan
+              </li>
               <li>Pemohon perlu membawa kad pengenalan asal</li>
               <li>Pemohon perlu menandatangani borang pengeluaran tunai</li>
             </ul>
           </div>
 
           <div class="flex justify-end gap-2">
-            <rs-button
-              variant="primary-outline"
-              @click="handleCancel"
-            >
+            <rs-button variant="primary-outline" @click="handleCancel">
               Batal
             </rs-button>
             <rs-button
               type="submit"
               :loading="isSubmitting"
+              @click="handleSubmit"
             >
               Hantar Permohonan
             </rs-button>
@@ -141,12 +144,81 @@
         </FormKit>
       </template>
     </rs-card>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmationModal"
+      title="Pengesahan Permohonan"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="space-y-4">
+          <div class="text-center">
+            <Icon
+              name="ph:warning-circle"
+              class="mx-auto text-warning"
+              size="3rem"
+            />
+            <h3 class="mt-4 text-lg font-medium text-gray-900">
+              Sahkan Permohonan Pengeluaran Tunai
+            </h3>
+            <p class="mt-2 text-sm text-gray-500">
+              Adakah anda pasti untuk menghantar permohonan pengeluaran tunai
+              ini?
+            </p>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-lg space-y-2">
+            <div class="flex justify-between">
+              <span class="font-medium">No PA:</span>
+              <span>{{ paNumber }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Jumlah Pengeluaran:</span>
+              <span>RM {{ formData.withdrawalAmount }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Tarikh Pengeluaran:</span>
+              <span>{{ formData.withdrawalDate }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Lokasi Pengeluaran:</span>
+              <span>{{ formData.withdrawalLocation }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Masa Pengeluaran:</span>
+              <span>{{ formData.withdrawalTime }}</span>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="primary-outline"
+            @click="showConfirmationModal = false"
+            :disabled="isSubmitting"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="primary"
+            @click="confirmSubmit"
+            :disabled="isSubmitting"
+          >
+            Sahkan
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 definePageMeta({
   title: "Permohonan Pengeluaran Tunai",
@@ -196,6 +268,7 @@ const breadcrumb = ref([
 
 // State management
 const isSubmitting = ref(false);
+const showConfirmationModal = ref(false);
 const applicantInfo = ref<ApplicantInfo | null>(null);
 const btbInfo = ref<BTBRecord | null>(null);
 const formData = ref({
@@ -207,42 +280,52 @@ const formData = ref({
 
 // Helper functions
 const formatAmount = (amount: number) => {
-  return new Intl.NumberFormat('ms-MY', {
+  return new Intl.NumberFormat("ms-MY", {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   }).format(amount);
 };
 
 const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('ms-MY', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  return new Date(date).toLocaleDateString("ms-MY", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 };
 
 // Form handlers
 const handleSubmit = async () => {
+  showConfirmationModal.value = true;
+};
+
+const confirmSubmit = async () => {
   try {
     isSubmitting.value = true;
-    
+
     // TODO: Implement API call to submit withdrawal request
-    console.log('Submitting withdrawal request:', {
+    console.log("Submitting withdrawal request:", {
       paNumber,
-      ...formData.value
+      ...formData.value,
     });
 
+    // Add a small delay to show loading state
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    showConfirmationModal.value = false;
+
     // Navigate back to listing page after successful submission
-    router.push('/BF-TNI/pengeluaran-tunai-kaunter/permohonan');
+    await router.push("/BF-TNI/pengeluaran-tunai-kaunter/permohonan/listing");
   } catch (error) {
-    console.error('Error submitting withdrawal request:', error);
+    console.error("Error submitting withdrawal request:", error);
   } finally {
     isSubmitting.value = false;
+    showConfirmationModal.value = false;
   }
 };
 
 const handleCancel = () => {
-  router.push('/BF-TNI/pengeluaran-tunai-kaunter/permohonan');
+  router.push("/BF-TNI/pengeluaran-tunai-kaunter/permohonan");
 };
 
 // Load data on mount
@@ -254,15 +337,15 @@ onMounted(async () => {
       icNumber: "123456789012",
       name: "Ahmad bin Abdullah",
       asnafStatus: "Aktif",
-      asnafCategory: "Fakir"
+      asnafCategory: "Fakir",
     };
 
     btbInfo.value = {
       paNumber,
       receiptDate: new Date().toISOString(),
-      amount: 1000.00,
+      amount: 1000.0,
       category: "Bantuan Bulanan",
-      status: "Belum Permohonan"
+      status: "Belum Permohonan",
     };
 
     // Set initial form values
@@ -271,11 +354,11 @@ onMounted(async () => {
       formData.value.withdrawalDate = formatDate(new Date().toISOString());
     }
   } catch (error) {
-    console.error('Error loading data:', error);
+    console.error("Error loading data:", error);
   }
 });
 </script>
 
 <style lang="scss" scoped>
 // Add any custom styles here
-</style> 
+</style>
