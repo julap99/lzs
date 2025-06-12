@@ -21,7 +21,7 @@ const login = async () => {
   userStore.setUsername("test_user");
   userStore.setRoles(["admin"]);
   userStore.setIsAuthenticated(true);
-  
+
   // Simple redirect to dashboard
   navigateTo("/dashboard");
 };
@@ -47,9 +47,9 @@ const handleLoadCallback = (response) => {
     <div class="w-full md:w-3/4 lg:w-1/2 xl:w-2/6 relative">
       <rs-card class="h-screen md:h-auto px-10 md:px-16 py-12 md:py-20 mb-0">
         <div class="img-container flex justify-center items-center mb-5">
-          <img 
-            src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" 
-            class="max-w-[150px]" 
+          <img
+            src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png"
+            class="max-w-[150px]"
             alt="LZS Logo"
           />
         </div>

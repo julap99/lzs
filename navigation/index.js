@@ -470,6 +470,28 @@ export default [
         ],
         meta: {},
       },
+      {
+        title: "Pengeluaran Tunai Kaunter",
+        icon: "iconamoon:component-fill",
+        path: "/BF-TNI/tambah-nilai-tunai",
+        child: [
+          {
+            title: "Permohonan (EKP)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pengeluaran-tunai-kaunter/permohonan",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Kelulusan (PKP/PIC)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pengeluaran-tunai-kaunter/kelulusan",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
 
       // {
       //   title: "Mengurus Tunai",
