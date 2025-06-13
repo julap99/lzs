@@ -887,14 +887,14 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Jawatan PA",
+            title: "Senarai Jawatan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/KF/KJ",
             child: [],
             meta: {},
           },
           {
-            title: "Elaun",
+            title: "Senarai Elaun",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/KF/KE",
             child: [],

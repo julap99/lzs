@@ -1,16 +1,11 @@
 <template>
     <div class="p-6">
       <div class="mb-6 text-center">
-        <div class="text-2xl font-bold mb-2 text-gray-800" dir="rtl" lang="ar">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎</div>
-        <h2 class="text-2xl font-bold mb-2">Selamat Datang ke New Agihan System (NAS)</h2>
+        <div class="text-4xl font-bold mb-2 text-gray-800" dir="rtl" lang="ar">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎</div>
+        <h2 class="text-3xl font-bold mb-2">Selamat Datang ke New Agihan System (NAS)</h2>
         <p class="text-gray-600">Akses pantas kepada maklumat dan tugasan anda sebagai Penolong Amil Lembaga Zakat Selangor.</p>
       </div>
-      <div class="flex justify-end mb-6">
-        <rs-button variant="primary" @click="navigateTo('/BF-PA/PP/PD')">
-          <Icon name="material-symbols:admin-panel-settings" class="mr-2" />
-          Login as Admin
-        </rs-button>
-      </div>
+
       <!-- Guest Name (centered) with action buttons -->
       <div class="mb-4 flex flex-col items-center">
         <div class="flex items-center gap-3">
@@ -23,6 +18,52 @@
           <rs-button size="sm" variant="primary-outline" class="rounded-full" @click="showSuratTawaran = true" title="Surat Tawaran">
             <Icon name="heroicons:document-text" size="22" />
           </rs-button>
+        </div>
+      </div>
+  
+      <!-- Cards Section -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div
+          v-for="card in cards"
+          :key="card.title"
+          class="relative cursor-pointer transition transform hover:scale-105 hover:shadow-lg rounded-xl p-5 border-2 shadow group"
+          :class="[
+            card.color,
+            selectedCard && selectedCard.title === card.title ? 'border-blue-600' : 'border-transparent',
+            'flex flex-col items-center text-center min-h-[170px]'
+          ]"
+          @click="openCardModal(card)"
+        >
+          <div class="flex items-center justify-center mb-2 w-full">
+            <Icon :name="card.icon" size="32" class="text-gray-700 group-hover:text-blue-700 transition" />
+            <span
+              v-if="card.change === 'positive'"
+              class="ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-green-200 text-green-800"
+            ></span>
+            <span
+              v-else-if="card.change === 'warning'"
+              class="ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-yellow-200 text-yellow-800"
+            >!</span>
+            <span
+              v-else-if="card.change === 'negative'"
+              class="ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-red-200 text-red-800"
+            ></span>
+          </div>
+          <div class="text-3xl font-bold text-gray-900 mb-1">{{ card.value }}</div>
+          <div class="font-semibold text-base text-gray-700 mb-1">{{ card.title }}</div>
+          <div class="text-sm text-gray-600">{{ card.description }}</div>
+        </div>
+      </div>
+  
+      <!-- Card Modal -->
+      <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+          <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-700" @click="closeModal">
+            <Icon name="heroicons:x-mark" size="24" />
+          </button>
+          <h3 class="text-xl font-bold mb-2">{{ selectedCard.title }}</h3>
+          <p class="mb-2 text-gray-700">Jumlah: {{ selectedCard.count }}</p>
+          <div class="text-gray-600 whitespace-pre-line">{{ selectedCard.details }}</div>
         </div>
       </div>
   
@@ -240,11 +281,63 @@
   </template>
   
   <script setup>
+  import { ref } from 'vue';
+
+  const cards = ref([
+    {
+      title: 'Asnaf Berdaftar',
+      value: '150',
+      icon: 'ic:baseline-people',
+      change: 'positive',
+      description: '+10% dari bulan lepas',
+      details: 'Senarai asnaf yang telah berdaftar di bawah jagaan anda.\nContoh: \n- Ahmad bin Ali (Fakir)\n- Siti binti Abu (Miskin)\n- ',
+      color: 'bg-blue-100',
+    },
+    {
+      title: 'Bantuan',
+      value: '75',
+      icon: 'ic:baseline-volunteer-activism',
+      change: 'warning',
+      description: '5 permohonan menunggu kelulusan',
+      details: 'Permohonan bantuan yang sedang diproses atau telah diluluskan.\nContoh:\n- Bantuan Kewangan Bulanan\n- Bantuan Pendidikan\n- Bantuan Perubatan',
+      color: 'bg-yellow-100',
+    },
+    {
+      title: 'Aktiviti Komuniti',
+      value: '50',
+      icon: 'ic:baseline-event',
+      change: 'warning',
+      description: '+3 aktiviti baru',
+      details: 'Maklumat tambahan atau statistik lain yang relevan untuk Penolong Amil.\nContoh:\n- Aktiviti komuniti\n- Program latihan',
+      color: 'bg-green-100',
+    },
+    {
+      title: 'Notifikasi Penting',
+      value: '25',
+      icon: 'ic:baseline-notifications-active',
+      change: 'warning',
+      description: '1 notis perlu tindakan segera',
+      details: 'Laporan ringkas atau notifikasi penting berkaitan tugasan anda.\nContoh:\n- Notis mesyuarat\n- Pengumuman terkini',
+      color: 'bg-red-100',
+    },
+  ]);
+
+  const showModal = ref(false);
+  const selectedCard = ref(null);
+
+  const openCardModal = (card) => {
+    selectedCard.value = card;
+    showModal.value = true;
+  };
+  const closeModal = () => {
+    showModal.value = false;
+    selectedCard.value = null;
+  };
+
   const navigateTo = (path) => {
     window.location.href = path;
   };
-  
-  import { ref } from 'vue';
+
   const showKadTauliah = ref(false);
   const showSuratTawaran = ref(false);
   </script>
