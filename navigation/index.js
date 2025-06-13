@@ -853,6 +853,27 @@ export default [
         ],
         meta: {},
       },
+      {
+        title: "Tuntutan",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Senarai Tuntutan (Pemohon)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Mohon Tuntutan (Pemohon)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
     ],
   },
 

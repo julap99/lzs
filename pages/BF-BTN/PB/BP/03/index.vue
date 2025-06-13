@@ -17,7 +17,8 @@
         type="form"
         :actions="false"
         @submit="generatePA"
-        v-model="paForm"
+        :modelValue="paForm"
+        @update:modelValue="(val) => Object.assign(paForm, val)"
       >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormKit
