@@ -308,7 +308,8 @@ const confirmSubmit = async () => {
     // Generate reference number
     nomorRujukan.value = `REF-${Date.now()}`;
     showConfirmationModal.value = false;
-    showSuccessModal.value = true;
+    // Redirect to syor page instead of showing success modal
+    router.push("/BF-BTN/PB/mohon-bantuan/syor");
   } catch (error) {
     console.error("Error submitting form:", error);
     // TODO: Show error message to user
