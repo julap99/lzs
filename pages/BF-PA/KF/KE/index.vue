@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Konfigurasi Elaun</h2>
+          <h2 class="text-xl font-semibold">Senarai Elaun</h2>
           <rs-button
             variant="primary"
             @click="navigateTo('/BF-PA/KF/KE/01')"
