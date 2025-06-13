@@ -788,6 +788,13 @@ export default [
             meta: {},
           },
           {
+            title: "Syorkan Bantuan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/PB/syorkan-bantuan",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Senarai Permohonan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/PB/senarai",

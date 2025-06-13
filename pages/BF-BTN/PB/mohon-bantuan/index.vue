@@ -21,6 +21,20 @@
             <h3 class="text-lg font-medium mb-4">Maklumat Profil Pemohon</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
+                type="select"
+                name="kategori_pemohon"
+                label="Kategori Pemohon"
+                :options="[
+                  { label: '-- Pilih --', value: '', disabled: true },
+                  { label: 'Individu', value: 'individu' },
+                  { label: 'Institusi', value: 'institusi' }
+                ]"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih kategori pemohon',
+                }"
+              />
+              <FormKit
                 type="text"
                 name="namaPemohon"
                 label="Nama Pemohon"
@@ -59,21 +73,21 @@
               Maklumat Permohonan Bantuan
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="jenisBantuan"
-                label="Jenis Bantuan Dipohon"
+              <CustomSelect
+                v-model="formData.jenisBantuan"
                 :options="jenisBantuanOptions"
-                validation="required"
-                :validation-messages="{
-                  required: 'Sila pilih jenis bantuan',
-                }"
+                label="Jenis Bantuan Dipohon"
+                search-placeholder="Cari jenis bantuan..."
+                :disabled="false"
               />
               <FormKit
                 type="select"
                 name="aidProduct"
                 label="Aid Product"
                 :options="aidProductOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
                 validation="required"
                 :validation-messages="{
                   required: 'Sila pilih aid product',
@@ -85,6 +99,9 @@
                 name="productPackage"
                 label="Product Package"
                 :options="productPackageOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
                 validation="required"
                 :validation-messages="{
                   required: 'Sila pilih product package',
@@ -136,18 +153,53 @@
             </div>
 
             <div class="mt-4">
-              <FormKit
-                type="file"
-                name="dokumenSokongan"
-                label="Dokumen Sokongan"
-                multiple
-                accept=".pdf,.jpg,.jpeg,.png"
-                validation="required"
-                :validation-messages="{
-                  required: 'Sila muat naik dokumen sokongan',
-                }"
-                help="Format yang diterima: PDF, JPG, JPEG, PNG"
-              />
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Dokumen Sokongan</h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Dokumen Geran
+                  </label>
+                  <FormKit
+                    type="file"
+                    name="dokumenGeran"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Sila muat naik dokumen geran',
+                    }"
+                    help="Format yang diterima: PDF, JPG, JPEG, PNG"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Dokumen Carian
+                  </label>
+                  <FormKit
+                    type="file"
+                    name="dokumenCarian"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Sila muat naik dokumen carian',
+                    }"
+                    help="Format yang diterima: PDF, JPG, JPEG, PNG"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Dokumen Sokongan Lain (Jika Ada)
+                  </label>
+                  <FormKit
+                    type="file"
+                    name="dokumenSokonganLain"
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    help="Format yang diterima: PDF, JPG, JPEG, PNG"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -189,7 +241,7 @@
       <template #footer>
         <div class="flex justify-center">
           <rs-button variant="primary" @click="handleViewStatus">
-            Lihat Status Permohonan
+            Pergi ke Senarai Permohonan
           </rs-button>
         </div>
       </template>
@@ -219,6 +271,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import CustomSelect from '~/components/CustomSelect.vue';
 
 definePageMeta({
   title: "Permohonan Bantuan",
@@ -246,84 +299,77 @@ const isStaff = computed(() => false);
 const bantuanData = ref({});
 
 // Import the bantuan data directly
-import bantuanJson from './Grouped by Aid Code.json';
+import bantuanJson from "./Grouped by Aid Code.json";
 
 // Set the bantuan data on component mount
 onMounted(() => {
   try {
     bantuanData.value = bantuanJson;
-    console.log('Loaded bantuan data:', bantuanData.value);
+    console.log("Loaded bantuan data:", bantuanData.value);
   } catch (error) {
-    console.error('Error loading bantuan data:', error);
+    console.error("Error loading bantuan data:", error);
   }
 });
 
 // Compute jenis bantuan options from the JSON data
 const jenisBantuanOptions = computed(() => {
-  const options = [
-    { label: '-- Pilih --', value: '', disabled: true }
+  if (!bantuanData.value.bantuan) return [];
+  
+  const options = Object.entries(bantuanData.value.bantuan).map(([categoryName]) => ({
+    label: categoryName,
+    value: categoryName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
   ];
-  if (bantuanData.value.bantuan) {
-    for (const [categoryName] of Object.entries(bantuanData.value.bantuan)) {
-      options.push({
-        label: categoryName,
-        value: categoryName
-      });
-    }
-  }
-  return options.sort((a, b) => {
-    if (a.disabled) return -1;
-    if (b.disabled) return 1;
-    return a.label.localeCompare(b.label);
-  });
 });
 
 // Compute aid product options based on selected jenis bantuan
 const aidProductOptions = computed(() => {
-  const options = [
-    { label: '-- Pilih --', value: '', disabled: true }
-  ];
-  if (!formData.value.jenisBantuan || !bantuanData.value.bantuan) return options;
-  
-  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
-  if (category) {
-    for (const [productName] of Object.entries(category)) {
-      options.push({
-        label: productName,
-        value: productName
-      });
-    }
+  if (!formData.value.jenisBantuan || !bantuanData.value.bantuan) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
   }
-  return options.sort((a, b) => {
-    if (a.disabled) return -1;
-    if (b.disabled) return 1;
-    return a.label.localeCompare(b.label);
-  });
+
+  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
+  if (!category) return [{ label: "-- Pilih --", value: "", disabled: true }];
+
+  const options = Object.entries(category).map(([productName]) => ({
+    label: productName,
+    value: productName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
 });
 
 // Compute product package options based on selected aid product
 const productPackageOptions = computed(() => {
-  const options = [
-    { label: '-- Pilih --', value: '', disabled: true }
-  ];
-  if (!formData.value.jenisBantuan || !formData.value.aidProduct || !bantuanData.value.bantuan) return options;
-  
-  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
-  if (category && category[formData.value.aidProduct]) {
-    options.push(...category[formData.value.aidProduct].map(pkg => ({
-      label: pkg,
-      value: pkg
-    })));
+  if (!formData.value.jenisBantuan || !formData.value.aidProduct || !bantuanData.value.bantuan) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
   }
-  return options.sort((a, b) => {
-    if (a.disabled) return -1;
-    if (b.disabled) return 1;
-    return a.label.localeCompare(b.label);
-  });
+
+  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
+  if (!category || !category[formData.value.aidProduct]) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const options = category[formData.value.aidProduct].map((pkg) => ({
+    label: pkg,
+    value: pkg,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
 });
 
 const kaedahPembayaranOptions = [
-  { label: '-- Pilih --', value: '', disabled: true },
+  { label: "-- Pilih --", value: "", disabled: true },
   { label: "Tunai", value: "TUNAI" },
   { label: "Bank In", value: "BANK_IN" },
   { label: "E-Wallet", value: "E_WALLET" },
@@ -365,7 +411,7 @@ const confirmSubmit = async () => {
     nomorRujukan.value = `REF-${Date.now()}`;
     showConfirmationModal.value = false;
     // Redirect to syor page instead of showing success modal
-    router.push("/BF-BTN/PB/mohon-bantuan/syor");
+    showSuccessModal.value = true;
   } catch (error) {
     console.error("Error submitting form:", error);
     // TODO: Show error message to user
