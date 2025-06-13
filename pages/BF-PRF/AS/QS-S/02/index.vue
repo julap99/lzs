@@ -1265,7 +1265,7 @@
             <div v-if="currentStep === 8">
               <h3 class="text-lg font-medium mb-4">H) Pengesahan</h3>
 
-              <!-- <div class="mb-6">
+              <div class="mb-6">
                 <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
                 <div class="flex flex-col gap-2">
                   <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
@@ -1320,10 +1320,10 @@
                     v-model="formData.verification.tarikhBantuan"
                   />
                 </div>
-              </div> -->
+              </div>
 
               <div class="mb-6">
-                <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
+                <h4 class="font-medium mb-3">2. Maklumat Perakuan Pemohon</h4>
                 <div class="flex flex-col gap-2">
                   <label class="font-medium">Hubungan kekeluargaan dengan kakitangan LZS?</label>
                   <FormKit
