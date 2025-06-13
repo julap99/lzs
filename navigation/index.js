@@ -656,6 +656,20 @@ export default [
           //   meta: {},
           // },
           {
+            title: "Pantas Perseorangan Service",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/QS/02",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Lengkap Service",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/FR/02",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Pendaftaran Pantas Perseorangan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/QS/01",
