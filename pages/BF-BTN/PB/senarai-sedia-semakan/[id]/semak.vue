@@ -104,7 +104,7 @@
           </rs-fieldset>
 
           <!-- Section 3: Perbandingan dengan Manual Kuasa -->
-          <rs-fieldset class="mb-6">
+          <!-- <rs-fieldset class="mb-6">
             <template #legend>
               <h3 class="text-lg font-medium">
                 Perbandingan dengan Manual Kuasa
@@ -154,7 +154,7 @@
                 </div>
               </div>
             </div>
-          </rs-fieldset>
+          </rs-fieldset> -->
 
           <!-- Section 4: Keputusan -->
           <rs-fieldset class="mb-6">

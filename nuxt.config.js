@@ -49,14 +49,14 @@ export default defineNuxtConfig({
     config: {
       inputs: {
         signature: {
-          type: 'input',
+          type: "input",
           props: {
-            type: 'text',
-            placeholder: 'Masukkan tandatangan digital penerima...'
-          }
-        }
-      }
-    }
+            type: "text",
+            placeholder: "Masukkan tandatangan digital penerima...",
+          },
+        },
+      },
+    },
   },
   pwa: {
     registerType: "autoUpdate",
@@ -550,5 +550,10 @@ export default defineNuxtConfig({
         requestSizeLimiter: false,
       },
     },
+  },
+  nitro: {
+    preset: "vercel",
+    compressPublicAssets: true,
+    minify: true,
   },
 });
