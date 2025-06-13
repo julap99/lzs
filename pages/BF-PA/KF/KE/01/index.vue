@@ -46,7 +46,7 @@
               <FormKit
                 type="text"
                 name="jawatan"
-                label="Jawatan"
+                label="Tajuk Elaun"
                 placeholder="Masukkan jawatan"
                 validation="required"
                 :validation-messages="{
@@ -58,13 +58,13 @@
               <FormKit
                 type="select"
                 name="jenisAktiviti"
-                label="Jenis Aktiviti"
-                placeholder="Pilih Jenis Aktiviti"
+                label="Jenis Elaun"
+                placeholder="Pilih Jenis Elaun"
                 :options="[
                   { label: 'Mesyuarat', value: 'MESYUARAT' },
                   { label: 'Program Luar', value: 'PROGRAM_LUAR' },
                   { label: 'Bancian', value: 'BANCIAN' },
-                  { label: 'Aktiviti Rasmi Lain', value: 'AKTIVITI_RASMI' },
+                  { label: 'Elaun Rasmi Lain', value: 'AKTIVITI_RASMI' },
                 ]"
                 validation="required"
                 :validation-messages="{
