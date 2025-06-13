@@ -663,7 +663,7 @@ export default [
             meta: {},
           },
           {
-            title: "Lengkap Service",
+            title: "Self Service Pendaftaran Lengkap",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/FR/02",
             child: [],
@@ -672,14 +672,14 @@ export default [
           {
             title: "Pendaftaran Pantas Perseorangan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/QS/01",
+            path: "/BF-PRF/AS/QS-S/01",
             child: [],
             meta: {},
           },
           {
             title: "Pendaftaran Lengkap",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/FR/01",
+            path: "/BF-PRF/AS/FR-S/01",
             child: [],
             meta: {},
           },
