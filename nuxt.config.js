@@ -1,6 +1,5 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  ssr: false,
   runtimeConfig: {
     auth: {
       secretAccess: process.env.NUXT_ACCESS_TOKEN_SECRET,
@@ -551,10 +550,5 @@ export default defineNuxtConfig({
         requestSizeLimiter: false,
       },
     },
-  },
-  nitro: {
-    preset: "vercel",
-    compressPublicAssets: true,
-    minify: true,
   },
 });
