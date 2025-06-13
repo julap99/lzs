@@ -124,82 +124,82 @@ export default [
   //   ],
   // },
 
-  {
-    header: "QS-1",
-    description: "Pendaftaran Pantas - Bantuan Kecemasan",
-    child: [
-      {
-        title: "Utama",
-        icon: "heroicons:home",
-        path: "/BF-PRF/AS/QS-1",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Carian Profil Asnaf",
-        icon: "heroicons:magnifying-glass",
-        path: "/BF-PRF/AS/QS-1/carian-profil",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Pendaftaran Pantas",
-        icon: "heroicons:user-plus",
-        path: "/BF-PRF/AS/QS-1/pendaftaran-pantas",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Permohonan Bantuan",
-        icon: "heroicons:document-text",
-        path: "/BF-PRF/AS/QS-1/permohonan-bantuan",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Temubual EKP",
-        icon: "heroicons:chat-bubble-left-right",
-        path: "/BF-PRF/AS/QS-1/temubual-ekp",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Kelulusan PKP",
-        icon: "heroicons:shield-check",
-        path: "/BF-PRF/AS/QS-1/kelulusan-pkp",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Sahkan Pengeluaran Tunai",
-        icon: "heroicons:document-text",
-        path: "/BF-PRF/AS/QS-1/sahkan-pengeluaran",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Serah Terima Tunai",
-        icon: "heroicons:hand-thumb-up",
-        path: "/BF-PRF/AS/QS-1/serah-terima-tunai",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Slip Penerimaan",
-        icon: "heroicons:document-text",
-        path: "/BF-PRF/AS/QS-1/slip-penerimaan",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Notifikasi Jejak Audit",
-        icon: "heroicons:bell",
-        path: "/BF-PRF/AS/QS-1/notifikasi-jejak-audit",
-        child: [],
-        meta: {},
-      },
-    ],
-  },
+  // {
+  //   header: "QS-1",
+  //   description: "Pendaftaran Pantas - Bantuan Kecemasan",
+  //   child: [
+  //     {
+  //       title: "Utama",
+  //       icon: "heroicons:home",
+  //       path: "/BF-PRF/AS/QS-1",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Carian Profil Asnaf",
+  //       icon: "heroicons:magnifying-glass",
+  //       path: "/BF-PRF/AS/QS-1/carian-profil",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Pendaftaran Pantas",
+  //       icon: "heroicons:user-plus",
+  //       path: "/BF-PRF/AS/QS-1/pendaftaran-pantas",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Permohonan Bantuan",
+  //       icon: "heroicons:document-text",
+  //       path: "/BF-PRF/AS/QS-1/permohonan-bantuan",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Temubual EKP",
+  //       icon: "heroicons:chat-bubble-left-right",
+  //       path: "/BF-PRF/AS/QS-1/temubual-ekp",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Kelulusan PKP",
+  //       icon: "heroicons:shield-check",
+  //       path: "/BF-PRF/AS/QS-1/kelulusan-pkp",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Sahkan Pengeluaran Tunai",
+  //       icon: "heroicons:document-text",
+  //       path: "/BF-PRF/AS/QS-1/sahkan-pengeluaran",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Serah Terima Tunai",
+  //       icon: "heroicons:hand-thumb-up",
+  //       path: "/BF-PRF/AS/QS-1/serah-terima-tunai",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Slip Penerimaan",
+  //       icon: "heroicons:document-text",
+  //       path: "/BF-PRF/AS/QS-1/slip-penerimaan",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Notifikasi Jejak Audit",
+  //       icon: "heroicons:bell",
+  //       path: "/BF-PRF/AS/QS-1/notifikasi-jejak-audit",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //   ],
+  // },
 
   // BF-DP
   {
@@ -1005,166 +1005,4 @@ export default [
   //   ],
   //   meta: {},
   // },
-
-  {
-    header: "Fungsi",
-    description: "",
-    child: [
-      {
-        title: "Komponen",
-        icon: "ph:gear-fine",
-        child: [
-          {
-            title: "Amaran",
-            path: "/komponen/amaran",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Butang",
-            path: "/komponen/butang",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Lencana",
-            path: "/komponen/lencana",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Collapse",
-            path: "/komponen/collapse",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Dropdown",
-            path: "/komponen/dropdown",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Modal",
-            path: "/komponen/modal",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Progress Bar",
-            path: "/komponen/progress-bar",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Tab",
-            path: "/komponen/tab",
-            child: [],
-            meta: {},
-          },
-        ],
-      },
-      {
-        title: "Datatable",
-        path: "/datatable",
-        icon: "ph:table",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Borang",
-        path: "/borang",
-        icon: "ph:clipboard-text",
-        child: [],
-      },
-      {
-        title: "Ikon",
-        path: "/ikon",
-        icon: "iconamoon:slightly-smiling-face",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Tipografi",
-        path: "/tipografi",
-        icon: "ph:text-aa",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Senarai Mesej",
-        path: "/senarai-mesej",
-        icon: "ic:outline-mail",
-        child: [],
-        meta: {},
-      },
-    ],
-    meta: {},
-  },
-  {
-    header: "Pentadbiran",
-    description: "Urus aplikasi anda",
-    child: [
-      {
-        title: "Konfigurasi",
-        icon: "ic:outline-settings",
-        child: [
-          {
-            title: "Persekitaran",
-            path: "/devtool/config/environment",
-          },
-        ],
-      },
-      {
-        title: "Penyunting Menu",
-        icon: "ci:menu-alt-03",
-        path: "/devtool/menu-editor",
-        child: [],
-      },
-      {
-        title: "Urus Pengguna",
-        path: "/devtool/user-management",
-        icon: "ph:user-circle-gear",
-        child: [
-          {
-            title: "Senarai Pengguna",
-            path: "/devtool/user-management/user",
-            icon: "",
-            child: [],
-          },
-          {
-            title: "Senarai Peranan",
-            path: "/devtool/user-management/role",
-            icon: "",
-            child: [],
-          },
-        ],
-      },
-      {
-        title: "Kandungan",
-        icon: "mdi:pencil-ruler",
-        child: [
-          {
-            title: "Penyunting",
-            path: "/devtool/content-editor",
-          },
-          {
-            title: "Templat",
-            path: "/devtool/content-editor/template",
-          },
-        ],
-      },
-      {
-        title: "Penyunting API",
-        path: "/devtool/api-editor",
-        icon: "material-symbols:api-rounded",
-        child: [],
-      },
-    ],
-    meta: {
-      auth: {
-        role: ["Developer"],
-      },
-    },
-  },
 ];
