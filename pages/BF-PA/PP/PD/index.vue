@@ -9,7 +9,7 @@
           <h2 class="text-xl font-semibold">
             Senarai Permohonan Penolong Amil
           </h2>
-          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PP/PD/Dashboard_PA')">Login as Penolong Amil</rs-button>
+          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PP/PD/PA_Login')">Login as Penolong Amil</rs-button>
         </div>
       </template>
 

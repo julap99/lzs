@@ -1596,11 +1596,6 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Carian Profil",
-    type: "link",
-    path: "/BF-PRF/AS/FR/01",
-  },
-  {
     name: "Borang Permohonan Lengkap",
     type: "current",
     path: "/BF-PRF/AS/FR/02",
@@ -1640,10 +1635,162 @@ const showLainInput = computed(() => {
 });
 
 const formData = ref({
-  komitmenTinggi: '',
-  keperluanMendesak: [],
-  lainKeperluan: '',
-  documents: [],
+  // Section A - Maklumat Peribadi Asnaf
+  nama_ketua_keluarga: '',
+  jenis_pengenalan: '',
+  no_pengenalan: '',
+  warganegara: '',
+  jantina: '',
+  bangsa: '',
+  bersekolah: '',
+  pendidikan_tertinggi: '',
+  tarikh_masuk_islam: '',
+  tarikh_masuk_kfam: '',
+  status_perkahwinan: '',
+
+  // Section B - Maklumat Kesihatan
+  tahap_kesihatan: '',
+  keadaan_kesihatan_sakit: '',
+  kos_penjagaan_sakit: '',
+  perbelanjaan_bulanan_sakit: '',
+  kesempurnaan_fizikal: '',
+  sebab_kecacatan: '',
+  tahap_kecacatan: '',
+  perbelanjaan_bulanan_oku: '',
+  keadaan_kesihatan_uzur: '',
+  kos_penjagaan_uzur: '',
+  perbelanjaan_bulanan_uzur: '',
+
+  // Section C - Kemahiran
+  kemahiran: '',
+
+  // Section D - Maklumat Kediaman
+  status_kediaman: '',
+  tapak_rumah: '',
+  jenis_rumah: '',
+  binaan_rumah: '',
+  keadaan_kediaman: '',
+  bekalan_air: '',
+  bil_air: '',
+  bekalan_elektrik: '',
+  bil_elektrik: '',
+  penyelenggaraan: '',
+  bil_penyelenggaraan: '',
+
+  // Section E - Maklumat Pinjaman
+  pemberi_pinjaman: '',
+  jenis_pinjaman: '',
+  bayaran_bulanan: '',
+  jumlah_perbelanjaan: '',
+  tahun_mula_pinjaman: '',
+  tahun_akhir_pinjaman: '',
+
+  // Section F - Maklumat Pemilikan
+  wang_simpanan: '',
+  emas: '',
+  saham: '',
+  kenderaan: '',
+  rumah_kedai: '',
+  tanah_sawah: '',
+
+  // Section G - Pengesahan
+  dibantu_penolong_amil: '',
+  nama_penolong_amil_bantuan: '',
+  kariah_bantuan: '',
+  tarikh_bantuan: '',
+  hubungan_kakitangan_lzs: '',
+  nama_kakitangan: '',
+  jawatan_kakitangan: '',
+  pejabat_kakitangan: '',
+  hubungan_kakitangan: '',
+  tarikh_perakuan: '',
+
+  // Section H - Pengesahan Bermastautin
+  ulasan_pengesahan: '',
+  nama_pengesah: '',
+  jawatan_pengesah: '',
+  no_telefon_pengesah: '',
+  tarikh_pengesahan_permastautin: '',
+
+  // Section I - Maklumat Penolong Amil
+  nama_penolong_amil: '',
+  jenis_permohonan: '',
+  tarikh_proses: '',
+
+  // Section J - Penilaian Awal
+  komitmen_tinggi: '',
+  keperluan_mendesak: [],
+  lain_keperluan: '',
+  dokumen_sokongan: [],
+
+  // Section B (Tanggungan) - Maklumat Peribadi Tanggungan
+  hubungan_pemohon: '',
+  nama_tanggungan: '',
+  jenis_pengenalan_tanggungan: '',
+  no_pengenalan_tanggungan: '',
+  jantina_tanggungan: '',
+  tarikh_lahir_tanggungan: '',
+  tempat_lahir_tanggungan: '',
+  bangsa_tanggungan: '',
+  status_perkahwinan_tanggungan: '',
+  tarikh_masuk_islam_tanggungan: '',
+  tarikh_masuk_kfam_tanggungan: '',
+  warganegara_tanggungan: '',
+  tempoh_menetap_selangor: '',
+  no_telefon_tanggungan: '',
+
+  // Maklumat Perbankan Tanggungan
+  nama_pemegang_akaun: '',
+  bank: '',
+  no_akaun_bank: '',
+  cara_pembayaran: '',
+  sebab_tunai: '',
+
+  // Pendidikan Tanggungan
+  bersekolah_tanggungan: '',
+  pendidikan_tertinggi_tanggungan: '',
+  jenis_sekolah: '',
+  nama_sekolah: '',
+  alamat_sekolah: '',
+  daerah_sekolah: '',
+  negeri_sekolah: '',
+  poskod_sekolah: '',
+  nama_sekolah_agama: '',
+  alamat_sekolah_agama: '',
+  daerah_sekolah_agama: '',
+  negeri_sekolah_agama: '',
+  poskod_sekolah_agama: '',
+  tinggal_bersama_keluarga: '',
+
+  // Kesihatan Tanggungan
+  tahap_kesihatan_tanggungan: '',
+  keadaan_kesihatan_sakit_tanggungan: '',
+  kos_penjagaan_sakit_tanggungan: '',
+  perbelanjaan_bulanan_sakit_tanggungan: '',
+  kesempurnaan_fizikal_tanggungan: '',
+  sebab_kecacatan_tanggungan: '',
+  tahap_kecacatan_tanggungan: '',
+  perbelanjaan_bulanan_oku_tanggungan: '',
+  keadaan_kesihatan_uzur_tanggungan: '',
+  kos_penjagaan_uzur_tanggungan: '',
+  perbelanjaan_bulanan_uzur_tanggungan: '',
+
+  // Kemahiran Tanggungan
+  kemahiran_tanggungan: '',
+
+  // Pekerjaan Tanggungan
+  pekerjaan_status: '',
+  sektor_pekerjaan: '',
+  nama_majikan: '',
+  no_tel_majikan: '',
+  alamat_majikan: '',
+  bandar_majikan: '',
+  poskod_majikan: '',
+  daerah_majikan: '',
+  negeri_majikan: '',
+  jawatan: '',
+  negara_pekerjaan: '',
+  status_jawatan: ''
 });
 
 const nextStepA = () => {
@@ -1710,7 +1857,7 @@ const handleSubmit = async () => {
     
     // Wait for 2 seconds before navigating
     // setTimeout(() => {
-      router.push("/BF-PRF/AS/FR/03");
+      router.push("/BF-PRF/AS/FR/04");
     // }, 2000);
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");

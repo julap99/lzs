@@ -30,13 +30,11 @@
               </h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
-                  type="select"
-                  name="idType"
-                  label="Jenis ID"
+                  type="text"
+                  name="idValue"
+                  label="Jenis ID (Kad Pengenalan, ID Foreign)"
                   validation="required"
-                  :options="idTypeOptions"
-                  placeholder="Pilih jenis ID"
-                  v-model="formData.personalInfo.idType"
+                  v-model="formData.personalInfo.idValue"
                   :validation-messages="{
                     required: 'Jenis ID adalah wajib',
                   }"
@@ -64,6 +62,16 @@
                     required: 'Nama adalah wajib',
                   }"
                 />
+                <FormKit
+                  type="text"
+                  name="islamName"
+                  label="Nama Selepas Islam(Mualaf)"
+                  validation="required"
+                  v-model="formData.personalInfo.islamName"
+                  :validation-messages="{
+                    required: 'Nama selepas Islam adalah wajib',
+                  }"
+                />
 
                 <FormKit
                   type="tel"
@@ -75,12 +83,50 @@
                     required: 'No Telefon adalah wajib',
                   }"
                 />
-
+                <FormKit
+                  type="select"
+                  name="religion"
+                  label="Agama"
+                  validation="required"
+                  :options="religionOptions"
+                  placeholder="Pilih agama"
+                  v-model="formData.personalInfo.religion"
+                  :validation-messages="{
+                    required: 'Agama adalah wajib',
+                  }"
+                />
                 <FormKit
                   type="text"
+                  name="otherIdNumber"
+                  label="No Polis/No Tentera/No Sijil Lahir"
+                  validation="required"
+                  v-model="formData.personalInfo.otherIdNumber"
+                  :validation-messages="{
+                    required: 'No Polis/No Tentera/No Sijil Lahir adalah wajib',
+                  }"
+                />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="date"
+                    name="passportStartDate"
+                    label="Tarikh mula passport"
+                    v-model="formData.personalInfo.passportStartDate"
+                  />
+                  <FormKit
+                    type="date"
+                    name="passportEndDate"
+                    label="Tarikh tamat passport"
+                    v-model="formData.personalInfo.passportEndDate"
+                  />
+                </div>
+
+                <FormKit
+                  type="select"
                   name="bankName"
                   label="Nama Bank"
                   validation="required"
+                  :options="bankOptions"
+                  placeholder="Pilih bank"
                   v-model="formData.personalInfo.bankName"
                   :validation-messages="{
                     required: 'Nama Bank adalah wajib',
@@ -96,6 +142,12 @@
                   :validation-messages="{
                     required: 'No Akaun Bank adalah wajib',
                   }"
+                />
+                <FormKit
+                  type="text"
+                  name="bankAccountHolder"
+                  label="Penama Bank Akaun"
+                  v-model="formData.personalInfo.bankAccountHolder"
                 />
 
                 <FormKit
@@ -245,6 +297,39 @@
                       required: 'Status poligami adalah wajib'
                     }"
                   />
+
+                  <div v-if="formData.personalInfo.polygamyStatus === 'ya'">
+                    <FormKit
+                      type="select"
+                      name="wivesCount"
+                      label="Bilangan Isteri"
+                      validation="required"
+                      :options="wivesCountOptions"
+                      placeholder="Pilih bilangan isteri"
+                      v-model="formData.personalInfo.wivesCount"
+                      :validation-messages="{
+                        required: 'Bilangan isteri adalah wajib'
+                      }"
+                    />
+                    <div v-for="(wife, idx) in formData.personalInfo.wives" :key="idx" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormKit
+                        type="text"
+                        :name="`wifeIc${idx}`"
+                        :label="`No Kp Pasangan #${idx+1}`"
+                        validation="required"
+                        v-model="wife.ic"
+                        :validation-messages="{ required: 'No Kp Pasangan adalah wajib' }"
+                      />
+                      <FormKit
+                        type="text"
+                        :name="`wifeName${idx}`"
+                        :label="`Nama Pasangan #${idx+1}`"
+                        validation="required"
+                        v-model="wife.name"
+                        :validation-messages="{ required: 'Nama Pasangan adalah wajib' }"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <FormKit
@@ -1357,6 +1442,20 @@
                   />
                 </div>
 
+                <div class="space-y-2">
+                  <FormKit
+                    type="textarea"
+                    v-model="formData.initialAssessment.additionalNotes"
+                    label="Catatan Tambahan"
+                    placeholder="Sila masukkan sebarang catatan tambahan yang berkaitan dengan permohonan ini"
+                    validation="required"
+                    validation-label="Catatan tambahan"
+                    validation-messages="{
+                      required: 'Sila masukkan catatan tambahan'
+                    }"
+                  />
+                </div>
+
                 <div class="flex justify-between gap-3 mt-6">
                   <rs-button
                     type="button"
@@ -1396,12 +1495,7 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Profiling",
-    type: "link",
-    path: "/dashboard",
-  },
-  {
-    name: "Borang Permohonan",
+    name: "Borang Permohonan Perseorangan",
     type: "current",
     path: "/BF-PRF/AS/QS/02",
   },
@@ -1413,12 +1507,18 @@ const totalStep = 10;
 // Form data structure
 const formData = ref({
   personalInfo: {
-    idType: "",
+    idValue: "",
     idNumber: "",
     name: "",
+    islamName: "",
     phone: "",
+    religion: "",
+    otherIdNumber: "",
+    passportStartDate: "",
+    passportEndDate: "",
     bankName: "",
     bankAccount: "",
+    bankAccountHolder: "",
     paymentMethod: "",
     cashPaymentReason: "",
     maritalStatus: "",
@@ -1432,6 +1532,8 @@ const formData = ref({
     assistanceType: "",
     disasterLocation: "",
     polygamyStatus: "",
+    wivesCount: "",
+    wives: [],
   },
   healthInfo: {
     status: "",
@@ -1520,6 +1622,7 @@ const formData = ref({
     keperluanMendesak: [],
     lainKeperluan: '',
     documents: [],
+    additionalNotes: '',
   },
 });
 
@@ -1595,6 +1698,38 @@ const positionStatusOptions = [
   { label: "Sementara", value: "temporary" },
 ];
 
+const bankOptions = [
+  { label: "Maybank", value: "maybank" },
+  { label: "CIMB", value: "cimb" },
+  { label: "RHB", value: "rhb" },
+  { label: "Bank Islam", value: "bank-islam" },
+  { label: "Bank Rakyat", value: "bank-rakyat" },
+  { label: "Public Bank", value: "public-bank" },
+  { label: "Hong Leong Bank", value: "hong-leong" },
+  { label: "Ambank", value: "ambank" },
+  { label: "BSN", value: "bsn" },
+  { label: "Affin Bank", value: "affin" },
+  { label: "UOB", value: "uob" },
+  { label: "OCBC", value: "ocbc" },
+  { label: "Standard Chartered", value: "standard-chartered" },
+  { label: "Alliance Bank", value: "alliance" },
+  { label: "Agrobank", value: "agrobank" },
+];
+
+const religionOptions = [
+  { label: "Islam", value: "islam" },
+  { label: "Kristian", value: "kristian" },
+  { label: "Buddha", value: "buddha" },
+  { label: "Hindu", value: "hindu" },
+  { label: "Lain-lain", value: "lain" }
+];
+
+const wivesCountOptions = [
+  { label: "2", value: 2 },
+  { label: "3", value: 3 },
+  { label: "4", value: 4 }
+];
+
 // Computed properties
 const hasSpouse = computed(() => {
   return ["married", "widower", "widow"].includes(
@@ -1618,7 +1753,7 @@ const showLainInput = computed(() => {
 
 // Methods
 const getPlaceholder = () => {
-  switch (formData.value.personalInfo.idType) {
+  switch (formData.value.personalInfo.idValue) {
     case "ic":
       return "Contoh: 901231025678";
     case "passport":
@@ -1748,6 +1883,31 @@ watch(
         islamDate: "",
         kfamDate: "",
       };
+    }
+  }
+);
+
+watch(
+  () => formData.value.personalInfo.wivesCount,
+  (newVal) => {
+    const count = parseInt(newVal) || 0;
+    if (count > 0) {
+      while (formData.value.personalInfo.wives.length < count) {
+        formData.value.personalInfo.wives.push({ ic: "", name: "" });
+      }
+      formData.value.personalInfo.wives = formData.value.personalInfo.wives.slice(0, count);
+    } else {
+      formData.value.personalInfo.wives = [];
+    }
+  }
+);
+
+watch(
+  () => formData.value.personalInfo.polygamyStatus,
+  (newVal) => {
+    if (newVal !== "ya") {
+      formData.value.personalInfo.wivesCount = "";
+      formData.value.personalInfo.wives = [];
     }
   }
 );
