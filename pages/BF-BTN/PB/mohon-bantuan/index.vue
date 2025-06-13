@@ -217,7 +217,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 definePageMeta({
@@ -242,32 +242,88 @@ const userProfile = ref({
 // Mock staff check - replace with actual auth check
 const isStaff = computed(() => false);
 
-// Mock options - replace with actual data from your API
-const jenisBantuanOptions = [
-  { label: "Bantuan Kewangan", value: "BANTUAN_KEWANGAN" },
-  { label: "Bantuan Pendidikan", value: "BANTUAN_PENDIDIKAN" },
-  { label: "Bantuan Perubatan", value: "BANTUAN_PERUBATAN" },
-];
+// Load the bantuan data from JSON
+const bantuanData = ref({});
 
-const aidProductOptions = computed(() => {
-  if (!formData.value.jenisBantuan) return [];
-  // Return filtered options based on jenisBantuan
-  return [
-    { label: "Bantuan Bulanan", value: "BANTUAN_BULANAN" },
-    { label: "Bantuan Sekali", value: "BANTUAN_SEKALI" },
-  ];
+// Import the bantuan data directly
+import bantuanJson from './Grouped by Aid Code.json';
+
+// Set the bantuan data on component mount
+onMounted(() => {
+  try {
+    bantuanData.value = bantuanJson;
+    console.log('Loaded bantuan data:', bantuanData.value);
+  } catch (error) {
+    console.error('Error loading bantuan data:', error);
+  }
 });
 
-const productPackageOptions = computed(() => {
-  if (!formData.value.aidProduct) return [];
-  // Return filtered options based on aidProduct
-  return [
-    { label: "Pakej A", value: "PAKEJ_A" },
-    { label: "Pakej B", value: "PAKEJ_B" },
+// Compute jenis bantuan options from the JSON data
+const jenisBantuanOptions = computed(() => {
+  const options = [
+    { label: '-- Pilih --', value: '', disabled: true }
   ];
+  if (bantuanData.value.bantuan) {
+    for (const [categoryName] of Object.entries(bantuanData.value.bantuan)) {
+      options.push({
+        label: categoryName,
+        value: categoryName
+      });
+    }
+  }
+  return options.sort((a, b) => {
+    if (a.disabled) return -1;
+    if (b.disabled) return 1;
+    return a.label.localeCompare(b.label);
+  });
+});
+
+// Compute aid product options based on selected jenis bantuan
+const aidProductOptions = computed(() => {
+  const options = [
+    { label: '-- Pilih --', value: '', disabled: true }
+  ];
+  if (!formData.value.jenisBantuan || !bantuanData.value.bantuan) return options;
+  
+  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
+  if (category) {
+    for (const [productName] of Object.entries(category)) {
+      options.push({
+        label: productName,
+        value: productName
+      });
+    }
+  }
+  return options.sort((a, b) => {
+    if (a.disabled) return -1;
+    if (b.disabled) return 1;
+    return a.label.localeCompare(b.label);
+  });
+});
+
+// Compute product package options based on selected aid product
+const productPackageOptions = computed(() => {
+  const options = [
+    { label: '-- Pilih --', value: '', disabled: true }
+  ];
+  if (!formData.value.jenisBantuan || !formData.value.aidProduct || !bantuanData.value.bantuan) return options;
+  
+  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
+  if (category && category[formData.value.aidProduct]) {
+    options.push(...category[formData.value.aidProduct].map(pkg => ({
+      label: pkg,
+      value: pkg
+    })));
+  }
+  return options.sort((a, b) => {
+    if (a.disabled) return -1;
+    if (b.disabled) return 1;
+    return a.label.localeCompare(b.label);
+  });
 });
 
 const kaedahPembayaranOptions = [
+  { label: '-- Pilih --', value: '', disabled: true },
   { label: "Tunai", value: "TUNAI" },
   { label: "Bank In", value: "BANK_IN" },
   { label: "E-Wallet", value: "E_WALLET" },
