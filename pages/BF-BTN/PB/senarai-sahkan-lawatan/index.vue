@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Senarai Permohonan untuk Disemak
+            Senarai Permohonan - Untuk Sahkan Lawatan
           </h2>
         </div>
       </template>
@@ -66,10 +66,10 @@
               <rs-button
                 variant="primary"
                 class="p-1 flex gap-2"
-                @click="handleReview(text)"
+                @click="handleSahkanLawatan(text)"
               >
                 <Icon name="ph:check" class="w-4 h-4" />
-                Semak
+                Sahkan Lawatan
               </rs-button>
             </div>
           </template>
@@ -124,7 +124,7 @@
 import { ref, computed } from "vue";
 
 definePageMeta({
-  title: "Senarai Permohonan untuk Disemak",
+  title: "Senarai Permohonan - Untuk Sahkan Lawatan",
 });
 
 const breadcrumb = ref([
@@ -134,9 +134,9 @@ const breadcrumb = ref([
     path: "/BF-BTN/PB/senarai",
   },
   {
-    name: "Senarai untuk Disemak",
+    name: "Untuk Sahkan Lawatan",
     type: "current",
-    path: "/BF-BTN/PB/senarai",
+    path: "/BF-BTN/PB/senarai-sahkan-lawatan",
   },
 ]);
 
@@ -153,18 +153,13 @@ const columns = [
     sortable: true,
   },
   {
-    key: "status",
-    label: "Status Permohonan",
-    sortable: true,
-  },
-  {
-    key: "tarikhTerima",
-    label: "Tarikh Terima Permohonan",
+    key: "tarikhSiasatan",
+    label: "Tarikh Siasatan",
     sortable: true,
   },
   {
     key: "namaPegawai",
-    label: "Nama Pegawai",
+    label: "Pegawai EOAD",
     sortable: true,
   },
   {
@@ -175,18 +170,12 @@ const columns = [
 ];
 
 // Options for filters
-const statusOptions = [
-  { label: "Semua Status", value: "" },
-  { label: "Baru", value: "baru" },
-  { label: "Dalam Semakan", value: "dalam_semakan" },
-  { label: "Tidak Lengkap", value: "tidak_lengkap" },
-  { label: "Untuk Siasatan", value: "untuk_siasatan" },
-];
+const statusOptions = [{ label: "Syor Bantuan Dikemukakan", value: "syor_bantuan_dikemukakan" }];
 
 // State
 const searchQuery = ref("");
 const filters = ref({
-  status: "",
+  status: "syor_bantuan_dikemukakan", // Default to "Syor Bantuan Dikemukakan"
 });
 const currentPage = ref(1);
 const pageSize = ref(10);
@@ -196,17 +185,17 @@ const applications = ref([
   {
     noRujukan: "NAS-2025-0001",
     namaPemohon: "Ahmad bin Abdullah",
-    status: "Baru",
-    tarikhTerima: "2024-03-20",
+    tarikhSiasatan: "2024-03-25",
     namaPegawai: "Siti binti Ali",
+    status: "syor_bantuan_dikemukakan",
     tindakan: "NAS-2025-0001",
   },
   {
     noRujukan: "NAS-2025-0002",
     namaPemohon: "Mohd bin Ismail",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
+    tarikhSiasatan: "2024-03-26",
     namaPegawai: "Aminah binti Hassan",
+    status: "syor_bantuan_dikemukakan",
     tindakan: "NAS-2025-0002",
   },
 ]);
@@ -227,7 +216,9 @@ const filteredApplications = computed(() => {
 
   // Apply filters
   if (filters.value.status) {
-    result = result.filter((app) => app.status === filters.value.status);
+    result = result.filter(
+      (app) => app.status.toLowerCase() === filters.value.status.toLowerCase()
+    );
   }
 
   // Apply pagination
@@ -253,20 +244,13 @@ const paginationEnd = computed(() => {
 });
 
 // Methods
-const handleViewDetails = (noRujukan) => {
-  navigateTo(`/BF-BTN/PB/senarai/${noRujukan}`);
-};
-
-const handleReview = (noRujukan) => {
-  navigateTo(`/BF-BTN/PB/senarai/${noRujukan}/semak`);
+const handleSahkanLawatan = (noRujukan) => {
+  navigateTo(`/BF-BTN/PB/senarai-sahkan-lawatan/${noRujukan}/sahkan`);
 };
 
 const getStatusVariant = (status) => {
   const variants = {
-    baru: "info",
-    dalam_semakan: "warning",
-    tidak_lengkap: "danger",
-    untuk_siasatan: "secondary",
+    syor_bantuan_dikemukakan: "warning",
   };
   return variants[status.toLowerCase()] || "default";
 };
