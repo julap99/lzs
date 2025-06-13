@@ -1357,6 +1357,20 @@
                   />
                 </div>
 
+                <div class="space-y-2">
+                  <FormKit
+                    type="textarea"
+                    v-model="formData.initialAssessment.additionalNotes"
+                    label="Catatan Tambahan"
+                    placeholder="Sila masukkan sebarang catatan tambahan yang berkaitan dengan permohonan ini"
+                    validation="required"
+                    validation-label="Catatan tambahan"
+                    validation-messages="{
+                      required: 'Sila masukkan catatan tambahan'
+                    }"
+                  />
+                </div>
+
                 <div class="flex justify-between gap-3 mt-6">
                   <rs-button
                     type="button"
@@ -1396,12 +1410,7 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Profiling",
-    type: "link",
-    path: "/dashboard",
-  },
-  {
-    name: "Borang Permohonan",
+    name: "Borang Permohonan Perseorangan",
     type: "current",
     path: "/BF-PRF/AS/QS/02",
   },
@@ -1520,6 +1529,7 @@ const formData = ref({
     keperluanMendesak: [],
     lainKeperluan: '',
     documents: [],
+    additionalNotes: '',
   },
 });
 
