@@ -30,10 +30,14 @@
               </h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
-                  type="text"
+                  type="select"
                   name="idValue"
-                  label="Jenis ID (Kad Pengenalan, ID Foreign)"
+                  label="Jenis ID"
                   validation="required"
+                  :options="[
+                    { label: 'Kad Pengenalan', value: 'ic' },
+                    { label: 'Foreign ID', value: 'foreign-id' }
+                  ]"
                   v-model="formData.personalInfo.idValue"
                   :validation-messages="{
                     required: 'Jenis ID adalah wajib',
@@ -54,6 +58,17 @@
 
                 <FormKit
                   type="text"
+                  name="otherIdNumber"
+                  label="No Polis/No Tentera/No Sijil Lahir"
+                  validation="required"
+                  v-model="formData.personalInfo.otherIdNumber"
+                  :validation-messages="{
+                    required: 'No Polis/No Tentera/No Sijil Lahir adalah wajib',
+                  }"
+                />
+
+                <FormKit
+                  type="text"
                   name="name"
                   label="Nama"
                   validation="required"
@@ -62,6 +77,7 @@
                     required: 'Nama adalah wajib',
                   }"
                 />
+
                 <FormKit
                   type="text"
                   name="islamName"
@@ -70,6 +86,62 @@
                   v-model="formData.personalInfo.islamName"
                   :validation-messages="{
                     required: 'Nama selepas Islam adalah wajib',
+                  }"
+                />
+
+                <FormKit
+                  type="select"
+                  name="gender"
+                  label="Jantina"
+                  validation="required"
+                  :options="[
+                    { label: 'Lelaki', value: 'L' },
+                    { label: 'Perempuan', value: 'P' }
+                  ]"
+                  placeholder="Pilih jantina"
+                  v-model="formData.personalInfo.gender"
+                  :validation-messages="{
+                    required: 'Jantina adalah wajib'
+                  }"
+                />
+
+                <FormKit
+                  type="date"
+                  name="dateOfBirth"
+                  label="Tarikh Lahir"
+                  validation="required"
+                  v-model="formData.personalInfo.dateOfBirth"
+                  :validation-messages="{
+                    required: 'Tarikh lahir adalah wajib',
+                  }"
+                />
+
+                <FormKit
+                  type="select"
+                  name="citizenship"
+                  label="Warganegara"
+                  validation="required"
+                  :options="[
+                    { label: 'Warganegara', value: 'warganegara' },
+                    { label: 'Bukan Warganegara', value: 'bukan-warganegara' }
+                  ]"
+                  placeholder="Pilih status warganegara"
+                  v-model="formData.personalInfo.citizenship"
+                  :validation-messages="{
+                    required: 'Status warganegara adalah wajib',
+                  }"
+                />
+
+                <FormKit
+                  type="select"
+                  name="religion"
+                  label="Agama"
+                  validation="required"
+                  :options="religionOptions"
+                  placeholder="Pilih agama"
+                  v-model="formData.personalInfo.religion"
+                  :validation-messages="{
+                    required: 'Agama adalah wajib',
                   }"
                 />
 
@@ -83,43 +155,139 @@
                     required: 'No Telefon adalah wajib',
                   }"
                 />
+
                 <FormKit
-                  type="select"
-                  name="religion"
-                  label="Agama"
-                  validation="required"
-                  :options="religionOptions"
-                  placeholder="Pilih agama"
-                  v-model="formData.personalInfo.religion"
+                  type="email"
+                  name="email"
+                  label="Emel"
+                  validation="required|email"
+                  v-model="formData.personalInfo.email"
                   :validation-messages="{
-                    required: 'Agama adalah wajib',
+                    required: 'Emel adalah wajib',
+                    email: 'Sila masukkan emel yang sah'
                   }"
                 />
-                <FormKit
-                  type="text"
-                  name="otherIdNumber"
-                  label="No Polis/No Tentera/No Sijil Lahir"
-                  validation="required"
-                  v-model="formData.personalInfo.otherIdNumber"
-                  :validation-messages="{
-                    required: 'No Polis/No Tentera/No Sijil Lahir adalah wajib',
-                  }"
-                />
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormKit
-                    type="date"
-                    name="passportStartDate"
-                    label="Tarikh mula passport"
-                    v-model="formData.personalInfo.passportStartDate"
-                  />
-                  <FormKit
-                    type="date"
-                    name="passportEndDate"
-                    label="Tarikh tamat passport"
-                    v-model="formData.personalInfo.passportEndDate"
-                  />
+
+                <!-- Passport Information (Conditional) -->
+                <div v-if="formData.personalInfo.idValue === 'foreign-id'" class="md:col-span-2">
+                  <h4 class="text-md font-medium mb-3">Maklumat Passport</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormKit
+                      type="date"
+                      name="passportStartDate"
+                      label="Tarikh mula passport"
+                      v-model="formData.personalInfo.passportStartDate"
+                    />
+                    <FormKit
+                      type="date"
+                      name="passportEndDate"
+                      label="Tarikh tamat passport"
+                      v-model="formData.personalInfo.passportEndDate"
+                    />
+                  </div>
                 </div>
 
+                <!-- Islamic Information Section -->
+                <div class="md:col-span-2">
+                  <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
+                </div>
+                <FormKit
+                  type="date"
+                  name="islamDate"
+                  label="Tarikh Masuk Islam"
+                  v-model="formData.personalInfo.islamDate"
+                  :validation-messages="{
+                    required: 'Tarikh masuk Islam adalah wajib',
+                  }"
+                />
+
+                <FormKit
+                  type="date"
+                  name="kfamDate"
+                  label="Tarikh Masuk KFAM"
+                  v-model="formData.personalInfo.kfamDate"
+                  :validation-messages="{
+                    required: 'Tarikh masuk KFAM adalah wajib',
+                  }"
+                />
+
+                <!-- Marital Status Section -->
+                <div class="md:col-span-2">
+                  <h4 class="text-md font-medium mb-3">Status Perkahwinan</h4>
+                </div>
+                <FormKit
+                  type="select"
+                  name="maritalStatus"
+                  label="Status Perkahwinan"
+                  validation="required"
+                  :options="[
+                    { label: 'Bujang', value: 'bujang' },
+                    { label: 'Berkahwin', value: 'berkahwin' },
+                    { label: 'Bercerai', value: 'bercerai' },
+                    { label: 'Duda', value: 'duda' },
+                    { label: 'Janda', value: 'janda' }
+                  ]"
+                  placeholder="Pilih status perkahwinan"
+                  v-model="formData.personalInfo.maritalStatus"
+                  :validation-messages="{
+                    required: 'Status perkahwinan adalah wajib'
+                  }"
+                />
+
+                <FormKit
+                  type="select"
+                  name="polygamyStatus"
+                  label="Status Poligami"
+                  validation="required"
+                  :options="[
+                    { label: 'Tidak', value: 'tidak' },
+                    { label: 'Ya', value: 'ya' }
+                  ]"
+                  placeholder="Pilih status poligami"
+                  v-model="formData.personalInfo.polygamyStatus"
+                  :validation-messages="{
+                    required: 'Status poligami adalah wajib'
+                  }"
+                />
+
+                <!-- Polygamy Information (Conditional) -->
+                <div v-if="formData.personalInfo.polygamyStatus === 'ya'" class="md:col-span-2">
+                  <FormKit
+                    type="select"
+                    name="wivesCount"
+                    label="Bilangan Isteri"
+                    validation="required"
+                    :options="wivesCountOptions"
+                    placeholder="Pilih bilangan isteri"
+                    v-model="formData.personalInfo.wivesCount"
+                    :validation-messages="{
+                      required: 'Bilangan isteri adalah wajib'
+                    }"
+                  />
+                  <div v-for="(wife, idx) in formData.personalInfo.wives" :key="idx" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <FormKit
+                      type="text"
+                      :name="`wifeIc${idx}`"
+                      :label="`No Kp Pasangan #${idx+1}`"
+                      validation="required"
+                      v-model="wife.ic"
+                      :validation-messages="{ required: 'No Kp Pasangan adalah wajib' }"
+                    />
+                    <FormKit
+                      type="text"
+                      :name="`wifeName${idx}`"
+                      :label="`Nama Pasangan #${idx+1}`"
+                      validation="required"
+                      v-model="wife.name"
+                      :validation-messages="{ required: 'Nama Pasangan adalah wajib' }"
+                    />
+                  </div>
+                </div>
+
+                <!-- Bank Information Section -->
+                <div class="md:col-span-2">
+                  <h4 class="text-md font-medium mb-3">Maklumat Bank</h4>
+                </div>
                 <FormKit
                   type="select"
                   name="bankName"
@@ -143,6 +311,7 @@
                     required: 'No Akaun Bank adalah wajib',
                   }"
                 />
+
                 <FormKit
                   type="text"
                   name="bankAccountHolder"
@@ -167,6 +336,7 @@
                   }"
                 />
 
+                <!-- Cash Payment Reason (Conditional) -->
                 <div v-if="formData.personalInfo.paymentMethod === 'tunai'" class="md:col-span-2">
                   <FormKit
                     type="select"
@@ -187,168 +357,47 @@
                   />
                 </div>
 
-                <FormKit
-                  type="email"
-                  name="email"
-                  label="Emel"
-                  validation="required|email"
-                  v-model="formData.personalInfo.email"
-                  :validation-messages="{
-                    required: 'Emel adalah wajib',
-                    email: 'Sila masukkan emel yang sah'
-                  }"
-                />
-
-                <FormKit
-                  type="select"
-                  name="citizenship"
-                  label="Warganegara"
-                  validation="required"
-                  :options="[
-                    { label: 'Warganegara', value: 'warganegara' },
-                    { label: 'Bukan Warganegara', value: 'bukan-warganegara' }
-                  ]"
-                  placeholder="Pilih status warganegara"
-                  v-model="formData.personalInfo.citizenship"
-                  :validation-messages="{
-                    required: 'Status warganegara adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="date"
-                  name="dateOfBirth"
-                  label="Tarikh Lahir"
-                  validation="required"
-                  v-model="formData.personalInfo.dateOfBirth"
-                  :validation-messages="{
-                    required: 'Tarikh lahir adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="date"
-                  name="islamDate"
-                  label="Tarikh Masuk Islam"
-                  v-model="formData.personalInfo.islamDate"
-                  :validation-messages="{
-                    required: 'Tarikh masuk Islam adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="date"
-                  name="kfamDate"
-                  label="Tarikh Masuk KFAM"
-                  v-model="formData.personalInfo.kfamDate"
-                  :validation-messages="{
-                    required: 'Tarikh masuk KFAM adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="select"
-                  name="gender"
-                  label="Jantina"
-                  validation="required"
-                  :options="[
-                    { label: 'Lelaki', value: 'L' },
-                    { label: 'Perempuan', value: 'P' }
-                  ]"
-                  placeholder="Pilih jantina"
-                  v-model="formData.personalInfo.gender"
-                  :validation-messages="{
-                    required: 'Jantina adalah wajib'
-                  }"
-                />
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Location Information Section -->
+                <div class="md:col-span-2">
+                  <h4 class="text-md font-medium mb-3">Maklumat Lokasi</h4>
+                </div>
+                <div class="flex gap-2">
                   <FormKit
-                    type="select"
-                    name="maritalStatus"
-                    label="Status Perkahwinan"
+                    v-model="formData.personalInfo.assistanceType"
+                    label="Lokasi"
+                    type="text"
                     validation="required"
-                    :options="[
-                      { label: 'Bujang', value: 'bujang' },
-                      { label: 'Berkahwin', value: 'berkahwin' },
-                      { label: 'Bercerai', value: 'bercerai' },
-                      { label: 'Duda', value: 'duda' },
-                      { label: 'Janda', value: 'janda' }
-                    ]"
-                    placeholder="Pilih status perkahwinan"
-                    v-model="formData.personalInfo.maritalStatus"
-                    :validation-messages="{
-                      required: 'Status perkahwinan adalah wajib'
-                    }"
+                    validation-visibility="dirty"
+                    class="flex-1"
                   />
-
-                  <FormKit
-                    type="select"
-                    name="polygamyStatus"
-                    label="Status Poligami"
-                    validation="required"
-                    :options="[
-                      { label: 'Tidak', value: 'tidak' },
-                      { label: 'Ya', value: 'ya' }
-                    ]"
-                    placeholder="Pilih status poligami"
-                    v-model="formData.personalInfo.polygamyStatus"
-                    :validation-messages="{
-                      required: 'Status poligami adalah wajib'
-                    }"
-                  />
-
-                  <div v-if="formData.personalInfo.polygamyStatus === 'ya'">
-                    <FormKit
-                      type="select"
-                      name="wivesCount"
-                      label="Bilangan Isteri"
-                      validation="required"
-                      :options="wivesCountOptions"
-                      placeholder="Pilih bilangan isteri"
-                      v-model="formData.personalInfo.wivesCount"
-                      :validation-messages="{
-                        required: 'Bilangan isteri adalah wajib'
-                      }"
-                    />
-                    <div v-for="(wife, idx) in formData.personalInfo.wives" :key="idx" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormKit
-                        type="text"
-                        :name="`wifeIc${idx}`"
-                        :label="`No Kp Pasangan #${idx+1}`"
-                        validation="required"
-                        v-model="wife.ic"
-                        :validation-messages="{ required: 'No Kp Pasangan adalah wajib' }"
-                      />
-                      <FormKit
-                        type="text"
-                        :name="`wifeName${idx}`"
-                        :label="`Nama Pasangan #${idx+1}`"
-                        validation="required"
-                        v-model="wife.name"
-                        :validation-messages="{ required: 'Nama Pasangan adalah wajib' }"
-                      />
-                    </div>
-                  </div>
+                  <rs-button
+                    type="button"
+                    variant="primary-outline"
+                    @click="selectAssistanceType"
+                    class="whitespace-nowrap mt-7"
+                  >
+                    <i class="fas fa-location-dot mr-2"></i>
+                    Dapatkan Lokasi
+                  </rs-button>
                 </div>
 
                 <FormKit
                   type="select"
-                  name="assistanceType"
-                  label="Saluran Bantuan (jika login as kaunter, option yang akan dilihat hanya Bencana)"
+                  name="healthStatus"
+                  label="Saluran Bencana"
                   validation="required"
                   :options="[
                     { label: 'Bencana', value: 'bencana' },
-                    { label: 'Tunai Kaunter(Express)', value: 'express' },
-                    { label: 'Tunai Lapangan)', value: 'lapangan' },
+                    { label: 'Tiada', value: 'tiada' }
                   ]"
-                  placeholder="Pilih bantuan"
-                  v-model="formData.personalInfo.assistanceType"
-                  :validation-messages="{ 
-                    required: 'Jenis bantuan adalah wajib'
+                  placeholder="Pilih saluran bencana"
+                  v-model="formData.healthInfo.status"
+                  :validation-messages="{
+                    required: 'Saluran bencana adalah wajib'
                   }"
                 />
 
+                <!-- Disaster Location (Conditional) -->
                 <FormKit
                   v-if="formData.personalInfo.assistanceType === 'bencana'"
                   type="select"
@@ -453,7 +502,7 @@
 
             <!-- Step 3: Maklumat Pasangan -->
             <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">C) Maklumat Pasangan</h3>
+              <h3 class="text-lg font-medium mb-4">C) Maklumat Pasangan(Jika tinggal bersama Di alamat yang sama)</h3>
 
               <FormKit
                 type="select"
@@ -473,53 +522,79 @@
                 v-model="statusKahwin"
               />
 
-              <div
-                v-if="statusKahwin == 'Berkahwin'"
-                class="grid grid-cols-1 md:grid-cols-2 gap-4"
-              >
-                <FormKit
-                  type="select"
-                  name="spouseIdType"
-                  label="Jenis ID Pasangan"
-                  validation="required"
-                  :options="idTypeOptions"
-                  placeholder="Pilih jenis ID"
-                  v-model="formData.spouseInfo.idType"
-                  :validation-messages="{
-                    required: 'Jenis ID adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="text"
-                  name="spouseIdNumber"
-                  label="Nombor ID Pasangan"
-                  validation="required"
-                  v-model="formData.spouseInfo.idNumber"
-                  :validation-messages="{
-                    required: 'Nombor ID adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="text"
-                  name="spouseName"
-                  label="Nama Pasangan"
-                  validation="required"
-                  v-model="formData.spouseInfo.name"
-                  :validation-messages="{
-                    required: 'Nama adalah wajib',
-                  }"
-                />
+              <div v-if="statusKahwin == 'Berkahwin'">
+                <div v-for="(spouse, idx) in formData.spouseInfo" :key="idx" class="mb-8 p-4 border border-gray-200 rounded-lg">
+                  <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-md font-medium">
+                      <span>Pasangan #</span>
+                      <span>{{ idx + 1 }}</span>
+                    </h4>
+                    <button type="button" @click="removeSpouse(idx)" class="text-red-500 hover:text-red-700">
+                      <Icon name="mdi:delete" size="1.25rem" />
+                    </button>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormKit
+                      type="select"
+                      :name="`spouseIdType${idx}`"
+                      label="Jenis ID Pasangan"
+                      validation="required"
+                      :options="idTypeOptions"
+                      placeholder="Pilih jenis ID"
+                      v-model="spouse.idType"
+                      :validation-messages="{ required: 'Jenis ID adalah wajib' }"
+                    />
+                    <FormKit
+                      type="text"
+                      :name="`spouseIdNumber${idx}`"
+                      label="Nombor ID Pasangan"
+                      validation="required"
+                      v-model="spouse.idNumber"
+                      :validation-messages="{ required: 'Nombor ID adalah wajib' }"
+                    />
+                    <FormKit
+                      type="date"
+                      :name="`spousePassportStartDate${idx}`"
+                      label="Tarikh Mula Passport"
+                      v-model="spouse.passportStartDate"
+                    />
+                    <FormKit
+                      type="date"
+                      :name="`spousePassportEndDate${idx}`"
+                      label="Tarikh Akhir Passport"
+                      v-model="spouse.passportEndDate"
+                    />
+                    <FormKit
+                      type="text"
+                      :name="`spouseName${idx}`"
+                      label="Nama Pasangan"
+                      validation="required"
+                      v-model="spouse.name"
+                      :validation-messages="{ required: 'Nama adalah wajib' }"
+                    />
+                    <FormKit
+                      type="file"
+                      :name="`spouseSupportDoc${idx}`"
+                      label="Muat naik dokumen sokongan pasangan"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      v-model="spouse.supportDoc"
+                      help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    />
+                  </div>
+                </div>
+                <div class="flex justify-center mt-4">
+                  <rs-button variant="secondary" @click="addSpouse" type="button">
+                    <Icon name="mdi:plus" class="mr-1" size="1rem" />
+                    Tambah Pasangan
+                  </rs-button>
+                </div>
               </div>
-
               <div v-else class="bg-gray-50 p-4 rounded-lg">
                 <p>
                   Tiada maklumat pasangan diperlukan berdasarkan status
                   perkahwinan yang dipilih.
                 </p>
               </div>
-
               <div class="flex justify-between gap-3 mt-6">
                 <rs-button
                   type="button"
@@ -552,14 +627,13 @@
                 </div>
 
                 <FormKit
-                  type="text"
+                  type="select"
                   name="district"
                   label="Daerah"
                   validation="required"
+                  :options="districtOptions"
                   v-model="formData.addressInfo.district"
-                  :validation-messages="{
-                    required: 'Daerah adalah wajib',
-                  }"
+                  :validation-messages="{ required: 'Daerah adalah wajib' }"
                 />
 
                 <FormKit
@@ -575,14 +649,13 @@
                 />
 
                 <FormKit
-                  type="text"
+                  type="select"
                   name="kariah"
                   label="Kariah"
                   validation="required"
+                  :options="kariahOptions"
                   v-model="formData.addressInfo.kariah"
-                  :validation-messages="{
-                    required: 'Kariah adalah wajib',
-                  }"
+                  :validation-messages="{ required: 'Kariah adalah wajib' }"
                 />
 
                 <FormKit
@@ -600,33 +673,11 @@
                 />
 
                 <FormKit
-                  type="select"
+                  type="text"
                   name="state"
                   label="Negeri"
-                  validation="required"
-                  :options="[
-                    { label: 'Selangor', value: 'selangor' },
-                    { label: 'Kuala Lumpur', value: 'kl' },
-                    { label: 'Putrajaya', value: 'putrajaya' },
-                    { label: 'Negeri Sembilan', value: 'ns' },
-                    { label: 'Melaka', value: 'melaka' },
-                    { label: 'Johor', value: 'johor' },
-                    { label: 'Pahang', value: 'pahang' },
-                    { label: 'Terengganu', value: 'terengganu' },
-                    { label: 'Kelantan', value: 'kelantan' },
-                    { label: 'Perak', value: 'perak' },
-                    { label: 'Perlis', value: 'perlis' },
-                    { label: 'Kedah', value: 'kedah' },
-                    { label: 'Pulau Pinang', value: 'penang' },
-                    { label: 'Sabah', value: 'sabah' },
-                    { label: 'Sarawak', value: 'sarawak' },
-                    { label: 'Labuan', value: 'labuan' }
-                  ]"
-                  placeholder="Pilih negeri"
                   v-model="formData.addressInfo.state"
-                  :validation-messages="{
-                    required: 'Negeri adalah wajib'
-                  }"
+                  disabled
                 />
 
                 <div class="md:col-span-2">
@@ -709,6 +760,35 @@
                       required: 'Maklumat ini adalah wajib',
                     }"
                   />
+                </div>
+
+                <FormKit
+                  type="file"
+                  name="addressSupportDoc"
+                  label="Muat naik dokumen sokongan alamat"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  v-model="formData.addressInfo.addressSupportDoc"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                />
+
+                <div class="flex gap-2">
+                  <FormKit
+                    v-model="formData.addressInfo.location"
+                    label="Lokasi"
+                    type="text"
+                    validation="required"
+                    validation-visibility="dirty"
+                    class="flex-1"
+                  />
+                  <rs-button
+                    type="button"
+                    variant="primary-outline"
+                    @click="selectAddressLocation"
+                    class="whitespace-nowrap mt-7"
+                  >
+                    <i class="fas fa-location-dot mr-2"></i>
+                    Dapatkan Lokasi
+                  </rs-button>
                 </div>
               </div>
 
@@ -905,6 +985,7 @@
                     :name="`dependent${index}KKID`"
                     label="KKID"
                     validation="required"
+                    disabled
                     v-model="dependent.kkid"
                     :validation-messages="{
                       required: 'KKID adalah wajib',
@@ -914,7 +995,7 @@
                   <FormKit
                     type="text"
                     :name="`dependent${index}NewIC`"
-                    label="No Kad Pengenalan (baru) / Foreign ID"
+                    label="No Kad Pengenalan / Foreign ID"
                     validation="required"
                     v-model="dependent.newIC"
                     :validation-messages="{
@@ -925,12 +1006,26 @@
                   <FormKit
                     type="text"
                     :name="`dependent${index}OtherID`"
-                    label="No Polis/No Tentera/No Pasport/No Sijil Lahir"
+                    label="No Polis/No Tentera/No Sijil Lahir"
                     validation="required"
                     v-model="dependent.otherID"
                     :validation-messages="{
                       required: 'No ID adalah wajib',
                     }"
+                  />
+
+                  <FormKit
+                    type="date"
+                    :name="`dependent${index}PassportStartDate`"
+                    label="Tarikh mula passport"
+                    v-model="dependent.passportStartDate"
+                  />
+
+                  <FormKit
+                    type="date"
+                    :name="`dependent${index}PassportEndDate`"
+                    label="Tarikh tamat passport"
+                    v-model="dependent.passportEndDate"
                   />
 
                   <FormKit
@@ -1209,10 +1304,11 @@
                   />
 
                   <FormKit
-                    type="text"
+                    type="select"
                     name="kariah_bantuan"
                     label="Kariah"
                     validation="required"
+                    :options="kariahOptions"
                     v-model="formData.verification.kariahBantuan"
                   />
 
@@ -1290,7 +1386,10 @@
                   >Kembali</rs-button
                 >
                 <div class="flex gap-3">
-                  <rs-button type="submit" variant="primary" @click="nextStep"
+                  <!-- <rs-button type="button" variant="secondary" @click="handleSave"
+                    >Simpan</rs-button
+                  > -->
+                  <rs-button type="button" variant="primary" @click="nextStep"
                     >Seterusnya ke Pengesahan Bermastautin</rs-button
                   >
                 </div>
@@ -1305,13 +1404,13 @@
               </p>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
+                <!-- <FormKit
                   type="textarea"
                   name="ulasan_pengesahan"
                   label="Ulasan"
                   validation="required"
                   v-model="formData.verification.ulasanPengesahan"
-                />
+                /> -->
 
                 <FormKit
                   type="text"
@@ -1344,6 +1443,21 @@
                   validation="required"
                   v-model="formData.verification.tarikhPengesahanPermastautin"
                 />
+
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="file"
+                    name="dokumen_pengesahan_permastautin"
+                    label="Muat naik dokumen pengesahan bermastautin"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    v-model="formData.verification.dokumenPengesahanPermastautin"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required"
+                    validation-messages="{
+                      required: 'Dokumen pengesahan bermastautin adalah wajib'
+                    }"
+                  />
+                </div>
               </div>
 
               <div class="flex justify-between gap-3 mt-6">
@@ -1394,6 +1508,7 @@
                       { label: 'Kematian', value: 'kematian', disabled: isTidakMendesakSelected },
                       { label: 'Konflik Keluarga (tiada tempat bergantung)', value: 'konflik', disabled: isTidakMendesakSelected },
                       { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah', disabled: isTidakMendesakSelected },
+                      { label: 'Tunggakan Bil Utiliti', value: 'tunggakanUtiliti', disabled: isTidakMendesakSelected },
                       { label: 'Selain dari di atas', value: 'lain', disabled: isTidakMendesakSelected },
                       { label: 'Tidak mendesak', value: 'tidakMendesak' }
                     ]"
@@ -1476,8 +1591,8 @@
             </div>
           </FormKit>
         </div>
-      </template></rs-card
-    >
+      </template>
+    </rs-card>
   </div>
 </template>
 
@@ -1541,29 +1656,28 @@ const formData = ref({
     chronicIllnessDoc: null,
     disabilityDoc: null
   },
-  spouseInfo: {
-    idType: "",
-    idNumber: "",
-    name: "",
-    phone: "",
-    bankName: "",
-    bankAccount: "",
-    healthStatus: "",
-    islamDate: "",
-    kfamDate: "",
-  },
+  spouseInfo: [
+    {
+      idType: "",
+      idNumber: "",
+      name: "",
+      supportDoc: null
+    }
+  ],
   addressInfo: {
     address: "",
     district: "",
     postcode: "",
     kariah: "",
-    state: "",
+    state: "Selangor",
     residenceYears: "",
     residenceStatus: "",
     paymentStatus: "",
     monthlyPayment: "",
     rentAmount: "",
     otherResidenceDetail: "",
+    addressSupportDoc: null,
+    location: ""
   },
   schoolDependents: [],
   nonSchoolDependents: [],
@@ -1590,7 +1704,8 @@ const formData = ref({
     namaPengesah: "",
     jawatanPengesah: "",
     noTelefonPengesah: "",
-    tarikhPengesahanPermastautin: ""
+    tarikhPengesahanPermastautin: "",
+    dokumenPengesahanPermastautin: null
   },
   income: {
     familyHeadName: "",
@@ -1631,8 +1746,7 @@ const statusKahwin = ref(null);
 // Options for select fields
 const idTypeOptions = [
   { label: "Kad Pengenalan", value: "ic" },
-  { label: "Pasport", value: "passport" },
-  { label: "Sijil Lahir", value: "birth-cert" },
+  { label: "Foreign Id", value: "foreign-id" },
 ];
 
 const maritalStatusOptions = [
@@ -1779,7 +1893,9 @@ const addSchoolDependent = () => {
     healthStatus: "",
     chronicDoc: null,
     disabilityDoc: null,
-    healthCost: ""
+    healthCost: "",
+    passportStartDate: "",
+    passportEndDate: ""
   });
 };
 
@@ -1813,6 +1929,19 @@ const addHeir = () => {
 
 const removeHeir = (index) => {
   formData.value.heirs.splice(index, 1);
+};
+
+const addSpouse = () => {
+  formData.value.spouseInfo.push({
+    idType: "",
+    idNumber: "",
+    name: "",
+    supportDoc: null
+  });
+};
+
+const removeSpouse = (index) => {
+  formData.value.spouseInfo.splice(index, 1);
 };
 
 const handleSubmit = async () => {
@@ -1866,23 +1995,64 @@ const handleKeperluanChange = (value) => {
   }
 };
 
+const selectAssistanceType = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        formData.value.personalInfo.assistanceType = 'Lokasi semasa';
+        toast.success('Lokasi berjaya diperoleh!');
+      },
+      (error) => {
+        toast.error('Tidak dapat mendapatkan lokasi.');
+      }
+    );
+  } else {
+    toast.error('Geolocation tidak disokong oleh pelayar ini.');
+  }
+};
+
+const districtOptions = [
+  { label: 'Gombak', value: 'gombak' },
+  { label: 'Hulu Langat', value: 'hulu-langat' },
+  { label: 'Hulu Selangor', value: 'hulu-selangor' },
+  { label: 'Klang', value: 'klang' },
+  { label: 'Kuala Langat', value: 'kuala-langat' },
+  { label: 'Kuala Selangor', value: 'kuala-selangor' },
+  { label: 'Petaling', value: 'petaling' },
+  { label: 'Sabak Bernam', value: 'sabak-bernam' },
+  { label: 'Sepang', value: 'sepang' },
+  { label: 'Shah Alam', value: 'shah-alam' }
+];
+const kariahOptions = [
+  { label: 'Masjid Negeri', value: 'masjid-negeri' },
+  { label: 'Masjid Sultan Salahuddin Abdul Aziz Shah', value: 'masjid-sultan-salahuddin' },
+  { label: 'Masjid Al-Azim Pandan Indah', value: 'masjid-al-azim' },
+  { label: 'Masjid Al-Amin Bangi', value: 'masjid-al-amin' },
+  // ... add more kariah as needed ...
+];
+const selectAddressLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        formData.value.addressInfo.location = 'Lokasi semasa';
+        toast.success('Lokasi berjaya diperoleh!');
+      },
+      (error) => {
+        toast.error('Tidak dapat mendapatkan lokasi.');
+      }
+    );
+  } else {
+    toast.error('Geolocation tidak disokong oleh pelayar ini.');
+  }
+};
+
 // Watchers
 watch(
   () => formData.value.personalInfo.maritalStatus,
   (newVal) => {
     if (!hasSpouse.value) {
       // Clear spouse info if no spouse
-      formData.value.spouseInfo = {
-        idType: "",
-        idNumber: "",
-        name: "",
-        phone: "",
-        bankName: "",
-        bankAccount: "",
-        healthStatus: "",
-        islamDate: "",
-        kfamDate: "",
-      };
+      formData.value.spouseInfo = [];
     }
   }
 );
@@ -1908,6 +2078,17 @@ watch(
     if (newVal !== "ya") {
       formData.value.personalInfo.wivesCount = "";
       formData.value.personalInfo.wives = [];
+    }
+  }
+);
+
+watch(
+  () => statusKahwin.value,
+  (newVal) => {
+    if (newVal !== "Berkahwin") {
+      formData.value.spouseInfo = [];
+    } else if (formData.value.spouseInfo.length === 0) {
+      addSpouse();
     }
   }
 );

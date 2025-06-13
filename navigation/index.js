@@ -663,7 +663,7 @@ export default [
             meta: {},
           },
           {
-            title: "Lengkap Service",
+            title: "Self Service Pendaftaran Lengkap",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/FR/02",
             child: [],
