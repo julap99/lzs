@@ -263,7 +263,7 @@
             />
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -306,7 +306,7 @@
             validation="required"
           />
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -448,7 +448,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -511,7 +511,7 @@
             label="6. Tahun Akhir Pinjaman"
           />
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -585,7 +585,7 @@
             min="0"
           />
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -697,7 +697,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -766,7 +766,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -829,7 +829,7 @@
             />
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -933,24 +933,21 @@
               />
             </div>
 
-            <div class="flex justify-end gap-3 mt-6">
+            <div class="flex justify-between gap-3 mt-6">
               <rs-button
                 type="button"
                 variant="primary-outline"
                 @click="prevStepA"
                 >Kembali</rs-button
               >
-              <rs-button
-                type="submit"
-                variant="primary"
-                @click="submitForm"
-                :disabled="processing"
-              >
-                <span v-if="processing">
-                  <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
-                </span>
-                <span v-else>Hantar Permohonan</span>
-              </rs-button>
+              <div class="flex gap-3">
+                    <rs-button type="button" variant="secondary" @click="handleSave"
+                      >Simpan</rs-button
+                    >
+                    <rs-button type="submit" variant="primary" @click="handleSubmit"
+                      >Hantar Permohonan</rs-button
+                    >
+                  </div>
             </div>
           </div>
         </FormKit>
@@ -1588,6 +1585,10 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const toast = useToast();
 
 definePageMeta({
   title: "Borang Permohonan Lengkap",
@@ -1684,6 +1685,37 @@ const submitForm = () => {
   // setTimeout(() => {
     navigateTo(`/BF-PRF/AS/FR/03`);
   // }, 1000);
+};
+
+const handleSave = async () => {
+  try {
+    // Handle form saving
+    console.log("Form saved:", formData.value);
+    // Add your save logic here (API call, etc.)
+
+    toast.success("Permohonan berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Permohonan tidak berjaya disimpan");
+    console.error("Save error:", error);
+  }
+};
+
+const handleSubmit = async () => {
+  try {
+  // Handle form submission
+  console.log("Form submitted:", formData.value);
+  // Add your submission logic here (API call, etc.)
+
+    toast.success("Permohonan berjaya dihantar");
+    
+    // Wait for 2 seconds before navigating
+    // setTimeout(() => {
+      router.push("/BF-PRF/AS/FR/03");
+    // }, 2000);
+  } catch (error) {
+    toast.error("Ralat! Permohonan tidak berjaya dihantar");
+    console.error("Submission error:", error);
+  }
 };
 </script>
 
