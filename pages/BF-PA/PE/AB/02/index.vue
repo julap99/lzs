@@ -15,7 +15,7 @@
         <div class="p-4">
           <!-- Maklumat Asnaf -->
           <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Maklumat Asnaf</h3>
+            <h3 class="text-lg font-semibold mb-4">Maklumat Aktiviti</h3>
             <div class="bg-gray-50 p-4 rounded-lg">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -61,10 +61,6 @@
                   <p class="font-medium">{{ application.paId }}</p>
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500">Nama Penolong Amil</p>
-                  <p class="font-medium">{{ application.paName }}</p>
-                </div>
-                <div>
                   <p class="text-sm text-gray-500">Lokasi Kariah</p>
                   <p class="font-medium">{{ application.kariahLocation }}</p>
                 </div>
@@ -76,22 +72,88 @@
                   <p class="text-sm text-gray-500">Jenis Tugasan</p>
                   <p class="font-medium">{{ getAssignmentTypeLabel(application.assignmentType) }}</p>
                 </div>
-                <div>
-                  <p class="text-sm text-gray-500">Kadar Elaun Tugasan</p>
-                  <p class="font-medium">RM {{ application.allowanceRate }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tables Section -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Senarai Penolong Amil -->
+              <div>
+                <h3 class="text-lg font-semibold mb-4">Senarai Penolong Amil</h3>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-white">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            No.
+                          </th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Nama Penolong Amil
+                          </th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Total Elaun
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="(pa, index) in penolongAmil" :key="pa.id">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            {{ index + 1 }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            {{ pa.name }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            RM {{ pa.totalAllowance }}
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot class="bg-white">
+                        <tr>
+                          <td colspan="2" class="px-6 py-4 text-right font-medium">
+                            Jumlah Keseluruhan:
+                          </td>
+                          <td class="px-6 py-4 font-medium text-blue-600">
+                            RM {{ totalAllowance }}
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
                 </div>
-                <div>
-                  <p class="text-sm text-gray-500">Jumlah Elaun Dikira</p>
-                  <p class="font-medium text-blue-600">RM {{ application.calculatedAllowance }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Status</p>
-                  <span
-                    class="px-2 py-1 text-xs font-medium rounded-full"
-                    :class="application.isEligible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                  >
-                    {{ application.isEligible ? 'Disokong' : 'Tidak Disokong' }}
-                  </span>
+              </div>
+
+              <!-- Senarai Aktiviti -->
+              <div>
+                <h3 class="text-lg font-semibold mb-4">Senarai Aktiviti</h3>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-white">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            No.
+                          </th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Nama Aktiviti
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="(activity, index) in activities" :key="activity.id">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            {{ index + 1 }}
+                          </td>
+                          <td class="px-6 py-4">
+                            {{ activity.name }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -248,7 +310,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 definePageMeta({
   title: "Semakan dan Sokongan",
@@ -285,6 +347,41 @@ const application = ref({
   calculatedAllowance: "1,500.00",
   isEligible: true,
 });
+
+// Mock Penolong Amil data
+const penolongAmil = ref([
+  {
+    id: 'PA001',
+    name: 'Ahmad bin Abdullah',
+    totalAllowance: '1,500.00',
+  },
+  {
+    id: 'PA002',
+    name: 'Ahmad bin Abdullah',
+    totalAllowance: '1,500.00',
+  },
+  {
+    id: 'PA003',
+    name: 'Ahmad bin Abdullah',
+    totalAllowance: '1,500.00',
+  },
+]);
+
+// Mock activities data
+const activities = ref([
+  {
+    id: 'ACT001',
+    name: 'Kutipan Zakat Fitrah',
+  },
+  {
+    id: 'ACT002',
+    name: 'Agihan Bantuan Asnaf',
+  },
+  {
+    id: 'ACT003',
+    name: 'Program Tazkirah',
+  },
+]);
 
 // Modal states
 const showApproveModal = ref(false);
@@ -324,6 +421,14 @@ const getStatusClass = (status) => {
   };
   return statusClasses[status] || "bg-gray-100 text-gray-800";
 };
+
+// Computed properties
+const totalAllowance = computed(() => {
+  return penolongAmil.value
+    .reduce((sum, pa) => sum + parseFloat(pa.totalAllowance.replace(/,/g, '')), 0)
+    .toFixed(2)
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+});
 
 // Form handlers
 const handleApprove = async () => {
