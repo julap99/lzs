@@ -95,7 +95,8 @@
               :disabled="true"
               :value="formatDate(new Date().toISOString())"
             />
-            <FormKit
+            
+            <!-- <FormKit
               type="text"
               name="withdrawalLocation"
               label="Lokasi Pengeluaran"
@@ -114,16 +115,13 @@
               :validation-messages="{
                 required: 'Masa pengeluaran diperlukan',
               }"
-            />
+            /> -->
           </div>
 
           <div class="mb-6">
             <h4 class="text-md font-semibold mb-2">Nota:</h4>
             <ul class="list-disc list-inside text-sm text-gray-600">
-              <li>
-                Pemohon perlu hadir ke lokasi pengeluaran pada tarikh dan masa
-                yang ditetapkan
-              </li>
+           
               <li>Pemohon perlu membawa kad pengenalan asal</li>
               <li>Pemohon perlu menandatangani borang pengeluaran tunai</li>
             </ul>
@@ -182,14 +180,14 @@
               <span class="font-medium">Tarikh Pengeluaran:</span>
               <span>{{ formData.withdrawalDate }}</span>
             </div>
-            <div class="flex justify-between">
+            <!-- <div class="flex justify-between">
               <span class="font-medium">Lokasi Pengeluaran:</span>
               <span>{{ formData.withdrawalLocation }}</span>
             </div>
             <div class="flex justify-between">
               <span class="font-medium">Masa Pengeluaran:</span>
               <span>{{ formData.withdrawalTime }}</span>
-            </div>
+            </div> -->
           </div>
         </div>
       </template>

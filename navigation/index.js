@@ -206,10 +206,17 @@ export default [
     header: "BF-DP",
     description: "Dashboard & Pelaporan",
     child: [
-      {
+      /* {
         title: "Tracking & Monitoring",
         icon: "iconamoon:component-fill",
         path: "/BF-DP/ST/02",
+        child: [],
+        meta: {},
+      }, */
+      {
+        title: "Tracking & Monitoring",
+        icon: "iconamoon:component-fill",
+        path: "/BF-DP/Portal",
         child: [],
         meta: {},
       },
@@ -222,6 +229,13 @@ export default [
     description: "Pengurusan Aduan",
     child: [
       {
+        title: "Dashboard",
+        icon: "iconamoon:file-document",
+        path: "/BF-ADN/DA",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Daftar Aduan",
         icon: "iconamoon:file-document",
         path: "/BF-ADN/PA/DA/01",
@@ -229,7 +243,7 @@ export default [
         meta: {},
       },
       {
-        title: "Agih Tugas",
+        title: "Senarai Aduan",
         icon: "iconamoon:calendar-2",
         path: "/BF-ADN/PA/AT/01",
         child: [],
@@ -375,6 +389,13 @@ export default [
             meta: {},
           },
           {
+            title: "Sejarah Buka Operasi",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/opening-akaun/sejarah-buka-operasi",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Terima & Sahkan Penerimaan Tunai",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-TNI/opening-akaun/terima-sah-penerimaan-tunai",
@@ -477,9 +498,16 @@ export default [
 
         child: [
           {
-            title: "Permohonan (EKP)",
+            title: "Carian Asnaf (EKP)",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-TNI/pengeluaran-tunai-kaunter/permohonan",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Permohonan (EKP)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/pengeluaran-tunai-kaunter/senarai-permohonan",
             child: [],
             meta: {},
           },

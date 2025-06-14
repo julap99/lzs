@@ -147,7 +147,7 @@ const permohonanList = ref([
     id: "PK-2024-001",
     namaEKP: "Ahmad bin Abdullah",
     noKaunter: "K001",
-    jumlahPengeluaran: 5000,
+    jumlahPengeluaran: 500,
     tarikhMasaPermohonan: new Date().toISOString(),
     statusPermohonan: "Tunggu Kelulusan",
     tindakan: { id: "PK-2024-001", status: "Tunggu Kelulusan" }
@@ -156,7 +156,7 @@ const permohonanList = ref([
     id: "PK-2024-002",
     namaEKP: "Siti binti Ali",
     noKaunter: "K002",
-    jumlahPengeluaran: 3000,
+    jumlahPengeluaran: 300,
     tarikhMasaPermohonan: new Date().toISOString(),
     statusPermohonan: "Diluluskan",
     tindakan: { id: "PK-2024-002", status: "Diluluskan" }

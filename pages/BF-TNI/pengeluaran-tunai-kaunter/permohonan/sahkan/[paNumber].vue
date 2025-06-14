@@ -341,8 +341,9 @@ const handleSubmit = async () => {
     showConfirmationModal.value = false;
 
     // Navigate back to listing page after successful submission
-    router.push("/BF-TNI/pengeluaran-tunai-kaunter/permohonan/listing");
-  } catch (error) {
+    //router.push("/BF-TNI/pengeluaran-tunai-kaunter/permohonan/listing");
+    router.push("/BF-TNI/slip-penerimaan");
+  } catch (error) { 
     console.error("Error confirming disbursement:", error);
   } finally {
     isSubmitting.value = false;

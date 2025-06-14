@@ -3,7 +3,7 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card>
-      <template #header>Agih Tugas (EOAD)</template>
+      <template #header>Senarai Aduan</template>
       <template #body>
         <rs-table
           class="mt-8"
@@ -17,9 +17,11 @@
           }"
         >
           <template v-slot:status="data">
-            <rs-badge :variant="getStatusVariant(data.text)" size="sm">
-              {{ data.text }}
-            </rs-badge>
+            <div class="flex justify-center">
+              <rs-badge :variant="getStatusVariant(data.text)" size="sm">
+                {{ data.text }}
+              </rs-badge>
+            </div>
           </template>
           <template v-slot:pernyataanMasalah="data">
             <rs-badge
@@ -39,7 +41,7 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-ADN/PA/AT/02`)"
+              @click="navigateByStatus(data.text)"
             >
               Lebih
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
@@ -77,46 +79,73 @@ const data = ref([
     namaAduan: "Aduan Keselamatan",
     pernyataanMasalah:
       "Terputus Bekalan Makanan/Tiada Tempat Tinggal (Kelas 1/Merah)",
-    tarikhAduan: "2024-03-15",
-    status: "Diambil",
-    aksi: "ADN-2024-001",
+    tarikhAduan: "2024-06-10",
+    status: "Aduan Baru",
+    aksi: "Aduan Baru",
   },
   {
     noAduan: "ADN-2024-002",
     namaAduan: "Aduan Kebersihan",
     pernyataanMasalah:
       "Masih Ada Bekalan Makanan/Mempunyai Tempat Tinggal/Tiada Sumber Pendapatan (Kelas 2/Kuning)",
-    tarikhAduan: "2024-03-14",
-    status: "Masih Kosong",
-    aksi: "ADN-2024-002",
+    tarikhAduan: "2024-06-09",
+    status: "Dalam Proses - Quick Assessment",
+    aksi: "Dalam Proses - Quick Assessment",
   },
   {
     noAduan: "ADN-2024-003",
     namaAduan: "Aduan Infrastruktur",
     pernyataanMasalah: "Pendapatan Berkurangan/Keperluan Lain (Kelas 3/Hijau)",
-    tarikhAduan: "2024-03-13",
-    status: "Diambil",
-    aksi: "ADN-2024-003",
+    tarikhAduan: "2024-06-08",
+    status: "Menunggu Kelulusan Bantuan",
+    aksi: "Menunggu Kelulusan Bantuan",
   },
   {
     noAduan: "ADN-2024-004",
     namaAduan: "Aduan Keselamatan",
     pernyataanMasalah:
       "Terputus Bekalan Makanan/Tiada Tempat Tinggal (Kelas 1/Merah)",
-    tarikhAduan: "2024-03-12",
-    status: "Masih Kosong",
-    aksi: "ADN-2024-004",
+    tarikhAduan: "2024-06-07",
+    status: "Dalam Proses - Siasatan Ringkas",
+    aksi: "Dalam Proses - Siasatan Ringkas",
   },
   {
     noAduan: "ADN-2024-005",
     namaAduan: "Aduan Kebersihan",
     pernyataanMasalah:
       "Masih Ada Bekalan Makanan/Mempunyai Tempat Tinggal/Tiada Sumber Pendapatan (Kelas 2/Kuning)",
-    tarikhAduan: "2024-03-11",
-    status: "Masih Kosong",
-    aksi: "ADN-2024-005",
+    tarikhAduan: "2024-06-06",
+    status: "Menunggu Serahan Bantuan",
+    aksi: "Menunggu Serahan Bantuan",
+  },
+  {
+    noAduan: "ADN-2024-006",
+    namaAduan: "Aduan Infrastruktur",
+    pernyataanMasalah: "Pendapatan Berkurangan/Keperluan Lain (Kelas 3/Hijau)",
+    tarikhAduan: "2024-06-05",
+    status: "Dalam Proses - Siasatan Lapangan",
+    aksi: "Dalam Proses - Siasatan Lapangan",
+  },
+  {
+    noAduan: "ADN-2024-007",
+    namaAduan: "Aduan Kebersihan",
+    pernyataanMasalah:
+      "Masih Ada Bekalan Makanan/Mempunyai Tempat Tinggal/Tiada Sumber Pendapatan (Kelas 2/Kuning)",
+    tarikhAduan: "2024-06-04",
+    status: "Selesai",
+    aksi: "Selesai",
+  },
+  {
+    noAduan: "ADN-2024-008",
+    namaAduan: "Aduan Keselamatan",
+    pernyataanMasalah:
+      "Terputus Bekalan Makanan/Tiada Tempat Tinggal (Kelas 1/Merah)",
+    tarikhAduan: "2024-06-03",
+    status: "Ditutup",
+    aksi: "Ditutup",
   },
 ]);
+
 
 const criteria = ref([
   {
@@ -133,7 +162,16 @@ const criteria = ref([
   },
   {
     label: "Status",
-    options: ["Diambil", "Masih Kosong"],
+    options: [
+      "Aduan Baru",
+      "Dalam Proses - Siasatan Ringkas",
+      "Dalam Proses - Quick Assessment",
+      "Dalam Proses - Siasatan Lapangan",
+      "Menunggu Kelulusan Bantuan",
+      "Menunggu Serahan Bantuan",
+      "Selesai",
+      "Ditutup",
+    ],
   },
 ]);
 
@@ -145,10 +183,17 @@ const selectedCriteria = ref({
 
 const filteredData = ref([...data.value]);
 
+
 const getStatusVariant = (status) => {
   const variants = {
-    "Masih Kosong": "warning",
-    Diambil: "success",
+    "Aduan Baru": "warning",
+    "Dalam Proses - Siasatan Ringkas": "primary",
+    "Dalam Proses - Quick Assessment": "primary",
+    "Dalam Proses - Siasatan Lapangan": "primary",
+    "Menunggu Kelulusan Bantuan": "info",
+    "Menunggu Serahan Bantuan": "info",
+    "Selesai": "success",
+    "Ditutup": "danger",
   };
   return variants[status] || "default";
 };
@@ -170,6 +215,21 @@ const formatDate = (date) => {
     hour12: true
   });
 };
+
+const navigateByStatus = (status) => {
+  console.log(status)
+  if (status === "Aduan Baru") {
+    navigateTo("/BF-ADN/PA/AT/02");
+  } else if (status === "Dalam Proses - Siasatan Ringkas") {
+    navigateTo("/BF-ADN/PA/TS/02");
+  } else if (status == "Dalam Proses - Siasatan Lapangan") {
+    navigateTo("/BF-ADN/PA/TS/04");
+  }else {
+    // Default fallback kalau nak
+    navigateTo("/BF-ADN/PA/AT/02");
+  }
+};
+
 
 const performSearch = () => {
   filteredData.value = data.value.filter((item) => {
