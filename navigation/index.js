@@ -1035,7 +1035,7 @@ export default [
           {
             title: "Bancian/Asnaf Review/Bantuan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PE/AB/01",
+            path: "/BF-PA/PE/AB",
             child: [],
             meta: {},
           },
