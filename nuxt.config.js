@@ -8,6 +8,9 @@ export default defineNuxtConfig({
       secretRefresh: process.env.NUXT_REFRESH_TOKEN_SECRET,
     },
   },
+  nitro: {
+    preset: "static",
+  },
   modules: [
     "@nuxtjs/tailwindcss",
     "@formkit/nuxt",
@@ -23,6 +26,7 @@ export default defineNuxtConfig({
   ],
   app: {
     pageTransition: { name: "page", mode: "out-in" },
+    baseURL: "/",
   },
   head: {
     title: "NAS",
