@@ -247,15 +247,20 @@
   });
   
   const breadcrumb = ref([
-    // {
-    //   name: "Dashboard",
-    //   type: "link",
-    //   path: "/dashboard",
-    // },
     {
-      name: "Borang Permohonan",
+      name: "Profiling",
+      type: "link",
+      path: "/BF-PRF/AS/QB/01",
+    },
+    {
+      name: "Asnaf",
+      type: "link",
+      path: "/BF-PRF/AS/QB/01",
+    },
+    {
+      name: "Pendaftaran Pantas Pukal",
       type: "current",
-      path: "/BF-PRF/AS/QS/02",
+      path: "/BF-PRF/AS/QB/01",
     },
   ]);
   

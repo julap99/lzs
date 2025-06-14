@@ -263,7 +263,7 @@
             />
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -306,7 +306,7 @@
             validation="required"
           />
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -448,7 +448,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -511,7 +511,7 @@
             label="6. Tahun Akhir Pinjaman"
           />
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -585,7 +585,7 @@
             min="0"
           />
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -610,7 +610,7 @@
             G. Pengesahan
           </h3>
 
-          <div class="mb-6">
+          <!-- <div class="mb-6">
             <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
@@ -644,10 +644,10 @@
                 validation="required"
               />
             </div>
-          </div>
+          </div> -->
 
           <div class="mb-6">
-            <h4 class="font-medium mb-3">2. Maklumat Perakuan Pemohon</h4>
+            <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium">Hubungan kekeluargaan dengan kakitangan LZS?</label>
               <FormKit
@@ -697,7 +697,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -766,7 +766,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -783,7 +783,7 @@
         <FormKit
           v-if="currentStepA === 9"
           type="form"
-          @submit="submitForm"
+          @submit="nextStepA"
           :actions="false"
           id="sectionI"
         >
@@ -793,16 +793,30 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
-              type="text"
+              type="select"
               name="nama_penolong_amil"
-              label="51. Nama Penolong Amil"
+              label="Nama Penolong Amil"
+              :options="[
+                'Ahmad bin Abdullah',
+                'Siti binti Mohamed',
+                'Mohd Ali bin Hassan',
+                'Nurul Huda binti Ismail',
+                'Abdul Rahman bin Omar',
+                'Fatimah binti Ahmad',
+                'Mohd Yusof bin Ibrahim',
+                'Aminah binti Abdullah',
+                'Hassan bin Mohamed',
+                'Noraini binti Ali'
+              ]"
+              placeholder="Pilih nama penolong amil"
               validation="required"
             />
 
             <FormKit
               type="select"
               name="jenis_permohonan"
-              label="52. Jenis Permohonan"
+              label="Jenis Permohonan"
+              placeholder="Pilih jenis permohonan"
               :options="['Baru', 'Review']"
               validation="required"
             />
@@ -810,12 +824,12 @@
             <FormKit
               type="date"
               name="tarikh_proses"
-              label="53. Tarikh Proses"
+              label="Tarikh Proses"
               validation="required"
             />
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -823,7 +837,7 @@
               >Kembali</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Seterusnya</rs-button
+              >Seterusnya ke Maklumat Peribadi Tanggungan</rs-button
             >
           </div>
         </FormKit>
@@ -1049,7 +1063,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -1177,7 +1191,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -1307,7 +1321,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -1433,7 +1447,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 mt-6">
+          <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
@@ -1443,14 +1457,123 @@
             <rs-button
               type="submit"
               variant="primary"
-              @click="submitForm"
+              @click="nextStepB"
               :disabled="processing"
             >
               <span v-if="processing">
                 <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
               </span>
-              <span v-else>Hantar Prmohonan</span>
+              <span v-else>Seterusnya ke Penilaian Awal</span>
             </rs-button>
+          </div>
+        </FormKit>
+
+        <FormKit
+          v-if="currentStepB === 6"
+          type="form"
+          @submit="submitForm"
+          :actions="false"
+          id="sectionJ"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            J. Penilaian Awal
+          </h3>
+
+          <div class="space-y-6">
+            <!-- Question 1 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                1. Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?*
+              </label>
+              <FormKit
+                type="radio"
+                name="komitmen_tinggi"
+                :options="[
+                  { label: 'Ya', value: 'Y' },
+                  { label: 'Tidak', value: 'T' }
+                ]"
+                validation="required"
+                validation-label="Jawapan"
+              />
+            </div>
+
+            <!-- Question 2 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                2. Apakah keperluan tuan/puan mendesak sekarang ini?*
+              </label>
+              <FormKit
+                type="checkbox"
+                name="keperluan_mendesak"
+                :options="[
+                  { label: 'Perubatan Kritikal', value: 'perubatan' },
+                  { label: 'Bencana', value: 'bencana' },
+                  { label: 'Kematian', value: 'kematian' },
+                  { label: 'Konflik Keluarga (tiada tempat bergantung)', value: 'konflik' },
+                  { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah' },
+                  { label: 'Selain dari di atas', value: 'lain' },
+                  { label: 'Tidak mendesak', value: 'tidakMendesak' }
+                ]"
+                validation="required|min:1"
+                validation-label="Jawapan"
+                validation-messages="{
+                  required: 'Sila pilih sekurang-kurangnya satu jawapan',
+                  min: 'Sila pilih sekurang-kurangnya satu jawapan'
+                }"
+              />
+
+              <!-- Additional input for "Selain dari di atas" -->
+              <div v-if="showLainInput" class="mt-4">
+                <FormKit
+                  type="text"
+                  name="lain_keperluan"
+                  label="Sila nyatakan keperluan lain:"
+                  validation="required"
+                  validation-label="Keperluan lain"
+                  validation-messages="{
+                    required: 'Sila nyatakan keperluan lain'
+                  }"
+                />
+              </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                3. Muat naik dokumen sokongan (PDF, JPG, PNG)*
+              </label>
+              <FormKit
+                type="file"
+                name="dokumen_sokongan"
+                multiple
+                accept=".pdf,.jpg,.jpeg,.png"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                validation-label="Dokumen"
+                validation-messages="{
+                  required: 'Sila muat naik sekurang-kurangnya satu dokumen',
+                  max: 'Saiz fail tidak boleh melebihi 5MB',
+                  mime: 'Format fail tidak dibenarkan'
+                }"
+              />
+            </div>
+
+            <div class="flex justify-between gap-3 mt-6">
+              <rs-button
+                type="button"
+                variant="primary-outline"
+                @click="prevStepB"
+                >Kembali</rs-button
+              >
+              <div class="flex gap-3">
+                    <rs-button type="button" variant="secondary" @click="handleSave"
+                      >Simpan</rs-button
+                    >
+                    <rs-button type="submit" variant="primary" @click="handleSubmit"
+                      >Hantar Permohonan</rs-button
+                    >
+                  </div>
+            </div>
           </div>
         </FormKit>
       </template>
@@ -1459,18 +1582,18 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const toast = useToast();
 
 definePageMeta({
   title: "Borang Permohonan Lengkap",
 });
 
 const breadcrumb = ref([
-  {
-    name: "Carian Profil",
-    type: "link",
-    path: "/BF-PRF/AS/FR/01",
-  },
   {
     name: "Borang Permohonan Lengkap",
     type: "current",
@@ -1500,24 +1623,179 @@ const stepsA = [
 ];
 
 const currentStepB = ref(1);
-const totalStepsB = 5;
+const totalStepsB = 6;
 
 const healthStatusTanggungan = ref("");
 const paymentMethod = ref("");
 
-const stepsB = [
-  { id: 1, label: "Maklumat Peribadi Tangungan" },
-  { id: 2, label: "Pendidikan" },
-  { id: 3, label: "Kesihatan" },
-  { id: 4, label: "Kemahiran" },
-  { id: 5, label: "Pekerjaan" },
-];
+const showLainInput = computed(() => {
+  return formData.value.keperluanMendesak?.includes('lain');
+});
+
+const formData = ref({
+  // Section A - Maklumat Peribadi Asnaf
+  nama_ketua_keluarga: '',
+  jenis_pengenalan: '',
+  no_pengenalan: '',
+  warganegara: '',
+  jantina: '',
+  bangsa: '',
+  bersekolah: '',
+  pendidikan_tertinggi: '',
+  tarikh_masuk_islam: '',
+  tarikh_masuk_kfam: '',
+  status_perkahwinan: '',
+
+  // Section B - Maklumat Kesihatan
+  tahap_kesihatan: '',
+  keadaan_kesihatan_sakit: '',
+  kos_penjagaan_sakit: '',
+  perbelanjaan_bulanan_sakit: '',
+  kesempurnaan_fizikal: '',
+  sebab_kecacatan: '',
+  tahap_kecacatan: '',
+  perbelanjaan_bulanan_oku: '',
+  keadaan_kesihatan_uzur: '',
+  kos_penjagaan_uzur: '',
+  perbelanjaan_bulanan_uzur: '',
+
+  // Section C - Kemahiran
+  kemahiran: '',
+
+  // Section D - Maklumat Kediaman
+  status_kediaman: '',
+  tapak_rumah: '',
+  jenis_rumah: '',
+  binaan_rumah: '',
+  keadaan_kediaman: '',
+  bekalan_air: '',
+  bil_air: '',
+  bekalan_elektrik: '',
+  bil_elektrik: '',
+  penyelenggaraan: '',
+  bil_penyelenggaraan: '',
+
+  // Section E - Maklumat Pinjaman
+  pemberi_pinjaman: '',
+  jenis_pinjaman: '',
+  bayaran_bulanan: '',
+  jumlah_perbelanjaan: '',
+  tahun_mula_pinjaman: '',
+  tahun_akhir_pinjaman: '',
+
+  // Section F - Maklumat Pemilikan
+  wang_simpanan: '',
+  emas: '',
+  saham: '',
+  kenderaan: '',
+  rumah_kedai: '',
+  tanah_sawah: '',
+
+  // Section G - Pengesahan
+  dibantu_penolong_amil: '',
+  nama_penolong_amil_bantuan: '',
+  kariah_bantuan: '',
+  tarikh_bantuan: '',
+  hubungan_kakitangan_lzs: '',
+  nama_kakitangan: '',
+  jawatan_kakitangan: '',
+  pejabat_kakitangan: '',
+  hubungan_kakitangan: '',
+  tarikh_perakuan: '',
+
+  // Section H - Pengesahan Bermastautin
+  ulasan_pengesahan: '',
+  nama_pengesah: '',
+  jawatan_pengesah: '',
+  no_telefon_pengesah: '',
+  tarikh_pengesahan_permastautin: '',
+
+  // Section I - Maklumat Penolong Amil
+  nama_penolong_amil: '',
+  jenis_permohonan: '',
+  tarikh_proses: '',
+
+  // Section J - Penilaian Awal
+  komitmen_tinggi: '',
+  keperluan_mendesak: [],
+  lain_keperluan: '',
+  dokumen_sokongan: [],
+
+  // Section B (Tanggungan) - Maklumat Peribadi Tanggungan
+  hubungan_pemohon: '',
+  nama_tanggungan: '',
+  jenis_pengenalan_tanggungan: '',
+  no_pengenalan_tanggungan: '',
+  jantina_tanggungan: '',
+  tarikh_lahir_tanggungan: '',
+  tempat_lahir_tanggungan: '',
+  bangsa_tanggungan: '',
+  status_perkahwinan_tanggungan: '',
+  tarikh_masuk_islam_tanggungan: '',
+  tarikh_masuk_kfam_tanggungan: '',
+  warganegara_tanggungan: '',
+  tempoh_menetap_selangor: '',
+  no_telefon_tanggungan: '',
+
+  // Maklumat Perbankan Tanggungan
+  nama_pemegang_akaun: '',
+  bank: '',
+  no_akaun_bank: '',
+  cara_pembayaran: '',
+  sebab_tunai: '',
+
+  // Pendidikan Tanggungan
+  bersekolah_tanggungan: '',
+  pendidikan_tertinggi_tanggungan: '',
+  jenis_sekolah: '',
+  nama_sekolah: '',
+  alamat_sekolah: '',
+  daerah_sekolah: '',
+  negeri_sekolah: '',
+  poskod_sekolah: '',
+  nama_sekolah_agama: '',
+  alamat_sekolah_agama: '',
+  daerah_sekolah_agama: '',
+  negeri_sekolah_agama: '',
+  poskod_sekolah_agama: '',
+  tinggal_bersama_keluarga: '',
+
+  // Kesihatan Tanggungan
+  tahap_kesihatan_tanggungan: '',
+  keadaan_kesihatan_sakit_tanggungan: '',
+  kos_penjagaan_sakit_tanggungan: '',
+  perbelanjaan_bulanan_sakit_tanggungan: '',
+  kesempurnaan_fizikal_tanggungan: '',
+  sebab_kecacatan_tanggungan: '',
+  tahap_kecacatan_tanggungan: '',
+  perbelanjaan_bulanan_oku_tanggungan: '',
+  keadaan_kesihatan_uzur_tanggungan: '',
+  kos_penjagaan_uzur_tanggungan: '',
+  perbelanjaan_bulanan_uzur_tanggungan: '',
+
+  // Kemahiran Tanggungan
+  kemahiran_tanggungan: '',
+
+  // Pekerjaan Tanggungan
+  pekerjaan_status: '',
+  sektor_pekerjaan: '',
+  nama_majikan: '',
+  no_tel_majikan: '',
+  alamat_majikan: '',
+  bandar_majikan: '',
+  poskod_majikan: '',
+  daerah_majikan: '',
+  negeri_majikan: '',
+  jawatan: '',
+  negara_pekerjaan: '',
+  status_jawatan: ''
+});
 
 const nextStepA = () => {
   if (currentStepA.value < totalStepsA) {
     currentStepA.value++;
   } else if (currentStepA.value === totalStepsA) {
-    navigateTo(`/BF-PRF/AS/PA/01`);
+    nextSection();
   }
 };
 
@@ -1548,9 +1826,41 @@ const prevSection = () => {
 
 const submitForm = () => {
   processing.value = true;
-  setTimeout(() => {
+
+  // setTimeout(() => {
     navigateTo(`/BF-PRF/AS/FR/03`);
-  }, 1000);
+  // }, 1000);
+};
+
+const handleSave = async () => {
+  try {
+    // Handle form saving
+    console.log("Form saved:", formData.value);
+    // Add your save logic here (API call, etc.)
+
+    toast.success("Permohonan berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Permohonan tidak berjaya disimpan");
+    console.error("Save error:", error);
+  }
+};
+
+const handleSubmit = async () => {
+  try {
+  // Handle form submission
+  console.log("Form submitted:", formData.value);
+  // Add your submission logic here (API call, etc.)
+
+    toast.success("Permohonan berjaya dihantar");
+    
+    // Wait for 2 seconds before navigating
+    // setTimeout(() => {
+      router.push("/BF-PRF/AS/FR/04");
+    // }, 2000);
+  } catch (error) {
+    toast.error("Ralat! Permohonan tidak berjaya dihantar");
+    console.error("Submission error:", error);
+  }
 };
 </script>
 

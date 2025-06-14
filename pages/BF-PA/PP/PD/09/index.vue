@@ -592,12 +592,12 @@ const breadcrumb = ref([
   {
     name: "Penolong Amil",
     type: "link",
-    path: "/BF-PA/PP/PD",
+    path: "/BF-PA/PP/PD/Dashboard_PA",
   },
   {
     name: "Pendaftaran",
     type: "link",
-    path: "/BF-PA/PP/PD",
+    path: "/BF-PA/PP/PD/Dashboard_PA",
   },
   {
     name: "Maklumat Peribadi",
@@ -732,6 +732,6 @@ const submitForm = async () => {
 // Navigation and modal handlers
 const handleModalClose = () => {
   showSuccessModal.value = false;
-  navigateTo("/BF-PA/PP/PD");
+  navigateTo("/BF-PA/PP/PD/Dashboard_PA");
 };
 </script> 

@@ -13,9 +13,18 @@
 
       <template #body>
         <div class="p-4">
-          <!-- Maklumat Calon Penolong Amil -->
+          <!-- Application Summary & Status -->
           <div class="mb-6">
-            <h3 class="font-medium mb-3">Maklumat Calon Penolong Amil</h3>
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-medium">Maklumat Calon Penolong Amil</h3>
+              <span
+                class="px-3 py-1 text-sm font-medium rounded-full"
+                :class="getStatusClass(application.status)"
+              >
+                {{ application.status }}
+              </span>
+            </div>
+
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -124,12 +133,6 @@
                   <p class="text-sm text-gray-500">Wakil Institusi</p>
                   <p class="font-medium">{{ application.picName }}</p>
                 </div>
-                <div class="md:col-span-2">
-                  <p class="text-sm text-gray-500 mb-1">Catatan dari Wakil Institusi</p>
-                  <p class="text-gray-700">
-                    {{ application.notes || "Tiada catatan" }}
-                  </p>
-                </div>
               </div>
 
               <!-- Document Preview Section for Surat Sokongan -->
@@ -190,7 +193,7 @@
                 <FormKit
                   type="checkbox"
                   name="confirmationCheck"
-                  label="Saya mengesahkan bahawa dokumen yang dimuat naik telah disahkan dan ditandatangani oleh pihak masjid"
+                  label="Saya mengesahkan bahawa dokumen yang dimuat naik telah disahkan dan ditandatangani oleh wakil institusi"
                   validation="accepted"
                   :validation-messages="{
                     accepted: 'Sila sahkan dokumen telah disahkan',
@@ -201,7 +204,7 @@
 
             <!-- Submit Buttons -->
             <div class="mt-6 flex justify-end space-x-3">
-              <rs-button variant="outline" @click="goBack"> Kembali </rs-button>
+              <rs-button variant="primary-outline" @click="goBack"> Kembali </rs-button>
               <rs-button
                 variant="danger"
                 @click="handleReject"
@@ -378,6 +381,7 @@ const application = ref({
   picPhone: "0123456789",
   picEmail: "razak@masjid.gov.my",
   uploadDate: "12/05/2025, 14:32",
+  status: "Menunggu Tapisan",
   documentSalinanKadPengenalan: "Salinan_Kad_Pengenalan.pdf",
   documentGambarCalon: "Gambar_Calon.jpg",
   documentSuratSokongan: "Surat_Sokongan.pdf",
@@ -428,10 +432,12 @@ const getCategoryLabel = (value) => {
 
 const getStatusClass = (status) => {
   const statusClasses = {
-    "Belum Disemak": "bg-yellow-100 text-yellow-800",
+    "Menunggu Tapisan": "bg-yellow-100 text-yellow-800",
     "Menunggu Sokongan JPPA": "bg-blue-100 text-blue-800",
-    Diluluskan: "bg-green-100 text-green-800",
-    Ditolak: "bg-red-100 text-red-800",
+    "Menunggu Kelulusan Ketua JPPA": "bg-blue-100 text-blue-800",
+    "Diluluskan": "bg-green-100 text-green-800",
+    "Tidak Disokong": "bg-red-100 text-red-800",
+    "Ditolak": "bg-red-100 text-red-800"
   };
   return statusClasses[status] || "bg-gray-100 text-gray-800";
 };

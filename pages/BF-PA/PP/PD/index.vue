@@ -4,49 +4,52 @@
 
     <rs-card class="mt-4">
       <template #header>
+        
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
             Senarai Permohonan Penolong Amil
           </h2>
-          <rs-button
-            variant="primary"
-            @click="navigateTo('/BF-PA/PP/PD/01')"
-          >
-            <Icon name="material-symbols:add-circle" class="mr-2" />
-            Tambah Baru
-          </rs-button>
+          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PP/PD/PA_Login')">Login as Penolong Amil</rs-button>
         </div>
       </template>
 
       <template #body>
         <div class="p-4">
-          <!-- Search and Filter Section -->
-          <div class="mb-4 flex flex-wrap gap-4">
-            <FormKit
-              type="text"
-              name="search"
-              placeholder="Cari nombor rujukan, nama calon..."
-              :classes="{
-                input: 'w-64',
-              }"
-            />
-            <FormKit
-              type="select"
-              name="status"
-              placeholder="Status"
-              :options="[
-                { label: 'Semua Status', value: '' },
-                { label: 'Belum Disemak', value: 'BELUM_DISEMAK' },
-                { label: 'Menunggu Sokongan JPPA', value: 'MENUNGGU_SOKONGAN' },
-                { label: 'Menunggu Kelulusan Ketua JPPA', value: 'MENUNGGU_KELULUSAN_KETUA_JPPA' },
-                { label: 'Menunggu Kelulusan Ketua Divisyen', value: 'MENUNGGU_KELULUSAN_KETUA_DIVISYEN' },
-                { label: 'Lulus', value: 'LULUS' },
-                { label: 'Tidak Lulus', value: 'TIDAK_LULUS' },
-              ]"
-              :classes="{
-                input: 'w-48',
-              }"
-            />
+          <!-- Search and Filter Section + Action Buttons -->
+          <div class="mb-4 flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex gap-4">
+              <FormKit
+                type="text"
+                name="search"
+                placeholder="Cari nombor rujukan, nama calon..."
+                :classes="{
+                  input: 'w-64',
+                }"
+              />
+              <FormKit
+                type="select"
+                name="status"
+                placeholder="Status"
+                :options="[
+                  { label: 'Semua Status', value: '' },
+                  { label: 'Belum Disemak', value: 'BELUM_DISEMAK' },
+                  { label: 'Menunggu Sokongan JPPA', value: 'MENUNGGU_SOKONGAN' },
+                  { label: 'Menunggu Kelulusan Ketua JPPA', value: 'MENUNGGU_KELULUSAN_KETUA_JPPA' },
+                  { label: 'Menunggu Kelulusan Ketua Divisyen', value: 'MENUNGGU_KELULUSAN_KETUA_DIVISYEN' },
+                  { label: 'Lulus', value: 'LULUS' },
+                  { label: 'Tidak Lulus', value: 'TIDAK_LULUS' },
+                ]"
+                :classes="{
+                  input: 'w-48',
+                }"
+              />
+            </div>
+            <div class="flex gap-2">
+              <rs-button variant="primary" @click="navigateTo('/BF-PA/PP/PD/01')">
+                <Icon name="material-symbols:add-circle" class="mr-2" />
+                Tambah Baru
+              </rs-button>
+            </div>
           </div>
 
           <!-- Table Section -->

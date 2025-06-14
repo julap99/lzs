@@ -21,6 +21,20 @@
             <h3 class="text-lg font-medium mb-4">Maklumat Profil Pemohon</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
+                type="select"
+                name="kategori_pemohon"
+                label="Kategori Pemohon"
+                :options="[
+                  { label: '-- Pilih --', value: '', disabled: true },
+                  { label: 'Individu', value: 'individu' },
+                  { label: 'Institusi', value: 'institusi' }
+                ]"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih kategori pemohon',
+                }"
+              />
+              <FormKit
                 type="text"
                 name="namaPemohon"
                 label="Nama Pemohon"
@@ -59,21 +73,21 @@
               Maklumat Permohonan Bantuan
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="jenisBantuan"
-                label="Jenis Bantuan Dipohon"
+              <CustomSelect
+                v-model="formData.jenisBantuan"
                 :options="jenisBantuanOptions"
-                validation="required"
-                :validation-messages="{
-                  required: 'Sila pilih jenis bantuan',
-                }"
+                label="Jenis Bantuan Dipohon"
+                search-placeholder="Cari jenis bantuan..."
+                :disabled="false"
               />
               <FormKit
                 type="select"
                 name="aidProduct"
                 label="Aid Product"
                 :options="aidProductOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
                 validation="required"
                 :validation-messages="{
                   required: 'Sila pilih aid product',
@@ -85,6 +99,9 @@
                 name="productPackage"
                 label="Product Package"
                 :options="productPackageOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
                 validation="required"
                 :validation-messages="{
                   required: 'Sila pilih product package',
@@ -136,18 +153,53 @@
             </div>
 
             <div class="mt-4">
-              <FormKit
-                type="file"
-                name="dokumenSokongan"
-                label="Dokumen Sokongan"
-                multiple
-                accept=".pdf,.jpg,.jpeg,.png"
-                validation="required"
-                :validation-messages="{
-                  required: 'Sila muat naik dokumen sokongan',
-                }"
-                help="Format yang diterima: PDF, JPG, JPEG, PNG"
-              />
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Dokumen Sokongan</h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Dokumen Geran
+                  </label>
+                  <FormKit
+                    type="file"
+                    name="dokumenGeran"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Sila muat naik dokumen geran',
+                    }"
+                    help="Format yang diterima: PDF, JPG, JPEG, PNG"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Dokumen Carian
+                  </label>
+                  <FormKit
+                    type="file"
+                    name="dokumenCarian"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Sila muat naik dokumen carian',
+                    }"
+                    help="Format yang diterima: PDF, JPG, JPEG, PNG"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Dokumen Sokongan Lain (Jika Ada)
+                  </label>
+                  <FormKit
+                    type="file"
+                    name="dokumenSokonganLain"
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    help="Format yang diterima: PDF, JPG, JPEG, PNG"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -189,7 +241,7 @@
       <template #footer>
         <div class="flex justify-center">
           <rs-button variant="primary" @click="handleViewStatus">
-            Lihat Status Permohonan
+            Pergi ke Senarai Permohonan
           </rs-button>
         </div>
       </template>
@@ -217,8 +269,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import CustomSelect from '~/components/CustomSelect.vue';
 
 definePageMeta({
   title: "Permohonan Bantuan",
@@ -242,32 +295,81 @@ const userProfile = ref({
 // Mock staff check - replace with actual auth check
 const isStaff = computed(() => false);
 
-// Mock options - replace with actual data from your API
-const jenisBantuanOptions = [
-  { label: "Bantuan Kewangan", value: "BANTUAN_KEWANGAN" },
-  { label: "Bantuan Pendidikan", value: "BANTUAN_PENDIDIKAN" },
-  { label: "Bantuan Perubatan", value: "BANTUAN_PERUBATAN" },
-];
+// Load the bantuan data from JSON
+const bantuanData = ref({});
 
-const aidProductOptions = computed(() => {
-  if (!formData.value.jenisBantuan) return [];
-  // Return filtered options based on jenisBantuan
+// Import the bantuan data directly
+import bantuanJson from "./Grouped by Aid Code.json";
+
+// Set the bantuan data on component mount
+onMounted(() => {
+  try {
+    bantuanData.value = bantuanJson;
+    console.log("Loaded bantuan data:", bantuanData.value);
+  } catch (error) {
+    console.error("Error loading bantuan data:", error);
+  }
+});
+
+// Compute jenis bantuan options from the JSON data
+const jenisBantuanOptions = computed(() => {
+  if (!bantuanData.value.bantuan) return [];
+  
+  const options = Object.entries(bantuanData.value.bantuan).map(([categoryName]) => ({
+    label: categoryName,
+    value: categoryName,
+  }));
+
   return [
-    { label: "Bantuan Bulanan", value: "BANTUAN_BULANAN" },
-    { label: "Bantuan Sekali", value: "BANTUAN_SEKALI" },
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
   ];
 });
 
-const productPackageOptions = computed(() => {
-  if (!formData.value.aidProduct) return [];
-  // Return filtered options based on aidProduct
+// Compute aid product options based on selected jenis bantuan
+const aidProductOptions = computed(() => {
+  if (!formData.value.jenisBantuan || !bantuanData.value.bantuan) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
+  if (!category) return [{ label: "-- Pilih --", value: "", disabled: true }];
+
+  const options = Object.entries(category).map(([productName]) => ({
+    label: productName,
+    value: productName,
+  }));
+
   return [
-    { label: "Pakej A", value: "PAKEJ_A" },
-    { label: "Pakej B", value: "PAKEJ_B" },
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+// Compute product package options based on selected aid product
+const productPackageOptions = computed(() => {
+  if (!formData.value.jenisBantuan || !formData.value.aidProduct || !bantuanData.value.bantuan) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
+  if (!category || !category[formData.value.aidProduct]) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const options = category[formData.value.aidProduct].map((pkg) => ({
+    label: pkg,
+    value: pkg,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
   ];
 });
 
 const kaedahPembayaranOptions = [
+  { label: "-- Pilih --", value: "", disabled: true },
   { label: "Tunai", value: "TUNAI" },
   { label: "Bank In", value: "BANK_IN" },
   { label: "E-Wallet", value: "E_WALLET" },
@@ -308,6 +410,7 @@ const confirmSubmit = async () => {
     // Generate reference number
     nomorRujukan.value = `REF-${Date.now()}`;
     showConfirmationModal.value = false;
+    // Redirect to syor page instead of showing success modal
     showSuccessModal.value = true;
   } catch (error) {
     console.error("Error submitting form:", error);

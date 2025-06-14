@@ -13,10 +13,10 @@
 
       <template #body>
         <div class="p-4">
-          <!-- Application Summary & Status -->
+          <!-- Maklumat Calon Penolong Amil -->
           <div class="mb-6">
             <div class="flex justify-between items-center mb-3">
-              <h3 class="font-medium">Maklumat Tapisan Jabatan Pengurusan Risiko</h3>
+              <h3 class="font-medium">Maklumat Calon Penolong Amil</h3>
               <span
                 class="px-3 py-1 text-sm font-medium rounded-full"
                 :class="getStatusClass(application.status)"
@@ -24,6 +24,86 @@
                 {{ application.status }}
               </span>
             </div>
+            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Nombor Kad Pengenalan</p>
+                  <p class="font-medium">{{ application.candidate.noKadPengenalan }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Nama Calon</p>
+                  <p class="font-medium">{{ application.candidate.namaCalonPenolongAmil }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Emel</p>
+                  <p class="font-medium">{{ application.candidate.emel }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Kategori Penolong Amil</p>
+                  <p class="font-medium">{{ getCategoryLabel(application.candidate.kategoriPenolongAmil) }}</p>
+                </div>
+              </div>
+
+              <!-- Document Preview Section for Salinan Kad Pengenalan and Gambar Calon -->
+              <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Salinan Kad Pengenalan -->
+                <div>
+                  <h4 class="font-medium mb-3">Salinan Kad Pengenalan</h4>
+                  <div class="border border-gray-200 rounded-md">
+                    <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
+                      <div class="flex items-center">
+                        <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
+                        <span>{{ application.documentSalinanKadPengenalan }}</span>
+                      </div>
+                      <rs-button size="sm" variant="primary-outline" @click="previewDocument('salinanKadPengenalan')">
+                        <Icon name="heroicons:eye" class="mr-1" size="16" />
+                        Lihat Dokumen
+                      </rs-button>
+                    </div>
+                    <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
+                      <div class="mb-2">
+                        <Icon name="heroicons:document" size="48" class="text-gray-400" />
+                      </div>
+                      <p class="text-sm">Klik butang "Lihat Dokumen" untuk melihat Salinan Kad Pengenalan</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                      Dimuat naik oleh {{ application.candidate.namaCalonPenolongAmil }} pada {{ application.uploadDate }}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gambar Calon -->
+                <div>
+                  <h4 class="font-medium mb-3">Gambar Calon</h4>
+                  <div class="border border-gray-200 rounded-md">
+                    <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
+                      <div class="flex items-center">
+                        <Icon name="heroicons:photo" class="text-blue-600 mr-2" size="20" />
+                        <span>{{ application.documentGambarCalon }}</span>
+                      </div>
+                      <rs-button size="sm" variant="primary-outline" @click="previewDocument('gambarCalon')">
+                        <Icon name="heroicons:eye" class="mr-1" size="16" />
+                        Lihat Dokumen
+                      </rs-button>
+                    </div>
+                    <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
+                      <div class="mb-2">
+                        <Icon name="heroicons:photo" size="48" class="text-gray-400" />
+                      </div>
+                      <p class="text-sm">Klik butang "Lihat Dokumen" untuk melihat Gambar Calon</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                      Dimuat naik oleh {{ application.candidate.namaCalonPenolongAmil }} pada {{ application.uploadDate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Maklumat Wakil Institusi -->
+          <div class="mb-6">
+            <h3 class="font-medium mb-3">Maklumat Wakil Institusi</h3>
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -43,98 +123,94 @@
                   <p class="font-medium">{{ application.picName }}</p>
                 </div>
               </div>
+
+              <!-- Document Preview Section for Surat Sokongan -->
+              <div class="mt-6">
+                <h4 class="font-medium mb-3">Surat Sokongan</h4>
+                <div class="border border-gray-200 rounded-md">
+                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
+                    <div class="flex items-center">
+                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
+                      <span>{{ application.documentSuratSokongan }}</span>
+                    </div>
+                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('suratSokongan')">
+                      <Icon name="heroicons:eye" class="mr-1" size="16" />
+                      Lihat Dokumen
+                    </rs-button>
+                  </div>
+                  <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
+                    <div class="mb-2">
+                      <Icon name="heroicons:document" size="48" class="text-gray-400" />
+                    </div>
+                    <p class="text-sm">
+                      Klik butang "Lihat Dokumen" untuk melihat Surat Sokongan
+                    </p>
+                  </div>
+                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                    Dimuat naik oleh {{ application.picName }} pada {{ application.uploadDate }}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Candidate Information Section -->
+          <!-- Maklumat Jabatan Pengurusan Risiko -->
           <div class="mb-6">
-            <h3 class="font-medium mb-3">Maklumat Calon Penolong Amil</h3>
+            <h3 class="font-medium mb-3">Maklumat Jabatan Pengurusan Risiko</h3>
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p class="text-sm text-gray-500">Nombor Kad Pengenalan</p>
-                  <p class="font-medium">
-                    {{ application.candidate.noKadPengenalan }}
-                  </p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Nama Calon</p>
-                  <p class="font-medium">
-                    {{ application.candidate.namaCalonPenolongAmil }}
-                  </p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Emel</p>
-                  <p class="font-medium">{{ application.candidate.emel }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Kategori Penolong Amil</p>
-                  <p class="font-medium">
-                    {{
-                      getCategoryLabel(
-                        application.candidate.kategoriPenolongAmil
-                      )
-                    }}
-                  </p>
-                </div>
-                <div class="md:col-span-2">
-                  <p class="text-sm text-gray-500 mb-1">
-                    Catatan dari Wakil Institusi
-                  </p>
-                  <p class="text-gray-700">
-                    {{ application.notes || "Tiada catatan" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Document Preview Section -->
-          <div class="mb-6">
-            <h3 class="font-medium mb-3">Dokumen Surat Tapisan Jabatan Pengurusan Risiko</h3>
-            <div class="border border-gray-200 rounded-md">
-              <div
-                class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center"
-              >
-                <div class="flex items-center">
-                  <Icon
-                    name="heroicons:document-text"
-                    class="text-blue-600 mr-2"
-                    size="20"
-                  />
-                  <span>{{ application.documentName }}</span>
-                </div>
-                <rs-button
-                  size="sm"
-                  variant="primary-outline"
-                  @click="previewDocument"
-                >
-                  <Icon name="heroicons:eye" class="mr-1" size="16" />
-                  Lihat Dokumen
-                </rs-button>
-              </div>
-              <div
-                class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500"
-              >
-                <div class="mb-2">
-                  <Icon
-                    name="heroicons:document"
-                    size="48"
-                    class="text-gray-400"
-                  />
-                </div>
-                <p class="text-sm">
-                  Klik butang "Lihat Dokumen" untuk melihat Surat Tapisan Jabatan Pengurusan Risiko
+              <div class="mb-3">
+                <p class="text-sm text-gray-500">Keputusan Tapisan</p>
+                <p class="font-medium">
+                  <span
+                    class="px-2 py-1 text-sm font-medium rounded-md"
+                    :class="application.isQualified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                  >
+                    {{ application.isQualified ? 'Calon Berkelayakan' : 'Calon Tidak Layak' }}
+                  </span>
                 </p>
               </div>
-              <div class="p-3 bg-gray-50 text-sm text-gray-500">
-                Dimuat naik oleh {{ application.picName }} pada
-                {{ application.uploadDate }}
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Tarikh Tapisan</p>
+                  <p class="font-medium">{{ application.uploadDate }}</p>
+                </div>
+                <div class="md:col-span-2">
+                  <p class="text-sm text-gray-500 mb-1">Catatan dari Jabatan Pengurusan Risiko</p>
+                  <p class="text-gray-700">{{ application.notes || "Tiada catatan" }}</p>
+                </div>
+              </div>
+
+              <!-- Document Preview Section for Surat Tapisan -->
+              <div class="mt-6">
+                <h4 class="font-medium mb-3">Dokumen Surat Tapisan Jabatan Pengurusan Risiko</h4>
+                <div class="border border-gray-200 rounded-md">
+                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
+                    <div class="flex items-center">
+                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
+                      <span>{{ application.documentName }}</span>
+                    </div>
+                    <rs-button size="sm" variant="primary-outline" @click="previewDocument">
+                      <Icon name="heroicons:eye" class="mr-1" size="16" />
+                      Lihat Dokumen
+                    </rs-button>
+                  </div>
+                  <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
+                    <div class="mb-2">
+                      <Icon name="heroicons:document" size="48" class="text-gray-400" />
+                    </div>
+                    <p class="text-sm">
+                      Klik butang "Lihat Dokumen" untuk melihat Surat Tapisan Jabatan Pengurusan Risiko
+                    </p>
+                  </div>
+                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                    Dimuat naik oleh {{ application.picName }} pada {{ application.uploadDate }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Executive Review Section -->
+          <!-- Sokongan Eksekutif JPPA -->
           <div class="mb-6">
             <h3 class="font-medium mb-3">Sokongan Eksekutif JPPA</h3>
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
@@ -143,44 +219,30 @@
                 <p class="font-medium">
                   <span
                     class="px-2 py-1 text-sm font-medium rounded-md"
-                    :class="
-                      application.executiveReview.recommendation === 'approve'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    "
+                    :class="application.executiveReview.recommendation === 'approve' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
                   >
-                    {{
-                      application.executiveReview.recommendation === "approve"
-                        ? "Disokong"
-                        : "Tidak Disokong"
-                    }}
+                    {{ application.executiveReview.recommendation === 'approve' ? 'Disokong' : 'Tidak Disokong' }}
                   </span>
                 </p>
               </div>
               <div class="mb-3">
                 <p class="text-sm text-gray-500">Ulasan/Justifikasi</p>
-                <p class="text-gray-700">
-                  {{ application.executiveReview.comments }}
-                </p>
+                <p class="text-gray-700">{{ application.executiveReview.comments }}</p>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p class="text-sm text-gray-500">Disokong Oleh</p>
-                  <p class="font-medium">
-                    {{ application.executiveReview.reviewedBy }}
-                  </p>
+                  <p class="font-medium">{{ application.executiveReview.reviewedBy }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Tarikh Sokongan</p>
-                  <p class="font-medium">
-                    {{ application.executiveReview.reviewedAt }}
-                  </p>
+                  <p class="font-medium">{{ application.executiveReview.reviewedAt }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- JPPA Approval Section -->
+          <!-- Keputusan Ketua JPPA -->
           <div class="mb-6">
             <h3 class="font-medium mb-3">Keputusan Ketua JPPA</h3>
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
@@ -189,44 +251,30 @@
                 <p class="font-medium">
                   <span
                     class="px-2 py-1 text-sm font-medium rounded-md"
-                    :class="
-                      application.jppaApproval.recommendation === 'approve'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    "
+                    :class="application.jppaApproval.recommendation === 'approve' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
                   >
-                    {{
-                      application.jppaApproval.recommendation === "approve"
-                        ? "Lulus"
-                        : "Tidak Disokong"
-                    }}
+                    {{ application.jppaApproval.recommendation === 'approve' ? 'Lulus' : 'Tidak Disokong' }}
                   </span>
                 </p>
               </div>
               <div class="mb-3">
                 <p class="text-sm text-gray-500">Ulasan/Justifikasi</p>
-                <p class="text-gray-700">
-                  {{ application.jppaApproval.comments }}
-                </p>
+                <p class="text-gray-700">{{ application.jppaApproval.comments }}</p>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p class="text-sm text-gray-500">Diluluskan Oleh</p>
-                  <p class="font-medium">
-                    {{ application.jppaApproval.reviewedBy }}
-                  </p>
+                  <p class="font-medium">{{ application.jppaApproval.reviewedBy }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Tarikh Lulus</p>
-                  <p class="font-medium">
-                    {{ application.jppaApproval.reviewedAt }}
-                  </p>
+                  <p class="font-medium">{{ application.jppaApproval.reviewedAt }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Manager Approval Form -->
+          <!-- Keputusan Ketua Divisyen -->
           <FormKit
             type="form"
             id="approvalForm"
@@ -235,7 +283,6 @@
           >
             <div class="mb-6">
               <h3 class="font-medium mb-3">Keputusan Ketua Divisyen</h3>
-
               <div class="mt-4">
                 <FormKit
                   type="checkbox"
@@ -266,7 +313,7 @@
                 :loading="isSubmitting"
                 @click="handleSubmit"
               >
-                Lulus
+                Lulus & Terima
               </rs-button>
             </div>
           </FormKit>
@@ -493,6 +540,7 @@ const application = ref({
     reviewedBy: "Dr. Azman bin Abdul Rahman",
     reviewedAt: "16/05/2025, 14:30",
   },
+  isQualified: true,
 });
 
 // Form submission state

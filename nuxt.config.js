@@ -1,26 +1,49 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
+
+// nuxt.config.ts or nuxt.config.js
+const isStatic = true;
+
 export default defineNuxtConfig({
+  // Enable SPA mode since we removed server-side functionality
+  ssr: false,
   runtimeConfig: {
     auth: {
       secretAccess: process.env.NUXT_ACCESS_TOKEN_SECRET,
       secretRefresh: process.env.NUXT_REFRESH_TOKEN_SECRET,
     },
   },
-  modules: [
-    "@nuxtjs/tailwindcss",
-    "@formkit/nuxt",
-    "@vite-pwa/nuxt",
-    "@vueuse/nuxt",
-    "floating-vue/nuxt",
-    "@pinia/nuxt",
-    "@pinia-plugin-persistedstate/nuxt",
-    "nuxt-security",
-    "nuxt-typed-router",
-    "nuxt-icon",
-    "@davestewart/nuxt-scrollbar",
-  ],
+  nitro: {
+    preset: "static",
+  },
+  modules: isStatic
+    ? [
+        "@nuxtjs/tailwindcss",
+        "@formkit/nuxt",
+        "@vueuse/nuxt",
+        "floating-vue/nuxt",
+        "@pinia/nuxt",
+        "@pinia-plugin-persistedstate/nuxt",
+        "nuxt-security",
+        "nuxt-typed-router",
+        "nuxt-icon",
+        "@davestewart/nuxt-scrollbar",
+      ]
+    : [
+        "@nuxtjs/tailwindcss",
+        "@formkit/nuxt",
+        "@vite-pwa/nuxt",
+        "@vueuse/nuxt",
+        "floating-vue/nuxt",
+        "@pinia/nuxt",
+        "@pinia-plugin-persistedstate/nuxt",
+        "nuxt-security",
+        "nuxt-typed-router",
+        "nuxt-icon",
+        "@davestewart/nuxt-scrollbar",
+      ],
   app: {
     pageTransition: { name: "page", mode: "out-in" },
+    baseURL: "/",
   },
   head: {
     title: "NAS",
@@ -49,14 +72,14 @@ export default defineNuxtConfig({
     config: {
       inputs: {
         signature: {
-          type: 'input',
+          type: "input",
           props: {
-            type: 'text',
-            placeholder: 'Masukkan tandatangan digital penerima...'
-          }
-        }
-      }
-    }
+            type: "text",
+            placeholder: "Masukkan tandatangan digital penerima...",
+          },
+        },
+      },
+    },
   },
   pwa: {
     registerType: "autoUpdate",

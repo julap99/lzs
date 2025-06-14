@@ -5,10 +5,9 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Permohonan Bantuan</h2>
-          <rs-button variant="primary" @click="navigateTo('/BF-BTN/PB/mohon-bantuan')">
-            <Icon name="material-symbols:add" class="mr-1" /> Mohon Bantuan Baru
-          </rs-button>
+          <h2 class="text-xl font-semibold">
+            Senarai Permohonan untuk Disemak
+          </h2>
         </div>
       </template>
 
@@ -20,21 +19,13 @@
               <FormKit
                 v-model="searchQuery"
                 type="text"
-                placeholder="Cari No Rujukan, Jenis Bantuan, Status..."
+                placeholder="Cari No KP, Nama, atau No Rujukan..."
                 :classes="{
                   input: '!py-2',
                 }"
               />
             </div>
             <div class="flex gap-2">
-              <FormKit
-                v-model="filters.jenisBantuan"
-                type="select"
-                :options="jenisBantuanOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
               <FormKit
                 v-model="filters.status"
                 type="select"
@@ -73,11 +64,12 @@
           <template v-slot:tindakan="{ text }">
             <div class="flex justify-center items-center gap-2">
               <rs-button
-                variant="primary-outline"
-                class="p-1 w-6 h-6"
-                @click="handleViewDetails(text)"
+                variant="primary"
+                class="p-1 flex gap-2"
+                @click="handleReview(text)"
               >
-                <Icon name="ph:eye" />
+                <Icon name="ph:check" class="w-4 h-4" />
+                Semak
               </rs-button>
             </div>
           </template>
@@ -132,7 +124,7 @@
 import { ref, computed } from "vue";
 
 definePageMeta({
-  title: "Senarai Permohonan Bantuan",
+  title: "Senarai Permohonan untuk Disemak",
 });
 
 const breadcrumb = ref([
@@ -142,7 +134,7 @@ const breadcrumb = ref([
     path: "/BF-BTN/PB/senarai",
   },
   {
-    name: "Senarai",
+    name: "Senarai untuk Disemak",
     type: "current",
     path: "/BF-BTN/PB/senarai",
   },
@@ -152,22 +144,12 @@ const breadcrumb = ref([
 const columns = [
   {
     key: "noRujukan",
-    label: "No Rujukan",
+    label: "No Rujukan Permohonan",
     sortable: true,
   },
   {
-    key: "jenisBantuan",
-    label: "Jenis Bantuan Dipohon",
-    sortable: true,
-  },
-  {
-    key: "aidProduct",
-    label: "Aid Product",
-    sortable: true,
-  },
-  {
-    key: "productPackage",
-    label: "Product Package",
+    key: "namaPemohon",
+    label: "Nama Pemohon",
     sortable: true,
   },
   {
@@ -176,8 +158,13 @@ const columns = [
     sortable: true,
   },
   {
-    key: "tarikhPermohonan",
-    label: "Tarikh Permohonan",
+    key: "tarikhTerima",
+    label: "Tarikh Terima Permohonan",
+    sortable: true,
+  },
+  {
+    key: "namaPegawai",
+    label: "Nama Pegawai",
     sortable: true,
   },
   {
@@ -188,27 +175,17 @@ const columns = [
 ];
 
 // Options for filters
-const jenisBantuanOptions = [
-  { label: "Semua Jenis Bantuan", value: "" },
-  { label: "Bantuan Tunai", value: "tunai" },
-  { label: "Bantuan Makanan", value: "makanan" },
-  { label: "Bantuan Pendidikan", value: "pendidikan" },
-];
-
 const statusOptions = [
   { label: "Semua Status", value: "" },
-  { label: "Diterima", value: "diterima" },
-  { label: "Dalam Proses", value: "dalam_proses" },
-  { label: "Lulus", value: "lulus" },
-  { label: "Tolak", value: "tolak" },
-  { label: "Selesai", value: "selesai" },
-  { label: "Batal", value: "batal" },
+  { label: "Baru", value: "baru" },
+  { label: "Dalam Semakan", value: "dalam_semakan" },
+  { label: "Tidak Lengkap", value: "tidak_lengkap" },
+  { label: "Untuk Siasatan", value: "untuk_siasatan" },
 ];
 
 // State
 const searchQuery = ref("");
 const filters = ref({
-  jenisBantuan: "",
   status: "",
 });
 const currentPage = ref(1);
@@ -218,20 +195,18 @@ const pageSize = ref(10);
 const applications = ref([
   {
     noRujukan: "NAS-2025-0001",
-    jenisBantuan: "Bantuan Tunai",
-    aidProduct: "Bantuan Bulanan",
-    productPackage: "Pakej Asas",
-    status: "Diterima",
-    tarikhPermohonan: "2024-03-20",
+    namaPemohon: "Ahmad bin Abdullah",
+    status: "Baru",
+    tarikhTerima: "2024-03-20",
+    namaPegawai: "Siti binti Ali",
     tindakan: "NAS-2025-0001",
   },
   {
     noRujukan: "NAS-2025-0002",
-    jenisBantuan: "Bantuan Makanan",
-    aidProduct: "Bantuan Makanan Bulanan",
-    productPackage: "Pakej Keluarga",
-    status: "Dalam Proses",
-    tarikhPermohonan: "2024-03-19",
+    namaPemohon: "Mohd bin Ismail",
+    status: "Dalam Semakan",
+    tarikhTerima: "2024-03-19",
+    namaPegawai: "Aminah binti Hassan",
     tindakan: "NAS-2025-0002",
   },
 ]);
@@ -246,17 +221,11 @@ const filteredApplications = computed(() => {
     result = result.filter(
       (app) =>
         app.noRujukan.toLowerCase().includes(query) ||
-        app.jenisBantuan.toLowerCase().includes(query) ||
-        app.status.toLowerCase().includes(query)
+        app.namaPemohon.toLowerCase().includes(query)
     );
   }
 
   // Apply filters
-  if (filters.value.jenisBantuan) {
-    result = result.filter(
-      (app) => app.jenisBantuan === filters.value.jenisBantuan
-    );
-  }
   if (filters.value.status) {
     result = result.filter((app) => app.status === filters.value.status);
   }
@@ -288,14 +257,16 @@ const handleViewDetails = (noRujukan) => {
   navigateTo(`/BF-BTN/PB/senarai/${noRujukan}`);
 };
 
+const handleReview = (noRujukan) => {
+  navigateTo(`/BF-BTN/PB/senarai/${noRujukan}/semak`);
+};
+
 const getStatusVariant = (status) => {
   const variants = {
-    diterima: "info",
-    dalam_proses: "warning",
-    lulus: "success",
-    tolak: "danger",
-    selesai: "success",
-    batal: "secondary",
+    baru: "info",
+    dalam_semakan: "warning",
+    tidak_lengkap: "danger",
+    untuk_siasatan: "secondary",
   };
   return variants[status.toLowerCase()] || "default";
 };

@@ -15,7 +15,16 @@
         <div class="p-4">
           <!-- Maklumat Calon Penolong Amil -->
           <div class="mb-6">
-            <h3 class="font-medium mb-3">Maklumat Calon Penolong Amil</h3>
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-medium">Maklumat Calon Penolong Amil</h3>
+              <span
+                class="px-3 py-1 text-sm font-medium rounded-full"
+                :class="getStatusClass(application.status)"
+              >
+                {{ application.status }}
+              </span>
+            </div>
+
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -94,62 +103,102 @@
                       </div>
                       <p class="text-sm">Klik butang "Lihat Dokumen" untuk melihat Gambar Calon</p>
                     </div>
+                    <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                      Dimuat naik oleh {{ application.candidate.namaCalonPenolongAmil }} pada {{ application.uploadDate }}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Maklumat Wakil Institusi -->
-            <div class="mb-6">
-              <h3 class="font-medium mb-3">Maklumat Wakil Institusi</h3>
-              <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-sm text-gray-500">Wakil Institusi</p>
-                    <p class="font-medium">{{ application.picName }}</p>
+          <!-- Maklumat Wakil Institusi -->
+          <div class="mb-6">
+            <h3 class="font-medium mb-3">Maklumat Wakil Institusi</h3>
+            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Wakil Institusi</p>
+                  <p class="font-medium">{{ application.picName }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">No. Rujukan</p>
+                  <p class="font-medium">{{ application.referenceNo }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Tarikh Permohonan</p>
+                  <p class="font-medium">{{ application.applicationDate }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Masjid</p>
+                  <p class="font-medium">{{ application.masjidName }}</p>
+                </div>
+              </div>
+
+              <!-- Document Preview Section for Surat Sokongan -->
+              <div class="mt-6">
+                <h4 class="font-medium mb-3">Surat Sokongan</h4>
+                <div class="border border-gray-200 rounded-md">
+                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
+                    <div class="flex items-center">
+                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
+                      <span>{{ application.documentSuratSokongan }}</span>
+                    </div>
+                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('suratSokongan')">
+                      <Icon name="heroicons:eye" class="mr-1" size="16" />
+                      Lihat Dokumen
+                    </rs-button>
                   </div>
-                  <div>
-                    <p class="text-sm text-gray-500">No. Rujukan</p>
-                    <p class="font-medium">{{ application.referenceNo }}</p>
+                  <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
+                    <div class="mb-2">
+                      <Icon name="heroicons:document" size="48" class="text-gray-400" />
+                    </div>
+                    <p class="text-sm">Klik butang "Lihat Dokumen" untuk melihat Surat Sokongan</p>
                   </div>
-                  <div>
-                    <p class="text-sm text-gray-500">Tarikh Permohonan</p>
-                    <p class="font-medium">{{ application.applicationDate }}</p>
-                  </div>
-                  <div>
-                    <p class="text-sm text-gray-500">Masjid</p>
-                    <p class="font-medium">{{ application.masjidName }}</p>
-                  </div>
-                  <div class="md:col-span-2">
-                    <p class="text-sm text-gray-500 mb-1">Catatan dari Wakil Institusi</p>
-                    <p class="text-gray-700">{{ application.notes || "Tiada catatan" }}</p>
+                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                    Dimuat naik oleh {{ application.picName }} pada {{ application.uploadDate }}
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Application Summary & Status -->
-            <div class="mb-6">
-              <div class="flex justify-between items-center mb-3">
-                <h3 class="font-medium">Maklumat Tapisan Jabatan Pengurusan Risiko</h3>
-                <span
-                  class="px-3 py-1 text-sm font-medium rounded-full"
-                  :class="getStatusClass(application.status)"
-                >
-                  {{ application.status }}
-                </span>
+          <!-- Maklumat Jabatan Pengurusan Risiko -->
+          <div class="mb-6">
+            <h3 class="font-medium mb-3">Maklumat Jabatan Pengurusan Risiko</h3>
+            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+              <div class="mb-3">
+                <p class="text-sm text-gray-500">Keputusan Tapisan</p>
+                <p class="font-medium">
+                  <span
+                    class="px-2 py-1 text-sm font-medium rounded-md"
+                    :class="application.isQualified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                  >
+                    {{ application.isQualified ? 'Calon Berkelayakan' : 'Calon Tidak Layak' }}
+                  </span>
+                </p>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Tarikh Tapisan</p>
+                  <p class="font-medium">{{ application.uploadDate }}</p>
+                </div>
+                <div class="md:col-span-2">
+                  <p class="text-sm text-gray-500 mb-1">Catatan dari Jabatan Pengurusan Risiko</p>
+                  <p class="text-gray-700">{{ application.notes || "Tiada catatan" }}</p>
+                </div>
               </div>
 
               <!-- Document Preview Section for Surat Tapisan Jabatan Pengurusan Risiko -->
-              <div class="mb-6">
-                <h3 class="font-medium mb-3">Dokumen Surat Tapisan Jabatan Pengurusan Risiko</h3>
+              <div class="mt-6">
+                <h4 class="font-medium mb-3">Dokumen Surat Tapisan Jabatan Pengurusan Risiko</h4>
                 <div class="border border-gray-200 rounded-md">
                   <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
                     <div class="flex items-center">
                       <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
                       <span>{{ application.documentSuratTapisan }}</span>
                     </div>
-                    <rs-button size="sm" variant="primary-outline" @click="previewDocument">
+                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('suratTapisan')">
                       <Icon name="heroicons:eye" class="mr-1" size="16" />
                       Lihat Dokumen
                     </rs-button>
@@ -170,7 +219,7 @@
             </div>
           </div>
 
-          <!-- Review Form -->
+          <!-- Penilaian Eksekutif JPPA -->
           <FormKit
             type="form"
             id="reviewForm"
@@ -184,7 +233,7 @@
                 <FormKit
                   type="checkbox"
                   name="confirmationCheck"
-                  label="Saya mengesahkan bahawa semua maklumat dan dokumen telah disemak dan keputusan saya adalah berdasarkan penilaian yang teliti"
+                  label="Saya mengesahkan bahawa semua maklumat dan dokumen telah disemak dan keputusan saya adalah berdasarkan penilaian yang teliti dan menyokong pelantikan calon ini sebagai Penolong Amil"
                   validation="accepted"
                   :validation-messages="{
                     accepted: 'Sila buat pengesahan sebelum hantar',
@@ -419,6 +468,7 @@ const application = ref({
   documentSuratSokongan: "Surat_Sokongan.pdf",
   documentSuratTapisan: "Surat_Tapisan_Jabatan_Pengurusan_Risiko.pdf",
   notes: "Calon telah melengkapkan semua syarat dan berkelayakan untuk dilantik sebagai Penolong Amil Fitrah.",
+  isQualified: true,
   candidate: {
     noKadPengenalan: "901231012345",
     namaCalonPenolongAmil: "Ahmad bin Abdullah",

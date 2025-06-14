@@ -13,10 +13,18 @@
 
       <template #body>
         <div class="p-4">
+          <!-- Maklumat Calon Penolong Amil -->
+          <div class="mb-6">
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-medium">Maklumat Calon Penolong Amil</h3>
+              <span
+                class="px-3 py-1 text-sm font-medium rounded-full"
+                :class="getStatusClass(application.status)"
+              >
+                {{ application.status }}
+              </span>
+            </div>
 
-                    <!-- Maklumat Calon Penolong Amil -->
-                    <div class="mb-6">
-            <h3 class="font-medium mb-3">Maklumat Calon Penolong Amil</h3>
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -100,9 +108,9 @@
             </div>
           </div>
 
-          <!-- Maklumat PIC Masjid -->
+          <!-- Maklumat Wakil Institusi -->
           <div class="mb-6">
-            <h3 class="font-medium mb-3">Maklumat PIC Masjid</h3>
+            <h3 class="font-medium mb-3">Maklumat Wakil Institusi</h3>
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -118,14 +126,8 @@
                   <p class="font-medium">{{ application.masjidName }}</p>
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500">PIC Masjid</p>
+                  <p class="text-sm text-gray-500">Wakil Institusi</p>
                   <p class="font-medium">{{ application.picName }}</p>
-                </div>
-                <div class="md:col-span-2">
-                  <p class="text-sm text-gray-500 mb-1">Catatan dari PIC Masjid</p>
-                  <p class="text-gray-700">
-                    {{ application.notes || "Tiada catatan" }}
-                  </p>
                 </div>
               </div>
 
@@ -156,85 +158,64 @@
               </div>
             </div>
           </div>
-          <!-- Application Summary & Status -->
-          <div class="mb-6">
-            <div class="flex justify-between items-center mb-3">
-              <h3 class="font-medium">Maklumat Tapisan Jabatan Pengurusan Risiko</h3>
-              <span
-                class="px-3 py-1 text-sm font-medium rounded-full"
-                :class="getStatusClass(application.status)"
-              >
-                {{ application.status }}
-              </span>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p class="text-sm text-gray-500">No. Rujukan</p>
-                  <p class="font-medium">{{ application.referenceNo }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Tarikh Permohonan</p>
-                  <p class="font-medium">{{ application.applicationDate }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Masjid</p>
-                  <p class="font-medium">{{ application.masjidName }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">PIC Masjid</p>
-                  <p class="font-medium">{{ application.picName }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Document Preview Section -->
+          <!-- Maklumat Jabatan Pengurusan Risiko -->
           <div class="mb-6">
-            <h3 class="font-medium mb-3">Dokumen Surat Tapisan Jabatan Pengurusan Risiko</h3>
-            <div class="border border-gray-200 rounded-md">
-              <div
-                class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center"
-              >
-                <div class="flex items-center">
-                  <Icon
-                    name="heroicons:document-text"
-                    class="text-blue-600 mr-2"
-                    size="20"
-                  />
-                  <span>{{ application.documentSuratTapisan }}</span>
-                </div>
-                <rs-button
-                  size="sm"
-                  variant="primary-outline"
-                  @click="previewDocument('suratTapisan')"
-                >
-                  <Icon name="heroicons:eye" class="mr-1" size="16" />
-                  Lihat Dokumen
-                </rs-button>
-              </div>
-              <div
-                class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500"
-              >
-                <div class="mb-2">
-                  <Icon
-                    name="heroicons:document"
-                    size="48"
-                    class="text-gray-400"
-                  />
-                </div>
-                <p class="text-sm">
-                  Klik butang "Lihat Dokumen" untuk melihat Surat Tapisan Jabatan Pengurusan Risiko
+            <h3 class="font-medium mb-3">Maklumat Jabatan Pengurusan Risiko</h3>
+            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+              <div class="mb-3">
+                <p class="text-sm text-gray-500">Keputusan Tapisan</p>
+                <p class="font-medium">
+                  <span
+                    class="px-2 py-1 text-sm font-medium rounded-md"
+                    :class="application.isQualified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                  >
+                    {{ application.isQualified ? 'Calon Berkelayakan' : 'Calon Tidak Layak' }}
+                  </span>
                 </p>
               </div>
-              <div class="p-3 bg-gray-50 text-sm text-gray-500">
-                Dimuat naik oleh {{ riskScreening.officer }} pada
-                {{ riskScreening.uploadDate }}
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Tarikh Tapisan</p>
+                  <p class="font-medium">{{ application.uploadDate }}</p>
+                </div>
+                <div class="md:col-span-2">
+                  <p class="text-sm text-gray-500 mb-1">Catatan dari Jabatan Pengurusan Risiko</p>
+                  <p class="text-gray-700">{{ application.notes || "Tiada catatan" }}</p>
+                </div>
+              </div>
+
+              <!-- Document Preview Section for Surat Tapisan -->
+              <div class="mt-6">
+                <h4 class="font-medium mb-3">Dokumen Surat Tapisan Jabatan Pengurusan Risiko</h4>
+                <div class="border border-gray-200 rounded-md">
+                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
+                    <div class="flex items-center">
+                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
+                      <span>{{ application.documentSuratTapisan }}</span>
+                    </div>
+                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('suratTapisan')">
+                      <Icon name="heroicons:eye" class="mr-1" size="16" />
+                      Lihat Dokumen
+                    </rs-button>
+                  </div>
+                  <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
+                    <div class="mb-2">
+                      <Icon name="heroicons:document" size="48" class="text-gray-400" />
+                    </div>
+                    <p class="text-sm">
+                      Klik butang "Lihat Dokumen" untuk melihat Surat Tapisan Jabatan Pengurusan Risiko
+                    </p>
+                  </div>
+                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
+                    Dimuat naik oleh {{ application.picName }} pada {{ application.uploadDate }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Executive Review Section -->
+          <!-- Sokongan Eksekutif JPPA -->
           <div class="mb-6">
             <h3 class="font-medium mb-3">Sokongan Eksekutif JPPA</h3>
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
@@ -249,47 +230,36 @@
                         : 'bg-red-100 text-red-800'
                     "
                   >
-                    {{
-                      application.executiveReview.recommendation === "approve"
-                        ? "Disokong"
-                        : "Tidak Disokong"
-                    }}
+                    {{ application.executiveReview.recommendation === 'approve' ? 'Disokong' : 'Tidak Disokong' }}
                   </span>
                 </p>
               </div>
               <div class="mb-3">
                 <p class="text-sm text-gray-500">Ulasan/Justifikasi</p>
-                <p class="text-gray-700">
-                  {{ application.executiveReview.comments }}
-                </p>
+                <p class="text-gray-700">{{ application.executiveReview.comments }}</p>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p class="text-sm text-gray-500">Disokong Oleh</p>
-                  <p class="font-medium">
-                    {{ application.executiveReview.reviewedBy }}
-                  </p>
+                  <p class="font-medium">{{ application.executiveReview.reviewedBy }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Tarikh Sokongan</p>
-                  <p class="font-medium">
-                    {{ application.executiveReview.reviewedAt }}
-                  </p>
+                  <p class="font-medium">{{ application.executiveReview.reviewedAt }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Manager Approval Form -->
+          <!-- Review Form -->
           <FormKit
             type="form"
-            id="approvalForm"
+            id="reviewForm"
             @submit="handleSubmit"
             :actions="false"
           >
             <div class="mb-6">
-              <h3 class="font-medium mb-3">Keputusan Ketua JPPA</h3>
-
+              <h3 class="font-medium mb-3">Penilaian Ketua JPPA</h3>
               <div class="mt-4">
                 <FormKit
                   type="checkbox"
@@ -540,6 +510,7 @@ const application = ref({
     reviewedBy: "Sarah binti Hamid",
     reviewedAt: "15/05/2025, 10:45",
   },
+  isQualified: true,
 });
 
 const riskScreening = ref({
