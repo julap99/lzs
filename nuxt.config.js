@@ -1,5 +1,7 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
+  // Enable SPA mode since we removed server-side functionality
+  ssr: false,
   runtimeConfig: {
     auth: {
       secretAccess: process.env.NUXT_ACCESS_TOKEN_SECRET,

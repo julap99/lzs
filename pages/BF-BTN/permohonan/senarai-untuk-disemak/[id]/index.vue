@@ -468,7 +468,6 @@
                   <rs-button
                     variant="primary"
                     @click="handleSubmit"
-                    :disabled="!isFormValid"
                     class="w-full !py-3 text-sm font-medium"
                   >
                     <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />

@@ -16,9 +16,6 @@ RUN yarn install --frozen-lockfile
 # Copy application code
 COPY . .
 
-# Generate Prisma client
-RUN yarn prisma generate
-
 # Expose port
 EXPOSE 3000
 
