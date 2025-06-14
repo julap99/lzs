@@ -8,25 +8,16 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++
 
 # Copy package files
-COPY package*.json ./
+COPY package.json yarn.lock* ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN yarn install --frozen-lockfile
 
 # Copy application code
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
-
-# Build the application
-RUN npm run build
-
 # Expose port
 EXPOSE 3000
 
-# Set environment variables
-ENV NODE_ENV=production
-
-# Start the application
-CMD ["node", ".output/server/index.mjs"] 
+# Start the Nuxt dev server
+CMD ["yarn", "dev"]
