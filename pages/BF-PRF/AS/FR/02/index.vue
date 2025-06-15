@@ -1254,7 +1254,7 @@
               >Kembali</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Seterusnya ke Maklumat Penolong Amil</rs-button
+              >Seterusnya ke Maklumat Peribadi Tanggungan</rs-button
             >
           </div>
         </FormKit>
@@ -1376,6 +1376,7 @@
                 type="select"
                 name="hubungan_pemohon"
                 label="1. Hubungan dengan Pemohon/Asnaf"
+                placeholder="Pilih hubungan"
                 :options="[
                   'Pasangan Pemohon',
                   'Isteri Kedua',
@@ -1394,35 +1395,63 @@
                   'Lain-lain Nyatakan',
                 ]"
                 validation="required"
+                v-model="hubunganPemohon"
               />
+
+              <div v-if="hubunganPemohon === 'Pasangan Pemohon'" class="md:col-span-2">
+                <FormKit
+                  type="file"
+                  name="dokumen_pasangan"
+                  label="Upload Dokumen Pasangan"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                />
+              </div>
 
               <FormKit
                 type="text"
                 name="nama_tanggungan"
-                label="2. Nama (Untuk Mualaf nama mengikut pengenalan)"
+                label="2. Nama (asal utk muallaf)"
                 validation="required"
               />
 
               <FormKit
+                type="text"
+                name="nama_selepas_islam"
+                label="5. Nama Selepas Islam (Muallaf)"
+              />
+
+              <FormKit
                 type="select"
-                name="jenis_pengenalan_tanggungan"
-                label="3. Jenis Pengenalan"
-                :options="[
-                  'MyKad',
-                  'MyKid',
-                  'Pasport',
-                  'Polis',
-                  'Tentera',
-                  'Sijil Beranak',
-                ]"
+                name="jenis_id"
+                label="2. Jenis ID"
+                placeholder="Pilih jenis ID"
+                :options="['Kad Pengenalan', 'Foreign ID']"
                 validation="required"
+                v-model="jenisIdTanggungan"
+              />
+
+              <div v-if="jenisIdTanggungan" class="md:col-span-2">
+                <FormKit
+                  type="file"
+                  name="dokumen_id"
+                  :label="`Upload Document`"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                />
+              </div>
+
+              <FormKit
+                type="text"
+                name="no_id_tanggungan"
+                label="4. No ID"
               />
 
               <FormKit
                 type="text"
                 name="no_pengenalan_tanggungan"
-                label="4. No Kad Pengenalan/No Polis/No Tentera/No Pasport/No Sijil Beranak"
-                validation="required"
+                label="4. No Polis/No Tentera/No Sijil Lahir"
               />
 
               <FormKit
@@ -1456,6 +1485,23 @@
               />
 
               <FormKit
+                type="date"
+                name="tarikh_lahir_tanggungan"
+                label="Tarikh Lahir"
+              />
+
+              <FormKit
+                type="date"
+                name="passportStartDate"
+                label="Tarikh mula passport"
+              />
+              <FormKit
+                type="date"
+                name="passportEndDate"
+                label="Tarikh tamat passport"
+              />
+
+              <FormKit
                 type="select"
                 name="status_perkahwinan_tanggungan"
                 label="9. Status Perkahwinan"
@@ -1471,11 +1517,23 @@
                 validation="required"
               />
 
-              <FormKit
+             <FormKit
                 type="date"
-                name="tarikh_masuk_islam_tanggungan"
-                label="10. *Tarikh Masuk Islam"
+                name="tarikh_masuk_islam"
+                label="15. *Tarikh Masuk Islam"
                 help="Format: dd-mm-yyyy"
+                validation="required"
+                v-model="tarikhMasukIslam"
+              />
+
+              <FormKit
+                v-if="tarikhMasukIslam"
+                type="file"
+                name="dokumen_masuk_islam"
+                label="16. *upload surat keislaman dari MAIS"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                accept=".pdf,.jpg,.jpeg,.png"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
               />
 
               <FormKit
@@ -1617,9 +1675,9 @@
 
                   <FormKit type="text" name="alamat_sekolah" label="Alamat" />
 
-                  <FormKit type="text" name="daerah_sekolah" label="Daerah" />
+                  <FormKit type="text" name="daerah_sekolah" :options="daerahOptions" label="Daerah" />
 
-                  <FormKit type="text" name="negeri_sekolah" label="Negeri" />
+                  <FormKit type="text" name="negeri_sekolah" :options="negeriOptions" label="Negeri" />
 
                   <FormKit type="text" name="poskod_sekolah" label="Poskod" />
                 </div>
@@ -1668,6 +1726,16 @@
                 label="6. Tinggal Bersama Keluarga"
                 :options="['Ya', 'Tidak', 'Asrama']"
               />
+
+              <FormKit
+                type="file"
+                name="dokumen_tinggal_bersama_keluarga"
+                label="Upload Dokumen"
+                accept=".pdf,.jpg,.jpeg,.png"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              />
+
             </div>
           </div>
 
@@ -2112,10 +2180,13 @@ const processing = ref(false);
 const currentSection = ref(1);
 
 const currentStepA = ref(1);
-const totalStepsA = 10;
+const totalStepsA = 9;
 const healthStatus = ref("");
 const dibantuPenolongAmil = ref("");
 const hubunganKakitanganLZS = ref("");
+const jenisIdTanggungan = ref("");
+const hubunganPemohon = ref("");
+
 
 const stepsA = [
   { id: 1, label: "Maklumat Peribadi" },
@@ -2127,7 +2198,7 @@ const stepsA = [
   { id: 7, label: "Waris" },
   { id: 8, label: "Pengesahan" },
   { id: 9, label: "Pengesahan Bermastautin" },
-  { id: 10, label: "Penolong Amil" }
+  // { id: 10, label: "Penolong Amil" }
 ];
 
 const currentStepB = ref(1);
@@ -2250,7 +2321,7 @@ const formData = ref({
   // Section B (Tanggungan) - Maklumat Peribadi Tanggungan
   hubungan_pemohon: '',
   nama_tanggungan: '',
-  jenis_pengenalan_tanggungan: '',
+  jenis_id_tanggungan: '',
   no_pengenalan_tanggungan: '',
   jantina_tanggungan: '',
   tarikh_lahir_tanggungan: '',
