@@ -42,50 +42,54 @@
                 Maklumat Semasa
               </h3>
               <table class="w-full mb-6">
-                <tr>
-                  <td class="py-1 font-semibold w-1/3">Nama:</td>
-                  <td class="py-1">AHMAD BIN ALI</td>
-                </tr>
-                <tr>
-                  <td class="py-1 font-semibold">Alamat:</td>
-                  <td class="py-1">
-                    NO 12, JALAN MERAK 5, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU,
-                    JOHOR
-                  </td>
-                </tr>
-                <tr>
-                  <td class="py-1 font-semibold">No. Telefon:</td>
-                  <td class="py-1">0123456789</td>
-                </tr>
-                <tr>
-                  <td class="py-1 font-semibold">Emel:</td>
-                  <td class="py-1">ahmad.ali@example.com</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td class="py-1 font-semibold w-1/3">Nama:</td>
+                    <td class="py-1">AHMAD BIN ALI</td>
+                  </tr>
+                  <tr>
+                    <td class="py-1 font-semibold">Alamat:</td>
+                    <td class="py-1">
+                      NO 12, JALAN MERAK 5, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU,
+                      JOHOR
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-1 font-semibold">No. Telefon:</td>
+                    <td class="py-1">0123456789</td>
+                  </tr>
+                  <tr>
+                    <td class="py-1 font-semibold">Emel:</td>
+                    <td class="py-1">ahmad.ali@example.com</td>
+                  </tr>
+                </tbody>
               </table>
 
               <h3 class="font-bold border-b border-black mb-2">
                 Perubahan Diluluskan
               </h3>
               <table class="w-full mb-6">
-                <tr>
-                  <td class="py-1 font-semibold w-1/3">Nama:</td>
-                  <td class="py-1">AHMAD BIN ALI HAJI</td>
-                </tr>
-                <tr>
-                  <td class="py-1 font-semibold">Alamat:</td>
-                  <td class="py-1">
-                    NO 15, JALAN MERAK 5, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU,
-                    JOHOR
-                  </td>
-                </tr>
-                <tr>
-                  <td class="py-1 font-semibold">No. Telefon:</td>
-                  <td class="py-1">01123456789</td>
-                </tr>
-                <tr>
-                  <td class="py-1 font-semibold">Emel:</td>
-                  <td class="py-1">ahmad.ali.haji@example.com</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td class="py-1 font-semibold w-1/3">Nama:</td>
+                    <td class="py-1">AHMAD BIN ALI HAJI</td>
+                  </tr>
+                  <tr>
+                    <td class="py-1 font-semibold">Alamat:</td>
+                    <td class="py-1">
+                      NO 15, JALAN MERAK 5, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU,
+                      JOHOR
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-1 font-semibold">No. Telefon:</td>
+                    <td class="py-1">01123456789</td>
+                  </tr>
+                  <tr>
+                    <td class="py-1 font-semibold">Emel:</td>
+                    <td class="py-1">ahmad.ali.haji@example.com</td>
+                  </tr>
+                </tbody>
               </table>
 
               <div class="mt-8 flex justify-between items-end">

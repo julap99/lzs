@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
+    "@nuxtjs/vercel-builder": "^0.25.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
     "@vite-pwa/nuxt": "^0.1.0",
     "eslint": "^8.39.0",

@@ -872,6 +872,13 @@ export default [
             meta: {},
           },
           {
+            title: "Senarai Siap untuk Siasatan Lapangan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/permohonan/senarai-siap-siasatan-lapangan",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Semakan & Sokongan (Hartanah)",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/permohonan/semakan-sokongan",
