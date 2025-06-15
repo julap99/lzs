@@ -192,7 +192,7 @@
                   'Diploma',
                   'STPM',
                   'Ijazah',
-                  'Lain-lain',
+                  'Lain-lain Nyatakan',
                 ]"
                 validation="required"
               />
@@ -951,12 +951,12 @@
               >Kembali</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Seterusnya ke Pengesahan</rs-button
+              >Seterusnya ke Maklumat Waris</rs-button
             >
           </div>
         </FormKit>
 
-        <!-- Section G Form -->
+        <!-- Section G Form - Maklumat Waris -->
         <FormKit
           v-if="currentStepA === 7"
           type="form"
@@ -965,10 +965,100 @@
           id="sectionG"
         >
           <h3 class="text-lg font-semibold mb-4">
-            G. Pengesahan
+            G. Maklumat Waris
           </h3>
 
-          <!-- <div class="mb-6">
+          <div
+            v-for="(heir, index) in formData.heirs"
+            :key="index"
+            class="mb-8 p-4 border border-gray-200 rounded-lg"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <h4 class="text-md font-medium">
+                Waris #{{ index + 1 }}
+              </h4>
+              <button
+                type="button"
+                @click="removeHeir(index)"
+                class="text-red-500 hover:text-red-700"
+              >
+                <Icon name="mdi:delete" size="1.25rem" />
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                :name="`heir${index}Name`"
+                label="Nama Waris"
+                validation="required"
+                v-model="heir.name"
+                :validation-messages="{
+                  required: 'Nama waris adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                :name="`heir${index}Relationship`"
+                label="Hubungan"
+                validation="required"
+                v-model="heir.relationship"
+                :validation-messages="{
+                  required: 'Hubungan adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="tel"
+                :name="`heir${index}Phone`"
+                label="No. Telefon Waris"
+                validation="required"
+                v-model="heir.phone"
+                :validation-messages="{
+                  required: 'No. telefon waris adalah wajib',
+                }"
+              />
+            </div>
+          </div>
+          
+          <div class="flex justify-center mt-4">
+            <rs-button
+              variant="secondary"
+              @click="addHeir"
+              type="button"
+            >
+              <Icon name="mdi:plus" class="mr-1" size="1rem" />
+              Tambah Waris
+            </rs-button>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <rs-button type="submit" variant="primary" @click="nextStepA"
+              >Seterusnya ke Pengesahan</rs-button
+            >
+          </div>
+        </FormKit>
+
+        <!-- Section H Form - Pengesahan -->
+        <FormKit
+          v-if="currentStepA === 8"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionH"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            H. Pengesahan
+          </h3>
+
+          <div class="mb-6">
             <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
@@ -983,15 +1073,41 @@
 
             <div v-if="dibantuPenolongAmil === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <FormKit
-                type="text"
+                type="select"
                 name="nama_penolong_amil_bantuan"
                 label="Nama Penolong Amil"
+                :options="[
+                  'Ahmad bin Abdullah',
+                  'Siti binti Mohamed',
+                  'Mohd Ali bin Hassan',
+                  'Nurul Huda binti Ismail',
+                  'Abdul Rahman bin Omar',
+                  'Fatimah binti Ahmad',
+                  'Mohd Yusof bin Ibrahim',
+                  'Aminah binti Abdullah',
+                  'Hassan bin Mohamed',
+                  'Noraini binti Ali'
+                ]"
+                placeholder="Pilih nama penolong amil"
                 validation="required"
               />
               <FormKit
-                type="text"
+                type="select"
                 name="kariah_bantuan"
                 label="Kariah"
+                :options="[
+                  'Masjid Al-Hidayah',
+                  'Masjid Al-Ikhlas',
+                  'Masjid Al-Amin',
+                  'Masjid Al-Muttaqin',
+                  'Masjid Al-Muhajirin',
+                  'Masjid Al-Ansar',
+                  'Masjid Al-Falah',
+                  'Masjid Al-Huda',
+                  'Masjid Al-Munawwarah',
+                  'Masjid Al-Rahman'
+                ]"
+                placeholder="Pilih kariah"
                 validation="required"
               />
 
@@ -1002,10 +1118,10 @@
                 validation="required"
               />
             </div>
-          </div> -->
+          </div>
 
           <div class="mb-6">
-            <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
+            <h4 class="font-medium mb-3">2. Maklumat Perakuan Pemohon</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium">Hubungan kekeluargaan dengan kakitangan LZS?</label>
               <FormKit
@@ -1068,16 +1184,16 @@
           </div>
         </FormKit>
 
-        <!-- Section H Form - Pengesahan Bermastautin -->
+        <!-- Section I Form - Pengesahan Bermastautin -->
         <FormKit
-          v-if="currentStepA === 8"
+          v-if="currentStepA === 9"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionH"
+          id="sectionI"
         >
           <h3 class="text-lg font-semibold mb-4">
-            H. Pengesahan Bermastautin
+            I. Pengesahan Bermastautin
           </h3>
 
           <div class="mb-6">
@@ -1088,10 +1204,16 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
-                type="textarea"
-                name="ulasan_pengesahan"
-                label="Ulasan"
-                validation="required"
+                type="file"
+                name="surat_pengesahan_bermastautin"
+                label="Surat Pengesahan Bermastautin"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                validation-messages="{
+                  required: 'Sila muat naik surat pengesahan bermastautin',
+                  max: 'Saiz fail tidak boleh melebihi 5MB',
+                  mime: 'Format fail tidak dibenarkan'
+                }"
               />
 
               <FormKit
@@ -1137,16 +1259,16 @@
           </div>
         </FormKit>
 
-        <!-- Section I Form -->
+        <!-- Section J Form - Penolong Amil -->
         <FormKit
-          v-if="currentStepA === 9"
+          v-if="currentStepA === 10"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionI"
+          id="sectionJ"
         >
           <h3 class="text-lg font-semibold mb-4">
-            I. Maklumat Penolong Amil (login sebagai penolong amil)
+            J. Maklumat Penolong Amil
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1990,7 +2112,7 @@ const processing = ref(false);
 const currentSection = ref(1);
 
 const currentStepA = ref(1);
-const totalStepsA = 9;
+const totalStepsA = 10;
 const healthStatus = ref("");
 const dibantuPenolongAmil = ref("");
 const hubunganKakitanganLZS = ref("");
@@ -2002,9 +2124,10 @@ const stepsA = [
   { id: 4, label: "Kediaman" },
   { id: 5, label: "Pinjaman" },
   { id: 6, label: "Pemilikan" },
-  { id: 7, label: "Pengesahan" },
-  { id: 8, label: "Pengesahan Bermastautin" },
-  { id: 9, label: "Penolong Amil" },
+  { id: 7, label: "Waris" },
+  { id: 8, label: "Pengesahan" },
+  { id: 9, label: "Pengesahan Bermastautin" },
+  { id: 10, label: "Penolong Amil" }
 ];
 
 const currentStepB = ref(1);
@@ -2191,7 +2314,10 @@ const formData = ref({
   negeri_majikan: '',
   jawatan: '',
   negara_pekerjaan: '',
-  status_jawatan: ''
+  status_jawatan: '',
+
+  // Add this line for heirs array
+  heirs: []
 });
 
 const nextStepA = () => {
@@ -2350,6 +2476,19 @@ const hasLoanInfo = computed(() => {
          tahunMulaPinjaman.value || 
          tahunAkhirPinjaman.value;
 });
+
+// Add these functions for handling heirs
+const addHeir = () => {
+  formData.value.heirs.push({
+    name: '',
+    relationship: '',
+    phone: ''
+  });
+};
+
+const removeHeir = (index) => {
+  formData.value.heirs.splice(index, 1);
+};
 </script>
 
 <style scoped></style>
