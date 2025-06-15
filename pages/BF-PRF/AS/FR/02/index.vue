@@ -431,6 +431,15 @@
               step="0.01"
               min="0"
             />
+
+            <FormKit
+              type="file"
+              name="dokumen_sakit_kronik"
+              label="d. Upload Dokumen Sakit Kronik"
+              accept=".pdf,.jpg,.jpeg,.png"
+              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+            />
           </div>
 
           <div v-if="healthStatus === 'OKU'" class="ml-6 mt-2">
@@ -462,6 +471,15 @@
               step="0.01"
               min="0"
             />
+
+            <FormKit
+              type="file"
+              name="dokumen_oku"
+              label="e. Upload Dokumen OKU"
+              accept=".pdf,.jpg,.jpeg,.png"
+              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+            />
           </div>
 
           <div v-if="healthStatus === 'Uzur'" class="ml-6 mt-2">
@@ -485,6 +503,15 @@
               label="c. Jumlah Perbelanjaan Bulanan (RM)"
               step="0.01"
               min="0"
+            />
+
+            <FormKit
+              type="file"
+              name="dokumen_uzur"
+              label="d. Upload Dokumen Uzur"
+              accept=".pdf,.jpg,.jpeg,.png"
+              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
             />
           </div>
 
@@ -556,10 +583,89 @@
             D. Maklumat Kediaman/Tempat Tinggal
           </h3>
 
+          <!-- Alamat Section -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Alamat Terkini</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="textarea"
+                name="alamat_terkini"
+                label="1. Alamat Terkini"
+                validation="required"
+              />
+
+              <div class="flex gap-2">
+                <FormKit
+                  v-model="lokasi"
+                  label="2. Lokasi"
+                  type="text"
+                  validation="required"
+                  validation-visibility="dirty"
+                  class="flex-1"
+                />
+                <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="selectLocation"
+                  class="whitespace-nowrap mt-7"
+                >
+                  <i class="fas fa-location-dot mr-2"></i>
+                  Dapatkan Lokasi
+                </rs-button>
+              </div>
+
+              <FormKit
+                type="select"
+                name="daerah"
+                label="3. Daerah"
+                placeholder="Pilih daerah"
+                :options="daerahOptions"
+                validation="required"
+              />
+
+              <FormKit
+                type="text"
+                name="poskod"
+                label="4. Poskod"
+                validation="required|number|length:5"
+                validation-messages="{
+                  required: 'Poskod diperlukan',
+                  number: 'Poskod mesti dalam bentuk nombor',
+                  length: 'Poskod mesti 5 digit'
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="kariah"
+                label="5. Kariah"
+                placeholder="Pilih kariah"
+                :options="kariahOptions"
+                validation="required"
+              />
+
+              <FormKit
+                type="number"
+                name="tempoh_menetap"
+                label="6. Tempoh Menetap (Tahun)"
+                min="0"
+                validation="required|min:0"
+              />
+
+              <FormKit
+                type="text"
+                name="negeri"
+                label="7. Negeri"
+                value="Selangor"
+                disabled
+              />
+            </div>
+          </div>
+
           <FormKit
             type="select"
             name="status_kediaman"
-            label="1. Status Kediaman/Tempat Tinggal"
+            label="8. Status Kediaman/Tempat Tinggal"
             :options="[
               'Milik Sendiri Tidak Berbayar',
               'Milik Sendiri Berbayar',
@@ -571,12 +677,24 @@
               'Lain-lain',
             ]"
             validation="required"
+            v-model="statusKediaman"
           />
+
+          <div v-if="statusKediaman === 'Sewa'" class="mt-4">
+            <FormKit
+              type="file"
+              name="dokumen_sewa"
+              label="Upload Dokumen Sewa"
+              accept=".pdf,.jpg,.jpeg,.png"
+              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+            />
+          </div>
 
           <FormKit
             type="select"
             name="tapak_rumah"
-            label="2. Tapak Rumah"
+            label="9. Tapak Rumah"
             :options="[
               'Milik Sendiri',
               'Tanah Wakaf',
@@ -593,7 +711,7 @@
           <FormKit
             type="select"
             name="jenis_rumah"
-            label="3. Jenis Rumah"
+            label="10. Jenis Rumah"
             :options="[
               'Kos Rendah',
               'Kos Sederhana',
@@ -607,7 +725,7 @@
           <FormKit
             type="select"
             name="binaan_rumah"
-            label="4. Binaan Rumah"
+            label="11. Binaan Rumah"
             :options="['Batu', 'Kayu', 'Separa Batu', 'Lain-lain']"
             validation="required"
           />
@@ -615,7 +733,7 @@
           <FormKit
             type="select"
             name="keadaan_kediaman"
-            label="5. Keadaan Kediaman"
+            label="12. Keadaan Kediaman"
             :options="['Baik/Sempurna', 'Uzur', 'Separa Uzur']"
             validation="required"
           />
@@ -625,7 +743,7 @@
               <FormKit
                 type="select"
                 name="bekalan_air"
-                label="6. Kemudahan Asas Bekalan Air"
+                label="13. Kemudahan Asas Bekalan Air"
                 :options="['Ada', 'Tiada']"
                 validation="required"
               />
@@ -1474,6 +1592,15 @@
                     step="0.01"
                     min="0"
                   />
+
+                  <FormKit
+                    type="file"
+                    name="dokumen_sakit_kronik_tanggungan"
+                    label="d. Upload Dokumen Sakit Kronik"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  />
                 </div>
               </div>
 
@@ -1511,6 +1638,15 @@
                     step="0.01"
                     min="0"
                   />
+
+                  <FormKit
+                    type="file"
+                    name="dokumen_oku_tanggungan"
+                    label="e. Upload Dokumen OKU"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  />
                 </div>
               </div>
 
@@ -1540,6 +1676,15 @@
                     label="c. Jumlah Perbelanjaan Bulanan (RM)"
                     step="0.01"
                     min="0"
+                  />
+
+                  <FormKit
+                    type="file"
+                    name="dokumen_uzur_tanggungan"
+                    label="d. Upload Dokumen Uzur"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                   />
                 </div>
               </div>
@@ -2129,6 +2274,51 @@ const bankOptions = [
 ];
 
 const jenisId = ref(null);
+
+const daerahOptions = [
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu-langat" },
+  { label: "Hulu Selangor", value: "hulu-selangor" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Langat", value: "kuala-langat" },
+  { label: "Kuala Selangor", value: "kuala-selangor" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Sabak Bernam", value: "sabak-bernam" },
+  { label: "Sepang", value: "sepang" }
+];
+
+const kariahOptions = [
+  { label: "Kariah Masjid Al-Hidayah", value: "masjid-al-hidayah" },
+  { label: "Kariah Masjid Al-Ikhlas", value: "masjid-al-ikhlas" },
+  { label: "Kariah Masjid Al-Muttaqin", value: "masjid-al-muttaqin" },
+  { label: "Kariah Masjid Al-Rahman", value: "masjid-al-rahman" },
+  { label: "Kariah Masjid Al-Salam", value: "masjid-al-salam" },
+  { label: "Kariah Masjid Al-Taqwa", value: "masjid-al-taqwa" },
+  { label: "Kariah Masjid An-Nur", value: "masjid-an-nur" },
+  { label: "Kariah Masjid Ar-Rahman", value: "masjid-ar-rahman" },
+  { label: "Kariah Masjid As-Salam", value: "masjid-as-salam" },
+  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" }
+];
+
+const lokasi = ref('');
+
+const selectLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        lokasi.value = 'Lokasi semasa';
+        toast.success('Lokasi berjaya diperoleh!');
+      },
+      (error) => {
+        toast.error('Tidak dapat mendapatkan lokasi.');
+      }
+    );
+  } else {
+    toast.error('Geolocation tidak disokong oleh pelayar ini.');
+  }
+};
+
+const statusKediaman = ref(null);
 </script>
 
 <style scoped></style>
