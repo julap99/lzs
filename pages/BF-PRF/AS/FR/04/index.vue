@@ -101,7 +101,7 @@
                   v-else
                   variant="primary"
                   class="ml-auto"
-                  @click="navigateTo(`/BF-PRF/AS/FR/05`)"
+                  @click="navigateTo(`/BF-BTN/PB/syorkan-bantuan`)"
                   :disabled="processing"
                 >
                   <span v-if="processing">
