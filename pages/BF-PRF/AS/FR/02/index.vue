@@ -818,12 +818,14 @@
             type="text"
             name="pemberi_pinjaman"
             label="1. Nama Institusi/Individu Pemberi Pinjaman"
+            v-model="pemberiPinjaman"
           />
 
           <FormKit
             type="text"
             name="jenis_pinjaman"
             label="2. Jenis Pinjaman"
+            v-model="jenisPinjaman"
           />
 
           <FormKit
@@ -832,6 +834,7 @@
             label="3. Amaun Bayaran Bulanan (RM)"
             step="0.01"
             min="0"
+            v-model="bayaranBulanan"
           />
 
           <FormKit
@@ -840,18 +843,30 @@
             label="4. Jumlah Keseluruhan Perbelanjaan (RM)"
             step="0.01"
             min="0"
+            v-model="jumlahPerbelanjaan"
           />
 
           <FormKit
             type="date"
             name="tahun_mula_pinjaman"
             label="5. Tahun Mula Pinjaman"
+            v-model="tahunMulaPinjaman"
           />
 
           <FormKit
             type="date"
             name="tahun_akhir_pinjaman"
             label="6. Tahun Akhir Pinjaman"
+            v-model="tahunAkhirPinjaman"
+          />
+
+          <FormKit
+            type="file"
+            name="dokumen_pinjaman"
+            label="7. Upload Dokumen Pinjaman"
+            accept=".pdf,.jpg,.jpeg,.png"
+            help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+            validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
           />
 
           <div class="flex justify-between gap-3 mt-6">
@@ -2319,6 +2334,22 @@ const selectLocation = () => {
 };
 
 const statusKediaman = ref(null);
+
+const pemberiPinjaman = ref('');
+const jenisPinjaman = ref('');
+const bayaranBulanan = ref(null);
+const jumlahPerbelanjaan = ref(null);
+const tahunMulaPinjaman = ref(null);
+const tahunAkhirPinjaman = ref(null);
+
+const hasLoanInfo = computed(() => {
+  return pemberiPinjaman.value || 
+         jenisPinjaman.value || 
+         bayaranBulanan.value || 
+         jumlahPerbelanjaan.value || 
+         tahunMulaPinjaman.value || 
+         tahunAkhirPinjaman.value;
+});
 </script>
 
 <style scoped></style>
