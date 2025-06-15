@@ -5,11 +5,11 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "prisma": "npx prisma db pull && npx prisma generate && nuxt dev"
+    "postinstall": "nuxt prepare"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
+    "@nuxtjs/vercel-builder": "^0.25.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
     "@vite-pwa/nuxt": "^0.1.0",
     "eslint": "^8.39.0",
@@ -44,7 +44,6 @@
     "@kiwicom/eslint-config": "^12.7.3",
     "@pinia/nuxt": "^0.4.11",
     "@popperjs/core": "^2.11.8",
-    "@prisma/client": "^5.1.1",
     "@shimyshack/uid": "^0.1.7",
     "@sweetalert2/theme-dark": "^5.0.14",
     "@vueup/vue-quill": "^1.0.0",
@@ -63,7 +62,6 @@
     "maska": "^1.5.0",
     "pinia": "^2.1.6",
     "prettier": "^2.8.1",
-    "prisma": "^5.1.1",
     "sass": "^1.62.0",
     "swiper": "^8.4.4",
     "thememirror": "^2.0.1",

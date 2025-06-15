@@ -2,6 +2,30 @@
    Notes: This file is the main entry point for the SCSS stylesheet.
   ================================================================================*/
 
+// Custom Layout SCSS
+@use "./custom/layout/vertical";
+@use "./custom/layout/horizontal";
+
+// Transition SCSS
+@use "./custom/transition/page";
+@use "./custom/transition/fade";
+@use "./custom/transition/fade-up";
+@use "./custom/transition/slide";
+@use "./custom/transition/slide-fade";
+
+// Scrollbar SCSS
+@use "./custom/scrollbar/scrollbar";
+
+// Custom SCSS library
+@use "./custom/library/dropdown";
+@use "./custom/library/nprogress";
+@use "./custom/library/formkit";
+@use "./custom/library/vuetoastification";
+@use "./custom/library/swiper";
+@use "./custom/library/fullcalendar";
+@use "./custom/library/floatingvue";
+@use "./custom/library/vuecountryflag";
+
 /* Import Inter font from Google Fonts - Following UI/UX Design Specifications v0.2 */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
@@ -40,27 +64,3 @@ code {
   color: rgb(233, 74, 74);
   background-color: rgba(146, 146, 146, 0.1);
 }
-
-// Custom Layout SCSS
-@import "./custom/layout/vertical";
-@import "./custom/layout/horizontal";
-
-// Transition SCSS
-@import "./custom/transition/page";
-@import "./custom/transition/fade";
-@import "./custom/transition/fade-up";
-@import "./custom/transition/slide";
-@import "./custom/transition/slide-fade";
-
-// Scrollbar SCSS
-@import "./custom/scrollbar/scrollbar";
-
-// Custom SCSS library
-@import "./custom/library/dropdown";
-@import "./custom/library/nprogress";
-@import "./custom/library/formkit";
-@import "./custom/library/vuetoastification";
-@import "./custom/library/swiper";
-@import "./custom/library/fullcalendar";
-@import "./custom/library/floatingvue";
-@import "./custom/library/vuecountryflag";
