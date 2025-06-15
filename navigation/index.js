@@ -879,6 +879,13 @@ export default [
             meta: {},
           },
           {
+            title: "Semakan & Sokongan (EOAD)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/permohonan/semakan-sokongan-1",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Semakan & Sokongan (Hartanah)",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/permohonan/semakan-sokongan",
