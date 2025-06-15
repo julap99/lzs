@@ -697,6 +697,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Senarai Permohonan untuk Disemakan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/permohonan/list-semakan",
+            child: [],
+            meta: {},
+          },
           // {
           //   title: "AS-QB",
           //   icon: "iconamoon:arrow-right-2-duotone",
