@@ -627,6 +627,11 @@
                       :validation-messages="{ required: 'Nombor ID adalah wajib' }"
                     />
                     <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
+                    <FormKit
                       type="date"
                       :name="`spousePassportStartDate${idx}`"
                       label="Tarikh Mula Passport"
@@ -1102,6 +1107,11 @@
                       required: 'No ID adalah wajib',
                     }"
                   />
+                  <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
 
                   <FormKit
                     type="date"
