@@ -538,11 +538,11 @@
       console.log("Form submitted:", formData.value);
       // Add your submission logic here (API call, etc.)
 
-      toast.success("Permohonan berjaya dihantar");
+      toast.success("Pengesahan berjaya dihantar");
       
       // Wait for 2 seconds before navigating
       // setTimeout(() => {
-        router.push("/BF-PRF/AS/FR/04");
+        router.push("/BF-PRF/AS/QB/02");
       // }, 2000);
     } catch (error) {
       toast.error("Ralat! Permohonan tidak berjaya dihantar");
