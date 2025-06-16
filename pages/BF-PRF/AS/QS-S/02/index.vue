@@ -195,10 +195,6 @@
                   }"
                 />
 
-                <!-- Passport Information (Conditional) -->
-                <div v-if="formData.personalInfo.idValue === 'foreign-id'" class="md:col-span-2">
-                  <h4 class="text-md font-medium mb-3">Maklumat Passport</h4>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormKit
                       type="date"
                       name="passportStartDate"
@@ -211,8 +207,6 @@
                       label="Tarikh tamat passport"
                       v-model="formData.personalInfo.passportEndDate"
                     />
-                  </div>
-                </div>
 
                 <!-- Islamic Information Section -->
                 <div class="md:col-span-2">
