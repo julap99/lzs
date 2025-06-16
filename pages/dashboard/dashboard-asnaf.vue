@@ -26,15 +26,34 @@
     <!-- Main Dashboard -->
     <div v-else class="space-y-6">
       <!-- Ringkasan Pengguna -->
-      <rs-card class="p-5 bg-white shadow-sm">
-        <div class="grid md:grid-cols-4 gap-4">
-          <div><strong>Nama:</strong> {{ user.nama }}</div>
-          <div><strong>Peranan:</strong> {{ user.peranan }}</div>
-          <div><strong>Daerah:</strong> {{ user.daerah }}</div>
-          <div><strong>Kariah:</strong> {{ user.kariah }}</div>
-          <div><strong>Login:</strong> {{ user.loginTime }}</div>
-        </div>
-      </rs-card>
+<rs-card class="p-6 bg-white shadow-sm rounded-xl">
+  <div class="space-y-4">
+    <!-- Tajuk Selamat Datang -->
+    <h1 class="text-3xl font-bold text-gray-800">
+      Selamat Datang, {{ user.nama }}
+    </h1>
+
+    <!-- Maklumat Pengguna -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+      <div class="flex flex-col">
+        <span class="font-medium text-gray-500">Kategori Asnaf</span>
+        <span class="text-gray-800">{{ user.peranan }}</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-medium text-gray-500">Daerah</span>
+        <span class="text-gray-800">{{ user.daerah }}</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-medium text-gray-500">Kariah</span>
+        <span class="text-gray-800">{{ user.kariah }}</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-medium text-gray-500">Log Masuk Terakhir</span>
+        <span class="text-gray-800">{{ user.loginTime }}</span>
+      </div>
+    </div>
+  </div>
+</rs-card>
 
       <!-- KPI Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
@@ -62,60 +81,71 @@
         </rs-card>
       </div>
 
-      <!-- Senarai Permohonan -->
-      <rs-card>
-        <template #header>
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <h2 class="text-lg font-semibold">Permohonan Sendiri</h2>
-            <FormKit
-              type="select"
-              label="Status"
-              v-model="filterStatus"
-              :options="statusOptions"
-              class="w-full md:w-48"
-            />
-          </div>
-        </template>
-
-        <rs-table
-          :data="filteredPermohonan"
-          :columns="permohonanColumns"
-          :options="{ hover: true }"
-        >
-          <template v-slot:status="data">
-            <rs-badge :variant="getStatusBadge(data.text)">
-              {{ data.text }}
-            </rs-badge>
+       <!-- Permohonan & Aktiviti -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Permohonan Terdahulu -->
+        <rs-card class="lg:col-span-2">
+          <template #header>
+            <div class="flex justify-between items-center flex-wrap gap-4">
+              <div class="flex items-center gap-3">
+                <h2 class="text-xl font-semibold">Permohonan Terdahulu</h2>
+                <rs-badge variant="primary">{{ filteredPermohonan.length }} REKOD</rs-badge>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <input type="text" v-model="searchText" placeholder="Cari no rujukan atau bantuan..." class="text-sm border rounded px-3 py-1 w-64" />
+                <select v-model="filterStatus" class="text-sm border rounded px-3 py-1 w-44">
+                  <option value="">Semua Status</option>
+                  <option value="Dalam Proses">Dalam Proses</option>
+                  <option value="Lulus">Lulus</option>
+                  <option value="Tolak">Tolak</option>
+                </select>
+              </div>
+            </div>
           </template>
-        </rs-table>
-      </rs-card>
 
-      <!-- Notifikasi -->
-      <rs-card v-if="notifications.length">
-        <template #header>
-          <h2 class="text-lg font-semibold">Notifikasi Terkini</h2>
-        </template>
-        <ul class="divide-y">
-          <li
-            v-for="(note, i) in notifications"
-            :key="i"
-            class="py-2 flex items-start gap-2"
+          <rs-table
+            :data="paginatedPermohonan"
+            :columns="permohonanColumns"
+            :pageSize="pageSize"
+            :totalRecords="filteredPermohonan.length"
+            :currentPage="currentPage"
+            @page-change="handlePageChange"
+            :options="{ hover: true }"
           >
-            <span :class="getBadgeColor(note.type)" class="text-xs font-medium whitespace-nowrap">
-              [{{ note.type }}]
-            </span>
-            <span class="text-sm">{{ note.message }}</span>
-          </li>
-        </ul>
-      </rs-card>
+            <template v-slot:status="data">
+              <rs-badge :variant="getStatusBadge(data.text)">{{ data.text.toUpperCase() }}</rs-badge>
+            </template>
+          </rs-table>
 
-      <rs-alert v-else variant="info">Tiada notifikasi baru.</rs-alert>
+          <p class="text-sm text-gray-500 mt-2">
+            Menunjukkan {{ paginatedPermohonan.length ? (currentPage - 1) * pageSize + 1 : 0 }} hingga
+            {{ (currentPage - 1) * pageSize + paginatedPermohonan.length }} dari {{ filteredPermohonan.length }} rekod
+          </p>
+        </rs-card>
+
+        <!-- Aktiviti Terkini -->
+        <rs-card>
+          <template #header>
+            <h2 class="text-lg font-semibold">Aktiviti Terkini</h2>
+          </template>
+          <template #body>
+            <ul class="divide-y divide-gray-200">
+              <li v-for="(note, i) in notifications" :key="i" class="py-3 flex items-start gap-2">
+                <Icon name="ic:baseline-upload" class="text-lg text-primary" />
+                <span class="text-sm">{{ note.message }}</span>
+              </li>
+            </ul>
+          </template>
+        </rs-card>
+      </div>
+
+      
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const breadcrumb = [
   { title: 'Dashboard', to: '/asnaf/dashboard' },
@@ -123,8 +153,10 @@ const breadcrumb = [
 
 const isLoading = ref(false);
 const error = ref<null | { title: string; message: string }>(null);
+const searchText = ref('');
 
-// Dummy fetch simulation
+
+
 const fetchDashboardData = () => {
   isLoading.value = true;
   setTimeout(() => {
@@ -132,24 +164,21 @@ const fetchDashboardData = () => {
   }, 1000);
 };
 
-// User info
 const user = {
   nama: 'Ali bin Abu',
-  peranan: 'Asnaf',
+  peranan: 'Fakir',
   daerah: 'Gombak',
   kariah: 'Masjid Al-Khairiyah',
   loginTime: new Date().toLocaleString('ms-MY'),
 };
 
-// KPI Data
 const kpiData = ref([
-  { title: 'Jumlah Bantuan Diterima', value: 3000, icon: 'ic:baseline-volunteer-activism', description: 'Tahun Ini' },
-  { title: 'Permohonan Aktif', value: 2, icon: 'ic:baseline-hourglass-top', description: 'Sedang Diproses' },
-  { title: 'Permohonan Ditolak', value: 1, icon: 'ic:baseline-cancel', description: 'Tahun Ini' },
-  { title: 'Kemaskini Terakhir', value: '25/04/2025', icon: 'ic:baseline-event-available', description: 'Tarikh' },
+  { title: 'Jumlah Keseluruhan Bantuan Diterima', value: 'RM 3,000', icon: 'ic:baseline-volunteer-activism', description: '' },
+  { title: 'Permohonan Aktif', value: 1, icon: 'ic:baseline-hourglass-top', description: 'Sedang Diproses' },
+  { title: 'Permohonan Ditolak', value: 1, icon: 'ic:baseline-cancel', description: '' },
+  { title: 'Kemaskini Seterusnya', value: '25/04/2026', icon: 'ic:baseline-event-available', description: 'Tarikh Review' },
 ]);
 
-// Permohonan
 const filterStatus = ref('');
 const statusOptions = [
   { label: 'Semua', value: '' },
@@ -176,12 +205,23 @@ const filteredPermohonan = computed(() => {
   return permohonanList.value.filter(p => p.status === filterStatus.value);
 });
 
-// Notifikasi
+const pageSize = 2;
+const currentPage = ref(1);
+
+const paginatedPermohonan = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
+  return filteredPermohonan.value.slice(start, end);
+});
+
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+};
+
 const notifications = ref([
   { type: 'success', message: 'Permohonan PMH/2025/0099 telah diluluskan dan akan diproses.' },
 ]);
 
-// Utilities
 const getBadgeColor = (type: string): string => {
   return {
     success: 'text-green-600',
@@ -209,5 +249,4 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
