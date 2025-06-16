@@ -130,7 +130,7 @@ const applications = ref([
   {
     nama: "Ahmad bin Abdullah",
     tarikhMohon: "2024-03-20",
-    jenisPendaftaran: "Self Service Pendaftaran Pantas Perseorangan",
+    jenisPendaftaran: "Pendaftaran Lengkap  ",
     status: "Menunggu Kelulusan",
     tindakan: "PRF-2024-001",
   },
@@ -177,7 +177,6 @@ const getStatusVariant = (status) => {
 };
 
 const handleSemak = (id) => {
-  // Handle semak action - would typically navigate to detail page
-  console.log("Semak application:", id);
+  navigateTo('/BF-PRF/AS/permohonan/semakan-data');
 };
 </script>
