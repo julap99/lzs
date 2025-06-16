@@ -244,40 +244,27 @@
             bayaran.
           </div>
 
-          <div v-else class="space-y-3">
-            <div
-              v-for="(payment, index) in paymentList"
-              :key="payment.kod"
-              class="border rounded-lg p-4 bg-white shadow-sm flex justify-between items-center"
+          <div v-else class="space-y-3">    
+            <rs-table
+              :data="paymentList"
+              :columns="paymentColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: true }"
+              advanced
             >
-              <div class="flex-1">
-                <div class="font-semibold text-lg text-gray-900">
-                  {{ payment.bayaranKepada || "Tiada Maklumat" }}
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button variant="info" size="sm" @click="handleEditPaymentModal(row)">
+                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" /> Lihat
+                  </rs-button>
+                  <rs-button variant="danger" size="sm" @click="handleDeletePayment(row)">
+                    <Icon name="material-symbols:delete" class="w-4 h-4" />
+                  </rs-button>
                 </div>
-                <div class="text-sm text-gray-500">
-                  {{ payment.kod }} • RM {{ formatNumber(payment.amaun) }}
-                </div>
-              </div>
-
-              <div class="flex space-x-2">
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  class="flex gap-2"
-                  @click="handleEditPaymentModal(payment)"
-                >
-                  <Icon name="material-symbols:visibility" class="h-4 w-4" />
-                  Lebih
-                </rs-button>
-                <rs-button
-                  variant="danger"
-                  size="sm"
-                  @click="handleDeletePayment(payment)"
-                >
-                  <Icon name="material-symbols:delete" class="h-4 w-4" />
-                </rs-button>
-              </div>
-            </div>
+              </template>
+            </rs-table>
           </div>
         </template>
       </rs-card>
@@ -308,40 +295,26 @@
           </div>
 
           <div v-else class="space-y-3">
-            <div
-              v-for="(recipient, index) in recipientList"
-              :key="recipient.id || recipient.namaPenuh + index"
-              class="border rounded-lg p-4 bg-white shadow-sm flex justify-between items-center"
+            <rs-table
+              :data="recipientList"
+              :columns="recipientColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: true }"
+              advanced
             >
-              <div class="flex-1">
-                <div class="font-semibold text-lg text-gray-900">
-                  {{ recipient.namaPenuh || "Penerima " + (index + 1) }}
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button variant="info" size="sm" @click="handleEditRecipientModal(row)">
+                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" /> Lihat
+                  </rs-button>
+                  <rs-button variant="danger" size="sm" @click="handleDeleteRecipient(row)">
+                    <Icon name="material-symbols:delete" class="w-4 h-4" />
+                  </rs-button>
                 </div>
-                <div class="text-sm text-gray-500">
-                  {{ recipient.kategoriAsnaf }} • RM
-                  {{ formatNumber(recipient.amaun) }}
-                </div>
-              </div>
-
-              <div class="flex space-x-2">
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  class="flex gap-2"
-                  @click="handleEditRecipientModal(recipient)"
-                >
-                  <Icon name="material-symbols:visibility" class="h-4 w-4" />
-                  Lebih
-                </rs-button>
-                <rs-button
-                  variant="danger"
-                  size="sm"
-                  @click="handleDeleteRecipient(recipient)"
-                >
-                  <Icon name="material-symbols:delete" class="h-4 w-4" />
-                </rs-button>
-              </div>
-            </div>
+              </template>
+            </rs-table>
           </div>
         </template>
       </rs-card>
@@ -388,7 +361,7 @@
             @click="handleSave"
             :disabled="isSubmitting"
           >
-            {{ isSubmitting ? "Sedang Simpan..." : "Simpan" }}
+            {{ isSubmitting ? "Sedang Simpan..." : "Sahkan Senarai" }}
           </rs-button>
         </div>
       </div>
@@ -709,6 +682,13 @@ const cawanganOptions = [
 
 // Payment Table Configuration
 const paymentColumns = [
+  {
+    key: 'select',
+    label: '',
+    width: '40px',
+    render: (row) => `<input type='checkbox' class='form-checkbox' v-model='selectedPaymentRows' />`,
+    sortable: false,
+  },
   { key: "kod", label: "Kod" },
   { key: "bayaranKepada", label: "Bayaran Kepada" },
   { key: "asnaf", label: "Asnaf" },
@@ -820,6 +800,7 @@ watch(
 );
 
 watch(
+  paymentList,
   recipientList,
   (newValue) => {
     console.log("Recipient list changed:", newValue);
@@ -871,6 +852,118 @@ const handleDocumentUpload = (event) => {
 const handleImport = async () => {
   try {
     isLoading.value = true;
+
+    // Dummy data import (simulasi data dari Excel)
+    recipientList.value = [
+      {
+        id: generateUniqueId("RCP"),
+        namaPenuh: "Nur Hazimah Binti Mohd Hafiz",
+        amaun: 2400.0,
+        agihanSemula: "Tidak",
+        bulkProcessing: "BP-2025-00004",
+        kategoriAsnaf: "Fakir",
+        bayaranKepada: "Asnaf",
+        negeri: "Selangor",
+        negara: "Malaysia",
+      },
+      {
+        id: generateUniqueId("RCP"),
+        namaPenuh: "Nur safiyya Binti Rosly",
+        amaun: 2400.0,
+        agihanSemula: "Tidak",
+        bulkProcessing: "BP-2025-00004",
+        kategoriAsnaf: "Fakir",
+        bayaranKepada: "Asnaf",
+        negeri: "Selangor",
+        negara: "Malaysia",
+      },
+      {
+        id: generateUniqueId("RCP"),
+        namaPenuh: "Mohd Nazrin Bin Mokhtar",
+        amaun: 2400.0,
+        agihanSemula: "Tidak",
+        bulkProcessing: "BP-2025-00004",
+        kategoriAsnaf: "Fakir",
+        bayaranKepada: "Asnaf",
+        negeri: "Selangor",
+        negara: "Malaysia",
+      },
+      {
+        id: generateUniqueId("RCP"),
+        namaPenuh: "Intan Nadia Binti Mohd Zamri",
+        amaun: 2400.0,
+        agihanSemula: "Tidak",
+        bulkProcessing: "BP-2025-00004",
+        kategoriAsnaf: "Fakir",
+        bayaranKepada: "Asnaf",
+        negeri: "Selangor",
+        negara: "Malaysia",
+      },
+    ];
+
+    paymentList.value = [
+      {
+        kod: "PT-2025-30371",
+        bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.0,
+        tarikhBayaran: "2025-04-17",
+      },
+      {
+        kod: "PT-2025-30372",
+        bayaranKepada: "Nur safiyya Binti Rosly",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.0,
+        tarikhBayaran: "2025-04-17",
+      },
+      {
+        kod: "PT-2025-30373",
+        bayaranKepada: "Mohd Nazrin Bin Mokhtar",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.0,
+        tarikhBayaran: "2025-04-17",
+      },
+      {
+        kod: "PT-2025-30374",
+        bayaranKepada: "Intan Nadia Binti Mohd Zamri",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.0,
+        tarikhBayaran: "2025-04-17",
+      },
+    ];
+
+    // Kemas kini jumlah amaun automatik
+    const jumlah = recipientList.value.reduce(
+      (sum, item) => sum + (parseFloat(item.amaun) || 0),
+      0
+    );
+    formData.value.jumlahAmaun = formatNumber(jumlah);
+
+    alert("success", "Fail berjaya diimport dan data dimasukkan.");
+  } catch (error) {
+    console.error("Error importing file:", error);
+    alert("error", "Gagal mengimport fail");
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+
+/* const handleImport = async () => {
+  try {
+    isLoading.value = true;
     // Here you would typically:
     // 1. Create FormData and append the file
     const formData = new FormData();
@@ -897,6 +990,93 @@ const handleImport = async () => {
       negara: "Malaysia",
     });
 
+    paymentList.value = [
+      {
+        kod: "PT-2025-30371",
+        bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.0,
+        tarikhBayaran: "2025-04-17",
+      },
+      {
+        kod: "PT-2025-30372",
+        bayaranKepada: "Nur safiyya Binti Rosly",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.0,
+        tarikhBayaran: "2025-04-17",
+      },
+      {
+        kod: "PT-2025-30373",
+        bayaranKepada: "Mohd Nazrin Bin Mokhtar",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.0,
+        tarikhBayaran: "2025-04-17",
+      },
+      {
+        kod: "PT-2025-30374",
+        bayaranKepada: "Intan Nadia Binti Mohd Zamri",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.0,
+        tarikhBayaran: "2025-04-17",
+      },
+    ];
+
+
+    paymentList.value.push = (
+      {
+        kod: "PT-2025-30371",
+        bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.00,
+        tarikhBayaran: "17/4/2025",
+      },
+      {
+        kod: "PT-2025-30372",
+        bayaranKepada: "Nur safiyya Binti Rosly",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.00,
+        tarikhBayaran: "17/4/2025",
+      },
+      {
+        kod: "PT-2025-30373",
+        bayaranKepada: "Mohd Nazrin Bin Mokhtar",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.00,
+        tarikhBayaran: "17/4/2025",
+      },
+      {
+        kod: "PT-2025-30374",
+        bayaranKepada: "Intan Nadia Binti Mohd Zamri",
+        asnaf: "Fakir",
+        contributor: "",
+        recipient: "",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400.00,
+        tarikhBayaran: "17/4/2025",
+      }
+    );
+
     // Update total amount
     formData.value.jumlahAmaun = formatNumber(totalAmount.value);
 
@@ -907,7 +1087,7 @@ const handleImport = async () => {
   } finally {
     isLoading.value = false;
   }
-};
+}; */
 
 const handleDocumentImport = async () => {
   try {

@@ -1005,7 +1005,7 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Cipta Bantuan Bulk",
+            title: "Senarai Bantuan Bulk",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/bantuan-bulk/cipta-bantuan-bulk",
             child: [],

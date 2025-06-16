@@ -253,40 +253,36 @@ const selectedBantuanId = ref(null);
 // Mock data (replace with actual API calls)
 const bantuanList = ref([
   {
-    bil: 1,
     kodBP: 'BP-2025-00001',
     tajukBantuan: 'Wang Saku Fakir Mac 2025',
-    bantuan: 'Bantuan Pendidikan',
-    produkBantuan: 'Wang Saku',
-    status: 'Diluluskan',
-    tindakan: { id: 'BP-2025-00001', status: 'Diluluskan' }
+    bantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+    produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+    status: 'Draft',
+    tindakan: { id: 'BP-2025-00001', status: 'Draft' }
   },
   {
-    bil: 2,
     kodBP: 'BP-2025-00002',
-    tajukBantuan: 'Bantuan Pendidikan Anak Miskin 2025',
-    bantuan: 'Bantuan Pendidikan',
-    produkBantuan: 'Yuran Sekolah',
-    status: 'Sedang Diproses',
-    tindakan: { id: 'BP-2025-00002', status: 'Sedang Diproses' }
+    tajukBantuan: 'Wang Saku Fakir Feb 2025',
+    bantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+    produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+    status: 'Draft',
+    tindakan: { id: 'BP-2025-00002', status: 'Draft' }
   },
   {
-    bil: 3,
     kodBP: 'BP-2025-00003',
-    tajukBantuan: 'Bantuan Rawatan Perubatan Miskin',
-    bantuan: 'Bantuan Perubatan',
-    produkBantuan: 'Kos Rawatan',
-    status: 'Ditolak',
-    tindakan: { id: 'BP-2025-00003', status: 'Ditolak' }
+    tajukBantuan: 'Wang Saku Fakir Mac 2025',
+    bantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+    produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+    status: 'Draft',
+    tindakan: { id: 'BP-2025-00003', status: 'Draft' }
   },
   {
-    bil: 4,
     kodBP: 'BP-2025-00004',
-    tajukBantuan: 'Bantuan Rawatan Perubatan Miskin',
-    bantuan: 'Bantuan Perubatan',
-    produkBantuan: 'Kos Rawatan',
-    status: 'Baru',
-    tindakan: { id: 'BP-2025-00004', status: 'Baru' }
+    tajukBantuan: 'Bantuan bencana Feb 2025',
+    bantuan: 'B146 - (HQ) BANTUAN BENCANA (FAKIR)',
+    produkBantuan: '(HQ) BANTUAN BANJIR (FAKIR)',
+    status: 'Draft',
+    tindakan: { id: 'BP-2025-00004', status: 'Draft' }
   },
 ]);
 
