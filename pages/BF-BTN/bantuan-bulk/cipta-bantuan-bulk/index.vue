@@ -195,7 +195,7 @@ const breadcrumb = ref([
     path: '/BF-BTN/bantuan-bulk',
   },
   {
-    name: 'Cipta Bantuan Bulk',
+    name: 'Senarai Bantuan Bulk',
     type: 'current',
     path: '/BF-BTN/bantuan-bulk/cipta-bantuan-bulk',
   },

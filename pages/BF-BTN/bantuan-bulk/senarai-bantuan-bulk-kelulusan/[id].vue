@@ -188,36 +188,29 @@
           </div>
 
           <div v-else class="space-y-3">
-            <div
-              v-for="(payment, index) in bayaranKepadaList"
-              :key="payment.kod"
-              class="border rounded-lg p-4 bg-white shadow-sm flex justify-between items-center"
+            <rs-table
+              :data="bayaranKepadaList"
+              :columns="recipientColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: true }"
+              advanced
             >
-              <div class="flex-1">
-                <div class="font-semibold text-lg text-gray-900">
-                  {{ payment.bayaranKepada || "Tiada Maklumat" }}
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    class="flex gap-2"
+                    @click="handleLihatBayaran(payment)"
+                  >
+                    <Icon name="ph:eye" class="h-4 w-4" />
+                    Lihat
+                  </rs-button>
                 </div>
-                <div class="text-sm text-gray-500">
-                  {{ payment.kod }} • {{ payment.amaun }} •
-                  {{ payment.tarikhBayaran }}
-                </div>
-                <div class="text-sm text-gray-600 mt-1">
-                  {{ payment.asnaf }}
-                </div>
-              </div>
-
-              <div class="flex space-x-2">
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  class="flex gap-2"
-                  @click="handleLihatBayaran(payment)"
-                >
-                  <Icon name="ph:eye" class="h-4 w-4" />
-                  Lihat
-                </rs-button>
-              </div>
-            </div>
+              </template>
+            </rs-table>
           </div>
         </template>
       </rs-card>
@@ -236,35 +229,29 @@
           </div>
 
           <div v-else class="space-y-3">
-            <div
-              v-for="(recipient, index) in penerimaList"
-              :key="recipient.namaPenuh + index"
-              class="border rounded-lg p-4 bg-white shadow-sm flex justify-between items-center"
+            <rs-table
+              :data="penerimaList"
+              :columns="recipientColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: true }"
+              advanced
             >
-              <div class="flex-1">
-                <div class="font-semibold text-lg text-gray-900">
-                  {{ recipient.namaPenuh || "Penerima " + (index + 1) }}
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    class="flex gap-2"
+                    @click="handleLihatPenerima(recipient)"
+                  >
+                    <Icon name="ph:eye" class="h-4 w-4" />
+                    Lihat
+                  </rs-button>
                 </div>
-                <div class="text-sm text-gray-500">
-                  {{ recipient.kategoriAsnaf }} • {{ recipient.amaun }}
-                </div>
-                <div class="text-sm text-gray-600 mt-1">
-                  {{ recipient.negeri }}, {{ recipient.negara }}
-                </div>
-              </div>
-
-              <div class="flex space-x-2">
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  class="flex gap-2"
-                  @click="handleLihatPenerima(recipient)"
-                >
-                  <Icon name="ph:eye" class="h-4 w-4" />
-                  Lihat
-                </rs-button>
-              </div>
-            </div>
+              </template>
+            </rs-table>
           </div>
         </template>
       </rs-card>
@@ -311,7 +298,7 @@
       <!-- Maklumat Sokongan Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Pelulus</h2>
+          <h2 class="text-xl font-semibold">Maklumat Sokongan</h2>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -325,6 +312,7 @@
               :classes="{
                 input: '!py-2',
               }"
+              disabled
             />
 
             <!-- Nama Pegawai -->
@@ -346,6 +334,7 @@
                 input: '!py-2 min-h-[100px]',
                 outer: 'md:col-span-2'
               }"
+              disabled
             />
 
             <!-- Tarikh -->
@@ -360,21 +349,83 @@
         </template>
       </rs-card>
 
+      <!-- Maklumat Sokongan Section -->
+      <rs-card>
+        <template #header>
+          <h2 class="text-xl font-semibold">Maklumat Pelulus</h2>
+        </template>
+        <template #body>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Status Semakan -->
+            <FormKit
+              v-model="pelulusForm.statusSemakan"
+              type="select"
+              label="Status Semakan *"
+              :options="statusSemakanOptions"
+              required
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+
+            <!-- Nama Pegawai -->
+            <FormKit
+              type="text"
+              name="namaPegawai"
+              label="Nama Pegawai"
+              v-model="pelulusForm.namaPegawai"
+              disabled
+            />
+
+            <!-- Catatan -->
+            <FormKit
+              v-model="pelulusForm.catatan"
+              type="textarea"
+              label="Catatan"
+              placeholder="Masukkan catatan sokongan..."
+              :classes="{
+                input: '!py-2 min-h-[100px]',
+                outer: 'md:col-span-2'
+              }"
+            />
+
+            <!-- Tarikh -->
+            <FormKit
+              type="text"
+              name="tarikh"
+              label="Tarikh"
+              v-model="pelulusForm.tarikh"
+              disabled
+            />
+          </div>
+        </template>
+      </rs-card>
+
       <!-- Action Buttons -->
-      <div class="">
+       <div class="">
         <div class="flex justify-between space-x-4">
           <rs-button variant="secondary" @click="handleKembali">
             <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
             Kembali
           </rs-button>
-          <rs-button
-            variant="primary"
-            @click="handleHantar"
-            :disabled="!sokonganForm.statusSemakan"
-          >
-            <Icon name="ph:paper-plane-tilt" class="w-4 h-4 mr-1" />
-            Hantar
-          </rs-button>
+          <div class="flex space-x-2">
+            <rs-button
+              variant="info"
+              @click="handleSimpan"
+              :disabled="!pelulusForm.statusSemakan"
+            >
+              <Icon name="ph:floppy-disk" class="w-4 h-4 mr-1" />
+              Simpan
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="handleHantar"
+              :disabled="!pelulusForm.statusSemakan"
+            >
+              <Icon name="ph:paper-plane-tilt" class="w-4 h-4 mr-1" />
+              Hantar
+            </rs-button>
+          </div>
         </div>
       </div>
     </div>
@@ -651,9 +702,17 @@ const documentList = ref([
 
 // Sokongan form data
 const sokonganForm = ref({
+  statusSemakan: "Disokong",
+  catatan: "Tiada",
+  namaPegawai: "Siti Aisyah Binti Ahmad",
+  tarikh: "10/07/2025",
+});
+
+// Sokongan form data
+const pelulusForm = ref({
   statusSemakan: "",
   catatan: "",
-  namaPegawai: "Siti Aisyah Binti Ahmad",
+  namaPegawai: "Abu bin Ali",
   tarikh: "14/07/2025",
 });
 
@@ -677,14 +736,14 @@ const handleKembali = () => {
 };
 
 const handleHantar = async () => {
-  if (!sokonganForm.value.statusSemakan) {
+  if (!pelulusForm.value.statusSemakan) {
     alert("Sila pilih Status Semakan");
     return;
   }
 
   try {
     // Here you would make API call to submit the sokongan
-    console.log("Submitting sokongan:", sokonganForm.value);
+    console.log("Submitting sokongan:", pelulusForm.value);
 
     // Show success message
     alert("Sokongan berjaya dihantar!");

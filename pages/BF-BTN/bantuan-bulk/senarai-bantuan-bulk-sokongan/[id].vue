@@ -188,36 +188,29 @@
           </div>
 
           <div v-else class="space-y-3">
-            <div
-              v-for="(payment, index) in bayaranKepadaList"
-              :key="payment.kod"
-              class="border rounded-lg p-4 bg-white shadow-sm flex justify-between items-center"
+            <rs-table
+              :data="bayaranKepadaList"
+              :columns="recipientColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: true }"
+              advanced
             >
-              <div class="flex-1">
-                <div class="font-semibold text-lg text-gray-900">
-                  {{ payment.bayaranKepada || "Tiada Maklumat" }}
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    class="flex gap-2"
+                    @click="handleLihatBayaran(payment)"
+                  >
+                    <Icon name="ph:eye" class="h-4 w-4" />
+                    Lihat
+                  </rs-button>
                 </div>
-                <div class="text-sm text-gray-500">
-                  {{ payment.kod }} • {{ payment.amaun }} •
-                  {{ payment.tarikhBayaran }}
-                </div>
-                <div class="text-sm text-gray-600 mt-1">
-                  {{ payment.asnaf }}
-                </div>
-              </div>
-
-              <div class="flex space-x-2">
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  class="flex gap-2"
-                  @click="handleLihatBayaran(payment)"
-                >
-                  <Icon name="ph:eye" class="h-4 w-4" />
-                  Lihat
-                </rs-button>
-              </div>
-            </div>
+              </template>
+            </rs-table>
           </div>
         </template>
       </rs-card>
@@ -236,35 +229,29 @@
           </div>
 
           <div v-else class="space-y-3">
-            <div
-              v-for="(recipient, index) in penerimaList"
-              :key="recipient.namaPenuh + index"
-              class="border rounded-lg p-4 bg-white shadow-sm flex justify-between items-center"
+            <rs-table
+              :data="penerimaList"
+              :columns="recipientColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: true }"
+              advanced
             >
-              <div class="flex-1">
-                <div class="font-semibold text-lg text-gray-900">
-                  {{ recipient.namaPenuh || "Penerima " + (index + 1) }}
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    class="flex gap-2"
+                    @click="handleLihatPenerima(recipient)"
+                  >
+                    <Icon name="ph:eye" class="h-4 w-4" />
+                    Lihat
+                  </rs-button>
                 </div>
-                <div class="text-sm text-gray-500">
-                  {{ recipient.kategoriAsnaf }} • {{ recipient.amaun }}
-                </div>
-                <div class="text-sm text-gray-600 mt-1">
-                  {{ recipient.negeri }}, {{ recipient.negara }}
-                </div>
-              </div>
-
-              <div class="flex space-x-2">
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  class="flex gap-2"
-                  @click="handleLihatPenerima(recipient)"
-                >
-                  <Icon name="ph:eye" class="h-4 w-4" />
-                  Lihat
-                </rs-button>
-              </div>
-            </div>
+              </template>
+            </rs-table>
           </div>
         </template>
       </rs-card>
@@ -367,14 +354,24 @@
             <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
             Kembali
           </rs-button>
-          <rs-button
-            variant="primary"
-            @click="handleHantar"
-            :disabled="!sokonganForm.statusSemakan"
-          >
-            <Icon name="ph:paper-plane-tilt" class="w-4 h-4 mr-1" />
-            Hantar
-          </rs-button>
+          <div class="flex space-x-2">
+            <rs-button
+              variant="info"
+              @click="handleSimpan"
+              :disabled="!sokonganForm.statusSemakan"
+            >
+              <Icon name="ph:floppy-disk" class="w-4 h-4 mr-1" />
+              Simpan
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="handleHantar"
+              :disabled="!sokonganForm.statusSemakan"
+            >
+              <Icon name="ph:paper-plane-tilt" class="w-4 h-4 mr-1" />
+              Hantar
+            </rs-button>
+          </div>
         </div>
       </div>
     </div>
