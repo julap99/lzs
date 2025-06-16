@@ -36,7 +36,7 @@
                 class="!px-2 !py-1"
                 @click="editItem(data.text)"
               >
-                Kemaskini
+                Semak dan Kira
               </rs-button>
             </div>
           </template>

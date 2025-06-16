@@ -286,9 +286,9 @@ const getStatusLabel = (status) => {
 const getActionRoute = (status) => {
   switch (status) {
     case 'Menunggu Sokongan JPPA':
-      return '/BF-PA/PE/MP/02'
-    case 'Menunggu Kelulusan Ketua JPPA':
       return '/BF-PA/PE/MP/03'
+    case 'Menunggu Kelulusan Ketua JPPA':
+      return '/BF-PA/PE/MP/04'
     default:
       return '#'
   }
