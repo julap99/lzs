@@ -651,10 +651,10 @@ const breadcrumb = ref([
 // Form data
 const formData = ref({
   // Section 1: Maklumat Bantuan
-  jenisBantuan: "B125 - BANTUAN BAIKPULIH RUMAH (MISKIN)",
-  aidProduct: "BANTUAN BAIKPULIH RUMAH (MISKIN)",
-  productPackage: "BAIKPULIH RUMAH (MISKIN)",
-  entitlementProduct: "BAIKPULIH RUMAH (MISKIN)",
+  jenisBantuan: "B112 - Bantuan Sewaan/Ansuran Rumah (Miskin)",
+  aidProduct: "BANTUAN SEWAAN/ANSURAN RUMAH (MISKIN)",
+  productPackage: "SEWAAN RUMAH BULANAN (MISKIN)",
+  entitlementProduct: "SEWAAN RUMAH BULANAN (MISKIN)",
   segera: false,
 
   // Section 2: Dokumen Sokongan

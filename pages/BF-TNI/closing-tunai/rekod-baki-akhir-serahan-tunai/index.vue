@@ -2,197 +2,198 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Rekod Baki Akhir & Serahan Tunai
-          </h2>
+    <!-- Page Header -->
+    <div class="mt-6 mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Rekod Baki Akhir & Serahan Tunai</h1>
+          <p class="mt-1 text-sm text-gray-600">
+            Lengkapkan baki akhir dan proses serahan tunai untuk sesi operasi semasa.
+          </p>
         </div>
-      </template>
-
-      <template #body>
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="handleSubmit"
-          v-model="formData"
+        <rs-badge
+          :variant="sessionData.statusSesi === 'Aktif' ? 'success' : 'default'"
+          class="text-sm px-4 py-2"
         >
-          <!-- Header Info Section -->
-          <div class="mb-6">
-            <h3 class="text-lg font-medium mb-2">Maklumat Header</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="text"
-                name="lokasiAkaun"
-                label="Lokasi / Akaun Tunai"
-                :value="sessionData.lokasiAkaun"
-                disabled
-              />
+          {{ sessionData.statusSesi }}
+        </rs-badge>
+      </div>
+    </div>
 
-              <FormKit
-                type="text"
-                name="namaPengguna"
-                label="Nama Pengguna (Login)"
-                :value="sessionData.namaPengguna"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="tarikhMasaRekod"
-                label="Tarikh & Masa Rekod Baki Akhir"
-                :value="formattedDateTime"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="idBukaOperasi"
-                label="ID Buka Operasi Berkaitan"
-                :value="sessionData.idBukaOperasi"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="statusSesi"
-                label="Status Sesi"
-                :value="sessionData.statusSesi"
-                disabled
-              />
-            </div>
-          </div>
-
-          <!-- Rekod Baki Akhir Section -->
-          <div class="mb-6">
-            <h3 class="text-lg font-medium mb-2">Rekod Baki Akhir</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="number"
-                name="jumlahTunaiKertas"
-                label="Jumlah Tunai Kertas (RM)"
-                validation="required|min:0"
-                :validation-messages="{
-                  required: 'Jumlah tunai kertas diperlukan',
-                  min: 'Jumlah tidak boleh negatif',
-                }"
-                v-model="formData.jumlahTunaiKertas"
-                :disabled="isCompleted"
-                help="Masukkan jumlah tunai kertas mengikut CL-01"
-              />
-
-              <FormKit
-                type="number"
-                name="jumlahSyiling"
-                label="Jumlah Syiling (RM)"
-                validation="required|min:0"
-                :validation-messages="{
-                  required: 'Jumlah syiling diperlukan',
-                  min: 'Jumlah tidak boleh negatif',
-                }"
-                v-model="formData.jumlahSyiling"
-                :disabled="isCompleted"
-                help="Masukkan jumlah syiling mengikut CL-01"
-              />
-
-              <FormKit
-                type="text"
-                name="jumlahKeseluruhan"
-                label="Jumlah Keseluruhan Tunai (RM)"
-                :value="formatCurrency(totalCash)"
-                disabled
-                help="Jumlah keseluruhan dikira secara automatik"
-              />
-
-              <div class="md:col-span-2">
-                <FormKit
-                  type="textarea"
-                  name="catatanTambahan"
-                  label="Catatan Tambahan (jika ada)"
-                  placeholder="Masukkan sebarang catatan tambahan"
-                  v-model="formData.catatanTambahan"
-                  :disabled="isCompleted"
-                  help="Catatan tambahan untuk rekod baki akhir"
-                />
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Kiri: Kandungan utama -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Maklumat Header -->
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:info" class="w-6 h-6 text-blue-600" />
               </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Maklumat Operasi</h2>
+                <p class="text-sm text-gray-500">Butiran sesi semasa dan ID operasi</p>
+              </div>
+            </div>
+          </template>
 
-              <!-- Balance Warning -->
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit type="text" label="Lokasi / Akaun Tunai" :value="sessionData.lokasiAkaun" disabled />
+              <FormKit type="text" label="Nama Pengguna (Login)" :value="sessionData.namaPengguna" disabled />
+              <FormKit type="text" label="Tarikh & Masa Rekod" :value="formattedDateTime" disabled />
+              <FormKit type="text" label="ID Buka Operasi" :value="sessionData.idBukaOperasi" disabled />
+              <FormKit type="text" label="Status Sesi" :value="sessionData.statusSesi" disabled />
+            </div>
+          </template>
+        </rs-card>
+
+        <!-- Rekod Baki Akhir -->
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:wallet" class="w-6 h-6 text-yellow-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Rekod Baki Akhir</h2>
+                <p class="text-sm text-gray-500">Maklumat tunai yang perlu direkod</p>
+              </div>
+            </div>
+          </template>
+
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit type="number" label="Jumlah Tunai Kertas (RM)" v-model="formData.jumlahTunaiKertas" :disabled="isCompleted" validation="required|min:0" />
+              <FormKit type="number" label="Jumlah Syiling (RM)" v-model="formData.jumlahSyiling" :disabled="isCompleted" validation="required|min:0" />
+              <FormKit type="text" label="Jumlah Keseluruhan Tunai (RM)" :value="formatCurrency(totalCash)" disabled />
+              <FormKit type="textarea" label="Catatan Tambahan (jika ada)" v-model="formData.catatanTambahan" :disabled="isCompleted" class="md:col-span-2" />
               <div v-if="totalCash <= 0" class="md:col-span-2">
-                <RsAlert type="warning" class="mt-2">
+                <RsAlert type="warning">
                   <template #icon>
                     <Icon name="heroicons:exclamation-triangle" />
                   </template>
-                  <div>
-                    <h4 class="font-medium">Amaran Jumlah Tunai</h4>
-                    <p>Jumlah keseluruhan tunai mesti lebih daripada 0.</p>
-                  </div>
+                  Jumlah keseluruhan tunai mesti lebih daripada 0.
                 </RsAlert>
               </div>
             </div>
-          </div>
+          </template>
+        </rs-card>
 
-          <!-- Serahan Tunai Section (Conditional) -->
-          <div v-if="isBranchAccount" class="mb-6">
-            <h3 class="text-lg font-medium mb-2">Serahan Tunai</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="text"
-                name="namaPkpPenerima"
-                label="Nama PKP Penerima Tunai"
-                validation="required"
-                :validation-messages="{
-                  required: 'Nama PKP penerima diperlukan',
-                }"
-                v-model="formData.namaPkpPenerima"
-                :disabled="isCompleted"
-                help="Masukkan nama PKP yang akan menerima tunai"
-              />
-
-              <FormKit
-                type="text"
-                name="tarikhMasaSerahan"
-                label="Tarikh & Masa Serahan Tunai"
-                :value="formattedDateTime"
-                disabled
-                help="Tarikh dan masa serahan akan direkodkan secara automatik"
-              />
-
-              <div class="md:col-span-2">
-                <FormKit
-                  type="textarea"
-                  name="catatanSerahan"
-                  label="Catatan Serahan (jika ada)"
-                  placeholder="Masukkan sebarang catatan berkaitan serahan tunai"
-                  v-model="formData.catatanSerahan"
-                  :disabled="isCompleted"
-                  help="Catatan tambahan untuk proses serahan tunai"
-                />
+        <!-- Serahan Tunai -->
+        <!-- <rs-card v-if="isBranchAccount">
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:handshake" class="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Serahan Tunai</h2>
+                <p class="text-sm text-gray-500">Maklumat serahan kepada PKP</p>
               </div>
             </div>
-          </div>
+          </template>
 
-          <!-- Action Buttons -->
-          <div class="flex justify-end gap-4 mt-6">
-            <rs-button
-              variant="primary-outline"
-              @click="handleCancel"
-              :disabled="isCompleted"
-            >
-              Batal
-            </rs-button>
-            <rs-button
-              type="submit"
-              variant="primary"
-              :disabled="isCompleted"
-              @click="validateAndShowConfirmation"
-            >
-              Simpan
-            </rs-button>
-          </div>
-        </FormKit>
-      </template>
-    </rs-card>
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit type="text" label="Nama PKP Penerima Tunai" v-model="formData.namaPkpPenerima" :disabled="isCompleted" validation="required" />
+              <FormKit type="text" label="Tarikh & Masa Serahan Tunai" :value="formattedDateTime" disabled />
+              <FormKit type="textarea" label="Catatan Serahan (jika ada)" v-model="formData.catatanSerahan" :disabled="isCompleted" class="md:col-span-2" />
+            </div>
+          </template>
+        </rs-card> -->
+      </div>
+
+      <!-- Sidebar Tindakan -->
+      <div class="lg:col-span-1">
+        <rs-card class="sticky top-6">
+           <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:hand" class="w-6 h-6 text-orange-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Maklumat Serahan & Tindakan</h2>
+                <p class="text-sm text-gray-500">Maklumat serahan tunai kepada PKP</p>
+              </div>
+            </div>
+          </template>
+
+          <template #body>
+            <FormKit type="form" :actions="false">
+              <div class="space-y-4">
+                <!-- Baki Tunai -->
+                <FormKit
+                  v-if="!isCompleted"
+                  type="number"
+                  label="Jumlah Tunai Kertas (RM)"
+                  validation="required|min:0"
+                  v-model="formData.jumlahTunaiKertas"
+                />
+                <FormKit
+                  v-if="!isCompleted"
+                  type="number"
+                  label="Jumlah Syiling (RM)"
+                  validation="required|min:0"
+                  v-model="formData.jumlahSyiling"
+                />
+                <div class="text-sm font-medium">
+                  Jumlah Keseluruhan:
+                  <span class="font-bold text-gray-800">
+                    RM {{ formatCurrency(totalCash) }}
+                  </span>
+                </div>
+
+                <!-- Serahan Tunai (jika akaun cawangan) -->
+                <template v-if="isBranchAccount">
+                  <hr class="my-4" />
+                  <div class="text-sm font-semibold text-gray-600">Serahan Tunai</div>
+                  <FormKit
+                    type="text"
+                    label="Nama PKP Penerima"
+                    validation="required"
+                    v-model="formData.namaPkpPenerima"
+                  />
+                  <FormKit
+                    type="text"
+                    label="Tarikh & Masa Serahan"
+                    :value="formattedDateTime"
+                    disabled
+                  />
+                  <FormKit
+                    type="textarea"
+                    label="Catatan Serahan (jika ada)"
+                    v-model="formData.catatanSerahan"
+                  />
+                </template>
+
+                <!-- Button -->
+                <div class="flex justify-between items-center mt-6">
+                  <rs-button
+                    type="submit"
+                    variant="primary"
+                    :disabled="isCompleted"
+                    @click="validateAndShowConfirmation"
+                  >
+                    Simpan
+                  </rs-button>
+
+                  <rs-button
+                    variant="primary-outline"
+                    @click="handleCancel"
+                    :disabled="isCompleted"
+                  >
+                    Batal
+                  </rs-button>
+                </div>
+              </div>
+            </FormKit>
+          </template>
+
+        </rs-card>
+      </div>
+    </div>
+
 
     <!-- Confirmation Modal -->
     <rs-modal
@@ -332,7 +333,7 @@ const breadcrumb = ref([
 
 // Mock session data - replace with actual data from API
 const sessionData = ref({
-  lokasiAkaun: "Cawangan Kuala Lumpur",
+  lokasiAkaun: "Cawangan Kuala Selangor",
   namaPengguna: "Ahmad bin Hassan",
   idBukaOperasi: "OPK-20240315-001",
   statusSesi: "Aktif",

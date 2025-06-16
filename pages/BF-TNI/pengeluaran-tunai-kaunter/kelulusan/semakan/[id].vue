@@ -93,9 +93,13 @@
             <Icon name="material-symbols:cancel" class="mr-1" size="15" />
             Tolak
           </rs-button>
-          <rs-button 
+          <!-- <rs-button 
             variant="primary" 
             :disabled="permohonanData.jenisAkaunPetiBesi === 'Cawangan' && !isBalanceSufficient"
+            @click="handleLuluskan"
+          > -->
+          <rs-button 
+            variant="primary" 
             @click="handleLuluskan"
           >
             <Icon name="material-symbols:check-circle" class="mr-1" size="15" />
@@ -184,7 +188,7 @@ const permohonanData = ref({
   id: id,
   namaEKP: "Ahmad bin Abdullah",
   noKaunter: "K001",
-  jumlahPengeluaran: 5000,
+  jumlahPengeluaran: 500,
   tarikhMasaPermohonan: new Date().toISOString(),
   namaPetiBesi: "PB001",
   jenisAkaunPetiBesi: "Cawangan",

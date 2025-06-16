@@ -1,275 +1,246 @@
 <template>
-  <div>
+  <div class="min-h-screen">
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Terima & Sahkan Penerimaan Tunai – PKP
-          </h2>
+    <!-- Page Header -->
+    <div class="mt-6 mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Pengesahan Penerimaan Tunai (PKP)</h1>
+          <p class="mt-1 text-sm text-gray-600">
+            Semak dan sahkan penerimaan tunai daripada pegawai penyerah.
+          </p>
         </div>
-      </template>
+      </div>
+    </div>
 
-      <template #body>
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="handleSubmit"
-          v-model="formData"
-        >
-          <!-- 1️⃣ Header Info Section -->
-          <div class="mb-6">
-            <h3 class="text-lg font-medium mb-2">Maklumat Header</h3>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Kiri: Maklumat & Butiran -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Kad Maklumat Header -->
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:identification-card" class="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Maklumat Operasi</h2>
+                <p class="text-sm text-gray-500">Maklumat pengguna & rekod berkaitan</p>
+              </div>
+            </div>
+          </template>
+
+          <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="text"
-                name="lokasiAkaun"
-                label="Lokasi / Akaun Tunai"
-                :value="sessionData.lokasiAkaun"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="namaPkp"
-                label="Nama PKP (login user)"
-                :value="sessionData.namaPkp"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="tarikhMasaPengesahan"
-                label="Masa & Tarikh Pengesahan"
-                :value="formattedDateTime"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="idBukaOperasi"
-                label="ID Buka Operasi Dikaitkan"
-                :value="sessionData.idBukaOperasi"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="statusSesi"
-                label="Status Sesi"
-                value="Aktif"
-                disabled
-              />
+              <FormKit type="text" label="Lokasi / Akaun Tunai" :value="sessionData.lokasiAkaun" disabled />
+              <FormKit type="text" label="Nama PKP (login user)" :value="sessionData.namaPkp" disabled />
+              <FormKit type="text" label="Masa & Tarikh Pengesahan" :value="formattedDateTime" disabled />
+              <FormKit type="text" label="ID Buka Operasi Dikaitkan" :value="sessionData.idBukaOperasi" disabled />
+              <FormKit type="text" label="Status Sesi" value="Aktif" disabled />
             </div>
-          </div>
+          </template>
+        </rs-card>
 
-          <!-- 2️⃣ Penerimaan Tunai Section -->
-          <div class="mb-6">
-            <h3 class="text-lg font-medium mb-2">Butiran Penerimaan Tunai</h3>
+        <!-- Kad Butiran Tunai -->
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:wallet" class="w-6 h-6 text-yellow-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Butiran Penerimaan Tunai</h2>
+                <p class="text-sm text-gray-500">Jumlah & maklumat penerimaan tunai</p>
+              </div>
+            </div>
+          </template>
+
+          <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="text"
-                name="jumlahTunaiKertas"
-                label="Jumlah Tunai Kertas (RM)"
-                :value="formatCurrency(cashData.jumlahTunaiKertas)"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="jumlahSyiling"
-                label="Jumlah Syiling (RM)"
-                :value="formatCurrency(cashData.jumlahSyiling)"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="jumlahKeseluruhan"
-                label="Jumlah Keseluruhan Tunai (RM)"
-                :value="formatCurrency(cashData.jumlahKeseluruhan)"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="tarikhMasaSerahan"
-                label="Tarikh & Masa Serahan Tunai"
-                :value="cashData.tarikhMasaSerahan"
-                disabled
-              />
-
-              <FormKit
-                type="text"
-                name="namaPicPenyerah"
-                label="Nama PIC Penyerah"
-                :value="cashData.namaPicPenyerah"
-                disabled
-              />
+              <FormKit type="text" label="Jumlah Tunai Kertas (RM)" :value="formatCurrency(cashData.jumlahTunaiKertas)" disabled />
+              <FormKit type="text" label="Jumlah Syiling (RM)" :value="formatCurrency(cashData.jumlahSyiling)" disabled />
+              <FormKit type="text" label="Jumlah Keseluruhan Tunai (RM)" :value="formatCurrency(cashData.jumlahKeseluruhan)" disabled />
+              <FormKit type="text" label="Tarikh & Masa Serahan Tunai" :value="cashData.tarikhMasaSerahan" disabled />
+              <FormKit type="text" label="Nama PIC Penyerah" :value="cashData.namaPicPenyerah" disabled />
             </div>
-          </div>
+          </template>
+        </rs-card>
+      </div>
 
-          <!-- 3️⃣ Form Pengesahan Section -->
-          <div class="mb-6">
-            <h3 class="text-lg font-medium mb-2">Pengesahan oleh PKP</h3>
-            <div class="grid grid-cols-1 gap-4">
-              <FormKit
-                type="textarea"
-                name="catatanTambahan"
-                label="Catatan Tambahan (jika ada)"
-                placeholder="Masukkan catatan tambahan jika ada perbezaan tunai atau remark tambahan diperlukan"
-                rows="3"
-              />
+      <!-- Kanan: Pengesahan PKP -->
+      <div class="lg:col-span-1 space-y-6">
+        <rs-card class="sticky top-6">
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:handshake" class="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Tindakan Pengesahan</h2>
+                <p class="text-sm text-gray-500">Isikan catatan jika ada dan sahkan penerimaan</p>
+              </div>
             </div>
-          </div>
+          </template>
 
-          <!-- 4️⃣ Action Buttons -->
-          <div class="flex justify-end gap-4 mt-6">
-            <rs-button
-              variant="primary"
-              type="submit"
-              :loading="processing"
-              @click="validateAndShowConfirmation"
-            >
-              Sahkan Penerimaan
-            </rs-button>
-          </div>
-        </FormKit>
-      </template>
-    </rs-card>
+          <template #body>
+            <FormKit type="form" :actions="false">
+              <div class="space-y-4">
+                <FormKit
+                  type="textarea"
+                  name="catatanTambahan"
+                  label="Catatan Tambahan (jika ada)"
+                  placeholder="Masukkan catatan jika ada perbezaan tunai atau remark tambahan"
+                  rows="4"
+                />
+                <!-- Button -->
+                <div class="flex justify-between items-center mt-6">
+                  <rs-button variant="primary-outline" @click="() => router.back()">Kembali</rs-button>
+                  <rs-button variant="primary" type="submit" @click="validateAndShowConfirmation" :loading="processing">
+                    Sahkan Penerimaan
+                  </rs-button> 
+                </div>
+              </div>
+            </FormKit>
+          </template>
 
-    <!-- Confirmation Modal -->
-    <rs-modal
-      v-model="showConfirmationModal"
-      title="Sahkan Penerimaan Tunai"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <p class="mb-4">
-          Adakah anda pasti untuk mengesahkan penerimaan tunai ini?
-        </p>
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <div class="space-y-2">
-            <p class="font-medium">
-              Jumlah Tunai Kertas: RM
-              {{ formatCurrency(cashData.jumlahTunaiKertas) }}
-            </p>
-            <p class="font-medium">
-              Jumlah Syiling: RM {{ formatCurrency(cashData.jumlahSyiling) }}
-            </p>
-            <p class="font-medium text-primary-600">
-              Jumlah Keseluruhan: RM
-              {{ formatCurrency(cashData.jumlahKeseluruhan) }}
-            </p>
+          
+        </rs-card>
+      </div>
 
-            <div class="mt-4 pt-4 border-t border-gray-200">
-              <p class="text-sm text-gray-600">
-                Status selepas simpan:
-                <span class="font-medium text-primary-600">
-                  {{
-                    isBranchAccount
-                      ? "Sedia untuk Kemaskini Status Akaun = Ditutup"
-                      : "Ditutup"
-                  }}
-                </span>
+      <!-- Confirmation Modal -->
+      <rs-modal
+        v-model="showConfirmationModal"
+        title="Sahkan Penerimaan Tunai"
+        size="md"
+        position="center"
+      >
+        <template #body>
+          <p class="mb-4">
+            Adakah anda pasti untuk mengesahkan penerimaan tunai ini?
+          </p>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="space-y-2">
+              <p class="font-medium">
+                Jumlah Tunai Kertas: RM
+                {{ formatCurrency(cashData.jumlahTunaiKertas) }}
+              </p>
+              <p class="font-medium">
+                Jumlah Syiling: RM {{ formatCurrency(cashData.jumlahSyiling) }}
+              </p>
+              <p class="font-medium text-primary-600">
+                Jumlah Keseluruhan: RM
+                {{ formatCurrency(cashData.jumlahKeseluruhan) }}
+              </p>
+
+              <div class="mt-4 pt-4 border-t border-gray-200">
+                <p class="text-sm text-gray-600">
+                  Status selepas simpan:
+                  <span class="font-medium text-primary-600">
+                    {{
+                      isBranchAccount
+                        ? "Sedia untuk Kemaskini Status Akaun = Ditutup"
+                        : "Ditutup"
+                    }}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-yellow-50 rounded-lg">
+              <p class="text-sm text-yellow-800">
+                <Icon
+                  name="heroicons:exclamation-triangle"
+                  class="inline-block mr-1"
+                />
+                Pastikan jumlah yang direkodkan adalah tepat sebelum mengesahkan.
+                Rekod tidak boleh diubah selepas disimpan.
               </p>
             </div>
           </div>
+        </template>
 
-          <div class="mt-4 p-4 bg-yellow-50 rounded-lg">
-            <p class="text-sm text-yellow-800">
-              <Icon
-                name="heroicons:exclamation-triangle"
-                class="inline-block mr-1"
-              />
-              Pastikan jumlah yang direkodkan adalah tepat sebelum mengesahkan.
-              Rekod tidak boleh diubah selepas disimpan.
+        <template #footer>
+          <rs-button
+            @click="showConfirmationModal = false"
+            :disabled="processing"
+            variant="primary-outline"
+          >
+            Tutup
+          </rs-button>
+
+          <rs-button
+            @click="handleConfirm"
+            :disabled="processing"
+            variant="primary"
+          >
+            <span v-if="processing">
+              <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
+              Sedang Menyimpan...
+            </span>
+            <span v-else>
+              <Icon name="heroicons:check-circle" class="mr-1" />
+              Sahkan & Simpan
+            </span>
+          </rs-button>
+        </template>
+      </rs-modal>
+
+      <!-- Success Modal -->
+      <rs-modal
+        v-model="showSuccessModal"
+        title="Berjaya"
+        size="md"
+        position="center"
+      >
+        <template #body>
+          <div class="text-center">
+            <Icon
+              name="heroicons:check-circle"
+              class="mx-auto text-green-500"
+              size="48"
+            />
+            <p class="mt-4 text-lg font-medium">
+              Sahkan Penerimaan Tunai berjaya.
+            </p>
+            <p class="mt-2 text-gray-600">
+              Sila klik [Tutup Operasi] untuk melengkapkan sesi Closing.
             </p>
           </div>
+        </template>
+
+        <template #footer>
+          <div class="flex justify-center">
+            <rs-button
+              variant="primary"
+              @click="handleCloseOperation"
+              :loading="processing"
+            >
+              Tutup Operasi
+            </rs-button>
+          </div>
+        </template>
+      </rs-modal>
+
+      <!-- Error Alert -->
+      <rs-alert
+        v-if="errorMessage"
+        type="error"
+        class="fixed bottom-4 right-4 z-50"
+        @close="errorMessage = ''"
+      >
+        <template #icon>
+          <Icon name="heroicons:x-circle" />
+        </template>
+        <div>
+          <h4 class="font-medium">Ralat</h4>
+          <p>{{ errorMessage }}</p>
         </div>
-      </template>
-
-      <template #footer>
-        <rs-button
-          @click="showConfirmationModal = false"
-          :disabled="processing"
-          variant="primary-outline"
-        >
-          Tutup
-        </rs-button>
-
-        <rs-button
-          @click="handleConfirm"
-          :disabled="processing"
-          variant="primary"
-        >
-          <span v-if="processing">
-            <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
-            Sedang Menyimpan...
-          </span>
-          <span v-else>
-            <Icon name="heroicons:check-circle" class="mr-1" />
-            Sahkan & Simpan
-          </span>
-        </rs-button>
-      </template>
-    </rs-modal>
-
-    <!-- Success Modal -->
-    <rs-modal
-      v-model="showSuccessModal"
-      title="Berjaya"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="text-center">
-          <Icon
-            name="heroicons:check-circle"
-            class="mx-auto text-green-500"
-            size="48"
-          />
-          <p class="mt-4 text-lg font-medium">
-            Sahkan Penerimaan Tunai berjaya.
-          </p>
-          <p class="mt-2 text-gray-600">
-            Sila klik [Tutup Operasi] untuk melengkapkan sesi Closing.
-          </p>
-        </div>
-      </template>
-
-      <template #footer>
-        <div class="flex justify-center">
-          <rs-button
-            variant="primary"
-            @click="handleCloseOperation"
-            :loading="processing"
-          >
-            Tutup Operasi
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Error Alert -->
-    <rs-alert
-      v-if="errorMessage"
-      type="error"
-      class="fixed bottom-4 right-4 z-50"
-      @close="errorMessage = ''"
-    >
-      <template #icon>
-        <Icon name="heroicons:x-circle" />
-      </template>
-      <div>
-        <h4 class="font-medium">Ralat</h4>
-        <p>{{ errorMessage }}</p>
-      </div>
-    </rs-alert>
+      </rs-alert>
+    </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed } from "vue";
@@ -299,7 +270,7 @@ const breadcrumb = ref([
 
 // Mock session data - replace with actual data from API
 const sessionData = ref({
-  lokasiAkaun: "Cawangan Kuala Lumpur",
+  lokasiAkaun: "Cawangan Kuala Selangor",
   namaPkp: "Ahmad bin Hassan",
   idBukaOperasi: "OPK-20240315-001",
   isBranchAccount: true,
@@ -359,7 +330,8 @@ const formatCurrency = (value) => {
 // Event handlers
 const validateAndShowConfirmation = () => {
   showConfirmationModal.value = true;
-};
+};  
+
 
 const handleConfirm = async () => {
   processing.value = true;

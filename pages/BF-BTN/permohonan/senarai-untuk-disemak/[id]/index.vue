@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"> 
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-6">
           <!-- Maklumat Pemohon Card -->
@@ -181,9 +181,6 @@
                         Status Dokumen
                       </th>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Catatan
-                      </th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Action
                       </th>
                     </tr>
@@ -222,36 +219,17 @@
 
                       <!-- Status Dokumen -->
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="w-48">
-                          <FormKit
-                            type="select"
-                            :name="`senaraiBantuan.${index}.statusDokumen`"
-                            :options="statusBantuanOptions"
-                            placeholder="Pilih status"
-                            :classes="{ 
-                              outer: 'mb-0',
-                              wrapper: 'relative',
-                              input: 'text-sm py-2 px-3'
-                            }"
-                          />
-                        </div>
+                          <div class="text-sm font-semibold text-green-700">
+                            <rs-badge
+                                variant="primary"
+                                class="text-xs"
+                              > 
+                            LENGKAP
+                            </rs-badge>
+                          </div>
                       </td>
 
-                      <!-- Catatan -->
-                      <td class="px-6 py-4">
-                        <div class="w-64">
-                          <FormKit
-                            type="textarea"
-                            :name="`senaraiBantuan.${index}.catatan`"
-                            rows="2"
-                            placeholder="Masukkan catatan..."
-                            :classes="{ 
-                              outer: 'mb-0',
-                              input: 'text-sm py-2 px-3'
-                            }"
-                          />
-                        </div>
-                      </td>
+                      
 
                       <!-- Action -->
                       <td class="px-6 py-4 whitespace-nowrap">
@@ -495,32 +473,37 @@ const formData = ref({
   // Section 2: Senarai Bantuan
   senaraiBantuan: [
     {
-      id: "B112",
-      nama: "B112 - Bantuan Sewaan/Ansuran Rumah (Miskin)",
+      id: "B125",
+      nama: "B125 - BANTUAN BAIKPULIH RUMAH (MISKIN)",
       kadar: 800,
       statusDokumen: "Lengkap",
-      catatan: ""
     },
-    {
+    /* {
       id: "B210", 
       nama: "B210 - Bantuan Modal (Miskin)",
       kadar: 5000,
-      statusDokumen: "Tak Lengkap",
-      catatan: ""
+      statusDokumen: "Lengkap",
     },
     {
       id: "B104",
       nama: "B104 - Bantuan Tunggakan Pembiayaan Rumah (Miskin)", 
       kadar: 1000,
       statusDokumen: "Lengkap",
-      catatan: ""
-    }
+    } */
   ],
 
   // Section 3: Status update
   statusPermohonanBaru: "",
   catatanUmumPegawai: "",
 });
+
+
+onMounted(() => {
+  formData.value.senaraiBantuan.forEach((item) => {
+    item.statusDokumen = "Lengkap";
+  });
+});
+
 
 // Configuration data
 const statusBantuanOptions = [

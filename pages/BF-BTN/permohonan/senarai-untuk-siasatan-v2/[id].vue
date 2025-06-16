@@ -177,7 +177,7 @@
                       <td class="px-6 py-4 whitespace-nowrap">
                         <rs-badge
                           :variant="getDocumentStatusVariant(assistance.documentStatus)"
-                          class="text-xs" 
+                          class="text-xs"
                         >
                           {{ assistance.documentStatus }}
                         </rs-badge>
@@ -445,7 +445,7 @@ const getDocumentStatusVariant = (status) => {
 const editAssistance = (assistance) => {
   // Implement navigation to edit assistance page
   console.log("Editing assistance:", assistance);
-  router.push(`/BF-BTN/permohonan/senarai-untuk-disemak/${route.params.id}/bantuan/${assistance}`);
+  // Example: router.push(`/BF-BTN/bantuan/edit/${assistance.code}`);
 };
 
 const handleSave = async () => {
