@@ -1364,7 +1364,7 @@
             <div v-if="currentStep === 8">
               <h3 class="text-lg font-medium mb-4">H) Pengesahan</h3>
 
-              <div class="mb-6">
+              <!-- <div class="mb-6">
                 <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
                 <div class="flex flex-col gap-2">
                   <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
@@ -1419,7 +1419,7 @@
                     v-model="formData.verification.tarikhBantuan"
                   />
                 </div>
-              </div>
+              </div> -->
 
               <div class="mb-6">
                 <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
@@ -1567,14 +1567,68 @@
                   >Kembali</rs-button
                 >
                 <rs-button type="submit" variant="primary" @click="nextStep"
-                  >Seterusnya ke Penilaian Awal</rs-button
+                  >Seterusnya ke Pegawai Pendaftar</rs-button
                 >
               </div>
             </div>
 
-            <!-- Step 10: Penilaian Awal -->
+            <!-- Step 10: Pegawai Pendaftar -->
             <div v-if="currentStep === 10">
-              <h3 class="text-lg font-medium mb-4">J) Penilaian Awal</h3>
+              <h3 class="text-lg font-medium mb-4">J) Pegawai Pendaftar</h3>
+              <div class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="text"
+                    name="nama_penolong_amil"
+                    label="Nama "
+                    value="Ahmad bin Abi"
+                    validation="required"
+                    disabled
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="jenis_permohonan"
+                    label="Jenis Permohonan"
+                    value="Baru"
+                    validation="required"
+                    disabled
+                  />
+                  <FormKit
+                    type="text"
+                    name="kategori"
+                    label="Kategori"
+                    value="kaunter"
+                    disabled
+                  />
+
+                  <FormKit
+                    type="date"
+                    name="tarikh_proses"
+                    label="Tarikh Proses"
+                    validation="required"
+                    :value="new Date().toISOString().split('T')[0]"
+                    disabled
+                  />
+                </div>
+
+                <div class="flex justify-between gap-3 mt-6">
+                  <rs-button
+                    type="button"
+                    variant="primary-outline"
+                    @click="prevStep"
+                    >Kembali</rs-button
+                  >
+                  <rs-button type="submit" variant="primary" @click="nextStep"
+                    >Seterusnya ke Penilaian Awal</rs-button
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 11: Penilaian Awal -->
+            <div v-if="currentStep === 11">
+              <h3 class="text-lg font-medium mb-4">K) Penilaian Awal</h3>
               <div class="space-y-6">
                 <!-- Question 1 -->
                 <div class="space-y-2">
@@ -1716,7 +1770,7 @@ const breadcrumb = ref([
 ]);
 
 const currentStep = ref(1);
-const totalStep = 10;
+const totalStep = 11; // Update total steps from 10 to 11
 
 // Form data structure
 const formData = ref({
@@ -1842,6 +1896,14 @@ const formData = ref({
     lainKeperluan: '',
     documents: [],
     additionalNotes: '',
+  },
+  registrationOfficer: {
+    namaPegawai: "",
+    jawatan: "",
+    pejabat: "",
+    tarikhPendaftaran: "",
+    ulasan: "",
+    dokumenPendaftaran: null
   },
 });
 

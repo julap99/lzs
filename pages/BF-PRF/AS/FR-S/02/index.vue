@@ -1058,7 +1058,7 @@
             H. Pengesahan
           </h3>
 
-          <div class="mb-6">
+          <!-- <div class="mb-6">
             <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
@@ -1118,10 +1118,10 @@
                 validation="required"
               />
             </div>
-          </div>
+          </div> -->
 
           <div class="mb-6">
-            <h4 class="font-medium mb-3">2. Maklumat Perakuan Pemohon</h4>
+            <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium">Hubungan kekeluargaan dengan kakitangan LZS?</label>
               <FormKit
@@ -1254,12 +1254,12 @@
               >Kembali</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Seterusnya ke Maklumat Penolong Amil</rs-button
+              >Seterusnya ke Pegawai Pendaftar</rs-button
             >
           </div>
         </FormKit>
 
-        <!-- Section J Form - Penolong Amil -->
+        <!-- Section J Form - Pegawai Pendaftar -->
         <FormKit
           v-if="currentStepA === 10"
           type="form"
@@ -1268,37 +1268,33 @@
           id="sectionJ"
         >
           <h3 class="text-lg font-semibold mb-4">
-            J. Maklumat Penolong Amil
+            J. Maklumat Pegawai Pendaftar
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
-              type="select"
+              type="text"
               name="nama_penolong_amil"
-              label="Nama Penolong Amil"
-              :options="[
-                'Ahmad bin Abdullah',
-                'Siti binti Mohamed',
-                'Mohd Ali bin Hassan',
-                'Nurul Huda binti Ismail',
-                'Abdul Rahman bin Omar',
-                'Fatimah binti Ahmad',
-                'Mohd Yusof bin Ibrahim',
-                'Aminah binti Abdullah',
-                'Hassan bin Mohamed',
-                'Noraini binti Ali'
-              ]"
-              placeholder="Pilih nama penolong amil"
+              label="Nama "
+              value="Ahmad bin Abi"
               validation="required"
+              disabled
             />
 
             <FormKit
-              type="select"
+              type="text"
               name="jenis_permohonan"
               label="Jenis Permohonan"
-              placeholder="Pilih jenis permohonan"
-              :options="['Baru', 'Review']"
+              value="Baru"
               validation="required"
+              disabled
+            />
+            <FormKit
+              type="text"
+              name="kategori"
+              label="Kategori"
+              value="kaunter"
+              disabled
             />
 
             <FormKit
@@ -1306,6 +1302,8 @@
               name="tarikh_proses"
               label="Tarikh Proses"
               validation="required"
+              :value="new Date().toISOString().split('T')[0]"
+              disabled
             />
           </div>
 
@@ -2198,7 +2196,7 @@ const stepsA = [
   { id: 7, label: "Waris" },
   { id: 8, label: "Pengesahan" },
   { id: 9, label: "Pengesahan Bermastautin" },
-  { id: 10, label: "Penolong Amil" }
+  { id: 10, label: "Pegawai Pendaftar" }
 ];
 
 const currentStepB = ref(1);
