@@ -194,6 +194,11 @@
                     min: 'Bilangan tanggungan tidak boleh kurang daripada 0'
                   }"
                 />
+                   <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
                   
                     <FormKit
                       type="date"
@@ -620,6 +625,11 @@
                       validation="required"
                       v-model="spouse.idNumber"
                       :validation-messages="{ required: 'Nombor ID adalah wajib' }"
+                    />
+                    <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
                     />
                     <FormKit
                       type="date"
@@ -1097,6 +1107,11 @@
                       required: 'No ID adalah wajib',
                     }"
                   />
+                  <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
 
                   <FormKit
                     type="date"
