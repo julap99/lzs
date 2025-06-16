@@ -18,6 +18,27 @@ export default [
         meta: {},
       },
       {
+        title: "Dashboard Asnaf",
+        icon: "iconamoon:component-fill",
+        path: "/dashboard/dashboard-asnaf",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "Dashboard EKP",
+        icon: "iconamoon:component-fill",
+        path: "/dashboard/dashboard-ekp",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "Dashboard EOAD",
+        icon: "iconamoon:component-fill",
+        path: "/dashboard/dashboard-eoad",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Analytics",
         icon: "iconamoon:component-fill",
         child: [
