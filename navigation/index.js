@@ -907,13 +907,6 @@ export default [
             meta: {},
           },
           {
-            title: "Semak Permohonan untuk Siasatan v2",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/permohonan/senarai-untuk-siasatan-v2",
-            child: [],
-            meta: {},
-          },
-          {
             title: "Senarai Siap untuk Siasatan Lapangan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/permohonan/senarai-siap-siasatan-lapangan",

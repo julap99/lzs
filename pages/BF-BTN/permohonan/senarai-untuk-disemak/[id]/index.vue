@@ -220,7 +220,12 @@
                       <!-- Status Dokumen -->
                       <td class="px-6 py-4 whitespace-nowrap">
                           <div class="text-sm font-semibold text-green-700">
+                            <rs-badge
+                                variant="primary"
+                                class="text-xs"
+                              > 
                             LENGKAP
+                            </rs-badge>
                           </div>
                       </td>
 
