@@ -28,7 +28,7 @@
                   <p class="font-medium">{{ application.assignmentEndDate }}</p>
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500">Jenis Tugasan</p>
+                  <p class="text-sm text-gray-500">Jenis Kategori</p>
                   <p class="font-medium">{{ getAssignmentTypeLabel(application.assignmentType) }}</p>
                 </div>
               </div>
