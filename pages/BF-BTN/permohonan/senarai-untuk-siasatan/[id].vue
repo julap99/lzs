@@ -426,7 +426,7 @@ const getStatusVariant = (status) => {
 const getStatusText = (status) => {
   const statusMap = {
     baru: "Baru",
-    dalam_semakan: "Dalam Semakan",
+    dalam_semakan: "Untuk Siasatan",
     tidak_lengkap: "Tidak Lengkap",
     lengkap: "Lengkap",
   };
