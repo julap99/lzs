@@ -13,53 +13,12 @@
 
       <template #body>
         <div class="p-4">
-          <!-- Maklumat Asnaf -->
-          <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Maklumat Aktiviti</h3>
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p class="text-sm text-gray-500">No. Rujukan</p>
-                  <p class="font-medium">{{ application.referenceNo }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Nama Asnaf</p>
-                  <p class="font-medium">{{ application.asnafName }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Kariah</p>
-                  <p class="font-medium">{{ application.kariahName }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Jenis Bantuan</p>
-                  <p class="font-medium">{{ getBantuanTypeLabel(application.bantuanType) }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Tarikh Mohon</p>
-                  <p class="font-medium">{{ application.applicationDate }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Status</p>
-                  <span
-                    class="px-2 py-1 text-xs font-medium rounded-full"
-                    :class="getStatusClass(application.status)"
-                  >
-                    {{ application.status }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- Maklumat Pengiraan Elaun -->
           <div class="mb-6">
             <h3 class="text-lg font-semibold mb-4">Maklumat Pengiraan Elaun</h3>
             <div class="bg-gray-50 p-4 rounded-lg">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p class="text-sm text-gray-500">ID Penolong Amil</p>
-                  <p class="font-medium">{{ application.paId }}</p>
-                </div>
                 <div>
                   <p class="text-sm text-gray-500">Lokasi Kariah</p>
                   <p class="font-medium">{{ application.kariahLocation }}</p>
@@ -78,85 +37,85 @@
 
           <!-- Tables Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Senarai Penolong Amil -->
-              <div>
-                <h3 class="text-lg font-semibold mb-4">Senarai Penolong Amil</h3>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-white">
-                        <tr>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            No.
-                          </th>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Nama Penolong Amil
-                          </th>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Total Elaun
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(pa, index) in penolongAmil" :key="pa.id">
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            {{ index + 1 }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            {{ pa.name }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            RM {{ pa.totalAllowance }}
-                          </td>
-                        </tr>
-                      </tbody>
-                      <tfoot class="bg-white">
-                        <tr>
-                          <td colspan="2" class="px-6 py-4 text-right font-medium">
-                            Jumlah Keseluruhan:
-                          </td>
-                          <td class="px-6 py-4 font-medium text-blue-600">
-                            RM {{ totalAllowance }}
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Senarai Aktiviti -->
-              <div>
-                <h3 class="text-lg font-semibold mb-4">Senarai Aktiviti</h3>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-white">
-                        <tr>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            No.
-                          </th>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Nama Aktiviti
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(activity, index) in activities" :key="activity.id">
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            {{ index + 1 }}
-                          </td>
-                          <td class="px-6 py-4">
-                            {{ activity.name }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+            <h3 class="text-lg font-semibold mb-4">Senarai Penolong Amil dan Aktiviti</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-white">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        No.
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Nama Penolong Amil
+                      </th>
+                      <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Aktiviti
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <template v-for="(pa, index) in penolongAmil" :key="pa.id">
+                      <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          {{ index + 1 }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          {{ pa.name }}
+                        </td>
+                        <td class="px-6 py-4">
+                          <ul class="list-disc list-inside">
+                            <li v-for="activity in activities" :key="activity.id" class="flex justify-between items-center">
+                              <span class="flex-1 text-center">{{ activity.name }}</span>
+                              <span class="text-blue-600 ml-4">RM {{ activity.allowanceRate }}</span>
+                            </li>
+                          </ul>
+                          <div class="text-right mt-2 font-medium text-blue-600">
+                            Jumlah Elaun: RM {{ (activities.length * 500).toFixed(2) }}
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                  <tfoot class="bg-white">
+                    <tr>
+                      <td colspan="2" class="px-6 py-4 text-right font-medium">
+                        Jumlah Keseluruhan Elaun:
+                      </td>
+                      <td class="px-6 py-4 font-medium text-blue-600 text-right">
+                        RM {{ totalAllowance }}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
               </div>
             </div>
+          </div>
+
+          <!-- Penilaian JPPA -->
+          <div class="mb-6">
+            <FormKit
+              type="form"
+              id="reviewForm"
+              @submit="handleSubmit"
+              :actions="false"
+            >
+              <div class="mb-6">
+                <h3 class="font-medium mb-3">Penilaian JPPA</h3>
+
+                <div class="mt-4">
+                  <FormKit
+                    type="checkbox"
+                    name="confirmationCheck"
+                    label="Saya mengesahkan bahawa semua maklumat dan dokumen telah disemak dan keputusan saya adalah berdasarkan penilaian yang teliti dan menyokong permohonan elaun ini"
+                    validation="accepted"
+                    :validation-messages="{
+                      accepted: 'Sila buat pengesahan sebelum hantar',
+                    }"
+                  />
+                </div>
+              </div>
+            </FormKit>
           </div>
 
           <!-- Action Buttons -->
@@ -342,7 +301,7 @@ const application = ref({
   paName: "Mohd Razak bin Ibrahim",
   kariahLocation: "Masjid Wilayah Persekutuan",
   assignmentEndDate: "31/12/2024",
-  assignmentType: "FITRAH",
+  assignmentType: "KARIAH",
   allowanceRate: "1,500.00",
   calculatedAllowance: "1,500.00",
   isEligible: true,
@@ -371,15 +330,18 @@ const penolongAmil = ref([
 const activities = ref([
   {
     id: 'ACT001',
-    name: 'Kutipan Zakat Fitrah',
+    name: 'Kutipan Zakat Kariah',
+    allowanceRate: '500.00',
   },
   {
     id: 'ACT002',
     name: 'Agihan Bantuan Asnaf',
+    allowanceRate: '500.00',
   },
   {
     id: 'ACT003',
     name: 'Program Tazkirah',
+    allowanceRate: '500.00',
   },
 ]);
 
@@ -403,7 +365,7 @@ const getBantuanTypeLabel = (value) => {
 
 const getAssignmentTypeLabel = (value) => {
   const types = {
-    FITRAH: "Fitrah",
+    KARIAH: "Kariah",
     PADI: "Padi",
     KARIAH: "Kariah",
     KOMUNITI: "Komuniti",

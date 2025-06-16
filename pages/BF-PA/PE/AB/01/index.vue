@@ -24,36 +24,23 @@
               <h3 class="text-lg font-semibold mb-4">Maklumat Pengiraan Elaun</h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- ID Penolong Amil -->
                 <FormKit
-                  type="text"
-                  name="paId"
-                  label="ID Penolong Amil"
-                  placeholder="Masukkan ID Penolong Amil"
+                  type="select"
+                  name="kariahLocation"
+                  label="Jenis Kategori"
+                  placeholder="Pilih lokasi kariah"
+                  :options="kariahCategories"
                   validation="required"
                   :validation-messages="{
-                    required: 'ID Penolong Amil diperlukan',
+                    required: 'Jenis-jenis Kariah',
                   }"
                 />
-
-                <!-- Nama Penolong Amil -->
-                <FormKit
-                  type="text"
-                  name="paName"
-                  label="Nama Penolong Amil"
-                  placeholder="Masukkan nama penolong amil"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Nama Penolong Amil diperlukan',
-                  }"
-                />
-
-                <!-- Lokasi Kariah -->
+                <!-- Lokasi Kariah  (To be added : a dropdown list of kariah (FAIZ))-->
                 <FormKit
                   type="select"
                   name="kariahLocation"
                   label="Lokasi Kariah"
-                  placeholder="Pilih lokasi kariah"
+                  placeholder="Institusi Kariah"
                   :options="kariahLocations"
                   validation="required"
                   :validation-messages="{
@@ -72,51 +59,8 @@
                   }"
                 />
 
-                <!-- Jenis Tugasan -->
-                <FormKit
-                  type="select"
-                  name="assignmentType"
-                  label="Jenis Tugasan"
-                  placeholder="Pilih jenis tugasan"
-                  :options="assignmentTypes"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Jenis Tugasan diperlukan',
-                  }"
-                />
-
-                <!-- Kadar Elaun Tugasan -->
-                <FormKit
-                  type="number"
-                  name="allowanceRate"
-                  label="Kadar Elaun Tugasan (RM)"
-                  placeholder="Masukkan kadar elaun"
-                  validation="required|min:0"
-                  :validation-messages="{
-                    required: 'Kadar Elaun diperlukan',
-                    min: 'Kadar Elaun mesti lebih daripada 0',
-                  }"
-                />
               </div>
 
-              <!-- Jumlah Elaun Dikira (View Only) -->
-              <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <p class="text-sm text-gray-500">Jumlah Elaun Dikira</p>
-                    <p class="text-xl font-bold text-blue-600">RM {{ calculatedAllowance }}</p>
-                  </div>
-                  <div>
-                    <p class="text-sm text-gray-500">Status Layak</p>
-                    <span
-                      class="px-3 py-1 text-sm font-medium rounded-full"
-                      :class="isEligible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                    >
-                      {{ isEligible ? 'Layak' : 'Tidak Layak' }}
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <!-- Action Buttons -->
@@ -199,6 +143,11 @@ const isSubmitting = ref(false);
 const showSuccessModal = ref(false);
 
 // Mock data for dropdowns
+const kariahCategories = [
+  { label: 'Kariah', value: 'KARIAH' },
+  { label: 'Kariah', value: 'KARIAH' },
+];
+
 const kariahLocations = [
   { label: 'Masjid Wilayah Persekutuan', value: 'MSJ-KUL-001' },
   { label: 'Masjid Al-Khairiyah', value: 'MSJ-KUL-002' },
