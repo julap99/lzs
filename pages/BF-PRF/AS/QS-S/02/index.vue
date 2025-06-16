@@ -842,7 +842,7 @@
                 <FormKit
                   type="file"
                   name="addressSupportDoc"
-                  label="Muat naik dokumen sokongan alamat"
+                  label="Muat naik dokumen sokongan sewaan"
                   accept=".pdf,.jpg,.jpeg,.png"
                   v-model="formData.addressInfo.addressSupportDoc"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
@@ -1105,7 +1105,7 @@
                       required: 'No ID adalah wajib',
                     }"
                   />
-                  <FormKit
+                   <FormKit
                       type="text"
                       name="nopassport"
                       label="No Passport"  
