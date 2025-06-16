@@ -206,7 +206,7 @@
   };
   
   const handleView = (id) => {
-    router.push('/BF-PRF/AS/QB/01');
+    router.push('/BF-PRF/AS/QB/03');
   };
   </script>
   
