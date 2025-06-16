@@ -7,6 +7,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "resolutions": {
+    "entities": "^4.5.0"
+  },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@nuxtjs/vercel-builder": "^0.25.0",
@@ -14,7 +17,7 @@
     "@vite-pwa/nuxt": "^0.1.0",
     "eslint": "^8.39.0",
     "eslint-plugin-vue": "^9.16.1",
-    "nuxt": "^3.6.5",
+    "nuxt": "^3.17.5",
     "nuxt-icon": "^0.1.7",
     "nuxt-security": "^0.13.0",
     "nuxt-typed-router": "^3.2.5",
