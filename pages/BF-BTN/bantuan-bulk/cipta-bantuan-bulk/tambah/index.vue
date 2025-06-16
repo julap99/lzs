@@ -682,13 +682,6 @@ const cawanganOptions = [
 
 // Payment Table Configuration
 const paymentColumns = [
-  {
-    key: 'select',
-    label: '',
-    width: '40px',
-    render: (row) => `<input type='checkbox' class='form-checkbox' v-model='selectedPaymentRows' />`,
-    sortable: false,
-  },
   { key: "kod", label: "Kod" },
   { key: "bayaranKepada", label: "Bayaran Kepada" },
   { key: "asnaf", label: "Asnaf" },
