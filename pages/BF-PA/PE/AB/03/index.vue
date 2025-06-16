@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Semakan dan Kelulusan
+            Semakan dan Kelulusan (Ketua JPPA)
           </h2>
         </div>
       </template>

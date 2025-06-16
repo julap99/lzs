@@ -28,7 +28,7 @@
                   type="select"
                   name="kariahLocation"
                   label="Jenis Kategori"
-                  placeholder="Pilih lokasi kariah"
+                  placeholder="Pilih kategori"
                   :options="kariahCategories"
                   validation="required"
                   :validation-messages="{
@@ -39,8 +39,8 @@
                 <FormKit
                   type="select"
                   name="kariahLocation"
-                  label="Lokasi Kariah"
-                  placeholder="Institusi Kariah"
+                  label="Lokasi Institusi"
+                  placeholder="Pilih lokasi institusi"
                   :options="kariahLocations"
                   validation="required"
                   :validation-messages="{
@@ -76,7 +76,7 @@
                 variant="primary"
                 @click="navigateTo('/BF-PA/PE/AB/02')"
               >
-                Simpan
+                Kira
               </rs-button>
             </div>
           </FormKit>
@@ -145,7 +145,7 @@ const showSuccessModal = ref(false);
 // Mock data for dropdowns
 const kariahCategories = [
   { label: 'Kariah', value: 'KARIAH' },
-  { label: 'Kariah', value: 'KARIAH' },
+  { label: 'Komuniti', value: 'KOMUNITI' },
 ];
 
 const kariahLocations = [

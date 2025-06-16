@@ -81,7 +81,7 @@
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Batch No
+                    No. Batch
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Institusi
@@ -101,14 +101,14 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="batch in filteredBatches" :key="batch.id">
+                <tr v-for="batch in batches" :key="batch.id">
                   <td class="px-6 py-4 whitespace-nowrap">
                     <a 
                       href="#" 
                       class="text-blue-600 hover:text-blue-800"
-                      @click.prevent="navigateTo(`/BF-PA/PE/AB/02/PA?id=${batch.id}`)"
+                      @click.prevent="navigateTo(getActionRoute(batch.status))"
                     >
-                      {{ batch.id }}
+                      {{ batch.batchNo }}
                     </a>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
@@ -118,21 +118,21 @@
                     {{ batch.category }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.date }}
+                    {{ batch.createdAt }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <span
                       class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getStatusClass(batch.status)"
+                      :class="getStatusColor(batch.status)"
                     >
-                      {{ batch.status }}
+                      {{ getStatusLabel(batch.status) }}
                     </span>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <rs-button
                       variant="primary"
                       size="sm"
-                      @click="navigateTo(`/BF-PA/PE/AB/02`)"
+                      @click="navigateTo(getActionRoute(batch.status))"
                     >
                       {{ getActionButtonText(batch.status) }}
                     </rs-button>
@@ -171,32 +171,44 @@ const breadcrumb = ref([
 // Mock data for batches
 const batches = ref([
   {
-    id: 'BATCH-2024-001',
+    id: 1,
+    batchNo: 'BATCH/2024/001',
     institution: 'Masjid Al-Hidayah',
     category: 'Kariah',
-    date: '01/03/2024',
-    status: 'Dalam Semakan',
+    status: 'Menunggu Sokongan JPPA',
+    createdAt: '2024-03-15'
   },
   {
-    id: 'BATCH-2024-002',
+    id: 2,
+    batchNo: 'BATCH/2024/002',
     institution: 'Masjid Al-Ikhlas',
-    category: 'Komuniti',
-    date: '02/03/2024',
-    status: 'Diluluskan',
+    category: 'Kariah',
+    status: 'Menunggu Kelulusan Ketua JPPA',
+    createdAt: '2024-03-16'
   },
   {
-    id: 'BATCH-2024-003',
+    id: 3,
+    batchNo: 'BATCH/2024/003',
     institution: 'Masjid Al-Amin',
     category: 'Kariah',
-    date: '03/03/2024',
-    status: 'Tidak Layak',
+    status: 'Diluluskan',
+    createdAt: '2024-03-10'
   },
+  {
+    id: 4,
+    batchNo: 'BATCH/2024/004',
+    institution: 'Masjid Al-Falah',
+    category: 'Kariah',
+    status: 'Ditolak',
+    createdAt: '2024-03-12'
+  }
 ]);
 
 // Status options for filter
 const statusOptions = [
   { label: 'Semua', value: '' },
-  { label: 'Dalam Semakan', value: 'Dalam Semakan' },
+  { label: 'Menunggu sokongan JPPA', value: 'Menunggu sokongan JPPA' },
+  { label: 'Menunggu Kelulusan Ketua JPPA', value: 'Menunggu Kelulusan Ketua JPPA' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Tidak Layak', value: 'Tidak Layak' },
 ];
@@ -217,32 +229,59 @@ const filteredBatches = computed(() => {
 });
 
 // Helper functions
-const getStatusClass = (status) => {
-  const statusClasses = {
-    'Dalam Semakan': 'bg-yellow-100 text-yellow-800',
-    'Diluluskan': 'bg-green-100 text-green-800',
-    'Tidak Layak': 'bg-red-100 text-red-800',
-  };
-  return statusClasses[status] || 'bg-gray-100 text-gray-800';
-};
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'Menunggu Sokongan JPPA':
+      return 'bg-yellow-100 text-yellow-800'
+    case 'Menunggu Kelulusan Ketua JPPA':
+      return 'bg-blue-100 text-blue-800'
+    case 'Diluluskan':
+      return 'bg-green-100 text-green-800'
+    case 'Ditolak':
+      return 'bg-red-100 text-red-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getStatusLabel = (status) => {
+  switch (status) {
+    case 'Menunggu Sokongan JPPA':
+      return 'Menunggu Sokongan JPPA'
+    case 'Menunggu Kelulusan Ketua JPPA':
+      return 'Menunggu Kelulusan Ketua JPPA'
+    case 'Diluluskan':
+      return 'Diluluskan'
+    case 'Ditolak':
+      return 'Ditolak'
+    default:
+      return status
+  }
+}
+
+const getActionRoute = (status) => {
+  switch (status) {
+    case 'Menunggu Sokongan JPPA':
+      return '/BF-PA/PE/AB/02'
+    case 'Menunggu Kelulusan Ketua JPPA':
+      return '/BF-PA/PE/AB/03'
+    default:
+      return '#'
+  }
+}
 
 const getActionButtonText = (status) => {
-  const actionTexts = {
-    'Dalam Semakan': 'Semak',
-    'Diluluskan': 'Lihat',
-    'Tidak Layak': 'Lihat',
-  };
-  return actionTexts[status] || 'Lihat';
-};
-
-const getNextPage = (status) => {
-  const nextPages = {
-    'Dalam Semakan': '02',
-    'Diluluskan': '03',
-    'Tidak Layak': '03',
-  };
-  return nextPages[status] || '02';
-};
+  switch (status) {
+    case 'Menunggu Sokongan JPPA':
+    case 'Menunggu Kelulusan Ketua JPPA':
+      return 'Semak'
+    case 'Diluluskan':
+    case 'Ditolak':
+      return 'Lihat'
+    default:
+      return 'Lihat'
+  }
+}
 
 // Event handlers
 const handleSearch = (event) => {

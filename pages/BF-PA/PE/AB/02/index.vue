@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Semakan dan Sokongan
+            Semakan dan Sokongan (JPPA)
           </h2>
         </div>
       </template>
@@ -365,7 +365,7 @@ const getBantuanTypeLabel = (value) => {
 
 const getAssignmentTypeLabel = (value) => {
   const types = {
-    KARIAH: "Kariah",
+    FITRAH: "Fitrah",
     PADI: "Padi",
     KARIAH: "Kariah",
     KOMUNITI: "Komuniti",
