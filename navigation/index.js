@@ -811,8 +811,8 @@ export default [
         ],
         meta: {},
       },
-      {
-        title: "BDS",
+       {
+        title: "Permohonan",
         icon: "iconamoon:component-fill",
         child: [
           {
@@ -829,6 +829,13 @@ export default [
             child: [],
             meta: {},
           },
+        ],
+        meta: {},
+      },
+      {
+        title: "BDS",
+        icon: "iconamoon:component-fill",
+        child: [
           {
             title: "Senarai Permohonan untuk Disemak",
             icon: "iconamoon:arrow-right-2-duotone",

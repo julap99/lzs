@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"> 
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-6">
           <!-- Maklumat Pemohon Card -->
@@ -473,12 +473,12 @@ const formData = ref({
   // Section 2: Senarai Bantuan
   senaraiBantuan: [
     {
-      id: "B112",
-      nama: "B112 - Bantuan Sewaan/Ansuran Rumah (Miskin)",
+      id: "B125",
+      nama: "B125 - BANTUAN BAIKPULIH RUMAH (MISKIN)",
       kadar: 800,
       statusDokumen: "Lengkap",
     },
-    {
+    /* {
       id: "B210", 
       nama: "B210 - Bantuan Modal (Miskin)",
       kadar: 5000,
@@ -489,7 +489,7 @@ const formData = ref({
       nama: "B104 - Bantuan Tunggakan Pembiayaan Rumah (Miskin)", 
       kadar: 1000,
       statusDokumen: "Lengkap",
-    }
+    } */
   ],
 
   // Section 3: Status update
