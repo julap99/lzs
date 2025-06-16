@@ -188,7 +188,7 @@ const permohonanData = ref({
   id: id,
   namaEKP: "Ahmad bin Abdullah",
   noKaunter: "K001",
-  jumlahPengeluaran: 5000,
+  jumlahPengeluaran: 500,
   tarikhMasaPermohonan: new Date().toISOString(),
   namaPetiBesi: "PB001",
   jenisAkaunPetiBesi: "Cawangan",

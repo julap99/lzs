@@ -2,200 +2,192 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card>
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h1 class="text-2xl font-bold">Butiran Aduan</h1>
-          <div class="flex items-center gap-4">
+    <div class="flex justify-between items-start mt-6 mb-4">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Maklumat Aduan</h1>
+        <p class="mt-1 text-sm text-gray-600">Semak dan jalankan tindakan ke atas aduan yang diterima.</p>
+      </div>
+      <rs-badge variant="warning">ADUAN BARU</rs-badge>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Kiri: Kandungan Utama -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- Maklumat Aduan -->
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:note" class="w-6 h-6 text-yellow-600" />
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-900">Maklumat Aduan</h2>
+                <p class="text-sm text-gray-500">Butiran ringkas aduan & kelas</p>
+              </div>
+            </div>
+          </template>
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit type="text" label="No. Aduan" :value="aduan.noAduan" disabled />
+              <FormKit type="text" label="Tarikh Aduan" :value="formatDate(aduan.tarikhAduan)" disabled />
+              <FormKit type="text" label="Status Semasa" :value="aduan.status" disabled />
+            </div>
+
+           
+          </template>
+        </rs-card>
+
+         <!-- SLA Section -->
+        <rs-card>
+            <template #header>
+                <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    <Icon name="ph:timer" class="w-6 h-6 text-indigo-600" />
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900">Pemantauan SLA</h2>
+                    <p class="text-sm text-gray-500">Tempoh siasatan yang dibenarkan</p>
+                </div>
+                </div>
+            </template>
+
+            <template #body>
+                <div class="space-y-4">
+                <div class="text-sm text-gray-600">
+                    SLA Ditetapkan: <strong>24 jam</strong><br />
+                    Baki Masa: <strong class="text-red-600">5 jam</strong>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div
+                    class="bg-indigo-600 h-3 rounded-full"
+                    style="width: calc((19 / 24) * 100%)"
+                    ></div>
+                </div>
+
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>24 jam</span>
+                    <span>5 jam baki</span>
+                </div>
+                </div>
+            </template>
+        </rs-card>
+
+
+        <!-- Butiran Aduan -->
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:file-text" class="w-6 h-6 text-orange-600" />
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-900">Butiran Aduan</h2>
+              </div>
+            </div>
+          </template>
+          <template #body>
+            <FormKit type="textarea" label="Pernyataan Masalah" :value="aduan.pernyataanMasalah" disabled />
+            <FormKit type="textarea" label="Ringkasan Aduan" :value="aduan.ringkasanAduan" disabled class="mt-4" />
+          </template>
+        </rs-card>
+
+        <!-- Maklumat Individu Dibantu -->
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:user" class="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-900">Maklumat Individu Dibantu</h2>
+                <p class="text-sm text-gray-500">Butiran lengkap individu yang dibantu</p>
+              </div>
+            </div>
+          </template>
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit type="text" label="Nama Penuh" :value="aduan.namaPenuh" disabled />
+              <FormKit type="text" label="No. KP" :value="aduan.noKp" disabled />
+              <FormKit type="text" label="Emel" :value="aduan.emel" disabled />
+              <FormKit type="text" label="No Telefon" :value="aduan.noTelefon" disabled />
+              <FormKit type="text" label="Alamat" :value="aduan.alamat" disabled class="md:col-span-2" />
+              <FormKit type="text" label="Daerah" :value="aduan.daerah" disabled />
+              <FormKit type="text" label="Kariah" :value="aduan.kariah" disabled />
+            </div>
+          </template>
+        </rs-card>
+
+        <!-- Maklumat Pengadu -->
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:phone" class="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-900">Maklumat Pengadu</h2>
+              </div>
+            </div>
+          </template>
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit type="text" label="Nama Pengadu" :value="aduan.namaPengadu" disabled />
+              <FormKit type="text" label="No KP Pengadu" :value="aduan.noKpPengadu" disabled />
+              <FormKit type="text" label="Emel Pengadu" :value="aduan.emelPengadu" disabled />
+              <FormKit type="text" label="No Telefon Pengadu" :value="aduan.noTelefonPengadu" disabled />
+            </div>
+          </template>
+        </rs-card>
+
+      </div>
+
+      <!-- Kanan: Sidebar Tindakan -->
+      <div class="lg:col-span-1 space-y-6">
+        <rs-card class="sticky top-6">
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:hand" class="w-6 h-6 text-orange-600" />
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-900">Tindakan</h2>
+                <p class="text-sm text-gray-500">Siasatan & pengesahan</p>
+              </div>
+            </div>
+          </template>
+          <template #body>
+            <rs-badge :variant="isAccepted ? 'success' : 'warning'">
+              {{ isAccepted ? 'Tugasan Diambil' : 'Belum Diambil' }}
+            </rs-badge>
             <rs-button
-              v-if="!isAccepted"
               variant="primary"
+              class="mt-4 w-full"
               @click="showAcceptModal = true"
+              v-if="!isAccepted"
             >
               Terima Tugasan
             </rs-button>
-            <rs-badge v-if="isAccepted" variant="success" size="lg">
-              Tugasan Diambil
-            </rs-badge>
             <rs-button
-              v-if="isAccepted"
-              variant="primary"
+              variant="primary-outline"
+              class="mt-2 w-full"
               @click="navigateToTask"
+              v-if="isAccepted"
             >
               Pergi ke Tugasan
               <Icon name="mdi:arrow-right" class="ml-2" size="1rem" />
             </rs-button>
-          </div>
-        </div>
-      </template>
+          </template>
+        </rs-card>
+      </div>
+    </div>
 
-      <template #body>
-        <div class="space-y-8">
-          <!-- Maklumat Aduan -->
-          <div class="bg-white p-6 rounded-lg border border-gray-200">
-            <h2 class="text-lg font-semibold mb-4">Maklumat Aduan</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <p class="text-sm text-gray-500">No. Aduan</p>
-                <p class="font-medium">{{ aduanData.noAduan }}</p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">Tarikh Aduan</p>
-                <p class="font-medium">
-                  {{ formatDate(aduanData.tarikhAduan) }}
-                </p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">Nama Aduan</p>
-                <p class="font-medium">{{ aduanData.namaAduan }}</p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">Status</p>
-                <rs-badge
-                  :variant="getStatusVariant(aduanData.status)"
-                  size="sm"
-                >
-                  {{ aduanData.status }}
-                </rs-badge>
-              </div>
-            </div>
-          </div>
-
-          <!-- Butiran Aduan -->
-          <div class="bg-white p-6 rounded-lg border border-gray-200">
-            <h2 class="text-lg font-semibold mb-4">Butiran Aduan</h2>
-            <div class="space-y-6">
-              <div>
-                <p class="text-sm text-gray-500 mb-2">Pernyataan Masalah</p>
-                <rs-badge
-                  :variant="
-                    getPernyataanMasalahVariant(aduanData.pernyataanMasalah)
-                  "
-                  size="sm"
-                >
-                  {{ aduanData.pernyataanMasalah }}
-                </rs-badge>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500 mb-2">Ringkasan Aduan</p>
-                <p class="text-gray-700">{{ aduanData.ringkasanAduan }}</p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500 mb-2">SLA</p>
-                <div class="w-full md:w-1/3">
-                  <div v-if="aduanData.pernyataanMasalah.includes('Kelas 1/Merah')" 
-                       class="p-4 rounded-lg border border-red-200 bg-red-50">
-                    <div class="flex items-center gap-2 mb-2">
-                      <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                      <p class="font-medium text-red-700">Kelas 1 (Merah)</p>
-                    </div>
-                    <p class="text-sm text-red-600">Dalam masa 24 jam</p>
-                    <div class="mt-2 pt-2 border-t border-red-200">
-                      <p class="text-sm text-red-700">Baki Masa:</p>
-                      <p class="text-lg font-semibold text-red-700">{{ getRemainingTime }}</p>
-                    </div>
-                  </div>
-                  <div v-else-if="aduanData.pernyataanMasalah.includes('Kelas 2/Kuning')"
-                       class="p-4 rounded-lg border border-yellow-200 bg-yellow-50">
-                    <div class="flex items-center gap-2 mb-2">
-                      <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                      <p class="font-medium text-yellow-700">Kelas 2 (Kuning)</p>
-                    </div>
-                    <p class="text-sm text-yellow-600">Dalam masa 3 hari</p>
-                    <div class="mt-2 pt-2 border-t border-yellow-200">
-                      <p class="text-sm text-yellow-700">Baki Masa:</p>
-                      <p class="text-lg font-semibold text-yellow-700">{{ getRemainingTime }}</p>
-                    </div>
-                  </div>
-                  <div v-else-if="aduanData.pernyataanMasalah.includes('Kelas 3/Hijau')"
-                       class="p-4 rounded-lg border border-green-200 bg-green-50">
-                    <div class="flex items-center gap-2 mb-2">
-                      <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                      <p class="font-medium text-green-700">Kelas 3 (Hijau)</p>
-                    </div>
-                    <p class="text-sm text-green-600">Dalam masa 5 hari</p>
-                    <div class="mt-2 pt-2 border-t border-green-200">
-                      <p class="text-sm text-green-700">Baki Masa:</p>
-                      <p class="text-lg font-semibold text-green-700">{{ getRemainingTime }}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Maklumat Individu Dibantu -->
-          <div class="bg-white p-6 rounded-lg border border-gray-200">
-            <h2 class="text-lg font-semibold mb-4">
-              Maklumat Individu Dibantu
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <p class="text-sm text-gray-500">Nama Penuh</p>
-                <p class="font-medium">{{ aduanData.namaPenuh }}</p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">No. Kad Pengenalan</p>
-                <p class="font-medium">{{ aduanData.noKadPengenalan }}</p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">Emel</p>
-                <p class="font-medium">{{ aduanData.emel }}</p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">No. Telefon</p>
-                <p class="font-medium">{{ aduanData.noTelefon }}</p>
-              </div>
-            </div>
-
-            <div class="mt-6">
-              <h3 class="text-md font-medium text-gray-700 mb-4">Alamat</h3>
-              <div class="space-y-2">
-                <p class="font-medium">{{ aduanData.alamatBaris1 }}</p>
-                <p class="font-medium">{{ aduanData.alamatBaris2 }}</p>
-                <p class="font-medium">{{ aduanData.daerah }}</p>
-                <p class="font-medium">{{ aduanData.kariah }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lampiran -->
-          <div
-            v-if="aduanData.lampiran && aduanData.lampiran.length > 0"
-            class="bg-white p-6 rounded-lg border border-gray-200"
-          >
-            <h2 class="text-lg font-semibold mb-4">Lampiran</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div
-                v-for="(file, index) in aduanData.lampiran"
-                :key="index"
-                class="relative"
-              >
-                <img
-                  v-if="isImage(file)"
-                  :src="file"
-                  :alt="'Lampiran ' + (index + 1)"
-                  class="w-full h-32 object-cover rounded-lg"
-                />
-                <div
-                  v-else
-                  class="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center"
-                >
-                  <i class="fas fa-file-pdf text-4xl text-red-500"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </template>
-    </rs-card>
-
-    <!-- Accept Task Modal -->
+    <!-- Modal -->
     <rs-modal
       v-model="showAcceptModal"
       title="Terima Tugasan"
-      :show-close="true"
-      @close="showAcceptModal = false"
       position="center"
       ok-title="Ya, Terima"
       :ok-callback="handleAcceptTask"
@@ -212,109 +204,68 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref } from 'vue';
+import { useRouter } from "vue-router";
 
-const route = useRoute();
 const router = useRouter();
+
+const breadcrumb = [
+  { name: 'Aduan', type: 'link', path: '/aduan' },
+  { name: 'Senarai Aduan', type: 'link', path: '/aduan/senarai' },
+  { name: 'Maklumat Aduan', type: 'current' }
+];
+
 const showAcceptModal = ref(false);
 const isAccepted = ref(false);
 
-definePageMeta({
-  title: "Butiran Aduan",
+const aduan = ref({
+  noAduan: 'ADN-2024-001',
+  tarikhAduan: '2024-03-15T08:00:00',
+  namaPenuh: 'Ahmad Zulkifli',
+  noKp: '850101-14-5677',
+  emel: 'ahmad.zul@email.com',
+  noTelefon: '0123456789',
+  alamat: 'No 1, Jalan Melati, Taman Harmoni',
+  daerah: 'Petaling',
+  kariah: 'Kariah Seksyen 7',
+  namaPengadu: 'Ahmad Zulkifli',
+  noKpPengadu: '850101-14-5677',
+  emelPengadu: 'ahmad.zul@email.com',
+  noTelefonPengadu: '0123456789',
+  pernyataanMasalah: 'Terputus bekalan makanan (Kelas 1/Merah)',
+  ringkasanAduan: 'Tiada makanan, tinggal seorang diri dan uzur.',
+  status: 'Aduan baru'
 });
 
-const breadcrumb = ref([
-  {
-    name: "Pengurusan Aduan",
-    type: "link",
-    path: "/BF-ADN/PA/AT/01",
-  },
-  {
-    name: "Butiran Aduan",
-    type: "current",
-    path: "/BF-ADN/PA/AT/02",
-  },
-]);
+const formatDate = (dateStr) => {
+  return new Date(dateStr).toLocaleString('ms-MY', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+};
 
-// Sample data - In real application, this would come from an API
-const aduanData = ref({
-  noAduan: "ADN-2024-001",
-  namaAduan: "Aduan Keselamatan",
-  pernyataanMasalah:
-    "Terputus Bekalan Makanan/Tiada Tempat Tinggal (Kelas 1/Merah)",
-  ringkasanAduan:
-    "Individu ini memerlukan bantuan segera kerana tiada tempat tinggal dan bekalan makanan. Keadaan kesihatan juga tidak stabil.",
-  tarikhAduan: "2024-03-15",
-  status: "Masih Kosong",
-  namaPenuh: "Ahmad bin Abdullah",
-  noKadPengenalan: "800101-01-1234",
-  emel: "ahmad@email.com",
-  noTelefon: "0123456789",
-  alamatBaris1: "No. 123, Jalan Merdeka",
-  alamatBaris2: "Taman Seri Indah",
-  daerah: "Kuala Lumpur",
-  kariah: "Masjid Jamek",
-  lampiran: [
-    "https://example.com/image1.jpg",
-    "https://example.com/document.pdf",
-  ],
-});
+const handleAcceptTask = () => {
+  isAccepted.value = true;
+  showAcceptModal.value = false;
+};
+
+const navigateToTask = () => {
+  //alert('Navigasi ke modul tugasan.');
+  router.push(`/BF-ADN/PA/TS/02`);
+};
 
 const getStatusVariant = (status) => {
   const variants = {
-    "Masih Kosong": "warning",
-    Diambil: "success",
+    "Aduan Baru": "warning",
+    "Dalam Proses - Siasatan Ringkas": "primary",
+    "Dalam Proses - Quick Assessment": "primary",
+    "Dalam Proses - Siasatan Lapangan": "primary",
+    "Menunggu Kelulusan Bantuan": "info",
+    "Menunggu Serahan Bantuan": "info",
+    "Selesai": "success",
+    "Ditutup": "danger",
   };
   return variants[status] || "default";
 };
 
-const getPernyataanMasalahVariant = (pernyataan) => {
-  if (pernyataan.includes("Kelas 1/Merah")) return "danger";
-  if (pernyataan.includes("Kelas 2/Kuning")) return "warning";
-  if (pernyataan.includes("Kelas 3/Hijau")) return "success";
-  return "default";
-};
-
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString("ms-MY", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true
-  });
-};
-
-const isImage = (file) => {
-  return /\.(jpg|jpeg|png)$/i.test(file);
-};
-
-const handleAcceptTask = () => {
-  // In real application, this would be an API call
-  aduanData.value.status = "Diambil";
-  isAccepted.value = true;
-  showAcceptModal.value = false;
-
-  // Show success message
-  // You can use your preferred notification system here
-};
-
-const navigateToTask = () => {
-  // Navigate to task management page
-  router.push(`/BF-ADN/PA/TS/02`);
-};
-
-const getRemainingTime = computed(() => {
-  return '10 jam';
-});
-
-onMounted(() => {
-  // In real application, fetch aduan data based on route.params.id
-  const aduanId = route.params.id;
-  // Fetch aduan data from API
-});
 </script>
-
-<style lang="scss" scoped></style>
