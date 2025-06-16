@@ -719,6 +719,13 @@ export default [
             meta: {},
           },
           {
+            title: "Pendaftaran Pantas Pukal",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/QB/01",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Pendaftaran Pantas Perseorangan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/QS-S/01",
@@ -732,10 +739,11 @@ export default [
             child: [],
             meta: {},
           },
+          
           {
-            title: "Pendaftaran Pantas Pukal",
+            title: "Semakan Maklumat",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/QB/01",
+            path: "/BF-PRF/AS/permohonan/list-semakan",
             child: [],
             meta: {},
           },
@@ -746,6 +754,7 @@ export default [
             child: [],
             meta: {},
           },
+          
           // {
           //   title: "AS-QB",
           //   icon: "iconamoon:arrow-right-2-duotone",
@@ -825,7 +834,7 @@ export default [
         ],
         meta: {},
       },
-      {
+       {
         title: "Permohonan",
         icon: "iconamoon:component-fill",
         child: [
@@ -1113,7 +1122,7 @@ export default [
           {
             title: "Mesyuarat/Program",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PE/MP/01",
+            path: "/BF-PA/PE/MP",
             child: [],
             meta: {},
           },

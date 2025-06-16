@@ -6,9 +6,9 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Bancian/Asnaf Review/Bantuan
+            Pengurusan Elaun bagi Mesyuarat/Program
           </h2>
-          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/AB/01')">Tambah Baru</rs-button>
+          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/MP/01')">Tambah Aktiviti</rs-button>
         </div>
       </template>
 
@@ -19,26 +19,26 @@
             <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-sm text-blue-600">Jumlah Penolong Amil</p>
-                  <h3 class="text-2xl text-centerfont-bold text-blue-700">1,234</h3>
+                  <p class="text-sm text-blue-600">Jumlah Aktiviti</p>
+                  <h3 class="text-2xl font-bold text-blue-700">156</h3>
                 </div>
-                <Icon name="heroicons:users" class="text-blue-500" size="24" />
+                <Icon name="heroicons:calendar" class="text-blue-500" size="24" />
               </div>
             </div>
             <div class="bg-green-50 p-4 rounded-lg border border-green-100">
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-sm text-green-600">Jumlah Elaun Yang Sudah Dibayar</p>
-                  <h3 class="text-2xl font-bold text-green-700">856</h3>
+                  <p class="text-sm text-green-600">Jumlah Kehadiran</p>
+                  <h3 class="text-2xl font-bold text-green-700">1,234</h3>
                 </div>
-                <Icon name="heroicons:check-circle" class="text-green-500" size="24" />
+                <Icon name="heroicons:user-group" class="text-green-500" size="24" />
               </div>
             </div>
             <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-sm text-yellow-600">Jumlah Elaun Yang Masih Diproses</p>
-                  <h3 class="text-2xl font-bold text-yellow-700">245</h3>
+                  <p class="text-sm text-yellow-600">Menunggu Sokongan</p>
+                  <h3 class="text-2xl font-bold text-yellow-700">45</h3>
                 </div>
                 <Icon name="heroicons:clock" class="text-yellow-500" size="24" />
               </div>
@@ -46,8 +46,8 @@
             <div class="bg-red-50 p-4 rounded-lg border border-red-100">
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-sm text-red-600">Jumlah Elaun Yang Sudah Ditolak</p>
-                  <h3 class="text-2xl font-bold text-red-700">133</h3>
+                  <p class="text-sm text-red-600">Tidak Hadir</p>
+                  <h3 class="text-2xl font-bold text-red-700">23</h3>
                 </div>
                 <Icon name="heroicons:x-circle" class="text-red-500" size="24" />
               </div>
@@ -60,7 +60,7 @@
               <FormKit
                 type="text"
                 name="search"
-                placeholder="Cari Batch No atau Institusi"
+                placeholder="Cari ID Aktiviti atau Nama Aktiviti"
                 :value="searchQuery"
                 @input="handleSearch"
               />
@@ -72,6 +72,14 @@
                 :value="selectedStatus"
                 @input="handleStatusChange"
               />
+              <FormKit
+                type="select"
+                name="jenisAktiviti"
+                placeholder="Jenis Aktiviti"
+                :options="jenisAktivitiOptions"
+                :value="selectedJenisAktiviti"
+                @input="handleJenisAktivitiChange"
+              />
             </div>
           </div>
 
@@ -81,16 +89,19 @@
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    No. Batch
+                    ID Aktiviti
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Institusi
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kategori
+                    Nama Aktiviti
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Tarikh
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Lokasi
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Jenis
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -101,40 +112,43 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="batch in batches" :key="batch.id">
+                <tr v-for="activity in activities" :key="activity.id">
                   <td class="px-6 py-4 whitespace-nowrap">
                     <a 
                       href="#" 
                       class="text-blue-600 hover:text-blue-800"
-                      @click.prevent="navigateTo(getActionRoute(batch.status))"
+                      @click.prevent="navigateTo(getActionRoute(activity.status))"
                     >
-                      {{ batch.batchNo }}
+                      {{ activity.id }}
                     </a>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.institution }}
+                    {{ activity.name }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.category }}
+                    {{ activity.date }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.createdAt }}
+                    {{ activity.location }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ activity.type }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <span
                       class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getStatusColor(batch.status)"
+                      :class="getStatusColor(activity.status)"
                     >
-                      {{ getStatusLabel(batch.status) }}
+                      {{ getStatusLabel(activity.status) }}
                     </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <rs-button
                       variant="primary"
                       size="sm"
-                      @click="navigateTo(getActionRoute(batch.status))"
+                      @click="navigateTo(getActionRoute(activity.status))"
                     >
-                      {{ getActionButtonText(batch.status) }}
+                      {{ getActionButtonText(activity.status) }}
                     </rs-button>
                   </td>
                 </tr>
@@ -151,80 +165,90 @@
 import { ref, computed } from 'vue';
 
 definePageMeta({
-  title: "Bancian/Asnaf Review/Bantuan",
-  description: "Senarai permohonan bantuan asnaf untuk semakan dan kelulusan",
+  title: "Pengurusan Elaun bagi Mesyuarat/Program",
+  description: "Senarai aktiviti mesyuarat dan program untuk pengurusan elaun",
 });
 
 const breadcrumb = ref([
   {
-    name: "Bancian/Asnaf",
+    name: "Pengurusan Elaun",
     type: "link",
-    path: "/BF-PA/PE/AB",
+    path: "/BF-PA/PE/MP",
   },
   {
-    name: "Review/Bantuan",
+    name: "Mesyuarat/Program",
     type: "current",
-    path: "/BF-PA/PE/AB",
+    path: "/BF-PA/PE/MP",
   },
 ]);
 
-// Mock data for batches
-const batches = ref([
+// Mock data for activities
+const activities = ref([
   {
-    id: 1,
-    batchNo: 'BATCH/2024/001',
-    institution: 'Masjid Al-Hidayah',
-    category: 'Kariah',
-    status: 'Menunggu Sokongan JPPA',
-    createdAt: '2024-03-15'
+    id: 'MP/2024/001',
+    name: 'Mesyuarat JPPA Bulanan',
+    date: '2024-03-15',
+    location: 'Dewan Mesyuarat JPPA',
+    type: 'Mesyuarat',
+    status: 'Menunggu Sokongan JPPA'
   },
   {
-    id: 2,
-    batchNo: 'BATCH/2024/002',
-    institution: 'Masjid Al-Ikhlas',
-    category: 'Kariah',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-    createdAt: '2024-03-16'
+    id: 'MP/2024/002',
+    name: 'Program Tazkirah Bulanan',
+    date: '2024-03-16',
+    location: 'Masjid Al-Hidayah',
+    type: 'Program',
+    status: 'Menunggu Kelulusan Ketua JPPA'
   },
   {
-    id: 3,
-    batchNo: 'BATCH/2024/003',
-    institution: 'Masjid Al-Amin',
-    category: 'Kariah',
-    status: 'Diluluskan',
-    createdAt: '2024-03-10'
+    id: 'MP/2024/003',
+    name: 'Latihan Pengurusan Zakat',
+    date: '2024-03-10',
+    location: 'Dewan Latihan',
+    type: 'Latihan',
+    status: 'Diluluskan'
   },
   {
-    id: 4,
-    batchNo: 'BATCH/2024/004',
-    institution: 'Masjid Al-Falah',
-    category: 'Kariah',
-    status: 'Ditolak',
-    createdAt: '2024-03-12'
+    id: 'MP/2024/004',
+    name: 'Mesyuarat Agung Tahunan',
+    date: '2024-03-12',
+    location: 'Dewan Utama',
+    type: 'Mesyuarat',
+    status: 'Ditolak'
   }
 ]);
 
 // Status options for filter
 const statusOptions = [
   { label: 'Semua', value: '' },
-  { label: 'Menunggu sokongan JPPA', value: 'Menunggu sokongan JPPA' },
+  { label: 'Menunggu Sokongan JPPA', value: 'Menunggu Sokongan JPPA' },
   { label: 'Menunggu Kelulusan Ketua JPPA', value: 'Menunggu Kelulusan Ketua JPPA' },
   { label: 'Diluluskan', value: 'Diluluskan' },
-  { label: 'Tidak Layak', value: 'Tidak Layak' },
+  { label: 'Ditolak', value: 'Ditolak' },
+];
+
+// Jenis Aktiviti options
+const jenisAktivitiOptions = [
+  { label: 'Semua', value: '' },
+  { label: 'Mesyuarat', value: 'Mesyuarat' },
+  { label: 'Program', value: 'Program' },
+  { label: 'Latihan', value: 'Latihan' },
 ];
 
 // Search and filter state
 const searchQuery = ref('');
 const selectedStatus = ref('');
+const selectedJenisAktiviti = ref('');
 
-// Computed filtered batches
-const filteredBatches = computed(() => {
-  return batches.value.filter(batch => {
+// Computed filtered activities
+const filteredActivities = computed(() => {
+  return activities.value.filter(activity => {
     const matchesSearch = !searchQuery.value || 
-      batch.id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      batch.institution.toLowerCase().includes(searchQuery.value.toLowerCase());
-    const matchesStatus = !selectedStatus.value || batch.status === selectedStatus.value;
-    return matchesSearch && matchesStatus;
+      activity.id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      activity.name.toLowerCase().includes(searchQuery.value.toLowerCase());
+    const matchesStatus = !selectedStatus.value || activity.status === selectedStatus.value;
+    const matchesJenis = !selectedJenisAktiviti.value || activity.type === selectedJenisAktiviti.value;
+    return matchesSearch && matchesStatus && matchesJenis;
   });
 });
 
@@ -262,9 +286,9 @@ const getStatusLabel = (status) => {
 const getActionRoute = (status) => {
   switch (status) {
     case 'Menunggu Sokongan JPPA':
-      return '/BF-PA/PE/AB/02'
+      return '/BF-PA/PE/MP/03'
     case 'Menunggu Kelulusan Ketua JPPA':
-      return '/BF-PA/PE/AB/03'
+      return '/BF-PA/PE/MP/04'
     default:
       return '#'
   }
@@ -291,8 +315,12 @@ const handleSearch = (event) => {
 const handleStatusChange = (event) => {
   selectedStatus.value = event.target.value;
 };
+
+const handleJenisAktivitiChange = (event) => {
+  selectedJenisAktiviti.value = event.target.value;
+};
 </script>
 
 <style scoped>
 /* Add any additional styles here */
-</style> 
+</style>

@@ -24,36 +24,23 @@
               <h3 class="text-lg font-semibold mb-4">Maklumat Pengiraan Elaun</h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- ID Penolong Amil -->
-                <FormKit
-                  type="text"
-                  name="paId"
-                  label="ID Penolong Amil"
-                  placeholder="Masukkan ID Penolong Amil"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'ID Penolong Amil diperlukan',
-                  }"
-                />
-
-                <!-- Nama Penolong Amil -->
-                <FormKit
-                  type="text"
-                  name="paName"
-                  label="Nama Penolong Amil"
-                  placeholder="Masukkan nama penolong amil"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Nama Penolong Amil diperlukan',
-                  }"
-                />
-
-                <!-- Lokasi Kariah -->
                 <FormKit
                   type="select"
                   name="kariahLocation"
-                  label="Lokasi Kariah"
-                  placeholder="Pilih lokasi kariah"
+                  label="Jenis Kategori"
+                  placeholder="Pilih kategori"
+                  :options="kariahCategories"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Jenis-jenis Kariah',
+                  }"
+                />
+                <!-- Lokasi Kariah  (To be added : a dropdown list of kariah (FAIZ))-->
+                <FormKit
+                  type="select"
+                  name="kariahLocation"
+                  label="Lokasi Institusi"
+                  placeholder="Pilih lokasi institusi"
                   :options="kariahLocations"
                   validation="required"
                   :validation-messages="{
@@ -72,51 +59,8 @@
                   }"
                 />
 
-                <!-- Jenis Tugasan -->
-                <FormKit
-                  type="select"
-                  name="assignmentType"
-                  label="Jenis Tugasan"
-                  placeholder="Pilih jenis tugasan"
-                  :options="assignmentTypes"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Jenis Tugasan diperlukan',
-                  }"
-                />
-
-                <!-- Kadar Elaun Tugasan -->
-                <FormKit
-                  type="number"
-                  name="allowanceRate"
-                  label="Kadar Elaun Tugasan (RM)"
-                  placeholder="Masukkan kadar elaun"
-                  validation="required|min:0"
-                  :validation-messages="{
-                    required: 'Kadar Elaun diperlukan',
-                    min: 'Kadar Elaun mesti lebih daripada 0',
-                  }"
-                />
               </div>
 
-              <!-- Jumlah Elaun Dikira (View Only) -->
-              <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <p class="text-sm text-gray-500">Jumlah Elaun Dikira</p>
-                    <p class="text-xl font-bold text-blue-600">RM {{ calculatedAllowance }}</p>
-                  </div>
-                  <div>
-                    <p class="text-sm text-gray-500">Status Layak</p>
-                    <span
-                      class="px-3 py-1 text-sm font-medium rounded-full"
-                      :class="isEligible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                    >
-                      {{ isEligible ? 'Layak' : 'Tidak Layak' }}
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <!-- Action Buttons -->
@@ -130,15 +74,82 @@
               <rs-button
                 type="submit"
                 variant="primary"
-                @click="navigateTo('/BF-PA/PE/AB/02')"
+                @click="handleKira"
               >
-                Simpan
+                Kira
               </rs-button>
             </div>
           </FormKit>
         </div>
       </template>
     </rs-card>
+
+    <!-- Calculation Table Section (shown after clicking Kira) -->
+    <div v-if="showCalculationTable" class="mt-8">
+      <h3 class="text-lg font-semibold mb-4">Senarai Penolong Amil dan Aktiviti</h3>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-white">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  No.
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Nama Penolong Amil
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Aktiviti
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <template v-for="(pa, index) in penolongAmil" :key="pa.id">
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ index + 1 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ pa.name }}
+                  </td>
+                  <td class="px-6 py-4">
+                    <ul class="list-disc list-inside">
+                      <li v-for="activity in pa.activities" :key="activity.id" class="flex justify-between items-center">
+                        <span class="flex-1 text-center">{{ activity.name }}</span>
+                        <span class="text-blue-600 ml-4">RM {{ activity.allowanceRate }}</span>
+                      </li>
+                    </ul>
+                    <div class="text-right mt-2 font-medium text-blue-600">
+                      Jumlah Elaun: RM {{ (pa.activities.length * 500).toFixed(2) }}
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+            <tfoot class="bg-white">
+              <tr>
+                <td colspan="2" class="px-6 py-4 text-right font-medium">
+                  Jumlah Keseluruhan Elaun:
+                </td>
+                <td class="px-6 py-4 font-medium text-blue-600 text-right">
+                  RM {{ totalAllowance }}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Simpan Button -->
+      <div class="flex justify-end mt-6">
+        <rs-button
+          variant="primary"
+          @click="handleSimpan"
+        >
+          Simpan
+        </rs-button>
+      </div>
+    </div>
 
     <!-- Success Modal -->
     <rs-modal
@@ -197,8 +208,14 @@ const breadcrumb = ref([
 // Form state
 const isSubmitting = ref(false);
 const showSuccessModal = ref(false);
+const showCalculationTable = ref(false);
 
 // Mock data for dropdowns
+const kariahCategories = [
+  { label: 'Kariah', value: 'KARIAH' },
+  { label: 'Komuniti', value: 'KOMUNITI' },
+];
+
 const kariahLocations = [
   { label: 'Masjid Wilayah Persekutuan', value: 'MSJ-KUL-001' },
   { label: 'Masjid Al-Khairiyah', value: 'MSJ-KUL-002' },
@@ -225,6 +242,78 @@ const isEligible = computed(() => {
   return true;
 });
 
+const penolongAmil = ref([
+  {
+    id: 1,
+    name: 'Ahmad bin Abdullah',
+    activities: [
+      {
+        id: 1,
+        name: 'Kutipan Zakat Kariah',
+        allowanceRate: '500.00'
+      },
+      {
+        id: 2,
+        name: 'Agihan Bantuan Asnaf',
+        allowanceRate: '500.00'
+      },
+      {
+        id: 3,
+        name: 'Program Tazkirah',
+        allowanceRate: '500.00'
+      }
+    ]
+  },
+  {
+    id: 2,
+    name: 'Mohd Razak bin Ibrahim',
+    activities: [
+      {
+        id: 1,
+        name: 'Kutipan Zakat Kariah',
+        allowanceRate: '500.00'
+      },
+      {
+        id: 2,
+        name: 'Agihan Bantuan Asnaf',
+        allowanceRate: '500.00'
+      }
+    ]
+  },
+  {
+    id: 3,
+    name: 'Siti Aminah binti Hassan',
+    activities: [
+      {
+        id: 1,
+        name: 'Kutipan Zakat Kariah',
+        allowanceRate: '500.00'
+      },
+      {
+        id: 2,
+        name: 'Agihan Bantuan Asnaf',
+        allowanceRate: '500.00'
+      },
+      {
+        id: 3,
+        name: 'Program Tazkirah',
+        allowanceRate: '500.00'
+      },
+      {
+        id: 4,
+        name: 'Program Qiamullail',
+        allowanceRate: '500.00'
+      }
+    ]
+  }
+]);
+
+const totalAllowance = computed(() => {
+  return penolongAmil.value.reduce((total, pa) => {
+    return total + (pa.activities.length * 500)
+  }, 0).toFixed(2)
+});
+
 // Form submission handler
 const handleSubmit = async (formData) => {
   isSubmitting.value = true;
@@ -239,6 +328,14 @@ const handleSubmit = async (formData) => {
   } finally {
     isSubmitting.value = false;
   }
+};
+
+const handleKira = () => {
+  showCalculationTable.value = true;
+};
+
+const handleSimpan = () => {
+  navigateTo('/BF-PA/PE/AB/02');
 };
 </script>
 

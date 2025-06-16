@@ -33,6 +33,7 @@
                   type="select"
                   name="idValue"
                   label="Jenis ID"
+                  placeholder="Pilih jenis ID"
                   validation="required"
                   :options="[
                     { label: 'Kad Pengenalan', value: 'ic' },
@@ -43,6 +44,21 @@
                     required: 'Jenis ID adalah wajib',
                   }"
                 />
+
+                <div v-if="formData.personalInfo.idValue" class="md:col-span-2">
+                  <FormKit
+                    type="file"
+                    name="idDocument"
+                    :label="formData.personalInfo.idValue === 'ic' ? 'Upload Kad Pengenalan' : 'Upload Foreign ID'"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    v-model="formData.personalInfo.idDocument"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Dokumen ID adalah wajib'
+                    }"
+                  />
+                </div>
 
                 <FormKit
                   type="text"
@@ -60,7 +76,6 @@
                   type="text"
                   name="otherIdNumber"
                   label="No Polis/No Tentera/No Sijil Lahir"
-                  validation="required"
                   v-model="formData.personalInfo.otherIdNumber"
                   :validation-messages="{
                     required: 'No Polis/No Tentera/No Sijil Lahir adalah wajib',
@@ -82,7 +97,6 @@
                   type="text"
                   name="islamName"
                   label="Nama Selepas Islam(Mualaf)"
-                  validation="required"
                   v-model="formData.personalInfo.islamName"
                   :validation-messages="{
                     required: 'Nama selepas Islam adalah wajib',
@@ -168,10 +182,24 @@
                   }"
                 />
 
-                <!-- Passport Information (Conditional) -->
-                <div v-if="formData.personalInfo.idValue === 'foreign-id'" class="md:col-span-2">
-                  <h4 class="text-md font-medium mb-3">Maklumat Passport</h4>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="number"
+                  name="dependentsCount"
+                  label="Bilangan Tanggungan"
+                  validation="required|number|min:0"
+                  v-model="formData.personalInfo.dependentsCount"
+                  :validation-messages="{
+                    required: 'Bilangan tanggungan adalah wajib',
+                    number: 'Sila masukkan nombor yang sah',
+                    min: 'Bilangan tanggungan tidak boleh kurang daripada 0'
+                  }"
+                />
+                   <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
+                  
                     <FormKit
                       type="date"
                       name="passportStartDate"
@@ -184,8 +212,8 @@
                       label="Tarikh tamat passport"
                       v-model="formData.personalInfo.passportEndDate"
                     />
-                  </div>
-                </div>
+                  
+                
 
                 <!-- Islamic Information Section -->
                 <div class="md:col-span-2">
@@ -200,6 +228,21 @@
                     required: 'Tarikh masuk Islam adalah wajib',
                   }"
                 />
+
+                <div v-if="formData.personalInfo.islamDate" class="md:col-span-2">
+                  <FormKit
+                    type="file"
+                    name="islamCertificate"
+                    label="Upload Surat Keislaman dari MAIS"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    v-model="formData.personalInfo.islamCertificate"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Surat keislaman adalah wajib'
+                    }"
+                  />
+                </div>
 
                 <FormKit
                   type="date"
@@ -397,6 +440,21 @@
                   }"
                 />
 
+                <div v-if="formData.healthInfo.status === 'bencana'" class="md:col-span-2">
+                  <FormKit
+                    type="file"
+                    name="disasterDocument"
+                    label="Upload Dokumen Bencana"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    v-model="formData.healthInfo.disasterDocument"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Dokumen bencana adalah wajib'
+                    }"
+                  />
+                </div>
+
                 <!-- Disaster Location (Conditional) -->
                 <FormKit
                   v-if="formData.personalInfo.assistanceType === 'bencana'"
@@ -544,6 +602,22 @@
                       v-model="spouse.idType"
                       :validation-messages="{ required: 'Jenis ID adalah wajib' }"
                     />
+
+                    <div v-if="spouse.idType" class="md:col-span-2">
+                      <FormKit
+                        type="file"
+                        :name="`spouseIdDocument${idx}`"
+                        :label="spouse.idType === 'ic' ? 'Upload Kad Pengenalan Pasangan' : 'Upload Foreign ID Pasangan'"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        v-model="spouse.idDocument"
+                        help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                        validation="required"
+                        :validation-messages="{
+                          required: 'Dokumen ID pasangan adalah wajib'
+                        }"
+                      />
+                    </div>
+
                     <FormKit
                       type="text"
                       :name="`spouseIdNumber${idx}`"
@@ -551,6 +625,11 @@
                       validation="required"
                       v-model="spouse.idNumber"
                       :validation-messages="{ required: 'Nombor ID adalah wajib' }"
+                    />
+                    <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
                     />
                     <FormKit
                       type="date"
@@ -930,7 +1009,7 @@
                   }"
                 />
 
-                <FormKit
+                <!-- <FormKit
                   type="number"
                   name="dependentsCount"
                   label="Bilangan Tanggungan"
@@ -941,7 +1020,7 @@
                     number: 'Sila masukkan nombor yang sah',
                     min: 'Bilangan tanggungan tidak boleh kurang daripada 0'
                   }"
-                />
+                /> -->
               </div>
 
               <div class="flex justify-between gap-3 mt-6">
@@ -1003,6 +1082,21 @@
                     }"
                   />
 
+                  <div class="md:col-span-2">
+                    <FormKit
+                      type="file"
+                      :name="`dependent${index}IdDocument`"
+                      label="Upload ID/Foreign ID/MyKid Tanggungan"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      v-model="dependent.idDocument"
+                      help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Dokumen ID tanggungan adalah wajib'
+                      }"
+                    />
+                  </div>
+
                   <FormKit
                     type="text"
                     :name="`dependent${index}OtherID`"
@@ -1013,6 +1107,11 @@
                       required: 'No ID adalah wajib',
                     }"
                   />
+                  <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
 
                   <FormKit
                     type="date"
@@ -1225,6 +1324,17 @@
                   />
 
                   <FormKit
+                    type="text"
+                    :name="`heir${index}Relationship`"
+                    label="Hubungan"
+                    validation="required"
+                    v-model="heir.relationship"
+                    :validation-messages="{
+                      required: 'Hubungan adalah wajib'
+                    }"
+                  />
+
+                  <FormKit
                     type="tel"
                     :name="`heir${index}Phone`"
                     label="No. Telefon Waris"
@@ -1265,7 +1375,7 @@
             <div v-if="currentStep === 8">
               <h3 class="text-lg font-medium mb-4">H) Pengesahan</h3>
 
-              <!-- <div class="mb-6">
+              <div class="mb-6">
                 <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
                 <div class="flex flex-col gap-2">
                   <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
@@ -1320,7 +1430,7 @@
                     v-model="formData.verification.tarikhBantuan"
                   />
                 </div>
-              </div> -->
+              </div>
 
               <div class="mb-6">
                 <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
@@ -1624,6 +1734,7 @@ const formData = ref({
   personalInfo: {
     idValue: "",
     idNumber: "",
+    idDocument: null, // Add this line
     name: "",
     islamName: "",
     phone: "",
@@ -1639,6 +1750,7 @@ const formData = ref({
     maritalStatus: "",
     healthStatus: "",
     islamDate: "",
+    islamCertificate: null, // Add this line
     kfamDate: "",
     email: "",
     citizenship: "",
@@ -1649,19 +1761,22 @@ const formData = ref({
     polygamyStatus: "",
     wivesCount: "",
     wives: [],
+    dependentsCount: "", // Add this line
   },
   healthInfo: {
     status: "",
     details: "",
     chronicIllnessDoc: null,
-    disabilityDoc: null
+    disabilityDoc: null, // Add this line
+    disasterDocument: null, // Add this line
   },
   spouseInfo: [
     {
       idType: "",
       idNumber: "",
       name: "",
-      supportDoc: null
+      supportDoc: null,
+      idDocument: null, // Add this line
     }
   ],
   addressInfo: {
@@ -1895,7 +2010,8 @@ const addSchoolDependent = () => {
     disabilityDoc: null,
     healthCost: "",
     passportStartDate: "",
-    passportEndDate: ""
+    passportEndDate: "",
+    idDocument: null, // Add this line
   });
 };
 
@@ -1924,6 +2040,7 @@ const addHeir = () => {
   formData.value.heirs.push({
     name: "",
     phone: "",
+    relationship: "", // Add this line
   });
 };
 
@@ -1936,7 +2053,8 @@ const addSpouse = () => {
     idType: "",
     idNumber: "",
     name: "",
-    supportDoc: null
+    supportDoc: null,
+    idDocument: null, // Add this line
   });
 };
 

@@ -171,7 +171,7 @@ const showRejectModal = ref(false);
 // Handle approval
 const handleApprove = () => {
   alert("Konfigurasi jawatan tersebut telah diluluskan");
-  navigateTo("/BF-PA/KF/KJ/01");
+  navigateTo("/BF-PA/KF/KJ");
 };
 
 // Handle rejection
@@ -183,6 +183,6 @@ const handleReject = () => {
 const submitRejection = () => {
   alert("Konfigurasi jawatan tersebut telah ditolak");
   showRejectModal.value = false;
-  navigateTo("/BF-PA/KF/KJ/01");
+  navigateTo("/BF-PA/KF/KJ");
 };
 </script> 

@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Semakan dan Kelulusan
+            Semakan dan Kelulusan (Ketua JPPA)
           </h2>
         </div>
       </template>
@@ -187,6 +187,32 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Penilaian Ketua JPPA -->
+          <div class="mb-6">
+            <FormKit
+              type="form"
+              id="reviewForm"
+              @submit="handleSubmit"
+              :actions="false"
+            >
+              <div class="mb-6">
+                <h3 class="font-medium mb-3">Penilaian Ketua JPPA</h3>
+
+                <div class="mt-4">
+                  <FormKit
+                    type="checkbox"
+                    name="confirmationCheck"
+                    label="Saya mengesahkan bahawa semua maklumat dan dokumen telah disemak dan keputusan saya adalah berdasarkan penilaian yang teliti dan meluluskan permohonan elaun ini"
+                    validation="accepted"
+                    :validation-messages="{
+                      accepted: 'Sila buat pengesahan sebelum hantar',
+                    }"
+                  />
+                </div>
+              </div>
+            </FormKit>
           </div>
 
           <!-- Action Buttons -->
