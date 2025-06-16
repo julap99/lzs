@@ -79,7 +79,7 @@
                   label="Kaedah Notifikasi"
                   placeholder="Pilih kaedah notifikasi"
                   :options="notificationMethods"
-                  value="WHATSAPP"
+                  value="SMS"
                 />
 
                 <!-- Mesej Notifikasi -->

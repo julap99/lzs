@@ -169,7 +169,7 @@ const paymentLocations = [
 
 // Computed values
 const paymentAdviceId = computed(() => 'PAY-2024-001');
-const paymentStatus = computed(() => 'Belum Menghantar');
+const paymentStatus = computed(() => 'Sudah Dihantar ke SAP');
 
 // Helper functions
 const getStatusClass = (status) => {

@@ -1085,7 +1085,7 @@ export default [
           {
             title: "Mesyuarat/Program",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PE/MP/01",
+            path: "/BF-PA/PE/MP",
             child: [],
             meta: {},
           },
