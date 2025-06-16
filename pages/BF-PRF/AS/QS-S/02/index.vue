@@ -194,6 +194,11 @@
                     min: 'Bilangan tanggungan tidak boleh kurang daripada 0'
                   }"
                 />
+                <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
 
                     <FormKit
                       type="date"
