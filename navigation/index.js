@@ -812,7 +812,7 @@ export default [
         meta: {},
       },
       {
-        title: "Permohonan",
+        title: "BDS",
         icon: "iconamoon:component-fill",
         child: [
           {
@@ -889,7 +889,7 @@ export default [
         meta: {},
       },
       {
-        title: "Permohonan (mashi)",
+        title: "BDST",
         icon: "iconamoon:component-fill",
         child: [
           {
@@ -903,6 +903,13 @@ export default [
             title: "Semak Permohonan untuk Siasatan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/permohonan/senarai-untuk-siasatan",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Semak Permohonan untuk Siasatan v2",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/permohonan/senarai-untuk-siasatan-v2",
             child: [],
             meta: {},
           },
@@ -927,6 +934,7 @@ export default [
             child: [],
             meta: {},
           },
+
           {
             title: "Notifikasi Pengesahan (BQ)",
             icon: "iconamoon:arrow-right-2-duotone",

@@ -79,6 +79,7 @@
                         required: 'Aid Product diperlukan'
                       }"
                       :classes="{ outer: 'mb-0' }"
+                      v-model="formData.aidProduct"
                     />
                   </div>
 
@@ -93,6 +94,7 @@
                         required: 'Product Package diperlukan'
                       }"
                       :classes="{ outer: 'mb-0' }"
+                      v-model="formData.productPackage"
                     />
                   </div>
 
@@ -107,6 +109,7 @@
                         required: 'Entitlement Product diperlukan'
                       }"
                       :classes="{ outer: 'mb-0' }"
+                      v-model="formData.entitlementProduct"
                     />
                   </div>
 
@@ -114,7 +117,7 @@
                     <FormKit
                       type="checkbox"
                       name="segera"
-                      label="SEGERA - Tanda sekiranya permohonan perlu disegerakan"
+                      label="SEGERA"
                       :classes="{ outer: 'mb-0' }"
                     />
                   </div>
@@ -153,12 +156,13 @@
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Dokumen
                       </th>
+                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                      </th>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
                       </th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Action
-                      </th>
+                     
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
@@ -170,21 +174,6 @@
                       <td class="px-6 py-4">
                         <div class="text-sm font-medium text-gray-900">
                           {{ dokumen.nama }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="w-48">
-                          <FormKit
-                            type="select"
-                            :name="`dokumenSokongan.${index}.status`"
-                            :options="statusDokumenOptions"
-                            placeholder="Pilih status"
-                            validation="required"
-                            :validation-messages="{
-                              required: 'Status dokumen diperlukan'
-                            }"
-                            :classes="{ outer: 'mb-0' }"
-                          />
                         </div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
@@ -205,6 +194,22 @@
                           >
                             <Icon name="ph:download" class="w-4 h-4" />
                           </rs-button>
+                        </div>
+                      </td>
+                      
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="w-48">
+                          <FormKit
+                            type="select"
+                            :name="`dokumenSokongan.${index}.status`"
+                            :options="statusDokumenOptions"
+                            placeholder="Pilih status"
+                            validation="required"
+                            :validation-messages="{
+                              required: 'Status dokumen diperlukan'
+                            }"
+                            :classes="{ outer: 'mb-0' }"
+                          />
                         </div>
                       </td>
                     </tr>
@@ -246,6 +251,7 @@
                     type="select"
                     name="statusSokongan"
                     label="Status Sokongan"
+                    v-model="formData.statusSokongan"
                     :options="statusSokonganOptions"
                     validation="required"
                     :validation-messages="{
@@ -268,6 +274,7 @@
                       required: 'Catatan pengesyoran diperlukan'
                     }"
                     :classes="{ outer: 'mb-0' }"
+                    v-model="formData.catatanPengesyoran"
                   />
                 </div>
               </div>
@@ -275,65 +282,65 @@
           </rs-card>
 
           <!-- Section 4: Input Maklumat Bantuan -->
-          <rs-card 
-            v-if="showBantuanDetails"
-            class="shadow-sm border-0 bg-white"
-          >
+          <rs-card v-if="showBantuanDetails" class="shadow-sm border-0 bg-white">
             <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon name="ph:currency-circle-dollar" class="w-6 h-6 text-purple-600" />
-                  </div>
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Input Maklumat Bantuan
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Butiran kadar dan tempoh bantuan
-                  </p>
-                </div>
-              </div>
+              <CardHeader title="Input Maklumat Bantuan" icon="ph:currency-circle-dollar" color="purple" />
             </template>
-
             <template #body>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="space-y-1">
-                  <FormKit
-                    type="number"
-                    name="kadarBantuan"
-                    label="Kadar Bantuan (RM)"
-                    placeholder="800"
-                    validation="required|number|min:0"
-                    :validation-messages="{
-                      required: 'Kadar bantuan diperlukan',
-                      number: 'Sila masukkan nombor sahaja',
-                      min: 'Kadar bantuan mesti lebih dari 0'
-                    }"
-                    :classes="{ outer: 'mb-0' }"
-                    @input="calculateTotal"
-                  />
-                </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Kadar Bantuan -->
+                <FormKit
+                  type="number"
+                  name="kadarBantuan"
+                  label="Kadar Bantuan (RM)"
+                  placeholder="800"
+                  v-model="formData.kadarBantuan"
+                  validation="required|number|min:0"
+                  :validation-messages="{
+                    required: 'Kadar bantuan diperlukan',
+                    number: 'Sila masukkan nombor',
+                    min: 'Minimum RM0'
+                  }"
+                  @input="calculateTotal"
+                  :classes="{ outer: 'mb-0' }"
+                />
 
-                <div class="space-y-1">
-                  <FormKit
-                    type="text"
-                    name="tempohBantuan"
-                    label="Tempoh / Kekerapan Bantuan"
-                    placeholder="6 bulan"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Tempoh bantuan diperlukan'
-                    }"
-                    :classes="{ outer: 'mb-0' }"
-                    @input="calculateTotal"
-                  />
-                </div>
+                <!-- Tempoh -->
+                <FormKit
+                  type="number"
+                  name="tempohBantuan"
+                  label="Tempoh / Kekerapan Bantuan (bulan)"
+                  placeholder="6"
+                  v-model="formData.tempohBantuan"
+                  validation="required|number|min:1"
+                  @input="calculateTotal"
+                  :classes="{ outer: 'mb-0' }"
+                />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <div class="space-y-1">
+                <!-- Tarikh Mula -->
+                <FormKit
+                  type="date"
+                  name="tarikhMula"
+                  label="Tarikh Mula"
+                  v-model="formData.tarikhMula"
+                  validation="required"
+                  :classes="{ outer: 'mb-0' }"
+                />
+
+                <!-- Tarikh Tamat -->
+                <FormKit
+                  type="date"
+                  name="tarikhTamat"
+                  label="Tarikh Tamat"
+                  v-model="formData.tarikhTamat"
+                  validation="required"
+                  :classes="{ outer: 'mb-0' }"
+                />
+
+                <!-- Jumlah Keseluruhan -->
+                <div class="space-y-1 md:col-span-3">
                   <label class="text-sm font-medium text-gray-700">
                     Jumlah Keseluruhan Bantuan (RM)
                   </label>
@@ -347,77 +354,82 @@
             </template>
           </rs-card>
 
-          <!-- Section 5: Input Maklumat Pembayaran -->
-          <rs-card 
-            v-if="showBantuanDetails"
-            class="shadow-sm border-0 bg-white"
-          >
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon name="ph:bank" class="w-6 h-6 text-indigo-600" />
-                  </div>
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Input Maklumat Pembayaran
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Butiran akaun untuk pembayaran bantuan
-                  </p>
-                </div>
-              </div>
-            </template>
 
+          <!-- Section 5: Input Maklumat Pembayaran -->
+          <rs-card v-if="showBantuanDetails" class="shadow-sm border-0 bg-white">
+            <template #header>
+              <CardHeader title="Input Maklumat Pembayaran" icon="ph:bank" color="indigo" />
+            </template>
             <template #body>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="space-y-1">
-                  <FormKit
-                    type="text"
-                    name="namaPenerima"
-                    label="Nama Penerima"
-                    placeholder="Masukkan nama penerima"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Nama penerima diperlukan'
-                    }"
-                    :classes="{ outer: 'mb-0' }"
-                  />
-                </div>
+                <!-- Penerima -->
+                <FormKit
+                  type="select"
+                  name="penerima"
+                  label="Penerima"
+                  v-model="formData.penerima"
+                  :options="[
+                    { label: 'Asnaf', value: 'Asnaf' },
+                    { label: 'Third Party', value: 'Third Party' },
+                    { label: 'Organisasi', value: 'Organisasi' },
+                    { label: 'PAK', value: 'PAK' }
+                  ]"
+                  validation="required"
+                  :classes="{ outer: 'mb-0' }"
+                />
 
-                <div class="space-y-1">
-                  <FormKit
-                    type="text"
-                    name="namaBank"
-                    label="Nama Bank"
-                    placeholder="Masukkan nama bank"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Nama bank diperlukan'
-                    }"
-                    :classes="{ outer: 'mb-0' }"
-                  />
-                </div>
+                <!-- Nama Penerima -->
+                <FormKit
+                  type="text"
+                  name="namaPenerima"
+                  label="Nama Penerima"
+                  v-model="formData.namaPenerima"
+                  validation="required"
+                  placeholder="Masukkan nama penerima"
+                  :classes="{ outer: 'mb-0' }"
+                />
 
-                <div class="space-y-1">
-                  <FormKit
-                    type="text"
-                    name="noAkaunBank"
-                    label="No Akaun Bank"
-                    placeholder="Masukkan nombor akaun"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Nombor akaun bank diperlukan'
-                    }"
-                    :classes="{ outer: 'mb-0' }"
-                  />
-                </div>
+                <!-- Kaedah Pembayaran -->
+                <FormKit
+                  type="select"
+                  name="kaedahPembayaran"
+                  label="Kaedah Pembayaran"
+                  v-model="formData.kaedahPembayaran"
+                  :options="[
+                    { label: 'EFT', value: 'EFT' },
+                    { label: 'VCash', value: 'VCash' },
+                    { label: 'Tunai', value: 'Tunai' },
+                    { label: 'Cek', value: 'Cek' }
+                  ]"
+                  validation="required"
+                  :classes="{ outer: 'mb-0' }"
+                />
+
+                <!-- Nama Bank -->
+                <FormKit
+                  type="text"
+                  name="namaBank"
+                  label="Nama Bank"
+                  v-model="formData.namaBank"
+                  validation="required"
+                  placeholder="Contoh: CIMB, Maybank"
+                  :classes="{ outer: 'mb-0' }"
+                />
+
+                <!-- No Akaun Bank -->
+                <FormKit
+                  type="text"
+                  name="noAkaunBank"
+                  label="No Akaun Bank"
+                  v-model="formData.noAkaunBank"
+                  validation="required"
+                  placeholder="Contoh: 1234567890"
+                  :classes="{ outer: 'mb-0' }"
+                />
               </div>
             </template>
           </rs-card>
+
         </div>
 
         <!-- Sidebar -->
@@ -498,6 +510,15 @@
 
                 <!-- Section 7: Action Buttons -->
                 <div class="space-y-3 pt-4 border-t">
+                  <rs-button
+                    variant="info"
+                    @click="handleSimpan"
+                    class="w-full !py-3 text-sm font-medium"
+                  >
+                    <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
+                    Hantar Kelulusan
+                  </rs-button>
+
                   <rs-button
                     variant="primary"
                     @click="handleSimpan"
@@ -631,9 +652,9 @@ const breadcrumb = ref([
 const formData = ref({
   // Section 1: Maklumat Bantuan
   jenisBantuan: "B112 - Bantuan Sewaan/Ansuran Rumah (Miskin)",
-  aidProduct: "",
-  productPackage: "",
-  entitlementProduct: "",
+  aidProduct: "BANTUAN SEWAAN/ANSURAN RUMAH (MISKIN)",
+  productPackage: "SEWAAN RUMAH BULANAN (MISKIN)",
+  entitlementProduct: "SEWAAN RUMAH BULANAN (MISKIN)",
   segera: false,
 
   // Section 2: Dokumen Sokongan
@@ -666,15 +687,29 @@ const formData = ref({
 
   // Section 3: Hasil Siasatan
   statusSokongan: "",
-  catatanPengesyoran: "",
+  catatanPengesyoran: `
+    Status: Balu
+    Jenis Pekerjaan : Bekerja sebagai tukang sapu di sekolah
+    Pendapatan KK : RM1200
+    Status Kediaman : Rumah Sewa
+    Jumlah bayaran rumah : RM800
+    Status Kesihatan KK : Sihat
+    Bantuan Agensi Lain : - 
+    Bil Tanggungan : 2 Orang(Anak)
+    Status Tanggungan : Masih Bersekolah , Tidak Bekerja`,
 
   // Section 4: Input Maklumat Bantuan
   kadarBantuan: null,
   tempohBantuan: "",
   jumlahKeseluruhan: 0,
+  tarikhMula: "",
+  tarikhTamat: "",
+  jumlahKeseluruhan: 0,
 
   // Section 5: Input Maklumat Pembayaran
+  penerima: "",
   namaPenerima: "",
+  kaedahPembayaran: "",
   namaBank: "",
   noAkaunBank: "",
 
@@ -828,6 +863,7 @@ const handleBackToList = () => {
   showSuccessModal.value = false;
   router.push(`/BF-BTN/permohonan/senarai-untuk-disemak/${route.params.id}`);
 };
+
 </script>
 
 <style lang="scss" scoped>
