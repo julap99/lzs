@@ -65,8 +65,20 @@
                 <span class="ml-2">{{ formatAmount(btbInfo.amount) }}</span>
               </div>
               <div>
-                <span class="font-medium">Kategori Bantuan:</span>
+                <span class="font-medium">Aids:</span>
                 <span class="ml-2">{{ btbInfo.category }}</span>
+              </div>
+              <div>
+                <span class="font-medium">Aid Product:</span>
+                <span class="ml-2">{{ btbInfo.aidProduct }}</span>
+              </div>
+              <div>
+                <span class="font-medium">Product Package:</span>
+                <span class="ml-2">{{ btbInfo.productPackage }}</span>
+              </div>
+               <div>
+                <span class="font-medium">Entitletement Product:</span>
+                <span class="ml-2">{{ btbInfo.entitlementProduct }}</span>
               </div>
             </div>
           </template>
@@ -95,7 +107,8 @@
               :disabled="true"
               :value="formatDate(new Date().toISOString())"
             />
-            <FormKit
+            
+            <!-- <FormKit
               type="text"
               name="withdrawalLocation"
               label="Lokasi Pengeluaran"
@@ -114,16 +127,13 @@
               :validation-messages="{
                 required: 'Masa pengeluaran diperlukan',
               }"
-            />
+            /> -->
           </div>
 
           <div class="mb-6">
             <h4 class="text-md font-semibold mb-2">Nota:</h4>
             <ul class="list-disc list-inside text-sm text-gray-600">
-              <li>
-                Pemohon perlu hadir ke lokasi pengeluaran pada tarikh dan masa
-                yang ditetapkan
-              </li>
+           
               <li>Pemohon perlu membawa kad pengenalan asal</li>
               <li>Pemohon perlu menandatangani borang pengeluaran tunai</li>
             </ul>
@@ -182,14 +192,14 @@
               <span class="font-medium">Tarikh Pengeluaran:</span>
               <span>{{ formData.withdrawalDate }}</span>
             </div>
-            <div class="flex justify-between">
+            <!-- <div class="flex justify-between">
               <span class="font-medium">Lokasi Pengeluaran:</span>
               <span>{{ formData.withdrawalLocation }}</span>
             </div>
             <div class="flex justify-between">
               <span class="font-medium">Masa Pengeluaran:</span>
               <span>{{ formData.withdrawalTime }}</span>
-            </div>
+            </div> -->
           </div>
         </div>
       </template>
@@ -236,7 +246,10 @@ interface BTBRecord {
   receiptDate: string;
   amount: number;
   category: string;
+  aidProduct: string;
   status: string;
+  productPackage: string;
+  entitlementProduct: string;
 }
 
 const router = useRouter();
@@ -343,8 +356,11 @@ onMounted(async () => {
     btbInfo.value = {
       paNumber,
       receiptDate: new Date().toISOString(),
-      amount: 1000.0,
-      category: "Bantuan Bulanan",
+      amount: 400.0,
+      category: "B105 - BANTUAN KEWANGAN BULANAN (FAKIR)",
+      aidProduct: "BANTUAN KEWANGAN BULANAN (FAKIR)",
+      productPackage: "KEWANGAN BULANAN (FAKIR) - T3",
+      entitlementProduct: "KEWANGAN BULANAN (FAKIR) - T3",
       status: "Belum Permohonan",
     };
 

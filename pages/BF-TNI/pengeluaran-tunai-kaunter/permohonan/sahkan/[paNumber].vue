@@ -65,8 +65,20 @@
                 <span class="ml-2">{{ formatAmount(btbInfo.amount) }}</span>
               </div>
               <div>
-                <span class="font-medium">Kategori Bantuan:</span>
+                <span class="font-medium">Aids:</span>
                 <span class="ml-2">{{ btbInfo.category }}</span>
+              </div>
+              <div>
+                <span class="font-medium">Aid Product:</span>
+                <span class="ml-2">{{ btbInfo.aidProduct }}</span>
+              </div>
+              <div>
+                <span class="font-medium">Product Package:</span>
+                <span class="ml-2">{{ btbInfo.productPackage }}</span>
+              </div>
+               <div>
+                <span class="font-medium">Entitletement Product:</span>
+                <span class="ml-2">{{ btbInfo.entitlementProduct }}</span>
               </div>
             </div>
           </template>
@@ -260,7 +272,10 @@ interface BTBRecord {
   receiptDate: string;
   amount: number;
   category: string;
+  aidProduct: string;
   status: string;
+  productPackage: string;
+  entitlementProduct: string;
 }
 
 interface WithdrawalInfo {
@@ -341,8 +356,9 @@ const handleSubmit = async () => {
     showConfirmationModal.value = false;
 
     // Navigate back to listing page after successful submission
-    router.push("/BF-TNI/pengeluaran-tunai-kaunter/permohonan/listing");
-  } catch (error) {
+    //router.push("/BF-TNI/pengeluaran-tunai-kaunter/permohonan/listing");
+    router.push("/BF-TNI/slip-penerimaan");
+  } catch (error) { 
     console.error("Error confirming disbursement:", error);
   } finally {
     isSubmitting.value = false;
@@ -369,8 +385,11 @@ onMounted(async () => {
     btbInfo.value = {
       paNumber,
       receiptDate: new Date().toISOString(),
-      amount: 1000.0,
-      category: "Bantuan Bulanan",
+      amount: 400.0,
+      category: "B105 - BANTUAN KEWANGAN BULANAN (FAKIR)",
+      aidProduct: "BANTUAN KEWANGAN BULANAN (FAKIR)",
+      productPackage: "KEWANGAN BULANAN (FAKIR) - T3",
+      entitlementProduct: "KEWANGAN BULANAN (FAKIR) - T3",
       status: "Diluluskan",
     };
 

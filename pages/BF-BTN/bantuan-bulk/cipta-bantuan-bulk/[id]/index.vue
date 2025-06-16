@@ -196,39 +196,26 @@
           </div>
 
           <div v-else class="space-y-3">
-            <div
-              v-for="(payment, index) in paymentList"
-              :key="payment.kod"
-              class="border rounded-lg p-4 bg-white shadow-sm flex justify-between items-center"
+            <rs-table
+              :data="paymentList"
+              :columns="paymentColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: true }"
+              advanced
             >
-              <div class="flex-1">
-                <div class="font-semibold text-lg text-gray-900">
-                  {{ payment.bayaranKepada || "Tiada Maklumat" }}
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button variant="info" size="sm" @click="handleEditPaymentModal(row)">
+                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" /> Lihat
+                  </rs-button>
+                  <rs-button variant="danger" size="sm" @click="handleDeletePayment(row)">
+                    <Icon name="material-symbols:delete" class="w-4 h-4" />
+                  </rs-button>
                 </div>
-                <div class="text-sm text-gray-500">
-                  {{ payment.kod }} • RM {{ formatNumber(payment.amaun) }}
-                </div>
-              </div>
-
-              <div class="flex space-x-2">
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  class="flex gap-2"
-                  @click="handleEditPaymentModal(payment)"
-                >
-                  <Icon name="material-symbols:visibility" class="h-4 w-4" />
-                  Lebih
-                </rs-button>
-                <rs-button
-                  variant="danger"
-                  size="sm"
-                  @click="handleDeletePayment(payment)"
-                >
-                  <Icon name="material-symbols:delete" class="h-4 w-4" />
-                </rs-button>
-              </div>
-            </div>
+              </template>
+            </rs-table>
           </div>
         </template>
       </rs-card>
@@ -259,40 +246,26 @@
           </div>
 
           <div v-else class="space-y-3">
-            <div
-              v-for="(recipient, index) in recipientList"
-              :key="recipient.id || recipient.namaPenuh + index"
-              class="border rounded-lg p-4 bg-white shadow-sm flex justify-between items-center"
+            <rs-table
+              :data="recipientList"
+              :columns="recipientColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: true }"
+              advanced
             >
-              <div class="flex-1">
-                <div class="font-semibold text-lg text-gray-900">
-                  {{ recipient.namaPenuh || "Penerima " + (index + 1) }}
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button variant="info" size="sm" @click="handleEditRecipientModal(row)">
+                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" /> Lihat
+                  </rs-button>
+                  <rs-button variant="danger" size="sm" @click="handleDeleteRecipient(row)">
+                    <Icon name="material-symbols:delete" class="w-4 h-4" />
+                  </rs-button>
                 </div>
-                <div class="text-sm text-gray-500">
-                  {{ recipient.kategoriAsnaf }} • RM
-                  {{ formatNumber(recipient.amaun) }}
-                </div>
-              </div>
-
-              <div class="flex space-x-2">
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  class="flex gap-2"
-                  @click="handleEditRecipientModal(recipient)"
-                >
-                  <Icon name="material-symbols:visibility" class="h-4 w-4" />
-                  Lebih
-                </rs-button>
-                <rs-button
-                  variant="danger"
-                  size="sm"
-                  @click="handleDeleteRecipient(recipient)"
-                >
-                  <Icon name="material-symbols:delete" class="h-4 w-4" />
-                </rs-button>
-              </div>
-            </div>
+              </template>
+            </rs-table>
           </div>
         </template>
       </rs-card>
@@ -340,12 +313,11 @@
           </rs-button>
           <div class="flex space-x-2">
             <rs-button
-              v-if="formData.status === 'Draf'"
               variant="warning"
               @click="editBantuan"
             >
               <Icon name="material-symbols:edit" class="mr-1" />
-              Edit
+              Simpan
             </rs-button>
             <rs-button
               variant="primary"

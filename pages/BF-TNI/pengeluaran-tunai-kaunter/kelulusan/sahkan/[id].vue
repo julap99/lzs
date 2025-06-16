@@ -233,7 +233,8 @@ const handleSahkan = async () => {
     console.log("Confirming disbursement:", id);
     
     // Show success message and redirect
-    router.push("/BF-TNI/pengeluaran-tunai-kaunter/kelulusan");
+    //router.push("/BF-TNI/pengeluaran-tunai-kaunter/kelulusan");
+    router.push("/BF-TNI/slip-penerimaan");
   } catch (error) {
     console.error("Error confirming disbursement:", error);
   }

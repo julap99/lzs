@@ -223,14 +223,14 @@
                             >
                               <Icon name="ph:pencil" class="w-3 h-3" />
                             </rs-button>
-                            <rs-button
+                            <!-- <rs-button
                               variant="danger-outline"
                               size="sm"
                               @click="deleteAssistance(assistance, index)"
                               class="!px-2 !py-1"
                             >
                               <Icon name="ph:trash" class="w-3 h-3" />
-                            </rs-button>
+                            </rs-button> -->
                           </div>
                         </td>
                       </tr>
@@ -362,10 +362,13 @@
                       <div class="p-3 bg-gray-50 rounded-lg border">
                         <div class="text-sm text-gray-900 space-y-1">
                           <div>• {{ formData.ringkasanProfil.status }}</div>
-                          <div>• {{ formData.ringkasanProfil.tanggungan }}</div>
-                          <div>• {{ formData.ringkasanProfil.rumah }}</div>
                           <div>• {{ formData.ringkasanProfil.pekerjaan }}</div>
-                          <div>• {{ formData.ringkasanProfil.khasus }}</div>
+                          <div>• {{ formData.ringkasanProfil.kediaman }}</div>
+                          <div>• {{ formData.ringkasanProfil.bayaranKediaman }}</div>
+                          <div>• {{ formData.ringkasanProfil.kesihatan }}</div>
+                          <div>• {{ formData.ringkasanProfil.bantuanLain }}</div>
+                          <div>• {{ formData.ringkasanProfil.bilTanggungan }}</div>
+                          <div>• {{ formData.ringkasanProfil.statusTanggungan }}</div>
                         </div>
                       </div>
                     </div>
@@ -504,11 +507,16 @@ const formData = ref({
   tarikhPermohonan: "",
   statusPermohonan: "",
   ringkasanProfil: {
-    status: "Pemohon seorang bapa tunggal",
-    tanggungan: "4 tanggungan",
-    rumah: "Menyewa rumah",
-    pekerjaan: "Tukang sapu sekolah",
-    khasus: "Anak OKU"
+    status: "Status: Balu",
+    pekerjaan: "Jenis Pekerjaan : Bekerja sebagai tukang sapu di sekolah",
+    pendapatan: "Pendapatan KK : RM1200",
+    kediaman: "Status Kediaman : Rumah Sewa",
+    bayaranKediaman: "Jumlah bayaran rumah : RM800",
+    kesihatan: "Status Kesihatan KK : Sihat",
+    bantuanLain: "Bantuan Agensi Lain : - ",
+    bilTanggungan: "Bil Tanggungan : 2 Orang(Anak)",
+    statusTanggungan: "Status Tanggungan : Masih Bersekolah , Tidak Bekerja"
+
   },
   tarikhLawatan: "",
   masaLawatan: "",
