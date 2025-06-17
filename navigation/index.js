@@ -922,6 +922,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Semakan & Kelulusan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/PB/semakan-dan-kelulusan/01",
+            child: [],
+            meta: {},
+          },
           // {
           //   title: "Bantuan Bulk",
           //   icon: "iconamoon:arrow-right-2-duotone",
