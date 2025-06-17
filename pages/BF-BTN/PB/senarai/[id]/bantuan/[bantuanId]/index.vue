@@ -782,26 +782,11 @@ const validateForm = () => {
 };
 
 const handleSimpanHantar = () => {
-  if (!validateForm()) {
-    // Show error message
-    return;
-  }
-  // Set status to "Untuk Kelulusan" (or as required)
-  formData.value.statusPermohonanBaru = "Untuk Kelulusan";
-  showSuccessModal.value = true;
+  
 };
 
 const handleSimpan = () => {
-  if (!validateForm()) {
-    // Show error message
-    return;
-  }
-
-  // Set status to "Untuk Siasatan" if valid
-  formData.value.statusPermohonanBaru = "Untuk Siasatan";
-  
-  // Show success modal
-  showSuccessModal.value = true;
+  router.push('/BF-BTN/PB/senarai');
 };
 
 const handleBatal = () => {
