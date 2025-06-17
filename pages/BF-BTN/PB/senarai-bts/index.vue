@@ -258,7 +258,7 @@
   };
   
   const handleReview = (noRujukan) => {
-    navigateTo(`/BF-BTN/PB/senarai/${noRujukan}/bantuan/B115`);
+    navigateTo(`/BF-BTN/PB/senarai-bts/${noRujukan}/bantuan/B115`);
   };
   
   const getStatusVariant = (status) => {

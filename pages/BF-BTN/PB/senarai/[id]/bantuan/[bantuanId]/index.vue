@@ -219,63 +219,124 @@
             </template>
           </rs-card>
 
-          <!-- Section 3: Hasil Siasatan -->
-          <rs-card 
-            v-if="showSiasatanSection"
-            class="shadow-sm border-0 bg-white"
-          >
+          <!-- Section 3: Status & Catatan Semakan (moved from sidebar, replaces Hasil Siasatan) -->
+          <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
                   <div
-                    class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center"
+                    class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center"
                   >
-                    <Icon name="ph:magnifying-glass" class="w-6 h-6 text-orange-600" />
+                    <Icon
+                      name="ph:clipboard-text"
+                      class="w-6 h-6 text-red-600"
+                    />
                   </div>
                 </div>
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">
-                    Hasil Siasatan
+                    Status & Catatan Semakan
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Keputusan dan catatan hasil siasatan
+                    Kemaskini status dan catatan
                   </p>
                 </div>
               </div>
             </template>
 
             <template #body>
-              <div class="grid grid-cols-1 gap-6">
+              <div class="space-y-6">
+                <!-- Status Selection -->
                 <div class="space-y-1">
                   <FormKit
                     type="select"
-                    name="statusSokongan"
-                    label="Status Sokongan"
-                    v-model="formData.statusSokongan"
-                    :options="statusSokonganOptions"
+                    name="statusPermohonanBaru"
+                    label="Status Permohonan"
+                    :options="statusPermohonanOptions"
                     validation="required"
                     :validation-messages="{
-                      required: 'Status sokongan diperlukan'
+                      required: 'Status permohonan diperlukan'
                     }"
-                    placeholder="Pilih status sokongan"
+                    placeholder="Pilih status"
                     :classes="{ outer: 'mb-0' }"
                   />
                 </div>
 
+                <!-- Catatan Pegawai -->
                 <div class="space-y-1">
                   <FormKit
                     type="textarea"
-                    name="catatanPengesyoran"
-                    label="Catatan Pengesyoran"
+                    name="catatanPegawai"
+                    label="Catatan Pegawai"
                     rows="4"
-                    placeholder="Contoh: Pemohon seorang bapa tunggal, mempunyai 4 orang tanggungan..."
-                    validation="required"
+                    :validation="formData.statusPermohonanBaru === 'Tidak Lengkap' ? 'required' : ''"
                     :validation-messages="{
-                      required: 'Catatan pengesyoran diperlukan'
+                      required: 'Catatan diperlukan untuk status Tidak Lengkap'
                     }"
+                    placeholder="Masukkan catatan pegawai (wajib jika Tidak Lengkap)"
                     :classes="{ outer: 'mb-0' }"
-                    v-model="formData.catatanPengesyoran"
                   />
+                </div>
+
+                <!-- Tarikh Semak -->
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">
+                    Tarikh Semak
+                  </label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">
+                      {{ formatDateTime(formData.tarikhSemak) }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Section 7: Action Buttons -->
+                <div class="space-y-3 pt-4 border-t">
+
+                  <rs-button
+                    variant="primary"
+                    @click="handleSimpan"
+                    class="w-full !py-3 text-sm font-medium"
+                  >
+                    <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
+                    Simpan
+                  </rs-button>
+
+                  <rs-button
+                    variant="success"
+                    @click="handleSimpanHantar"
+                    class="w-full !py-3 text-sm font-medium"
+                  >
+                    <Icon name="ph:paper-plane" class="w-5 h-5 mr-2" />
+                    Simpan & Hantar
+                  </rs-button>
+
+                  <rs-button
+                    variant="primary-outline"
+                    @click="handleBatal"
+                    class="w-full !py-3 text-sm font-medium"
+                  >
+                    <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
+                    Kembali
+                  </rs-button>
+                </div>
+
+                <!-- Information Note -->
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div class="flex">
+                    <Icon
+                      name="ph:info"
+                      class="w-5 h-5 text-blue-400 mt-0.5"
+                    />
+                    <div class="ml-3">
+                      <h3 class="text-sm font-medium text-blue-800">
+                        Maklumat
+                      </h3>
+                      <p class="mt-1 text-xs text-blue-700">
+                        Sekiranya bantuan tanpa siasatan, sistem akan terus ke "Untuk Siasatan".
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </template>
@@ -435,129 +496,7 @@
         <!-- Sidebar -->
         <div class="lg:col-span-1 space-y-6">
           <!-- Section 6: Status & Catatan Semakan -->
-          <rs-card 
-            v-if="showBantuanDetails"
-            class="shadow-sm border-0 bg-white sticky top-6"
-          >
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon
-                      name="ph:clipboard-text"
-                      class="w-6 h-6 text-red-600"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Status & Catatan Semakan
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Kemaskini status dan catatan
-                  </p>
-                </div>
-              </div>
-            </template>
-
-            <template #body>
-              <div class="space-y-6">
-                <!-- Status Selection -->
-                <div class="space-y-1">
-                  <FormKit
-                    type="select"
-                    name="statusPermohonanBaru"
-                    label="Status Permohonan"
-                    :options="statusPermohonanOptions"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Status permohonan diperlukan'
-                    }"
-                    placeholder="Pilih status"
-                    :classes="{ outer: 'mb-0' }"
-                  />
-                </div>
-
-                <!-- Catatan Pegawai -->
-                <div class="space-y-1">
-                  <FormKit
-                    type="textarea"
-                    name="catatanPegawai"
-                    label="Catatan Pegawai"
-                    rows="4"
-                    :validation="formData.statusPermohonanBaru === 'Tidak Lengkap' ? 'required' : ''"
-                    :validation-messages="{
-                      required: 'Catatan diperlukan untuk status Tidak Lengkap'
-                    }"
-                    placeholder="Masukkan catatan pegawai (wajib jika Tidak Lengkap)"
-                    :classes="{ outer: 'mb-0' }"
-                  />
-                </div>
-
-                <!-- Tarikh Semak -->
-                <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700">
-                    Tarikh Semak
-                  </label>
-                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                    <span class="text-sm text-gray-900">
-                      {{ formatDateTime(formData.tarikhSemak) }}
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Section 7: Action Buttons -->
-                <div class="space-y-3 pt-4 border-t">
-                  <rs-button
-                    variant="info"
-                    @click="handleSimpan"
-                    class="w-full !py-3 text-sm font-medium"
-                  >
-                    <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
-                    Hantar Kelulusan
-                  </rs-button>
-
-                  <rs-button
-                    variant="primary"
-                    @click="handleSimpan"
-                    class="w-full !py-3 text-sm font-medium"
-                  >
-                    <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
-                    Simpan
-                  </rs-button>
-
-                  <rs-button
-                    variant="primary-outline"
-                    @click="handleBatal"
-                    class="w-full !py-3 text-sm font-medium"
-                  >
-                    <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
-                    Batal / Kembali
-                  </rs-button>
-                </div>
-
-                <!-- Information Note -->
-                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div class="flex">
-                    <Icon
-                      name="ph:info"
-                      class="w-5 h-5 text-blue-400 mt-0.5"
-                    />
-                    <div class="ml-3">
-                      <h3 class="text-sm font-medium text-blue-800">
-                        Maklumat
-                      </h3>
-                      <p class="mt-1 text-xs text-blue-700">
-                        Sekiranya bantuan tanpa siasatan, sistem akan terus ke "Untuk Siasatan".
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </rs-card>
+          <!-- Removed from sidebar as per new requirements -->
         </div>
       </div>
     </div>
@@ -840,6 +779,16 @@ const validateForm = () => {
   }
 
   return true;
+};
+
+const handleSimpanHantar = () => {
+  if (!validateForm()) {
+    // Show error message
+    return;
+  }
+  // Set status to "Untuk Kelulusan" (or as required)
+  formData.value.statusPermohonanBaru = "Untuk Kelulusan";
+  showSuccessModal.value = true;
 };
 
 const handleSimpan = () => {
