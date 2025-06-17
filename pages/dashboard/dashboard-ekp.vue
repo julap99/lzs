@@ -1,16 +1,42 @@
 <template>
-  <div class="space-y-6">
-    <!-- Breadcrumb -->
-    <LayoutsBreadcrumb :items="breadcrumb" />
+  <LayoutsBreadcrumb :items="breadcrumb" />
 
+  <!-- Loading State -->
+  <div v-if="isLoading" class="flex justify-center items-center min-h-[200px]">
+    <rs-spinner size="lg" />
+  </div>
+  <!-- Error State -->
+  <rs-alert
+    v-else-if="error"
+    variant="danger"
+    class="mb-6"
+    :title="error.title"
+    :description="error.message"
+  >
+    <template #actions>
+      <rs-button variant="primary" @click="fetchDashboardData">
+        <Icon name="ic:baseline-refresh" class="mr-1" /> Retry
+      </rs-button>
+    </template>
+  </rs-alert>
+
+  <!-- Success State -->
+  <div v-else>
     <!-- Info Pengguna -->
-    <rs-card class="p-5">
-      <div class="grid md:grid-cols-4 gap-4">
-        <div><strong>Nama:</strong> {{ user.nama }}</div>
-        <div><strong>Peranan:</strong> {{ user.peranan }}</div>
-        <div><strong>Cawangan:</strong> {{ user.cawangan }}</div>
-        <div><strong>Login:</strong> {{ user.loginTime }}</div>
-      </div>
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="p-4">
+          <h1 class="text-3xl font-bold text-gray-800 mt-2">
+            Eksekutif Khidmat Pelanggan - {{ user.cawangan }}
+          </h1>
+          <p class="text-sm text-gray-600 mt-1">
+            Nama: <strong>{{ user.nama }}</strong>
+          </p>
+          <p class="text-sm text-gray-500">
+            Log Masuk Terakhir: {{ user.loginTime }}
+          </p>
+        </div>
+      </template>
     </rs-card>
 
     <!-- KPI Cards -->
@@ -38,7 +64,7 @@
     </div>
 
     <!-- Aktiviti Terkini + Carta -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
       <!-- Aktiviti Terkini -->
       <rs-card>
         <template #header>
@@ -66,19 +92,19 @@
         <template #header>
           <h2 class="text-lg font-semibold text-primary">Carta Ringkasan Prestasi</h2>
         </template>
-        <client-only>
-          <VueApexCharts
-            type="donut"
-            height="300"
-            :series="chartSeries"
-            :options="chartOptions"
-          />
-        </client-only>
+          <client-only>
+            <VueApexCharts
+              type="donut"
+              height="300"
+              :series="chartSeries"
+              :options="chartOptions"
+            />
+          </client-only>
       </rs-card>
     </div>
 
-    <!-- Statistik Permohonan Mengikut Status -->
-    <rs-card>
+    <!-- Statistik Permohonan -->
+    <rs-card class="mt-6">
       <template #header>
         <h2 class="text-lg font-semibold text-primary">Statistik Permohonan Mengikut Status</h2>
       </template>
@@ -101,14 +127,25 @@
 import { ref } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
 
-const breadcrumb = ref([{ title: 'Dashboard EKP', to: '/dashboard-ekp' }]);
+const breadcrumb = ref([
+  {
+    name: "Dashboard",
+    type: "current",
+    path: "/",
+  },
+]);
 
-const user = {
+// Dummy user data
+const user = ref({
   nama: 'Haslina bt Yusuf',
   peranan: 'Eksekutif Kelulusan Permohonan (EKP)',
   cawangan: 'Cawangan Shah Alam',
   loginTime: new Date().toLocaleString('ms-MY'),
-};
+});
+
+// Error type (nullable)
+const error = ref<{ title: string; message: string } | null>(null);
+const isLoading = ref(false);
 
 // KPI Cards
 const kpiList = ref([
@@ -118,8 +155,14 @@ const kpiList = ref([
   { title: 'Permohonan Draf', value: 15, icon: 'ic:baseline-drafts' },
 ]);
 
-// Carta Prestasi
-const chartSeries = [10, 3, 2]; // Selesai, Rework, Draf
+// Recent Activities
+const recentActivities = ref([
+  { id: 1, message: 'Permohonan baharu Ahmad bin Abdullah', time: '5 minit lepas' },
+  { id: 2, message: 'Kelulusan disahkan oleh Sarah bt Ismail', time: '30 minit lepas' },
+]);
+
+// Chart Data
+const chartSeries = [10, 3, 2];
 const chartOptions = {
   labels: ['Selesai', 'Rework', 'Draf'],
   colors: ['#22c55e', '#f97316', '#3b82f6'],
@@ -145,17 +188,20 @@ const chartOptions = {
   }
 };
 
-// Statistik Permohonan
+// Statistik Table
 const statistikColumns = [
   { key: 'jenis', label: 'Jenis' },
   { key: 'status', label: 'Status' },
   { key: 'jumlah', label: 'Jumlah' },
 ];
+
 const statistikPermohonan = ref([
   { jenis: 'Bantuan Kesihatan', status: 'DITOLAK', jumlah: 10 },
   { jenis: 'Bantuan Kewangan', status: 'DISEMAK', jumlah: 30 },
   { jenis: 'Bantuan Pendidikan', status: 'DILULUSKAN', jumlah: 40 },
 ]);
+
+// Status Badge Variant
 const getStatusVariant = (status: string) => {
   return {
     DITOLAK: 'danger',
@@ -164,11 +210,17 @@ const getStatusVariant = (status: string) => {
   }[status] || 'default';
 };
 
-// Aktiviti Terkini
-const recentActivities = ref([
-  { id: 1, message: 'Permohonan baharu Ahmad bin Abdullah', time: '5 minit lepas' },
-  { id: 2, message: 'Kelulusan disahkan oleh Sarah bt Ismail', time: '30 minit lepas' },
-]);
+// Dummy data loader
+const fetchDashboardData = () => {
+  isLoading.value = true;
+  error.value = null;
+
+  setTimeout(() => {
+    isLoading.value = false;
+    // simulate error
+    // error.value = { title: "Ralat", message: "Gagal ambil data." }
+  }, 1000);
+};
 </script>
 
 <style scoped>
