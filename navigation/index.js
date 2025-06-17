@@ -919,6 +919,19 @@ export default [
         meta: {},
       },
       {
+        title: "BTS",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Senarai Permohonan untuk Disemak",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/PB/senarai-bts",
+            child: [],
+            meta: {},
+          },
+        ],
+      },
+      {
         title: "BDST",
         icon: "iconamoon:component-fill",
         child: [
