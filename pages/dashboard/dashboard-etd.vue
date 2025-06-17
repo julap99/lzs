@@ -1,19 +1,14 @@
 <template>
+  <!-- Breadcrumb Navigation -->
   <LayoutsBreadcrumb :items="breadcrumb" />
 
-  <!-- Loading State -->
+  <!-- Loading Spinner -->
   <div v-if="isLoading" class="flex justify-center items-center min-h-[200px]">
     <rs-spinner size="lg" />
   </div>
 
-  <!-- Error State -->
-  <rs-alert
-    v-else-if="error"
-    variant="danger"
-    class="mb-6"
-    :title="error.title"
-    :description="error.message"
-  >
+  <!-- Error Alert -->
+  <rs-alert v-else-if="error" variant="danger" class="mb-6" :title="error.title" :description="error.message">
     <template #actions>
       <rs-button variant="primary" @click="fetchDashboardData">
         <Icon name="ic:baseline-refresh" class="mr-1" /> Retry
@@ -21,26 +16,26 @@
     </template>
   </rs-alert>
 
-  <template v-else>
-      <!-- Header / Welcome Card -->
-      <rs-card class="mb-6">
-        <template #body>
-          <div class="p-4">
-            <h1 class="text-3xl font-bold text-gray-800 mt-2">
-              Eksekutif Teknikal Daerah - Hulu Selangor
-            </h1>
-            <p class="text-sm text-gray-600 mt-1">
-              Nama: <strong>Encik Amirul Azwan</strong>
-            </p>
-            <p class="text-sm text-gray-500">
-              Log Masuk Terakhir: {{ formatDateTime(new Date().toISOString()) }}
-            </p>
-          </div>
-        </template>
-      </rs-card>
+  <!-- Main Dashboard Content -->
+  <div v-else class="space-y-6">
+    <!-- User Info Card -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="p-4">
+          <h1 class="text-3xl font-bold text-gray-800 mt-2">
+            Eksekutif Teknikal Daerah - Hulu Selangor
+          </h1>
+          <p class="text-sm text-gray-600 mt-1">
+            Nama: <strong>Encik Amirul Azwan</strong>
+          </p>
+          <p class="text-sm text-gray-500">
+            Log Masuk Terakhir: {{ formatDateTime(new Date().toISOString()) }}
+          </p>
+        </div>
+      </template>
+    </rs-card>
 
-  
-    <!-- KPI Ringkasan -->
+    <!-- KPI Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <rs-card
         v-for="(kpi, index) in kpiData"
@@ -71,9 +66,9 @@
       </rs-card>
     </div>
 
-    <!-- Main Dashboard Grid -->
+    <!-- Main Grid: Task List & Activity Feed -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Tugasan Section -->
+      <!-- Task List Section -->
       <rs-card class="lg:col-span-2">
         <template #header>
           <div class="flex justify-between items-center">
@@ -91,7 +86,6 @@
             </div>
           </div>
         </template>
-
         <template #body>
           <!-- Filters -->
           <div class="mb-4 flex flex-wrap gap-4">
@@ -100,7 +94,6 @@
             <FormKit type="select" :options="kategoriOptions" v-model="filters.kategori" placeholder="Kategori Bantuan" :classes="{ input: 'w-44' }" />
             <FormKit type="select" :options="statusOptions" v-model="filters.status" placeholder="Status" :classes="{ input: 'w-44' }" />
           </div>
-
           <!-- Table -->
           <rs-table
             :data="paginatedData"
@@ -120,7 +113,6 @@
               </rs-button>
             </template>
           </rs-table>
-
           <p class="text-sm text-gray-500 mt-4">
             Menunjukkan {{ paginatedData.length ? (currentPage - 1) * pageSize + 1 : 0 }} hingga
             {{ (currentPage - 1) * pageSize + paginatedData.length }} dari {{ filteredData.length }} rekod
@@ -128,7 +120,7 @@
         </template>
       </rs-card>
 
-      <!-- Aktiviti Terkini Section -->
+      <!-- Activity Feed Section -->
       <rs-card>
         <template #header>
           <h2 class="text-xl font-semibold">Aktiviti Terkini</h2>
@@ -148,11 +140,13 @@
         </template>
       </rs-card>
     </div>
-  </template>
-  
+  </div>
 </template>
 
 <script setup lang="ts">
+// =======================
+// Dashboard ETD Logic
+// =======================
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import type { Ref } from 'vue';
 
@@ -264,10 +258,6 @@ const paginatedData = computed(() => {
   return filteredData.value.slice(start, start + pageSize.value);
 });
 
-const hasActiveFilters = computed(() => {
-  return Object.values(filters.value).some(value => value !== '');
-});
-
 const getStatusVariant = (status: string): string => {
   const variants: Record<string, string> = {
     'Belum Disemak': 'warning',
@@ -302,36 +292,16 @@ const handlePageChange = (page: number) => {
   currentPage.value = page;
 };
 
-const handleSortChange = (sort: { key: string; order: 'asc' | 'desc' }) => {
-  console.log('Sort changed:', sort);
-};
-
 const resetFilters = () => {
-  filters.value = { search: '', lokasi: '', kategori: '', status: '' };
-  currentPage.value = 1;
+  filters.value.search = '';
+  filters.value.lokasi = '';
+  filters.value.kategori = '';
+  filters.value.status = '';
 };
 
-const exportToCSV = async () => {
-  try {
-    isExporting.value = true;
-    const header = ['No', 'Nama Pemohon', 'Lokasi', 'Kategori', 'Tarikh Mohon', 'Status'];
-    const rows = tableData.value.map(p =>
-      [p.no, p.namaPemohon, p.lokasi, p.kategori, p.tarikhMohon, p.status].join(',')
-    );
-    const csvContent = [header.join(','), ...rows].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'senarai-permohonan.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } catch (error) {
-    console.error('Error exporting to CSV:', error);
-  } finally {
-    isExporting.value = false;
-  }
+const exportToCSV = () => {
+  // Integrate with backend or CSV export library as needed
+  console.log('Exporting to CSV...');
 };
 
 const fetchDashboardData = async () => {
@@ -357,7 +327,6 @@ const fetchDashboardData = async () => {
         status: 'BQ Disediakan'
       }
     ];
-    totalRecords.value = tableData.value.length;
     kpiData.value[0].value = 150;
     kpiData.value[1].value = 45;
     kpiData.value[2].value = 105;

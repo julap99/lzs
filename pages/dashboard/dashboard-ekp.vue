@@ -1,11 +1,12 @@
 <template>
+  <!-- Breadcrumb Navigation -->
   <LayoutsBreadcrumb :items="breadcrumb" />
 
-  <!-- Loading State -->
+  <!-- Loading Spinner -->
   <div v-if="isLoading" class="flex justify-center items-center min-h-[200px]">
     <rs-spinner size="lg" />
   </div>
-  <!-- Error State -->
+  <!-- Error Alert -->
   <rs-alert
     v-else-if="error"
     variant="danger"
@@ -20,9 +21,9 @@
     </template>
   </rs-alert>
 
-  <!-- Success State -->
-  <div v-else>
-    <!-- Info Pengguna -->
+  <!-- Main Dashboard Content -->
+  <div v-else class="space-y-6">
+    <!-- User Info Card -->
     <rs-card class="mb-6">
       <template #body>
         <div class="p-4">
@@ -39,7 +40,7 @@
       </template>
     </rs-card>
 
-    <!-- KPI Cards -->
+    <!-- KPI Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <rs-card
         v-for="(kpi, index) in kpiList"
@@ -63,9 +64,9 @@
       </rs-card>
     </div>
 
-    <!-- Aktiviti Terkini + Carta -->
+    <!-- Main Grid: Activity Feed & Donut Chart -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-      <!-- Aktiviti Terkini -->
+      <!-- Activity Feed Section -->
       <rs-card>
         <template #header>
           <h2 class="text-lg font-semibold text-primary">Aktiviti Terkini</h2>
@@ -87,23 +88,23 @@
         </div>
       </rs-card>
 
-      <!-- Carta Donut Prestasi -->
+      <!-- Donut Chart Section -->
       <rs-card>
         <template #header>
           <h2 class="text-lg font-semibold text-primary">Carta Ringkasan Prestasi</h2>
         </template>
-          <client-only>
-            <VueApexCharts
-              type="donut"
-              height="300"
-              :series="chartSeries"
-              :options="chartOptions"
-            />
-          </client-only>
+        <client-only>
+          <VueApexCharts
+            type="donut"
+            height="300"
+            :series="chartSeries"
+            :options="chartOptions"
+          />
+        </client-only>
       </rs-card>
     </div>
 
-    <!-- Statistik Permohonan -->
+    <!-- Statistik Permohonan Table -->
     <rs-card class="mt-6">
       <template #header>
         <h2 class="text-lg font-semibold text-primary">Statistik Permohonan Mengikut Status</h2>
@@ -124,6 +125,9 @@
 </template>
 
 <script setup lang="ts">
+// =======================
+// Dashboard EKP Logic
+// =======================
 import { ref } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
 
@@ -135,7 +139,7 @@ const breadcrumb = ref([
   },
 ]);
 
-// Dummy user data
+// User info (should be dynamic in production)
 const user = ref({
   nama: 'Haslina bt Yusuf',
   peranan: 'Eksekutif Kelulusan Permohonan (EKP)',
@@ -143,11 +147,11 @@ const user = ref({
   loginTime: new Date().toLocaleString('ms-MY'),
 });
 
-// Error type (nullable)
+// Error and loading state
 const error = ref<{ title: string; message: string } | null>(null);
 const isLoading = ref(false);
 
-// KPI Cards
+// KPI summary data
 const kpiList = ref([
   { title: 'Jumlah Permohonan Hari Ini', value: 120, icon: 'ic:baseline-person-add' },
   { title: 'Permohonan Selesai', value: 80, icon: 'ic:baseline-check-circle' },
@@ -214,7 +218,6 @@ const getStatusVariant = (status: string) => {
 const fetchDashboardData = () => {
   isLoading.value = true;
   error.value = null;
-
   setTimeout(() => {
     isLoading.value = false;
     // simulate error

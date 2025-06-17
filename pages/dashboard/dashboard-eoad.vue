@@ -1,12 +1,13 @@
 <template>
+  <!-- Breadcrumb Navigation -->
   <LayoutsBreadcrumb :items="breadcrumb" />
 
-  <!-- Loading State -->
+  <!-- Loading Spinner -->
   <div v-if="isLoading" class="flex justify-center items-center min-h-[200px]">
     <rs-spinner size="lg" />
   </div>
 
-  <!-- Error State -->
+  <!-- Error Alert -->
   <rs-alert v-else-if="error" variant="danger" class="mb-6" :title="error.title" :description="error.message">
     <template #actions>
       <rs-button variant="primary" @click="refreshData">
@@ -15,9 +16,9 @@
     </template>
   </rs-alert>
 
-  <!-- Dashboard Content -->
+  <!-- Main Dashboard Content -->
   <div v-else class="space-y-6">
-    <!-- Info Pengguna -->
+    <!-- User Info Card -->
     <rs-card class="mb-6 p-5 bg-white shadow-sm">
       <div>
         <h1 class="text-3xl font-bold text-gray-800">{{ user.peranan }} - {{ user.daerah }}</h1>
@@ -26,7 +27,7 @@
       </div>
     </rs-card>
 
-    <!-- KPI Ringkasan -->
+    <!-- KPI Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <rs-card v-for="(kpi, index) in kpiList" :key="index" class="group transition-all duration-300 hover:shadow-md">
         <div class="relative p-5">
@@ -46,9 +47,9 @@
       </rs-card>
     </div>
 
-    <!-- Tugasan dan Aktiviti Terkini -->
+    <!-- Main Grid: Task List & Activity Feed -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Tugasan -->
+      <!-- Task List Section -->
       <rs-card class="lg:col-span-2">
         <template #header>
           <div class="flex justify-between items-center">
@@ -66,13 +67,11 @@
             </div>
           </div>
         </template>
-
         <template #body>
           <div class="mb-4 flex flex-wrap gap-4">
             <FormKit type="text" v-model="filters.search" placeholder="Cari nama atau lokasi..." :classes="{ input: 'w-64' }" />
             <FormKit type="select" :options="statusOptions" v-model="filters.status" placeholder="Semua Status" :classes="{ input: 'w-44' }" />
           </div>
-
           <rs-table
             :data="paginatedTasks"
             :columns="taskColumns"
@@ -82,7 +81,6 @@
             @page-change="handlePageChange"
             :options="{ hover: true, showNoColumn: true }"
           />
-
           <p class="text-sm text-gray-500 mt-4">
             Menunjukkan {{ paginatedTasks.length ? (currentPage - 1) * pageSize + 1 : 0 }} hingga
             {{ (currentPage - 1) * pageSize + paginatedTasks.length }} dari {{ filteredTasks.length }} rekod
@@ -90,7 +88,7 @@
         </template>
       </rs-card>
 
-      <!-- Aktiviti Terkini -->
+      <!-- Activity Feed Section -->
       <rs-card>
         <template #header>
           <h2 class="text-xl font-semibold">Aktiviti Terkini</h2>
@@ -114,38 +112,18 @@
 </template>
 
 <script setup lang="ts">
+// =======================
+// Dashboard EOAD Logic
+// =======================
 import { ref, computed } from 'vue';
-
-interface KPI {
-  title: string;
-  value: number;
-  icon: string;
-  description: string;
-}
-
-interface Task {
-  tajuk: string;
-  tarikh: string;
-  status: string;
-}
-
-interface Notification {
-  type: 'info' | 'success' | 'warning' | 'danger';
-  message: string;
-  date: string;
-}
-
-interface ErrorState {
-  title: string;
-  message: string;
-}
 
 const breadcrumb = ref([{ name: 'Dashboard', type: 'current', path: '/' }]);
 const isLoading = ref(false);
-const error = ref<ErrorState | null>(null);
+const error = ref<{ title: string; message: string } | null>(null);
 const currentPage = ref(1);
 const pageSize = ref(5);
 
+// User info (should be dynamic in production)
 const user = {
   nama: 'Ahmad bin Ali',
   peranan: 'Eksekutif Operasi Agihan Daerah',
@@ -153,29 +131,34 @@ const user = {
   loginTime: new Date().toLocaleString('ms-MY'),
 };
 
-const kpiList = ref<KPI[]>([
+// KPI summary data
+const kpiList = ref([
   { title: 'Permohonan Baharu', value: 45, icon: 'ic:baseline-note-add', description: 'Baru' },
   { title: 'Perlu Tindakan', value: 12, icon: 'ic:baseline-error-outline', description: 'Tertunggak' },
   { title: 'Telah Diluluskan', value: 7, icon: 'ic:baseline-check-circle', description: 'Selesai' },
   { title: 'Tugasan Aktif', value: 5, icon: 'ic:baseline-assignment', description: 'Berjalan' },
 ]);
 
+// Table columns
 const taskColumns = [
   { key: 'tajuk', label: 'Tugasan' },
   { key: 'tarikh', label: 'Tarikh' },
   { key: 'status', label: 'Status' },
 ];
 
-const taskList = ref<Task[]>([
+// Task list data
+const taskList = ref([
   { tajuk: 'Kelulusan Bantuan - Permohonan 456', tarikh: '2025-06-13', status: 'Selesai' },
   { tajuk: 'Lawatan Tapak - Permohonan 123', tarikh: '2025-06-14', status: 'Belum Selesai' },
 ]);
 
-const notifications = ref<Notification[]>([
+// Activity feed notifications
+const notifications = ref([
   { type: 'info', message: 'Permohonan 789 menunggu lawatan tapak.', date: '2025-06-15' },
   { type: 'success', message: 'Permohonan 456 telah diluluskan oleh EKP.', date: '2025-06-14' },
 ]);
 
+// Filters for search and status
 const filters = ref({ search: '', status: '' });
 
 const filteredTasks = computed(() => {
@@ -196,42 +179,36 @@ const statusOptions = [
   { label: 'Belum Selesai', value: 'Belum Selesai' },
 ];
 
-const refreshData = () => {
-  console.log('Refresh triggered...');
+// Helper: Reset filters
+const resetFilters = () => {
+  filters.value.search = '';
+  filters.value.status = '';
 };
 
+// Helper: Export data (placeholder)
 const exportData = () => {
-  console.log('Export to Excel triggered...');
+  // Integrate with backend or Excel export library as needed
+  console.log('Exporting to Excel...');
 };
 
+// Pagination handler
 const handlePageChange = (page: number) => {
   currentPage.value = page;
 };
 
+// Helper: Format numbers (currency, etc.)
 const formatNumber = (value: string | number): string => {
   const num = typeof value === 'string' ? parseFloat(value) : value;
   return new Intl.NumberFormat('ms-MY').format(num);
 };
 
-const getBadgeColor = (type: string): string => {
-  return {
-    success: 'text-green-600',
-    warning: 'text-yellow-600',
-    info: 'text-blue-600',
-    danger: 'text-red-600',
-  }[type] || 'text-gray-500';
+// Data fetch simulation
+const refreshData = () => {
+  isLoading.value = true;
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 800);
 };
-
-const resetFilters = () => {
-  filters.value = {
-    search: '',
-    status: '',
-  };
-  currentPage.value = 1;
-};
-
-
-
 </script>
 
 <style scoped></style>
