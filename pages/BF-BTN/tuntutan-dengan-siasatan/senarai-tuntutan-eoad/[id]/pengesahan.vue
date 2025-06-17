@@ -132,70 +132,107 @@
         </template>
       </rs-card>
 
-      <!-- Section 3: Dapatan & Pengesahan -->
+      <!-- Section 3: Kaedah Siasatan -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <h2 class="text-xl font-semibold">Dapatan & Pengesahan</h2>
+            <h2 class="text-xl font-semibold">Kaedah Siasatan</h2>
           </div>
         </template>
         <template #body>
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Perlu Lawatan Tapak?
+                Cara Siasatan
               </label>
-
               <FormKit
                 type="select"
                 v-model="perluLawatanTapak"
                 :options="[
-                  { label: 'Ya', value: true },
-                  { label: 'Tidak', value: false }
+                  { label: 'Lapangan', value: true },
+                  { label: 'Telefon', value: false },
+                  { label: 'Semak Dokumen Sahaja', value: false }
                 ]"
                 placeholder="Sila pilih..."
               />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Catatan Laporan Pengesahan
-              </label>
-              <FormKit
-                type="textarea"
-                v-model="catatanPengesahan"
-                validation="required"
-                :validation-messages="{
-                  required:
-                    'Catatan diperlukan jika tidak menyokong permohonan',
-                }"
-                placeholder="Sila masukkan catatan pengesahan..."
-                rows="4"
-              />
+              <div v-if="perluLawatanTapak" class="mt-4 space-y-4">
+                <FormKit
+                  type="date"
+                  v-model="tarikhLawatanTapak"
+                  label="Tarikh Lawatan Tapak"
+                  validation="required"
+                  :validation-messages="{ required: 'Sila pilih tarikh lawatan tapak' }"
+                />
+                <FormKit
+                  type="time"
+                  v-model="masaLawatanTapak"
+                  label="Masa Lawatan Tapak"
+                  validation="required"
+                  :validation-messages="{ required: 'Sila pilih masa lawatan tapak' }"
+                  format="24hr"
+                />
+              </div>
             </div>
           </div>
         </template>
       </rs-card>
 
-      <!-- Section 4: Action & Status -->
+      <!-- Section 4: Pengesahan EOAD -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            <h2 class="text-xl font-semibold">Pengesahan EOAD</h2>
+          </div>
+        </template>
+        <template #body>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Catatan Laporan Pengesahan (EOAD)
+            </label>
+            <FormKit
+              type="textarea"
+              v-model="catatanPengesahan"
+              validation="required"
+              :validation-messages="{
+                required: 'Catatan diperlukan jika tidak menyokong permohonan',
+              }"
+              placeholder="Sila masukkan catatan pengesahan..."
+              rows="4"
+            />
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 5: Action & Status -->
       <rs-card>
         <template #body>
           <div class="flex justify-end space-x-4">
+            <!-- Draf Button -->
+            <rs-button
+              variant="secondary"
+              @click="showDraftModal = true"
+              :disabled="processing"
+            >
+              <Icon name="material-symbols:save" class="mr-1" />
+              Draf
+            </rs-button>
+            <!-- Ditolak Button -->
             <rs-button
               variant="danger"
               @click="showTidakSokongModal = true"
               :disabled="processing"
             >
               <Icon name="material-symbols:close" class="mr-1" />
-              Tidak Sokong — Kembali ke Pemohon
+              Ditolak
             </rs-button>
+            <!-- Sokong & Hantar Button -->
             <rs-button
               variant="primary"
               @click="showSokongModal = true"
               :disabled="processing"
             >
               <Icon name="material-symbols:check" class="mr-1" />
-              Sokong & Hantar ke Pelulus
+              Sokong & Hantar
             </rs-button>
           </div>
         </template>
@@ -329,6 +366,36 @@
         </div>
       </template>
     </rs-modal>
+
+    <!-- Draft Confirmation Modal -->
+    <rs-modal
+      v-model="showDraftModal"
+      title="Simpan Draf?"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center space-y-4">
+          <Icon name="ph:warning-circle" class="mx-auto text-warning" size="3rem" />
+          <h3 class="mt-4 text-lg font-medium text-gray-900">
+            Adakah anda ingin simpan sebagai Draf terlebih dahulu?
+          </h3>
+          <p class="mt-2 text-sm text-gray-500">
+            Anda boleh melengkapkan maklumat ini kemudian.
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button variant="primary-outline" @click="showDraftModal = false" :disabled="processing">
+            Batal
+          </rs-button>
+          <rs-button variant="secondary" @click="handleSimpanDraf" :loading="processing">
+            Simpan Draf
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -362,11 +429,14 @@ const breadcrumb = ref([
 // Form state
 const perluLawatanTapak = ref(false);
 const catatanPengesahan = ref("");
+const tarikhLawatanTapak = ref("");
+const masaLawatanTapak = ref("");
 
 // Add modal state variables
 const showSokongModal = ref(false);
 const showTidakSokongModal = ref(false);
 const processing = ref(false);
+const showDraftModal = ref(false);
 
 // Sample data - in real app, this would be fetched from API
 const tuntutanData = ref({
@@ -487,6 +557,29 @@ const handleTidakSokong = async () => {
 const recordAuditTrail = async (data) => {
   // Implement audit trail recording logic
   console.log("Recording audit trail:", data);
+};
+
+const handleSimpanDraf = async () => {
+  try {
+    processing.value = true;
+    // Implement draft save logic here
+    await recordAuditTrail({
+      pegawai: pegawaiInfo.value,
+      tindakan: "Simpan Draf",
+      catatan: catatanPengesahan.value,
+    });
+    // Navigate back to listing with info message
+    navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
+      query: {
+        info: "Tuntutan telah disimpan sebagai draf.",
+      },
+    });
+  } catch (error) {
+    console.error("Error saving draft:", error);
+  } finally {
+    processing.value = false;
+    showDraftModal.value = false;
+  }
 };
 </script>
 

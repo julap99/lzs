@@ -6,6 +6,10 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Senarai Semua Tuntutan</h2>
+          <rs-button variant="primary" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan')">
+            <Icon name="material-symbols:add" class="w-5 h-5 mr-1" />
+            Tambah Tuntutan
+          </rs-button>
         </div>
       </template>
 
