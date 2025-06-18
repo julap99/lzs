@@ -38,10 +38,9 @@
 
         <!-- Main Table -->
         <rs-table
-          :data="filteredTuntutan"
+          :data="tableDataWithNo"
           :columns="columns"
-          :pageSize="pageSize"
-          :showNoColumn="true"
+          :showNoColumn="false"
           :options="{
             variant: 'default',
             hover: true,
@@ -53,15 +52,17 @@
           }"
           advanced
         >
-          <!-- Custom column templates -->
-          <template v-slot:noTuntutan="{ text }">
-            <a 
-              href="#" 
-              class="text-primary-600 hover:text-primary-800"
-              @click.prevent="viewTuntutan(text)"
-            >
-              {{ text }}
-            </a>
+          <template v-slot:no="{ value, index }">
+            <div class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                class="form-checkbox h-4 w-4 text-primary-600"
+                :value="value.noTuntutan"
+                :checked="selectedRows.includes(value.noTuntutan)"
+                @change="onCheckboxChange($event, value)"
+              />
+              <span>{{ value.no }}</span>
+            </div>
           </template>
 
           <template v-slot:amaunTuntutan="{ text }">
@@ -90,7 +91,7 @@
                 variant="primary"
                 size="sm"
                 class="!px-2 !py-1"
-                @click="handleSemakKelulusan(text.id)"
+                @click="handleSemakKelulusan(text.noTuntutan)"
               >
                 <Icon name="ph:check" class="w-4 h-4 mr-1" />
                 Semak & Buat Kelulusan
@@ -139,6 +140,18 @@
             </div>
           </div>
         </div>
+
+        <!-- Bulk Approval Button at Bottom -->
+        <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
+          <rs-button
+            variant="success"
+            @click="handleBulkApproval"
+            :disabled="processing"
+          >
+            <Icon name="material-symbols:approval" class="w-4 h-4 mr-1" />
+            Kelulusan (Bulk) ({{ selectedRows.length }})
+          </rs-button>
+        </div>
       </template>
     </rs-card>
   </div>
@@ -166,46 +179,14 @@ const breadcrumb = ref([
 
 // Table columns configuration
 const columns = [
-  {
-    key: 'noTuntutan',
-    label: 'No. Tuntutan',
-    sortable: true,
-  },
-  {
-    key: 'noGL',
-    label: 'No. GL',
-    sortable: true,
-  },
-  {
-    key: 'namaPemohon',
-    label: 'Nama Pemohon / Institusi',
-    sortable: true,
-  },
-  {
-    key: 'tarikhTuntutan',
-    label: 'Tarikh Tuntutan',
-    sortable: true,
-  },
-  {
-    key: 'amaunTuntutan',
-    label: 'Amaun Tuntutan (RM)',
-    sortable: true,
-  },
-  {
-    key: 'statusPermohonan',
-    label: 'Status Permohonan',
-    sortable: true,
-  },
-  {
-    key: 'pegawaiETD',
-    label: 'Pegawai ETD/EOAD',
-    sortable: true,
-  },
-  {
-    key: 'tindakan',
-    label: 'Tindakan',
-    sortable: false,
-  },
+  { key: 'noTuntutan', label: 'No. Tuntutan', sortable: true },
+  { key: 'noGL', label: 'No. GL', sortable: true },
+  { key: 'namaPemohon', label: 'Nama Pemohon / Institusi', sortable: true },
+  { key: 'tarikhTuntutan', label: 'Tarikh Tuntutan', sortable: true },
+  { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
+  { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },
+  { key: 'pegawaiETD', label: 'Pegawai ETD/EOAD', sortable: true },
+  { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
 
 // Options for filters
@@ -227,7 +208,6 @@ const currentPage = ref(1);
 // Sample data - Replace with actual API call
 const tuntutanList = ref([
   {
-    id: 'TDS-2024-001',
     noTuntutan: 'TDS-2024-001',
     noGL: 'GL-2024-001',
     namaPemohon: 'Ahmad bin Abdullah',
@@ -236,11 +216,62 @@ const tuntutanList = ref([
     statusPermohonan: 'Untuk Kelulusan',
     pegawaiETD: 'Sarah binti Omar',
     tindakan: {
-      id: 'TDS-2024-001',
+      noTuntutan: 'TDS-2024-001',
       status: 'Untuk Kelulusan'
     }
   },
-  // Add more sample data as needed
+  {
+    noTuntutan: 'TDS-2024-002',
+    noGL: 'GL-2024-002',
+    namaPemohon: 'Masjid Al-Hidayah',
+    tarikhTuntutan: '2024-03-19T14:15:00',
+    amaunTuntutan: 8000.00,
+    statusPermohonan: 'Untuk Kelulusan',
+    pegawaiETD: 'Sarah binti Omar',
+    tindakan: {
+      noTuntutan: 'TDS-2024-002',
+      status: 'Untuk Kelulusan'
+    }
+  },
+  {
+    noTuntutan: 'TDS-2024-003',
+    noGL: 'GL-2024-003',
+    namaPemohon: 'Sekolah Agama Rakyat Al-Amin',
+    tarikhTuntutan: '2024-03-18T11:45:00',
+    amaunTuntutan: 12000.00,
+    statusPermohonan: 'Untuk Kelulusan',
+    pegawaiETD: 'Sarah binti Omar',
+    tindakan: {
+      noTuntutan: 'TDS-2024-003',
+      status: 'Untuk Kelulusan'
+    }
+  },
+  {
+    noTuntutan: 'TDS-2024-004',
+    noGL: 'GL-2024-004',
+    namaPemohon: 'Surau Kampung Baru',
+    tarikhTuntutan: '2024-03-17T16:20:00',
+    amaunTuntutan: 3500.00,
+    statusPermohonan: 'Untuk Kelulusan',
+    pegawaiETD: 'Sarah binti Omar',
+    tindakan: {
+      noTuntutan: 'TDS-2024-004',
+      status: 'Untuk Kelulusan'
+    }
+  },
+  {
+    noTuntutan: 'TDS-2024-005',
+    noGL: 'GL-2024-005',
+    namaPemohon: 'Pusat Tahfiz Al-Quran',
+    tarikhTuntutan: '2024-03-16T10:30:00',
+    amaunTuntutan: 15000.00,
+    statusPermohonan: 'Untuk Kelulusan',
+    pegawaiETD: 'Sarah binti Omar',
+    tindakan: {
+      noTuntutan: 'TDS-2024-005',
+      status: 'Untuk Kelulusan'
+    }
+  },
 ]);
 
 // Computed properties
@@ -277,6 +308,62 @@ const paginationEnd = computed(() => {
   return Math.min(currentPage.value * pageSize.value, totalTuntutan.value);
 });
 
+const tableDataWithNo = computed(() =>
+  filteredTuntutan.value.map((row, idx) => {
+    return Object.assign({ no: idx + 1 }, row);
+  })
+);
+
+const selectedRows = ref([]);
+const processing = ref(false);
+
+const onCheckboxChange = (event, row) => {
+  const isChecked = event.target.checked;
+  if (isChecked) {
+    if (!selectedRows.value.includes(row.noTuntutan)) {
+      selectedRows.value.push(row.noTuntutan);
+    }
+  } else {
+    selectedRows.value = selectedRows.value.filter(id => id !== row.noTuntutan);
+  }
+};
+
+const handleBulkApproval = async () => {
+  try {
+    processing.value = true;
+    const result = await $swal.fire({
+      icon: 'question',
+      title: 'Kelulusan (Bulk)',
+      text: `Adakah anda pasti untuk mengesahkan ${selectedRows.value.length} tuntutan yang dipilih?`,
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Sahkan',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#10b981',
+    });
+    if (result.isConfirmed) {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await $swal.fire({
+        icon: 'success',
+        title: 'Berjaya!',
+        text: `Semua permohonan yang dipilih telah berjaya disahkan`,
+        confirmButtonText: 'OK'
+      });
+      selectedRows.value = [];
+      // Refresh data if needed
+    }
+  } catch (error) {
+    await $swal.fire({
+      icon: 'error',
+      title: 'Ralat',
+      text: 'Ralat telah berlaku semasa memproses kelulusan bulk',
+      confirmButtonText: 'OK'
+    });
+  } finally {
+    processing.value = false;
+  }
+};
+
 // Utility functions
 const formatNumber = (value) => {
   return new Intl.NumberFormat('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
@@ -304,14 +391,12 @@ const getStatusVariant = (status) => {
 };
 
 // Action handlers
-const viewTuntutan = (tuntutanId) => {
-  // Navigate to tuntutan details page
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${tuntutanId}`);
+const viewTuntutan = (noTuntutan) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${noTuntutan}`);
 };
 
-const handleSemakKelulusan = (tuntutanId) => {
-  // Navigate to TDS-04 screen
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${tuntutanId}/semak-kelulusan`);
+const handleSemakKelulusan = (noTuntutan) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${noTuntutan}/semak-kelulusan`);
 };
 </script>
 

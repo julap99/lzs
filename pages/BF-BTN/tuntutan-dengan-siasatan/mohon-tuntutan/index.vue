@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Mohon Tuntutan GL (TDS-01)</h2>
+          <h2 class="text-xl font-semibold">Mohon Tuntutan GL</h2>
         </div>
       </template>
 
@@ -24,7 +24,7 @@
                 :validation-messages="{
                   required: 'Sila pilih Nombor GL'
                 }"
-                @change="handleGLChange"
+                @input="handleGLChange"
               />
             </div>
           </div>
@@ -37,69 +37,45 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormKit
                   v-model="formData.kodBantuan"
-                  type="select"
+                  type="text"
                   label="Kod Bantuan"
-                  :options="kodBantuanOptions"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila pilih Kod Bantuan'
-                  }"
-                  @change="handleKodBantuanChange"
+                  disabled
                 />
 
                 <FormKit
                   v-model="formData.jenisBantuan"
-                  type="select"
+                  type="text"
                   label="Jenis Bantuan"
-                  :options="jenisBantuanOptions"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila pilih Jenis Bantuan'
-                  }"
-                  @change="handleJenisBantuanChange"
+                  disabled
                 />
 
                 <FormKit
                   v-model="formData.bahanBantuan"
-                  type="select"
+                  type="text"
                   label="Bahan Bantuan"
-                  :options="bahanBantuanOptions"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila pilih Bahan Bantuan'
-                  }"
-                  @change="handleBahanBantuanChange"
+                  disabled
                 />
 
                 <FormKit
                   v-model="formData.pakejBantuan"
-                  type="select"
+                  type="text"
                   label="Pakej Bantuan"
-                  :options="pakejBantuanOptions"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila pilih Pakej Bantuan'
-                  }"
-                  @change="handlePakejBantuanChange"
+                  disabled
                 />
 
                 <FormKit
                   v-model="formData.kelayakanBantuan"
-                  type="select"
+                  type="text"
                   label="Kelayakan Bantuan"
-                  :options="kelayakanBantuanOptions"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila pilih Kelayakan Bantuan'
-                  }"
+                  disabled
                 />
               </div>
             </div>
           </div>
 
-          <!-- Section 3: Isi Permohonan Tuntutan -->
+          <!-- Section 3: Maklumat Tuntutan -->
           <div class="mb-8">
-            <h3 class="text-lg font-medium mb-4">Isi Permohonan Tuntutan</h3>
+            <h3 class="text-lg font-medium mb-4">Maklumat Tuntutan</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit
                 v-model="formData.noGL"
@@ -123,12 +99,12 @@
               />
 
               <FormKit
-                v-model="formData.tarikhPerkhidmatan"
+                v-model="formData.tarikh"
                 type="date"
-                label="Tarikh Perkhidmatan"
+                label="Tarikh"
                 validation="required"
                 :validation-messages="{
-                  required: 'Sila pilih tarikh perkhidmatan'
+                  required: 'Sila pilih tarikh'
                 }"
               />
 
@@ -156,7 +132,7 @@
                 :validation-messages="{
                   required: 'Sila muat naik sekurang-kurangnya satu dokumen sokongan'
                 }"
-                help="Format yang diterima: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
+                help="Format yang diterima: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB. Dokumen default akan dipilih secara automatik berdasarkan GL yang dipilih."
               />
             </div>
           </div>
@@ -187,7 +163,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { useNuxtApp } from "#app";
 
 definePageMeta({
@@ -218,7 +194,7 @@ const formData = ref({
   pakejBantuan: "",
   kelayakanBantuan: "",
   amaunTuntutan: "",
-  tarikhPerkhidmatan: "",
+  tarikh: "",
   catatanTambahan: "",
   dokumenSokongan: [],
 });
@@ -229,78 +205,67 @@ const glOptions = ref([
   { label: "GL-2025-002 - BANTUAN PERUBATAN DIALISIS", value: "GL-2025-002" },
 ]);
 
-// Mock data for bantuan options
-const kodBantuanOptions = ref([
-  { label: 'Sila pilih...', value: '' },
-  { label: 'B400', value: 'B400' }
-]);
-
-const jenisBantuanOptions = ref([
-  { label: 'Sila pilih...', value: '' },
-  { label: '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA', value: 'HQ_BANTUAN_SUMBANGAN_PERALATAN' },
-  { label: 'BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA', value: 'BANTUAN_SUMBANGAN_PERALATAN' }
-]);
-
-const bahanBantuanOptions = ref([
-  { label: 'Sila pilih...', value: '' },
-  { label: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'HQ_BANTUAN_SUMBANGAN_PERALATAN' },
-  { label: 'BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'BANTUAN_SUMBANGAN_PERALATAN' },
-  { label: 'BANTUAN SUMBANGAN KARPET', value: 'BANTUAN_SUMBANGAN_KARPET' }
-]);
-
-const pakejBantuanOptions = ref([
-  { label: 'Sila pilih...', value: '' },
-  { label: '(GL) (HQ) BANTUAN CUCIAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_CUCIAN_KARPET' },
-  { label: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_KARPET' },
-  { label: '(GL) (HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_PERALATAN' },
-  { label: '(GL) (HQ) SUMBANGAN PERALATAN SEKOLAH AGAMA', value: 'GL_HQ_SUMBANGAN_PERALATAN_SEKOLAH' },
-  { label: 'SUMBANGAN PERALATAN SURAU SEKOLAH', value: 'SUMBANGAN_PERALATAN_SURAU' },
-  { label: 'BANTUAN SUMBANGAN KARPET', value: 'BANTUAN_SUMBANGAN_KARPET' }
-]);
-
-const kelayakanBantuanOptions = ref([
-  { label: 'Sila pilih...', value: '' },
-  { label: '(GL) (HQ) BANTUAN CUCIAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_CUCIAN_KARPET' },
-  { label: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_KARPET' },
-  { label: '(GL) (HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_PERALATAN' },
-  { label: '(GL) (HQ) SUMBANGAN PERALATAN SEKOLAH AGAMA', value: 'GL_HQ_SUMBANGAN_PERALATAN_SEKOLAH' },
-  { label: '(GL) SUMBANGAN PERALATAN SURAU SEKOLAH', value: 'GL_SUMBANGAN_PERALATAN_SURAU' },
-  { label: '(GL) BANTUAN SUMBANGAN KARPET', value: 'GL_BANTUAN_SUMBANGAN_KARPET' },
-  { label: '(GL) SUMBANGAN PERALATAN SEKOLAH AGAMA', value: 'GL_SUMBANGAN_PERALATAN_SEKOLAH' }
-]);
-
-// Handle GL selection change
-const handleGLChange = (value) => {
-  // Auto-populate related fields based on selected GL
-  console.log("Selected GL:", value);
-  // Add logic to fetch and populate GL details
+// GL data mapping
+const glDataMapping = {
+  'GL-2025-001': {
+    kodBantuan: 'B400',
+    jenisBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA',
+    bahanBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA',
+    pakejBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
+    kelayakanBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
+    amaunTuntutan: 5000.00,
+    dokumenDefault: 'GL_Bantuan_Sumbangan_Karpet.pdf'
+  },
+  'GL-2025-002': {
+    kodBantuan: 'B103',
+    jenisBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
+    bahanBantuan: '(HQ) KATEGORI HEMODIALISIS (FAKIR)',
+    pakejBantuan: '(GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)',
+    kelayakanBantuan: '(GL) (HQ) HEMODIALISIS (FAKIR)',
+    amaunTuntutan: 1500.00,
+    dokumenDefault: 'GL_Bantuan_Perubatan_Dialisis.pdf'
+  }
 };
 
-// Handle changes in bantuan fields
-const handleKodBantuanChange = (value) => {
-  // Reset dependent fields
+// Handle GL selection change
+const handleGLChange = async (value) => {
+  console.log("handleGLChange triggered with value:", value);
+  
+  // Reset all bantuan fields first
+  formData.value.kodBantuan = '';
   formData.value.jenisBantuan = '';
   formData.value.bahanBantuan = '';
   formData.value.pakejBantuan = '';
   formData.value.kelayakanBantuan = '';
-};
-
-const handleJenisBantuanChange = (value) => {
-  // Reset dependent fields
-  formData.value.bahanBantuan = '';
-  formData.value.pakejBantuan = '';
-  formData.value.kelayakanBantuan = '';
-};
-
-const handleBahanBantuanChange = (value) => {
-  // Reset dependent fields
-  formData.value.pakejBantuan = '';
-  formData.value.kelayakanBantuan = '';
-};
-
-const handlePakejBantuanChange = (value) => {
-  // Reset dependent field
-  formData.value.kelayakanBantuan = '';
+  formData.value.amaunTuntutan = '';
+  formData.value.dokumenSokongan = [];
+  
+  // Auto-populate based on selected GL
+  if (value && glDataMapping[value]) {
+    const glData = glDataMapping[value];
+    console.log("Found GL data:", glData);
+    
+    // Use nextTick to ensure reactivity
+    await nextTick();
+    
+    formData.value.kodBantuan = glData.kodBantuan;
+    formData.value.jenisBantuan = glData.jenisBantuan;
+    formData.value.bahanBantuan = glData.bahanBantuan;
+    formData.value.pakejBantuan = glData.pakejBantuan;
+    formData.value.kelayakanBantuan = glData.kelayakanBantuan;
+    formData.value.amaunTuntutan = glData.amaunTuntutan;
+    
+    // Set default document
+    if (glData.dokumenDefault) {
+      // Create a mock File object for the default document
+      const defaultFile = new File([''], glData.dokumenDefault, { type: 'application/pdf' });
+      formData.value.dokumenSokongan = [defaultFile];
+    }
+    
+    console.log("Updated formData:", formData.value);
+  } else {
+    console.log("No GL data found for value:", value);
+  }
 };
 
 // Handle form submission
