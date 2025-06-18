@@ -164,6 +164,43 @@
 
       <!-- Sidebar Kanan -->
       <div class="space-y-6">
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:wallet" class="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Tunai Lapangan</h2>
+                <p class="text-sm text-gray-500">Mohon pengeluaran tunai sebelum turun siasatan</p>
+              </div>
+            </div>
+          </template>
+          <template #body>
+            <div class="flex justify-between items-center">
+              <rs-button variant="primary" @click="redirectKePengurusanTunai">
+                Mohon Pengeluaran Tunai
+              </rs-button>
+              <rs-button variant="primary-outline" @click="lihatSejarah">
+                Sejarah Pengeluaran
+              </rs-button>
+            </div>
+
+            <!-- History Ringkas -->
+            <div v-if="pengeluaranHistory.length" class="mt-6 space-y-3">
+              <div class="text-sm font-semibold text-gray-700">Sejarah Pengeluaran</div>
+              <ul class="text-sm text-gray-600 space-y-2">
+                <li v-for="(item, index) in pengeluaranHistory" :key="index">
+                  <span class="font-medium">{{ item.tarikh }}:</span> RM{{ item.amaun }} - {{ item.status }}
+                </li>
+              </ul>
+            </div>
+          </template>
+        </rs-card>
+
+
+        
+
         <!-- Siasatan Lapangan -->
         <rs-card>
           <template #header>
@@ -181,11 +218,14 @@
             <FormKit type="textarea" label="Nota Siasatan" v-model="formData.notaSiasatan" />
             <FormKit type="text" label="Lokasi Agihan" v-model="formData.lokasiAgihan" />
             <FormKit type="file" label="Lampiran Bukti Bergambar" v-model="formData.buktiGambar" multiple />
+            <FormKit type="number" label="Jumlah Bantuan (RM)" v-model="formData.jumlahBantuan" help="Maksimum RM500" />
+            <FormKit type="textarea" label="Catatan Tambahan" v-model="formData.catatanBantuan" />
           </template>
         </rs-card>
+        
 
         <!-- Agihan Bantuan Tunai -->
-        <rs-card>
+        <!-- <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
               <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -202,7 +242,7 @@
             <FormKit type="text" label="Tarikh Agihan" :value="formattedNow" disabled />
             <FormKit type="textarea" label="Catatan Tambahan" v-model="formData.catatanBantuan" />
           </template>
-        </rs-card>
+        </rs-card> -->
 
         <!-- Status dan Simpan -->
         <rs-card>
@@ -258,12 +298,19 @@ const aduan = ref({
 const formData = ref({
   notaSiasatan: '',
   lokasiAgihan: '',
-  jumlah: null,
+  jumlahBantuan: null,
   catatanBantuan: '',
-  statusAkhir: '',
-  justifikasi: '',
- 
+  keputusan: '',
+  catatanKeputusan: '',
+  amaunDipohon: null,
+  tujuanPengeluaran: '',
+  petiBesi: ''
 });
+
+const pengeluaranHistory = ref([
+  { tarikh: '2025-05-01', amaun: 300, status: 'Diluluskan' },
+  { tarikh: '2025-03-22', amaun: 200, status: 'Digunakan' }
+]);
 
 const handleSubmit = () => {
   alert('Maklumat siasatan dan agihan telah disimpan.');

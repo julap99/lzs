@@ -2,180 +2,124 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Kelulusan Pendaftaran Third Party
-          </h2>
-          <rs-badge :variant="getStatusBadgeVariant()">{{
-            applicationData.status
-          }}</rs-badge>
-        </div>
-      </template>
+    <div class="flex justify-between items-start mt-6 mb-4">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Pengesahan Pendaftaran Third Party</h1>
+        <p class="mt-1 text-sm text-gray-600">Semak permohonan organisasi dan berikan keputusan pengesahan.</p>
+      </div>
+      <rs-badge :variant="getStatusBadgeVariant()">{{ applicationData.status }}</rs-badge>
+    </div>
 
-      <template #body>
-        <!-- Application Details Section -->
-        <div class="mb-6">
-          <h3 class="text-lg font-medium mb-4">Maklumat Permohonan</h3>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <h4 class="font-medium text-gray-700">Maklumat Asas</h4>
-              <div class="mt-3 border rounded-md p-4 bg-gray-50">
-                <div class="grid grid-cols-1 gap-3">
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">No. Rujukan</span>
-                    <span class="font-medium"
-                      >ORG{{ applicationData.refNumber }}</span
-                    >
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Tarikh Permohonan</span>
-                    <span class="font-medium">{{
-                      applicationData.applicationDate
-                    }}</span>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Jenis Organisasi</span>
-                    <span class="font-medium">{{
-                      applicationData.organizationType
-                    }}</span>
-                  </div>
-                </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Kiri: Maklumat Permohonan -->
+      <div class="lg:col-span-2 space-y-6">
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:buildings" class="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-900">Maklumat Permohonan</h2>
+                <p class="text-sm text-gray-500">Butiran permohonan dan organisasi</p>
               </div>
             </div>
+          </template>
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit type="text" label="No. Rujukan" :value="'ORG' + applicationData.refNumber" disabled />
+              <FormKit type="text" label="Tarikh Permohonan" :value="applicationData.applicationDate" disabled />
+              <FormKit type="text" label="Jenis Organisasi" :value="applicationData.organizationType" disabled />
+              <FormKit type="text" label="Nama Organisasi" :value="applicationData.organizationName" disabled />
+              <FormKit type="text" label="No. Pendaftaran" :value="applicationData.registrationNumber" disabled />
+              <FormKit type="text" label="Email Organisasi" :value="applicationData.email" disabled />
+            </div>
+          </template>
+        </rs-card>
 
-            <div>
-              <h4 class="font-medium text-gray-700">Maklumat Organisasi</h4>
-              <div class="mt-3 border rounded-md p-4 bg-gray-50">
-                <div class="grid grid-cols-1 gap-3">
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Nama Organisasi</span>
-                    <span class="font-medium">{{
-                      applicationData.organizationName
-                    }}</span>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">No. Pendaftaran</span>
-                    <span class="font-medium">{{
-                      applicationData.registrationNumber
-                    }}</span>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Email</span>
-                    <span class="font-medium">{{ applicationData.email }}</span>
-                  </div>
-                </div>
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:map-pin" class="w-6 h-6 text-gray-600" />
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-900">Alamat dan Hubungan</h2>
               </div>
             </div>
-          </div>
+          </template>
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit type="text" label="Alamat" :value="applicationData.address" disabled />
+              <FormKit type="text" label="Bandar" :value="applicationData.city" disabled />
+              <FormKit type="text" label="Poskod" :value="applicationData.postcode" disabled />
+              <FormKit type="text" label="Negeri" :value="applicationData.state" disabled />
+              <FormKit type="text" label="Nama Pegawai" :value="applicationData.contactPerson" disabled />
+              <FormKit type="text" label="No. Telefon" :value="applicationData.contactPhone" disabled />
+              <FormKit type="text" label="Email Pegawai" :value="applicationData.contactEmail" disabled />
+            </div>
+          </template>
+        </rs-card>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <h4 class="font-medium text-gray-700">Alamat</h4>
-              <div class="mt-3 border rounded-md p-4 bg-gray-50">
-                <div class="grid grid-cols-1 gap-3">
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Alamat</span>
-                    <span class="font-medium">{{
-                      applicationData.address
-                    }}</span>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Bandar</span>
-                    <span class="font-medium">{{ applicationData.city }}</span>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Poskod</span>
-                    <span class="font-medium">{{
-                      applicationData.postcode
-                    }}</span>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Negeri</span>
-                    <span class="font-medium">{{ applicationData.state }}</span>
-                  </div>
-                </div>
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:paperclip" class="w-6 h-6 text-yellow-600" />
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-900">Dokumen Sokongan</h2>
               </div>
             </div>
-
-            <div>
-              <h4 class="font-medium text-gray-700">Maklumat Hubungan</h4>
-              <div class="mt-3 border rounded-md p-4 bg-gray-50">
-                <div class="grid grid-cols-1 gap-3">
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Nama Pegawai</span>
-                    <span class="font-medium">{{
-                      applicationData.contactPerson
-                    }}</span>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">No. Telefon</span>
-                    <span class="font-medium">{{
-                      applicationData.contactPhone
-                    }}</span>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm text-gray-600">Email</span>
-                    <span class="font-medium">{{
-                      applicationData.contactEmail
-                    }}</span>
+          </template>
+          <template #body>
+            <ul class="divide-y divide-gray-200">
+              <li
+                v-for="(doc, index) in applicationData.documents"
+                :key="index"
+                class="py-4 flex items-center justify-between"
+              >
+                <div class="flex items-center">
+                  <Icon name="mdi:file-document-outline" class="text-blue-600 mr-3" size="1.25rem" />
+                  <div>
+                    <p class="font-medium text-gray-900">{{ doc.name }}</p>
+                    <p class="text-sm text-gray-500">{{ doc.size }}</p>
                   </div>
                 </div>
+                <rs-button variant="secondary-outline" size="sm">
+                  <Icon name="mdi:download" size="1rem" class="mr-1" /> Muat Turun
+                </rs-button>
+              </li>
+            </ul>
+          </template>
+        </rs-card>
+      </div>
+
+      <!-- Kanan: Pengesahan -->
+      <div class="lg:col-span-1 space-y-6">
+        <rs-card class="sticky top-6">
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:check-circle" class="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-900">Maklumat Pengesahan</h2>
               </div>
             </div>
-          </div>
-
-          <div class="mb-6">
-            <h4 class="font-medium text-gray-700">Dokumen Sokongan</h4>
-            <div class="mt-3 border rounded-md p-4 bg-gray-50">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div
-                  v-for="(doc, index) in applicationData.documents"
-                  :key="index"
-                  class="flex justify-between items-center p-3 bg-white border rounded-md"
-                >
-                  <div class="flex items-center">
-                    <Icon
-                      name="mdi:file-document-outline"
-                      size="1.5rem"
-                      class="text-blue-600 mr-3"
-                    />
-                    <div>
-                      <p class="font-medium">{{ doc.name }}</p>
-                      <p class="text-sm text-gray-500">{{ doc.size }}</p>
-                    </div>
-                  </div>
-                  <rs-button variant="secondary-outline" size="sm">
-                    <Icon name="mdi:download" size="1rem" class="mr-1" />
-                    Muat Turun
-                  </rs-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Approval Section -->
-        <div class="mt-8 border-t pt-6">
-          <h3 class="text-lg font-medium mb-4">Maklumat Kelulusan</h3>
-
-          <FormKit type="form" :actions="false" @submit="handleApprovalSubmit">
-            <div class="grid grid-cols-1 gap-6">
+          </template>
+          <template #body>
+            <FormKit type="form" :actions="false" @submit="handleApprovalSubmit">
               <FormKit
                 type="radio"
                 name="approvalStatus"
-                label="Status Kelulusan"
+                label="Status Pengesahan"
                 validation="required"
                 :options="[
                   { label: 'Lulus', value: 'approved' },
                   { label: 'Tidak Lulus', value: 'rejected' },
                 ]"
                 v-model="approvalData.status"
-                :validation-messages="{
-                  required: 'Status kelulusan adalah wajib',
-                }"
               />
 
               <FormKit
@@ -184,39 +128,29 @@
                 name="justification"
                 label="Justifikasi Penolakan"
                 validation="required"
-                placeholder="Sila nyatakan sebab penolakan permohonan ini"
-                help="Sila berikan alasan terperinci tentang sebab permohonan ini ditolak"
+                placeholder="Sila nyatakan sebab penolakan"
                 v-model="approvalData.justification"
-                :validation-messages="{
-                  required:
-                    'Justifikasi adalah wajib untuk permohonan yang tidak diluluskan',
-                }"
               />
-            </div>
 
-            <div class="mt-6 flex justify-end gap-4">
-              <rs-button variant="primary-outline" @click="goBack">
-                Kembali
-              </rs-button>
-
-              <rs-button
-                variant="primary"
-                type="submit"
-                :disabled="processing"
-                @click="handleApprovalSubmit"
-              >
-                <span v-if="processing">
-                  <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
-                </span>
-                <span v-else>Hantar Keputusan</span>
-              </rs-button>
-            </div>
-          </FormKit>
-        </div>
-      </template>
-    </rs-card>
+              <div class="mt-6 flex justify-end gap-4">
+                <rs-button variant="secondary-outline" @click="goBack">Kembali</rs-button>
+                <rs-button variant="primary" type="submit" :disabled="processing">
+                  <template v-if="processing">
+                    <Icon name="eos-icons:loading" class="animate-spin mr-1" size="1rem" /> Memproses...
+                  </template>
+                  <template v-else>
+                    <Icon name="material-symbols:check-circle" class="mr-1" size="1rem" /> Hantar Keputusan
+                  </template>
+                </rs-button>
+              </div>
+            </FormKit>
+          </template>
+        </rs-card>
+      </div>
+    </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed } from "vue";
@@ -224,7 +158,7 @@ import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
 definePageMeta({
-  title: "Kelulusan Pendaftaran Organisasi",
+  title: "Pengesahan Pendaftaran Organisasi",
 });
 
 const toast = useToast();
@@ -233,39 +167,41 @@ const processing = ref(false);
 
 const breadcrumb = ref([
   {
-    name: "Kelulusan",
+    name: "Pengesahan",
     type: "link",
     path: "/BF-PRF/TP/PP/01",
   },
   {
-    name: "Kelulusan Pendaftaran Third Party",
+    name: "Pengesahan Pendaftaran Third Party",
     type: "current",
   },
 ]);
 
 // Mock application data - in real implementation this would be fetched from API
 const applicationData = ref({
-  refNumber: "2405001",
-  applicationDate: "15 Mei 2025",
-  status: "Menunggu Kelulusan",
-  organizationType: "Swasta",
-  organizationName: "Syarikat Teknologi Maju Sdn Bhd",
-  registrationNumber: "200301012345",
-  email: "admin@tekmas.com.my",
-  address: "No. 123, Jalan Teknologi 3/5",
-  city: "Cyberjaya",
-  postcode: "63000",
+  refNumber: "2406002",
+  applicationDate: "18 Jun 2025",
+  status: "Menunggu Pengesahan",
+  organizationType: "Third-party (Vendor)",
+  organizationCategory: "Registered", // Atau "Non-Registered"
+  organizationStructure: "Induk", // atau "Cawangan"
+  organizationName: "Pusat Dialisis Sejahtera",
+  registrationNumber: "12345678-X",
+  email: "admin@dialisis-sejahtera.my",
+  address: "Lot 5, Jalan Rawatan, Taman Sejahtera",
+  city: "Shah Alam",
+  postcode: "40100",
   state: "Selangor",
-  contactPerson: "Ahmad Bin Abdullah",
-  contactPhone: "012-3456789",
-  contactEmail: "ahmad@tekmas.com.my",
+  contactPerson: "Dr. Fazira Binti Mohamad",
+  contactPhone: "013-9876543",
+  contactEmail: "fazira@dialisis-sejahtera.my",
   documents: [
-    { name: "Sijil Pendaftaran Syarikat", size: "2.4 MB" },
-    { name: "Surat Perwakilan Kuasa", size: "1.8 MB" },
-    { name: "Laporan Tahunan", size: "5.2 MB" },
-    { name: "Penyata Bank", size: "1.1 MB" },
+    { name: "Sijil Pendaftaran Syarikat", size: "2.2 MB" },
+    { name: "Surat Perakuan LZS", size: "1.5 MB" },
+    { name: "Senarai Penerima Manfaat", size: "3.1 MB" },
   ],
 });
+
 
 const approvalData = ref({
   status: "",
@@ -278,7 +214,7 @@ const getStatusBadgeVariant = () => {
       return "success";
     case "Ditolak":
       return "danger";
-    case "Menunggu Kelulusan":
+    case "Menunggu Pengesahan":
       return "warning";
     default:
       return "info";

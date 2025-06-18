@@ -285,16 +285,30 @@ export default [
         meta: {},
       },
       {
-        title: "Senarai Aduan",
+        title: "Senarai Aduan Terbuka",
+        icon: "iconamoon:calendar-2",
+        path: "/BF-ADN/PA/AT/04",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "Senarai Aduan - Admin",
         icon: "iconamoon:calendar-2",
         path: "/BF-ADN/PA/AT/01",
         child: [],
         meta: {},
       },
       {
-        title: "Tugasan Saya",
+        title: "Senarai Tugasan Saya",
         icon: "iconamoon:calendar-2",
         path: "/BF-ADN/PA/TS/01",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "Senarai Aduan Saya",
+        icon: "iconamoon:calendar-2",
+        path: "/BF-ADN/PA/AS",
         child: [],
         meta: {},
       },
@@ -841,17 +855,17 @@ export default [
           {
             title: "Senarai Pengesahan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/OR/PP/03",
+            path: "/BF-PRF/OR/PP",
             child: [],
             meta: {},
           },
-          {
+          /* {
             title: "Kemaskini Profil",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/KP/01",
             child: [],
             meta: {},
-          },
+          }, */
           {
             title: " Pendaftaran Baharu Cawangan",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -876,17 +890,17 @@ export default [
           {
             title: "Senarai Pengesahan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/TP/PP/03",
+            path: "/BF-PRF/TP/PP",
             child: [],
             meta: {},
           },
-          {
+          /* {
             title: "Kemaskini Profil",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/TP/KP/01",
             child: [],
             meta: {},
-          },
+          }, */
         ],
         meta: {},
       },

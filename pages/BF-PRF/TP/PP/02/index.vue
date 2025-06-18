@@ -32,9 +32,9 @@
           <FormKit
             type="text"
             name="organizationName"
-            label="Nama Organisasi"
+            label="Nama Vendor/Individu"
             validation="required"
-            placeholder="Masukkan nama organisasi"
+            placeholder="Masukkan nama vendor/Iindividu"
             v-model="formData.organizationName"
           />
 
@@ -46,9 +46,9 @@
             placeholder="Pilih jenis kategori"
             :options="[
               { label: 'Individu', value: 'ngo' },
-              { label: 'Syarikat', value: 'syarikat' },
+              /* { label: 'Syarikat', value: 'syarikat' }, */
               { label: 'Vendor', value: 'vendor' },
-              { label: 'Rumah Sewa', value: 'rumahsewa' },
+              /* { label: 'Rumah Sewa', value: 'rumahsewa' }, */
             ]"
             v-model="formData.organizationType"
           />
@@ -291,57 +291,134 @@
           @submit="nextStep"
           #default="{ value }"
         >
-          <FormKit
-            type="select"
-            name="bankName"
-            label="Nama Bank"
-            validation="required"
-            placeholder="Pilih bank"
-            :options="[
-              'Maybank',
-              'CIMB Bank',
-              'Public Bank',
-              'RHB Bank',
-              'Hong Leong Bank',
-              'AmBank',
-              'Bank Islam',
-              'Bank Rakyat',
-              'Bank Muamalat',
-              'OCBC Bank',
-              'HSBC Bank',
-              'Standard Chartered Bank',
-              'Citibank',
-              'UOB Bank',
-            ]"
-            v-model="formData.bankName"
-          />
+           <div
+              v-for="(bank, index) in formData.banks"
+              :key="index"
+              class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50"
+            >
+              <h3 class="font-semibold text-sm text-gray-700">
+                Maklumat Bank {{ index + 1 }}
+              </h3>
 
-          <FormKit
-            type="text"
-            name="bankAccountNumber"
-            label="Nombor Akaun Bank"
-            validation="required"
-            placeholder="Masukkan nombor akaun bank"
-            v-model="formData.bankAccountNumber"
-          />
+              <FormKit
+                type="select"
+                label="Nama Bank"
+                placeholder="Pilih bank"
+                validation="required"
+                :options="[
+                  'Maybank',
+                  'CIMB Bank',
+                  'Public Bank',
+                  'RHB Bank',
+                  'Hong Leong Bank',
+                  'AmBank',
+                  'Bank Islam',
+                  'Bank Rakyat',
+                  'Bank Muamalat',
+                  'OCBC Bank',
+                  'HSBC Bank',
+                  'Standard Chartered Bank',
+                  'Citibank',
+                  'UOB Bank'
+                ]"
+                v-model="bank.bankName"
+              />
 
-          <FormKit
-            type="text"
-            name="swiftCode"
-            label="SWIFT Code (jika berkenaan)"
-            placeholder="Contoh: MBBEMYKL"
-            v-model="formData.swiftCode"
-          />
+              <FormKit
+                type="text"
+                label="Nombor Akaun Bank"
+                validation="required"
+                placeholder="Masukkan nombor akaun bank"
+                v-model="bank.bankAccountNumber"
+              />
 
-          <FormKit
-            type="select"
-            name="paymentMethod"
-            label="Kaedah Pembayaran"
-            validation="required"
-            placeholder="Pilih kaedah pembayaran"
-            :options="['Direct Bank In', 'Cheque', 'Cash', 'Online Transfer']"
-            v-model="formData.paymentMethod"
-          />
+              <FormKit
+                type="text"
+                label="Penama Akaun Bank"
+                placeholder=""
+                v-model="bank.penamaBank"
+              />
+
+              <!-- <FormKit
+                type="select"
+                label="Kaedah Pembayaran"
+                validation="required"
+                placeholder="Pilih kaedah pembayaran"
+                :options="['Direct Bank In', 'Cheque', 'Cash', 'Online Transfer']"
+                v-model="bank.paymentMethod"
+              /> -->
+
+              <div class="flex justify-end">
+                <rs-button
+                  v-if="formData.banks.length > 1"
+                  variant="danger-outline"
+                  size="sm"
+                  @click.prevent="removeBank(index)"
+                >
+                  Buang Maklumat Ini
+                </rs-button>
+              </div>
+            </div>
+
+            <rs-button
+              variant="primary-outline"
+              size="sm"
+              @click.prevent="tambahMaklumatBank"
+            >
+              + Tambah Maklumat Bank
+            </rs-button>
+
+         <!--    <FormKit
+              type="select"
+              name="bankName"
+              label="Nama Bank"
+              validation="required"
+              placeholder="Pilih bank"
+              :options="[
+                'Maybank',
+                'CIMB Bank',
+                'Public Bank',
+                'RHB Bank',
+                'Hong Leong Bank',
+                'AmBank',
+                'Bank Islam',
+                'Bank Rakyat',
+                'Bank Muamalat',
+                'OCBC Bank',
+                'HSBC Bank',
+                'Standard Chartered Bank',
+                'Citibank',
+                'UOB Bank',
+              ]"
+              v-model="formData.bankName"
+            />
+
+            <FormKit
+              type="text"
+              name="bankAccountNumber"
+              label="Nombor Akaun Bank"
+              validation="required"
+              placeholder="Masukkan nombor akaun bank"
+              v-model="formData.bankAccountNumber"
+            />
+
+            <FormKit
+              type="text"
+              name="swiftCode"
+              label="SWIFT Code (jika berkenaan)"
+              placeholder="Contoh: MBBEMYKL"
+              v-model="formData.swiftCode"
+            />
+
+            <FormKit
+              type="select"
+              name="paymentMethod"
+              label="Kaedah Pembayaran"
+              validation="required"
+              placeholder="Pilih kaedah pembayaran"
+              :options="['Direct Bank In', 'Cheque', 'Cash', 'Online Transfer']"
+              v-model="formData.paymentMethod"
+            /> -->
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -546,10 +623,18 @@ const formData = ref({
   email: "",
 
   // Step 5: Maklumat Bank
-  bankName: "",
+  banks: [
+    {
+      bankName: '',
+      bankAccountNumber: '',
+      penamaBank: '',
+      paymentMethod: '',
+    },
+  ],
+ /*  bankName: "",
   bankAccountNumber: "",
   swiftCode: "",
-  paymentMethod: "",
+  paymentMethod: "", */
 
   // Step 6: Maklumat Tambahan Masjid/Surau
   pakList: [{ name: "", ic: "", type: "" }],
@@ -562,6 +647,19 @@ const formData = ref({
   bankProof: null,
   additionalDocuments: [],
 });
+
+const tambahMaklumatBank = () => {
+  formData.value.banks.push({
+    bankName: '',
+    bankAccountNumber: '',
+    swiftCode: '',
+    paymentMethod: '',
+  });
+};
+
+const removeBank = (index) => {
+  formData.value.banks.splice(index, 1);
+};
 
 const nextStep = () => {
   if (currentStep.value < totalSteps) {

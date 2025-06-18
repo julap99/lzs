@@ -66,7 +66,7 @@
             </div>
           </template>
           <template #body>
-            <FormKit type="checkbox" label="Sahkan alamat pemastautin adalah tepat" v-model="formData.sahAlamat" />
+           <!--  <FormKit type="checkbox" label="Sahkan alamat pemastautin adalah tepat" v-model="formData.sahAlamat" /> -->
 
             <div v-for="(bantuan, index) in formData.bantuanList" :key="index" class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
               <FormKit type="text" label="Jenis Bantuan" v-model="bantuan.jenis" />
@@ -84,6 +84,35 @@
 
       <!-- Sidebar Kanan -->
       <div class="space-y-6">
+        <rs-card>
+        <template #header>
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+              <Icon name="mdi:map-marker-check-outline" class="w-6 h-6 text-indigo-600" />
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900">Pengesahan Pemastautin</h2>
+              <p class="text-sm text-gray-500">Disahkan oleh Pegawai Penilai</p>
+            </div>
+          </div>
+        </template>
+
+        <template #body>
+          <div class="flex items-center space-x-3">
+            <FormKit
+              type="checkbox"
+              v-model="formData.sahPemastautin"
+              outer-class="!mb-0"  
+              input-class="align-middle" 
+            />
+            <span class="text-sm font-medium leading-snug mt-0">
+              Saya mengesahkan bahawa individu menetap di alamat yang dinyatakan.
+            </span>
+          </div>
+        </template>
+
+      </rs-card>
+
         <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
@@ -136,7 +165,8 @@ const formData = ref({
     { jenis: 'Bantuan Keperluan Hidup (B104)', jumlah: 300, tempoh: '1 bulan', justifikasi: '' }
   ],
   status: '',
-  catatan: ''
+  catatan: '',
+  sahPemastautin: false
 });
 
 const tambahBarisBantuan = () => {
