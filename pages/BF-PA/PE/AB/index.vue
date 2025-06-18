@@ -76,70 +76,162 @@
           </div>
 
           <!-- Table Section -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    No. Batch
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Institusi
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kategori
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tarikh
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tindakan
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="batch in batches" :key="batch.id">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <a 
-                      href="#" 
-                      class="text-blue-600 hover:text-blue-800"
-                      @click.prevent="navigateTo('/BF-PA/PE/AB/02/PA')"
-                    >
-                      {{ batch.batchNo }}
-                    </a>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.institution }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.category }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.createdAt }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getStatusColor(batch.status)"
-                    >
-                      {{ getStatusLabel(batch.status) }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <rs-button
-                      variant="primary"
-                      size="sm"
-                      @click="navigateTo(getActionRoute(batch.status))"
-                    >
-                      {{ getActionButtonText(batch.status) }}
-                    </rs-button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="space-y-8">
+            <!-- Approved Items Table -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                <Icon name="heroicons:check-circle" class="mr-2" size="20" />
+                Senarai elaun yang telah diluluskan
+              </h3>
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-green-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        No. Batch
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Institusi
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Kategori
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Tarikh
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Tindakan
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="batch in approvedBatches" :key="batch.id">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <a 
+                          href="#" 
+                          class="text-blue-600 hover:text-blue-800"
+                          @click.prevent="navigateTo('/BF-PA/PE/AB/02/PA')"
+                        >
+                          {{ batch.batchNo }}
+                        </a>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ batch.institution }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ batch.category }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ batch.createdAt }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 py-1 text-xs font-medium rounded-full"
+                          :class="getStatusColor(batch.status)"
+                        >
+                          {{ getStatusLabel(batch.status) }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <rs-button
+                          variant="primary"
+                          size="sm"
+                          @click="navigateTo(getActionRoute(batch.status))"
+                        >
+                          {{ getActionButtonText(batch.status) }}
+                        </rs-button>
+                      </td>
+                    </tr>
+                    <tr v-if="approvedBatches.length === 0">
+                      <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                        Tiada data yang diluluskan
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Rejected Items Table -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                <Icon name="heroicons:x-circle" class="mr-2" size="20" />
+                Senarai elaun yang telah ditolak
+              </h3>
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-red-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        No. Batch
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Institusi
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Kategori
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Tarikh
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Tindakan
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="batch in rejectedBatches" :key="batch.id">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <a 
+                          href="#" 
+                          class="text-blue-600 hover:text-blue-800"
+                          @click.prevent="navigateTo('/BF-PA/PE/AB/02/PA')"
+                        >
+                          {{ batch.batchNo }}
+                        </a>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ batch.institution }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ batch.category }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ batch.createdAt }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 py-1 text-xs font-medium rounded-full"
+                          :class="getStatusColor(batch.status)"
+                        >
+                          {{ getStatusLabel(batch.status) }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <rs-button
+                          variant="primary"
+                          size="sm"
+                          @click="navigateTo(getActionRoute(batch.status))"
+                        >
+                          {{ getActionButtonText(batch.status) }}
+                        </rs-button>
+                      </td>
+                    </tr>
+                    <tr v-if="rejectedBatches.length === 0">
+                      <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                        Tiada data yang ditolak
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </template>
@@ -172,22 +264,6 @@ const breadcrumb = ref([
 const batches = ref([
   {
     id: 1,
-    batchNo: 'BATCH/2024/001',
-    institution: 'Masjid Al-Hidayah',
-    category: 'Kariah',
-    status: 'Menunggu Sokongan JPPA',
-    createdAt: '2024-03-15'
-  },
-  {
-    id: 2,
-    batchNo: 'BATCH/2024/002',
-    institution: 'Masjid Al-Ikhlas',
-    category: 'Kariah',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-    createdAt: '2024-03-16'
-  },
-  {
-    id: 3,
     batchNo: 'BATCH/2024/003',
     institution: 'Masjid Al-Amin',
     category: 'Kariah',
@@ -195,22 +271,36 @@ const batches = ref([
     createdAt: '2024-03-10'
   },
   {
-    id: 4,
+    id: 2,
     batchNo: 'BATCH/2024/004',
     institution: 'Masjid Al-Falah',
     category: 'Kariah',
     status: 'Ditolak',
     createdAt: '2024-03-12'
+  },
+  {
+    id: 3,
+    batchNo: 'BATCH/2024/007',
+    institution: 'Masjid Kg Delek',
+    category: 'Kariah',
+    status: 'Diluluskan',
+    createdAt: '2024-03-14'
+  },
+  {
+    id: 4,
+    batchNo: 'BATCH/2024/012',
+    institution: 'Masjid Bandar Utama',
+    category: 'Kariah',
+    status: 'Ditolak',
+    createdAt: '2024-03-21'
   }
 ]);
 
 // Status options for filter
 const statusOptions = [
   { label: 'Semua', value: '' },
-  { label: 'Menunggu sokongan JPPA', value: 'Menunggu sokongan JPPA' },
-  { label: 'Menunggu Kelulusan Ketua JPPA', value: 'Menunggu Kelulusan Ketua JPPA' },
   { label: 'Diluluskan', value: 'Diluluskan' },
-  { label: 'Tidak Layak', value: 'Tidak Layak' },
+  { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 // Search and filter state
@@ -221,11 +311,20 @@ const selectedStatus = ref('');
 const filteredBatches = computed(() => {
   return batches.value.filter(batch => {
     const matchesSearch = !searchQuery.value || 
-      batch.id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      batch.batchNo.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       batch.institution.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesStatus = !selectedStatus.value || batch.status === selectedStatus.value;
     return matchesSearch && matchesStatus;
   });
+});
+
+// Computed properties for separated tables
+const approvedBatches = computed(() => {
+  return filteredBatches.value.filter(batch => batch.status === 'Diluluskan');
+});
+
+const rejectedBatches = computed(() => {
+  return filteredBatches.value.filter(batch => batch.status === 'Ditolak');
 });
 
 // Helper functions
