@@ -235,10 +235,10 @@ const breadcrumb = ref([
   {
     name: "Kelulusan",
     type: "link",
-    path: "/BF-PRF/OR/AP/01",
+    path: "/BF-PRF/TP/PP/01",
   },
   {
-    name: "Kelulusan Pendaftaran Organisasi",
+    name: "Kelulusan Pendaftaran Third Party",
     type: "current",
   },
 ]);

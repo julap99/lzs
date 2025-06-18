@@ -5,94 +5,70 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Carian Profil</h2>
+          <h2 class="text-xl font-semibold">Carian Profil Third-Party</h2>
         </div>
       </template>
 
       <template #body>
         <!-- Form Section -->
         <div class="mb-6">
-          <h3 class="text-lg font-medium mb-4">Carian Profil</h3>
+          <h3 class="text-lg font-medium mb-4">Maklumat Carian</h3>
           <FormKit type="form" :actions="false" @submit="handleSubmit">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit
                 type="select"
-                name="idType"
-                label="Jenis ID"
+                name="kategori"
+                label="Kategori Profil"
                 validation="required"
-                :options="idTypeOptions"
-                placeholder="Pilih jenis ID"
-                v-model="formData.idType"
-                :validation-messages="{
-                  required: 'Jenis ID adalah wajib',
-                }"
+                :options="kategoriOptions"
+                placeholder="Pilih kategori"
+                v-model="formData.kategori"
+                :validation-messages="{ required: 'Kategori adalah wajib' }"
               />
-
               <FormKit
                 type="text"
-                name="idNumber"
-                label="Nombor ID"
+                name="noId"
+                label="Nombor Pengenalan / Kod Vendor"
                 validation="required"
-                v-model="formData.idNumber"
-                :validation-messages="{
-                  required: 'Nombor ID adalah wajib',
-                }"
+                v-model="formData.noId"
                 :placeholder="getPlaceholder()"
+                :validation-messages="{ required: 'Nombor ID adalah wajib' }"
               />
             </div>
 
             <div class="mt-6 flex justify-end gap-4">
-              <div>
-                <rs-button variant="primary-outline" @click="resetForm">
-                  Reset
-                </rs-button>
-              </div>
-
-              <div>
-                <rs-button
-                  variant="primary"
-                  class="ml-auto"
-                  @click="validateAndSearch"
-                  :disabled="processing"
-                >
-                  <span v-if="processing">
-                    <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
-                  </span>
-                  <span v-else>Cari</span>
-                </rs-button>
-              </div>
+              <rs-button variant="primary-outline" @click="resetForm">Reset</rs-button>
+              <rs-button variant="primary" :disabled="processing" @click="validateAndSearch">
+                <span v-if="processing">
+                  <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
+                </span>
+                <span v-else>Cari</span>
+              </rs-button>
             </div>
           </FormKit>
         </div>
 
-        <!-- Search Result Section -->
+        <!-- Result Section -->
         <div v-if="searchCompleted" class="mt-6">
-          <rs-card
-            :variant="profileExists ? 'success' : 'warning'"
-            class="mb-4"
-          >
+          <rs-card :variant="profileExists ? 'success' : 'warning'" class="mb-4">
             <template #body>
               <div class="flex items-center">
                 <div class="mr-4">
                   <Icon
-                    :name="
-                      profileExists ? 'mdi:check-circle' : 'mdi:alert-circle'
-                    "
+                    :name="profileExists ? 'mdi:check-circle' : 'mdi:alert-circle'"
                     size="2rem"
                     :class="profileExists ? 'text-green-600' : 'text-amber-600'"
                   />
                 </div>
                 <div>
                   <h3 class="text-lg font-medium">
-                    {{
-                      profileExists ? "Profil Ditemui" : "Profil Tidak Ditemui"
-                    }}
+                    {{ profileExists ? "Profil Ditemui" : "Profil Tidak Ditemui" }}
                   </h3>
                   <p class="text-sm mt-1">
                     {{
                       profileExists
-                        ? "Profil bagi ID yang dimasukkan telah dijumpai dalam sistem."
-                        : "Tiada profil ditemui bagi ID yang dimasukkan."
+                        ? "Profil telah wujud dalam sistem. Anda boleh teruskan ke kemaskini."
+                        : "Profil belum wujud. Anda perlu meneruskan ke proses pendaftaran baharu."
                     }}
                   </p>
                 </div>
@@ -100,12 +76,8 @@
             </template>
             <template #footer>
               <div class="flex justify-end">
-                <rs-button
-                  variant="primary"
-                  @click="navigateNext"
-                  :disabled="profileExists"
-                >
-                  {{ profileExists ? "Kemaskini Profil" : "Pendaftaran Baru" }}
+                <rs-button variant="primary" @click="navigateNext">
+                  {{ profileExists ? "Kemaskini Profil" : "Pendaftaran Baharu" }}
                 </rs-button>
               </div>
             </template>
@@ -117,76 +89,53 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
 
-definePageMeta({
-  title: "Carian Profil",
-});
+definePageMeta({ title: "Carian Profil Third-Party" });
 
+const router = useRouter();
 const processing = ref(false);
 const searchCompleted = ref(false);
 const profileExists = ref(false);
 
 const breadcrumb = ref([
-  {
-    name: "Pendaftaran Third Party",
-    type: "link",
-    path: "/BF-PRF/TP/PP/01",
-  },
-  {
-    name: "Carian Profil",
-    type: "current",
-    path: "/BF-PRF/TP/PP/01",
-  },
+  { name: "Profil Third-Party", type: "link", path: "/BF-PRF/TP/PP/01" },
+  { name: "Carian Profil", type: "current", path: "/BF-PRF/TP/PP/01" },
 ]);
 
-const idTypeOptions = [
-  { label: "No. Organisasi", value: "org" },
-  { label: "No. Rujukan", value: "rujukan" },
-  { label: "No. Kad Pengenalan", value: "ic" },
+const kategoriOptions = [
+  { label: "Recipient (Individu)", value: "recipient" },
+  { label: "Vendor (Syarikat/Entiti)", value: "vendor" },
 ];
 
-const formData = ref({
-  idType: "",
-  idNumber: "",
-});
+const formData = ref({ kategori: "", noId: "" });
 
 const getPlaceholder = () => {
-  switch (formData.value.idType) {
-    case "ic":
-      return "Contoh: 880101121234";
-    case "org":
-      return "Masukkan No. Organisasi";
-    case "rujukan":
-      return "Masukkan No. Rujukan";
-    default:
-      return "Sila pilih jenis ID dahulu";
+  switch (formData.value.kategori) {
+    case "recipient": return "Contoh: 880101121234";
+    case "vendor": return "Contoh: VD123456";
+    default: return "Sila pilih kategori dahulu";
   }
 };
 
 const resetForm = () => {
-  formData.value.idType = "";
-  formData.value.idNumber = "";
+  formData.value.kategori = "";
+  formData.value.noId = "";
   searchCompleted.value = false;
 };
 
 const validateAndSearch = () => {
-  if (!formData.value.idType || !formData.value.idNumber) {
-    return;
-  }
-
+  if (!formData.value.kategori || !formData.value.noId) return;
   performSearch();
 };
 
-const performSearch = async () => {
+const performSearch = () => {
   processing.value = true;
   searchCompleted.value = false;
 
-  // Simulate API call to search for profile with randomized result
   setTimeout(() => {
     processing.value = false;
-    // Randomize whether profile exists or not (50% chance)
     profileExists.value = Math.random() >= 0.5;
     searchCompleted.value = true;
   }, 1000);
@@ -194,24 +143,16 @@ const performSearch = async () => {
 
 const navigateNext = () => {
   if (profileExists.value) {
-    // Navigate to update profile page
-    // navigateTo("/BF-PRF/AS/FR/02");
+    router.push("/BF-PRF/TP/PP/03");
   } else {
-    // Navigate to new registration page
-    navigateTo("/BF-PRF/TP/PP/02");
+    router.push("/BF-PRF/TP/PP/02");
   }
 };
 
-const handleSubmit = (data) => {
-  console.log("Form submitted:", data);
-  validateAndSearch();
-};
-
-// Watch for changes in ID type to clear the ID number field
 watch(
-  () => formData.value.idType,
-  () => {
-    formData.value.idNumber = "";
-  }
+  () => formData.value.kategori,
+  () => { formData.value.noId = ""; }
 );
 </script>
+
+<style scoped></style>
