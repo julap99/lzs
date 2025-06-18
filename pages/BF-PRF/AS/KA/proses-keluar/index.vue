@@ -31,19 +31,10 @@
             </div>
             <div class="flex gap-2">
               <FormKit
-                v-model="filters.kategoriSebelum"
+                v-model="filters.kategori"
                 type="select"
-                :options="kategoriSebelumOptions"
-                placeholder="Kategori Sebelum"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.kategoriSelepas"
-                type="select"
-                :options="kategoriSelepasOptions"
-                placeholder="Kategori Selepas"
+                :options="kategoriOptions"
+                placeholder="Kategori"
                 :classes="{
                   input: '!py-2',
                 }"
@@ -69,13 +60,8 @@
           }"
           advanced
         >
-          <!-- Custom slot for kategori sebelum -->
-          <template v-slot:kategoriSebelum="data">
-            {{ data.text }}
-          </template>
-
-          <!-- Custom slot for kategori selepas -->
-          <template v-slot:kategoriSelepas="data">
+          <!-- Custom slot for kategori -->
+          <template v-slot:kategori="data">
             {{ data.text }}
           </template>
 
@@ -153,6 +139,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { useRouter } from 'vue-router';
 
 definePageMeta({
   title: "Proses Keluar Asnaf",
@@ -184,47 +171,35 @@ const breadcrumb = ref([
 // Table fields configuration
 const tableFields = [
   "namaAsnaf",
-  "kategoriSebelum",
-  "kategoriSelepas",
+  "kategori",
   "tarikhAkhir",
   "noTelefon",
   "tindakan"
 ];
 
 // Options for filters
-const kategoriSebelumOptions = [
+const kategoriOptions = [
   { label: "Semua Kategori", value: "" },
   { label: "Miskin", value: "Miskin" },
   { label: "Fakir", value: "Fakir" },
-  { label: "Non Fakir", value: "Non Fakir" },
-  { label: "Non Miskin", value: "Non Miskin" },
-];
-
-const kategoriSelepasOptions = [
-  { label: "Semua Kategori", value: "" },
-  { label: "Miskin", value: "Miskin" },
-  { label: "Fakir", value: "Fakir" },
-  { label: "Non Fakir", value: "Non Fakir" },
-  { label: "Non Miskin", value: "Non Miskin" },
 ];
 
 // State
 const searchQuery = ref("");
 const filters = ref({
-  kategoriSebelum: "",
-  kategoriSelepas: "",
+  kategori: "",
 });
 const pageSize = ref(10);
 const currentPage = ref(1);
 const showConfirmModal = ref(false);
 const selectedAsnafId = ref(null);
+const router = useRouter();
 
 // Sample data - Replace with actual API call
 const asnafList = ref([
   {
     namaAsnaf: "Ahmad bin Abdullah",
-    kategoriSebelum: "Fakir",
-    kategoriSelepas: "Non Fakir",
+    kategori: "Fakir",
     tarikhAkhir: "2020-01-15",
     noTelefon: "0123456789",
     tindakan: { id: "ASN-2024-001" },
@@ -232,8 +207,7 @@ const asnafList = ref([
   },
   {
     namaAsnaf: "Siti binti Ali",
-    kategoriSebelum: "Miskin",
-    kategoriSelepas: "Non Miskin",
+    kategori: "Miskin",
     tarikhAkhir: "2020-03-20",
     noTelefon: "0123456788",
     tindakan: { id: "ASN-2024-002" },
@@ -241,8 +215,7 @@ const asnafList = ref([
   },
   {
     namaAsnaf: "Mohammad bin Hassan",
-    kategoriSebelum: "Non Fakir",
-    kategoriSelepas: "Fakir",
+    kategori: "Fakir",
     tarikhAkhir: "2021-06-10",
     noTelefon: "0123456787",
     tindakan: { id: "ASN-2024-003" },
@@ -250,8 +223,7 @@ const asnafList = ref([
   },
   {
     namaAsnaf: "Fatimah binti Omar",
-    kategoriSebelum: "Non Miskin",
-    kategoriSelepas: "Miskin",
+    kategori: "Miskin",
     tarikhAkhir: "2020-08-25",
     noTelefon: "0123456786",
     tindakan: { id: "ASN-2024-004" },
@@ -259,8 +231,7 @@ const asnafList = ref([
   },
   {
     namaAsnaf: "Abdul Rahman bin Ismail",
-    kategoriSebelum: "Fakir",
-    kategoriSelepas: "Non Fakir",
+    kategori: "Fakir",
     tarikhAkhir: "2021-02-14",
     noTelefon: "0123456785",
     tindakan: { id: "ASN-2024-005" },
@@ -268,8 +239,7 @@ const asnafList = ref([
   },
   {
     namaAsnaf: "Zainab binti Ahmad",
-    kategoriSebelum: "Miskin",
-    kategoriSelepas: "Non Miskin",
+    kategori: "Miskin",
     tarikhAkhir: "2020-11-30",
     noTelefon: "0123456784",
     tindakan: { id: "ASN-2024-006" },
@@ -277,8 +247,7 @@ const asnafList = ref([
   },
   {
     namaAsnaf: "Ibrahim bin Yusof",
-    kategoriSebelum: "Non Fakir",
-    kategoriSelepas: "Fakir",
+    kategori: "Fakir",
     tarikhAkhir: "2019-09-05",
     noTelefon: "0123456783",
     tindakan: { id: "ASN-2024-007" },
@@ -293,13 +262,10 @@ const filteredAsnafList = computed(() => {
       asnaf.namaAsnaf.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       (asnaf.noTelefon && asnaf.noTelefon.includes(searchQuery.value));
     
-    const matchesKategoriSebelum = filters.value.kategoriSebelum === "" || 
-      asnaf.kategoriSebelum === filters.value.kategoriSebelum;
+    const matchesKategori = filters.value.kategori === "" || 
+      asnaf.kategori === filters.value.kategori;
     
-    const matchesKategoriSelepas = filters.value.kategoriSelepas === "" || 
-      asnaf.kategoriSelepas === filters.value.kategoriSelepas;
-    
-    return matchesSearch && matchesKategoriSebelum && matchesKategoriSelepas;
+    return matchesSearch && matchesKategori;
   });
 });
 
@@ -362,6 +328,9 @@ const confirmProsesKeluar = () => {
   // Show success message
   // You can use SweetAlert2 or any notification system here
   console.log('Proses keluar berjaya');
+
+  // Redirect to /BF-PRF/AS/FR/04
+  router.push('/BF-PRF/AS/FR/04');
 };
 
 const refreshData = () => {
@@ -370,8 +339,7 @@ const refreshData = () => {
   // Reset filters
   searchQuery.value = "";
   filters.value = {
-    kategoriSebelum: "",
-    kategoriSelepas: "",
+    kategori: "",
   };
   selectedAsnafId.value = null;
 };
