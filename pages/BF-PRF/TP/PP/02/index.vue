@@ -498,14 +498,14 @@ const router = useRouter();
 
 const breadcrumb = ref([
   {
-    name: "Organisasi",
+    name: "Third Party",
     type: "link",
-    path: "/BF-PRF/OR/PP/01",
+    path: "/BF-PRF/TP/PP/01",
   },
   {
     name: "Pendaftaran Baru",
     type: "current",
-    path: "/BF-PRF/OR/PP/02",
+    path: "/BF-PRF/TP/PP/02",
   },
 ]);
 
