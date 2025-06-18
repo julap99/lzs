@@ -3,7 +3,54 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <div class="space-y-6 mt-4">
-      <!-- Section 1: Maklumat Tuntutan -->
+      <!-- Section 1: Maklumat Bantuan -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            <Icon name="material-symbols:info-outline" class="mr-2" />
+            Maklumat Bantuan
+          </div>
+        </template>
+        <template #body>
+          <div class="bg-gray-50 p-4 rounded-lg mb-6">
+            <h4 class="text-md font-medium mb-4">Butiran Asas Jenis Bantuan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Kod Bantuan
+                </label>
+                <div class="text-gray-900">{{ bantuanData.kodBantuan }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Jenis Bantuan
+                </label>
+                <div class="text-gray-900">{{ bantuanData.jenisBantuan }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Bahan Bantuan
+                </label>
+                <div class="text-gray-900">{{ bantuanData.bahanBantuan }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Pakej Bantuan
+                </label>
+                <div class="text-gray-900">{{ bantuanData.pakejBantuan }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Kelayakan Bantuan
+                </label>
+                <div class="text-gray-900">{{ bantuanData.kelayakanBantuan }}</div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 2: Maklumat Tuntutan -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
@@ -76,7 +123,7 @@
         </template>
       </rs-card>
 
-      <!-- Section 2: Semakan Maklumat -->
+      <!-- Section 3: Semakan Maklumat -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
@@ -183,7 +230,7 @@
         </template>
       </rs-card>
 
-      <!-- Section 3: Keputusan Kelulusan -->
+      <!-- Section 4: Keputusan Kelulusan -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
@@ -381,6 +428,15 @@ const tuntutan = ref({
   ],
   dokumenPerkhidmatan: [{ name: "Perkhidmatan 1.pdf", url: "#" }],
   lampiranLain: [{ name: "Lampiran 1.pdf", url: "#" }],
+});
+
+// Sample bantuan data - in real app, this would be fetched from API based on GL
+const bantuanData = ref({
+  kodBantuan: "B400",
+  jenisBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+  bahanBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA",
+  pakejBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
+  kelayakanBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
 });
 
 // Form state

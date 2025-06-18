@@ -39,9 +39,6 @@
         <!-- Main Table -->
         <rs-table
           :data="filteredTuntutan"
-          :columns="columns"
-          :pageSize="pageSize"
-          :showNoColumn="true"
           :options="{
             variant: 'default',
             hover: true,
@@ -218,14 +215,16 @@ const currentPage = ref(1);
 
 // Options for filters
 const statusOptions = [
-  { label: 'Dalam Semakan', value: 'dalam_semakan' },
-  { label: 'Untuk Kelulusan', value: 'untuk_kelulusan' },
-  { label: 'Perlu Penambahbaikan', value: 'perlu_penambahbaikan' },
+  { label: 'Semua Status', value: '' },
+  { label: 'Dalam Semakan', value: 'Dalam Semakan' },
+  { label: 'Untuk Kelulusan', value: 'Untuk Kelulusan' },
+  { label: 'Perlu Penambahbaikan', value: 'Perlu Penambahbaikan' },
 ];
 
 // Sample data - in real app, this would come from an API
 const tuntutanList = ref([
   {
+    id: 'TUN-2024-001',
     noTuntutan: 'TUN-2024-001',
     noGL: 'GL-001-2024',
     namaPemohon: 'Ahmad bin Abdullah',
@@ -235,7 +234,50 @@ const tuntutanList = ref([
     pegawaiETD: 'Siti Aminah',
     tindakan: { id: 'TUN-2024-001', status: 'Dalam Semakan' }
   },
-  // Add more sample data as needed
+  {
+    id: 'TUN-2024-002',
+    noTuntutan: 'TUN-2024-002',
+    noGL: 'GL-002-2024',
+    namaPemohon: 'Masjid Al-Hidayah',
+    tarikhTuntutan: new Date(Date.now() - 86400000).toISOString(),
+    amaunTuntutan: 8000.00,
+    statusPermohonan: 'Dalam Semakan',
+    pegawaiETD: 'Siti Aminah',
+    tindakan: { id: 'TUN-2024-002', status: 'Dalam Semakan' }
+  },
+  {
+    id: 'TUN-2024-003',
+    noTuntutan: 'TUN-2024-003',
+    noGL: 'GL-003-2024',
+    namaPemohon: 'Sekolah Agama Rakyat Al-Amin',
+    tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(),
+    amaunTuntutan: 12000.00,
+    statusPermohonan: 'Dalam Semakan',
+    pegawaiETD: 'Siti Aminah',
+    tindakan: { id: 'TUN-2024-003', status: 'Dalam Semakan' }
+  },
+  {
+    id: 'TUN-2024-004',
+    noTuntutan: 'TUN-2024-004',
+    noGL: 'GL-004-2024',
+    namaPemohon: 'Surau Kampung Baru',
+    tarikhTuntutan: new Date(Date.now() - 259200000).toISOString(),
+    amaunTuntutan: 3500.00,
+    statusPermohonan: 'Dalam Semakan',
+    pegawaiETD: 'Siti Aminah',
+    tindakan: { id: 'TUN-2024-004', status: 'Dalam Semakan' }
+  },
+  {
+    id: 'TUN-2024-005',
+    noTuntutan: 'TUN-2024-005',
+    noGL: 'GL-005-2024',
+    namaPemohon: 'Pusat Tahfiz Al-Quran',
+    tarikhTuntutan: new Date(Date.now() - 345600000).toISOString(),
+    amaunTuntutan: 15000.00,
+    statusPermohonan: 'Dalam Semakan',
+    pegawaiETD: 'Siti Aminah',
+    tindakan: { id: 'TUN-2024-005', status: 'Dalam Semakan' }
+  },
 ]);
 
 // Computed properties
@@ -255,7 +297,7 @@ const filteredTuntutan = computed(() => {
   // Apply status filter
   if (filters.value.status) {
     filtered = filtered.filter(item => 
-      item.statusPermohonan.toLowerCase().replace(/\s+/g, '_') === filters.value.status
+      item.statusPermohonan === filters.value.status
     );
   }
 

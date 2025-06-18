@@ -39,9 +39,6 @@
         <!-- Main Table -->
         <rs-table
           :data="filteredTuntutan"
-          :columns="columns"
-          :pageSize="pageSize"
-          :showNoColumn="true"
           :options="{
             variant: 'default',
             hover: true,
@@ -240,7 +237,62 @@ const tuntutanList = ref([
       status: 'Untuk Kelulusan'
     }
   },
-  // Add more sample data as needed
+  {
+    id: 'TDS-2024-002',
+    noTuntutan: 'TDS-2024-002',
+    noGL: 'GL-2024-002',
+    namaPemohon: 'Masjid Al-Hidayah',
+    tarikhTuntutan: '2024-03-19T14:15:00',
+    amaunTuntutan: 8000.00,
+    statusPermohonan: 'Untuk Kelulusan',
+    pegawaiETD: 'Sarah binti Omar',
+    tindakan: {
+      id: 'TDS-2024-002',
+      status: 'Untuk Kelulusan'
+    }
+  },
+  {
+    id: 'TDS-2024-003',
+    noTuntutan: 'TDS-2024-003',
+    noGL: 'GL-2024-003',
+    namaPemohon: 'Sekolah Agama Rakyat Al-Amin',
+    tarikhTuntutan: '2024-03-18T11:45:00',
+    amaunTuntutan: 12000.00,
+    statusPermohonan: 'Untuk Kelulusan',
+    pegawaiETD: 'Sarah binti Omar',
+    tindakan: {
+      id: 'TDS-2024-003',
+      status: 'Untuk Kelulusan'
+    }
+  },
+  {
+    id: 'TDS-2024-004',
+    noTuntutan: 'TDS-2024-004',
+    noGL: 'GL-2024-004',
+    namaPemohon: 'Surau Kampung Baru',
+    tarikhTuntutan: '2024-03-17T16:20:00',
+    amaunTuntutan: 3500.00,
+    statusPermohonan: 'Untuk Kelulusan',
+    pegawaiETD: 'Sarah binti Omar',
+    tindakan: {
+      id: 'TDS-2024-004',
+      status: 'Untuk Kelulusan'
+    }
+  },
+  {
+    id: 'TDS-2024-005',
+    noTuntutan: 'TDS-2024-005',
+    noGL: 'GL-2024-005',
+    namaPemohon: 'Pusat Tahfiz Al-Quran',
+    tarikhTuntutan: '2024-03-16T10:30:00',
+    amaunTuntutan: 15000.00,
+    statusPermohonan: 'Untuk Kelulusan',
+    pegawaiETD: 'Sarah binti Omar',
+    tindakan: {
+      id: 'TDS-2024-005',
+      status: 'Untuk Kelulusan'
+    }
+  },
 ]);
 
 // Computed properties

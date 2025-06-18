@@ -88,7 +88,12 @@
                 v-model="formData.amaunTuntutan"
                 type="number"
                 label="Amaun Tuntutan (RM)"
-                disabled
+                validation="required|number|min:0"
+                :validation-messages="{
+                  required: 'Sila masukkan amaun tuntutan',
+                  number: 'Sila masukkan nilai yang sah',
+                  min: 'Amaun tidak boleh negatif'
+                }"
                 step="0.01"
                 min="0"
               />
@@ -127,7 +132,7 @@
                 :validation-messages="{
                   required: 'Sila muat naik sekurang-kurangnya satu dokumen sokongan'
                 }"
-                help="Format yang diterima: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
+                help="Format yang diterima: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB. Dokumen default akan dipilih secara automatik berdasarkan GL yang dipilih."
               />
             </div>
           </div>
@@ -208,7 +213,8 @@ const glDataMapping = {
     bahanBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA',
     pakejBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
     kelayakanBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
-    amaunTuntutan: 5000.00
+    amaunTuntutan: 5000.00,
+    dokumenDefault: 'GL_Bantuan_Sumbangan_Karpet.pdf'
   },
   'GL-2025-002': {
     kodBantuan: 'B103',
@@ -216,7 +222,8 @@ const glDataMapping = {
     bahanBantuan: '(HQ) KATEGORI HEMODIALISIS (FAKIR)',
     pakejBantuan: '(GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)',
     kelayakanBantuan: '(GL) (HQ) HEMODIALISIS (FAKIR)',
-    amaunTuntutan: 1500.00
+    amaunTuntutan: 1500.00,
+    dokumenDefault: 'GL_Bantuan_Perubatan_Dialisis.pdf'
   }
 };
 
@@ -231,6 +238,7 @@ const handleGLChange = async (value) => {
   formData.value.pakejBantuan = '';
   formData.value.kelayakanBantuan = '';
   formData.value.amaunTuntutan = '';
+  formData.value.dokumenSokongan = [];
   
   // Auto-populate based on selected GL
   if (value && glDataMapping[value]) {
@@ -246,6 +254,13 @@ const handleGLChange = async (value) => {
     formData.value.pakejBantuan = glData.pakejBantuan;
     formData.value.kelayakanBantuan = glData.kelayakanBantuan;
     formData.value.amaunTuntutan = glData.amaunTuntutan;
+    
+    // Set default document
+    if (glData.dokumenDefault) {
+      // Create a mock File object for the default document
+      const defaultFile = new File([''], glData.dokumenDefault, { type: 'application/pdf' });
+      formData.value.dokumenSokongan = [defaultFile];
+    }
     
     console.log("Updated formData:", formData.value);
   } else {
