@@ -19,7 +19,7 @@
                 v-model="formData.noGL"
                 type="select"
                 label="Nombor GL"
-                :options="[{ label: '', value: '' }, ...glOptions]"
+                :options="[{ label: 'Sila Pilih...', value: '' }, ...glOptions]"
                 validation="required"
                 :validation-messages="{
                   required: 'Sila pilih Nombor GL'
@@ -232,21 +232,25 @@ const glOptions = ref([
 
 // Mock data for bantuan options
 const kodBantuanOptions = ref([
+  { label: 'Sila pilih...', value: '' },
   { label: 'B400', value: 'B400' }
 ]);
 
 const jenisBantuanOptions = ref([
+  { label: 'Sila pilih...', value: '' },
   { label: '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA', value: 'HQ_BANTUAN_SUMBANGAN_PERALATAN' },
   { label: 'BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA', value: 'BANTUAN_SUMBANGAN_PERALATAN' }
 ]);
 
 const bahanBantuanOptions = ref([
+  { label: 'Sila pilih...', value: '' },
   { label: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'HQ_BANTUAN_SUMBANGAN_PERALATAN' },
   { label: 'BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'BANTUAN_SUMBANGAN_PERALATAN' },
   { label: 'BANTUAN SUMBANGAN KARPET', value: 'BANTUAN_SUMBANGAN_KARPET' }
 ]);
 
 const pakejBantuanOptions = ref([
+  { label: 'Sila pilih...', value: '' },
   { label: '(GL) (HQ) BANTUAN CUCIAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_CUCIAN_KARPET' },
   { label: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_KARPET' },
   { label: '(GL) (HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_PERALATAN' },
@@ -256,6 +260,7 @@ const pakejBantuanOptions = ref([
 ]);
 
 const kelayakanBantuanOptions = ref([
+  { label: 'Sila pilih...', value: '' },
   { label: '(GL) (HQ) BANTUAN CUCIAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_CUCIAN_KARPET' },
   { label: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_KARPET' },
   { label: '(GL) (HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_PERALATAN' },
