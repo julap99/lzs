@@ -219,7 +219,7 @@
           <div class="flex justify-end gap-4 mt-6">
             <rs-button
               variant="primary-outline"
-              @click="navigateTo('/BF-PA/PE/AB')"
+              @click="navigateTo('/BF-PA/PE/AB/Paparan_Ketua_JPPA')"
             >
               Kembali
             </rs-button>
@@ -355,7 +355,7 @@
         <div class="flex justify-center">
           <rs-button
             variant="primary"
-            @click="navigateTo('/BF-PA/PE/AB')"
+            @click="navigateTo('/BF-PA/PE/AB/Paparan_Ketua_JPPA')"
           >
             OK
           </rs-button>
@@ -377,7 +377,7 @@ const breadcrumb = ref([
   {
     name: "Bancian/Asnaf",
     type: "link",
-    path: "/BF-PA/PE/AB",
+    path: "/BF-PA/PE/AB/Paparan_Ketua_JPPA",
   },
   {
     name: "Semakan dan Kelulusan",

@@ -40,7 +40,15 @@
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    No. Batch
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        class="form-checkbox h-4 w-4 text-primary-600"
+                        :checked="isAllSelected"
+                        @change="toggleSelectAll"
+                      />
+                      <span>No. Batch</span>
+                    </div>
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Institusi
@@ -62,13 +70,22 @@
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="batch in filteredBatches" :key="batch.id">
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <a 
-                      href="#" 
-                      class="text-blue-600 hover:text-blue-800"
-                      @click.prevent="navigateTo('/BF-PA/PE/AB/02/PA')"
-                    >
-                      {{ batch.batchNo }}
-                    </a>
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        class="form-checkbox h-4 w-4 text-primary-600"
+                        :value="batch.batchNo"
+                        :checked="selectedRows.includes(batch.batchNo)"
+                        @change="onCheckboxChange($event, batch)"
+                      />
+                      <a 
+                        href="#" 
+                        class="text-blue-600 hover:text-blue-800"
+                        @click.prevent="navigateTo('/BF-PA/PE/AB/02/PA')"
+                      >
+                        {{ batch.batchNo }}
+                      </a>
+                    </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ batch.institution }}
@@ -103,6 +120,18 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Bulk Approval Button at Bottom -->
+    <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
+      <rs-button
+        variant="success"
+        @click="handleBulkApproval"
+        :disabled="processing"
+      >
+        <Icon name="material-symbols:approval" class="w-4 h-4 mr-1" />
+        Sokong (Bulk) ({{ selectedRows.length }})
+      </rs-button>
+    </div>
   </div>
 </template>
 
@@ -172,6 +201,8 @@ const statusOptions = [
 // Search and filter state
 const searchQuery = ref('');
 const selectedStatus = ref('');
+const selectedRows = ref([]);
+const processing = ref(false);
 
 // Computed filtered batches
 const filteredBatches = computed(() => {
@@ -182,6 +213,11 @@ const filteredBatches = computed(() => {
     const matchesStatus = !selectedStatus.value || batch.status === selectedStatus.value;
     return matchesSearch && matchesStatus;
   });
+});
+
+// Computed properties for bulk selection
+const isAllSelected = computed(() => {
+  return filteredBatches.value.length > 0 && selectedRows.value.length === filteredBatches.value.length;
 });
 
 // Helper functions
@@ -228,6 +264,64 @@ const handleSearch = (event) => {
 
 const handleStatusChange = (event) => {
   selectedStatus.value = event.target.value;
+};
+
+// Checkbox handlers
+const onCheckboxChange = (event, batch) => {
+  const isChecked = event.target.checked;
+  if (isChecked) {
+    if (!selectedRows.value.includes(batch.batchNo)) {
+      selectedRows.value.push(batch.batchNo);
+    }
+  } else {
+    selectedRows.value = selectedRows.value.filter(id => id !== batch.batchNo);
+  }
+};
+
+const toggleSelectAll = (event) => {
+  const isChecked = event.target.checked;
+  if (isChecked) {
+    selectedRows.value = filteredBatches.value.map(batch => batch.batchNo);
+  } else {
+    selectedRows.value = [];
+  }
+};
+
+// Bulk approval handler
+const handleBulkApproval = async () => {
+  try {
+    processing.value = true;
+    const result = await $swal.fire({
+      icon: 'question',
+      title: 'Sokongan (Bulk)',
+      text: `Adakah anda pasti untuk menyokong ${selectedRows.value.length} permohonan elaun yang dipilih?`,
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Sokong',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#10b981',
+    });
+    if (result.isConfirmed) {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await $swal.fire({
+        icon: 'success',
+        title: 'Berjaya!',
+        text: `Semua permohonan elaun yang dipilih telah berjaya disokong`,
+        confirmButtonText: 'OK'
+      });
+      selectedRows.value = [];
+      // Refresh data if needed
+    }
+  } catch (error) {
+    await $swal.fire({
+      icon: 'error',
+      title: 'Ralat',
+      text: 'Ralat telah berlaku semasa memproses sokongan bulk',
+      confirmButtonText: 'OK'
+    });
+  } finally {
+    processing.value = false;
+  }
 };
 </script>
 

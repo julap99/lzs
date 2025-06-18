@@ -48,7 +48,15 @@
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID Aktiviti
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        class="form-checkbox h-4 w-4 text-primary-600"
+                        :checked="isAllSelected"
+                        @change="toggleSelectAll"
+                      />
+                      <span>ID Aktiviti</span>
+                    </div>
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Nama Aktiviti
@@ -73,13 +81,22 @@
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="activity in filteredActivities" :key="activity.id">
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <a 
-                      href="#" 
-                      class="text-blue-600 hover:text-blue-800"
-                      @click.prevent="navigateTo(getActionRoute(activity.status))"
-                    >
-                      {{ activity.id }}
-                    </a>
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        class="form-checkbox h-4 w-4 text-primary-600"
+                        :value="activity.id"
+                        :checked="selectedRows.includes(activity.id)"
+                        @change="onCheckboxChange($event, activity)"
+                      />
+                      <a 
+                        href="#" 
+                        class="text-blue-600 hover:text-blue-800"
+                        @click.prevent="navigateTo(getActionRoute(activity.status))"
+                      >
+                        {{ activity.id }}
+                      </a>
+                    </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ activity.name }}
@@ -117,6 +134,18 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Bulk Approval Button at Bottom -->
+    <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
+      <rs-button
+        variant="success"
+        @click="handleBulkApproval"
+        :disabled="processing"
+      >
+        <Icon name="material-symbols:approval" class="w-4 h-4 mr-1" />
+        Sokong (Bulk) ({{ selectedRows.length }})
+      </rs-button>
+    </div>
   </div>
 </template>
 
@@ -195,6 +224,8 @@ const jenisAktivitiOptions = [
 const searchQuery = ref('');
 const selectedStatus = ref('');
 const selectedJenisAktiviti = ref('');
+const selectedRows = ref([]);
+const processing = ref(false);
 
 // Computed filtered activities
 const filteredActivities = computed(() => {
@@ -206,6 +237,11 @@ const filteredActivities = computed(() => {
     const matchesJenis = !selectedJenisAktiviti.value || activity.type === selectedJenisAktiviti.value;
     return matchesSearch && matchesStatus && matchesJenis;
   });
+});
+
+// Computed properties for bulk selection
+const isAllSelected = computed(() => {
+  return filteredActivities.value.length > 0 && selectedRows.value.length === filteredActivities.value.length;
 });
 
 // Helper functions
@@ -256,6 +292,64 @@ const handleStatusChange = (event) => {
 
 const handleJenisAktivitiChange = (event) => {
   selectedJenisAktiviti.value = event.target.value;
+};
+
+// Checkbox handlers
+const onCheckboxChange = (event, activity) => {
+  const isChecked = event.target.checked;
+  if (isChecked) {
+    if (!selectedRows.value.includes(activity.id)) {
+      selectedRows.value.push(activity.id);
+    }
+  } else {
+    selectedRows.value = selectedRows.value.filter(id => id !== activity.id);
+  }
+};
+
+const toggleSelectAll = (event) => {
+  const isChecked = event.target.checked;
+  if (isChecked) {
+    selectedRows.value = filteredActivities.value.map(activity => activity.id);
+  } else {
+    selectedRows.value = [];
+  }
+};
+
+// Bulk approval handler
+const handleBulkApproval = async () => {
+  try {
+    processing.value = true;
+    const result = await $swal.fire({
+      icon: 'question',
+      title: 'Sokongan (Bulk)',
+      text: `Adakah anda pasti untuk menyokong ${selectedRows.value.length} aktiviti mesyuarat/program yang dipilih?`,
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Sokong',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#10b981',
+    });
+    if (result.isConfirmed) {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await $swal.fire({
+        icon: 'success',
+        title: 'Berjaya!',
+        text: `Semua aktiviti mesyuarat/program yang dipilih telah berjaya disokong`,
+        confirmButtonText: 'OK'
+      });
+      selectedRows.value = [];
+      // Refresh data if needed
+    }
+  } catch (error) {
+    await $swal.fire({
+      icon: 'error',
+      title: 'Ralat',
+      text: 'Ralat telah berlaku semasa memproses sokongan bulk',
+      confirmButtonText: 'OK'
+    });
+  } finally {
+    processing.value = false;
+  }
 };
 </script>
 
