@@ -1,0 +1,320 @@
+<template>
+  <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+
+    <div class="space-y-6 mt-4">
+      <!-- Section 1: Maklumat Tuntutan -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            <Icon name="material-symbols:info-outline" class="mr-2" />
+            Maklumat Tuntutan
+          </div>
+        </template>
+        <template #body>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                ID Permohonan Tuntutan
+              </label>
+              <div class="text-gray-900">{{ tuntutan.idPermohonan }}</div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                No. GL
+              </label>
+              <div class="text-gray-900">{{ tuntutan.noGL }}</div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Amaun Tuntutan
+              </label>
+              <div class="text-gray-900">
+                RM {{ formatNumber(tuntutan.amaunTuntutan) }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Tarikh Permohonan
+              </label>
+              <div class="text-gray-900">
+                {{ formatDate(tuntutan.tarikhPermohonan) }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Pegawai ETD/EOAD
+              </label>
+              <div class="text-gray-900">{{ tuntutan.pegawaiETD }}</div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Dokumen Sokongan
+              </label>
+              <div class="flex items-center space-x-2">
+                <a
+                  v-for="(doc, index) in tuntutan.dokumenSokongan"
+                  :key="index"
+                  :href="doc.url"
+                  target="_blank"
+                  class="text-primary-600 hover:text-primary-800 flex items-center"
+                >
+                  <Icon
+                    name="material-symbols:file-present-outline"
+                    class="mr-1"
+                  />
+                  {{ doc.name }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 2: Semakan Maklumat -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            <Icon name="material-symbols:fact-check-outline" class="mr-2" />
+            Semakan Maklumat
+          </div>
+        </template>
+        <template #body>
+          <div class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Status GL
+              </label>
+              <rs-badge
+                :variant="tuntutan.statusGL === 'Valid' ? 'success' : 'danger'"
+              >
+                {{ tuntutan.statusGL }}
+              </rs-badge>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Perbandingan Amaun GL vs Tuntutan
+              </label>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <div class="text-sm text-gray-500">Amaun GL</div>
+                  <div class="text-lg font-semibold">
+                    RM {{ formatNumber(tuntutan.amaunGL) }}
+                  </div>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <div class="text-sm text-gray-500">Amaun Tuntutan</div>
+                  <div class="text-lg font-semibold">
+                    RM {{ formatNumber(tuntutan.amaunTuntutan) }}
+                  </div>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <div class="text-sm text-gray-500">Perbezaan</div>
+                  <div
+                    class="text-lg font-semibold"
+                    :class="{
+                      'text-danger': tuntutan.amaunTuntutan > tuntutan.amaunGL,
+                      'text-success':
+                        tuntutan.amaunTuntutan <= tuntutan.amaunGL,
+                    }"
+                  >
+                    RM
+                    {{
+                      formatNumber(
+                        Math.abs(tuntutan.amaunGL - tuntutan.amaunTuntutan)
+                      )
+                    }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Tarikh & Dokumen Perkhidmatan
+              </label>
+              <div class="space-y-2">
+                <div>Tarikh: {{ formatDate(tuntutan.tarikhPerkhidmatan) }}</div>
+                <div class="flex items-center space-x-2">
+                  <a
+                    v-for="(doc, index) in tuntutan.dokumenPerkhidmatan"
+                    :key="index"
+                    :href="doc.url"
+                    target="_blank"
+                    class="text-primary-600 hover:text-primary-800 flex items-center"
+                  >
+                    <Icon
+                      name="material-symbols:file-present-outline"
+                      class="mr-1"
+                    />
+                    {{ doc.name }}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Lampiran Lain
+              </label>
+              <div class="flex items-center space-x-2">
+                <a
+                  v-for="(doc, index) in tuntutan.lampiranLain"
+                  :key="index"
+                  :href="doc.url"
+                  target="_blank"
+                  class="text-primary-600 hover:text-primary-800 flex items-center"
+                >
+                  <Icon
+                    name="material-symbols:file-present-outline"
+                    class="mr-1"
+                  />
+                  {{ doc.name }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 3: Keputusan Kelulusan -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            <Icon name="material-symbols:approval-outline" class="mr-2" />
+            Keputusan Kelulusan
+          </div>
+        </template>
+        <template #body>
+          <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Status Kelulusan
+                </label>
+                <rs-badge variant="danger" class="text-lg">
+                  Ditolak
+                </rs-badge>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Pegawai Meluluskan
+                </label>
+                <div class="text-gray-900">{{ currentUser.name }}</div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Tarikh Keputusan Kelulusan
+                </label>
+                <div class="text-gray-900">{{ formatDate(tuntutan.tarikhKelulusan) }}</div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Catatan Semakan
+                </label>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <p class="text-gray-900">{{ tuntutan.catatanSemakan }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-6 flex justify-end">
+      <rs-button
+        variant="secondary"
+        @click="handleBack"
+      >
+        <Icon name="material-symbols:arrow-back" class="mr-1" />
+        Kembali ke Senarai
+      </rs-button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+
+definePageMeta({
+  title: "Lihat Tuntutan Ditolak",
+});
+
+const route = useRoute();
+
+const breadcrumb = ref([
+  {
+    name: "Tuntutan dengan Siasatan",
+    type: "link",
+    path: "/BF-BTN/tuntutan-dengan-siasatan",
+  },
+  {
+    name: "Senarai Tuntutan",
+    type: "link",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+  },
+  {
+    name: "Lihat Tuntutan Ditolak",
+    type: "current",
+    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${route.params.id}/view-ditolak`,
+  },
+]);
+
+// Sample data - Replace with actual API call
+const tuntutan = ref({
+  idPermohonan: "TUN-2024-006",
+  noGL: "GL-006",
+  amaunTuntutan: 25000.0,
+  amaunGL: 15000.0,
+  tarikhPermohonan: "2024-03-22T09:30:00",
+  tarikhKelulusan: "2024-03-28T16:45:00",
+  pegawaiETD: "Siti Aminah binti Abdullah",
+  statusGL: "Valid",
+  tarikhPerkhidmatan: "2024-03-20T00:00:00",
+  catatanSemakan: "Permohonan ini tidak dapat diluluskan kerana amaun tuntutan melebihi had yang dibenarkan dalam GL. Amaun tuntutan RM25,000 melebihi had GL sebanyak RM15,000. Selain itu, beberapa dokumen sokongan tidak lengkap dan perlu dilengkapi sebelum permohonan boleh dipertimbangkan semula.",
+  dokumenSokongan: [
+    { name: "Dokumen 1.pdf", url: "#" },
+    { name: "Dokumen 2.pdf", url: "#" },
+  ],
+  dokumenPerkhidmatan: [{ name: "Perkhidmatan 1.pdf", url: "#" }],
+  lampiranLain: [{ name: "Lampiran 1.pdf", url: "#" }],
+});
+
+// Mock current user - Replace with actual user data
+const currentUser = ref({
+  name: "Ahmad bin Ismail",
+  role: "Pelulus",
+});
+
+// Utility functions
+const formatNumber = (value) => {
+  return new Intl.NumberFormat("ms-MY", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+};
+
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString("ms-MY");
+};
+
+// Action handlers
+const handleBack = () => {
+  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan");
+};
+</script>
+
+<style lang="scss" scoped>
+// Add any custom styles here if needed
+</style> 

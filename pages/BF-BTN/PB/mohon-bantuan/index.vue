@@ -124,7 +124,7 @@
                 :validation-messages="{
                   required: 'Sila pilih kaedah pembayaran',
                 }"
-                :disabled="!isStaff"
+                :disabled="isStaff"
               />
               <FormKit
                 type="number"
@@ -372,7 +372,7 @@ const kaedahPembayaranOptions = [
   { label: "-- Pilih --", value: "", disabled: true },
   { label: "Tunai", value: "TUNAI" },
   { label: "Bank In", value: "BANK_IN" },
-  { label: "E-Wallet", value: "E_WALLET" },
+  { label: "Tunai (Kaunter Ekspres)", value: "E_WALLET" },
 ];
 
 // Breadcrumb items

@@ -259,9 +259,9 @@ const formData = ref({
 const userProfile = ref({
   nama: "Ahmad bin Abdullah",
   noKadPengenalan: "901231012345",
-  statusHousehold: "Miskin",
-  statusIndividu: "Asnaf Fakir",
-  multidimensiAsnaf: "Fakir Miskin",
+  statusHousehold: "Fakir",
+  statusIndividu: "Fakir",
+  multidimensiAsnaf: "Tidak Produktif",
 });
 
 // Compute suggested bantuan data based on the JSON structure

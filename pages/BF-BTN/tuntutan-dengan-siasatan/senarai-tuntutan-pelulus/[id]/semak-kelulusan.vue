@@ -253,7 +253,7 @@
               <rs-button
                 type="submit"
                 :variant="form.keputusan === 'Lulus' ? 'primary' : 'danger'"
-                :disabled="isSubmitting"
+                :disabled="isSubmitting || !form.keputusan"
                 @click="handleSubmit"
               >
                 {{ form.keputusan === "Lulus" ? "Lulus" : "Tidak Lulus" }}
