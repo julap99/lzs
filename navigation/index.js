@@ -797,8 +797,9 @@ export default [
             meta: {},
           },
           // {
-          //   title: "AS-KA",
+          //   title: "Keluar Asnaf",
           //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-PRF/AS/KA/01",
           //   child: [],
           //   meta: {},
           // },
