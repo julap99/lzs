@@ -3,7 +3,7 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card>
-      <template #header>Tugasan Saya (EOAD)</template>
+      <template #header>Tugasan Saya</template>
       <template #body>
         <rs-table
           class="mt-8"
@@ -93,7 +93,7 @@ const breadcrumb = ref([
     path: `/BF-ADN/PA/TS/01`,
   },
   {
-    name: "Tugasan Saya (EOAD)",
+    name: "Tugasan Saya",
     type: "current",
     path: "/BF-ADN/PA/TS/01",
   },

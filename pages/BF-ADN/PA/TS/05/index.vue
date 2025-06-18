@@ -164,7 +164,7 @@
 
       <!-- Sidebar Kanan -->
       <div class="space-y-6">
-        <rs-card>
+        <!-- <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
               <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
@@ -186,7 +186,7 @@
               </rs-button>
             </div>
 
-            <!-- History Ringkas -->
+        
             <div v-if="pengeluaranHistory.length" class="mt-6 space-y-3">
               <div class="text-sm font-semibold text-gray-700">Sejarah Pengeluaran</div>
               <ul class="text-sm text-gray-600 space-y-2">
@@ -196,10 +196,8 @@
               </ul>
             </div>
           </template>
-        </rs-card>
+        </rs-card> -->
 
-
-        
 
         <!-- Siasatan Lapangan -->
         <rs-card>
@@ -220,6 +218,11 @@
             <FormKit type="file" label="Lampiran Bukti Bergambar" v-model="formData.buktiGambar" multiple />
             <FormKit type="number" label="Jumlah Bantuan (RM)" v-model="formData.jumlahBantuan" help="Maksimum RM500" />
             <FormKit type="textarea" label="Catatan Tambahan" v-model="formData.catatanBantuan" />
+
+            <div class="flex justify-end gap-4 mt-6">
+              <rs-button variant="primary-outline" @click="handleCancel">Batal</rs-button>
+              <rs-button variant="primary" @click="handleSubmit">Simpan & Serah</rs-button>
+            </div>
           </template>
         </rs-card>
         
@@ -245,7 +248,7 @@
         </rs-card> -->
 
         <!-- Status dan Simpan -->
-        <rs-card>
+        <!-- <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
               <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
@@ -265,7 +268,7 @@
               <rs-button variant="primary" @click="handleSubmit">Simpan & Serah</rs-button>
             </div>
           </template>
-        </rs-card>
+        </rs-card> -->
         
       </div>
     </div>
