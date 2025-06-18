@@ -88,7 +88,12 @@
                 v-model="formData.amaunTuntutan"
                 type="number"
                 label="Amaun Tuntutan (RM)"
-                disabled
+                validation="required|number|min:0"
+                :validation-messages="{
+                  required: 'Sila masukkan amaun tuntutan',
+                  number: 'Sila masukkan nilai yang sah',
+                  min: 'Amaun tidak boleh negatif'
+                }"
                 step="0.01"
                 min="0"
               />
