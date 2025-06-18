@@ -84,7 +84,7 @@
                         <a 
                           href="#" 
                           class="text-blue-600 hover:text-blue-800"
-                          @click.prevent="navigateTo(getActionRoute(activity.status))"
+                          @click.prevent="navigateTo(getActionRoute(activity.status, activity.id))"
                         >
                           {{ activity.id }}
                         </a>
@@ -113,7 +113,7 @@
                         <rs-button
                           variant="primary"
                           size="sm"
-                          @click="navigateTo(getActionRoute(activity.status))"
+                          @click="navigateTo(getActionRoute(activity.status, activity.id))"
                         >
                           {{ getActionButtonText(activity.status) }}
                         </rs-button>
@@ -168,7 +168,7 @@
                         <a 
                           href="#" 
                           class="text-blue-600 hover:text-blue-800"
-                          @click.prevent="navigateTo(getActionRoute(activity.status))"
+                          @click.prevent="navigateTo(getActionRoute(activity.status, activity.id))"
                         >
                           {{ activity.id }}
                         </a>
@@ -197,7 +197,7 @@
                         <rs-button
                           variant="primary"
                           size="sm"
-                          @click="navigateTo(getActionRoute(activity.status))"
+                          @click="navigateTo(getActionRoute(activity.status, activity.id))"
                         >
                           {{ getActionButtonText(activity.status) }}
                         </rs-button>
@@ -348,12 +348,16 @@ const getStatusLabel = (status) => {
   }
 }
 
-const getActionRoute = (status) => {
+const getActionRoute = (status, activityId) => {
   switch (status) {
     case 'Menunggu Sokongan JPPA':
       return '/BF-PA/PE/MP/03'
     case 'Menunggu Kelulusan Ketua JPPA':
       return '/BF-PA/PE/MP/04'
+    case 'Diluluskan':
+      return `/BF-PA/PE/MP/view-lulus?id=${encodeURIComponent(activityId)}`
+    case 'Ditolak':
+      return `/BF-PA/PE/MP/view-tolak?id=${encodeURIComponent(activityId)}`
     default:
       return '#'
   }

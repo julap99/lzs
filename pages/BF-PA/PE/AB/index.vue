@@ -99,7 +99,7 @@
                         <rs-button
                           variant="primary"
                           size="sm"
-                          @click="navigateTo(getActionRoute(batch.status))"
+                          @click="navigateTo(getActionRoute(batch.status, batch.batchNo))"
                         >
                           {{ getActionButtonText(batch.status) }}
                         </rs-button>
@@ -177,7 +177,7 @@
                         <rs-button
                           variant="primary"
                           size="sm"
-                          @click="navigateTo(getActionRoute(batch.status))"
+                          @click="navigateTo(getActionRoute(batch.status, batch.batchNo))"
                         >
                           {{ getActionButtonText(batch.status) }}
                         </rs-button>
@@ -318,12 +318,16 @@ const getStatusLabel = (status) => {
   }
 }
 
-const getActionRoute = (status) => {
+const getActionRoute = (status, batchNo) => {
   switch (status) {
     case 'Menunggu Sokongan JPPA':
       return '/BF-PA/PE/AB/02'
     case 'Menunggu Kelulusan Ketua JPPA':
       return '/BF-PA/PE/AB/03'
+    case 'Diluluskan':
+      return `/BF-PA/PE/AB/view-lulus?id=${encodeURIComponent(batchNo)}`
+    case 'Ditolak':
+      return `/BF-PA/PE/AB/view-tolak?id=${encodeURIComponent(batchNo)}`
     default:
       return '#'
   }
