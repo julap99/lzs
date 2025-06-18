@@ -104,8 +104,9 @@
               Simpan Draf
             </rs-button>
             <rs-button
-              type="submit"
+              type="button"
               variant="primary"
+              @click="handleSubmit"
             >
               <Icon name="material-symbols:send" class="w-4 h-4 mr-1" />
               Hantar Tuntutan
@@ -119,10 +120,13 @@
 
 <script setup>
 import { ref } from "vue";
+import { useNuxtApp } from "#app";
 
 definePageMeta({
   title: "Mohon Tuntutan GL (TDS-01)",
 });
+
+const { $swal } = useNuxtApp();
 
 const breadcrumb = ref([
   {
@@ -179,7 +183,13 @@ const handleSubmit = async () => {
     // Add API call here
 
     // Show success message
-    // Navigate to success page or show notification
+    await $swal.fire({
+      icon: 'success',
+      title: 'Berjaya!',
+      text: 'Permohonan tuntutan anda telah berjaya dihantar',
+      confirmButtonText: 'OK'
+    });
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan');
   } catch (error) {
     console.error("Error submitting form:", error);
     // Show error message
@@ -201,7 +211,13 @@ const handleSaveDraft = async () => {
     // Add API call here
 
     // Show success message
-    // Navigate to draft list or show notification
+    await $swal.fire({
+      icon: 'success',
+      title: 'Berjaya!',
+      text: 'Permohonan tuntutan anda telah berjaya disimpan sebagai "Draf"',
+      confirmButtonText: 'OK'
+    });
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan');
   } catch (error) {
     console.error("Error saving draft:", error);
     // Show error message

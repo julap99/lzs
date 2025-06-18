@@ -220,7 +220,7 @@
           </rs-card>
 
           <!-- Section 3: Hasil Siasatan -->
-          <rs-card 
+          <!-- <rs-card 
             v-if="showSiasatanSection"
             class="shadow-sm border-0 bg-white"
           >
@@ -279,7 +279,7 @@
                 </div>
               </div>
             </template>
-          </rs-card>
+          </rs-card> -->
 
           <!-- Section 4: Input Maklumat Bantuan -->
           <rs-card v-if="showBantuanDetails" class="shadow-sm border-0 bg-white">
@@ -436,7 +436,6 @@
         <div class="lg:col-span-1 space-y-6">
           <!-- Section 6: Status & Catatan Semakan -->
           <rs-card 
-            v-if="showBantuanDetails"
             class="shadow-sm border-0 bg-white sticky top-6"
           >
             <template #header>
@@ -510,14 +509,14 @@
 
                 <!-- Section 7: Action Buttons -->
                 <div class="space-y-3 pt-4 border-t">
-                  <rs-button
+                  <!-- <rs-button
                     variant="info"
                     @click="handleSimpan"
                     class="w-full !py-3 text-sm font-medium"
                   >
                     <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
                     Hantar Kelulusan
-                  </rs-button>
+                  </rs-button> -->
 
                   <rs-button
                     variant="primary"
