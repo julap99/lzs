@@ -14,49 +14,9 @@
 
       <template #body>
         <div class="p-4">
-          <!-- Key Metrics Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-blue-600">Jumlah Penolong Amil</p>
-                  <h3 class="text-2xl text-centerfont-bold text-blue-700">1,234</h3>
-                </div>
-                <Icon name="heroicons:users" class="text-blue-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-green-50 p-4 rounded-lg border border-green-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-green-600">Jumlah Elaun Yang Sudah Dibayar</p>
-                  <h3 class="text-2xl font-bold text-green-700">856</h3>
-                </div>
-                <Icon name="heroicons:check-circle" class="text-green-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-yellow-600">Jumlah Elaun Yang Masih Diproses</p>
-                  <h3 class="text-2xl font-bold text-yellow-700">245</h3>
-                </div>
-                <Icon name="heroicons:clock" class="text-yellow-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-red-50 p-4 rounded-lg border border-red-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-red-600">Jumlah Elaun Yang Sudah Ditolak</p>
-                  <h3 class="text-2xl font-bold text-red-700">133</h3>
-                </div>
-                <Icon name="heroicons:x-circle" class="text-red-500" size="24" />
-              </div>
-            </div>
-          </div>
-
           <!-- Search and Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="text"
                 name="search"
