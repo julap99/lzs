@@ -148,9 +148,13 @@
               type="date"
               name="tarikhAkhir"
               label="Tarikh Akhir"
+              validation="required" 
               v-model="tarikhAkhir"
               placeholder="Pilih Tarikh Akhir"
               class="max-w-xs"
+              :validation-messages="{
+                required: 'Tarikh Akhir adalah wajib',
+              }"
             />
           </div>
 
@@ -178,8 +182,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, inject } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useToast } from 'vue-toastification';
 
 definePageMeta({
   title: "Carian Asnaf",
@@ -219,12 +224,6 @@ const kariahOptions = [
 const kategoriAsnafOptions = [
   { label: "Fakir", value: "fakir" },
   { label: "Miskin", value: "miskin" },
-  { label: "Amil", value: "amil" },
-  { label: "Muallaf", value: "muallaf" },
-  { label: "Riqab", value: "riqab" },
-  { label: "Gharim", value: "gharim" },
-  { label: "Fisabilillah", value: "fisabilillah" },
-  { label: "Ibnus Sabil", value: "ibnus_sabil" },
 ];
 
 const formData = ref({
@@ -234,6 +233,8 @@ const formData = ref({
 });
 
 const searchResults = ref([]);
+
+const toast = useToast();
 
 const resetForm = () => {
   formData.value.kariah = "";
@@ -291,13 +292,7 @@ const generateMockData = () => {
 
   const mockKategori = [
     "Fakir",
-    "Miskin",
-    "Amil",
-    "Muallaf",
-    "Riqab",
-    "Gharim",
-    "Fisabilillah",
-    "Ibnus Sabil"
+    "Miskin"
   ];
 
   // Generate 3-8 random records
@@ -343,11 +338,10 @@ const handleHantar = () => {
     selectedItems.value.includes(item.id)
   );
 
-  console.log('Selected items to send:', selectedData);
-  
-  // Here you would typically send the data to your API
-  // For now, we'll just show an alert
-  alert(`Hantar ${selectedItems.value.length} rekod yang dipilih`);
+  // Show toast notification
+  toast.success(`notifikasi telah dihantar kepada ${selectedItems.value.length} pemohon`, {
+    timeout: 2000
+  });
 };
 
 const handleSubmit = (data) => {
