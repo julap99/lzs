@@ -38,10 +38,9 @@
 
         <!-- Main Table -->
         <rs-table
-          :data="filteredTuntutan"
+          :data="tableDataWithNo"
           :columns="columns"
-          :pageSize="pageSize"
-          :showNoColumn="true"
+          :showNoColumn="false"
           :options="{
             variant: 'default',
             hover: true,
@@ -53,6 +52,20 @@
           }"
           advanced
         >
+          <!-- New No. column with checkbox and row number -->
+          <template v-slot:no="{ value, index }">
+            <div class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                class="form-checkbox h-4 w-4 text-primary-600"
+                :value="value.noTuntutan"
+                :checked="selectedRows.includes(value.noTuntutan)"
+                @change="onCheckboxChange($event, value)"
+              />
+              <span>{{ value.no }}</span>
+            </div>
+          </template>
+
           <!-- Custom column templates -->
           <template v-slot:noTuntutan="{ text }">
             <a 
@@ -90,7 +103,7 @@
                 variant="primary"
                 size="sm"
                 class="!px-2 !py-1"
-                @click="handleSemakPengesahan(text.id)"
+                @click="handleSemakPengesahan(text.noTuntutan)"
               >
                 <Icon name="ph:check" class="w-4 h-4 mr-1" />
                 Semak & Buat Pengesahan
@@ -141,6 +154,18 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Bulk Approval Button at Bottom -->
+    <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
+      <rs-button
+        variant="success"
+        @click="handleBulkApproval"
+        :disabled="processing"
+      >
+        <Icon name="material-symbols:approval" class="w-4 h-4 mr-1" />
+        Pengesahan (Bulk) ({{ selectedRows.length }})
+      </rs-button>
+    </div>
   </div>
 </template>
 
@@ -166,61 +191,29 @@ const breadcrumb = ref([
 
 // Table columns configuration
 const columns = [
-  {
-    key: 'noTuntutan',
-    label: 'No. Tuntutan / ID Tuntutan',
-    sortable: true,
-  },
-  {
-    key: 'noGL',
-    label: 'No. GL',
-    sortable: true,
-  },
-  {
-    key: 'namaPemohon',
-    label: 'Nama Pemohon / Institusi',
-    sortable: true,
-  },
-  {
-    key: 'tarikhTuntutan',
-    label: 'Tarikh Tuntutan',
-    sortable: true,
-  },
-  {
-    key: 'amaunTuntutan',
-    label: 'Amaun Tuntutan (RM)',
-    sortable: true,
-  },
-  {
-    key: 'statusPermohonan',
-    label: 'Status Permohonan',
-    sortable: true,
-  },
-  {
-    key: 'pegawaiETD',
-    label: 'Pegawai ETD/EOAD',
-    sortable: true,
-  },
-  {
-    key: 'tindakan',
-    label: 'Tindakan',
-    sortable: false,
-  },
+  { key: 'noTuntutan', label: 'No. Tuntutan / ID Tuntutan', sortable: true },
+  { key: 'noGL', label: 'No. GL', sortable: true },
+  { key: 'namaPemohon', label: 'Nama Pemohon / Institusi', sortable: true },
+  { key: 'tarikhTuntutan', label: 'Tarikh Tuntutan', sortable: true },
+  { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
+  { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },
+  { key: 'pegawaiETD', label: 'Pegawai ETD/EOAD', sortable: true },
+  { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
 
-// State
 const searchQuery = ref('');
-const filters = ref({
-  status: '',
-});
+const filters = ref({ status: '' });
 const pageSize = ref(10);
 const currentPage = ref(1);
+const selectedRows = ref([]);
+const processing = ref(false);
 
 // Options for filters
 const statusOptions = [
-  { label: 'Dalam Semakan', value: 'dalam_semakan' },
-  { label: 'Untuk Kelulusan', value: 'untuk_kelulusan' },
-  { label: 'Perlu Penambahbaikan', value: 'perlu_penambahbaikan' },
+  { label: 'Semua Status', value: '' },
+  { label: 'Dalam Semakan', value: 'Dalam Semakan' },
+  { label: 'Untuk Kelulusan', value: 'Untuk Kelulusan' },
+  { label: 'Perlu Penambahbaikan', value: 'Perlu Penambahbaikan' },
 ];
 
 // Sample data - in real app, this would come from an API
@@ -233,9 +226,48 @@ const tuntutanList = ref([
     amaunTuntutan: 5000.00,
     statusPermohonan: 'Dalam Semakan',
     pegawaiETD: 'Siti Aminah',
-    tindakan: { id: 'TUN-2024-001', status: 'Dalam Semakan' }
+    tindakan: { noTuntutan: 'TUN-2024-001', status: 'Dalam Semakan' }
   },
-  // Add more sample data as needed
+  {
+    noTuntutan: 'TUN-2024-002',
+    noGL: 'GL-002-2024',
+    namaPemohon: 'Masjid Al-Hidayah',
+    tarikhTuntutan: new Date(Date.now() - 86400000).toISOString(),
+    amaunTuntutan: 8000.00,
+    statusPermohonan: 'Dalam Semakan',
+    pegawaiETD: 'Siti Aminah',
+    tindakan: { noTuntutan: 'TUN-2024-002', status: 'Dalam Semakan' }
+  },
+  {
+    noTuntutan: 'TUN-2024-003',
+    noGL: 'GL-003-2024',
+    namaPemohon: 'Sekolah Agama Rakyat Al-Amin',
+    tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(),
+    amaunTuntutan: 12000.00,
+    statusPermohonan: 'Dalam Semakan',
+    pegawaiETD: 'Siti Aminah',
+    tindakan: { noTuntutan: 'TUN-2024-003', status: 'Dalam Semakan' }
+  },
+  {
+    noTuntutan: 'TUN-2024-004',
+    noGL: 'GL-004-2024',
+    namaPemohon: 'Surau Kampung Baru',
+    tarikhTuntutan: new Date(Date.now() - 259200000).toISOString(),
+    amaunTuntutan: 3500.00,
+    statusPermohonan: 'Dalam Semakan',
+    pegawaiETD: 'Siti Aminah',
+    tindakan: { noTuntutan: 'TUN-2024-004', status: 'Dalam Semakan' }
+  },
+  {
+    noTuntutan: 'TUN-2024-005',
+    noGL: 'GL-005-2024',
+    namaPemohon: 'Pusat Tahfiz Al-Quran',
+    tarikhTuntutan: new Date(Date.now() - 345600000).toISOString(),
+    amaunTuntutan: 15000.00,
+    statusPermohonan: 'Dalam Semakan',
+    pegawaiETD: 'Siti Aminah',
+    tindakan: { noTuntutan: 'TUN-2024-005', status: 'Dalam Semakan' }
+  },
 ]);
 
 // Computed properties
@@ -255,7 +287,7 @@ const filteredTuntutan = computed(() => {
   // Apply status filter
   if (filters.value.status) {
     filtered = filtered.filter(item => 
-      item.statusPermohonan.toLowerCase().replace(/\s+/g, '_') === filters.value.status
+      item.statusPermohonan === filters.value.status
     );
   }
 
@@ -266,6 +298,12 @@ const totalTuntutan = computed(() => filteredTuntutan.value.length);
 const totalPages = computed(() => Math.ceil(totalTuntutan.value / pageSize.value));
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
 const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalTuntutan.value));
+
+const tableDataWithNo = computed(() =>
+  filteredTuntutan.value.map((row, idx) => {
+    return Object.assign({ no: idx + 1 }, row);
+  })
+);
 
 // Methods
 const formatDate = (dateString) => {
@@ -294,14 +332,59 @@ const getStatusVariant = (status) => {
   return variants[status] || 'default';
 };
 
-const viewTuntutan = (tuntutanId) => {
-  // Navigate to tuntutan details page
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${tuntutanId}`);
+const viewTuntutan = (noTuntutan) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${noTuntutan}`);
 };
 
-const handleSemakPengesahan = (tuntutanId) => {
-  // Navigate to TDS-02 screen
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${tuntutanId}/pengesahan`);
+const handleSemakPengesahan = (noTuntutan) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${noTuntutan}/pengesahan`);
+};
+
+const onCheckboxChange = (event, row) => {
+  const isChecked = event.target.checked;
+  if (isChecked) {
+    if (!selectedRows.value.includes(row.noTuntutan)) {
+      selectedRows.value.push(row.noTuntutan);
+    }
+  } else {
+    selectedRows.value = selectedRows.value.filter(id => id !== row.noTuntutan);
+  }
+};
+
+const handleBulkApproval = async () => {
+  try {
+    processing.value = true;
+    const result = await $swal.fire({
+      icon: 'question',
+      title: 'Pengesahan (Bulk)',
+      text: `Adakah anda pasti untuk mengesahkan ${selectedRows.value.length} tuntutan yang dipilih?`,
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Sahkan',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#10b981',
+    });
+    if (result.isConfirmed) {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await $swal.fire({
+        icon: 'success',
+        title: 'Berjaya!',
+        text: `Semua permohonan yang dipilih telah berjaya disahkan`,
+        confirmButtonText: 'OK'
+      });
+      selectedRows.value = [];
+      // Refresh data if needed
+    }
+  } catch (error) {
+    await $swal.fire({
+      icon: 'error',
+      title: 'Ralat',
+      text: 'Ralat telah berlaku semasa memproses pengesahan bulk',
+      confirmButtonText: 'OK'
+    });
+  } finally {
+    processing.value = false;
+  }
 };
 </script>
 

@@ -124,7 +124,7 @@
                   variant="primary"
                   size="sm"
                   class="!px-2 !py-1"
-                  @click="handleView(data.text.id)"
+                  @click="handleViewDalamSemakan(data.text.id)"
                 >
                   <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" />
                   Lihat Tuntutan
@@ -744,7 +744,7 @@ const handleView = (id) => {
 };
 
 const handleEdit = (id) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/edit`);
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/view-draf`);
 };
 
 const handleSubmit = (id) => {
@@ -778,6 +778,10 @@ const handleViewLulus = (id) => {
 
 const handleViewDitolak = (id) => {
   navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/view-ditolak`);
+};
+
+const handleViewDalamSemakan = (id) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/view-dalam-semakan`);
 };
 </script>
 
