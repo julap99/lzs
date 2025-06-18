@@ -739,7 +739,7 @@ export default [
             child: [],
             meta: {},
           },
-          
+
           {
             title: "Semakan Maklumat",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -754,7 +754,7 @@ export default [
             child: [],
             meta: {},
           },
-          
+
           // {
           //   title: "AS-QB",
           //   icon: "iconamoon:arrow-right-2-duotone",
@@ -834,7 +834,7 @@ export default [
         ],
         meta: {},
       },
-       {
+      {
         title: "Permohonan",
         icon: "iconamoon:component-fill",
         child: [
@@ -873,17 +873,31 @@ export default [
             child: [],
             meta: {},
           },
+          // {
+          //   title: "Senarai Permohonan untuk Siap Siasatan",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-BTN/PB/senarai-siap-siasatan",
+          //   child: [],
+          //   meta: {},
+          // },
+          // {
+          //   title: "Senarai Permohonan Selesai Siasatan",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-BTN/PB/senarai-selesai-siasatan-lapangan",
+          //   child: [],
+          //   meta: {},
+          // },
           {
-            title: "Senarai Permohonan untuk Siap Siasatan",
+            title: "Senarai Siap untuk Siasatan Lapangan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/PB/senarai-siap-siasatan",
+            path: "/BF-BTN/permohonan/senarai-siap-siasatan-lapangan",
             child: [],
             meta: {},
           },
           {
-            title: "Senarai Permohonan Selesai Siasatan",
+            title: "Semakan & Sokongan (EOAD)",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/PB/senarai-selesai-siasatan-lapangan",
+            path: "/BF-BTN/permohonan/semakan-sokongan-1",
             child: [],
             meta: {},
           },
@@ -923,55 +937,76 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Semak Permohonan untuk Disemak",
+            title: "Senarai Permohonan untuk Disemak",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/permohonan/senarai-untuk-disemak",
             child: [],
             meta: {},
           },
           {
-            title: "Semak Permohonan untuk Siasatan",
+            title: "Senarai Permohonan untuk Siasatan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/permohonan/senarai-untuk-siasatan",
             child: [],
             meta: {},
           },
           {
-            title: "Senarai Siap untuk Siasatan Lapangan",
+            title: "Senarai Permohonan Siasatan ke Lapangan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/permohonan/senarai-siap-siasatan-lapangan",
+            path: "/BF-BTN/permohonan/senarai-siasatan-lapangan",
             child: [],
             meta: {},
           },
           {
-            title: "Semakan & Sokongan (EOAD)",
+            title: "Tamat Lawatan ETD untuk Disahkan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/permohonan/semakan-sokongan-1",
+            path: "/BF-BTN/permohonan/tamat-lawatan-etd",
             child: [],
             meta: {},
           },
           {
-            title: "Semakan & Sokongan (Hartanah)",
+            title: "Senarai Semakan & Sokongan / Pinda Bantuan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/permohonan/semakan-sokongan",
+            path: "/BF-BTN/permohonan/semakan-sokongan-pinda-bantuan",
             child: [],
             meta: {},
           },
+          {
+            title: "Notifikasi Pengesahan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/permohonan/notifikasi-pengesahan",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Semakan Kelulusan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/permohonan/senarai-semakan-kelulusan",
+            child: [],
+            meta: {},
+          },
+          // {
+          //   title: "Semakan & Sokongan (Hartanah)",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-BTN/permohonan/semakan-sokongan",
+          //   child: [],
+          //   meta: {},
+          // },
 
-          {
-            title: "Notifikasi Pengesahan (BQ)",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/permohonan/notifikasi-pengesahan-bq",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Semakan & Kelulusan (Pelulus)",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/permohonan/semakan-kelulusan-pelulus",
-            child: [],
-            meta: {},
-          },
+          // {
+          //   title: "Notifikasi Pengesahan (BQ)",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-BTN/permohonan/notifikasi-pengesahan-bq",
+          //   child: [],
+          //   meta: {},
+          // },
+          // {
+          //   title: "Semakan & Kelulusan (Pelulus)",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-BTN/permohonan/semakan-kelulusan-pelulus",
+          //   child: [],
+          //   meta: {},
+          // },
           {
             title: "Arahan Kerja (PR)",
             icon: "iconamoon:arrow-right-2-duotone",

@@ -77,12 +77,29 @@
 
                 <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
-                    >No IC</label
+                    >Jenis Bantuan</label
                   >
                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                    <span class="text-sm font-mono text-gray-900">{{
-                      formData.noIc
+                    <span class="text-sm text-gray-900">{{
+                      formData.jenisBantuan
                     }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >SEGERA</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <input 
+                      type="checkbox" 
+                      :checked="formData.segera" 
+                      disabled 
+                      class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span class="ml-2 text-sm text-gray-900">
+                      {{ formData.segera ? 'Ya' : 'Tidak' }}
+                    </span>
                   </div>
                 </div>
 
@@ -97,7 +114,7 @@
                   </div>
                 </div>
 
-                <div class="space-y-1 md:col-span-2">
+                <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Status Permohonan</label
                   >
@@ -114,7 +131,111 @@
             </template>
           </rs-card>
 
-          <!-- Section 2: Bantuan Berkaitan -->
+          <!-- Section 2: Semakan Permohonan (Read-only) -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon name="ph:file-text" class="w-6 h-6 text-indigo-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Semakan Permohonan
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Butiran lengkap permohonan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Nama Pemohon</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{
+                      permohonanData.namaPemohon
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >No IC</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm font-mono text-gray-900">{{
+                      permohonanData.noIc
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1 md:col-span-2">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Alamat</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{
+                      permohonanData.alamat
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Jenis Bantuan</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{
+                      permohonanData.jenisBantuan
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Kaedah Pembayaran</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{
+                      permohonanData.kaedahPembayaran
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Jumlah Bantuan</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm font-medium text-gray-900">
+                      RM {{ permohonanData.jumlahBantuan?.toLocaleString() }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="space-y-1 md:col-span-2">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Keterangan Permohonan</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{
+                      permohonanData.keterangan
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+          <!-- Section 3: Semakan Dokumen Sokongan (Form) -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
@@ -122,86 +243,93 @@
                   <div
                     class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
                   >
-                    <Icon name="ph:money" class="w-6 h-6 text-green-600" />
+                    <Icon name="ph:folder-open" class="w-6 h-6 text-green-600" />
                   </div>
                 </div>
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">
-                    Bantuan Berkaitan
+                    Semakan Dokumen Sokongan
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Senarai bantuan yang berkaitan dengan permohonan ini
+                    Semak status dan berikan catatan untuk setiap dokumen
                   </p>
                 </div>
               </div>
             </template>
 
             <template #body>
-              <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Nama Bantuan
-                      </th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Kadar (RM)
-                      </th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status Dokumen
-                      </th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr
-                      v-for="(assistance, index) in assistanceList"
-                      :key="index"
-                      class="hover:bg-gray-50"
-                    >
-                      <td class="px-6 py-4">
-                        <div class="text-sm font-medium text-gray-900">
-                          {{ assistance.code }} - {{ assistance.name }}
-                        </div>
-                        <div class="text-sm text-gray-500">
-                          {{ assistance.category }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">
-                          RM {{ assistance.amount.toLocaleString() }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <rs-badge
-                          :variant="getDocumentStatusVariant(assistance.documentStatus)"
-                          class="text-xs" 
-                        >
-                          {{ assistance.documentStatus }}
-                        </rs-badge>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
+              <div class="space-y-4">
+                <div
+                  v-for="(dokumen, index) in dokumenList"
+                  :key="index"
+                  class="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                >
+                  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- Dokumen Info -->
+                    <div class="space-y-2">
+                      <h4 class="font-medium text-gray-900">
+                        {{ dokumen.jenis }}
+                      </h4>
+                      <div class="flex items-center space-x-2">
                         <rs-button
+                          size="xs"
                           variant="primary-outline"
-                          size="sm"
-                          @click="editAssistance(assistance)"
-                          class="!px-3 !py-1.5"
+                          @click="previewDocument(dokumen)"
                         >
-                          <Icon name="ph:pencil" class="w-4 h-4 mr-1" />
-                          Edit
+                          <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                          Preview
                         </rs-button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                        <rs-button
+                          size="xs"
+                          variant="success-outline"
+                          @click="downloadDocument(dokumen)"
+                        >
+                          <Icon name="ph:download" class="w-4 h-4 mr-1" />
+                          Muat Turun
+                        </rs-button>
+                      </div>
+                    </div>
+
+                    <!-- Status Dropdown -->
+                    <div class="space-y-2">
+                      <label class="text-sm font-medium text-gray-700">
+                        Status Dokumen
+                      </label>
+                      <FormKit
+                        type="select"
+                        :options="statusDokumenOptions"
+                        v-model="dokumen.status"
+                        :classes="{
+                          input: 'text-sm'
+                        }"
+                      />
+                    </div>
+
+                    <!-- Catatan Pegawai -->
+                    <div class="space-y-2">
+                      <label class="text-sm font-medium text-gray-700">
+                        Catatan Pegawai
+                        <span v-if="formData.segera" class="text-red-500">*</span>
+                      </label>
+                      <FormKit
+                        type="textarea"
+                        v-model="dokumen.catatan"
+                        rows="3"
+                        :validation="formData.segera ? 'required' : ''"
+                        :classes="{
+                          input: 'text-sm'
+                        }"
+                        placeholder="Masukkan catatan..."
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </template>
           </rs-card>
         </div>
 
-        <!-- Sidebar - Section 3: Kemaskini Permohonan -->
+        <!-- Sidebar - Section 4: Kemaskini Permohonan -->
         <div class="lg:col-span-1 space-y-6">
           <rs-card class="shadow-sm border-0 bg-white sticky top-6">
             <template #header>
@@ -230,7 +358,7 @@
                 type="form"
                 :actions="false"
                 @submit="handleSubmit"
-                v-model="formData"
+                v-model="updateData"
               >
                 <div class="space-y-6">
                   <!-- Catatan Penilaian Awal -->
@@ -240,7 +368,7 @@
                     label="Catatan Penilaian Awal"
                     placeholder="Masukkan catatan penilaian awal..."
                     rows="4"
-                    v-model="formData.catatanPenilaianAwal"
+                    v-model="updateData.catatanPenilaianAwal"
                     help="Catatan ini adalah pilihan"
                   />
 
@@ -251,7 +379,7 @@
                     label="Kaedah Siasatan"
                     :options="kaedahSiasatanOptions"
                     placeholder="Pilih kaedah siasatan"
-                    v-model="formData.kaedahSiasatan"
+                    v-model="updateData.kaedahSiasatan"
                     validation="required"
                   />
 
@@ -260,7 +388,7 @@
                     type="date"
                     name="tarikhLawatan"
                     label="Tarikh Lawatan"
-                    v-model="formData.tarikhLawatan"
+                    v-model="updateData.tarikhLawatan"
                     validation="date_after:today"
                     :validation-messages="{
                       date_after: 'Tarikh lawatan mesti selepas hari ini'
@@ -274,7 +402,7 @@
                     label="Masa Lawatan"
                     :options="masaLawatanOptions"
                     placeholder="Pilih masa lawatan"
-                    v-model="formData.masaLawatan"
+                    v-model="updateData.masaLawatan"
                   />
 
                   <!-- Status Pengesahan Lawatan -->
@@ -284,21 +412,32 @@
                     label="Status Pengesahan Lawatan"
                     :options="statusPengesahanOptions"
                     placeholder="Pilih status pengesahan"
-                    v-model="formData.statusPengesahanLawatan"
+                    v-model="updateData.statusPengesahanLawatan"
                     validation="required"
                   />
 
-                  <!-- Action Buttons -->
+                  <!-- Status Permohonan -->
+                  <FormKit
+                    type="select"
+                    name="statusPermohonan"
+                    label="Status Permohonan"
+                    :options="statusPermohonanOptions"
+                    placeholder="Pilih status permohonan"
+                    v-model="updateData.statusPermohonan"
+                    validation="required"
+                  />
+
+                  <!-- Section 5: Action Buttons -->
                   <div class="space-y-3 pt-4 border-t">
                     <rs-button
                       variant="primary"
-                      @click="handleSave"
+                      @click="handleSaveAndUpdateStatus"
                       :disabled="processing"
                       :loading="processing"
                       class="w-full !py-3 text-sm font-medium"
                     >
                       <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
-                      Simpan Kemaskini
+                      Simpan & Kemaskini Status
                     </rs-button>
 
                     <rs-button
@@ -307,7 +446,7 @@
                       class="w-full !py-3 text-sm font-medium"
                     >
                       <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
-                      Kembali ke Senarai
+                      Batal
                     </rs-button>
                   </div>
                 </div>
@@ -352,48 +491,79 @@ const breadcrumb = ref([
   },
 ]);
 
-// Form data
+// Section 1: Maklumat Permohonan data
 const formData = ref({
   idPermohonan: "",
   namaPemohon: "",
-  noIc: "",
+  jenisBantuan: "",
+  segera: false,
   tarikhPermohonan: "",
   statusPermohonan: "",
+});
+
+// Section 2: Semakan Permohonan data
+const permohonanData = ref({
+  namaPemohon: "",
+  alamat: "",
+  noIc: "",
+  jenisBantuan: "",
+  kaedahPembayaran: "",
+  jumlahBantuan: 0,
+  keterangan: "",
+});
+
+// Section 3: Dokumen list
+const dokumenList = ref([
+  {
+    jenis: "Geran Tanah",
+    filename: "geran_tanah.pdf",
+    status: "",
+    catatan: "",
+  },
+  {
+    jenis: "Carian Rasmi Tanah",
+    filename: "carian_rasmi.pdf",
+    status: "",
+    catatan: "",
+  },
+  {
+    jenis: "Akuan Sumpah",
+    filename: "akuan_sumpah.pdf",
+    status: "",
+    catatan: "",
+  },
+]);
+
+// Section 4: Update data
+const updateData = ref({
   catatanPenilaianAwal: "",
   kaedahSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
   statusPengesahanLawatan: "",
+  statusPermohonan: "",
 });
 
-// Assistance list data
-const assistanceList = ref([
-  {
-    code: "B112",
-    name: "Bantuan Sewaan/Ansuran Rumah",
-    category: "Miskin",
-    amount: 800,
-    documentStatus: "Lengkap",
-  },
-  {
-    code: "B104",
-    name: "Bantuan Tunggakan Pembiayaan Rumah",
-    category: "Miskin",
-    amount: 1000,
-    documentStatus: "Lengkap",
-  },
+// Dropdown options
+const statusDokumenOptions = ref([
+  { label: "Lengkap", value: "lengkap" },
+  { label: "Tidak Lengkap", value: "tidak_lengkap" },
 ]);
 
-// Dropdown options
 const kaedahSiasatanOptions = ref([
   { label: "Telefon", value: "telefon" },
   { label: "Semak Dokumen Sahaja", value: "dokumen" },
-  { label: "Lapangan", value: "lapangan" },
+  { label: "Lawatan", value: "lawatan" },
 ]);
 
 const statusPengesahanOptions = ref([
   { label: "Sah", value: "sah" },
   { label: "Belum Sah", value: "belum_sah" },
+]);
+
+const statusPermohonanOptions = ref([
+  { label: "Menunggu Siasatan Lapangan", value: "menunggu_siasatan" },
+  { label: "Lawatan Dijadualkan", value: "lawatan_dijadualkan" },
 ]);
 
 // Generate time options (9:00 - 18:00, every 30 minutes)
@@ -402,10 +572,13 @@ const masaLawatanOptions = computed(() => {
   for (let hour = 9; hour <= 18; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
       if (hour === 18 && minute > 0) break; // Stop at 18:00
-      const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      const startTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      const endHour = minute === 30 ? hour + 1 : hour;
+      const endMinute = minute === 30 ? 0 : minute + 30;
+      const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
       times.push({
-        label: timeString,
-        value: timeString,
+        label: `${startTime} - ${endTime}`,
+        value: `${startTime}-${endTime}`,
       });
     }
   }
@@ -419,6 +592,8 @@ const getStatusVariant = (status) => {
     dalam_semakan: "warning",
     tidak_lengkap: "danger",
     lengkap: "success",
+    menunggu_siasatan: "warning",
+    lawatan_dijadualkan: "info",
   };
   return variants[status?.toLowerCase()] || "default";
 };
@@ -426,33 +601,58 @@ const getStatusVariant = (status) => {
 const getStatusText = (status) => {
   const statusMap = {
     baru: "Baru",
-    dalam_semakan: "Untuk Siasatan",
+    dalam_semakan: "Dalam Semakan",
     tidak_lengkap: "Tidak Lengkap",
     lengkap: "Lengkap",
+    menunggu_siasatan: "Menunggu Siasatan Lapangan",
+    lawatan_dijadualkan: "Lawatan Dijadualkan",
   };
   return statusMap[status?.toLowerCase()] || status;
 };
 
-const getDocumentStatusVariant = (status) => {
-  const variants = {
-    lengkap: "success",
-    tidak_lengkap: "danger",
-    dalam_semakan: "warning",
-  };
-  return variants[status?.toLowerCase()] || "default";
+const previewDocument = (dokumen) => {
+  // Implement document preview functionality
+  console.log("Previewing document:", dokumen);
+  // This could open a modal or navigate to a document viewer
 };
 
-const editAssistance = (assistance) => {
-  // Implement navigation to edit assistance page
-  console.log("Editing assistance:", assistance);
-  router.push(`/BF-BTN/permohonan/senarai-untuk-disemak/${route.params.id}/bantuan/${assistance}`);
+const downloadDocument = (dokumen) => {
+  // Implement document download functionality
+  console.log("Downloading document:", dokumen);
+  // This would trigger a file download
 };
 
-const handleSave = async () => {
+const handleSaveAndUpdateStatus = async () => {
   try {
     processing.value = true;
-    // Implement API call to save the updates
-    toast.success("Kemaskini telah disimpan");
+    
+    // Validate required fields based on SEGERA status
+    if (formData.value.segera) {
+      const incompleteDocs = dokumenList.value.filter(doc => !doc.catatan.trim());
+      if (incompleteDocs.length > 0) {
+        toast.error("Catatan pegawai wajib diisi untuk semua dokumen kerana permohonan ini bertanda SEGERA");
+        return;
+      }
+    }
+    
+    // Prepare data for API
+    const payload = {
+      ...updateData.value,
+      dokumen: dokumenList.value.map(doc => ({
+        jenis: doc.jenis,
+        status: doc.status,
+        catatan: doc.catatan,
+      })),
+    };
+    
+    // Implement API call to save updates and trigger workflow
+    console.log("Saving data:", payload);
+    
+    toast.success("Kemaskini telah disimpan dan status telah dikemaskini");
+    
+    // Navigate back to list after successful save
+    router.push("/BF-BTN/permohonan/senarai-untuk-siasatan");
+    
   } catch (error) {
     toast.error("Ralat semasa menyimpan kemaskini");
     console.error(error);
@@ -471,13 +671,24 @@ onMounted(async () => {
     // Implement API call to fetch application data
     // This is mock data for now
     formData.value = {
-      ...formData.value,
       idPermohonan: route.params.id,
       namaPemohon: "Ahmad bin Abdullah",
-      noIc: "880101-12-1234",
+      jenisBantuan: "Bantuan Pendidikan",
+      segera: true,
       tarikhPermohonan: "15 Nov 2024",
       statusPermohonan: "dalam_semakan",
     };
+    
+    permohonanData.value = {
+      namaPemohon: "Ahmad bin Abdullah",
+      alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
+      noIc: "880101-12-1234",
+      jenisBantuan: "Bantuan Pendidikan",
+      kaedahPembayaran: "Transfer Bank",
+      jumlahBantuan: 2500,
+      keterangan: "Permohonan bantuan untuk yuran pengajian anak di universiti tempatan",
+    };
+    
   } catch (error) {
     toast.error("Ralat semasa memuatkan data permohonan");
     console.error(error);
@@ -499,6 +710,15 @@ onMounted(async () => {
 
 // Table row hover effect
 .hover\:bg-gray-50:hover {
+  background-color: #f9fafb;
+}
+
+// Document card styling
+.border-gray-200 {
+  border-color: #e5e7eb;
+}
+
+.bg-gray-50 {
   background-color: #f9fafb;
 }
 </style>
