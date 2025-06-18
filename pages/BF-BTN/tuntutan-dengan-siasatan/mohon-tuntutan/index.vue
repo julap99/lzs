@@ -225,9 +225,8 @@ const formData = ref({
 
 // Sample GL options - Replace with actual API call
 const glOptions = ref([
-  { label: "GL-001 - Bantuan Makanan", value: "GL-001" },
-  { label: "GL-002 - Bantuan Pendidikan", value: "GL-002" },
-  { label: "GL-003 - Bantuan Perubatan", value: "GL-003" },
+  { label: "GL-2025-001 - BANTUAN SUMBANGAN KARPET", value: "GL-2025-001" },
+  { label: "GL-2025-002 - BANTUAN PERUBATAN DIALISIS", value: "GL-2025-002" },
 ]);
 
 // Mock data for bantuan options
