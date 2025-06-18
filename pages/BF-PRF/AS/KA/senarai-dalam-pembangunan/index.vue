@@ -148,8 +148,6 @@ const kategoriOptions = [
   { label: "Semua Kategori", value: "" },
   { label: "Fakir", value: "Fakir" },
   { label: "Miskin", value: "Miskin" },
-  { label: "Non Fakir", value: "Non Fakir" },
-  { label: "Non Miskin", value: "Non Miskin" },
 ];
 
 const statusOptions = [
@@ -187,22 +185,6 @@ const asnafList = ref([
     tindakan: { id: "ASN-2024-002" }
   },
   {
-    namaAsnaf: "Mohammad bin Hassan",
-    kategoriAsnaf: "Non Fakir",
-    statusReview: "Selesai Review",
-    tarikhAkhir: "2024-01-10",
-    noTelefon: "0123456787",
-    tindakan: { id: "ASN-2024-003" }
-  },
-  {
-    namaAsnaf: "Fatimah binti Omar",
-    kategoriAsnaf: "Non Miskin",
-    statusReview: "Selesai Review",
-    tarikhAkhir: "2024-03-05",
-    noTelefon: "0123456786",
-    tindakan: { id: "ASN-2024-004" }
-  },
-  {
     namaAsnaf: "Abdul Rahman bin Ismail",
     kategoriAsnaf: "Fakir",
     statusReview: "Ditangguhkan",
@@ -217,15 +199,7 @@ const asnafList = ref([
     tarikhAkhir: "2024-01-30",
     noTelefon: "0123456784",
     tindakan: { id: "ASN-2024-006" }
-  },
-  {
-    namaAsnaf: "Ibrahim bin Yusof",
-    kategoriAsnaf: "Non Fakir",
-    statusReview: "Sedang Review",
-    tarikhAkhir: "2024-01-05",
-    noTelefon: "0123456783",
-    tindakan: { id: "ASN-2024-007" }
-  },
+  }
 ]);
 
 // Computed properties
