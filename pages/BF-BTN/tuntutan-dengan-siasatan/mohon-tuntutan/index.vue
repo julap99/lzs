@@ -19,7 +19,7 @@
                 v-model="formData.noGL"
                 type="select"
                 label="Nombor GL"
-                :options="glOptions"
+                :options="[{ label: '', value: '' }, ...glOptions]"
                 validation="required"
                 :validation-messages="{
                   required: 'Sila pilih Nombor GL'
@@ -29,7 +29,75 @@
             </div>
           </div>
 
-          <!-- Section 2: Isi Permohonan Tuntutan -->
+          <!-- Section 2: Maklumat Bantuan -->
+          <div class="mb-8">
+            <h3 class="text-lg font-medium mb-4">Maklumat Bantuan</h3>
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+              <h4 class="text-md font-medium mb-4">Butiran asas jenis bantuan</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormKit
+                  v-model="formData.kodBantuan"
+                  type="select"
+                  label="Kod Bantuan"
+                  :options="kodBantuanOptions"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih Kod Bantuan'
+                  }"
+                  @change="handleKodBantuanChange"
+                />
+
+                <FormKit
+                  v-model="formData.jenisBantuan"
+                  type="select"
+                  label="Jenis Bantuan"
+                  :options="jenisBantuanOptions"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih Jenis Bantuan'
+                  }"
+                  @change="handleJenisBantuanChange"
+                />
+
+                <FormKit
+                  v-model="formData.bahanBantuan"
+                  type="select"
+                  label="Bahan Bantuan"
+                  :options="bahanBantuanOptions"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih Bahan Bantuan'
+                  }"
+                  @change="handleBahanBantuanChange"
+                />
+
+                <FormKit
+                  v-model="formData.pakejBantuan"
+                  type="select"
+                  label="Pakej Bantuan"
+                  :options="pakejBantuanOptions"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih Pakej Bantuan'
+                  }"
+                  @change="handlePakejBantuanChange"
+                />
+
+                <FormKit
+                  v-model="formData.kelayakanBantuan"
+                  type="select"
+                  label="Kelayakan Bantuan"
+                  :options="kelayakanBantuanOptions"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih Kelayakan Bantuan'
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Isi Permohonan Tuntutan -->
           <div class="mb-8">
             <h3 class="text-lg font-medium mb-4">Isi Permohonan Tuntutan</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -74,7 +142,7 @@
             </div>
           </div>
 
-          <!-- Section 3: Muat Naik Dokumen Sokongan -->
+          <!-- Section 4: Muat Naik Dokumen Sokongan -->
           <div class="mb-8">
             <h3 class="text-lg font-medium mb-4">Muat Naik Dokumen Sokongan</h3>
             <div class="grid grid-cols-1 gap-6">
@@ -93,7 +161,7 @@
             </div>
           </div>
 
-          <!-- Section 4: Action & Status -->
+          <!-- Section 5: Action & Status -->
           <div class="flex justify-end gap-4">
             <rs-button
               type="button"
@@ -144,6 +212,11 @@ const breadcrumb = ref([
 // Form data
 const formData = ref({
   noGL: "",
+  kodBantuan: "",
+  jenisBantuan: "",
+  bahanBantuan: "",
+  pakejBantuan: "",
+  kelayakanBantuan: "",
   amaunTuntutan: "",
   tarikhPerkhidmatan: "",
   catatanTambahan: "",
@@ -157,11 +230,73 @@ const glOptions = ref([
   { label: "GL-003 - Bantuan Perubatan", value: "GL-003" },
 ]);
 
+// Mock data for bantuan options
+const kodBantuanOptions = ref([
+  { label: 'B400', value: 'B400' }
+]);
+
+const jenisBantuanOptions = ref([
+  { label: '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA', value: 'HQ_BANTUAN_SUMBANGAN_PERALATAN' },
+  { label: 'BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA', value: 'BANTUAN_SUMBANGAN_PERALATAN' }
+]);
+
+const bahanBantuanOptions = ref([
+  { label: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'HQ_BANTUAN_SUMBANGAN_PERALATAN' },
+  { label: 'BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'BANTUAN_SUMBANGAN_PERALATAN' },
+  { label: 'BANTUAN SUMBANGAN KARPET', value: 'BANTUAN_SUMBANGAN_KARPET' }
+]);
+
+const pakejBantuanOptions = ref([
+  { label: '(GL) (HQ) BANTUAN CUCIAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_CUCIAN_KARPET' },
+  { label: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_KARPET' },
+  { label: '(GL) (HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_PERALATAN' },
+  { label: '(GL) (HQ) SUMBANGAN PERALATAN SEKOLAH AGAMA', value: 'GL_HQ_SUMBANGAN_PERALATAN_SEKOLAH' },
+  { label: 'SUMBANGAN PERALATAN SURAU SEKOLAH', value: 'SUMBANGAN_PERALATAN_SURAU' },
+  { label: 'BANTUAN SUMBANGAN KARPET', value: 'BANTUAN_SUMBANGAN_KARPET' }
+]);
+
+const kelayakanBantuanOptions = ref([
+  { label: '(GL) (HQ) BANTUAN CUCIAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_CUCIAN_KARPET' },
+  { label: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_KARPET' },
+  { label: '(GL) (HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', value: 'GL_HQ_BANTUAN_SUMBANGAN_PERALATAN' },
+  { label: '(GL) (HQ) SUMBANGAN PERALATAN SEKOLAH AGAMA', value: 'GL_HQ_SUMBANGAN_PERALATAN_SEKOLAH' },
+  { label: '(GL) SUMBANGAN PERALATAN SURAU SEKOLAH', value: 'GL_SUMBANGAN_PERALATAN_SURAU' },
+  { label: '(GL) BANTUAN SUMBANGAN KARPET', value: 'GL_BANTUAN_SUMBANGAN_KARPET' },
+  { label: '(GL) SUMBANGAN PERALATAN SEKOLAH AGAMA', value: 'GL_SUMBANGAN_PERALATAN_SEKOLAH' }
+]);
+
 // Handle GL selection change
 const handleGLChange = (value) => {
   // Auto-populate related fields based on selected GL
   console.log("Selected GL:", value);
   // Add logic to fetch and populate GL details
+};
+
+// Handle changes in bantuan fields
+const handleKodBantuanChange = (value) => {
+  // Reset dependent fields
+  formData.value.jenisBantuan = '';
+  formData.value.bahanBantuan = '';
+  formData.value.pakejBantuan = '';
+  formData.value.kelayakanBantuan = '';
+};
+
+const handleJenisBantuanChange = (value) => {
+  // Reset dependent fields
+  formData.value.bahanBantuan = '';
+  formData.value.pakejBantuan = '';
+  formData.value.kelayakanBantuan = '';
+};
+
+const handleBahanBantuanChange = (value) => {
+  // Reset dependent fields
+  formData.value.pakejBantuan = '';
+  formData.value.kelayakanBantuan = '';
+};
+
+const handlePakejBantuanChange = (value) => {
+  // Reset dependent field
+  formData.value.kelayakanBantuan = '';
 };
 
 // Handle form submission

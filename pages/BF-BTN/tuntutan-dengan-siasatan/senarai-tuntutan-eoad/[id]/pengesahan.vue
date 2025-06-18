@@ -177,7 +177,7 @@
         </template>
       </rs-card>
 
-      <!-- Section 4: Pengesahan EOAD -->
+      <!-- Section 4: Pengesahan EOAD & Action -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
@@ -185,64 +185,88 @@
           </div>
         </template>
         <template #body>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Catatan Laporan Pengesahan (EOAD)
-            </label>
-            <FormKit
-              type="textarea"
-              v-model="catatanPengesahan"
-              validation="required"
-              :validation-messages="{
-                required: 'Catatan diperlukan jika tidak menyokong permohonan',
-              }"
-              placeholder="Sila masukkan catatan pengesahan..."
-              rows="4"
-            />
-          </div>
-        </template>
-      </rs-card>
+          <form @submit.prevent="handleSubmit" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Keputusan Pengesahan
+              </label>
+              <div class="space-x-4">
+                <FormKit
+                  type="radio"
+                  name="keputusan"
+                  v-model="form.keputusan"
+                  :options="[
+                    { label: 'Sokong', value: 'Sokong' },
+                    { label: 'Tidak Sokong', value: 'Tidak Sokong' },
+                  ]"
+                  :validation="[['required']]"
+                />
+              </div>
+            </div>
 
-      <!-- Section 5: Action & Status -->
-      <rs-card>
-        <template #body>
-          <div class="flex justify-end space-x-4">
-            <!-- Draf Button -->
-            <rs-button
-              variant="secondary"
-              @click="showDraftModal = true"
-              :disabled="processing"
-            >
-              <Icon name="material-symbols:save" class="mr-1" />
-              Draf
-            </rs-button>
-            <!-- Ditolak Button -->
-            <rs-button
-              variant="danger"
-              @click="showTidakSokongModal = true"
-              :disabled="processing"
-            >
-              <Icon name="material-symbols:close" class="mr-1" />
-              Ditolak
-            </rs-button>
-            <!-- Sokong & Hantar Button -->
-            <rs-button
-              variant="primary"
-              @click="showSokongModal = true"
-              :disabled="processing"
-            >
-              <Icon name="material-symbols:check" class="mr-1" />
-              Sokong & Hantar
-            </rs-button>
-          </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Catatan Laporan Pengesahan (EOAD)
+              </label>
+              <FormKit
+                type="textarea"
+                v-model="form.catatan"
+                placeholder="Sila masukkan catatan pengesahan..."
+                validation="required_if:keputusan,Tidak Sokong"
+                :validation-messages="{
+                  required_if: 'Catatan diperlukan untuk keputusan Tidak Sokong',
+                }"
+                rows="4"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Tarikh Pengesahan
+                </label>
+                <div class="text-gray-900">{{ formatDate(new Date()) }}</div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Pegawai EOAD
+                </label>
+                <div class="text-gray-900">{{ pegawaiInfo }}</div>
+              </div>
+            </div>
+
+            <div class="flex justify-end space-x-4 pt-4">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleCancel"
+                :disabled="processing"
+              >
+                Batal
+              </rs-button>
+              <rs-button
+                type="submit"
+                :variant="form.keputusan === 'Sokong' ? 'primary' : 'danger'"
+                :disabled="processing || !form.keputusan"
+                @click="handleSubmit"
+              >
+                {{ form.keputusan === "Sokong" ? "Sokong & Hantar" : "Tidak Sokong" }}
+              </rs-button>
+            </div>
+          </form>
         </template>
       </rs-card>
     </div>
 
-    <!-- Sokong Confirmation Modal -->
+    <!-- Confirmation Modal -->
     <rs-modal
-      v-model="showSokongModal"
-      title="Pengesahan Sokong"
+      v-model="showConfirmationModal"
+      :title="
+        form.keputusan === 'Sokong'
+          ? 'Pengesahan Sokong'
+          : 'Pengesahan Tidak Sokong'
+      "
       size="md"
       position="center"
     >
@@ -255,10 +279,13 @@
               size="3rem"
             />
             <h3 class="mt-4 text-lg font-medium text-gray-900">
-              Sahkan Sokongan Tuntutan
+              {{ form.keputusan === 'Sokong' ? 'Sahkan Sokongan Tuntutan' : 'Sahkan Tidak Sokong Tuntutan' }}
             </h3>
             <p class="mt-2 text-sm text-gray-500">
-              Adakah anda pasti untuk menyokong tuntutan ini dan menghantar ke pelulus?
+              {{ form.keputusan === 'Sokong' 
+                ? 'Adakah anda pasti untuk menyokong tuntutan ini dan menghantar ke pelulus?' 
+                : 'Adakah anda pasti untuk tidak menyokong tuntutan ini dan mengembalikan kepada pemohon?' 
+              }}
             </p>
           </div>
 
@@ -279,69 +306,9 @@
               <span class="font-medium">Perlu Lawatan Tapak:</span>
               <span>{{ perluLawatanTapak ? 'Ya' : 'Tidak' }}</span>
             </div>
-          </div>
-        </div>
-      </template>
-
-      <template #footer>
-        <div class="flex justify-end gap-3">
-          <rs-button
-            variant="primary-outline"
-            @click="showSokongModal = false"
-            :disabled="processing"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="primary"
-            @click="handleSokong"
-            :loading="processing"
-          >
-            Sahkan
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Tidak Sokong Confirmation Modal -->
-    <rs-modal
-      v-model="showTidakSokongModal"
-      title="Pengesahan Tidak Sokong"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="space-y-4">
-          <div class="text-center">
-            <Icon
-              name="ph:warning-circle"
-              class="mx-auto text-warning"
-              size="3rem"
-            />
-            <h3 class="mt-4 text-lg font-medium text-gray-900">
-              Sahkan Tidak Sokong Tuntutan
-            </h3>
-            <p class="mt-2 text-sm text-gray-500">
-              Adakah anda pasti untuk tidak menyokong tuntutan ini dan mengembalikan kepada pemohon?
-            </p>
-          </div>
-
-          <div class="bg-gray-50 p-4 rounded-lg space-y-2">
-            <div class="flex justify-between">
-              <span class="font-medium">ID Tuntutan:</span>
-              <span>{{ tuntutanData.idTuntutan }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">No. GL:</span>
-              <span>{{ tuntutanData.noGL }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Amaun Tuntutan:</span>
-              <span>RM {{ formatNumber(tuntutanData.amaunTuntutan) }}</span>
-            </div>
             <div class="flex justify-between">
               <span class="font-medium">Catatan:</span>
-              <span>{{ catatanPengesahan || '-' }}</span>
+              <span>{{ form.catatan || '-' }}</span>
             </div>
           </div>
         </div>
@@ -351,47 +318,17 @@
         <div class="flex justify-end gap-3">
           <rs-button
             variant="primary-outline"
-            @click="showTidakSokongModal = false"
+            @click="showConfirmationModal = false"
             :disabled="processing"
           >
             Batal
           </rs-button>
           <rs-button
-            variant="danger"
-            @click="handleTidakSokong"
+            :variant="form.keputusan === 'Sokong' ? 'primary' : 'danger'"
+            @click="handleConfirm"
             :loading="processing"
           >
-            Sahkan
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Draft Confirmation Modal -->
-    <rs-modal
-      v-model="showDraftModal"
-      title="Simpan Draf?"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="text-center space-y-4">
-          <Icon name="ph:warning-circle" class="mx-auto text-warning" size="3rem" />
-          <h3 class="mt-4 text-lg font-medium text-gray-900">
-            Adakah anda ingin simpan sebagai Draf terlebih dahulu?
-          </h3>
-          <p class="mt-2 text-sm text-gray-500">
-            Anda boleh melengkapkan maklumat ini kemudian.
-          </p>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-end gap-3">
-          <rs-button variant="primary-outline" @click="showDraftModal = false" :disabled="processing">
-            Batal
-          </rs-button>
-          <rs-button variant="secondary" @click="handleSimpanDraf" :loading="processing">
-            Simpan Draf
+            {{ form.keputusan === 'Sokong' ? 'Sahkan' : 'Sahkan' }}
           </rs-button>
         </div>
       </template>
@@ -427,16 +364,18 @@ const breadcrumb = ref([
 ]);
 
 // Form state
+const form = ref({
+  keputusan: "",
+  catatan: "",
+});
+
 const perluLawatanTapak = ref(false);
-const catatanPengesahan = ref("");
 const tarikhLawatanTapak = ref("");
 const masaLawatanTapak = ref("");
 
-// Add modal state variables
-const showSokongModal = ref(false);
-const showTidakSokongModal = ref(false);
+// Modal state variables
+const showConfirmationModal = ref(false);
 const processing = ref(false);
-const showDraftModal = ref(false);
 
 // Sample data - in real app, this would be fetched from API
 const tuntutanData = ref({
@@ -469,14 +408,6 @@ const pegawaiInfo = computed(() => {
   return "Siti Aminah binti Abdullah (ETD)";
 });
 
-// Computed properties
-const isFormValid = computed(() => {
-  if (!perluLawatanTapak.value) {
-    return catatanPengesahan.value.length > 0;
-  }
-  return true;
-});
-
 // Methods
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("ms-MY");
@@ -504,82 +435,61 @@ const downloadDocument = (doc) => {
   document.body.removeChild(link);
 };
 
-const handleSokong = async () => {
+const handleSubmit = () => {
+  if (!form.value.keputusan) {
+    return;
+  }
+  showConfirmationModal.value = true;
+};
+
+const handleConfirm = async () => {
   try {
     processing.value = true;
-    // Implement approval logic here
-    // Record in audit trail
-    await recordAuditTrail({
-      pegawai: pegawaiInfo.value,
-      tindakan: "Sokong",
-      catatan: catatanPengesahan.value,
-    });
+    
+    if (form.value.keputusan === 'Sokong') {
+      // Implement approval logic here
+      await recordAuditTrail({
+        pegawai: pegawaiInfo.value,
+        tindakan: "Sokong",
+        catatan: form.value.catatan,
+      });
 
-    // Navigate back to listing with success message
-    navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
-      query: {
-        success: "Tuntutan telah disokong dan dihantar ke pelulus",
-      },
-    });
+      // Navigate back to listing with success message
+      navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
+        query: {
+          success: "Tuntutan telah disokong dan dihantar ke pelulus",
+        },
+      });
+    } else {
+      // Implement rejection logic here
+      await recordAuditTrail({
+        pegawai: pegawaiInfo.value,
+        tindakan: "Tidak Sokong",
+        catatan: form.value.catatan,
+      });
+
+      // Navigate back to listing with info message
+      navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
+        query: {
+          info: "Tuntutan telah dikembalikan kepada pemohon untuk penambahbaikan",
+        },
+      });
+    }
   } catch (error) {
-    console.error("Error processing approval:", error);
+    console.error("Error processing decision:", error);
   } finally {
     processing.value = false;
-    showSokongModal.value = false;
+    showConfirmationModal.value = false;
   }
 };
 
-const handleTidakSokong = async () => {
-  try {
-    processing.value = true;
-    // Implement rejection logic here
-    // Record in audit trail
-    await recordAuditTrail({
-      pegawai: pegawaiInfo.value,
-      tindakan: "Tidak Sokong",
-      catatan: catatanPengesahan.value,
-    });
-
-    // Navigate back to listing with info message
-    navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
-      query: {
-        info: "Tuntutan telah dikembalikan kepada pemohon untuk penambahbaikan",
-      },
-    });
-  } catch (error) {
-    console.error("Error processing rejection:", error);
-  } finally {
-    processing.value = false;
-    showTidakSokongModal.value = false;
-  }
+const handleCancel = () => {
+  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad");
 };
 
 const recordAuditTrail = async (data) => {
   // Implement audit trail recording logic
   console.log("Recording audit trail:", data);
-};
-
-const handleSimpanDraf = async () => {
-  try {
-    processing.value = true;
-    // Implement draft save logic here
-    await recordAuditTrail({
-      pegawai: pegawaiInfo.value,
-      tindakan: "Simpan Draf",
-      catatan: catatanPengesahan.value,
-    });
-    // Navigate back to listing with info message
-    navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
-      query: {
-        info: "Tuntutan telah disimpan sebagai draf.",
-      },
-    });
-  } catch (error) {
-    console.error("Error saving draft:", error);
-  } finally {
-    processing.value = false;
-    showDraftModal.value = false;
-  }
 };
 </script>
 
