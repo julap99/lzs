@@ -8,11 +8,18 @@
           <h2 class="text-xl font-semibold">
             Senarai Permohonan Penolong Amil
           </h2>
-          <rs-button
+          <!-- <rs-button
             variant="primary-outline"
             @click="navigateTo('/BF-PA/PP/PD/PA_Login')"
           >
             Login as Penolong Amil
+          </rs-button> -->
+          <rs-button
+            variant="primary"
+            @click="navigateTo('/BF-PA/PP/pra-daftar/daftar-baharu')"
+          >
+            <Icon name="material-symbols:add-circle" class="mr-2" />
+            Tambah Baru
           </rs-button>
         </div>
       </template>
@@ -41,19 +48,12 @@
                   input: '!py-2',
                 }"
               />
-              <!-- <rs-button
+              <rs-button
                 variant="secondary-outline"
                 @click="toggleSelectAll"
               >
                 <Icon name="material-symbols:checklist" class="mr-2" />
                 {{ selectAll ? 'Batal Pilih Semua' : 'Pilih Semua' }}
-              </rs-button> -->
-              <rs-button
-                variant="primary"
-                @click="navigateTo('/BF-PA/PP/pra-daftar/daftar-baharu')"
-              >
-                <Icon name="material-symbols:add-circle" class="mr-2" />
-                Tambah Baru
               </rs-button>
             </div>
           </div>
@@ -66,14 +66,14 @@
         >
           <div class="flex items-center justify-between">
             <span class="text-sm text-blue-700">
-              {{ selectedRows.length }} baris dipilih
+              {{ selectedRowsDebug.length }} baris dipilih
             </span>
             <div class="flex gap-2">
-              <rs-button variant="danger" size="sm" @click="handleBulkReject">
+              <rs-button variant="danger" size="sm" @click="showBulkRejectModal = true">
                 <Icon name="material-symbols:close" class="w-4 h-4 mr-1" />
                 Tolak
               </rs-button>
-              <rs-button variant="primary" size="sm" @click="handleBulkApprove">
+              <rs-button variant="primary" size="sm" @click="showBulkApproveModal = true">
                 <Icon name="material-symbols:check" class="w-4 h-4 mr-1" />
                 Sahkan
               </rs-button>
@@ -117,17 +117,15 @@
             </div>
           </template>
 
-          <template v-slot:pilih="{ text }">
+          <template v-slot:pilih="slotProps">
             <div class="flex justify-center">
-              <FormKit
-                v-model="selectedRows"
+              {{ console.log('Pilih slot props:', slotProps) }}
+              <input
                 type="checkbox"
-                :value="text.noRef"
-                :classes="{
-                  wrapper: 'm-0',
-                  outer: 'm-0',
-                  input: 'rounded',
-                }"
+                :value="getRowRefFromSlot(slotProps)"
+                :checked="selectedRows.includes(getRowRefFromSlot(slotProps))"
+                @change="toggleRowSelection(getRowRefFromSlot(slotProps))"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
             </div>
           </template>
@@ -175,6 +173,107 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Bulk Approve Confirmation Modal -->
+    <div
+      v-if="showBulkApproveModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      @click="showBulkApproveModal = false"
+    >
+      <div
+        class="bg-white rounded-lg p-6 max-w-md w-full mx-4"
+        @click.stop
+      >
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+            <Icon name="material-symbols:check-circle" class="w-6 h-6 text-green-600" />
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900">Sahkan Permohonan</h3>
+            <p class="text-sm text-gray-600">Tindakan ini tidak boleh dibatalkan</p>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <p class="text-gray-700">
+            Adakah anda pasti untuk sahkan <strong>{{ selectedRows.length }}</strong> permohonan yang dipilih?
+          </p>
+          <div class="mt-3 max-h-32 overflow-y-auto bg-gray-50 rounded p-3">
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li v-for="refNo in selectedRows" :key="refNo" class="flex items-center">
+                <Icon name="material-symbols:circle" class="w-2 h-2 mr-2" />
+                {{ refNo }} - {{ getApplicationName(refNo) }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="flex justify-end gap-3">
+          <rs-button variant="secondary-outline" @click="showBulkApproveModal = false">
+            Batal
+          </rs-button>
+          <rs-button variant="primary" @click="confirmBulkApprove">
+            <Icon name="material-symbols:check" class="w-4 h-4 mr-1" />
+            Ya, Sahkan
+          </rs-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Reject Confirmation Modal -->
+    <div
+      v-if="showBulkRejectModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      @click="showBulkRejectModal = false"
+    >
+      <div
+        class="bg-white rounded-lg p-6 max-w-md w-full mx-4"
+        @click.stop
+      >
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+            <Icon name="material-symbols:cancel" class="w-6 h-6 text-red-600" />
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900">Tolak Permohonan</h3>
+            <p class="text-sm text-gray-600">Tindakan ini tidak boleh dibatalkan</p>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <p class="text-gray-700">
+            Adakah anda pasti untuk tolak <strong>{{ selectedRows.length }}</strong> permohonan yang dipilih?
+          </p>
+          <div class="mt-3 max-h-32 overflow-y-auto bg-gray-50 rounded p-3">
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li v-for="refNo in selectedRows" :key="refNo" class="flex items-center">
+                <Icon name="material-symbols:circle" class="w-2 h-2 mr-2" />
+                {{ refNo }} - {{ getApplicationName(refNo) }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="flex justify-end gap-3">
+          <rs-button variant="secondary-outline" @click="showBulkRejectModal = false">
+            Batal
+          </rs-button>
+          <rs-button variant="danger" @click="confirmBulkReject">
+            <Icon name="material-symbols:close" class="w-4 h-4 mr-1" />
+            Ya, Tolak
+          </rs-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div
+      v-if="showSuccessToast"
+      class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center"
+    >
+      <Icon name="material-symbols:check-circle" class="w-5 h-5 mr-2" />
+      {{ successMessage }}
+    </div>
   </div>
 </template>
 
@@ -218,22 +317,22 @@ const columns = [
     sortable: true,
   },
   {
-    key: "candidateName",
+    key: "namaCalon",
     label: "Nama Calon",
     sortable: true,
   },
   {
-    key: "masjidName",
+    key: "namaMasjid",
     label: "Masjid",
     sortable: true,
   },
   {
-    key: "categoryLabel",
+    key: "kategoriLabel",
     label: "Kategori",
     sortable: true,
   },
   {
-    key: "applicationDate",
+    key: "tarikhPermohonan",
     label: "Tarikh Mohon",
     sortable: true,
   },
@@ -278,10 +377,22 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const selectedRows = ref([]);
 const selectAll = ref(false);
+const showBulkApproveModal = ref(false);
+const showBulkRejectModal = ref(false);
+const showSuccessToast = ref(false);
+const successMessage = ref("");
 
-// Mock data for applications
+// Debug computed to monitor selection
+const selectedRowsDebug = computed(() => {
+  console.log("Selected rows:", selectedRows.value);
+  console.log("Selected rows count:", selectedRows.value.length);
+  return selectedRows.value;
+});
+
+// Mock data for applications (standardized data structure)
 const applications = ref([
   {
+    pilih: false,
     noRef: "PA-2024-001",
     namaCalon: "Ahmad bin Abdullah",
     namaMasjid: "Masjid Wilayah Persekutuan",
@@ -289,31 +400,31 @@ const applications = ref([
     tarikhPermohonan: "01/03/2024",
     status: "Belum Disemak",
     tindakan: { status: "Belum Disemak", noRef: "PA-2024-001" },
-    pilih: false,
   },
   {
+    pilih: false,
     noRef: "PA-2024-002",
-    namaCalonPenolongAmil: "Siti binti Mohamed",
+    namaCalon: "Siti binti Mohamed",
     namaMasjid: "Masjid Al-Khairiyah",
     kategoriLabel: "Kariah",
     tarikhPermohonan: "02/03/2024",
     status: "Menunggu Sokongan JPPA",
     tindakan: { status: "Menunggu Sokongan JPPA", noRef: "PA-2024-002" },
-    pilih: false,
   },
   {
+    pilih: false,
     noRef: "PA-2024-003",
-    namaCalonPenolongAmil: "Mohd Razak bin Ibrahim",
+    namaCalon: "Mohd Razak bin Ibrahim",
     namaMasjid: "Masjid Bandar Utama",
     kategoriLabel: "Komuniti",
     tarikhPermohonan: "03/03/2024",
     status: "Menunggu Kelulusan Ketua JPPA",
     tindakan: { status: "Menunggu Kelulusan Ketua JPPA", noRef: "PA-2024-003" },
-    pilih: false,
   },
   {
+    pilih: false,
     noRef: "PA-2024-004",
-    namaCalonPenolongAmil: "Nurul Huda binti Ali",
+    namaCalon: "Nurul Huda binti Ali",
     namaMasjid: "Masjid Damansara Perdana",
     kategoriLabel: "Padi",
     tarikhPermohonan: "04/03/2024",
@@ -322,27 +433,26 @@ const applications = ref([
       status: "Menunggu Kelulusan Ketua Divisyen",
       noRef: "PA-2024-004",
     },
-    pilih: false,
   },
   {
+    pilih: false,
     noRef: "PA-2024-005",
-    namaCalonPenolongAmil: "Abdul Rahman bin Hassan",
+    namaCalon: "Abdul Rahman bin Hassan",
     namaMasjid: "Masjid Kg Delek",
     kategoriLabel: "Fitrah",
     tarikhPermohonan: "05/03/2024",
     status: "Lulus",
     tindakan: { status: "Lulus", noRef: "PA-2024-005" },
-    pilih: false,
   },
   {
+    pilih: false,
     noRef: "PA-2024-006",
-    namaCalonPenolongAmil: "Fatimah binti Ismail",
+    namaCalon: "Fatimah binti Ismail",
     namaMasjid: "Masjid Al-Hidayah",
     kategoriLabel: "Komuniti",
     tarikhPermohonan: "06/03/2024",
     status: "Tidak Lulus",
     tindakan: { status: "Tidak Lulus", noRef: "PA-2024-006" },
-    pilih: false,
   },
 ]);
 
@@ -422,6 +532,55 @@ const getNextPage = (status) => {
   return statusPages[status] || "01";
 };
 
+const getApplicationName = (noRef) => {
+  const app = applications.value.find(app => app.noRef === noRef);
+  return app ? app.namaCalon : "";
+};
+
+// Helper functions for manual checkbox
+const getRowRefFromSlot = (slotProps) => {
+  // Try different ways to get the noRef from slot props
+  console.log('Getting noRef from slot props:', slotProps);
+  
+  if (slotProps.row?.noRef) return slotProps.row.noRef;
+  if (slotProps.data?.noRef) return slotProps.data.noRef;
+  if (slotProps.item?.noRef) return slotProps.item.noRef;
+  if (slotProps.record?.noRef) return slotProps.record.noRef;
+  
+  // If none of the above work, try to get from the entire row data
+  // The table might pass the entire filteredApplications row
+  const allProps = Object.keys(slotProps);
+  console.log('Available slot prop keys:', allProps);
+  
+  // Find a property that has noRef
+  for (const key of allProps) {
+    if (slotProps[key] && typeof slotProps[key] === 'object' && slotProps[key].noRef) {
+      console.log(`Found noRef in ${key}:`, slotProps[key].noRef);
+      return slotProps[key].noRef;
+    }
+  }
+  
+  return null;
+};
+
+const toggleRowSelection = (noRef) => {
+  if (!noRef) return;
+  
+  console.log('Toggling row selection for:', noRef);
+  console.log('Current selectedRows:', selectedRows.value);
+  
+  const index = selectedRows.value.indexOf(noRef);
+  if (index > -1) {
+    // Remove from selection
+    selectedRows.value.splice(index, 1);
+  } else {
+    // Add to selection
+    selectedRows.value.push(noRef);
+  }
+  
+  console.log('New selectedRows:', selectedRows.value);
+};
+
 // Action handlers
 const handleAction = (actionData) => {
   const nextPage = getNextPage(actionData.status);
@@ -429,69 +588,73 @@ const handleAction = (actionData) => {
 };
 
 // Bulk action handlers
-const handleBulkApprove = () => {
+const confirmBulkApprove = () => {
   if (selectedRows.value.length === 0) return;
 
-  // Show confirmation dialog
-  if (
-    confirm(
-      `Adakah anda pasti untuk sahkan ${selectedRows.value.length} permohonan yang dipilih?`
-    )
-  ) {
-    // Here you would normally make API calls to approve the selected applications
-    console.log("Approving applications:", selectedRows.value);
+  const approvedCount = selectedRows.value.length;
 
-    // For demo purposes, update the status of selected items
-    applications.value.forEach((app) => {
-      if (selectedRows.value.includes(app.noRef)) {
-        app.status = "Lulus";
-      }
-    });
+  // Here you would normally make API calls to approve the selected applications
+  console.log("Approving applications:", selectedRows.value);
 
-    // Clear selection
-    selectedRows.value = [];
-    selectAll.value = false;
+  // For demo purposes, update the status of selected items
+  applications.value.forEach((app) => {
+    if (selectedRows.value.includes(app.noRef)) {
+      app.status = "Lulus";
+    }
+  });
 
-    // Show success message (you can replace this with your notification system)
-    alert("Permohonan telah berjaya disahkan.");
-  }
+  // Clear selection and close modal
+  selectedRows.value = [];
+  selectAll.value = false;
+  showBulkApproveModal.value = false;
+
+  // Show success message
+  showSuccessMessage(`${approvedCount} permohonan telah berjaya disahkan.`);
 };
 
-const handleBulkReject = () => {
+const confirmBulkReject = () => {
   if (selectedRows.value.length === 0) return;
 
-  // Show confirmation dialog
-  if (
-    confirm(
-      `Adakah anda pasti untuk tolak ${selectedRows.value.length} permohonan yang dipilih?`
-    )
-  ) {
-    // Here you would normally make API calls to reject the selected applications
-    console.log("Rejecting applications:", selectedRows.value);
+  const rejectedCount = selectedRows.value.length;
 
-    // For demo purposes, update the status of selected items
-    applications.value.forEach((app) => {
-      if (selectedRows.value.includes(app.noRef)) {
-        app.status = "Tidak Lulus";
-      }
-    });
+  // Here you would normally make API calls to reject the selected applications
+  console.log("Rejecting applications:", selectedRows.value);
 
-    // Clear selection
-    selectedRows.value = [];
-    selectAll.value = false;
+  // For demo purposes, update the status of selected items
+  applications.value.forEach((app) => {
+    if (selectedRows.value.includes(app.noRef)) {
+      app.status = "Tidak Lulus";
+    }
+  });
 
-    // Show success message (you can replace this with your notification system)
-    alert("Permohonan telah berjaya ditolak.");
-  }
+  // Clear selection and close modal
+  selectedRows.value = [];
+  selectAll.value = false;
+  showBulkRejectModal.value = false;
+
+  // Show success message
+  showSuccessMessage(`${rejectedCount} permohonan telah berjaya ditolak.`);
 };
 
 // Select all functionality
 const toggleSelectAll = () => {
   if (selectAll.value) {
-    selectedRows.value = filteredApplications.value.map((app) => app.noRef);
-  } else {
+    // Deselect all
     selectedRows.value = [];
+  } else {
+    // Select all filtered applications
+    selectedRows.value = filteredApplications.value.map((app) => app.noRef);
   }
+  selectAll.value = !selectAll.value;
+};
+
+// Success toast functionality
+const showSuccessMessage = (message) => {
+  successMessage.value = message;
+  showSuccessToast.value = true;
+  setTimeout(() => {
+    showSuccessToast.value = false;
+  }, 3000);
 };
 
 // Watch for changes in selected rows to update select all state
@@ -524,5 +687,20 @@ watch(pageSize, () => {
 </script>
 
 <style scoped>
-/* Add any additional styles here */
+/* Custom modal animation */
+.modal-enter-active, .modal-leave-active {
+  transition: opacity 0.3s;
+}
+.modal-enter-from, .modal-leave-to {
+  opacity: 0;
+}
+
+/* Toast animation */
+.toast-enter-active, .toast-leave-active {
+  transition: all 0.3s ease;
+}
+.toast-enter-from, .toast-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+}
 </style>
