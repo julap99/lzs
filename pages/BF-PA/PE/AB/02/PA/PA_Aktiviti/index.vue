@@ -19,10 +19,6 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <p class="text-sm text-gray-500">ID Penolong Amil</p>
-                <p class="font-medium">{{ paInfo.id }}</p>
-              </div>
-              <div>
                 <p class="text-sm text-gray-500">Nama Penolong Amil</p>
                 <p class="font-medium">{{ paInfo.name }}</p>
               </div>
@@ -37,6 +33,23 @@
               <div>
                 <p class="text-sm text-gray-500">Jenis Tugasan</p>
                 <p class="font-medium">{{ paInfo.assignmentType }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Payment Advice No.</p>
+                <p class="font-medium">{{ paInfo.paymentAdviceNo }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Status Pembayaran</p>
+                <span
+                  class="px-2 py-1 text-xs font-medium rounded-full"
+                  :class="getPaymentStatusClass(paInfo.paymentStatus)"
+                >
+                  {{ paInfo.paymentStatus }}
+                </span>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">No. Akaun Pembayaran</p>
+                <p class="font-medium">{{ paInfo.accountNo }}</p>
               </div>
             </div>
           </div>
@@ -59,7 +72,10 @@
                       Aktiviti
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Lokasi
+                      Nama Asnaf
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      No. Rujukan
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Elaun
@@ -78,7 +94,10 @@
                       {{ activity.name }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      {{ activity.location }}
+                      {{ activity.asnafName }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      {{ activity.referenceNo }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       RM {{ activity.allowance }}
@@ -87,7 +106,7 @@
                 </tbody>
                 <tfoot class="bg-gray-50">
                   <tr>
-                    <td colspan="4" class="px-6 py-4 text-right font-medium">
+                    <td colspan="5" class="px-6 py-4 text-right font-medium">
                       Jumlah Keseluruhan:
                     </td>
                     <td class="px-6 py-4 font-medium text-blue-600">
@@ -148,6 +167,9 @@ const paInfo = ref({
   endDate: '31/12/2024',
   assignmentType: 'Kariah',
   status: 'Disokong',
+  paymentStatus: 'Telah Dibayar',
+  paymentAdviceNo: 'PA-2024-001',
+  accountNo: '1234567890',
 });
 
 // Mock activities data
@@ -156,7 +178,8 @@ const activities = ref([
     id: 'B001',
     date: '01/03/2024',
     name: 'Bancian Baru',
-    location: 'Masjid Al-Hidayah',
+    asnafName: 'Abdul Rahman bin Mohamed',
+    referenceNo: 'ASN-2024-001',
     status: 'Selesai',
     allowance: '30.00',
   },
@@ -164,7 +187,8 @@ const activities = ref([
     id: 'AR001',
     date: '02/03/2024',
     name: 'Asnaf Review',
-    location: 'Masjid Al-Hidayah',
+    asnafName: 'Fatimah binti Omar',
+    referenceNo: 'ASN-2024-002',
     status: 'Dalam Proses',
     allowance: '20.00',
   },
@@ -172,7 +196,8 @@ const activities = ref([
     id: 'PB001',
     date: '03/03/2024',
     name: 'Permohonan Bantuan',
-    location: 'Masjid Al-Hidayah',
+    asnafName: 'Hassan bin Ismail',
+    referenceNo: 'ASN-2024-003',
     status: 'Belum Bermula',
     allowance: '20.00',
   },
@@ -180,7 +205,8 @@ const activities = ref([
     id: 'B002',
     date: '04/03/2024',
     name: 'Bancian Baru',
-    location: 'Masjid Al-Hidayah',
+    asnafName: 'Zainab binti Abdullah',
+    referenceNo: 'ASN-2024-004',
     status: 'Selesai',
     allowance: '30.00',
   },
@@ -188,7 +214,8 @@ const activities = ref([
     id: 'AR002',
     date: '05/03/2024',
     name: 'Asnaf Review',
-    location: 'Masjid Al-Hidayah',
+    asnafName: 'Mohamed bin Yusof',
+    referenceNo: 'ASN-2024-005',
     status: 'Dalam Proses',
     allowance: '20.00',
   }
@@ -199,6 +226,15 @@ const getStatusClass = (status) => {
   const statusClasses = {
     'Disokong': 'bg-green-100 text-green-800',
     'Tidak Disokong': 'bg-red-100 text-red-800',
+  };
+  return statusClasses[status] || 'bg-gray-100 text-gray-800';
+};
+
+const getPaymentStatusClass = (status) => {
+  const statusClasses = {
+    'Belum Dibayar': 'bg-yellow-100 text-yellow-800',
+    'Telah Dibayar': 'bg-green-100 text-green-800',
+    'Dalam Proses': 'bg-blue-100 text-blue-800',
   };
   return statusClasses[status] || 'bg-gray-100 text-gray-800';
 };
