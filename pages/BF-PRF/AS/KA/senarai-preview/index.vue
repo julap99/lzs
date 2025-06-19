@@ -111,7 +111,7 @@
                     Kategori Asnaf
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tarikh
+                    Tarikh Akhir Review
                   </th>
                 </tr>
               </thead>
@@ -147,7 +147,7 @@
             <FormKit
               type="date"
               name="tarikhAkhir"
-              label="Tarikh Akhir"
+              label="Tarikh Akhir Asnaf Membuat Kemaskini Maklumat"
               validation="required" 
               v-model="tarikhAkhir"
               placeholder="Pilih Tarikh Akhir"

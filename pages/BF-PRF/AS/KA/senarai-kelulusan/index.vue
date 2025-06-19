@@ -134,7 +134,7 @@
           Adakah anda pasti untuk meluluskan permohonan asnaf ini?
         </p>
         <p class="text-sm text-gray-600 mb-4">
-          Tindakan ini akan memproses kelulusan asnaf tanpa mengubah kategori.
+          Tindakan kelulusan keluar asnaf tanpa mengubah kategori.
         </p>
       </template>
       <template #footer>
@@ -186,7 +186,8 @@ const tableFields = [
   "namaAsnaf",
   "kategoriSebelum",
   "kategoriSelepas",
-  "tarikhAkhir",
+  "statusAsnaf",
+  "tarikhTamatPembangunan",
   "noTelefon",
   "tindakan"
 ];
@@ -225,72 +226,80 @@ const asnafList = ref([
     namaAsnaf: "Ahmad bin Abdullah",
     kategoriSebelum: "Fakir",
     kategoriSelepas: "Non Fakir",
-    tarikhAkhir: "2020-01-15",
+    statusAsnaf: "Dalam Pembangunan Asnaf",
+    tarikhTamatPembangunan: "2025-01-15",
     noTelefon: "0123456789",
-    tindakan: { id: "ASN-2024-001" },
+    tindakan: { id: "ASN-2025-001" },
     isProcessed: false
   },
   {
     namaAsnaf: "Siti binti Ali",
     kategoriSebelum: "Miskin",
     kategoriSelepas: "Non Miskin",
-    tarikhAkhir: "2020-03-20",
+    statusAsnaf: "Dalam Pembangunan Asnaf",
+    tarikhTamatPembangunan: "2025-03-20",
     noTelefon: "0123456788",
-    tindakan: { id: "ASN-2024-002" },
+    tindakan: { id: "ASN-2025-002" },
     isProcessed: false
   },
   {
     namaAsnaf: "Mohammad bin Hassan",
     kategoriSebelum: "Non Fakir",
     kategoriSelepas: "Fakir",
-    tarikhAkhir: "2021-06-10",
+    statusAsnaf: "Dalam Pembangunan Asnaf",
+    tarikhTamatPembangunan: "2025-06-10",
     noTelefon: "0123456787",
-    tindakan: { id: "ASN-2024-003" },
+    tindakan: { id: "ASN-2025-003" },
     isProcessed: false
   },
   {
     namaAsnaf: "Fatimah binti Omar",
     kategoriSebelum: "Non Miskin",
     kategoriSelepas: "Miskin",
-    tarikhAkhir: "2020-08-25",
+    statusAsnaf: "Dalam Pembangunan Asnaf",
+    tarikhTamatPembangunan: "2025-08-25",
     noTelefon: "0123456786",
-    tindakan: { id: "ASN-2024-004" },
+    tindakan: { id: "ASN-2025-004" },
     isProcessed: false
   },
   {
     namaAsnaf: "Abdul Rahman bin Ismail",
     kategoriSebelum: "Fakir",
     kategoriSelepas: "Non Fakir",
-    tarikhAkhir: "2021-02-14",
+    statusAsnaf: "Dalam Pembangunan Asnaf",
+    tarikhTamatPembangunan: "2025-02-14",
     noTelefon: "0123456785",
-    tindakan: { id: "ASN-2024-005" },
+    tindakan: { id: "ASN-2025-005" },
     isProcessed: false
   },
   {
     namaAsnaf: "Zainab binti Ahmad",
     kategoriSebelum: "Miskin",
     kategoriSelepas: "Non Miskin",
-    tarikhAkhir: "2020-11-30",
+    statusAsnaf: "Dalam Pembangunan Asnaf",
+    tarikhTamatPembangunan: "2025-11-30",
     noTelefon: "0123456784",
-    tindakan: { id: "ASN-2024-006" },
+    tindakan: { id: "ASN-2025-006" },
     isProcessed: false
   },
   {
     namaAsnaf: "Ibrahim bin Yusof",
     kategoriSebelum: "Non Fakir",
     kategoriSelepas: "Fakir",
-    tarikhAkhir: "2019-09-05",
+    statusAsnaf: "Dalam Pembangunan Asnaf",
+    tarikhTamatPembangunan: "2025-09-05",
     noTelefon: "0123456783",
-    tindakan: { id: "ASN-2024-007" },
+    tindakan: { id: "ASN-2025-007" },
     isProcessed: false
   },
   {
     namaAsnaf: "Aminah binti Khalid",
     kategoriSebelum: "Non Miskin",
     kategoriSelepas: "Miskin",
-    tarikhAkhir: "2020-05-12",
+    statusAsnaf: "Dalam Pembangunan Asnaf",
+    tarikhTamatPembangunan: "2025-05-12",
     noTelefon: "0123456782",
-    tindakan: { id: "ASN-2024-008" },
+    tindakan: { id: "ASN-2025-008" },
     isProcessed: false
   },
 ]);
