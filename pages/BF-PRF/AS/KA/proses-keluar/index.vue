@@ -76,7 +76,7 @@
                 @click="prosesKeluarSingle(data.value)"
               >
                 <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
-                Keluarkan
+                Proses Penentuan Keluar Asnaf
               </rs-button>
               <span 
                 v-else
@@ -120,7 +120,7 @@
           Adakah anda pasti untuk memproses keluar asnaf ini?
         </p>
         <p class="text-sm text-gray-600 mb-4">
-          Tindakan ini akan memproses keluar asnaf tanpa mengubah kategori.
+          Tindakan ini akan memproses keluar asnaf untuk menentukan status terkini asnaf
         </p>
       </template>
       <template #footer>
@@ -129,7 +129,7 @@
             Batal
           </rs-button>
           <rs-button variant="success" @click="confirmProsesKeluar">
-            Keluarkan
+            Teruskan
           </rs-button>
         </div>
       </template>
@@ -329,8 +329,8 @@ const confirmProsesKeluar = () => {
   // You can use SweetAlert2 or any notification system here
   console.log('Proses keluar berjaya');
 
-  // Redirect to /BF-PRF/AS/FR/04
-  router.push('/BF-PRF/AS/FR/04');
+  // Redirect to /BF-PRF/AS/KA/proses-keluar/hadkifayah
+  router.push('/BF-PRF/AS/KA/proses-keluar/hadkifayah');
 };
 
 const refreshData = () => {
