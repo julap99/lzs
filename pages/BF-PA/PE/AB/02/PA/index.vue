@@ -185,33 +185,53 @@ const penolongAmil = ref([
   },
   {
     id: 'PA002',
-    name: 'Ahmad bin Abdullah',
-    totalAllowance: '1,500.00',
+    name: 'Siti Aminah binti Hassan',
+    totalAllowance: '1,000.00',
   },
   {
     id: 'PA003',
-    name: 'Ahmad bin Abdullah',
-    totalAllowance: '1,500.00',
+    name: 'Mohd Razak bin Ibrahim',
+    totalAllowance: '1,000.00',
   },
+  {
+    id: 'PA004',
+    name: 'Nurul Aisyah binti Omar',
+    totalAllowance: '1,000.00',
+  },
+  {
+    id: 'PA005',
+    name: 'Ali bin Hassan',
+    totalAllowance: '1,500.00',
+  }
 ]);
 
 // Mock activities data
 const activities = ref([
   {
     id: 'ACT001',
-    name: 'Kutipan Zakat Fitrah',
-    totalAllowance: '1,500.00',
+    name: 'Kutipan Zakat Kariah',
+    totalAllowance: '500.00',
   },
   {
     id: 'ACT002',
     name: 'Agihan Bantuan Asnaf',
-    totalAllowance: '1,500.00',
+    totalAllowance: '500.00',
   },
   {
-    id: 'ACT002',
+    id: 'ACT003',
     name: 'Program Tazkirah',
-    totalAllowance: '1,500.00',
+    totalAllowance: '500.00',
   },
+  {
+    id: 'ACT004',
+    name: 'Lawatan Asnaf',
+    totalAllowance: '500.00',
+  },
+  {
+    id: 'ACT005',
+    name: 'Program Qiamullail',
+    totalAllowance: '500.00',
+  }
 ]);
 
 // Computed properties for totals

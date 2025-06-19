@@ -123,84 +123,87 @@
 
         <div class="relative overflow-x-auto">
           <table class="w-full text-sm text-left">
-            <thead class="text-xs uppercase bg-gray-50">
-              <tr>
-                <th scope="col" class="px-6 py-3">
-                  <div class="flex items-center">
-                    <FormKit
-                      v-model="isAllSelected"
-                      type="checkbox"
-                      :classes="{
-                        wrapper: 'mb-0',
-                        outer: 'mb-0',
-                        input: 'icon-check rounded',
-                      }"
-                      @change="handleSelectAll"
-                    />
-                  </div>
-                </th>
-                <th scope="col" class="px-6 py-3">Nama Pemohon</th>
-                <th scope="col" class="px-6 py-3">Jenis Bantuan</th>
-                <th scope="col" class="px-6 py-3">Status</th>
-                <th scope="col" class="px-6 py-3">No. Batch</th>
-                <th scope="col" class="px-6 py-3 text-center">Tindakan</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="applicant in filteredApplicants"
-                :key="applicant.id"
-                class="bg-white border-b hover:bg-gray-50"
-              >
-                <td class="px-6 py-4">
-                  <FormKit
-                    v-model="applicant.selected"
-                    type="checkbox"
-                    :classes="{
-                      wrapper: 'mb-0',
-                      outer: 'mb-0',
-                      input: 'icon-check rounded',
-                    }"
-                    @change="handleSelectionChange(applicant)"
-                  />
-                </td>
-                <td class="px-6 py-4">
-                  <div class="flex flex-col">
-                    <span class="font-medium">{{ applicant.name }}</span>
-                    <span class="text-sm text-gray-500">{{
-                      applicant.icNumber
-                    }}</span>
-                  </div>
-                </td>
-                <td class="px-6 py-4">
-                  <rs-badge :variant="getAidTypeVariant(applicant.aidType)">
-                    {{ applicant.aidType }}
-                  </rs-badge>
-                </td>
-                <td class="px-6 py-4">
-                  <rs-badge :variant="getStatusVariant(applicant.status)">
-                    {{ applicant.status }}
-                  </rs-badge>
-                </td>
-                <td class="px-6 py-4">
-                  <span class="font-mono text-sm">{{
-                    applicant.batchNumber
-                  }}</span>
-                </td>
-                <td class="px-6 py-4 text-center">
-                  <div class="flex justify-center items-center gap-2">
-                    <rs-button
-                      variant="primary-outline"
-                      class="p-1 w-6 h-6"
-                      @click="handleViewDetails(applicant)"
-                    >
-                      <Icon name="ph:eye" />
-                    </rs-button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+<thead class="text-xs uppercase bg-gray-50">
+  <tr>
+    <th scope="col" class="px-6 py-3">
+      <div class="flex items-center">
+        <FormKit
+          v-model="isAllSelected"
+          type="checkbox"
+          :classes="{
+            wrapper: 'mb-0',
+            outer: 'mb-0',
+            input: 'icon-check rounded',
+          }"
+          @change="handleSelectAll"
+        />
+      </div>
+    </th>
+    <th scope="col" class="px-6 py-3">Nama Pemohon</th>
+    <th scope="col" class="px-6 py-3">Jenis Bantuan</th>
+    <th scope="col" class="px-6 py-3">Kadar</th> <!-- Moved here -->
+    <th scope="col" class="px-6 py-3">Status</th>
+    <th scope="col" class="px-6 py-3">No. Batch</th>
+    <th scope="col" class="px-6 py-3 text-center">Tindakan</th>
+  </tr>
+</thead>
+
+  <tbody>
+  <tr
+    v-for="applicant in filteredApplicants"
+    :key="applicant.id"
+    class="bg-white border-b hover:bg-gray-50"
+  >
+    <td class="px-6 py-4">
+      <FormKit
+        v-model="applicant.selected"
+        type="checkbox"
+        :classes="{
+          wrapper: 'mb-0',
+          outer: 'mb-0',
+          input: 'icon-check rounded',
+        }"
+        @change="handleSelectionChange(applicant)"
+      />
+    </td>
+    <td class="px-6 py-4">
+      <div class="flex flex-col">
+        <span class="font-medium">{{ applicant.name }}</span>
+        <span class="text-sm text-gray-500">{{ applicant.icNumber }}</span>
+      </div>
+    </td>
+    <td class="px-6 py-4">
+      <rs-badge :variant="getAidTypeVariant(applicant.aidType)">
+        {{ applicant.aidType }}
+      </rs-badge>
+    </td>
+    <td class="px-6 py-4">
+      <span class="text-sm">{{ applicant.kadar }}</span> <!-- Pindah ke sini -->
+    </td>
+    <td class="px-6 py-4">
+      <rs-badge :variant="getStatusVariant(applicant.status)">
+        {{ applicant.status }}
+      </rs-badge>
+    </td>
+    <td class="px-6 py-4">
+      <span class="font-mono text-sm">{{ applicant.batchNumber }}</span>
+    </td>
+    <td class="px-6 py-4 text-center">
+      <div class="flex justify-center items-center gap-2">
+        <rs-button
+          variant="primary-outline"
+          class="p-1 w-6 h-6"
+          @click="handleViewDetails(applicant)"
+        >
+          <Icon name="ph:eye" />
+        </rs-button>
+      </div>
+    </td>
+  </tr>
+</tbody>
+
+</table>
+
         </div>
 
         <!-- Pagination -->
@@ -327,14 +330,16 @@ const breadcrumb = ref([
 ]);
 
 interface Applicant {
-  id: string;
-  name: string;
-  icNumber: string;
-  aidType: string;
-  status: string;
-  batchNumber: string;
-  selected?: boolean;
+  id: 1,
+  name: "Ali Bin Abu",
+  icNumber: "900101-01-1234",
+  aidType: "Zakat Bulanan",
+  status: "Diluluskan",
+  batchNumber: "B001",
+  kadar: "RM500", // ← Tambah nilai ini
+  selected: false
 }
+
 
 interface Filters {
   status: string;
@@ -352,6 +357,7 @@ const applicants = ref<Applicant[]>([
     status: "Menunggu",
     batchNumber: "BATCH-001",
     selected: false,
+    kadar: "RM500",
   },
   {
     id: "2",
@@ -361,6 +367,7 @@ const applicants = ref<Applicant[]>([
     status: "Diluluskan",
     batchNumber: "BATCH-001",
     selected: false,
+    kadar: "RM200",
   },
   {
     id: "3",
@@ -370,6 +377,7 @@ const applicants = ref<Applicant[]>([
     status: "Menunggu",
     batchNumber: "BATCH-002",
     selected: false,
+    kadar: "RM300",
   },
   {
     id: "4",
@@ -379,6 +387,7 @@ const applicants = ref<Applicant[]>([
     status: "Ditolak",
     batchNumber: "BATCH-002",
     selected: false,
+    kadar: "RM500",
   },
   {
     id: "5",
@@ -388,6 +397,7 @@ const applicants = ref<Applicant[]>([
     status: "Menunggu",
     batchNumber: "BATCH-003",
     selected: false,
+    kadar: "RM200",
   },
   {
     id: "6",
@@ -397,6 +407,7 @@ const applicants = ref<Applicant[]>([
     status: "Diluluskan",
     batchNumber: "BATCH-003",
     selected: false,
+    kadar: "RM300",
   },
   {
     id: "7",
@@ -406,6 +417,7 @@ const applicants = ref<Applicant[]>([
     status: "Menunggu",
     batchNumber: "BATCH-004",
     selected: false,
+    kadar: "RM500",
   },
   {
     id: "8",
@@ -415,6 +427,7 @@ const applicants = ref<Applicant[]>([
     status: "Ditolak",
     batchNumber: "BATCH-004",
     selected: false,
+    kadar: "RM200",
   },
   {
     id: "9",
@@ -424,6 +437,7 @@ const applicants = ref<Applicant[]>([
     status: "Menunggu",
     batchNumber: "BATCH-005",
     selected: false,
+    kadar: "RM300",
   },
   {
     id: "10",
@@ -433,6 +447,7 @@ const applicants = ref<Applicant[]>([
     status: "Diluluskan",
     batchNumber: "BATCH-005",
     selected: false,
+    kadar: "RM500",
   },
   {
     id: "11",
@@ -442,6 +457,7 @@ const applicants = ref<Applicant[]>([
     status: "Menunggu",
     batchNumber: "BATCH-006",
     selected: false,
+    kadar: "RM200",
   },
   {
     id: "12",
@@ -451,6 +467,7 @@ const applicants = ref<Applicant[]>([
     status: "Ditolak",
     batchNumber: "BATCH-006",
     selected: false,
+    kadar: "RM300",
   },
   {
     id: "13",
@@ -460,6 +477,7 @@ const applicants = ref<Applicant[]>([
     status: "Menunggu",
     batchNumber: "BATCH-007",
     selected: false,
+    kadar: "RM500",
   },
   {
     id: "14",
@@ -469,6 +487,7 @@ const applicants = ref<Applicant[]>([
     status: "Diluluskan",
     batchNumber: "BATCH-007",
     selected: false,
+    kadar: "RM200",
   },
   {
     id: "15",
@@ -478,8 +497,10 @@ const applicants = ref<Applicant[]>([
     status: "Menunggu",
     batchNumber: "BATCH-008",
     selected: false,
+    kadar: "RM300",
   },
 ]);
+
 
 const selectedApplicants = ref<Applicant[]>([]);
 const isDetailsModalVisible = ref(false);

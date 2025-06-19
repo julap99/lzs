@@ -8,8 +8,42 @@
           <h2 class="text-xl font-semibold">
             Pra Pendaftaran Calon Penolong Amil
           </h2>
+          <rs-button variant="secondary" @click="showImportModal = true">
+            <Icon name="mdi:import" class="mr-1" size="1rem" />
+            Import
+          </rs-button>
         </div>
       </template>
+
+      <!-- Import Modal -->
+      <rs-modal v-model="showImportModal" title="Import Data" size="md">
+        <template #body>
+          <div class="p-4">
+            <FormKit
+              type="form"
+              :actions="false"
+              @submit="handleImport"
+            >
+              <FormKit
+                type="file"
+                name="importFile"
+                label="Upload File"
+                accept=".xlsx,.xls,.csv"
+                validation="required"
+                v-model="importFile"
+                :validation-messages="{ required: 'Please upload a file' }"
+              />
+            </FormKit>
+          </div>
+        </template>
+        <template #footer>
+          <div class="flex justify-end gap-2">
+            <rs-button variant="primary" @click="handleImport">
+              Import
+            </rs-button>
+          </div>
+        </template>
+      </rs-modal>
 
       <template #body>
         <div class="p-4">
@@ -51,6 +85,7 @@
                     required: 'Nombor kad pengenalan diperlukan',
                     length: 'Nombor kad pengenalan mesti 12 digit',
                   }"
+                  v-model="forms[index].noKadPengenalan"
                 />
 
                 <!-- Nama Calon -->
@@ -63,6 +98,7 @@
                   :validation-messages="{
                     required: 'Nama calon diperlukan',
                   }"
+                  v-model="forms[index].namaCalonPenolongAmil"
                 />
 
                 <!-- Emel -->
@@ -76,6 +112,7 @@
                     required: 'Emel diperlukan',
                     email: 'Format emel tidak sah',
                   }"
+                  v-model="forms[index].emel"
                 />
 
                 <!-- No Telefon -->
@@ -89,6 +126,7 @@
                     required: 'No telefon diperlukan',
                     matches: 'Format no telefon tidak sah',
                   }"
+                  v-model="forms[index].noTelefon"
                 />
 
                 <!-- Kategori Penolong Amil -->
@@ -139,6 +177,7 @@
                           :validation-messages="{
                             required: 'Sila pilih institusi',
                           }"
+                          v-model="forms[index].kariah.institusi"
                         />
                       </div>
                     </div>
@@ -178,6 +217,7 @@
                           :validation-messages="{
                             required: 'Sila pilih institusi',
                           }"
+                          v-model="forms[index].komuniti.institusi"
                         />
                       </div>
                     </div>
@@ -206,6 +246,7 @@
                     fileRemoveIcon: 'mdi:delete',
                     fileRemoveText: 'sr-only'
                   }"
+                  v-model="forms[index].kadPengenalanFile"
                 />
 
                 <!-- Gambar Calon Upload -->
@@ -225,6 +266,7 @@
                     fileRemoveIcon: 'mdi:delete',
                     fileRemoveText: 'sr-only'
                   }"
+                  v-model="forms[index].gambarCalon"
                 />
               </div>
             </div>
@@ -482,6 +524,89 @@ watch(isSubmitting, (newValue) => {
     navigateTo("/BF-PA/PP/PD/02");
   }
 });
+
+// Import modal state
+const showImportModal = ref(false);
+const importFile = ref(null);
+
+const handleImport = () => {
+  // Fill forms with 5 mock candidates
+  forms.value = generateMockCandidates(5);
+  showImportModal.value = false;
+};
+
+function generateMockCandidates(count) {
+  const names = [
+    'Ahmad bin Ali',
+    'Siti binti Abu',
+    'Mohd Faizal',
+    'Nurul Aisyah',
+    'Ali bin Hassan'
+  ];
+  const icNumbers = [
+    '900101012345',
+    '880202023456',
+    '920303034567',
+    '950404045678',
+    '970505056789'
+  ];
+  const emails = [
+    'ahmad@example.com',
+    'siti@example.com',
+    'faizal@example.com',
+    'aisyah@example.com',
+    'ali@example.com'
+  ];
+  const phones = [
+    '0123456789',
+    '0132345678',
+    '0141234567',
+    '0179876543',
+    '0198765432'
+  ];
+  const kariahInstitusi = [
+    'MASJID_KARIAH',
+    'MASJID_AL_KHAIRIYAH',
+    'TAMAN_SERI_GOMBAK',
+    'MASJID_DAMANSARA_PERDANA',
+    'MASJID_BANDAR_UTAMA'
+  ];
+  const komunitiJenis = [
+    'PEMBANGUNAN_SOSIAL',
+    'PEMBANGUNAN_EKONOMI',
+    'PEMBANGUNAN_PENDIDIKAN',
+    'PEMBANGUNAN_INSAN',
+    'PEMBANGUNAN_INSTITUSI_AGAMA'
+  ];
+  const komunitiInstitusi = [
+    'MASJID_DAN_SURAU',
+    'PUSAT_KHIDMAT_MASYARAKAT',
+    'NGO',
+    'PUSAT_LATIHAN_KEMAHIRAN',
+    'KOPERASI_ASNAF'
+  ];
+  return Array.from({ length: count }, (_, i) => ({
+    noKadPengenalan: icNumbers[i],
+    namaCalonPenolongAmil: names[i],
+    emel: emails[i],
+    noTelefon: phones[i],
+    kategori: {
+      fitrah: i % 2 === 0,
+      padi: i % 3 === 0,
+      kariah: i % 2 === 1,
+      komuniti: i % 2 === 0
+    },
+    kariah: {
+      institusi: kariahInstitusi[i % kariahInstitusi.length]
+    },
+    komuniti: {
+      jenis: komunitiJenis[i % komunitiJenis.length],
+      institusi: komunitiInstitusi[i % komunitiInstitusi.length]
+    },
+    kadPengenalanFile: null,
+    gambarCalon: null
+  }));
+}
 </script>
 
 <style scoped>

@@ -6,6 +6,10 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Senarai Semua Tuntutan</h2>
+          <rs-button variant="primary" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan')">
+            <Icon name="material-symbols:add" class="w-5 h-5 mr-1" />
+            Tambah Tuntutan
+          </rs-button>
         </div>
       </template>
 
@@ -120,7 +124,7 @@
                   variant="primary"
                   size="sm"
                   class="!px-2 !py-1"
-                  @click="handleView(data.text.id)"
+                  @click="handleViewDalamSemakan(data.text.id)"
                 >
                   <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" />
                   Lihat Tuntutan
@@ -224,6 +228,142 @@
             </div>
           </div>
         </div>
+
+        <!-- Permohonan Yang Telah Dilulus Table -->
+        <div class="mt-8">
+          <h3 class="text-lg font-semibold mb-4 text-success-600">
+            <Icon name="material-symbols:check-circle" class="mr-2" />
+            Permohonan yang telah diluluskan
+          </h3>
+          <rs-table
+            :data="tuntutanLulus"
+            :columns="columnsLulus"
+            :pageSize="pageSizeLulus"
+            :showNoColumn="true"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: true,
+            }"
+            advanced
+          >
+            <template v-slot:noTuntutan="data">
+              <a
+                href="#"
+                class="text-primary-600 hover:text-primary-800"
+                @click.prevent="viewDetails(data.text)"
+              >
+                {{ data.text }}
+              </a>
+            </template>
+
+            <template v-slot:tarikhTuntutan="data">
+              {{ formatDate(data.text) }}
+            </template>
+
+            <template v-slot:amaunTuntutan="data">
+              <div class="font-medium text-right">
+                RM {{ formatNumber(data.text) }}
+              </div>
+            </template>
+
+            <template v-slot:statusPermohonan="data">
+              <rs-badge variant="success">
+                {{ data.text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:tarikhPerkhidmatan="data">
+              {{ formatDate(data.text) }}
+            </template>
+
+            <template v-slot:tindakan="data">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  size="sm"
+                  class="!px-2 !py-1"
+                  @click="handleViewLulus(data.text.id)"
+                >
+                  <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" />
+                  Lihat
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </div>
+
+        <!-- Permohonan yang Telah Ditolak Table -->
+        <div class="mt-8">
+          <h3 class="text-lg font-semibold mb-4 text-danger-600">
+            <Icon name="material-symbols:cancel" class="mr-2" />
+            Permohonan yang telah ditolak
+          </h3>
+          <rs-table
+            :data="tuntutanDitolak"
+            :columns="columnsDitolak"
+            :pageSize="pageSizeDitolak"
+            :showNoColumn="true"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: true,
+            }"
+            advanced
+          >
+            <template v-slot:noTuntutan="data">
+              <a
+                href="#"
+                class="text-primary-600 hover:text-primary-800"
+                @click.prevent="viewDetails(data.text)"
+              >
+                {{ data.text }}
+              </a>
+            </template>
+
+            <template v-slot:tarikhTuntutan="data">
+              {{ formatDate(data.text) }}
+            </template>
+
+            <template v-slot:amaunTuntutan="data">
+              <div class="font-medium text-right">
+                RM {{ formatNumber(data.text) }}
+              </div>
+            </template>
+
+            <template v-slot:statusPermohonan="data">
+              <rs-badge variant="danger">
+                {{ data.text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:tarikhPerkhidmatan="data">
+              {{ formatDate(data.text) }}
+            </template>
+
+            <template v-slot:tindakan="data">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  size="sm"
+                  class="!px-2 !py-1"
+                  @click="handleViewDitolak(data.text.id)"
+                >
+                  <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" />
+                  Lihat
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </div>
       </template>
     </rs-card>
   </div>
@@ -293,6 +433,94 @@ const columns = [
   },
 ];
 
+// Columns for Lulus table
+const columnsLulus = [
+  {
+    key: "noTuntutan",
+    label: "No. Tuntutan",
+    sortable: true,
+  },
+  {
+    key: "noGL",
+    label: "No. GL",
+    sortable: true,
+  },
+  {
+    key: "namaPemohon",
+    label: "Nama Pemohon / Institusi",
+    sortable: true,
+  },
+  {
+    key: "tarikhTuntutan",
+    label: "Tarikh Tuntutan",
+    sortable: true,
+  },
+  {
+    key: "amaunTuntutan",
+    label: "Amaun Tuntutan (RM)",
+    sortable: true,
+  },
+  {
+    key: "statusPermohonan",
+    label: "Status Permohonan",
+    sortable: true,
+  },
+  {
+    key: "tarikhPerkhidmatan",
+    label: "Tarikh Perkhidmatan",
+    sortable: true,
+  },
+  {
+    key: "tindakan",
+    label: "Tindakan",
+    sortable: false,
+  },
+];
+
+// Columns for Ditolak table
+const columnsDitolak = [
+  {
+    key: "noTuntutan",
+    label: "No. Tuntutan",
+    sortable: true,
+  },
+  {
+    key: "noGL",
+    label: "No. GL",
+    sortable: true,
+  },
+  {
+    key: "namaPemohon",
+    label: "Nama Pemohon / Institusi",
+    sortable: true,
+  },
+  {
+    key: "tarikhTuntutan",
+    label: "Tarikh Tuntutan",
+    sortable: true,
+  },
+  {
+    key: "amaunTuntutan",
+    label: "Amaun Tuntutan (RM)",
+    sortable: true,
+  },
+  {
+    key: "statusPermohonan",
+    label: "Status Permohonan",
+    sortable: true,
+  },
+  {
+    key: "tarikhPerkhidmatan",
+    label: "Tarikh Perkhidmatan",
+    sortable: true,
+  },
+  {
+    key: "tindakan",
+    label: "Tindakan",
+    sortable: false,
+  },
+];
+
 // Options for filters
 const statusOptions = [
   { label: "Semua Status", value: "" },
@@ -310,6 +538,8 @@ const filters = ref({
 });
 const pageSize = ref(10);
 const currentPage = ref(1);
+const pageSizeLulus = ref(5);
+const pageSizeDitolak = ref(5);
 
 // Sample data - Replace with actual API call
 const tuntutanList = ref([
@@ -324,7 +554,136 @@ const tuntutanList = ref([
     tarikhPerkhidmatan: "2024-03-15",
     tindakan: { id: "TUN-2024-001", status: "Draf" }
   },
+  {
+    id: "TUN-2024-012",
+    noTuntutan: "TUN-2024-012",
+    noGL: "GL-012",
+    namaPemohon: "Masjid Al-Rahman",
+    tarikhTuntutan: "2024-03-26",
+    amaunTuntutan: 7200.00,
+    statusPermohonan: "Dalam Semakan",
+    tarikhPerkhidmatan: "2024-03-24",
+    tindakan: { id: "TUN-2024-012", status: "Dalam Semakan" }
+  },
+  {
+    id: "TUN-2024-013",
+    noTuntutan: "TUN-2024-013",
+    noGL: "GL-013",
+    namaPemohon: "Sekolah Agama Rakyat Al-Hikmah",
+    tarikhTuntutan: "2024-03-25",
+    amaunTuntutan: 11000.00,
+    statusPermohonan: "Dalam Semakan",
+    tarikhPerkhidmatan: "2024-03-22",
+    tindakan: { id: "TUN-2024-013", status: "Dalam Semakan" }
+  },
+  {
+    id: "TUN-2024-014",
+    noTuntutan: "TUN-2024-014",
+    noGL: "GL-014",
+    namaPemohon: "Surau Taman Damai",
+    tarikhTuntutan: "2024-03-24",
+    amaunTuntutan: 3800.00,
+    statusPermohonan: "Dalam Semakan",
+    tarikhPerkhidmatan: "2024-03-21",
+    tindakan: { id: "TUN-2024-014", status: "Dalam Semakan" }
+  },
+  {
+    id: "TUN-2024-015",
+    noTuntutan: "TUN-2024-015",
+    noGL: "GL-015",
+    namaPemohon: "Pusat Tahfiz Al-Quran Nurul Iman",
+    tarikhTuntutan: "2024-03-23",
+    amaunTuntutan: 13500.00,
+    statusPermohonan: "Dalam Semakan",
+    tarikhPerkhidmatan: "2024-03-20",
+    tindakan: { id: "TUN-2024-015", status: "Dalam Semakan" }
+  },
   // Add more sample data as needed
+]);
+
+// Mock data for Lulus table
+const tuntutanLulus = ref([
+  {
+    id: "TUN-2024-002",
+    noTuntutan: "TUN-2024-002",
+    noGL: "GL-002",
+    namaPemohon: "Masjid Al-Hidayah",
+    tarikhTuntutan: "2024-03-18",
+    amaunTuntutan: 8000.00,
+    statusPermohonan: "Diluluskan",
+    tarikhPerkhidmatan: "2024-03-10",
+    tindakan: { id: "TUN-2024-002", status: "Diluluskan" }
+  },
+  {
+    id: "TUN-2024-003",
+    noTuntutan: "TUN-2024-003",
+    noGL: "GL-003",
+    namaPemohon: "Sekolah Agama Rakyat Al-Amin",
+    tarikhTuntutan: "2024-03-15",
+    amaunTuntutan: 12000.00,
+    statusPermohonan: "Diluluskan",
+    tarikhPerkhidmatan: "2024-03-08",
+    tindakan: { id: "TUN-2024-003", status: "Diluluskan" }
+  },
+  {
+    id: "TUN-2024-004",
+    noTuntutan: "TUN-2024-004",
+    noGL: "GL-004",
+    namaPemohon: "Surau Kampung Baru",
+    tarikhTuntutan: "2024-03-12",
+    amaunTuntutan: 3500.00,
+    statusPermohonan: "Diluluskan",
+    tarikhPerkhidmatan: "2024-03-05",
+    tindakan: { id: "TUN-2024-004", status: "Diluluskan" }
+  },
+  {
+    id: "TUN-2024-005",
+    noTuntutan: "TUN-2024-005",
+    noGL: "GL-005",
+    namaPemohon: "Pusat Tahfiz Al-Quran",
+    tarikhTuntutan: "2024-03-10",
+    amaunTuntutan: 15000.00,
+    statusPermohonan: "Diluluskan",
+    tarikhPerkhidmatan: "2024-03-01",
+    tindakan: { id: "TUN-2024-005", status: "Diluluskan" }
+  },
+]);
+
+// Mock data for Ditolak table
+const tuntutanDitolak = ref([
+  {
+    id: "TUN-2024-006",
+    noTuntutan: "TUN-2024-006",
+    noGL: "GL-006",
+    namaPemohon: "Kumpulan Belia Islam",
+    tarikhTuntutan: "2024-03-22",
+    amaunTuntutan: 25000.00,
+    statusPermohonan: "Ditolak",
+    tarikhPerkhidmatan: "2024-03-20",
+    tindakan: { id: "TUN-2024-006", status: "Ditolak" }
+  },
+  {
+    id: "TUN-2024-007",
+    noTuntutan: "TUN-2024-007",
+    noGL: "GL-007",
+    namaPemohon: "Persatuan Islam Kampung Melayu",
+    tarikhTuntutan: "2024-03-19",
+    amaunTuntutan: 18000.00,
+    statusPermohonan: "Ditolak",
+    tarikhPerkhidmatan: "2024-03-15",
+    tindakan: { id: "TUN-2024-007", status: "Ditolak" }
+  },
+  {
+    id: "TUN-2024-008",
+    noTuntutan: "TUN-2024-008",
+    noGL: "GL-008",
+    namaPemohon: "Surau Taman Permai",
+    tarikhTuntutan: "2024-03-16",
+    amaunTuntutan: 7500.00,
+    statusPermohonan: "Ditolak",
+    tarikhPerkhidmatan: "2024-03-12",
+    tindakan: { id: "TUN-2024-008", status: "Ditolak" }
+  },
 ]);
 
 // Computed properties
@@ -370,7 +729,7 @@ const formatNumber = (number) => {
 
 const getStatusVariant = (status) => {
   const variants = {
-    'Draf': 'secondary',
+    'Draf': 'info',
     'Dalam Semakan': 'warning',
     'Lulus': 'success',
     'Tidak Lulus': 'danger',
@@ -385,7 +744,7 @@ const handleView = (id) => {
 };
 
 const handleEdit = (id) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/edit`);
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/view-draf`);
 };
 
 const handleSubmit = (id) => {
@@ -410,6 +769,19 @@ const handlePrintRejection = (id) => {
 
 const handleImprove = (id) => {
   navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/improve`);
+};
+
+// New handlers for Lulus and Ditolak tables
+const handleViewLulus = (id) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/view-lulus`);
+};
+
+const handleViewDitolak = (id) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/view-ditolak`);
+};
+
+const handleViewDalamSemakan = (id) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${id}/view-dalam-semakan`);
 };
 </script>
 

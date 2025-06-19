@@ -311,8 +311,8 @@ onMounted(() => {
       no: 1,
       noPA: "PA-2024-001",
       tarikhResit: new Date().toISOString(),
-      jumlah: 1000.0,
-      namaBantuan: "Bantuan Kewangan Bulanan",
+      jumlah: 400.0,
+      namaBantuan: "B105 - Bantuan Kewangan Bulanan",
       statusSerahan: "Belum Serahan",
       tindakan: ""
     },
@@ -329,8 +329,8 @@ onMounted(() => {
       no: 3,
       noPA: "PA-2024-004",
       tarikhResit: new Date().toISOString(),
-      jumlah: 1000.0,
-      namaBantuan: "Bantuan Kewangan Bulanan",
+      jumlah: 400.0,
+      namaBantuan: "B105 - Bantuan Kewangan Bulanan",
       statusSerahan: "Belum Serahan",
       tindakan: ""
     },

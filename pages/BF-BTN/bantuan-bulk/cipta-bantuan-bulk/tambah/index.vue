@@ -113,26 +113,61 @@
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CustomSelect
+                v-model="formData.jenisBantuan"
+                :options="jenisBantuanOptions"
+                label="Jenis Bantuan Dipohon"
+                search-placeholder="Cari jenis bantuan..."
+                :disabled="false"
+              />
+              <FormKit
+                type="select"
+                name="aidProduct"
+                label="Aid Product"
+                :options="aidProductOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih aid product',
+                }"
+                :disabled="!formData.jenisBantuan"
+              />
+              <FormKit
+                type="select"
+                name="productPackage"
+                label="Product Package"
+                :options="productPackageOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih product package',
+                }"
+                :disabled="!formData.aidProduct"
+              />
             <!-- Kategori Bantuan -->
-            <FormKit
+            <!-- <FormKit
               type="text"
               name="kategoriBantuan"
               label="Kategori Bantuan"
               v-model="formData.kategoriBantuan"
               disabled
-            />
+            /> -->
 
             <!-- Sub-Kategori -->
-            <FormKit
+            <!-- <FormKit
               type="text"
               name="subKategori"
               label="Sub-Kategori"
               v-model="formData.subKategori"
               disabled
-            />
+            /> -->
 
             <!-- Bantuan -->
-            <FormKit
+            <!-- <FormKit
               type="select"
               name="bantuan"
               label="Bantuan"
@@ -140,20 +175,20 @@
               placeholder="Pilih bantuan"
               validation="required"
               v-model="formData.bantuan"
-            />
+            /> -->
 
             <!-- Kod Bantuan -->
-            <FormKit
+            <!-- <FormKit
               type="text"
               name="kodBantuan"
               label="Kod Bantuan"
               v-model="formData.kodBantuan"
               disabled
               help="Auto-generate berdasarkan bantuan"
-            />
+            /> -->
 
             <!-- Produk Bantuan -->
-            <FormKit
+            <!-- <FormKit
               type="select"
               name="produkBantuan"
               label="Produk Bantuan"
@@ -161,7 +196,7 @@
               placeholder="Pilih produk bantuan"
               validation="required"
               v-model="formData.produkBantuan"
-            />
+            /> -->
 
             <!-- Penyiasat -->
             <FormKit
@@ -610,14 +645,33 @@ const formData = ref({
   tarikhMohon: computed(() => new Date().toLocaleDateString("ms-MY")),
   diciptaOleh: "",
   diciptaPada: "",
-  kategoriBantuan: "Pendidikan Fakir",
-  subKategori: "Pendidikan IPT",
+  kategoriBantuan: "",
+  subKategori: "",
   bantuan: "",
   kodBantuan: "",
   produkBantuan: "",
   penyiasat: "",
   cawangan: "",
+  aidProduct: "",
+  jenisBantuan: ""
 });
+
+// Load the bantuan data from JSON
+const bantuanData = ref({});
+
+// Import the bantuan data directly
+import bantuanJson from "./Grouped by Aid Code.json";
+
+// Set the bantuan data on component mount
+onMounted(() => {
+  try {
+    bantuanData.value = bantuanJson;
+    console.log("Loaded bantuan data:", bantuanData.value);
+  } catch (error) {
+    console.error("Error loading bantuan data:", error);
+  }
+});
+
 
 const breadcrumb = ref([
   {
@@ -953,6 +1007,62 @@ const handleImport = async () => {
   }
 };
 
+// Compute jenis bantuan options from the JSON data
+const jenisBantuanOptions = computed(() => {
+  if (!bantuanData.value.bantuan) return [];
+  
+  const options = Object.entries(bantuanData.value.bantuan).map(([categoryName]) => ({
+    label: categoryName,
+    value: categoryName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+// Compute aid product options based on selected jenis bantuan
+const aidProductOptions = computed(() => {
+  if (!formData.value.jenisBantuan || !bantuanData.value.bantuan) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
+  if (!category) return [{ label: "-- Pilih --", value: "", disabled: true }];
+
+  const options = Object.entries(category).map(([productName]) => ({
+    label: productName,
+    value: productName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+// Compute product package options based on selected aid product
+const productPackageOptions = computed(() => {
+  if (!formData.value.jenisBantuan || !formData.value.aidProduct || !bantuanData.value.bantuan) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
+  if (!category || !category[formData.value.aidProduct]) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const options = category[formData.value.aidProduct].map((pkg) => ({
+    label: pkg,
+    value: pkg,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
 
 /* const handleImport = async () => {
   try {

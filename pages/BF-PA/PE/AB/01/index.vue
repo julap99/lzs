@@ -244,66 +244,45 @@ const isEligible = computed(() => {
 
 const penolongAmil = ref([
   {
-    id: 1,
+    id: 'PA001',
     name: 'Ahmad bin Abdullah',
     activities: [
-      {
-        id: 1,
-        name: 'Kutipan Zakat Kariah',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 2,
-        name: 'Agihan Bantuan Asnaf',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 3,
-        name: 'Program Tazkirah',
-        allowanceRate: '500.00'
-      }
+      { id: 1, name: 'Kutipan Zakat Kariah', allowanceRate: '500.00' },
+      { id: 2, name: 'Agihan Bantuan Asnaf', allowanceRate: '500.00' },
+      { id: 3, name: 'Program Tazkirah', allowanceRate: '500.00' }
     ]
   },
   {
-    id: 2,
-    name: 'Mohd Razak bin Ibrahim',
-    activities: [
-      {
-        id: 1,
-        name: 'Kutipan Zakat Kariah',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 2,
-        name: 'Agihan Bantuan Asnaf',
-        allowanceRate: '500.00'
-      }
-    ]
-  },
-  {
-    id: 3,
+    id: 'PA002',
     name: 'Siti Aminah binti Hassan',
     activities: [
-      {
-        id: 1,
-        name: 'Kutipan Zakat Kariah',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 2,
-        name: 'Agihan Bantuan Asnaf',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 3,
-        name: 'Program Tazkirah',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 4,
-        name: 'Program Qiamullail',
-        allowanceRate: '500.00'
-      }
+      { id: 1, name: 'Kutipan Zakat Kariah', allowanceRate: '500.00' },
+      { id: 2, name: 'Lawatan Asnaf', allowanceRate: '500.00' }
+    ]
+  },
+  {
+    id: 'PA003',
+    name: 'Mohd Razak bin Ibrahim',
+    activities: [
+      { id: 1, name: 'Agihan Bantuan Asnaf', allowanceRate: '500.00' },
+      { id: 2, name: 'Program Qiamullail', allowanceRate: '500.00' }
+    ]
+  },
+  {
+    id: 'PA004',
+    name: 'Nurul Aisyah binti Omar',
+    activities: [
+      { id: 1, name: 'Program Tazkirah', allowanceRate: '500.00' },
+      { id: 2, name: 'Lawatan Asnaf', allowanceRate: '500.00' }
+    ]
+  },
+  {
+    id: 'PA005',
+    name: 'Ali bin Hassan',
+    activities: [
+      { id: 1, name: 'Kutipan Zakat Kariah', allowanceRate: '500.00' },
+      { id: 2, name: 'Program Qiamullail', allowanceRate: '500.00' },
+      { id: 3, name: 'Lawatan Asnaf', allowanceRate: '500.00' }
     ]
   }
 ]);
@@ -335,7 +314,7 @@ const handleKira = () => {
 };
 
 const handleSimpan = () => {
-  navigateTo('/BF-PA/PE/AB/02');
+  navigateTo('/BF-PA/PE/AB');
 };
 </script>
 

@@ -4,7 +4,53 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <div class="space-y-6">
-      <!-- Section 1: Maklumat Tuntutan -->
+      <!-- Section 1: Maklumat Bantuan -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
+          </div>
+        </template>
+        <template #body>
+          <div class="bg-gray-50 p-4 rounded-lg mb-6">
+            <h4 class="text-md font-medium mb-4">Butiran Asas Jenis Bantuan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Kod Bantuan
+                </label>
+                <p class="text-gray-900">{{ bantuanData.kodBantuan }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Jenis Bantuan
+                </label>
+                <p class="text-gray-900">{{ bantuanData.jenisBantuan }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Bahan Bantuan
+                </label>
+                <p class="text-gray-900">{{ bantuanData.bahanBantuan }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Pakej Bantuan
+                </label>
+                <p class="text-gray-900">{{ bantuanData.pakejBantuan }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Kelayakan Bantuan
+                </label>
+                <p class="text-gray-900">{{ bantuanData.kelayakanBantuan }}</p>
+              </div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 2: Maklumat Tuntutan -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
@@ -51,7 +97,7 @@
         </template>
       </rs-card>
 
-      <!-- Section 2: Maklumat GL / Invoice -->
+      <!-- Section 3: Maklumat GL / Invoice -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
@@ -132,80 +178,141 @@
         </template>
       </rs-card>
 
-      <!-- Section 3: Dapatan & Pengesahan -->
+      <!-- Section 4: Kaedah Siasatan -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <h2 class="text-xl font-semibold">Dapatan & Pengesahan</h2>
+            <h2 class="text-xl font-semibold">Kaedah Siasatan</h2>
           </div>
         </template>
         <template #body>
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Perlu Lawatan Tapak?
+                Cara Siasatan
               </label>
-
               <FormKit
                 type="select"
                 v-model="perluLawatanTapak"
                 :options="[
-                  { label: 'Ya', value: true },
-                  { label: 'Tidak', value: false }
+                  { label: 'Lapangan', value: true },
+                  { label: 'Telefon', value: false },
+                  { label: 'Semak Dokumen Sahaja', value: false }
                 ]"
                 placeholder="Sila pilih..."
               />
+              <div v-if="perluLawatanTapak" class="mt-4 space-y-4">
+                <FormKit
+                  type="date"
+                  v-model="tarikhLawatanTapak"
+                  label="Tarikh Lawatan Tapak"
+                  validation="required"
+                  :validation-messages="{ required: 'Sila pilih tarikh lawatan tapak' }"
+                />
+                <FormKit
+                  type="time"
+                  v-model="masaLawatanTapak"
+                  label="Masa Lawatan Tapak"
+                  validation="required"
+                  :validation-messages="{ required: 'Sila pilih masa lawatan tapak' }"
+                  format="24hr"
+                />
+              </div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 5: Pengesahan EOAD & Action -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            <h2 class="text-xl font-semibold">Pengesahan EOAD</h2>
+          </div>
+        </template>
+        <template #body>
+          <form @submit.prevent="handleSubmit" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Keputusan Pengesahan
+              </label>
+              <div class="space-x-4">
+                <FormKit
+                  type="radio"
+                  name="keputusan"
+                  v-model="form.keputusan"
+                  :options="[
+                    { label: 'Sokong', value: 'Sokong' },
+                    { label: 'Tidak Sokong', value: 'Tidak Sokong' },
+                  ]"
+                  :validation="[['required']]"
+                />
+              </div>
             </div>
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Catatan Laporan Pengesahan
+                Catatan Laporan Pengesahan (EOAD)
               </label>
               <FormKit
                 type="textarea"
-                v-model="catatanPengesahan"
-                validation="required"
-                :validation-messages="{
-                  required:
-                    'Catatan diperlukan jika tidak menyokong permohonan',
-                }"
+                v-model="form.catatan"
                 placeholder="Sila masukkan catatan pengesahan..."
+                validation="required_if:keputusan,Tidak Sokong"
+                :validation-messages="{
+                  required_if: 'Catatan diperlukan untuk keputusan Tidak Sokong',
+                }"
                 rows="4"
               />
             </div>
-          </div>
-        </template>
-      </rs-card>
 
-      <!-- Section 4: Action & Status -->
-      <rs-card>
-        <template #body>
-          <div class="flex justify-end space-x-4">
-            <rs-button
-              variant="danger"
-              @click="showTidakSokongModal = true"
-              :disabled="processing"
-            >
-              <Icon name="material-symbols:close" class="mr-1" />
-              Tidak Sokong — Kembali ke Pemohon
-            </rs-button>
-            <rs-button
-              variant="primary"
-              @click="showSokongModal = true"
-              :disabled="processing"
-            >
-              <Icon name="material-symbols:check" class="mr-1" />
-              Sokong & Hantar ke Pelulus
-            </rs-button>
-          </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Tarikh Pengesahan
+                </label>
+                <div class="text-gray-900">{{ formatDate(new Date()) }}</div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Pegawai EOAD
+                </label>
+                <div class="text-gray-900">{{ pegawaiInfo }}</div>
+              </div>
+            </div>
+
+            <div class="flex justify-end space-x-4 pt-4">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleCancel"
+                :disabled="processing"
+              >
+                Batal
+              </rs-button>
+              <rs-button
+                type="submit"
+                :variant="form.keputusan === 'Sokong' ? 'primary' : 'danger'"
+                :disabled="processing || !form.keputusan"
+                @click="handleSubmit"
+              >
+                {{ form.keputusan === "Sokong" ? "Sokong & Hantar" : "Tidak Sokong" }}
+              </rs-button>
+            </div>
+          </form>
         </template>
       </rs-card>
     </div>
 
-    <!-- Sokong Confirmation Modal -->
+    <!-- Confirmation Modal -->
     <rs-modal
-      v-model="showSokongModal"
-      title="Pengesahan Sokong"
+      v-model="showConfirmationModal"
+      :title="
+        form.keputusan === 'Sokong'
+          ? 'Pengesahan Sokong'
+          : 'Pengesahan Tidak Sokong'
+      "
       size="md"
       position="center"
     >
@@ -218,10 +325,13 @@
               size="3rem"
             />
             <h3 class="mt-4 text-lg font-medium text-gray-900">
-              Sahkan Sokongan Tuntutan
+              {{ form.keputusan === 'Sokong' ? 'Sahkan Sokongan Tuntutan' : 'Sahkan Tidak Sokong Tuntutan' }}
             </h3>
             <p class="mt-2 text-sm text-gray-500">
-              Adakah anda pasti untuk menyokong tuntutan ini dan menghantar ke pelulus?
+              {{ form.keputusan === 'Sokong' 
+                ? 'Adakah anda pasti untuk menyokong tuntutan ini dan menghantar ke pelulus?' 
+                : 'Adakah anda pasti untuk tidak menyokong tuntutan ini dan mengembalikan kepada pemohon?' 
+              }}
             </p>
           </div>
 
@@ -242,69 +352,9 @@
               <span class="font-medium">Perlu Lawatan Tapak:</span>
               <span>{{ perluLawatanTapak ? 'Ya' : 'Tidak' }}</span>
             </div>
-          </div>
-        </div>
-      </template>
-
-      <template #footer>
-        <div class="flex justify-end gap-3">
-          <rs-button
-            variant="primary-outline"
-            @click="showSokongModal = false"
-            :disabled="processing"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="primary"
-            @click="handleSokong"
-            :loading="processing"
-          >
-            Sahkan
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Tidak Sokong Confirmation Modal -->
-    <rs-modal
-      v-model="showTidakSokongModal"
-      title="Pengesahan Tidak Sokong"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="space-y-4">
-          <div class="text-center">
-            <Icon
-              name="ph:warning-circle"
-              class="mx-auto text-warning"
-              size="3rem"
-            />
-            <h3 class="mt-4 text-lg font-medium text-gray-900">
-              Sahkan Tidak Sokong Tuntutan
-            </h3>
-            <p class="mt-2 text-sm text-gray-500">
-              Adakah anda pasti untuk tidak menyokong tuntutan ini dan mengembalikan kepada pemohon?
-            </p>
-          </div>
-
-          <div class="bg-gray-50 p-4 rounded-lg space-y-2">
-            <div class="flex justify-between">
-              <span class="font-medium">ID Tuntutan:</span>
-              <span>{{ tuntutanData.idTuntutan }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">No. GL:</span>
-              <span>{{ tuntutanData.noGL }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Amaun Tuntutan:</span>
-              <span>RM {{ formatNumber(tuntutanData.amaunTuntutan) }}</span>
-            </div>
             <div class="flex justify-between">
               <span class="font-medium">Catatan:</span>
-              <span>{{ catatanPengesahan || '-' }}</span>
+              <span>{{ form.catatan || '-' }}</span>
             </div>
           </div>
         </div>
@@ -314,17 +364,17 @@
         <div class="flex justify-end gap-3">
           <rs-button
             variant="primary-outline"
-            @click="showTidakSokongModal = false"
+            @click="showConfirmationModal = false"
             :disabled="processing"
           >
             Batal
           </rs-button>
           <rs-button
-            variant="danger"
-            @click="handleTidakSokong"
+            :variant="form.keputusan === 'Sokong' ? 'primary' : 'danger'"
+            @click="handleConfirm"
             :loading="processing"
           >
-            Sahkan
+            {{ form.keputusan === 'Sokong' ? 'Sahkan' : 'Sahkan' }}
           </rs-button>
         </div>
       </template>
@@ -360,12 +410,17 @@ const breadcrumb = ref([
 ]);
 
 // Form state
-const perluLawatanTapak = ref(false);
-const catatanPengesahan = ref("");
+const form = ref({
+  keputusan: "",
+  catatan: "",
+});
 
-// Add modal state variables
-const showSokongModal = ref(false);
-const showTidakSokongModal = ref(false);
+const perluLawatanTapak = ref(false);
+const tarikhLawatanTapak = ref("");
+const masaLawatanTapak = ref("");
+
+// Modal state variables
+const showConfirmationModal = ref(false);
 const processing = ref(false);
 
 // Sample data - in real app, this would be fetched from API
@@ -394,17 +449,18 @@ const tuntutanData = ref({
   ],
 });
 
+// Sample bantuan data - in real app, this would be fetched from API based on GL
+const bantuanData = ref({
+  kodBantuan: "B400",
+  jenisBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+  bahanBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA",
+  pakejBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
+  kelayakanBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
+});
+
 // Get current user info - in real app, this would come from auth state
 const pegawaiInfo = computed(() => {
   return "Siti Aminah binti Abdullah (ETD)";
-});
-
-// Computed properties
-const isFormValid = computed(() => {
-  if (!perluLawatanTapak.value) {
-    return catatanPengesahan.value.length > 0;
-  }
-  return true;
 });
 
 // Methods
@@ -434,54 +490,56 @@ const downloadDocument = (doc) => {
   document.body.removeChild(link);
 };
 
-const handleSokong = async () => {
+const handleSubmit = () => {
+  if (!form.value.keputusan) {
+    return;
+  }
+  showConfirmationModal.value = true;
+};
+
+const handleConfirm = async () => {
   try {
     processing.value = true;
-    // Implement approval logic here
-    // Record in audit trail
-    await recordAuditTrail({
-      pegawai: pegawaiInfo.value,
-      tindakan: "Sokong",
-      catatan: catatanPengesahan.value,
-    });
+    
+    if (form.value.keputusan === 'Sokong') {
+      // Implement approval logic here
+      await recordAuditTrail({
+        pegawai: pegawaiInfo.value,
+        tindakan: "Sokong",
+        catatan: form.value.catatan,
+      });
 
-    // Navigate back to listing with success message
-    navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
-      query: {
-        success: "Tuntutan telah disokong dan dihantar ke pelulus",
-      },
-    });
+      // Navigate back to listing with success message
+      navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
+        query: {
+          success: "Tuntutan telah disokong dan dihantar ke pelulus",
+        },
+      });
+    } else {
+      // Implement rejection logic here
+      await recordAuditTrail({
+        pegawai: pegawaiInfo.value,
+        tindakan: "Tidak Sokong",
+        catatan: form.value.catatan,
+      });
+
+      // Navigate back to listing with info message
+      navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
+        query: {
+          info: "Tuntutan telah dikembalikan kepada pemohon untuk penambahbaikan",
+        },
+      });
+    }
   } catch (error) {
-    console.error("Error processing approval:", error);
+    console.error("Error processing decision:", error);
   } finally {
     processing.value = false;
-    showSokongModal.value = false;
+    showConfirmationModal.value = false;
   }
 };
 
-const handleTidakSokong = async () => {
-  try {
-    processing.value = true;
-    // Implement rejection logic here
-    // Record in audit trail
-    await recordAuditTrail({
-      pegawai: pegawaiInfo.value,
-      tindakan: "Tidak Sokong",
-      catatan: catatanPengesahan.value,
-    });
-
-    // Navigate back to listing with info message
-    navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad", {
-      query: {
-        info: "Tuntutan telah dikembalikan kepada pemohon untuk penambahbaikan",
-      },
-    });
-  } catch (error) {
-    console.error("Error processing rejection:", error);
-  } finally {
-    processing.value = false;
-    showTidakSokongModal.value = false;
-  }
+const handleCancel = () => {
+  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad");
 };
 
 const recordAuditTrail = async (data) => {

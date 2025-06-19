@@ -14,46 +14,6 @@
 
       <template #body>
         <div class="p-4">
-          <!-- Key Metrics Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-blue-600">Jumlah Aktiviti</p>
-                  <h3 class="text-2xl font-bold text-blue-700">156</h3>
-                </div>
-                <Icon name="heroicons:calendar" class="text-blue-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-green-50 p-4 rounded-lg border border-green-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-green-600">Jumlah Kehadiran</p>
-                  <h3 class="text-2xl font-bold text-green-700">1,234</h3>
-                </div>
-                <Icon name="heroicons:user-group" class="text-green-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-yellow-600">Menunggu Sokongan</p>
-                  <h3 class="text-2xl font-bold text-yellow-700">45</h3>
-                </div>
-                <Icon name="heroicons:clock" class="text-yellow-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-red-50 p-4 rounded-lg border border-red-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-red-600">Tidak Hadir</p>
-                  <h3 class="text-2xl font-bold text-red-700">23</h3>
-                </div>
-                <Icon name="heroicons:x-circle" class="text-red-500" size="24" />
-              </div>
-            </div>
-          </div>
-
           <!-- Search and Filter Section -->
           <div class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -84,76 +44,174 @@
           </div>
 
           <!-- Table Section -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID Aktiviti
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nama Aktiviti
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tarikh
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Lokasi
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Jenis
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tindakan
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="activity in activities" :key="activity.id">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <a 
-                      href="#" 
-                      class="text-blue-600 hover:text-blue-800"
-                      @click.prevent="navigateTo(getActionRoute(activity.status))"
-                    >
-                      {{ activity.id }}
-                    </a>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.name }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.date }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.location }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.type }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getStatusColor(activity.status)"
-                    >
-                      {{ getStatusLabel(activity.status) }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <rs-button
-                      variant="primary"
-                      size="sm"
-                      @click="navigateTo(getActionRoute(activity.status))"
-                    >
-                      {{ getActionButtonText(activity.status) }}
-                    </rs-button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="space-y-8">
+            <!-- Approved Items Table -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                <Icon name="heroicons:check-circle" class="mr-2" size="20" />
+                Senarai elaun yang telah diluluskan
+              </h3>
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-green-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        ID Aktiviti
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Nama Aktiviti
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Tarikh
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Lokasi
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Jenis
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                        Tindakan
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="activity in approvedActivities" :key="activity.id">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <a 
+                          href="#" 
+                          class="text-blue-600 hover:text-blue-800"
+                          @click.prevent="navigateTo(getActionRoute(activity.status, activity.id))"
+                        >
+                          {{ activity.id }}
+                        </a>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ activity.name }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ activity.date }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ activity.location }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ activity.type }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 py-1 text-xs font-medium rounded-full"
+                          :class="getStatusColor(activity.status)"
+                        >
+                          {{ getStatusLabel(activity.status) }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <rs-button
+                          variant="primary"
+                          size="sm"
+                          @click="navigateTo(getActionRoute(activity.status, activity.id))"
+                        >
+                          {{ getActionButtonText(activity.status) }}
+                        </rs-button>
+                      </td>
+                    </tr>
+                    <tr v-if="approvedActivities.length === 0">
+                      <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                        Tiada data yang diluluskan
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Rejected Items Table -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                <Icon name="heroicons:x-circle" class="mr-2" size="20" />
+                Senarai elaun yang telah ditolak
+              </h3>
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-red-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        ID Aktiviti
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Nama Aktiviti
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Tarikh
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Lokasi
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Jenis
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">
+                        Tindakan
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="activity in rejectedActivities" :key="activity.id">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <a 
+                          href="#" 
+                          class="text-blue-600 hover:text-blue-800"
+                          @click.prevent="navigateTo(getActionRoute(activity.status, activity.id))"
+                        >
+                          {{ activity.id }}
+                        </a>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ activity.name }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ activity.date }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ activity.location }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ activity.type }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 py-1 text-xs font-medium rounded-full"
+                          :class="getStatusColor(activity.status)"
+                        >
+                          {{ getStatusLabel(activity.status) }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <rs-button
+                          variant="primary"
+                          size="sm"
+                          @click="navigateTo(getActionRoute(activity.status, activity.id))"
+                        >
+                          {{ getActionButtonText(activity.status) }}
+                        </rs-button>
+                      </td>
+                    </tr>
+                    <tr v-if="rejectedActivities.length === 0">
+                      <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                        Tiada data yang ditolak
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </template>
@@ -185,22 +243,6 @@ const breadcrumb = ref([
 // Mock data for activities
 const activities = ref([
   {
-    id: 'MP/2024/001',
-    name: 'Mesyuarat JPPA Bulanan',
-    date: '2024-03-15',
-    location: 'Dewan Mesyuarat JPPA',
-    type: 'Mesyuarat',
-    status: 'Menunggu Sokongan JPPA'
-  },
-  {
-    id: 'MP/2024/002',
-    name: 'Program Tazkirah Bulanan',
-    date: '2024-03-16',
-    location: 'Masjid Al-Hidayah',
-    type: 'Program',
-    status: 'Menunggu Kelulusan Ketua JPPA'
-  },
-  {
     id: 'MP/2024/003',
     name: 'Latihan Pengurusan Zakat',
     date: '2024-03-10',
@@ -215,14 +257,28 @@ const activities = ref([
     location: 'Dewan Utama',
     type: 'Mesyuarat',
     status: 'Ditolak'
+  },
+  {
+    id: 'MP/2024/007',
+    name: 'Program Khidmat Masyarakat',
+    date: '2024-03-18',
+    location: 'Masjid Al-Amin',
+    type: 'Program',
+    status: 'Diluluskan'
+  },
+  {
+    id: 'MP/2024/012',
+    name: 'Mesyuarat Koordinasi',
+    date: '2024-03-30',
+    location: 'Pejabat Zakat',
+    type: 'Mesyuarat',
+    status: 'Ditolak'
   }
 ]);
 
 // Status options for filter
 const statusOptions = [
   { label: 'Semua', value: '' },
-  { label: 'Menunggu Sokongan JPPA', value: 'Menunggu Sokongan JPPA' },
-  { label: 'Menunggu Kelulusan Ketua JPPA', value: 'Menunggu Kelulusan Ketua JPPA' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
@@ -250,6 +306,15 @@ const filteredActivities = computed(() => {
     const matchesJenis = !selectedJenisAktiviti.value || activity.type === selectedJenisAktiviti.value;
     return matchesSearch && matchesStatus && matchesJenis;
   });
+});
+
+// Computed properties for separated tables
+const approvedActivities = computed(() => {
+  return filteredActivities.value.filter(activity => activity.status === 'Diluluskan');
+});
+
+const rejectedActivities = computed(() => {
+  return filteredActivities.value.filter(activity => activity.status === 'Ditolak');
 });
 
 // Helper functions
@@ -283,12 +348,16 @@ const getStatusLabel = (status) => {
   }
 }
 
-const getActionRoute = (status) => {
+const getActionRoute = (status, activityId) => {
   switch (status) {
     case 'Menunggu Sokongan JPPA':
       return '/BF-PA/PE/MP/03'
     case 'Menunggu Kelulusan Ketua JPPA':
       return '/BF-PA/PE/MP/04'
+    case 'Diluluskan':
+      return `/BF-PA/PE/MP/view-lulus?id=${encodeURIComponent(activityId)}`
+    case 'Ditolak':
+      return `/BF-PA/PE/MP/view-tolak?id=${encodeURIComponent(activityId)}`
     default:
       return '#'
   }

@@ -116,10 +116,10 @@
               class="p-4 rounded-lg border bg-yellow-50 border-l-4 border-yellow-300"
             >
               <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium text-gray-900">Alamat</h4>
+                <h4 class="font-medium text-gray-900">Pendapatan</h4>
                 <span
                   class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full"
-                  >UA</span
+                  >AR</span
                 >
               </div>
 
@@ -129,8 +129,7 @@
                     >Nilai Semasa</label
                   >
                   <div class="p-2 bg-gray-50 rounded text-sm">
-                    NO 12, JALAN MERAK 5, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU,
-                    JOHOR
+                    RM 300
                   </div>
                 </div>
                 <div>
@@ -140,8 +139,7 @@
                   <div
                     class="p-2 bg-green-50 rounded text-sm font-medium text-green-800 border border-green-100"
                   >
-                    NO 15, JALAN MERAK 5, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU,
-                    JOHOR
+                    RM 200
                     <Icon
                       name="heroicons:arrow-long-right-20-solid"
                       class="ml-1 text-green-500 inline"
@@ -151,8 +149,7 @@
               </div>
 
               <div class="text-xs text-gray-500 mt-2">
-                <span class="font-medium">Sebab:</span> Pindah ke rumah baru
-                dalam taman yang sama
+                <span class="font-medium">Sebab:</span> Perubahan pendapatan
               </div>
             </div>
           </div>

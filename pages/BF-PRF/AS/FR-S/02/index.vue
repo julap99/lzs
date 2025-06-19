@@ -103,6 +103,23 @@
                 name="no_pengenalan"
                 label="6. No Polis/No Tentera/No Sijil Lahir"
               />
+
+              <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="7. No Passport"  
+                    />
+
+              <FormKit
+                type="date"
+                name="passportStartDate"
+                label="8. Tarikh mula passport"
+              />
+              <FormKit
+                type="date"
+                name="passportEndDate"
+                label="9. Tarikh tamat passport"
+              />
             </div>
           </div>
 

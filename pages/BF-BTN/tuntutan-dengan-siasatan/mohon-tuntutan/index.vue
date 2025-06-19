@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Mohon Tuntutan GL (TDS-01)</h2>
+          <h2 class="text-xl font-semibold">Mohon Tuntutan GL</h2>
         </div>
       </template>
 
@@ -19,19 +19,63 @@
                 v-model="formData.noGL"
                 type="select"
                 label="Nombor GL"
-                :options="glOptions"
+                :options="[{ label: 'Sila Pilih...', value: '' }, ...glOptions]"
                 validation="required"
                 :validation-messages="{
                   required: 'Sila pilih Nombor GL'
                 }"
-                @change="handleGLChange"
+                @input="handleGLChange"
               />
             </div>
           </div>
 
-          <!-- Section 2: Isi Permohonan Tuntutan -->
+          <!-- Section 2: Maklumat Bantuan -->
           <div class="mb-8">
-            <h3 class="text-lg font-medium mb-4">Isi Permohonan Tuntutan</h3>
+            <h3 class="text-lg font-medium mb-4">Maklumat Bantuan</h3>
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+              <h4 class="text-md font-medium mb-4">Butiran asas jenis bantuan</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormKit
+                  v-model="formData.kodBantuan"
+                  type="text"
+                  label="Kod Bantuan"
+                  disabled
+                />
+
+                <FormKit
+                  v-model="formData.jenisBantuan"
+                  type="text"
+                  label="Jenis Bantuan"
+                  disabled
+                />
+
+                <FormKit
+                  v-model="formData.bahanBantuan"
+                  type="text"
+                  label="Bahan Bantuan"
+                  disabled
+                />
+
+                <FormKit
+                  v-model="formData.pakejBantuan"
+                  type="text"
+                  label="Pakej Bantuan"
+                  disabled
+                />
+
+                <FormKit
+                  v-model="formData.kelayakanBantuan"
+                  type="text"
+                  label="Kelayakan Bantuan"
+                  disabled
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Maklumat Tuntutan -->
+          <div class="mb-8">
+            <h3 class="text-lg font-medium mb-4">Maklumat Tuntutan</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit
                 v-model="formData.noGL"
@@ -55,12 +99,12 @@
               />
 
               <FormKit
-                v-model="formData.tarikhPerkhidmatan"
+                v-model="formData.tarikh"
                 type="date"
-                label="Tarikh Perkhidmatan"
+                label="Tarikh"
                 validation="required"
                 :validation-messages="{
-                  required: 'Sila pilih tarikh perkhidmatan'
+                  required: 'Sila pilih tarikh'
                 }"
               />
 
@@ -74,7 +118,7 @@
             </div>
           </div>
 
-          <!-- Section 3: Muat Naik Dokumen Sokongan -->
+          <!-- Section 4: Muat Naik Dokumen Sokongan -->
           <div class="mb-8">
             <h3 class="text-lg font-medium mb-4">Muat Naik Dokumen Sokongan</h3>
             <div class="grid grid-cols-1 gap-6">
@@ -88,12 +132,12 @@
                 :validation-messages="{
                   required: 'Sila muat naik sekurang-kurangnya satu dokumen sokongan'
                 }"
-                help="Format yang diterima: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
+                help="Format yang diterima: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB. Dokumen default akan dipilih secara automatik berdasarkan GL yang dipilih."
               />
             </div>
           </div>
 
-          <!-- Section 4: Action & Status -->
+          <!-- Section 5: Action & Status -->
           <div class="flex justify-end gap-4">
             <rs-button
               type="button"
@@ -104,8 +148,9 @@
               Simpan Draf
             </rs-button>
             <rs-button
-              type="submit"
+              type="button"
               variant="primary"
+              @click="handleSubmit"
             >
               <Icon name="material-symbols:send" class="w-4 h-4 mr-1" />
               Hantar Tuntutan
@@ -118,11 +163,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
+import { useNuxtApp } from "#app";
 
 definePageMeta({
   title: "Mohon Tuntutan GL (TDS-01)",
 });
+
+const { $swal } = useNuxtApp();
 
 const breadcrumb = ref([
   {
@@ -140,24 +188,84 @@ const breadcrumb = ref([
 // Form data
 const formData = ref({
   noGL: "",
+  kodBantuan: "",
+  jenisBantuan: "",
+  bahanBantuan: "",
+  pakejBantuan: "",
+  kelayakanBantuan: "",
   amaunTuntutan: "",
-  tarikhPerkhidmatan: "",
+  tarikh: "",
   catatanTambahan: "",
   dokumenSokongan: [],
 });
 
 // Sample GL options - Replace with actual API call
 const glOptions = ref([
-  { label: "GL-001 - Bantuan Makanan", value: "GL-001" },
-  { label: "GL-002 - Bantuan Pendidikan", value: "GL-002" },
-  { label: "GL-003 - Bantuan Perubatan", value: "GL-003" },
+  { label: "GL-2025-001 - BANTUAN SUMBANGAN KARPET", value: "GL-2025-001" },
+  { label: "GL-2025-002 - BANTUAN PERUBATAN DIALISIS", value: "GL-2025-002" },
 ]);
 
+// GL data mapping
+const glDataMapping = {
+  'GL-2025-001': {
+    kodBantuan: 'B400',
+    jenisBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA',
+    bahanBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA',
+    pakejBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
+    kelayakanBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
+    amaunTuntutan: 5000.00,
+    dokumenDefault: 'GL_Bantuan_Sumbangan_Karpet.pdf'
+  },
+  'GL-2025-002': {
+    kodBantuan: 'B103',
+    jenisBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
+    bahanBantuan: '(HQ) KATEGORI HEMODIALISIS (FAKIR)',
+    pakejBantuan: '(GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)',
+    kelayakanBantuan: '(GL) (HQ) HEMODIALISIS (FAKIR)',
+    amaunTuntutan: 1500.00,
+    dokumenDefault: 'GL_Bantuan_Perubatan_Dialisis.pdf'
+  }
+};
+
 // Handle GL selection change
-const handleGLChange = (value) => {
-  // Auto-populate related fields based on selected GL
-  console.log("Selected GL:", value);
-  // Add logic to fetch and populate GL details
+const handleGLChange = async (value) => {
+  console.log("handleGLChange triggered with value:", value);
+  
+  // Reset all bantuan fields first
+  formData.value.kodBantuan = '';
+  formData.value.jenisBantuan = '';
+  formData.value.bahanBantuan = '';
+  formData.value.pakejBantuan = '';
+  formData.value.kelayakanBantuan = '';
+  formData.value.amaunTuntutan = '';
+  formData.value.dokumenSokongan = [];
+  
+  // Auto-populate based on selected GL
+  if (value && glDataMapping[value]) {
+    const glData = glDataMapping[value];
+    console.log("Found GL data:", glData);
+    
+    // Use nextTick to ensure reactivity
+    await nextTick();
+    
+    formData.value.kodBantuan = glData.kodBantuan;
+    formData.value.jenisBantuan = glData.jenisBantuan;
+    formData.value.bahanBantuan = glData.bahanBantuan;
+    formData.value.pakejBantuan = glData.pakejBantuan;
+    formData.value.kelayakanBantuan = glData.kelayakanBantuan;
+    formData.value.amaunTuntutan = glData.amaunTuntutan;
+    
+    // Set default document
+    if (glData.dokumenDefault) {
+      // Create a mock File object for the default document
+      const defaultFile = new File([''], glData.dokumenDefault, { type: 'application/pdf' });
+      formData.value.dokumenSokongan = [defaultFile];
+    }
+    
+    console.log("Updated formData:", formData.value);
+  } else {
+    console.log("No GL data found for value:", value);
+  }
 };
 
 // Handle form submission
@@ -179,7 +287,13 @@ const handleSubmit = async () => {
     // Add API call here
 
     // Show success message
-    // Navigate to success page or show notification
+    await $swal.fire({
+      icon: 'success',
+      title: 'Berjaya!',
+      text: 'Permohonan tuntutan anda telah berjaya dihantar',
+      confirmButtonText: 'OK'
+    });
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan');
   } catch (error) {
     console.error("Error submitting form:", error);
     // Show error message
@@ -201,7 +315,13 @@ const handleSaveDraft = async () => {
     // Add API call here
 
     // Show success message
-    // Navigate to draft list or show notification
+    await $swal.fire({
+      icon: 'success',
+      title: 'Berjaya!',
+      text: 'Permohonan tuntutan anda telah berjaya disimpan sebagai "Draf"',
+      confirmButtonText: 'OK'
+    });
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan');
   } catch (error) {
     console.error("Error saving draft:", error);
     // Show error message

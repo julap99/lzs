@@ -135,6 +135,31 @@
           </div>
         </div>
 
+        <!-- Dokumen Berkaitan Section -->
+        <div class="mb-6">
+          <h3 class="text-lg font-medium mb-4">Dokumen Berkaitan</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              v-for="(doc, index) in documents"
+              :key="index"
+              class="p-4 border rounded-lg flex items-center justify-between"
+            >
+              <div>
+                <p class="font-medium">{{ doc.name }}</p>
+                <p class="text-sm text-gray-500">{{ doc.type }}</p>
+              </div>
+              <rs-button
+                variant="primary-outline"
+                size="sm"
+                @click="downloadDocument(doc)"
+              >
+                <Icon name="mdi:download" class="mr-1" />
+                Muat Turun
+              </rs-button>
+            </div>
+          </div>
+        </div>
+
         <!-- Section B: Maklumat Kesihatan -->
         <div class="mb-8">
           <h3 class="text-lg font-medium mb-4 border-b pb-2">
@@ -172,6 +197,31 @@
               <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
                 {{ formData.perbelanjaan_bulanan_sakit }}
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dokumen Berkaitan Section -->
+        <div class="mb-6">
+          <h3 class="text-lg font-medium mb-4">Dokumen Berkaitan</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              v-for="(doc, index) in documents"
+              :key="index"
+              class="p-4 border rounded-lg flex items-center justify-between"
+            >
+              <div>
+                <p class="font-medium">{{ doc.name }}</p>
+                <p class="text-sm text-gray-500">{{ doc.type }}</p>
+              </div>
+              <rs-button
+                variant="primary-outline"
+                size="sm"
+                @click="downloadDocument(doc)"
+              >
+                <Icon name="mdi:download" class="mr-1" />
+                Muat Turun
+              </rs-button>
             </div>
           </div>
         </div>
@@ -249,6 +299,31 @@
             </div>
           </div>
         </div>
+
+        <!-- Dokumen Berkaitan Section -->
+        <div class="mb-6">
+          <h3 class="text-lg font-medium mb-4">Dokumen Berkaitan</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              v-for="(doc, index) in documents"
+              :key="index"
+              class="p-4 border rounded-lg flex items-center justify-between"
+            >
+              <div>
+                <p class="font-medium">{{ doc.name }}</p>
+                <p class="text-sm text-gray-500">{{ doc.type }}</p>
+              </div>
+              <rs-button
+                variant="primary-outline"
+                size="sm"
+                @click="downloadDocument(doc)"
+              >
+                <Icon name="mdi:download" class="mr-1" />
+                Muat Turun
+              </rs-button>
+            </div>
+          </div>
+        </div>  
 
         <!-- Section E: Maklumat Pinjaman -->
         <div class="mb-8">
@@ -1240,6 +1315,33 @@ const formData = ref({
     ]
   }
 });
+
+// Fake documents array (follow QB/03)
+const documents = [
+  {
+    name: 'Sijil Nikah',
+    type: 'PDF',
+    url: '#',
+  },
+  {
+    name: 'Salinan Kad Pengenalan',
+    type: 'PDF',
+    url: '#',
+  },
+  {
+    name: 'Slip Gaji',
+    type: 'PDF',
+    url: '#',
+  },
+];
+
+// Handle document download (demo)
+function downloadDocument(doc) {
+  // For demo, just log the document info
+  // In production, you would trigger a real download
+  // eslint-disable-next-line no-console
+  console.log('Download document:', doc);
+}
 
 const handleLengkap = () => {
   router.push('/BF-PRF/AS/FR/04');

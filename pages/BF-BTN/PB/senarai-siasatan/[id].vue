@@ -1,316 +1,329 @@
 <template>
-  <div>
-    <LayoutsBreadcrumb :items="breadcrumb" />
+  <div class="min-h-screen">
+    <div class="">
+      <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Semak Dokumen & Buat Pengesahan</h2>
-          <rs-badge v-if="formData.status" :variant="getStatusVariant(formData.status)">
-            {{ formData.status }}
+      <!-- Page Header -->
+      <div class="mt-6 mb-8">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">
+              Semakan & Kemaskini Permohonan
+            </h1>
+            <p class="mt-1 text-sm text-gray-600">
+              Semak maklumat permohonan dan kemaskini penilaian awal
+            </p>
+          </div>
+          <rs-badge
+            v-if="formData.statusPermohonan"
+            :variant="getStatusVariant(formData.statusPermohonan)"
+            class="text-sm px-4 py-2"
+          >
+            {{ getStatusText(formData.statusPermohonan) }}
           </rs-badge>
         </div>
-      </template>
+      </div>
 
-      <template #body>
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="handleSubmit"
-          v-model="formData"
-        >
-          <!-- Section 1: Maklumat Permohonan -->
-          <rs-fieldset class="mb-6">
-            <template #legend>
-              <h3 class="text-lg font-medium">Maklumat Permohonan</h3>
-            </template>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="text"
-                name="idPermohonan"
-                label="ID Permohonan"
-                readonly
-              />
-              <FormKit
-                type="text"
-                name="namaPemohon"
-                label="Nama Pemohon"
-                readonly
-              />
-              <FormKit
-                type="text"
-                name="noKpPemohon"
-                label="No KP Pemohon"
-                readonly
-              />
-              <FormKit
-                type="text"
-                name="jenisBantuan"
-                label="Jenis Bantuan"
-                readonly
-              />
-              <FormKit
-                type="text"
-                name="kategoriBantuan"
-                label="Kategori Bantuan & Asnaf"
-                readonly
-              />
-            </div>
-          </rs-fieldset>
-
-          <!-- Section 2: Dokumen Sokongan -->
-          <rs-fieldset class="mb-6">
-            <template #legend>
-              <h3 class="text-lg font-medium">Dokumen Sokongan</h3>
-            </template>
-
-            <div class="space-y-4">
-              <div v-for="(doc, index) in documents" :key="index" 
-                class="flex items-center justify-between p-4 border rounded-lg transition-colors duration-200"
-                :class="{ 
-                  'border-red-500 bg-red-50': !doc.isVerified && doc.required,
-                  'border-gray-200': doc.isVerified || !doc.required 
-                }"
-              >
-                <div class="flex items-center gap-4 flex-1">
-                  <FormKit
-                    type="checkbox"
-                    :name="`documents.${index}.isVerified`"
-                    :validation="doc.required ? 'required' : ''"
-                    :validation-messages="{
-                      required: 'Dokumen ini perlu disahkan'
-                    }"
-                    class="!mb-0"
-                  />
-                  <div class="flex-1">
-                    <div class="font-medium">{{ doc.name }}</div>
-                    <div class="text-sm text-gray-500">{{ doc.description }}</div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Section 1: Maklumat Permohonan (Read-only) -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon name="ph:user-circle" class="w-6 h-6 text-blue-600" />
                   </div>
-                  <div class="flex gap-2">
-                    <rs-button
-                      variant="primary-outline"
-                      size="sm"
-                      @click="viewDocument(doc)"
-                      :disabled="!doc.url"
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Maklumat Permohonan
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Butiran pemohon dan status permohonan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >ID Permohonan</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm font-mono text-gray-900">{{
+                      formData.idPermohonan
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Nama Pemohon</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{
+                      formData.namaPemohon
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >No IC</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm font-mono text-gray-900">{{
+                      formData.noIc
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Tarikh Permohonan</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{
+                      formData.tarikhPermohonan
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1 md:col-span-2">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Status Permohonan</label
+                  >
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <rs-badge
+                      :variant="getStatusVariant(formData.statusPermohonan)"
+                      class="text-sm"
                     >
-                      <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                      Lihat
-                    </rs-button>
-                    <rs-button
-                      variant="primary-outline"
-                      size="sm"
-                      @click="downloadDocument(doc)"
-                      :disabled="!doc.url"
-                    >
-                      <Icon name="ph:download" class="w-4 h-4 mr-1" />
-                      Muat Turun
-                    </rs-button>
+                      {{ getStatusText(formData.statusPermohonan) }}
+                    </rs-badge>
                   </div>
                 </div>
               </div>
-            </div>
-          </rs-fieldset>
+            </template>
+          </rs-card>
 
-          <!-- Section 3: Catatan & Status Dokumen -->
-          <rs-fieldset class="mb-6">
-            <template #legend>
-              <h3 class="text-lg font-medium">Catatan & Status Dokumen</h3>
+          <!-- Section 2: Bantuan Berkaitan -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon name="ph:money" class="w-6 h-6 text-green-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Bantuan Berkaitan
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Senarai bantuan yang berkaitan dengan permohonan ini
+                  </p>
+                </div>
+              </div>
             </template>
 
-            <div class="grid grid-cols-1 gap-4">
-              <FormKit
-                type="textarea"
-                name="catatanStatus"
-                label="Catatan Status Dokumen"
-                placeholder="Masukkan catatan status dokumen..."
-                rows="4"
-              />
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="text"
-                  name="tarikhSemakan"
-                  label="Tarikh & Masa Semakan"
-                  readonly
-                />
-                <FormKit
-                  type="text"
-                  name="namaPegawai"
-                  label="Nama Pegawai EOAD"
-                  readonly
-                />
+            <template #body>
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Nama Bantuan
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Kadar (RM)
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status Dokumen
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr
+                      v-for="(assistance, index) in assistanceList"
+                      :key="index"
+                      class="hover:bg-gray-50"
+                    >
+                      <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">
+                          {{ assistance.code }} - {{ assistance.name }}
+                        </div>
+                        <div class="text-sm text-gray-500">
+                          {{ assistance.category }}
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">
+                          RM {{ assistance.amount.toLocaleString() }}
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <rs-badge
+                          :variant="getDocumentStatusVariant(assistance.documentStatus)"
+                          class="text-xs" 
+                        >
+                          {{ assistance.documentStatus }}
+                        </rs-badge>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <rs-button
+                          variant="primary-outline"
+                          size="sm"
+                          @click="editAssistance(assistance)"
+                          class="!px-3 !py-1.5"
+                        >
+                          <Icon name="ph:pencil" class="w-4 h-4 mr-1" />
+                          Edit
+                        </rs-button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-            </div>
-          </rs-fieldset>
-
-          <!-- Section 4: Action Buttons -->
-          <div class="flex justify-end gap-4 mt-6">
-            <rs-button
-              variant="primary-outline"
-              @click="handleCancel"
-            >
-              Batal / Kembali
-            </rs-button>
-            <rs-button
-              variant="warning"
-              @click="showNeedReviewConfirm = true"
-              :disabled="processing"
-            >
-              Perlu Semakan Semula Dokumen
-            </rs-button>
-            <rs-button
-              variant="primary"
-              @click="showVerifyConfirm = true"
-              :disabled="processing"
-            >
-              Disahkan - Siap untuk Siasatan Lapangan
-            </rs-button>
-          </div>
-        </FormKit>
-      </template>
-    </rs-card>
-
-    <!-- Need Review Confirmation Modal -->
-    <rs-modal
-      v-model="showNeedReviewConfirm"
-      title="Pengesahan Semakan Semula"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="space-y-4">
-          <div class="text-center">
-            <Icon
-              name="ph:warning-circle"
-              class="mx-auto text-warning"
-              size="3rem"
-            />
-            <h3 class="mt-4 text-lg font-medium text-gray-900">
-              Sahkan Semakan Semula
-            </h3>
-            <p class="mt-2 text-sm text-gray-500">
-              Adakah anda pasti untuk menandakan permohonan ini perlu disemak semula?
-            </p>
-          </div>
-
-          <div class="bg-gray-50 p-4 rounded-lg space-y-2">
-            <div class="flex justify-between">
-              <span class="font-medium">ID Permohonan:</span>
-              <span>{{ formData.idPermohonan }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Nama Pemohon:</span>
-              <span>{{ formData.namaPemohon }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Status Semasa:</span>
-              <span>{{ formData.status }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Status Selepas:</span>
-              <span class="text-warning">Untuk Siasatan</span>
-            </div>
-          </div>
+            </template>
+          </rs-card>
         </div>
-      </template>
 
-      <template #footer>
-        <div class="flex justify-end gap-3">
-          <rs-button
-            variant="primary-outline"
-            @click="showNeedReviewConfirm = false"
-            :disabled="processing"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="warning"
-            @click="handleNeedReview"
-            :loading="processing"
-          >
-            Sahkan
-          </rs-button>
+        <!-- Sidebar - Section 3: Kemaskini Permohonan -->
+        <div class="lg:col-span-1 space-y-6">
+          <rs-card class="shadow-sm border-0 bg-white sticky top-6">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="ph:clipboard-text"
+                      class="w-6 h-6 text-purple-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Kemaskini Permohonan
+                  </h2>
+                  <p class="text-sm text-gray-500">Penilaian dan tindakan</p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <FormKit
+                type="form"
+                :actions="false"
+                @submit="handleSubmit"
+                v-model="formData"
+              >
+                <div class="space-y-6">
+                  <!-- Catatan Penilaian Awal -->
+                  <FormKit
+                    type="textarea"
+                    name="catatanPenilaianAwal"
+                    label="Catatan Penilaian Awal"
+                    placeholder="Masukkan catatan penilaian awal..."
+                    rows="4"
+                    v-model="formData.catatanPenilaianAwal"
+                    help="Catatan ini adalah pilihan"
+                  />
+
+                  <!-- Kaedah Siasatan -->
+                  <FormKit
+                    type="select"
+                    name="kaedahSiasatan"
+                    label="Kaedah Siasatan"
+                    :options="kaedahSiasatanOptions"
+                    placeholder="Pilih kaedah siasatan"
+                    v-model="formData.kaedahSiasatan"
+                    validation="required"
+                  />
+
+                  <!-- Tarikh Lawatan -->
+                  <FormKit
+                    type="date"
+                    name="tarikhLawatan"
+                    label="Tarikh Lawatan"
+                    v-model="formData.tarikhLawatan"
+                    validation="date_after:today"
+                    :validation-messages="{
+                      date_after: 'Tarikh lawatan mesti selepas hari ini'
+                    }"
+                  />
+
+                  <!-- Masa Lawatan -->
+                  <FormKit
+                    type="select"
+                    name="masaLawatan"
+                    label="Masa Lawatan"
+                    :options="masaLawatanOptions"
+                    placeholder="Pilih masa lawatan"
+                    v-model="formData.masaLawatan"
+                  />
+
+                  <!-- Status Pengesahan Lawatan -->
+                  <FormKit
+                    type="select"
+                    name="statusPengesahanLawatan"
+                    label="Status Pengesahan Lawatan"
+                    :options="statusPengesahanOptions"
+                    placeholder="Pilih status pengesahan"
+                    v-model="formData.statusPengesahanLawatan"
+                    validation="required"
+                  />
+
+                  <!-- Action Buttons -->
+                  <div class="space-y-3 pt-4 border-t">
+                    <rs-button
+                      variant="primary"
+                      @click="handleSave"
+                      :disabled="processing"
+                      :loading="processing"
+                      class="w-full !py-3 text-sm font-medium"
+                    >
+                      <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
+                      Simpan Kemaskini
+                    </rs-button>
+
+                    <rs-button
+                      variant="primary-outline"
+                      @click="handleCancel"
+                      class="w-full !py-3 text-sm font-medium"
+                    >
+                      <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
+                      Kembali ke Senarai
+                    </rs-button>
+                  </div>
+                </div>
+              </FormKit>
+            </template>
+          </rs-card>
         </div>
-      </template>
-    </rs-modal>
-
-    <!-- Verify Confirmation Modal -->
-    <rs-modal
-      v-model="showVerifyConfirm"
-      title="Pengesahan Dokumen"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="space-y-4">
-          <div class="text-center">
-            <Icon
-              name="ph:warning-circle"
-              class="mx-auto text-warning"
-              size="3rem"
-            />
-            <h3 class="mt-4 text-lg font-medium text-gray-900">
-              Sahkan Dokumen
-            </h3>
-            <p class="mt-2 text-sm text-gray-500">
-              Adakah anda pasti untuk mengesahkan semua dokumen dan menandakan permohonan ini siap untuk siasatan lapangan?
-            </p>
-          </div>
-
-          <div class="bg-gray-50 p-4 rounded-lg space-y-2">
-            <div class="flex justify-between">
-              <span class="font-medium">ID Permohonan:</span>
-              <span>{{ formData.idPermohonan }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Nama Pemohon:</span>
-              <span>{{ formData.namaPemohon }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Status Semasa:</span>
-              <span>{{ formData.status }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Status Selepas:</span>
-              <span class="text-success">Siap untuk Siasatan Lapangan</span>
-            </div>
-          </div>
-
-          <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p class="text-sm text-yellow-800 flex items-center">
-              <Icon name="ph:warning" class="w-5 h-5 mr-2 flex-shrink-0" />
-              Pastikan semua dokumen yang diperlukan telah disahkan sebelum meneruskan.
-            </p>
-          </div>
-        </div>
-      </template>
-
-      <template #footer>
-        <div class="flex justify-end gap-3">
-          <rs-button
-            variant="primary-outline"
-            @click="showVerifyConfirm = false"
-            :disabled="processing"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="primary"
-            @click="handleVerify"
-            :loading="processing"
-          >
-            Sahkan
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useToast } from 'vue-toastification';
+import { ref, onMounted, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 
 const route = useRoute();
 const router = useRouter();
@@ -318,130 +331,138 @@ const toast = useToast();
 const processing = ref(false);
 
 definePageMeta({
-  title: 'Semak Dokumen & Buat Pengesahan',
+  title: "Semakan & Kemaskini Permohonan",
 });
 
 const breadcrumb = ref([
   {
-    name: 'Permohonan Bantuan',
-    type: 'link',
-    path: '/BF-BTN/PB/senarai',
+    name: "Permohonan Bantuan",
+    type: "link",
+    path: "/BF-BTN/permohonan/senarai",
   },
   {
-    name: 'Untuk Siasatan',
-    type: 'link',
-    path: '/BF-BTN/PB/senarai-siasatan',
+    name: "Untuk Siasatan",
+    type: "link",
+    path: "/BF-BTN/permohonan/senarai-untuk-siasatan",
   },
   {
-    name: 'Semak Dokumen',
-    type: 'current',
-    path: `/BF-BTN/PB/senarai-siasatan/${route.params.id}`,
+    name: "Semakan & Kemaskini",
+    type: "current",
+    path: `/BF-BTN/permohonan/senarai-untuk-siasatan/${route.params.id}`,
   },
 ]);
 
 // Form data
 const formData = ref({
-  idPermohonan: '',
-  namaPemohon: '',
-  noKpPemohon: '',
-  jenisBantuan: '',
-  kategoriBantuan: '',
-  status: 'untuk_siasatan',
-  catatanStatus: '',
-  tarikhSemakan: '',
-  namaPegawai: '',
-  documents: [],
+  idPermohonan: "",
+  namaPemohon: "",
+  noIc: "",
+  tarikhPermohonan: "",
+  statusPermohonan: "",
+  catatanPenilaianAwal: "",
+  kaedahSiasatan: "",
+  tarikhLawatan: "",
+  masaLawatan: "",
+  statusPengesahanLawatan: "",
 });
 
-// Document list
-const documents = ref([
+// Assistance list data
+const assistanceList = ref([
   {
-    name: 'Surat Kelulusan',
-    description: 'Surat kelulusan rasmi dari pihak berkuasa',
-    required: true,
-    isVerified: false,
-    url: '#',
+    code: "B112",
+    name: "Bantuan Sewaan/Ansuran Rumah",
+    category: "Miskin",
+    amount: 800,
+    documentStatus: "Lengkap",
   },
   {
-    name: 'Sebutharga / Invois',
-    description: 'Dokumen rasmi yang menunjukkan nilai bantuan',
-    required: true,
-    isVerified: false,
-    url: '#',
-  },
-  {
-    name: 'Gambar Premis / Lokasi',
-    description: 'Gambar lokasi atau premis yang berkaitan dengan permohonan',
-    required: true,
-    isVerified: false,
-    url: '#',
-  },
-  {
-    name: 'Salinan Pemilikan',
-    description: 'Dokumen yang mengesahkan pemilikan atau hak',
-    required: true,
-    isVerified: false,
-    url: '#',
+    code: "B104",
+    name: "Bantuan Tunggakan Pembiayaan Rumah",
+    category: "Miskin",
+    amount: 1000,
+    documentStatus: "Lengkap",
   },
 ]);
 
-// Add confirmation dialog refs
-const showNeedReviewConfirm = ref(false);
-const showVerifyConfirm = ref(false);
+// Dropdown options
+const kaedahSiasatanOptions = ref([
+  { label: "Telefon", value: "telefon" },
+  { label: "Semak Dokumen Sahaja", value: "dokumen" },
+  { label: "Lapangan", value: "lapangan" },
+]);
+
+const statusPengesahanOptions = ref([
+  { label: "Sah", value: "sah" },
+  { label: "Belum Sah", value: "belum_sah" },
+]);
+
+// Generate time options (9:00 - 18:00, every 30 minutes)
+const masaLawatanOptions = computed(() => {
+  const times = [];
+  for (let hour = 9; hour <= 18; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      if (hour === 18 && minute > 0) break; // Stop at 18:00
+      const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      times.push({
+        label: timeString,
+        value: timeString,
+      });
+    }
+  }
+  return times;
+});
 
 // Methods
 const getStatusVariant = (status) => {
   const variants = {
-    untuk_siasatan: 'warning',
-    siap_siasatan_lapangan: 'success',
+    baru: "info",
+    dalam_semakan: "warning",
+    tidak_lengkap: "danger",
+    lengkap: "success",
   };
-  return variants[status.toLowerCase()] || 'default';
+  return variants[status?.toLowerCase()] || "default";
 };
 
-const viewDocument = (doc) => {
-  // Implement document viewing logic
-  console.log('Viewing document:', doc);
+const getStatusText = (status) => {
+  const statusMap = {
+    baru: "Baru",
+    dalam_semakan: "Untuk Siasatan",
+    tidak_lengkap: "Tidak Lengkap",
+    lengkap: "Lengkap",
+  };
+  return statusMap[status?.toLowerCase()] || status;
 };
 
-const downloadDocument = (doc) => {
-  // Implement document download logic
-  console.log('Downloading document:', doc);
+const getDocumentStatusVariant = (status) => {
+  const variants = {
+    lengkap: "success",
+    tidak_lengkap: "danger",
+    dalam_semakan: "warning",
+  };
+  return variants[status?.toLowerCase()] || "default";
+};
+
+const editAssistance = (assistance) => {
+  // Implement navigation to edit assistance page
+  console.log("Editing assistance:", assistance);
+  router.push(`/BF-BTN/PB/senarai-sedia-semakan/${route.params.id}/bantuan/B115`);
+};
+
+const handleSave = async () => {
+  try {
+    processing.value = true;
+    // Implement API call to save the updates
+    toast.success("Kemaskini telah disimpan");
+  } catch (error) {
+    toast.error("Ralat semasa menyimpan kemaskini");
+    console.error(error);
+  } finally {
+    processing.value = false;
+  }
 };
 
 const handleCancel = () => {
-  router.push('/BF-BTN/PB/senarai-siasatan');
-};
-
-const handleNeedReview = async () => {
-  try {
-    processing.value = true;
-    // Implement API call to update status
-    formData.value.status = 'untuk_siasatan';
-    toast.success('Status permohonan telah dikemaskini');
-    router.push('/BF-BTN/PB/senarai-siasatan');
-  } catch (error) {
-    toast.error('Ralat semasa mengemaskini status');
-    console.error(error);
-  } finally {
-    processing.value = false;
-    showNeedReviewConfirm.value = false;
-  }
-};
-
-const handleVerify = async () => {
-  try {
-    processing.value = true;
-    // Implement API call to update status
-    formData.value.status = 'siap_siasatan_lapangan';
-    toast.success('Dokumen telah disahkan');
-    router.push('/BF-BTN/PB/senarai-siasatan');
-  } catch (error) {
-    toast.error('Ralat semasa mengesahkan dokumen');
-    console.error(error);
-  } finally {
-    processing.value = false;
-    showVerifyConfirm.value = false;
-  }
+  router.push("/BF-BTN/permohonan/senarai-untuk-siasatan");
 };
 
 // Fetch application data on mount
@@ -452,22 +473,32 @@ onMounted(async () => {
     formData.value = {
       ...formData.value,
       idPermohonan: route.params.id,
-      namaPemohon: 'Ahmad bin Abdullah',
-      noKpPemohon: '880101-12-1234',
-      jenisBantuan: 'Bantuan Kewangan',
-      kategoriBantuan: 'Fakir',
-      tarikhSemakan: new Date().toLocaleString(),
-      namaPegawai: 'Siti binti Ali',
+      namaPemohon: "Ahmad bin Abdullah",
+      noIc: "880101-12-1234",
+      tarikhPermohonan: "15 Nov 2024",
+      statusPermohonan: "dalam_semakan",
     };
   } catch (error) {
-    toast.error('Ralat semasa memuatkan data permohonan');
+    toast.error("Ralat semasa memuatkan data permohonan");
     console.error(error);
   }
 });
 </script>
 
 <style lang="scss" scoped>
-.rs-fieldset {
-  @apply border border-gray-200 rounded-lg p-4;
+// Custom animations and transitions
+.group:hover .group-hover\:text-blue-600 {
+  transition: color 0.2s ease-in-out;
 }
-</style> 
+
+// Enhanced focus states
+.focus\:ring-2:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+// Table row hover effect
+.hover\:bg-gray-50:hover {
+  background-color: #f9fafb;
+}
+</style>

@@ -194,11 +194,12 @@
                     min: 'Bilangan tanggungan tidak boleh kurang daripada 0'
                   }"
                 />
+                <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
 
-                <!-- Passport Information (Conditional) -->
-                <div v-if="formData.personalInfo.idValue === 'foreign-id'" class="md:col-span-2">
-                  <h4 class="text-md font-medium mb-3">Maklumat Passport</h4>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormKit
                       type="date"
                       name="passportStartDate"
@@ -211,8 +212,6 @@
                       label="Tarikh tamat passport"
                       v-model="formData.personalInfo.passportEndDate"
                     />
-                  </div>
-                </div>
 
                 <!-- Islamic Information Section -->
                 <div class="md:col-span-2">
@@ -626,6 +625,11 @@
                       :validation-messages="{ required: 'Nombor ID adalah wajib' }"
                     />
                     <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
+                    <FormKit
                       type="date"
                       :name="`spousePassportStartDate${idx}`"
                       label="Tarikh Mula Passport"
@@ -838,7 +842,7 @@
                 <FormKit
                   type="file"
                   name="addressSupportDoc"
-                  label="Muat naik dokumen sokongan alamat"
+                  label="Muat naik dokumen sokongan sewaan"
                   accept=".pdf,.jpg,.jpeg,.png"
                   v-model="formData.addressInfo.addressSupportDoc"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
@@ -1101,6 +1105,11 @@
                       required: 'No ID adalah wajib',
                     }"
                   />
+                   <FormKit
+                      type="text"
+                      name="nopassport"
+                      label="No Passport"  
+                    />
 
                   <FormKit
                     type="date"
