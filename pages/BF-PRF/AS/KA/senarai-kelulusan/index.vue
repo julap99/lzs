@@ -134,7 +134,7 @@
           Adakah anda pasti untuk meluluskan permohonan asnaf ini?
         </p>
         <p class="text-sm text-gray-600 mb-4">
-          Tindakan kelulusan keluar asnaf tanpa mengubah kategori.
+          Tindakan kelulusan keluar asnaf.
         </p>
       </template>
       <template #footer>
@@ -226,7 +226,7 @@ const asnafList = ref([
     namaAsnaf: "Ahmad bin Abdullah",
     kategoriSebelum: "Fakir",
     kategoriSelepas: "Non Fakir",
-    statusAsnaf: "Dalam Pembangunan Asnaf",
+    statusAsnaf: "-",
     tarikhTamatPembangunan: "2025-01-15",
     noTelefon: "0123456789",
     tindakan: { id: "ASN-2025-001" },
@@ -236,7 +236,7 @@ const asnafList = ref([
     namaAsnaf: "Siti binti Ali",
     kategoriSebelum: "Miskin",
     kategoriSelepas: "Non Miskin",
-    statusAsnaf: "Dalam Pembangunan Asnaf",
+    statusAsnaf: "-",
     tarikhTamatPembangunan: "2025-03-20",
     noTelefon: "0123456788",
     tindakan: { id: "ASN-2025-002" },
@@ -247,7 +247,7 @@ const asnafList = ref([
     kategoriSebelum: "Non Fakir",
     kategoriSelepas: "Fakir",
     statusAsnaf: "Dalam Pembangunan Asnaf",
-    tarikhTamatPembangunan: "2025-06-10",
+    tarikhTamatPembangunan: "2025-07-10",
     noTelefon: "0123456787",
     tindakan: { id: "ASN-2025-003" },
     isProcessed: false
@@ -266,7 +266,7 @@ const asnafList = ref([
     namaAsnaf: "Abdul Rahman bin Ismail",
     kategoriSebelum: "Fakir",
     kategoriSelepas: "Non Fakir",
-    statusAsnaf: "Dalam Pembangunan Asnaf",
+    statusAsnaf: "-",
     tarikhTamatPembangunan: "2025-02-14",
     noTelefon: "0123456785",
     tindakan: { id: "ASN-2025-005" },
@@ -297,7 +297,7 @@ const asnafList = ref([
     kategoriSebelum: "Non Miskin",
     kategoriSelepas: "Miskin",
     statusAsnaf: "Dalam Pembangunan Asnaf",
-    tarikhTamatPembangunan: "2025-05-12",
+    tarikhTamatPembangunan: "2025-09-12",
     noTelefon: "0123456782",
     tindakan: { id: "ASN-2025-008" },
     isProcessed: false

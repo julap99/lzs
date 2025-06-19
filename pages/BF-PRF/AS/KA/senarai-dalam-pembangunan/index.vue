@@ -139,7 +139,7 @@ const tableFields = [
   "namaAsnaf",
   "kategoriAsnaf", 
   "statusReview",
-  "tarikhAkhir",
+  "tarikhTamatPembangunan",
   "noTelefon"
 ];
 
