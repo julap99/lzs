@@ -98,49 +98,136 @@
           <div class="flex justify-end space-x-4 mt-8">
             <rs-button
               variant="primary-outline"
-              @click="navigateTo('/BF-PA/PE/MP/01')"
+              @click="goBack"
             >
               Kembali
             </rs-button>
-            <rs-button variant="primary" @click="handleSubmit">
-              Sahkan
+            <rs-button 
+              variant="danger-outline"
+              @click="handleReject"
+            >
+              Tolak
+            </rs-button>
+            <rs-button 
+              variant="primary" 
+              @click="handleApprove"
+            >
+              Lulus
             </rs-button>
           </div>
         </FormKit>
       </template>
     </rs-card>
 
-    <!-- Confirmation Modal -->
+    <!-- Success Modal for Approval -->
     <rs-modal
       v-model="showSuccessModal"
-      title="Hantar ke Pelulus"
+      title="Kelulusan Berjaya"
       size="md"
       position="center"
     >
       <template #body>
         <div class="text-center">
-          <Icon
-            name="material-symbols:help-outline"
-            class="text-blue-500 text-5xl mb-4"
-          />
-          <p class="text-lg mb-2">
-            Adakah anda pasti untuk menghantar Kiraan Jumlah Elaun ini kepada Ketua JPPA?
+          <div class="flex justify-center mb-4">
+            <Icon
+              name="material-symbols:check-circle"
+              class="text-green-500"
+              size="48"
+            />
+          </div>
+          <p class="mb-2">
+            Permohonan elaun penolong amil berjaya diluluskan.
           </p>
           <p class="text-gray-600">
-            Semakan ini akan dihantar kepada pelulus untuk kelulusan seterusnya.
+            Status permohonan telah dikemaskini kepada "Diluluskan".
           </p>
         </div>
       </template>
       <template #footer>
-        <div class="flex justify-center space-x-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showSuccessModal = false"
-          >
+        <div class="flex justify-center">
+          <rs-button variant="primary" @click="handleModalClose">
+            Tutup
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Success Modal for Rejection -->
+    <rs-modal
+      v-model="showRejectSuccessModal"
+      title="Permohonan Ditolak"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <Icon
+              name="material-symbols:check-circle"
+              class="text-red-500"
+              size="48"
+            />
+          </div>
+          <p class="mb-2">
+            Permohonan elaun penolong amil telah ditolak.
+          </p>
+          <p class="text-gray-600">
+            Status permohonan telah dikemaskini kepada "Ditolak".
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center">
+          <rs-button variant="primary" @click="handleRejectModalClose">
+            Kembali ke Senarai
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmModal"
+      :title="isRejecting ? 'Pengesahan Tolak' : 'Pengesahan Lulus'"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div>
+          <p class="mb-4">
+            {{ isRejecting 
+              ? 'Adakah anda pasti untuk menolak permohonan elaun penolong amil ini?'
+              : 'Adakah anda pasti untuk meluluskan permohonan elaun penolong amil ini?'
+            }}
+          </p>
+          <p class="text-gray-600 text-sm">
+            {{ isRejecting 
+              ? 'Selepas ditolak, permohonan ini tidak boleh dihantar semula. Notifikasi akan dihantar kepada pemohon.'
+              : 'Selepas diluluskan, permohonan akan diproses untuk pembayaran elaun.'
+            }}
+          </p>
+          <div class="mt-4">
+            <FormKit
+              type="textarea"
+              name="remarks"
+              :label="isRejecting ? 'Sebab Penolakan (Pilihan)' : 'Ulasan / Justifikasi (Pilihan)'"
+              :placeholder="isRejecting ? 'Masukkan sebab penolakan permohonan (jika ada)' : 'Masukkan ulasan dan justifikasi kelulusan (jika ada)'"
+              rows="3"
+              v-model="remarks"
+            />
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end space-x-3">
+          <rs-button variant="outline" @click="showConfirmModal = false">
             Batal
           </rs-button>
-          <rs-button variant="primary" @click="confirmSubmit">
-            Sokong & Hantar
+          <rs-button 
+            :variant="isRejecting ? 'danger' : 'primary'" 
+            @click="confirmSubmission"
+          >
+            {{ isRejecting ? 'Tolak' : 'Lulus' }}
           </rs-button>
         </div>
       </template>
@@ -161,6 +248,10 @@ definePageMeta({
 const route = useRoute();
 const toast = useToast();
 const showSuccessModal = ref(false);
+const showRejectSuccessModal = ref(false);
+const showConfirmModal = ref(false);
+const isRejecting = ref(false);
+const remarks = ref('');
 
 const breadcrumb = ref([
   {
@@ -176,34 +267,39 @@ const breadcrumb = ref([
 ]);
 
 const formData = ref({
-  kadarElaun: "100.00",
-  jumlahElaun: "500.00",
+  kadarElaun: "25.00",
+  jumlahElaun: "125.00",
   ulasan:"Permohonan ini telah disahkan oleh Eksekutif JPPA",
   senaraiPenolong: [
     {
       id: 1,
-      nama: "Nama Penolong Amil",
+      nama: "Ahmad bin Abdullah",
       tarikh: "2024-12-31",
+      elaun: "25.00"
     },
     {
       id: 2,
-      nama: "Nama Penolong Amil",
+      nama: "Siti Aminah binti Hassan",
       tarikh: "2024-12-31",
+      elaun: "25.00"
     },
     {
       id: 3,
-      nama: "Nama Penolong Amil",
+      nama: "Mohd Razak bin Ibrahim",
       tarikh: "2024-12-31",
+      elaun: "25.00"
     },
     {
       id: 4,
-      nama: "Nama Penolong Amil",
+      nama: "Nurul Aisyah binti Omar",
       tarikh: "2024-12-31",
+      elaun: "25.00"
     },
     {
       id: 5,
-      nama: "Nama Penolong Amil",
+      nama: "Ali bin Hassan",
       tarikh: "2024-12-31",
+      elaun: "25.00"
     },
   ],
 });
@@ -223,29 +319,34 @@ onMounted(async () => {
   // TODO: Fetch bantuan data based on ID from route.params.id
   // For now using mock data
   const mockData = {
-    kadarElaun: "100.00",
-    jumlahElaun: "500.00",
+    kadarElaun: "25.00",
+    jumlahElaun: "125.00",
     ulasan:"Permohonan ini telah disahkan oleh Eksekutif JPPA",
     senaraiPenolong: [
       {
-        nama: "Nama Penolong Amil",
+        nama: "Ahmad bin Abdullah",
         tarikh: "2024-12-31",
+        elaun: "25.00"
       },
       {
-        nama: "Nama Penolong Amil",
+        nama: "Siti Aminah binti Hassan",
         tarikh: "2024-12-31",
+        elaun: "25.00"
       },
       {
-        nama: "Nama Penolong Amil",
+        nama: "Mohd Razak bin Ibrahim",
         tarikh: "2024-12-31",
+        elaun: "25.00"
       },
       {
-        nama: "Nama Penolong Amil",
+        nama: "Nurul Aisyah binti Omar",
         tarikh: "2024-12-31",
+        elaun: "25.00"
       },
       {
-        nama: "Nama Penolong Amil",
+        nama: "Ali bin Hassan",
         tarikh: "2024-12-31",
+        elaun: "25.00"
       },
     ],
   };
@@ -263,27 +364,45 @@ const handleSubmit = async (formData) => {
   }
 };
 
-const confirmSubmit = async () => {
-  try {
-    // TODO: Implement API call to update bantuan status
-    console.log("Updating bantuan status:", formData.value);
-
-    // Close modal
-    showSuccessModal.value = false;
-
-    // Show success toast
-    toast.success("Semakan telah berjaya dihantar kepada pelulus");
-
-    // Navigate back to list
-    // navigateToList();
-    navigateTo("/BF-PA/PE/MP/05");
-  } catch (error) {
-    toast.error("Ralat semasa mengemaskini status bantuan");
-    console.error("Error updating bantuan status:", error);
-  }
+const handleApprove = () => {
+  isRejecting.value = false;
+  showConfirmModal.value = true;
 };
 
-const navigateToList = () => {
-  navigateTo("/BF-BTN/PB/BTLB/01");
+const handleReject = () => {
+  isRejecting.value = true;
+  showConfirmModal.value = true;
+};
+
+const goBack = () => {
+  navigateTo('/BF-PA/PE/MP/Paparan_Ketua_JPPA');
+};
+
+const handleModalClose = () => {
+  showSuccessModal.value = false;
+  navigateTo('/BF-PA/PE/MP/Paparan_Ketua_JPPA');
+};
+
+const handleRejectModalClose = () => {
+  showRejectSuccessModal.value = false;
+  navigateTo('/BF-PA/PE/MP/Paparan_Ketua_JPPA');
+};
+
+const confirmSubmission = async () => {
+  try {
+    // Mock API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    showConfirmModal.value = false;
+    remarks.value = '';
+    
+    if (isRejecting.value) {
+      showRejectSuccessModal.value = true;
+    } else {
+      showSuccessModal.value = true;
+    }
+  } catch (error) {
+    console.error('Error processing submission:', error);
+  }
 };
 </script>

@@ -153,44 +153,44 @@ const paInfo = ref({
 // Mock activities data
 const activities = ref([
   {
-    id: 'ACT001',
+    id: 'B001',
     date: '01/03/2024',
-    name: 'Kutipan Zakat Kariah',
+    name: 'Bancian Baru',
     location: 'Masjid Al-Hidayah',
     status: 'Selesai',
-    allowance: '500.00',
+    allowance: '30.00',
   },
   {
-    id: 'ACT002',
+    id: 'AR001',
     date: '02/03/2024',
-    name: 'Agihan Bantuan Asnaf',
+    name: 'Asnaf Review',
     location: 'Masjid Al-Hidayah',
     status: 'Dalam Proses',
-    allowance: '500.00',
+    allowance: '20.00',
   },
   {
-    id: 'ACT003',
+    id: 'PB001',
     date: '03/03/2024',
-    name: 'Program Tazkirah',
+    name: 'Permohonan Bantuan',
     location: 'Masjid Al-Hidayah',
     status: 'Belum Bermula',
-    allowance: '500.00',
+    allowance: '20.00',
   },
   {
-    id: 'ACT004',
+    id: 'B002',
     date: '04/03/2024',
-    name: 'Lawatan Asnaf',
+    name: 'Bancian Baru',
     location: 'Masjid Al-Hidayah',
     status: 'Selesai',
-    allowance: '500.00',
+    allowance: '30.00',
   },
   {
-    id: 'ACT005',
+    id: 'AR002',
     date: '05/03/2024',
-    name: 'Program Qiamullail',
+    name: 'Asnaf Review',
     location: 'Masjid Al-Hidayah',
     status: 'Dalam Proses',
-    allowance: '500.00',
+    allowance: '20.00',
   }
 ]);
 
@@ -215,7 +215,7 @@ const getActivityStatusClass = (status) => {
 // Computed properties
 const totalAllowance = computed(() => {
   return activities.value
-    .reduce((sum, activity) => sum + parseFloat(activity.allowance.replace(/,/g, '')), 0)
+    .reduce((sum, activity) => sum + parseFloat(activity.allowance), 0)
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 });

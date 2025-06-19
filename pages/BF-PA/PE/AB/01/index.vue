@@ -247,49 +247,51 @@ const penolongAmil = ref([
     id: 'PA001',
     name: 'Ahmad bin Abdullah',
     activities: [
-      { id: 1, name: 'Kutipan Zakat Kariah', allowanceRate: '500.00' },
-      { id: 2, name: 'Agihan Bantuan Asnaf', allowanceRate: '500.00' },
-      { id: 3, name: 'Program Tazkirah', allowanceRate: '500.00' }
+      { id: 'B001', name: 'Bancian Baru', allowanceRate: '30.00' },
+      { id: 'AR001', name: 'Asnaf Review', allowanceRate: '20.00' },
+      { id: 'PB001', name: 'Permohonan Bantuan', allowanceRate: '20.00' }
     ]
   },
   {
     id: 'PA002',
     name: 'Siti Aminah binti Hassan',
     activities: [
-      { id: 1, name: 'Kutipan Zakat Kariah', allowanceRate: '500.00' },
-      { id: 2, name: 'Lawatan Asnaf', allowanceRate: '500.00' }
+      { id: 'B002', name: 'Bancian Baru', allowanceRate: '30.00' },
+      { id: 'AR002', name: 'Asnaf Review', allowanceRate: '20.00' }
     ]
   },
   {
     id: 'PA003',
     name: 'Mohd Razak bin Ibrahim',
     activities: [
-      { id: 1, name: 'Agihan Bantuan Asnaf', allowanceRate: '500.00' },
-      { id: 2, name: 'Program Qiamullail', allowanceRate: '500.00' }
+      { id: 'PB002', name: 'Permohonan Bantuan', allowanceRate: '20.00' },
+      { id: 'AR003', name: 'Asnaf Review', allowanceRate: '20.00' }
     ]
   },
   {
     id: 'PA004',
     name: 'Nurul Aisyah binti Omar',
     activities: [
-      { id: 1, name: 'Program Tazkirah', allowanceRate: '500.00' },
-      { id: 2, name: 'Lawatan Asnaf', allowanceRate: '500.00' }
+      { id: 'B003', name: 'Bancian Baru', allowanceRate: '30.00' },
+      { id: 'PB003', name: 'Permohonan Bantuan', allowanceRate: '20.00' }
     ]
   },
   {
     id: 'PA005',
     name: 'Ali bin Hassan',
     activities: [
-      { id: 1, name: 'Kutipan Zakat Kariah', allowanceRate: '500.00' },
-      { id: 2, name: 'Program Qiamullail', allowanceRate: '500.00' },
-      { id: 3, name: 'Lawatan Asnaf', allowanceRate: '500.00' }
+      { id: 'B001', name: 'Bancian Baru', allowanceRate: '30.00' },
+      { id: 'AR001', name: 'Asnaf Review', allowanceRate: '20.00' },
+      { id: 'PB001', name: 'Permohonan Bantuan', allowanceRate: '20.00' }
     ]
   }
 ]);
 
 const totalAllowance = computed(() => {
   return penolongAmil.value.reduce((total, pa) => {
-    return total + (pa.activities.length * 500)
+    return total + pa.activities.reduce((sum, activity) => {
+      return sum + parseFloat(activity.allowanceRate)
+    }, 0)
   }, 0).toFixed(2)
 });
 

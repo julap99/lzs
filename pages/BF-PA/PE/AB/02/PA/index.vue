@@ -102,35 +102,7 @@
             </div>
           </div>
 
-          <!-- Activities List -->
-          <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Senarai Aktiviti Yang Dilakukan</h3>
-            
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      No.
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Nama Aktiviti
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="(activity, index) in activities" :key="activity.id">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      {{ index + 1 }}
-                    </td>
-                    <td class="px-6 py-4">
-                      {{ activity.name }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+
 
           <!-- Action Buttons -->
           <div class="flex justify-end gap-4 mt-6">
@@ -181,70 +153,70 @@ const penolongAmil = ref([
   {
     id: 'PA001',
     name: 'Ahmad bin Abdullah',
-    totalAllowance: '1,500.00',
+    totalAllowance: '70.00',
   },
   {
     id: 'PA002',
     name: 'Siti Aminah binti Hassan',
-    totalAllowance: '1,000.00',
+    totalAllowance: '50.00',
   },
   {
     id: 'PA003',
     name: 'Mohd Razak bin Ibrahim',
-    totalAllowance: '1,000.00',
+    totalAllowance: '40.00',
   },
   {
     id: 'PA004',
     name: 'Nurul Aisyah binti Omar',
-    totalAllowance: '1,000.00',
+    totalAllowance: '50.00',
   },
   {
     id: 'PA005',
     name: 'Ali bin Hassan',
-    totalAllowance: '1,500.00',
+    totalAllowance: '70.00',
   }
 ]);
 
 // Mock activities data
 const activities = ref([
   {
-    id: 'ACT001',
-    name: 'Kutipan Zakat Kariah',
-    totalAllowance: '500.00',
+    id: 'B001',
+    name: 'Bancian Baru',
+    totalAllowance: '30.00',
   },
   {
-    id: 'ACT002',
-    name: 'Agihan Bantuan Asnaf',
-    totalAllowance: '500.00',
+    id: 'AR001',
+    name: 'Asnaf Review',
+    totalAllowance: '20.00',
   },
   {
-    id: 'ACT003',
-    name: 'Program Tazkirah',
-    totalAllowance: '500.00',
+    id: 'PB001',
+    name: 'Permohonan Bantuan',
+    totalAllowance: '20.00',
   },
   {
-    id: 'ACT004',
-    name: 'Lawatan Asnaf',
-    totalAllowance: '500.00',
+    id: 'B002',
+    name: 'Bancian Baru',
+    totalAllowance: '30.00',
   },
   {
-    id: 'ACT005',
-    name: 'Program Qiamullail',
-    totalAllowance: '500.00',
+    id: 'AR002',
+    name: 'Asnaf Review',
+    totalAllowance: '20.00',
   }
 ]);
 
 // Computed properties for totals
 const totalAllowance = computed(() => {
   return penolongAmil.value
-    .reduce((sum, pa) => sum + parseFloat(pa.totalAllowance.replace(/,/g, '')), 0)
+    .reduce((sum, pa) => sum + parseFloat(pa.totalAllowance), 0)
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 });
 
 const totalActivityAllowance = computed(() => {
   return activities.value
-    .reduce((sum, activity) => sum + parseFloat(activity.totalAllowance.replace(/,/g, '')), 0)
+    .reduce((sum, activity) => sum + parseFloat(activity.totalAllowance), 0)
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 });

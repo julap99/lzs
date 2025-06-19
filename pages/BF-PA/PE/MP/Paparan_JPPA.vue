@@ -173,7 +173,7 @@ const breadcrumb = ref([
 // Mock data for activities - only "Menunggu Sokongan JPPA" status
 const activities = ref([
   {
-    id: 'MP/2024/001',
+    id: 'M001',
     name: 'Mesyuarat JPPA Bulanan',
     date: '2024-03-15',
     location: 'Dewan Mesyuarat JPPA',
@@ -181,7 +181,7 @@ const activities = ref([
     status: 'Menunggu Sokongan JPPA'
   },
   {
-    id: 'MP/2024/005',
+    id: 'P001',
     name: 'Program Khidmat Masyarakat',
     date: '2024-03-20',
     location: 'Masjid Al-Hidayah',
@@ -189,7 +189,7 @@ const activities = ref([
     status: 'Menunggu Sokongan JPPA'
   },
   {
-    id: 'MP/2024/008',
+    id: 'L001',
     name: 'Latihan Pengurusan Zakat',
     date: '2024-03-25',
     location: 'Dewan Latihan',
@@ -197,7 +197,7 @@ const activities = ref([
     status: 'Menunggu Sokongan JPPA'
   },
   {
-    id: 'MP/2024/010',
+    id: 'M002',
     name: 'Mesyuarat Koordinasi',
     date: '2024-03-28',
     location: 'Pejabat Zakat',

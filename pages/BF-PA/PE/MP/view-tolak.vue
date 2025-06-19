@@ -233,31 +233,31 @@ const penolongAmil = ref([
     id: 'PA001',
     name: 'Ahmad bin Abdullah',
     role: 'Pengerusi',
-    allowance: '500.00',
+    allowance: '50.00',
   },
   {
     id: 'PA002',
     name: 'Siti Aminah binti Hassan',
     role: 'Setiausaha',
-    allowance: '400.00',
+    allowance: '40.00',
   },
   {
     id: 'PA003',
     name: 'Mohd Razak bin Ibrahim',
     role: 'Ahli Jawatankuasa',
-    allowance: '300.00',
+    allowance: '30.00',
   },
   {
     id: 'PA004',
     name: 'Nurul Aisyah binti Omar',
     role: 'Ahli Jawatankuasa',
-    allowance: '300.00',
+    allowance: '30.00',
   },
   {
     id: 'PA005',
     name: 'Ali bin Hassan',
     role: 'Ahli Jawatankuasa',
-    allowance: '300.00',
+    allowance: '30.00',
   }
 ]);
 
