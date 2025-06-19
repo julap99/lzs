@@ -6,19 +6,22 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Semakan dan Sokongan (JPPA)
+            Maklumat Elaun Penolong Amil (Diluluskan)
           </h2>
         </div>
       </template>
 
       <template #body>
         <div class="p-4">
-
           <!-- Maklumat Pengiraan Elaun -->
           <div class="mb-6">
             <h3 class="text-lg font-semibold mb-4">Maklumat Pengiraan Elaun</h3>
             <div class="bg-gray-50 p-4 rounded-lg">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">No. Batch</p>
+                  <p class="font-medium text-blue-600">{{ batchId }}</p>
+                </div>
                 <div>
                   <p class="text-sm text-gray-500">Lokasi Kariah</p>
                   <p class="font-medium">{{ application.kariahLocation }}</p>
@@ -30,6 +33,12 @@
                 <div>
                   <p class="text-sm text-gray-500">Jenis Kategori</p>
                   <p class="font-medium">{{ getAssignmentTypeLabel(application.assignmentType) }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Status</p>
+                  <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                    Diluluskan
+                  </span>
                 </div>
               </div>
             </div>
@@ -92,179 +101,76 @@
             </div>
           </div>
 
-          <!-- Penilaian JPPA -->
+          <!-- Maklumat Sokongan JPPA -->
           <div class="mb-6">
-            <FormKit
-              type="form"
-              id="reviewForm"
-              @submit="handleSubmit"
-              :actions="false"
-            >
-              <div class="mb-6">
-                <h3 class="font-medium mb-3">Penilaian JPPA</h3>
-
-                <div class="mt-4">
-                  <FormKit
-                    type="checkbox"
-                    name="confirmationCheck"
-                    label="Saya mengesahkan bahawa semua maklumat dan dokumen telah disemak dan keputusan saya adalah berdasarkan penilaian yang teliti dan menyokong permohonan elaun ini"
-                    validation="accepted"
-                    :validation-messages="{
-                      accepted: 'Sila buat pengesahan sebelum hantar',
-                    }"
-                  />
+            <h3 class="text-lg font-semibold mb-4">Maklumat Sokongan JPPA</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Disokong Oleh</p>
+                  <p class="font-medium">{{ application.jppaSupport.reviewedBy }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Tarikh Sokongan</p>
+                  <p class="font-medium">{{ application.jppaSupport.reviewedAt }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Status</p>
+                  <span
+                    class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800"
+                  >
+                    Disokong
+                  </span>
+                </div>
+                <div class="md:col-span-2">
+                  <p class="text-sm text-gray-500">Catatan</p>
+                  <p class="font-medium">{{ application.jppaSupport.comments }}</p>
                 </div>
               </div>
-            </FormKit>
+            </div>
+          </div>
+
+          <!-- Maklumat Kelulusan Ketua JPPA -->
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-4">Maklumat Kelulusan Ketua JPPA</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Diluluskan Oleh</p>
+                  <p class="font-medium">{{ application.ketuaJPPA.approvedBy }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Tarikh Kelulusan</p>
+                  <p class="font-medium">{{ application.ketuaJPPA.approvedAt }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Status</p>
+                  <span
+                    class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800"
+                  >
+                    Diluluskan
+                  </span>
+                </div>
+                <div class="md:col-span-2">
+                  <p class="text-sm text-gray-500">Catatan Kelulusan</p>
+                  <p class="font-medium">{{ application.ketuaJPPA.comments }}</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Action Buttons -->
           <div class="flex justify-end gap-4 mt-6">
             <rs-button
               variant="primary-outline"
-              @click="navigateTo('/BF-PA/PE/AB/Paparan_JPPA')"
+              @click="navigateTo('/BF-PA/PE/AB')"
             >
               Kembali
-            </rs-button>
-            <rs-button
-              variant="danger-outline"
-              @click="showRejectModal = true"
-            >
-              Tolak
-            </rs-button>
-            <rs-button
-              variant="primary"
-              @click="showApproveModal = true"
-            >
-              Sokong
             </rs-button>
           </div>
         </div>
       </template>
     </rs-card>
-
-    <!-- Approve Confirmation Modal -->
-    <rs-modal
-      v-model="showApproveModal"
-      title="Sahkan Sokongan"
-      size="sm"
-      position="center"
-    >
-      <template #body>
-        <div class="p-4">
-          <FormKit
-            type="form"
-            id="approveForm"
-            :actions="false"
-            @submit="handleApprove"
-          >
-            <FormKit
-              type="textarea"
-              name="remarks"
-              label="Catatan (Jika Perlu)"
-              placeholder="Masukkan catatan jika perlu"
-              rows="3"
-            />
-          </FormKit>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-end gap-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showApproveModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="primary"
-            :loading="isSubmitting"
-            @click="handleApprove"
-          >
-            Sahkan
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Reject Confirmation Modal -->
-    <rs-modal
-      v-model="showRejectModal"
-      title="Sahkan Penolakan"
-      size="sm"
-      position="center"
-    >
-      <template #body>
-        <div class="p-4">
-          <FormKit
-            type="form"
-            id="rejectForm"
-            :actions="false"
-            @submit="handleReject"
-          >
-            <FormKit
-              type="textarea"
-              name="remarks"
-              label="Sebab Penolakan"
-              placeholder="Masukkan sebab penolakan"
-              validation="required"
-              :validation-messages="{
-                required: 'Sebab penolakan diperlukan',
-              }"
-              rows="3"
-            />
-          </FormKit>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-end gap-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showRejectModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="danger"
-            :loading="isSubmitting"
-            @click="handleReject"
-          >
-            Sahkan
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Success Modal -->
-    <rs-modal
-      v-model="showSuccessModal"
-      title="Berjaya"
-      size="sm"
-      position="center"
-    >
-      <template #body>
-        <div class="text-center p-4">
-          <Icon
-            name="heroicons:check-circle"
-            class="text-green-500 mx-auto mb-4"
-            size="48"
-          />
-          <p class="text-gray-700">
-            {{ successMessage }}
-          </p>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-center">
-          <rs-button
-            variant="primary"
-            @click="navigateTo('/BF-PA/PE/AB/Paparan_JPPA')"
-          >
-            OK
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
   </div>
 </template>
 
@@ -272,22 +178,27 @@
 import { ref, computed } from 'vue';
 
 definePageMeta({
-  title: "Semakan dan Sokongan",
-  description: "Semakan dan sokongan permohonan bantuan asnaf",
+  title: "Maklumat Elaun Penolong Amil (Diluluskan)",
+  description: "Maklumat elaun penolong amil yang telah diluluskan",
 });
+
+const route = useRoute();
 
 const breadcrumb = ref([
   {
     name: "Bancian/Asnaf",
     type: "link",
-    path: "/BF-PA/PE/AB/Paparan_JPPA",
+    path: "/BF-PA/PE/AB",
   },
   {
-    name: "Semakan dan Sokongan",
+    name: "Maklumat Elaun (Diluluskan)",
     type: "current",
-    path: "/BF-PA/PE/AB/02",
+    path: "/BF-PA/PE/AB/view-lulus",
   },
 ]);
+
+// Get batch ID from query parameter
+const batchId = computed(() => route.query.id || 'BATCH/2024/003');
 
 // Mock application data
 const application = ref({
@@ -296,7 +207,7 @@ const application = ref({
   kariahName: "Masjid Wilayah Persekutuan",
   bantuanType: "KEWANGAN",
   applicationDate: "01/03/2024",
-  status: "Menunggu Sokongan JPPA",
+  status: "Diluluskan",
   paId: "PA-2024-001",
   paName: "Mohd Razak bin Ibrahim",
   kariahLocation: "Masjid Wilayah Persekutuan",
@@ -305,6 +216,18 @@ const application = ref({
   allowanceRate: "1,500.00",
   calculatedAllowance: "1,500.00",
   isEligible: true,
+  jppaSupport: {
+    reviewedBy: "Sarah binti Hamid",
+    reviewedAt: "15/05/2024, 10:45",
+    isSupported: true,
+    comments: "Berdasarkan semakan dokumen dan maklumat yang dikemukakan, permohonan ini disokong untuk diluluskan. Asnaf memenuhi semua kriteria yang ditetapkan.",
+  },
+  ketuaJPPA: {
+    approvedBy: "Ahmad bin Ismail",
+    approvedAt: "20/05/2024, 14:30",
+    isApproved: true,
+    comments: "Permohonan elaun penolong amil telah disemak dengan teliti dan memenuhi semua kriteria kelayakan. Dokumen sokongan lengkap dan sah. Amaun elaun adalah munasabah dan dalam had yang dibenarkan. Permohonan ini diluluskan.",
+  },
 });
 
 // Mock Penolong Amil data
@@ -365,24 +288,7 @@ const activities = ref([
   }
 ]);
 
-// Modal states
-const showApproveModal = ref(false);
-const showRejectModal = ref(false);
-const showSuccessModal = ref(false);
-const isSubmitting = ref(false);
-const successMessage = ref('');
-
 // Helper functions
-const getBantuanTypeLabel = (value) => {
-  const types = {
-    KEWANGAN: "Bantuan Kewangan",
-    PENDIDIKAN: "Bantuan Pendidikan",
-    PERUBATAN: "Bantuan Perubatan",
-    KEMUDAHAN: "Bantuan Kemudahan",
-  };
-  return types[value] || value;
-};
-
 const getAssignmentTypeLabel = (value) => {
   const types = {
     FITRAH: "Fitrah",
@@ -393,17 +299,6 @@ const getAssignmentTypeLabel = (value) => {
   return types[value] || value;
 };
 
-const getStatusClass = (status) => {
-  const statusClasses = {
-    "Belum Disemak": "bg-yellow-100 text-yellow-800",
-    "Menunggu Sokongan JPPA": "bg-blue-100 text-blue-800",
-    "Menunggu Kelulusan Ketua JPPA": "bg-purple-100 text-purple-800",
-    Lulus: "bg-green-100 text-green-800",
-    "Tidak Lulus": "bg-red-100 text-red-800",
-  };
-  return statusClasses[status] || "bg-gray-100 text-gray-800";
-};
-
 // Computed properties
 const totalAllowance = computed(() => {
   return penolongAmil.value
@@ -411,41 +306,6 @@ const totalAllowance = computed(() => {
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 });
-
-// Form handlers
-const handleApprove = async () => {
-  isSubmitting.value = true;
-  
-  try {
-    // Mock API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    showApproveModal.value = false;
-    successMessage.value = "Permohonan telah berjaya disokong dan dihantar kepada Ketua JPPA.";
-    showSuccessModal.value = true;
-  } catch (error) {
-    console.error('Error approving application:', error);
-  } finally {
-    isSubmitting.value = false;
-  }
-};
-
-const handleReject = async () => {
-  isSubmitting.value = true;
-  
-  try {
-    // Mock API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    showRejectModal.value = false;
-    successMessage.value = "Permohonan telah ditolak.";
-    showSuccessModal.value = true;
-  } catch (error) {
-    console.error('Error rejecting application:', error);
-  } finally {
-    isSubmitting.value = false;
-  }
-};
 </script>
 
 <style scoped>

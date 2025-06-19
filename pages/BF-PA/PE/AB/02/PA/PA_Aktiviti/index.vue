@@ -155,7 +155,7 @@ const activities = ref([
   {
     id: 'ACT001',
     date: '01/03/2024',
-    name: 'Kutipan Zakat Fitrah',
+    name: 'Kutipan Zakat Kariah',
     location: 'Masjid Al-Hidayah',
     status: 'Selesai',
     allowance: '500.00',
@@ -176,6 +176,22 @@ const activities = ref([
     status: 'Belum Bermula',
     allowance: '500.00',
   },
+  {
+    id: 'ACT004',
+    date: '04/03/2024',
+    name: 'Lawatan Asnaf',
+    location: 'Masjid Al-Hidayah',
+    status: 'Selesai',
+    allowance: '500.00',
+  },
+  {
+    id: 'ACT005',
+    date: '05/03/2024',
+    name: 'Program Qiamullail',
+    location: 'Masjid Al-Hidayah',
+    status: 'Dalam Proses',
+    allowance: '500.00',
+  }
 ]);
 
 // Helper functions
