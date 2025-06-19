@@ -96,7 +96,7 @@
                             </p>
                           </div>
                           <div class="bg-white p-3 rounded border">
-                            <p class="text-sm text-gray-600">Skor Terbobot:</p>
+                            <p class="text-sm text-gray-600">Skor berpemberat:</p>
                             <p class="text-lg font-semibold text-blue-600">
                               {{ calculateWeightedScore('age').toFixed(3) }}
                             </p>
@@ -115,7 +115,7 @@
                             </p>
                           </div>
                           <div class="bg-white p-3 rounded border">
-                            <p class="text-sm text-gray-600">Skor Terbobot:</p>
+                            <p class="text-sm text-gray-600">Skor berpemberat:</p>
                             <p class="text-lg font-semibold text-blue-600">
                               {{ calculateWeightedScore('education').toFixed(3) }}
                             </p>
@@ -134,7 +134,7 @@
                             </p>
                           </div>
                           <div class="bg-white p-3 rounded border">
-                            <p class="text-sm text-gray-600">Skor Terbobot:</p>
+                            <p class="text-sm text-gray-600">Skor berpemberat:</p>
                             <p class="text-lg font-semibold text-blue-600">
                               {{ calculateWeightedScore('health').toFixed(3) }}
                             </p>
@@ -153,7 +153,7 @@
                             </p>
                           </div>
                           <div class="bg-white p-3 rounded border">
-                            <p class="text-sm text-gray-600">Skor Terbobot:</p>
+                            <p class="text-sm text-gray-600">Skor berpemberat:</p>
                             <p class="text-lg font-semibold text-blue-600">
                               {{ calculateWeightedScore('job').toFixed(3) }}
                             </p>
@@ -174,7 +174,7 @@
                             </p>
                           </div>
                           <div class="bg-white p-3 rounded border">
-                            <p class="text-sm text-gray-600">Skor Terbobot:</p>
+                            <p class="text-sm text-gray-600">Skor berpemberat:</p>
                             <p class="text-lg font-semibold text-blue-600">
                               {{ calculateWeightedScore('disability').toFixed(3) }}
                             </p>
@@ -193,7 +193,7 @@
                             </p>
                           </div>
                           <div class="bg-white p-3 rounded border">
-                            <p class="text-sm text-gray-600">Skor Terbobot:</p>
+                            <p class="text-sm text-gray-600">Skor berpemberat:</p>
                             <p class="text-lg font-semibold text-blue-600">
                               {{ calculateWeightedScore('experience').toFixed(3) }}
                             </p>
@@ -212,7 +212,7 @@
                             </p>
                           </div>
                           <div class="bg-white p-3 rounded border">
-                            <p class="text-sm text-gray-600">Skor Terbobot:</p>
+                            <p class="text-sm text-gray-600">Skor berpemberat:</p>
                             <p class="text-lg font-semibold text-blue-600">
                               {{ calculateWeightedScore('skills').toFixed(3) }}
                             </p>
@@ -231,7 +231,7 @@
                             </p>
                           </div>
                           <div class="bg-white p-3 rounded border">
-                            <p class="text-sm text-gray-600">Skor Terbobot:</p>
+                            <p class="text-sm text-gray-600">Skor berpemberat:</p>
                             <p class="text-lg font-semibold text-blue-600">
                               {{ calculateWeightedScore('assets').toFixed(3) }}
                             </p>
