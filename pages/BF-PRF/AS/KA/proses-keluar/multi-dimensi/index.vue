@@ -244,9 +244,17 @@
                     <div class="mt-6">
                       <div class="bg-green-50 p-4 rounded-lg">
                         <h3 class="font-medium text-green-800 mb-3">Hasil Pengiraan Multi Dimensi</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                        <div v-if="processing" class="text-center py-8">
+                          <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-green-800 bg-green-100 rounded-md">
+                            <Icon name="eos-icons:loading" class="animate-spin -ml-1 mr-3 h-5 w-5" />
+                            Sedang mengira status multi dimensi...
+                          </div>
+                        </div>
+                        
+                        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div class="bg-white p-3 rounded border">
-                            <p class="text-sm text-gray-600">Jumlah Skor Terbobot:</p>
+                            <p class="text-sm text-gray-600">Jumlah Skor Pemberat:</p>
                             <p class="text-lg font-semibold text-green-600">
                               {{ totalWeightedScore.toFixed(3) }}
                             </p>
@@ -258,7 +266,8 @@
                             </p>
                           </div>
                         </div>
-                        <div class="mt-3 bg-white p-3 rounded border">
+                        
+                        <div v-if="!processing && multiDimensionalStatus" class="mt-3 bg-white p-3 rounded border">
                           <p class="text-sm text-gray-600">Status Multi Dimensi:</p>
                           <p class="text-xl font-bold" :class="statusColorClass">
                             {{ multiDimensionalStatus }}
@@ -803,14 +812,14 @@ const mockDataSets = {
   adult_non_productive: {
     age: 45,
     categories: {
-      age: { score: 6, maxScore: 10 },
-      education: { score: 4, maxScore: 10 },
-      health: { score: 5, maxScore: 10 },
-      job: { score: 3, maxScore: 10 },
-      disability: { score: 8, maxScore: 10 },
-      experience: { score: 4, maxScore: 10 },
-      skills: { score: 3, maxScore: 10 },
-      assets: { score: 2, maxScore: 10 },
+      age: { score: 3, maxScore: 10 },
+      education: { score: 2, maxScore: 10 },
+      health: { score: 4, maxScore: 10 },
+      job: { score: 1, maxScore: 10 },
+      disability: { score: 6, maxScore: 10 },
+      experience: { score: 2, maxScore: 10 },
+      skills: { score: 1, maxScore: 10 },
+      assets: { score: 1, maxScore: 10 },
     }
   },
   minor: {
@@ -909,20 +918,33 @@ const calculateMultiDimensionalMerit = () => {
   const isAdult = formData.value.age >= 19;
   
   if (isAdult) {
-    // For adults: divide by 19 (total weight of 8 categories)
-    multiDimensionalMerit.value = totalWeightedScore.value / 19;
+    // For adults: calculate merit as percentage of total possible score
+    const totalPossibleScore = 10; // Max score per category
+    const totalActualScore = Object.values(formData.value.categories).reduce((sum, category) => {
+      return sum + (category.score || 0);
+    }, 0);
+    
+    // Calculate merit as percentage (0-1 range)
+    multiDimensionalMerit.value = totalActualScore / (totalPossibleScore * 8); // 8 categories for adults
   } else {
-    // For minors: divide by 14 (total weight of 4 categories)
-    multiDimensionalMerit.value = totalWeightedScore.value / 14;
+    // For minors: calculate merit as percentage of total possible score (4 categories)
+    const totalPossibleScore = 10; // Max score per category
+    const minorCategories = ['age', 'education', 'health', 'disability'];
+    const totalActualScore = minorCategories.reduce((sum, category) => {
+      return sum + (formData.value.categories[category]?.score || 0);
+    }, 0);
+    
+    // Calculate merit as percentage (0-1 range)
+    multiDimensionalMerit.value = totalActualScore / (totalPossibleScore * 4); // 4 categories for minors
   }
 };
 
 // Determine status based on merit
 const determineStatus = (merit) => {
-  if (merit === 0) return "Tegar";
-  if (merit <= 0.25) return "Tidak Produktif";
-  if (merit <= 0.5) return "Produktif C";
-  if (merit <= 0.75) return "Produktif B";
+  if (merit <= 0.2) return "Tegar";
+  if (merit <= 0.4) return "Tidak Produktif";
+  if (merit <= 0.6) return "Produktif C";
+  if (merit <= 0.8) return "Produktif B";
   return "Produktif A";
 };
 
@@ -953,12 +975,58 @@ const calculateMultiDimensionalStatus = () => {
 
   processing.value = true;
 
-  // Simulate calculation process
+  // Simulate calculation process with random variations
   setTimeout(() => {
+    // Generate scores that will produce different statuses
+    const statusRanges = [
+      // Tegar (0-20%): 0-2 scores
+      [0, 1, 2],
+      // Tidak Produktif (20-40%): 2-4 scores  
+      [2, 3, 4],
+      // Produktif C (40-60%): 4-6 scores
+      [4, 5, 6],
+      // Produktif B (60-80%): 6-8 scores
+      [6, 7, 8],
+      // Produktif A (80-100%): 8-10 scores
+      [8, 9, 10]
+    ];
+    
+    // Randomly select a status range
+    const selectedRange = statusRanges[Math.floor(Math.random() * statusRanges.length)];
+    
+    // Generate scores within the selected range
+    const newScores = {
+      age: selectedRange[Math.floor(Math.random() * selectedRange.length)],
+      education: selectedRange[Math.floor(Math.random() * selectedRange.length)],
+      health: selectedRange[Math.floor(Math.random() * selectedRange.length)],
+      job: selectedRange[Math.floor(Math.random() * selectedRange.length)],
+      disability: selectedRange[Math.floor(Math.random() * selectedRange.length)],
+      experience: selectedRange[Math.floor(Math.random() * selectedRange.length)],
+      skills: selectedRange[Math.floor(Math.random() * selectedRange.length)],
+      assets: selectedRange[Math.floor(Math.random() * selectedRange.length)],
+    };
+
+    // Apply new scores to current categories
+    Object.keys(newScores).forEach(category => {
+      if (formData.value.categories[category]) {
+        formData.value.categories[category].score = newScores[category];
+      }
+    });
+
+    // Recalculate merit and status
     calculateMultiDimensionalMerit();
     multiDimensionalStatus.value = determineStatus(multiDimensionalMerit.value);
     processing.value = false;
+    
+    // Show success notification
+    showCalculationComplete();
   }, 1000);
+};
+
+// Show calculation complete notification
+const showCalculationComplete = () => {
+  // You can add a toast notification here if you have a notification system
+  console.log('Calculation complete! New status:', multiDimensionalStatus.value);
 };
 
 const handleSubmit = (data) => {
