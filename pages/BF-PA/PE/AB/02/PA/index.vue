@@ -55,6 +55,9 @@
                       Total Elaun
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Tindakan
                     </th>
                   </tr>
@@ -68,7 +71,7 @@
                       <a 
                         href="#" 
                         class="text-blue-600 hover:text-blue-800"
-                        @click.prevent="navigateTo(`/BF-PA/PE/AB/02/PA/PA_Aktiviti?id=${pa.id}`)"
+                        @click.prevent="navigateTo(`/BF-PA/PE/AB/02/PA/PA_Aktiviti/${pa.id}`)"
                       >
                         {{ pa.name }}
                       </a>
@@ -77,10 +80,18 @@
                       RM {{ pa.totalAllowance }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs font-medium rounded-full"
+                        :class="getPaymentStatusClass(pa.paymentStatus)"
+                      >
+                        {{ pa.paymentStatus }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
                       <rs-button
                         variant="primary"
                         size="sm"
-                        @click="navigateTo(`/BF-PA/PE/AB/02/PA/PA_Aktiviti?id=${pa.id}`)"
+                        @click="navigateTo(`/BF-PA/PE/AB/02/PA/PA_Aktiviti/${pa.id}`)"
                       >
                         Lihat Aktiviti
                       </rs-button>
@@ -89,7 +100,7 @@
                 </tbody>
                 <tfoot class="bg-gray-50">
                   <tr>
-                    <td colspan="2" class="px-6 py-4 text-right font-medium">
+                    <td colspan="3" class="px-6 py-4 text-right font-medium">
                       Jumlah Keseluruhan:
                     </td>
                     <td class="px-6 py-4 font-medium text-blue-600">
@@ -101,8 +112,6 @@
               </table>
             </div>
           </div>
-
-
 
           <!-- Action Buttons -->
           <div class="flex justify-end gap-4 mt-6">
@@ -154,26 +163,31 @@ const penolongAmil = ref([
     id: 'PA001',
     name: 'Ahmad bin Abdullah',
     totalAllowance: '70.00',
+    paymentStatus: 'Telah Ditolak',
   },
   {
     id: 'PA002',
     name: 'Siti Aminah binti Hassan',
     totalAllowance: '50.00',
+    paymentStatus: 'Belum Dibayar',
   },
   {
     id: 'PA003',
     name: 'Mohd Razak bin Ibrahim',
     totalAllowance: '40.00',
+    paymentStatus: 'Telah Dibayar',
   },
   {
     id: 'PA004',
     name: 'Nurul Aisyah binti Omar',
     totalAllowance: '50.00',
+    paymentStatus: 'Belum Dibayar',
   },
   {
     id: 'PA005',
     name: 'Ali bin Hassan',
     totalAllowance: '70.00',
+    paymentStatus: 'Telah Dibayar',
   }
 ]);
 
@@ -220,6 +234,16 @@ const totalActivityAllowance = computed(() => {
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 });
+
+const getPaymentStatusClass = (status) => {
+  const statusClasses = {
+    'Telah Dibayar': 'bg-green-100 text-green-800',
+    'Belum Dibayar': 'bg-yellow-100 text-yellow-800',
+    'Telah Ditolak': 'bg-red-100 text-red-800',
+    'Dalam Proses': 'bg-blue-100 text-blue-800',
+  };
+  return statusClasses[status] || 'bg-gray-100 text-gray-800';
+};
 </script>
 
 <style scoped>

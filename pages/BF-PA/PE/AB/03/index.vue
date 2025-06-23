@@ -104,7 +104,7 @@
                         <a 
                           href="#" 
                           class="text-blue-600 hover:text-blue-800"
-                          @click.prevent="navigateTo(`/BF-PA/PE/AB/02/PA/PA_Aktiviti?id=${pa.id}`)"
+                          @click.prevent="navigateTo(`/BF-PA/PE/AB/02/PA/PA_Aktiviti/${pa.id}`)"
                         >
                           {{ pa.name }}
                         </a>
