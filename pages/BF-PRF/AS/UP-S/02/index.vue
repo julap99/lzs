@@ -54,14 +54,14 @@
               <FormKit
                 type="text"
                 name="nama_ketua_keluarga"
-                label="1. Nama Ketua Keluarga (Untuk Mualaf nama mengikut pengenalan)"
+                label="Nama Ketua Keluarga (Untuk Mualaf nama mengikut pengenalan)"
                 validation="required"
               />
 
               <FormKit
                 type="select"
                 name="jenis_id"
-                label="2. Jenis ID"
+                label="Jenis ID"
                 placeholder="Pilih jenis ID"
                 :options="['Kad Pengenalan', 'Foreign ID']"
                 validation="required"
@@ -82,27 +82,27 @@
               <FormKit
                 type="text"
                 name="nombor_id"
-                label="3. Nombor ID"
+                label="Nombor ID"
                 validation="required"
               />
 
               <FormKit
                 type="text"
                 name="nama"
-                label="4. Nama"
+                label="Nama"
                 validation="required"
               />
 
               <FormKit
                 type="text"
                 name="nama_selepas_islam"
-                label="5. Nama Selepas Islam (Muallaf)"
+                label="Nama Selepas Islam (Muallaf)"
               />
 
               <FormKit
                 type="text"
                 name="no_pengenalan"
-                label="6. No Polis/No Tentera/No Sijil Lahir"
+                label="No Polis/No Tentera/No Sijil Lahir"
               />
               <FormKit
                 type="date"
@@ -124,7 +124,7 @@
               <FormKit
                 type="date"
                 name="tarikh_lahir"
-                label="7. Tarikh Lahir"
+                label="Tarikh Lahir"
                 help="Format: dd-mm-yyyy"
                 validation="required"
               />
@@ -132,7 +132,7 @@
               <FormKit
                 type="select"
                 name="agama"
-                label="8. Agama"
+                label="Agama"
                 :options="[
                   'Islam',
                   'Kristian',
@@ -149,14 +149,14 @@
               <FormKit
                 type="email"
                 name="emel"
-                label="9. Emel"
+                label="Emel"
                 validation="required|email"
               />
 
               <FormKit
                 type="select"
                 name="warganegara"
-                label="10. Warganegara"
+                label="Warganegara"
                 :options="['Warganegara', 'Bukan Warganegara']"
                 validation="required"
               />
@@ -164,7 +164,7 @@
               <FormKit
                 type="select"
                 name="jantina"
-                label="11. Jantina"
+                label="Jantina"
                 :options="['Lelaki', 'Perempuan']"
                 validation="required"
               />
@@ -172,7 +172,7 @@
               <FormKit
                 type="select"
                 name="bangsa"
-                label="12. Bangsa"
+                label="Bangsa"
                 :options="['Melayu', 'Cina', 'India', 'Lain-lain']"
                 validation="required"
               />
@@ -186,7 +186,7 @@
               <FormKit
                 type="select"
                 name="bersekolah"
-                label="13. Bersekolah"
+                label="Bersekolah"
                 :options="['Ya', 'Tidak']"
                 validation="required"
               />
@@ -194,7 +194,7 @@
               <FormKit
                 type="select"
                 name="pendidikan_tertinggi"
-                label="14. Pendidikan Tertinggi"
+                label="Pendidikan Tertinggi"
                 :options="[
                   'Peringkat Rendah',
                   'SRP/PMR',
@@ -217,7 +217,7 @@
               <FormKit
                 type="date"
                 name="tarikh_masuk_islam"
-                label="15. *Tarikh Masuk Islam"
+                label="*Tarikh Masuk Islam"
                 help="Format: dd-mm-yyyy"
                 validation="required"
                 v-model="tarikhMasukIslam"
@@ -227,7 +227,7 @@
                 v-if="tarikhMasukIslam"
                 type="file"
                 name="dokumen_masuk_islam"
-                label="16. *upload surat keislaman dari MAIS"
+                label="*upload surat keislaman dari MAIS"
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 accept=".pdf,.jpg,.jpeg,.png"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -236,7 +236,7 @@
               <FormKit
                 type="date"
                 name="tarikh_masuk_kfam"
-                label="17. *Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
+                label="*Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
                 help="Format: dd-mm-yyyy"
                 validation="required"
               />
@@ -250,7 +250,7 @@
               <FormKit
                 type="select"
                 name="status_perkahwinan"
-                label="18. Status Perkahwinan"
+                label="Status Perkahwinan"
                 :options="[
                   'Berkahwin',
                   'Bujang',
@@ -266,7 +266,7 @@
               <FormKit
                 type="select"
                 name="status_poligami"
-                label="19. Status Poligami"
+                label="Status Poligami"
                 :options="[
                   { label: 'Tidak', value: 'tidak' },
                   { label: 'Ya', value: 'ya' }
@@ -315,7 +315,7 @@
               <FormKit
                 type="select"
                 name="saluran_bencana"
-                label="20. Saluran Bencana"
+                label="Saluran Bencana"
                 placeholder="Pilih saluran bencana"
                 :options="[
                   { label: 'Bencana', value: 'bencana' },
@@ -345,7 +345,7 @@
               <FormKit
                 type="select"
                 name="nama_bank"
-                label="21. Nama Bank"
+                label="Nama Bank"
                 placeholder="Pilih nama bank"
                 :options="bankOptions"
                 validation="required"
@@ -354,21 +354,21 @@
               <FormKit
                 type="text"
                 name="no_akaun_bank"
-                label="22. No Akaun Bank"
+                label="No Akaun Bank"
                 validation="required"
               />
 
               <FormKit
                 type="text"
                 name="nama_pemegang_akaun"
-                label="23. Nama Pemegang Akaun Bank"
+                label="Nama Pemegang Akaun Bank"
                 validation="required"
               />
 
               <FormKit
                 type="select"
                 name="cara_pembayaran"
-                label="24. Cara Pembayaran"
+                label="Cara Pembayaran"
                 placeholder="Pilih cara pembayaran"
                 :options="[
                   { label: 'Akaun', value: 'akaun' },
@@ -414,7 +414,7 @@
           <FormKit
             type="select"
             name="tahap_kesihatan"
-            label="1. Tahap Kesihatan"
+            label="Tahap Kesihatan"
             :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
             validation="required"
             v-model="healthStatus"
@@ -424,21 +424,21 @@
             <FormKit
               type="select"
               name="keadaan_kesihatan_sakit"
-              label="a. Keadaan Kesihatan"
+              label="Keadaan Kesihatan"
               :options="['Terlantar', 'Tidak Terlantar']"
             />
 
             <FormKit
               type="select"
               name="kos_penjagaan_sakit"
-              label="b. Kos Penjagaan"
+              label="Kos Penjagaan"
               :options="['Berbayar', 'Tidak berbayar']"
             />
 
             <FormKit
               type="number"
               name="perbelanjaan_bulanan_sakit"
-              label="c. Jumlah Perbelanjaan Bulanan (RM)"
+              label="Jumlah Perbelanjaan Bulanan (RM)"
               step="0.01"
               min="0"
             />
@@ -446,7 +446,7 @@
             <FormKit
               type="file"
               name="dokumen_sakit_kronik"
-              label="d. Upload Dokumen Sakit Kronik"
+              label="Upload Dokumen Sakit Kronik"
               accept=".pdf,.jpg,.jpeg,.png"
               help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
               validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -457,28 +457,28 @@
             <FormKit
               type="select"
               name="kesempurnaan_fizikal"
-              label="a. Kesempurnaan Fizikal"
+              label="Kesempurnaan Fizikal"
               :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
             />
 
             <FormKit
               type="select"
               name="sebab_kecacatan"
-              label="b. Sebab Kecacatan (Jika Cacat)"
+              label="Sebab Kecacatan (Jika Cacat)"
               :options="['Sejak Lahir', 'Musibah']"
             />
 
             <FormKit
               type="select"
               name="tahap_kecacatan"
-              label="c. Tahap Kecacatan"
+              label="Tahap Kecacatan"
               :options="['Terlantar', 'Tidak Terlantar']"
             />
 
             <FormKit
               type="number"
               name="perbelanjaan_bulanan_oku"
-              label="d. Jumlah Perbelanjaan Bulanan (RM)"
+              label="Jumlah Perbelanjaan Bulanan (RM)"
               step="0.01"
               min="0"
             />
@@ -486,7 +486,7 @@
             <FormKit
               type="file"
               name="dokumen_oku"
-              label="e. Upload Dokumen OKU"
+              label="Upload Dokumen OKU"
               accept=".pdf,.jpg,.jpeg,.png"
               help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
               validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -497,21 +497,21 @@
             <FormKit
               type="select"
               name="keadaan_kesihatan_uzur"
-              label="a. Keadaan Kesihatan"
+              label="Keadaan Kesihatan"
               :options="['Terlantar', 'Tidak Terlantar']"
             />
 
             <FormKit
               type="select"
               name="kos_penjagaan_uzur"
-              label="b. Kos Penjagaan"
+              label="Kos Penjagaan"
               :options="['Berbayar', 'Tidak berbayar']"
             />
 
             <FormKit
               type="number"
               name="perbelanjaan_bulanan_uzur"
-              label="c. Jumlah Perbelanjaan Bulanan (RM)"
+              label="Jumlah Perbelanjaan Bulanan (RM)"
               step="0.01"
               min="0"
             />
@@ -519,7 +519,7 @@
             <FormKit
               type="file"
               name="dokumen_uzur"
-              label="d. Upload Dokumen Uzur"
+              label="Upload Dokumen Uzur"
               accept=".pdf,.jpg,.jpeg,.png"
               help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
               validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -601,14 +601,14 @@
               <FormKit
                 type="textarea"
                 name="alamat_terkini"
-                label="1. Alamat Terkini"
+                label="Alamat Terkini"
                 validation="required"
               />
 
               <div class="flex gap-2">
                 <FormKit
                   v-model="lokasi"
-                  label="2. Lokasi"
+                  label="Lokasi"
                   type="text"
                   validation="required"
                   validation-visibility="dirty"
@@ -628,7 +628,7 @@
               <FormKit
                 type="select"
                 name="daerah"
-                label="3. Daerah"
+                label="Daerah"
                 placeholder="Pilih daerah"
                 :options="daerahOptions"
                 validation="required"
@@ -637,7 +637,7 @@
               <FormKit
                 type="text"
                 name="poskod"
-                label="4. Poskod"
+                label="Poskod"
                 validation="required|number|length:5"
                 validation-messages="{
                   required: 'Poskod diperlukan',
@@ -649,7 +649,7 @@
               <FormKit
                 type="select"
                 name="kariah"
-                label="5. Kariah"
+                label="Kariah"
                 placeholder="Pilih kariah"
                 :options="kariahOptions"
                 validation="required"
@@ -658,7 +658,7 @@
               <FormKit
                 type="number"
                 name="tempoh_menetap"
-                label="6. Tempoh Menetap (Tahun)"
+                label="Tempoh Menetap (Tahun)"
                 min="0"
                 validation="required|min:0"
               />
@@ -666,7 +666,7 @@
               <FormKit
                 type="text"
                 name="negeri"
-                label="7. Negeri"
+                label="Negeri"
                 value="Selangor"
                 disabled
               />
@@ -676,7 +676,7 @@
           <FormKit
             type="select"
             name="status_kediaman"
-            label="8. Status Kediaman/Tempat Tinggal"
+            label="Status Kediaman/Tempat Tinggal"
             :options="[
               'Milik Sendiri Tidak Berbayar',
               'Milik Sendiri Berbayar',
@@ -705,7 +705,7 @@
           <FormKit
             type="select"
             name="tapak_rumah"
-            label="9. Tapak Rumah"
+            label="Tapak Rumah"
             :options="[
               'Milik Sendiri',
               'Tanah Wakaf',
@@ -722,7 +722,7 @@
           <FormKit
             type="select"
             name="jenis_rumah"
-            label="10. Jenis Rumah"
+            label="Jenis Rumah"
             :options="[
               'Kos Rendah',
               'Kos Sederhana',
@@ -736,7 +736,7 @@
           <FormKit
             type="select"
             name="binaan_rumah"
-            label="11. Binaan Rumah"
+            label="Binaan Rumah"
             :options="['Batu', 'Kayu', 'Separa Batu', 'Lain-lain']"
             validation="required"
           />
@@ -744,7 +744,7 @@
           <FormKit
             type="select"
             name="keadaan_kediaman"
-            label="12. Keadaan Kediaman"
+            label="Keadaan Kediaman"
             :options="['Baik/Sempurna', 'Uzur', 'Separa Uzur']"
             validation="required"
           />
@@ -754,7 +754,7 @@
               <FormKit
                 type="select"
                 name="bekalan_air"
-                label="13. Kemudahan Asas Bekalan Air"
+                label="Kemudahan Asas Bekalan Air"
                 :options="['Ada', 'Tiada']"
                 validation="required"
               />
@@ -828,21 +828,21 @@
           <FormKit
             type="text"
             name="pemberi_pinjaman"
-            label="1. Nama Institusi/Individu Pemberi Pinjaman"
+            label="Nama Institusi/Individu Pemberi Pinjaman"
             v-model="pemberiPinjaman"
           />
 
           <FormKit
             type="text"
             name="jenis_pinjaman"
-            label="2. Jenis Pinjaman"
+            label="Jenis Pinjaman"
             v-model="jenisPinjaman"
           />
 
           <FormKit
             type="number"
             name="bayaran_bulanan"
-            label="3. Amaun Bayaran Bulanan (RM)"
+            label="Amaun Bayaran Bulanan (RM)"
             step="0.01"
             min="0"
             v-model="bayaranBulanan"
@@ -851,7 +851,7 @@
           <FormKit
             type="number"
             name="jumlah_perbelanjaan"
-            label="4. Jumlah Keseluruhan Perbelanjaan (RM)"
+            label="Jumlah Keseluruhan Perbelanjaan (RM)"
             step="0.01"
             min="0"
             v-model="jumlahPerbelanjaan"
@@ -860,21 +860,21 @@
           <FormKit
             type="date"
             name="tahun_mula_pinjaman"
-            label="5. Tahun Mula Pinjaman"
+            label="Tahun Mula Pinjaman"
             v-model="tahunMulaPinjaman"
           />
 
           <FormKit
             type="date"
             name="tahun_akhir_pinjaman"
-            label="6. Tahun Akhir Pinjaman"
+            label="Tahun Akhir Pinjaman"
             v-model="tahunAkhirPinjaman"
           />
 
           <FormKit
             type="file"
             name="dokumen_pinjaman"
-            label="7. Upload Dokumen Pinjaman"
+            label="Upload Dokumen Pinjaman"
             accept=".pdf,.jpg,.jpeg,.png"
             help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
             validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -903,7 +903,7 @@
         >
           <h3 class="text-lg font-semibold mb-4">F. Maklumat Pemilikan</h3>
 
-          <h4 class="font-medium mb-2">1. Aset Cair:</h4>
+          <h4 class="font-medium mb-2">Aset Cair:</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
               type="number"
@@ -931,7 +931,7 @@
             />
           </div>
 
-          <h4 class="font-medium mb-2 mt-4">2. Aset Tidak Cair:</h4>
+          <h4 class="font-medium mb-2 mt-4">Aset Tidak Cair:</h4>
           <FormKit
             type="text"
             name="kenderaan"
@@ -1385,7 +1385,7 @@
               <FormKit
                 type="select"
                 name="hubungan_pemohon"
-                label="1. Hubungan dengan Pemohon/Asnaf"
+                label="Hubungan dengan Pemohon/Asnaf"
                 placeholder="Pilih hubungan"
                 :options="[
                   'Pasangan Pemohon',
@@ -1421,20 +1421,20 @@
               <FormKit
                 type="text"
                 name="nama_tanggungan"
-                label="2. Nama (asal utk muallaf)"
+                label="Nama (asal utk muallaf)"
                 validation="required"
               />
 
               <FormKit
                 type="text"
                 name="nama_selepas_islam"
-                label="5. Nama Selepas Islam (Muallaf)"
+                label="Nama Selepas Islam (Muallaf)"
               />
 
               <FormKit
                 type="select"
                 name="jenis_id"
-                label="2. Jenis ID"
+                label="Jenis ID"
                 placeholder="Pilih jenis ID"
                 :options="['Kad Pengenalan', 'Foreign ID']"
                 validation="required"
@@ -1455,19 +1455,19 @@
               <FormKit
                 type="text"
                 name="no_id_tanggungan"
-                label="4. No ID"
+                label="No ID"
               />
 
               <FormKit
                 type="text"
                 name="no_pengenalan_tanggungan"
-                label="4. No Polis/No Tentera/No Sijil Lahir"
+                label="No Polis/No Tentera/No Sijil Lahir"
               />
 
               <FormKit
                 type="select"
                 name="jantina_tanggungan"
-                label="5. Jantina"
+                label="Jantina"
                 :options="['Lelaki', 'Perempuan']"
                 validation="required"
               />
@@ -1475,21 +1475,21 @@
               <FormKit
                 type="date"
                 name="tarikh_lahir_tanggungan"
-                label="6. Tarikh Lahir"
+                label="Tarikh Lahir"
                 validation="required"
               />
 
               <FormKit
                 type="text"
                 name="tempat_lahir_tanggungan"
-                label="7. Tempat Lahir"
+                label="Tempat Lahir"
                 validation="required"
               />
 
               <FormKit
                 type="select"
                 name="bangsa_tanggungan"
-                label="8. Bangsa"
+                label="Bangsa"
                 :options="['Melayu', 'Cina', 'India', 'Lain-lain Nyatakan']"
                 validation="required"
               />
@@ -1514,7 +1514,7 @@
               <FormKit
                 type="select"
                 name="status_perkahwinan_tanggungan"
-                label="9. Status Perkahwinan"
+                label="Status Perkahwinan"
                 :options="[
                   'Berkahwin',
                   'Bujang',
@@ -1530,7 +1530,7 @@
              <FormKit
                 type="date"
                 name="tarikh_masuk_islam"
-                label="15. *Tarikh Masuk Islam"
+                label="*Tarikh Masuk Islam"
                 help="Format: dd-mm-yyyy"
                 validation="required"
                 v-model="tarikhMasukIslam"
@@ -1540,7 +1540,7 @@
                 v-if="tarikhMasukIslam"
                 type="file"
                 name="dokumen_masuk_islam"
-                label="16. *upload surat keislaman dari MAIS"
+                label="*upload surat keislaman dari MAIS"
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 accept=".pdf,.jpg,.jpeg,.png"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1549,14 +1549,14 @@
               <FormKit
                 type="date"
                 name="tarikh_masuk_kfam_tanggungan"
-                label="11. *Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
+                label="*Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
                 help="Format: dd-mm-yyyy"
               />
 
               <FormKit
                 type="select"
                 name="warganegara_tanggungan"
-                label="12. Warganegara"
+                label="Warganegara"
                 :options="['Warganegara', 'Bukan Warganegara']"
                 validation="required"
               />
@@ -1564,14 +1564,14 @@
               <FormKit
                 type="number"
                 name="tempoh_menetap_selangor"
-                label="13. Tempoh Menetap Di Selangor (Tahun)"
+                label="Tempoh Menetap Di Selangor (Tahun)"
                 min="0"
               />
 
               <FormKit
                 type="text"
                 name="no_telefon_tanggungan"
-                label="14. No Telefon/Telefon Bimbit"
+                label="No Telefon/Telefon Bimbit"
               />
             </div>
           </div>
@@ -1583,21 +1583,21 @@
               <FormKit
                 type="text"
                 name="nama_pemegang_akaun"
-                label="1. Nama Pemegang Akaun"
+                label="Nama Pemegang Akaun"
               />
 
-              <FormKit type="text" name="bank" label="2. Bank" />
+              <FormKit type="text" name="bank" label="Bank" />
 
               <FormKit
                 type="text"
                 name="no_akaun_bank"
-                label="3. No Akaun Bank"
+                label="No Akaun Bank"
               />
 
               <FormKit
                 type="select"
                 name="cara_pembayaran"
-                label="4. Cara Pembayaran"
+                label="Cara Pembayaran"
                 :options="['Akaun', 'Cek', 'Tunai Nyatakan Sebab']"
               />
 
@@ -1637,14 +1637,14 @@
               <FormKit
                 type="select"
                 name="bersekolah_tanggungan"
-                label="1. Bersekolah"
+                label="Bersekolah"
                 :options="['Ya', 'Tidak']"
               />
 
               <FormKit
                 type="select"
                 name="pendidikan_tertinggi_tanggungan"
-                label="2. Pendidikan Tertinggi"
+                label="Pendidikan Tertinggi"
                 :options="[
                   'Peringkat Rendah',
                   'SRP/PMR',
@@ -1660,7 +1660,7 @@
               <FormKit
                 type="select"
                 name="jenis_sekolah"
-                label="3. Jenis Sekolah"
+                label="Jenis Sekolah"
                 :options="[
                   'Pra Sekolah',
                   'Sekolah Rendah Kebangsaan',
@@ -1674,7 +1674,7 @@
 
               <div class="col-span-full">
                 <h5 class="font-medium mb-2">
-                  4. Nama dan Alamat Sekolah/Institusi (SEK.MEN/SRK/IPTA/IPTS)
+                  Nama dan Alamat Sekolah/Institusi (SEK.MEN/SRK/IPTA/IPTS)
                 </h5>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
@@ -1695,7 +1695,7 @@
 
               <div class="col-span-full">
                 <h5 class="font-medium mb-2">
-                  5. Nama dan Alamat Sekolah/Institusi (SRA/KAFA)
+                  Nama dan Alamat Sekolah/Institusi (SRA/KAFA)
                 </h5>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
@@ -1733,7 +1733,7 @@
               <FormKit
                 type="select"
                 name="tinggal_bersama_keluarga"
-                label="6. Tinggal Bersama Keluarga"
+                label="Tinggal Bersama Keluarga"
                 :options="['Ya', 'Tidak', 'Asrama']"
               />
 
@@ -1775,7 +1775,7 @@
               <FormKit
                 type="select"
                 name="tahap_kesihatan_tanggungan"
-                label="1. Tahap Kesihatan"
+                label="Tahap Kesihatan"
                 :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
                 v-model="healthStatusTanggungan"
               />
@@ -1784,26 +1784,26 @@
                 v-if="healthStatusTanggungan === 'Sakit Kronik'"
                 class="col-span-full ml-6"
               >
-                <h5 class="font-medium mb-2">2. Sakit Kronik</h5>
+                <h5 class="font-medium mb-2">Sakit Kronik</h5>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
                     type="select"
                     name="keadaan_kesihatan_sakit_tanggungan"
-                    label="a. Keadaan Kesihatan"
+                    label="Keadaan Kesihatan"
                     :options="['Terlantar', 'Tidak Terlantar']"
                   />
 
                   <FormKit
                     type="select"
                     name="kos_penjagaan_sakit_tanggungan"
-                    label="b. Kos Penjagaan"
+                    label="Kos Penjagaan"
                     :options="['Berbayar', 'Tidak berbayar']"
                   />
 
                   <FormKit
                     type="number"
                     name="perbelanjaan_bulanan_sakit_tanggungan"
-                    label="c. Jumlah Perbelanjaan Bulanan (RM)"
+                    label="Jumlah Perbelanjaan Bulanan (RM)"
                     step="0.01"
                     min="0"
                   />
@@ -1811,7 +1811,7 @@
                   <FormKit
                     type="file"
                     name="dokumen_sakit_kronik_tanggungan"
-                    label="d. Upload Dokumen Sakit Kronik"
+                    label="Upload Dokumen Sakit Kronik"
                     accept=".pdf,.jpg,.jpeg,.png"
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1823,33 +1823,33 @@
                 v-if="healthStatusTanggungan === 'OKU'"
                 class="col-span-full ml-6"
               >
-                <h5 class="font-medium mb-2">3. OKU</h5>
+                <h5 class="font-medium mb-2">OKU</h5>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
                     type="select"
                     name="kesempurnaan_fizikal_tanggungan"
-                    label="a. Kesempurnaan Fizikal"
+                    label="Kesempurnaan Fizikal"
                     :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
                   />
 
                   <FormKit
                     type="select"
                     name="sebab_kecacatan_tanggungan"
-                    label="b. Sebab Kecacatan (Jika Cacat)"
+                    label="Sebab Kecacatan (Jika Cacat)"
                     :options="['Sejak Lahir', 'Musibah']"
                   />
 
                   <FormKit
                     type="select"
                     name="tahap_kecacatan_tanggungan"
-                    label="c. Tahap Kecacatan"
+                    label="Tahap Kecacatan"
                     :options="['Terlantar', 'Tidak Terlantar']"
                   />
 
                   <FormKit
                     type="number"
                     name="perbelanjaan_bulanan_oku_tanggungan"
-                    label="d. Jumlah Perbelanjaan Bulanan (RM)"
+                    label="Jumlah Perbelanjaan Bulanan (RM)"
                     step="0.01"
                     min="0"
                   />
@@ -1857,7 +1857,7 @@
                   <FormKit
                     type="file"
                     name="dokumen_oku_tanggungan"
-                    label="e. Upload Dokumen OKU"
+                    label="Upload Dokumen OKU"
                     accept=".pdf,.jpg,.jpeg,.png"
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1869,26 +1869,26 @@
                 v-if="healthStatusTanggungan === 'Uzur'"
                 class="col-span-full ml-6"
               >
-                <h5 class="font-medium mb-2">4. Uzur</h5>
+                <h5 class="font-medium mb-2">Uzur</h5>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
                     type="select"
                     name="keadaan_kesihatan_uzur_tanggungan"
-                    label="a. Keadaan Kesihatan"
+                    label="Keadaan Kesihatan"
                     :options="['Terlantar', 'Tidak Terlantar']"
                   />
 
                   <FormKit
                     type="select"
                     name="kos_penjagaan_uzur_tanggungan"
-                    label="b. Kos Penjagaan"
+                    label="Kos Penjagaan"
                     :options="['Berbayar', 'Tidak berbayar']"
                   />
 
                   <FormKit
                     type="number"
                     name="perbelanjaan_bulanan_uzur_tanggungan"
-                    label="c. Jumlah Perbelanjaan Bulanan (RM)"
+                    label="Jumlah Perbelanjaan Bulanan (RM)"
                     step="0.01"
                     min="0"
                   />
@@ -1896,7 +1896,7 @@
                   <FormKit
                     type="file"
                     name="dokumen_uzur_tanggungan"
-                    label="d. Upload Dokumen Uzur"
+                    label="Upload Dokumen Uzur"
                     accept=".pdf,.jpg,.jpeg,.png"
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1974,7 +1974,7 @@
               <FormKit
                 type="select"
                 name="pekerjaan_status"
-                label="1. Pekerjaan"
+                label="Pekerjaan"
                 :options="[
                   'Bekerja Nyatakan Jawatan',
                   'Tidak Bekerja Nyatakan',
@@ -1984,7 +1984,7 @@
               <FormKit
                 type="select"
                 name="sektor_pekerjaan"
-                label="3. Sektor"
+                label="Sektor"
                 :options="[
                   'Kerajaan',
                   'Swasta',
@@ -1996,37 +1996,37 @@
               <FormKit
                 type="text"
                 name="nama_majikan"
-                label="4. Nama Majikan"
+                label="Nama Majikan"
               />
 
               <FormKit
                 type="text"
                 name="no_tel_majikan"
-                label="5. No Tel Majikan"
+                label="No Tel Majikan"
               />
 
               <FormKit
                 type="text"
                 name="alamat_majikan"
-                label="6. Alamat Majikan"
+                label="Alamat Majikan"
               />
 
-              <FormKit type="text" name="bandar_majikan" label="7. Bandar" />
+              <FormKit type="text" name="bandar_majikan" label="Bandar" />
 
-              <FormKit type="text" name="poskod_majikan" label="8. Poskod" />
+              <FormKit type="text" name="poskod_majikan" label="Poskod" />
 
-              <FormKit type="text" name="daerah_majikan" label="9. Daerah" />
+              <FormKit type="text" name="daerah_majikan" label="Daerah" />
 
-              <FormKit type="text" name="negeri_majikan" label="10. Negeri" />
+              <FormKit type="text" name="negeri_majikan" label="Negeri" />
 
-              <FormKit type="text" name="jawatan" label="11. Jawatan" />
+              <FormKit type="text" name="jawatan" label="Jawatan" />
 
-              <FormKit type="text" name="negara_pekerjaan" label="12. Negara" />
+              <FormKit type="text" name="negara_pekerjaan" label="Negara" />
 
               <FormKit
                 type="select"
                 name="status_jawatan"
-                label="13. Status Jawatan"
+                label="Status Jawatan"
                 :options="['Tetap', 'Kontrak', 'Sementara']"
               />
             </div>

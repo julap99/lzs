@@ -1376,7 +1376,7 @@
               <h3 class="text-lg font-medium mb-4">H) Pengesahan</h3>
 
               <div class="mb-6">
-                <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
+                <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
                 <div class="flex flex-col gap-2">
                   <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
                   <FormKit
