@@ -6,14 +6,14 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Maklumat Aktiviti Penolong Amil
+            Semakan Semula - Eksekutif JPPA
           </h2>
         </div>
       </template>
 
       <template #body>
         <div class="p-4">
-          <!-- Penolong Amil Information -->
+          <!-- Maklumat Penolong Amil -->
           <div class="mb-6">
             <h3 class="text-lg font-semibold mb-4">Maklumat Penolong Amil</h3>
             
@@ -41,8 +41,7 @@
               <div>
                 <p class="text-sm text-gray-500">Status Pembayaran</p>
                 <span
-                  class="px-2 py-1 text-xs font-medium rounded-full"
-                  :class="getPaymentStatusClass(paInfo.paymentStatus)"
+                  class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800"
                 >
                   {{ paInfo.paymentStatus }}
                 </span>
@@ -54,7 +53,7 @@
             </div>
           </div>
 
-          <!-- Activities List -->
+          <!-- Senarai Aktiviti -->
           <div class="mb-6">
             <h3 class="text-lg font-semibold mb-4">Senarai Aktiviti</h3>
             
@@ -118,18 +117,102 @@
             </div>
           </div>
 
+          <!-- Form Semakan Semula -->
+          <div class="mb-6">
+            <FormKit
+              type="form"
+              id="reviewForm"
+              @submit="handleSubmit"
+              :actions="false"
+            >
+              <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-4">Semakan Semula</h3>
+                
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                  <div class="flex items-start space-x-3">
+                    <Icon name="ph:warning" class="w-5 h-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <h4 class="font-medium text-yellow-900">
+                        Maklumat Penting
+                      </h4>
+                      <p class="text-sm text-yellow-700 mt-1">
+                        Status pembayaran telah ditolak. Sila semak semula maklumat dan jana semula payment advice jika diperlukan.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="md:col-span-2">
+                    <FormKit
+                      type="checkbox"
+                      name="confirmationCheck"
+                      label="Saya mengesahkan bahawa semua maklumat telah disemak semula dan keputusan saya adalah berdasarkan penilaian yang teliti"
+                      validation="accepted"
+                      :validation-messages="{
+                        accepted: 'Sila buat pengesahan sebelum hantar',
+                      }"
+                    />
+                  </div>
+                </div>
+              </div>
+            </FormKit>
+          </div>
+
           <!-- Action Buttons -->
           <div class="flex justify-end gap-4 mt-6">
             <rs-button
               variant="primary-outline"
-              @click="navigateTo('/BF-PA/PE/AB/02/PA')"
+              @click="handleBack"
             >
               Kembali
+            </rs-button>
+            <rs-button
+              variant="warning"
+              @click="handleRegeneratePayment"
+              :disabled="processing"
+              :loading="processing"
+            >
+              <Icon name="ph:arrow-clockwise" class="w-5 h-5 mr-2" />
+              Jana Semula Payment Advice
             </rs-button>
           </div>
         </div>
       </template>
     </rs-card>
+
+    <!-- Success Modal -->
+    <rs-modal
+      v-model="showSuccessModal"
+      title="Penjanaan Semula Berjaya"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <Icon
+              name="material-symbols:check-circle"
+              class="text-green-500"
+              size="48"
+            />
+          </div>
+          <p class="mb-2">
+            Penjanaan semula payment advice telah berjaya dijana.
+          </p>
+          <p class="text-gray-600">
+            Status pembayaran telah dikemaskini dan sedia untuk diproses semula.
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center">
+          <rs-button variant="primary" @click="handleSuccessModalClose">
+            OK
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -137,8 +220,8 @@
 import { ref, computed } from 'vue';
 
 definePageMeta({
-  title: "Maklumat Aktiviti Penolong Amil",
-  description: "Maklumat aktiviti penolong amil",
+  title: "Semakan Semula - Eksekutif JPPA",
+  description: "Semakan semula pembayaran yang ditolak",
 });
 
 const breadcrumb = ref([
@@ -148,16 +231,15 @@ const breadcrumb = ref([
     path: "/BF-PA/PE/AB",
   },
   {
-    name: "Maklumat Aktiviti",
-    type: "link",
-    path: "/BF-PA/PE/AB/02/PA",
-  },
-  {
-    name: "Maklumat Aktiviti Penolong Amil",
+    name: "Semakan Semula",
     type: "current",
-    path: "/BF-PA/PE/AB/02/PA/PA_Aktiviti",
+    path: "/BF-PA/PE/AB/06",
   },
 ]);
+
+// State variables
+const processing = ref(false);
+const showSuccessModal = ref(false);
 
 // Mock PA data
 const paInfo = ref({
@@ -167,7 +249,7 @@ const paInfo = ref({
   endDate: '31/12/2024',
   assignmentType: 'Kariah',
   status: 'Disokong',
-  paymentStatus: 'Telah Dibayar',
+  paymentStatus: 'Telah Ditolak',
   paymentAdviceNo: 'PA-2024-001',
   accountNo: '1234567890',
 });
@@ -221,32 +303,18 @@ const activities = ref([
   }
 ]);
 
-// Helper functions
-const getStatusClass = (status) => {
-  const statusClasses = {
-    'Disokong': 'bg-green-100 text-green-800',
-    'Tidak Disokong': 'bg-red-100 text-red-800',
-  };
-  return statusClasses[status] || 'bg-gray-100 text-gray-800';
-};
+// Form options
+const reviewStatusOptions = [
+  { label: 'Lulus Semula', value: 'LULUS_SEMULA' },
+  { label: 'Perlu Penambahbaikan', value: 'PERLU_PENAMBAHBAIKAN' },
+  { label: 'Tolak Semula', value: 'TOLAK_SEMULA' },
+];
 
-const getPaymentStatusClass = (status) => {
-  const statusClasses = {
-    'Belum Dibayar': 'bg-yellow-100 text-yellow-800',
-    'Telah Dibayar': 'bg-green-100 text-green-800',
-    'Dalam Proses': 'bg-blue-100 text-blue-800',
-  };
-  return statusClasses[status] || 'bg-gray-100 text-gray-800';
-};
-
-const getActivityStatusClass = (status) => {
-  const statusClasses = {
-    'Selesai': 'bg-green-100 text-green-800',
-    'Dalam Proses': 'bg-yellow-100 text-yellow-800',
-    'Belum Bermula': 'bg-blue-100 text-blue-800',
-  };
-  return statusClasses[status] || 'bg-gray-100 text-gray-800';
-};
+const actionTypeOptions = [
+  { label: 'Jana Semula Payment Advice', value: 'JANA_SEMULA' },
+  { label: 'Kemaskini Maklumat', value: 'KEMASKINI_MAKLUMAT' },
+  { label: 'Hantar Semula untuk Semakan', value: 'HANTAR_SEMULA' },
+];
 
 // Computed properties
 const totalAllowance = computed(() => {
@@ -255,8 +323,47 @@ const totalAllowance = computed(() => {
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 });
+
+// Action handlers
+const handleBack = () => {
+  navigateTo('/BF-PA/PE/AB/02/PA/PA_Aktiviti');
+};
+
+const handleSubmit = async (formData) => {
+  try {
+    processing.value = true;
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    console.log('Form submitted:', formData);
+    // Handle form submission logic here
+  } catch (error) {
+    console.error('Error submitting form:', error);
+  } finally {
+    processing.value = false;
+  }
+};
+
+const handleRegeneratePayment = async () => {
+  try {
+    processing.value = true;
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    showSuccessModal.value = true;
+  } catch (error) {
+    console.error('Error regenerating payment:', error);
+  } finally {
+    processing.value = false;
+  }
+};
+
+const handleSuccessModalClose = () => {
+  showSuccessModal.value = false;
+  navigateTo('/BF-PA/PE/AB/02/PA');
+};
 </script>
 
 <style scoped>
 /* Add any additional styles here */
-</style> 
+</style>
