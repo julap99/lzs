@@ -740,6 +740,13 @@ export default [
             meta: {},
           },
           {
+            title: "Self Service Kemaskini",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/UP-S/01",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Pendaftaran Pantas Pukal",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/QB/01",
