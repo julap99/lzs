@@ -238,7 +238,7 @@
             />
           </div>
           <p class="mb-2">
-            Pembayaran elaun penolong amil berjaya diproses.
+            Payment Advice bagi elaun penolong amil berjaya dijana.
           </p>
           <p class="text-gray-600">
             Status pembayaran telah dikemaskini kepada "Telah Dibayar".
