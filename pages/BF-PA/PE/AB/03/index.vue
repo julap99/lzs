@@ -229,9 +229,22 @@
           <p class="mb-2">
             Permohonan elaun penolong amil berjaya diluluskan.
           </p>
-          <p class="text-gray-600">
+          <p class="text-gray-600 mb-4">
             Status permohonan telah dikemaskini kepada "Diluluskan".
           </p>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-start space-x-3">
+              <Icon name="ph:info" class="w-5 h-5 text-blue-600 mt-0.5" />
+              <div>
+                <h4 class="font-medium text-blue-900">
+                  Payment Advice Akan Dijana
+                </h4>
+                <p class="text-sm text-blue-700 mt-1">
+                  Sistem akan menjana Payment Advice untuk semua penolong amil dalam batch ini secara automatik.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </template>
       <template #footer>
@@ -239,6 +252,87 @@
           <rs-button variant="primary" @click="handleModalClose">
             Tutup
           </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Payment Advice Generation Alert Modal -->
+    <rs-modal
+      v-model="showPaymentAdviceModal"
+      title="Payment Advice Telah Dijana"
+      size="lg"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <Icon
+              name="heroicons:banknotes"
+              class="text-green-500"
+              size="48"
+            />
+          </div>
+          <p class="mb-4 text-lg font-medium">
+            Payment Advice telah berjaya dijana untuk Batch <span class="text-blue-600">{{ batchId }}</span>
+          </p>
+          
+          <div class="bg-gray-50 rounded-lg p-4 mb-4">
+            <h4 class="font-medium mb-3">Maklumat Payment Advice:</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+              <div>
+                <p class="text-sm text-gray-500">Jumlah Penolong Amil:</p>
+                <p class="font-medium">{{ penolongAmil.length }} orang</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Jumlah Keseluruhan:</p>
+                <p class="font-medium">RM {{ totalAllowance }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Status Penghantaran:</p>
+                <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                  Sudah Dihantar ke SAP
+                </span>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Tarikh Penjanaan:</p>
+                <p class="font-medium">{{ new Date().toLocaleDateString('ms-MY') }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-600">
+            Notifikasi akan dihantar kepada semua penolong amil yang terlibat.
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center">
+          <rs-button variant="primary" @click="handlePaymentAdviceModalClose">
+            Tutup
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Loading Modal for Payment Advice Generation -->
+    <rs-modal
+      v-model="showLoadingModal"
+      title="Menjana Payment Advice"
+      size="md"
+      position="center"
+      :closable="false"
+    >
+      <template #body>
+        <div class="text-center p-6">
+          <div class="flex justify-center mb-4">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+          <p class="text-gray-700 mb-2">
+            Sistem sedang menjana Payment Advice...
+          </p>
+          <p class="text-sm text-gray-600">
+            Sila tunggu sebentar
+          </p>
         </div>
       </template>
     </rs-modal>
@@ -424,8 +518,11 @@ const activities = ref([
 const showSuccessModal = ref(false);
 const showRejectSuccessModal = ref(false);
 const showConfirmModal = ref(false);
+const showPaymentAdviceModal = ref(false);
 const isRejecting = ref(false);
 const remarks = ref('');
+const batchId = ref('BATCH/2024/002'); // Mock batch ID
+const showLoadingModal = ref(false);
 
 // Helper functions
 const getBantuanTypeLabel = (value) => {
@@ -484,6 +581,18 @@ const goBack = () => {
 
 const handleModalClose = () => {
   showSuccessModal.value = false;
+  // Show loading modal to simulate system processing
+  showLoadingModal.value = true;
+  
+  // Simulate payment advice generation process
+  setTimeout(() => {
+    showLoadingModal.value = false;
+    showPaymentAdviceModal.value = true;
+  }, 2000); // 2 seconds loading time
+};
+
+const handlePaymentAdviceModalClose = () => {
+  showPaymentAdviceModal.value = false;
   navigateTo('/BF-PA/PE/AB/Paparan_Ketua_JPPA');
 };
 
@@ -495,6 +604,7 @@ const handleRejectModalClose = () => {
 const confirmSubmission = async () => {
   try {
     // Mock API call
+    showLoadingModal.value = true;
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     showConfirmModal.value = false;
@@ -507,6 +617,8 @@ const confirmSubmission = async () => {
     }
   } catch (error) {
     console.error('Error processing submission:', error);
+  } finally {
+    showLoadingModal.value = false;
   }
 };
 </script>
