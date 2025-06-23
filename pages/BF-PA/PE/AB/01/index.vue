@@ -155,7 +155,7 @@
     <rs-modal
       v-model="showSuccessModal"
       title="Berjaya"
-      size="sm"
+      size="md"
       position="center"
     >
       <template #body>
@@ -165,8 +165,11 @@
             class="text-green-500 mx-auto mb-4"
             size="48"
           />
-          <p class="text-gray-700">
-            Maklumat pengiraan elaun telah berjaya disimpan.
+          <p class="text-gray-700 mb-2">
+            Maklumat elaun untuk Batch <span class="font-semibold text-blue-600">{{ batchId }}</span> telah berjaya disimpan!
+          </p>
+          <p class="text-sm text-gray-600">
+            Batch ini akan dipaparkan dalam senarai untuk semakan dan sokongan JPPA.
           </p>
         </div>
       </template>
@@ -209,6 +212,7 @@ const breadcrumb = ref([
 const isSubmitting = ref(false);
 const showSuccessModal = ref(false);
 const showCalculationTable = ref(false);
+const batchId = ref('BATCH/2024/015'); // Mock batch ID
 
 // Mock data for dropdowns
 const kariahCategories = [
@@ -316,7 +320,7 @@ const handleKira = () => {
 };
 
 const handleSimpan = () => {
-  navigateTo('/BF-PA/PE/AB');
+  showSuccessModal.value = true;
 };
 </script>
 
