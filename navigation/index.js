@@ -742,7 +742,7 @@ export default [
           {
             title: "Self Service Kemaskini",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/UP-S/01",
+            path: "/BF-PRF/AS/UP-S/02",
             child: [],
             meta: {},
           },

@@ -146,21 +146,21 @@ definePageMeta({
 });
 
 const breadcrumb = ref([
-  {
-    name: "BF-PRF",
-    type: "link",
-    path: "/BF-PRF",
-  },
-  {
-    name: "AS",
-    type: "link",
-    path: "/BF-PRF/AS",
-  },
-  {
-    name: "KA",
-    type: "link",
-    path: "/BF-PRF/AS/KA",
-  },
+  // {
+  //   name: "BF-PRF",
+  //   type: "link",
+  //   path: "/BF-PRF",
+  // },
+  // {
+  //   name: "AS",
+  //   type: "link",
+  //   path: "/BF-PRF/AS",
+  // },
+  // {
+  //   name: "KA",
+  //   type: "link",
+  //   path: "/BF-PRF/AS/KA",
+  // },
   {
     name: "Proses Keluar",
     type: "current",

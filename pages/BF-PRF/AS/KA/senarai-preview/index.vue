@@ -197,16 +197,16 @@ const selectedItems = ref([]);
 const tarikhAkhir = ref("");
 
 const breadcrumb = ref([
-  {
-    name: "Profiling",
-    type: "link",
-    path: "/BF-PRF/AS/KA/01",
-  },
-  {
-    name: "Asnaf",
-    type: "link",
-    path: "/BF-PRF/AS/KA/01",
-  },
+  // {
+  //   name: "Profiling",
+  //   type: "link",
+  //   path: "/BF-PRF/AS/KA/01",
+  // },
+  // {
+  //   name: "Asnaf",
+  //   type: "link",
+  //   path: "/BF-PRF/AS/KA/01",
+  // },
   {
     name: "Carian Asnaf",
     type: "current",
