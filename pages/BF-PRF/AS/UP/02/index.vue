@@ -95,12 +95,6 @@
 
               <FormKit
                 type="text"
-                name="nama_selepas_islam"
-                label="Nama Selepas Islam (Muallaf)"
-              />
-
-              <FormKit
-                type="text"
                 name="no_pengenalan"
                 label="No Polis/No Tentera/No Sijil Lahir"
               />
@@ -214,6 +208,13 @@
           <div class="mb-6">
             <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <FormKit
+                type="text"
+                name="nama_selepas_islam"
+                label="Nama Selepas Islam (Muallaf)"
+              />
+              
               <FormKit
                 type="date"
                 name="tarikh_masuk_islam"
@@ -349,6 +350,18 @@
                 placeholder="Pilih nama bank"
                 :options="bankOptions"
                 validation="required"
+                v-model="formData.nama_bank"
+              />
+
+              <FormKit
+                v-if="formData.nama_bank"
+                type="text"
+                name="swift_code"
+                label="SWIFT Code"
+                v-model="formData.swift_code"
+                :value="selectedBankSwiftCode"
+                readonly
+                help="SWIFT Code untuk bank yang dipilih"
               />
 
               <FormKit
@@ -2488,21 +2501,21 @@ const saluranBencana = ref(null);
 const caraPembayaran = ref(null);
 
 const bankOptions = [
-  { label: "Maybank", value: "maybank" },
-  { label: "CIMB", value: "cimb" },
-  { label: "RHB", value: "rhb" },
-  { label: "Bank Islam", value: "bank-islam" },
-  { label: "Bank Rakyat", value: "bank-rakyat" },
-  { label: "Public Bank", value: "public-bank" },
-  { label: "Hong Leong Bank", value: "hong-leong" },
-  { label: "Ambank", value: "ambank" },
-  { label: "BSN", value: "bsn" },
-  { label: "Affin Bank", value: "affin" },
-  { label: "UOB", value: "uob" },
-  { label: "OCBC", value: "ocbc" },
-  { label: "Standard Chartered", value: "standard-chartered" },
-  { label: "Alliance Bank", value: "alliance" },
-  { label: "Agrobank", value: "agrobank" }
+  { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
+  { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
+  { label: "RHB", value: "rhb", swiftCode: "RHBBMYKL" },
+  { label: "Bank Islam", value: "bank-islam", swiftCode: "BIMBMYKL" },
+  { label: "Bank Rakyat", value: "bank-rakyat", swiftCode: "BKRMYKL" },
+  { label: "Public Bank", value: "public-bank", swiftCode: "PBBEMYKL" },
+  { label: "Hong Leong Bank", value: "hong-leong", swiftCode: "HLBBMYKL" },
+  { label: "Ambank", value: "ambank", swiftCode: "ARBKMYKL" },
+  { label: "BSN", value: "bsn", swiftCode: "BSNAMYKL" },
+  { label: "Affin Bank", value: "affin", swiftCode: "PHBMMYKL" },
+  { label: "UOB", value: "uob", swiftCode: "UOVBMYKL" },
+  { label: "OCBC", value: "ocbc", swiftCode: "OCBCMYKL" },
+  { label: "Standard Chartered", value: "standard-chartered", swiftCode: "SCBLMYKL" },
+  { label: "Alliance Bank", value: "alliance", swiftCode: "MFBBMYKL" },
+  { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" }
 ];
 
 const jenisId = ref(null);
@@ -2587,6 +2600,27 @@ const goToStepA = (stepId) => {
 const goToStepB = (stepId) => {
   currentStepB.value = stepId;
 };
+
+// Add computed property
+const selectedBankSwiftCode = computed(() => {
+  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank);
+  return selectedBank ? selectedBank.swiftCode : '';
+});
+
+// Add watcher
+watch(
+  () => formData.value.nama_bank,
+  (newVal) => {
+    if (newVal) {
+      const selectedBank = bankOptions.find(bank => bank.value === newVal);
+      if (selectedBank) {
+        formData.value.swift_code = selectedBank.swiftCode;
+      }
+    } else {
+      formData.value.swift_code = '';
+    }
+  }
+);
 </script>
 
 <style scoped></style>

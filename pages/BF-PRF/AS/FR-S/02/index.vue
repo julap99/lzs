@@ -43,7 +43,7 @@
           @submit="nextStepA"
         >
           <h3 class="text-lg font-semibold mb-4">
-            A. Maklumat Peribadi Asnaf (* untuk muallaf)
+            A. Maklumat Peribadi Asnaf (untuk muallaf)
           </h3>
 
           <!-- Personal Information Section -->
@@ -90,12 +90,6 @@
                 name="nama"
                 label="Nama"
                 validation="required"
-              />
-
-              <FormKit
-                type="text"
-                name="nama_selepas_islam"
-                label="Nama Selepas Islam (Muallaf)"
               />
 
               <FormKit
@@ -220,10 +214,17 @@
           <div class="mb-6">
             <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <FormKit
+                type="text"
+                name="nama_selepas_islam"
+                label="Nama Selepas Islam (Muallaf)"
+              />
+
               <FormKit
                 type="date"
                 name="tarikh_masuk_islam"
-                label="*Tarikh Masuk Islam"
+                label="Tarikh Masuk Islam"
                 help="Format: dd-mm-yyyy"
                 validation="required"
                 v-model="tarikhMasukIslam"
@@ -233,7 +234,7 @@
                 v-if="tarikhMasukIslam"
                 type="file"
                 name="dokumen_masuk_islam"
-                label="*upload surat keislaman dari MAIS"
+                label="upload surat keislaman dari MAIS"
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 accept=".pdf,.jpg,.jpeg,.png"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -242,7 +243,7 @@
               <FormKit
                 type="date"
                 name="tarikh_masuk_kfam"
-                label="*Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
+                label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
                 help="Format: dd-mm-yyyy"
                 validation="required"
               />
@@ -355,13 +356,27 @@
                 placeholder="Pilih nama bank"
                 :options="bankOptions"
                 validation="required"
+                v-model="formData.nama_bank"
               />
+
+                <FormKit
+                  v-if="formData.nama_bank"
+                  type="text"
+                  name="swift_code"
+                  label="SWIFT Code"
+                  v-model="formData.swift_code"
+                  :value="selectedBankSwiftCode"
+                  readonly
+                  help="SWIFT Code untuk bank yang dipilih"
+                />
+              
 
               <FormKit
                 type="text"
                 name="no_akaun_bank"
                 label="No Akaun Bank"
                 validation="required"
+                v-model="formData.no_akaun_bank"
               />
 
               <FormKit
@@ -369,6 +384,7 @@
                 name="nama_pemegang_akaun"
                 label="Nama Pemegang Akaun Bank"
                 validation="required"
+                v-model="formData.nama_pemegang_akaun"
               />
 
               <FormKit
@@ -382,11 +398,11 @@
                   { label: 'Tunai', value: 'tunai' }
                 ]"
                 validation="required"
-                v-model="caraPembayaran"
+                v-model="formData.cara_pembayaran"
               />
 
               <FormKit
-                v-if="caraPembayaran === 'tunai'"
+                v-if="formData.cara_pembayaran === 'tunai'"
                 type="select"
                 name="sebab_tunai"
                 label="Sebab Pembayaran Tunai"
@@ -396,6 +412,7 @@
                   { label: 'Disenarai Hitam', value: 'senarai_hitam' }
                 ]"
                 validation="required"
+                v-model="formData.sebab_tunai"
               />
             </div>
           </div>
@@ -1216,7 +1233,7 @@
           <div class="mb-6">
             <h4 class="font-medium mb-3">Maklumat Pengesahan Permastautin</h4>
             <p class="text-sm text-gray-600 mb-4">
-              *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
+              (Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1535,7 +1552,7 @@
              <FormKit
                 type="date"
                 name="tarikh_masuk_islam"
-                label="*Tarikh Masuk Islam"
+                label="Tarikh Masuk Islam"
                 help="Format: dd-mm-yyyy"
                 validation="required"
                 v-model="tarikhMasukIslam"
@@ -1545,7 +1562,7 @@
                 v-if="tarikhMasukIslam"
                 type="file"
                 name="dokumen_masuk_islam"
-                label="*upload surat keislaman dari MAIS"
+                label="upload surat keislaman dari MAIS"
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 accept=".pdf,.jpg,.jpeg,.png"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1554,7 +1571,7 @@
               <FormKit
                 type="date"
                 name="tarikh_masuk_kfam_tanggungan"
-                label="*Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
+                label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
                 help="Format: dd-mm-yyyy"
               />
 
@@ -2073,7 +2090,7 @@
             <!-- Question 1 -->
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
-                Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?*
+                Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?
               </label>
               <FormKit
                 type="radio"
@@ -2090,7 +2107,7 @@
             <!-- Question 2 -->
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
-                Apakah keperluan tuan/puan mendesak sekarang ini?*
+                Apakah keperluan tuan/puan mendesak sekarang ini?
               </label>
               <FormKit
                 type="checkbox"
@@ -2130,7 +2147,7 @@
             <!-- File Upload Section -->
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
-                Muat naik dokumen sokongan (PDF, JPG, PNG)*
+                Muat naik dokumen sokongan (PDF, JPG, PNG)
               </label>
               <FormKit
                 type="file"
@@ -2267,6 +2284,14 @@ const formData = ref({
   tarikh_masuk_islam: '',
   tarikh_masuk_kfam: '',
   status_perkahwinan: '',
+
+  // Bank Information
+  nama_bank: '',
+  no_akaun_bank: '',
+  nama_pemegang_akaun: '',
+  swift_code: '',
+  cara_pembayaran: '',
+  sebab_tunai: '',
 
   // Section B - Maklumat Kesihatan
   tahap_kesihatan: '',
@@ -2493,21 +2518,21 @@ const saluranBencana = ref(null);
 const caraPembayaran = ref(null);
 
 const bankOptions = [
-  { label: "Maybank", value: "maybank" },
-  { label: "CIMB", value: "cimb" },
-  { label: "RHB", value: "rhb" },
-  { label: "Bank Islam", value: "bank-islam" },
-  { label: "Bank Rakyat", value: "bank-rakyat" },
-  { label: "Public Bank", value: "public-bank" },
-  { label: "Hong Leong Bank", value: "hong-leong" },
-  { label: "Ambank", value: "ambank" },
-  { label: "BSN", value: "bsn" },
-  { label: "Affin Bank", value: "affin" },
-  { label: "UOB", value: "uob" },
-  { label: "OCBC", value: "ocbc" },
-  { label: "Standard Chartered", value: "standard-chartered" },
-  { label: "Alliance Bank", value: "alliance" },
-  { label: "Agrobank", value: "agrobank" }
+  { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
+  { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
+  { label: "RHB", value: "rhb", swiftCode: "RHBBMYKL" },
+  { label: "Bank Islam", value: "bank-islam", swiftCode: "BIMBMYKL" },
+  { label: "Bank Rakyat", value: "bank-rakyat", swiftCode: "BKRMYKL" },
+  { label: "Public Bank", value: "public-bank", swiftCode: "PBBEMYKL" },
+  { label: "Hong Leong Bank", value: "hong-leong", swiftCode: "HLBBMYKL" },
+  { label: "Ambank", value: "ambank", swiftCode: "ARBKMYKL" },
+  { label: "BSN", value: "bsn", swiftCode: "BSNAMYKL" },
+  { label: "Affin Bank", value: "affin", swiftCode: "PHBMMYKL" },
+  { label: "UOB", value: "uob", swiftCode: "UOVBMYKL" },
+  { label: "OCBC", value: "ocbc", swiftCode: "OCBCMYKL" },
+  { label: "Standard Chartered", value: "standard-chartered", swiftCode: "SCBLMYKL" },
+  { label: "Alliance Bank", value: "alliance", swiftCode: "MFBBMYKL" },
+  { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" }
 ];
 
 const jenisId = ref(null);
@@ -2573,6 +2598,12 @@ const hasLoanInfo = computed(() => {
          tahunAkhirPinjaman.value;
 });
 
+// Computed property to get SWIFT code for selected bank
+const selectedBankSwiftCode = computed(() => {
+  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank);
+  return selectedBank ? selectedBank.swiftCode : '';
+});
+
 // Add these functions for handling heirs
 const addHeir = () => {
   formData.value.heirs.push({
@@ -2585,6 +2616,21 @@ const addHeir = () => {
 const removeHeir = (index) => {
   formData.value.heirs.splice(index, 1);
 };
+
+// Watcher to update SWIFT code when bank is selected
+watch(
+  () => formData.value.nama_bank,
+  (newVal) => {
+    if (newVal) {
+      const selectedBank = bankOptions.find(bank => bank.value === newVal);
+      if (selectedBank) {
+        formData.value.swift_code = selectedBank.swiftCode;
+      }
+    } else {
+      formData.value.swift_code = '';
+    }
+  }
+);
 </script>
 
 <style scoped></style>

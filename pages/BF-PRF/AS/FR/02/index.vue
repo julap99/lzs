@@ -218,6 +218,13 @@
           <div class="mb-6">
             <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <FormKit
+                type="text"
+                name="nama_selepas_islam"
+                label="Nama Selepas Islam (Muallaf)"
+              />
+              
               <FormKit
                 type="date"
                 name="tarikh_masuk_islam"
@@ -353,6 +360,17 @@
                 placeholder="Pilih nama bank"
                 :options="bankOptions"
                 validation="required"
+                v-model="selectedBank"
+              />
+
+              <FormKit
+                v-if="selectedBank"
+                type="text"
+                name="swiss_code"
+                label="Swiss Code"
+                :value="selectedBankSwissCode"
+                readonly
+                help="Swiss code untuk bank yang dipilih"
               />
 
               <FormKit
@@ -1431,12 +1449,6 @@
               />
 
               <FormKit
-                type="text"
-                name="nama_selepas_islam"
-                label="Nama Selepas Islam (Muallaf)"
-              />
-
-              <FormKit
                 type="select"
                 name="jenis_id"
                 label="Jenis ID"
@@ -2492,23 +2504,31 @@ const saluranBencana = ref(null);
 
 const caraPembayaran = ref(null);
 
+const selectedBank = ref(null);
+
 const bankOptions = [
-  { label: "Maybank", value: "maybank" },
-  { label: "CIMB", value: "cimb" },
-  { label: "RHB", value: "rhb" },
-  { label: "Bank Islam", value: "bank-islam" },
-  { label: "Bank Rakyat", value: "bank-rakyat" },
-  { label: "Public Bank", value: "public-bank" },
-  { label: "Hong Leong Bank", value: "hong-leong" },
-  { label: "Ambank", value: "ambank" },
-  { label: "BSN", value: "bsn" },
-  { label: "Affin Bank", value: "affin" },
-  { label: "UOB", value: "uob" },
-  { label: "OCBC", value: "ocbc" },
-  { label: "Standard Chartered", value: "standard-chartered" },
-  { label: "Alliance Bank", value: "alliance" },
-  { label: "Agrobank", value: "agrobank" }
+  { label: "Maybank", value: "maybank", swissCode: "MBBEMYKL" },
+  { label: "CIMB", value: "cimb", swissCode: "CIBBMYKL" },
+  { label: "RHB", value: "rhb", swissCode: "RHBBMYKL" },
+  { label: "Bank Islam", value: "bank-islam", swissCode: "BIMBMYKL" },
+  { label: "Bank Rakyat", value: "bank-rakyat", swissCode: "BKRMYKL" },
+  { label: "Public Bank", value: "public-bank", swissCode: "PBBEMYKL" },
+  { label: "Hong Leong Bank", value: "hong-leong", swissCode: "HLBBMYKL" },
+  { label: "Ambank", value: "ambank", swissCode: "AMBBMYKL" },
+  { label: "BSN", value: "bsn", swissCode: "BSNAMYKL" },
+  { label: "Affin Bank", value: "affin", swissCode: "PHBMMYKL" },
+  { label: "UOB", value: "uob", swissCode: "UOVBMYKL" },
+  { label: "OCBC", value: "ocbc", swissCode: "OCBCMYKL" },
+  { label: "Standard Chartered", value: "standard-chartered", swissCode: "SCBLMYKL" },
+  { label: "Alliance Bank", value: "alliance", swissCode: "MFBBMYKL" },
+  { label: "Agrobank", value: "agrobank", swissCode: "AGOBMYKL" }
 ];
+
+const selectedBankSwissCode = computed(() => {
+  if (!selectedBank.value) return '';
+  const bank = bankOptions.find(bank => bank.value === selectedBank.value);
+  return bank ? bank.swissCode : '';
+});
 
 const jenisId = ref(null);
 
