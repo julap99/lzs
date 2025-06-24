@@ -1366,7 +1366,7 @@
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2.5">
             <div
-              class="bg-primary h-2.5 rounded-full"
+              class="bg-primary h-2.5 rounded-full transition-all duration-300"
               :style="`width: ${(currentStepB / totalStepsB) * 100}%`"
             ></div>
           </div>
@@ -2218,6 +2218,16 @@ const stepsA = [
 
 const currentStepB = ref(1);
 const totalStepsB = 6;
+
+// Define steps for progress indicator (Section B - Tanggungan)
+const stepsB = [
+  { id: 1, label: "Peribadi" },
+  { id: 2, label: "Pendidikan" },
+  { id: 3, label: "Kesihatan" },
+  { id: 4, label: "Kemahiran" },
+  { id: 5, label: "Pekerjaan" },
+  { id: 6, label: "Penilaian" }
+];
 
 const healthStatusTanggungan = ref("");
 const paymentMethod = ref("");

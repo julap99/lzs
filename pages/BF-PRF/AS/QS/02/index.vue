@@ -6,15 +6,28 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Isi Borang Permohonan Online</h2>
+          <div class="text-sm text-gray-600">
+            Langkah {{ currentStep }} dari {{ totalStep }}
+          </div>
         </div>
       </template>
 
       <template #body>
         <!-- Progress indicator -->
         <div class="mb-6">
+          <div class="flex justify-between mb-2">
+            <div
+              v-for="step in steps"
+              :key="step.id"
+              class="text-center flex-1"
+              :class="{ 'font-semibold': currentStep >= step.id }"
+            >
+              {{ step.label }}
+            </div>
+          </div>
           <div class="w-full bg-gray-200 rounded-full h-2.5">
             <div
-              class="bg-primary h-2.5 rounded-full"
+              class="bg-primary h-2.5 rounded-full transition-all duration-300"
               :style="`width: ${(currentStep / totalStep) * 100}%`"
             ></div>
           </div>
@@ -1728,6 +1741,20 @@ const breadcrumb = ref([
 
 const currentStep = ref(1);
 const totalStep = 10;
+
+// Define steps for progress indicator
+const steps = [
+  { id: 1, label: "Peribadi" },
+  { id: 2, label: "Kesihatan" },
+  { id: 3, label: "Pasangan" },
+  { id: 4, label: "Alamat" },
+  { id: 5, label: "Pekerjaan" },
+  { id: 6, label: "Tanggungan" },
+  { id: 7, label: "Waris" },
+  { id: 8, label: "Pengesahan" },
+  { id: 9, label: "Bermastautin" },
+  { id: 10, label: "Pegawai" }
+];
 
 // Form data structure
 const formData = ref({
