@@ -92,7 +92,7 @@
                       <a 
                         href="#" 
                         class="text-blue-600 hover:text-blue-800"
-                        @click.prevent="navigateTo(getActionRoute(activity.status))"
+                        @click.prevent="navigateTo(`/BF-PA/PE/MP/${activity.id}`)"
                       >
                         {{ activity.id }}
                       </a>
@@ -122,7 +122,7 @@
                     <rs-button
                       variant="primary"
                       size="sm"
-                      @click="navigateTo(getActionRoute(activity.status))"
+                      @click="navigateTo('/BF-PA/PE/MP/04')"
                     >
                       {{ getActionButtonText(activity.status) }}
                     </rs-button>
@@ -173,36 +173,40 @@ const breadcrumb = ref([
 // Mock data for activities - only "Menunggu Kelulusan Ketua JPPA" status
 const activities = ref([
   {
-    id: 'P002',
-    name: 'Program Tazkirah Bulanan',
-    date: '2024-03-16',
+    id: 'P001',
+    name: 'Program Khidmat Masyarakat',
+    date: '20/03/2024',
     location: 'Masjid Al-Hidayah',
     type: 'Program',
-    status: 'Menunggu Kelulusan Ketua JPPA'
+    status: 'Menunggu Kelulusan Ketua JPPA',
+    allowanceRate: '100.00'
   },
   {
     id: 'M003',
     name: 'Mesyuarat Agung Tahunan',
-    date: '2024-03-22',
+    date: '22/03/2024',
     location: 'Dewan Utama',
     type: 'Mesyuarat',
-    status: 'Menunggu Kelulusan Ketua JPPA'
+    status: 'Menunggu Kelulusan Ketua JPPA',
+    allowanceRate: '50.00'
   },
   {
-    id: 'L002',
-    name: 'Program Latihan Asas',
-    date: '2024-03-26',
-    location: 'Bilik Latihan',
+    id: 'L001',
+    name: 'Latihan Pengurusan Zakat',
+    date: '25/03/2024',
+    location: 'Dewan Latihan',
     type: 'Latihan',
-    status: 'Menunggu Kelulusan Ketua JPPA'
+    status: 'Menunggu Kelulusan Ketua JPPA',
+    allowanceRate: '100.00'
   },
   {
     id: 'M004',
-    name: 'Mesyuarat Koordinasi',
-    date: '2024-03-29',
+    name: 'Mesyuarat Koordinasi Khas',
+    date: '29/03/2024',
     location: 'Pejabat Zakat',
     type: 'Mesyuarat',
-    status: 'Menunggu Kelulusan Ketua JPPA'
+    status: 'Menunggu Kelulusan Ketua JPPA',
+    allowanceRate: '50.00'
   }
 ]);
 
@@ -263,7 +267,7 @@ const getStatusLabel = (status) => {
   }
 }
 
-const getActionRoute = (status) => {
+const getActionRoute = (status, activityId) => {
   switch (status) {
     case 'Menunggu Kelulusan Ketua JPPA':
       return '/BF-PA/PE/MP/04'

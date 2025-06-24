@@ -92,7 +92,7 @@
                       <a 
                         href="#" 
                         class="text-blue-600 hover:text-blue-800"
-                        @click.prevent="navigateTo(getActionRoute(activity.status))"
+                        @click.prevent="navigateTo(`/BF-PA/PE/MP/${activity.id}`)"
                       >
                         {{ activity.id }}
                       </a>
@@ -122,7 +122,7 @@
                     <rs-button
                       variant="primary"
                       size="sm"
-                      @click="navigateTo(getActionRoute(activity.status))"
+                      @click="navigateTo('/BF-PA/PE/MP/03')"
                     >
                       {{ getActionButtonText(activity.status) }}
                     </rs-button>
@@ -175,34 +175,38 @@ const activities = ref([
   {
     id: 'M001',
     name: 'Mesyuarat JPPA Bulanan',
-    date: '2024-03-15',
+    date: '15/03/2024',
     location: 'Dewan Mesyuarat JPPA',
     type: 'Mesyuarat',
-    status: 'Menunggu Sokongan JPPA'
-  },
-  {
-    id: 'P001',
-    name: 'Program Khidmat Masyarakat',
-    date: '2024-03-20',
-    location: 'Masjid Al-Hidayah',
-    type: 'Program',
-    status: 'Menunggu Sokongan JPPA'
-  },
-  {
-    id: 'L001',
-    name: 'Latihan Pengurusan Zakat',
-    date: '2024-03-25',
-    location: 'Dewan Latihan',
-    type: 'Latihan',
-    status: 'Menunggu Sokongan JPPA'
+    status: 'Menunggu Sokongan JPPA',
+    allowanceRate: '50.00'
   },
   {
     id: 'M002',
     name: 'Mesyuarat Koordinasi',
-    date: '2024-03-28',
+    date: '28/03/2024',
     location: 'Pejabat Zakat',
     type: 'Mesyuarat',
-    status: 'Menunggu Sokongan JPPA'
+    status: 'Menunggu Sokongan JPPA',
+    allowanceRate: '50.00'
+  },
+  {
+    id: 'P002',
+    name: 'Program Tazkirah Bulanan',
+    date: '18/03/2024',
+    location: 'Masjid Al-Hidayah',
+    type: 'Program',
+    status: 'Menunggu Sokongan JPPA',
+    allowanceRate: '100.00'
+  },
+  {
+    id: 'L002',
+    name: 'Latihan Asas Pengurusan',
+    date: '27/03/2024',
+    location: 'Bilik Latihan',
+    type: 'Latihan',
+    status: 'Menunggu Sokongan JPPA',
+    allowanceRate: '100.00'
   }
 ]);
 
@@ -263,7 +267,7 @@ const getStatusLabel = (status) => {
   }
 }
 
-const getActionRoute = (status) => {
+const getActionRoute = (status, activityId) => {
   switch (status) {
     case 'Menunggu Sokongan JPPA':
       return '/BF-PA/PE/MP/03'
