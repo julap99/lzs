@@ -1,19 +1,91 @@
 <template>
   <div>
+    <!-- Breadcrumb Navigation -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <!-- Disable overlay when modal is shown -->
+    <div v-if="showSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Disabled form indicator -->
+    <!-- <div v-if="isFormDisabled && !showSelectionModal" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+      <div class="bg-orange-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center">
+        <Icon name="material-symbols:warning" class="mr-2" />
+        <span class="text-sm font-medium">
+          {{ selectedType === 'lain-lain' 
+            ? 'Permohonan jenis "Lain-lain" sedang dalam pembangunan. Sila pilih "Bencana" untuk meneruskan.' 
+            : 'Sila pilih jenis permohonan terlebih dahulu' 
+          }}
+        </span>
+      </div>
+    </div> -->
+
+    <!-- Enabled form indicator -->
+    <!-- <div v-if="!isFormDisabled && selectedType === 'bencana'" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+      <div class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center">
+        <Icon name="material-symbols:check-circle" class="mr-2" />
+        <span class="text-sm font-medium">Permohonan Bencana - Semua medan telah diaktifkan</span>
+      </div>
+    </div> -->
+
+    <!-- Change Selection Button - Always accessible -->
+    <!-- <div v-if="selectedType && !showSelectionModal" class="fixed top-4 right-4 z-50">
+      <rs-button 
+        variant="outline" 
+        size="sm"
+        @click="changeSelection"
+        class="text-sm bg-white shadow-lg hover:bg-gray-50"
+        :disabled="false"
+      >
+        <Icon name="material-symbols:edit" class="mr-1" size="14" />
+        Tukar Pilihan
+      </rs-button>
+    </div> -->
+
+    <!-- Main Form Card -->
+    <rs-card class="mt-4" :class="{ 'pointer-events-none opacity-50': isFormDisabled }">
+      <!-- Form Header -->
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Isi Borang Permohonan Online</h2>
-          <div class="text-sm text-gray-600">
-            Langkah {{ currentStep }} dari {{ totalStep }}
+          <div class="flex items-center">
+            <h2 class="text-xl font-semibold">Isi Borang Permohonan Online</h2>
+            <div v-if="selectedType" class="ml-4">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                :class="selectedType === 'bencana' 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-orange-100 text-orange-800'"
+              >
+                <Icon 
+                  :name="selectedType === 'bencana' ? 'material-symbols:check-circle' : 'material-symbols:check-circle-outline'" 
+                  class="mr-1" 
+                  size="14"
+                />
+                {{ selectedType === 'bencana' ? 'Bencana' : 'Lain-lain' }}
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <rs-button 
+              v-if="selectedType"
+              variant="outline" 
+              size="sm"
+              @click="changeSelection"
+              class="text-sm"
+              :disabled="false"
+              style="pointer-events: auto; z-index: 60;"
+            >
+              <Icon name="material-symbols:edit" class="mr-1" size="14" />
+              Tukar Pilihan
+            </rs-button>
+            <div class="text-sm text-gray-600">
+              Langkah {{ currentStep }} dari {{ totalStep }}
+            </div>
           </div>
         </div>
       </template>
 
+      <!-- Form Body -->
       <template #body>
-        <!-- Progress indicator -->
+        <!-- Progress Indicator -->
         <div class="mb-6">
           <div class="flex justify-between mb-2">
             <div
@@ -35,7 +107,7 @@
 
         <!-- Form Section -->
         <div class="mb-6">
-          <FormKit type="form" :actions="false" @submit="handleSubmit">
+          <FormKit type="form" :actions="false" @submit="handleSubmit" :disabled="isFormDisabled">
             <!-- Step 1: Maklumat Peribadi Asnaf -->
             <div v-if="currentStep === 1">
               <h3 class="text-lg font-medium mb-4">
@@ -1779,21 +1851,149 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Selection Modal -->
+    <rs-modal
+      v-model="showSelectionModal"
+      title="Pilih Jenis Permohonan"
+      size="lg"
+      position="center"
+      :overlay-close="false"
+      :hide-footer="true"
+      dialog-class="max-w-2xl"
+    >
+      <template #body>
+        <div class="text-center p-6">
+          <div class="flex justify-center mb-6">
+            <div class="bg-blue-100 rounded-full p-4">
+              <Icon
+                name="material-symbols:help-outline"
+                class="text-blue-600"
+                size="48"
+              />
+            </div>
+          </div>
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">
+            Sila pilih jenis permohonan anda
+          </h3>
+          <p class="text-gray-600 mb-8 text-base">
+            Pilihan ini akan menentukan aliran permohonan yang sesuai untuk situasi anda.
+          </p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div 
+              class="border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition-all duration-300 transform hover:scale-105"
+              :class="{ 'border-orange-500 bg-orange-50 shadow-lg': selectedType === 'bencana' }"
+              @click="selectType('bencana')"
+            >
+              <div class="flex flex-col items-center">
+                <div class="bg-orange-100 rounded-full p-3 mb-4">
+                  <Icon
+                    name="material-symbols:warning"
+                    class="text-orange-600"
+                    size="32"
+                  />
+                </div>
+                <h4 class="font-semibold text-gray-800 mb-3 text-lg">Bencana</h4>
+                <p class="text-sm text-gray-600 text-center leading-relaxed">
+                  Permohonan untuk bantuan bencana alam atau kecemasan seperti banjir, kebakaran, tanah runtuh, dll
+                </p>
+              </div>
+            </div>
+            
+            <div 
+              class="border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-green-400 hover:bg-green-50 transition-all duration-300 transform hover:scale-105"
+              :class="{ 'border-green-500 bg-green-50 shadow-lg': selectedType === 'lain-lain' }"
+              @click="selectType('lain-lain')"
+            >
+              <div class="flex flex-col items-center">
+                <div class="bg-green-100 rounded-full p-3 mb-4">
+                  <Icon
+                    name="material-symbols:person"
+                    class="text-green-600"
+                    size="32"
+                  />
+                </div>
+                <h4 class="font-semibold text-gray-800 mb-3 text-lg">Lain-lain</h4>
+                <p class="text-sm text-gray-600 text-center leading-relaxed">
+                  Permohonan untuk bantuan lain seperti kesihatan, pendidikan, sara hidup, dan keperluan asas lain
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-8">
+            <rs-button 
+              variant="primary" 
+              @click="confirmSelection"
+              :disabled="!selectedType"
+              class="w-full md:w-auto px-8 py-3 text-base font-medium"
+              size="lg"
+            >
+              <Icon name="material-symbols:arrow-forward" class="mr-2" />
+              Teruskan
+            </rs-button>
+          </div>
+          
+          <!-- Warning message for "lain-lain" selection -->
+          <!-- <div v-if="selectedType === 'lain-lain'" class="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+            <div class="flex items-start">
+              <Icon name="material-symbols:warning" class="text-orange-600 mt-1 mr-3 flex-shrink-0" />
+              <div>
+                <h4 class="font-medium text-orange-800 mb-1">Perhatian</h4>
+                <p class="text-sm text-orange-700 mb-3">
+                  Permohonan jenis "Lain-lain" sedang dalam pembangunan. Untuk masa ini, hanya permohonan "Bencana" yang boleh diproses.
+                </p>
+                <rs-button 
+                  variant="outline" 
+                  size="sm"
+                  @click="selectedType = ''"
+                  class="text-orange-600 border-orange-300 hover:bg-orange-100"
+                >
+                  Tukar Pilihan
+                </rs-button>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+// ============================================================================
+// IMPORTS
+// ============================================================================
+import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
+// ============================================================================
+// COMPOSABLES & SETUP
+// ============================================================================
 const toast = useToast();
 const router = useRouter();
 
+// ============================================================================
+// PAGE META
+// ============================================================================
 definePageMeta({
   title: "Isi Permohonan Ringkas",
 });
 
+// ============================================================================
+// REACTIVE STATE
+// ============================================================================
+// Modal state
+const showSelectionModal = ref(true);
+const selectedType = ref('');
+
+// Form state
+const currentStep = ref(1);
+const totalStep = 11;
+
+// Breadcrumb
 const breadcrumb = ref([
   {
     name: "Borang Permohonan Perseorangan",
@@ -1802,10 +2002,7 @@ const breadcrumb = ref([
   },
 ]);
 
-const currentStep = ref(1);
-const totalStep = 11; // Update total steps from 10 to 11
-
-// Define steps for progress indicator
+// Steps configuration
 const steps = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Kesihatan" },
@@ -1820,12 +2017,14 @@ const steps = [
   { id: 11, label: "Penilaian" }
 ];
 
-// Form data structure
+// ============================================================================
+// FORM DATA STRUCTURE
+// ============================================================================
 const formData = ref({
   personalInfo: {
     idValue: "",
     idNumber: "",
-    idDocument: null, // Add this line
+    idDocument: null,
     name: "",
     islamName: "",
     phone: "",
@@ -1842,7 +2041,7 @@ const formData = ref({
     maritalStatus: "",
     healthStatus: "",
     islamDate: "",
-    islamCertificate: null, // Add this line
+    islamCertificate: null,
     kfamDate: "",
     email: "",
     citizenship: "",
@@ -1853,14 +2052,14 @@ const formData = ref({
     polygamyStatus: "",
     wivesCount: "",
     wives: [],
-    dependentsCount: "", // Add this line
+    dependentsCount: "",
   },
   healthInfo: {
     status: "",
     details: "",
     chronicIllnessDoc: null,
-    disabilityDoc: null, // Add this line
-    disasterDocument: null, // Add this line
+    disabilityDoc: null,
+    disasterDocument: null,
   },
   spouseInfo: [
     {
@@ -1868,7 +2067,7 @@ const formData = ref({
       idNumber: "",
       name: "",
       supportDoc: null,
-      idDocument: null, // Add this line
+      idDocument: null,
     }
   ],
   addressInfo: {
@@ -1956,14 +2155,19 @@ const formData = ref({
   },
 });
 
+// Additional form state
 const statusKahwin = ref(null);
 
-// Options for select fields
+// ============================================================================
+// OPTIONS & CONFIGURATIONS
+// ============================================================================
+// ID Type Options
 const idTypeOptions = [
   { label: "Kad Pengenalan", value: "ic" },
   { label: "Foreign Id", value: "foreign-id" },
 ];
 
+// Marital Status Options
 const maritalStatusOptions = [
   { label: "Bujang", value: "single" },
   { label: "Berkahwin", value: "married" },
@@ -1972,6 +2176,7 @@ const maritalStatusOptions = [
   { label: "Bercerai", value: "divorced" },
 ];
 
+// Health Status Options
 const healthStatusOptions = [
   { label: "Sihat", value: "sihat" },
   { label: "Kurang Upaya", value: "disabled" },
@@ -1984,6 +2189,7 @@ const healthStatusOptionsExtended = [
   { label: "Warga Emas", value: "elderly" },
 ];
 
+// Residence Status Options
 const residenceStatusOptions = [
   { label: "Milik Sendiri", value: "milik-sendiri" },
   { label: "Sewa", value: "sewa" },
@@ -1991,14 +2197,15 @@ const residenceStatusOptions = [
   { label: "Lain-lain", value: "lain-lain" },
 ];
 
+// Education Level Options
 const educationLevelOptions = [
   { label: "Sekolah", value: "sekolah" },
   { label: "Tidak Bersekolah", value: "tidak-bersekolah" },
   { label: "Bekerja", value: "bekerja" },
   { label: "Tidak Bekerja", value: "tidak-bekerja" },
-  // Add more education levels as needed
 ];
 
+// Relationship Options
 const relationshipOptions = [
   { label: "Anak", value: "child" },
   { label: "Ibu Bapa", value: "parent" },
@@ -2007,6 +2214,7 @@ const relationshipOptions = [
   { label: "Lain-lain", value: "other" },
 ];
 
+// Income Source Options
 const incomeSourceOptions = [
   { label: "Gaji", value: "salary" },
   { label: "Bekerja Sendiri", value: "self-employed" },
@@ -2015,18 +2223,21 @@ const incomeSourceOptions = [
   { label: "Lain-lain", value: "other" },
 ];
 
+// Employment Sector Options
 const employmentSectorOptions = [
   { label: "Kerajaan", value: "government" },
   { label: "Swasta", value: "private" },
   { label: "Sendiri", value: "self-employed" },
 ];
 
+// Position Status Options
 const positionStatusOptions = [
   { label: "Tetap", value: "permanent" },
   { label: "Kontrak", value: "contract" },
   { label: "Sementara", value: "temporary" },
 ];
 
+// Bank Options with SWIFT Codes
 const bankOptions = [
   { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
   { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
@@ -2045,6 +2256,7 @@ const bankOptions = [
   { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" },
 ];
 
+// Religion Options
 const religionOptions = [
   { label: "Islam", value: "islam" },
   { label: "Kristian", value: "kristian" },
@@ -2053,40 +2265,81 @@ const religionOptions = [
   { label: "Lain-lain", value: "lain" }
 ];
 
+// Wives Count Options
 const wivesCountOptions = [
   { label: "2", value: 2 },
   { label: "3", value: 3 },
   { label: "4", value: 4 }
 ];
 
-// Computed properties
+// District Options
+const districtOptions = [
+  { label: 'Gombak', value: 'gombak' },
+  { label: 'Hulu Langat', value: 'hulu-langat' },
+  { label: 'Hulu Selangor', value: 'hulu-selangor' },
+  { label: 'Klang', value: 'klang' },
+  { label: 'Kuala Langat', value: 'kuala-langat' },
+  { label: 'Kuala Selangor', value: 'kuala-selangor' },
+  { label: 'Petaling', value: 'petaling' },
+  { label: 'Sabak Bernam', value: 'sabak-bernam' },
+  { label: 'Sepang', value: 'sepang' },
+  { label: 'Shah Alam', value: 'shah-alam' }
+];
+
+// Kariah Options
+const kariahOptions = [
+  { label: 'Masjid Negeri', value: 'masjid-negeri' },
+  { label: 'Masjid Sultan Salahuddin Abdul Aziz Shah', value: 'masjid-sultan-salahuddin' },
+  { label: 'Masjid Al-Azim Pandan Indah', value: 'masjid-al-azim' },
+  { label: 'Masjid Al-Amin Bangi', value: 'masjid-al-amin' },
+];
+
+// ============================================================================
+// COMPUTED PROPERTIES
+// ============================================================================
+// Check if user has spouse
 const hasSpouse = computed(() => {
   return ["married", "widower", "widow"].includes(
     formData.value.personalInfo.maritalStatus
   );
 });
 
+// Check if user is muallaf
 const isMuallaf = computed(() => {
-  // Logic to determine if applicant is muallaf
-  // This might need to be adjusted based on your actual requirements
   return false;
 });
 
+// Check if "Tidak mendesak" is selected
 const isTidakMendesakSelected = computed(() => {
   return formData.value.initialAssessment.keperluanMendesak.includes('tidakMendesak');
 });
 
+// Check if "Lain" input should be shown
 const showLainInput = computed(() => {
   return formData.value.initialAssessment.keperluanMendesak.includes('lain');
 });
 
-// Computed property to get SWIFT code for selected bank
+// Check if form should be disabled
+const isFormDisabled = computed(() => {
+  // Only disable form when modal is still showing
+  if (showSelectionModal.value) {
+    return true;
+  }
+  
+  // Enable form for both "bencana" and "lain-lain" selections
+  return false;
+});
+
+// Get SWIFT code for selected bank
 const selectedBankSwiftCode = computed(() => {
   const selectedBank = bankOptions.find(bank => bank.value === formData.value.personalInfo.bankName);
   return selectedBank ? selectedBank.swiftCode : '';
 });
 
-// Methods
+// ============================================================================
+// METHODS
+// ============================================================================
+// Form utility methods
 const getPlaceholder = () => {
   switch (formData.value.personalInfo.idValue) {
     case "ic":
@@ -2100,6 +2353,7 @@ const getPlaceholder = () => {
   }
 };
 
+// Dependent management methods
 const addSchoolDependent = () => {
   formData.value.schoolDependents.push({
     kkid: "",
@@ -2117,7 +2371,7 @@ const addSchoolDependent = () => {
     healthCost: "",
     passportStartDate: "",
     passportEndDate: "",
-    idDocument: null, // Add this line
+    idDocument: null,
   });
 };
 
@@ -2146,7 +2400,7 @@ const addHeir = () => {
   formData.value.heirs.push({
     name: "",
     phone: "",
-    relationship: "", // Add this line
+    relationship: "",
   });
 };
 
@@ -2154,13 +2408,14 @@ const removeHeir = (index) => {
   formData.value.heirs.splice(index, 1);
 };
 
+// Spouse management methods
 const addSpouse = () => {
   formData.value.spouseInfo.push({
     idType: "",
     idNumber: "",
     name: "",
     supportDoc: null,
-    idDocument: null, // Add this line
+    idDocument: null,
   });
 };
 
@@ -2168,24 +2423,29 @@ const removeSpouse = (index) => {
   formData.value.spouseInfo.splice(index, 1);
 };
 
+// Form submission methods
 const handleSubmit = async () => {
   try {
-  // Handle form submission
-  console.log("Form submitted:", formData.value);
-  // Add your submission logic here (API call, etc.)
-
+    console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
-    
-    // Wait for 2 seconds before navigating
-    // setTimeout(() => {
-      router.push("/BF-PRF/AS/FR/04");
-    // }, 2000);
+    router.push("/BF-PRF/AS/FR/04");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);
   }
 };
 
+const handleSave = async () => {
+  try {
+    console.log("Form saved:", formData.value);
+    toast.success("Permohonan berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Permohonan tidak berjaya disimpan");
+    console.error("Save error:", error);
+  }
+};
+
+// Step navigation methods
 const prevStep = () => {
   currentStep.value--;
 };
@@ -2194,31 +2454,18 @@ const nextStep = () => {
   currentStep.value++;
 };
 
-const handleSave = async () => {
-  try {
-    // Handle form saving
-    console.log("Form saved:", formData.value);
-    // Add your save logic here (API call, etc.)
-
-    toast.success("Permohonan berjaya disimpan");
-  } catch (error) {
-    toast.error("Ralat! Permohonan tidak berjaya disimpan");
-    console.error("Save error:", error);
-  }
-};
-
+// Form event handlers
 const handleKeperluanChange = (value) => {
-  // If "Tidak mendesak" is selected, clear all other selections
   if (value.includes('tidakMendesak')) {
     formData.value.initialAssessment.keperluanMendesak = ['tidakMendesak'];
   }
   
-  // If "Selain dari di atas" is unselected, clear the additional input
   if (!value.includes('lain')) {
     formData.value.initialAssessment.lainKeperluan = '';
   }
 };
 
+// Location methods
 const selectAssistanceType = () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -2235,25 +2482,6 @@ const selectAssistanceType = () => {
   }
 };
 
-const districtOptions = [
-  { label: 'Gombak', value: 'gombak' },
-  { label: 'Hulu Langat', value: 'hulu-langat' },
-  { label: 'Hulu Selangor', value: 'hulu-selangor' },
-  { label: 'Klang', value: 'klang' },
-  { label: 'Kuala Langat', value: 'kuala-langat' },
-  { label: 'Kuala Selangor', value: 'kuala-selangor' },
-  { label: 'Petaling', value: 'petaling' },
-  { label: 'Sabak Bernam', value: 'sabak-bernam' },
-  { label: 'Sepang', value: 'sepang' },
-  { label: 'Shah Alam', value: 'shah-alam' }
-];
-const kariahOptions = [
-  { label: 'Masjid Negeri', value: 'masjid-negeri' },
-  { label: 'Masjid Sultan Salahuddin Abdul Aziz Shah', value: 'masjid-sultan-salahuddin' },
-  { label: 'Masjid Al-Azim Pandan Indah', value: 'masjid-al-azim' },
-  { label: 'Masjid Al-Amin Bangi', value: 'masjid-al-amin' },
-  // ... add more kariah as needed ...
-];
 const selectAddressLocation = () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -2270,17 +2498,44 @@ const selectAddressLocation = () => {
   }
 };
 
-// Watchers
+// Modal methods
+const selectType = (type) => {
+  selectedType.value = type;
+};
+
+const confirmSelection = () => {
+  if (selectedType.value) {
+    showSelectionModal.value = false;
+    
+    if (selectedType.value === 'bencana') {
+      formData.value.personalInfo.assistanceType = 'bencana';
+      formData.value.healthInfo.status = 'bencana';
+      toast.success('Jenis permohonan: Bencana - Semua medan telah diaktifkan');
+    } else if (selectedType.value === 'lain-lain') {
+      formData.value.personalInfo.assistanceType = 'lain-lain';
+      toast.success('Jenis permohonan: Lain-lain - Semua medan telah diaktifkan');
+    }
+  }
+};
+
+const changeSelection = () => {
+  showSelectionModal.value = true;
+};
+
+// ============================================================================
+// WATCHERS
+// ============================================================================
+// Watch marital status changes
 watch(
   () => formData.value.personalInfo.maritalStatus,
   (newVal) => {
     if (!hasSpouse.value) {
-      // Clear spouse info if no spouse
       formData.value.spouseInfo = [];
     }
   }
 );
 
+// Watch wives count changes
 watch(
   () => formData.value.personalInfo.wivesCount,
   (newVal) => {
@@ -2296,6 +2551,7 @@ watch(
   }
 );
 
+// Watch polygamy status changes
 watch(
   () => formData.value.personalInfo.polygamyStatus,
   (newVal) => {
@@ -2306,6 +2562,7 @@ watch(
   }
 );
 
+// Watch marriage status changes
 watch(
   () => statusKahwin.value,
   (newVal) => {
@@ -2317,7 +2574,7 @@ watch(
   }
 );
 
-// Watcher to update SWIFT code when bank is selected
+// Watch bank selection for SWIFT code
 watch(
   () => formData.value.personalInfo.bankName,
   (newVal) => {
@@ -2331,4 +2588,22 @@ watch(
     }
   }
 );
+
+// Watch modal state to prevent closing without selection
+watch(
+  () => showSelectionModal.value,
+  (newVal) => {
+    if (!newVal && !selectedType.value) {
+      showSelectionModal.value = true;
+    }
+  }
+);
+
+// ============================================================================
+// LIFECYCLE HOOKS
+// ============================================================================
+onMounted(() => {
+  showSelectionModal.value = true;
+  selectedType.value = '';
+});
 </script>
