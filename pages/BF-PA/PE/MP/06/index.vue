@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Kiraan Jumlah Elaun Mengikut Penolong Amil</h2>
+          <h2 class="text-xl font-semibold">Notifikasi Status Pembayaran Elaun</h2>
           <rs-badge
             v-if="formData.status"
             :variant="getStatusVariant(formData.status)"
@@ -100,16 +100,26 @@
               <FormKit 
               type="text" 
               name="idPayment" 
-              label="ID" 
+              label="ID Payment Advice" 
               disabled 
               />
               <FormKit
                 type="text"
                 name="status"
-                label="Status Hantar SAP"
+                label="Status Pembayaran"
                 disabled
               />
             </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="flex justify-end space-x-4 mt-8">
+            <rs-button
+              variant="primary"
+              @click="navigateTo('/BF-PA/PE/MP')"
+            >
+              Kembali ke Senarai
+            </rs-button>
           </div>
         </FormKit>
       </template>
@@ -124,24 +134,30 @@ import { useToast } from "vue-toastification";
 import { useRoute } from "vue-router";
 
 definePageMeta({
-  title: "Semakan Bantuan",
-  description: "Semak dan ulas permohonan bantuan",
+  title: "Notifikasi Status Pembayaran Elaun",
+  description: "Notifikasi status pembayaran elaun penolong amil",
 });
 
 const route = useRoute();
 const toast = useToast();
 const showSuccessModal = ref(false);
+const tableKey = ref(0);
 
 const breadcrumb = ref([
   {
     name: "Pengurusan Penolong Amil",
     type: "link",
-    path: "/BF-PA/PE/MP/01",
+    path: "/BF-PA/PE/MP",
   },
   {
-    name: "Jana Payment Advice",
+    name: "Mesyuarat/Program",
+    type: "link",
+    path: "/BF-PA/PE/MP",
+  },
+  {
+    name: "Notifikasi Status Pembayaran",
     type: "current",
-    path: "/BF-PA/PE/MP/05",
+    path: "/BF-PA/PE/MP/06",
   },
 ]);
 

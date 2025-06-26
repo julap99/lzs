@@ -359,8 +359,9 @@ const getActionRoute = (status, activityId) => {
     case 'Menunggu Kelulusan Ketua JPPA':
       return '/BF-PA/PE/MP/04'
     case 'Diluluskan':
+      return `/BF-PA/PE/MP/view-lulus`
     case 'Ditolak':
-      return `/BF-PA/PE/MP/${activityId}`
+      return `/BF-PA/PE/MP/07`
     default:
       return '#'
   }
@@ -372,8 +373,9 @@ const getActionButtonText = (status) => {
     case 'Menunggu Kelulusan Ketua JPPA':
       return 'Semak'
     case 'Diluluskan':
-    case 'Ditolak':
       return 'Lihat'
+    case 'Ditolak':
+      return 'Semak Semula'
     default:
       return 'Lihat'
   }
