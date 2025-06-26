@@ -2510,10 +2510,10 @@ const confirmSelection = () => {
     if (selectedType.value === 'bencana') {
       formData.value.personalInfo.assistanceType = 'bencana';
       formData.value.healthInfo.status = 'bencana';
-      toast.success('Jenis permohonan: Bencana - Semua medan telah diaktifkan');
+      toast.success('Jenis permohonan: Bencana');
     } else if (selectedType.value === 'lain-lain') {
       formData.value.personalInfo.assistanceType = 'lain-lain';
-      toast.success('Jenis permohonan: Lain-lain - Semua medan telah diaktifkan');
+      toast.success('Jenis permohonan: Lain-lain');
     }
   }
 };

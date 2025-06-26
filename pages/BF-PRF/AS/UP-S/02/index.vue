@@ -1,7 +1,9 @@
 <template>
   <div>
+    <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- ========================= Section 1 ========================= -->
     <rs-card v-if="currentSection == 1" class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
@@ -15,7 +17,7 @@
       </template>
 
       <template #body>
-        <!-- Progress indicator -->
+        <!-- Progress indicator for Section A -->
         <div class="mb-6">
           <div class="flex justify-between mb-2">
             <div
@@ -36,7 +38,7 @@
           </div>
         </div>
 
-        <!-- Section A Form -->
+        <!-- ========================= Section A: Maklumat Peribadi Asnaf ========================= -->
         <FormKit
           v-if="currentStepA == 1"
           type="form"
@@ -417,7 +419,7 @@
           </div>
         </FormKit>
 
-        <!-- Section B Form -->
+        <!-- ========================= Section B: Maklumat Kesihatan ========================= -->
         <FormKit
           v-if="currentStepA === 2"
           type="form"
@@ -555,7 +557,7 @@
           </div>
         </FormKit>
 
-        <!-- Section C Form -->
+        <!-- ========================= Section C: Kemahiran ========================= -->
         <FormKit
           v-if="currentStepA === 3"
           type="form"
@@ -598,7 +600,7 @@
           </div>
         </FormKit>
 
-        <!-- Section D Form -->
+        <!-- ========================= Section D: Maklumat Kediaman ========================= -->
         <FormKit
           v-if="currentStepA === 4"
           type="form"
@@ -831,7 +833,7 @@
           </div>
         </FormKit>
 
-        <!-- Section E Form -->
+        <!-- ========================= Section E: Maklumat Pinjaman Harta ========================= -->
         <FormKit
           v-if="currentStepA === 5"
           type="form"
@@ -909,7 +911,7 @@
           </div>
         </FormKit>
 
-        <!-- Section F Form -->
+        <!-- ========================= Section F: Maklumat Pemilikan ========================= -->
         <FormKit
           v-if="currentStepA === 6"
           type="form"
@@ -983,7 +985,7 @@
           </div>
         </FormKit>
 
-        <!-- Section G Form - Maklumat Waris -->
+        <!-- ========================= Section G: Maklumat Waris ========================= -->
         <FormKit
           v-if="currentStepA === 7"
           type="form"
@@ -1073,7 +1075,7 @@
           </div>
         </FormKit>
 
-        <!-- Section H Form - Pengesahan -->
+        <!-- ========================= Section H: Pengesahan ========================= -->
         <FormKit
           v-if="currentStepA === 8"
           type="form"
@@ -1211,7 +1213,7 @@
           </div>
         </FormKit>
 
-        <!-- Section I Form - Pengesahan Bermastautin -->
+        <!-- ========================= Section I: Pengesahan Bermastautin ========================= -->
         <FormKit
           v-if="currentStepA === 9"
           type="form"
@@ -1286,7 +1288,7 @@
           </div>
         </FormKit>
 
-        <!-- Section J Form - Pegawai Pendaftar -->
+        <!-- ========================= Section J: Maklumat Pegawai Pendaftar ========================= -->
         <FormKit
           v-if="currentStepA === 10"
           type="form"
@@ -1349,6 +1351,7 @@
       </template>
     </rs-card>
 
+    <!-- ========================= Section 2 ========================= -->
     <rs-card v-if="currentSection == 2" class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
@@ -1362,7 +1365,7 @@
       </template>
 
       <template #body>
-        <!-- Progress indicator -->
+        <!-- Progress indicator for Section B -->
         <div class="mb-6">
           <div class="flex justify-between mb-2">
             <div
@@ -1383,7 +1386,7 @@
           </div>
         </div>
 
-        <!-- NEW Section B Form - Maklumat Peibadi Tanggungan -->
+        <!-- ========================= Section B1: Maklumat Peribadi Tanggungan ========================= -->
         <FormKit
           v-if="currentStepB === 1"
           type="form"

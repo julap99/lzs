@@ -2188,6 +2188,9 @@ import { ref, computed, watch } from "vue";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 
+// ============================================================================
+// IMPORTS & SETUP
+// ============================================================================
 const router = useRouter();
 const toast = useToast();
 
@@ -2195,25 +2198,13 @@ definePageMeta({
   title: "Borang Permohonan Lengkap",
 });
 
-const breadcrumb = ref([
-  {
-    name: "Borang Permohonan Lengkap",
-    type: "current",
-    path: "/BF-PRF/AS/FR/02",
-  },
-]);
+// ============================================================================
+// CONSTANTS & OPTIONS
+// ============================================================================
 
-const processing = ref(false);
-const currentSection = ref(1);
-
-const currentStepA = ref(1);
+// Form Steps Configuration
 const totalStepsA = 9;
-const healthStatus = ref("");
-const dibantuPenolongAmil = ref("");
-const hubunganKakitanganLZS = ref("");
-const jenisIdTanggungan = ref("");
-const hubunganPemohon = ref("");
-
+const totalStepsB = 6;
 
 const stepsA = [
   { id: 1, label: "Maklumat Peribadi" },
@@ -2225,13 +2216,8 @@ const stepsA = [
   { id: 7, label: "Waris" },
   { id: 8, label: "Pengesahan" },
   { id: 9, label: "Pengesahan Bermastautin" },
-  // { id: 10, label: "Penolong Amil" }
 ];
 
-const currentStepB = ref(1);
-const totalStepsB = 6;
-
-// Define steps for progress indicator (Section B - Tanggungan)
 const stepsB = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Pendidikan" },
@@ -2241,31 +2227,97 @@ const stepsB = [
   { id: 6, label: "Penilaian" }
 ];
 
+// Form Options
+const bankOptions = [
+  { label: "Maybank", value: "maybank", swissCode: "MBBEMYKL" },
+  { label: "CIMB", value: "cimb", swissCode: "CIBBMYKL" },
+  { label: "RHB", value: "rhb", swissCode: "RHBBMYKL" },
+  { label: "Bank Islam", value: "bank-islam", swissCode: "BIMBMYKL" },
+  { label: "Bank Rakyat", value: "bank-rakyat", swissCode: "BKRMYKL" },
+  { label: "Public Bank", value: "public-bank", swissCode: "PBBEMYKL" },
+  { label: "Hong Leong Bank", value: "hong-leong", swissCode: "HLBBMYKL" },
+  { label: "Ambank", value: "ambank", swissCode: "AMBBMYKL" },
+  { label: "BSN", value: "bsn", swissCode: "BSNAMYKL" },
+  { label: "Affin Bank", value: "affin", swissCode: "PHBMMYKL" },
+  { label: "UOB", value: "uob", swissCode: "UOVBMYKL" },
+  { label: "OCBC", value: "ocbc", swissCode: "OCBCMYKL" },
+  { label: "Standard Chartered", value: "standard-chartered", swissCode: "SCBLMYKL" },
+  { label: "Alliance Bank", value: "alliance", swissCode: "MFBBMYKL" },
+  { label: "Agrobank", value: "agrobank", swissCode: "AGOBMYKL" }
+];
+
+const daerahOptions = [
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu-langat" },
+  { label: "Hulu Selangor", value: "hulu-selangor" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Langat", value: "kuala-langat" },
+  { label: "Kuala Selangor", value: "kuala-selangor" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Sabak Bernam", value: "sabak-bernam" },
+  { label: "Sepang", value: "sepang" }
+];
+
+const kariahOptions = [
+  { label: "Kariah Masjid Al-Hidayah", value: "masjid-al-hidayah" },
+  { label: "Kariah Masjid Al-Ikhlas", value: "masjid-al-ikhlas" },
+  { label: "Kariah Masjid Al-Muttaqin", value: "masjid-al-muttaqin" },
+  { label: "Kariah Masjid Al-Rahman", value: "masjid-al-rahman" },
+  { label: "Kariah Masjid Al-Salam", value: "masjid-al-salam" },
+  { label: "Kariah Masjid Al-Taqwa", value: "masjid-al-taqwa" },
+  { label: "Kariah Masjid An-Nur", value: "masjid-an-nur" },
+  { label: "Kariah Masjid Ar-Rahman", value: "masjid-ar-rahman" },
+  { label: "Kariah Masjid As-Salam", value: "masjid-as-salam" },
+  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" }
+];
+
+// ============================================================================
+// REACTIVE REFERENCES
+// ============================================================================
+
+// Navigation State
+const currentSection = ref(1);
+const currentStepA = ref(1);
+const currentStepB = ref(1);
+const processing = ref(false);
+
+// Form State
+const healthStatus = ref("");
 const healthStatusTanggungan = ref("");
+const dibantuPenolongAmil = ref("");
+const hubunganKakitanganLZS = ref("");
+const jenisIdTanggungan = ref("");
+const hubunganPemohon = ref("");
 const paymentMethod = ref("");
-
-const showLainInput = computed(() => {
-  return formData.value.keperluanMendesak?.includes('lain');
-});
-
 const tarikhMasukIslam = ref(null);
-
 const statusPoligami = ref(null);
 const bilanganIsteri = ref(null);
 const isteriList = ref([]);
+const saluranBencana = ref(null);
+const caraPembayaran = ref(null);
+const selectedBank = ref(null);
+const jenisId = ref(null);
+const lokasi = ref('');
+const statusKediaman = ref(null);
 
-watch(bilanganIsteri, (newVal) => {
-  const count = parseInt(newVal) || 0;
-  isteriList.value = Array(count).fill({});
-});
+// Loan Information
+const pemberiPinjaman = ref('');
+const jenisPinjaman = ref('');
+const bayaranBulanan = ref(null);
+const jumlahPerbelanjaan = ref(null);
+const tahunMulaPinjaman = ref(null);
+const tahunAkhirPinjaman = ref(null);
 
-watch(statusPoligami, (newVal) => {
-  if (newVal !== 'ya') {
-    bilanganIsteri.value = null;
-    isteriList.value = [];
-  }
-});
+// Breadcrumb
+const breadcrumb = ref([
+  {
+    name: "Borang Permohonan Lengkap",
+    type: "current",
+    path: "/BF-PRF/AS/FR/02",
+  },
+]);
 
+// Form Data
 const formData = ref({
   // Section A - Maklumat Peribadi Asnaf
   nama_ketua_keluarga: '',
@@ -2428,6 +2480,50 @@ const formData = ref({
   heirs: []
 });
 
+// ============================================================================
+// COMPUTED PROPERTIES
+// ============================================================================
+
+const showLainInput = computed(() => {
+  return formData.value.keperluanMendesak?.includes('lain');
+});
+
+const selectedBankSwissCode = computed(() => {
+  if (!selectedBank.value) return '';
+  const bank = bankOptions.find(bank => bank.value === selectedBank.value);
+  return bank ? bank.swissCode : '';
+});
+
+const hasLoanInfo = computed(() => {
+  return pemberiPinjaman.value || 
+         jenisPinjaman.value || 
+         bayaranBulanan.value || 
+         jumlahPerbelanjaan.value || 
+         tahunMulaPinjaman.value || 
+         tahunAkhirPinjaman.value;
+});
+
+// ============================================================================
+// WATCHERS
+// ============================================================================
+
+watch(bilanganIsteri, (newVal) => {
+  const count = parseInt(newVal) || 0;
+  isteriList.value = Array(count).fill({});
+});
+
+watch(statusPoligami, (newVal) => {
+  if (newVal !== 'ya') {
+    bilanganIsteri.value = null;
+    isteriList.value = [];
+  }
+});
+
+// ============================================================================
+// METHODS
+// ============================================================================
+
+// Navigation Methods
 const nextStepA = () => {
   if (currentStepA.value < totalStepsA) {
     currentStepA.value++;
@@ -2453,6 +2549,7 @@ const prevStepB = () => {
     currentStepB.value--;
   }
 };
+
 const nextSection = () => {
   currentSection.value = 2;
 };
@@ -2461,20 +2558,15 @@ const prevSection = () => {
   currentSection.value = 1;
 };
 
+// Form Submission Methods
 const submitForm = () => {
   processing.value = true;
-
-  // setTimeout(() => {
-    navigateTo(`/BF-PRF/AS/FR/03`);
-  // }, 1000);
+  navigateTo(`/BF-PRF/AS/FR/03`);
 };
 
 const handleSave = async () => {
   try {
-    // Handle form saving
     console.log("Form saved:", formData.value);
-    // Add your save logic here (API call, etc.)
-
     toast.success("Permohonan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya disimpan");
@@ -2484,81 +2576,16 @@ const handleSave = async () => {
 
 const handleSubmit = async () => {
   try {
-  // Handle form submission
-  console.log("Form submitted:", formData.value);
-  // Add your submission logic here (API call, etc.)
-
+    console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
-    
-    // Wait for 2 seconds before navigating
-    // setTimeout(() => {
-      router.push("/BF-PRF/AS/FR/04");
-    // }, 2000);
+    router.push("/BF-PRF/AS/FR/04");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);
   }
 };
 
-const saluranBencana = ref(null);
-
-const caraPembayaran = ref(null);
-
-const selectedBank = ref(null);
-
-const bankOptions = [
-  { label: "Maybank", value: "maybank", swissCode: "MBBEMYKL" },
-  { label: "CIMB", value: "cimb", swissCode: "CIBBMYKL" },
-  { label: "RHB", value: "rhb", swissCode: "RHBBMYKL" },
-  { label: "Bank Islam", value: "bank-islam", swissCode: "BIMBMYKL" },
-  { label: "Bank Rakyat", value: "bank-rakyat", swissCode: "BKRMYKL" },
-  { label: "Public Bank", value: "public-bank", swissCode: "PBBEMYKL" },
-  { label: "Hong Leong Bank", value: "hong-leong", swissCode: "HLBBMYKL" },
-  { label: "Ambank", value: "ambank", swissCode: "AMBBMYKL" },
-  { label: "BSN", value: "bsn", swissCode: "BSNAMYKL" },
-  { label: "Affin Bank", value: "affin", swissCode: "PHBMMYKL" },
-  { label: "UOB", value: "uob", swissCode: "UOVBMYKL" },
-  { label: "OCBC", value: "ocbc", swissCode: "OCBCMYKL" },
-  { label: "Standard Chartered", value: "standard-chartered", swissCode: "SCBLMYKL" },
-  { label: "Alliance Bank", value: "alliance", swissCode: "MFBBMYKL" },
-  { label: "Agrobank", value: "agrobank", swissCode: "AGOBMYKL" }
-];
-
-const selectedBankSwissCode = computed(() => {
-  if (!selectedBank.value) return '';
-  const bank = bankOptions.find(bank => bank.value === selectedBank.value);
-  return bank ? bank.swissCode : '';
-});
-
-const jenisId = ref(null);
-
-const daerahOptions = [
-  { label: "Gombak", value: "gombak" },
-  { label: "Hulu Langat", value: "hulu-langat" },
-  { label: "Hulu Selangor", value: "hulu-selangor" },
-  { label: "Klang", value: "klang" },
-  { label: "Kuala Langat", value: "kuala-langat" },
-  { label: "Kuala Selangor", value: "kuala-selangor" },
-  { label: "Petaling", value: "petaling" },
-  { label: "Sabak Bernam", value: "sabak-bernam" },
-  { label: "Sepang", value: "sepang" }
-];
-
-const kariahOptions = [
-  { label: "Kariah Masjid Al-Hidayah", value: "masjid-al-hidayah" },
-  { label: "Kariah Masjid Al-Ikhlas", value: "masjid-al-ikhlas" },
-  { label: "Kariah Masjid Al-Muttaqin", value: "masjid-al-muttaqin" },
-  { label: "Kariah Masjid Al-Rahman", value: "masjid-al-rahman" },
-  { label: "Kariah Masjid Al-Salam", value: "masjid-al-salam" },
-  { label: "Kariah Masjid Al-Taqwa", value: "masjid-al-taqwa" },
-  { label: "Kariah Masjid An-Nur", value: "masjid-an-nur" },
-  { label: "Kariah Masjid Ar-Rahman", value: "masjid-ar-rahman" },
-  { label: "Kariah Masjid As-Salam", value: "masjid-as-salam" },
-  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" }
-];
-
-const lokasi = ref('');
-
+// Utility Methods
 const selectLocation = () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -2575,25 +2602,7 @@ const selectLocation = () => {
   }
 };
 
-const statusKediaman = ref(null);
-
-const pemberiPinjaman = ref('');
-const jenisPinjaman = ref('');
-const bayaranBulanan = ref(null);
-const jumlahPerbelanjaan = ref(null);
-const tahunMulaPinjaman = ref(null);
-const tahunAkhirPinjaman = ref(null);
-
-const hasLoanInfo = computed(() => {
-  return pemberiPinjaman.value || 
-         jenisPinjaman.value || 
-         bayaranBulanan.value || 
-         jumlahPerbelanjaan.value || 
-         tahunMulaPinjaman.value || 
-         tahunAkhirPinjaman.value;
-});
-
-// Add these functions for handling heirs
+// Heirs Management Methods
 const addHeir = () => {
   formData.value.heirs.push({
     name: '',
