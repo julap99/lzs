@@ -65,12 +65,6 @@
                     Tarikh
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Lokasi
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Jenis
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -105,12 +99,6 @@
                     {{ activity.date }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.location }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.type }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
                     <span
                       class="px-2 py-1 text-xs font-medium rounded-full"
                       :class="getStatusColor(activity.status)"
@@ -119,13 +107,29 @@
                     </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <rs-button
-                      variant="primary"
-                      size="sm"
-                      @click="navigateTo('/BF-PA/PE/MP/04')"
-                    >
-                      {{ getActionButtonText(activity.status) }}
-                    </rs-button>
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="navigateTo('/BF-PA/PE/MP/04')"
+                      >
+                        Lihat Butiran
+                      </rs-button>
+                      <rs-button
+                        variant="success"
+                        size="sm"
+                        @click="openApproveModal(activity.id)"
+                      >
+                        Lulus
+                      </rs-button>
+                      <rs-button
+                        variant="danger"
+                        size="sm"
+                        @click="openRejectModal(activity.id)"
+                      >
+                        Tolak
+                      </rs-button>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -151,11 +155,14 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useToast } from 'vue-toastification';
 
 definePageMeta({
   title: "Senarai Elaun Penolong Amil (Ketua JPPA) - Mesyuarat/Program",
   description: "Senarai aktiviti mesyuarat dan program untuk semakan dan kelulusan Ketua JPPA",
 });
+
+const toast = useToast();
 
 const breadcrumb = ref([
   {
@@ -173,40 +180,34 @@ const breadcrumb = ref([
 // Mock data for activities - only "Menunggu Kelulusan Ketua JPPA" status
 const activities = ref([
   {
-    id: 'P001',
-    name: 'Program Khidmat Masyarakat',
+    id: 'MP2024-002',
+    name: 'Latihan Pengurusan Zakat dan Fitrah',
     date: '20/03/2024',
-    location: 'Masjid Al-Hidayah',
-    type: 'Program',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-    allowanceRate: '100.00'
-  },
-  {
-    id: 'M003',
-    name: 'Mesyuarat Agung Tahunan',
-    date: '22/03/2024',
-    location: 'Dewan Utama',
-    type: 'Mesyuarat',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-    allowanceRate: '50.00'
-  },
-  {
-    id: 'L001',
-    name: 'Latihan Pengurusan Zakat',
-    date: '25/03/2024',
-    location: 'Dewan Latihan',
+    location: 'Dewan Latihan LZS, Kompleks Zakat Selangor',
     type: 'Latihan',
     status: 'Menunggu Kelulusan Ketua JPPA',
-    allowanceRate: '100.00'
+    allowanceRate: '50.00',
+    jumlahElaun: '200.00'
   },
   {
-    id: 'M004',
-    name: 'Mesyuarat Koordinasi Khas',
-    date: '29/03/2024',
-    location: 'Pejabat Zakat',
-    type: 'Mesyuarat',
+    id: 'MP2024-005',
+    name: 'Latihan Sistem e-Zakat',
+    date: '02/04/2024',
+    location: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya',
+    type: 'Latihan',
     status: 'Menunggu Kelulusan Ketua JPPA',
-    allowanceRate: '50.00'
+    allowanceRate: '60.00',
+    jumlahElaun: '120.00'
+  },
+  {
+    id: 'MP2024-008',
+    name: 'Latihan Pengurusan Aduan',
+    date: '12/04/2024',
+    location: 'Bilik Latihan, Pejabat Zakat Gombak',
+    type: 'Latihan',
+    status: 'Menunggu Kelulusan Ketua JPPA',
+    allowanceRate: '55.00',
+    jumlahElaun: '110.00'
   }
 ]);
 
@@ -248,43 +249,6 @@ const isAllSelected = computed(() => {
   return filteredActivities.value.length > 0 && selectedRows.value.length === filteredActivities.value.length;
 });
 
-// Helper functions
-const getStatusColor = (status) => {
-  switch (status) {
-    case 'Menunggu Kelulusan Ketua JPPA':
-      return 'bg-blue-100 text-blue-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
-  }
-}
-
-const getStatusLabel = (status) => {
-  switch (status) {
-    case 'Menunggu Kelulusan Ketua JPPA':
-      return 'Menunggu Kelulusan Ketua JPPA'
-    default:
-      return status
-  }
-}
-
-const getActionRoute = (status, activityId) => {
-  switch (status) {
-    case 'Menunggu Kelulusan Ketua JPPA':
-      return '/BF-PA/PE/MP/04'
-    default:
-      return '#'
-  }
-}
-
-const getActionButtonText = (status) => {
-  switch (status) {
-    case 'Menunggu Kelulusan Ketua JPPA':
-      return 'Semak'
-    default:
-      return 'Lihat'
-  }
-}
-
 // Event handlers
 const handleSearch = (event) => {
   searchQuery.value = event.target.value;
@@ -298,61 +262,98 @@ const handleJenisAktivitiChange = (event) => {
   selectedJenisAktiviti.value = event.target.value;
 };
 
-// Checkbox handlers
 const onCheckboxChange = (event, activity) => {
-  const isChecked = event.target.checked;
-  if (isChecked) {
-    if (!selectedRows.value.includes(activity.id)) {
-      selectedRows.value.push(activity.id);
-    }
+  if (event.target.checked) {
+    selectedRows.value.push(activity.id);
   } else {
     selectedRows.value = selectedRows.value.filter(id => id !== activity.id);
   }
 };
 
 const toggleSelectAll = (event) => {
-  const isChecked = event.target.checked;
-  if (isChecked) {
+  if (event.target.checked) {
     selectedRows.value = filteredActivities.value.map(activity => activity.id);
   } else {
     selectedRows.value = [];
   }
 };
 
-// Bulk approval handler
 const handleBulkApproval = async () => {
+  if (selectedRows.value.length === 0) {
+    toast.warning('Sila pilih aktiviti untuk diluluskan');
+    return;
+  }
+
+  processing.value = true;
+  
   try {
-    processing.value = true;
-    const result = await $swal.fire({
-      icon: 'question',
-      title: 'Kelulusan (Bulk)',
-      text: `Adakah anda pasti untuk meluluskan ${selectedRows.value.length} aktiviti mesyuarat/program yang dipilih?`,
-      showCancelButton: true,
-      confirmButtonText: 'Ya, Lulus',
-      cancelButtonText: 'Batal',
-      confirmButtonColor: '#10b981',
-    });
-    if (result.isConfirmed) {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await $swal.fire({
-        icon: 'success',
-        title: 'Berjaya!',
-        text: `Semua aktiviti mesyuarat/program yang dipilih telah berjaya diluluskan`,
-        confirmButtonText: 'OK'
-      });
-      selectedRows.value = [];
-      // Refresh data if needed
+    // Update status for selected activities
+    for (const activityId of selectedRows.value) {
+      const activity = activities.value.find(a => a.id === activityId);
+      if (activity) {
+        activity.status = 'Lulus';
+      }
     }
+    
+    toast.success(`${selectedRows.value.length} aktiviti berjaya diluluskan`);
+    selectedRows.value = [];
   } catch (error) {
-    await $swal.fire({
-      icon: 'error',
-      title: 'Ralat',
-      text: 'Ralat telah berlaku semasa memproses kelulusan bulk',
-      confirmButtonText: 'OK'
-    });
+    toast.error('Ralat semasa meluluskan aktiviti');
+    console.error('Error in bulk approval:', error);
   } finally {
     processing.value = false;
+  }
+};
+
+// Helper functions
+const getStatusColor = (status) => {
+  const colors = {
+    'Menunggu Kelulusan Ketua JPPA': 'bg-blue-100 text-blue-800',
+    'Lulus': 'bg-green-100 text-green-800',
+    'Di Tolak': 'bg-red-100 text-red-800',
+  };
+  return colors[status] || 'bg-gray-100 text-gray-800';
+};
+
+const getStatusLabel = (status) => {
+  return status;
+};
+
+const getActionButtonText = (status) => {
+  switch (status) {
+    case 'Menunggu Kelulusan Ketua JPPA':
+      return 'Lulus';
+    case 'Lulus':
+      return 'Lihat';
+    default:
+      return 'Lihat';
+  }
+};
+
+// Individual action handlers
+const handleApprove = async (activityId) => {
+  try {
+    const activity = activities.value.find(a => a.id === activityId);
+    if (activity) {
+      activity.status = 'Lulus';
+    }
+    toast.success('Aktiviti berjaya diluluskan');
+  } catch (error) {
+    toast.error('Ralat semasa meluluskan aktiviti');
+    console.error('Error approving activity:', error);
+  }
+};
+
+const handleReject = async (activityId) => {
+  try {
+    const activity = activities.value.find(a => a.id === activityId);
+    if (activity) {
+      activity.status = 'Di Tolak';
+    }
+    toast.success('Aktiviti telah ditolak dan dikembalikan kepada pemohon');
+  } catch (error) {
+    toast.error('Ralat semasa menolak aktiviti');
+    console.error('Error rejecting activity:', error);
   }
 };
 </script>

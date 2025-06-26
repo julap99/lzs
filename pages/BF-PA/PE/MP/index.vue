@@ -8,7 +8,7 @@
           <h2 class="text-xl font-semibold">
             Pengurusan Elaun bagi Mesyuarat/Program
           </h2>
-          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/MP/01')">Tambah Aktiviti</rs-button>
+          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/MP/01')">Tambah Pembayaran Aktiviti</rs-button>
         </div>
       </template>
 
