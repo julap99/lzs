@@ -171,9 +171,9 @@ const editItem = (codeId) => {
   // Find the activity data based on the tindakan ID
   const activity = aktivitiList.value.find(item => item.tindakan === codeId);
   if (activity) {
-    navigateTo(`/BF-PA/PE/MP/02/${activity.kodAktiviti}`);
+    navigateTo(`/BF-PA/PE/MP/${activity.kodAktiviti}`);
   } else {
-    navigateTo(`/BF-PA/PE/MP/02`);
+    navigateTo(`/BF-PA/PE/MP`);
   }
 };
 

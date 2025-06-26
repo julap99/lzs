@@ -435,12 +435,7 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Pengurusan Penolong Amil",
-    type: "link",
-    path: "/BF-PA/PE/MP",
-  },
-  {
-    name: "Mesyuarat/Program",
+    name: "Pengurusan Elaun",
     type: "link",
     path: "/BF-PA/PE/MP",
   },
@@ -552,7 +547,7 @@ const handleReject = () => {
 };
 
 const goBack = () => {
-  navigateTo('/BF-PA/PE/MP');
+  navigateTo('/BF-PA/PE/MP/Paparan_Ketua_JPPA');
 };
 
 const handleModalClose = () => {
@@ -569,12 +564,12 @@ const handleModalClose = () => {
 
 const handlePaymentAdviceModalClose = () => {
   showPaymentAdviceModal.value = false;
-  navigateTo('/BF-PA/PE/MP');
+  navigateTo('/BF-PA/PE/MP/Paparan_Ketua_JPPA');
 };
 
 const handleRejectModalClose = () => {
   showRejectSuccessModal.value = false;
-  navigateTo('/BF-PA/PE/MP/07'); // Go to re-review screen
+  navigateTo('/BF-PA/PE/MP/Paparan_Ketua_JPPA'); // Go to re-review screen
 };
 
 const confirmSubmission = async () => {

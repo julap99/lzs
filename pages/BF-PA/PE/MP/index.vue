@@ -84,7 +84,7 @@
                         <a 
                           href="#" 
                           class="text-blue-600 hover:text-blue-800"
-                          @click.prevent="navigateTo(getActionRoute(activity.status, activity.id))"
+                          @click.prevent="navigateTo(`/BF-PA/PE/MP/${activity.id}`)"
                         >
                           {{ activity.id }}
                         </a>
@@ -168,7 +168,7 @@
                         <a 
                           href="#" 
                           class="text-blue-600 hover:text-blue-800"
-                          @click.prevent="navigateTo(getActionRoute(activity.status, activity.id))"
+                          @click.prevent="navigateTo(`/BF-PA/PE/MP/${activity.id}`)"
                         >
                           {{ activity.id }}
                         </a>

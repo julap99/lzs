@@ -130,7 +130,7 @@
           <div class="flex justify-end space-x-4 mt-8">
             <rs-button
               variant="primary-outline"
-              @click="navigateTo('/BF-PA/PE/MP/01')"
+              @click="navigateTo(`/BF-PA/PE/MP/${activityId}`)"
             >
               Kembali
             </rs-button>
@@ -191,25 +191,26 @@ definePageMeta({
 });
 
 const route = useRoute();
+const activityId = route.params.id;
 const toast = useToast();
 const showSuccessModal = ref(false);
 const tableKey = ref(0);
 
 const breadcrumb = ref([
   {
-    name: "Pengurusan Penolong Amil",
+    name: "Pengurusan Elaun",
     type: "link",
-    path: "/BF-PA/PE/MP/01",
+    path: "/BF-PA/PE/MP",
   },
   {
-    name: "Mesyuarat/Program",
+    name: "Maklumat Aktiviti",
     type: "link",
-    path: "/BF-PA/PE/MP/01",
+    path: `/BF-PA/PE/MP/${activityId}`,
   },
   {
     name: "Kira Jumlah Elaun",
     type: "current",
-    path: `/BF-PA/PE/MP/02/${route.params.id}`,
+    path: `/BF-PA/PE/MP/02/${activityId}`,
   },
 ]);
 
@@ -331,6 +332,58 @@ const aktivitiData = {
       }
     ]
   },
+  "MP2024-006": {
+    namaAktiviti: "Program Bantuan Asnaf Bulanan",
+    jenisAktiviti: "Program",
+    tarikhAktiviti: "05/04/2024",
+    lokasiAktiviti: "Dewan Serbaguna Masjid Kg Delek",
+    kehadiran: "45/50",
+    status: "Di Tolak",
+    kadarElaun: "50.00",
+    jumlahElaun: "2250.00",
+    senaraiPenolong: [
+      {
+        idPenolong: "PA011",
+        nama: "Omar bin Hassan",
+        jawatan: "Penolong Amil",
+        kategori: "Asnaf",
+        statusKehadiran: "Hadir",
+        elaun: "50.00"
+      },
+      {
+        idPenolong: "PA012",
+        nama: "Fatimah binti Ahmad",
+        jawatan: "Penolong Amil",
+        kategori: "Asnaf",
+        statusKehadiran: "Hadir",
+        elaun: "50.00"
+      },
+      {
+        idPenolong: "PA013",
+        nama: "Ahmad bin Omar",
+        jawatan: "Penolong Amil",
+        kategori: "Asnaf",
+        statusKehadiran: "Tidak Hadir",
+        elaun: "0.00"
+      },
+      {
+        idPenolong: "PA014",
+        nama: "Siti binti Hassan",
+        jawatan: "Penolong Amil",
+        kategori: "Asnaf",
+        statusKehadiran: "Hadir",
+        elaun: "50.00"
+      },
+      {
+        idPenolong: "PA015",
+        nama: "Mohamed bin Ali",
+        jawatan: "Penolong Amil",
+        kategori: "Asnaf",
+        statusKehadiran: "Hadir",
+        elaun: "50.00"
+      }
+    ]
+  },
   "MP2024-007": {
     namaAktiviti: "Mesyuarat Perancangan Aktiviti Q2",
     jenisAktiviti: "Mesyuarat",
@@ -423,7 +476,6 @@ const calculateTotalAllowance = () => {
 };
 
 onMounted(async () => {
-  const activityId = route.params.id;
   const activity = aktivitiData[activityId];
   
   if (activity) {
@@ -469,8 +521,8 @@ const confirmSubmit = async () => {
     // Show success toast
     toast.success("Kiraan elaun telah berjaya dihantar kepada Eksekutif JPPA");
 
-    // Navigate back to main PE/MP page
-    navigateTo("/BF-PA/PE/MP");
+    // Navigate back to activity detail page
+    navigateTo(`/BF-PA/PE/MP/${activityId}`);
   } catch (error) {
     toast.error("Ralat semasa menghantar kiraan elaun");
     console.error("Error submitting allowance calculation:", error);
