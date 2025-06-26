@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Kiraan Jumlah Elaun Mengikut Penolong Amil</h2>
+          <h2 class="text-xl font-semibold">Jana Payment Advice</h2>
           <rs-badge
             v-if="formData.status"
             :variant="getStatusVariant(formData.status)"
@@ -65,6 +65,26 @@
                 name="jumlahElaun"
                 label="Jumlah Elaun"
                 disabled
+              />
+            </div>
+          </div>
+
+          <!-- Status Pembayaran Section (for testing) -->
+          <div class="space-y-6 mt-8">
+            <h3 class="text-lg font-medium">Status Pembayaran (Untuk Ujian)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="select"
+                name="statusPembayaran"
+                label="Status Pembayaran"
+                :options="[
+                  { label: 'Berjaya', value: 'Berjaya' },
+                  { label: 'Ditolak', value: 'Ditolak' }
+                ]"
+                validation="required"
+                :validation-messages="{
+                  required: 'Status Pembayaran diperlukan',
+                }"
               />
             </div>
           </div>
@@ -154,19 +174,25 @@ import { useToast } from "vue-toastification";
 import { useRoute } from "vue-router";
 
 definePageMeta({
-  title: "Semakan Bantuan",
-  description: "Semak dan ulas permohonan bantuan",
+  title: "Jana Payment Advice",
+  description: "Jana Payment Advice untuk elaun penolong amil",
 });
 
 const route = useRoute();
 const toast = useToast();
 const showSuccessModal = ref(false);
+const tableKey = ref(0);
 
 const breadcrumb = ref([
   {
     name: "Pengurusan Penolong Amil",
     type: "link",
-    path: "/BF-PA/PE/MP/01",
+    path: "/BF-PA/PE/MP",
+  },
+  {
+    name: "Mesyuarat/Program",
+    type: "link",
+    path: "/BF-PA/PE/MP",
   },
   {
     name: "Jana Payment Advice",
@@ -178,6 +204,7 @@ const breadcrumb = ref([
 const formData = ref({
   kadarElaun: "100.00",
   jumlahElaun: "500.00",
+  statusPembayaran: "Berjaya",
   ulasan:"Permohonan ini telah disahkan oleh Eksekutif JPPA",
   ulasanKetua:"Permohonan ini telah disahkan oleh Ketua JPPA",
   senaraiPenolong: [
@@ -274,14 +301,22 @@ const confirmSubmit = async () => {
     showSuccessModal.value = false;
 
     // Show success toast
-    toast.success("Semakan telah berjaya dihantar kepada pelulus");
+    toast.success("Payment Advice berjaya dijana");
 
-    // Navigate back to list
-    // navigateToList();
-    navigateTo("/BF-PA/PE/MP/06");
+    // Conditional routing based on payment status
+    if (formData.value.statusPembayaran === "Berjaya") {
+      // If successful, go to PE/MP/06 (Notification)
+      navigateTo("/BF-PA/PE/MP/06");
+    } else if (formData.value.statusPembayaran === "Ditolak") {
+      // If rejected, go to PE/MP/07 (Re-review)
+      navigateTo("/BF-PA/PE/MP/07");
+    } else {
+      // Default fallback
+      navigateTo("/BF-PA/PE/MP");
+    }
   } catch (error) {
-    toast.error("Ralat semasa mengemaskini status bantuan");
-    console.error("Error updating bantuan status:", error);
+    toast.error("Ralat semasa menjana Payment Advice");
+    console.error("Error generating payment advice:", error);
   }
 };
 

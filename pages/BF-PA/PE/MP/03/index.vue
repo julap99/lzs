@@ -245,9 +245,9 @@ const remarks = ref('');
 
 const breadcrumb = ref([
   {
-    name: "Pengurusan Penolong Amil",
+    name: "Pengurusan Elaun",
     type: "link",
-    path: "/BF-PA/PE/MP/01",
+    path: "/BF-PA/PE/MP",
   },
   {
     name: "Semakan dan Sokongan",
