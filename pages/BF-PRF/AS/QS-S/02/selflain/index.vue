@@ -594,9 +594,18 @@
                   @click="goBack"
                   >Kembali</rs-button
                 >
-                <rs-button type="submit" variant="primary" @click="nextStep"
-                  >Seterusnya ke Maklumat Alamat</rs-button
-                >
+                <div class="flex gap-3">
+                  <rs-button 
+                    type="button" 
+                    variant="secondary" 
+                    @click="handleSaveStep1"
+                  >
+                    Simpan
+                  </rs-button>
+                  <rs-button type="submit" variant="primary" @click="nextStep"
+                    >Seterusnya ke Maklumat Alamat</rs-button
+                  >
+                </div>
               </div>
             </div>
 
@@ -810,9 +819,18 @@
                   @click="prevStep"
                   >Kembali</rs-button
                 >
-                <rs-button type="submit" variant="primary" @click="nextStep"
-                  >Seterusnya ke Pengesahan</rs-button
-                >
+                <div class="flex gap-3">
+                  <rs-button 
+                    type="button" 
+                    variant="secondary" 
+                    @click="handleSaveStep2"
+                  >
+                    Simpan
+                  </rs-button>
+                  <rs-button type="submit" variant="primary" @click="nextStep"
+                    >Seterusnya ke Pengesahan</rs-button
+                  >
+                </div>
               </div>
             </div>
 
@@ -859,6 +877,46 @@
                       required: 'Pegawai PAK adalah wajib'
                     }"
                     :disabled="!formData.verification.selectedKariah"
+                  />
+                </div>
+
+                <div class="flex flex-col gap-2 mt-6">
+                  <label class="font-medium">Adakah PAK membantu semasa pengisian borang permohonan ini?</label>
+                  <FormKit
+                    type="radio"
+                    name="pak_assistance"
+                    :options="['Ya', 'Tidak']"
+                    validation="required"
+                    v-model="formData.verification.pakAssistance"
+                  />
+                </div>
+
+                <div v-if="formData.verification.pakAssistance === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <FormKit
+                    type="select"
+                    name="selected_kariah_assistance"
+                    label="Pilih Kariah"
+                    validation="required"
+                    :options="kariahOptions"
+                    placeholder="Pilih Kariah"
+                    v-model="formData.verification.selectedKariahAssistance"
+                    :validation-messages="{
+                      required: 'Kariah adalah wajib'
+                    }"
+                  />
+
+                  <FormKit
+                    type="select"
+                    name="selected_pak_officer_assistance"
+                    label="Pilih Nama Pegawai PAK"
+                    validation="required"
+                    :options="pakOfficersOptionsAssistance"
+                    placeholder="Pilih Pegawai PAK"
+                    v-model="formData.verification.selectedPakOfficerAssistance"
+                    :validation-messages="{
+                      required: 'Pegawai PAK adalah wajib'
+                    }"
+                    :disabled="!formData.verification.selectedKariahAssistance"
                   />
                 </div>
 
@@ -943,7 +1001,14 @@
                   >Kembali</rs-button
                 >
                 <div class="flex gap-3">
-                  <rs-button type="button" variant="primary" @click="nextStep"
+                  <rs-button 
+                    type="button" 
+                    variant="secondary" 
+                    @click="handleSaveStep3"
+                  >
+                    Simpan
+                  </rs-button>
+                  <rs-button type="submit" variant="primary" @click="nextStep"
                     >Seterusnya ke Pengesahan Bermastautin</rs-button
                   >
                 </div>
@@ -1066,9 +1131,18 @@
                   @click="prevStep"
                   >Kembali</rs-button
                 >
-                <rs-button type="submit" variant="primary" @click="handleSubmit"
-                  >Hantar Permohonan</rs-button
-                >
+                <div class="flex gap-3">
+                  <rs-button 
+                    type="button" 
+                    variant="secondary" 
+                    @click="handleSaveStep4"
+                  >
+                    Simpan
+                  </rs-button>
+                  <rs-button type="submit" variant="primary" @click="handleSubmit"
+                    >Hantar Permohonan</rs-button
+                  >
+                </div>
               </div>
             </div>
           </FormKit>
@@ -1079,7 +1153,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -1089,6 +1163,19 @@ definePageMeta({ title: "Isi Permohonan Ringkas" });
 // Composables
 const toast = useToast();
 const router = useRouter();
+
+// Fix scrolling issue after navigation
+onMounted(() => {
+  // Force scroll to top and re-enable scrolling
+  window.scrollTo(0, 0);
+  document.body.style.overflow = 'auto';
+  document.documentElement.style.overflow = 'auto';
+  
+  // Additional fix for some browsers
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+  }, 100);
+});
 
 // Reactive State
 const currentStep = ref(1);
@@ -1138,7 +1225,8 @@ const formData = ref({
     }, pdpaConsent: false,
     selectedKariah: "masjid-negeri", selectedPakOfficer: "ustaz-ahmad-abdullah",
     // New PAK relationship fields
-    hubunganPAK: "", selectedKariahPAK: "", selectedPakOfficerPAK: ""
+    hubunganPAK: "", selectedKariahPAK: "", selectedPakOfficerPAK: "",
+    pakAssistance: "", selectedKariahAssistance: "", selectedPakOfficerAssistance: ""
   },
 });
 
@@ -1300,6 +1388,11 @@ const pakOfficersOptions = computed(() => {
 
 const pakOfficersOptionsPAK = computed(() => {
   const selectedKariah = formData.value.verification.selectedKariahPAK;
+  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
+});
+
+const pakOfficersOptionsAssistance = computed(() => {
+  const selectedKariah = formData.value.verification.selectedKariahAssistance;
   return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
 });
 
@@ -1469,6 +1562,11 @@ watch(() => formData.value.verification.selectedKariahPAK, (newVal) => {
   formData.value.verification.selectedPakOfficerPAK = '';
 });
 
+watch(() => formData.value.verification.selectedKariahAssistance, (newVal) => {
+  // Clear selected PAK officer when Kariah changes for PAK assistance
+  formData.value.verification.selectedPakOfficerAssistance = '';
+});
+
 const addSpouse = () => {
   formData.value.personalInfo.spouses.push({
     relationship: "",
@@ -1557,5 +1655,95 @@ const downloadDocument = (doc) => {
 
 const goBack = () => {
   router.push('/BF-PRF/AS/QS-S/02');
+};
+
+const handleSaveStep1 = async () => {
+  try {
+    // Save personal information data
+    const step1Data = {
+      personalInfo: formData.value.personalInfo,
+      healthInfo: formData.value.healthInfo
+    };
+    
+    // Here you would typically send this data to your backend
+    console.log("Langkah 1 disimpan:", step1Data);
+    
+    // Show success message
+    toast.success("Maklumat Peribadi berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step 1 error:", error);
+  }
+};
+
+const handleSaveStep2 = async () => {
+  try {
+    // Save address information data
+    const step2Data = {
+      addressInfo: formData.value.addressInfo
+    };
+    
+    // Here you would typically send this data to your backend
+    console.log("Langkah 2 disimpan:", step2Data);
+    
+    // Show success message
+    toast.success("Maklumat Alamat berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step 2 error:", error);
+  }
+};
+
+const handleSaveStep3 = async () => {
+  try {
+    // Save verification information data
+    const step3Data = {
+      verification: {
+        hubunganKakitanganLZS: formData.value.verification.hubunganKakitanganLZS,
+        selectedKariah: formData.value.verification.selectedKariah,
+        selectedPakOfficer: formData.value.verification.selectedPakOfficer,
+        pakAssistance: formData.value.verification.pakAssistance,
+        selectedKariahAssistance: formData.value.verification.selectedKariahAssistance,
+        selectedPakOfficerAssistance: formData.value.verification.selectedPakOfficerAssistance,
+        hubunganPAK: formData.value.verification.hubunganPAK,
+        selectedKariahPAK: formData.value.verification.selectedKariahPAK,
+        selectedPakOfficerPAK: formData.value.verification.selectedPakOfficerPAK,
+        pdpaConsent: formData.value.verification.pdpaConsent
+      }
+    };
+    
+    // Here you would typically send this data to your backend
+    console.log("Langkah 3 disimpan:", step3Data);
+    
+    // Show success message
+    toast.success("Maklumat Pengesahan berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step 3 error:", error);
+  }
+};
+
+const handleSaveStep4 = async () => {
+  try {
+    // Save final verification data
+    const step4Data = {
+      verification: {
+        namaPengesah: formData.value.verification.namaPengesah,
+        jawatanPengesah: formData.value.verification.jawatanPengesah,
+        noTelefonPengesah: formData.value.verification.noTelefonPengesah,
+        tarikhPengesahanPermastautin: formData.value.verification.tarikhPengesahanPermastautin,
+        dokumenPengesahanPermastautin: formData.value.verification.dokumenPengesahanPermastautin
+      }
+    };
+    
+    // Here you would typically send this data to your backend
+    console.log("Langkah 4 disimpan:", step4Data);
+    
+    // Show success message
+    toast.success("Maklumat Pengesah Bermastautin berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step 4 error:", error);
+  }
 };
 </script>
