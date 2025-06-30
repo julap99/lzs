@@ -198,7 +198,7 @@
             </div>
           </div>
           
-          <div class="mt-8">
+          <!-- <div class="mt-8">
             <rs-button 
               variant="primary" 
               @click="confirmSelection"
@@ -209,7 +209,7 @@
               <Icon name="material-symbols:arrow-forward" class="mr-2" />
               Teruskan
             </rs-button>
-          </div>
+          </div> -->
         </div>
       </template>
     </rs-modal>
@@ -281,6 +281,13 @@ const handleSave = async () => {
 
 const selectType = (type) => {
   selectedType.value = type;
+  
+  // Redirect immediately based on selection
+  if (type === 'bencana') {
+    router.push('/BF-PRF/AS/QS-S/02/selfbencana');
+  } else if (type === 'lain-lain') {
+    router.push('/BF-PRF/AS/QS-S/02/selflain');
+  }
 };
 
 const confirmSelection = () => {
