@@ -1420,27 +1420,13 @@ export default [
         meta: {},
       },
       {
-        title: "Penyelenggaraan Am",
+        title: "Penyelenggaraan Kod",
         icon: "iconamoon:component-fill",
         child: [
           {
             title: "Konfigurasi Kategori & Kod",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PS/PK/admin",
-            child: [],
-            meta: {},
-          },
-        ],
-        meta: {},
-      },
-      {
-        title: "Pengurusan Audit Trail",
-        icon: "iconamoon:component-fill",
-        child: [
-          {
-            title: "Carian Audit Trail",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PS/PAT/CAT",
+            path: "/BF-PS/PK/",
             child: [],
             meta: {},
           },
