@@ -3,7 +3,7 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card>
-      <template #header>Tugasan Saya (EOAD)</template>
+      <template #header>Tugasan Saya</template>
       <template #body>
         <rs-table
           class="mt-8"
@@ -53,6 +53,7 @@
                 <Icon name="mdi:clipboard-check" class="ml-1" size="1rem" />
               </rs-button>
               <rs-button
+                v-if="!isStatusFinal(data.text)"
                 variant="primary"
                 size="sm"
                 class="!px-2 !py-1"
@@ -92,7 +93,7 @@ const breadcrumb = ref([
     path: `/BF-ADN/PA/TS/01`,
   },
   {
-    name: "Tugasan Saya (EOAD)",
+    name: "Tugasan Saya",
     type: "current",
     path: "/BF-ADN/PA/TS/01",
   },
@@ -100,84 +101,67 @@ const breadcrumb = ref([
 
 const data = ref([
   {
-    noRujukan: "ADN-2024-001",
-    namaIndividu: "Ahmad bin Abdullah",
-    kategoriAduan: 1,
-    lokasi: "Kuala Lumpur",
-    SLA: 24,
-    tarikhAduan: "2024-03-15",
-    status: "Aduan Baru",
-    aksi: "ADN-2024-001",
-  },
-  {
     noRujukan: "ADN-2024-002",
     namaIndividu: "Noraini binti Ali",
     kategoriAduan: 1,
-    lokasi: "Putrajaya",
     SLA: 24,
     tarikhAduan: "2024-03-14",
     status: "Dalam Proses - Siasatan Ringkas",
-    aksi: "ADN-2024-002",
+    aksi: "Dalam Proses - Siasatan Ringkas",
   },
   {
     noRujukan: "ADN-2024-003",
     namaIndividu: "Siti binti Hassan",
     kategoriAduan: 2,
-    lokasi: "Selangor",
     SLA: 25,
     tarikhAduan: "2024-03-13",
     status: "Dalam Proses - Quick Assessment",
-    aksi: "ADN-2024-003",
+    aksi: "Dalam Proses - Quick Assessment",
   },
   {
     noRujukan: "ADN-2024-004",
     namaIndividu: "Zulhelmi bin Rashid",
     kategoriAduan: 3,
-    lokasi: "Melaka",
     SLA: 72,
     tarikhAduan: "2024-03-10",
     status: "Dalam Proses - Siasatan Lapangan",
-    aksi: "ADN-2024-004",
+    aksi: "Dalam Proses - Siasatan Lapangan",
   },
   {
     noRujukan: "ADN-2024-005",
     namaIndividu: "Sharifah Aida",
     kategoriAduan: 2,
-    lokasi: "Johor Bahru",
     SLA: 24,
     tarikhAduan: "2024-03-09",
     status: "Menunggu Kelulusan Bantuan",
-    aksi: "ADN-2024-005",
+    aksi: "Menunggu Kelulusan Bantuan",
   },
   {
     noRujukan: "ADN-2024-006",
     namaIndividu: "Mohamad Hafiz",
     kategoriAduan: 1,
-    lokasi: "Seremban",
     SLA: 12,
     tarikhAduan: "2024-03-08",
     status: "Ditamatkan – Tukar Kategori",
-    aksi: "ADN-2024-006",
+    aksi: "Ditamatkan – Tukar Kategori",
   },
   {
     noRujukan: "ADN-2024-007",
     namaIndividu: "Liyana Zahid",
     kategoriAduan: 2,
-    lokasi: "Ipoh",
     SLA: 48,
     tarikhAduan: "2024-03-07",
     status: "Selesai",
-    aksi: "ADN-2024-007",
+    aksi: "Selesai",
   },
   {
     noRujukan: "ADN-2024-008",
     namaIndividu: "Khairul Azhar",
     kategoriAduan: 3,
-    lokasi: "Kuantan",
     SLA: 36,
     tarikhAduan: "2024-03-06",
     status: "Ditutup",
-    aksi: "ADN-2024-008",
+    aksi: "Ditutup",
   },
 ]);
 
@@ -212,7 +196,7 @@ const getStatusVariant = (status) => {
     "Dalam Proses - Quick Assessment": "primary",
     "Dalam Proses - Siasatan Lapangan": "primary",
     "Menunggu Kelulusan Bantuan": "info",
-    "Ditamatkan – Tukar Kategori": "info",
+    "Ditamatkan – Tukar Kategori": "danger",
     "Selesai": "success",
     "Ditutup": "danger",
   };
@@ -226,13 +210,10 @@ const navigateByStatus = (status) => {
   } else if (status === "Dalam Proses - Siasatan Ringkas") {
     navigateTo("/BF-ADN/PA/TS/02");
   } else if (status == "Dalam Proses - Siasatan Lapangan") {
-    navigateTo("/BF-ADN/PA/TS/04");
+    navigateTo("/BF-ADN/PA/TS/05");
   } else if (status == "Dalam Proses - Quick Assessment") {
     navigateTo("/BF-ADN/PA/QA/01");
-  } 
-  else if (status == "Dalam Proses - Quick Assessment") {
-    navigateTo("/BF-ADN/PA/QA/01");
-  }else {
+  } else {
     // Default fallback kalau nak
     navigateTo("/BF-ADN/PA/AT/02");
   }
@@ -302,6 +283,11 @@ onMounted(() => {
   // In real application, fetch only tasks that are taken by the current user
   // filteredData.value = await fetchUserTasks();
 });
+
+
+const isStatusFinal = (status) => {
+  return ["Ditutup", "Selesai", "Ditamatkan – Tukar Kategori"].includes(status);
+};
 </script>
 
 <style lang="scss" scoped></style>
