@@ -1301,7 +1301,28 @@ export default [
     description: "Pentadbir Sistem",
     child: [
       {
-        title: "Peranan & Kebenaran",
+        title: "Pengurusan Pengguna",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Daftar Pengguna",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PS/PP/daftar-pengguna",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Pengguna",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PS/PP/senarai-pengguna",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Pengurusan Peranan & Kebenaran Pengguna",
         icon: "iconamoon:component-fill",
         child: [
           {
@@ -1336,13 +1357,34 @@ export default [
         meta: {},
       },
       {
-        title: "Penyelenggaraan kod",
+        title: "Penyelenggaraan Kod",
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Admin",
+            title: "Konfigurasi Kategori",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PS/PK/admin",
+            path: "/BF-PS/PK/konfigurasi-kategori",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Konfigurasi Kod",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PS/PK/konfigurasi-kod",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Pengurusan Audit Trail",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Carian Audit Trail",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PS/PAT/carian-audit-trail",
             child: [],
             meta: {},
           },
