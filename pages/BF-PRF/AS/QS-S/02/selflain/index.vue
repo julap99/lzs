@@ -27,10 +27,25 @@
             <div
               v-for="step in steps"
               :key="step.id"
-              class="text-center flex-1"
+              class="text-center flex-1 relative group"
               :class="{ 'font-semibold': currentStep >= step.id }"
             >
-              {{ step.label }}
+              <span 
+                class="cursor-default"
+                :title="step.tooltip"
+              >
+                {{ step.label }}
+              </span>
+              <!-- Tooltip for Bermastautin tab -->
+              <div 
+                v-if="step.tooltip"
+                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10"
+                style="max-width: 400px;"
+              >
+                <span class="italic">{{ step.tooltip }}</span>
+                <!-- Tooltip arrow -->
+                <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+              </div>
             </div>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -941,9 +956,9 @@
             <!-- Step 4: Maklumat Pengesah Bermastautin -->
             <div v-if="currentStep === 4">
               <h3 class="text-lg font-medium mb-4">D) Maklumat Pengesah Bermastautin</h3>
-              <p class="text-sm text-gray-600 mb-4">
+              <!-- <p class="text-sm text-gray-600 mb-4">
                 *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
-              </p>
+              </p> -->
 
               <!-- PAK Officer Information (Readonly) -->
               <div class="mb-6">
@@ -1092,7 +1107,7 @@ const steps = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Alamat" },
   { id: 3, label: "Pengesahan" },
-  { id: 4, label: "Bermastautin" }
+  { id: 4, label: "Bermastautin", tooltip: "*(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)" }
 ];
 
 // Form Data

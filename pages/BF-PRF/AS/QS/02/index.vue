@@ -1765,7 +1765,7 @@ const steps = [
   { id: 7, label: "Waris" },
   { id: 8, label: "Pengesahan" },
   { id: 9, label: "Bermastautin" },
-  { id: 10, label: "Pegawai" }
+  { id: 10, label: "Penilaian Awal" }
 ];
 
 // Form data structure
