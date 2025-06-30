@@ -6,6 +6,55 @@
       <!-- Seksyen Kiri -->
       <div class="lg:col-span-2 space-y-6">
         <!-- Maklumat Aduan & Profil -->
+          <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:user-focus" class="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Status Pemohon</h2>
+                <p class="text-sm text-gray-500">Individu ini berdaftar sebagai penerima bantuan zakat (status: {{ aduan?.kategoriAsnaf || 'Belum Dikenalpasti' }})</p>
+              </div>
+            </div>
+          </template>
+
+          <template #body>
+            <div class="space-y-3">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p class="text-sm text-gray-500">Status Profil</p>
+                  <p class="font-medium text-gray-800">
+                    {{ aduan?.statusProfil || 'Tidak Diketahui' }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Kategori Asnaf</p>
+                  <p class="font-medium text-gray-800">
+                    {{ aduan?.kategoriAsnaf || 'Tiada Maklumat' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- <div>
+                <rs-button
+                  v-if="aduan?.statusProfil === 'Sudah Berdaftar'"
+                  variant="primary-outline"
+                  @click="navigateToKemaskiniProfil"
+                >
+                  Kemaskini Profil
+                </rs-button>
+                <rs-button
+                  v-else
+                  variant="primary"
+                  @click="navigateToDaftarAsnaf"
+                >
+                  Daftar Asnaf
+                </rs-button>
+              </div> -->
+            </div>
+          </template>
+        </rs-card>
         <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
@@ -109,11 +158,17 @@
               Saya mengesahkan bahawa individu menetap di alamat yang dinyatakan.
             </span>
           </div>
+
+          <div class="flex justify-end gap-4 mt-6">
+              <rs-button variant="primary-outline" @click="handleCancel">Batal</rs-button>
+              <rs-button variant="primary" @click="handleSubmit">Simpan & Serah</rs-button>
+          </div>
         </template>
+        
 
       </rs-card>
 
-        <rs-card>
+        <!-- <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
               <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
@@ -133,7 +188,7 @@
               <rs-button variant="primary" @click="handleSubmit">Simpan & Serah</rs-button>
             </div>
           </template>
-        </rs-card>
+        </rs-card> -->
       </div>
     </div>
   </div>

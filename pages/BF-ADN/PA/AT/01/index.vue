@@ -132,14 +132,14 @@ const data = ref([
     status: "Dalam Proses - Quick Assessment",
     aksi: "Dalam Proses - Quick Assessment",
   },
-  {
+  /* {
     noAduan: "ADN-2024-003",
     namaPengadu: "Mohamad Hafiz bin Rahim",
     tahapKeperluan: "Pendapatan Berkurangan/Keperluan Lain (Kelas 3/Hijau)",
     tarikhAduan: "2024-06-08",
     status: "Menunggu Kelulusan Bantuan",
     aksi: "Menunggu Kelulusan Bantuan",
-  },
+  }, */
   {
     noAduan: "ADN-2024-004",
     namaPengadu: "Farah Nadia binti Kamal",
@@ -263,7 +263,7 @@ const navigateByStatus = (status) => {
   } else if (status === "Dalam Proses - Siasatan Ringkas") {
     navigateTo("/BF-ADN/PA/TS/02");
   } else if (status == "Dalam Proses - Siasatan Lapangan") {
-    navigateTo("/BF-ADN/PA/TS/04");
+    navigateTo("/BF-ADN/PA/TS/05");
   } else if (status == "Dalam Proses - Quick Assessment") {
     navigateTo("/BF-ADN/PA/QA/01");
   } 
@@ -304,7 +304,7 @@ const statusOptions = [
   'Dalam Proses - Quick Assessment',
   'Dalam Proses - Siasatan Ringkas',
   'Dalam Proses - Siasatan Lapangan',
-  'Agihan Semula',
+  /* 'Agihan Semula', */
   'Selesai',
   'Ditutup'
 ];

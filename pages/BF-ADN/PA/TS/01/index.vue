@@ -127,7 +127,7 @@ const data = ref([
     status: "Dalam Proses - Siasatan Lapangan",
     aksi: "Dalam Proses - Siasatan Lapangan",
   },
-  {
+  /* {
     noRujukan: "ADN-2024-005",
     namaIndividu: "Sharifah Aida",
     kategoriAduan: 2,
@@ -135,15 +135,15 @@ const data = ref([
     tarikhAduan: "2024-03-09",
     status: "Menunggu Kelulusan Bantuan",
     aksi: "Menunggu Kelulusan Bantuan",
-  },
+  }, */
   {
     noRujukan: "ADN-2024-006",
     namaIndividu: "Mohamad Hafiz",
     kategoriAduan: 1,
     SLA: 12,
     tarikhAduan: "2024-03-08",
-    status: "Ditamatkan – Tukar Kategori",
-    aksi: "Ditamatkan – Tukar Kategori",
+    status: "Ditamatkan",
+    aksi: "Ditamatkan",
   },
   {
     noRujukan: "ADN-2024-007",
@@ -196,7 +196,7 @@ const getStatusVariant = (status) => {
     "Dalam Proses - Quick Assessment": "primary",
     "Dalam Proses - Siasatan Lapangan": "primary",
     "Menunggu Kelulusan Bantuan": "info",
-    "Ditamatkan – Tukar Kategori": "danger",
+    "Ditamatkan": "danger",
     "Selesai": "success",
     "Ditutup": "danger",
   };

@@ -57,16 +57,16 @@ const formData = ref({
 
 const penyataanMasalahOptions = [
   {
-    label: "Terputus Bekalan Makanan/Tiada Tempat Tinggal (Kelas 1/Merah)",
+    label: "Terputus Bekalan Makanan/Tiada Tempat Tinggal",
     value: "kelas_1",
   },
   {
     label:
-      "Masih Ada Bekalan Makanan/Mempunyai Tempat Tinggal/Tiada Sumber Pendapatan (Kelas 2/Kuning)",
+      "Masih Ada Bekalan Makanan/Mempunyai Tempat Tinggal/Tiada Sumber Pendapatan",
     value: "kelas_2",
   },
   {
-    label: "Pendapatan Berkurangan/Keperluan Lain. (Kelas 3/Hijau)",
+    label: "Pendapatan Berkurangan/Keperluan Lain.",
     value: "kelas_3",
   },
 ];
@@ -242,6 +242,69 @@ const getCurrentLocation = () => {
         >
           <!-- Maklumat Individu Dibantu -->
           <div class="space-y-6">
+            
+            <div class="bg-gray-50 p-6 rounded-lg">
+              <h2 class="text-lg font-semibold mb-4">Aduan Untuk</h2>
+              <FormKit
+                v-model="formData.isWakil"
+                type="radio"
+                :options="[
+                  { label: 'Diri sendiri', value: 'diri_sendiri' },
+                  { label: 'Orang lain (wakil)', value: 'wakil' },
+                ]"
+                :classes="{
+                  fieldset: 'border-0 !p-0',
+                  legend: '!font-semibold !text-sm mb-0',
+                  options: '!flex !flex-col gap-4 mt-3',
+                }"
+              />
+            </div>
+
+            <!-- Maklumat Pengadu (jika wakil) -->
+            <div v-if="formData.isWakil === 'wakil'" class="space-y-6 mt-6">
+              <div class="flex items-center gap-2">
+                <h2 class="text-lg font-semibold">Maklumat Pengadu (Wakil)</h2>
+                <div class="h-px flex-1 bg-gray-200"></div>
+              </div>
+
+              <div class="bg-white p-6 rounded-lg border border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    v-model="formData.namaPengadu"
+                    label="Nama"
+                    type="text"
+                    validation="required"
+                    validation-visibility="dirty"
+                  />
+
+                  <FormKit
+                    v-model="formData.noKadPengenalanPengadu"
+                    label="No. Kad Pengenalan"
+                    type="text"
+                    validation="required|length:12"
+                    validation-visibility="dirty"
+                  />
+
+                  <FormKit
+                    v-model="formData.emelPengadu"
+                    label="Emel"
+                    type="email"
+                    validation="required|email"
+                    validation-visibility="dirty"
+                  />
+
+                  <FormKit
+                    v-model="formData.noTelefonPengadu"
+                    label="No. Telefon"
+                    type="tel"
+                    validation="required|matches:/^[0-9]{3}-[0-9]{7}$/"
+                    validation-visibility="dirty"
+                    help="Format: xxx-xxxxxxx"
+                  />
+                </div>
+              </div>
+            </div>
+
             <div class="flex items-center gap-2">
               <h2 class="text-lg font-semibold">Maklumat Individu Dibantu</h2>
               <div class="h-px flex-1 bg-gray-200"></div>
@@ -423,7 +486,7 @@ const getCurrentLocation = () => {
                   />
 
                   <!-- Aduan Untuk -->
-                  <div class="bg-gray-50 p-6 rounded-lg">
+                  <!-- <div class="bg-gray-50 p-6 rounded-lg">
                     <h2 class="text-lg font-semibold mb-4">Aduan Untuk</h2>
                     <FormKit
                       v-model="formData.isWakil"
@@ -438,56 +501,13 @@ const getCurrentLocation = () => {
                         options: '!flex !flex-col gap-4 mt-3',
                       }"
                     />
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Maklumat Pengadu (jika wakil) -->
-          <div v-if="formData.isWakil === 'wakil'" class="space-y-6 mt-6">
-            <div class="flex items-center gap-2">
-              <h2 class="text-lg font-semibold">Maklumat Pengadu (Wakil)</h2>
-              <div class="h-px flex-1 bg-gray-200"></div>
-            </div>
-
-            <div class="bg-white p-6 rounded-lg border border-gray-200">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  v-model="formData.namaPengadu"
-                  label="Nama"
-                  type="text"
-                  validation="required"
-                  validation-visibility="dirty"
-                />
-
-                <FormKit
-                  v-model="formData.noKadPengenalanPengadu"
-                  label="No. Kad Pengenalan"
-                  type="text"
-                  validation="required|length:12"
-                  validation-visibility="dirty"
-                />
-
-                <FormKit
-                  v-model="formData.emelPengadu"
-                  label="Emel"
-                  type="email"
-                  validation="required|email"
-                  validation-visibility="dirty"
-                />
-
-                <FormKit
-                  v-model="formData.noTelefonPengadu"
-                  label="No. Telefon"
-                  type="tel"
-                  validation="required|matches:/^[0-9]{3}-[0-9]{7}$/"
-                  validation-visibility="dirty"
-                  help="Format: xxx-xxxxxxx"
-                />
-              </div>
-            </div>
-          </div>
+          
 
           <div class="flex justify-end mt-8">
             <rs-button
