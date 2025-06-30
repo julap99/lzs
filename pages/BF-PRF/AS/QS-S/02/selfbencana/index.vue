@@ -56,12 +56,13 @@
                 </div>
                 <div class="flex gap-2">
                   <FormKit
-                    v-model="formData.personalInfo.assistanceType"
+                    v-model="formData.personalInfo.location"
                     label="Lokasi"
                     type="text"
                     validation="required"
                     validation-visibility="dirty"
                     class="flex-1"
+                    placeholder="Masukkan lokasi"
                   />
                   <rs-button
                     type="button"
@@ -120,7 +121,7 @@
                   <FormKit
                     type="file"
                     name="noDisasterDocument"
-                    label="Upload Dokumen Sokongan"
+                    label="Upload Dokumen Report Polis"
                     accept=".pdf,.jpg,.jpeg,.png"
                     v-model="formData.healthInfo.noDisasterDocument"
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
@@ -132,19 +133,28 @@
                 </div>
 
                 <!-- Disaster Location (Conditional) -->
-                <FormKit
-                  v-if="formData.healthInfo.status && formData.healthInfo.status !== 'tiada'"
-                  type="select"
-                  name="location"
-                  label="Lokasi Bencana"
-                  validation="required"
-                  :options="districtOptions"
-                  placeholder="Pilih lokasi bencana"
-                  v-model="formData.personalInfo.disasterLocation"
-                  :validation-messages="{
-                    required: 'Lokasi bencana adalah wajib'
-                  }"
-                />
+                <div v-if="formData.healthInfo.status && formData.healthInfo.status !== 'tiada'" class="md:col-span-2">
+                  <!-- <div class="flex gap-2">
+                    <FormKit
+                      v-model="formData.personalInfo.disasterLocation"
+                      label="Lokasi Bencana"
+                      type="text"
+                      validation="required"
+                      validation-visibility="dirty"
+                      class="flex-1"
+                      placeholder="Masukkan lokasi bencana"
+                    />
+                    <rs-button
+                      type="button"
+                      variant="primary-outline"
+                      @click="getLocation('personalInfo')"
+                      class="whitespace-nowrap mt-7"
+                    >
+                      <i class="fas fa-location-dot mr-2"></i>
+                      Dapatkan Lokasi
+                    </rs-button>
+                  </div> -->
+                </div>
 
                 <div class="md:col-span-2">
                   <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
@@ -357,6 +367,19 @@
                     required: 'Status perkahwinan adalah wajib'
                   }"
                 />
+                
+                <FormKit
+                  type="number"
+                  name="dependentsCount"
+                  label="Bilangan Tanggungan"
+                  validation="required|number|min:0"
+                  v-model="formData.personalInfo.dependentsCount"
+                  :validation-messages="{
+                    required: 'Bilangan tanggungan adalah wajib',
+                    number: 'Sila masukkan nombor yang sah',
+                    min: 'Bilangan tanggungan tidak boleh kurang daripada 0'
+                  }"
+                />
 
                 <!-- Spouse/Family Member Information (Conditional) -->
                 <div v-if="formData.personalInfo.maritalStatus === 'berkahwin'" class="md:col-span-2">
@@ -442,18 +465,7 @@
                   </div>
                 </div>
 
-                <!-- <FormKit
-                  type="number"
-                  name="dependentsCount"
-                  label="Bilangan Tanggungan"
-                  validation="required|number|min:0"
-                  v-model="formData.personalInfo.dependentsCount"
-                  :validation-messages="{
-                    required: 'Bilangan tanggungan adalah wajib',
-                    number: 'Sila masukkan nombor yang sah',
-                    min: 'Bilangan tanggungan tidak boleh kurang daripada 0'
-                  }"
-                /> -->
+                
 
                 <!-- Bank Information Section -->
                 <div class="md:col-span-2">
@@ -972,7 +984,6 @@
 import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import bencanaListData from "./bencana-list.json";
 
 // Page Meta
 definePageMeta({ title: "Isi Permohonan Ringkas" });
@@ -1005,7 +1016,7 @@ const formData = ref({
     bankName: "", bankAccount: "", bankAccountHolder: "", swiftCode: "", paymentMethod: "", noPaymentReason: [],
     maritalStatus: "", healthStatus: "", islamDate: "", islamCertificate: null, kfamDate: "", email: "",
     citizenship: "", dateOfBirth: "", gender: "", assistanceType: "", disasterLocation: "", polygamyStatus: "",
-    wivesCount: "", wives: [], dependentsCount: "", grossIncome: "", incomeDocument: null,
+    wivesCount: "", wives: [], dependentsCount: "", grossIncome: "", incomeDocument: null, location: "",
     // Spouse/Family member fields - now as array
     spouses: [],
   },
@@ -1176,13 +1187,10 @@ const selectedBankSwiftCode = computed(() => {
 });
 
 const disasterListOptions = computed(() => {
-  const options = [{ label: 'Tiada', value: 'tiada' }];
-  if (bencanaListData?.bencana) {
-    bencanaListData.bencana.forEach(bencana => {
-      options.push({ label: bencana.label, value: bencana.value });
-    });
-  }
-  return options;
+  return [
+    { label: 'Bencana', value: 'bencana' },
+    { label: 'Tiada', value: 'tiada' }
+  ];
 });
 
 const pakOfficersOptions = computed(() => {
@@ -1281,24 +1289,15 @@ const getSpousePlaceholder = (index) => {
 };
 
 const getLocation = (field) => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      () => {
-        formData.value[field].location = 'Lokasi semasa';
-        toast.success('Lokasi berjaya diperoleh!');
-      },
-      () => toast.error('Tidak dapat mendapatkan lokasi.')
-    );
-  } else {
-    toast.error('Geolocation tidak disokong oleh pelayar ini.');
-  }
+  formData.value[field].location = 'Lokasi semasa';
+  toast.success('Lokasi berjaya diperoleh!');
 };
 
 const handleSubmit = async () => {
   try {
     console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
-    router.push("/BF-PRF/AS/FR/04");
+    // router.push("/BF-PRF/AS/FR/04");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);

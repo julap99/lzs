@@ -107,7 +107,6 @@
                     v-model="formData.initialAssessment.additionalNotes"
                     label="Catatan Tambahan"
                     placeholder="Sila masukkan sebarang catatan tambahan yang berkaitan dengan permohonan ini"
-                    validation="required"
                     validation-label="Catatan tambahan"
                     validation-messages="{
                       required: 'Sila masukkan catatan tambahan'
