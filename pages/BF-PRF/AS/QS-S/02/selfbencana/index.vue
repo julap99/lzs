@@ -572,7 +572,13 @@
                 </div>
               </div>
 
-              <div class="flex justify-end">
+              <div class="flex justify-between gap-3 mt-6">
+                <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="goBack"
+                  >Kembali</rs-button
+                >
                 <rs-button type="submit" variant="primary" @click="nextStep"
                   >Seterusnya ke Maklumat Alamat</rs-button
                 >
@@ -583,18 +589,43 @@
             <div v-if="currentStep === 2">
               <h3 class="text-lg font-medium mb-4">B) Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Multiple Addresses Section -->
                 <div class="md:col-span-2">
-                  <FormKit
-                    type="textarea"
-                    name="address"
-                    label="Alamat Terkini"
-                    validation="required"
-                    placeholder="Sila masukkan alamat"
-                    v-model="formData.addressInfo.address"
-                    :validation-messages="{
-                      required: 'Alamat adalah wajib',
-                    }"
-                  />
+                  <div class="flex justify-between items-center mb-3">
+                    <h4 class="text-md font-medium">Alamat Terkini</h4>
+                    <rs-button type="button" variant="primary-outline" @click="addAddress" class="text-sm">
+                      <i class="fas fa-plus mr-2"></i>Tambah Alamat
+                    </rs-button>
+                  </div>
+                  
+                  <!-- Address Entries -->
+                  <div v-for="(addressEntry, index) in formData.addressInfo.addresses" :key="index" class="border rounded-lg p-4 mb-4 bg-gray-50">
+                    <div class="flex justify-between items-center mb-3">
+                      <h5 class="font-medium text-gray-700">Alamat #{{ index + 1 }}</h5>
+                      <rs-button 
+                        v-if="formData.addressInfo.addresses.length > 1"
+                        type="button" 
+                        variant="danger-outline" 
+                        @click="removeAddress(index)" 
+                        class="text-sm" 
+                        size="sm"
+                      >
+                        <i class="fas fa-trash mr-1"></i>Padam
+                      </rs-button>
+                    </div>
+                    
+                    <FormKit
+                      type="textarea"
+                      :name="`address_${index}`"
+                      label="Alamat"
+                      validation="required"
+                      placeholder="Sila masukkan alamat"
+                      v-model="addressEntry.address"
+                      :validation-messages="{
+                        required: 'Alamat adalah wajib',
+                      }"
+                    />
+                  </div>
                 </div>
 
                 <FormKit
@@ -733,10 +764,11 @@
                 <FormKit
                   type="file"
                   name="addressSupportDoc"
-                  label="Muat naik dokumen sokongan sewaan"
+                  label="Muat naik dokumen sokongan sokongan"
                   accept=".pdf,.jpg,.jpeg,.png"
                   v-model="formData.addressInfo.addressSupportDoc"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  mul
                 />
 
                 <div class="flex gap-2">
@@ -818,6 +850,46 @@
                     :disabled="!formData.verification.selectedKariah"
                   />
                 </div>
+
+                <div class="flex flex-col gap-2 mt-6">
+                  <label class="font-medium">Hubungan kekeluargaan dengan PAK?</label>
+                  <FormKit
+                    type="radio"
+                    name="hubungan_pak"
+                    :options="['Ya', 'Tidak']"
+                    validation="required"
+                    v-model="formData.verification.hubunganPAK"
+                  />
+                </div>
+
+                <div v-if="formData.verification.hubunganPAK === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <FormKit
+                    type="select"
+                    name="selected_kariah_pak"
+                    label="Pilih Kariah"
+                    validation="required"
+                    :options="kariahOptions"
+                    placeholder="Pilih Kariah"
+                    v-model="formData.verification.selectedKariahPAK"
+                    :validation-messages="{
+                      required: 'Kariah adalah wajib'
+                    }"
+                  />
+
+                  <FormKit
+                    type="select"
+                    name="selected_pak_officer_pak"
+                    label="Pilih Nama Pegawai PAK"
+                    validation="required"
+                    :options="pakOfficersOptionsPAK"
+                    placeholder="Pilih Pegawai PAK"
+                    v-model="formData.verification.selectedPakOfficerPAK"
+                    :validation-messages="{
+                      required: 'Pegawai PAK adalah wajib'
+                    }"
+                    :disabled="!formData.verification.selectedKariahPAK"
+                  />
+                </div>
               </div>
 
               <!-- PDPA Statement -->
@@ -834,6 +906,20 @@
                       <li>Saya berhak untuk mengakses, membetulkan, dan menarik balik kebenaran penggunaan maklumat peribadi saya pada bila-bila masa.</li>
                     </ol>
                   </div>
+                </div>
+                
+                <!-- PDPA Checkbox -->
+                <div class="mt-4">
+                  <FormKit
+                    type="checkbox"
+                    name="pdpa_consent"
+                    label="Saya mengakui dan bersetuju dengan pernyataan PDPA di atas"
+                    validation="required"
+                    v-model="formData.verification.pdpaConsent"
+                    :validation-messages="{
+                      required: 'Anda mesti bersetuju dengan pernyataan PDPA untuk meneruskan'
+                    }"
+                  />
                 </div>
               </div>
 
@@ -1025,7 +1111,8 @@ const formData = ref({
     noDisasterNotes: "", noDisasterDocument: null,
   },
   addressInfo: {
-    address: "", district: "", postcode: "", kariah: "", state: "Selangor", residenceYears: "",
+    addresses: [{ address: "" }], // Array of addresses
+    district: "", postcode: "", kariah: "", state: "Selangor", residenceYears: "",
     residenceStatus: "", paymentStatus: "", monthlyPayment: "", rentAmount: "", otherResidenceDetail: "",
     addressSupportDoc: null, location: ""
   },
@@ -1038,7 +1125,9 @@ const formData = ref({
       lastModified: new Date('2024-01-15').getTime(),
       type: "application/pdf"
     }, pdpaConsent: false,
-    selectedKariah: "masjid-negeri", selectedPakOfficer: "ustaz-ahmad-abdullah"
+    selectedKariah: "masjid-negeri", selectedPakOfficer: "ustaz-ahmad-abdullah",
+    // New PAK relationship fields
+    hubunganPAK: "", selectedKariahPAK: "", selectedPakOfficerPAK: ""
   },
 });
 
@@ -1195,6 +1284,11 @@ const disasterListOptions = computed(() => {
 
 const pakOfficersOptions = computed(() => {
   const selectedKariah = formData.value.verification.selectedKariah;
+  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
+});
+
+const pakOfficersOptionsPAK = computed(() => {
+  const selectedKariah = formData.value.verification.selectedKariahPAK;
   return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
 });
 
@@ -1359,6 +1453,11 @@ watch(() => formData.value.verification.selectedKariah, (newVal) => {
   formData.value.verification.selectedPakOfficer = '';
 });
 
+watch(() => formData.value.verification.selectedKariahPAK, (newVal) => {
+  // Clear selected PAK officer when Kariah changes for PAK relationship
+  formData.value.verification.selectedPakOfficerPAK = '';
+});
+
 const addSpouse = () => {
   formData.value.personalInfo.spouses.push({
     relationship: "",
@@ -1371,6 +1470,14 @@ const addSpouse = () => {
 
 const removeSpouse = (index) => {
   formData.value.personalInfo.spouses.splice(index, 1);
+};
+
+const addAddress = () => {
+  formData.value.addressInfo.addresses.push({ address: "" });
+};
+
+const removeAddress = (index) => {
+  formData.value.addressInfo.addresses.splice(index, 1);
 };
 
 // Helper methods for readonly display
@@ -1443,5 +1550,9 @@ const downloadDocument = (doc) => {
   // In production, you would trigger a real download
   console.log('Download document:', doc);
   toast.info(`Muat turun dokumen: ${doc.name}`);
+};
+
+const goBack = () => {
+  router.push('/BF-PRF/AS/QS-S/02');
 };
 </script>
