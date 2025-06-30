@@ -1,19 +1,91 @@
 <template>
   <div>
+    <!-- Breadcrumb Navigation -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <!-- Disable overlay when modal is shown -->
+    <div v-if="showSelectionModal && currentStep === 2" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Disabled form indicator -->
+    <!-- <div v-if="isFormDisabled && !showSelectionModal" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+      <div class="bg-orange-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center">
+        <Icon name="material-symbols:warning" class="mr-2" />
+        <span class="text-sm font-medium">
+          {{ selectedType === 'lain-lain' 
+            ? 'Permohonan jenis "Lain-lain" sedang dalam pembangunan. Sila pilih "Bencana" untuk meneruskan.' 
+            : 'Sila pilih jenis permohonan terlebih dahulu' 
+          }}
+        </span>
+      </div>
+    </div> -->
+
+    <!-- Enabled form indicator -->
+    <!-- <div v-if="!isFormDisabled && selectedType === 'bencana'" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+      <div class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center">
+        <Icon name="material-symbols:check-circle" class="mr-2" />
+        <span class="text-sm font-medium">Permohonan Bencana - Semua medan telah diaktifkan</span>
+      </div>
+    </div> -->
+
+    <!-- Change Selection Button - Always accessible -->
+    <!-- <div v-if="selectedType && !showSelectionModal" class="fixed top-4 right-4 z-50">
+      <rs-button 
+        variant="outline" 
+        size="sm"
+        @click="changeSelection"
+        class="text-sm bg-white shadow-lg hover:bg-gray-50"
+        :disabled="false"
+      >
+        <Icon name="material-symbols:edit" class="mr-1" size="14" />
+        Tukar Pilihan
+      </rs-button>
+    </div> -->
+
+    <!-- Main Form Card -->
+    <rs-card class="mt-4" :class="{ 'pointer-events-none opacity-50': isFormDisabled }">
+      <!-- Form Header -->
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Isi Borang Permohonan Online</h2>
-          <div class="text-sm text-gray-600">
-            Langkah {{ currentStep }} dari {{ totalStep }}
+          <div class="flex items-center">
+            <h2 class="text-xl font-semibold">Isi Borang Permohonan Online(lain-lain)</h2>
+            <div v-if="selectedType" class="ml-4">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                :class="selectedType === 'bencana' 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-orange-100 text-orange-800'"
+              >
+                <Icon 
+                  :name="selectedType === 'bencana' ? 'material-symbols:check-circle' : 'material-symbols:check-circle-outline'" 
+                  class="mr-1" 
+                  size="14"
+                />
+                {{ selectedType === 'bencana' ? 'Bencana' : 'Lain-lain' }}
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <rs-button 
+              v-if="selectedType && currentStep >= 2"
+              variant="outline" 
+              size="sm"
+              @click="changeSelection"
+              class="text-sm"
+              :disabled="false"
+              style="pointer-events: auto; z-index: 60;"
+            >
+              <Icon name="material-symbols:edit" class="mr-1" size="14" />
+              Tukar Pilihan
+            </rs-button>
+            <div class="text-sm text-gray-600">
+              Langkah {{ currentStep }} dari {{ totalStep }}
+            </div>
           </div>
         </div>
       </template>
 
+      <!-- Form Body -->
       <template #body>
-        <!-- Progress indicator -->
+        <!-- Progress Indicator -->
         <div class="mb-6">
           <div class="flex justify-between mb-2">
             <div
@@ -35,11 +107,117 @@
 
         <!-- Form Section -->
         <div class="mb-6">
-          <FormKit type="form" :actions="false" @submit="handleSubmit">
-            <!-- Step 1: Maklumat Peribadi Asnaf -->
+          <FormKit type="form" :actions="false" @submit="handleSubmit" :disabled="isFormDisabled">
+            <!-- Step 1: Penilaian Awal -->
             <div v-if="currentStep === 1">
+              <h3 class="text-lg font-medium mb-4">A) Penilaian Awal</h3>
+              <div class="space-y-6">
+                <!-- Question 1 -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    1. Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?*
+                  </label>
+                  <FormKit
+                    type="radio"
+                    v-model="formData.initialAssessment.komitmenTinggi"
+                    :options="[
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'T' }
+                    ]"
+                    validation="required"
+                    validation-label="Jawapan"
+                  />
+                </div>
+
+                <!-- Question 2 -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    2. Apakah keperluan tuan/puan mendesak sekarang ini?*
+                  </label>
+                  <FormKit
+                    type="checkbox"
+                    v-model="formData.initialAssessment.keperluanMendesak"
+                    :options="[
+                      { label: 'Perubatan Kritikal', value: 'perubatan', disabled: isTidakMendesakSelected },
+                      { label: 'Bencana', value: 'bencana', disabled: isTidakMendesakSelected },
+                      { label: 'Kematian', value: 'kematian', disabled: isTidakMendesakSelected },
+                      { label: 'Konflik Keluarga (tiada tempat bergantung)', value: 'konflik', disabled: isTidakMendesakSelected },
+                      { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah', disabled: isTidakMendesakSelected },
+                      { label: 'Tunggakan Bil Utiliti', value: 'tunggakanUtiliti', disabled: isTidakMendesakSelected },
+                      { label: 'Selain dari di atas', value: 'lain', disabled: isTidakMendesakSelected },
+                      { label: 'Tidak mendesak', value: 'tidakMendesak' }
+                    ]"
+                    validation="required|min:1"
+                    validation-label="Jawapan"
+                    validation-messages="{
+                      required: 'Sila pilih sekurang-kurangnya satu jawapan',
+                      min: 'Sila pilih sekurang-kurangnya satu jawapan'
+                    }"
+                    @input="handleKeperluanChange"
+                  />
+
+                  <!-- Additional input for "Selain dari di atas" -->
+                  <div v-if="showLainInput" class="mt-4">
+                    <FormKit
+                      type="text"
+                      v-model="formData.initialAssessment.lainKeperluan"
+                      label="Sila nyatakan keperluan lain:"
+                      validation="required"
+                      validation-label="Keperluan lain"
+                      validation-messages="{
+                        required: 'Sila nyatakan keperluan lain'
+                      }"
+                    />
+                  </div>
+                </div>
+
+                <!-- File Upload Section -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    3. Muat naik dokumen sokongan (PDF, JPG, PNG)*
+                  </label>
+                  <FormKit
+                    type="file"
+                    v-model="formData.initialAssessment.documents"
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
+                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                    validation-label="Dokumen"
+                    validation-messages="{
+                      required: 'Sila muat naik sekurang-kurangnya satu dokumen',
+                      max: 'Saiz fail tidak boleh melebihi 5MB',
+                      mime: 'Format fail tidak dibenarkan'
+                    }"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <FormKit
+                    type="textarea"
+                    v-model="formData.initialAssessment.additionalNotes"
+                    label="Catatan Tambahan"
+                    placeholder="Sila masukkan sebarang catatan tambahan yang berkaitan dengan permohonan ini"
+                    validation="required"
+                    validation-label="Catatan tambahan"
+                    validation-messages="{
+                      required: 'Sila masukkan catatan tambahan'
+                    }"
+                  />
+                </div>
+              </div>
+
+              <div class="flex justify-end">
+                <rs-button type="submit" variant="primary" @click="nextStep"
+                  >Seterusnya ke Maklumat Peribadi</rs-button
+                >
+              </div>
+            </div>
+
+            <!-- Step 2: Maklumat Peribadi Asnaf -->
+            <div v-if="currentStep === 2">
               <h3 class="text-lg font-medium mb-4">
-                A) Maklumat Peribadi Asnaf
+                B) Maklumat Peribadi Asnaf
               </h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
@@ -197,12 +375,12 @@
                     min: 'Bilangan tanggungan tidak boleh kurang daripada 0'
                   }"
                 />
-                   <FormKit
+                <FormKit
                       type="text"
                       name="nopassport"
                       label="No Passport"  
                     />
-                  
+
                     <FormKit
                       type="date"
                       name="passportStartDate"
@@ -215,8 +393,6 @@
                       label="Tarikh tamat passport"
                       v-model="formData.personalInfo.passportEndDate"
                     />
-                  
-                
 
                 <!-- Islamic Information Section -->
                 <div class="md:col-span-2">
@@ -244,7 +420,7 @@
                 />
 
                   <FormKit
-                   v-if="formData.personalInfo.islamDate"
+                  v-if="formData.personalInfo.islamDate"
                     type="file"
                     name="islamCertificate"
                     label="Upload Surat Keislaman dari MAIS"
@@ -356,16 +532,17 @@
                     required: 'Nama Bank adalah wajib',
                   }"
                 />
-
-                <FormKit
-                  v-if="formData.personalInfo.bankName"
-                  type="text"
-                  name="swiftCode"
-                  label="Swift Code"
-                  v-model="formData.personalInfo.swiftCode"
-                  readonly
-                  help="Swift code akan dipaparkan secara automatik berdasarkan bank yang dipilih"
-                />
+            
+                  <FormKit
+                   v-if="formData.personalInfo.bankName"
+                    type="text"
+                    name="swiftCode"
+                    label="SWIFT Code"
+                    v-model="formData.personalInfo.swiftCode"
+                    :value="selectedBankSwiftCode"
+                    readonly
+                    help="SWIFT Code untuk bank yang dipilih"
+                  />                
 
                 <FormKit
                   type="text"
@@ -384,8 +561,6 @@
                   label="Penama Bank Akaun"
                   v-model="formData.personalInfo.bankAccountHolder"
                 />
-
-               
 
                 <FormKit
                   type="select"
@@ -515,9 +690,9 @@
               </div>
             </div>
 
-            <!-- Step 2: Maklumat Kesihatan -->
-            <div v-if="currentStep === 2">
-              <h3 class="text-lg font-medium mb-4">B) Maklumat Kesihatan</h3>
+            <!-- Step 3: Maklumat Kesihatan -->
+            <div v-if="currentStep === 3">
+              <h3 class="text-lg font-medium mb-4">C) Maklumat Kesihatan</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="select"
@@ -583,9 +758,9 @@
               </div>
             </div>
 
-            <!-- Step 3: Maklumat Pasangan -->
-            <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">C) Maklumat Pasangan(Jika tinggal bersama Di alamat yang sama)</h3>
+            <!-- Step 4: Maklumat Pasangan -->
+            <div v-if="currentStep === 4">
+              <h3 class="text-lg font-medium mb-4">D) Maklumat Pasangan(Jika tinggal bersama Di alamat yang sama)</h3>
 
               <FormKit
                 type="select"
@@ -712,9 +887,9 @@
               </div>
             </div>
 
-            <!-- Step 4: Maklumat Alamat -->
-            <div v-if="currentStep === 4">
-              <h3 class="text-lg font-medium mb-4">D) Maklumat Alamat</h3>
+            <!-- Step 5: Maklumat Alamat -->
+            <div v-if="currentStep === 5">
+              <h3 class="text-lg font-medium mb-4">E) Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="md:col-span-2">
                   <FormKit
@@ -909,9 +1084,9 @@
               </div>
             </div>
 
-            <!-- Step 5: Maklumat Pekerjaan -->
-            <div v-if="currentStep === 5">
-              <h3 class="text-lg font-medium mb-4">E) Maklumat Pekerjaan</h3>
+            <!-- Step 6: Maklumat Pekerjaan -->
+            <div v-if="currentStep === 6">
+              <h3 class="text-lg font-medium mb-4">F) Maklumat Pekerjaan</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="select"
@@ -1061,9 +1236,9 @@
               </div>
             </div>
 
-            <!-- Step 6: Maklumat Tanggungan  -->
-            <div v-if="currentStep === 6">
-              <h3 class="text-lg font-medium mb-4">F) Maklumat Tanggungan</h3>
+            <!-- Step 7: Maklumat Tanggungan  -->
+            <div v-if="currentStep === 7">
+              <h3 class="text-lg font-medium mb-4">G) Maklumat Tanggungan</h3>
 
               <div
                 v-for="(dependent, index) in formData.schoolDependents"
@@ -1132,7 +1307,7 @@
                       required: 'No ID adalah wajib',
                     }"
                   />
-                  <FormKit
+                   <FormKit
                       type="text"
                       name="nopassport"
                       label="No Passport"  
@@ -1314,9 +1489,9 @@
               </div>
             </div>
 
-            <!-- Step 7: Maklumat Waris -->
-            <div v-if="currentStep === 7">
-              <h3 class="text-lg font-medium mb-4">G) Maklumat Waris</h3>
+            <!-- Step 8: Maklumat Waris -->
+            <div v-if="currentStep === 8">
+              <h3 class="text-lg font-medium mb-4">H) Maklumat Waris</h3>
 
               <div
                 v-for="(heir, index) in formData.heirs"
@@ -1396,12 +1571,12 @@
               </div>
             </div>
 
-            <!-- Step 8: Pengesahan -->
-            <div v-if="currentStep === 8">
-              <h3 class="text-lg font-medium mb-4">H) Pengesahan</h3>
+            <!-- Step 9: Pengesahan -->
+            <div v-if="currentStep === 9">
+              <h3 class="text-lg font-medium mb-4">I) Pengesahan</h3>
 
-              <div class="mb-6">
-                <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
+              <!-- <div class="mb-6">
+                <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
                 <div class="flex flex-col gap-2">
                   <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
                   <FormKit
@@ -1455,7 +1630,7 @@
                     v-model="formData.verification.tarikhBantuan"
                   />
                 </div>
-              </div>
+              </div> -->
 
               <div class="mb-6">
                 <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
@@ -1531,9 +1706,9 @@
               </div>
             </div>
 
-            <!-- Step 9: Maklumat Pengesah Bermastautin -->
-            <div v-if="currentStep === 9">
-              <h3 class="text-lg font-medium mb-4">I) Maklumat Pengesah Bermastautin</h3>
+            <!-- Step 10: Maklumat Pengesah Bermastautin -->
+            <div v-if="currentStep === 10">
+              <h3 class="text-lg font-medium mb-4">J) Maklumat Pengesah Bermastautin</h3>
               <p class="text-sm text-gray-600 mb-4">
                 *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
               </p>
@@ -1603,106 +1778,48 @@
                   >Kembali</rs-button
                 >
                 <rs-button type="submit" variant="primary" @click="nextStep"
-                  >Seterusnya ke Penilaian Awal</rs-button
+                  >Seterusnya ke Pegawai Pendaftar</rs-button
                 >
               </div>
             </div>
 
-            <!-- Step 10: Penilaian Awal -->
-            <div v-if="currentStep === 10">
-              <h3 class="text-lg font-medium mb-4">J) Penilaian Awal</h3>
+            <!-- Step 11: Pegawai Pendaftar -->
+            <div v-if="currentStep === 11">
+              <h3 class="text-lg font-medium mb-4">K) Pegawai Pendaftar</h3>
               <div class="space-y-6">
-                <!-- Question 1 -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700">
-                    1. Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?*
-                  </label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
-                    type="radio"
-                    v-model="formData.initialAssessment.komitmenTinggi"
-                    :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'T' }
-                    ]"
+                    type="text"
+                    name="nama_penolong_amil"
+                    label="Nama "
+                    value="Ahmad bin Abi"
                     validation="required"
-                    validation-label="Jawapan"
-                  />
-                </div>
-
-                <!-- Question 2 -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700">
-                    2. Apakah keperluan tuan/puan mendesak sekarang ini?*
-                  </label>
-                  <FormKit
-                    type="checkbox"
-                    v-model="formData.initialAssessment.keperluanMendesak"
-                    :options="[
-                      { label: 'Perubatan Kritikal', value: 'perubatan', disabled: isTidakMendesakSelected },
-                      { label: 'Bencana', value: 'bencana', disabled: isTidakMendesakSelected },
-                      { label: 'Kematian', value: 'kematian', disabled: isTidakMendesakSelected },
-                      { label: 'Konflik Keluarga (tiada tempat bergantung)', value: 'konflik', disabled: isTidakMendesakSelected },
-                      { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah', disabled: isTidakMendesakSelected },
-                      { label: 'Tunggakan Bil Utiliti', value: 'tunggakanUtiliti', disabled: isTidakMendesakSelected },
-                      { label: 'Selain dari di atas', value: 'lain', disabled: isTidakMendesakSelected },
-                      { label: 'Tidak mendesak', value: 'tidakMendesak' }
-                    ]"
-                    validation="required|min:1"
-                    validation-label="Jawapan"
-                    validation-messages="{
-                      required: 'Sila pilih sekurang-kurangnya satu jawapan',
-                      min: 'Sila pilih sekurang-kurangnya satu jawapan'
-                    }"
-                    @input="handleKeperluanChange"
+                    disabled
                   />
 
-                  <!-- Additional input for "Selain dari di atas" -->
-                  <div v-if="showLainInput" class="mt-4">
-                    <FormKit
-                      type="text"
-                      v-model="formData.initialAssessment.lainKeperluan"
-                      label="Sila nyatakan keperluan lain:"
-                      validation="required"
-                      validation-label="Keperluan lain"
-                      validation-messages="{
-                        required: 'Sila nyatakan keperluan lain'
-                      }"
-                    />
-                  </div>
-                </div>
-
-                <!-- File Upload Section -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700">
-                    3. Muat naik dokumen sokongan (PDF, JPG, PNG)*
-                  </label>
                   <FormKit
-                    type="file"
-                    v-model="formData.initialAssessment.documents"
-                    multiple
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                    validation-label="Dokumen"
-                    validation-messages="{
-                      required: 'Sila muat naik sekurang-kurangnya satu dokumen',
-                      max: 'Saiz fail tidak boleh melebihi 5MB',
-                      mime: 'Format fail tidak dibenarkan'
-                    }"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <FormKit
-                    type="textarea"
-                    v-model="formData.initialAssessment.additionalNotes"
-                    label="Catatan Tambahan"
-                    placeholder="Sila masukkan sebarang catatan tambahan yang berkaitan dengan permohonan ini"
+                    type="text"
+                    name="jenis_permohonan"
+                    label="Jenis Permohonan"
+                    value="Baru"
                     validation="required"
-                    validation-label="Catatan tambahan"
-                    validation-messages="{
-                      required: 'Sila masukkan catatan tambahan'
-                    }"
+                    disabled
+                  />
+                  <FormKit
+                    type="text"
+                    name="kategori"
+                    label="Kategori"
+                    value="kaunter"
+                    disabled
+                  />
+
+                  <FormKit
+                    type="date"
+                    name="tarikh_proses"
+                    label="Tarikh Proses"
+                    validation="required"
+                    :value="new Date().toISOString().split('T')[0]"
+                    disabled
                   />
                 </div>
 
@@ -1713,14 +1830,9 @@
                     @click="prevStep"
                     >Kembali</rs-button
                   >
-                  <div class="flex gap-3">
-                    <rs-button type="button" variant="secondary" @click="handleSave"
-                      >Simpan</rs-button
-                    >
-                    <rs-button type="submit" variant="primary" @click="handleSubmit"
-                      >Hantar Permohonan</rs-button
-                    >
-                  </div>
+                  <rs-button type="submit" variant="primary" @click="nextStep"
+                    >Seterusnya ke Penilaian Awal</rs-button
+                  >
                 </div>
               </div>
             </div>
@@ -1728,52 +1840,180 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Selection Modal -->
+    <rs-modal
+      v-model="showSelectionModal"
+      title="Pilih Jenis Permohonan"
+      size="lg"
+      position="center"
+      :overlay-close="false"
+      :hide-footer="true"
+      dialog-class="max-w-2xl"
+    >
+      <template #body>
+        <div class="text-center p-6">
+          <div class="flex justify-center mb-6">
+            <div class="bg-blue-100 rounded-full p-4">
+              <Icon
+                name="material-symbols:help-outline"
+                class="text-blue-600"
+                size="48"
+              />
+            </div>
+          </div>
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">
+            Sila pilih jenis permohonan anda
+          </h3>
+          <p class="text-gray-600 mb-8 text-base">
+            Setelah menilai keperluan awal anda, sila pilih jenis permohonan yang sesuai.
+          </p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div 
+              class="border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition-all duration-300 transform hover:scale-105"
+              :class="{ 'border-orange-500 bg-orange-50 shadow-lg': selectedType === 'bencana' }"
+              @click="selectType('bencana')"
+            >
+              <div class="flex flex-col items-center">
+                <div class="bg-orange-100 rounded-full p-3 mb-4">
+                  <Icon
+                    name="material-symbols:warning"
+                    class="text-orange-600"
+                    size="32"
+                  />
+                </div>
+                <h4 class="font-semibold text-gray-800 mb-3 text-lg">Bencana</h4>
+                <p class="text-sm text-gray-600 text-center leading-relaxed">
+                  Permohonan untuk bantuan bencana alam atau kecemasan seperti banjir, kebakaran, tanah runtuh, dll
+                </p>
+              </div>
+            </div>
+            
+            <div 
+              class="border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-green-400 hover:bg-green-50 transition-all duration-300 transform hover:scale-105"
+              :class="{ 'border-green-500 bg-green-50 shadow-lg': selectedType === 'lain-lain' }"
+              @click="selectType('lain-lain')"
+            >
+              <div class="flex flex-col items-center">
+                <div class="bg-green-100 rounded-full p-3 mb-4">
+                  <Icon
+                    name="material-symbols:person"
+                    class="text-green-600"
+                    size="32"
+                  />
+                </div>
+                <h4 class="font-semibold text-gray-800 mb-3 text-lg">Lain-lain</h4>
+                <p class="text-sm text-gray-600 text-center leading-relaxed">
+                  Permohonan untuk bantuan lain seperti kesihatan, pendidikan, sara hidup, dan keperluan asas lain
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-8">
+            <rs-button 
+              variant="primary" 
+              @click="confirmSelection"
+              :disabled="!selectedType"
+              class="w-full md:w-auto px-8 py-3 text-base font-medium"
+              size="lg"
+            >
+              <Icon name="material-symbols:arrow-forward" class="mr-2" />
+              Teruskan
+            </rs-button>
+          </div>
+          
+          <!-- Warning message for "lain-lain" selection -->
+          <!-- <div v-if="selectedType === 'lain-lain'" class="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+            <div class="flex items-start">
+              <Icon name="material-symbols:warning" class="text-orange-600 mt-1 mr-3 flex-shrink-0" />
+              <div>
+                <h4 class="font-medium text-orange-800 mb-1">Perhatian</h4>
+                <p class="text-sm text-orange-700 mb-3">
+                  Permohonan jenis "Lain-lain" sedang dalam pembangunan. Untuk masa ini, hanya permohonan "Bencana" yang boleh diproses.
+                </p>
+                <rs-button 
+                  variant="outline" 
+                  size="sm"
+                  @click="selectedType = ''"
+                  class="text-orange-600 border-orange-300 hover:bg-orange-100"
+                >
+                  Tukar Pilihan
+                </rs-button>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+// ============================================================================
+// IMPORTS
+// ============================================================================
+import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
+// ============================================================================
+// COMPOSABLES & SETUP
+// ============================================================================
 const toast = useToast();
 const router = useRouter();
 
+// ============================================================================
+// PAGE META
+// ============================================================================
 definePageMeta({
   title: "Isi Permohonan Ringkas",
 });
 
+// ============================================================================
+// REACTIVE STATE
+// ============================================================================
+// Modal state
+const showSelectionModal = ref(false);
+const selectedType = ref('');
+
+// Form state
+const currentStep = ref(1);
+const totalStep = 11;
+
+// Breadcrumb
 const breadcrumb = ref([
   {
     name: "Borang Permohonan Perseorangan",
     type: "current",
-    path: "/BF-PRF/AS/QS/02",
+    path: "/BF-PRF/AS/QS-S/02/selflain",
   },
 ]);
 
-const currentStep = ref(1);
-const totalStep = 10;
-
-// Define steps for progress indicator
+// Steps configuration
 const steps = [
-  { id: 1, label: "Peribadi" },
-  { id: 2, label: "Kesihatan" },
-  { id: 3, label: "Pasangan" },
-  { id: 4, label: "Alamat" },
-  { id: 5, label: "Pekerjaan" },
-  { id: 6, label: "Tanggungan" },
-  { id: 7, label: "Waris" },
-  { id: 8, label: "Pengesahan" },
-  { id: 9, label: "Bermastautin" },
-  { id: 10, label: "Pegawai" }
+  { id: 1, label: "Penilaian" },
+  { id: 2, label: "Peribadi" },
+  { id: 3, label: "Kesihatan" },
+  { id: 4, label: "Pasangan" },
+  { id: 5, label: "Alamat" },
+  { id: 6, label: "Pekerjaan" },
+  { id: 7, label: "Tanggungan" },
+  { id: 8, label: "Waris" },
+  { id: 9, label: "Pengesahan" },
+  { id: 10, label: "Bermastautin" },
+  { id: 11, label: "Pegawai" }
 ];
 
-// Form data structure
+// ============================================================================
+// FORM DATA STRUCTURE
+// ============================================================================
 const formData = ref({
   personalInfo: {
     idValue: "",
     idNumber: "",
-    idDocument: null, // Add this line
+    idDocument: null,
     name: "",
     islamName: "",
     phone: "",
@@ -1790,7 +2030,7 @@ const formData = ref({
     maritalStatus: "",
     healthStatus: "",
     islamDate: "",
-    islamCertificate: null, // Add this line
+    islamCertificate: null,
     kfamDate: "",
     email: "",
     citizenship: "",
@@ -1801,14 +2041,14 @@ const formData = ref({
     polygamyStatus: "",
     wivesCount: "",
     wives: [],
-    dependentsCount: "", // Add this line
+    dependentsCount: "",
   },
   healthInfo: {
     status: "",
     details: "",
     chronicIllnessDoc: null,
-    disabilityDoc: null, // Add this line
-    disasterDocument: null, // Add this line
+    disabilityDoc: null,
+    disasterDocument: null,
   },
   spouseInfo: [
     {
@@ -1816,7 +2056,7 @@ const formData = ref({
       idNumber: "",
       name: "",
       supportDoc: null,
-      idDocument: null, // Add this line
+      idDocument: null,
     }
   ],
   addressInfo: {
@@ -1894,16 +2134,29 @@ const formData = ref({
     documents: [],
     additionalNotes: '',
   },
+  registrationOfficer: {
+    namaPegawai: "",
+    jawatan: "",
+    pejabat: "",
+    tarikhPendaftaran: "",
+    ulasan: "",
+    dokumenPendaftaran: null
+  },
 });
 
+// Additional form state
 const statusKahwin = ref(null);
 
-// Options for select fields
+// ============================================================================
+// OPTIONS & CONFIGURATIONS
+// ============================================================================
+// ID Type Options
 const idTypeOptions = [
   { label: "Kad Pengenalan", value: "ic" },
   { label: "Foreign Id", value: "foreign-id" },
 ];
 
+// Marital Status Options
 const maritalStatusOptions = [
   { label: "Bujang", value: "single" },
   { label: "Berkahwin", value: "married" },
@@ -1912,6 +2165,7 @@ const maritalStatusOptions = [
   { label: "Bercerai", value: "divorced" },
 ];
 
+// Health Status Options
 const healthStatusOptions = [
   { label: "Sihat", value: "sihat" },
   { label: "Kurang Upaya", value: "disabled" },
@@ -1924,6 +2178,7 @@ const healthStatusOptionsExtended = [
   { label: "Warga Emas", value: "elderly" },
 ];
 
+// Residence Status Options
 const residenceStatusOptions = [
   { label: "Milik Sendiri", value: "milik-sendiri" },
   { label: "Sewa", value: "sewa" },
@@ -1931,14 +2186,15 @@ const residenceStatusOptions = [
   { label: "Lain-lain", value: "lain-lain" },
 ];
 
+// Education Level Options
 const educationLevelOptions = [
   { label: "Sekolah", value: "sekolah" },
   { label: "Tidak Bersekolah", value: "tidak-bersekolah" },
   { label: "Bekerja", value: "bekerja" },
   { label: "Tidak Bekerja", value: "tidak-bekerja" },
-  // Add more education levels as needed
 ];
 
+// Relationship Options
 const relationshipOptions = [
   { label: "Anak", value: "child" },
   { label: "Ibu Bapa", value: "parent" },
@@ -1947,6 +2203,7 @@ const relationshipOptions = [
   { label: "Lain-lain", value: "other" },
 ];
 
+// Income Source Options
 const incomeSourceOptions = [
   { label: "Gaji", value: "salary" },
   { label: "Bekerja Sendiri", value: "self-employed" },
@@ -1955,18 +2212,21 @@ const incomeSourceOptions = [
   { label: "Lain-lain", value: "other" },
 ];
 
+// Employment Sector Options
 const employmentSectorOptions = [
   { label: "Kerajaan", value: "government" },
   { label: "Swasta", value: "private" },
   { label: "Sendiri", value: "self-employed" },
 ];
 
+// Position Status Options
 const positionStatusOptions = [
   { label: "Tetap", value: "permanent" },
   { label: "Kontrak", value: "contract" },
   { label: "Sementara", value: "temporary" },
 ];
 
+// Bank Options with SWIFT Codes
 const bankOptions = [
   { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
   { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
@@ -1985,6 +2245,7 @@ const bankOptions = [
   { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" },
 ];
 
+// Religion Options
 const religionOptions = [
   { label: "Islam", value: "islam" },
   { label: "Kristian", value: "kristian" },
@@ -1993,40 +2254,81 @@ const religionOptions = [
   { label: "Lain-lain", value: "lain" }
 ];
 
+// Wives Count Options
 const wivesCountOptions = [
   { label: "2", value: 2 },
   { label: "3", value: 3 },
   { label: "4", value: 4 }
 ];
 
-// Computed properties
+// District Options
+const districtOptions = [
+  { label: 'Gombak', value: 'gombak' },
+  { label: 'Hulu Langat', value: 'hulu-langat' },
+  { label: 'Hulu Selangor', value: 'hulu-selangor' },
+  { label: 'Klang', value: 'klang' },
+  { label: 'Kuala Langat', value: 'kuala-langat' },
+  { label: 'Kuala Selangor', value: 'kuala-selangor' },
+  { label: 'Petaling', value: 'petaling' },
+  { label: 'Sabak Bernam', value: 'sabak-bernam' },
+  { label: 'Sepang', value: 'sepang' },
+  { label: 'Shah Alam', value: 'shah-alam' }
+];
+
+// Kariah Options
+const kariahOptions = [
+  { label: 'Masjid Negeri', value: 'masjid-negeri' },
+  { label: 'Masjid Sultan Salahuddin Abdul Aziz Shah', value: 'masjid-sultan-salahuddin' },
+  { label: 'Masjid Al-Azim Pandan Indah', value: 'masjid-al-azim' },
+  { label: 'Masjid Al-Amin Bangi', value: 'masjid-al-amin' },
+];
+
+// ============================================================================
+// COMPUTED PROPERTIES
+// ============================================================================
+// Check if user has spouse
 const hasSpouse = computed(() => {
   return ["married", "widower", "widow"].includes(
     formData.value.personalInfo.maritalStatus
   );
 });
 
+// Check if user is muallaf
 const isMuallaf = computed(() => {
-  // Logic to determine if applicant is muallaf
-  // This might need to be adjusted based on your actual requirements
   return false;
 });
 
+// Check if "Tidak mendesak" is selected
 const isTidakMendesakSelected = computed(() => {
   return formData.value.initialAssessment.keperluanMendesak.includes('tidakMendesak');
 });
 
+// Check if "Lain" input should be shown
 const showLainInput = computed(() => {
   return formData.value.initialAssessment.keperluanMendesak.includes('lain');
 });
 
-// Computed property to get SWIFT code for selected bank
+// Check if form should be disabled
+const isFormDisabled = computed(() => {
+  // Disable form when modal is showing at step 2
+  if (showSelectionModal.value && currentStep.value === 2) {
+    return true;
+  }
+  
+  // Enable form for all other cases
+  return false;
+});
+
+// Get SWIFT code for selected bank
 const selectedBankSwiftCode = computed(() => {
   const selectedBank = bankOptions.find(bank => bank.value === formData.value.personalInfo.bankName);
   return selectedBank ? selectedBank.swiftCode : '';
 });
 
-// Methods
+// ============================================================================
+// METHODS
+// ============================================================================
+// Form utility methods
 const getPlaceholder = () => {
   switch (formData.value.personalInfo.idValue) {
     case "ic":
@@ -2040,6 +2342,7 @@ const getPlaceholder = () => {
   }
 };
 
+// Dependent management methods
 const addSchoolDependent = () => {
   formData.value.schoolDependents.push({
     kkid: "",
@@ -2057,7 +2360,7 @@ const addSchoolDependent = () => {
     healthCost: "",
     passportStartDate: "",
     passportEndDate: "",
-    idDocument: null, // Add this line
+    idDocument: null,
   });
 };
 
@@ -2086,7 +2389,7 @@ const addHeir = () => {
   formData.value.heirs.push({
     name: "",
     phone: "",
-    relationship: "", // Add this line
+    relationship: "",
   });
 };
 
@@ -2094,13 +2397,14 @@ const removeHeir = (index) => {
   formData.value.heirs.splice(index, 1);
 };
 
+// Spouse management methods
 const addSpouse = () => {
   formData.value.spouseInfo.push({
     idType: "",
     idNumber: "",
     name: "",
     supportDoc: null,
-    idDocument: null, // Add this line
+    idDocument: null,
   });
 };
 
@@ -2108,38 +2412,21 @@ const removeSpouse = (index) => {
   formData.value.spouseInfo.splice(index, 1);
 };
 
+// Form submission methods
 const handleSubmit = async () => {
   try {
-  // Handle form submission
-  console.log("Form submitted:", formData.value);
-  // Add your submission logic here (API call, etc.)
-
+    console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
-    
-    // Wait for 2 seconds before navigating
-    // setTimeout(() => {
-      router.push("/BF-PRF/AS/FR/04");
-    // }, 2000);
+    router.push("/BF-PRF/AS/FR/04");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);
   }
 };
 
-const prevStep = () => {
-  currentStep.value--;
-};
-
-const nextStep = () => {
-  currentStep.value++;
-};
-
 const handleSave = async () => {
   try {
-    // Handle form saving
     console.log("Form saved:", formData.value);
-    // Add your save logic here (API call, etc.)
-
     toast.success("Permohonan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya disimpan");
@@ -2147,18 +2434,32 @@ const handleSave = async () => {
   }
 };
 
+// Step navigation methods
+const prevStep = () => {
+  currentStep.value--;
+};
+
+const nextStep = () => {
+  // Show selection modal when moving to step 2
+  if (currentStep.value === 1) {
+    showSelectionModal.value = true;
+  } else {
+    currentStep.value++;
+  }
+};
+
+// Form event handlers
 const handleKeperluanChange = (value) => {
-  // If "Tidak mendesak" is selected, clear all other selections
   if (value.includes('tidakMendesak')) {
     formData.value.initialAssessment.keperluanMendesak = ['tidakMendesak'];
   }
   
-  // If "Selain dari di atas" is unselected, clear the additional input
   if (!value.includes('lain')) {
     formData.value.initialAssessment.lainKeperluan = '';
   }
 };
 
+// Location methods
 const selectAssistanceType = () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -2175,25 +2476,6 @@ const selectAssistanceType = () => {
   }
 };
 
-const districtOptions = [
-  { label: 'Gombak', value: 'gombak' },
-  { label: 'Hulu Langat', value: 'hulu-langat' },
-  { label: 'Hulu Selangor', value: 'hulu-selangor' },
-  { label: 'Klang', value: 'klang' },
-  { label: 'Kuala Langat', value: 'kuala-langat' },
-  { label: 'Kuala Selangor', value: 'kuala-selangor' },
-  { label: 'Petaling', value: 'petaling' },
-  { label: 'Sabak Bernam', value: 'sabak-bernam' },
-  { label: 'Sepang', value: 'sepang' },
-  { label: 'Shah Alam', value: 'shah-alam' }
-];
-const kariahOptions = [
-  { label: 'Masjid Negeri', value: 'masjid-negeri' },
-  { label: 'Masjid Sultan Salahuddin Abdul Aziz Shah', value: 'masjid-sultan-salahuddin' },
-  { label: 'Masjid Al-Azim Pandan Indah', value: 'masjid-al-azim' },
-  { label: 'Masjid Al-Amin Bangi', value: 'masjid-al-amin' },
-  // ... add more kariah as needed ...
-];
 const selectAddressLocation = () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -2210,17 +2492,47 @@ const selectAddressLocation = () => {
   }
 };
 
-// Watchers
+// Modal methods
+const selectType = (type) => {
+  selectedType.value = type;
+};
+
+const confirmSelection = () => {
+  if (selectedType.value) {
+    showSelectionModal.value = false;
+    
+    if (selectedType.value === 'bencana') {
+      formData.value.personalInfo.assistanceType = 'bencana';
+      formData.value.healthInfo.status = 'bencana';
+      toast.success('Jenis permohonan: Bencana');
+    } else if (selectedType.value === 'lain-lain') {
+      formData.value.personalInfo.assistanceType = 'lain-lain';
+      toast.success('Jenis permohonan: Lain-lain');
+    }
+    
+    // Advance to step 2 (Maklumat Peribadi Asnaf)
+    currentStep.value = 2;
+  }
+};
+
+const changeSelection = () => {
+  showSelectionModal.value = true;
+};
+
+// ============================================================================
+// WATCHERS
+// ============================================================================
+// Watch marital status changes
 watch(
   () => formData.value.personalInfo.maritalStatus,
   (newVal) => {
     if (!hasSpouse.value) {
-      // Clear spouse info if no spouse
       formData.value.spouseInfo = [];
     }
   }
 );
 
+// Watch wives count changes
 watch(
   () => formData.value.personalInfo.wivesCount,
   (newVal) => {
@@ -2236,6 +2548,7 @@ watch(
   }
 );
 
+// Watch polygamy status changes
 watch(
   () => formData.value.personalInfo.polygamyStatus,
   (newVal) => {
@@ -2246,6 +2559,7 @@ watch(
   }
 );
 
+// Watch marriage status changes
 watch(
   () => statusKahwin.value,
   (newVal) => {
@@ -2257,16 +2571,36 @@ watch(
   }
 );
 
-// Watcher to update SWIFT code when bank selection changes
+// Watch bank selection for SWIFT code
 watch(
   () => formData.value.personalInfo.bankName,
   (newVal) => {
     if (newVal) {
       const selectedBank = bankOptions.find(bank => bank.value === newVal);
-      formData.value.personalInfo.swiftCode = selectedBank ? selectedBank.swiftCode : '';
+      if (selectedBank) {
+        formData.value.personalInfo.swiftCode = selectedBank.swiftCode;
+      }
     } else {
       formData.value.personalInfo.swiftCode = '';
     }
   }
 );
+
+// Watch modal state to prevent closing without selection
+watch(
+  () => showSelectionModal.value,
+  (newVal) => {
+    if (!newVal && !selectedType.value && currentStep.value === 2) {
+      showSelectionModal.value = true;
+    }
+  }
+);
+
+// ============================================================================
+// LIFECYCLE HOOKS
+// ============================================================================
+onMounted(() => {
+  showSelectionModal.value = false;
+  selectedType.value = '';
+});
 </script>

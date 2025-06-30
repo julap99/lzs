@@ -282,7 +282,7 @@
       position="center"
     >
       <template #body>
-        <div class="max-h-[80vh] overflow-y-auto">
+        <div class="overflow-y-auto">
           <FormKit
             type="form"
             id="candidateForm"

@@ -742,14 +742,21 @@ export default [
           {
             title: "Self Service Pendaftaran Pantas Perseorangan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/QS/02",
+            path: "/BF-PRF/AS/QS-S/02",
             child: [],
             meta: {},
           },
           {
             title: "Self Service Pendaftaran Lengkap",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/FR/02",
+            path: "/BF-PRF/AS/FR-S/02",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Self Service Kemaskini",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/UP-S/02",
             child: [],
             meta: {},
           },
@@ -763,14 +770,14 @@ export default [
           {
             title: "Pendaftaran Pantas Perseorangan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/QS-S/01",
+            path: "/BF-PRF/AS/QS/01",
             child: [],
             meta: {},
           },
           {
             title: "Pendaftaran Lengkap",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/FR-S/01",
+            path: "/BF-PRF/AS/FR/01",
             child: [],
             meta: {},
           },
@@ -1277,14 +1284,58 @@ export default [
             title: "Bancian/Asnaf Review/Bantuan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PE/AB",
-            child: [],
+            child: [
+              {
+                title: "Senarai Elaun Penolong Amil",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PA/PE/AB",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Senarai Elaun Penolong Amil (JPPA)",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PA/PE/AB/Paparan_JPPA",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Senarai Elaun Penolong Amil (Ketua JPPA)",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PA/PE/AB/Paparan_Ketua_JPPA",
+                child: [],
+                meta: {},
+              },
+            ],
             meta: {},
           },
           {
             title: "Mesyuarat/Program",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PE/MP",
-            child: [],
+            child: [
+              {
+                title: "Senarai Elaun Penolong Amil",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PA/PE/MP",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Senarai Elaun Penolong Amil (JPPA)",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PA/PE/MP/Paparan_JPPA",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Senarai Elaun Penolong Amil (Ketua JPPA)",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PA/PE/MP/Paparan_Ketua_JPPA",
+                child: [],
+                meta: {},
+              },
+            ],
             meta: {},
           },
         ],
@@ -1299,7 +1350,28 @@ export default [
     description: "Pentadbir Sistem",
     child: [
       {
-        title: "Peranan & Kebenaran",
+        title: "Pengurusan Pengguna",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Daftar Pengguna",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PS/PP/daftar-pengguna",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Pengguna",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PS/PP/senarai-pengguna",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Pengurusan Peranan & Kebenaran Pengguna",
         icon: "iconamoon:component-fill",
         child: [
           {
@@ -1334,13 +1406,34 @@ export default [
         meta: {},
       },
       {
-        title: "Penyelenggaraan kod",
+        title: "Penyelenggaraan Kod",
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Admin",
+            title: "Konfigurasi Kategori",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PS/PK/admin",
+            path: "/BF-PS/PK/konfigurasi-kategori",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Konfigurasi Kod",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PS/PK/konfigurasi-kod",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Pengurusan Audit Trail",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Carian Audit Trail",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PS/PAT/carian-audit-trail",
             child: [],
             meta: {},
           },

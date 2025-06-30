@@ -155,7 +155,7 @@
     <rs-modal
       v-model="showSuccessModal"
       title="Berjaya"
-      size="sm"
+      size="md"
       position="center"
     >
       <template #body>
@@ -165,8 +165,11 @@
             class="text-green-500 mx-auto mb-4"
             size="48"
           />
-          <p class="text-gray-700">
-            Maklumat pengiraan elaun telah berjaya disimpan.
+          <p class="text-gray-700 mb-2">
+            Maklumat elaun untuk Batch <span class="font-semibold text-blue-600">{{ batchId }}</span> telah berjaya disimpan!
+          </p>
+          <p class="text-sm text-gray-600">
+            Batch ini akan dipaparkan dalam senarai untuk semakan dan sokongan JPPA.
           </p>
         </div>
       </template>
@@ -209,6 +212,7 @@ const breadcrumb = ref([
 const isSubmitting = ref(false);
 const showSuccessModal = ref(false);
 const showCalculationTable = ref(false);
+const batchId = ref('BATCH/2024/015'); // Mock batch ID
 
 // Mock data for dropdowns
 const kariahCategories = [
@@ -244,73 +248,54 @@ const isEligible = computed(() => {
 
 const penolongAmil = ref([
   {
-    id: 1,
+    id: 'PA001',
     name: 'Ahmad bin Abdullah',
     activities: [
-      {
-        id: 1,
-        name: 'Kutipan Zakat Kariah',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 2,
-        name: 'Agihan Bantuan Asnaf',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 3,
-        name: 'Program Tazkirah',
-        allowanceRate: '500.00'
-      }
+      { id: 'B001', name: 'Bancian Baru', allowanceRate: '30.00' },
+      { id: 'AR001', name: 'Asnaf Review', allowanceRate: '20.00' },
+      { id: 'PB001', name: 'Permohonan Bantuan', allowanceRate: '20.00' }
     ]
   },
   {
-    id: 2,
-    name: 'Mohd Razak bin Ibrahim',
-    activities: [
-      {
-        id: 1,
-        name: 'Kutipan Zakat Kariah',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 2,
-        name: 'Agihan Bantuan Asnaf',
-        allowanceRate: '500.00'
-      }
-    ]
-  },
-  {
-    id: 3,
+    id: 'PA002',
     name: 'Siti Aminah binti Hassan',
     activities: [
-      {
-        id: 1,
-        name: 'Kutipan Zakat Kariah',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 2,
-        name: 'Agihan Bantuan Asnaf',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 3,
-        name: 'Program Tazkirah',
-        allowanceRate: '500.00'
-      },
-      {
-        id: 4,
-        name: 'Program Qiamullail',
-        allowanceRate: '500.00'
-      }
+      { id: 'B002', name: 'Bancian Baru', allowanceRate: '30.00' },
+      { id: 'AR002', name: 'Asnaf Review', allowanceRate: '20.00' }
+    ]
+  },
+  {
+    id: 'PA003',
+    name: 'Mohd Razak bin Ibrahim',
+    activities: [
+      { id: 'PB002', name: 'Permohonan Bantuan', allowanceRate: '20.00' },
+      { id: 'AR003', name: 'Asnaf Review', allowanceRate: '20.00' }
+    ]
+  },
+  {
+    id: 'PA004',
+    name: 'Nurul Aisyah binti Omar',
+    activities: [
+      { id: 'B003', name: 'Bancian Baru', allowanceRate: '30.00' },
+      { id: 'PB003', name: 'Permohonan Bantuan', allowanceRate: '20.00' }
+    ]
+  },
+  {
+    id: 'PA005',
+    name: 'Ali bin Hassan',
+    activities: [
+      { id: 'B001', name: 'Bancian Baru', allowanceRate: '30.00' },
+      { id: 'AR001', name: 'Asnaf Review', allowanceRate: '20.00' },
+      { id: 'PB001', name: 'Permohonan Bantuan', allowanceRate: '20.00' }
     ]
   }
 ]);
 
 const totalAllowance = computed(() => {
   return penolongAmil.value.reduce((total, pa) => {
-    return total + (pa.activities.length * 500)
+    return total + pa.activities.reduce((sum, activity) => {
+      return sum + parseFloat(activity.allowanceRate)
+    }, 0)
   }, 0).toFixed(2)
 });
 
@@ -335,7 +320,7 @@ const handleKira = () => {
 };
 
 const handleSimpan = () => {
-  navigateTo('/BF-PA/PE/AB/02');
+  showSuccessModal.value = true;
 };
 </script>
 

@@ -28,12 +28,12 @@ const processing = ref(false);
 const breadcrumb = ref([
   {
     name: "Profiling",
-    type: "current",
+    type: "link",
     path: "/BF-PRF/AS/FR/07",
   },
   {
     name: "Asnaf",
-    type: "current",
+    type: "link",
     path: "/BF-PRF/AS/FR/07",
   },
   {

@@ -76,7 +76,7 @@
                 @click="prosesKeluarSingle(data.value)"
               >
                 <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
-                Keluarkan
+                Proses Penentuan Keluar Asnaf
               </rs-button>
               <span 
                 v-else
@@ -120,7 +120,7 @@
           Adakah anda pasti untuk memproses keluar asnaf ini?
         </p>
         <p class="text-sm text-gray-600 mb-4">
-          Tindakan ini akan memproses keluar asnaf tanpa mengubah kategori.
+          Tindakan ini akan memproses keluar asnaf untuk menentukan status terkini asnaf
         </p>
       </template>
       <template #footer>
@@ -129,7 +129,7 @@
             Batal
           </rs-button>
           <rs-button variant="success" @click="confirmProsesKeluar">
-            Keluarkan
+            Teruskan
           </rs-button>
         </div>
       </template>
@@ -146,21 +146,21 @@ definePageMeta({
 });
 
 const breadcrumb = ref([
-  {
-    name: "BF-PRF",
-    type: "link",
-    path: "/BF-PRF",
-  },
-  {
-    name: "AS",
-    type: "link",
-    path: "/BF-PRF/AS",
-  },
-  {
-    name: "KA",
-    type: "link",
-    path: "/BF-PRF/AS/KA",
-  },
+  // {
+  //   name: "BF-PRF",
+  //   type: "link",
+  //   path: "/BF-PRF",
+  // },
+  // {
+  //   name: "AS",
+  //   type: "link",
+  //   path: "/BF-PRF/AS",
+  // },
+  // {
+  //   name: "KA",
+  //   type: "link",
+  //   path: "/BF-PRF/AS/KA",
+  // },
   {
     name: "Proses Keluar",
     type: "current",
@@ -172,7 +172,7 @@ const breadcrumb = ref([
 const tableFields = [
   "namaAsnaf",
   "kategori",
-  "tarikhAkhir",
+  "tarikhTamatPembangunan",
   "noTelefon",
   "tindakan"
 ];
@@ -200,7 +200,7 @@ const asnafList = ref([
   {
     namaAsnaf: "Ahmad bin Abdullah",
     kategori: "Fakir",
-    tarikhAkhir: "2020-01-15",
+    tarikhTamatPembangunan: "2025-05-15",
     noTelefon: "0123456789",
     tindakan: { id: "ASN-2024-001" },
     isProcessed: false
@@ -208,7 +208,7 @@ const asnafList = ref([
   {
     namaAsnaf: "Siti binti Ali",
     kategori: "Miskin",
-    tarikhAkhir: "2020-03-20",
+    tarikhTamatPembangunan: "2025-06-20",
     noTelefon: "0123456788",
     tindakan: { id: "ASN-2024-002" },
     isProcessed: false
@@ -216,7 +216,7 @@ const asnafList = ref([
   {
     namaAsnaf: "Mohammad bin Hassan",
     kategori: "Fakir",
-    tarikhAkhir: "2021-06-10",
+    tarikhTamatPembangunan: "2025-06-10",
     noTelefon: "0123456787",
     tindakan: { id: "ASN-2024-003" },
     isProcessed: false
@@ -224,7 +224,7 @@ const asnafList = ref([
   {
     namaAsnaf: "Fatimah binti Omar",
     kategori: "Miskin",
-    tarikhAkhir: "2020-08-25",
+    tarikhTamatPembangunan: "2025-04-25",
     noTelefon: "0123456786",
     tindakan: { id: "ASN-2024-004" },
     isProcessed: false
@@ -232,7 +232,7 @@ const asnafList = ref([
   {
     namaAsnaf: "Abdul Rahman bin Ismail",
     kategori: "Fakir",
-    tarikhAkhir: "2021-02-14",
+    tarikhTamatPembangunan: "2025-06-14",
     noTelefon: "0123456785",
     tindakan: { id: "ASN-2024-005" },
     isProcessed: false
@@ -240,7 +240,7 @@ const asnafList = ref([
   {
     namaAsnaf: "Zainab binti Ahmad",
     kategori: "Miskin",
-    tarikhAkhir: "2020-11-30",
+    tarikhTamatPembangunan: "2025-05-30",
     noTelefon: "0123456784",
     tindakan: { id: "ASN-2024-006" },
     isProcessed: false
@@ -248,7 +248,7 @@ const asnafList = ref([
   {
     namaAsnaf: "Ibrahim bin Yusof",
     kategori: "Fakir",
-    tarikhAkhir: "2019-09-05",
+    tarikhTamatPembangunan: "2025-09-05",
     noTelefon: "0123456783",
     tindakan: { id: "ASN-2024-007" },
     isProcessed: false
@@ -329,8 +329,8 @@ const confirmProsesKeluar = () => {
   // You can use SweetAlert2 or any notification system here
   console.log('Proses keluar berjaya');
 
-  // Redirect to /BF-PRF/AS/FR/04
-  router.push('/BF-PRF/AS/FR/04');
+  // Redirect to /BF-PRF/AS/KA/proses-keluar/hadkifayah
+  router.push('/BF-PRF/AS/KA/proses-keluar/hadkifayah');
 };
 
 const refreshData = () => {

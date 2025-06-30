@@ -1,7 +1,9 @@
 <template>
   <div>
+    <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- ========================= Section 1 ========================= -->
     <rs-card v-if="currentSection == 1" class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
@@ -15,7 +17,7 @@
       </template>
 
       <template #body>
-        <!-- Progress indicator -->
+        <!-- Progress indicator for Section A -->
         <div class="mb-6">
           <div class="flex justify-between mb-2">
             <div
@@ -36,7 +38,7 @@
           </div>
         </div>
 
-        <!-- Section A Form -->
+        <!-- ========================= Section A: Maklumat Peribadi Asnaf ========================= -->
         <FormKit
           v-if="currentStepA == 1"
           type="form"
@@ -353,22 +355,23 @@
                 v-model="formData.nama_bank"
               />
 
-              <FormKit
+                <FormKit
                 v-if="formData.nama_bank"
-                type="text"
-                name="swift_code"
-                label="SWIFT Code"
-                v-model="formData.swift_code"
-                :value="selectedBankSwiftCode"
-                readonly
-                help="SWIFT Code untuk bank yang dipilih"
-              />
+                  type="text"
+                  name="swift_code"
+                  label="SWIFT Code"
+                  v-model="formData.swift_code"
+                  :value="selectedBankSwiftCode"
+                  readonly
+                  help="SWIFT Code untuk bank yang dipilih"
+                />
 
               <FormKit
                 type="text"
                 name="no_akaun_bank"
                 label="No Akaun Bank"
                 validation="required"
+                v-model="formData.no_akaun_bank"
               />
 
               <FormKit
@@ -376,6 +379,7 @@
                 name="nama_pemegang_akaun"
                 label="Nama Pemegang Akaun Bank"
                 validation="required"
+                v-model="formData.nama_pemegang_akaun"
               />
 
               <FormKit
@@ -389,11 +393,11 @@
                   { label: 'Tunai', value: 'tunai' }
                 ]"
                 validation="required"
-                v-model="caraPembayaran"
+                v-model="formData.cara_pembayaran"
               />
 
               <FormKit
-                v-if="caraPembayaran === 'tunai'"
+                v-if="formData.cara_pembayaran === 'tunai'"
                 type="select"
                 name="sebab_tunai"
                 label="Sebab Pembayaran Tunai"
@@ -403,6 +407,7 @@
                   { label: 'Disenarai Hitam', value: 'senarai_hitam' }
                 ]"
                 validation="required"
+                v-model="formData.sebab_tunai"
               />
             </div>
           </div>
@@ -414,7 +419,7 @@
           </div>
         </FormKit>
 
-        <!-- Section B Form -->
+        <!-- ========================= Section B: Maklumat Kesihatan ========================= -->
         <FormKit
           v-if="currentStepA === 2"
           type="form"
@@ -437,21 +442,21 @@
             <FormKit
               type="select"
               name="keadaan_kesihatan_sakit"
-              label="a. Keadaan Kesihatan"
+              label="Keadaan Kesihatan"
               :options="['Terlantar', 'Tidak Terlantar']"
             />
 
             <FormKit
               type="select"
               name="kos_penjagaan_sakit"
-              label="b. Kos Penjagaan"
+              label="Kos Penjagaan"
               :options="['Berbayar', 'Tidak berbayar']"
             />
 
             <FormKit
               type="number"
               name="perbelanjaan_bulanan_sakit"
-              label="c. Jumlah Perbelanjaan Bulanan (RM)"
+              label="Jumlah Perbelanjaan Bulanan (RM)"
               step="0.01"
               min="0"
             />
@@ -459,7 +464,7 @@
             <FormKit
               type="file"
               name="dokumen_sakit_kronik"
-              label="d. Upload Dokumen Sakit Kronik"
+              label="Upload Dokumen Sakit Kronik"
               accept=".pdf,.jpg,.jpeg,.png"
               help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
               validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -470,28 +475,28 @@
             <FormKit
               type="select"
               name="kesempurnaan_fizikal"
-              label="a. Kesempurnaan Fizikal"
+              label="Kesempurnaan Fizikal"
               :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
             />
 
             <FormKit
               type="select"
               name="sebab_kecacatan"
-              label="b. Sebab Kecacatan (Jika Cacat)"
+              label="Sebab Kecacatan (Jika Cacat)"
               :options="['Sejak Lahir', 'Musibah']"
             />
 
             <FormKit
               type="select"
               name="tahap_kecacatan"
-              label="c. Tahap Kecacatan"
+              label="Tahap Kecacatan"
               :options="['Terlantar', 'Tidak Terlantar']"
             />
 
             <FormKit
               type="number"
               name="perbelanjaan_bulanan_oku"
-              label="d. Jumlah Perbelanjaan Bulanan (RM)"
+              label="Jumlah Perbelanjaan Bulanan (RM)"
               step="0.01"
               min="0"
             />
@@ -499,7 +504,7 @@
             <FormKit
               type="file"
               name="dokumen_oku"
-              label="e. Upload Dokumen OKU"
+              label="Upload Dokumen OKU"
               accept=".pdf,.jpg,.jpeg,.png"
               help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
               validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -510,21 +515,21 @@
             <FormKit
               type="select"
               name="keadaan_kesihatan_uzur"
-              label="a. Keadaan Kesihatan"
+              label="Keadaan Kesihatan"
               :options="['Terlantar', 'Tidak Terlantar']"
             />
 
             <FormKit
               type="select"
               name="kos_penjagaan_uzur"
-              label="b. Kos Penjagaan"
+              label="Kos Penjagaan"
               :options="['Berbayar', 'Tidak berbayar']"
             />
 
             <FormKit
               type="number"
               name="perbelanjaan_bulanan_uzur"
-              label="c. Jumlah Perbelanjaan Bulanan (RM)"
+              label="Jumlah Perbelanjaan Bulanan (RM)"
               step="0.01"
               min="0"
             />
@@ -532,7 +537,7 @@
             <FormKit
               type="file"
               name="dokumen_uzur"
-              label="d. Upload Dokumen Uzur"
+              label="Upload Dokumen Uzur"
               accept=".pdf,.jpg,.jpeg,.png"
               help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
               validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -552,7 +557,7 @@
           </div>
         </FormKit>
 
-        <!-- Section C Form -->
+        <!-- ========================= Section C: Kemahiran ========================= -->
         <FormKit
           v-if="currentStepA === 3"
           type="form"
@@ -595,7 +600,7 @@
           </div>
         </FormKit>
 
-        <!-- Section D Form -->
+        <!-- ========================= Section D: Maklumat Kediaman ========================= -->
         <FormKit
           v-if="currentStepA === 4"
           type="form"
@@ -828,7 +833,7 @@
           </div>
         </FormKit>
 
-        <!-- Section E Form -->
+        <!-- ========================= Section E: Maklumat Pinjaman Harta ========================= -->
         <FormKit
           v-if="currentStepA === 5"
           type="form"
@@ -906,7 +911,7 @@
           </div>
         </FormKit>
 
-        <!-- Section F Form -->
+        <!-- ========================= Section F: Maklumat Pemilikan ========================= -->
         <FormKit
           v-if="currentStepA === 6"
           type="form"
@@ -980,7 +985,7 @@
           </div>
         </FormKit>
 
-        <!-- Section G Form - Maklumat Waris -->
+        <!-- ========================= Section G: Maklumat Waris ========================= -->
         <FormKit
           v-if="currentStepA === 7"
           type="form"
@@ -1070,7 +1075,7 @@
           </div>
         </FormKit>
 
-        <!-- Section H Form - Pengesahan -->
+        <!-- ========================= Section H: Pengesahan ========================= -->
         <FormKit
           v-if="currentStepA === 8"
           type="form"
@@ -1083,7 +1088,7 @@
           </h3>
 
           <!-- <div class="mb-6">
-            <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
+            <h4 class="font-medium mb-3">1. Bantuan Penolong Amil</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
               <FormKit
@@ -1208,7 +1213,7 @@
           </div>
         </FormKit>
 
-        <!-- Section I Form - Pengesahan Bermastautin -->
+        <!-- ========================= Section I: Pengesahan Bermastautin ========================= -->
         <FormKit
           v-if="currentStepA === 9"
           type="form"
@@ -1278,12 +1283,12 @@
               >Kembali</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Seterusnya ke Maklumat Pegawai Pendaftar</rs-button
+              >Seterusnya ke Maklumat Peribadi Tanggungan</rs-button
             >
           </div>
         </FormKit>
 
-        <!-- Section J Form - Pegawai Pendaftar -->
+        <!-- ========================= Section J: Maklumat Pegawai Pendaftar ========================= -->
         <FormKit
           v-if="currentStepA === 10"
           type="form"
@@ -1346,6 +1351,7 @@
       </template>
     </rs-card>
 
+    <!-- ========================= Section 2 ========================= -->
     <rs-card v-if="currentSection == 2" class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
@@ -1359,7 +1365,7 @@
       </template>
 
       <template #body>
-        <!-- Progress indicator -->
+        <!-- Progress indicator for Section B -->
         <div class="mb-6">
           <div class="flex justify-between mb-2">
             <div
@@ -1380,7 +1386,7 @@
           </div>
         </div>
 
-        <!-- NEW Section B Form - Maklumat Peibadi Tanggungan -->
+        <!-- ========================= Section B1: Maklumat Peribadi Tanggungan ========================= -->
         <FormKit
           v-if="currentStepB === 1"
           type="form"
@@ -1802,21 +1808,21 @@
                   <FormKit
                     type="select"
                     name="keadaan_kesihatan_sakit_tanggungan"
-                    label="a. Keadaan Kesihatan"
+                    label="Keadaan Kesihatan"
                     :options="['Terlantar', 'Tidak Terlantar']"
                   />
 
                   <FormKit
                     type="select"
                     name="kos_penjagaan_sakit_tanggungan"
-                    label="b. Kos Penjagaan"
+                    label="Kos Penjagaan"
                     :options="['Berbayar', 'Tidak berbayar']"
                   />
 
                   <FormKit
                     type="number"
                     name="perbelanjaan_bulanan_sakit_tanggungan"
-                    label="c. Jumlah Perbelanjaan Bulanan (RM)"
+                    label="Jumlah Perbelanjaan Bulanan (RM)"
                     step="0.01"
                     min="0"
                   />
@@ -1824,7 +1830,7 @@
                   <FormKit
                     type="file"
                     name="dokumen_sakit_kronik_tanggungan"
-                    label="d. Upload Dokumen Sakit Kronik"
+                    label="Upload Dokumen Sakit Kronik"
                     accept=".pdf,.jpg,.jpeg,.png"
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1841,28 +1847,28 @@
                   <FormKit
                     type="select"
                     name="kesempurnaan_fizikal_tanggungan"
-                    label="a. Kesempurnaan Fizikal"
+                    label="Kesempurnaan Fizikal"
                     :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
                   />
 
                   <FormKit
                     type="select"
                     name="sebab_kecacatan_tanggungan"
-                    label="b. Sebab Kecacatan (Jika Cacat)"
+                    label="Sebab Kecacatan (Jika Cacat)"
                     :options="['Sejak Lahir', 'Musibah']"
                   />
 
                   <FormKit
                     type="select"
                     name="tahap_kecacatan_tanggungan"
-                    label="c. Tahap Kecacatan"
+                    label="Tahap Kecacatan"
                     :options="['Terlantar', 'Tidak Terlantar']"
                   />
 
                   <FormKit
                     type="number"
                     name="perbelanjaan_bulanan_oku_tanggungan"
-                    label="d. Jumlah Perbelanjaan Bulanan (RM)"
+                    label="Jumlah Perbelanjaan Bulanan (RM)"
                     step="0.01"
                     min="0"
                   />
@@ -1870,7 +1876,7 @@
                   <FormKit
                     type="file"
                     name="dokumen_oku_tanggungan"
-                    label="e. Upload Dokumen OKU"
+                    label="Upload Dokumen OKU"
                     accept=".pdf,.jpg,.jpeg,.png"
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1887,21 +1893,21 @@
                   <FormKit
                     type="select"
                     name="keadaan_kesihatan_uzur_tanggungan"
-                    label="a. Keadaan Kesihatan"
+                    label="Keadaan Kesihatan"
                     :options="['Terlantar', 'Tidak Terlantar']"
                   />
 
                   <FormKit
                     type="select"
                     name="kos_penjagaan_uzur_tanggungan"
-                    label="b. Kos Penjagaan"
+                    label="Kos Penjagaan"
                     :options="['Berbayar', 'Tidak berbayar']"
                   />
 
                   <FormKit
                     type="number"
                     name="perbelanjaan_bulanan_uzur_tanggungan"
-                    label="c. Jumlah Perbelanjaan Bulanan (RM)"
+                    label="Jumlah Perbelanjaan Bulanan (RM)"
                     step="0.01"
                     min="0"
                   />
@@ -1909,7 +1915,7 @@
                   <FormKit
                     type="file"
                     name="dokumen_uzur_tanggungan"
-                    label="d. Upload Dokumen Uzur"
+                    label="Upload Dokumen Uzur"
                     accept=".pdf,.jpg,.jpeg,.png"
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -2081,7 +2087,7 @@
             <!-- Question 1 -->
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
-                Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?*
+                1. Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?*
               </label>
               <FormKit
                 type="radio"
@@ -2098,7 +2104,7 @@
             <!-- Question 2 -->
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
-                Apakah keperluan tuan/puan mendesak sekarang ini?*
+                2. Apakah keperluan tuan/puan mendesak sekarang ini?*
               </label>
               <FormKit
                 type="checkbox"
@@ -2138,7 +2144,7 @@
             <!-- File Upload Section -->
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
-                Muat naik dokumen sokongan (PDF, JPG, PNG)*
+                3. Muat naik dokumen sokongan (PDF, JPG, PNG)*
               </label>
               <FormKit
                 type="file"
@@ -2184,9 +2190,6 @@ import { ref, computed, watch } from "vue";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 
-// ============================================================================
-// IMPORTS & SETUP
-// ============================================================================
 const router = useRouter();
 const toast = useToast();
 
@@ -2194,13 +2197,25 @@ definePageMeta({
   title: "Borang Permohonan Lengkap",
 });
 
-// ============================================================================
-// CONSTANTS & OPTIONS
-// ============================================================================
+const breadcrumb = ref([
+  {
+    name: "Borang Permohonan Lengkap",
+    type: "current",
+    path: "/BF-PRF/AS/FR/02",
+  },
+]);
 
-// Form Steps Configuration
-const totalStepsA = 10;
-const totalStepsB = 6;
+const processing = ref(false);
+const currentSection = ref(1);
+
+const currentStepA = ref(1);
+const totalStepsA = 9;
+const healthStatus = ref("");
+const dibantuPenolongAmil = ref("");
+const hubunganKakitanganLZS = ref("");
+const jenisIdTanggungan = ref("");
+const hubunganPemohon = ref("");
+
 
 const stepsA = [
   { id: 1, label: "Maklumat Peribadi" },
@@ -2212,9 +2227,13 @@ const stepsA = [
   { id: 7, label: "Waris" },
   { id: 8, label: "Pengesahan" },
   { id: 9, label: "Pengesahan Bermastautin" },
-  { id: 10, label: "Pegawai Pendaftar" }
+  // { id: 10, label: "Pegawai Pendaftar" }
 ];
 
+const currentStepB = ref(1);
+const totalStepsB = 6;
+
+// Define steps for progress indicator (Section B - Tanggungan)
 const stepsB = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Pendidikan" },
@@ -2224,96 +2243,31 @@ const stepsB = [
   { id: 6, label: "Penilaian" }
 ];
 
-// Form Options
-const bankOptions = [
-  { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
-  { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
-  { label: "RHB", value: "rhb", swiftCode: "RHBBMYKL" },
-  { label: "Bank Islam", value: "bank-islam", swiftCode: "BIMBMYKL" },
-  { label: "Bank Rakyat", value: "bank-rakyat", swiftCode: "BKRMYKL" },
-  { label: "Public Bank", value: "public-bank", swiftCode: "PBBEMYKL" },
-  { label: "Hong Leong Bank", value: "hong-leong", swiftCode: "HLBBMYKL" },
-  { label: "Ambank", value: "ambank", swiftCode: "ARBKMYKL" },
-  { label: "BSN", value: "bsn", swiftCode: "BSNAMYKL" },
-  { label: "Affin Bank", value: "affin", swiftCode: "PHBMMYKL" },
-  { label: "UOB", value: "uob", swiftCode: "UOVBMYKL" },
-  { label: "OCBC", value: "ocbc", swiftCode: "OCBCMYKL" },
-  { label: "Standard Chartered", value: "standard-chartered", swiftCode: "SCBLMYKL" },
-  { label: "Alliance Bank", value: "alliance", swiftCode: "MFBBMYKL" },
-  { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" }
-];
-
-const daerahOptions = [
-  { label: "Gombak", value: "gombak" },
-  { label: "Hulu Langat", value: "hulu-langat" },
-  { label: "Hulu Selangor", value: "hulu-selangor" },
-  { label: "Klang", value: "klang" },
-  { label: "Kuala Langat", value: "kuala-langat" },
-  { label: "Kuala Selangor", value: "kuala-selangor" },
-  { label: "Petaling", value: "petaling" },
-  { label: "Sabak Bernam", value: "sabak-bernam" },
-  { label: "Sepang", value: "sepang" }
-];
-
-const kariahOptions = [
-  { label: "Kariah Masjid Al-Hidayah", value: "masjid-al-hidayah" },
-  { label: "Kariah Masjid Al-Ikhlas", value: "masjid-al-ikhlas" },
-  { label: "Kariah Masjid Al-Muttaqin", value: "masjid-al-muttaqin" },
-  { label: "Kariah Masjid Al-Rahman", value: "masjid-al-rahman" },
-  { label: "Kariah Masjid Al-Salam", value: "masjid-al-salam" },
-  { label: "Kariah Masjid Al-Taqwa", value: "masjid-al-taqwa" },
-  { label: "Kariah Masjid An-Nur", value: "masjid-an-nur" },
-  { label: "Kariah Masjid Ar-Rahman", value: "masjid-ar-rahman" },
-  { label: "Kariah Masjid As-Salam", value: "masjid-as-salam" },
-  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" }
-];
-
-// ============================================================================
-// REACTIVE REFERENCES
-// ============================================================================
-
-// Navigation State
-const currentSection = ref(1);
-const currentStepA = ref(1);
-const currentStepB = ref(1);
-const processing = ref(false);
-
-// Form State
-const healthStatus = ref("");
 const healthStatusTanggungan = ref("");
-const dibantuPenolongAmil = ref("");
-const hubunganKakitanganLZS = ref("");
-const jenisIdTanggungan = ref("");
-const hubunganPemohon = ref("");
 const paymentMethod = ref("");
+
+const showLainInput = computed(() => {
+  return formData.value.keperluanMendesak?.includes('lain');
+});
+
 const tarikhMasukIslam = ref(null);
+
 const statusPoligami = ref(null);
 const bilanganIsteri = ref(null);
 const isteriList = ref([]);
-const saluranBencana = ref(null);
-const caraPembayaran = ref(null);
-const jenisId = ref(null);
-const lokasi = ref('');
-const statusKediaman = ref(null);
 
-// Loan Information
-const pemberiPinjaman = ref('');
-const jenisPinjaman = ref('');
-const bayaranBulanan = ref(null);
-const jumlahPerbelanjaan = ref(null);
-const tahunMulaPinjaman = ref(null);
-const tahunAkhirPinjaman = ref(null);
+watch(bilanganIsteri, (newVal) => {
+  const count = parseInt(newVal) || 0;
+  isteriList.value = Array(count).fill({});
+});
 
-// Breadcrumb
-const breadcrumb = ref([
-  {
-    name: "Borang Permohonan Lengkap",
-    type: "current",
-    path: "/BF-PRF/AS/FR/02",
-  },
-]);
+watch(statusPoligami, (newVal) => {
+  if (newVal !== 'ya') {
+    bilanganIsteri.value = null;
+    isteriList.value = [];
+  }
+});
 
-// Form Data
 const formData = ref({
   // Section A - Maklumat Peribadi Asnaf
   nama_ketua_keluarga: '',
@@ -2327,6 +2281,14 @@ const formData = ref({
   tarikh_masuk_islam: '',
   tarikh_masuk_kfam: '',
   status_perkahwinan: '',
+
+  // Bank Information
+  nama_bank: '',
+  no_akaun_bank: '',
+  nama_pemegang_akaun: '',
+  swift_code: '',
+  cara_pembayaran: '',
+  sebab_tunai: '',
 
   // Section B - Maklumat Kesihatan
   tahap_kesihatan: '',
@@ -2476,63 +2438,6 @@ const formData = ref({
   heirs: []
 });
 
-// ============================================================================
-// COMPUTED PROPERTIES
-// ============================================================================
-
-const showLainInput = computed(() => {
-  return formData.value.keperluanMendesak?.includes('lain');
-});
-
-const hasLoanInfo = computed(() => {
-  return pemberiPinjaman.value || 
-         jenisPinjaman.value || 
-         bayaranBulanan.value || 
-         jumlahPerbelanjaan.value || 
-         tahunMulaPinjaman.value || 
-         tahunAkhirPinjaman.value;
-});
-
-const selectedBankSwiftCode = computed(() => {
-  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank);
-  return selectedBank ? selectedBank.swiftCode : '';
-});
-
-// ============================================================================
-// WATCHERS
-// ============================================================================
-
-watch(bilanganIsteri, (newVal) => {
-  const count = parseInt(newVal) || 0;
-  isteriList.value = Array(count).fill({});
-});
-
-watch(statusPoligami, (newVal) => {
-  if (newVal !== 'ya') {
-    bilanganIsteri.value = null;
-    isteriList.value = [];
-  }
-});
-
-watch(
-  () => formData.value.nama_bank,
-  (newVal) => {
-    if (newVal) {
-      const selectedBank = bankOptions.find(bank => bank.value === newVal);
-      if (selectedBank) {
-        formData.value.swift_code = selectedBank.swiftCode;
-      }
-    } else {
-      formData.value.swift_code = '';
-    }
-  }
-);
-
-// ============================================================================
-// METHODS
-// ============================================================================
-
-// Navigation Methods
 const nextStepA = () => {
   if (currentStepA.value < totalStepsA) {
     currentStepA.value++;
@@ -2558,7 +2463,6 @@ const prevStepB = () => {
     currentStepB.value--;
   }
 };
-
 const nextSection = () => {
   currentSection.value = 2;
 };
@@ -2567,23 +2471,20 @@ const prevSection = () => {
   currentSection.value = 1;
 };
 
-const goToStepA = (stepId) => {
-  currentStepA.value = stepId;
-};
-
-const goToStepB = (stepId) => {
-  currentStepB.value = stepId;
-};
-
-// Form Submission Methods
 const submitForm = () => {
   processing.value = true;
-  navigateTo(`/BF-PRF/AS/FR/03`);
+
+  // setTimeout(() => {
+    navigateTo(`/BF-PRF/AS/FR/03`);
+  // }, 1000);
 };
 
 const handleSave = async () => {
   try {
+    // Handle form saving
     console.log("Form saved:", formData.value);
+    // Add your save logic here (API call, etc.)
+
     toast.success("Permohonan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya disimpan");
@@ -2593,16 +2494,73 @@ const handleSave = async () => {
 
 const handleSubmit = async () => {
   try {
-    console.log("Form submitted:", formData.value);
+  // Handle form submission
+  console.log("Form submitted:", formData.value);
+  // Add your submission logic here (API call, etc.)
+
     toast.success("Permohonan berjaya dikemaskini");
-    router.push("/BF-PRF/AS/UP/04");
+    
+    // Wait for 2 seconds before navigating
+    // setTimeout(() => {
+      router.push("/BF-PRF/AS/UP/04");
+    // }, 2000);
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);
   }
 };
 
-// Utility Methods
+const saluranBencana = ref(null);
+
+const caraPembayaran = ref(null);
+
+const bankOptions = [
+  { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
+  { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
+  { label: "RHB", value: "rhb", swiftCode: "RHBBMYKL" },
+  { label: "Bank Islam", value: "bank-islam", swiftCode: "BIMBMYKL" },
+  { label: "Bank Rakyat", value: "bank-rakyat", swiftCode: "BKRMYKL" },
+  { label: "Public Bank", value: "public-bank", swiftCode: "PBBEMYKL" },
+  { label: "Hong Leong Bank", value: "hong-leong", swiftCode: "HLBBMYKL" },
+  { label: "Ambank", value: "ambank", swiftCode: "ARBKMYKL" },
+  { label: "BSN", value: "bsn", swiftCode: "BSNAMYKL" },
+  { label: "Affin Bank", value: "affin", swiftCode: "PHBMMYKL" },
+  { label: "UOB", value: "uob", swiftCode: "UOVBMYKL" },
+  { label: "OCBC", value: "ocbc", swiftCode: "OCBCMYKL" },
+  { label: "Standard Chartered", value: "standard-chartered", swiftCode: "SCBLMYKL" },
+  { label: "Alliance Bank", value: "alliance", swiftCode: "MFBBMYKL" },
+  { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" }
+];
+
+const jenisId = ref(null);
+
+const daerahOptions = [
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu-langat" },
+  { label: "Hulu Selangor", value: "hulu-selangor" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Langat", value: "kuala-langat" },
+  { label: "Kuala Selangor", value: "kuala-selangor" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Sabak Bernam", value: "sabak-bernam" },
+  { label: "Sepang", value: "sepang" }
+];
+
+const kariahOptions = [
+  { label: "Kariah Masjid Al-Hidayah", value: "masjid-al-hidayah" },
+  { label: "Kariah Masjid Al-Ikhlas", value: "masjid-al-ikhlas" },
+  { label: "Kariah Masjid Al-Muttaqin", value: "masjid-al-muttaqin" },
+  { label: "Kariah Masjid Al-Rahman", value: "masjid-al-rahman" },
+  { label: "Kariah Masjid Al-Salam", value: "masjid-al-salam" },
+  { label: "Kariah Masjid Al-Taqwa", value: "masjid-al-taqwa" },
+  { label: "Kariah Masjid An-Nur", value: "masjid-an-nur" },
+  { label: "Kariah Masjid Ar-Rahman", value: "masjid-ar-rahman" },
+  { label: "Kariah Masjid As-Salam", value: "masjid-as-salam" },
+  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" }
+];
+
+const lokasi = ref('');
+
 const selectLocation = () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -2619,7 +2577,31 @@ const selectLocation = () => {
   }
 };
 
-// Heirs Management Methods
+const statusKediaman = ref(null);
+
+const pemberiPinjaman = ref('');
+const jenisPinjaman = ref('');
+const bayaranBulanan = ref(null);
+const jumlahPerbelanjaan = ref(null);
+const tahunMulaPinjaman = ref(null);
+const tahunAkhirPinjaman = ref(null);
+
+const hasLoanInfo = computed(() => {
+  return pemberiPinjaman.value || 
+         jenisPinjaman.value || 
+         bayaranBulanan.value || 
+         jumlahPerbelanjaan.value || 
+         tahunMulaPinjaman.value || 
+         tahunAkhirPinjaman.value;
+});
+
+// Computed property to get SWIFT code for selected bank
+const selectedBankSwiftCode = computed(() => {
+  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank);
+  return selectedBank ? selectedBank.swiftCode : '';
+});
+
+// Add these functions for handling heirs
 const addHeir = () => {
   formData.value.heirs.push({
     name: '',
@@ -2631,6 +2613,28 @@ const addHeir = () => {
 const removeHeir = (index) => {
   formData.value.heirs.splice(index, 1);
 };
+
+const goToStepA = (stepId) => {
+  currentStepA.value = stepId;
+};
+const goToStepB = (stepId) => {
+  currentStepB.value = stepId;
+};
+
+// Watcher to update SWIFT code when bank is selected
+watch(
+  () => formData.value.nama_bank,
+  (newVal) => {
+    if (newVal) {
+      const selectedBank = bankOptions.find(bank => bank.value === newVal);
+      if (selectedBank) {
+        formData.value.swift_code = selectedBank.swiftCode;
+      }
+    } else {
+      formData.value.swift_code = '';
+    }
+  }
+);
 </script>
 
 <style scoped></style>
