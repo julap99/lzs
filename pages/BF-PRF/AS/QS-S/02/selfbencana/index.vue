@@ -780,44 +780,48 @@
 
                 <div v-if="formData.verification.hubunganKakitanganLZS === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <FormKit
-                    type="text"
-                    name="nama_kakitangan"
-                    label="Nama Kakitangan"
+                    type="select"
+                    name="selected_kariah"
+                    label="Pilih Kariah"
                     validation="required"
-                    v-model="formData.verification.namaKakitangan"
+                    :options="kariahOptions"
+                    placeholder="Pilih Kariah"
+                    v-model="formData.verification.selectedKariah"
+                    :validation-messages="{
+                      required: 'Kariah adalah wajib'
+                    }"
                   />
 
                   <FormKit
-                    type="text"
-                    name="jawatan_kakitangan"
-                    label="Jawatan"
+                    type="select"
+                    name="selected_pak_officer"
+                    label="Pilih Nama Pegawai PAK"
                     validation="required"
-                    v-model="formData.verification.jawatanKakitangan"
+                    :options="pakOfficersOptions"
+                    placeholder="Pilih Pegawai PAK"
+                    v-model="formData.verification.selectedPakOfficer"
+                    :validation-messages="{
+                      required: 'Pegawai PAK adalah wajib'
+                    }"
+                    :disabled="!formData.verification.selectedKariah"
                   />
+                </div>
+              </div>
 
-                  <FormKit
-                    type="text"
-                    name="pejabat_kakitangan"
-                    label="Pejabat"
-                    validation="required"
-                    v-model="formData.verification.pejabatKakitangan"
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="hubungan_kakitangan"
-                    label="Hubungan"
-                    validation="required"
-                    v-model="formData.verification.hubunganKakitangan"
-                  />
-
-                  <FormKit
-                    type="date"
-                    name="tarikh_perakuan"
-                    label="Tarikh Perakuan"
-                    validation="required"
-                    v-model="formData.verification.tarikhPerakuan"
-                  />
+              <!-- PDPA Statement -->
+              <div class="mb-6">
+                <h4 class="font-medium mb-3">Pernyataan PDPA (Akta Perlindungan Data Peribadi 2010)</h4>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div class="text-sm text-gray-700 space-y-2">
+                    <p><strong>Dengan mengisi borang ini, saya mengakui dan bersetuju bahawa:</strong></p>
+                    <ol class="list-decimal list-inside space-y-1 ml-4">
+                      <li>Semua maklumat peribadi yang diberikan adalah benar dan tepat.</li>
+                      <li>Lembaga Zakat Selangor (LZS) berhak untuk mengumpul, menyimpan, memproses, dan menggunakan maklumat peribadi saya untuk tujuan pemprosesan permohonan bantuan ini.</li>
+                      <li>LZS boleh berkongsi maklumat peribadi saya dengan agensi-agensi berkaitan untuk tujuan pengesahan dan pemprosesan permohonan.</li>
+                      <li>Saya memahami bahawa maklumat peribadi saya akan dilindungi mengikut Akta Perlindungan Data Peribadi 2010.</li>
+                      <li>Saya berhak untuk mengakses, membetulkan, dan menarik balik kebenaran penggunaan maklumat peribadi saya pada bila-bila masa.</li>
+                    </ol>
+                  </div>
                 </div>
               </div>
 
@@ -843,6 +847,55 @@
                 *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
               </p>
 
+              <!-- PAK Officer Information (Readonly) -->
+              <div class="mb-6">
+                <h4 class="font-medium mb-3">Maklumat Pegawai PAK yang Mengesahkan</h4>
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Kariah</label>
+                      <div class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded">
+                        {{ getKariahLabel(formData.verification.selectedKariah) || 'Belum dipilih' }}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Nama Pegawai PAK</label>
+                      <div class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded">
+                        {{ getPakOfficerLabel(formData.verification.selectedPakOfficer) || 'Belum dipilih' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Document Information (Readonly) -->
+              <div class="mb-6">
+                <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div
+                    v-for="(doc, index) in uploadedDocuments"
+                    :key="index"
+                    class="p-4 border rounded-lg flex items-center justify-between bg-white"
+                  >
+                    <div>
+                      <p class="font-medium">{{ doc.name }}</p>
+                      <p class="text-sm text-gray-500">{{ doc.type }}</p>
+                      <p class="text-xs text-gray-400">{{ doc.size }}</p>
+                    </div>
+                    <rs-button
+                      variant="primary-outline"
+                      size="sm"
+                      @click="downloadDocument(doc)"
+                    >
+                      <Icon name="mdi:download" class="mr-1" />
+                      Muat Turun
+                    </rs-button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Original Form Fields (Hidden/Readonly) -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="text"
@@ -850,6 +903,7 @@
                   label="Nama"
                   validation="required"
                   v-model="formData.verification.namaPengesah"
+                  disabled
                 />
 
                 <FormKit
@@ -858,6 +912,7 @@
                   label="Jawatan"
                   validation="required"
                   v-model="formData.verification.jawatanPengesah"
+                  disabled
                 />
 
                 <FormKit
@@ -866,6 +921,7 @@
                   label="No Telefon"
                   validation="required"
                   v-model="formData.verification.noTelefonPengesah"
+                  disabled
                 />
 
                 <FormKit
@@ -874,6 +930,7 @@
                   label="Tarikh Pengesahan"
                   validation="required"
                   v-model="formData.verification.tarikhPengesahanPermastautin"
+                  disabled
                 />
 
                 <div class="md:col-span-2">
@@ -899,63 +956,9 @@
                   @click="prevStep"
                   >Kembali</rs-button
                 >
-                <rs-button type="submit" variant="primary" @click="nextStep"
-                  >Seterusnya ke Pegawai Pendaftar</rs-button
+                <rs-button type="submit" variant="primary" @click="handleSubmit"
+                  >Hantar Permohonan</rs-button
                 >
-              </div>
-            </div>
-
-            <!-- Step 5: Pegawai Pendaftar -->
-            <div v-if="currentStep === 5">
-              <h3 class="text-lg font-medium mb-4">E) Pegawai Pendaftar</h3>
-              <div class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormKit
-                    type="text"
-                    name="nama_penolong_amil"
-                    label="Nama "
-                    value="Ahmad bin Abi"
-                    validation="required"
-                    disabled
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="jenis_permohonan"
-                    label="Jenis Permohonan"
-                    value="Baru"
-                    validation="required"
-                    disabled
-                  />
-                  <FormKit
-                    type="text"
-                    name="kategori"
-                    label="Kategori"
-                    value="kaunter"
-                    disabled
-                  />
-
-                  <FormKit
-                    type="date"
-                    name="tarikh_proses"
-                    label="Tarikh Proses"
-                    validation="required"
-                    :value="new Date().toISOString().split('T')[0]"
-                    disabled
-                  />
-                </div>
-
-                <div class="flex justify-between gap-3 mt-6">
-                  <rs-button
-                    type="button"
-                    variant="primary-outline"
-                    @click="prevStep"
-                    >Kembali</rs-button
-                  >
-                  <rs-button type="submit" variant="primary" @click="handleSubmit"
-                    >Hantar Permohonan</rs-button
-                  >
-                </div>
               </div>
             </div>
           </FormKit>
@@ -980,7 +983,7 @@ const router = useRouter();
 
 // Reactive State
 const currentStep = ref(1);
-const totalStep = 5;
+const totalStep = 4;
 
 const breadcrumb = ref([{
   name: "Borang Permohonan Perseorangan",
@@ -992,8 +995,7 @@ const steps = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Alamat" },
   { id: 3, label: "Pengesahan" },
-  { id: 4, label: "Bermastautin" },
-  { id: 5, label: "Pegawai" }
+  { id: 4, label: "Bermastautin" }
 ];
 
 // Form Data
@@ -1018,8 +1020,14 @@ const formData = ref({
   },
   verification: {
     hubunganKakitanganLZS: "", namaKakitangan: "", jawatanKakitangan: "", pejabatKakitangan: "",
-    hubunganKakitangan: "", tarikhPerakuan: "", namaPengesah: "", jawatanPengesah: "", noTelefonPengesah: "",
-    tarikhPengesahanPermastautin: "", dokumenPengesahanPermastautin: null
+    hubunganKakitangan: "", tarikhPerakuan: "", namaPengesah: "Ustaz Ahmad bin Abdullah", jawatanPengesah: "Pegawai PAK", noTelefonPengesah: "012-3456789",
+    tarikhPengesahanPermastautin: "2024-01-15", dokumenPengesahanPermastautin: {
+      name: "pengesahan_bermastautin_ahmad_bin_ali.pdf",
+      size: 2048576,
+      lastModified: new Date('2024-01-15').getTime(),
+      type: "application/pdf"
+    }, pdpaConsent: false,
+    selectedKariah: "masjid-negeri", selectedPakOfficer: "ustaz-ahmad-abdullah"
   },
 });
 
@@ -1137,6 +1145,30 @@ const relationshipOptions = [
   { label: 'Lain-lain', value: 'lain-lain' }
 ];
 
+// PAK Officers by Kariah
+const pakOfficersByKariah = {
+  'masjid-negeri': [
+    { label: 'Ustaz Ahmad bin Abdullah', value: 'ustaz-ahmad-abdullah' },
+    { label: 'Ustazah Siti binti Mohamed', value: 'ustazah-siti-mohamed' },
+    { label: 'Ustaz Mohd bin Hassan', value: 'ustaz-mohd-hassan' }
+  ],
+  'masjid-sultan-salahuddin': [
+    { label: 'Ustaz Ismail bin Omar', value: 'ustaz-ismail-omar' },
+    { label: 'Ustazah Fatimah binti Ali', value: 'ustazah-fatimah-ali' },
+    { label: 'Ustaz Kamal bin Ibrahim', value: 'ustaz-kamal-ibrahim' }
+  ],
+  'masjid-al-azim': [
+    { label: 'Ustaz Rahman bin Sulaiman', value: 'ustaz-rahman-sulaiman' },
+    { label: 'Ustazah Aminah binti Yusof', value: 'ustazah-aminah-yusof' },
+    { label: 'Ustaz Zulkifli bin Ahmad', value: 'ustaz-zulkifli-ahmad' }
+  ],
+  'masjid-al-amin': [
+    { label: 'Ustaz Aziz bin Mohamed', value: 'ustaz-aziz-mohamed' },
+    { label: 'Ustazah Nor binti Hassan', value: 'ustazah-nor-hassan' },
+    { label: 'Ustaz Hamid bin Abdullah', value: 'ustaz-hamid-abdullah' }
+  ]
+};
+
 // Computed Properties
 const selectedBankSwiftCode = computed(() => {
   const selectedBank = bankOptions.find(bank => bank.value === formData.value.personalInfo.bankName);
@@ -1151,6 +1183,56 @@ const disasterListOptions = computed(() => {
     });
   }
   return options;
+});
+
+const pakOfficersOptions = computed(() => {
+  const selectedKariah = formData.value.verification.selectedKariah;
+  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
+});
+
+const uploadedDocuments = computed(() => {
+  const documents = [];
+  
+  // Add fake documents for demonstration
+  documents.push(
+    {
+      name: 'pengesahan_bermastautin_ahmad_bin_ali.pdf',
+      type: 'PDF Document',
+      size: '2.00 MB',
+      url: '#'
+    },
+    {
+      name: 'surat_pengesahan_penghulu.jpg',
+      type: 'JPEG Image',
+      size: '1.25 MB',
+      url: '#'
+    },
+    {
+      name: 'dokumen_sokongan_rumah.pdf',
+      type: 'PDF Document',
+      size: '3.45 MB',
+      url: '#'
+    },
+    // {
+    //   name: 'gambar_kediaman.png',
+    //   type: 'PNG Image',
+    //   size: '856 KB',
+    //   url: '#'
+    // }
+  );
+  
+  // Add the main verification document if it exists
+  if (formData.value.verification.dokumenPengesahanPermastautin) {
+    const doc = formData.value.verification.dokumenPengesahanPermastautin;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
+      url: '#'
+    });
+  }
+  
+  return documents;
 });
 
 // Methods
@@ -1255,6 +1337,12 @@ watch(() => formData.value.personalInfo.bankName, (newVal) => {
   }
 });
 
+watch(() => formData.value.addressInfo.residenceYears, (newVal) => {
+  if (newVal && newVal.trim() !== '') {
+    toast.info('Notifikasi telah dihantar kepada PAK/Kariah');
+  }
+});
+
 watch(() => formData.value.personalInfo.maritalStatus, (newVal) => {
   if (newVal === 'berkahwin') {
     // Add first spouse entry if array is empty
@@ -1265,6 +1353,11 @@ watch(() => formData.value.personalInfo.maritalStatus, (newVal) => {
     // Clear spouses array if not married
     formData.value.personalInfo.spouses = [];
   }
+});
+
+watch(() => formData.value.verification.selectedKariah, (newVal) => {
+  // Clear selected PAK officer when Kariah changes
+  formData.value.verification.selectedPakOfficer = '';
 });
 
 const addSpouse = () => {
@@ -1279,5 +1372,77 @@ const addSpouse = () => {
 
 const removeSpouse = (index) => {
   formData.value.personalInfo.spouses.splice(index, 1);
+};
+
+// Helper methods for readonly display
+const getKariahLabel = (value) => {
+  const kariahOptions = [
+    { label: 'Masjid Negeri', value: 'masjid-negeri' },
+    { label: 'Masjid Sultan Salahuddin', value: 'masjid-sultan-salahuddin' },
+    { label: 'Masjid Al-Azim', value: 'masjid-al-azim' },
+    { label: 'Masjid Al-Amin', value: 'masjid-al-amin' }
+  ];
+  const kariah = kariahOptions.find(k => k.value === value);
+  return kariah ? kariah.label : '';
+};
+
+const getPakOfficerLabel = (value) => {
+  const selectedKariah = formData.value.verification.selectedKariah;
+  const officers = pakOfficersByKariah[selectedKariah] || [];
+  const officer = officers.find(o => o.value === value);
+  return officer ? officer.label : '';
+};
+
+const getDocumentName = (file) => {
+  if (!file) return '';
+  if (typeof file === 'string') return file;
+  if (file instanceof File) return file.name;
+  if (file && file.name) return file.name;
+  return '';
+};
+
+const getDocumentSize = (file) => {
+  if (!file) return '';
+  if (file instanceof File) {
+    const sizeInBytes = file.size;
+    const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+    const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
+    if (sizeInMB >= 1) {
+      return `${sizeInMB} MB`;
+    } else {
+      return `${sizeInKB} KB`;
+    }
+  }
+  return '';
+};
+
+const getDocumentType = (file) => {
+  if (!file) return '';
+  if (file instanceof File) {
+    const extension = file.name.split('.').pop().toUpperCase();
+    const typeMap = {
+      'PDF': 'PDF Document',
+      'JPG': 'JPEG Image',
+      'JPEG': 'JPEG Image',
+      'PNG': 'PNG Image'
+    };
+    return typeMap[extension] || extension;
+  }
+  return '';
+};
+
+const getDocumentUploadDate = (file) => {
+  if (!file) return '';
+  if (file instanceof File) {
+    return new Date(file.lastModified).toLocaleDateString('ms-MY');
+  }
+  return new Date().toLocaleDateString('ms-MY');
+};
+
+const downloadDocument = (doc) => {
+  // For demo, just log the document info
+  // In production, you would trigger a real download
+  console.log('Download document:', doc);
+  toast.info(`Muat turun dokumen: ${doc.name}`);
 };
 </script>
