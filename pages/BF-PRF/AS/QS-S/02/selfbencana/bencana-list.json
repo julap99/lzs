@@ -1,0 +1,44 @@
+{
+  "bencana": [
+    {
+      "label": "Banjir",
+      "value": "banjir"
+    },
+    {
+      "label": "Kebakaran",
+      "value": "kebakaran"
+    },
+    {
+      "label": "Tanah Runtuh",
+      "value": "tanah-runtuh"
+    },
+    {
+      "label": "Ribut/Taufan",
+      "value": "ribut-taufan"
+    },
+    {
+      "label": "Gempa Bumi",
+      "value": "gempa-bumi"
+    },
+    {
+      "label": "Tsunami",
+      "value": "tsunami"
+    },
+    {
+      "label": "Kemarau",
+      "value": "kemarau"
+    },
+    {
+      "label": "Jerebu",
+      "value": "jerebu"
+    },
+    {
+      "label": "Angin Kencang",
+      "value": "angin-kencang"
+    },
+    {
+      "label": "Hujan Asid",
+      "value": "hujan-asid"
+    }
+  ]
+} 
