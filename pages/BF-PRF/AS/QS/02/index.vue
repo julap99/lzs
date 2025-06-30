@@ -19,10 +19,25 @@
             <div
               v-for="step in steps"
               :key="step.id"
-              class="text-center flex-1"
+              class="text-center flex-1 relative group"
               :class="{ 'font-semibold': currentStep >= step.id }"
             >
-              {{ step.label }}
+              <span 
+                class="cursor-default"
+                :title="step.tooltip"
+              >
+                {{ step.label }}
+              </span>
+              <!-- Tooltip for Bermastautin tab -->
+              <div 
+                v-if="step.tooltip"
+                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10"
+                style="max-width: 400px;"
+              >
+                <span class="italic">{{ step.tooltip }}</span>
+                <!-- Tooltip arrow -->
+                <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+              </div>
             </div>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -426,10 +441,10 @@
                 </div>
 
                 <!-- Location Information Section -->
-                <div class="md:col-span-2">
+                <!-- <div class="md:col-span-2">
                   <h4 class="text-md font-medium mb-3">Maklumat Lokasi</h4>
-                </div>
-                <div class="flex gap-2">
+                </div> -->
+                <!-- <div class="flex gap-2">
                   <FormKit
                     v-model="formData.personalInfo.assistanceType"
                     label="Lokasi"
@@ -447,9 +462,9 @@
                     <i class="fas fa-location-dot mr-2"></i>
                     Dapatkan Lokasi
                   </rs-button>
-                </div>
+                </div> -->
 
-                <FormKit
+                <!-- <FormKit
                   type="select"
                   name="healthStatus"
                   label="Saluran Bencana"
@@ -478,10 +493,10 @@
                       required: 'Dokumen bencana adalah wajib'
                     }"
                   />
-                </div>
+                </div> -->
 
                 <!-- Disaster Location (Conditional) -->
-                <FormKit
+                <!-- <FormKit
                   v-if="formData.personalInfo.assistanceType === 'bencana'"
                   type="select"
                   name="location"
@@ -505,7 +520,7 @@
                   :validation-messages="{
                     required: 'Lokasi bencana adalah wajib'
                   }"
-                />
+                /> -->
               </div>
 
               <div class="flex justify-end">
@@ -719,11 +734,39 @@
                 <div class="md:col-span-2">
                   <FormKit
                     type="textarea"
-                    name="address"
-                    label="Alamat Terkini"
+                    name="alamat1"
+                    label="Alamat 1"
                     validation="required"
                     placeholder="Sila masukkan alamat"
-                    v-model="formData.addressInfo.address"
+                    v-model="formData.addressInfo.alamat1"
+                    :validation-messages="{
+                      required: 'Alamat adalah wajib',
+                    }"
+                  />
+                </div>
+
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="textarea"
+                    name="alamat2"
+                    label="Alamat 2"
+                    validation="required"
+                    placeholder="Sila masukkan alamat"
+                    v-model="formData.addressInfo.alamat2"
+                    :validation-messages="{
+                      required: 'Alamat adalah wajib',
+                    }"
+                  />
+                </div>
+
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="textarea"
+                    name="alamat3"
+                    label="Alamat 3"
+                    validation="required"
+                    placeholder="Sila masukkan alamat"
+                    v-model="formData.addressInfo.alamat3"
                     :validation-messages="{
                       required: 'Alamat adalah wajib',
                     }"
@@ -1764,7 +1807,7 @@ const steps = [
   { id: 6, label: "Tanggungan" },
   { id: 7, label: "Waris" },
   { id: 8, label: "Pengesahan" },
-  { id: 9, label: "Bermastautin" },
+  { id: 9, label: "Bermastautin", tooltip: "*(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)" },
   { id: 10, label: "Penilaian Awal" }
 ];
 
@@ -1820,7 +1863,9 @@ const formData = ref({
     }
   ],
   addressInfo: {
-    address: "",
+    alamat1: "",
+    alamat2: "",
+    alamat3: "",
     district: "",
     postcode: "",
     kariah: "",

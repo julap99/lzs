@@ -604,43 +604,39 @@
             <div v-if="currentStep === 2">
               <h3 class="text-lg font-medium mb-4">B) Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Multiple Addresses Section -->
+                <!-- Fixed Address Fields -->
                 <div class="md:col-span-2">
-                  <div class="flex justify-between items-center mb-3">
-                    <h4 class="text-md font-medium">Alamat Terkini</h4>
-                    <rs-button type="button" variant="primary-outline" @click="addAddress" class="text-sm">
-                      <i class="fas fa-plus mr-2"></i>Tambah Alamat
-                    </rs-button>
-                  </div>
-                  
-                  <!-- Address Entries -->
-                  <div v-for="(addressEntry, index) in formData.addressInfo.addresses" :key="index" class="border rounded-lg p-4 mb-4 bg-gray-50">
-                    <div class="flex justify-between items-center mb-3">
-                      <h5 class="font-medium text-gray-700">Alamat #{{ index + 1 }}</h5>
-                      <rs-button 
-                        v-if="formData.addressInfo.addresses.length > 1"
-                        type="button" 
-                        variant="danger-outline" 
-                        @click="removeAddress(index)" 
-                        class="text-sm" 
-                        size="sm"
-                      >
-                        <i class="fas fa-trash mr-1"></i>Padam
-                      </rs-button>
-                    </div>
-                    
-                    <FormKit
-                      type="textarea"
-                      :name="`address_${index}`"
-                      label="Alamat"
-                      validation="required"
-                      placeholder="Sila masukkan alamat"
-                      v-model="addressEntry.address"
-                      :validation-messages="{
-                        required: 'Alamat adalah wajib',
-                      }"
-                    />
-                  </div>
+                  <h4 class="text-md font-medium mb-3">Alamat Terkini</h4>
+                </div>
+
+                <div class="md:col-span-2">
+                  <FormKit
+                  type="textarea"
+                  name="alamat1"
+                  label="Alamat 1"
+                  validation="required"
+                  placeholder="Sila masukkan alamat 1"
+                  v-model="formData.addressInfo.alamat1"
+                  :validation-messages="{
+                    required: 'Alamat 1 adalah wajib',
+                  }"
+                />
+
+                <FormKit
+                  type="textarea"
+                  name="alamat2"
+                  label="Alamat 2"
+                  placeholder="Sila masukkan alamat 2 (tidak wajib)"
+                  v-model="formData.addressInfo.alamat2"
+                />
+
+                <FormKit
+                  type="textarea"
+                  name="alamat3"
+                  label="Alamat 3"
+                  placeholder="Sila masukkan alamat 3 (tidak wajib)"
+                  v-model="formData.addressInfo.alamat3"
+                />
                 </div>
 
                 <FormKit
@@ -926,7 +922,8 @@
                 <!-- PDPA Checkbox -->
                 <div class="mt-4">
                   <FormKit
-                    type="checkbox"
+                    type="radio"
+                    :options="['Setuju', 'Tidak Setuju']"
                     name="pdpa_consent"
                     label="Saya mengakui dan bersetuju dengan pernyataan PDPA di atas"
                     validation="required"
@@ -1100,7 +1097,7 @@ const totalStep = 4;
 const breadcrumb = ref([{
   name: "Borang Permohonan Perseorangan",
   type: "current",
-  path: "/BF-PRF/AS/QS-S/02/selfbencana",
+  path: "/BF-PRF/AS/QS-S/02/selflain",
 }]);
 
 const steps = [
@@ -1126,8 +1123,7 @@ const formData = ref({
     noDisasterNotes: "", noDisasterDocument: null,
   },
   addressInfo: {
-    addresses: [{ address: "" }], // Array of addresses
-    district: "", postcode: "", kariah: "", state: "Selangor", residenceYears: "",
+    alamat1: "", alamat2: "", alamat3: "", district: "", postcode: "", kariah: "", state: "Selangor", residenceYears: "",
     residenceStatus: "", paymentStatus: "", monthlyPayment: "", rentAmount: "", otherResidenceDetail: "",
     addressSupportDoc: null, location: ""
   },
@@ -1485,14 +1481,6 @@ const addSpouse = () => {
 
 const removeSpouse = (index) => {
   formData.value.personalInfo.spouses.splice(index, 1);
-};
-
-const addAddress = () => {
-  formData.value.addressInfo.addresses.push({ address: "" });
-};
-
-const removeAddress = (index) => {
-  formData.value.addressInfo.addresses.splice(index, 1);
 };
 
 // Helper methods for readonly display
