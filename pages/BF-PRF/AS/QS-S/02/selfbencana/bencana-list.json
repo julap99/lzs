@@ -1,44 +1,44 @@
 {
   "bencana": [
     {
-      "label": "Banjir",
-      "value": "banjir"
+      "label": "Kemalangan Jalan Raya",
+      "value": "kemalangan-jalan-raya"
     },
     {
-      "label": "Kebakaran",
-      "value": "kebakaran"
+      "label": "Rumah Terbakar",
+      "value": "rumah-terbakar"
     },
     {
-      "label": "Tanah Runtuh",
-      "value": "tanah-runtuh"
+      "label": "Kemalangan Kerja",
+      "value": "kemalangan-kerja"
     },
     {
-      "label": "Ribut/Taufan",
-      "value": "ribut-taufan"
+      "label": "Kecurian",
+      "value": "kecurian"
     },
     {
-      "label": "Gempa Bumi",
-      "value": "gempa-bumi"
+      "label": "Kemalangan Domestik",
+      "value": "kemalangan-domestik"
     },
     {
-      "label": "Tsunami",
-      "value": "tsunami"
+      "label": "Kebakaran Kecil",
+      "value": "kebakaran-kecil"
     },
     {
-      "label": "Kemarau",
-      "value": "kemarau"
+      "label": "Kerosakan Kenderaan",
+      "value": "kerosakan-kenderaan"
     },
     {
-      "label": "Jerebu",
-      "value": "jerebu"
+      "label": "Kemalangan Sukan",
+      "value": "kemalangan-sukan"
     },
     {
-      "label": "Angin Kencang",
-      "value": "angin-kencang"
+      "label": "Kerosakan Harta Benda",
+      "value": "kerosakan-harta-benda"
     },
     {
-      "label": "Hujan Asid",
-      "value": "hujan-asid"
+      "label": "Kemalangan Lain-lain",
+      "value": "kemalangan-lain-lain"
     }
   ]
 } 
