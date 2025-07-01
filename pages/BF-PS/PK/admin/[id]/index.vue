@@ -151,21 +151,26 @@ const groupName = computed(() => {
   return names[group] || group;
 });
 
-const breadcrumb = ref([
+const breadcrumb = computed(() => [
   {
-    name: "Pentadbiran Sistem",
+    name: "Pentadbir Sistem",
+    type: "link",
+    path: "/BF-PS",
+  },
+  {
+    name: "Penyelenggaraan Kod",
+    type: "link",
+    path: "/BF-PS/PK",
+  },
+  {
+    name: "Admin",
     type: "link",
     path: "/BF-PS/PK/admin",
   },
   {
-    name: "Konfigurasi Kod Rujukan",
-    type: "link",
-    path: "/BF-PS/PK/admin",
-  },
-  {
-    name: groupName.value,
+    name: "Edit Kategori",
     type: "current",
-    path: `?BF-PS/PK/admin/${group}`,
+    path: `/BF-PS/PK/admin/${group}`,
   },
 ]);
 

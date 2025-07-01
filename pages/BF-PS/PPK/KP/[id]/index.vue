@@ -118,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 definePageMeta({
@@ -129,21 +129,21 @@ const route = useRoute();
 const router = useRouter();
 const roleId = route.params.id;
 
-const breadcrumb = ref([
+const breadcrumb = computed(() => [
   {
-    name: "Pentadbiran Sistem",
+    name: "Pentadbir Sistem",
     type: "link",
-    path: "/admin/roles",
+    path: "/BF-PS",
   },
   {
     name: "Konfigurasi Peranan",
     type: "link",
-    path: "/admin/roles",
+    path: "/BF-PS/PPK/KP",
   },
   {
-    name: "Butiran Peranan",
+    name: "Edit Peranan",
     type: "current",
-    path: `/admin/roles/${roleId}`,
+    path: `/BF-PS/PPK/KP/${roleId.value}`,
   },
 ]);
 

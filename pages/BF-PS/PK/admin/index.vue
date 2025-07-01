@@ -95,14 +95,19 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Pentadbiran Sistem",
+    name: "Pentadbir Sistem",
     type: "link",
-    path: "/BF-PS/PPK/KP",
+    path: "/BF-PS",
   },
   {
-    name: "Konfigurasi Kod Rujukan",
+    name: "Penyelenggaraan Kod",
+    type: "link",
+    path: "/BF-PS/PK",
+  },
+  {
+    name: "Admin",
     type: "current",
-    path: "/BF-PS/PPK/KP",
+    path: "/BF-PS/PK/admin",
   },
 ]);
 
