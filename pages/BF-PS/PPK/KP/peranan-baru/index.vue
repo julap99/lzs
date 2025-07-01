@@ -107,19 +107,19 @@ const router = useRouter();
 
 const breadcrumb = ref([
   {
-    name: "Pentadbiran Sistem",
+    name: "Pentadbir Sistem",
     type: "link",
-    path: "/admin/roles",
+    path: "/BF-PS",
   },
   {
     name: "Konfigurasi Peranan",
     type: "link",
-    path: "/admin/roles",
+    path: "/BF-PS/PPK/KP",
   },
   {
     name: "Tambah Peranan Baru",
     type: "current",
-    path: "/admin/roles/create",
+    path: "/BF-PS/PPK/KP/peranan-baru",
   },
 ]);
 
