@@ -607,6 +607,11 @@ const codes = ref([
 // Table columns
 const categoryColumns = [
   {
+    key: "idKategori",
+    label: "Id Kategori", 
+    sortable: true,
+  },
+  {
     key: "kategoriKod",
     label: "Kategori Kod", 
     sortable: true,
@@ -654,7 +659,10 @@ const codeColumns = [
 // Computed properties
 const filteredCategories = computed(() => {
   let filtered = categories.value.map(category => ({
-    ...category,
+    idKategori: category.idKategori,
+    kategoriKod: category.kategoriKod,
+    keterangan: category.keterangan,
+    status: category.status,
     tindakan: category
   }));
 
@@ -701,7 +709,9 @@ const filteredCodes = computed(() => {
   }
 
   return filtered.map(code => ({
-    ...code,
+    idKod: code.idKod,
+    keterangan: code.keterangan,
+    status: code.status,
     tindakan: code
   }));
 });
