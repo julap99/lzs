@@ -1424,16 +1424,9 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Konfigurasi Kategori",
+            title: "Konfigurasi Kategori & Kod",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PS/PK/konfigurasi-kategori",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Konfigurasi Kod",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PS/PK/konfigurasi-kod",
+            path: "/BF-PS/PK/",
             child: [],
             meta: {},
           },
@@ -1441,17 +1434,10 @@ export default [
         meta: {},
       },
       {
-        title: "Pengurusan Audit Trail",
+        title: "Statistik / Laporan",
         icon: "iconamoon:component-fill",
-        child: [
-          {
-            title: "Carian Audit Trail",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PS/PAT/carian-audit-trail",
-            child: [],
-            meta: {},
-          },
-        ],
+        path: "/BF-PS/SL",
+        child: [],
         meta: {},
       },
     ],
