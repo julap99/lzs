@@ -1350,6 +1350,13 @@ export default [
     description: "Pentadbir Sistem",
     child: [
       {
+        title: "Dashboard",
+        icon: "heroicons:home",
+        path: "/BF-PS",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Pengurusan Pengguna",
         icon: "iconamoon:component-fill",
         child: [

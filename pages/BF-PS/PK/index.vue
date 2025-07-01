@@ -472,7 +472,7 @@ const breadcrumb = ref([
     path: "/BF-PS",
   },
   {
-    name: "Penyelenggaraan Am",
+    name: "Penyelenggaraan Kod",
     type: "link", 
     path: "/BF-PS/PK",
   },
