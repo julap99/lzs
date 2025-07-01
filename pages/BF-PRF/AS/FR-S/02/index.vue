@@ -1457,14 +1457,14 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Pegawai Pendaftar</rs-button
+                >Seterusnya ke Maklumat Peribadi Tanggungan</rs-button
               >
             </div>
           </div>
         </FormKit>
 
         <!-- Section J Form - Pegawai Pendaftar -->
-        <FormKit
+        <!-- <FormKit
           v-if="currentStepA === 10"
           type="form"
           @submit="nextStepA"
@@ -1527,7 +1527,7 @@
               >
             </div>
           </div>
-        </FormKit>
+        </FormKit> -->
       </template>
     </rs-card>
 
@@ -2535,7 +2535,7 @@ const processing = ref(false);
 const currentSection = ref(1);
 
 const currentStepA = ref(1);
-const totalStepsA = 10;
+const totalStepsA = 9;
 const healthStatus = ref("");
 const dibantuPenolongAmil = ref("");
 const hubunganKakitanganLZS = ref("");
@@ -2553,8 +2553,8 @@ const stepsA = [
   { id: 6, label: "Pemilikan" },
   { id: 7, label: "Waris" },
   { id: 8, label: "Pengesahan" },
-  { id: 9, label: "Pengesahan Bermastautin" },
-  { id: 10, label: "Pegawai Pendaftar" }
+  { id: 9, label: "Pengesahan Bermastautin" }
+  // { id: 10, label: "Pegawai Pendaftar" }
 ];
 
 const currentStepB = ref(1);
@@ -2939,15 +2939,15 @@ const handleSaveStepA9 = async () => {
   }
 };
 
-const handleSaveStepA10 = async () => {
-  try {
-    console.log("Step A10 saved:", formData.value);
-    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
-  } catch (error) {
-    toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A10 error:", error);
-  }
-};
+// const handleSaveStepA10 = async () => {
+//   try {
+//     console.log("Step A10 saved:", formData.value);
+//     toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+//   } catch (error) {
+//     toast.error("Ralat! Maklumat tidak berjaya disimpan");
+//     console.error("Save Step A10 error:", error);
+//   }
+// };
 
 // Step B Save Functions
 const handleSaveStepB1 = async () => {
