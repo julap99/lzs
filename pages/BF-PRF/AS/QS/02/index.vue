@@ -963,33 +963,31 @@
 
               <!-- PDPA Statement -->
               <div class="mb-6">
-                <h4 class="font-medium mb-3">Pernyataan PDPA (Akta Perlindungan Data Peribadi 2010)</h4>
+                <h4 class="font-medium mb-3">Pengesahan PDPA (Akta Perlindungan Data Peribadi)</h4>
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div class="text-sm text-gray-700 space-y-2">
-                    <p><strong>Dengan mengisi borang ini, saya mengakui dan bersetuju bahawa:</strong></p>
-                    <ol class="list-decimal list-inside space-y-1 ml-4">
-                      <li>Semua maklumat peribadi yang diberikan adalah benar dan tepat.</li>
-                      <li>Lembaga Zakat Selangor (LZS) berhak untuk mengumpul, menyimpan, memproses, dan menggunakan maklumat peribadi saya untuk tujuan pemprosesan permohonan bantuan ini.</li>
-                      <li>LZS boleh berkongsi maklumat peribadi saya dengan agensi-agensi berkaitan untuk tujuan pengesahan dan pemprosesan permohonan.</li>
-                      <li>Saya memahami bahawa maklumat peribadi saya akan dilindungi mengikut Akta Perlindungan Data Peribadi 2010.</li>
-                      <li>Saya berhak untuk mengakses, membetulkan, dan menarik balik kebenaran penggunaan maklumat peribadi saya pada bila-bila masa.</li>
-                    </ol>
+                  <div class="flex items-start gap-3">
+                    <FormKit
+                      type="radio"
+                      name="pdpa_consent"
+                      label=""
+                      :options="[
+                        { label: 'Setuju', value: true },
+                        { label: 'Tidak Setuju', value: false }
+                      ]"
+                      validation="required"
+                      v-model="formData.verification.pdpaConsent"
+                    />
+                    <div class="text-sm text-gray-700">
+                      <p class="font-medium mb-2">Saya mengesahkan bahawa:</p>
+                      <ul class="list-disc list-inside space-y-1 text-xs">
+                        <li>Semua maklumat yang diberikan adalah benar dan tepat</li>
+                        <li>Saya memberikan kebenaran kepada Lembaga Zakat Selangor (LZS) untuk memproses dan menyimpan data peribadi saya</li>
+                        <li>Saya memahami bahawa data saya akan digunakan untuk tujuan pemprosesan permohonan bantuan</li>
+                        <li>Saya bersetuju untuk menerima komunikasi berkaitan permohonan saya</li>
+                        <li>Saya boleh menarik balik kebenaran ini pada bila-bila masa</li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-                
-                <!-- PDPA Checkbox -->
-                <div class="mt-4">
-                  <FormKit
-                    type="radio"
-                    :options="['Setuju', 'Tidak Setuju']"
-                    name="pdpa_consent"
-                    label="Saya mengakui dan bersetuju dengan pernyataan PDPA di atas"
-                    validation="required"
-                    v-model="formData.verification.pdpaConsent"
-                    :validation-messages="{
-                      required: 'Anda mesti bersetuju dengan pernyataan PDPA untuk meneruskan'
-                    }"
-                  />
                 </div>
               </div>
 
