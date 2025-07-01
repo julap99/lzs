@@ -1405,22 +1405,8 @@ export default [
           {
             title: "Kebenaran Kumpulan Pengguna",
             icon: "iconamoon:arrow-right-2-duotone",
-            child: [
-              {
-                title: "Admin",
-                icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-PS/PPK/KKP/admin",
-                child: [],
-                meta: {},
-              },
-              {
-                title: "NAS",
-                icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-PS/PPK/KKP/nas",
-                child: [],
-                meta: {},
-              },
-            ],
+            path: "/BF-PS/PPK/KKP",
+            child: [],
             meta: {},
           },
         ],
