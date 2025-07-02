@@ -2,6 +2,57 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Header Notice -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+      <div class="flex items-center gap-2">
+        <Icon name="ic:baseline-people" class="text-blue-600" />
+        <div class="text-sm text-blue-800">
+          <p class="font-medium">Pengurusan Pengguna Sistem</p>
+          <p>Senarai lengkap pengguna dalam sistem dengan fungsi carian, kemaskini, dan pengurusan peranan.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg stats-card fade-in">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-100 text-sm">Jumlah Pengguna</p>
+            <p class="text-2xl font-bold">{{ totalUsers }}</p>
+          </div>
+          <Icon name="ic:baseline-people" class="w-8 h-8 text-blue-200" />
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg stats-card fade-in">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-100 text-sm">Pengguna Aktif</p>
+            <p class="text-2xl font-bold">{{ activeUsers }}</p>
+          </div>
+          <Icon name="ic:baseline-check-circle" class="w-8 h-8 text-green-200" />
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 rounded-lg stats-card fade-in">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-orange-100 text-sm">Staf Sistem</p>
+            <p class="text-2xl font-bold">{{ staffUsers }}</p>
+          </div>
+          <Icon name="ic:baseline-badge" class="w-8 h-8 text-orange-200" />
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg stats-card fade-in">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-100 text-sm">Peranan Unik</p>
+            <p class="text-2xl font-bold">{{ uniqueRoles }}</p>
+          </div>
+          <Icon name="ic:baseline-security" class="w-8 h-8 text-purple-200" />
+        </div>
+      </div>
+    </div>
+
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
@@ -13,9 +64,10 @@
             <rs-button
               variant="outline"
               @click="refreshData"
+              :loading="refreshing"
             >
               <Icon name="ic:baseline-refresh" class="mr-1" />
-              Muat Semula
+              {{ refreshing ? 'Memuat...' : 'Muat Semula' }}
             </rs-button>
             <rs-button
               variant="outline"
@@ -23,7 +75,7 @@
               :loading="exporting"
             >
               <Icon name="ic:baseline-table-chart" class="mr-1" />
-              Muat Turun Excel
+              {{ exporting ? 'Mengeksport...' : 'Muat Turun Excel' }}
             </rs-button>
             <rs-button
               variant="outline"
@@ -299,6 +351,142 @@
         </template>
       </rs-card>
     </rs-modal>
+
+    <!-- Success Modal for Operations -->
+    <rs-modal
+      v-model="showSuccessModal"
+      title="Operasi Berjaya"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center py-6">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Icon name="ic:baseline-check-circle" class="w-8 h-8 text-green-600" />
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Operasi Selesai!</h3>
+          <p class="text-gray-600 mb-4">{{ successMessage }}</p>
+          <div class="bg-blue-50 p-3 rounded-lg text-sm">
+            <p class="font-medium text-blue-900">Sistem telah dikemaskini</p>
+            <p class="text-blue-700">Data pengguna telah disegerakkan</p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center">
+          <rs-button variant="primary" @click="showSuccessModal = false">
+            <Icon name="ic:baseline-check" class="mr-1" />
+            Terima Kasih
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Export Modal -->
+    <rs-modal
+      v-model="showExportModal"
+      title="Eksport Data Pengguna"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center py-6">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Icon name="ic:baseline-download-done" class="w-8 h-8 text-blue-600" />
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Eksport Excel Berjaya</h3>
+          <p class="text-gray-600 mb-4">Fail senarai pengguna telah dijana dengan jayanya</p>
+          
+          <!-- Mock Progress Bar -->
+          <div class="bg-gray-200 rounded-full h-2 mb-4">
+            <div class="bg-blue-600 h-2 rounded-full transition-all duration-1000" :style="{ width: exportProgress + '%' }"></div>
+          </div>
+          
+          <div class="bg-green-50 p-3 rounded-lg text-sm">
+            <p class="font-medium text-green-900">📊 Fail siap untuk dimuat turun</p>
+            <p class="text-green-700">Format: XLSX | Saiz: {{ exportFileSize }} | {{ totalUsers }} rekod</p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center space-x-3">
+          <rs-button variant="outline" @click="showExportModal = false">
+            Tutup
+          </rs-button>
+          <rs-button variant="success" @click="simulateDownload">
+            <Icon name="ic:baseline-download" class="mr-1" />
+            Muat Turun
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Delete Confirmation Modal -->
+    <rs-modal
+      v-model="showDeleteModal"
+      title="Pengesahan Hapus Pengguna"
+      size="sm"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center py-4">
+          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Icon name="ic:baseline-warning" class="w-8 h-8 text-red-600" />
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Hapus Pengguna</h3>
+          <p class="text-gray-600 mb-4">Adakah anda pasti mahu menghapuskan pengguna <strong>"{{ userToDelete?.nama }}"</strong>?</p>
+          <div class="bg-yellow-50 p-3 rounded-lg text-sm text-left">
+            <p class="font-medium text-yellow-900">⚠️ Amaran:</p>
+            <p class="text-yellow-800">Tindakan ini tidak boleh dibatalkan dan akan mempengaruhi:</p>
+            <ul class="list-disc list-inside text-yellow-700 mt-1">
+              <li>Akses pengguna ke sistem</li>
+              <li>Rekod audit berkaitan</li>
+              <li>Sejarah aktiviti</li>
+            </ul>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center space-x-3">
+          <rs-button variant="outline" @click="showDeleteModal = false">
+            Batal
+          </rs-button>
+          <rs-button variant="danger" @click="confirmDelete" :loading="deleting">
+            <Icon name="ic:baseline-delete-forever" class="mr-1" />
+            {{ deleting ? 'Menghapus...' : 'Ya, Hapus' }}
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Loading Overlay -->
+    <div v-if="refreshing" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-8 max-w-sm mx-4">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Icon name="ic:baseline-sync" class="w-8 h-8 text-blue-600 animate-spin" />
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Memuat Semula Data</h3>
+          <p class="text-gray-600 mb-4">Sila tunggu sebentar...</p>
+          
+          <!-- Progress Steps -->
+          <div class="space-y-2 text-left">
+            <div class="flex items-center text-sm">
+              <Icon name="ic:baseline-check-circle" class="w-4 h-4 text-green-500 mr-2" />
+              <span class="text-green-700">Menghubungi pangkalan data</span>
+            </div>
+            <div class="flex items-center text-sm">
+              <Icon name="ic:baseline-sync" class="w-4 h-4 text-blue-500 mr-2 animate-spin" />
+              <span class="text-blue-700">Mengemas kini senarai pengguna</span>
+            </div>
+            <div class="flex items-center text-sm text-gray-400">
+              <Icon name="ic:baseline-radio-button-unchecked" class="w-4 h-4 mr-2" />
+              <span>Menyusun data terkini</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -395,7 +583,18 @@ const pageSize = ref(10);
 const showEditModal = ref(false);
 const saving = ref(false);
 const exporting = ref(false);
+const refreshing = ref(false);
+const deleting = ref(false);
 const selectedUser = ref(null);
+
+// New modal states
+const showSuccessModal = ref(false);
+const showExportModal = ref(false);
+const showDeleteModal = ref(false);
+const successMessage = ref('');
+const exportProgress = ref(0);
+const exportFileSize = ref('');
+const userToDelete = ref(null);
 
 // Form data for editing
 const editForm = ref({
@@ -554,6 +753,20 @@ const totalPages = computed(() => Math.ceil(totalUsers.value / pageSize.value));
 const paginationStart = computed(() => (currentPage.value - 1) * pageSize.value + 1);
 const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalUsers.value));
 
+// Statistics computed properties
+const activeUsers = computed(() => {
+  return users.value.filter(user => user.status === 'Aktif').length;
+});
+
+const staffUsers = computed(() => {
+  return users.value.filter(user => user.jenisPengguna === 'Staf').length;
+});
+
+const uniqueRoles = computed(() => {
+  const roles = new Set(users.value.map(user => user.perananSemasa));
+  return roles.size;
+});
+
 const filteredPeranan = computed(() => {
   return perananList.value.filter(peranan => 
     peranan.jenisPengguna === editForm.value.jenisPengguna || 
@@ -581,27 +794,35 @@ const editUser = (user) => {
   showEditModal.value = true;
 };
 
-const deleteUser = async (user) => {
-  const confirmed = await $confirm({
-    title: 'Sahkan Hapus',
-    message: `Adakah anda pasti mahu menghapuskan pengguna "${user.nama}"?`,
-    confirmText: 'Hapus',
-    cancelText: 'Batal',
-    color: 'red'
-  });
+const deleteUser = (user) => {
+  userToDelete.value = user;
+  showDeleteModal.value = true;
+};
 
-  if (confirmed) {
-    try {
-      // Remove from local array
-      const index = users.value.findIndex(u => u.id === user.id);
-      if (index > -1) {
-        users.value.splice(index, 1);
-      }
-      
-      $toast.success('Pengguna berjaya dihapuskan');
-    } catch (error) {
-      $toast.error('Ralat semasa menghapuskan pengguna');
+const confirmDelete = async () => {
+  try {
+    deleting.value = true;
+    
+    // Simulate deletion delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Remove from local array
+    const index = users.value.findIndex(u => u.id === userToDelete.value.id);
+    if (index > -1) {
+      users.value.splice(index, 1);
     }
+    
+    showDeleteModal.value = false;
+    successMessage.value = `Pengguna "${userToDelete.value.nama}" telah berjaya dihapuskan dari sistem.`;
+    showSuccessModal.value = true;
+    
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    successMessage.value = 'Ralat berlaku semasa menghapuskan pengguna. Sila cuba lagi.';
+    showSuccessModal.value = true;
+  } finally {
+    deleting.value = false;
+    userToDelete.value = null;
   }
 };
 
@@ -623,6 +844,9 @@ const saveUser = async () => {
   try {
     saving.value = true;
     
+    // Simulate save delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     // Update local data
     const index = users.value.findIndex(u => u.id === selectedUser.value.id);
     if (index > -1) {
@@ -632,42 +856,120 @@ const saveUser = async () => {
       };
     }
     
-    $toast.success('Pengguna berjaya dikemaskini');
     showEditModal.value = false;
+    successMessage.value = `Maklumat pengguna "${editForm.value.nama}" telah berjaya dikemaskini.`;
+    showSuccessModal.value = true;
+    
   } catch (error) {
-    $toast.error('Ralat semasa menyimpan pengguna');
+    console.error('Error saving user:', error);
+    successMessage.value = 'Ralat berlaku semasa menyimpan maklumat pengguna. Sila cuba lagi.';
+    showSuccessModal.value = true;
   } finally {
     saving.value = false;
   }
 };
 
-const refreshData = () => {
-  // Simulate data refresh
-  $toast.info('Data telah dimuat semula');
+const refreshData = async () => {
+  try {
+    refreshing.value = true;
+    
+    // Simulate data refresh delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // In real implementation, this would fetch fresh data from API
+    // For demo, we'll just show success
+    successMessage.value = `Data pengguna telah dimuat semula. ${totalUsers.value} rekod dikemaskini.`;
+    showSuccessModal.value = true;
+    
+  } catch (error) {
+    console.error('Error refreshing data:', error);
+    successMessage.value = 'Ralat berlaku semasa memuat semula data. Sila cuba lagi.';
+    showSuccessModal.value = true;
+  } finally {
+    refreshing.value = false;
+  }
 };
 
 const exportToExcel = async () => {
   try {
     exporting.value = true;
+    exportProgress.value = 0;
+    exportFileSize.value = `${Math.round(totalUsers.value * 0.02)}KB`;
+    
+    // Show export modal with progress
+    showExportModal.value = true;
+    
+    // Simulate progress
+    const progressInterval = setInterval(() => {
+      exportProgress.value += 25;
+      if (exportProgress.value >= 100) {
+        clearInterval(progressInterval);
+      }
+    }, 400);
     
     // Simulate export delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Create mock download
-    const link = document.createElement('a');
-    link.href = '#';
-    link.download = `Senarai_Pengguna_${new Date().toISOString().split('T')[0]}.xlsx`;
-    link.click();
-    
-    $toast.success('Laporan Excel berjaya dimuat turun');
   } catch (error) {
-    $toast.error('Ralat semasa memuat turun laporan');
+    console.error('Error exporting data:', error);
+    showExportModal.value = false;
+    successMessage.value = 'Ralat berlaku semasa mengeksport data. Sila cuba lagi.';
+    showSuccessModal.value = true;
   } finally {
     exporting.value = false;
   }
 };
+
+const simulateDownload = () => {
+  console.log(`💾 Simulating Excel download: Senarai_Pengguna_${new Date().toISOString().split('T')[0]}.xlsx`);
+  showExportModal.value = false;
+  successMessage.value = `Fail Excel dengan ${totalUsers.value} rekod pengguna telah berjaya dimuat turun.`;
+  showSuccessModal.value = true;
+  
+  // Reset progress for next use
+  exportProgress.value = 0;
+};
 </script>
 
 <style scoped>
-/* Custom styles if needed */
+/* Statistics cards hover effects */
+.stats-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Presentation enhancements */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button hover animations */
+.btn-enhanced {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-enhanced:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Progress bar animation */
+.progress-bar {
+  transition: width 0.3s ease-in-out;
+}
 </style>
