@@ -1427,6 +1427,13 @@ export default [
         meta: {},
       },
       {
+        title: "Carian Audit Trail",
+        icon: "iconamoon:component-fill",
+        path: "/BF-PS/CAT",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Statistik / Laporan",
         icon: "iconamoon:component-fill",
         path: "/BF-PS/SL",

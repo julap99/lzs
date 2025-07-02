@@ -525,6 +525,15 @@ const moduleAccess = ref([
     accessCount: 18
   },
   {
+    name: "Carian Audit Trail",
+    description: "Carian dan paparan rekod audit sistem",
+    icon: "ic:baseline-security",
+    path: "/BF-PS/CAT",
+    available: true,
+    lastAccessed: "Hari ini",
+    accessCount: 34
+  },
+  {
     name: "Statistik Laporan",
     description: "Jana dan lihat laporan sistem",
     icon: "ic:baseline-assessment",
