@@ -2,6 +2,57 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Header Notice -->
+    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+      <div class="flex items-center gap-2">
+        <Icon name="ic:baseline-assessment" class="text-green-600" />
+        <div class="text-sm text-green-800">
+          <p class="font-medium">Pusat Statistik & Laporan Sistem</p>
+          <p>Jana dan eksport laporan komprehensif untuk analisis data sistem, audit trail, dan laporan pengurusan.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg stats-card fade-in">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-100 text-sm">Jumlah Laporan</p>
+            <p class="text-2xl font-bold">{{ totalReports }}</p>
+          </div>
+          <Icon name="ic:baseline-description" class="w-8 h-8 text-blue-200" />
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg stats-card fade-in">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-100 text-sm">Laporan Aktif</p>
+            <p class="text-2xl font-bold">{{ activeReports }}</p>
+          </div>
+          <Icon name="ic:baseline-trending-up" class="w-8 h-8 text-green-200" />
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 rounded-lg stats-card fade-in">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-orange-100 text-sm">Modul Tersedia</p>
+            <p class="text-2xl font-bold">{{ availableModules }}</p>
+          </div>
+          <Icon name="ic:baseline-widgets" class="w-8 h-8 text-orange-200" />
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg stats-card fade-in">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-100 text-sm">Eksport Hari Ini</p>
+            <p class="text-2xl font-bold">{{ todayExports }}</p>
+          </div>
+          <Icon name="ic:baseline-file-download" class="w-8 h-8 text-purple-200" />
+        </div>
+      </div>
+    </div>
+
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
@@ -202,6 +253,105 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Export Success Modal -->
+    <rs-modal
+      v-model="showExportModal"
+      title="Eksport Laporan Berjaya"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center py-6">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Icon name="ic:baseline-download-done" class="w-8 h-8 text-blue-600" />
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ exportModalTitle }}</h3>
+          <p class="text-gray-600 mb-4">{{ exportModalMessage }}</p>
+          
+          <!-- Mock Progress Bar -->
+          <div class="bg-gray-200 rounded-full h-2 mb-4">
+            <div class="bg-blue-600 h-2 rounded-full transition-all duration-1000" :style="{ width: exportProgress + '%' }"></div>
+          </div>
+          
+          <div class="bg-green-50 p-3 rounded-lg text-sm">
+            <p class="font-medium text-green-900">📊 Fail siap untuk dimuat turun</p>
+            <p class="text-green-700">Format: {{ exportFormat }} | Saiz: {{ exportFileSize }} | Rekod: {{ currentReportData.length || 'N/A' }}</p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center space-x-3">
+          <rs-button variant="outline" @click="showExportModal = false">
+            Tutup
+          </rs-button>
+          <rs-button variant="success" @click="simulateDownload">
+            <Icon name="ic:baseline-download" class="mr-1" />
+            Muat Turun
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Report Generation Modal -->
+    <rs-modal
+      v-model="showReportModal"
+      title="Jana Laporan"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center py-6">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Icon name="ic:baseline-assessment" class="w-8 h-8 text-green-600" />
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Laporan Berjaya Dijana</h3>
+          <p class="text-gray-600 mb-4">{{ selectedReport?.namaLaporan }} telah berjaya dijana dan siap untuk dipaparkan.</p>
+          <div class="bg-blue-50 p-3 rounded-lg text-sm">
+            <p class="font-medium text-blue-900">Maklumat Laporan:</p>
+            <p class="text-blue-700">{{ currentReportData.length }} rekod ditemui</p>
+            <p class="text-blue-700">Tarikh jana: {{ new Date().toLocaleString('ms-MY') }}</p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center">
+          <rs-button variant="primary" @click="showReportModal = false">
+            <Icon name="ic:baseline-visibility" class="mr-1" />
+            Lihat Laporan
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Loading Overlay -->
+    <div v-if="loadingReport" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-8 max-w-sm mx-4">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Icon name="ic:baseline-bar-chart" class="w-8 h-8 text-green-600 animate-pulse" />
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Menjana Laporan</h3>
+          <p class="text-gray-600 mb-4">Sila tunggu sebentar...</p>
+          
+          <!-- Progress Steps -->
+          <div class="space-y-2 text-left">
+            <div class="flex items-center text-sm">
+              <Icon name="ic:baseline-check-circle" class="w-4 h-4 text-green-500 mr-2" />
+              <span class="text-green-700">Mengakses pangkalan data</span>
+            </div>
+            <div class="flex items-center text-sm">
+              <Icon name="ic:baseline-sync" class="w-4 h-4 text-blue-500 mr-2 animate-spin" />
+              <span class="text-blue-700">Memproses data laporan</span>
+            </div>
+            <div class="flex items-center text-sm text-gray-400">
+              <Icon name="ic:baseline-radio-button-unchecked" class="w-4 h-4 mr-2" />
+              <span>Menyusun hasil laporan</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -230,8 +380,18 @@ const searchQuery = ref("");
 const showReportView = ref(false);
 const selectedReport = ref(null);
 const exporting = ref(false);
+const loadingReport = ref(false);
 const pageSize = ref(10);
 const reportPageSize = ref(15);
+
+// New modal states
+const showExportModal = ref(false);
+const showReportModal = ref(false);
+const exportModalTitle = ref('');
+const exportModalMessage = ref('');
+const exportProgress = ref(0);
+const exportFormat = ref('');
+const exportFileSize = ref('');
 
 // Filters
 const filters = ref({
@@ -410,6 +570,15 @@ const auditReportData = ref([
   }
 ]);
 
+// Statistics computed properties
+const totalReports = computed(() => reports.value.length);
+const activeReports = computed(() => reports.value.filter(r => r.tarikhKemaaskini >= '2024-01-01').length);
+const availableModules = computed(() => {
+  const modules = new Set(reports.value.map(r => r.modul));
+  return modules.size;
+});
+const todayExports = computed(() => Math.floor(Math.random() * 15) + 1); // Mock data
+
 // Computed properties
 const availableReports = computed(() => {
   return reports.value.map(report => ({
@@ -505,12 +674,24 @@ const currentReportColumns = computed(() => {
 });
 
 // Methods
-const viewReport = (report) => {
-  selectedReport.value = report;
-  showReportView.value = true;
-  
-  // Log audit trail
-  logAuditAction('Lihat Laporan', report.namaLaporan);
+const viewReport = async (report) => {
+  try {
+    loadingReport.value = true;
+    selectedReport.value = report;
+    
+    // Simulate report generation delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    showReportView.value = true;
+    loadingReport.value = false;
+    showReportModal.value = true;
+    
+    // Log audit trail
+    logAuditAction('Lihat Laporan', report.namaLaporan);
+  } catch (error) {
+    console.error('Error generating report:', error);
+    loadingReport.value = false;
+  }
 };
 
 const backToReportList = () => {
@@ -521,22 +702,32 @@ const backToReportList = () => {
 const exportPDF = async (report) => {
   try {
     exporting.value = true;
+    exportProgress.value = 0;
+    exportFormat.value = 'PDF';
+    exportFileSize.value = `${Math.round(currentReportData.value.length * 0.08)}KB`;
+    exportModalTitle.value = 'Eksport PDF Berjaya';
+    exportModalMessage.value = `Laporan "${report.namaLaporan}" telah dijana dalam format PDF.`;
+    
+    // Show export modal with progress
+    showExportModal.value = true;
+    
+    // Simulate progress
+    const progressInterval = setInterval(() => {
+      exportProgress.value += 20;
+      if (exportProgress.value >= 100) {
+        clearInterval(progressInterval);
+      }
+    }, 400);
     
     // Simulate export delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Create mock download
-    const link = document.createElement('a');
-    link.href = '#';
-    link.download = `${report.namaLaporan.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
-    link.click();
-    
     // Log audit trail
     logAuditAction('Cetak PDF', report.namaLaporan);
     
-    $toast.success(`Laporan PDF "${report.namaLaporan}" berjaya dimuat turun`);
   } catch (error) {
-    $toast.error('Ralat semasa memuat turun laporan PDF');
+    console.error('Error exporting PDF:', error);
+    showExportModal.value = false;
   } finally {
     exporting.value = false;
   }
@@ -545,30 +736,61 @@ const exportPDF = async (report) => {
 const exportExcel = async (report) => {
   try {
     exporting.value = true;
+    exportProgress.value = 0;
+    exportFormat.value = 'XLSX';
+    exportFileSize.value = `${Math.round(currentReportData.value.length * 0.05)}KB`;
+    exportModalTitle.value = 'Eksport Excel Berjaya';
+    exportModalMessage.value = `Laporan "${report.namaLaporan}" telah dijana dalam format Excel.`;
+    
+    // Show export modal with progress
+    showExportModal.value = true;
+    
+    // Simulate progress
+    const progressInterval = setInterval(() => {
+      exportProgress.value += 25;
+      if (exportProgress.value >= 100) {
+        clearInterval(progressInterval);
+      }
+    }, 300);
     
     // Simulate export delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Create mock download
-    const link = document.createElement('a');
-    link.href = '#';
-    link.download = `${report.namaLaporan.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
-    link.click();
+    await new Promise(resolve => setTimeout(resolve, 1800));
     
     // Log audit trail
     logAuditAction('Cetak Excel', report.namaLaporan);
     
-    $toast.success(`Laporan Excel "${report.namaLaporan}" berjaya dimuat turun`);
   } catch (error) {
-    $toast.error('Ralat semasa memuat turun laporan Excel');
+    console.error('Error exporting Excel:', error);
+    showExportModal.value = false;
   } finally {
     exporting.value = false;
   }
 };
 
-const refreshReports = () => {
-  // Simulate refresh
-  $toast.info('Senarai laporan telah dimuat semula');
+const simulateDownload = () => {
+  const fileName = `${selectedReport.value?.namaLaporan.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.${exportFormat.value.toLowerCase()}`;
+  console.log(`💾 Simulating download: ${fileName}`);
+  showExportModal.value = false;
+  
+  // Reset progress for next use
+  exportProgress.value = 0;
+};
+
+const refreshReports = async () => {
+  try {
+    loadingReport.value = true;
+    
+    // Simulate refresh delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // In real implementation, this would fetch fresh data from API
+    console.log('📊 Reports refreshed successfully');
+    
+  } catch (error) {
+    console.error('Error refreshing reports:', error);
+  } finally {
+    loadingReport.value = false;
+  }
 };
 
 const logAuditAction = (action, reportName) => {
@@ -601,5 +823,44 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Custom styles if needed */
+/* Statistics cards hover effects */
+.stats-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Presentation enhancements */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button hover animations */
+.btn-enhanced {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-enhanced:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Progress bar animation */
+.progress-bar {
+  transition: width 0.3s ease-in-out;
+}
 </style>

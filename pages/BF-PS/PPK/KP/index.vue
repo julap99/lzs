@@ -2,13 +2,92 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Security Notice -->
-    <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
-      <div class="flex items-center gap-2">
-        <Icon name="ic:baseline-security" class="text-amber-600" />
-        <div class="text-sm text-amber-800">
-          <p class="font-medium">Kawalan Akses Kritikal</p>
-          <p>Perubahan peranan akan menjejaskan akses pengguna. Semua tindakan direkod dalam jejak audit.</p>
+    <!-- Enhanced Header Notice for Role Management -->
+    <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-lg p-6 mb-6">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
+          <Icon name="ic:baseline-admin-panel-settings" class="text-emerald-600 w-8 h-8" />
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-emerald-900 mb-2">Pusat Pengurusan Peranan & Kebenaran</h1>
+          <p class="text-emerald-700">Konfigurasi peranan pengguna dan kawalan akses sistem. Perubahan peranan akan menjejaskan kebenaran akses secara real-time.</p>
+        </div>
+        <div class="ml-auto">
+          <rs-badge variant="warning" size="lg">
+            <Icon name="ic:baseline-security" class="mr-1" />
+            Kawalan Kritikal
+          </rs-badge>
+        </div>
+      </div>
+    </div>
+
+    <!-- Role Management Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <!-- Total Roles -->
+      <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-xl shadow-lg stats-card hover-lift">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-emerald-100 text-sm font-medium">Jumlah Peranan</p>
+            <p class="text-3xl font-bold">{{ totalRoles }}</p>
+            <div class="flex items-center mt-2">
+              <Icon name="ic:baseline-admin-panel-settings" class="w-4 h-4 text-emerald-200 mr-1" />
+              <span class="text-emerald-200 text-xs">Sistem NAS</span>
+            </div>
+          </div>
+          <div class="bg-emerald-400 bg-opacity-30 p-3 rounded-lg">
+            <Icon name="ic:baseline-group" class="w-8 h-8 text-emerald-100" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Roles -->
+      <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg stats-card hover-lift">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-100 text-sm font-medium">Peranan Aktif</p>
+            <p class="text-3xl font-bold">{{ activeRoles }}</p>
+            <div class="flex items-center mt-2">
+              <Icon name="ic:baseline-check-circle" class="w-4 h-4 text-blue-200 mr-1" />
+              <span class="text-blue-200 text-xs">Dalam kegunaan</span>
+            </div>
+          </div>
+          <div class="bg-blue-400 bg-opacity-30 p-3 rounded-lg">
+            <Icon name="ic:baseline-verified" class="w-8 h-8 text-blue-100" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Permissions -->
+      <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg stats-card hover-lift">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-100 text-sm font-medium">Jumlah Kebenaran</p>
+            <p class="text-3xl font-bold">{{ totalPermissions }}</p>
+            <div class="flex items-center mt-2">
+              <Icon name="ic:baseline-key" class="w-4 h-4 text-purple-200 mr-1" />
+              <span class="text-purple-200 text-xs">Akses terkonfigurasi</span>
+            </div>
+          </div>
+          <div class="bg-purple-400 bg-opacity-30 p-3 rounded-lg">
+            <Icon name="ic:baseline-lock" class="w-8 h-8 text-purple-100" />
+          </div>
+        </div>
+      </div>
+
+      <!-- High Security Roles -->
+      <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-xl shadow-lg stats-card hover-lift">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-orange-100 text-sm font-medium">Peranan Tinggi</p>
+            <p class="text-3xl font-bold">{{ highSecurityRoles }}</p>
+            <div class="flex items-center mt-2">
+              <Icon name="ic:baseline-shield" class="w-4 h-4 text-orange-200 mr-1" />
+              <span class="text-orange-200 text-xs">Keselamatan tinggi</span>
+            </div>
+          </div>
+          <div class="bg-orange-400 bg-opacity-30 p-3 rounded-lg">
+            <Icon name="ic:baseline-security" class="w-8 h-8 text-orange-100" />
+          </div>
         </div>
       </div>
     </div>
@@ -24,9 +103,17 @@
             <rs-button
               variant="outline"
               @click="refreshRoles"
+              :loading="refreshingRoles"
             >
               <Icon name="ic:baseline-refresh" class="mr-1" />
-              Muat Semula
+              {{ refreshingRoles ? 'Memuat...' : 'Muat Semula' }}
+            </rs-button>
+            <rs-button
+              variant="success-outline"
+              @click="exportRoles"
+            >
+              <Icon name="ic:baseline-download" class="mr-1" />
+              Eksport
             </rs-button>
             <rs-button
               variant="primary"
@@ -588,6 +675,15 @@ const tableData = computed(() => {
   }));
 });
 
+// Enhanced Statistics for PPK/KP Module
+const totalRoles = computed(() => roles.value.length);
+const activeRoles = computed(() => roles.value.filter(role => role.status === 'Aktif').length);
+const totalPermissions = computed(() => 156); // Mock total permissions
+const highSecurityRoles = computed(() => roles.value.filter(role => role.tahapAkses === 'Super Admin').length);
+
+// Enhanced Loading States
+const refreshingRoles = ref(false);
+
 // Methods
 const getStatusVariant = (status) => {
   return status === 'Aktif' ? 'success' : 'danger';
@@ -602,8 +698,24 @@ const getAccessLevelVariant = (level) => {
   }
 };
 
-const refreshRoles = () => {
-  $toast.info('Senarai peranan telah dimuat semula');
+const refreshRoles = async () => {
+  refreshingRoles.value = true;
+  console.log('🔄 Refreshing roles...');
+  
+  try {
+    // Simulate refresh delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    console.log('✅ Roles refreshed successfully');
+  } finally {
+    refreshingRoles.value = false;
+  }
+};
+
+const exportRoles = async () => {
+  console.log('📊 Exporting roles and permissions...');
+  // Simulate export delay
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  console.log('✅ Roles exported successfully');
 };
 
 const addRole = () => {
@@ -743,8 +855,82 @@ const logAuditAction = (action, type, item) => {
 // Initialize
 onMounted(() => {
   // Set initial data
+  console.log('👥 Pengurusan Peranan module initialized');
 });
 </script>
+
+<style scoped>
+/* Enhanced Role Management Styling */
+.stats-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Fade-in animations */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Role card enhancements */
+.role-card {
+  transition: all 0.2s ease-in-out;
+  border-left: 4px solid transparent;
+}
+
+.role-card:hover {
+  border-left-color: #10b981;
+  background-color: #f0fdfa;
+  transform: translateX(4px);
+}
+
+/* Permission badge styling */
+.permission-badge {
+  transition: all 0.2s ease-in-out;
+}
+
+.permission-badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Security level indicators */
+.security-high {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.security-medium {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.security-low {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+/* Button enhancements */
+.btn-enhanced {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-enhanced:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+</style>
 
 <style scoped>
 </style>

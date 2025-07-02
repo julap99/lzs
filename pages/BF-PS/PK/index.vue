@@ -2,13 +2,92 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Security Notice -->
-    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-      <div class="flex items-center gap-2">
-        <Icon name="ic:baseline-security" class="text-blue-600" />
-        <div class="text-sm text-blue-800">
-          <p class="font-medium">Akses Terkawal</p>
-          <p>Hanya pegawai berautoriti boleh menyelenggara kod. Semua tindakan direkod dalam jejak audit.</p>
+    <!-- Enhanced Header Notice for Code Maintenance -->
+    <div class="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-lg p-6 mb-6">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
+          <Icon name="ic:baseline-code" class="text-indigo-600 w-8 h-8" />
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-indigo-900 mb-2">Pusat Penyelenggaraan Kod Sistem</h1>
+          <p class="text-indigo-700">Konfigurasi dan pengurusan kod rujukan sistem. Kategori kod digunakan untuk mengklasifikasikan data dalam sistem NAS.</p>
+        </div>
+        <div class="ml-auto">
+          <rs-badge variant="info" size="lg">
+            <Icon name="ic:baseline-security" class="mr-1" />
+            Akses Terkawal
+          </rs-badge>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code Management Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <!-- Total Categories -->
+      <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white p-6 rounded-xl shadow-lg stats-card hover-lift">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-indigo-100 text-sm font-medium">Jumlah Kategori</p>
+            <p class="text-3xl font-bold">{{ totalCategories }}</p>
+            <div class="flex items-center mt-2">
+              <Icon name="ic:baseline-category" class="w-4 h-4 text-indigo-200 mr-1" />
+              <span class="text-indigo-200 text-xs">Aktif dalam sistem</span>
+            </div>
+          </div>
+          <div class="bg-indigo-400 bg-opacity-30 p-3 rounded-lg">
+            <Icon name="ic:baseline-folder" class="w-8 h-8 text-indigo-100" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Codes -->
+      <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-xl shadow-lg stats-card hover-lift">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-emerald-100 text-sm font-medium">Jumlah Kod</p>
+            <p class="text-3xl font-bold">{{ totalCodes }}</p>
+            <div class="flex items-center mt-2">
+              <Icon name="ic:baseline-code" class="w-4 h-4 text-emerald-200 mr-1" />
+              <span class="text-emerald-200 text-xs">Kod rujukan</span>
+            </div>
+          </div>
+          <div class="bg-emerald-400 bg-opacity-30 p-3 rounded-lg">
+            <Icon name="ic:baseline-list" class="w-8 h-8 text-emerald-100" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Codes -->
+      <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg stats-card hover-lift">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-100 text-sm font-medium">Kod Aktif</p>
+            <p class="text-3xl font-bold">{{ activeCodes }}</p>
+            <div class="flex items-center mt-2">
+              <Icon name="ic:baseline-check-circle" class="w-4 h-4 text-blue-200 mr-1" />
+              <span class="text-blue-200 text-xs">Dalam kegunaan</span>
+            </div>
+          </div>
+          <div class="bg-blue-400 bg-opacity-30 p-3 rounded-lg">
+            <Icon name="ic:baseline-verified" class="w-8 h-8 text-blue-100" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Updates -->
+      <div class="bg-gradient-to-br from-violet-500 to-violet-600 text-white p-6 rounded-xl shadow-lg stats-card hover-lift">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-violet-100 text-sm font-medium">Kemaskini Terkini</p>
+            <p class="text-3xl font-bold">{{ recentUpdates }}</p>
+            <div class="flex items-center mt-2">
+              <Icon name="ic:baseline-schedule" class="w-4 h-4 text-violet-200 mr-1" />
+              <span class="text-violet-200 text-xs">7 hari terakhir</span>
+            </div>
+          </div>
+          <div class="bg-violet-400 bg-opacity-30 p-3 rounded-lg">
+            <Icon name="ic:baseline-update" class="w-8 h-8 text-violet-100" />
+          </div>
         </div>
       </div>
     </div>
@@ -25,9 +104,17 @@
             <rs-button
               variant="outline"
               @click="refreshCategories"
+              :loading="refreshingCategories"
             >
               <Icon name="ic:baseline-refresh" class="mr-1" />
-              Muat Semula
+              {{ refreshingCategories ? 'Memuat...' : 'Muat Semula' }}
+            </rs-button>
+            <rs-button
+              variant="success-outline"
+              @click="exportCategories"
+            >
+              <Icon name="ic:baseline-download" class="mr-1" />
+              Eksport
             </rs-button>
             <rs-button
               variant="primary"
@@ -142,9 +229,17 @@
             <rs-button
               variant="outline"
               @click="refreshCodes"
+              :loading="refreshingCodes"
             >
               <Icon name="ic:baseline-refresh" class="mr-1" />
-              Muat Semula
+              {{ refreshingCodes ? 'Memuat...' : 'Muat Semula' }}
+            </rs-button>
+            <rs-button
+              variant="success-outline"
+              @click="exportCodes"
+            >
+              <Icon name="ic:baseline-download" class="mr-1" />
+              Eksport Kod
             </rs-button>
             <rs-button
               variant="primary"
@@ -727,16 +822,59 @@ const categoryFilterOptions = computed(() => {
 });
 
 // Methods
+// Enhanced Statistics for PK Module
+const totalCategories = computed(() => categories.value.length);
+const totalCodes = computed(() => codes.value.length);
+const activeCodes = computed(() => codes.value.filter(code => code.status === 'Aktif').length);
+const recentUpdates = computed(() => 8); // Mock recent updates count
+
+// Enhanced Loading States
+const refreshingCategories = ref(false);
+const refreshingCodes = ref(false);
+
+// Enhanced Methods
 const getStatusVariant = (status) => {
   return status === 'Aktif' ? 'success' : 'danger';
 };
 
-const refreshCategories = () => {
-  $toast.info('Senarai kategori telah dimuat semula');
+const refreshCategories = async () => {
+  refreshingCategories.value = true;
+  console.log('🔄 Refreshing categories...');
+  
+  try {
+    // Simulate refresh delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    console.log('✅ Categories refreshed successfully');
+  } finally {
+    refreshingCategories.value = false;
+  }
 };
 
-const refreshCodes = () => {
-  $toast.info('Senarai kod telah dimuat semula');
+const refreshCodes = async () => {
+  refreshingCodes.value = true;
+  console.log('🔄 Refreshing codes...');
+  
+  try {
+    // Simulate refresh delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    console.log('✅ Codes refreshed successfully');
+  } finally {
+    refreshingCodes.value = false;
+  }
+};
+
+const exportCategories = async () => {
+  console.log('📊 Exporting categories...');
+  // Simulate export delay
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  console.log('✅ Categories exported successfully');
+};
+
+const exportCodes = async () => {
+  console.log('📊 Exporting codes...');
+  // Simulate export delay
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  console.log('✅ Codes exported successfully');
 };
 
 const addCategory = () => {
@@ -968,8 +1106,83 @@ const logAuditAction = (action, type, item) => {
 // Initialize
 onMounted(() => {
   // Set initial data
+  console.log('🔧 Penyelenggaraan Kod module initialized');
 });
 </script>
+
+<style scoped>
+/* Enhanced Code Maintenance Styling */
+.stats-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Fade-in animations */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Table hover effects */
+.table-row-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.table-row-hover:hover {
+  background-color: #f8fafc;
+  transform: scale(1.002);
+}
+
+/* Button enhancements */
+.btn-enhanced {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-enhanced:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading states */
+.loading-overlay {
+  backdrop-filter: blur(2px);
+}
+
+/* Status badge animations */
+.status-badge {
+  transition: all 0.2s ease-in-out;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+}
+
+/* Code category cards */
+.category-card {
+  transition: all 0.2s ease-in-out;
+  border-left: 4px solid transparent;
+}
+
+.category-card:hover {
+  border-left-color: #6366f1;
+  background-color: #f8fafc;
+  transform: translateX(4px);
+}
+</style>
 
 <style scoped>
 /* Custom styles if needed */
