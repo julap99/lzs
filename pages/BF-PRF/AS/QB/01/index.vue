@@ -117,8 +117,8 @@
                       }"
                     />
 
-                    <div v-if="applicant.idType" class="md:col-span-2">
                       <FormKit
+                      v-if="applicant.idType"
                         type="file"
                         :name="`applicant${index}idDocument`"
                         :label="getDocumentLabel(applicant.idType)"
@@ -130,7 +130,6 @@
                           required: 'Dokumen ID adalah wajib'
                         }"
                       />
-                    </div>
 
                     <FormKit
                       type="text"
