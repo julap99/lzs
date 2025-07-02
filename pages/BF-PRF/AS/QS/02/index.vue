@@ -61,7 +61,7 @@
           <FormKit type="form" :actions="false" @submit="handleSubmit">
             <!-- Step 1: Penilaian Awal -->
             <div v-if="currentStep === 1">
-              <h3 class="text-lg font-medium mb-4">A) Penilaian Awal</h3>
+              <h3 class="text-lg font-medium mb-4">I) Penilaian Awal</h3>
               <div class="space-y-6">
                 <!-- Question 1 -->
                 <div class="space-y-2">
@@ -181,7 +181,7 @@
 
             <!-- Step 2: Maklumat Peribadi Asnaf -->
             <div v-if="currentStep === 2">
-              <h3 class="text-lg font-medium mb-4">B) Maklumat Peribadi Asnaf</h3>
+              <h3 class="text-lg font-medium mb-4">II) Maklumat Peribadi Asnaf</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Location Information Section - Moved to top -->
                 <!-- <div class="md:col-span-2">
@@ -306,8 +306,8 @@
                   }"
                 />
 
-                <div v-if="formData.personalInfo.idValue" class="md:col-span-2">
                   <FormKit
+                    v-if="formData.personalInfo.idValue"
                     type="file"
                     name="idDocument"
                     :label="getDocumentLabel()"
@@ -319,7 +319,6 @@
                       required: 'Dokumen ID adalah wajib'
                     }"
                   />
-                </div>
 
                 <FormKit
                   type="text"
@@ -345,16 +344,23 @@
                 />
 
                 <FormKit
-                  type="select"
-                  name="gender"
-                  label="Jantina"
-                  validation="required"
-                  :options="genderOptions"
-                  placeholder="Pilih jantina"
-                  v-model="formData.personalInfo.gender"
-                  :validation-messages="{
-                    required: 'Jantina adalah wajib'
-                  }"
+                  type="text"
+                  name="nopassport"
+                  label="No Passport"  
+                />
+
+                <FormKit
+                  type="date"
+                  name="passportStartDate"
+                  label="Tarikh mula passport"
+                  v-model="formData.personalInfo.passportStartDate"
+                />
+
+                <FormKit
+                  type="date"
+                  name="passportEndDate"
+                  label="Tarikh tamat passport"
+                  v-model="formData.personalInfo.passportEndDate"
                 />
 
                 <FormKit
@@ -365,6 +371,19 @@
                   v-model="formData.personalInfo.dateOfBirth"
                   :validation-messages="{
                     required: 'Tarikh lahir adalah wajib',
+                  }"
+                />
+
+                <FormKit
+                  type="select"
+                  name="gender"
+                  label="Jantina"
+                  validation="required"
+                  :options="genderOptions"
+                  placeholder="Pilih jantina"
+                  v-model="formData.personalInfo.gender"
+                  :validation-messages="{
+                    required: 'Jantina adalah wajib'
                   }"
                 />
 
@@ -392,25 +411,7 @@
                   :validation-messages="{
                     required: 'Agama adalah wajib',
                   }"
-                />
-                 <FormKit
-                  type="text"
-                  name="nopassport"
-                  label="No Passport"  
-                />
-
-                <FormKit
-                  type="date"
-                  name="passportStartDate"
-                  label="Tarikh mula passport"
-                  v-model="formData.personalInfo.passportStartDate"
-                />
-                <FormKit
-                  type="date"
-                  name="passportEndDate"
-                  label="Tarikh tamat passport"
-                  v-model="formData.personalInfo.passportEndDate"
-                />
+                />              
 
                 <!-- <FormKit
                   type="tel"
@@ -729,7 +730,7 @@
 
             <!-- Step 3: Maklumat Alamat -->
             <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">C) Maklumat Alamat</h3>
+              <h3 class="text-lg font-medium mb-4">III) Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Fixed Address Fields -->
                 <div class="md:col-span-2">
@@ -954,7 +955,7 @@
 
             <!-- Step 4: Pengesahan -->
             <div v-if="currentStep === 4">
-              <h3 class="text-lg font-medium mb-4">D) Pengesahan</h3>
+              <h3 class="text-lg font-medium mb-4">IV) Pengesahan</h3>
 
               <div class="mb-6">
                 <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
@@ -1133,7 +1134,7 @@
 
             <!-- Step 5: Maklumat Pengesah Bermastautin -->
             <div v-if="currentStep === 5">
-              <h3 class="text-lg font-medium mb-4">E) Maklumat Pengesah Bermastautin</h3>
+              <h3 class="text-lg font-medium mb-4">V) Maklumat Pengesah Bermastautin</h3>
               <!-- <p class="text-sm text-gray-600 mb-4">
                 *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
               </p> -->
@@ -1264,7 +1265,7 @@
 
             <!-- Step 6: Pegawai Pendaftar -->
             <div v-if="currentStep === 6">
-              <h3 class="text-lg font-medium mb-4">F) Maklumat Pegawai Pendaftar</h3>
+              <h3 class="text-lg font-medium mb-4">VI) Maklumat Pegawai Pendaftar</h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
@@ -1449,10 +1450,7 @@ const bankOptions = [
 
 const idTypeOptions = [
   { label: 'Kad Pengenalan', value: 'ic' },
-  { label: 'Foreign ID', value: 'foreign-id' },
-  { label: 'No Polis', value: 'polis' },
-  { label: 'No Tentera', value: 'tentera' },
-  { label: 'No Sijil Lahir', value: 'sijil-lahir' }
+  { label: 'Foreign ID', value: 'foreign-id' }
 ];
 
 const genderOptions = [
@@ -1645,10 +1643,7 @@ const uploadedDocuments = computed(() => {
 const getPlaceholder = () => {
   const placeholders = {
     "ic": "Contoh: 901231025678",
-    "foreign-id": "Contoh: A12345678",
-    "polis": "Contoh: 123456",
-    "tentera": "Contoh: 12345678",
-    "sijil-lahir": "Contoh: 12345678"
+    "foreign-id": "Contoh: A12345678"
   };
   return placeholders[formData.value.personalInfo.idValue] || "";
 };
@@ -1656,10 +1651,7 @@ const getPlaceholder = () => {
 const getDocumentLabel = () => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID",
-    "polis": "Upload No Polis",
-    "tentera": "Upload No Tentera",
-    "sijil-lahir": "Upload No Sijil Lahir"
+    "foreign-id": "Upload Foreign ID"
   };
   return labels[formData.value.personalInfo.idValue] || "";
 };
@@ -1667,10 +1659,7 @@ const getDocumentLabel = () => {
 const getSpouseDocumentLabel = (index) => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID",
-    "polis": "Upload No Polis",
-    "tentera": "Upload No Tentera",
-    "sijil-lahir": "Upload No Sijil Lahir"
+    "foreign-id": "Upload Foreign ID"
   };
   return labels[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";
 };
@@ -1678,10 +1667,7 @@ const getSpouseDocumentLabel = (index) => {
 const getSpousePlaceholder = (index) => {
   const placeholders = {
     "ic": "Contoh: 901231025678",
-    "foreign-id": "Contoh: A12345678",
-    "polis": "Contoh: 123456",
-    "tentera": "Contoh: 12345678",
-    "sijil-lahir": "Contoh: 12345678"
+    "foreign-id": "Contoh: A12345678"
   };
   return placeholders[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";
 };

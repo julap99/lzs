@@ -62,7 +62,7 @@
             <!-- Step 1: Maklumat Peribadi Asnaf -->
             <div v-if="currentStep === 1">
               <h3 class="text-lg font-medium mb-4">
-                A) Maklumat Peribadi Asnaf
+                I) Maklumat Peribadi Asnaf
               </h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Location Information Section - Moved to top -->
@@ -188,8 +188,9 @@
                   }"
                 />
 
-                <div v-if="formData.personalInfo.idValue" class="md:col-span-2">
+                
                   <FormKit
+                    v-if="formData.personalInfo.idValue"
                     type="file"
                     name="idDocument"
                     :label="getDocumentLabel()"
@@ -201,7 +202,7 @@
                       required: 'Dokumen ID adalah wajib'
                     }"
                   />
-                </div>
+              
 
                 <FormKit
                   type="text"
@@ -611,7 +612,7 @@
 
             <!-- Step 2: Maklumat Alamat -->
             <div v-if="currentStep === 2">
-              <h3 class="text-lg font-medium mb-4">B) Maklumat Alamat</h3>
+              <h3 class="text-lg font-medium mb-4">II) Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Fixed Address Fields -->
                 <div class="md:col-span-2">
@@ -836,7 +837,7 @@
 
             <!-- Step 3: Pengesahan -->
             <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">C) Pengesahan</h3>
+              <h3 class="text-lg font-medium mb-4">III) Pengesahan</h3>
 
               <div class="mb-6">
                 <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
@@ -1015,7 +1016,7 @@
 
             <!-- Step 4: Maklumat Pengesah Bermastautin -->
             <div v-if="currentStep === 4">
-              <h3 class="text-lg font-medium mb-4">D) Maklumat Pengesah Bermastautin</h3>
+              <h3 class="text-lg font-medium mb-4">IV) Maklumat Pengesah Bermastautin</h3>
               <!-- <p class="text-sm text-gray-600 mb-4">
                 *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
               </p> -->
@@ -1249,10 +1250,7 @@ const bankOptions = [
 
 const idTypeOptions = [
   { label: 'Kad Pengenalan', value: 'ic' },
-  { label: 'Foreign ID', value: 'foreign-id' },
-  { label: 'No Polis', value: 'polis' },
-  { label: 'No Tentera', value: 'tentera' },
-  { label: 'No Sijil Lahir', value: 'sijil-lahir' }
+  { label: 'Foreign ID', value: 'foreign-id' }
 ];
 
 const genderOptions = [
@@ -1443,10 +1441,7 @@ const uploadedDocuments = computed(() => {
 const getPlaceholder = () => {
   const placeholders = {
     "ic": "Contoh: 901231025678",
-    "foreign-id": "Contoh: A12345678",
-    "polis": "Contoh: 123456",
-    "tentera": "Contoh: 12345678",
-    "sijil-lahir": "Contoh: 12345678"
+    "foreign-id": "Contoh: A12345678"
   };
   return placeholders[formData.value.personalInfo.idValue] || "";
 };
@@ -1454,10 +1449,7 @@ const getPlaceholder = () => {
 const getDocumentLabel = () => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID",
-    "polis": "Upload No Polis",
-    "tentera": "Upload No Tentera",
-    "sijil-lahir": "Upload No Sijil Lahir"
+    "foreign-id": "Upload Foreign ID"
   };
   return labels[formData.value.personalInfo.idValue] || "";
 };
@@ -1465,10 +1457,7 @@ const getDocumentLabel = () => {
 const getSpouseDocumentLabel = (index) => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID",
-    "polis": "Upload No Polis",
-    "tentera": "Upload No Tentera",
-    "sijil-lahir": "Upload No Sijil Lahir"
+    "foreign-id": "Upload Foreign ID"
   };
   return labels[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";
 };
@@ -1476,10 +1465,7 @@ const getSpouseDocumentLabel = (index) => {
 const getSpousePlaceholder = (index) => {
   const placeholders = {
     "ic": "Contoh: 901231025678",
-    "foreign-id": "Contoh: A12345678",
-    "polis": "Contoh: 123456",
-    "tentera": "Contoh: 12345678",
-    "sijil-lahir": "Contoh: 12345678"
+    "foreign-id": "Contoh: A12345678"
   };
   return placeholders[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";
 };

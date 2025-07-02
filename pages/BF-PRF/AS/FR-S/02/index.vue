@@ -43,7 +43,7 @@
           @submit="nextStepA"
         >
           <h3 class="text-lg font-semibold mb-4">
-            A. Maklumat Peribadi Asnaf (untuk muallaf)
+            I. Maklumat Peribadi Asnaf (untuk muallaf)
           </h3>
 
           <!-- Personal Information Section -->
@@ -57,7 +57,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID', 'No Polis', 'No Tentera', 'No Sijil Lahir']"
+                :options="['Kad Pengenalan', 'Foreign ID']"
                 validation="required"
                 v-model="jenisId"
               />
@@ -108,6 +108,12 @@
                 type="date"
                 name="passportEndDate"
                 label="Tarikh tamat passport"
+              />
+
+              <FormKit
+                type="text"
+                name="no_telefon"
+                label="No Telefon"
               />
             </div>
           </div>
@@ -403,7 +409,7 @@
           :actions="false"
           id="sectionB"
         >
-          <h3 class="text-lg font-semibold mb-4">B. Maklumat Kesihatan</h3>
+          <h3 class="text-lg font-semibold mb-4">II. Maklumat Kesihatan</h3>
 
           <FormKit
             type="select"
@@ -532,7 +538,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Kemahiran</rs-button
+                >Seterusnya ke Maklumat Kemahiran</rs-button
               >
             </div>
           </div>
@@ -546,7 +552,7 @@
           :actions="false"
           id="sectionC"
         >
-          <h3 class="text-lg font-semibold mb-4">C. Kemahiran</h3>
+          <h3 class="text-lg font-semibold mb-4">III. Kemahiran</h3>
 
           <FormKit
             type="select"
@@ -595,7 +601,7 @@
           id="sectionD"
         >
           <h3 class="text-lg font-semibold mb-4">
-            D. Maklumat Kediaman/Tempat Tinggal
+            IV. Maklumat Kediaman/Tempat Tinggal
           </h3>
 
           <!-- Alamat Section -->
@@ -877,7 +883,7 @@
           :actions="false"
           id="sectionE"
         >
-          <h3 class="text-lg font-semibold mb-4">E. Maklumat Pinjaman Harta</h3>
+          <h3 class="text-lg font-semibold mb-4">V. Maklumat Pinjaman Harta</h3>
 
           <FormKit
             type="text"
@@ -960,9 +966,9 @@
           :actions="false"
           id="sectionF"
         >
-          <h3 class="text-lg font-semibold mb-4">F. Maklumat Pemilikan</h3>
+          <h3 class="text-lg font-semibold mb-4">VI. Maklumat Pemilikan</h3>
 
-          <h4 class="font-medium mb-2">1. Aset Cair:</h4>
+          <h4 class="font-medium mb-2">Aset Cair</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
               type="number"
@@ -990,7 +996,7 @@
             />
           </div>
 
-          <h4 class="font-medium mb-2 mt-4">2. Aset Tidak Cair:</h4>
+          <h4 class="font-medium mb-2 mt-4">Aset Tidak Cair</h4>
           <FormKit
             type="text"
             name="kenderaan"
@@ -1040,7 +1046,7 @@
           id="sectionG"
         >
           <h3 class="text-lg font-semibold mb-4">
-            G. Maklumat Waris
+            VII. Maklumat Waris
           </h3>
 
           <div
@@ -1135,7 +1141,7 @@
           id="sectionH"
         >
           <h3 class="text-lg font-semibold mb-4">
-            H. Pengesahan
+            VIII. Pengesahan
           </h3>
 
           <div class="mb-6">
@@ -1340,7 +1346,7 @@
           id="sectionI"
         >
           <h3 class="text-lg font-semibold mb-4">
-            I. Pengesahan Bermastautin
+            IX. Pengesahan Bermastautin
           </h3>
 
           <!-- PAK Officer Information (Readonly) -->
@@ -1571,13 +1577,10 @@
           @submit="nextStepB"
           :actions="false"
         >
-          <h3 class="text-lg font-semibold mb-4">
-            B. Maklumat Peribadi Tanggungan
-          </h3>
 
-          <!-- A. Maklumat Peibadi Tanggungan -->
+          <!-- I. Maklumat Peibadi Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">A. Maklumat Peribadi Tanggungan</h4>
+            <h4 class="font-medium mb-3">I. Maklumat Peribadi Tanggungan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -1627,7 +1630,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID', 'No Polis', 'No Tentera', 'No Sijil Lahir']"
+                :options="['Kad Pengenalan', 'Foreign ID']"
                 validation="required"
                 v-model="jenisIdTanggungan"
               />
@@ -1860,7 +1863,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Pendidikan</rs-button
+                >Seterusnya ke Maklumat Pendidikan Tanggungan</rs-button
               >
             </div>
           </div>
@@ -1872,9 +1875,9 @@
           @submit="nextStepB"
           :actions="false"
         >
-          <!-- B. Maklumat Pendidikan Tanggungan -->
+          <!-- III. Maklumat Pendidikan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">B. Maklumat Pendidikan Tanggungan</h4>
+            <h4 class="font-medium mb-3">III. Maklumat Pendidikan Tanggungan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -2003,7 +2006,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Kesihatan</rs-button
+                >Seterusnya ke Maklumat Kesihatan Tanggungan</rs-button
               >
             </div>
           </div>
@@ -2015,9 +2018,9 @@
           @submit="nextStepB"
           :actions="false"
         >
-          <!-- C. Maklumat Kesihatan Tanggungan -->
+          <!-- IV. Maklumat Kesihatan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">C. Maklumat Kesihatan Tanggungan</h4>
+            <h4 class="font-medium mb-3">IV. Maklumat Kesihatan Tanggungan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -2165,7 +2168,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Kemahiran</rs-button
+                >Seterusnya ke Maklumat Kemahiran Tanggungan</rs-button
               >
             </div>
           </div>
@@ -2177,9 +2180,9 @@
           @submit="nextStepB"
           :actions="false"
         >
-          <!-- D. Maklumat Kemahiran Tanggungan -->
+          <!-- V. Maklumat Kemahiran Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">D. Maklumat Kemahiran Tanggungan</h4>
+            <h4 class="font-medium mb-3">V. Maklumat Kemahiran Tanggungan</h4>
             <FormKit
               type="select"
               name="kemahiran_tanggungan"
@@ -2212,7 +2215,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Pekerjaan</rs-button
+                >Seterusnya ke Maklumat Pekerjaan Tanggungan</rs-button
               >
             </div>
           </div>
@@ -2224,9 +2227,9 @@
           @submit="nextStepB"
           :actions="false"
         >
-          <!-- E. Maklumat Pekerjaan Tanggungan -->
+          <!-- VI. Maklumat Pekerjaan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">E. Maklumat Pekerjaan Tanggungan</h4>
+            <h4 class="font-medium mb-3">VI. Maklumat Pekerjaan Tanggungan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -2332,7 +2335,7 @@
           id="sectionJ"
         >
           <h3 class="text-lg font-semibold mb-4">
-            J. Penilaian Awal
+            X. Penilaian Awal
           </h3>
 
           <div class="space-y-6">
