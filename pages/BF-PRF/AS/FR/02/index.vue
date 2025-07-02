@@ -43,7 +43,11 @@
           @submit="nextStepA"
         >
           <h3 class="text-lg font-semibold mb-4">
-            I. Maklumat Peribadi Asnaf (untuk muallaf)
+            A. Maklumat Peribadi Asnaf (*untuk muallaf)
+          </h3>
+
+          <h3 class="text-lg font-semibold mb-4">
+            I. Maklumat Peribadi
           </h3>
 
           <!-- Personal Information Section -->
@@ -57,13 +61,14 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID', 'No Polis', 'No Tentera', 'No Sijil Lahir']"
+                :options="['Kad Pengenalan', 'Foreign ID']"
                 validation="required"
                 v-model="jenisId"
               />
 
-              <div v-if="jenisId" class="md:col-span-2">
+              
                 <FormKit
+                  v-if="jenisId"
                   type="file"
                   name="dokumen_id"
                   :label="`Upload ${jenisId}`"
@@ -71,7 +76,7 @@
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                 />
-              </div>
+
 
               <FormKit
                 type="text"
@@ -108,12 +113,6 @@
                 type="date"
                 name="passportEndDate"
                 label="Tarikh tamat passport"
-              />
-
-              <FormKit
-                type="text"
-                name="no_telefon"
-                label="No Telefon"
               />
             </div>
           </div>
@@ -152,6 +151,12 @@
                 name="emel"
                 label="Emel"
                 validation="required|email"
+              />
+
+              <FormKit
+                type="text"
+                name="no_telefon"
+                label="No Telefon"
               />
 
               <FormKit
@@ -1578,6 +1583,10 @@
           :actions="false"
         >
 
+        <h3 class="text-lg font-semibold mb-4">
+            B. Maklumat Peribadi Tanggungan
+          </h3>
+
           <!-- I. Maklumat Peibadi Tanggungan -->
           <div class="mb-6">
             <h4 class="font-medium mb-3">I. Maklumat Peribadi Tanggungan</h4>
@@ -1630,7 +1639,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID', 'No Polis', 'No Tentera', 'No Sijil Lahir']"
+                :options="['Kad Pengenalan', 'Foreign ID']"
                 validation="required"
                 v-model="jenisIdTanggungan"
               />
@@ -1749,7 +1758,7 @@
 
           <!-- II. Maklumat Islam -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">II. Maklumat Islam</h4>
+            <h4 class="font-medium mb-3">Maklumat Islam</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="text"
@@ -1881,9 +1890,9 @@
           @submit="nextStepB"
           :actions="false"
         >
-          <!-- III. Maklumat Pendidikan Tanggungan -->
+          <!-- II. Maklumat Pendidikan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">III. Maklumat Pendidikan Tanggungan</h4>
+            <h4 class="font-medium mb-3">II. Maklumat Pendidikan Tanggungan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -2024,9 +2033,9 @@
           @submit="nextStepB"
           :actions="false"
         >
-          <!-- IV. Maklumat Kesihatan Tanggungan -->
+          <!-- III. Maklumat Kesihatan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">IV. Maklumat Kesihatan Tanggungan</h4>
+            <h4 class="font-medium mb-3">III. Maklumat Kesihatan Tanggungan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -2186,9 +2195,9 @@
           @submit="nextStepB"
           :actions="false"
         >
-          <!-- V. Maklumat Kemahiran Tanggungan -->
+          <!-- IV. Maklumat Kemahiran Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">V. Maklumat Kemahiran Tanggungan</h4>
+            <h4 class="font-medium mb-3">IV. Maklumat Kemahiran Tanggungan</h4>
             <FormKit
               type="select"
               name="kemahiran_tanggungan"
@@ -2233,9 +2242,9 @@
           @submit="nextStepB"
           :actions="false"
         >
-          <!-- VI. Maklumat Pekerjaan Tanggungan -->
+          <!-- V. Maklumat Pekerjaan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">VI. Maklumat Pekerjaan Tanggungan</h4>
+            <h4 class="font-medium mb-3">V. Maklumat Pekerjaan Tanggungan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -2341,7 +2350,7 @@
           id="sectionJ"
         >
           <h3 class="text-lg font-semibold mb-4">
-            X. Penilaian Awal
+            C. Penilaian Awal
           </h3>
 
           <div class="space-y-6">
@@ -2525,6 +2534,9 @@ import { ref, computed, watch } from "vue";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 
+// ============================================================================
+// ROUTER & TOAST SETUP
+// ============================================================================
 const router = useRouter();
 const toast = useToast();
 
@@ -2532,27 +2544,26 @@ definePageMeta({
   title: "Borang Permohonan Lengkap",
 });
 
+// ============================================================================
+// BREADCRUMB CONFIGURATION
+// ============================================================================
 const breadcrumb = ref([
   {
-    name: "Borang Permohonan Lengkap",
+    name: " Pendaftaran Lengkap",
     type: "current",
     path: "/BF-PRF/AS/FR/02",
   },
 ]);
 
+// ============================================================================
+// SECTION & STEP MANAGEMENT
+// ============================================================================
 const processing = ref(false);
 const currentSection = ref(1);
 
+// Section A - Main Form Steps
 const currentStepA = ref(1);
 const totalStepsA = 10;
-const healthStatus = ref("");
-const dibantuPenolongAmil = ref("");
-const hubunganKakitanganLZS = ref("");
-const hubunganPAK = ref("");
-const jenisIdTanggungan = ref("");
-const hubunganPemohon = ref("");
-
-
 const stepsA = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Kesihatan" },
@@ -2566,10 +2577,9 @@ const stepsA = [
   { id: 10, label: "Pegawai Pendaftar" }
 ];
 
+// Section B - Tanggungan Form Steps
 const currentStepB = ref(1);
 const totalStepsB = 6;
-
-// Define steps for progress indicator (Section B - Tanggungan)
 const stepsB = [
   { id: 1, label: "Peribadi Tanggungan" },
   { id: 2, label: "Pendidikan Tanggungan" },
@@ -2579,32 +2589,55 @@ const stepsB = [
   { id: 6, label: "Penilaian" }
 ];
 
+// ============================================================================
+// FORM STATE VARIABLES
+// ============================================================================
+// Health Status Variables
+const healthStatus = ref("");
 const healthStatusTanggungan = ref("");
-const paymentMethod = ref("");
 
-const showLainInput = computed(() => {
-  return formData.value.keperluanMendesak?.includes('lain');
-});
+// Relationship Variables
+const dibantuPenolongAmil = ref("");
+const hubunganKakitanganLZS = ref("");
+const hubunganPAK = ref("");
+const hubunganPemohon = ref("");
 
+// ID Type Variables
+const jenisId = ref(null);
+const jenisIdTanggungan = ref("");
+
+// Islamic Information Variables
 const tarikhMasukIslam = ref(null);
 const tarikhMasukIslamTanggungan = ref(null);
 
+// Polygamy Variables
 const statusPoligami = ref(null);
 const bilanganIsteri = ref(null);
 const isteriList = ref([]);
 
-watch(bilanganIsteri, (newVal) => {
-  const count = parseInt(newVal) || 0;
-  isteriList.value = Array(count).fill({});
-});
+// Payment Variables
+const caraPembayaran = ref(null);
+const paymentMethod = ref("");
 
-watch(statusPoligami, (newVal) => {
-  if (newVal !== 'ya') {
-    bilanganIsteri.value = null;
-    isteriList.value = [];
-  }
-});
+// Residence Variables
+const statusKediaman = ref(null);
 
+// Loan Variables
+const pemberiPinjaman = ref('');
+const jenisPinjaman = ref('');
+const bayaranBulanan = ref(null);
+const jumlahPerbelanjaan = ref(null);
+const tahunMulaPinjaman = ref(null);
+const tahunAkhirPinjaman = ref(null);
+
+// Modal Variables
+const showKursusModal = ref(false);
+const selectedKursus = ref(null);
+const selectedGuru = ref(null);
+
+// ============================================================================
+// FORM DATA STRUCTURE
+// ============================================================================
 const formData = ref({
   // Section A - Maklumat Peribadi Asnaf
   jenis_id: '',
@@ -2795,10 +2828,305 @@ const formData = ref({
   negara_pekerjaan: '',
   status_jawatan: '',
 
-  // Add this line for heirs array
+  // Heirs array
   heirs: []
 });
 
+// ============================================================================
+// OPTIONS DATA
+// ============================================================================
+// Payment Method Options
+const paymentMethodOptions = [
+  { label: 'Akaun', value: 'akaun' },
+  { label: 'Tiada', value: 'tiada' }
+];
+
+// No Payment Reason Options
+const noPaymentReasonOptions = [
+  { label: 'Muflis', value: 'muflis' },
+  { label: 'Bukan Warganegara', value: 'bukan-warganegara' }
+];
+
+// Bank Options with SWIFT Codes
+const bankOptions = [
+  { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
+  { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
+  { label: "RHB", value: "rhb", swiftCode: "RHBBMYKL" },
+  { label: "Bank Islam", value: "bank-islam", swiftCode: "BIMBMYKL" },
+  { label: "Bank Rakyat", value: "bank-rakyat", swiftCode: "BKRMYKL" },
+  { label: "Public Bank", value: "public-bank", swiftCode: "PBBEMYKL" },
+  { label: "Hong Leong Bank", value: "hong-leong", swiftCode: "HLBBMYKL" },
+  { label: "Ambank", value: "ambank", swiftCode: "ARBKMYKL" },
+  { label: "BSN", value: "bsn", swiftCode: "BSNAMYKL" },
+  { label: "Affin Bank", value: "affin", swiftCode: "PHBMMYKL" },
+  { label: "UOB", value: "uob", swiftCode: "UOVBMYKL" },
+  { label: "OCBC", value: "ocbc", swiftCode: "OCBCMYKL" },
+  { label: "Standard Chartered", value: "standard-chartered", swiftCode: "SCBLMYKL" },
+  { label: "Alliance Bank", value: "alliance", swiftCode: "MFBBMYKL" },
+  { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" }
+];
+
+// District Options
+const daerahOptions = [
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu-langat" },
+  { label: "Hulu Selangor", value: "hulu-selangor" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Langat", value: "kuala-langat" },
+  { label: "Kuala Selangor", value: "kuala-selangor" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Sabak Bernam", value: "sabak-bernam" },
+  { label: "Sepang", value: "sepang" }
+];
+
+// Mosque Parish Options
+const kariahOptions = [
+  { label: "Kariah Masjid Al-Hidayah", value: "masjid-al-hidayah" },
+  { label: "Kariah Masjid Al-Ikhlas", value: "masjid-al-ikhlas" },
+  { label: "Kariah Masjid Al-Muttaqin", value: "masjid-al-muttaqin" },
+  { label: "Kariah Masjid Al-Rahman", value: "masjid-al-rahman" },
+  { label: "Kariah Masjid Al-Salam", value: "masjid-al-salam" },
+  { label: "Kariah Masjid Al-Taqwa", value: "masjid-al-taqwa" },
+  { label: "Kariah Masjid An-Nur", value: "masjid-an-nur" },
+  { label: "Kariah Masjid Ar-Rahman", value: "masjid-ar-rahman" },
+  { label: "Kariah Masjid As-Salam", value: "masjid-as-salam" },
+  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" }
+];
+
+// PAK Officers by Mosque Parish
+const pakOfficersByKariah = {
+  'masjid-al-hidayah': [
+    { label: 'Ustaz Ahmad bin Abdullah', value: 'ustaz-ahmad-abdullah' },
+    { label: 'Ustazah Siti binti Mohamed', value: 'ustazah-siti-mohamed' },
+    { label: 'Ustaz Mohd bin Hassan', value: 'ustaz-mohd-hassan' }
+  ],
+  'masjid-al-ikhlas': [
+    { label: 'Ustaz Ismail bin Omar', value: 'ustaz-ismail-omar' },
+    { label: 'Ustazah Fatimah binti Ali', value: 'ustazah-fatimah-ali' },
+    { label: 'Ustaz Kamal bin Ibrahim', value: 'ustaz-kamal-ibrahim' }
+  ],
+  'masjid-al-muttaqin': [
+    { label: 'Ustaz Rahman bin Sulaiman', value: 'ustaz-rahman-sulaiman' },
+    { label: 'Ustazah Aminah binti Yusof', value: 'ustazah-aminah-yusof' },
+    { label: 'Ustaz Zulkifli bin Ahmad', value: 'ustaz-zulkifli-ahmad' }
+  ],
+  'masjid-al-rahman': [
+    { label: 'Ustaz Aziz bin Mohamed', value: 'ustaz-aziz-mohamed' },
+    { label: 'Ustazah Nor binti Hassan', value: 'ustazah-nor-hassan' },
+    { label: 'Ustaz Hamid bin Abdullah', value: 'ustaz-hamid-abdullah' }
+  ],
+  'masjid-al-salam': [
+    { label: 'Ustaz Yusof bin Ahmad', value: 'ustaz-yusof-ahmad' },
+    { label: 'Ustazah Mariam binti Omar', value: 'ustazah-mariam-omar' },
+    { label: 'Ustaz Khalid bin Ismail', value: 'ustaz-khalid-ismail' }
+  ],
+  'masjid-al-taqwa': [
+    { label: 'Ustaz Omar bin Hassan', value: 'ustaz-omar-hassan' },
+    { label: 'Ustazah Zainab binti Ali', value: 'ustazah-zainab-ali' },
+    { label: 'Ustaz Ibrahim bin Mohamed', value: 'ustaz-ibrahim-mohamed' }
+  ],
+  'masjid-an-nur': [
+    { label: 'Ustaz Hassan bin Abdullah', value: 'ustaz-hassan-abdullah' },
+    { label: 'Ustazah Aishah binti Yusof', value: 'ustazah-aishah-yusof' },
+    { label: 'Ustaz Mohamed bin Khalid', value: 'ustaz-mohamed-khalid' }
+  ],
+  'masjid-ar-rahman': [
+    { label: 'Ustaz Abdullah bin Omar', value: 'ustaz-abdullah-omar' },
+    { label: 'Ustazah Khadijah binti Hassan', value: 'ustazah-khadijah-hassan' },
+    { label: 'Ustaz Ali bin Ismail', value: 'ustaz-ali-ismail' }
+  ],
+  'masjid-as-salam': [
+    { label: 'Ustaz Sulaiman bin Ahmad', value: 'ustaz-sulaiman-ahmad' },
+    { label: 'Ustazah Safiyah binti Mohamed', value: 'ustazah-safiyah-mohamed' },
+    { label: 'Ustaz Yusof bin Khalid', value: 'ustaz-yusof-khalid' }
+  ],
+  'masjid-at-taqwa': [
+    { label: 'Ustaz Khalid bin Abdullah', value: 'ustaz-khalid-abdullah' },
+    { label: 'Ustazah Aminah binti Omar', value: 'ustazah-aminah-omar' },
+    { label: 'Ustaz Ismail bin Hassan', value: 'ustaz-ismail-hassan' }
+  ]
+};
+
+// Course List Data
+const kursusList = ref([
+  {
+    id: 1,
+    nama: "Kursus Fardu Ain Asas",
+    deskripsi: "Kursus asas untuk mempelajari fardu ain",
+    durasi: "3 bulan",
+    kapasiti: 20
+  },
+  {
+    id: 2,
+    nama: "Kursus Tahfiz Al-Quran",
+    deskripsi: "Kursus menghafal Al-Quran",
+    durasi: "6 bulan",
+    kapasiti: 15
+  },
+  {
+    id: 3,
+    nama: "Kursus Bahasa Arab",
+    deskripsi: "Kursus bahasa Arab untuk pemula",
+    durasi: "4 bulan",
+    kapasiti: 25
+  },
+  {
+    id: 4,
+    nama: "Kursus Fiqh Muamalat",
+    deskripsi: "Kursus hukum muamalat Islam",
+    durasi: "2 bulan",
+    kapasiti: 30
+  },
+  {
+    id: 5,
+    nama: "Kursus Tafsir Al-Quran",
+    deskripsi: "Kursus memahami tafsir Al-Quran",
+    durasi: "5 bulan",
+    kapasiti: 18
+  }
+]);
+
+// Teacher List Data
+const guruList = ref([
+  {
+    id: 1,
+    nama: "Ustaz Ahmad bin Abdullah",
+    specialization: "Fardu Ain & Fiqh",
+    rating: 4.8,
+    pengalaman: 10
+  },
+  {
+    id: 2,
+    nama: "Ustazah Siti binti Mohamed",
+    specialization: "Tahfiz Al-Quran",
+    rating: 4.9,
+    pengalaman: 15
+  },
+  {
+    id: 3,
+    nama: "Ustaz Mohd Ali bin Hassan",
+    specialization: "Bahasa Arab",
+    rating: 4.7,
+    pengalaman: 8
+  },
+  {
+    id: 4,
+    nama: "Ustazah Nurul Huda binti Ismail",
+    specialization: "Tafsir Al-Quran",
+    rating: 4.6,
+    pengalaman: 12
+  },
+  {
+    id: 5,
+    nama: "Ustaz Abdul Rahman bin Omar",
+    specialization: "Fiqh Muamalat",
+    rating: 4.5,
+    pengalaman: 9
+  }
+]);
+
+// ============================================================================
+// COMPUTED PROPERTIES
+// ============================================================================
+const showLainInput = computed(() => {
+  return formData.value.keperluanMendesak?.includes('lain');
+});
+
+const hasLoanInfo = computed(() => {
+  return pemberiPinjaman.value || 
+         jenisPinjaman.value || 
+         bayaranBulanan.value || 
+         jumlahPerbelanjaan.value || 
+         tahunMulaPinjaman.value || 
+         tahunAkhirPinjaman.value;
+});
+
+const selectedBankSwiftCode = computed(() => {
+  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank);
+  return selectedBank ? selectedBank.swiftCode : '';
+});
+
+const selectedBankSwiftCodeTanggungan = computed(() => {
+  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank_tanggungan);
+  return selectedBank ? selectedBank.swiftCode : '';
+});
+
+const selectedDaerah = computed(() => {
+  const daerah = daerahOptions.find(d => d.value === formData.value.addressInfo.daerah);
+  return daerah ? daerah.label : '';
+});
+
+const pakOfficersOptionsBantuan = computed(() => {
+  const selectedKariah = formData.value.pengesahan.kariah_bantuan;
+  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
+});
+
+const pakOfficersOptionsHubungan = computed(() => {
+  const selectedKariah = formData.value.pengesahan.kariah_hubungan_pak;
+  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
+});
+
+const uploadedDocuments = computed(() => {
+  const documents = [];
+  
+  // Add sample document for demonstration
+  if (formData.value.pengesahan.surat_pengesahan_bermastautin) {
+    documents.push({
+      name: "pengesahan_bermastautin.pdf",
+      type: "application/pdf",
+      size: "2.0 MB"
+    });
+  }
+  
+  return documents;
+});
+
+// ============================================================================
+// WATCHERS
+// ============================================================================
+watch(bilanganIsteri, (newVal) => {
+  const count = parseInt(newVal) || 0;
+  isteriList.value = Array(count).fill({});
+});
+
+watch(statusPoligami, (newVal) => {
+  if (newVal !== 'ya') {
+    bilanganIsteri.value = null;
+    isteriList.value = [];
+  }
+});
+
+watch(
+  () => formData.value.nama_bank,
+  (newVal) => {
+    if (newVal) {
+      const selectedBank = bankOptions.find(bank => bank.value === newVal);
+      if (selectedBank) {
+        formData.value.swift_code = selectedBank.swiftCode;
+      }
+    } else {
+      formData.value.swift_code = '';
+    }
+  }
+);
+
+watch(
+  () => formData.value.nama_bank_tanggungan,
+  (newVal) => {
+    if (newVal) {
+      const selectedBank = bankOptions.find(bank => bank.value === newVal);
+      if (selectedBank) {
+        formData.value.swift_code_tanggungan = selectedBank.swiftCode;
+      }
+    } else {
+      formData.value.swift_code_tanggungan = '';
+    }
+  }
+);
+
+// ============================================================================
+// STEP NAVIGATION FUNCTIONS
+// ============================================================================
 const nextStepA = () => {
   if (currentStepA.value < totalStepsA) {
     currentStepA.value++;
@@ -2825,9 +3153,6 @@ const prevStepB = () => {
   }
 };
 
-const goToPeribadi = () => {
-  currentStepB.value = 1;
-};
 const nextSection = () => {
   currentSection.value = 2;
 };
@@ -2836,20 +3161,32 @@ const prevSection = () => {
   currentSection.value = 1;
 };
 
+const goToPeribadi = () => {
+  currentStepB.value = 1;
+};
+
+// ============================================================================
+// FORM SUBMISSION FUNCTIONS
+// ============================================================================
 const submitForm = () => {
   processing.value = true;
+  navigateTo(`/BF-PRF/AS/FR/03`);
+};
 
-  // setTimeout(() => {
-    navigateTo(`/BF-PRF/AS/FR/03`);
-  // }, 1000);
+const handleSubmit = async () => {
+  try {
+    console.log("Form submitted:", formData.value);
+    toast.success("Permohonan berjaya dihantar");
+    router.push("/BF-PRF/AS/FR/04");
+  } catch (error) {
+    toast.error("Ralat! Permohonan tidak berjaya dihantar");
+    console.error("Submission error:", error);
+  }
 };
 
 const handleSave = async () => {
   try {
-    // Handle form saving
     console.log("Form saved:", formData.value);
-    // Add your save logic here (API call, etc.)
-
     toast.success("Permohonan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya disimpan");
@@ -2857,7 +3194,9 @@ const handleSave = async () => {
   }
 };
 
-// Step A Save Functions
+// ============================================================================
+// STEP SAVE FUNCTIONS - SECTION A
+// ============================================================================
 const handleSaveStepA1 = async () => {
   try {
     console.log("Step A1 saved:", formData.value);
@@ -2958,7 +3297,9 @@ const handleSaveStepA10 = async () => {
   }
 };
 
-// Step B Save Functions
+// ============================================================================
+// STEP SAVE FUNCTIONS - SECTION B
+// ============================================================================
 const handleSaveStepB1 = async () => {
   try {
     console.log("Step B1 saved:", formData.value);
@@ -3009,121 +3350,9 @@ const handleSaveStepB5 = async () => {
   }
 };
 
-const handleSubmit = async () => {
-  try {
-  // Handle form submission
-  console.log("Form submitted:", formData.value);
-  // Add your submission logic here (API call, etc.)
-
-    toast.success("Permohonan berjaya dihantar");
-    
-    // Wait for 2 seconds before navigating
-    // setTimeout(() => {
-      router.push("/BF-PRF/AS/FR/04");
-    // }, 2000);
-  } catch (error) {
-    toast.error("Ralat! Permohonan tidak berjaya dihantar");
-    console.error("Submission error:", error);
-  }
-};
-
-
-
-const caraPembayaran = ref(null);
-
-const paymentMethodOptions = [
-  { label: 'Akaun', value: 'akaun' },
-  { label: 'Tiada', value: 'tiada' }
-];
-
-const noPaymentReasonOptions = [
-  { label: 'Muflis', value: 'muflis' },
-  { label: 'Bukan Warganegara', value: 'bukan-warganegara' }
-];
-
-const bankOptions = [
-  { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
-  { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
-  { label: "RHB", value: "rhb", swiftCode: "RHBBMYKL" },
-  { label: "Bank Islam", value: "bank-islam", swiftCode: "BIMBMYKL" },
-  { label: "Bank Rakyat", value: "bank-rakyat", swiftCode: "BKRMYKL" },
-  { label: "Public Bank", value: "public-bank", swiftCode: "PBBEMYKL" },
-  { label: "Hong Leong Bank", value: "hong-leong", swiftCode: "HLBBMYKL" },
-  { label: "Ambank", value: "ambank", swiftCode: "ARBKMYKL" },
-  { label: "BSN", value: "bsn", swiftCode: "BSNAMYKL" },
-  { label: "Affin Bank", value: "affin", swiftCode: "PHBMMYKL" },
-  { label: "UOB", value: "uob", swiftCode: "UOVBMYKL" },
-  { label: "OCBC", value: "ocbc", swiftCode: "OCBCMYKL" },
-  { label: "Standard Chartered", value: "standard-chartered", swiftCode: "SCBLMYKL" },
-  { label: "Alliance Bank", value: "alliance", swiftCode: "MFBBMYKL" },
-  { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" }
-];
-
-const jenisId = ref(null);
-
-const daerahOptions = [
-  { label: "Gombak", value: "gombak" },
-  { label: "Hulu Langat", value: "hulu-langat" },
-  { label: "Hulu Selangor", value: "hulu-selangor" },
-  { label: "Klang", value: "klang" },
-  { label: "Kuala Langat", value: "kuala-langat" },
-  { label: "Kuala Selangor", value: "kuala-selangor" },
-  { label: "Petaling", value: "petaling" },
-  { label: "Sabak Bernam", value: "sabak-bernam" },
-  { label: "Sepang", value: "sepang" }
-];
-
-const kariahOptions = [
-  { label: "Kariah Masjid Al-Hidayah", value: "masjid-al-hidayah" },
-  { label: "Kariah Masjid Al-Ikhlas", value: "masjid-al-ikhlas" },
-  { label: "Kariah Masjid Al-Muttaqin", value: "masjid-al-muttaqin" },
-  { label: "Kariah Masjid Al-Rahman", value: "masjid-al-rahman" },
-  { label: "Kariah Masjid Al-Salam", value: "masjid-al-salam" },
-  { label: "Kariah Masjid Al-Taqwa", value: "masjid-al-taqwa" },
-  { label: "Kariah Masjid An-Nur", value: "masjid-an-nur" },
-  { label: "Kariah Masjid Ar-Rahman", value: "masjid-ar-rahman" },
-  { label: "Kariah Masjid As-Salam", value: "masjid-as-salam" },
-  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" }
-];
-
-
-
-const getLocation = (field) => {
-  formData.value[field].location = 'Lokasi semasa';
-  toast.success('Lokasi berjaya diperoleh!');
-};
-
-const statusKediaman = ref(null);
-
-const pemberiPinjaman = ref('');
-const jenisPinjaman = ref('');
-const bayaranBulanan = ref(null);
-const jumlahPerbelanjaan = ref(null);
-const tahunMulaPinjaman = ref(null);
-const tahunAkhirPinjaman = ref(null);
-
-const hasLoanInfo = computed(() => {
-  return pemberiPinjaman.value || 
-         jenisPinjaman.value || 
-         bayaranBulanan.value || 
-         jumlahPerbelanjaan.value || 
-         tahunMulaPinjaman.value || 
-         tahunAkhirPinjaman.value;
-});
-
-// Computed property to get SWIFT code for selected bank
-const selectedBankSwiftCode = computed(() => {
-  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank);
-  return selectedBank ? selectedBank.swiftCode : '';
-});
-
-// Computed property to get SWIFT code for selected bank (Tanggungan)
-const selectedBankSwiftCodeTanggungan = computed(() => {
-  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank_tanggungan);
-  return selectedBank ? selectedBank.swiftCode : '';
-});
-
-// Add these functions for handling heirs
+// ============================================================================
+// HEIRS MANAGEMENT FUNCTIONS
+// ============================================================================
 const addHeir = () => {
   formData.value.heirs.push({
     name: '',
@@ -3136,123 +3365,17 @@ const removeHeir = (index) => {
   formData.value.heirs.splice(index, 1);
 };
 
-// Watcher to update SWIFT code when bank is selected
-watch(
-  () => formData.value.nama_bank,
-  (newVal) => {
-    if (newVal) {
-      const selectedBank = bankOptions.find(bank => bank.value === newVal);
-      if (selectedBank) {
-        formData.value.swift_code = selectedBank.swiftCode;
-      }
-    } else {
-      formData.value.swift_code = '';
-    }
-  }
-);
+// ============================================================================
+// LOCATION & UTILITY FUNCTIONS
+// ============================================================================
+const getLocation = (field) => {
+  formData.value[field].location = 'Lokasi semasa';
+  toast.success('Lokasi berjaya diperoleh!');
+};
 
-// Watcher to update SWIFT code when bank is selected (Tanggungan)
-watch(
-  () => formData.value.nama_bank_tanggungan,
-  (newVal) => {
-    if (newVal) {
-      const selectedBank = bankOptions.find(bank => bank.value === newVal);
-      if (selectedBank) {
-        formData.value.swift_code_tanggungan = selectedBank.swiftCode;
-      }
-    } else {
-      formData.value.swift_code_tanggungan = '';
-    }
-  }
-);
-
-// Kursus Modal Variables and Functions
-const showKursusModal = ref(false);
-const selectedKursus = ref(null);
-const selectedGuru = ref(null);
-
-const selectedDaerah = computed(() => {
-  const daerah = daerahOptions.find(d => d.value === formData.value.addressInfo.daerah);
-  return daerah ? daerah.label : '';
-});
-
-// Fake data for courses and teachers
-const kursusList = ref([
-  {
-    id: 1,
-    nama: "Kursus Fardu Ain Asas",
-    deskripsi: "Kursus asas untuk mempelajari fardu ain",
-    durasi: "3 bulan",
-    kapasiti: 20
-  },
-  {
-    id: 2,
-    nama: "Kursus Tahfiz Al-Quran",
-    deskripsi: "Kursus menghafal Al-Quran",
-    durasi: "6 bulan",
-    kapasiti: 15
-  },
-  {
-    id: 3,
-    nama: "Kursus Bahasa Arab",
-    deskripsi: "Kursus bahasa Arab untuk pemula",
-    durasi: "4 bulan",
-    kapasiti: 25
-  },
-  {
-    id: 4,
-    nama: "Kursus Fiqh Muamalat",
-    deskripsi: "Kursus hukum muamalat Islam",
-    durasi: "2 bulan",
-    kapasiti: 30
-  },
-  {
-    id: 5,
-    nama: "Kursus Tafsir Al-Quran",
-    deskripsi: "Kursus memahami tafsir Al-Quran",
-    durasi: "5 bulan",
-    kapasiti: 18
-  }
-]);
-
-const guruList = ref([
-  {
-    id: 1,
-    nama: "Ustaz Ahmad bin Abdullah",
-    specialization: "Fardu Ain & Fiqh",
-    rating: 4.8,
-    pengalaman: 10
-  },
-  {
-    id: 2,
-    nama: "Ustazah Siti binti Mohamed",
-    specialization: "Tahfiz Al-Quran",
-    rating: 4.9,
-    pengalaman: 15
-  },
-  {
-    id: 3,
-    nama: "Ustaz Mohd Ali bin Hassan",
-    specialization: "Bahasa Arab",
-    rating: 4.7,
-    pengalaman: 8
-  },
-  {
-    id: 4,
-    nama: "Ustazah Nurul Huda binti Ismail",
-    specialization: "Tafsir Al-Quran",
-    rating: 4.6,
-    pengalaman: 12
-  },
-  {
-    id: 5,
-    nama: "Ustaz Abdul Rahman bin Omar",
-    specialization: "Fiqh Muamalat",
-    rating: 4.5,
-    pengalaman: 9
-  }
-]);
-
+// ============================================================================
+// KURSUS MODAL FUNCTIONS
+// ============================================================================
 const openKursusModal = () => {
   if (!formData.value.addressInfo.location && !selectedDaerah.value) {
     toast.error('Sila pilih lokasi atau daerah terlebih dahulu');
@@ -3287,72 +3410,9 @@ const confirmKursusSelection = () => {
   }
 };
 
-// PAK Officers by Kariah
-const pakOfficersByKariah = {
-  'masjid-al-hidayah': [
-    { label: 'Ustaz Ahmad bin Abdullah', value: 'ustaz-ahmad-abdullah' },
-    { label: 'Ustazah Siti binti Mohamed', value: 'ustazah-siti-mohamed' },
-    { label: 'Ustaz Mohd bin Hassan', value: 'ustaz-mohd-hassan' }
-  ],
-  'masjid-al-ikhlas': [
-    { label: 'Ustaz Ismail bin Omar', value: 'ustaz-ismail-omar' },
-    { label: 'Ustazah Fatimah binti Ali', value: 'ustazah-fatimah-ali' },
-    { label: 'Ustaz Kamal bin Ibrahim', value: 'ustaz-kamal-ibrahim' }
-  ],
-  'masjid-al-muttaqin': [
-    { label: 'Ustaz Rahman bin Sulaiman', value: 'ustaz-rahman-sulaiman' },
-    { label: 'Ustazah Aminah binti Yusof', value: 'ustazah-aminah-yusof' },
-    { label: 'Ustaz Zulkifli bin Ahmad', value: 'ustaz-zulkifli-ahmad' }
-  ],
-  'masjid-al-rahman': [
-    { label: 'Ustaz Aziz bin Mohamed', value: 'ustaz-aziz-mohamed' },
-    { label: 'Ustazah Nor binti Hassan', value: 'ustazah-nor-hassan' },
-    { label: 'Ustaz Hamid bin Abdullah', value: 'ustaz-hamid-abdullah' }
-  ],
-  'masjid-al-salam': [
-    { label: 'Ustaz Yusof bin Ahmad', value: 'ustaz-yusof-ahmad' },
-    { label: 'Ustazah Mariam binti Omar', value: 'ustazah-mariam-omar' },
-    { label: 'Ustaz Khalid bin Ismail', value: 'ustaz-khalid-ismail' }
-  ],
-  'masjid-al-taqwa': [
-    { label: 'Ustaz Omar bin Hassan', value: 'ustaz-omar-hassan' },
-    { label: 'Ustazah Zainab binti Ali', value: 'ustazah-zainab-ali' },
-    { label: 'Ustaz Ibrahim bin Mohamed', value: 'ustaz-ibrahim-mohamed' }
-  ],
-  'masjid-an-nur': [
-    { label: 'Ustaz Hassan bin Abdullah', value: 'ustaz-hassan-abdullah' },
-    { label: 'Ustazah Aishah binti Yusof', value: 'ustazah-aishah-yusof' },
-    { label: 'Ustaz Mohamed bin Khalid', value: 'ustaz-mohamed-khalid' }
-  ],
-  'masjid-ar-rahman': [
-    { label: 'Ustaz Abdullah bin Omar', value: 'ustaz-abdullah-omar' },
-    { label: 'Ustazah Khadijah binti Hassan', value: 'ustazah-khadijah-hassan' },
-    { label: 'Ustaz Ali bin Ismail', value: 'ustaz-ali-ismail' }
-  ],
-  'masjid-as-salam': [
-    { label: 'Ustaz Sulaiman bin Ahmad', value: 'ustaz-sulaiman-ahmad' },
-    { label: 'Ustazah Safiyah binti Mohamed', value: 'ustazah-safiyah-mohamed' },
-    { label: 'Ustaz Yusof bin Khalid', value: 'ustaz-yusof-khalid' }
-  ],
-  'masjid-at-taqwa': [
-    { label: 'Ustaz Khalid bin Abdullah', value: 'ustaz-khalid-abdullah' },
-    { label: 'Ustazah Aminah binti Omar', value: 'ustazah-aminah-omar' },
-    { label: 'Ustaz Ismail bin Hassan', value: 'ustaz-ismail-hassan' }
-  ]
-};
-
-// Computed properties for PAK officers options
-const pakOfficersOptionsBantuan = computed(() => {
-  const selectedKariah = formData.value.pengesahan.kariah_bantuan;
-  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
-});
-
-const pakOfficersOptionsHubungan = computed(() => {
-  const selectedKariah = formData.value.pengesahan.kariah_hubungan_pak;
-  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
-});
-
-// Helper functions for bermastautin section
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
 const getKariahLabel = (value) => {
   const kariah = kariahOptions.find(k => k.value === value);
   return kariah ? kariah.label : '';
@@ -3367,23 +3427,6 @@ const getPakOfficerLabel = (value) => {
   return '';
 };
 
-// Computed property for uploaded documents
-const uploadedDocuments = computed(() => {
-  const documents = [];
-  
-  // Add sample document for demonstration
-  if (formData.value.pengesahan.surat_pengesahan_bermastautin) {
-    documents.push({
-      name: "pengesahan_bermastautin.pdf",
-      type: "application/pdf",
-      size: "2.0 MB"
-    });
-  }
-  
-  return documents;
-});
-
-// Function to handle document download
 const downloadDocument = (doc) => {
   // This would typically trigger a download
   console.log('Downloading document:', doc.name);
