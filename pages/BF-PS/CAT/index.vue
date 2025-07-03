@@ -97,6 +97,17 @@
                     @input="onUserSearch"
                   />
 
+                  <!-- MyKad / Foreign ID Search -->
+                  <FormKit
+                    type="text"
+                    name="noKpForeignId"
+                    label="No. MyKad / Foreign ID"
+                    v-model="searchForm.noKpForeignId"
+                    placeholder="Cari berdasarkan IC... (cth: 800101015432)"
+                    help="Cari rekod berdasarkan No. MyKad atau Foreign ID pengguna (Pilihan)"
+                    @input="onIdSearch"
+                  />
+
                   <!-- Module Dropdown -->
                   <FormKit
                     type="select"
@@ -246,6 +257,10 @@
                   <div v-if="searchForm.namaPengguna">
                     <span class="text-gray-600 font-medium">Pengguna:</span>
                     <p>{{ searchForm.namaPengguna }}</p>
+                  </div>
+                  <div v-if="searchForm.noKpForeignId">
+                    <span class="text-gray-600 font-medium">MyKad/Foreign ID:</span>
+                    <p>{{ searchForm.noKpForeignId }}</p>
                   </div>
                   <div v-if="searchForm.modul">
                     <span class="text-gray-600 font-medium">Modul:</span>
@@ -455,6 +470,10 @@
                   <span>{{ selectedAuditLog.username }}</span>
                   <rs-badge :variant="getUserRoleBadgeVariant(selectedAuditLog.userRole)">{{ selectedAuditLog.userRole }}</rs-badge>
                 </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">MyKad / Foreign ID</label>
+                <p class="font-mono text-sm bg-white p-2 rounded border">{{ selectedAuditLog.userIdNumber }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Tindakan</label>
@@ -721,6 +740,7 @@ const searchForm = ref({
   tarikhMula: '',
   tarikhTamat: '',
   namaPengguna: '',
+  noKpForeignId: '',
   modul: '',
   subModul: '',
   jenisTindakan: ''
@@ -858,13 +878,13 @@ const generateMockAuditLogs = (criteria) => {
   };
   const actions = ['Tambah', 'Kemaskini', 'Padam', 'Lulus', 'Tolak'];
   const users = [
-    { name: 'AdminICT01', role: 'ADMIN' },
-    { name: 'NASAdmin02', role: 'NAS' },
-    { name: 'EKP03', role: 'EKP' },
-    { name: 'EOAD04', role: 'EOAD' },
-    { name: 'AuditOfficer01', role: 'AUDIT' },
-    { name: 'AhmadPentadbir', role: 'ADMIN' },
-    { name: 'SitiEKP', role: 'EKP' }
+    { name: 'AdminICT01', role: 'ADMIN', idNumber: '800101015432' },
+    { name: 'NASAdmin02', role: 'NAS', idNumber: '850505025678' },
+    { name: 'EKP03', role: 'EKP', idNumber: '820202036789' },
+    { name: 'EOAD04', role: 'EOAD', idNumber: '870707047890' },
+    { name: 'AuditOfficer01', role: 'AUDIT', idNumber: '830303038901' },
+    { name: 'AhmadPentadbir', role: 'ADMIN', idNumber: '860606069012' },
+    { name: 'SitiEKP', role: 'EKP', idNumber: 'A1234567B' }
   ];
 
   // Generate filtered logs based on criteria
@@ -902,6 +922,7 @@ const generateMockAuditLogs = (criteria) => {
       timestampDate: date,
       username: user.name,
       userRole: user.role,
+      userIdNumber: user.idNumber,
       module,
       subModule,
       action,
@@ -938,6 +959,14 @@ const generateMockAuditLogs = (criteria) => {
     );
   }
 
+  // Filter by MyKad / Foreign ID
+  if (criteria.noKpForeignId) {
+    const query = criteria.noKpForeignId.toLowerCase();
+    filteredLogs = filteredLogs.filter(log => 
+      log.userIdNumber.toLowerCase().includes(query)
+    );
+  }
+
   // Filter by module
   if (criteria.modul) {
     filteredLogs = filteredLogs.filter(log => log.module === criteria.modul);
@@ -965,6 +994,21 @@ const onUserSearch = (value) => {
   console.log('User search:', value);
 };
 
+const onIdSearch = (value) => {
+  // Mock ID validation - in real implementation, this would validate format
+  console.log('ID search:', value);
+  
+  // Basic validation feedback (optional enhancement)
+  if (value && value.length > 0) {
+    const isMyKadFormat = /^\d{12}$/.test(value);
+    const isForeignIdFormat = /^[A-Z0-9]{6,}$/i.test(value);
+    
+    if (!isMyKadFormat && !isForeignIdFormat && value.length >= 6) {
+      console.log('💡 Format hint: MyKad (12 digits) or Foreign ID (6+ alphanumeric)');
+    }
+  }
+};
+
 const resetSearch = () => {
   showResetModal.value = true;
 };
@@ -974,6 +1018,7 @@ const confirmReset = () => {
     tarikhMula: '',
     tarikhTamat: '',
     namaPengguna: '',
+    noKpForeignId: '',
     modul: '',
     subModul: '',
     jenisTindakan: ''
