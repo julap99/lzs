@@ -68,7 +68,7 @@
         <!-- Search Result Section -->
         <div v-if="searchCompleted" class="mt-6">
           <rs-card
-            :variant="profileExists ? 'success' : 'warning'"
+            :variant="profileStatus === 'found' ? 'success' : profileStatus === 'not_found' ? 'warning' : 'info'"
             class="mb-4"
           >
             <template #body>
@@ -76,23 +76,25 @@
                 <div class="mr-4">
                   <Icon
                     :name="
-                      profileExists ? 'mdi:check-circle' : 'mdi:alert-circle'
+                      profileStatus === 'found' ? 'mdi:check-circle' : profileStatus === 'not_found' ? 'mdi:alert-circle' : 'mdi:information'
                     "
                     size="2rem"
-                    :class="profileExists ? 'text-green-600' : 'text-amber-600'"
+                    :class="profileStatus === 'found' ? 'text-green-600' : profileStatus === 'not_found' ? 'text-amber-600' : 'text-blue-600'"
                   />
                 </div>
                 <div>
                   <h3 class="text-lg font-medium">
                     {{
-                      profileExists ? "Profil Ditemui" : "Profil Tidak Ditemui"
+                      profileStatus === 'found' ? "Profil Ditemui" : profileStatus === 'not_found' ? "Profil Tidak Ditemui" : "Lengkapkan Profil"
                     }}
                   </h3>
                   <p class="text-sm mt-1">
                     {{
-                      profileExists
+                      profileStatus === 'found'
                         ? "Profil bagi ID yang dimasukkan telah dijumpai dalam sistem."
-                        : "Tiada profil ditemui bagi ID yang dimasukkan."
+                        : profileStatus === 'not_found'
+                        ? "Tiada profil ditemui bagi ID yang dimasukkan."
+                        : "Profil tidak lengkap. Silakan lengkapkan profil."
                     }}
                   </p>
                 </div>
@@ -104,7 +106,7 @@
                   variant="primary"
                   @click="navigateNext"
                 >
-                  {{ profileExists ? "Kemaskini Profil" : "Pendaftaran Baru" }}
+                  {{ profileStatus === 'found' ? "Kemaskini Profil" : profileStatus === 'not_found' ? "Pendaftaran Baru" : "Lengkapkan Profil" }}
                 </rs-button>
               </div>
             </template>
@@ -125,7 +127,7 @@ definePageMeta({
 
 const processing = ref(false);
 const searchCompleted = ref(false);
-const profileExists = ref(false);
+const profileStatus = ref(""); // "found", "not_found", "incomplete"
 
 const breadcrumb = ref([
   {
@@ -191,16 +193,26 @@ const performSearch = async () => {
   // Simulate API call to search for profile with randomized result
   setTimeout(() => {
     processing.value = false;
-    // Randomize whether profile exists or not (50% chance)
-    profileExists.value = Math.random() >= 0.5;
+    // Randomize between three states: found, not_found, incomplete
+    const random = Math.random();
+    if (random < 0.33) {
+      profileStatus.value = "found";
+    } else if (random < 0.66) {
+      profileStatus.value = "not_found";
+    } else {
+      profileStatus.value = "incomplete";
+    }
     searchCompleted.value = true;
   }, 1000);
 };
 
 const navigateNext = () => {
-  if (profileExists.value) {
+  if (profileStatus.value === "found") {
     // Navigate to update profile page
     navigateTo("/BF-PRF/AS/UP/02");
+  } else if (profileStatus.value === "incomplete") {
+    // Navigate to complete profile page
+    navigateTo("/BF-PRF/AS/QS/02");
   } else {
     // Navigate to new registration page
     navigateTo("/BF-PRF/AS/QS/02");

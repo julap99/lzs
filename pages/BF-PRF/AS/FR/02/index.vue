@@ -61,7 +61,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID']"
+                :options="['Kad Pengenalan', 'Foreign ID','No Polis','No Tentera','No Sijil Lahir']"
                 validation="required"
                 v-model="jenisId"
               />
@@ -90,12 +90,6 @@
                 name="nama"
                 label="Nama"
                 validation="required"
-              />
-
-              <FormKit
-                type="text"
-                name="no_pengenalan"
-                label="No Polis/No Tentera/No Sijil Lahir"
               />
 
               <FormKit
@@ -1639,13 +1633,13 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID']"
+                :options="['Kad Pengenalan', 'Foreign ID','No Polis','No Tentera','No Sijil Lahir']"
                 validation="required"
                 v-model="jenisIdTanggungan"
               />
 
-              <div v-if="jenisIdTanggungan" class="md:col-span-2">
                 <FormKit
+                v-if="jenisIdTanggungan"
                   type="file"
                   name="dokumen_id"
                   :label="`Upload Document`"
@@ -1653,7 +1647,6 @@
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                 />
-              </div>
 
               <FormKit
                 type="text"
