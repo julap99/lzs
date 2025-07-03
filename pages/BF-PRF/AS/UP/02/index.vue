@@ -63,7 +63,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID']"
+                :options="['Kad Pengenalan', 'Foreign ID','No Polis','No Tentera','No Sijil Lahir']"
                 validation="required"
                 v-model="jenisId"
               />
@@ -90,12 +90,6 @@
                 name="nama"
                 label="Nama"
                 validation="required"
-              />
-
-              <FormKit
-                type="text"
-                name="no_pengenalan"
-                label="No Polis/No Tentera/No Sijil Lahir"
               />
 
               <FormKit
@@ -1468,7 +1462,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Peribadi Tanggungan</rs-button
+                >Seterusnya ke Pegawai Pendaftar</rs-button
               >
             </div>
           </div>
@@ -1483,7 +1477,7 @@
           id="sectionJ"
         >
           <h3 class="text-lg font-semibold mb-4">
-            J. Maklumat Pegawai Pendaftar
+            X. Maklumat Pegawai Pendaftar
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1643,13 +1637,14 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID']"
+                :options="['Kad Pengenalan', 'Foreign ID','No Polis','No Tentera','No Sijil Lahir']"
                 validation="required"
                 v-model="jenisIdTanggungan"
               />
 
-              <div v-if="jenisIdTanggungan" class="md:col-span-2">
+              
                 <FormKit
+                 v-if="jenisIdTanggungan"
                   type="file"
                   name="dokumen_id"
                   :label="`Upload Document`"
@@ -1657,7 +1652,6 @@
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                 />
-              </div>
 
               <FormKit
                 type="text"
@@ -1749,7 +1743,7 @@
               <FormKit
                 type="text"
                 name="no_telefon_tanggungan"
-                label="No Telefon/Telefon Bimbit"
+                label="No Telefon"
               />
             </div>
           </div>
