@@ -212,7 +212,7 @@ const navigateNext = () => {
     navigateTo("/BF-PRF/AS/UP/02");
   } else if (profileStatus.value === "incomplete") {
     // Navigate to complete profile page
-    navigateTo("/BF-PRF/AS/QS/02");
+    navigateTo("/BF-PRF/AS/QS/sample");
   } else {
     // Navigate to new registration page
     navigateTo("/BF-PRF/AS/QS/02");

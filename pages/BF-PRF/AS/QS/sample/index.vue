@@ -158,6 +158,12 @@
               </div>
 
               <div class="flex justify-between gap-3 mt-6">
+                <!-- <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="goBack"
+                  >Kembali</rs-button
+                > -->
                   <rs-button 
                     type="button" 
                     variant="secondary" 
@@ -1156,7 +1162,10 @@
               <!-- Document Information (Readonly) -->
               <div class="mb-6">
                 <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-if="uploadedDocuments.length === 0" class="text-center py-8 text-gray-500">
+                  <p>Tiada dokumen yang dimuat naik</p>
+                </div>
+                <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div
                     v-for="(doc, index) in uploadedDocuments"
                     :key="index"
@@ -1187,6 +1196,7 @@
                   label="Nama"
                   validation="required"
                   v-model="formData.verification.namaPengesah"
+                  :value="getPakOfficerLabel(formData.verification.selectedPakOfficer)"
                   disabled
                 />
 
@@ -1196,6 +1206,7 @@
                   label="Jawatan"
                   validation="required"
                   v-model="formData.verification.jawatanPengesah"
+                  value="Pegawai PAK"
                   disabled
                 />
 
@@ -1205,6 +1216,7 @@
                   label="No Telefon"
                   validation="required"
                   v-model="formData.verification.noTelefonPengesah"
+                  value="012-3456789"
                   disabled
                 />
 
@@ -1214,6 +1226,7 @@
                   label="Tarikh Pengesahan"
                   validation="required"
                   v-model="formData.verification.tarikhPengesahanPermastautin"
+                  :value="new Date().toISOString().split('T')[0]"
                   disabled
                 />
 
@@ -1294,7 +1307,7 @@
                   name="tarikh_proses"
                   label="Tarikh Proses"
                   validation="required"
-                  :value="new Date().toISOString().split('T')[0]"
+                  :value="formData.pegawaiPendaftar.tarikhProses"
                   v-model="formData.pegawaiPendaftar.tarikhProses"
                   disabled
                 />
@@ -1360,7 +1373,7 @@ const totalStep = 6;
 const breadcrumb = ref([{
   name: "Borang Permohonan Perseorangan",
   type: "current",
-  path: "/BF-PRF/AS/QS/02",
+  path: "/BF-PRF/AS/QS/sample",
 }]);
 
 const steps = [
@@ -1375,43 +1388,166 @@ const steps = [
 // Form Data
 const formData = ref({
   penilaianAwal: {
-    komitmenTinggi: '',
-    keperluanMendesak: [],
-    lainKeperluan: '',
-    documents: [],
-    additionalNotes: '',
+    komitmenTinggi: 'Y',
+    keperluanMendesak: ['perubatan', 'tunggakanUtiliti'],
+    lainKeperluan: 'Keperluan untuk pembedahan jantung',
+    documents: [
+      {
+        name: 'surat_doktor.pdf',
+        size: 2048576,
+        type: 'application/pdf',
+        lastModified: new Date('2024-01-10').getTime()
+      },
+      {
+        name: 'bil_electric.jpg',
+        size: 1048576,
+        type: 'image/jpeg',
+        lastModified: new Date('2024-01-12').getTime()
+      }
+    ],
+    additionalNotes: 'Pesakit memerlukan pembedahan segera dan menghadapi masalah kewangan untuk membayar bil elektrik yang tertunggak.',
   },
   personalInfo: {
-    idValue: "", idNumber: "", idDocument: null, name: "", islamName: "", phone: "", religion: "",
-    bankName: "", bankAccount: "", bankAccountHolder: "", swiftCode: "", paymentMethod: "", noPaymentReason: [],
-    maritalStatus: "", healthStatus: "", islamDate: "", islamCertificate: null, kfamDate: "", email: "",
-    citizenship: "", dateOfBirth: "", gender: "", assistanceType: "", disasterLocation: "", polygamyStatus: "",
-    wivesCount: "", wives: [], dependentsCount: "", grossIncome: "", incomeDocument: null, location: "",
+    idValue: "ic", 
+    idNumber: "901231025678", 
+    idDocument: {
+      name: 'kad_pengenalan_ahmad.jpg',
+      size: 1536000,
+      type: 'image/jpeg',
+      lastModified: new Date('2024-01-05').getTime()
+    }, 
+    name: "Ahmad bin Abdullah", 
+    nopassport: "A12345678",
+    passportStartDate: "2020-01-15",
+    passportEndDate: "2030-01-15",
+    islamName: "Ahmad bin Abdullah", 
+    phone: "0123456789", 
+    religion: "islam",
+    bankName: "maybank", 
+    bankAccount: "1234567890", 
+    bankAccountHolder: "Ahmad bin Abdullah", 
+    swiftCode: "MBBEMYKL", 
+    paymentMethod: "akaun", 
+    noPaymentReason: [],
+    maritalStatus: "berkahwin", 
+    healthStatus: "sihat", 
+    islamDate: "2020-06-15", 
+    islamCertificate: {
+      name: 'surat_keislaman_mais.pdf',
+      size: 1024000,
+      type: 'application/pdf',
+      lastModified: new Date('2020-06-20').getTime()
+    }, 
+    kfamDate: "2020-07-01", 
+    email: "ahmad.abdullah@email.com",
+    citizenship: "warganegara", 
+    dateOfBirth: "1990-12-31", 
+    gender: "L", 
+    assistanceType: "bantuan_rumah", 
+    disasterLocation: "Kuala Lumpur", 
+    polygamyStatus: "tidak",
+    wivesCount: "", 
+    wives: [], 
+    dependentsCount: "3", 
+    grossIncome: "2500", 
+    incomeDocument: {
+      name: 'slip_gaji_ahmad.pdf',
+      size: 512000,
+      type: 'application/pdf',
+      lastModified: new Date('2024-01-08').getTime()
+    }, 
+    location: "Kuala Lumpur, Selangor",
     // Spouse/Family member fields - now as array
-    spouses: [],
+    spouses: [
+      {
+        relationship: "pasangan",
+        spouseIdType: "ic",
+        spouseIdNumber: "901231025679",
+        spouseName: "Siti binti Mohamed",
+        spouseIdDocument: {
+          name: 'kad_pengenalan_siti.jpg',
+          size: 1456000,
+          type: 'image/jpeg',
+          lastModified: new Date('2024-01-05').getTime()
+        }
+      },
+      {
+        relationship: "anak",
+        spouseIdType: "sijil-lahir",
+        spouseIdNumber: "202012310001",
+        spouseName: "Mohd Ali bin Ahmad",
+        spouseIdDocument: {
+          name: 'sijil_lahir_ali.pdf',
+          size: 890000,
+          type: 'application/pdf',
+          lastModified: new Date('2024-01-05').getTime()
+        }
+      }
+    ],
   },
   healthInfo: {
-    status: "", details: "", chronicIllnessDoc: null, disabilityDoc: null, disasterDocument: null,
-    noDisasterNotes: "", noDisasterDocument: null,
+    status: "tiada", 
+    details: "", 
+    chronicIllnessDoc: null, 
+    disabilityDoc: null, 
+    disasterDocument: null,
+    noDisasterNotes: "Tiada bencana yang berlaku dalam tempoh 5 tahun lepas", 
+    noDisasterDocument: {
+      name: 'report_polis_tiada_bencana.pdf',
+      size: 756000,
+      type: 'application/pdf',
+      lastModified: new Date('2024-01-10').getTime()
+    },
   },
   addressInfo: {
-    alamat1: "", alamat2: "", alamat3: "", district: "", postcode: "", kariah: "", state: "Selangor", residenceYears: "",
-    residenceStatus: "", paymentStatus: "", monthlyPayment: "", rentAmount: "", otherResidenceDetail: "",
-    addressSupportDoc: null, location: ""
+    alamat1: "No. 123, Jalan Merdeka", 
+    alamat2: "Taman Seri Indah", 
+    alamat3: "Seksyen 15", 
+    district: "shah-alam", 
+    postcode: "40000", 
+    kariah: "masjid-negeri", 
+    state: "Selangor", 
+    residenceYears: "5",
+    residenceStatus: "sewa", 
+    paymentStatus: "", 
+    monthlyPayment: "", 
+    rentAmount: "800", 
+    otherResidenceDetail: "",
+    addressSupportDoc: {
+      name: 'surat_sewa_rumah.pdf',
+      size: 1234000,
+      type: 'application/pdf',
+      lastModified: new Date('2024-01-03').getTime()
+    }, 
+    location: "Shah Alam, Selangor"
   },
   verification: {
-    hubunganKakitanganLZS: "", namaKakitangan: "", jawatanKakitangan: "", pejabatKakitangan: "",
-    hubunganKakitangan: "", tarikhPerakuan: "", namaPengesah: "Ustaz Ahmad bin Abdullah", jawatanPengesah: "Pegawai PAK", noTelefonPengesah: "012-3456789",
-    tarikhPengesahanPermastautin: "2024-01-15", dokumenPengesahanPermastautin: {
+    hubunganKakitanganLZS: "Tidak", 
+    namaKakitangan: "", 
+    jawatanKakitangan: "", 
+    pejabatKakitangan: "",
+    hubunganKakitangan: "", 
+    tarikhPerakuan: "", 
+    namaPengesah: "Ustaz Ahmad bin Abdullah", 
+    jawatanPengesah: "Pegawai PAK", 
+    noTelefonPengesah: "012-3456789",
+    tarikhPengesahanPermastautin: "2024-01-15", 
+    dokumenPengesahanPermastautin: {
       name: "pengesahan_bermastautin_ahmad_bin_ali.pdf",
       size: 2048576,
       lastModified: new Date('2024-01-15').getTime(),
       type: "application/pdf"
-    }, pdpaConsent: false,
-    selectedKariah: "masjid-negeri", selectedPakOfficer: "ustaz-ahmad-abdullah",
+    }, 
+    pdpaConsent: true,
+    selectedKariah: "masjid-negeri", 
+    selectedPakOfficer: "ustaz-ahmad-abdullah",
     // New PAK relationship fields
-    hubunganPAK: "", selectedKariahPAK: "", selectedPakOfficerPAK: "",
-    pakAssistance: "", selectedKariahAssistance: "", selectedPakOfficerAssistance: ""
+    hubunganPAK: "Tidak", 
+    selectedKariahPAK: "", 
+    selectedPakOfficerPAK: "",
+    pakAssistance: "Ya", 
+    selectedKariahAssistance: "masjid-negeri", 
+    selectedPakOfficerAssistance: "ustaz-ahmad-abdullah"
   },
   pegawaiPendaftar: {
     nama: "Ahmad bin Abi",
@@ -1592,33 +1728,85 @@ const pakOfficersOptionsAssistance = computed(() => {
 const uploadedDocuments = computed(() => {
   const documents = [];
   
-  // Add fake documents for demonstration
-  documents.push(
-    {
-      name: 'pengesahan_bermastautin_ahmad_bin_ali.pdf',
-      type: 'PDF Document',
-      size: '2.00 MB',
+  // Add documents from penilaian awal
+  if (formData.value.penilaianAwal.documents && formData.value.penilaianAwal.documents.length > 0) {
+    formData.value.penilaianAwal.documents.forEach(doc => {
+      documents.push({
+        name: getDocumentName(doc),
+        type: getDocumentType(doc),
+        size: getDocumentSize(doc),
+        url: '#'
+      });
+    });
+  }
+  
+  // Add personal info documents
+  if (formData.value.personalInfo.idDocument) {
+    const doc = formData.value.personalInfo.idDocument;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
       url: '#'
-    },
-    {
-      name: 'surat_pengesahan_penghulu.jpg',
-      type: 'JPEG Image',
-      size: '1.25 MB',
+    });
+  }
+  
+  if (formData.value.personalInfo.islamCertificate) {
+    const doc = formData.value.personalInfo.islamCertificate;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
       url: '#'
-    },
-    {
-      name: 'dokumen_sokongan_rumah.pdf',
-      type: 'PDF Document',
-      size: '3.45 MB',
+    });
+  }
+  
+  if (formData.value.personalInfo.incomeDocument) {
+    const doc = formData.value.personalInfo.incomeDocument;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
       url: '#'
-    },
-    // {
-    //   name: 'gambar_kediaman.png',
-    //   type: 'PNG Image',
-    //   size: '856 KB',
-    //   url: '#'
-    // }
-  );
+    });
+  }
+  
+  // Add spouse documents
+  if (formData.value.personalInfo.spouses && formData.value.personalInfo.spouses.length > 0) {
+    formData.value.personalInfo.spouses.forEach((spouse, index) => {
+      if (spouse.spouseIdDocument) {
+        const doc = spouse.spouseIdDocument;
+        documents.push({
+          name: getDocumentName(doc),
+          type: getDocumentType(doc),
+          size: getDocumentSize(doc),
+          url: '#'
+        });
+      }
+    });
+  }
+  
+  // Add health info documents
+  if (formData.value.healthInfo.noDisasterDocument) {
+    const doc = formData.value.healthInfo.noDisasterDocument;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
+      url: '#'
+    });
+  }
+  
+  // Add address documents
+  if (formData.value.addressInfo.addressSupportDoc) {
+    const doc = formData.value.addressInfo.addressSupportDoc;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
+      url: '#'
+    });
+  }
   
   // Add the main verification document if it exists
   if (formData.value.verification.dokumenPengesahanPermastautin) {
@@ -1794,32 +1982,65 @@ const getDocumentName = (file) => {
 
 const getDocumentSize = (file) => {
   if (!file) return '';
+  
+  let sizeInBytes;
+  
   if (file instanceof File) {
-    const sizeInBytes = file.size;
-    const sizeInKB = (sizeInBytes / 1024).toFixed(2);
-    const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
-    if (sizeInMB >= 1) {
-      return `${sizeInMB} MB`;
-    } else {
-      return `${sizeInKB} KB`;
-    }
+    sizeInBytes = file.size;
+  } else if (file && typeof file.size === 'number') {
+    sizeInBytes = file.size;
+  } else {
+    return '';
   }
-  return '';
+  
+  const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+  const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
+  
+  if (sizeInMB >= 1) {
+    return `${sizeInMB} MB`;
+  } else {
+    return `${sizeInKB} KB`;
+  }
 };
 
 const getDocumentType = (file) => {
   if (!file) return '';
+  
+  let fileName = '';
+  let fileType = '';
+  
   if (file instanceof File) {
-    const extension = file.name.split('.').pop().toUpperCase();
-    const typeMap = {
-      'PDF': 'PDF Document',
-      'JPG': 'JPEG Image',
-      'JPEG': 'JPEG Image',
-      'PNG': 'PNG Image'
-    };
-    return typeMap[extension] || extension;
+    fileName = file.name;
+    fileType = file.type;
+  } else if (file && file.name) {
+    fileName = file.name;
+    fileType = file.type || '';
+  } else {
+    return '';
   }
-  return '';
+  
+  // Try to get type from MIME type first
+  if (fileType) {
+    const typeMap = {
+      'application/pdf': 'PDF Document',
+      'image/jpeg': 'JPEG Image',
+      'image/jpg': 'JPEG Image',
+      'image/png': 'PNG Image'
+    };
+    if (typeMap[fileType]) {
+      return typeMap[fileType];
+    }
+  }
+  
+  // Fallback to file extension
+  const extension = fileName.split('.').pop().toUpperCase();
+  const extensionMap = {
+    'PDF': 'PDF Document',
+    'JPG': 'JPEG Image',
+    'JPEG': 'JPEG Image',
+    'PNG': 'PNG Image'
+  };
+  return extensionMap[extension] || extension;
 };
 
 const getDocumentUploadDate = (file) => {
