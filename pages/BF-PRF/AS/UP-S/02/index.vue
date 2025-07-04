@@ -62,10 +62,10 @@
                 type="select"
                 name="jenis_id"
                 label="Jenis ID"
-                placeholder="Pilih jenis ID"
                 :options="['Kad Pengenalan', 'Foreign ID','No Polis','No Tentera','No Sijil Lahir']"
                 validation="required"
                 v-model="jenisId"
+                value="Kad Pengenalan"
               />
 
                 <FormKit
@@ -83,6 +83,7 @@
                 name="nombor_id"
                 label="Nombor ID"
                 validation="required"
+                value="123456789"
               />
 
               <FormKit
@@ -90,23 +91,27 @@
                 name="nama"
                 label="Nama"
                 validation="required"
+                value="Ahmad bin Ali"
               />
 
               <FormKit
                 type="text"
                 name="nopassport"
                 label="No Passport"  
+                value="A12345678"
               />
 
               <FormKit
                 type="date"
                 name="passportStartDate"
                 label="Tarikh mula passport"
+                value="2025-01-01"
               />
               <FormKit
                 type="date"
                 name="passportEndDate"
                 label="Tarikh tamat passport"
+                value="2026-01-01"
               />
             </div>
           </div>
@@ -121,6 +126,7 @@
                 label="Tarikh Lahir"
                 help="Format: dd-mm-yyyy"
                 validation="required"
+                value="2000-01-01"
               />
 
               <FormKit
@@ -138,6 +144,7 @@
                   'Lain-lain'
                 ]"
                 validation="required"
+                value="Islam"
               />
 
               <FormKit
@@ -145,12 +152,14 @@
                 name="emel"
                 label="Emel"
                 validation="required|email"
+                value="ahmad@gmail.com"
               />
 
               <FormKit
                 type="text"
                 name="no_telefon"
                 label="No Telefon"
+                value="0123456789"
               />
 
               <FormKit
@@ -159,6 +168,7 @@
                 label="Warganegara"
                 :options="['Warganegara', 'Bukan Warganegara']"
                 validation="required"
+                value="Warganegara"
               />
 
               <FormKit
@@ -167,6 +177,7 @@
                 label="Jantina"
                 :options="['Lelaki', 'Perempuan']"
                 validation="required"
+                value="Lelaki"
               />
 
               <FormKit
@@ -175,6 +186,7 @@
                 label="Bangsa"
                 :options="['Melayu', 'Cina', 'India', 'Lain-lain']"
                 validation="required"
+                value="Melayu"
               />
             </div>
           </div>
@@ -189,6 +201,7 @@
                 label="Bersekolah"
                 :options="['Ya', 'Tidak']"
                 validation="required"
+                value="Ya"
               />
 
               <FormKit
@@ -206,6 +219,7 @@
                   'Lain-lain Nyatakan',
                 ]"
                 validation="required"
+                value="SPM"
               />
             </div>
           </div>
@@ -228,15 +242,17 @@
                 help="Format: dd-mm-yyyy"
                 validation="required"
                 v-model="tarikhMasukIslam"
+                value="2025-01-01"
               />
 
+              <!-- Conversion Document (Conditional) -->
               <FormKit
                 v-if="tarikhMasukIslam"
                 type="file"
                 name="dokumen_masuk_islam"
-                label="upload surat keislaman dari MAIS"
-                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                label="Upload surat keislaman dari MAIS"
                 accept=".pdf,.jpg,.jpeg,.png"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
               />
 
@@ -246,6 +262,7 @@
                 label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
                 help="Format: dd-mm-yyyy"
                 validation="required"
+                value="2025-01-01"
               />
             </div>
           </div>
@@ -268,6 +285,7 @@
                   'Balu',
                 ]"
                 validation="required"
+                value="Berkahwin"
               />
 
               <FormKit
@@ -280,6 +298,7 @@
                 ]"
                 validation="required"
                 v-model="statusPoligami"
+                value="Tidak"
               />
 
               <!-- Polygamy Information (Conditional) -->
@@ -329,6 +348,7 @@
                 :options="bankOptions"
                 validation="required"
                 v-model="formData.nama_bank"
+                value="Bank Islam"
               />
 
                 <FormKit
@@ -349,6 +369,7 @@
                 label="No Akaun Bank"
                 validation="required"
                 v-model="formData.no_akaun_bank"
+                value="1234567890"
               />
 
               <FormKit
@@ -357,6 +378,7 @@
                 label="Nama Pemegang Akaun Bank"
                 validation="required"
                 v-model="formData.nama_pemegang_akaun"
+                value="Ahmad bin Ali"
               />
 
               <FormKit
@@ -365,11 +387,11 @@
                 label="Kaedah Pembayaran"
                 validation="required"
                 :options="paymentMethodOptions"
-                placeholder="Pilih kaedah pembayaran"
                 v-model="formData.kaedah_pembayaran"
                 :validation-messages="{
                   required: 'Kaedah pembayaran adalah wajib'
                 }"
+                value="akaun"
               />
 
               <!-- Conditional checkboxes when Tiada is selected -->
@@ -613,19 +635,19 @@
                   name="alamat1"
                   label="Alamat 1"
                   validation="required"
-                  placeholder="Sila masukkan alamat 1"
                   v-model="formData.addressInfo.alamat1"
                   :validation-messages="{
                     required: 'Alamat 1 adalah wajib',
                   }"
+                  value="Jalan Bukit Bintang 1, Taman Bukit Bintang, 57000 Kuala Lumpur"
                 />
 
                 <FormKit
                   type="textarea"
                   name="alamat2"
                   label="Alamat 2"
-                  placeholder="Sila masukkan alamat 2 (tidak wajib)"
                   v-model="formData.addressInfo.alamat2"
+                  value="Jalan Bukit Bintang 2, Taman Bukit Bintang, 57000 Kuala Lumpur"
                 />
 
                 <FormKit
@@ -677,6 +699,7 @@
                   number: 'Poskod mesti dalam bentuk nombor',
                   length: 'Poskod mesti 5 digit'
                 }"
+                value="12345"
               />
 
               <FormKit
@@ -694,6 +717,7 @@
                 label="Tempoh Bermastautin (Tahun)"
                 min="0"
                 validation="required|min:0"
+                value="1"
               />
 
               <div class="flex gap-2">
@@ -811,32 +835,18 @@
                 label="Kemudahan Asas Bekalan Air"
                 :options="['Ada', 'Tiada']"
                 validation="required"
-              />
-              <FormKit
-                type="number"
-                name="bil_air"
-                label="Anggaran Bil Sebulan (RM)"
-                step="0.01"
-                min="0"
+                value="Ada"
               />
             </div>
 
-            <div>
               <FormKit
                 type="select"
                 name="bekalan_elektrik"
                 label="Bekalan Elektrik"
                 :options="['Ada', 'Tiada']"
                 validation="required"
+                value="Ada"
               />
-              <FormKit
-                type="number"
-                name="bil_elektrik"
-                label="Anggaran Bil Sebulan (RM)"
-                step="0.01"
-                min="0"
-              />
-            </div>
 
             <div>
               <FormKit
@@ -845,6 +855,7 @@
                 label="Bil Penyelenggaraan"
                 :options="['Ada', 'Tiada']"
                 validation="required"
+                value="Ada"
               />
               <FormKit
                 type="number"
@@ -852,6 +863,7 @@
                 label="Anggaran Bil Sebulan (RM)"
                 step="0.01"
                 min="0"
+                value="20"
               />
             </div>
           </div>
@@ -889,6 +901,7 @@
             name="pemberi_pinjaman"
             label="Nama Institusi/Individu Pemberi Pinjaman"
             v-model="pemberiPinjaman"
+            value="Bank Rakyat"
           />
 
           <FormKit
@@ -896,6 +909,7 @@
             name="jenis_pinjaman"
             label="Jenis Pinjaman"
             v-model="jenisPinjaman"
+            value="Perumahan"
           />
 
           <FormKit
@@ -905,6 +919,7 @@
             step="0.01"
             min="0"
             v-model="bayaranBulanan"
+            value="500"
           />
 
           <FormKit
@@ -914,6 +929,7 @@
             step="0.01"
             min="0"
             v-model="jumlahPerbelanjaan"
+            value="6000"
           />
 
           <FormKit
@@ -921,6 +937,7 @@
             name="tahun_mula_pinjaman"
             label="Tahun Mula Pinjaman"
             v-model="tahunMulaPinjaman"
+            value="2018-01-01"
           />
 
           <FormKit
@@ -928,6 +945,7 @@
             name="tahun_akhir_pinjaman"
             label="Tahun Akhir Pinjaman"
             v-model="tahunAkhirPinjaman"
+            value="2028-01-01"
           />
 
           <FormKit
@@ -976,6 +994,7 @@
               help="*sertakan penyata bank"
               step="0.01"
               min="0"
+              value="2000"
             />
 
             <FormKit
@@ -984,6 +1003,7 @@
               label="Emas (gram)"
               step="0.01"
               min="0"
+              value="10"
             />
 
             <FormKit
@@ -992,6 +1012,7 @@
               label="Saham (RM)"
               step="0.01"
               min="0"
+              value="5000"
             />
           </div>
 
@@ -1001,6 +1022,7 @@
             name="kenderaan"
             label="Kenderaan (Nyatakan Unit)"
             help="Contoh: Basikal 1, Kereta 1"
+            value="Kereta 1"
           />
 
           <FormKit
@@ -1008,6 +1030,7 @@
             name="rumah_kedai"
             label="Rumah Kedai (unit)"
             min="0"
+            value="0"
           />
 
           <FormKit
@@ -1016,6 +1039,7 @@
             label="Tanah/Sawah (ekar)"
             step="0.01"
             min="0"
+            value="1"
           />
 
           <div class="flex justify-between gap-3 mt-6">
@@ -1153,6 +1177,7 @@
                 :options="['Ya', 'Tidak']"
                 validation="required"
                 v-model="dibantuPenolongAmil"
+                value="Ya"
               />
             </div>
 
@@ -1196,6 +1221,7 @@
                 :options="['Ya', 'Tidak']"
                 validation="required"
                 v-model="hubunganPAK"
+                value="Tidak"
               />
             </div>
 
@@ -1630,6 +1656,7 @@
                 name="nama_tanggungan"
                 label="Nama"
                 validation="required"
+                value="Ali bin Ahmad"
               />
 
               <FormKit
@@ -1657,24 +1684,28 @@
                 type="text"
                 name="no_id_tanggungan"
                 label="No ID"
+                value="010101011111"
               />
 
               <FormKit
                 type="text"
                 name="nopassport"
                 label="No Passport"
+                value="B12345678"
               />
 
               <FormKit
                 type="date"
                 name="passportStartDate"
                 label="Tarikh mula passport"
+                value="2023-01-01"
               />
 
               <FormKit
                 type="date"
                 name="passportEndDate"
                 label="Tarikh tamat passport"
+                value="2028-01-01"
               />
 
               <FormKit
@@ -1683,6 +1714,7 @@
                 label="Jantina"
                 :options="['Lelaki', 'Perempuan']"
                 validation="required"
+                value="Lelaki"
               />
 
               <FormKit
@@ -1690,6 +1722,7 @@
                 name="tarikh_lahir_tanggungan"
                 label="Tarikh Lahir"
                 validation="required"
+                value="2010-01-01"
               />
 
               <FormKit
@@ -1697,6 +1730,7 @@
                 name="tempat_lahir_tanggungan"
                 label="Tempat Lahir"
                 validation="required"
+                value="Kuala Lumpur"
               />
 
               <FormKit
@@ -1705,6 +1739,7 @@
                 label="Bangsa"
                 :options="['Melayu', 'Cina', 'India', 'Lain-lain Nyatakan']"
                 validation="required"
+                value="Melayu"
               />
 
               <FormKit
@@ -1721,6 +1756,7 @@
                   'Balu',
                 ]"
                 validation="required"
+                value="Bujang"
               />
 
 
@@ -1731,6 +1767,7 @@
                 label="Warganegara"
                 :options="['Warganegara', 'Bukan Warganegara']"
                 validation="required"
+                value="Warganegara"
               />
 
               <FormKit
@@ -1738,12 +1775,14 @@
                 name="tempoh_menetap_selangor"
                 label="Tempoh Menetap Di Selangor (Tahun)"
                 min="0"
+                value="10"
               />
 
               <FormKit
                 type="text"
                 name="no_telefon_tanggungan"
                 label="No Telefon"
+                value="0191234567"
               />
             </div>
           </div>
@@ -1782,6 +1821,7 @@
                 name="tarikh_masuk_kfam_tanggungan"
                 label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
                 help="Format: dd-mm-yyyy"
+                value="2020-02-01"
               />
             </div>
           </div>
@@ -1891,6 +1931,7 @@
                 name="bersekolah_tanggungan"
                 label="Bersekolah"
                 :options="['Ya', 'Tidak']"
+                value="Ya"
               />
 
               <FormKit
@@ -1907,6 +1948,7 @@
                   'Ijazah',
                   'Lain-lain Nyatakan',
                 ]"
+                value="SPM"
               />
 
               <FormKit
@@ -1922,6 +1964,7 @@
                   'IPTA/IPTS',
                   'Maahd Tahfiz',
                 ]"
+                value="Sekolah Menengah Kebangsaan"
               />
 
               <div class="col-span-full">
@@ -1933,15 +1976,16 @@
                     type="text"
                     name="nama_sekolah"
                     label="Nama Sekolah"
+                    value="SMK Bukit Bintang"
                   />
 
-                  <FormKit type="text" name="alamat_sekolah" label="Alamat" />
+                  <FormKit type="text" name="alamat_sekolah" label="Alamat" value="Jalan BB 1" />
 
-                  <FormKit type="text" name="daerah_sekolah" :options="daerahOptions" label="Daerah" />
+                  <FormKit type="text" name="daerah_sekolah" :options="daerahOptions" label="Daerah" value="gombak" />
 
-                  <FormKit type="text" name="negeri_sekolah" :options="negeriOptions" label="Negeri" />
+                  <FormKit type="text" name="negeri_sekolah" :options="negeriOptions" label="Negeri" value="Selangor" />
 
-                  <FormKit type="text" name="poskod_sekolah" label="Poskod" />
+                  <FormKit type="text" name="poskod_sekolah" label="Poskod" value="57000" />
                 </div>
               </div>
 
@@ -1954,30 +1998,35 @@
                     type="text"
                     name="nama_sekolah_agama"
                     label="Nama Sekolah"
+                    value="SRA Bukit Bintang"
                   />
 
                   <FormKit
                     type="text"
                     name="alamat_sekolah_agama"
                     label="Alamat"
+                    value="Jalan BB 2"
                   />
 
                   <FormKit
                     type="text"
                     name="daerah_sekolah_agama"
                     label="Daerah"
+                    value="gombak"
                   />
 
                   <FormKit
                     type="text"
                     name="negeri_sekolah_agama"
                     label="Negeri"
+                    value="Selangor"
                   />
 
                   <FormKit
                     type="text"
                     name="poskod_sekolah_agama"
                     label="Poskod"
+                    value="57000"
                   />
                 </div>
               </div>
@@ -1987,6 +2036,7 @@
                 name="tinggal_bersama_keluarga"
                 label="Tinggal Bersama Keluarga"
                 :options="['Ya', 'Tidak', 'Asrama']"
+                value="Ya"
               />
 
               <FormKit
@@ -2207,6 +2257,7 @@
                 'Perniagaan',
                 'Lain-lain Nyatakan',
               ]"
+              value="Pertanian"
             />
           </div>
 
@@ -2246,6 +2297,7 @@
                   'Bekerja Nyatakan Jawatan',
                   'Tidak Bekerja Nyatakan',
                 ]"
+                value="Bekerja Nyatakan Jawatan"
               />
 
               <FormKit
@@ -2258,43 +2310,48 @@
                   'Badan Berkanun',
                   'Kerja Sendiri Nyatakan',
                 ]"
+                value="Swasta"
               />
 
               <FormKit
                 type="text"
                 name="nama_majikan"
                 label="Nama Majikan"
+                value="ABC Sdn Bhd"
               />
 
               <FormKit
                 type="text"
                 name="no_tel_majikan"
                 label="No Tel Majikan"
+                value="034567890"
               />
 
               <FormKit
                 type="text"
                 name="alamat_majikan"
                 label="Alamat Majikan"
+                value="Jalan Raja"
               />
 
-              <FormKit type="text" name="bandar_majikan" label="Bandar" />
+              <FormKit type="text" name="bandar_majikan" label="Bandar" value="Kuala Lumpur" />
 
-              <FormKit type="text" name="poskod_majikan" label="Poskod" />
+              <FormKit type="text" name="poskod_majikan" label="Poskod" value="50000" />
 
-              <FormKit type="text" name="daerah_majikan" label="Daerah" />
+              <FormKit type="text" name="daerah_majikan" label="Daerah" value="gombak" />
 
-              <FormKit type="text" name="negeri_majikan" label="Negeri" />
+              <FormKit type="text" name="negeri_majikan" label="Negeri" value="Selangor" />
 
-              <FormKit type="text" name="jawatan" label="Jawatan" />
+              <FormKit type="text" name="jawatan" label="Jawatan" value="Eksekutif" />
 
-              <FormKit type="text" name="negara_pekerjaan" label="Negara" />
+              <FormKit type="text" name="negara_pekerjaan" label="Negara" value="Malaysia" />
 
               <FormKit
                 type="select"
                 name="status_jawatan"
                 label="Status Jawatan"
                 :options="['Tetap', 'Kontrak', 'Sementara']"
+                value="Tetap"
               />
             </div>
           </div>
@@ -2360,6 +2417,7 @@
                 ]"
                 validation="required"
                 validation-label="Jawapan"
+                value="Y"
               />
             </div>
 
@@ -2386,6 +2444,7 @@
                   required: 'Sila pilih sekurang-kurangnya satu jawapan',
                   min: 'Sila pilih sekurang-kurangnya satu jawapan'
                 }"
+                value="['perubatan']"
               />
 
               <!-- Additional input for "Selain dari di atas" -->
@@ -2585,25 +2644,25 @@ const stepsB = [
 // FORM STATE VARIABLES
 // ============================================================================
 // Health Status Variables
-const healthStatus = ref("");
-const healthStatusTanggungan = ref("");
+const healthStatus = ref("Sihat");
+const healthStatusTanggungan = ref("Sihat");
 
 // Relationship Variables
-const dibantuPenolongAmil = ref("");
-const hubunganKakitanganLZS = ref("");
-const hubunganPAK = ref("");
-const hubunganPemohon = ref("");
+const dibantuPenolongAmil = ref("Ya");
+const hubunganKakitanganLZS = ref("Tidak");
+const hubunganPAK = ref("Tidak");
+const hubunganPemohon = ref("Anak");
 
 // ID Type Variables
-const jenisId = ref(null);
-const jenisIdTanggungan = ref("");
+const jenisId = ref("Kad Pengenalan");
+const jenisIdTanggungan = ref("Kad Pengenalan");
 
 // Islamic Information Variables
-const tarikhMasukIslam = ref(null);
-const tarikhMasukIslamTanggungan = ref(null);
+const tarikhMasukIslam = ref("2020-01-01");
+const tarikhMasukIslamTanggungan = ref("2020-01-01");
 
 // Polygamy Variables
-const statusPoligami = ref(null);
+const statusPoligami = ref("tidak");
 const bilanganIsteri = ref(null);
 const isteriList = ref([]);
 
@@ -2612,15 +2671,15 @@ const caraPembayaran = ref(null);
 const paymentMethod = ref("");
 
 // Residence Variables
-const statusKediaman = ref(null);
+const statusKediaman = ref("Milik Sendiri Tidak Berbayar");
 
 // Loan Variables
-const pemberiPinjaman = ref('');
-const jenisPinjaman = ref('');
-const bayaranBulanan = ref(null);
-const jumlahPerbelanjaan = ref(null);
-const tahunMulaPinjaman = ref(null);
-const tahunAkhirPinjaman = ref(null);
+const pemberiPinjaman = ref('Bank Rakyat');
+const jenisPinjaman = ref('Perumahan');
+const bayaranBulanan = ref(500);
+const jumlahPerbelanjaan = ref(6000);
+const tahunMulaPinjaman = ref('2018-01-01');
+const tahunAkhirPinjaman = ref('2028-01-01');
 
 // Modal Variables
 const showKursusModal = ref(false);
@@ -2632,28 +2691,28 @@ const selectedGuru = ref(null);
 // ============================================================================
 const formData = ref({
   // Section A - Maklumat Peribadi Asnaf
-  jenis_id: '',
-  no_pengenalan: '',
-  warganegara: '',
-  jantina: '',
-  bangsa: '',
-  bersekolah: '',
-  pendidikan_tertinggi: '',
-  tarikh_masuk_islam: '',
-  tarikh_masuk_kfam: '',
-  status_perkahwinan: '',
-
+  jenis_id: 'Kad Pengenalan',
+  no_pengenalan: '900101011234',
+  warganegara: 'Warganegara',
+  jantina: 'Lelaki',
+  bangsa: 'Melayu',
+  bersekolah: 'Ya',
+  pendidikan_tertinggi: 'SPM',
+  tarikh_masuk_islam: '2020-01-01',
+  tarikh_masuk_kfam: '2020-02-01',
+  status_perkahwinan: 'Berkahwin',
+  status_poligami: 'tidak',
+  bilangan_isteri: null,
   // Bank Information
-  nama_bank: '',
-  no_akaun_bank: '',
-  nama_pemegang_akaun: '',
-  swift_code: '',
-  kaedah_pembayaran: '',
-  noPaymentReason: [],
+  nama_bank: 'bank-islam',
+  no_akaun_bank: '1234567890',
+  nama_pemegang_akaun: 'Ahmad bin Ali',
+  swift_code: 'BIMBMYKL',
+  kaedah_pembayaran: 'akaun',
+  noPaymentReason: ['muflis'],
   sebab_tunai: '',
-
   // Section B - Maklumat Kesihatan
-  tahap_kesihatan: '',
+  tahap_kesihatan: 'Sihat',
   keadaan_kesihatan_sakit: '',
   kos_penjagaan_sakit: '',
   perbelanjaan_bulanan_sakit: '',
@@ -2664,134 +2723,115 @@ const formData = ref({
   keadaan_kesihatan_uzur: '',
   kos_penjagaan_uzur: '',
   perbelanjaan_bulanan_uzur: '',
-
   // Section C - Kemahiran
-  kemahiran: '',
-
+  kemahiran: 'Pertanian',
   // Section D - Maklumat Kediaman
   addressInfo: {
-    alamat1: '',
-    alamat2: '',
-    alamat3: '',
-    location: '',
-    daerah: '',
-    kursus_terpilih: '',
-    selectedKursus: null,
-    selectedGuru: null,
-    status_kediaman: '',
-    tapak_rumah: '',
-    jenis_rumah: '',
-    binaan_rumah: '',
-    keadaan_kediaman: '',
-    bekalan_air: '',
-    bil_air: '',
-    bekalan_elektrik: '',
-    bil_elektrik: '',
-    penyelenggaraan: '',
-    bil_penyelenggaraan: '',
+    alamat1: 'Jalan Bukit Bintang 1, Taman Bukit Bintang, 57000 Kuala Lumpur',
+    alamat2: 'Jalan Bukit Bintang 2, Taman Bukit Bintang, 57000 Kuala Lumpur',
+    alamat3: 'Apartment 3A',
+    location: 'Kuala Lumpur',
+    daerah: 'gombak',
+    kursus_terpilih: 'Kursus Fardu Ain Asas - Ustaz Ahmad bin Abdullah',
+    selectedKursus: { id: 1, nama: 'Kursus Fardu Ain Asas' },
+    selectedGuru: { id: 1, nama: 'Ustaz Ahmad bin Abdullah' },
+    status_kediaman: 'Milik Sendiri Tidak Berbayar',
+    tapak_rumah: 'Milik Sendiri',
+    jenis_rumah: 'Kos Rendah',
+    binaan_rumah: 'Batu',
+    keadaan_kediaman: 'Baik/Sempurna',
+    bekalan_air: 'Ada',
+    bil_air: 30,
+    bekalan_elektrik: 'Ada',
+    bil_elektrik: 50,
+    penyelenggaraan: 'Ada',
+    bil_penyelenggaraan: 20,
   },
-
   // Section E - Maklumat Pinjaman
-  pemberi_pinjaman: '',
-  jenis_pinjaman: '',
-  bayaran_bulanan: '',
-  jumlah_perbelanjaan: '',
-  tahun_mula_pinjaman: '',
-  tahun_akhir_pinjaman: '',
-
+  pemberi_pinjaman: 'Bank Rakyat',
+  jenis_pinjaman: 'Perumahan',
+  bayaran_bulanan: 500,
+  jumlah_perbelanjaan: 6000,
+  tahun_mula_pinjaman: '2018-01-01',
+  tahun_akhir_pinjaman: '2028-01-01',
   // Section F - Maklumat Pemilikan
-  wang_simpanan: '',
-  emas: '',
-  saham: '',
-  kenderaan: '',
-  rumah_kedai: '',
-  tanah_sawah: '',
-
+  wang_simpanan: 2000,
+  emas: 10,
+  saham: 5000,
+  kenderaan: 'Kereta 1',
+  rumah_kedai: 0,
+  tanah_sawah: 1,
   // Section G - Pengesahan
   pengesahan: {
-    dibantu_penolong_amil: '',
-    kariah_bantuan: '',
-    nama_penolong_amil_bantuan: '',
-    tarikh_bantuan: '',
-    hubungan_pak: '',
+    dibantu_penolong_amil: 'Ya',
+    kariah_bantuan: 'masjid-al-hidayah',
+    nama_penolong_amil_bantuan: 'ustaz-ahmad-abdullah',
+    tarikh_bantuan: '2024-01-01',
+    hubungan_pak: 'Tidak',
     kariah_hubungan_pak: '',
     nama_pak_hubungan: '',
     jenis_hubungan_pak: '',
     tarikh_hubungan_pak: '',
-    pdpa_consent: false,
-    hubungan_kakitangan_lzs: '',
+    pdpa_consent: true,
+    hubungan_kakitangan_lzs: 'Tidak',
     nama_kakitangan: '',
     jawatan_kakitangan: '',
     pejabat_kakitangan: '',
     hubungan_kakitangan: '',
     tarikh_perakuan: '',
-    // Fake data for PAK officer information display in bermastautin
     kariah_bermastautin: 'masjid-al-hidayah',
     nama_pak_bermastautin: 'ustaz-ahmad-abdullah',
-    // Fake data for form fields in bermastautin
     nama_pengesah: 'Ustaz Ahmad bin Abdullah',
     jawatan_pengesah: 'Pegawai PAK',
     no_telefon_pengesah: '012-3456789',
     tarikh_pengesahan_permastautin: '2024-01-15',
+    surat_pengesahan_bermastautin: 'mockfile.pdf',
   },
-
-  // Section H - Pengesahan Bermastautin
-  ulasan_pengesahan: '',
-  surat_pengesahan_bermastautin: null,
-
-  // Section I - Maklumat Penolong Amil
-  nama_penolong_amil: '',
-  jenis_permohonan: '',
-  tarikh_proses: '',
-
-  // Section J - Penilaian Awal
-  komitmen_tinggi: '',
-  keperluan_mendesak: [],
+  ulasan_pengesahan: 'Semua maklumat telah disahkan.',
+  surat_pengesahan_bermastautin: 'mockfile.pdf',
+  nama_penolong_amil: 'Ahmad bin Abi',
+  jenis_permohonan: 'Review',
+  tarikh_proses: '2024-05-01',
+  komitmen_tinggi: 'Y',
+  keperluan_mendesak: ['perubatan'],
   lain_keperluan: '',
-  dokumen_sokongan: [],
-
-  // Section B (Tanggungan) - Maklumat Peribadi Tanggungan
-  hubungan_pemohon: '',
-  nama_tanggungan: '',
-  jenis_id_tanggungan: '',
-  no_pengenalan_tanggungan: '',
-  jantina_tanggungan: '',
-  tarikh_lahir_tanggungan: '',
-  tempat_lahir_tanggungan: '',
-  bangsa_tanggungan: '',
-  status_perkahwinan_tanggungan: '',
-  tarikh_masuk_islam_tanggungan: '',
-  tarikh_masuk_kfam_tanggungan: '',
-  warganegara_tanggungan: '',
-  tempoh_menetap_selangor: '',
-  no_telefon_tanggungan: '',
-
-  // Maklumat Perbankan Tanggungan
-  nama_bank_tanggungan: '',
-  swift_code_tanggungan: '',
-  no_akaun_bank_tanggungan: '',
-  nama_pemegang_akaun_tanggungan: '',
-  kaedah_pembayaran_tanggungan: '',
+  dokumen_sokongan: ['mockdoc.pdf'],
+  // Section B (Tanggungan)
+  hubungan_pemohon: 'Anak',
+  nama_tanggungan: 'Ali bin Ahmad',
+  jenis_id_tanggungan: 'Kad Pengenalan',
+  no_pengenalan_tanggungan: '010101011111',
+  jantina_tanggungan: 'Lelaki',
+  tarikh_lahir_tanggungan: '2010-01-01',
+  tempat_lahir_tanggungan: 'Kuala Lumpur',
+  bangsa_tanggungan: 'Melayu',
+  status_perkahwinan_tanggungan: 'Bujang',
+  tarikh_masuk_islam_tanggungan: '2020-01-01',
+  tarikh_masuk_kfam_tanggungan: '2020-02-01',
+  warganegara_tanggungan: 'Warganegara',
+  tempoh_menetap_selangor: 10,
+  no_telefon_tanggungan: '0191234567',
+  nama_bank_tanggungan: 'maybank',
+  swift_code_tanggungan: 'MBBEMYKL',
+  no_akaun_bank_tanggungan: '9876543210',
+  nama_pemegang_akaun_tanggungan: 'Ali bin Ahmad',
+  kaedah_pembayaran_tanggungan: 'akaun',
   noPaymentReasonTanggungan: [],
-
-  // Pendidikan Tanggungan
-  bersekolah_tanggungan: '',
-  pendidikan_tertinggi_tanggungan: '',
-  jenis_sekolah: '',
-  nama_sekolah: '',
-  alamat_sekolah: '',
-  daerah_sekolah: '',
-  negeri_sekolah: '',
-  poskod_sekolah: '',
-  nama_sekolah_agama: '',
-  alamat_sekolah_agama: '',
-  daerah_sekolah_agama: '',
-  negeri_sekolah_agama: '',
-  poskod_sekolah_agama: '',
-  tinggal_bersama_keluarga: '',
-
-  // Kesihatan Tanggungan
-  tahap_kesihatan_tanggungan: '',
+  bersekolah_tanggungan: 'Ya',
+  pendidikan_tertinggi_tanggungan: 'SPM',
+  jenis_sekolah: 'Sekolah Menengah Kebangsaan',
+  nama_sekolah: 'SMK Bukit Bintang',
+  alamat_sekolah: 'Jalan BB 1',
+  daerah_sekolah: 'gombak',
+  negeri_sekolah: 'Selangor',
+  poskod_sekolah: '57000',
+  nama_sekolah_agama: 'SRA Bukit Bintang',
+  alamat_sekolah_agama: 'Jalan BB 2',
+  daerah_sekolah_agama: 'gombak',
+  negeri_sekolah_agama: 'Selangor',
+  poskod_sekolah_agama: '57000',
+  tinggal_bersama_keluarga: 'Ya',
+  tahap_kesihatan_tanggungan: 'Sihat',
   keadaan_kesihatan_sakit_tanggungan: '',
   kos_penjagaan_sakit_tanggungan: '',
   perbelanjaan_bulanan_sakit_tanggungan: '',
@@ -2802,26 +2842,22 @@ const formData = ref({
   keadaan_kesihatan_uzur_tanggungan: '',
   kos_penjagaan_uzur_tanggungan: '',
   perbelanjaan_bulanan_uzur_tanggungan: '',
-
-  // Kemahiran Tanggungan
-  kemahiran_tanggungan: '',
-
-  // Pekerjaan Tanggungan
-  pekerjaan_status: '',
-  sektor_pekerjaan: '',
-  nama_majikan: '',
-  no_tel_majikan: '',
-  alamat_majikan: '',
-  bandar_majikan: '',
-  poskod_majikan: '',
-  daerah_majikan: '',
-  negeri_majikan: '',
-  jawatan: '',
-  negara_pekerjaan: '',
-  status_jawatan: '',
-
-  // Heirs array
-  heirs: []
+  kemahiran_tanggungan: 'Pertanian',
+  pekerjaan_status: 'Bekerja Nyatakan Jawatan',
+  sektor_pekerjaan: 'Swasta',
+  nama_majikan: 'ABC Sdn Bhd',
+  no_tel_majikan: '034567890',
+  alamat_majikan: 'Jalan Raja',
+  bandar_majikan: 'Kuala Lumpur',
+  poskod_majikan: '50000',
+  daerah_majikan: 'gombak',
+  negeri_majikan: 'Selangor',
+  jawatan: 'Eksekutif',
+  negara_pekerjaan: 'Malaysia',
+  status_jawatan: 'Tetap',
+  heirs: [
+    { name: 'Fatimah binti Ahmad', relationship: 'Ibu', phone: '0123456789' }
+  ]
 });
 
 // ============================================================================
@@ -2869,6 +2905,25 @@ const daerahOptions = [
   { label: "Petaling", value: "petaling" },
   { label: "Sabak Bernam", value: "sabak-bernam" },
   { label: "Sepang", value: "sepang" }
+];
+
+// State Options
+const negeriOptions = [
+  { label: "Selangor", value: "Selangor" },
+  { label: "Kuala Lumpur", value: "Kuala Lumpur" },
+  { label: "Putrajaya", value: "Putrajaya" },
+  { label: "Negeri Sembilan", value: "Negeri Sembilan" },
+  { label: "Perak", value: "Perak" },
+  { label: "Pahang", value: "Pahang" },
+  { label: "Melaka", value: "Melaka" },
+  { label: "Johor", value: "Johor" },
+  { label: "Kedah", value: "Kedah" },
+  { label: "Kelantan", value: "Kelantan" },
+  { label: "Perlis", value: "Perlis" },
+  { label: "Pulau Pinang", value: "Pulau Pinang" },
+  { label: "Terengganu", value: "Terengganu" },
+  { label: "Sabah", value: "Sabah" },
+  { label: "Sarawak", value: "Sarawak" }
 ];
 
 // Mosque Parish Options
