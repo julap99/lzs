@@ -40,10 +40,19 @@
               />
 
               <FormKit
+                v-model="form.jenisPengenalan"
+                type="select"
+                label="Jenis Pengenalan"
+                :options="jenisPengenalanOptions"
+                validation="required"
+                @change="onJenisPengenalanChange"
+              />
+
+              <FormKit
                 v-model="form.noKp"
                 type="text"
-                label="No. KP / Passport / Foreign ID"
-                placeholder="Contoh: 800101015432"
+                label="No. MyKad / Foreign ID"
+                :placeholder="getPlaceholderText()"
                 validation="required"
                 @blur="validateNoKp"
               />
@@ -216,6 +225,7 @@ const breadcrumb = ref([
 const form = ref({
   jenisPengguna: '',
   nama: '',
+  jenisPengenalan: '',
   noKp: '',
   emel: '',
   noTel: '',
@@ -239,8 +249,14 @@ const saving = ref(false);
 
 // Options for form fields
 const jenisPenggunaOptions = [
-  { label: 'Staf', value: 'Staf' },
-  { label: 'Bukan Staf', value: 'Bukan Staf' }
+  { label: 'AD', value: 'AD' },
+  { label: 'NPS', value: 'NPS' },
+  { label: 'Awam', value: 'Awam' }
+];
+
+const jenisPengenalanOptions = [
+  { label: 'MyKad', value: 'MyKad' },
+  { label: 'Foreign ID', value: 'Foreign ID' }
 ];
 
 const statusOptions = [
@@ -250,13 +266,14 @@ const statusOptions = [
 
 // Peranan data - filtered by jenis pengguna
 const perananList = ref([
-  { id: 1, nama: 'Admin Sistem', jenisPengguna: 'Staf', selected: false },
-  { id: 2, nama: 'Pegawai Bantuan', jenisPengguna: 'Bukan Staf', selected: false },
-  { id: 3, nama: 'Pegawai Sistem', jenisPengguna: 'Staf', selected: false },
-  { id: 4, nama: 'Pegawai Audit', jenisPengguna: 'Staf', selected: false },
-  { id: 5, nama: 'Pegawai Lapangan', jenisPengguna: 'Bukan Staf', selected: false },
-  { id: 6, nama: 'Pengguna Awam', jenisPengguna: 'Bukan Staf', selected: false },
-  { id: 7, nama: 'Pegawai Pentadbir', jenisPengguna: 'Staf', selected: false }
+  { id: 1, nama: 'Admin Sistem', jenisPengguna: 'AD', selected: false },
+  { id: 2, nama: 'Pegawai Bantuan', jenisPengguna: 'NPS', selected: false },
+  { id: 3, nama: 'Pegawai Sistem', jenisPengguna: 'AD', selected: false },
+  { id: 4, nama: 'Pegawai Audit', jenisPengguna: 'AD', selected: false },
+  { id: 5, nama: 'Pegawai Lapangan', jenisPengguna: 'NPS', selected: false },
+  { id: 6, nama: 'Pengguna Awam', jenisPengguna: 'Awam', selected: false },
+  { id: 7, nama: 'Pegawai Pentadbir', jenisPengguna: 'AD', selected: false },
+  { id: 8, nama: 'Pegawai Khas', jenisPengguna: 'NPS', selected: false }
 ]);
 
 // Computed properties
@@ -270,6 +287,7 @@ const filteredPeranan = computed(() => {
 const isFormValid = computed(() => {
   return form.value.jenisPengguna &&
          form.value.nama &&
+         form.value.jenisPengenalan &&
          form.value.noKp &&
          form.value.emel &&
          form.value.perananSemasa &&
@@ -280,6 +298,16 @@ const isFormValid = computed(() => {
 });
 
 // Methods
+const getPlaceholderText = () => {
+  if (form.value.jenisPengenalan === 'MyKad') {
+    return 'Contoh: 800101015432';
+  } else if (form.value.jenisPengenalan === 'Foreign ID') {
+    return 'Contoh: A1234567B';
+  } else {
+    return 'Pilih jenis pengenalan terlebih dahulu';
+  }
+};
+
 const onJenisPenggunaChange = () => {
   // Reset peranan selection when jenis pengguna changes
   perananList.value.forEach(p => p.selected = false);
@@ -291,16 +319,38 @@ const onJenisPenggunaChange = () => {
   }
 };
 
+const onJenisPengenalanChange = () => {
+  // Clear the ID number when changing identification type
+  form.value.noKp = '';
+  form.value.idPengguna = '';
+  errors.value.noKp = '';
+};
+
 const validateNoKp = async () => {
   if (!form.value.noKp) {
-    errors.value.noKp = 'No. KP / Passport / Foreign ID adalah wajib';
+    errors.value.noKp = 'No. MyKad / Foreign ID adalah wajib';
+    return;
+  }
+
+  if (!form.value.jenisPengenalan) {
+    errors.value.noKp = 'Sila pilih jenis pengenalan terlebih dahulu';
     return;
   }
   
-  // Basic format validation
-  if (form.value.noKp.length < 6) {
-    errors.value.noKp = 'No. KP / Passport / Foreign ID mesti sekurang-kurangnya 6 aksara';
-    return;
+  // Format validation based on identification type
+  if (form.value.jenisPengenalan === 'MyKad') {
+    // MyKad should be 12 digits
+    const myKadRegex = /^\d{12}$/;
+    if (!myKadRegex.test(form.value.noKp)) {
+      errors.value.noKp = 'No. MyKad mesti mengandungi 12 digit sahaja';
+      return;
+    }
+  } else if (form.value.jenisPengenalan === 'Foreign ID') {
+    // Foreign ID should be at least 6 characters
+    if (form.value.noKp.length < 6) {
+      errors.value.noKp = 'No. Foreign ID mesti sekurang-kurangnya 6 aksara';
+      return;
+    }
   }
   
   // Check for uniqueness (mock validation)
@@ -312,11 +362,13 @@ const validateNoKp = async () => {
     '830303038901',
     '860606069012',
     '840404049123',
-    '880808089234'
+    '880808089234',
+    'A1234567B',
+    'P9876543C'
   ];
   
   if (existingUsers.includes(form.value.noKp)) {
-    errors.value.noKp = 'No. KP / Passport / Foreign ID sudah wujud dalam sistem';
+    errors.value.noKp = 'No. MyKad / Foreign ID sudah wujud dalam sistem';
   } else {
     errors.value.noKp = '';
     // Auto-set ID Pengguna
@@ -428,6 +480,7 @@ const resetForm = () => {
   form.value = {
     jenisPengguna: '',
     nama: '',
+    jenisPengenalan: '',
     noKp: '',
     emel: '',
     noTel: '',

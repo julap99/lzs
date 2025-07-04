@@ -28,7 +28,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-blue-100 text-sm font-medium">Jumlah Pengguna</p>
-            <p class="text-3xl font-bold">{{ totalUsers }}</p>
+            <p class="text-3xl font-bold">{{ totalUsers.toLocaleString() }}</p>
             <div class="flex items-center mt-2">
               <Icon name="ic:baseline-trending-up" class="w-4 h-4 text-blue-200 mr-1" />
               <span class="text-blue-200 text-xs">+12 minggu ini</span>
@@ -45,7 +45,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-green-100 text-sm font-medium">Sesi Aktif</p>
-            <p class="text-3xl font-bold">{{ activeSessions }}</p>
+            <p class="text-3xl font-bold">{{ Math.round(activeSessions) }}</p>
             <div class="flex items-center mt-2">
               <Icon name="ic:baseline-circle" class="w-4 h-4 text-green-200 mr-1 animate-pulse" />
               <span class="text-green-200 text-xs">Masa nyata</span>
@@ -94,7 +94,7 @@
 
     <!-- Main Dashboard Content -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Quick Actions Panel -->
+      <!-- Quick Actions Panel - FIRST PRIORITY -->
       <div class="lg:col-span-2">
         <rs-card>
           <template #header>
@@ -104,7 +104,7 @@
             </div>
           </template>
           <template #body>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <!-- User Management Actions -->
               <div class="space-y-3">
                 <h4 class="font-medium text-gray-700 flex items-center">
@@ -136,7 +136,7 @@
                 <div class="space-y-2">
                   <rs-button variant="outline" size="sm" class="w-full justify-start" @click="navigateTo('/BF-PS/PPK/KP')">
                     <Icon name="ic:baseline-admin-panel-settings" class="mr-2" />
-                    Peranan & Kebenaran
+                    Peranan & Kebenaran Pengguna
                   </rs-button>
                   <rs-button variant="outline" size="sm" class="w-full justify-start" @click="navigateTo('/BF-PS/PK')">
                     <Icon name="ic:baseline-code" class="mr-2" />
@@ -164,32 +164,6 @@
                     <Icon name="ic:baseline-description" class="mr-2" />
                     Jana Laporan Sistem
                   </rs-button>
-                  <rs-button variant="outline" size="sm" class="w-full justify-start" @click="systemHealthCheck">
-                    <Icon name="ic:baseline-health-and-safety" class="mr-2" />
-                    Pemeriksaan Kesihatan
-                  </rs-button>
-                </div>
-              </div>
-
-              <!-- Maintenance Actions -->
-              <div class="space-y-3">
-                <h4 class="font-medium text-gray-700 flex items-center">
-                  <Icon name="ic:baseline-build" class="mr-2 text-orange-500" />
-                  Penyelenggaraan
-                </h4>
-                <div class="space-y-2">
-                  <rs-button variant="outline" size="sm" class="w-full justify-start" @click="backupSystem" :loading="backingUp">
-                    <Icon name="ic:baseline-backup" class="mr-2" />
-                    {{ backingUp ? 'Membuat Sandaran...' : 'Sandaran Sistem' }}
-                  </rs-button>
-                  <rs-button variant="outline" size="sm" class="w-full justify-start" @click="clearCache" :loading="clearingCache">
-                    <Icon name="ic:baseline-clear-all" class="mr-2" />
-                    {{ clearingCache ? 'Membersihkan...' : 'Bersihkan Cache' }}
-                  </rs-button>
-                  <rs-button variant="outline" size="sm" class="w-full justify-start" @click="systemUpdate" :loading="updating">
-                    <Icon name="ic:baseline-system-update" class="mr-2" />
-                    {{ updating ? 'Mengemas kini...' : 'Kemas kini Sistem' }}
-                  </rs-button>
                 </div>
               </div>
             </div>
@@ -197,84 +171,8 @@
         </rs-card>
       </div>
 
-      <!-- System Status & Activity -->
+      <!-- Right Sidebar: Recent Activity Only -->
       <div class="space-y-6">
-        <!-- System Status -->
-        <rs-card>
-          <template #header>
-            <div class="flex items-center gap-2">
-              <Icon name="ic:baseline-monitor-heart" class="text-green-600" />
-              <h3 class="text-lg font-semibold">Status Sistem</h3>
-            </div>
-          </template>
-          <template #body>
-            <div class="space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600">Pangkalan Data</span>
-                <div class="flex items-center">
-                  <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                  <span class="text-sm font-medium text-green-700">Dalam Talian</span>
-                </div>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600">Pelayan Web</span>
-                <div class="flex items-center">
-                  <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                  <span class="text-sm font-medium text-green-700">Optimal</span>
-                </div>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600">Sistem Cache</span>
-                <div class="flex items-center">
-                  <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
-                  <span class="text-sm font-medium text-yellow-700">Perlahan</span>
-                </div>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600">Backup Harian</span>
-                <div class="flex items-center">
-                  <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  <span class="text-sm font-medium text-green-700">Selesai</span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- System Performance -->
-            <div class="mt-6 pt-4 border-t border-gray-200">
-              <h4 class="text-sm font-medium text-gray-700 mb-3">Prestasi Sistem</h4>
-              <div class="space-y-3">
-                <div>
-                  <div class="flex justify-between text-sm mb-1">
-                    <span class="text-gray-600">CPU</span>
-                    <span class="font-medium">{{ cpuUsage }}%</span>
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-blue-600 h-2 rounded-full transition-all duration-500" :style="{ width: cpuUsage + '%' }"></div>
-                  </div>
-                </div>
-                <div>
-                  <div class="flex justify-between text-sm mb-1">
-                    <span class="text-gray-600">Memori</span>
-                    <span class="font-medium">{{ memoryUsage }}%</span>
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-green-600 h-2 rounded-full transition-all duration-500" :style="{ width: memoryUsage + '%' }"></div>
-                  </div>
-                </div>
-                <div>
-                  <div class="flex justify-between text-sm mb-1">
-                    <span class="text-gray-600">Storan</span>
-                    <span class="font-medium">{{ storageUsage }}%</span>
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-orange-600 h-2 rounded-full transition-all duration-500" :style="{ width: storageUsage + '%' }"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </template>
-        </rs-card>
-
         <!-- Recent Activity -->
         <rs-card>
           <template #header>
@@ -284,10 +182,10 @@
             </div>
           </template>
           <template #body>
-            <div class="space-y-3">
-              <div v-for="activity in recentActivities" :key="activity.id" class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Icon :name="activity.icon" class="w-4 h-4 text-blue-600" />
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+              <div v-for="activity in recentActivities" :key="activity.id" class="flex items-start gap-3 p-2 bg-gray-50 rounded-lg">
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Icon :name="activity.icon" class="w-3 h-3 text-blue-600" />
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-medium text-gray-900">{{ activity.title }}</p>
@@ -296,7 +194,7 @@
                 </div>
               </div>
             </div>
-            <div class="mt-4 pt-3 border-t border-gray-200">
+            <div class="mt-3 pt-3 border-t border-gray-200">
               <rs-button variant="outline" size="sm" class="w-full" @click="navigateTo('/BF-PS/CAT')">
                 <Icon name="ic:baseline-visibility" class="mr-2" />
                 Lihat Semua Aktiviti
@@ -439,52 +337,79 @@ const activeSessions = ref(89);
 const systemModules = ref(6);
 const securityScore = ref(97);
 
-// System Performance Metrics
-const cpuUsage = ref(45);
-const memoryUsage = ref(67);
-const storageUsage = ref(72);
-
-// Loading states for maintenance actions
-const backingUp = ref(false);
-const clearingCache = ref(false);
-const updating = ref(false);
+// No additional state variables needed for simplified dashboard
 
 // Recent Activities with enhanced presentation
 const recentActivities = ref([
   {
     id: 1,
     title: "Pengguna Baharu Didaftarkan",
-    description: "AdminICT01 mendaftar pengguna baharu dalam sistem",
+    description: "AdminICT01 mendaftar pengguna baharu: NAS_User_2024",
     icon: "ic:baseline-person-add",
-    time: "2 minit yang lalu"
+    time: "5 minit yang lalu"
   },
   {
     id: 2,
-    title: "Peranan EKP Dikemaskini",
+    title: "Peranan Pengguna Dikemaskini",
     description: "Kebenaran akses untuk peranan EKP telah dikemaskini",
     icon: "ic:baseline-admin-panel-settings",
-    time: "15 minit yang lalu"
-  },
-  {
-    id: 3,
-    title: "Kod NEGERI Baharu",
-    description: "Kod rujukan negeri baharu telah ditambah ke sistem",
-    icon: "ic:baseline-code",
     time: "1 jam yang lalu"
   },
   {
+    id: 3,
+    title: "Kod Rujukan Ditambah",
+    description: "Kod rujukan baharu untuk kategori NEGERI telah ditambah",
+    icon: "ic:baseline-code",
+    time: "3 jam yang lalu"
+  },
+  {
     id: 4,
-    title: "Laporan Audit Dijana",
-    description: "AuditOfficer01 menjana laporan audit trail bulanan",
-    icon: "ic:baseline-assessment",
-    time: "2 jam yang lalu"
+    title: "Audit Trail Dicari",
+    description: "NASAdmin02 melakukan carian audit trail untuk tempoh Januari 2024",
+    icon: "ic:baseline-search",
+    time: "5 jam yang lalu"
   },
   {
     id: 5,
-    title: "Backup Sistem Selesai",
-    description: "Sandaran harian sistem telah berjaya diselesaikan",
-    icon: "ic:baseline-backup",
-    time: "3 jam yang lalu"
+    title: "Pengguna Dinyahaktifkan",
+    description: "AdminICT01 menyahaktifkan akaun pengguna: TEMP_USER_001",
+    icon: "ic:baseline-person-remove",
+    time: "8 jam yang lalu"
+  },
+  {
+    id: 6,
+    title: "Kategori Kod Dikemaskini",
+    description: "Kategori JANTINA telah dikemaskini dengan kod rujukan baharu",
+    icon: "ic:baseline-edit",
+    time: "1 hari yang lalu"
+  },
+  {
+    id: 7,
+    title: "Laporan Statistik Dijana",
+    description: "AuditOfficer01 menjana laporan statistik sistem untuk bulan Januari",
+    icon: "ic:baseline-bar-chart",
+    time: "1 hari yang lalu"
+  },
+  {
+    id: 8,
+    title: "Kebenaran Peranan Diubah",
+    description: "Kebenaran untuk peranan EOAD telah diubah oleh AdminICT01",
+    icon: "ic:baseline-security",
+    time: "2 hari yang lalu"
+  },
+  {
+    id: 9,
+    title: "Kod Rujukan Dipadam",
+    description: "Kod rujukan lama untuk kategori STATUS telah dipadam",
+    icon: "ic:baseline-delete",
+    time: "2 hari yang lalu"
+  },
+  {
+    id: 10,
+    title: "Pengguna Bulk Import",
+    description: "NASAdmin02 import 25 pengguna baharu melalui fail Excel",
+    icon: "ic:baseline-upload",
+    time: "3 hari yang lalu"
   }
 ]);
 
@@ -588,56 +513,7 @@ const generateSystemReport = async () => {
   console.log('✅ System report generated successfully');
 };
 
-const systemHealthCheck = async () => {
-  console.log('🔍 Running system health check...');
-  // Simulate health check delay
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  console.log('✅ System health check completed - All systems optimal');
-};
-
-const backupSystem = async () => {
-  backingUp.value = true;
-  console.log('💾 Starting system backup...');
-  
-  try {
-    // Simulate backup process
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log('✅ System backup completed successfully');
-  } finally {
-    backingUp.value = false;
-  }
-};
-
-const clearCache = async () => {
-  clearingCache.value = true;
-  console.log('🧹 Clearing system cache...');
-  
-  try {
-    // Simulate cache clearing
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    console.log('✅ System cache cleared successfully');
-    
-    // Update cache status in performance indicators
-    if (storageUsage.value > 50) {
-      storageUsage.value -= 15;
-    }
-  } finally {
-    clearingCache.value = false;
-  }
-};
-
-const systemUpdate = async () => {
-  updating.value = true;
-  console.log('🔄 Checking for system updates...');
-  
-  try {
-    // Simulate update check
-    await new Promise(resolve => setTimeout(resolve, 2500));
-    console.log('✅ System is up to date');
-  } finally {
-    updating.value = false;
-  }
-};
+// Essential dashboard methods only
 
 // Initialize dashboard data
 onMounted(() => {
@@ -648,11 +524,6 @@ onMounted(() => {
     // Update statistics slightly
     totalUsers.value += Math.floor(Math.random() * 2);
     activeSessions.value = Math.max(50, Math.min(150, activeSessions.value + (Math.random() - 0.5) * 10));
-    
-    // Update system performance
-    cpuUsage.value = Math.max(20, Math.min(80, cpuUsage.value + (Math.random() - 0.5) * 5));
-    memoryUsage.value = Math.max(40, Math.min(90, memoryUsage.value + (Math.random() - 0.5) * 3));
-    storageUsage.value = Math.max(60, Math.min(95, storageUsage.value + (Math.random() - 0.5) * 2));
   }, 30000); // Update every 30 seconds
 });
 </script>
@@ -781,6 +652,16 @@ onMounted(() => {
 /* Custom dashboard styles */
 .transition-shadow {
   transition: box-shadow 0.3s ease;
+}
+
+/* Session Management Styling */
+.session-stat {
+  transition: all 0.2s ease-in-out;
+}
+
+.session-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive grid adjustments */
