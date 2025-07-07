@@ -1409,7 +1409,7 @@ const formData = ref({
   },
   personalInfo: {
     idValue: "ic", 
-    idNumber: "901231025678", 
+    idNumber: "123456789", 
     idDocument: {
       name: 'kad_pengenalan_ahmad.jpg',
       size: 1536000,
@@ -1424,7 +1424,7 @@ const formData = ref({
     phone: "0123456789", 
     religion: "islam",
     bankName: "maybank", 
-    bankAccount: "1234567890", 
+    bankAccount: "123456789", 
     bankAccountHolder: "Ahmad bin Abdullah", 
     swiftCode: "MBBEMYKL", 
     paymentMethod: "akaun", 
@@ -1462,7 +1462,7 @@ const formData = ref({
       {
         relationship: "pasangan",
         spouseIdType: "ic",
-        spouseIdNumber: "901231025679",
+        spouseIdNumber: "123456789",
         spouseName: "Siti binti Mohamed",
         spouseIdDocument: {
           name: 'kad_pengenalan_siti.jpg',
@@ -1823,7 +1823,7 @@ const uploadedDocuments = computed(() => {
 // Methods
 const getPlaceholder = () => {
   const placeholders = {
-    "ic": "Contoh: 901231025678",
+    "ic": "Contoh: 123456789",
     "foreign-id": "Contoh: A12345678"
   };
   return placeholders[formData.value.personalInfo.idValue] || "";
@@ -1849,7 +1849,7 @@ const getSpouseDocumentLabel = (index) => {
 
 const getSpousePlaceholder = (index) => {
   const placeholders = {
-    "ic": "Contoh: 901231025678",
+    "ic": "Contoh: 123456789",
     "foreign-id": "Contoh: A12345678",
     "sijil-lahir": "Contoh: 1234567890"
   };

@@ -100,9 +100,7 @@ const breadcrumb = ref([
 
 const idTypeOptions = [
   { label: "No. Kad Pengenalan", value: "ic" },
-  { label: "No. Polis", value: "police" },
-  { label: "No. Tentera", value: "military" },
-  { label: "No. Pasport", value: "passport" },
+  { label: "Foreign ID", value: "foreign" },
 ];
 
 const formData = ref({
@@ -113,13 +111,9 @@ const formData = ref({
 const getPlaceholder = () => {
   switch (formData.value.idType) {
     case "ic":
-      return "Contoh: 880101121234";
-    case "police":
-      return "Masukkan No. Polis";
-    case "military":
-      return "Masukkan No. Tentera";
-    case "passport":
-      return "Masukkan No. Pasport";
+      return "Contoh: 123456789";
+    case "foreign":
+      return "Masukkan Foreign ID";
     default:
       return "Sila pilih jenis ID dahulu";
   }
