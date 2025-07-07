@@ -365,15 +365,6 @@
 
               <FormKit
                 type="text"
-                name="no_akaun_bank"
-                label="No Akaun Bank"
-                validation="required"
-                v-model="formData.no_akaun_bank"
-                value="1234567890"
-              />
-
-              <FormKit
-                type="text"
                 name="nama_pemegang_akaun"
                 label="Nama Pemegang Akaun Bank"
                 validation="required"
@@ -409,6 +400,79 @@
                   }"
                 />
               </div>
+            </div>
+
+            <!-- Multiple Bank Account Numbers -->
+            <div class="mt-4">
+              <h5 class="font-medium mb-3">No Akaun Bank</h5>
+              
+              <div v-for="(accountNumber, index) in formData.bankAccountNumbers" :key="index" class="mb-3">
+                <div class="flex gap-2 items-end">
+                  <div class="flex-1">
+                    <FormKit
+                      type="text"
+                      :name="`no_akaun_bank_${index}`"
+                      :label="`No Akaun Bank ${index + 1}`"
+                      validation="required"
+                      v-model="accountNumber.number"
+                      :validation-messages="{
+                        required: 'No akaun bank adalah wajib'
+                      }"
+                    />
+                  </div>
+                  <button
+                    v-if="formData.bankAccountNumbers.length > 1"
+                    type="button"
+                    @click="removeBankAccountNumber(index)"
+                    class="text-red-500 hover:text-red-700 mb-2"
+                  >
+                    <Icon name="mdi:delete" size="1.25rem" />
+                  </button>
+                </div>
+              </div>
+
+              <!-- Add Bank Account Number Button -->
+              <div class="flex justify-center mt-4">
+                <rs-button
+                  variant="secondary"
+                  @click="addBankAccountNumber"
+                  type="button"
+                >
+                  <Icon name="mdi:plus" class="mr-1" size="1rem" />
+                  Tambah No Akaun Bank
+                </rs-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Death Information Section -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Kematian</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="select"
+                name="jenis_id_kematian"
+                label="Jenis ID"
+                :options="['Kad Pengenalan', 'Foreign ID', 'Sijil Lahir']"
+                v-model="formData.jenis_id_kematian"
+                value="Kad Pengenalan"
+              />
+
+              <FormKit
+                type="text"
+                name="no_id_kematian"
+                label="No ID"
+                v-model="formData.no_id_kematian"
+                value=""
+              />
+
+              <FormKit
+                type="text"
+                name="nama_kematian"
+                label="Nama"
+                v-model="formData.nama_kematian"
+                value=""
+              />
             </div>
           </div>
 
@@ -1853,14 +1917,6 @@
 
               <FormKit
                 type="text"
-                name="no_akaun_bank_tanggungan"
-                label="No Akaun Bank"
-                validation="required"
-                v-model="formData.no_akaun_bank_tanggungan"
-              />
-
-              <FormKit
-                type="text"
                 name="nama_pemegang_akaun_tanggungan"
                 label="Nama Pemegang Akaun Bank"
                 validation="required"
@@ -1894,6 +1950,48 @@
                     min: 'Sila pilih sekurang-kurangnya satu sebab'
                   }"
                 />
+              </div>
+            </div>
+
+            <!-- Multiple Bank Account Numbers for Tanggungan -->
+            <div class="mt-4">
+              <h5 class="font-medium mb-3">No Akaun Bank</h5>
+              
+              <div v-for="(accountNumber, index) in formData.bankAccountNumbersTanggungan" :key="index" class="mb-3">
+                <div class="flex gap-2 items-end">
+                  <div class="flex-1">
+                    <FormKit
+                      type="text"
+                      :name="`no_akaun_bank_tanggungan_${index}`"
+                      :label="`No Akaun Bank ${index + 1}`"
+                      validation="required"
+                      v-model="accountNumber.number"
+                      :validation-messages="{
+                        required: 'No akaun bank adalah wajib'
+                      }"
+                    />
+                  </div>
+                  <button
+                    v-if="formData.bankAccountNumbersTanggungan.length > 1"
+                    type="button"
+                    @click="removeBankAccountNumberTanggungan(index)"
+                    class="text-red-500 hover:text-red-700 mb-2"
+                  >
+                    <Icon name="mdi:delete" size="1.25rem" />
+                  </button>
+                </div>
+              </div>
+
+              <!-- Add Bank Account Number Button for Tanggungan -->
+              <div class="flex justify-center mt-4">
+                <rs-button
+                  variant="secondary"
+                  @click="addBankAccountNumberTanggungan"
+                  type="button"
+                >
+                  <Icon name="mdi:plus" class="mr-1" size="1rem" />
+                  Tambah No Akaun Bank
+                </rs-button>
               </div>
             </div>
           </div>
@@ -2705,12 +2803,18 @@ const formData = ref({
   bilangan_isteri: null,
   // Bank Information
   nama_bank: 'bank-islam',
-  no_akaun_bank: '1234567890',
   nama_pemegang_akaun: 'Ahmad bin Ali',
   swift_code: 'BIMBMYKL',
+  bankAccountNumbers: [
+    { number: '1234567890' }
+  ],
   kaedah_pembayaran: 'akaun',
   noPaymentReason: ['muflis'],
   sebab_tunai: '',
+  // Death Information
+  jenis_id_kematian: 'Kad Pengenalan',
+  no_id_kematian: '',
+  nama_kematian: '',
   // Section B - Maklumat Kesihatan
   tahap_kesihatan: 'Sihat',
   keadaan_kesihatan_sakit: '',
@@ -2813,7 +2917,9 @@ const formData = ref({
   no_telefon_tanggungan: '0191234567',
   nama_bank_tanggungan: 'maybank',
   swift_code_tanggungan: 'MBBEMYKL',
-  no_akaun_bank_tanggungan: '9876543210',
+  bankAccountNumbersTanggungan: [
+    { number: '9876543210' }
+  ],
   nama_pemegang_akaun_tanggungan: 'Ali bin Ahmad',
   kaedah_pembayaran_tanggungan: 'akaun',
   noPaymentReasonTanggungan: [],
@@ -3410,6 +3516,29 @@ const addHeir = () => {
 
 const removeHeir = (index) => {
   formData.value.heirs.splice(index, 1);
+};
+
+// ============================================================================
+// BANK ACCOUNT NUMBER MANAGEMENT FUNCTIONS
+// ============================================================================
+const addBankAccountNumber = () => {
+  formData.value.bankAccountNumbers.push({
+    number: ''
+  });
+};
+
+const removeBankAccountNumber = (index) => {
+  formData.value.bankAccountNumbers.splice(index, 1);
+};
+
+const addBankAccountNumberTanggungan = () => {
+  formData.value.bankAccountNumbersTanggungan.push({
+    number: ''
+  });
+};
+
+const removeBankAccountNumberTanggungan = (index) => {
+  formData.value.bankAccountNumbersTanggungan.splice(index, 1);
 };
 
 // ============================================================================
