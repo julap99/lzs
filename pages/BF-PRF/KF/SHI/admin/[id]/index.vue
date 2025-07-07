@@ -11,13 +11,6 @@
           <h2 class="text-xl font-semibold">
             Kemaskini Status Household / Individu
           </h2>
-          <!-- <FormKit
-            type="button"
-            @click="navigateTo('/BF-PRF/KF/SHI/admin')"
-            outer-class="m-0"
-          >
-            <Icon name="material-symbols:arrow-back" class="mr-1" /> Kembali
-          </FormKit> -->
         </div>
 
         <!-- Body -->
@@ -105,7 +98,7 @@
             <div class="flex justify-end space-x-3 pt-4">
               <rs-button
                 variant="primary-outline"
-                @click="navigateTo('/BF-PRF/KF/SHI')"
+                @click="navigateTo('/BF-PRF/KF/SHI/admin')"
                 outer-class="m-0"
               >
                 Batal
@@ -122,7 +115,7 @@
                   ></div>
                   Menyimpan...
                 </span>
-                <span v-else>Simpan</span>
+                <span v-else>Hantar Untuk Kelulusan</span>
               </rs-button>
             </div>
           </div>
@@ -327,7 +320,7 @@ const updateStatus = async () => {
     auditHistory.value.unshift(newAuditEntry);
 
     // Success handling
-    toast.success("Status berjaya dikemaskini");
+    toast.success("Status berjaya dihantar untuk kelulusan");
   } catch (error) {
     // Error handling
     toast.error("Ralat semasa mengemaskini status. Sila cuba lagi.");
@@ -348,4 +341,4 @@ const formatDate = (dateString) => {
     minute: "2-digit",
   });
 };
-</script>
+</script> 

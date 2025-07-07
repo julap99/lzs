@@ -183,7 +183,7 @@ const inactiveStatusCount = computed(() => {
 // Methods
 
 const updateStatus = (id) => {
-  navigateTo(`SHI/${id}`);
+  navigateTo(`admin/${id}`);
 };
 
 const deleteStatus = (id) => {
