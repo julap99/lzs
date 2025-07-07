@@ -1249,7 +1249,8 @@ const bankOptions = [
 
 const idTypeOptions = [
   { label: 'Kad Pengenalan', value: 'ic' },
-  { label: 'Foreign ID', value: 'foreign-id' }
+  { label: 'Foreign ID', value: 'foreign-id' },
+  { label: 'Sijil Lahir', value: 'sijil-lahir' }
 ];
 
 const genderOptions = [
@@ -1448,7 +1449,8 @@ const getPlaceholder = () => {
 const getDocumentLabel = () => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID"
+    "foreign-id": "Upload Foreign ID",
+    "sijil-lahir": "Upload Sijil Lahir"
   };
   return labels[formData.value.personalInfo.idValue] || "";
 };
@@ -1456,7 +1458,8 @@ const getDocumentLabel = () => {
 const getSpouseDocumentLabel = (index) => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID"
+    "foreign-id": "Upload Foreign ID",
+    "sijil-lahir": "Upload Sijil Lahir"
   };
   return labels[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";
 };

@@ -61,11 +61,10 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID','No Polis','No Tentera','No Sijil Lahir']"
+                :options="['Kad Pengenalan', 'Foreign ID','Sijil Lahir']"
                 validation="required"
                 v-model="jenisId"
               />
-
               
                 <FormKit
                   v-if="jenisId"
@@ -1633,7 +1632,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID','No Polis','No Tentera','No Sijil Lahir']"
+                :options="['Kad Pengenalan', 'Foreign ID','Sijil Lahir']"
                 validation="required"
                 v-model="jenisIdTanggungan"
               />

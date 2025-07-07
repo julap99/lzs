@@ -61,7 +61,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID','No Polis','No Tentera','No Sijil Lahir']"
+                :options="['Kad Pengenalan', 'Foreign ID','Sijil Lahir']"
                 validation="required"
                 v-model="jenisId"
               />
@@ -1633,7 +1633,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID','No Polis','No Tentera','No Sijil Lahir']"
+                :options="['Kad Pengenalan', 'Foreign ID','Sijil Lahir']"
                 validation="required"
                 v-model="jenisIdTanggungan"
               />
@@ -1642,7 +1642,7 @@
                 v-if="jenisIdTanggungan"
                   type="file"
                   name="dokumen_id"
-                  :label="`Upload Document`"
+                  :label="`Upload ${jenisIdTanggungan}`"
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"

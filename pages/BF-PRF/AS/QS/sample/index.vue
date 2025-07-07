@@ -1579,9 +1579,7 @@ const bankOptions = [
 const idTypeOptions = [
   { label: 'Kad Pengenalan', value: 'ic' },
   { label: 'Foreign ID', value: 'foreign-id' },
-  { label: 'No Polis', value: 'polis' },
-  { label: 'No Tentera', value: 'tentera' },
-  { label: 'No Sijil Lahir', value: 'sijil-lahir' }
+  { label: 'Sijil Lahir', value: 'sijil-lahir' }
 ];
 
 const genderOptions = [
@@ -1835,9 +1833,7 @@ const getDocumentLabel = () => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
     "foreign-id": "Upload Foreign ID",
-    "polis": "Upload No Polis",
-    "tentera": "Upload No Tentera",
-    "sijil-lahir": "Upload No Sijil Lahir"
+    "sijil-lahir": "Upload Sijil Lahir"
   };
   return labels[formData.value.personalInfo.idValue] || "";
 };
@@ -1846,9 +1842,7 @@ const getSpouseDocumentLabel = (index) => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
     "foreign-id": "Upload Foreign ID",
-    "polis": "Upload No Polis",
-    "tentera": "Upload No Tentera",
-    "sijil-lahir": "Upload No Sijil Lahir"
+    "sijil-lahir": "Upload Sijil Lahir"
   };
   return labels[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";
 };
@@ -1857,8 +1851,6 @@ const getSpousePlaceholder = (index) => {
   const placeholders = {
     "ic": "Contoh: 901231025678",
     "foreign-id": "Contoh: A12345678",
-    "polis": "Contoh: 1234567890",
-    "tentera": "Contoh: 1234567890",
     "sijil-lahir": "Contoh: 1234567890"
   };
   return placeholders[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";

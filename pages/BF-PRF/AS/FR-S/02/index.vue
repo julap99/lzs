@@ -57,7 +57,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID']"
+                :options="['Kad Pengenalan', 'Foreign ID', 'Sijil Lahir']"
                 validation="required"
                 v-model="jenisId"
               />
@@ -1631,7 +1631,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID']"
+                :options="['Kad Pengenalan', 'Foreign ID', 'Sijil Lahir']"
                 validation="required"
                 v-model="jenisIdTanggungan"
               />
