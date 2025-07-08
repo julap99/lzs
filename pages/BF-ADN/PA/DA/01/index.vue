@@ -1,227 +1,3 @@
-<script setup>
-import { ref, watch } from "vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-const showConfirmModal = ref(false);
-const showRegistrationModal = ref(false);
-const registrationType = ref('');
-
-definePageMeta({
-  title: "Hantar Aduan",
-});
-
-const breadcrumb = ref([
-  {
-    name: "Pengurusan Aduan",
-    type: "link",
-    path: "/BF-ADN/PA/DA/01",
-  },
-  {
-    name: "Hantar Aduan",
-    type: "current",
-    path: "/BF-ADN/PA/DA/01",
-  },
-]);
-
-const formData = ref({
-  // Form control
-  isWakil: false,
-
-  // Maklumat Individu Dibantu
-  jenisID: "",
-  noKadPengenalan: "",
-  namaPenuh: "",
-  emel: "",
-  noTelefon: "",
-  alamatBaris1: "",
-  alamatBaris2: "",
-  negeri: "Selangor",
-  daerah: "",
-  kariah: "",
-  lokasi: {
-    lat: null,
-    lng: null,
-    address: "",
-  },
-  penyataanMasalah: "",
-  ringkasanAduan: "",
-  lampiran: [],
-
-  // Maklumat Pengadu (jika wakil)
-  namaPengadu: "",
-  noKadPengenalanPengadu: "",
-  emelPengadu: "",
-  noTelefonPengadu: "",
-});
-
-const penyataanMasalahOptions = [
-  {
-    label: "Terputus Bekalan Makanan/Tiada Tempat Tinggal",
-    value: "kelas_1",
-  },
-  {
-    label:
-      "Masih Ada Bekalan Makanan/Mempunyai Tempat Tinggal/Tiada Sumber Pendapatan",
-    value: "kelas_2",
-  },
-  {
-    label: "Pendapatan Berkurangan/Keperluan Lain.",
-    value: "kelas_3",
-  },
-];
-
-const jenisIDOptions = [
-  { label: "MyKad (IC)", value: "mykad" },
-  { label: "Passport", value: "passport" },
-  { label: "MyTentera", value: "mytentera" },
-  { label: "MyPolis", value: "mypolis" },
-  { label: "Lain-lain", value: "lain" },
-];
-
-const daerahOptions = [
-  { label: "Petaling", value: "petaling" },
-  { label: "Klang", value: "klang" },
-  { label: "Hulu Langat", value: "hulu_langat" },
-  { label: "Sepang", value: "sepang" },
-  { label: "Gombak", value: "gombak" },
-  { label: "Kuala Selangor", value: "kuala_selangor" },
-  { label: "Hulu Selangor", value: "hulu_selangor" },
-  { label: "Sabak Bernam", value: "sabak_bernam" },
-];
-
-const kariahOptions = ref([]);
-
-const updateKariahOptions = (daerah) => {
-  switch (daerah) {
-    case "petaling":
-      kariahOptions.value = [
-        {
-          label: "Kariah Masjid Sultan Salahuddin Abdul Aziz Shah",
-          value: "msaas",
-        },
-        { label: "Kariah Masjid Al-Hidayah", value: "alhidayah" },
-      ];
-      break;
-    case "klang":
-      kariahOptions.value = [
-        { label: "Kariah Masjid Sultan Suleiman", value: "mss" },
-        { label: "Kariah Masjid Al-Hidayah Klang", value: "ahk" },
-      ];
-      break;
-    default:
-      kariahOptions.value = [];
-  }
-};
-
-watch(
-  () => formData.value.daerah,
-  (newDaerah) => {
-    updateKariahOptions(newDaerah);
-    formData.value.kariah = "";
-  }
-);
-
-const handleSubmit = () => {
-  // Validate ID number based on selected ID type
-  const idType = formData.value.jenisID;
-  const idNumber = formData.value.noKadPengenalan;
-
-  let isValid = true;
-  let errorMessage = "";
-
-  switch (idType) {
-    case "mykad":
-      if (!/^\d{12}$/.test(idNumber)) {
-        isValid = false;
-        errorMessage = "Nombor MyKad mestilah 12 digit";
-      }
-      break;
-    case "passport":
-      if (!/^[A-Z0-9]{6,12}$/.test(idNumber)) {
-        isValid = false;
-        errorMessage = "Format passport tidak sah";
-      }
-      break;
-    case "mytentera":
-      if (!/^[A-Z0-9]{6,12}$/.test(idNumber)) {
-        isValid = false;
-        errorMessage = "Format MyTentera tidak sah";
-      }
-      break;
-    case "mypolis":
-      if (!/^[A-Z0-9]{6,12}$/.test(idNumber)) {
-        isValid = false;
-        errorMessage = "Format MyPolis tidak sah";
-      }
-      break;
-    case "lain":
-      if (!idNumber) {
-        isValid = false;
-        errorMessage = "Sila masukkan nombor ID";
-      }
-      break;
-  }
-
-  if (!isValid) {
-    alert(errorMessage);
-    return;
-  }
-
-  // Check if user needs registration
-  if (formData.value.isWakil === 'diri_sendiri' && 
-      (formData.value.penyataanMasalah === 'kelas_2' || formData.value.penyataanMasalah === 'kelas_3')) {
-    registrationType.value = formData.value.penyataanMasalah === 'kelas_2' ? 'quick' : 'full';
-    showRegistrationModal.value = true;
-    return;
-  }
-
-  showConfirmModal.value = true;
-};
-
-const handleRegistrationConfirm = () => {
-  showRegistrationModal.value = false;
-  // Redirect based on registration type
-  if (registrationType.value === 'quick') {
-    router.push('/BF-ADN/PA/DA/quick-registration');
-  } else {
-    router.push('/BF-ADN/PA/DA/full-registration');
-  }
-};
-
-const handleRegistrationCancel = () => {
-  showRegistrationModal.value = false;
-};
-
-const handleConfirm = () => {
-  console.log("Form submitted:", formData.value);
-  showConfirmModal.value = false;
-  router.push("/BF-ADN/PA/DA/02");
-};
-
-const handleCancel = () => {
-  showConfirmModal.value = false;
-};
-
-// Geo-Lokasi functions
-const getCurrentLocation = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        formData.value.lokasi.lat = position.coords.latitude;
-        formData.value.lokasi.lng = position.coords.longitude;
-        // Here you would typically call a geocoding service to get the address
-        // For now, we'll just set a placeholder
-        formData.value.lokasi.address = "Lokasi semasa";
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-      }
-    );
-  }
-};
-</script>
-
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
@@ -502,18 +278,38 @@ const getCurrentLocation = () => {
                       }"
                     />
                   </div> -->
-                </div>
-              </div>
-            </div>
-          </div>
+                  <!-- Consent Section -->
+                  <div class="space-y-4">
+                    <h3 class="text-md font-medium text-gray-700">Persetujuan</h3>
+                    
+                    <div class="bg-white p-4 rounded border border-gray-300">
+                      <p class="text-sm text-gray-700 leading-relaxed">
+                        Saya mengesahkan bahawa segala maklumat yang diberikan dalam aduan ini adalah <strong>BENAR, TEPAT, LENGKAP</strong> dan <strong>TERKINI</strong>. Saya dengan ini bersetuju memberi persetujuan secara nyata (explicit consent) kepada Zakat Selangor untuk mengumpul, memproses, menggunakan data peribadi saya dan tanggungan saya (jika ada) bagi tujuan pentadbiran, kajian, dakwah, promosi dan aktiviti-aktiviti lain berkaitan fungsi Zakat Selangor seperti yang dinyatakan di dalam Notis Privasi Zakat Selangor di <a href="https://www.zakatselangor.com.my" target="_blank" class="text-blue-600 hover:text-blue-800 underline">https://www.zakatselangor.com.my</a>. Saya juga telah mendapatkan persetujuan daripada pihak ketiga berhubung dengan data dan maklumat pihak ketiga yang akan diserahkan kepada pihak Zakat Selangor.
+                      </p>
+                    </div>
 
-          
+                    <FormKit
+                      v-model="formData.consentAgreed"
+                      type="checkbox"
+                      label="Saya bersetuju dengan terma dan syarat di atas"
+                      validation="required"
+                      validation-visibility="dirty"
+                      :validation-messages="{
+                        required: 'Anda mesti bersetuju dengan terma dan syarat untuk meneruskan'
+                      }"
+                    />
+                  </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
           <div class="flex justify-end mt-8">
             <rs-button
               type="submit"
               variant="primary"
               class="min-w-[200px]"
+              :disabled="!formData.consentAgreed"
               @click="handleSubmit"
             >
               Hantar Aduan
@@ -560,3 +356,263 @@ const getCurrentLocation = () => {
     </rs-modal>
   </div>
 </template>
+
+<script setup>
+import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
+
+// ============================================================================
+// PAGE META & CONFIGURATION
+// ============================================================================
+
+definePageMeta({
+  title: "Hantar Aduan",
+});
+
+// ============================================================================
+// ROUTER & MODAL STATE
+// ============================================================================
+
+const router = useRouter();
+const showConfirmModal = ref(false);
+const showRegistrationModal = ref(false);
+const registrationType = ref('');
+
+// ============================================================================
+// BREADCRUMB NAVIGATION
+// ============================================================================
+
+const breadcrumb = ref([
+  {
+    name: "Pengurusan Aduan",
+    type: "link",
+    path: "/BF-ADN/PA/DA/01",
+  },
+  {
+    name: "Hantar Aduan",
+    type: "current",
+    path: "/BF-ADN/PA/DA/01",
+  },
+]);
+
+// ============================================================================
+// FORM DATA
+// ============================================================================
+
+const formData = ref({
+  // Form control
+  isWakil: false,
+  consentAgreed: false,
+
+  // Maklumat Individu Dibantu
+  jenisID: "",
+  noKadPengenalan: "",
+  namaPenuh: "",
+  emel: "",
+  noTelefon: "",
+  alamatBaris1: "",
+  alamatBaris2: "",
+  negeri: "Selangor",
+  daerah: "",
+  kariah: "",
+  lokasi: {
+    lat: null,
+    lng: null,
+    address: "",
+  },
+  penyataanMasalah: "",
+  ringkasanAduan: "",
+  lampiran: [],
+
+  // Maklumat Pengadu (jika wakil)
+  namaPengadu: "",
+  noKadPengenalanPengadu: "",
+  emelPengadu: "",
+  noTelefonPengadu: "",
+});
+
+// ============================================================================
+// FORM OPTIONS & CONFIGURATION
+// ============================================================================
+
+const penyataanMasalahOptions = [
+  {
+    label: "Terputus Bekalan Makanan/Tiada Tempat Tinggal",
+    value: "kelas_1",
+  },
+  {
+    label:
+      "Masih Ada Bekalan Makanan/Mempunyai Tempat Tinggal/Tiada Sumber Pendapatan",
+    value: "kelas_2",
+  },
+  {
+    label: "Pendapatan Berkurangan/Keperluan Lain.",
+    value: "kelas_3",
+  },
+];
+
+const jenisIDOptions = [
+  { label: "MyKad (IC)", value: "mykad" },
+  { label: "Passport", value: "passport" },
+  { label: "MyTentera", value: "mytentera" },
+  { label: "MyPolis", value: "mypolis" },
+  { label: "Lain-lain", value: "lain" },
+];
+
+const daerahOptions = [
+  { label: "Petaling", value: "petaling" },
+  { label: "Klang", value: "klang" },
+  { label: "Hulu Langat", value: "hulu_langat" },
+  { label: "Sepang", value: "sepang" },
+  { label: "Gombak", value: "gombak" },
+  { label: "Kuala Selangor", value: "kuala_selangor" },
+  { label: "Hulu Selangor", value: "hulu_selangor" },
+  { label: "Sabak Bernam", value: "sabak_bernam" },
+];
+
+const kariahOptions = ref([]);
+
+// ============================================================================
+// WATCHERS & REACTIVE UPDATES
+// ============================================================================
+
+watch(
+  () => formData.value.daerah,
+  (newDaerah) => {
+    updateKariahOptions(newDaerah);
+    formData.value.kariah = "";
+  }
+);
+
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+const updateKariahOptions = (daerah) => {
+  switch (daerah) {
+    case "petaling":
+      kariahOptions.value = [
+        {
+          label: "Kariah Masjid Sultan Salahuddin Abdul Aziz Shah",
+          value: "msaas",
+        },
+        { label: "Kariah Masjid Al-Hidayah", value: "alhidayah" },
+      ];
+      break;
+    case "klang":
+      kariahOptions.value = [
+        { label: "Kariah Masjid Sultan Suleiman", value: "mss" },
+        { label: "Kariah Masjid Al-Hidayah Klang", value: "ahk" },
+      ];
+      break;
+    default:
+      kariahOptions.value = [];
+  }
+};
+
+const validateIDNumber = (idType, idNumber) => {
+  let isValid = true;
+  let errorMessage = "";
+
+  switch (idType) {
+    case "mykad":
+      if (!/^\d{12}$/.test(idNumber)) {
+        isValid = false;
+        errorMessage = "Nombor MyKad mestilah 12 digit";
+      }
+      break;
+    case "passport":
+      if (!/^[A-Z0-9]{6,12}$/.test(idNumber)) {
+        isValid = false;
+        errorMessage = "Format passport tidak sah";
+      }
+      break;
+    case "mytentera":
+      if (!/^[A-Z0-9]{6,12}$/.test(idNumber)) {
+        isValid = false;
+        errorMessage = "Format MyTentera tidak sah";
+      }
+      break;
+    case "mypolis":
+      if (!/^[A-Z0-9]{6,12}$/.test(idNumber)) {
+        isValid = false;
+        errorMessage = "Format MyPolis tidak sah";
+      }
+      break;
+    case "lain":
+      if (!idNumber) {
+        isValid = false;
+        errorMessage = "Sila masukkan nombor ID";
+      }
+      break;
+  }
+
+  return { isValid, errorMessage };
+};
+
+const getCurrentLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        formData.value.lokasi.lat = position.coords.latitude;
+        formData.value.lokasi.lng = position.coords.longitude;
+        formData.value.lokasi.address = "Lokasi semasa";
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+      }
+    );
+  }
+};
+
+// ============================================================================
+// EVENT HANDLERS
+// ============================================================================
+
+const handleSubmit = () => {
+  // Validate ID number
+  const { isValid, errorMessage } = validateIDNumber(
+    formData.value.jenisID,
+    formData.value.noKadPengenalan
+  );
+
+  if (!isValid) {
+    alert(errorMessage);
+    return;
+  }
+
+  // Check if user needs registration
+  if (formData.value.isWakil === 'diri_sendiri' && 
+      (formData.value.penyataanMasalah === 'kelas_2' || formData.value.penyataanMasalah === 'kelas_3')) {
+    registrationType.value = formData.value.penyataanMasalah === 'kelas_2' ? 'quick' : 'full';
+    showRegistrationModal.value = true;
+    return;
+  }
+
+  showConfirmModal.value = true;
+};
+
+const handleRegistrationConfirm = () => {
+  showRegistrationModal.value = false;
+  // Redirect based on registration type
+  if (registrationType.value === 'quick') {
+    router.push('/BF-ADN/PA/DA/quick-registration');
+  } else {
+    router.push('/BF-ADN/PA/DA/full-registration');
+  }
+};
+
+const handleRegistrationCancel = () => {
+  showRegistrationModal.value = false;
+};
+
+const handleConfirm = () => {
+  console.log("Form submitted:", formData.value);
+  showConfirmModal.value = false;
+  router.push("/BF-ADN/PA/DA/02");
+};
+
+const handleCancel = () => {
+  showConfirmModal.value = false;
+};
+</script>
