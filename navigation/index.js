@@ -712,10 +712,24 @@ export default [
             meta: {},
           },
           {
-            title: "Household / Infividu",
+            title: "Household / Individu",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/KF/SHI",
-            child: [],
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/SHI/admin",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/SHI/pelulus",
+                child: [],
+                meta: {},
+              },
+            ],
             meta: {},
           },
         ],

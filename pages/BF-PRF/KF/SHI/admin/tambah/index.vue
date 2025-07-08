@@ -112,7 +112,11 @@
               :loading="isSubmitting"
               @click="saveNewStatus"
             >
-              Simpan
+              <span v-if="isSubmitting">
+                <Icon name="eos-icons:loading" size="1rem" class="mr-1" />
+                Menghantar...
+              </span>
+              <span v-else>Hantar Untuk Kelulusan</span>
             </rs-button>
           </div>
         </FormKit>
@@ -190,7 +194,7 @@ const saveNewStatus = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Success handling
-    toast.success("Status berjaya ditambah");
+    toast.success("Status berjaya dihantar untuk kelulusan");
     navigateTo("/BF-PRF/KF/SHI/admin");
   } catch (error) {
     // Error handling

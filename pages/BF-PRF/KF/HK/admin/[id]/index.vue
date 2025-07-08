@@ -393,17 +393,42 @@ const kategoriOptions = [
 ];
 
 const householdOptions = [
+  // Kategori Utama - Default (cannot be added via form)
   { label: "Ketua Keluarga", value: "Ketua Keluarga" },
-  {
-    label: "Dewasa Bekerja (18 tahun ke atas)",
-    value: "Dewasa Bekerja (18 tahun ke atas)",
-  },
-  {
-    label: "Dewasa Tidak Bekerja (18 tahun ke atas)",
-    value: "Dewasa Tidak Bekerja (18 tahun ke atas)",
-  },
-  { label: "Anak (Bawah 18 tahun)", value: "Anak (Bawah 18 tahun)" },
-  { label: "Bayi (Bawah 2 tahun)", value: "Bayi (Bawah 2 tahun)" },
+  { label: "Dewasa Bekerja", value: "Dewasa Bekerja" },
+  { label: "Dewasa Tidak Bekerja", value: "Dewasa Tidak Bekerja" },
+  { label: "Tanggungan IPT", value: "Tanggungan IPT" },
+  { label: "Tanggungan 7-17 Tahun", value: "Tanggungan 7-17 Tahun" },
+  { label: "Tanggungan 6 Tahun ke Bawah", value: "Tanggungan 6 Tahun ke Bawah" },
+  
+  // Kategori Utama - Additional
+  { label: "Penjaga Bukan Keluarga", value: "Penjaga Bukan Keluarga" },
+  { label: "Tanggungan Tahfiz", value: "Tanggungan Tahfiz" },
+  { label: "Anak Angkat", value: "Anak Angkat" },
+  { label: "Ibu Bapa Tiri", value: "Ibu Bapa Tiri" },
+  { label: "Saudara Kandung", value: "Saudara Kandung" },
+  { label: "Nenek/Datuk", value: "Nenek/Datuk" },
+  { label: "Cucu", value: "Cucu" },
+  { label: "Penjaga Khas", value: "Penjaga Khas" },
+  { label: "Tanggungan Dewasa OKU", value: "Tanggungan Dewasa OKU" },
+  { label: "Anak Yatim Piatu", value: "Anak Yatim Piatu" },
+  
+  // Kategori Tambahan - Default
+  { label: "OKU", value: "OKU" },
+  { label: "Pesakit Kronik", value: "Pesakit Kronik" },
+  { label: "Penjagaan Anak < 12 Tahun", value: "Penjagaan Anak < 12 Tahun" },
+  
+  // Kategori Tambahan - Additional
+  { label: "Warga Emas", value: "Warga Emas" },
+  { label: "Keperluan Terapi", value: "Keperluan Terapi" },
+  { label: "Keperluan Pemulihan", value: "Keperluan Pemulihan" },
+  { label: "Bantuan Perubatan", value: "Bantuan Perubatan" },
+  { label: "Keperluan Diet Khas", value: "Keperluan Diet Khas" },
+  { label: "Alat Bantu Mobility", value: "Alat Bantu Mobility" },
+  { label: "Keperluan Pendidikan Khas", value: "Keperluan Pendidikan Khas" },
+  { label: "Rawatan Jangka Panjang", value: "Rawatan Jangka Panjang" },
+  { label: "Keperluan Penjagaan Harian", value: "Keperluan Penjagaan Harian" },
+  { label: "Bantuan Teknologi Assistive", value: "Bantuan Teknologi Assistive" },
 ];
 
 // Computed
