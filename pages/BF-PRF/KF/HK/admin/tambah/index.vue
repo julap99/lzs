@@ -19,247 +19,137 @@
       </template>
 
       <template #body>
-        <!-- Important Notice at Top -->
         <div class="bg-yellow-50 p-3 rounded border border-yellow-200 mb-6">
           <p class="text-yellow-800 text-sm">
             <Icon name="material-symbols:info-outline" class="mr-1" />
-            Perhatian: Semua penambahan akan melalui proses kelulusan
-            terlebih dahulu sebelum dikuat kuasa.
+            Perhatian: Semua penambahan akan melalui proses kelulusan terlebih dahulu sebelum dikuat kuasa.
           </p>
         </div>
 
-        <FormKit
-          type="form"
-          :actions="false"
-          v-model="formData"
-        >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Step 1: Category Selection -->
+        <FormKit type="form" :actions="false" @submit="handleSubmit">
+          <div class="mb-6">
             <FormKit
               type="select"
-              name="category"
-              label="Kategori Kadar Had Kifayah"
+              name="seksyen"
+              label="Pilih Seksyen"
               validation="required"
-              :options="kategoriOptions"
-              placeholder="Pilih kategori"
-              :validation-messages="{
-                required: 'Kategori adalah wajib',
-              }"
-              @input="onCategoryChange"
+              :options="seksyenOptions"
+              placeholder="Pilih Seksyen"
+              v-model="selectedSeksyen"
             />
-
-            <!-- Step 2: Household Type Selection (only shows after category is selected) -->
-            <FormKit
-              v-if="formData.category"
-              type="select"
-              name="householdType"
-              label="Kategori Isi Rumah"
-              validation="required"
-              :options="currentHouseholdOptions"
-              placeholder="Pilih kategori isi rumah"
-              :validation-messages="{
-                required: 'Kategori isi rumah adalah wajib',
-              }"
-              @input="onHouseholdTypeChange"
-            />
-
-            <!-- Info message when category is selected but household type not yet -->
-            <div 
-              v-if="formData.category && !formData.householdType"
-              class="bg-blue-50 p-3 rounded border border-blue-200 col-span-2"
-            >
-              <p class="text-blue-800 text-sm">
-                <Icon name="material-symbols:info-outline" class="mr-1" />
-                Sila pilih kategori isi rumah untuk meneruskan pengisian kadar.
-              </p>
-            </div>
-
-            <!-- Step 3: Rate Fields (disabled until both selections are made) -->
-            <FormKit
-              type="number"
-              name="paidHouseRate"
-              label="Kadar Kifayah Rumah Berbayar (RM)"
-              validation="required|min:0"
-              step="0.01"
-              :disabled="!canEditRates"
-              :validation-messages="{
-                required: 'Kadar rumah berbayar adalah wajib',
-                min: 'Nilai tidak boleh negatif',
-              }"
-              :help="!canEditRates ? 'Sila pilih kategori dan jenis isi rumah terlebih dahulu' : 'Nilai akan diisi secara automatik berdasarkan kategori yang dipilih'"
-            />
-
-            <FormKit
-              type="number"
-              name="freeHouseRate"
-              label="Kadar Kifayah Rumah Percuma (RM)"
-              validation="required|min:0"
-              step="0.01"
-              :disabled="!canEditRates"
-              :validation-messages="{
-                required: 'Kadar rumah percuma adalah wajib',
-                min: 'Nilai tidak boleh negatif',
-              }"
-              :help="!canEditRates ? 'Sila pilih kategori dan jenis isi rumah terlebih dahulu' : 'Nilai akan diisi secara automatik berdasarkan kategori yang dipilih'"
-            />
-
-            <!-- Success message when rates are auto-filled -->
-            <div 
-              v-if="ratesAutoFilled"
-              class="bg-green-50 p-3 rounded border border-green-200 col-span-2"
-            >
-              <p class="text-green-800 text-sm">
-                <Icon name="material-symbols:check-circle-outline" class="mr-1" />
-                ✅ Kadar telah diisi secara automatik berdasarkan kategori <strong>{{ formData.category }}</strong> - <strong>{{ formData.householdType }}</strong>. 
-                Anda boleh mengubah nilai jika diperlukan.
-              </p>
-            </div>
-
-            <!-- Step 4: Date Selection with visual feedback -->
-            <FormKit
-              type="date"
-              name="effectiveDate"
-              label="Tarikh Mula Kuat Kuasa"
-              validation="required"
-              :validation-messages="{
-                required: 'Tarikh mula adalah wajib',
-              }"
-              :help="needsDateSelection ? 'Sila pilih tarikh untuk melengkapkan permohonan' : 'Tarikh kuat kuasa konfigurasi'"
-            />
-
-            <!-- Date selection guidance -->
-            <div 
-              v-if="needsDateSelection"
-              class="bg-orange-50 p-3 rounded border border-orange-200 col-span-2"
-            >
-              <p class="text-orange-800 text-sm">
-                <Icon name="material-symbols:calendar-today" class="mr-1" />
-                📅 Sila pilih tarikh mula kuat kuasa untuk melengkapkan permohonan konfigurasi.
-              </p>
-            </div>
-
-            <!-- All steps completed message -->
-            <div 
-              v-if="allStepsCompleted"
-              class="bg-emerald-50 p-3 rounded border border-emerald-200 col-span-2"
-            >
-              <p class="text-emerald-800 text-sm font-medium">
-                <Icon name="material-symbols:task-alt" class="mr-1" />
-                🎉 Semua maklumat telah lengkap! Anda boleh hantar permohonan untuk kelulusan.
-              </p>
-            </div>
-
-
           </div>
 
-          <div class="mt-6 flex justify-end gap-4">
-            <rs-button
-              variant="primary-outline"
-              @click="navigateTo('/BF-PRF/KF/HK/admin')"
-              type="button"
-              :disabled="isSubmitting"
-            >
-              Batal
-            </rs-button>
-            <rs-button
-              variant="primary"
-              type="button"
-              @click="showConfirmationModal"
-              :disabled="!canSubmit || isSubmitting"
-            >
-              <span v-if="isSubmitting">
-                <Icon name="eos-icons:loading" size="1rem" class="mr-1" />
-                Menghantar...
-              </span>
-              <span v-else>Hantar Untuk Kelulusan</span>
-            </rs-button>
+          <!-- Seksyen A Table -->
+          <div v-if="selectedSeksyen === 'A'">
+            <h3 class="text-lg font-semibold mt-6">Seksyen A: Konfigurasi Isi Rumah</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[800px] mt-4 border">
+                <thead>
+                  <tr class="bg-gray-100">
+                    <th class="p-2">Kategori Isi Rumah</th>
+                    <th class="p-2 text-center">Kadar Rumah Berbayar (RM)</th>
+                    <th class="p-2 text-center">Kadar Rumah Percuma (RM)</th>
+                    <th class="p-2 text-center">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in sekAData" :key="index">
+                    <td><input v-model="item.kategori" type="text" class="w-full border p-2" required /></td>
+                    <td class="text-center"><input v-model.number="item.kadarBerbayar" type="number" min="0" class="w-full border p-2 text-center" required /></td>
+                    <td class="text-center"><input v-model.number="item.kadarPercuma" type="number" min="0" class="w-full border p-2 text-center" required /></td>
+                    <td class="flex justify-center items-center">
+                      <rs-button v-if="sekAData.length > 1" @click="confirmRemove('A', index)" variant="danger" size="sm" circle>
+                        <Icon name="mdi:delete" />
+                      </rs-button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex justify-start mt-4">
+              <rs-button @click="addCategoryA" variant="success">
+                <Icon name="mdi:plus" class="mr-1" />Tambah Kategori
+              </rs-button>
+            </div>
+          </div>
+
+          <!-- Seksyen B Table -->
+          <div v-if="selectedSeksyen === 'B'">
+            <h3 class="text-lg font-semibold mt-6">Seksyen B: Konfigurasi Tambahan</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[600px] mt-4 border">
+                <thead>
+                  <tr class="bg-gray-100">
+                    <th class="p-2">Jenis Kategori Tambahan</th>
+                    <th class="p-2 text-center">Kadar (RM)</th>
+                    <th class="p-2 text-center">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in sekBData" :key="index">
+                    <td><input v-model="item.jenisKategori" type="text" class="w-full border p-2" required /></td>
+                    <td class="text-center"><input v-model.number="item.kadar" type="number" min="0" class="w-full border p-2 text-center" required /></td>
+                    <td class="flex justify-center items-center">
+                      <rs-button v-if="sekBData.length > 1" @click="confirmRemove('B', index)" variant="danger" size="sm" circle>
+                        <Icon name="mdi:delete" />
+                      </rs-button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex justify-start mt-4">
+              <rs-button @click="addCategoryB" variant="success">
+                <Icon name="mdi:plus" class="mr-1" />Tambah Kategori
+              </rs-button>
+            </div>
           </div>
         </FormKit>
+
+        <!-- Submit buttons outside FormKit to avoid validation issues -->
+        <div class="mt-6 flex justify-end gap-4">
+          <rs-button
+            variant="primary-outline"
+            @click="navigateTo('/BF-PRF/KF/HK/admin')"
+            type="button"
+            :disabled="isSubmitting"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="primary"
+            @click="handleSubmit"
+            :disabled="!canSubmit || isSubmitting"
+          >
+            <span v-if="isSubmitting">
+              <Icon name="eos-icons:loading" size="1rem" class="mr-1" />
+              Menghantar...
+            </span>
+            <span v-else>Hantar Untuk Kelulusan</span>
+          </rs-button>
+        </div>
       </template>
     </rs-card>
 
-    <!-- Confirmation Modal -->
-    <rs-modal
-      v-model="showConfirmModal"
-      title="Pengesahan Hantar Permohonan"
-      size="lg"
-      position="center"
-      :hideFooter="true"
-    >
-      <div class="space-y-4">
-        <div class="bg-blue-50 p-4 rounded border border-blue-200">
-          <h4 class="font-semibold text-blue-900 mb-2">📋 Ringkasan Permohonan</h4>
-          <div class="space-y-2 text-sm text-blue-800">
-            <div><strong>Kategori:</strong> {{ formData.category }}</div>
-            <div><strong>Jenis Isi Rumah:</strong> {{ formData.householdType }}</div>
-            <div><strong>Kadar Rumah Berbayar:</strong> RM {{ formatCurrency(formData.paidHouseRate) }}</div>
-            <div><strong>Kadar Rumah Percuma:</strong> RM {{ formatCurrency(formData.freeHouseRate) }}</div>
-            <div><strong>Tarikh Mula Kuat Kuasa:</strong> {{ formatDate(formData.effectiveDate) }}</div>
-          </div>
+    <!-- Remove Confirmation Modal -->
+    <rs-modal v-model="showRemoveModal" title="Pengesahan" size="sm" position="center" :hideFooter="true">
+      <div class="text-center p-4">
+        <Icon name="mdi:alert" class="text-red-500 mb-2" size="2rem" />
+        <div class="mb-4 text-lg font-semibold">
+          Anda pasti ingin buang kategori ini?
         </div>
-
-        <p class="text-gray-700 text-center text-lg">
-          Adakah anda pasti ingin tambah Konfigurasi Had Kifayah baharu?
-        </p>
-      </div>
-
-      <div class="mt-6 flex justify-center gap-4">
-        <rs-button
-          variant="secondary"
-          @click="showConfirmModal = false"
-          :disabled="isSubmitting"
-        >
-          Batal
-        </rs-button>
-        <rs-button
-          variant="primary"
-          @click="submitForm"
-          :disabled="isSubmitting"
-        >
-          <span v-if="isSubmitting">
-            <Icon name="eos-icons:loading" size="1rem" class="mr-1" />
-            Menghantar...
-          </span>
-          <span v-else>Ya, Tambah Konfigurasi</span>
-        </rs-button>
-      </div>
-    </rs-modal>
-
-    <!-- Success Modal -->
-    <rs-modal
-      v-model="showSuccessModal"
-      title="Berjaya"
-      size="md"
-      position="center"
-      :closable="false"
-      :hideFooter="true"
-    >
-      <div class="text-center space-y-4">
-        <div class="text-green-600">
-          <Icon name="material-symbols:check-circle" size="4rem" />
+        <div class="flex justify-center gap-4 mt-4">
+          <rs-button variant="secondary" @click="cancelRemove">Batal</rs-button>
+          <rs-button variant="danger" @click="doRemove">Buang</rs-button>
         </div>
-        
-        <div>
-          <h4 class="font-semibold text-gray-900 mb-2">Konfigurasi Telah Berjaya Dihantar Untuk Kelulusan!</h4>
-          <p class="text-gray-600">
-            Permohonan konfigurasi had kifayah baharu telah disimpan dan dihantar untuk proses kelulusan.
-          </p>
-        </div>
-      </div>
-
-      <div class="mt-6 flex justify-center">
-        <rs-button
-          variant="primary"
-          @click="handleSuccessClose"
-        >
-          Kembali ke Dashboard
-        </rs-button>
       </div>
     </rs-modal>
   </div>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue';
+
 definePageMeta({
   title: "Tambah Konfigurasi Had Kifayah",
 });
@@ -284,239 +174,115 @@ const breadcrumb = ref([
   },
 ]);
 
-// Form state
-const isSubmitting = ref(false);
-const ratesAutoFilled = ref(false);
-const showConfirmModal = ref(false);
-const showSuccessModal = ref(false);
-
-const formData = ref({
-  category: "",
-  householdType: "",
-  paidHouseRate: 0,
-  freeHouseRate: 0,
-  effectiveDate: "",
-});
-
-// Options
-const kategoriOptions = [
-  { label: "Utama", value: "Utama" },
-  { label: "Tambahan", value: "Tambahan" },
+const seksyenOptions = [
+  { label: 'Seksyen A: Kadar Had Kifayah Utama', value: 'A' },
+  { label: 'Seksyen B: Kadar Had Kifayah Tambahan', value: 'B' },
 ];
 
-// Predefined rate data based on documentation
-const rateData = {
-  Utama: {
-    "Ketua Keluarga": { paidHouseRate: 1215.00, freeHouseRate: 780.00 },
-    "Dewasa Bekerja": { paidHouseRate: 412.00, freeHouseRate: 412.00 },
-    "Dewasa Tidak Bekerja": { paidHouseRate: 167.00, freeHouseRate: 167.00 },
-    "Tanggungan IPT": { paidHouseRate: 613.00, freeHouseRate: 613.00 },
-    "Tanggungan 7-17 Tahun": { paidHouseRate: 408.00, freeHouseRate: 408.00 },
-    "Tanggungan 6 Tahun ke Bawah": { paidHouseRate: 175.00, freeHouseRate: 175.00 },
-    // Additional Utama categories
-    "Penjaga Bukan Keluarga": { paidHouseRate: 400.00, freeHouseRate: 400.00 },
-    "Tanggungan Tahfiz": { paidHouseRate: 350.00, freeHouseRate: 350.00 },
-    "Anak Angkat": { paidHouseRate: 300.00, freeHouseRate: 300.00 },
-    "Ibu Bapa Tiri": { paidHouseRate: 500.00, freeHouseRate: 500.00 },
-    "Saudara Kandung": { paidHouseRate: 250.00, freeHouseRate: 250.00 },
-    "Nenek/Datuk": { paidHouseRate: 600.00, freeHouseRate: 600.00 },
-    "Cucu": { paidHouseRate: 200.00, freeHouseRate: 200.00 },
-    "Penjaga Khas": { paidHouseRate: 450.00, freeHouseRate: 450.00 },
-    "Tanggungan Dewasa OKU": { paidHouseRate: 550.00, freeHouseRate: 550.00 },
-    "Anak Yatim Piatu": { paidHouseRate: 380.00, freeHouseRate: 380.00 },
-  },
-  Tambahan: {
-    "OKU": { paidHouseRate: 247.00, freeHouseRate: 247.00 },
-    "Pesakit Kronik": { paidHouseRate: 243.00, freeHouseRate: 243.00 },
-    "Penjagaan Anak < 12 Tahun": { paidHouseRate: 330.00, freeHouseRate: 330.00 },
-    // Additional Tambahan categories
-    "Warga Emas": { paidHouseRate: 280.00, freeHouseRate: 280.00 },
-    "Keperluan Terapi": { paidHouseRate: 320.00, freeHouseRate: 320.00 },
-    "Keperluan Pemulihan": { paidHouseRate: 350.00, freeHouseRate: 350.00 },
-    "Bantuan Perubatan": { paidHouseRate: 400.00, freeHouseRate: 400.00 },
-    "Keperluan Diet Khas": { paidHouseRate: 200.00, freeHouseRate: 200.00 },
-    "Alat Bantu Mobility": { paidHouseRate: 500.00, freeHouseRate: 500.00 },
-    "Keperluan Pendidikan Khas": { paidHouseRate: 300.00, freeHouseRate: 300.00 },
-    "Rawatan Jangka Panjang": { paidHouseRate: 450.00, freeHouseRate: 450.00 },
-    "Keperluan Penjagaan Harian": { paidHouseRate: 380.00, freeHouseRate: 380.00 },
-    "Bantuan Teknologi Assistive": { paidHouseRate: 600.00, freeHouseRate: 600.00 },
-  }
-};
+const selectedSeksyen = ref('A');
 
-// Household options based on category
-const householdOptions = {
-  Utama: [
-    // Default Utama categories
-    { label: "Ketua Keluarga", value: "Ketua Keluarga" },
-    { label: "Dewasa Bekerja", value: "Dewasa Bekerja" },
-    { label: "Dewasa Tidak Bekerja", value: "Dewasa Tidak Bekerja" },
-    { label: "Tanggungan IPT", value: "Tanggungan IPT" },
-    { label: "Tanggungan 7-17 Tahun", value: "Tanggungan 7-17 Tahun" },
-    { label: "Tanggungan 6 Tahun ke Bawah", value: "Tanggungan 6 Tahun ke Bawah" },
-    // Additional Utama categories
-    { label: "Penjaga Bukan Keluarga", value: "Penjaga Bukan Keluarga" },
-    { label: "Tanggungan Tahfiz", value: "Tanggungan Tahfiz" },
-    { label: "Anak Angkat", value: "Anak Angkat" },
-    { label: "Ibu Bapa Tiri", value: "Ibu Bapa Tiri" },
-    { label: "Saudara Kandung", value: "Saudara Kandung" },
-    { label: "Nenek/Datuk", value: "Nenek/Datuk" },
-    { label: "Cucu", value: "Cucu" },
-    { label: "Penjaga Khas", value: "Penjaga Khas" },
-    { label: "Tanggungan Dewasa OKU", value: "Tanggungan Dewasa OKU" },
-    { label: "Anak Yatim Piatu", value: "Anak Yatim Piatu" },
-  ],
-  Tambahan: [
-    // Default Tambahan categories
-    { label: "OKU", value: "OKU" },
-    { label: "Pesakit Kronik", value: "Pesakit Kronik" },
-    { label: "Penjagaan Anak < 12 Tahun", value: "Penjagaan Anak < 12 Tahun" },
-    // Additional Tambahan categories
-    { label: "Warga Emas", value: "Warga Emas" },
-    { label: "Keperluan Terapi", value: "Keperluan Terapi" },
-    { label: "Keperluan Pemulihan", value: "Keperluan Pemulihan" },
-    { label: "Bantuan Perubatan", value: "Bantuan Perubatan" },
-    { label: "Keperluan Diet Khas", value: "Keperluan Diet Khas" },
-    { label: "Alat Bantu Mobility", value: "Alat Bantu Mobility" },
-    { label: "Keperluan Pendidikan Khas", value: "Keperluan Pendidikan Khas" },
-    { label: "Rawatan Jangka Panjang", value: "Rawatan Jangka Panjang" },
-    { label: "Keperluan Penjagaan Harian", value: "Keperluan Penjagaan Harian" },
-    { label: "Bantuan Teknologi Assistive", value: "Bantuan Teknologi Assistive" },
-  ]
-};
+// Seksyen A data
+const sekAData = ref([
+  { kategori: 'Ketua Keluarga', kadarBerbayar: 1215.00, kadarPercuma: 780.00 },
+  { kategori: 'Dewasa Bekerja', kadarBerbayar: 412.00, kadarPercuma: 412.00 },
+  { kategori: 'Dewasa Tidak Bekerja', kadarBerbayar: 167.00, kadarPercuma: 167.00 },
+  { kategori: 'Tanggungan IPT', kadarBerbayar: 613.00, kadarPercuma: 613.00 },
+  { kategori: 'Tanggungan 7-17 Tahun', kadarBerbayar: 408.00, kadarPercuma: 408.00 },
+  { kategori: 'Tanggungan 6 Tahun ke Bawah', kadarBerbayar: 175.00, kadarPercuma: 175.00 },
+]);
 
-// Computed properties for form state
-const currentHouseholdOptions = computed(() => {
-  if (!formData.value.category) return [];
-  return householdOptions[formData.value.category] || [];
-});
+// Seksyen B data
+const sekBData = ref([
+  { jenisKategori: 'OKU', kadar: 247.00 },
+  { jenisKategori: 'Pesakit Kronik', kadar: 243.00 },
+  { jenisKategori: 'Penjagaan Anak < 12 Tahun', kadar: 330.00 },
+]);
 
-const canEditRates = computed(() => {
-  return formData.value.category && formData.value.householdType;
-});
+const isSubmitting = ref(false);
 
-const needsDateSelection = computed(() => {
-  return canEditRates.value && !formData.value.effectiveDate;
-});
-
-const allStepsCompleted = computed(() => {
-  return formData.value.category && 
-         formData.value.householdType && 
-         formData.value.paidHouseRate > 0 && 
-         formData.value.freeHouseRate > 0 && 
-         formData.value.effectiveDate;
-});
-
+// Validation logic to prevent submission with empty data
 const canSubmit = computed(() => {
-  return allStepsCompleted.value;
-});
-
-// Event handlers for autofill functionality
-const onCategoryChange = () => {
-  console.log('Category changed to:', formData.value.category);
-  
-  // Reset dependent fields when category changes
-  formData.value.householdType = "";
-  formData.value.paidHouseRate = 0;
-  formData.value.freeHouseRate = 0;
-  ratesAutoFilled.value = false;
-};
-
-const onHouseholdTypeChange = () => {
-  console.log('Household type changed to:', formData.value.householdType);
-  
-  // Autofill rates based on category and household type
-  if (formData.value.category && formData.value.householdType) {
-    const rates = rateData[formData.value.category]?.[formData.value.householdType];
-    console.log('Found rates:', rates);
-    
-    if (rates) {
-      // Use nextTick to ensure the DOM is updated
-      nextTick(() => {
-        formData.value.paidHouseRate = rates.paidHouseRate;
-        formData.value.freeHouseRate = rates.freeHouseRate;
-        ratesAutoFilled.value = true;
-        
-        console.log('Rates set:', {
-          paid: formData.value.paidHouseRate,
-          free: formData.value.freeHouseRate
-        });
-      });
-    }
+  if (selectedSeksyen.value === 'A') {
+    return sekAData.value.length > 0 && 
+           sekAData.value.every(row => 
+             row.kategori && row.kategori.trim() !== '' && 
+             row.kadarBerbayar !== null && row.kadarBerbayar >= 0 && 
+             row.kadarPercuma !== null && row.kadarPercuma >= 0
+           );
+  } else if (selectedSeksyen.value === 'B') {
+    return sekBData.value.length > 0 && 
+           sekBData.value.every(row => 
+             row.jenisKategori && row.jenisKategori.trim() !== '' && 
+             row.kadar !== null && row.kadar >= 0
+           );
   }
-};
-
-// Watch for changes to ensure reactivity
-watch(() => formData.value.category, (newVal) => {
-  console.log('Watching category change:', newVal);
-  onCategoryChange();
+  return false;
 });
 
-watch(() => formData.value.householdType, (newVal) => {
-  console.log('Watching household type change:', newVal);
-  if (newVal) {
-    onHouseholdTypeChange();
+// Modal state for remove confirmation
+const showRemoveModal = ref(false);
+const removeTarget = ref({ section: null, index: null });
+
+function confirmRemove(section, index) {
+  removeTarget.value = { section, index };
+  showRemoveModal.value = true;
+}
+function doRemove() {
+  if (removeTarget.value.section === 'A') {
+    if (sekAData.value.length > 1 && removeTarget.value.index !== null) sekAData.value.splice(removeTarget.value.index, 1);
+  } else if (removeTarget.value.section === 'B') {
+    if (sekBData.value.length > 1 && removeTarget.value.index !== null) sekBData.value.splice(removeTarget.value.index, 1);
   }
-});
+  showRemoveModal.value = false;
+  removeTarget.value = { section: null, index: null };
+}
+function cancelRemove() {
+  showRemoveModal.value = false;
+  removeTarget.value = { section: null, index: null };
+}
 
-// Methods
-const showConfirmationModal = () => {
-  showConfirmModal.value = true;
-};
+function addCategoryA() {
+  sekAData.value.push({ kategori: '', kadarBerbayar: null, kadarPercuma: null });
+}
+function addCategoryB() {
+  sekBData.value.push({ jenisKategori: '', kadar: null });
+}
 
-const submitForm = async () => {
-  isSubmitting.value = true;
-
+async function handleSubmit() {
   try {
-    // Prepare submission data
-    const submissionData = {
-      ...formData.value,
-      paidHouseRate: parseFloat(formData.value.paidHouseRate),
-      freeHouseRate: parseFloat(formData.value.freeHouseRate),
-      status: "Menunggu Kelulusan",
-      submittedAt: new Date().toISOString(),
-    };
-
-    // Log the data (in real app, this would be API call)
-    console.log("Submitting configuration:", submissionData);
-
-    // Quick buffer/loading state (similar to BF-PS pattern)
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    // Close confirmation modal and show success modal
-    showConfirmModal.value = false;
+    isSubmitting.value = true;
     
-    // Small delay before showing success modal for better UX
-    setTimeout(() => {
-      showSuccessModal.value = true;
-    }, 200);
-
+    // Prepare the data based on selected section
+    const submissionData = {
+      seksyen: selectedSeksyen.value,
+      data: selectedSeksyen.value === 'A' ? sekAData.value : sekBData.value,
+      status: 'Menunggu Kelulusan',
+      tarikhHantar: new Date().toISOString(),
+      // Add other required fields for submission
+    };
+    
+    console.log('Submitting data:', submissionData);
+    
+    // TODO: Replace with actual API call
+    // const response = await $fetch('/api/konfigurasi/hk/submit', {
+    //   method: 'POST',
+    //   body: submissionData
+    // });
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Show success message
+    alert('Permohonan konfigurasi telah dihantar untuk kelulusan!');
+    
+    // Navigate back to admin page
+    await navigateTo('/BF-PRF/KF/HK/admin');
+    
   } catch (error) {
-    console.error("Submit error:", error);
-    alert("Ralat semasa menambah konfigurasi");
-    showConfirmModal.value = false;
+    console.error('Error submitting form:', error);
+    alert('Ralat semasa menghantar permohonan. Sila cuba lagi.');
   } finally {
     isSubmitting.value = false;
   }
-};
-
-const handleSuccessClose = () => {
-  showSuccessModal.value = false;
-  // Navigate back to admin dashboard
-  navigateTo("/BF-PRF/KF/HK/admin");
-};
-
-// Helper functions
-const formatCurrency = (value) => {
-  if (value === undefined || value === null) return "0.00";
-  return parseFloat(value).toFixed(2);
-};
-
-const formatDate = (date) => {
-  if (!date) return "";
-  return new Date(date).toLocaleDateString('ms-MY', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
+}
 </script>
