@@ -23,7 +23,9 @@ const login = async () => {
   userStore.setIsAuthenticated(true);
 
   // Simple redirect to dashboard
-  navigateTo("/dashboard");
+  //navigateTo("/dashboard");
+  navigateTo("/BF-TNI/dashboard");
+  
 };
 
 const handleWidgetId = (widgetId) => {

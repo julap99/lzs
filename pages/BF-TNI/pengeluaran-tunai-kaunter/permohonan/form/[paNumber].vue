@@ -61,6 +61,10 @@
                 <span class="ml-2">{{ formatDate(btbInfo.receiptDate) }}</span>
               </div>
               <div>
+                <span class="font-medium">Nama Asnaf :</span>
+                <span class="ml-2">{{ btbInfo.namAsnaf }}</span>
+              </div>
+              <div>
                 <span class="font-medium">Jumlah Bantuan (RM):</span>
                 <span class="ml-2">{{ formatAmount(btbInfo.amount) }}</span>
               </div>
@@ -77,7 +81,7 @@
                 <span class="ml-2">{{ btbInfo.productPackage }}</span>
               </div>
                <div>
-                <span class="font-medium">Entitletement Product:</span>
+                <span class="font-medium">Entitlement Product:</span>
                 <span class="ml-2">{{ btbInfo.entitlementProduct }}</span>
               </div>
             </div>
@@ -244,6 +248,7 @@ interface ApplicantInfo {
 interface BTBRecord {
   paNumber: string;
   receiptDate: string;
+  namAsnaf: string;
   amount: number;
   category: string;
   aidProduct: string;
@@ -328,7 +333,7 @@ const confirmSubmit = async () => {
     showConfirmationModal.value = false;
 
     // Navigate back to listing page after successful submission
-    await router.push("/BF-TNI/pengeluaran-tunai-kaunter/permohonan/listing");
+    await router.push("/BF-TNI/pengeluaran-tunai-kaunter/senarai-permohonan");
   } catch (error) {
     console.error("Error submitting withdrawal request:", error);
   } finally {
@@ -358,6 +363,7 @@ onMounted(async () => {
       receiptDate: new Date().toISOString(),
       amount: 400.0,
       category: "B105 - BANTUAN KEWANGAN BULANAN (FAKIR)",
+      namAsnaf: "Abu bin Abdullah",
       aidProduct: "BANTUAN KEWANGAN BULANAN (FAKIR)",
       productPackage: "KEWANGAN BULANAN (FAKIR) - T3",
       entitlementProduct: "KEWANGAN BULANAN (FAKIR) - T3",

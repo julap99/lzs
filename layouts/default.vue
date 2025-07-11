@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import RSLayout from "@/components/layouts/index";
 </script>
 
@@ -8,4 +8,16 @@ import RSLayout from "@/components/layouts/index";
       <slot />
     </RSLayout>
   </div>
+</template> -->
+<script setup>
+import RSLayout from "@/components/layouts/index";
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+</script>
+
+<template>
+  <RSLayout>
+    <NuxtPage :key="route.fullPath" />
+  </RSLayout>
 </template>

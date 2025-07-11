@@ -138,19 +138,19 @@ const currentPage = ref(1);
 const permohonanList = ref([
   {
     noPA: 'PA-2024-101',
-    nama: 'Ahmad bin Hassan',
+    nama: 'Nurul Aisyah binti Ismail',
     ic: '900101065533',
     jumlah: 1000,
-    namaBantuan: 'Bantuan Kewangan Bulanan',
+    namaBantuan: 'KEWANGAN BULANAN (FAKIR)',
     status: 'Tunggu Kelulusan',
     tindakan: ''
   },
   {
     noPA: 'PA-2024-102',
-    nama: 'Nurul Aisyah binti Ismail',
+    nama: 'Ahmad bin Abdullah',
     ic: '910202085522',
     jumlah: 850,
-    namaBantuan: 'Bantuan Pendidikan',
+    namaBantuan: 'KEWANGAN BULANAN (FAKIR)',
     status: 'Diluluskan',
     tindakan: ''
   },
@@ -159,7 +159,7 @@ const permohonanList = ref([
     nama: 'Zulkifli bin Omar',
     ic: '851231055512',
     jumlah: 500,
-    namaBantuan: 'Bantuan Ramadhan',
+    namaBantuan: 'KEWANGAN BULANAN (FAKIR)',
     status: 'Tunggu Kelulusan',
     tindakan: ''
   },
@@ -168,7 +168,7 @@ const permohonanList = ref([
     nama: 'Siti Aminah binti Kamal',
     ic: '890908105566',
     jumlah: 600,
-    namaBantuan: 'Bantuan Sewa Rumah',
+    namaBantuan: 'KEWANGAN BULANAN (FAKIR)',
     status: 'Ditolak',
     tindakan: ''
   },
@@ -177,7 +177,7 @@ const permohonanList = ref([
     nama: 'Hafiz bin Ahmad',
     ic: '920715065422',
     jumlah: 700,
-    namaBantuan: 'Bantuan Keperluan Asas',
+    namaBantuan: 'KEWANGAN BULANAN (MISKIN)',
     status: 'Telah Diagih',
     tindakan: ''
   }
