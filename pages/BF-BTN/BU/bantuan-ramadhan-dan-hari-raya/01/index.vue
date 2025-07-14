@@ -10,31 +10,45 @@
           </template>
           <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Nama Ketua Keluarga (Autocomplete) -->
-              <div>
+              <!-- Nama Ketua Keluarga (Autocomplete Dropdown) -->
+              <div class="relative">
                 <label class="block font-medium mb-1">Nama Ketua Keluarga</label>
                 <input
                   v-model="selectedKetuaKeluarga"
-                  list="ketuaKeluargaList"
-                  class="form-input w-full border rounded px-3 py-2"
+                  @input="showDropdown = true"
+                  @focus="showDropdown = true"
+                  @blur="() => setTimeout(() => showDropdown = false, 150)"
+                  :class="['form-input w-full border rounded px-3 py-2', errorNama ? 'border-red-500' : '']"
                   placeholder="Cari nama..."
+                  autocomplete="off"
                 />
-                <datalist id="ketuaKeluargaList">
-                  <option v-for="k in ketuaKeluargaOptions" :key="k.ic" :value="k.nama" />
-                </datalist>
+                <ul v-if="showDropdown && filteredKeluargaList.length > 0" class="absolute z-10 bg-white border w-full mt-1 rounded shadow max-h-40 overflow-y-auto">
+                  <li v-for="k in filteredKeluargaList" :key="k.ic" @mousedown.prevent="selectKeluarga(k.nama)" class="px-3 py-2 hover:bg-blue-100 cursor-pointer">
+                    {{ k.nama }} <span class="text-xs text-gray-400">({{ k.ic }})</span>
+                  </li>
+                </ul>
+                <div v-if="selectedKetuaKeluarga && !isValidKeluarga" class="text-xs text-red-600 mt-1">Nama tidak dijumpai dalam senarai.</div>
+                <div v-if="!selectedKetuaKeluarga" class="text-xs text-gray-400 mt-1">Sila pilih nama Ketua Keluarga.</div>
               </div>
               <!-- Kategori (Radio) -->
               <div>
-                <label class="block font-medium mb-1">Kategori</label>
+                <label class="block font-medium mb-1">
+                  Kategori
+                  <span class="text-xs text-gray-500 ml-1" title="Pilih kategori asnaf untuk menentukan kadar bantuan">ⓘ</span>
+                </label>
                 <div class="flex gap-4">
                   <label v-for="k in kategoriOptions" :key="k" class="flex items-center gap-1">
-                    <input type="radio" v-model="selectedKategori" :value="k" /> {{ k }}
+                    <input type="radio" v-model="selectedKategori" :value="k" /> 
+                    <span :class="getKategoriBadgeClass(k)">{{ k }}</span>
                   </label>
                 </div>
               </div>
               <!-- Tanggungan (Dropdown) -->
               <div>
-                <label class="block font-medium mb-1">Tanggungan</label>
+                <label class="block font-medium mb-1">
+                  Tanggungan
+                  <span class="text-xs text-gray-500 ml-1" title="Bilangan tanggungan keluarga - mempengaruhi kadar bantuan">ⓘ</span>
+                </label>
                 <select v-model="selectedTanggungan" class="form-select w-full border rounded px-3 py-2">
                   <option v-for="t in tanggunganOptions" :key="t" :value="t">{{ t }}</option>
                 </select>
@@ -49,6 +63,7 @@
             <div class="mt-4 flex justify-end">
               <rs-button variant="primary" @click="handleSearch">Search</rs-button>
             </div>
+            <div v-if="errorNama" class="text-red-600 text-sm mt-2">Sila pilih nama Ketua Keluarga yang sah sebelum membuat carian.</div>
           </template>
         </rs-card>
       </div>
@@ -59,14 +74,25 @@
             <h2 class="text-lg font-semibold">Info Bantuan</h2>
           </template>
           <template #body>
-            <div class="space-y-2">
-              <div class="flex justify-between">
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
                 <span class="font-medium">Bil:</span>
-                <span>{{ computedDependentsCount }}</span>
+                <span class="text-lg font-semibold">{{ computedDependentsCount }}</span>
               </div>
-              <div class="flex justify-between">
-                <span class="font-medium">Kadar Bantuan (RM):</span>
-                <span>{{ computedKadarBantuan }}</span>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Kategori:</span>
+                <span :class="getKategoriBadgeClass(selectedKategori)">{{ selectedKategori }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Tanggungan:</span>
+                <span class="text-sm">{{ selectedTanggungan }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">
+                  Kadar Bantuan (RM):
+                  <span class="text-xs text-gray-500 ml-1" title="Kadar bantuan berdasarkan kategori dan tanggungan">ⓘ</span>
+                </span>
+                <span class="text-lg font-bold text-green-600">{{ computedKadarBantuan }}</span>
               </div>
             </div>
             <!-- Debug output for troubleshooting -->
@@ -81,42 +107,52 @@
     </div>
 
     <!-- Section B: Table of Dependents -->
-    <div v-if="showResults" class="mt-8">
-      <rs-card>
-        <template #header>
-          <h2 class="text-lg font-semibold">
-            Senarai Tanggungan {{ selectedKategori }} dibawah {{ selectedKetuaKeluarga }}
-          </h2>
-        </template>
-        <template #body>
-          <div class="overflow-x-auto">
-            <table class="min-w-full border">
-              <thead>
-                <tr class="bg-gray-100">
-                  <th class="px-4 py-2 border">No.</th>
-                  <th class="px-4 py-2 border">Nama</th>
-                  <th class="px-4 py-2 border">IC</th>
-                  <th class="px-4 py-2 border">Tindakan</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(d, idx) in filteredDependents" :key="d.ic">
-                  <td class="px-4 py-2 border">{{ idx + 1 }}</td>
-                  <td class="px-4 py-2 border">{{ d.nama }}</td>
-                  <td class="px-4 py-2 border">{{ d.ic }}</td>
-                  <td class="px-4 py-2 border text-center">
-                    <input type="checkbox" v-model="d.selected" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="mt-4 flex justify-end">
-            <rs-button variant="success" @click="handleConfirm">Sahkan</rs-button>
-          </div>
-        </template>
-      </rs-card>
-    </div>
+    <transition name="fade">
+      <div v-if="showResults" class="mt-8">
+        <rs-card>
+          <template #header>
+            <h2 class="text-lg font-semibold">
+              Senarai Tanggungan {{ selectedKategori }} dibawah {{ selectedKetuaKeluarga }}
+            </h2>
+          </template>
+          <template #body>
+            <div v-if="filteredDependents.length > 0" class="overflow-x-auto">
+              <table class="min-w-full border">
+                <thead class="bg-gray-100 sticky top-0">
+                  <tr>
+                    <th class="px-3 py-2 border text-left text-sm font-medium">No.</th>
+                    <th class="px-3 py-2 border text-left text-sm font-medium">Nama</th>
+                    <th class="px-3 py-2 border text-left text-sm font-medium">IC</th>
+                    <th class="px-3 py-2 border text-center text-sm font-medium">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(d, idx) in filteredDependents" :key="d.ic" class="hover:bg-gray-50">
+                    <td class="px-3 py-2 border text-sm">{{ idx + 1 }}</td>
+                    <td class="px-3 py-2 border text-sm">{{ d.nama }}</td>
+                    <td class="px-3 py-2 border text-sm">{{ d.ic }}</td>
+                    <td class="px-3 py-2 border text-center">
+                      <input type="checkbox" v-model="d.selected" class="w-4 h-4" />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div v-else class="text-center py-8">
+              <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p class="text-gray-500">Tiada tanggungan dijumpai untuk keluarga ini.</p>
+            </div>
+            <div class="mt-4 flex justify-end">
+              <rs-button variant="success" @click="handleConfirm" :disabled="!hasSelectedDependents">
+                Sahkan ({{ selectedDependentsCount }} dipilih)
+              </rs-button>
+            </div>
+          </template>
+        </rs-card>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -241,7 +277,48 @@ const computedKadarBantuan = computed(() => {
   return kadarTable[cappedT]?.[k] || 0
 })
 
+const showDropdown = ref(false)
+const errorNama = ref(false)
+
+const filteredKeluargaList = computed(() => {
+  if (!selectedKetuaKeluarga.value) return ketuaKeluargaOptions
+  return ketuaKeluargaOptions.filter(k => k.nama.toLowerCase().includes(selectedKetuaKeluarga.value.toLowerCase()))
+})
+
+const isValidKeluarga = computed(() => {
+  return !!ketuaKeluargaOptions.find(k => k.nama === selectedKetuaKeluarga.value)
+})
+
+const selectedDependentsCount = computed(() => {
+  return filteredDependents.value.filter(d => d.selected).length
+})
+
+const hasSelectedDependents = computed(() => {
+  return selectedDependentsCount.value > 0
+})
+
+function getKategoriBadgeClass(kategori) {
+  const classes = {
+    'Fakir': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800',
+    'Miskin': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800',
+    'Mualaf': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800'
+  }
+  return classes[kategori] || 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800'
+}
+
+function selectKeluarga(nama) {
+  selectedKetuaKeluarga.value = nama
+  showDropdown.value = false
+}
+
 function handleSearch() {
+  errorNama.value = false
+  if (!isValidKeluarga.value) {
+    errorNama.value = true
+    showResults.value = false
+    filteredDependents.value = []
+    return
+  }
   // Find selected family head
   const ketua = ketuaKeluargaOptions.find(k => k.nama === selectedKetuaKeluarga.value)
   // Prepare dependents list
@@ -262,3 +339,8 @@ function handleConfirm() {
   navigateTo('/BF-BTN/BU/bantuan-ramadhan-dan-hari-raya/02')
 }
 </script>
+
+<style>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>
