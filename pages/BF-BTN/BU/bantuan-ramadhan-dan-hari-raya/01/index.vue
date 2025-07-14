@@ -212,6 +212,8 @@ watch(selectedKetuaKeluarga, (newVal) => {
     selectedKategori.value = 'Fakir'
     selectedTanggungan.value = 'Tiada'
     lastDateReview.value = ''
+    showResults.value = false
+    filteredDependents.value = []
   }
 })
 
