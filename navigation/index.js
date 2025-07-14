@@ -1,5 +1,5 @@
 export default [
-  /* {
+  {
     header: "Utama",
     description: "",
     child: [
@@ -136,7 +136,7 @@ export default [
         meta: {},
       },
     ],
-  }, */
+  },
 
   // {
   //   header: "QS-1",
@@ -166,7 +166,7 @@ export default [
   //   ],
   // },
 
-  /* {
+  {
     header: "QS-1",
     description: "Pendaftaran Pantas - Bantuan Kecemasan",
     child: [
@@ -241,10 +241,10 @@ export default [
         meta: {},
       },
     ],
-  }, */
+  }, 
 
   // BF-DP
-  /* {
+  {
     header: "BF-DP",
     description: "Dashboard & Pelaporan",
     child: [
@@ -257,10 +257,10 @@ export default [
         meta: {},
       },
     ],
-  }, */
+  },
 
   // BF-ADN
-  /* {
+  {
     header: "BF-ADN",
     description: "Pengurusan Aduan",
     child: [
@@ -307,7 +307,7 @@ export default [
         meta: {},
       },
     ],
-  }, */
+  }, 
 
   // BF-PTPC
   // {
@@ -385,7 +385,7 @@ export default [
         child: [],
         meta: {},
       },
-      /* {
+      {
         title: "Peti Besi",
         icon: "iconamoon:component-fill",
         child: [
@@ -540,9 +540,9 @@ export default [
           },
         ],
         meta: {},
-      }, */
+      }, 
  
-      {
+      /* {
         title: "Semakan Asnaf",
         icon: "iconamoon:search-duotone",
         path: "/BF-TNI/pengeluaran-tunai-kaunter/permohonan",
@@ -562,8 +562,8 @@ export default [
         path: "/BF-TNI/pengeluaran-tunai-kaunter/kelulusan",
         child: [],
         meta: {},
-      },
-       /*{
+      }, */
+      {
         title: "Pengeluaran Tunai Kaunter",
         icon: "iconamoon:component-fill",
         path: "/BF-TNI/pengeluaran-tunai-kaunter",
@@ -622,7 +622,7 @@ export default [
           },
         ],
         meta: {},
-      }, */
+      }, 
 
       // {
       //   title: "Mengurus Tunai",
@@ -656,7 +656,7 @@ export default [
   },
 
   // BF-PRF
-  /* {
+  {
     header: "BF-PRF",
     description: "Profiling",
     child: [
@@ -942,10 +942,10 @@ export default [
         meta: {},
       },
     ],
-  }, */
+  },
 
   // BF-BTN
-  /* {
+   {
     header: "BF-BTN",
     description: "Pengurusan Bantuan",
     child: [
@@ -1236,10 +1236,10 @@ export default [
         meta: {},
       },
     ],
-  }, */
+  },
 
   // BF-PA
-  /* {
+  {
     header: "BF-PA",
     description: "Pengurusan Penolong Amil",
     child: [
@@ -1372,10 +1372,10 @@ export default [
         meta: {},
       },
     ],
-  }, */
+  },
 
   // BF-PS
-  /* {
+  {
     header: "BF-PS",
     description: "Pentadbir Sistem",
     child: [
@@ -1471,7 +1471,7 @@ export default [
         meta: {},
       },
     ],
-  }, */
+  },
 
   // Kitchen Sink
   // {
