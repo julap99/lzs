@@ -160,7 +160,7 @@
                     <Icon name="ic:baseline-bar-chart" class="mr-2" />
                     Statistik Laporan
                   </rs-button>
-                  <rs-button variant="outline" size="sm" class="w-full justify-start" @click="generateSystemReport">
+                  <rs-button variant="outline" size="sm" class="w-full justify-start" @click="navigateTo('/BF-PS/02')">
                     <Icon name="ic:baseline-description" class="mr-2" />
                     Jana Laporan Sistem
                   </rs-button>
