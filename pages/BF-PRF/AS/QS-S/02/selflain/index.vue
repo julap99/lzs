@@ -250,6 +250,7 @@
                   }"
                 />
 
+                <!-- Citizenship - Normal column width -->
                 <FormKit
                   type="select"
                   name="citizenship"
@@ -263,6 +264,48 @@
                   }"
                 />
 
+                <!-- Passport Fields - Only show for non-citizens -->
+                <div v-if="formData.personalInfo.citizenship === 'bukan-warganegara'" class="md:col-span-2">
+                  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <h4 class="text-md font-medium text-blue-800 mb-3">Maklumat Passport (Bukan Warganegara)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <FormKit
+                        type="text"
+                        name="nopassport"
+                        label="No Passport"
+                        validation="required"
+                        v-model="formData.personalInfo.nopassport"
+                        :validation-messages="{
+                          required: 'No Passport adalah wajib untuk bukan warganegara',
+                        }"
+                      />
+
+                      <FormKit
+                        type="date"
+                        name="passportStartDate"
+                        label="Tarikh mula passport"
+                        validation="required"
+                        v-model="formData.personalInfo.passportStartDate"
+                        :validation-messages="{
+                          required: 'Tarikh mula passport adalah wajib untuk bukan warganegara',
+                        }"
+                      />
+
+                      <FormKit
+                        type="date"
+                        name="passportEndDate"
+                        label="Tarikh tamat passport"
+                        validation="required"
+                        v-model="formData.personalInfo.passportEndDate"
+                        :validation-messages="{
+                          required: 'Tarikh tamat passport adalah wajib untuk bukan warganegara',
+                        }"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Religion - Below passport fields -->
                 <FormKit
                   type="select"
                   name="religion"
@@ -275,24 +318,16 @@
                     required: 'Agama adalah wajib',
                   }"
                 />
-                 <FormKit
-                  type="text"
-                  name="nopassport"
-                  label="No Passport"  
-                />
 
-                <FormKit
-                  type="date"
-                  name="passportStartDate"
-                  label="Tarikh mula passport"
-                  v-model="formData.personalInfo.passportStartDate"
-                />
-                <FormKit
-                  type="date"
-                  name="passportEndDate"
-                  label="Tarikh tamat passport"
-                  v-model="formData.personalInfo.passportEndDate"
-                />
+                <!-- Mualaf Checkbox - Full width below religion -->
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="checkbox"
+                    name="isMualaf"
+                    label="Adakah anda seorang mualaf?"
+                    v-model="formData.personalInfo.isMualaf"
+                  />
+                </div>
 
                 <!-- <FormKit
                   type="tel"
@@ -317,44 +352,50 @@
                   }"
                 /> -->
 
-                <!-- Islamic Information Section -->
-                <div class="md:col-span-2">
-                  <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
+                <!-- Islamic Information Section - Only show for mualaf -->
+                <div v-if="formData.personalInfo.isMualaf" class="md:col-span-2">
+                  <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                    <h4 class="text-md font-medium text-green-800 mb-3">Maklumat Islam (Mualaf)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormKit
+                        type="text"
+                        name="islamName"
+                        label="Nama Selepas Islam(Mualaf)"
+                        validation="required"
+                        v-model="formData.personalInfo.islamName"
+                        :validation-messages="{
+                          required: 'Nama selepas Islam adalah wajib',
+                        }"
+                      />
+                      
+                      <FormKit
+                        type="date"
+                        name="islamDate"
+                        label="Tarikh Masuk Islam"
+                        validation="required"
+                        v-model="formData.personalInfo.islamDate"
+                        :validation-messages="{
+                          required: 'Tarikh masuk Islam adalah wajib',
+                        }"
+                      />
+                    </div>
+                    
+                    <div v-if="formData.personalInfo.islamDate" class="mt-4">
+                      <FormKit
+                        type="file"
+                        name="islamCertificate"
+                        label="Upload Surat Keislaman dari MAIS"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        v-model="formData.personalInfo.islamCertificate"
+                        help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                        validation="required"
+                        :validation-messages="{
+                          required: 'Surat keislaman adalah wajib'
+                        }"
+                      />
+                    </div>
+                  </div>
                 </div>
-
-                <FormKit
-                  type="text"
-                  name="islamName"
-                  label="Nama Selepas Islam(Mualaf)"
-                  v-model="formData.personalInfo.islamName"
-                  :validation-messages="{
-                    required: 'Nama selepas Islam adalah wajib',
-                  }"
-                />
-                
-                <FormKit
-                  type="date"
-                  name="islamDate"
-                  label="Tarikh Masuk Islam"
-                  v-model="formData.personalInfo.islamDate"
-                  :validation-messages="{
-                    required: 'Tarikh masuk Islam adalah wajib',
-                  }"
-                />
-
-                  <FormKit
-                  v-if="formData.personalInfo.islamDate"
-                    type="file"
-                    name="islamCertificate"
-                    label="Upload Surat Keislaman dari MAIS"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    v-model="formData.personalInfo.islamCertificate"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Surat keislaman adalah wajib'
-                    }"
-                  />
 
                 <!-- <FormKit
                   type="date"
@@ -1200,6 +1241,7 @@ const formData = ref({
     maritalStatus: "", healthStatus: "", islamDate: "", islamCertificate: null, kfamDate: "", email: "",
     citizenship: "", dateOfBirth: "", gender: "", assistanceType: "", disasterLocation: "", polygamyStatus: "",
     wivesCount: "", wives: [], dependentsCount: "", grossIncome: "", incomeDocument: null, location: "",
+    isMualaf: false, nopassport: "", passportStartDate: "", passportEndDate: "",
     // Spouse/Family member fields - now as array
     spouses: [],
   },
