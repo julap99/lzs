@@ -1069,7 +1069,7 @@ export default [
         meta: {},
       },
       {
-        title: "BTS",
+        title: "BDS",
         icon: "iconamoon:component-fill",
         child: [
           {
@@ -1080,6 +1080,20 @@ export default [
             meta: {},
           },
         ],
+      },
+      {
+        title: "Bantuan Utama",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Bantuan Ramadhan & Hari Raya",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/BU/bantuan-ramadhan-dan-hari-raya/01",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
       },
       {
         title: "BDST",
