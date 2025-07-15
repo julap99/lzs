@@ -22,7 +22,7 @@
                   placeholder="Cari nama..."
                   autocomplete="off"
                 />
-                <ul v-if="showDropdown && filteredKeluargaList.length > 0" class="absolute z-10 bg-white border w-full mt-1 rounded shadow max-h-40 overflow-y-auto">
+                <ul v-if="showDropdown && selectedKetuaKeluarga && filteredKeluargaList.length > 0" class="absolute z-10 bg-white border w-full mt-1 rounded shadow max-h-40 overflow-y-auto">
                   <li v-for="k in filteredKeluargaList" :key="k.ic" @mousedown.prevent="selectKeluarga(k.nama)" class="px-3 py-2 hover:bg-blue-100 cursor-pointer">
                     {{ k.nama }} <span class="text-xs text-gray-400">({{ k.ic }})</span>
                   </li>
@@ -77,7 +77,7 @@
             <div class="space-y-3">
               <div class="flex justify-between items-center">
                 <span class="font-medium">Bil:</span>
-                <span class="text-lg font-semibold">{{ computedDependentsCount }}</span>
+                <span class="text-lg font-semibold">{{ computedAggregateCount }}</span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="font-medium">Kategori:</span>
@@ -89,17 +89,17 @@
               </div>
               <div class="flex justify-between items-center">
                 <span class="font-medium">
-                  Kadar Bantuan (RM):
+                  Kadar (RM):
                   <span class="text-xs text-gray-500 ml-1" title="Kadar bantuan berdasarkan kategori dan tanggungan">ⓘ</span>
                 </span>
-                <span class="text-lg font-bold text-green-600">{{ computedKadarBantuan }}</span>
+                <span class="text-lg font-bold text-green-600">{{ computedAggregateKadar }}</span>
               </div>
             </div>
             <!-- Debug output for troubleshooting -->
             <div v-if="false" class="mt-2 text-xs text-gray-400">
               <div>selectedKategori: {{ selectedKategori }}</div>
               <div>selectedTanggungan: {{ selectedTanggungan }}</div>
-              <div>computedKadarBantuan: {{ computedKadarBantuan }}</div>
+              <div>computedKadarBantuan: {{ computedAggregateKadar }}</div>
             </div>
           </template>
         </rs-card>
@@ -127,12 +127,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(d, idx) in filteredDependents" :key="d.ic" class="hover:bg-gray-50">
+                  <tr v-for="(kk, idx) in filteredDependents" :key="kk.ic" class="hover:bg-gray-50">
                     <td class="px-3 py-2 border text-sm">{{ idx + 1 }}</td>
-                    <td class="px-3 py-2 border text-sm">{{ d.nama }}</td>
-                    <td class="px-3 py-2 border text-sm">{{ d.ic }}</td>
+                    <td class="px-3 py-2 border text-sm">{{ kk.nama }}</td>
+                    <td class="px-3 py-2 border text-sm">{{ kk.ic }}</td>
                     <td class="px-3 py-2 border text-center">
-                      <input type="checkbox" v-model="d.selected" class="w-4 h-4" />
+                      <input type="checkbox" v-model="kk.selected" class="w-4 h-4" />
                     </td>
                   </tr>
                 </tbody>
@@ -142,10 +142,10 @@
               <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <p class="text-gray-500">Tiada tanggungan dijumpai untuk keluarga ini.</p>
+              <p class="text-gray-500">Tiada keluarga dijumpai untuk kriteria ini.</p>
             </div>
             <div class="mt-4 flex justify-end">
-              <rs-button variant="success" @click="handleConfirm" :disabled="!hasSelectedDependents">
+              <rs-button variant="success" @click="goToSummary" :disabled="!hasSelectedDependents">
                 Sahkan ({{ selectedDependentsCount }} dipilih)
               </rs-button>
             </div>
@@ -244,7 +244,6 @@ watch(selectedKetuaKeluarga, (newVal) => {
     selectedTanggungan.value = ketua.tanggungan
     lastDateReview.value = ketua.lastDateReview
   } else {
-    // Reset if not found
     selectedKategori.value = 'Fakir'
     selectedTanggungan.value = 'Tiada'
     lastDateReview.value = ''
@@ -281,21 +280,19 @@ const showDropdown = ref(false)
 const errorNama = ref(false)
 
 const filteredKeluargaList = computed(() => {
-  if (!selectedKetuaKeluarga.value) return ketuaKeluargaOptions
-  return ketuaKeluargaOptions.filter(k => k.nama.toLowerCase().includes(selectedKetuaKeluarga.value.toLowerCase()))
+  // Only show dropdown if input is not empty
+  if (!selectedKetuaKeluarga.value) return []
+  return ketuaKeluargaOptions.filter(k =>
+    k.nama.toLowerCase().includes(selectedKetuaKeluarga.value.toLowerCase())
+  )
 })
 
 const isValidKeluarga = computed(() => {
   return !!ketuaKeluargaOptions.find(k => k.nama === selectedKetuaKeluarga.value)
 })
 
-const selectedDependentsCount = computed(() => {
-  return filteredDependents.value.filter(d => d.selected).length
-})
-
-const hasSelectedDependents = computed(() => {
-  return selectedDependentsCount.value > 0
-})
+const selectedDependentsCount = computed(() => filteredDependents.value.filter(d => d.selected).length)
+const hasSelectedDependents = computed(() => selectedDependentsCount.value > 0)
 
 function getKategoriBadgeClass(kategori) {
   const classes = {
@@ -319,22 +316,49 @@ function handleSearch() {
     filteredDependents.value = []
     return
   }
-  // Find selected family head
   const ketua = ketuaKeluargaOptions.find(k => k.nama === selectedKetuaKeluarga.value)
-  // Prepare dependents list
-  filteredDependents.value = (ketua ? ketua.dependents : []).map(d => ({ ...d, selected: true }))
-  showResults.value = true
+  if (ketua) {
+    filteredDependents.value = ketua.dependents.map(d => ({ ...d, selected: true }))
+    showResults.value = true
+  } else {
+    showResults.value = false
+    filteredDependents.value = []
+  }
 }
 
-function handleConfirm() {
-  // Store selection in localStorage for demo
-  localStorage.setItem('bantuanConfirm', JSON.stringify({
-    ketua: selectedKetuaKeluarga.value,
+function selectKK(kk) {
+  // This function is no longer needed as dependents are checked by default
+  // Keeping it for now, but it will not be called from the template
+}
+
+const computedAggregateCount = computed(() => filteredDependents.value.length)
+const computedAggregateKadar = computed(() => {
+  // Capping logic for each kategori
+  const t = selectedTanggungan.value
+  const k = selectedKategori.value
+  let cappedT = t
+  if (k === 'Mualaf') {
+    const allowed = tanggunganOptions.slice(0, 11)
+    cappedT = allowed.includes(t) ? t : 'T10'
+  } else if (k === 'Fakir') {
+    const allowed = tanggunganOptions.slice(0, 14)
+    cappedT = allowed.includes(t) ? t : 'T13'
+  } else if (k === 'Miskin') {
+    const allowed = tanggunganOptions.slice(0, 15)
+    cappedT = allowed.includes(t) ? t : 'T14'
+  }
+  return kadarTable[cappedT]?.[k] || 0
+})
+
+function goToSummary() {
+  // Only pass selected dependents
+  const ketua = ketuaKeluargaOptions.find(k => k.nama === selectedKetuaKeluarga.value)
+  localStorage.setItem('bantuanSummary', JSON.stringify({
+    ketua: ketua ? ketua.nama : '',
     kategori: selectedKategori.value,
     tanggungan: selectedTanggungan.value,
     lastDateReview: lastDateReview.value,
     dependents: filteredDependents.value.filter(d => d.selected),
-    kadar: computedKadarBantuan.value,
   }))
   navigateTo('/BF-BTN/BU/bantuan-ramadhan-dan-hari-raya/02')
 }
