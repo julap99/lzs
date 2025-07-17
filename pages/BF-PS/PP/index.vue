@@ -77,13 +77,7 @@
               <Icon name="ic:baseline-table-chart" class="mr-1" />
               {{ exporting ? 'Mengeksport...' : 'Muat Turun Excel' }}
             </rs-button>
-            <rs-button
-              variant="outline"
-              @click="navigateTo('/BF-PS/PP/02')"
-            >
-              <Icon name="ic:baseline-settings" class="mr-1" />
-              Cipta Akaun
-            </rs-button>
+
             <rs-button
               variant="primary"
               @click="navigateTo('/BF-PS/PP/01')"
@@ -231,126 +225,7 @@
       </template>
     </rs-card>
 
-    <!-- Edit User Modal -->
-    <rs-modal v-model="showEditModal" size="lg">
-      <rs-card>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">Kemaskini Pengguna</h3>
-            <rs-button
-              variant="ghost"
-              @click="showEditModal = false"
-            >
-              <Icon name="ic:baseline-close" />
-            </rs-button>
-          </div>
-        </template>
 
-        <template #body>
-          <form @submit.prevent="saveUser" class="space-y-6">
-            <!-- Maklumat Pengguna -->
-            <div>
-              <h4 class="text-md font-medium mb-4">Maklumat Pengguna</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  v-model="editForm.jenisPengguna"
-                  type="select"
-                  label="Jenis Pengguna"
-                  :options="jenisPenggunaOptions"
-                  validation="required"
-                />
-                
-                <FormKit
-                  v-model="editForm.idPengguna"
-                  type="text"
-                  label="ID Pengguna"
-                  disabled
-                />
-                
-                <FormKit
-                  v-model="editForm.nama"
-                  type="text"
-                  label="Nama"
-                  validation="required"
-                />
-                
-                <FormKit
-                  v-model="editForm.noKp"
-                  type="text"
-                  label="No. KP / Passport / Foreign ID"
-                  validation="required"
-                />
-                
-                <FormKit
-                  v-model="editForm.emel"
-                  type="email"
-                  label="Emel"
-                  validation="required|email"
-                />
-                
-                <FormKit
-                  v-model="editForm.noTel"
-                  type="text"
-                  label="No. Tel Bimbit"
-                />
-                
-                <FormKit
-                  v-model="editForm.status"
-                  type="select"
-                  label="Status"
-                  :options="statusOptions"
-                  validation="required"
-                />
-              </div>
-            </div>
-
-            <!-- Senarai Peranan Pengguna -->
-            <div>
-              <h4 class="text-md font-medium mb-4">Senarai Peranan Pengguna</h4>
-              <div class="space-y-3">
-                <div
-                  v-for="(peranan, index) in filteredPeranan"
-                  :key="peranan.id"
-                  class="flex items-center gap-4 p-3 border rounded-lg"
-                >
-                  <span class="w-8 text-sm text-gray-500">{{ index + 1 }}</span>
-                  <span class="flex-1">{{ peranan.nama }}</span>
-                  <FormKit
-                    v-model="peranan.selected"
-                    type="checkbox"
-                    @change="updatePerananSemasa"
-                  />
-                  <FormKit
-                    v-model="editForm.perananSemasa"
-                    type="radio"
-                    :value="peranan.id"
-                    :disabled="!peranan.selected"
-                  />
-                </div>
-              </div>
-            </div>
-          </form>
-        </template>
-
-        <template #footer>
-          <div class="flex justify-end gap-3">
-            <rs-button
-              variant="ghost"
-              @click="showEditModal = false"
-            >
-              Batal
-            </rs-button>
-            <rs-button
-              variant="primary"
-              @click="saveUser"
-              :loading="saving"
-            >
-              Simpan
-            </rs-button>
-          </div>
-        </template>
-      </rs-card>
-    </rs-modal>
 
     <!-- Success Modal for Operations -->
     <rs-modal
@@ -562,8 +437,8 @@ const columns = [
 // Options for filters
 const jenisPenggunaOptions = [
   { label: "Semua", value: "" },
-  { label: "Staf", value: "Staf" },
-  { label: "Bukan Staf", value: "Bukan Staf" },
+  { label: "Staf", value: "AD" },
+  { label: "Bukan Staf", value: "NPS" },
 ];
 
 const statusOptions = [
@@ -580,12 +455,10 @@ const filters = ref({
 });
 const currentPage = ref(1);
 const pageSize = ref(10);
-const showEditModal = ref(false);
 const saving = ref(false);
 const exporting = ref(false);
 const refreshing = ref(false);
 const deleting = ref(false);
-const selectedUser = ref(null);
 
 // New modal states
 const showSuccessModal = ref(false);
@@ -596,23 +469,13 @@ const exportProgress = ref(0);
 const exportFileSize = ref('');
 const userToDelete = ref(null);
 
-// Form data for editing
-const editForm = ref({
-  idPengguna: '',
-  jenisPengguna: '',
-  nama: '',
-  noKp: '',
-  emel: '',
-  noTel: '',
-  status: '',
-  perananSemasa: ''
-});
+
 
 // Mock data - consistent with other pages
 const users = ref([
   {
     id: 1,
-    jenisPengguna: 'Staf',
+    jenisPengguna: 'AD',
     nama: 'Ahmad bin Abdullah',
     noKp: '800101015432',
     emel: 'ahmad.abdullah@nas.gov.my',
@@ -623,7 +486,7 @@ const users = ref([
   },
   {
     id: 2,
-    jenisPengguna: 'Bukan Staf',
+    jenisPengguna: 'NPS',
     nama: 'Siti binti Mohamed',
     noKp: '850505025678',
     emel: 'siti.mohamed@example.com',
@@ -634,7 +497,7 @@ const users = ref([
   },
   {
     id: 3,
-    jenisPengguna: 'Staf',
+    jenisPengguna: 'AD',
     nama: 'Mohd Ali bin Hassan',
     noKp: '820202036789',
     emel: 'ali.hassan@nas.gov.my',
@@ -645,7 +508,7 @@ const users = ref([
   },
   {
     id: 4,
-    jenisPengguna: 'Staf',
+    jenisPengguna: 'AD',
     nama: 'Nurul Ain binti Ibrahim',
     noKp: '870707047890',
     emel: 'nurul.ain@nas.gov.my',
@@ -656,7 +519,7 @@ const users = ref([
   },
   {
     id: 5,
-    jenisPengguna: 'Bukan Staf',
+    jenisPengguna: 'NPS',
     nama: 'Abdul Rahman bin Sulaiman',
     noKp: '830303038901',
     emel: 'abdul.rahman@example.com',
@@ -667,7 +530,7 @@ const users = ref([
   },
   {
     id: 6,
-    jenisPengguna: 'Staf',
+    jenisPengguna: 'AD',
     nama: 'Fatimah binti Ahmad',
     noKp: '860606069012',
     emel: 'fatimah.ahmad@nas.gov.my',
@@ -678,7 +541,7 @@ const users = ref([
   },
   {
     id: 7,
-    jenisPengguna: 'Bukan Staf',
+    jenisPengguna: 'Awam',
     nama: 'Ismail bin Omar',
     noKp: '840404049123',
     emel: 'ismail.omar@example.com',
@@ -689,7 +552,7 @@ const users = ref([
   },
   {
     id: 8,
-    jenisPengguna: 'Staf',
+    jenisPengguna: 'AD',
     nama: 'Zainab binti Yusof',
     noKp: '880808089234',
     emel: 'zainab.yusof@nas.gov.my',
@@ -702,13 +565,14 @@ const users = ref([
 
 // Peranan data
 const perananList = ref([
-  { id: 1, nama: 'Admin Sistem', jenisPengguna: 'Staf', selected: false },
-  { id: 2, nama: 'Pegawai Bantuan', jenisPengguna: 'Bukan Staf', selected: false },
-  { id: 3, nama: 'Pegawai Sistem', jenisPengguna: 'Staf', selected: false },
-  { id: 4, nama: 'Pegawai Audit', jenisPengguna: 'Staf', selected: false },
-  { id: 5, nama: 'Pegawai Lapangan', jenisPengguna: 'Bukan Staf', selected: false },
-  { id: 6, nama: 'Pengguna Awam', jenisPengguna: 'Bukan Staf', selected: false },
-  { id: 7, nama: 'Pegawai Pentadbir', jenisPengguna: 'Staf', selected: false }
+  { id: 1, nama: 'Admin Sistem', jenisPengguna: 'AD', selected: false },
+  { id: 2, nama: 'Pegawai Bantuan', jenisPengguna: 'NPS', selected: false },
+  { id: 3, nama: 'Pegawai Sistem', jenisPengguna: 'AD', selected: false },
+  { id: 4, nama: 'Pegawai Audit', jenisPengguna: 'AD', selected: false },
+  { id: 5, nama: 'Pegawai Lapangan', jenisPengguna: 'NPS', selected: false },
+  { id: 6, nama: 'Pengguna Awam', jenisPengguna: 'Awam', selected: false },
+  { id: 7, nama: 'Pegawai Pentadbir', jenisPengguna: 'AD', selected: false },
+  { id: 8, nama: 'Pegawai Khas', jenisPengguna: 'NPS', selected: false }
 ]);
 
 // Computed properties
@@ -737,7 +601,7 @@ const filteredUsers = computed(() => {
 
 const tableData = computed(() => {
   return filteredUsers.value.map(user => ({
-    jenisPengguna: user.jenisPengguna,
+    jenisPengguna: getJenisPenggunaDisplay(user.jenisPengguna),
     nama: user.nama,
     noKp: user.noKp,
     emel: user.emel,
@@ -747,6 +611,19 @@ const tableData = computed(() => {
     tindakan: user // Keep the full user object for action buttons
   }));
 });
+
+// Helper function to convert technical jenisPengguna to display value
+const getJenisPenggunaDisplay = (jenisPengguna) => {
+  switch (jenisPengguna) {
+    case 'AD':
+      return 'Staf';
+    case 'NPS':
+    case 'Awam':
+      return 'Bukan Staf';
+    default:
+      return jenisPengguna;
+  }
+};
 
 const totalUsers = computed(() => filteredUsers.value.length);
 const totalPages = computed(() => Math.ceil(totalUsers.value / pageSize.value));
@@ -759,7 +636,7 @@ const activeUsers = computed(() => {
 });
 
 const staffUsers = computed(() => {
-  return users.value.filter(user => user.jenisPengguna === 'Staf').length;
+  return users.value.filter(user => user.jenisPengguna === 'AD').length;
 });
 
 const uniqueRoles = computed(() => {
@@ -767,31 +644,12 @@ const uniqueRoles = computed(() => {
   return roles.size;
 });
 
-const filteredPeranan = computed(() => {
-  return perananList.value.filter(peranan => 
-    peranan.jenisPengguna === editForm.value.jenisPengguna || 
-    editForm.value.jenisPengguna === ''
-  );
-});
+
 
 // Methods
 const editUser = (user) => {
-  selectedUser.value = user;
-  editForm.value = {
-    idPengguna: user.noKp,
-    jenisPengguna: user.jenisPengguna,
-    nama: user.nama,
-    noKp: user.noKp,
-    emel: user.emel,
-    noTel: user.noTel || '',
-    status: user.status,
-    perananSemasa: ''
-  };
-  
-  // Reset peranan selection
-  perananList.value.forEach(p => p.selected = false);
-  
-  showEditModal.value = true;
+  // Navigate to PP/01 with edit mode and user ID
+  navigateTo(`/BF-PS/PP/01?mode=edit&userId=${user.id}`);
 };
 
 const deleteUser = (user) => {
@@ -832,42 +690,7 @@ const canDeleteUser = (user) => {
   return true;
 };
 
-const updatePerananSemasa = () => {
-  // Ensure only one peranan semasa is selected
-  const selectedPeranan = perananList.value.filter(p => p.selected);
-  if (selectedPeranan.length === 1) {
-    editForm.value.perananSemasa = selectedPeranan[0].id;
-  }
-};
 
-const saveUser = async () => {
-  try {
-    saving.value = true;
-    
-    // Simulate save delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Update local data
-    const index = users.value.findIndex(u => u.id === selectedUser.value.id);
-    if (index > -1) {
-      users.value[index] = {
-        ...users.value[index],
-        ...editForm.value
-      };
-    }
-    
-    showEditModal.value = false;
-    successMessage.value = `Maklumat pengguna "${editForm.value.nama}" telah berjaya dikemaskini.`;
-    showSuccessModal.value = true;
-    
-  } catch (error) {
-    console.error('Error saving user:', error);
-    successMessage.value = 'Ralat berlaku semasa menyimpan maklumat pengguna. Sila cuba lagi.';
-    showSuccessModal.value = true;
-  } finally {
-    saving.value = false;
-  }
-};
 
 const refreshData = async () => {
   try {

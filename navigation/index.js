@@ -1418,13 +1418,7 @@ export default [
             child: [],
             meta: {},
           },
-          {
-            title: "Cipta Akaun Pengguna",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PS/PP/02",
-            child: [],
-            meta: {},
-          },
+
           {
             title: "Audit Pengguna",
             icon: "iconamoon:arrow-right-2-duotone",
