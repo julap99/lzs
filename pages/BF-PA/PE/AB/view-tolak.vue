@@ -217,8 +217,8 @@ const application = ref({
   kariahLocation: "Masjid Al-Falah",
   assignmentEndDate: "31/12/2024",
   assignmentType: "KARIAH",
-  allowanceRate: "1,500.00",
-  calculatedAllowance: "1,500.00",
+  allowanceRate: "280.00",
+  calculatedAllowance: "280.00",
   isEligible: false,
   jppaSupport: {
     reviewedBy: "Sarah binti Hamid",
@@ -240,56 +240,56 @@ const penolongAmil = ref([
   {
     id: 'PA001',
     name: 'Ahmad bin Abdullah',
-    totalAllowance: '1,500.00',
+    totalAllowance: '70.00',
   },
   {
     id: 'PA002',
     name: 'Siti Aminah binti Hassan',
-    totalAllowance: '1,000.00',
+    totalAllowance: '50.00',
   },
   {
     id: 'PA003',
     name: 'Mohd Razak bin Ibrahim',
-    totalAllowance: '1,000.00',
+    totalAllowance: '40.00',
   },
   {
     id: 'PA004',
     name: 'Nurul Aisyah binti Omar',
-    totalAllowance: '1,000.00',
+    totalAllowance: '50.00',
   },
   {
     id: 'PA005',
     name: 'Ali bin Hassan',
-    totalAllowance: '1,500.00',
+    totalAllowance: '70.00',
   }
 ]);
 
 // Mock activities data
 const activities = ref([
   {
-    id: 'ACT001',
-    name: 'Kutipan Zakat Kariah',
-    allowanceRate: '500.00',
+    id: 'B001',
+    name: 'Bancian Baru',
+    allowanceRate: '30.00',
   },
   {
-    id: 'ACT002',
-    name: 'Agihan Bantuan Asnaf',
-    allowanceRate: '500.00',
+    id: 'AR001',
+    name: 'Asnaf Review',
+    allowanceRate: '20.00',
   },
   {
-    id: 'ACT003',
-    name: 'Program Tazkirah',
-    allowanceRate: '500.00',
+    id: 'PB001',
+    name: 'Permohonan Bantuan',
+    allowanceRate: '20.00',
   },
   {
-    id: 'ACT004',
-    name: 'Lawatan Asnaf',
-    allowanceRate: '500.00',
+    id: 'B002',
+    name: 'Bancian Baru',
+    allowanceRate: '30.00',
   },
   {
-    id: 'ACT005',
-    name: 'Program Qiamullail',
-    allowanceRate: '500.00',
+    id: 'AR002',
+    name: 'Asnaf Review',
+    allowanceRate: '20.00',
   }
 ]);
 

@@ -188,6 +188,20 @@
                 </tr>
               </tbody>
             </table>
+            
+            <!-- Ulasan oleh PAK/EOAD -->
+            <div class="mt-6">
+              <FormKit
+                type="textarea"
+                name="ulasanPakEoad"
+                v-model="ulasanPakEoad"
+                label="Ulasan oleh PAK/EOAD"
+                placeholder="Masukkan ulasan..."
+                validation="required"
+                :rows="4"
+                :disabled="!isStaff"
+              />
+            </div>
           </div>
         </div>
 
@@ -196,7 +210,10 @@
           <rs-button variant="secondary" @click="handleCancel">
             Batal / Kembali ke Permohonan
           </rs-button>
-          <rs-button variant="primary" @click="handleConfirm">
+          <rs-button variant="warning" @click="handleSiasatan">
+            Siasatan  oleh PAK
+          </rs-button>
+          <rs-button variant="primary" @click="handleConfirm" :disabled="!isFormValid">
             Sahkan Syor Bantuan
           </rs-button>
         </div>
@@ -250,6 +267,9 @@ const toast = useToast();
 const showConfirmationModal = ref(false);
 const bantuanData = ref(bantuanJson);
 
+// Add ulasan ref for validation
+const ulasanPakEoad = ref('');
+
 // Add formData ref with default status
 const formData = ref({
   status: "Dalam Semakan"
@@ -293,6 +313,11 @@ const suggestedBantuan = computed(() => {
 
 // Mock staff check - replace with actual auth check
 const isStaff = computed(() => true); // Set to true for testing
+
+// Check if form is valid (ulasan is filled)
+const isFormValid = computed(() => {
+  return ulasanPakEoad.value.trim().length > 0;
+});
 
 // Compute all available bantuan options for the dropdown
 const bantuanOptions = computed(() => {
@@ -368,6 +393,10 @@ const handleCancel = () => {
 
 // Confirm handler
 const handleConfirm = () => {
+  if (!isFormValid.value) {
+    toast.error("Sila isi ulasan oleh PAK/EOAD terlebih dahulu");
+    return;
+  }
   showConfirmationModal.value = true;
 };
 
@@ -397,6 +426,11 @@ const addNewBantuan = () => {
 // Remove bantuan
 const removeBantuan = (index) => {
   existingBantuanChanges.value.splice(index, 1);
+};
+
+// Siasatan handler
+const handleSiasatan = () => {
+  toast.warning("Siasatan oleh PAK/EOAD akan dijalankan");
 };
 </script>
 

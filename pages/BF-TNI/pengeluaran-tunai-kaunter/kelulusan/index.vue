@@ -145,9 +145,9 @@ const tableKey = ref(0);
 const permohonanList = ref([
   {
     id: "PK-2024-001",
-    namaEKP: "Ahmad bin Abdullah",
+    namaEKP: "Fatin bin Abu",
     noKaunter: "K001",
-    jumlahPengeluaran: 500,
+    jumlahPengeluaran: 400,
     tarikhMasaPermohonan: new Date().toISOString(),
     statusPermohonan: "Tunggu Kelulusan",
     tindakan: { id: "PK-2024-001", status: "Tunggu Kelulusan" }

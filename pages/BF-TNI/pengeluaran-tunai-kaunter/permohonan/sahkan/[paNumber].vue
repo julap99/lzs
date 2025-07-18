@@ -77,7 +77,7 @@
                 <span class="ml-2">{{ btbInfo.productPackage }}</span>
               </div>
                <div>
-                <span class="font-medium">Entitletement Product:</span>
+                <span class="font-medium">Entitlement Product:</span>
                 <span class="ml-2">{{ btbInfo.entitlementProduct }}</span>
               </div>
             </div>

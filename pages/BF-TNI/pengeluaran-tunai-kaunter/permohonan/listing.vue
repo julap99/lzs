@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isReady">
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
@@ -8,7 +8,7 @@
           <h2 class="text-xl font-semibold">Senarai Bantuan Tunai Bulanan (Bayaran Tunai)</h2>
           <rs-button variant="primary-outline" @click="navigateToSearch">
             <Icon name="material-symbols:arrow-back" class="mr-1" size="15" />
-            Kembali ke Carian
+            Kembali ke Semakan
           </rs-button>
         </div>
       </template>
@@ -215,6 +215,7 @@ import { useRouter, useRoute } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 
+const isReady = ref(false);
 const tableKey = ref(0);
 const searchQuery = ref('');
 const filters = ref({ status: '' });
@@ -344,6 +345,7 @@ onMounted(() => {
       tindakan: ""
     }, */
   ];
+  isReady.value = true;
   tableKey.value++;
 });
 

@@ -112,21 +112,21 @@ definePageMeta({
 });
 
 const breadcrumb = ref([
-  {
-    name: "BF-PRF",
-    type: "link",
-    path: "/BF-PRF",
-  },
-  {
-    name: "AS",
-    type: "link",
-    path: "/BF-PRF/AS",
-  },
-  {
-    name: "KA",
-    type: "link",
-    path: "/BF-PRF/AS/KA",
-  },
+  // {
+  //   name: "BF-PRF",
+  //   type: "link",
+  //   path: "/BF-PRF",
+  // },
+  // {
+  //   name: "AS",
+  //   type: "link",
+  //   path: "/BF-PRF/AS",
+  // },
+  // {
+  //   name: "KA",
+  //   type: "link",
+  //   path: "/BF-PRF/AS/KA",
+  // },
   {
     name: "Senarai Dalam Pembangunan",
     type: "current",
@@ -139,7 +139,7 @@ const tableFields = [
   "namaAsnaf",
   "kategoriAsnaf", 
   "statusReview",
-  "tarikhAkhir",
+  "tarikhTamatPembangunan",
   "noTelefon"
 ];
 
@@ -152,9 +152,7 @@ const kategoriOptions = [
 
 const statusOptions = [
   { label: "Semua Status", value: "" },
-  { label: "Sedang Review", value: "Sedang Review" },
-  { label: "Selesai Review", value: "Selesai Review" },
-  { label: "Ditangguhkan", value: "Ditangguhkan" },
+  { label: "Dalam Proses Pembangunan", value: "Dalam Proses Pembangunan" },
 ];
 
 // State
@@ -171,34 +169,34 @@ const asnafList = ref([
   {
     namaAsnaf: "Ahmad bin Abdullah",
     kategoriAsnaf: "Fakir",
-    statusReview: "Selesai Review",
-    tarikhAkhir: "2024-01-15",
+    statusReview: "Dalam Proses Pembangunan",
+    tarikhAkhir: "2025-12-15",
     noTelefon: "0123456789",
-    tindakan: { id: "ASN-2024-001" }
+    tindakan: { id: "ASN-2025-001" }
   },
   {
     namaAsnaf: "Siti binti Ali",
     kategoriAsnaf: "Miskin",
-    statusReview: "Selesai Review",
-    tarikhAkhir: "2024-02-20",
+    statusReview: "Dalam Proses Pembangunan",
+    tarikhAkhir: "2025-11-20",
     noTelefon: "0123456788",
-    tindakan: { id: "ASN-2024-002" }
+    tindakan: { id: "ASN-2025-002" }
   },
   {
     namaAsnaf: "Abdul Rahman bin Ismail",
     kategoriAsnaf: "Fakir",
-    statusReview: "Ditangguhkan",
-    tarikhAkhir: "2024-02-14",
+    statusReview: "Dalam Proses Pembangunan",
+    tarikhAkhir: "2025-12-14",
     noTelefon: "0123456785",
-    tindakan: { id: "ASN-2024-005" }
+    tindakan: { id: "ASN-2025-005" }
   },
   {
     namaAsnaf: "Zainab binti Ahmad",
     kategoriAsnaf: "Miskin",
-    statusReview: "Sedang Review",
-    tarikhAkhir: "2024-01-30",
+    statusReview: "Dalam Proses Pembangunan",
+    tarikhAkhir: "2025-11-30",
     noTelefon: "0123456784",
-    tindakan: { id: "ASN-2024-006" }
+    tindakan: { id: "ASN-2025-006" }
   }
 ]);
 
@@ -232,9 +230,7 @@ const paginationEnd = computed(() => {
 // Utility functions
 const getStatusVariant = (status) => {
   const variants = {
-    'Sedang Review': 'warning',
-    'Selesai Review': 'success',
-    'Ditangguhkan': 'danger',
+    'Dalam Proses Pembangunan': 'warning',
   };
   return variants[status] || 'default';
 };

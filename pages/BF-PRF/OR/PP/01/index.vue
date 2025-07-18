@@ -191,7 +191,7 @@ const performSearch = async () => {
 const navigateNext = () => {
   if (profileExists.value) {
     // Navigate to update profile page
-    // navigateTo("/BF-PRF/AS/FR/02");
+    //navigateTo("/BF-PRF/OR/PP/KP");
   } else {
     // Navigate to new registration page
     navigateTo("/BF-PRF/OR/PP/02");

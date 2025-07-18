@@ -105,14 +105,42 @@
                     </div>
 
                     <FormKit
+                      type="select"
+                      :name="`applicant${index}idType`"
+                      label="Jenis ID"
+                      placeholder="Pilih jenis ID"
+                      validation="required"
+                      :options="idTypeOptions"
+                      v-model="applicant.idType"
+                      :validation-messages="{
+                        required: 'Jenis ID adalah wajib',
+                      }"
+                    />
+
+                      <FormKit
+                      v-if="applicant.idType"
+                        type="file"
+                        :name="`applicant${index}idDocument`"
+                        :label="getDocumentLabel(applicant.idType)"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        v-model="applicant.idDocument"
+                        help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                        validation="required"
+                        :validation-messages="{
+                          required: 'Dokumen ID adalah wajib'
+                        }"
+                      />
+
+                    <FormKit
                       type="text"
                       :name="`applicant${index}newIC`"
-                      label="No Kad Pengenalan (baru) / Foreign ID"
+                      label="Nombor ID"
                       validation="required"
                       v-model="applicant.newIC"
                       :validation-messages="{
-                        required: 'No Kad Pengenalan adalah wajib',
+                        required: 'Nombor ID adalah wajib',
                       }"
+                      :placeholder="getPlaceholder(applicant.idType)"
                     />
 
                     <FormKit
@@ -126,12 +154,7 @@
                       }"
                     />
 
-                    <FormKit
-                      type="text"
-                      :name="`applicant${index}policeNo`"
-                      label="No Polis/No Tentera/No Sijil Lahir"
-                      v-model="applicant.policeNo"
-                    />
+
 
                     <FormKit
                       type="text"
@@ -204,25 +227,26 @@
                     </div>
 
                     <FormKit
-                      type="text"
-                      :name="`applicant${index}accountName`"
-                      label="Penama Bank Akaun"
-                      validation="required"
-                      v-model="applicant.accountName"
-                      :validation-messages="{
-                        required: 'Penama Bank Akaun adalah wajib',
-                      }"
-                    />
-
-                    <FormKit
-                      type="text"
+                      type="select"
                       :name="`applicant${index}bankName`"
                       label="Nama Bank"
                       validation="required"
+                      :options="bankOptions"
+                      placeholder="Pilih bank"
                       v-model="applicant.bankName"
                       :validation-messages="{
                         required: 'Nama Bank adalah wajib',
                       }"
+                    />
+
+                    <FormKit
+                      v-if="applicant.bankName"
+                      type="text"
+                      :name="`applicant${index}swiftCode`"
+                      label="SWIFT Code"
+                      :value="getSelectedBankSwiftCode(applicant.bankName)"
+                      readonly
+                      help="SWIFT Code untuk bank yang dipilih"
                     />
 
                     <FormKit
@@ -237,40 +261,40 @@
                     />
 
                     <FormKit
-                      type="select"
-                      :name="`applicant${index}paymentMethod`"
-                      label="Cara Pembayaran"
-                      validation="required"
-                      :options="[
-                        { label: 'Akaun', value: 'account' },
-                        { label: 'Cek', value: 'cheque' },
-                        { label: 'Tunai', value: 'cash' }
-                      ]"
-                      placeholder="Pilih cara pembayaran"
-                      v-model="applicant.paymentMethod"
-                      :validation-messages="{
-                        required: 'Cara Pembayaran adalah wajib',
-                      }"
+                      type="text"
+                      :name="`applicant${index}bankAccountHolder`"
+                      label="Penama Bank Akaun"
+                      v-model="applicant.bankAccountHolder"
                     />
 
                     <FormKit
-                      v-if="applicant.paymentMethod === 'cash'"
                       type="select"
-                      :name="`applicant${index}cashReason`"
-                      label="Nyatakan sebab jika tunai"
+                      :name="`applicant${index}paymentMethod`"
+                      label="Kaedah Pembayaran"
                       validation="required"
-                      :options="[
-                        { label: 'Uzur', value: 'uzur' },
-                        { label: 'Sakit', value: 'sakit' },
-                        { label: 'Muflis', value: 'muflis' },
-                        { label: 'Disenarai hitam', value: 'blacklisted' }
-                      ]"
-                      placeholder="Pilih sebab pembayaran tunai"
-                      v-model="applicant.cashReason"
+                      :options="paymentMethodOptions"
+                      placeholder="Pilih kaedah pembayaran"
+                      v-model="applicant.paymentMethod"
                       :validation-messages="{
-                        required: 'Sebab pembayaran tunai adalah wajib',
+                        required: 'Kaedah pembayaran adalah wajib'
                       }"
                     />
+
+                    <!-- Conditional checkboxes when Tiada is selected -->
+                    <div v-if="applicant.paymentMethod === 'tiada'" class="md:col-span-2">
+                      <FormKit
+                        type="checkbox"
+                        :name="`applicant${index}noPaymentReason`"
+                        label="Nyatakan sebab"
+                        :options="noPaymentReasonOptions"
+                        v-model="applicant.noPaymentReason"
+                        validation="required|min:1"
+                        :validation-messages="{
+                          required: 'Sila pilih sekurang-kurangnya satu sebab',
+                          min: 'Sila pilih sekurang-kurangnya satu sebab'
+                        }"
+                      />
+                    </div>
 
                     <!-- Maklumat Bencana -->
                     <div class="md:col-span-2 mt-6">
@@ -294,7 +318,7 @@
                         type="button"
                         variant="primary-outline"
                         class="whitespace-nowrap mt-7"
-                        @click="getGeolocation(index)"
+                        @click="getLocation(index)"
                       >
                         <i class="fas fa-location-dot mr-2"></i>
                         Dapatkan Lokasi
@@ -302,15 +326,46 @@
                     </div>
 
                     <FormKit
-                      type="text"
-                      :name="`applicant${index}helpCode`"
-                      label="Kod Bantuan"
+                      type="select"
+                      :name="`applicant${index}disasterStatus`"
+                      label="Senarai Bencana"
                       validation="required"
-                      v-model="applicant.helpCode"
+                      :options="disasterListOptions"
+                      placeholder="Pilih senarai bencana"
+                      v-model="applicant.disasterStatus"
                       :validation-messages="{
-                        required: 'Kod Bantuan adalah wajib',
+                        required: 'Senarai bencana adalah wajib'
                       }"
                     />
+
+                    <div v-if="applicant.disasterStatus && applicant.disasterStatus !== 'tiada'" class="md:col-span-2">
+                      <FormKit
+                        type="file"
+                        :name="`applicant${index}disasterDocument`"
+                        label="Upload Dokumen Bencana"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        v-model="applicant.disasterDocument"
+                        help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                        validation="required"
+                        :validation-messages="{
+                          required: 'Dokumen bencana adalah wajib'
+                        }"
+                      />
+                    </div>
+
+                    <div v-if="applicant.disasterStatus === 'tiada'" class="md:col-span-2">
+                      <FormKit
+                        type="textarea"
+                        :name="`applicant${index}noDisasterNotes`"
+                        label="Catatan"
+                        placeholder="Sila nyatakan sebab mengapa tiada bencana"
+                        v-model="applicant.noDisasterNotes"
+                        validation="required"
+                        :validation-messages="{
+                          required: 'Catatan adalah wajib'
+                        }"
+                      />
+                    </div>
 
                     <FormKit
                       type="number"
@@ -376,7 +431,7 @@
   </template>
   
   <script setup>
-  import { ref } from "vue";
+  import { ref, watch } from "vue";
   import { useRouter } from "vue-router";
   import { useToast } from "vue-toastification";
   
@@ -451,11 +506,10 @@
 
   // Function to generate fake applicants
   const generateFakeApplicants = (count) => {
-    const banks = ['Maybank', 'CIMB Bank', 'Public Bank', 'RHB Bank', 'AmBank', 'Hong Leong Bank'];
+    const bankValues = bankOptions.map(bank => bank.value);
     const familyCategories = ['fakir', 'miskin', 'amil', 'muallaf', 'riqab', 'gharimin', 'fisabilillah', 'ibnus-sabil'];
     const helpCodes = ['A001', 'B002', 'C003', 'D004', 'E005'];
-    const paymentMethods = ['account', 'cheque', 'cash'];
-    const cashReasons = ['uzur', 'sakit', 'muflis', 'blacklisted'];
+    const paymentMethods = ['akaun', 'tiada'];
     const disasterLocations = [
       'Kuala Lumpur',
       'Selangor',
@@ -477,52 +531,143 @@
 
     return Array.from({ length: count }, () => {
       const paymentMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+      const idTypes = ['ic', 'foreign-id', 'polis', 'tentera', 'sijil-lahir'];
       return {
+        idType: idTypes[Math.floor(Math.random() * idTypes.length)],
+        idDocument: null,
         newIC: generateFakeIC(),
         name: `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`,
-        policeNo: generateFakeIC(),
         passportNo: `A${Math.floor(Math.random() * 1000000)}`,
         passportStartDate: new Date(Date.now() - Math.random() * 10000000000).toISOString().split('T')[0],
         passportEndDate: new Date(Date.now() + Math.random() * 10000000000).toISOString().split('T')[0],
         phone: generateFakePhone(),
         address: addresses[Math.floor(Math.random() * addresses.length)],
         familyCategory: familyCategories[Math.floor(Math.random() * familyCategories.length)],
-        accountName: `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`,
-        bankName: banks[Math.floor(Math.random() * banks.length)],
+        bankName: bankValues[Math.floor(Math.random() * bankValues.length)],
+        swiftCode: '',
         bankAccount: generateFakeBankAccount(),
+        bankAccountHolder: `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`,
         paymentMethod: paymentMethod,
-        cashReason: paymentMethod === 'cash' ? cashReasons[Math.floor(Math.random() * cashReasons.length)] : '',
+        noPaymentReason: paymentMethod === 'tiada' ? [noPaymentReasonOptions[Math.floor(Math.random() * noPaymentReasonOptions.length)].value] : [],
         disasterLocation: disasterLocations[Math.floor(Math.random() * disasterLocations.length)],
-        helpCode: helpCodes[Math.floor(Math.random() * helpCodes.length)],
+        disasterStatus: disasterListOptions[Math.floor(Math.random() * disasterListOptions.length)].value,
+        disasterDocument: null,
+        noDisasterNotes: '',
+        noDisasterDocument: null,
         helpAmount: Math.floor(Math.random() * 10000),
         policeReport: null
       };
     });
   };
   
+  // ID Type Options
+  const idTypeOptions = [
+    { label: 'Kad Pengenalan', value: 'ic' },
+    { label: 'Foreign ID', value: 'foreign-id' },
+    { label: 'Sijil Lahir', value: 'sijil-lahir' }
+  ];
+
+  // Bank Options
+  const bankOptions = [
+    { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
+    { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
+    { label: "RHB", value: "rhb", swiftCode: "RHBBMYKL" },
+    { label: "Bank Islam", value: "bank-islam", swiftCode: "BIMBMYKL" },
+    { label: "Bank Rakyat", value: "bank-rakyat", swiftCode: "BKRMYKL" },
+    { label: "Public Bank", value: "public-bank", swiftCode: "PBBEMYKL" },
+    { label: "Hong Leong Bank", value: "hong-leong", swiftCode: "HLBBMYKL" },
+    { label: "Ambank", value: "ambank", swiftCode: "ARBKMYKL" },
+    { label: "BSN", value: "bsn", swiftCode: "BSNAMYKL" },
+    { label: "Affin Bank", value: "affin", swiftCode: "PHBMMYKL" },
+    { label: "UOB", value: "uob", swiftCode: "UOVBMYKL" },
+    { label: "OCBC", value: "ocbc", swiftCode: "OCBCMYKL" },
+    { label: "Standard Chartered", value: "standard-chartered", swiftCode: "SCBLMYKL" },
+    { label: "Alliance Bank", value: "alliance", swiftCode: "MFBBMYKL" },
+    { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" },
+  ];
+
+  // Payment Method Options
+  const paymentMethodOptions = [
+    { label: 'Akaun', value: 'akaun' },
+    { label: 'Tiada', value: 'tiada' }
+  ];
+
+  // No Payment Reason Options
+  const noPaymentReasonOptions = [
+    { label: 'Muflis', value: 'muflis' },
+    { label: 'Bukan Warganegara', value: 'bukan-warganegara' }
+  ];
+
+  // Disaster List Options
+  const disasterListOptions = [
+    { label: 'Bencana', value: 'bencana' },
+    { label: 'Tiada', value: 'tiada' }
+  ];
+
+  // Get SWIFT Code for selected bank
+  const getSelectedBankSwiftCode = (bankName) => {
+    const selectedBank = bankOptions.find(bank => bank.value === bankName);
+    return selectedBank ? selectedBank.swiftCode : '';
+  };
+
+  // Get placeholder based on ID type
+  const getPlaceholder = (idType) => {
+    const placeholders = {
+      "ic": "Contoh: 901231025678",
+      "foreign-id": "Contoh: A12345678",
+      "sijil-lahir": "Contoh: 12345678"
+    };
+    return placeholders[idType] || "";
+  };
+
+  // Get document label based on ID type
+  const getDocumentLabel = (idType) => {
+    const labels = {
+      "ic": "Upload Kad Pengenalan",
+      "foreign-id": "Upload Foreign ID",
+      "sijil-lahir": "Upload Sijil Lahir"
+    };
+    return labels[idType] || "";
+  };
+
   // Form data structure
   const formData = ref({
     applicants: [],
   });
+
+  // Watch for bank changes to update SWIFT code
+  watch(() => formData.value.applicants, (newApplicants) => {
+    newApplicants.forEach((applicant) => {
+      if (applicant.bankName) {
+        const selectedBank = bankOptions.find(bank => bank.value === applicant.bankName);
+        applicant.swiftCode = selectedBank ? selectedBank.swiftCode : '';
+      }
+    });
+  }, { deep: true });
   
   const addApplicant = () => {
     formData.value.applicants.push({
+      idType: "",
+      idDocument: null,
       newIC: "",
       name: "",
-      policeNo: "",
       passportNo: "",
       passportStartDate: "",
       passportEndDate: "",
       phone: "",
       address: "",
       familyCategory: "",
-      accountName: "",
       bankName: "",
+      swiftCode: "",
       bankAccount: "",
+      bankAccountHolder: "",
       paymentMethod: "",
-      cashReason: "",
+      noPaymentReason: [],
       disasterLocation: "",
-      helpCode: "",
+      disasterStatus: "",
+      disasterDocument: null,
+      noDisasterNotes: "",
+      noDisasterDocument: null,
       helpAmount: "",
       policeReport: null,
     });
@@ -550,22 +695,9 @@
     }
   };
 
-  const getGeolocation = (index) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const coords = `${position.coords.latitude}, ${position.coords.longitude}`;
-          formData.value.applicants[index].disasterLocation = `Lokasi semasa`;
-          // formData.value.applicants[index].disasterLocation = `Lokasi semasa (${coords})`;
-          toast.success('Lokasi berjaya diperoleh!');
-        },
-        (error) => {
-          toast.error('Tidak dapat mendapatkan lokasi.');
-        }
-      );
-    } else {
-      toast.error('Geolocation tidak disokong oleh pelayar ini.');
-    }
+  const getLocation = (applicantIndex) => {
+    formData.value.applicants[applicantIndex].disasterLocation = 'Lokasi semasa';
+    toast.success('Lokasi berjaya diperoleh!');
   };
 
   const handleSave = async () => {

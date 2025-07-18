@@ -59,8 +59,12 @@
 
           <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+              <!-- <div>
                 <label class="block text-sm font-medium text-gray-700">Baki Tunai di Tangan PIC (RM)</label>
+                <p class="mt-1 font-medium">RM {{ formatNumber(permohonanData.bakiTunaiPIC) }}</p>
+              </div> -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Baki Tunai di Peti Besi Utama (RM)</label>
                 <p class="mt-1 font-medium">RM {{ formatNumber(permohonanData.bakiTunaiPIC) }}</p>
               </div>
               <div>
@@ -186,9 +190,9 @@ const rejectionForm = ref({
 // Mock data - replace with actual API call
 const permohonanData = ref({
   id: id,
-  namaEKP: "Ahmad bin Abdullah",
+  namaEKP: "Fatin bin Abu",
   noKaunter: "K001",
-  jumlahPengeluaran: 500,
+  jumlahPengeluaran: 400,
   tarikhMasaPermohonan: new Date().toISOString(),
   namaPetiBesi: "PB001",
   jenisAkaunPetiBesi: "Cawangan",

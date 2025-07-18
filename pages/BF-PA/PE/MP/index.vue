@@ -8,7 +8,7 @@
           <h2 class="text-xl font-semibold">
             Pengurusan Elaun bagi Mesyuarat/Program
           </h2>
-          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/MP/01')">Tambah Aktiviti</rs-button>
+          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/MP/01')">Tambah Pembayaran Aktiviti</rs-button>
         </div>
       </template>
 
@@ -84,7 +84,7 @@
                         <a 
                           href="#" 
                           class="text-blue-600 hover:text-blue-800"
-                          @click.prevent="navigateTo(getActionRoute(activity.status, activity.id))"
+                          @click.prevent="navigateTo(`/BF-PA/PE/MP/${activity.id}`)"
                         >
                           {{ activity.id }}
                         </a>
@@ -113,7 +113,7 @@
                         <rs-button
                           variant="primary"
                           size="sm"
-                          @click="navigateTo(getActionRoute(activity.status, activity.id))"
+                          @click="navigateTo('/BF-PA/PE/MP/view-lulus')"
                         >
                           {{ getActionButtonText(activity.status) }}
                         </rs-button>
@@ -168,7 +168,7 @@
                         <a 
                           href="#" 
                           class="text-blue-600 hover:text-blue-800"
-                          @click.prevent="navigateTo(getActionRoute(activity.status, activity.id))"
+                          @click.prevent="navigateTo(`/BF-PA/PE/MP/${activity.id}`)"
                         >
                           {{ activity.id }}
                         </a>
@@ -197,7 +197,7 @@
                         <rs-button
                           variant="primary"
                           size="sm"
-                          @click="navigateTo(getActionRoute(activity.status, activity.id))"
+                          @click="navigateTo('/BF-PA/PE/MP/view-tolak')"
                         >
                           {{ getActionButtonText(activity.status) }}
                         </rs-button>
@@ -243,36 +243,40 @@ const breadcrumb = ref([
 // Mock data for activities
 const activities = ref([
   {
-    id: 'MP/2024/003',
+    id: 'L001',
     name: 'Latihan Pengurusan Zakat',
-    date: '2024-03-10',
+    date: '25/03/2024',
     location: 'Dewan Latihan',
     type: 'Latihan',
-    status: 'Diluluskan'
+    status: 'Diluluskan',
+    allowanceRate: '100.00'
   },
   {
-    id: 'MP/2024/004',
-    name: 'Mesyuarat Agung Tahunan',
-    date: '2024-03-12',
-    location: 'Dewan Utama',
+    id: 'M001',
+    name: 'Mesyuarat JPPA Bulanan',
+    date: '15/03/2024',
+    location: 'Dewan Mesyuarat JPPA',
     type: 'Mesyuarat',
-    status: 'Ditolak'
+    status: 'Menunggu Sokongan JPPA',
+    allowanceRate: '50.00'
   },
   {
-    id: 'MP/2024/007',
+    id: 'P001',
     name: 'Program Khidmat Masyarakat',
-    date: '2024-03-18',
-    location: 'Masjid Al-Amin',
+    date: '20/03/2024',
+    location: 'Masjid Al-Hidayah',
     type: 'Program',
-    status: 'Diluluskan'
+    status: 'Menunggu Kelulusan Ketua JPPA',
+    allowanceRate: '100.00'
   },
   {
-    id: 'MP/2024/012',
+    id: 'M002',
     name: 'Mesyuarat Koordinasi',
-    date: '2024-03-30',
+    date: '30/03/2024',
     location: 'Pejabat Zakat',
     type: 'Mesyuarat',
-    status: 'Ditolak'
+    status: 'Ditolak',
+    allowanceRate: '50.00'
   }
 ]);
 
@@ -355,9 +359,9 @@ const getActionRoute = (status, activityId) => {
     case 'Menunggu Kelulusan Ketua JPPA':
       return '/BF-PA/PE/MP/04'
     case 'Diluluskan':
-      return `/BF-PA/PE/MP/view-lulus?id=${encodeURIComponent(activityId)}`
+      return `/BF-PA/PE/MP/view-lulus`
     case 'Ditolak':
-      return `/BF-PA/PE/MP/view-tolak?id=${encodeURIComponent(activityId)}`
+      return `/BF-PA/PE/MP/07`
     default:
       return '#'
   }
@@ -369,8 +373,9 @@ const getActionButtonText = (status) => {
     case 'Menunggu Kelulusan Ketua JPPA':
       return 'Semak'
     case 'Diluluskan':
-    case 'Ditolak':
       return 'Lihat'
+    case 'Ditolak':
+      return 'Semak Semula'
     default:
       return 'Lihat'
   }

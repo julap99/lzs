@@ -25,7 +25,7 @@ const receiptData = ref({
   receiptDate: "", // Will be set properly in onMounted
   applicantSignature: "",
   digitalSignature: "",
-  signatureMethod: "manual", // manual or digital
+  signatureMethod: "digital", // manual or digital
   witnessName: "",
   printedBy: "",
   remarks: "",
@@ -273,7 +273,7 @@ const completeProcess = () => {
 
 // Safe access to applicant data
 const getApplicantName = () => {
-  return ("Imah");
+  return ("Abu bin Abdullah");
 };
 
 const getApplicantIC = () => {
@@ -285,12 +285,16 @@ const getApplicationId = () => {
 };
 
 const getAssistanceType = () => {
-  return "Bantuan Kecemasan";
+  return "B105 - BANTUAN KEWANGAN BULANAN (FAKIR)";
+};
+
+const getAssistanceProduk = () => {
+  return "KEWANGAN BULANAN (FAKIR) - T3";
 };
 
 const getCashAmount = () => {
   return (
-    "200"
+    "400"
   );
 };
 
@@ -413,7 +417,7 @@ const formatDate = (dateString) => {
             <div class="nas-receipt-body">
               <!-- Applicant Information -->
               <div class="nas-receipt-section">
-                <h4 class="nas-receipt-section-title">MAKLUMAT PEMOHON</h4>
+                <h4 class="nas-receipt-section-title">MAKLUMAT ASNAF</h4>
                 <div class="nas-receipt-grid">
                   <div class="nas-receipt-item">
                     <span class="nas-receipt-label">Nama:</span>
@@ -441,9 +445,15 @@ const formatDate = (dateString) => {
                 <h4 class="nas-receipt-section-title">BUTIRAN BANTUAN</h4>
                 <div class="nas-receipt-grid">
                   <div class="nas-receipt-item">
-                    <span class="nas-receipt-label">Jenis Bantuan:</span>
+                    <span class="nas-receipt-label">Bantuan:</span>
                     <span class="nas-receipt-value">{{
                       getAssistanceType()
+                    }}</span>
+                  </div>
+                  <div class="nas-receipt-item">
+                    <span class="nas-receipt-label">Bantuan Produk:</span>
+                    <span class="nas-receipt-value">{{
+                      getAssistanceProduk()
                     }}</span>
                   </div>
                   <div class="nas-receipt-item">
@@ -518,7 +528,7 @@ const formatDate = (dateString) => {
                       role="radiogroup"
                       aria-describedby="signature-method-help"
                     >
-                      <label class="nas-radio-item">
+                      <!-- <label class="nas-radio-item">
                         <input
                           v-model="receiptData.signatureMethod"
                           type="radio"
@@ -527,7 +537,7 @@ const formatDate = (dateString) => {
                           name="signatureMethod"
                         />
                         <span class="nas-radio-label">Manual (Tulis Nama)</span>
-                      </label>
+                      </label> -->
                       <label class="nas-radio-item">
                         <input
                           v-model="receiptData.signatureMethod"

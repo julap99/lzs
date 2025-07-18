@@ -36,6 +36,56 @@
           </template>
         </rs-card>
 
+         <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:user-focus" class="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Status Pemohon</h2>
+                <p class="text-sm text-gray-500">Individu ini belum berdaftar sebagai penerima bantuan zakat </p>
+              </div>
+            </div>
+          </template>
+
+          <template #body>
+            <div class="space-y-3">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p class="text-sm text-gray-500">Status Profil</p>
+                  <p class="font-medium text-gray-800">
+                    {{ aduan?.statusProfil || 'Tidak Diketahui' }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Kategori Asnaf</p>
+                  <p class="font-medium text-gray-800">
+                    {{ aduan?.kategoriAsnaf || 'Tiada Maklumat' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- <div>
+                <rs-button
+                  v-if="aduan?.statusProfil === 'Sudah Berdaftar'"
+                  variant="primary-outline"
+                  @click="navigateToKemaskiniProfil"
+                >
+                  Kemaskini Profil
+                </rs-button>
+                <rs-button
+                  v-else
+                  variant="primary"
+                  @click="navigateToDaftarAsnaf"
+                >
+                  Daftar Asnaf
+                </rs-button>
+              </div> -->
+            </div>
+          </template>
+        </rs-card>
+
          <!-- SLA Section -->
         <rs-card>
             <template #header>
@@ -166,9 +216,9 @@
                 validation="required"
               />
 
+              <label class="block font-medium mb-1">Kemaskini Tahap Keperluan Bantuan</label>
               <FormKit
                 type="checkbox"
-                label="Tukar Kategori Aduan"
                 v-model="form.tukarKategori"
               />
 
@@ -182,7 +232,29 @@
                     'Pendapatan Berkurangan/Keperluan Lain (Kelas 3/Hijau)'
                   ]"
                   validation="required"
-                />
+                /> 
+              </div>
+
+              <FormKit
+                v-model="form.keputusan"
+                type="select"
+                label="Agih Tugas Semula"
+                :options="siasatanOptions"
+                validation="required"
+                validation-visibility="dirty"
+              />
+
+              <div v-if="form.keputusan == 'new_assign'" >
+                <!-- <FormKit
+                  type="select"
+                  label="Tahap Keperluan Baru"
+                  v-model="form.tahapBaru"
+                  :options="[
+                    'Masih Ada Bekalan Makanan/Mempunyai Tempat Tinggal/Tiada Sumber Pendapatan (Kelas 2/Kuning)',
+                    'Pendapatan Berkurangan/Keperluan Lain (Kelas 3/Hijau)'
+                  ]"
+                  validation="required"
+                /> -->
                  <FormKit
                     v-model="form.pegawaiBaru"
                     type="select"
@@ -198,7 +270,7 @@
                   v-model="form.catatanAgih"
                   class="md:col-span-2"
                 />
-              </div>
+              </div> 
 
               <!-- Buttons -->
                 <div class="flex justify-between items-center mt-6">
@@ -343,8 +415,14 @@ const form = ref({
   tukarKategori: false,
   tahapBaru: '',
   pegawaiBaru: '',
-  catatanAgih: ''
+  catatanAgih: '',
+  keputusan: ''
 });
+
+const siasatanOptions = [
+  { label: "Tidak", value: "kekal" },
+  { label: "Ya", value: "new_assign" },
+];
 
 const handleSimpan = () => {
   alert('Maklumat siasatan disimpan.');

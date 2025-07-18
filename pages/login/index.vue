@@ -24,6 +24,7 @@ const login = async () => {
 
   // Simple redirect to dashboard
   navigateTo("/dashboard");
+  
 };
 
 const handleWidgetId = (widgetId) => {

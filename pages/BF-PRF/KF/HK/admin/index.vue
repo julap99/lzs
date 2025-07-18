@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Konfigurasi Had Kifayah</h2>
-          <rs-button variant="primary" @click="navigateTo(`admin/tambah`)">
+          <rs-button variant="primary" @click="navigateTo('admin/tambah')">
             <Icon name="material-symbols:add" class="mr-1" /> Tambah Baharu
           </rs-button>
         </div>
@@ -31,8 +31,11 @@
             hover: true,
           }"
         >
-          <template v-slot:kadarBerbayar="data"> RM {{ data.text }} </template>
-          <template v-slot:kadarPercuma="data"> RM {{ data.text }} </template>
+          <template v-slot:kategori="data">{{ data.text }}</template>
+          <template v-slot:jenisIsiRumah="data">{{ data.text }}</template>
+          <template v-slot:kadarBerbayar="data"> RM {{ formatCurrency(data.text) }} </template>
+          <template v-slot:kadarPercuma="data"> RM {{ formatCurrency(data.text) }} </template>
+          <template v-slot:tarikhMulaBerkuatkuasa="data">{{ formatDate(data.text) }}</template>
 
           <template v-slot:status="data">
             <rs-badge :variant="getStatusVariant(data.text)">
@@ -79,41 +82,88 @@ const breadcrumb = ref([
 // Table data and reactivity control
 const tableKey = ref(0);
 const kifayahLimits = ref([
+  // Section A: Kadar Had Kifayah Utama
   {
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
-    kadarBerbayar: 1200.0,
-    kadarPercuma: 1000.0,
+    kadarBerbayar: 1215.00,
+    kadarPercuma: 780.00,
     tarikhMulaBerkuatkuasa: "2025-01-01",
     status: "Aktif",
     tindakan: 1,
   },
   {
     kategori: "Utama",
-    jenisIsiRumah: "Dewasa Bekerja (18 tahun ke atas)",
-    kadarBerbayar: 800.0,
-    kadarPercuma: 600.0,
+    jenisIsiRumah: "Dewasa Bekerja",
+    kadarBerbayar: 412.00,
+    kadarPercuma: 412.00,
     tarikhMulaBerkuatkuasa: "2025-01-01",
-    status: "Aktif",
+    status: "Menunggu Kelulusan",
     tindakan: 2,
   },
   {
-    kategori: "Tambahan",
-    jenisIsiRumah: "Anak (Bawah 18 tahun)",
-    kadarBerbayar: 400.0,
-    kadarPercuma: 300.0,
+    kategori: "Utama",
+    jenisIsiRumah: "Dewasa Tidak Bekerja",
+    kadarBerbayar: 167.00,
+    kadarPercuma: 167.00,
     tarikhMulaBerkuatkuasa: "2025-01-01",
-    status: "Tidak Aktif",
+    status: "Aktif",
     tindakan: 3,
   },
   {
-    kategori: "Tambahan",
-    jenisIsiRumah: "Bayi (Bawah 2 tahun)",
-    kadarBerbayar: 200.0,
-    kadarPercuma: 150.0,
-    tarikhMulaBerkuatkuasa: "2025-03-15",
-    status: "Menunggu Kelulusan",
+    kategori: "Utama",
+    jenisIsiRumah: "Tanggungan IPT",
+    kadarBerbayar: 613.00,
+    kadarPercuma: 613.00,
+    tarikhMulaBerkuatkuasa: "2025-01-01",
+    status: "Tidak Aktif",
     tindakan: 4,
+  },
+  {
+    kategori: "Utama",
+    jenisIsiRumah: "Tanggungan 7-17 Tahun",
+    kadarBerbayar: 408.00,
+    kadarPercuma: 408.00,
+    tarikhMulaBerkuatkuasa: "2025-01-01",
+    status: "Aktif",
+    tindakan: 5,
+  },
+  {
+    kategori: "Utama",
+    jenisIsiRumah: "Tanggungan 6 Tahun ke Bawah",
+    kadarBerbayar: 175.00,
+    kadarPercuma: 175.00,
+    tarikhMulaBerkuatkuasa: "2025-01-01",
+    status: "Menunggu Kelulusan",
+    tindakan: 6,
+  },
+  // Section B: Kadar Had Kifayah Tambahan
+  {
+    kategori: "Tambahan",
+    jenisIsiRumah: "OKU",
+    kadarBerbayar: 247.00,
+    kadarPercuma: 247.00,
+    tarikhMulaBerkuatkuasa: "2025-01-01",
+    status: "Aktif",
+    tindakan: 7,
+  },
+  {
+    kategori: "Tambahan",
+    jenisIsiRumah: "Pesakit Kronik",
+    kadarBerbayar: 243.00,
+    kadarPercuma: 243.00,
+    tarikhMulaBerkuatkuasa: "2025-01-01",
+    status: "Aktif",
+    tindakan: 8,
+  },
+  {
+    kategori: "Tambahan",
+    jenisIsiRumah: "Penjagaan Anak < 12 Tahun",
+    kadarBerbayar: 330.00,
+    kadarPercuma: 330.00,
+    tarikhMulaBerkuatkuasa: "2025-01-01",
+    status: "Tidak Aktif",
+    tindakan: 9,
   },
 ]);
 
@@ -124,151 +174,10 @@ const pendingApprovalCount = computed(() => {
   ).length;
 });
 
-// Form data
-const formData = ref({
-  id: null,
-  category: "",
-  householdType: "",
-  paidHouseRate: 0,
-  freeHouseRate: 0,
-  effectiveDate: "",
-  status: "Menunggu Kelulusan", // Default status for new entries
-});
-
-// Options for dropdowns
-const kategoriOptions = ref([
-  { label: "Utama", value: "Utama" },
-  { label: "Tambahan", value: "Tambahan" },
-]);
-
-const householdOptions = ref([
-  { label: "Ketua Keluarga", value: "Ketua Keluarga" },
-  {
-    label: "Dewasa Bekerja (18 tahun ke atas)",
-    value: "Dewasa Bekerja (18 tahun ke atas)",
-  },
-  {
-    label: "Dewasa Tidak Bekerja (18 tahun ke atas)",
-    value: "Dewasa Tidak Bekerja (18 tahun ke atas)",
-  },
-  { label: "Anak (Bawah 18 tahun)", value: "Anak (Bawah 18 tahun)" },
-  { label: "Bayi (Bawah 2 tahun)", value: "Bayi (Bawah 2 tahun)" },
-]);
-
-// Modal control
-const showModal = ref(false);
-const isEditing = ref(false);
-const processing = ref(false);
-
-const modalTitle = computed(() => {
-  return isEditing.value ? "Kemaskini Had Kifayah" : "Tambah Had Kifayah";
-});
-
 // Make sure the table refreshes when component mounts
 onMounted(() => {
   refreshTable();
 });
-
-// Methods
-const showAddModal = () => {
-  isEditing.value = false;
-  resetForm();
-  showModal.value = true;
-};
-
-const editItem = (item) => {
-  isEditing.value = true;
-  // Create a deep copy to avoid modifying the original data
-  formData.value = JSON.parse(JSON.stringify(item));
-  // Set status to "Menunggu Kelulusan" as we're editing
-  formData.value.originalStatus = item.status; // Store original status
-  showModal.value = true;
-};
-
-const toggleStatus = (item) => {
-  const index = kifayahLimits.value.findIndex((i) => i.id === item.id);
-  if (index !== -1) {
-    const updatedItem = { ...kifayahLimits.value[index] };
-    // Set to pending status instead of directly changing
-    updatedItem.previousStatus = updatedItem.status;
-    updatedItem.status = "Menunggu Kelulusan";
-    updatedItem.statusChangeRequested =
-      updatedItem.previousStatus === "Aktif" ? "Tidak Aktif" : "Aktif";
-
-    kifayahLimits.value.splice(index, 1, updatedItem);
-    refreshTable();
-  }
-};
-
-const handleSubmit = () => {
-  processing.value = true;
-
-  // Ensure numeric values are properly parsed
-  const paidRate = parseFloat(formData.value.paidHouseRate);
-  const freeRate = parseFloat(formData.value.freeHouseRate);
-
-  if (isNaN(paidRate) || isNaN(freeRate)) {
-    alert("Sila masukkan nilai kadar yang sah");
-    processing.value = false;
-    return;
-  }
-
-  // Create a new object to avoid reference issues
-  const submittedData = {
-    id: formData.value.id,
-    category: formData.value.category,
-    householdType: formData.value.householdType,
-    paidHouseRate: paidRate,
-    freeHouseRate: freeRate,
-    effectiveDate: formData.value.effectiveDate,
-    status: "Menunggu Kelulusan", // Always set to pending for approval
-  };
-
-  setTimeout(() => {
-    if (isEditing.value) {
-      // For editing, store the original data for reference
-      submittedData.originalStatus = formData.value.originalStatus;
-
-      // Update existing item
-      const index = kifayahLimits.value.findIndex(
-        (i) => i.id === submittedData.id
-      );
-      if (index !== -1) {
-        kifayahLimits.value.splice(index, 1, submittedData);
-      }
-    } else {
-      // Add new item
-      const newId =
-        kifayahLimits.value.length > 0
-          ? Math.max(...kifayahLimits.value.map((i) => i.id)) + 1
-          : 1;
-
-      submittedData.id = newId;
-      kifayahLimits.value.push(submittedData);
-    }
-
-    refreshTable();
-    processing.value = false;
-    showModal.value = false;
-  }, 500);
-};
-
-const cancelForm = () => {
-  showModal.value = false;
-  resetForm();
-};
-
-const resetForm = () => {
-  formData.value = {
-    id: null,
-    category: "",
-    householdType: "",
-    paidHouseRate: 0,
-    freeHouseRate: 0,
-    effectiveDate: "",
-    status: "Menunggu Kelulusan", // Default status for new entries
-  };
-};
 
 const refreshTable = () => {
   nextTick(() => {
@@ -286,10 +195,7 @@ const formatDate = (dateString) => {
 
 const formatCurrency = (value) => {
   if (value === undefined || value === null) return "0.00";
-  return parseFloat(value).toLocaleString("ms-MY", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  return parseFloat(value).toFixed(2);
 };
 
 // Helper function to determine badge variant based on status

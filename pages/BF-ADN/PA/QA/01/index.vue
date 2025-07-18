@@ -6,6 +6,55 @@
       <!-- Seksyen Kiri -->
       <div class="lg:col-span-2 space-y-6">
         <!-- Maklumat Aduan & Profil -->
+          <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:user-focus" class="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Status Pemohon</h2>
+                <p class="text-sm text-gray-500">Individu ini berdaftar sebagai penerima bantuan zakat (status: {{ aduan?.kategoriAsnaf || 'Belum Dikenalpasti' }})</p>
+              </div>
+            </div>
+          </template>
+
+          <template #body>
+            <div class="space-y-3">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p class="text-sm text-gray-500">Status Profil</p>
+                  <p class="font-medium text-gray-800">
+                    {{ aduan?.statusProfil || 'Tidak Diketahui' }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Kategori Asnaf</p>
+                  <p class="font-medium text-gray-800">
+                    {{ aduan?.kategoriAsnaf || 'Tiada Maklumat' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- <div>
+                <rs-button
+                  v-if="aduan?.statusProfil === 'Sudah Berdaftar'"
+                  variant="primary-outline"
+                  @click="navigateToKemaskiniProfil"
+                >
+                  Kemaskini Profil
+                </rs-button>
+                <rs-button
+                  v-else
+                  variant="primary"
+                  @click="navigateToDaftarAsnaf"
+                >
+                  Daftar Asnaf
+                </rs-button>
+              </div> -->
+            </div>
+          </template>
+        </rs-card>
         <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
@@ -66,7 +115,7 @@
             </div>
           </template>
           <template #body>
-            <FormKit type="checkbox" label="Sahkan alamat pemastautin adalah tepat" v-model="formData.sahAlamat" />
+           <!--  <FormKit type="checkbox" label="Sahkan alamat pemastautin adalah tepat" v-model="formData.sahAlamat" /> -->
 
             <div v-for="(bantuan, index) in formData.bantuanList" :key="index" class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
               <FormKit type="text" label="Jenis Bantuan" v-model="bantuan.jenis" />
@@ -85,6 +134,41 @@
       <!-- Sidebar Kanan -->
       <div class="space-y-6">
         <rs-card>
+        <template #header>
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+              <Icon name="mdi:map-marker-check-outline" class="w-6 h-6 text-indigo-600" />
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900">Pengesahan Pemastautin</h2>
+              <p class="text-sm text-gray-500">Disahkan oleh Pegawai Penilai</p>
+            </div>
+          </div>
+        </template>
+
+        <template #body>
+          <div class="flex items-center space-x-3">
+            <FormKit
+              type="checkbox"
+              v-model="formData.sahPemastautin"
+              outer-class="!mb-0"  
+              input-class="align-middle" 
+            />
+            <span class="text-sm font-medium leading-snug mt-0">
+              Saya mengesahkan bahawa individu menetap di alamat yang dinyatakan.
+            </span>
+          </div>
+
+          <div class="flex justify-end gap-4 mt-6">
+              <rs-button variant="primary-outline" @click="handleCancel">Batal</rs-button>
+              <rs-button variant="primary" @click="handleSubmit">Simpan & Serah</rs-button>
+          </div>
+        </template>
+        
+
+      </rs-card>
+
+        <!-- <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
               <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
@@ -104,7 +188,7 @@
               <rs-button variant="primary" @click="handleSubmit">Simpan & Serah</rs-button>
             </div>
           </template>
-        </rs-card>
+        </rs-card> -->
       </div>
     </div>
   </div>
@@ -136,7 +220,8 @@ const formData = ref({
     { jenis: 'Bantuan Keperluan Hidup (B104)', jumlah: 300, tempoh: '1 bulan', justifikasi: '' }
   ],
   status: '',
-  catatan: ''
+  catatan: '',
+  sahPemastautin: false
 });
 
 const tambahBarisBantuan = () => {

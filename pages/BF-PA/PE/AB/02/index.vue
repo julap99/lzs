@@ -122,19 +122,19 @@
           <div class="flex justify-end gap-4 mt-6">
             <rs-button
               variant="primary-outline"
-              @click="navigateTo('/BF-PA/PE/AB/Paparan_JPPA')"
+              @click="goBack"
             >
               Kembali
             </rs-button>
             <rs-button
               variant="danger-outline"
-              @click="showRejectModal = true"
+              @click="handleReject"
             >
               Tolak
             </rs-button>
             <rs-button
               variant="primary"
-              @click="showApproveModal = true"
+              @click="handleApprove"
             >
               Sokong
             </rs-button>
@@ -143,124 +143,115 @@
       </template>
     </rs-card>
 
-    <!-- Approve Confirmation Modal -->
-    <rs-modal
-      v-model="showApproveModal"
-      title="Sahkan Sokongan"
-      size="sm"
-      position="center"
-    >
-      <template #body>
-        <div class="p-4">
-          <FormKit
-            type="form"
-            id="approveForm"
-            :actions="false"
-            @submit="handleApprove"
-          >
-            <FormKit
-              type="textarea"
-              name="remarks"
-              label="Catatan (Jika Perlu)"
-              placeholder="Masukkan catatan jika perlu"
-              rows="3"
-            />
-          </FormKit>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-end gap-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showApproveModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="primary"
-            :loading="isSubmitting"
-            @click="handleApprove"
-          >
-            Sahkan
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Reject Confirmation Modal -->
-    <rs-modal
-      v-model="showRejectModal"
-      title="Sahkan Penolakan"
-      size="sm"
-      position="center"
-    >
-      <template #body>
-        <div class="p-4">
-          <FormKit
-            type="form"
-            id="rejectForm"
-            :actions="false"
-            @submit="handleReject"
-          >
-            <FormKit
-              type="textarea"
-              name="remarks"
-              label="Sebab Penolakan"
-              placeholder="Masukkan sebab penolakan"
-              validation="required"
-              :validation-messages="{
-                required: 'Sebab penolakan diperlukan',
-              }"
-              rows="3"
-            />
-          </FormKit>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-end gap-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showRejectModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="danger"
-            :loading="isSubmitting"
-            @click="handleReject"
-          >
-            Sahkan
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Success Modal -->
+    <!-- Success Modal for Approval -->
     <rs-modal
       v-model="showSuccessModal"
-      title="Berjaya"
-      size="sm"
+      title="Sokongan Berjaya Dihantar"
+      size="md"
       position="center"
     >
       <template #body>
-        <div class="text-center p-4">
-          <Icon
-            name="heroicons:check-circle"
-            class="text-green-500 mx-auto mb-4"
-            size="48"
-          />
-          <p class="text-gray-700">
-            {{ successMessage }}
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <Icon
+              name="material-symbols:check-circle"
+              class="text-green-500"
+              size="48"
+            />
+          </div>
+          <p class="mb-2">
+            Permohonan elaun penolong amil berjaya disokong dan dihantar.
+          </p>
+          <p class="text-gray-600">
+            Status permohonan telah dikemaskini kepada "Menunggu Kelulusan Ketua JPPA".
           </p>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-center">
-          <rs-button
-            variant="primary"
-            @click="navigateTo('/BF-PA/PE/AB/Paparan_JPPA')"
+          <rs-button variant="primary" @click="handleModalClose">
+            Tutup
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Success Modal for Rejection -->
+    <rs-modal
+      v-model="showRejectSuccessModal"
+      title="Permohonan Ditolak"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <Icon
+              name="material-symbols:check-circle"
+              class="text-red-500"
+              size="48"
+            />
+          </div>
+          <p class="mb-2">
+            Permohonan elaun penolong amil telah ditolak.
+          </p>
+          <p class="text-gray-600">
+            Status permohonan telah dikemaskini kepada "Ditolak".
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center">
+          <rs-button variant="primary" @click="handleRejectModalClose">
+            Kembali ke Senarai
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmModal"
+      :title="isRejecting ? 'Pengesahan Tolak' : 'Pengesahan Sokong'"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div>
+          <p class="mb-4">
+            {{ isRejecting 
+              ? 'Adakah anda pasti untuk menolak permohonan elaun penolong amil ini?'
+              : 'Adakah anda pasti untuk menyokong permohonan elaun penolong amil ini?'
+            }}
+          </p>
+          <p class="text-gray-600 text-sm">
+            {{ isRejecting 
+              ? 'Selepas ditolak, permohonan ini tidak boleh dihantar semula. Notifikasi akan dihantar kepada pemohon.'
+              : 'Selepas disokong, permohonan akan dihantar kepada Ketua JPPA untuk kelulusan.'
+            }}
+          </p>
+          <div class="mt-4">
+            <FormKit
+              type="textarea"
+              name="remarks"
+              :label="isRejecting ? 'Sebab Penolakan (Pilihan)' : 'Ulasan / Justifikasi (Pilihan)'"
+              :placeholder="isRejecting ? 'Masukkan sebab penolakan permohonan (jika ada)' : 'Masukkan ulasan dan justifikasi sokongan (jika ada)'"
+              rows="3"
+              v-model="remarks"
+            />
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end space-x-3">
+          <rs-button variant="outline" @click="showConfirmModal = false">
+            Batal
+          </rs-button>
+          <rs-button 
+            :variant="isRejecting ? 'danger' : 'primary'" 
+            @click="confirmSubmission"
           >
-            OK
+            {{ isRejecting ? 'Tolak' : 'Sokong' }}
           </rs-button>
         </div>
       </template>
@@ -302,8 +293,8 @@ const application = ref({
   kariahLocation: "Masjid Wilayah Persekutuan",
   assignmentEndDate: "31/12/2024",
   assignmentType: "KARIAH",
-  allowanceRate: "1,500.00",
-  calculatedAllowance: "1,500.00",
+  allowanceRate: "280.00",
+  calculatedAllowance: "280.00",
   isEligible: true,
 });
 
@@ -312,65 +303,65 @@ const penolongAmil = ref([
   {
     id: 'PA001',
     name: 'Ahmad bin Abdullah',
-    totalAllowance: '1,500.00',
+    totalAllowance: '70.00',
   },
   {
     id: 'PA002',
     name: 'Siti Aminah binti Hassan',
-    totalAllowance: '1,000.00',
+    totalAllowance: '50.00',
   },
   {
     id: 'PA003',
     name: 'Mohd Razak bin Ibrahim',
-    totalAllowance: '1,000.00',
+    totalAllowance: '40.00',
   },
   {
     id: 'PA004',
     name: 'Nurul Aisyah binti Omar',
-    totalAllowance: '1,000.00',
+    totalAllowance: '50.00',
   },
   {
     id: 'PA005',
     name: 'Ali bin Hassan',
-    totalAllowance: '1,500.00',
+    totalAllowance: '70.00',
   }
 ]);
 
 // Mock activities data
 const activities = ref([
   {
-    id: 'ACT001',
-    name: 'Kutipan Zakat Kariah',
-    allowanceRate: '500.00',
+    id: 'B001',
+    name: 'Bancian Baru',
+    allowanceRate: '30.00',
   },
   {
-    id: 'ACT002',
-    name: 'Agihan Bantuan Asnaf',
-    allowanceRate: '500.00',
+    id: 'AR001',
+    name: 'Asnaf Review',
+    allowanceRate: '20.00',
   },
   {
-    id: 'ACT003',
-    name: 'Program Tazkirah',
-    allowanceRate: '500.00',
+    id: 'PB001',
+    name: 'Permohonan Bantuan',
+    allowanceRate: '20.00',
   },
   {
-    id: 'ACT004',
-    name: 'Lawatan Asnaf',
-    allowanceRate: '500.00',
+    id: 'B002',
+    name: 'Bancian Baru',
+    allowanceRate: '30.00',
   },
   {
-    id: 'ACT005',
-    name: 'Program Qiamullail',
-    allowanceRate: '500.00',
+    id: 'AR002',
+    name: 'Asnaf Review',
+    allowanceRate: '20.00',
   }
 ]);
 
 // Modal states
-const showApproveModal = ref(false);
-const showRejectModal = ref(false);
 const showSuccessModal = ref(false);
-const isSubmitting = ref(false);
-const successMessage = ref('');
+const showRejectSuccessModal = ref(false);
+const showConfirmModal = ref(false);
+const isRejecting = ref(false);
+const remarks = ref('');
 
 // Helper functions
 const getBantuanTypeLabel = (value) => {
@@ -406,44 +397,52 @@ const getStatusClass = (status) => {
 
 // Computed properties
 const totalAllowance = computed(() => {
-  return penolongAmil.value
-    .reduce((sum, pa) => sum + parseFloat(pa.totalAllowance.replace(/,/g, '')), 0)
+  return activities.value
+    .reduce((sum, activity) => sum + parseFloat(activity.allowanceRate), 0)
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 });
 
 // Form handlers
-const handleApprove = async () => {
-  isSubmitting.value = true;
-  
-  try {
-    // Mock API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    showApproveModal.value = false;
-    successMessage.value = "Permohonan telah berjaya disokong dan dihantar kepada Ketua JPPA.";
-    showSuccessModal.value = true;
-  } catch (error) {
-    console.error('Error approving application:', error);
-  } finally {
-    isSubmitting.value = false;
-  }
+const handleApprove = () => {
+  isRejecting.value = false;
+  showConfirmModal.value = true;
 };
 
-const handleReject = async () => {
-  isSubmitting.value = true;
-  
+const handleReject = () => {
+  isRejecting.value = true;
+  showConfirmModal.value = true;
+};
+
+const goBack = () => {
+  navigateTo('/BF-PA/PE/AB/Paparan_JPPA');
+};
+
+const handleModalClose = () => {
+  showSuccessModal.value = false;
+  navigateTo('/BF-PA/PE/AB/Paparan_JPPA');
+};
+
+const handleRejectModalClose = () => {
+  showRejectSuccessModal.value = false;
+  navigateTo('/BF-PA/PE/AB/Paparan_JPPA');
+};
+
+const confirmSubmission = async () => {
   try {
     // Mock API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    showRejectModal.value = false;
-    successMessage.value = "Permohonan telah ditolak.";
-    showSuccessModal.value = true;
+    showConfirmModal.value = false;
+    remarks.value = '';
+    
+    if (isRejecting.value) {
+      showRejectSuccessModal.value = true;
+    } else {
+      showSuccessModal.value = true;
+    }
   } catch (error) {
-    console.error('Error rejecting application:', error);
-  } finally {
-    isSubmitting.value = false;
+    console.error('Error processing submission:', error);
   }
 };
 </script>

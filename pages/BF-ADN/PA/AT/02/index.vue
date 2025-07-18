@@ -21,7 +21,7 @@
               <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
                 <Icon name="ph:note" class="w-6 h-6 text-yellow-600" />
               </div>
-              <div>
+              <div> 
                 <h2 class="text-md font-semibold text-gray-900">Maklumat Aduan</h2>
                 <p class="text-sm text-gray-500">Butiran ringkas aduan & kelas</p>
               </div>
@@ -35,6 +35,57 @@
             </div>
 
            
+          </template>
+        </rs-card>
+
+        <!-- Status Pemohon -->
+        <rs-card>
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:user-focus" class="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Status Pemohon</h2>
+                <p class="text-sm text-gray-500">Individu ini berdaftar sebagai penerima bantuan zakat (status: {{ aduan?.kategoriAsnaf || 'Belum Dikenalpasti' }})</p>
+              </div>
+            </div>
+          </template>
+
+          <template #body>
+            <div class="space-y-3">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p class="text-sm text-gray-500">Status Profil</p>
+                  <p class="font-medium text-gray-800">
+                    {{ aduan?.statusProfil || 'Tidak Diketahui' }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Kategori Asnaf</p>
+                  <p class="font-medium text-gray-800">
+                    {{ aduan?.kategoriAsnaf || 'Tiada Maklumat' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- <div>
+                <rs-button
+                  v-if="aduan?.statusProfil === 'Sudah Berdaftar'"
+                  variant="primary-outline"
+                  @click="navigateToKemaskiniProfil"
+                >
+                  Kemaskini Profil
+                </rs-button>
+                <rs-button
+                  v-else
+                  variant="primary"
+                  @click="navigateToDaftarAsnaf"
+                >
+                  Daftar Asnaf
+                </rs-button>
+              </div> -->
+            </div>
           </template>
         </rs-card>
 

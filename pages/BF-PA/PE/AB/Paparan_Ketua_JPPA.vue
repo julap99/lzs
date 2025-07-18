@@ -81,7 +81,7 @@
                       <a 
                         href="#" 
                         class="text-blue-600 hover:text-blue-800"
-                        @click.prevent="navigateTo('/BF-PA/PE/AB/03')"
+                        @click.prevent="navigateTo('/BF-PA/PE/AB/02/PA')"
                       >
                         {{ batch.batchNo }}
                       </a>

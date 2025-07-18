@@ -69,21 +69,21 @@ definePageMeta({
 
 // Breadcrumb
 const breadcrumb = ref([
-  {
-    name: "BF-PRF",
-    type: "link",
-    path: "/BF-PRF",
-  },
-  {
-    name: "AS",
-    type: "link",
-    path: "/BF-PRF/AS",
-  },
-  {
-    name: "Permohonan",
-    type: "link",
-    path: "/BF-PRF/AS/permohonan",
-  },
+  // {
+  //   name: "BF-PRF",
+  //   type: "link",
+  //   path: "/BF-PRF",
+  // },
+  // {
+  //   name: "AS",
+  //   type: "link",
+  //   path: "/BF-PRF/AS",
+  // },
+  // {
+  //   name: "Permohonan",
+  //   type: "link",
+  //   path: "/BF-PRF/AS/permohonan",
+  // },
   {
     name: "Senarai Semakan",
     type: "current",
