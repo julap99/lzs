@@ -535,8 +535,14 @@ const isFormValid = computed(() => {
   const hasSearchName = formData.value.searchName.trim() !== '';
   
   // At least one field must be filled
-  return (hasSearchKeyword || hasIdType || hasIdNumber || hasSearchName) &&
-         Object.values(validationErrors.value).every(error => error === '');
+  const hasAtLeastOneField = hasSearchKeyword || hasIdType || hasIdNumber || hasSearchName;
+  
+  // Only check for critical validation errors (not empty field errors for flexible search)
+  const hasCriticalErrors = validationErrors.value.searchKeyword || 
+                           validationErrors.value.searchName || 
+                           validationErrors.value.idNumber;
+  
+  return hasAtLeastOneField && !hasCriticalErrors;
 });
 
 const getPlaceholder = () => {
@@ -571,7 +577,8 @@ const validateField = (fieldName) => {
       break;
       
     case 'idType':
-      if (value === '') {
+      // Only validate if ID number is filled, otherwise it's optional for flexible search
+      if (value === '' && formData.value.idNumber.trim() !== '') {
         validationErrors.value.idType = 'Sila pilih Jenis Pengenalan ID';
       } else {
         validationErrors.value.idType = '';
@@ -585,6 +592,8 @@ const validateField = (fieldName) => {
         validationErrors.value.idNumber = 'Pengenalan ID terlalu panjang (maksimum 20 aksara)';
       } else if (formData.value.idType === 'myKad' && !/^\d{12}$/.test(value.replace(/\s/g, ''))) {
         validationErrors.value.idNumber = 'Format MyKad tidak sah (12 digit)';
+      } else if (formData.value.idType === '' && value.trim() !== '') {
+        validationErrors.value.idNumber = 'Sila pilih jenis ID dahulu';
       } else {
         validationErrors.value.idNumber = '';
       }
@@ -640,8 +649,13 @@ const validateAndSearch = () => {
     return;
   }
 
-  // Check for validation errors
-  if (Object.values(validationErrors.value).some(error => error !== '')) {
+  // Only check for critical validation errors (not empty field errors for flexible search)
+  const criticalErrors = [];
+  if (validationErrors.value.searchKeyword) criticalErrors.push(validationErrors.value.searchKeyword);
+  if (validationErrors.value.searchName) criticalErrors.push(validationErrors.value.searchName);
+  if (validationErrors.value.idNumber) criticalErrors.push(validationErrors.value.idNumber);
+  
+  if (criticalErrors.length > 0) {
     errorMessage.value = 'Sila betulkan ralat dalam borang';
     return;
   }
