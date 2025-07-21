@@ -482,7 +482,7 @@ const formData = ref({
   searchName: "",
 });
 
-// Enhanced mock database with more details
+// Enhanced mock database with comprehensive data for presentation
 const mockDatabase = [
   { 
     id: '123456789', 
@@ -524,6 +524,166 @@ const mockDatabase = [
     email: 'siti.omar@email.com',
     registrationDate: '12/11/2023'
   },
+  { 
+    id: '888999000', 
+    name: 'Mohammad bin Ismail', 
+    kariah: 'Kariah E', 
+    bankAccount: '007788990011', 
+    status: 'Asnaf',
+    phone: '013-4567890',
+    email: 'mohammad.ismail@email.com',
+    registrationDate: '05/02/2023'
+  },
+  { 
+    id: '444555666', 
+    name: 'Aminah binti Zulkifli', 
+    kariah: 'Kariah F', 
+    bankAccount: '002233445566', 
+    status: 'Bukan Asnaf',
+    phone: '014-5678901',
+    email: 'aminah.zulkifli@email.com',
+    registrationDate: '18/04/2023'
+  },
+  { 
+    id: '777888999', 
+    name: 'Hassan bin Abdullah', 
+    kariah: 'Kariah G', 
+    bankAccount: '006677889900', 
+    status: 'Asnaf',
+    phone: '015-6789012',
+    email: 'hassan.abdullah@email.com',
+    registrationDate: '30/05/2023'
+  },
+  { 
+    id: '222333444', 
+    name: 'Noraini binti Kamal', 
+    kariah: 'Kariah H', 
+    bankAccount: '008899001122', 
+    status: 'Bukan Asnaf',
+    phone: '017-7890123',
+    email: 'noraini.kamal@email.com',
+    registrationDate: '14/06/2023'
+  },
+  { 
+    id: '666777888', 
+    name: 'Ismail bin Rahman', 
+    kariah: 'Kariah I', 
+    bankAccount: '003344556677', 
+    status: 'Asnaf',
+    phone: '018-8901234',
+    email: 'ismail.rahman@email.com',
+    registrationDate: '25/08/2023'
+  },
+  { 
+    id: '333444555', 
+    name: 'Zainab binti Yusof', 
+    kariah: 'Kariah J', 
+    bankAccount: '004455667788', 
+    status: 'Bukan Asnaf',
+    phone: '019-9012345',
+    email: 'zainab.yusof@email.com',
+    registrationDate: '09/09/2023'
+  },
+  { 
+    id: '999000111', 
+    name: 'Abdul Rahman bin Ali', 
+    kariah: 'Kariah K', 
+    bankAccount: '001122334455', 
+    status: 'Asnaf',
+    phone: '010-0123456',
+    email: 'abdul.rahman@email.com',
+    registrationDate: '20/10/2023'
+  },
+  { 
+    id: '555666777', 
+    name: 'Mariam binti Khalid', 
+    kariah: 'Kariah L', 
+    bankAccount: '005566778899', 
+    status: 'Bukan Asnaf',
+    phone: '011-1234567',
+    email: 'mariam.khalid@email.com',
+    registrationDate: '03/12/2023'
+  },
+  { 
+    id: '111222333', 
+    name: 'Khalid bin Omar', 
+    kariah: 'Kariah M', 
+    bankAccount: '009988776655', 
+    status: 'Asnaf',
+    phone: '012-2345678',
+    email: 'khalid.omar@email.com',
+    registrationDate: '17/01/2024'
+  },
+  { 
+    id: '777888999', 
+    name: 'Salma binti Ibrahim', 
+    kariah: 'Kariah N', 
+    bankAccount: '004433221100', 
+    status: 'Bukan Asnaf',
+    phone: '013-3456789',
+    email: 'salma.ibrahim@email.com',
+    registrationDate: '28/02/2024'
+  },
+  { 
+    id: '444555666', 
+    name: 'Ibrahim bin Ahmad', 
+    kariah: 'Kariah O', 
+    bankAccount: '007788990011', 
+    status: 'Asnaf',
+    phone: '014-4567890',
+    email: 'ibrahim.ahmad@email.com',
+    registrationDate: '10/03/2024'
+  },
+  { 
+    id: '222333444', 
+    name: 'Nurul Ain binti Zainal', 
+    kariah: 'Kariah P', 
+    bankAccount: '002233445566', 
+    status: 'Bukan Asnaf',
+    phone: '015-5678901',
+    email: 'nurul.ain@email.com',
+    registrationDate: '22/03/2024'
+  },
+  { 
+    id: '888999000', 
+    name: 'Zainal bin Mohamed', 
+    kariah: 'Kariah Q', 
+    bankAccount: '006677889900', 
+    status: 'Asnaf',
+    phone: '016-6789012',
+    email: 'zainal.mohamed@email.com',
+    registrationDate: '05/04/2024'
+  },
+  { 
+    id: '666777888', 
+    name: 'Rohana binti Sulaiman', 
+    kariah: 'Kariah R', 
+    bankAccount: '008899001122', 
+    status: 'Bukan Asnaf',
+    phone: '017-7890123',
+    email: 'rohana.sulaiman@email.com',
+    registrationDate: '18/04/2024'
+  },
+  { 
+    id: '333444555', 
+    name: 'Sulaiman bin Hashim', 
+    kariah: 'Kariah S', 
+    bankAccount: '003344556677', 
+    status: 'Asnaf',
+    phone: '018-8901234',
+    email: 'sulaiman.hashim@email.com',
+    registrationDate: '30/04/2024'
+  },
+  { 
+    id: '999000111', 
+    name: 'Haslina binti Aziz', 
+    kariah: 'Kariah T', 
+    bankAccount: '004455667788', 
+    status: 'Bukan Asnaf',
+    phone: '019-9012345',
+    email: 'haslina.aziz@email.com',
+    registrationDate: '12/05/2024'
+  }
 ];
 
 // Computed property for form validation
