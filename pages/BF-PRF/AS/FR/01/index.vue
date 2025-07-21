@@ -482,12 +482,12 @@ const formData = ref({
   searchName: "",
 });
 
-// Enhanced mock database with comprehensive data for presentation
+// Enhanced mock database with proper kariah structure for presentation
 const mockDatabase = [
   { 
     id: '123456789', 
     name: 'Ali bin Abu', 
-    kariah: 'Kariah A', 
+    kariah: 'Kariah Masjid Al-Hidayah', 
     bankAccount: '001122334455', 
     status: 'Asnaf',
     phone: '012-3456789',
@@ -497,7 +497,7 @@ const mockDatabase = [
   { 
     id: '987654321', 
     name: 'Fatimah binti Ahmad', 
-    kariah: 'Kariah B', 
+    kariah: 'Kariah Masjid Al-Ikhlas', 
     bankAccount: '005566778899', 
     status: 'Bukan Asnaf',
     phone: '019-8765432',
@@ -507,7 +507,7 @@ const mockDatabase = [
   { 
     id: '555666777', 
     name: 'Ahmad bin Hassan', 
-    kariah: 'Kariah C', 
+    kariah: 'Kariah Masjid Al-Muttaqin', 
     bankAccount: '009988776655', 
     status: 'Asnaf',
     phone: '011-2345678',
@@ -517,7 +517,7 @@ const mockDatabase = [
   { 
     id: '111222333', 
     name: 'Siti binti Omar', 
-    kariah: 'Kariah D', 
+    kariah: 'Kariah Masjid Al-Rahman', 
     bankAccount: '004433221100', 
     status: 'Bukan Asnaf',
     phone: '016-7890123',
@@ -527,7 +527,7 @@ const mockDatabase = [
   { 
     id: '888999000', 
     name: 'Mohammad bin Ismail', 
-    kariah: 'Kariah E', 
+    kariah: 'Kariah Masjid Al-Salam', 
     bankAccount: '007788990011', 
     status: 'Asnaf',
     phone: '013-4567890',
@@ -537,7 +537,7 @@ const mockDatabase = [
   { 
     id: '444555666', 
     name: 'Aminah binti Zulkifli', 
-    kariah: 'Kariah F', 
+    kariah: 'Kariah Masjid Al-Taqwa', 
     bankAccount: '002233445566', 
     status: 'Bukan Asnaf',
     phone: '014-5678901',
@@ -547,7 +547,7 @@ const mockDatabase = [
   { 
     id: '777888999', 
     name: 'Hassan bin Abdullah', 
-    kariah: 'Kariah G', 
+    kariah: 'Kariah Masjid An-Nur', 
     bankAccount: '006677889900', 
     status: 'Asnaf',
     phone: '015-6789012',
@@ -557,7 +557,7 @@ const mockDatabase = [
   { 
     id: '222333444', 
     name: 'Noraini binti Kamal', 
-    kariah: 'Kariah H', 
+    kariah: 'Kariah Masjid Ar-Rahman', 
     bankAccount: '008899001122', 
     status: 'Bukan Asnaf',
     phone: '017-7890123',
@@ -567,7 +567,7 @@ const mockDatabase = [
   { 
     id: '666777888', 
     name: 'Ismail bin Rahman', 
-    kariah: 'Kariah I', 
+    kariah: 'Kariah Masjid As-Salam', 
     bankAccount: '003344556677', 
     status: 'Asnaf',
     phone: '018-8901234',
@@ -577,7 +577,7 @@ const mockDatabase = [
   { 
     id: '333444555', 
     name: 'Zainab binti Yusof', 
-    kariah: 'Kariah J', 
+    kariah: 'Kariah Masjid At-Taqwa', 
     bankAccount: '004455667788', 
     status: 'Bukan Asnaf',
     phone: '019-9012345',
@@ -587,7 +587,7 @@ const mockDatabase = [
   { 
     id: '999000111', 
     name: 'Abdul Rahman bin Ali', 
-    kariah: 'Kariah K', 
+    kariah: 'Masjid Negeri', 
     bankAccount: '001122334455', 
     status: 'Asnaf',
     phone: '010-0123456',
@@ -597,7 +597,7 @@ const mockDatabase = [
   { 
     id: '555666777', 
     name: 'Mariam binti Khalid', 
-    kariah: 'Kariah L', 
+    kariah: 'Masjid Sultan Salahuddin Abdul Aziz Shah', 
     bankAccount: '005566778899', 
     status: 'Bukan Asnaf',
     phone: '011-1234567',
@@ -607,7 +607,7 @@ const mockDatabase = [
   { 
     id: '111222333', 
     name: 'Khalid bin Omar', 
-    kariah: 'Kariah M', 
+    kariah: 'Masjid Al-Azim Pandan Indah', 
     bankAccount: '009988776655', 
     status: 'Asnaf',
     phone: '012-2345678',
@@ -617,7 +617,7 @@ const mockDatabase = [
   { 
     id: '777888999', 
     name: 'Salma binti Ibrahim', 
-    kariah: 'Kariah N', 
+    kariah: 'Masjid Al-Amin Bangi', 
     bankAccount: '004433221100', 
     status: 'Bukan Asnaf',
     phone: '013-3456789',
@@ -627,7 +627,7 @@ const mockDatabase = [
   { 
     id: '444555666', 
     name: 'Ibrahim bin Ahmad', 
-    kariah: 'Kariah O', 
+    kariah: 'Masjid Wilayah Persekutuan', 
     bankAccount: '007788990011', 
     status: 'Asnaf',
     phone: '014-4567890',
@@ -637,7 +637,7 @@ const mockDatabase = [
   { 
     id: '222333444', 
     name: 'Nurul Ain binti Zainal', 
-    kariah: 'Kariah P', 
+    kariah: 'Masjid Al-Khairiyah', 
     bankAccount: '002233445566', 
     status: 'Bukan Asnaf',
     phone: '015-5678901',
@@ -647,7 +647,7 @@ const mockDatabase = [
   { 
     id: '888999000', 
     name: 'Zainal bin Mohamed', 
-    kariah: 'Kariah Q', 
+    kariah: 'Taman Seri Gombak', 
     bankAccount: '006677889900', 
     status: 'Asnaf',
     phone: '016-6789012',
@@ -657,7 +657,7 @@ const mockDatabase = [
   { 
     id: '666777888', 
     name: 'Rohana binti Sulaiman', 
-    kariah: 'Kariah R', 
+    kariah: 'Masjid Damansara Perdana', 
     bankAccount: '008899001122', 
     status: 'Bukan Asnaf',
     phone: '017-7890123',
@@ -667,7 +667,7 @@ const mockDatabase = [
   { 
     id: '333444555', 
     name: 'Sulaiman bin Hashim', 
-    kariah: 'Kariah S', 
+    kariah: 'Masjid Bandar Utama', 
     bankAccount: '003344556677', 
     status: 'Asnaf',
     phone: '018-8901234',
@@ -677,7 +677,7 @@ const mockDatabase = [
   { 
     id: '999000111', 
     name: 'Haslina binti Aziz', 
-    kariah: 'Kariah T', 
+    kariah: 'Batang Kali', 
     bankAccount: '004455667788', 
     status: 'Bukan Asnaf',
     phone: '019-9012345',
