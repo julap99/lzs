@@ -58,7 +58,7 @@
                     input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     @input="validateField('searchName')"
                   />
-                  <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Contoh: "nur . ahmad" untuk carian tepat</p>
+                  <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Semua perkataan mesti ada dalam nama. Contoh: "nur . ahmad" untuk carian tepat</p>
                 </div>
 
                 <!-- Kariah Field -->
@@ -215,7 +215,7 @@
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-3">
                     <Icon name="mdi:account-group" size="1.5rem" class="text-blue-600" />
-                    <h3 class="text-lg font-medium text-gray-900">Senarai Profil Ditemui</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Paparan Hasil Carian</h3>
                   </div>
                   <div class="flex items-center space-x-4">
                     <span class="text-sm text-gray-500">{{ searchResults.length }} profil ditemui</span>
@@ -232,191 +232,72 @@
                 </div>
               </template>
               <template #body>
-                <div class="space-y-3">
-                  <div 
-                    v-for="profile in searchResults" 
-                    :key="profile.id" 
-                    @click="selectProfile(profile)" 
-                    class="cursor-pointer hover:bg-blue-50 p-4 border border-gray-200 rounded-lg transition-all duration-200 hover:shadow-md hover:border-blue-300"
-                    tabindex="0"
-                    @keydown.enter="selectProfile(profile)"
-                    @keydown.space="selectProfile(profile)"
-                  >
-                    <div class="flex items-center justify-between">
-                      <div class="flex-1">
-                        <div class="font-semibold text-gray-900 text-lg">{{ profile.name }}</div>
-                        <div class="text-sm text-gray-600 mt-1">
-                          <span class="inline-flex items-center">
-                            <Icon name="mdi:map-marker" size="1rem" class="mr-1" />
-                            {{ profile.kariah }}
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Jenis Pengenalan ID
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Pengenalan ID
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Nama
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Kariah
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Kategori Asnaf
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Tindakan
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="profile in searchResults" :key="profile.id" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ getSelectedIdTypeLabel(profile.idType) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ profile.id }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {{ profile.name }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ profile.kariah }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <span :class="getKategoriAsnafVariant(profile.kategoriAsnaf)" class="text-sm font-medium">
+                            {{ profile.kategoriAsnaf }}
                           </span>
-                          <span class="mx-2">•</span>
-                          <span class="inline-flex items-center">
-                            <Icon name="mdi:bank" size="1rem" class="mr-1" />
-                            {{ profile.bankAccount }}
-                          </span>
-                        </div>
-                        <div class="mt-2 flex items-center space-x-4 text-xs text-gray-500">
-                          <span class="inline-flex items-center">
-                            <Icon name="mdi:calendar" size="1rem" class="mr-1" />
-                            Daftar: {{ profile.registrationDate || 'N/A' }}
-                          </span>
-                          <span class="inline-flex items-center">
-                            <Icon name="mdi:phone" size="1rem" class="mr-1" />
-                            {{ profile.phone || 'N/A' }}
-                          </span>
-                        </div>
-                      </div>
-                      <div class="ml-4 flex items-center space-x-2">
-                        <span :class="getKategoriAsnafVariant(profile.kategoriAsnaf)" class="text-sm font-medium">
-                          {{ profile.kategoriAsnaf }}
-                        </span>
-                        <Icon name="mdi:chevron-right" size="1.5rem" class="text-gray-400" />
-                      </div>
-                    </div>
-                  </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <rs-button 
+                            variant="primary" 
+                            size="sm"
+                            @click="updateProfile(profile)"
+                            class="text-xs"
+                          >
+                            <Icon name="mdi:pencil" size="1rem" class="mr-1" />
+                            Kemaskini Profil
+                          </rs-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </template>
             </rs-card>
           </div>
 
-          <!-- Selected Profile Section -->
-          <div v-if="selectedProfile" class="mt-8">
-            <rs-card variant="success" class="mb-6 shadow-lg">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3">
-                    <Icon name="mdi:check-circle" size="1.5rem" class="text-green-600" />
-                    <h3 class="text-lg font-medium text-gray-900">Profil Ditemui</h3>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <rs-button 
-                      variant="primary-outline" 
-                      size="sm"
-                      @click="printProfile"
-                    >
-                      <Icon name="mdi:printer" size="1rem" class="mr-1" />
-                      Print
-                    </rs-button>
-                    <rs-button 
-                      variant="primary-outline" 
-                      size="sm"
-                      @click="viewProfileHistory"
-                    >
-                      <Icon name="mdi:history" size="1rem" class="mr-1" />
-                      History
-                    </rs-button>
-                  </div>
-                </div>
-              </template>
-              <template #body>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <!-- Basic Info -->
-                  <div class="space-y-4">
-                    <h4 class="font-medium text-gray-900 mb-3">Maklumat Asas</h4>
-                    <div class="space-y-3">
-                      <div class="flex items-center space-x-3">
-                        <Icon name="mdi:card-account-details" size="1.2rem" class="text-blue-600" />
-                        <div>
-                          <p class="text-sm text-gray-500">Jenis Pengenalan ID</p>
-                          <p class="font-medium">{{ getSelectedIdTypeLabel() }}</p>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-3">
-                        <Icon name="mdi:numeric" size="1.2rem" class="text-blue-600" />
-                        <div>
-                          <p class="text-sm text-gray-500">Pengenalan ID</p>
-                          <p class="font-medium">{{ selectedProfile.id }}</p>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-3">
-                        <Icon name="mdi:account" size="1.2rem" class="text-blue-600" />
-                        <div>
-                          <p class="text-sm text-gray-500">Nama</p>
-                          <p class="font-medium">{{ selectedProfile.name }}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <!-- Contact & Location -->
-                  <div class="space-y-4">
-                    <h4 class="font-medium text-gray-900 mb-3">Maklumat Perhubungan</h4>
-                    <div class="space-y-3">
-                      <div class="flex items-center space-x-3">
-                        <Icon name="mdi:map-marker" size="1.2rem" class="text-blue-600" />
-                        <div>
-                          <p class="text-sm text-gray-500">Kariah</p>
-                          <p class="font-medium">{{ selectedProfile.kariah }}</p>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-3">
-                        <Icon name="mdi:phone" size="1.2rem" class="text-blue-600" />
-                        <div>
-                          <p class="text-sm text-gray-500">Telefon</p>
-                          <p class="font-medium">{{ selectedProfile.phone || 'N/A' }}</p>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-3">
-                        <Icon name="mdi:email" size="1.2rem" class="text-blue-600" />
-                        <div>
-                          <p class="text-sm text-gray-500">Emel</p>
-                          <p class="font-medium">{{ selectedProfile.email || 'N/A' }}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Financial & Status -->
-                  <div class="space-y-4">
-                    <h4 class="font-medium text-gray-900 mb-3">Maklumat Kewangan</h4>
-                    <div class="space-y-3">
-                      <div class="flex items-center space-x-3">
-                        <Icon name="mdi:bank" size="1.2rem" class="text-blue-600" />
-                        <div>
-                          <p class="text-sm text-gray-500">Akaun Bank</p>
-                          <p class="font-medium">{{ selectedProfile.bankAccount }}</p>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-3">
-                        <Icon name="mdi:badge-account" size="1.2rem" class="text-blue-600" />
-                        <div>
-                          <p class="text-sm text-gray-500">Kategori Asnaf</p>
-                          <p class="font-medium">
-                            <span :class="getKategoriAsnafVariant(selectedProfile.kategoriAsnaf)">
-                              {{ selectedProfile.kategoriAsnaf }}
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-3">
-                        <Icon name="mdi:calendar" size="1.2rem" class="text-blue-600" />
-                        <div>
-                          <p class="text-sm text-gray-500">Tarikh Pendaftaran</p>
-                          <p class="font-medium">{{ selectedProfile.registrationDate || 'N/A' }}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template>
-              <template #footer>
-                <div class="flex justify-end space-x-3">
-                  <rs-button variant="primary-outline" @click="viewFullProfile" class="px-6">
-                    <Icon name="mdi:eye" size="1rem" class="mr-2" />
-                    Lihat Profil Lengkap
-                  </rs-button>
-                  <rs-button variant="primary" @click="updateProfile" class="px-6">
-                    <Icon name="mdi:pencil" size="1rem" class="mr-2" />
-                    Kemaskini Profil
-                  </rs-button>
-                </div>
-              </template>
-            </rs-card>
-          </div>
 
           <!-- No Results Section -->
-          <div v-if="searchCompleted && searchResults.length === 0 && !selectedProfile" class="mt-8">
+          <div v-if="searchCompleted && searchResults.length === 0" class="mt-8">
             <rs-card variant="warning" class="mb-6 shadow-md">
               <template #header>
                 <div class="flex items-center space-x-3">
@@ -541,6 +422,7 @@ const formData = ref({
 const mockDatabase = [
   { 
     id: '123456789', 
+    idType: 'myKad',
     name: 'Ali bin Abu', 
     kariah: 'Kariah Masjid Al-Hidayah', 
     bankAccount: '001122334455', 
@@ -551,6 +433,7 @@ const mockDatabase = [
   },
   { 
     id: '987654321', 
+    idType: 'myKad',
     name: 'Fatimah binti Ahmad', 
     kariah: 'Kariah Masjid Al-Ikhlas', 
     bankAccount: '005566778899', 
@@ -561,6 +444,7 @@ const mockDatabase = [
   },
   { 
     id: '555666777', 
+    idType: 'myKad',
     name: 'Ahmad bin Hassan', 
     kariah: 'Kariah Masjid Al-Muttaqin', 
     bankAccount: '009988776655', 
@@ -571,6 +455,7 @@ const mockDatabase = [
   },
   { 
     id: '111222333', 
+    idType: 'myKad',
     name: 'Siti binti Omar', 
     kariah: 'Kariah Masjid Al-Rahman', 
     bankAccount: '004433221100', 
@@ -581,6 +466,7 @@ const mockDatabase = [
   },
   { 
     id: '888999000', 
+    idType: 'myKad',
     name: 'Mohammad bin Ismail', 
     kariah: 'Kariah Masjid Al-Salam', 
     bankAccount: '007788990011', 
@@ -591,6 +477,7 @@ const mockDatabase = [
   },
   { 
     id: '444555666', 
+    idType: 'myKad',
     name: 'Aminah binti Zulkifli', 
     kariah: 'Kariah Masjid Al-Taqwa', 
     bankAccount: '002233445566', 
@@ -601,6 +488,7 @@ const mockDatabase = [
   },
   { 
     id: '777888999', 
+    idType: 'myKad',
     name: 'Hassan bin Abdullah', 
     kariah: 'Kariah Masjid An-Nur', 
     bankAccount: '006677889900', 
@@ -611,6 +499,7 @@ const mockDatabase = [
   },
   { 
     id: '222333444', 
+    idType: 'myKad',
     name: 'Noraini binti Kamal', 
     kariah: 'Kariah Masjid Ar-Rahman', 
     bankAccount: '008899001122', 
@@ -621,6 +510,7 @@ const mockDatabase = [
   },
   { 
     id: '666777888', 
+    idType: 'myKad',
     name: 'Ismail bin Rahman', 
     kariah: 'Kariah Masjid As-Salam', 
     bankAccount: '003344556677', 
@@ -631,6 +521,7 @@ const mockDatabase = [
   },
   { 
     id: '333444555', 
+    idType: 'myKad',
     name: 'Zainab binti Yusof', 
     kariah: 'Kariah Masjid At-Taqwa', 
     bankAccount: '004455667788', 
@@ -641,6 +532,7 @@ const mockDatabase = [
   },
   { 
     id: '999000111', 
+    idType: 'myKad',
     name: 'Abdul Rahman bin Ali', 
     kariah: 'Masjid Negeri', 
     bankAccount: '001122334455', 
@@ -651,6 +543,7 @@ const mockDatabase = [
   },
   { 
     id: '555666777', 
+    idType: 'myKad',
     name: 'Mariam binti Khalid', 
     kariah: 'Masjid Sultan Salahuddin Abdul Aziz Shah', 
     bankAccount: '005566778899', 
@@ -661,6 +554,7 @@ const mockDatabase = [
   },
   { 
     id: '111222333', 
+    idType: 'myKad',
     name: 'Khalid bin Omar', 
     kariah: 'Masjid Al-Azim Pandan Indah', 
     bankAccount: '009988776655', 
@@ -671,6 +565,7 @@ const mockDatabase = [
   },
   { 
     id: '777888999', 
+    idType: 'myKad',
     name: 'Salma binti Ibrahim', 
     kariah: 'Masjid Al-Amin Bangi', 
     bankAccount: '004433221100', 
@@ -681,6 +576,7 @@ const mockDatabase = [
   },
   { 
     id: '444555666', 
+    idType: 'myKad',
     name: 'Ibrahim bin Ahmad', 
     kariah: 'Masjid Wilayah Persekutuan', 
     bankAccount: '007788990011', 
@@ -691,6 +587,7 @@ const mockDatabase = [
   },
   { 
     id: '222333444', 
+    idType: 'myKad',
     name: 'Nurul Ain binti Zainal', 
     kariah: 'Masjid Al-Khairiyah', 
     bankAccount: '002233445566', 
@@ -701,6 +598,7 @@ const mockDatabase = [
   },
   { 
     id: '888999000', 
+    idType: 'myKad',
     name: 'Zainal bin Mohamed', 
     kariah: 'Taman Seri Gombak', 
     bankAccount: '006677889900', 
@@ -711,6 +609,7 @@ const mockDatabase = [
   },
   { 
     id: '666777888', 
+    idType: 'myKad',
     name: 'Rohana binti Sulaiman', 
     kariah: 'Masjid Damansara Perdana', 
     bankAccount: '008899001122', 
@@ -721,6 +620,7 @@ const mockDatabase = [
   },
   { 
     id: '333444555', 
+    idType: 'myKad',
     name: 'Sulaiman bin Hashim', 
     kariah: 'Masjid Bandar Utama', 
     bankAccount: '003344556677', 
@@ -731,6 +631,7 @@ const mockDatabase = [
   },
   { 
     id: '999000111', 
+    idType: 'myKad',
     name: 'Haslina binti Aziz', 
     kariah: 'Batang Kali', 
     bankAccount: '004455667788', 
@@ -741,6 +642,7 @@ const mockDatabase = [
   },
   { 
     id: '777888999', 
+    idType: 'myKad',
     name: 'Nur Elezza Ainna Ahmad', 
     kariah: 'Kariah Masjid Al-Hidayah', 
     bankAccount: '112233445566', 
@@ -751,6 +653,7 @@ const mockDatabase = [
   },
   { 
     id: '888999000', 
+    idType: 'myKad',
     name: 'Nur Elezza Binti Mohammad Ahmad', 
     kariah: 'Kariah Masjid Al-Ikhlas', 
     bankAccount: '223344556677', 
@@ -761,6 +664,7 @@ const mockDatabase = [
   },
   { 
     id: '666777888', 
+    idType: 'myKad',
     name: 'Mohammad Harun Bin Ali Hassan', 
     kariah: 'Kariah Masjid Al-Muttaqin', 
     bankAccount: '334455667788', 
@@ -771,6 +675,7 @@ const mockDatabase = [
   },
   { 
     id: '555666777', 
+    idType: 'myKad',
     name: 'Aminah Binti Omar Bin Khalid', 
     kariah: 'Kariah Masjid Al-Rahman', 
     bankAccount: '445566778899', 
@@ -812,9 +717,9 @@ const getPlaceholder = () => {
   }
 };
 
-const getSelectedIdTypeLabel = () => {
-  const option = idTypeOptions.find(opt => opt.value === formData.value.idType);
-  return option ? option.label : formData.value.idType;
+const getSelectedIdTypeLabel = (idType) => {
+  const option = idTypeOptions.find(opt => opt.value === idType);
+  return option ? option.label : idType;
 };
 
 const getKategoriAsnafVariant = (kategori) => {
@@ -980,11 +885,12 @@ const performFlexibleSearch = async () => {
           
           nameMatch = hasTerm1 && hasTerm2;
         } else {
-          // Simple search: any part of the name
-          const searchWords = searchName.toLowerCase().split(' ');
+          // Simple search: ALL parts of the name must be found (AND logic)
+          const searchWords = searchName.toLowerCase().split(' ').filter(word => word.trim() !== '');
           const nameWords = profileName.split(' ');
           
-          nameMatch = searchWords.some(searchWord => 
+          // Check if ALL search words are found in the name (AND logic)
+          nameMatch = searchWords.every(searchWord => 
             nameWords.some(nameWord => nameWord.includes(searchWord.trim()))
           );
         }
@@ -1070,8 +976,8 @@ const viewFullProfile = () => {
   console.log('Viewing full profile...');
 };
 
-const updateProfile = () => {
-  // Navigate to update profile page
+const updateProfile = (profile) => {
+  // Navigate to update profile page with profile data
   navigateTo("/BF-PRF/AS/UP/02");
 };
 
