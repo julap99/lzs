@@ -82,7 +82,7 @@
                   />
                 </div>
 
-                <div>
+                <div v-if="formData.idType">
                   <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center">
                       <Icon name="mdi:numeric" size="1.2rem" class="text-blue-600 mr-2" />
@@ -708,7 +708,7 @@ const isFormValid = computed(() => {
 const getPlaceholder = () => {
   switch (formData.value.idType) {
     case "myKad":
-      return "Contoh: 123456789";
+      return "Contoh: 123456789012 (12 digit)";
     case "foreignID":
       return "Masukkan Foreign ID";
     default:
@@ -737,12 +737,12 @@ const validateField = (fieldName) => {
       break;
       
     case 'idType':
-      // Only validate if ID number is filled, otherwise it's optional for flexible search
-      if (value === '' && formData.value.idNumber.trim() !== '') {
-        validationErrors.value.idType = 'Sila pilih Jenis Pengenalan ID';
-      } else {
-        validationErrors.value.idType = '';
+      // Clear ID number when ID type changes
+      if (value === '') {
+        formData.value.idNumber = '';
+        validationErrors.value.idNumber = '';
       }
+      validationErrors.value.idType = '';
       break;
       
     case 'idNumber':
@@ -752,8 +752,8 @@ const validateField = (fieldName) => {
         validationErrors.value.idNumber = 'Pengenalan ID terlalu panjang (maksimum 20 aksara)';
       } else if (formData.value.idType === 'myKad' && !/^\d{12}$/.test(value.replace(/\s/g, ''))) {
         validationErrors.value.idNumber = 'Format MyKad tidak sah (12 digit)';
-      } else if (formData.value.idType === '' && value.trim() !== '') {
-        validationErrors.value.idNumber = 'Sila pilih jenis ID dahulu';
+      } else if (formData.value.idType === 'foreignID' && value.trim().length < 3) {
+        validationErrors.value.idNumber = 'Foreign ID mesti sekurang-kurangnya 3 aksara';
       } else {
         validationErrors.value.idNumber = '';
       }
