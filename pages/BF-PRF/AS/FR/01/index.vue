@@ -37,26 +37,74 @@
           <!-- Form Section -->
           <div class="mb-8">
             <FormKit type="form" :actions="false" @submit="handleSubmit">
-              <!-- Search Keyword Field -->
-              <div class="mb-6">
-                <div class="flex items-center justify-between mb-2">
-                  <div class="flex items-center">
-                    <Icon name="mdi:magnify" size="1.2rem" class="text-blue-600 mr-2" />
-                    <label class="text-sm font-medium text-gray-700">Carian Maklumat</label>
+              <!-- Enhanced Search Fields -->
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Name Field -->
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center">
+                      <Icon name="mdi:account" size="1.2rem" class="text-blue-600 mr-2" />
+                      <label class="text-sm font-medium text-gray-700">Nama</label>
+                    </div>
+                    <div v-if="validationErrors.searchName" class="text-xs text-red-500">
+                      {{ validationErrors.searchName }}
+                    </div>
                   </div>
-                  <div v-if="validationErrors.searchKeyword" class="text-xs text-red-500">
-                    {{ validationErrors.searchKeyword }}
-                  </div>
+                  <FormKit
+                    type="text"
+                    name="searchName"
+                    v-model="formData.searchName"
+                    placeholder="Masukkan nama (sebarang bahagian nama)"
+                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    @input="validateField('searchName')"
+                  />
+                  <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh</p>
                 </div>
-                <FormKit
-                  type="text"
-                  name="searchKeyword"
-                  v-model="formData.searchKeyword"
-                  placeholder="Masukkan nama, kariah atau nombor akaun bank"
-                  input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  @input="validateField('searchKeyword')"
-                />
-                <p class="mt-1 text-xs text-gray-500">Cari dengan nama, kariah atau nombor akaun bank</p>
+
+                <!-- Kariah Field -->
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center">
+                      <Icon name="mdi:mosque" size="1.2rem" class="text-blue-600 mr-2" />
+                      <label class="text-sm font-medium text-gray-700">Kariah</label>
+                    </div>
+                    <div v-if="validationErrors.searchKariah" class="text-xs text-red-500">
+                      {{ validationErrors.searchKariah }}
+                    </div>
+                  </div>
+                  <FormKit
+                    type="select"
+                    name="searchKariah"
+                    :options="kariahOptions"
+                    placeholder="Pilih kariah"
+                    v-model="formData.searchKariah"
+                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    @change="validateField('searchKariah')"
+                  />
+                  <p class="mt-1 text-xs text-gray-500">Pilih kariah untuk carian yang tepat</p>
+                </div>
+
+                <!-- Bank Account Field -->
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center">
+                      <Icon name="mdi:bank" size="1.2rem" class="text-blue-600 mr-2" />
+                      <label class="text-sm font-medium text-gray-700">Nombor Akaun Bank</label>
+                    </div>
+                    <div v-if="validationErrors.searchBankAccount" class="text-xs text-red-500">
+                      {{ validationErrors.searchBankAccount }}
+                    </div>
+                  </div>
+                  <FormKit
+                    type="text"
+                    name="searchBankAccount"
+                    v-model="formData.searchBankAccount"
+                    placeholder="Masukkan nombor akaun bank"
+                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    @input="validateField('searchBankAccount')"
+                  />
+                  <p class="mt-1 text-xs text-gray-500">Cari dengan nombor akaun bank yang tepat</p>
+                </div>
               </div>
 
               <!-- ID Type and ID Number Fields -->
@@ -103,26 +151,7 @@
                 </div>
               </div>
 
-              <!-- Name Field -->
-              <div class="mb-6">
-                <div class="flex items-center justify-between mb-2">
-                  <div class="flex items-center">
-                    <Icon name="mdi:account" size="1.2rem" class="text-blue-600 mr-2" />
-                    <label class="text-sm font-medium text-gray-700">Nama Mengikut Dokumen Pengenalan</label>
-                  </div>
-                  <div v-if="validationErrors.searchName" class="text-xs text-red-500">
-                    {{ validationErrors.searchName }}
-                  </div>
-                </div>
-                <FormKit
-                  type="text"
-                  name="searchName"
-                  v-model="formData.searchName"
-                  placeholder="Masukkan nama mengikut dokumen pengenalan"
-                  input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  @input="validateField('searchName')"
-                />
-              </div>
+
 
               <!-- Action Buttons -->
               <div class="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-gray-200">
@@ -445,10 +474,11 @@ const searchResults = ref([]);
 const selectedProfile = ref(null);
 const errorMessage = ref('');
 const validationErrors = ref({
-  searchKeyword: '',
+  searchName: '',
+  searchKariah: '',
+  searchBankAccount: '',
   idType: '',
-  idNumber: '',
-  searchName: ''
+  idNumber: ''
 });
 
 
@@ -475,11 +505,36 @@ const idTypeOptions = [
   { label: "Foreign ID", value: "foreignID" },
 ];
 
+// Kariah options for dropdown
+const kariahOptions = [
+  { label: "Kariah Masjid Al-Hidayah", value: "Kariah Masjid Al-Hidayah" },
+  { label: "Kariah Masjid Al-Ikhlas", value: "Kariah Masjid Al-Ikhlas" },
+  { label: "Kariah Masjid Al-Muttaqin", value: "Kariah Masjid Al-Muttaqin" },
+  { label: "Kariah Masjid Al-Rahman", value: "Kariah Masjid Al-Rahman" },
+  { label: "Kariah Masjid Al-Salam", value: "Kariah Masjid Al-Salam" },
+  { label: "Kariah Masjid Al-Taqwa", value: "Kariah Masjid Al-Taqwa" },
+  { label: "Kariah Masjid An-Nur", value: "Kariah Masjid An-Nur" },
+  { label: "Kariah Masjid Ar-Rahman", value: "Kariah Masjid Ar-Rahman" },
+  { label: "Kariah Masjid As-Salam", value: "Kariah Masjid As-Salam" },
+  { label: "Kariah Masjid At-Taqwa", value: "Kariah Masjid At-Taqwa" },
+  { label: "Masjid Negeri", value: "Masjid Negeri" },
+  { label: "Masjid Sultan Salahuddin Abdul Aziz Shah", value: "Masjid Sultan Salahuddin Abdul Aziz Shah" },
+  { label: "Masjid Al-Azim Pandan Indah", value: "Masjid Al-Azim Pandan Indah" },
+  { label: "Masjid Al-Amin Bangi", value: "Masjid Al-Amin Bangi" },
+  { label: "Masjid Wilayah Persekutuan", value: "Masjid Wilayah Persekutuan" },
+  { label: "Masjid Al-Khairiyah", value: "Masjid Al-Khairiyah" },
+  { label: "Taman Seri Gombak", value: "Taman Seri Gombak" },
+  { label: "Masjid Damansara Perdana", value: "Masjid Damansara Perdana" },
+  { label: "Masjid Bandar Utama", value: "Masjid Bandar Utama" },
+  { label: "Batang Kali", value: "Batang Kali" }
+];
+
 const formData = ref({
-  searchKeyword: "",
+  searchName: "",
+  searchKariah: "",
+  searchBankAccount: "",
   idType: "",
   idNumber: "",
-  searchName: "",
 });
 
 // Enhanced mock database with proper kariah structure for presentation
@@ -689,17 +744,18 @@ const mockDatabase = [
 // Computed property for form validation
 const isFormValid = computed(() => {
   // Allow search if at least one field is filled
-  const hasSearchKeyword = formData.value.searchKeyword.trim() !== '';
+  const hasSearchName = formData.value.searchName.trim() !== '';
+  const hasSearchKariah = formData.value.searchKariah !== '';
+  const hasSearchBankAccount = formData.value.searchBankAccount.trim() !== '';
   const hasIdType = formData.value.idType !== '';
   const hasIdNumber = formData.value.idNumber.trim() !== '';
-  const hasSearchName = formData.value.searchName.trim() !== '';
   
   // At least one field must be filled
-  const hasAtLeastOneField = hasSearchKeyword || hasIdType || hasIdNumber || hasSearchName;
+  const hasAtLeastOneField = hasSearchName || hasSearchKariah || hasSearchBankAccount || hasIdType || hasIdNumber;
   
   // Only check for critical validation errors (not empty field errors for flexible search)
-  const hasCriticalErrors = validationErrors.value.searchKeyword || 
-                           validationErrors.value.searchName || 
+  const hasCriticalErrors = validationErrors.value.searchName || 
+                           validationErrors.value.searchBankAccount || 
                            validationErrors.value.idNumber;
   
   return hasAtLeastOneField && !hasCriticalErrors;
@@ -726,13 +782,29 @@ const validateField = (fieldName) => {
   const value = formData.value[fieldName];
   
   switch (fieldName) {
-    case 'searchKeyword':
+    case 'searchName':
       if (value.trim() === '') {
-        validationErrors.value.searchKeyword = '';
+        validationErrors.value.searchName = '';
       } else if (value.length > 100) {
-        validationErrors.value.searchKeyword = 'Carian Maklumat terlalu panjang (maksimum 100 aksara)';
+        validationErrors.value.searchName = 'Nama terlalu panjang (maksimum 100 aksara)';
       } else {
-        validationErrors.value.searchKeyword = '';
+        validationErrors.value.searchName = '';
+      }
+      break;
+      
+    case 'searchKariah':
+      validationErrors.value.searchKariah = '';
+      break;
+      
+    case 'searchBankAccount':
+      if (value.trim() === '') {
+        validationErrors.value.searchBankAccount = '';
+      } else if (!/^\d+$/.test(value.replace(/\s/g, ''))) {
+        validationErrors.value.searchBankAccount = 'Nombor akaun bank mesti mengandungi digit sahaja';
+      } else if (value.length < 8 || value.length > 20) {
+        validationErrors.value.searchBankAccount = 'Nombor akaun bank mesti 8-20 digit';
+      } else {
+        validationErrors.value.searchBankAccount = '';
       }
       break;
       
@@ -758,33 +830,25 @@ const validateField = (fieldName) => {
         validationErrors.value.idNumber = '';
       }
       break;
-      
-    case 'searchName':
-      if (value.trim() === '') {
-        validationErrors.value.searchName = '';
-      } else if (value.length > 100) {
-        validationErrors.value.searchName = 'Nama terlalu panjang (maksimum 100 aksara)';
-      } else {
-        validationErrors.value.searchName = '';
-      }
-      break;
   }
 };
 
 const resetForm = () => {
-  formData.value.searchKeyword = "";
+  formData.value.searchName = "";
+  formData.value.searchKariah = "";
+  formData.value.searchBankAccount = "";
   formData.value.idType = "";
   formData.value.idNumber = "";
-  formData.value.searchName = "";
   searchResults.value = [];
   selectedProfile.value = null;
   searchCompleted.value = false;
   errorMessage.value = "";
   validationErrors.value = {
-    searchKeyword: '',
+    searchName: '',
+    searchKariah: '',
+    searchBankAccount: '',
     idType: '',
-    idNumber: '',
-    searchName: ''
+    idNumber: ''
   };
 };
 
@@ -792,27 +856,29 @@ const validateAndSearch = () => {
   errorMessage.value = ''; // Clear previous errors
   
   // Validate all fields
-  validateField('searchKeyword');
+  validateField('searchName');
+  validateField('searchKariah');
+  validateField('searchBankAccount');
   validateField('idType');
   validateField('idNumber');
-  validateField('searchName');
   
   // Check if at least one field is filled
-  const hasSearchKeyword = formData.value.searchKeyword.trim() !== '';
+  const hasSearchName = formData.value.searchName.trim() !== '';
+  const hasSearchKariah = formData.value.searchKariah !== '';
+  const hasSearchBankAccount = formData.value.searchBankAccount.trim() !== '';
   const hasIdNumber = formData.value.idNumber.trim() !== '';
   const hasIdType = formData.value.idType !== '';
-  const hasSearchName = formData.value.searchName.trim() !== '';
   
   // At least one field must be filled
-  if (!hasSearchKeyword && !hasIdNumber && !hasIdType && !hasSearchName) {
+  if (!hasSearchName && !hasSearchKariah && !hasSearchBankAccount && !hasIdNumber && !hasIdType) {
     errorMessage.value = 'Sila isi sekurang-kurangnya satu maklumat untuk carian';
     return;
   }
 
   // Only check for critical validation errors (not empty field errors for flexible search)
   const criticalErrors = [];
-  if (validationErrors.value.searchKeyword) criticalErrors.push(validationErrors.value.searchKeyword);
   if (validationErrors.value.searchName) criticalErrors.push(validationErrors.value.searchName);
+  if (validationErrors.value.searchBankAccount) criticalErrors.push(validationErrors.value.searchBankAccount);
   if (validationErrors.value.idNumber) criticalErrors.push(validationErrors.value.idNumber);
   
   if (criticalErrors.length > 0) {
@@ -836,33 +902,42 @@ const performFlexibleSearch = async () => {
       return input.replace(/[<>]/g, '').trim();
     };
     
-    const keyword = sanitizeInput(formData.value.searchKeyword).toLowerCase();
-    const idNumber = sanitizeInput(formData.value.idNumber);
     const searchName = sanitizeInput(formData.value.searchName).toLowerCase();
+    const searchKariah = formData.value.searchKariah;
+    const searchBankAccount = sanitizeInput(formData.value.searchBankAccount);
+    const idNumber = sanitizeInput(formData.value.idNumber);
     const idType = formData.value.idType;
     
     // Find matches based on any combination of filled fields
     const matches = mockDatabase.filter(profile => {
       let match = true;
       
-      // Check search keyword (name, kariah, or bank account)
-      if (keyword) {
-        const keywordMatch = profile.name.toLowerCase().includes(keyword) ||
-                            profile.kariah.toLowerCase().includes(keyword) ||
-                            profile.bankAccount.includes(keyword);
-        match = match && keywordMatch;
+      // Check name with flexible search (any part of the name)
+      if (searchName) {
+        const nameParts = profile.name.toLowerCase().split(' ');
+        const searchParts = searchName.split(' ');
+        const nameMatch = nameParts.some(part => 
+          searchParts.some(searchPart => part.includes(searchPart))
+        );
+        match = match && nameMatch;
       }
       
-      // Check ID number
+      // Check kariah (exact match)
+      if (searchKariah) {
+        const kariahMatch = profile.kariah === searchKariah;
+        match = match && kariahMatch;
+      }
+      
+      // Check bank account (exact match)
+      if (searchBankAccount) {
+        const bankMatch = profile.bankAccount === searchBankAccount;
+        match = match && bankMatch;
+      }
+      
+      // Check ID number (exact match)
       if (idNumber) {
         const idMatch = profile.id === idNumber;
         match = match && idMatch;
-      }
-      
-      // Check name
-      if (searchName) {
-        const nameMatch = profile.name.toLowerCase().includes(searchName);
-        match = match && nameMatch;
       }
       
       // Check ID type (if specified)
@@ -896,6 +971,8 @@ const selectProfile = (profile) => {
   // Populate form fields with selected profile data
   formData.value.idNumber = profile.id;
   formData.value.searchName = profile.name;
+  formData.value.searchKariah = profile.kariah;
+  formData.value.searchBankAccount = profile.bankAccount;
   
   searchResults.value = []; // Clear search results after selection
 };
