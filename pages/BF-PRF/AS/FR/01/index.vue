@@ -28,7 +28,7 @@
             </div>
             <div class="text-sm text-gray-500">
               <Icon name="mdi:information" size="1rem" class="inline mr-1" />
-              Isi mana-mana maklumat untuk carian yang fleksibel
+              Isi mana-mana maklumat untuk carian yang fleksibel. Semakin banyak maklumat, semakin tepat hasil carian.
             </div>
           </div>
         </template>
@@ -58,7 +58,7 @@
                     input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     @input="validateField('searchName')"
                   />
-                  <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Semua perkataan mesti ada dalam nama. Contoh: "nur . ahmad" untuk carian tepat</p>
+                  <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Semua perkataan mesti ada dalam nama. Contoh: "nur . ahmad" untuk carian tepat atau "ahmad" untuk carian umum</p>
                 </div>
 
                 <!-- Kariah Field -->
@@ -81,7 +81,7 @@
                     input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     @change="validateField('searchKariah')"
                   />
-                  <p class="mt-1 text-xs text-gray-500">Pilih kariah untuk carian yang tepat</p>
+                  <p class="mt-1 text-xs text-gray-500">Pilih kariah untuk menapis hasil carian mengikut lokasi</p>
                 </div>
 
                 <!-- Bank Account Field -->
@@ -103,7 +103,7 @@
                     input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     @input="validateField('searchBankAccount')"
                   />
-                  <p class="mt-1 text-xs text-gray-500">Cari dengan nombor akaun bank yang tepat</p>
+                  <p class="mt-1 text-xs text-gray-500">Cari dengan nombor akaun bank yang tepat (8-20 digit)</p>
                 </div>
               </div>
 
@@ -184,7 +184,7 @@
           </div>
           
           <!-- Error Message Display -->
-          <div v-if="errorMessage" class="mt-6">
+          <div v-if="errorMessage && searchCompleted" class="mt-6">
             <rs-card variant="danger" class="mb-4 shadow-md">
               <template #body>
                 <div class="flex items-start">
@@ -208,8 +208,23 @@
             </rs-card>
           </div>
 
+          <!-- Loading State -->
+          <div v-if="processing" class="mt-8">
+            <rs-card variant="info" class="mb-6 shadow-md">
+              <template #body>
+                <div class="flex items-center justify-center py-12">
+                  <div class="text-center">
+                    <Icon name="eos-icons:loading" class="animate-spin text-4xl text-blue-600 mb-4" />
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Mencari Profil...</h3>
+                    <p class="text-sm text-gray-500">Sila tunggu sebentar</p>
+                  </div>
+                </div>
+              </template>
+            </rs-card>
+          </div>
+
           <!-- Search Results Section -->
-          <div v-if="searchResults.length > 0" class="mt-8">
+          <div v-if="searchResults.length > 0 && !processing" class="mt-8">
             <rs-card variant="info" class="mb-6 shadow-md">
               <template #header>
                 <div class="flex items-center justify-between">
@@ -218,16 +233,41 @@
                     <h3 class="text-lg font-medium text-gray-900">Paparan Hasil Carian</h3>
                   </div>
                   <div class="flex items-center space-x-4">
-                    <span class="text-sm text-gray-500">{{ searchResults.length }} profil ditemui</span>
-                    <rs-button 
-                      variant="primary-outline" 
-                      size="sm"
-                      @click="exportResults"
-                      class="text-xs"
-                    >
-                      <Icon name="mdi:download" size="1rem" class="mr-1" />
-                      Export
-                    </rs-button>
+                    <div class="text-sm text-gray-500">
+                      <span class="font-medium">{{ searchResults.length }}</span> profil ditemui
+                      <span v-if="hasSearchCriteria" class="ml-2 text-xs">
+                        untuk kriteria carian anda
+                      </span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <rs-button 
+                        variant="primary-outline" 
+                        size="sm"
+                        @click="exportToPDF"
+                        class="text-xs"
+                      >
+                        <Icon name="mdi:file-pdf-box" size="1rem" class="mr-1" />
+                        PDF
+                      </rs-button>
+                      <rs-button 
+                        variant="primary-outline" 
+                        size="sm"
+                        @click="exportToExcel"
+                        class="text-xs"
+                      >
+                        <Icon name="mdi:file-excel" size="1rem" class="mr-1" />
+                        Excel
+                      </rs-button>
+                      <rs-button 
+                        variant="primary-outline" 
+                        size="sm"
+                        @click="printResults"
+                        class="text-xs"
+                      >
+                        <Icon name="mdi:printer" size="1rem" class="mr-1" />
+                        Print
+                      </rs-button>
+                    </div>
                   </div>
                 </div>
               </template>
@@ -257,9 +297,12 @@
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="profile in searchResults" :key="profile.id" class="hover:bg-gray-50">
+                      <tr v-for="profile in paginatedResults" :key="profile.id" class="hover:bg-gray-50">
                         <td class="px-3 py-4 text-sm text-gray-900 truncate text-center" :title="getSelectedIdTypeLabel(profile.idType)">
-                          {{ getSelectedIdTypeLabel(profile.idType) }}
+                          <div class="flex items-center justify-center space-x-1">
+                            <Icon :name="getIdTypeIcon(profile.idType)" size="1rem" class="text-gray-500" />
+                            <span>{{ getSelectedIdTypeLabel(profile.idType) }}</span>
+                          </div>
                         </td>
                         <td class="px-3 py-4 text-sm text-gray-900 truncate text-center" :title="profile.id">
                           {{ profile.id }}
@@ -271,7 +314,7 @@
                           {{ profile.kariah }}
                         </td>
                         <td class="px-3 py-4 text-center">
-                          <span :class="getKategoriAsnafVariant(profile.kategoriAsnaf)" class="text-sm font-medium">
+                          <span :class="getKategoriAsnafBadge(profile.kategoriAsnaf)" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border">
                             {{ profile.kategoriAsnaf }}
                           </span>
                         </td>
@@ -290,6 +333,63 @@
                     </tbody>
                   </table>
                 </div>
+                
+                <!-- Pagination Controls -->
+                <div v-if="searchResults.length > itemsPerPage" class="mt-6 flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-700">Tunjuk setiap halaman:</span>
+                    <select 
+                      v-model="itemsPerPage" 
+                      class="border border-gray-300 rounded px-2 py-1 text-sm"
+                      @change="currentPage = 1"
+                    >
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                    </select>
+                    <span class="text-sm text-gray-500">
+                      {{ paginationStart }}-{{ paginationEnd }} daripada {{ searchResults.length }}
+                    </span>
+                  </div>
+                  
+                  <div class="flex items-center space-x-2">
+                    <rs-button 
+                      variant="primary-outline" 
+                      size="sm"
+                      :disabled="currentPage === 1"
+                      @click="currentPage = currentPage - 1"
+                    >
+                      <Icon name="mdi:chevron-left" size="1rem" />
+                      Sebelum
+                    </rs-button>
+                    
+                    <div class="flex items-center space-x-1">
+                      <button 
+                        v-for="page in getVisiblePages()" 
+                        :key="page"
+                        @click="currentPage = page"
+                        :class="[
+                          'px-3 py-1 text-sm rounded',
+                          currentPage === page 
+                            ? 'bg-blue-600 text-white' 
+                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                        ]"
+                      >
+                        {{ page }}
+                      </button>
+                    </div>
+                    
+                    <rs-button 
+                      variant="primary-outline" 
+                      size="sm"
+                      :disabled="currentPage === totalPages"
+                      @click="currentPage = currentPage + 1"
+                    >
+                      Seterus
+                      <Icon name="mdi:chevron-right" size="1rem" />
+                    </rs-button>
+                  </div>
+                </div>
               </template>
             </rs-card>
           </div>
@@ -297,28 +397,49 @@
 
 
           <!-- No Results Section -->
-          <div v-if="searchCompleted && searchResults.length === 0" class="mt-8">
+          <div v-if="searchCompleted && searchResults.length === 0 && !processing" class="mt-8">
             <rs-card variant="warning" class="mb-6 shadow-md">
-              <template #header>
-                <div class="flex items-center space-x-3">
-                  <Icon name="mdi:alert-circle" size="1.5rem" class="text-amber-600" />
-                  <h3 class="text-lg font-medium text-gray-900">Profil Tidak Ditemui</h3>
-                </div>
-              </template>
               <template #body>
-                <div class="text-center py-8">
-                  <Icon name="mdi:account-search" size="4rem" class="text-gray-300 mx-auto mb-4" />
-                  <h4 class="text-lg font-medium text-gray-900 mb-2">Tiada profil ditemui</h4>
-                  <p class="text-gray-600 mb-4">
-                    Tiada profil ditemui dengan maklumat yang dimasukkan. 
-                    <span v-if="formData.idNumber && formData.idNumber !== ''" class="font-medium text-amber-700">
-                      Pengenalan ID "{{ formData.idNumber }}" mungkin salah atau tidak wujud dalam sistem.
-                    </span>
+                <div class="text-center py-12">
+                  <div class="mb-6">
+                    <Icon name="mdi:account-search" size="5rem" class="text-gray-300 mx-auto mb-4" />
+                    <div class="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                      <Icon name="mdi:help-circle" size="3rem" class="text-gray-400" />
+                    </div>
+                  </div>
+                  <h4 class="text-xl font-medium text-gray-900 mb-3">Tiada Hasil Carian</h4>
+                  <p class="text-gray-600 mb-6 max-w-md mx-auto">
+                    Tiada profil ditemui dengan kriteria carian anda. 
+                    Cuba ubah maklumat carian atau gunakan kriteria yang lebih umum.
                   </p>
-                  <div class="space-y-3 text-sm text-gray-500">
-                    <p>• Semak semula maklumat yang dimasukkan</p>
-                    <p>• Pastikan format ID adalah betul</p>
-                    <p>• Cuba dengan maklumat yang berbeza</p>
+                  
+                  <!-- Search Criteria Display -->
+                  <div v-if="hasSearchCriteria" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 max-w-md mx-auto">
+                    <h5 class="text-sm font-medium text-blue-900 mb-2">Kriteria Carian:</h5>
+                    <div class="text-sm text-blue-700 space-y-1">
+                      <p v-if="formData.searchName">• Nama: "{{ formData.searchName }}"</p>
+                      <p v-if="formData.searchKariah">• Kariah: "{{ formData.searchKariah }}"</p>
+                      <p v-if="formData.searchBankAccount">• Akaun Bank: "{{ formData.searchBankAccount }}"</p>
+                      <p v-if="formData.idNumber">• ID: "{{ formData.idNumber }}"</p>
+                    </div>
+                  </div>
+                  
+                  <div class="space-y-4">
+                    <h5 class="text-sm font-medium text-gray-700">Cadangan:</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                      <div class="flex items-start space-x-2">
+                        <Icon name="mdi:check-circle" size="1rem" class="text-green-500 mt-0.5" />
+                        <span>Semak ejaan nama</span>
+                      </div>
+                      <div class="flex items-start space-x-2">
+                        <Icon name="mdi:check-circle" size="1rem" class="text-green-500 mt-0.5" />
+                        <span>Cuba nama yang lebih pendek</span>
+                      </div>
+                      <div class="flex items-start space-x-2">
+                        <Icon name="mdi:check-circle" size="1rem" class="text-green-500 mt-0.5" />
+                        <span>Pastikan format ID betul</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </template>
@@ -354,6 +475,18 @@ const searchCompleted = ref(false);
 const searchResults = ref([]);
 const selectedProfile = ref(null);
 const errorMessage = ref('');
+
+// Pagination
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
+const totalPages = computed(() => Math.ceil(searchResults.value.length / itemsPerPage.value));
+const paginatedResults = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return searchResults.value.slice(start, end);
+});
+const paginationStart = computed(() => (currentPage.value - 1) * itemsPerPage.value + 1);
+const paginationEnd = computed(() => Math.min(currentPage.value * itemsPerPage.value, searchResults.value.length));
 const validationErrors = ref({
   searchName: '',
   searchKariah: '',
@@ -367,15 +500,15 @@ const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF/AS/FR/01",
+    path: "/BF-PRF",
   },
   {
     name: "Asnaf",
     type: "link",
-    path: "/BF-PRF/AS/FR/01",
+    path: "/BF-PRF/AS",
   },
   {
-    name: "Pendaftaran Lengkap",
+    name: "Carian Profil",
     type: "current",
     path: "/BF-PRF/AS/FR/01",
   },
@@ -731,6 +864,53 @@ const getKategoriAsnafVariant = (kategori) => {
   return variants[kategori] || 'text-gray-600';
 };
 
+const getKategoriAsnafBadge = (kategori) => {
+  const badges = {
+    'Fakir': 'bg-red-100 text-red-800 border-red-200',
+    'Miskin': 'bg-orange-100 text-orange-800 border-orange-200', 
+    'Mualaf': 'bg-blue-100 text-blue-800 border-blue-200'
+  };
+  return badges[kategori] || 'bg-gray-100 text-gray-800 border-gray-200';
+};
+
+const getIdTypeIcon = (idType) => {
+  const icons = {
+    'myKad': 'mdi:card-account-details',
+    'foreignID': 'mdi:passport'
+  };
+  return icons[idType] || 'mdi:card-account-details';
+};
+
+// Computed properties for search feedback
+const hasSearchCriteria = computed(() => {
+  return formData.value.searchName.trim() !== '' ||
+         formData.value.searchKariah !== '' ||
+         formData.value.searchBankAccount.trim() !== '' ||
+         formData.value.idNumber.trim() !== '';
+});
+
+const searchCriteriaText = computed(() => {
+  const criteria = [];
+  if (formData.value.searchName.trim()) criteria.push(`Nama: "${formData.value.searchName}"`);
+  if (formData.value.searchKariah) criteria.push(`Kariah: "${formData.value.searchKariah}"`);
+  if (formData.value.searchBankAccount.trim()) criteria.push(`Akaun Bank: "${formData.value.searchBankAccount}"`);
+  if (formData.value.idNumber.trim()) criteria.push(`ID: "${formData.value.idNumber}"`);
+  return criteria.join(', ');
+});
+
+// Pagination helper function
+const getVisiblePages = () => {
+  const pages = [];
+  const maxVisible = 5;
+  const start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2));
+  const end = Math.min(totalPages.value, start + maxVisible - 1);
+  
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  return pages;
+};
+
 // Real-time validation
 const validateField = (fieldName) => {
   const value = formData.value[fieldName];
@@ -797,6 +977,7 @@ const resetForm = () => {
   selectedProfile.value = null;
   searchCompleted.value = false;
   errorMessage.value = "";
+  currentPage.value = 1; // Reset pagination
   validationErrors.value = {
     searchName: '',
     searchKariah: '',
@@ -848,6 +1029,7 @@ const performFlexibleSearch = async () => {
   searchCompleted.value = false;
   searchResults.value = [];
   selectedProfile.value = null;
+  currentPage.value = 1; // Reset to first page on new search
 
   // Simulate API call delay
   setTimeout(() => {
@@ -941,40 +1123,34 @@ const performFlexibleSearch = async () => {
   }, 1000);
 };
 
-const selectProfile = (profile) => {
-  selectedProfile.value = profile;
-  
-  // Populate form fields with selected profile data
-  formData.value.idNumber = profile.id;
-  formData.value.searchName = profile.name;
-  formData.value.searchKariah = profile.kariah;
-  formData.value.searchBankAccount = profile.bankAccount;
-  
-  searchResults.value = []; // Clear search results after selection
-};
+
 
 
 
 // Enhanced functionality
-const exportResults = () => {
-  // Implementation for exporting results
-  console.log('Exporting results...');
+
+
+const exportToPDF = () => {
+  // PDF export implementation
+  console.log('Exporting to PDF...');
+  // In real implementation, use jsPDF or similar library
+  alert('PDF export functionality akan diimplementasi');
 };
 
-const printProfile = () => {
-  // Implementation for printing profile
-  console.log('Printing profile...');
+const exportToExcel = () => {
+  // Excel/CSV export implementation
+  console.log('Exporting to Excel...');
+  // In real implementation, use SheetJS or similar library
+  alert('Excel export functionality akan diimplementasi');
 };
 
-const viewProfileHistory = () => {
-  // Implementation for viewing profile history
-  console.log('Viewing profile history...');
+const printResults = () => {
+  // Print-friendly implementation
+  console.log('Printing results...');
+  window.print();
 };
 
-const viewFullProfile = () => {
-  // Implementation for viewing full profile
-  console.log('Viewing full profile...');
-};
+
 
 const updateProfile = (profile) => {
   // Navigate to update profile page with profile data
