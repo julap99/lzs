@@ -268,8 +268,8 @@
                         </div>
                       </div>
                       <div class="ml-4 flex items-center space-x-2">
-                        <span :class="profile.status === 'Asnaf' ? 'text-green-600' : 'text-orange-600'" class="text-sm font-medium">
-                          {{ profile.status }}
+                        <span :class="getKategoriAsnafVariant(profile.kategoriAsnaf)" class="text-sm font-medium">
+                          {{ profile.kategoriAsnaf }}
                         </span>
                         <Icon name="mdi:chevron-right" size="1.5rem" class="text-gray-400" />
                       </div>
@@ -381,10 +381,10 @@
                       <div class="flex items-center space-x-3">
                         <Icon name="mdi:badge-account" size="1.2rem" class="text-blue-600" />
                         <div>
-                          <p class="text-sm text-gray-500">Status</p>
+                          <p class="text-sm text-gray-500">Kategori Asnaf</p>
                           <p class="font-medium">
-                            <span :class="selectedProfile.status === 'Asnaf' ? 'text-green-600' : 'text-orange-600'">
-                              {{ selectedProfile.status }}
+                            <span :class="getKategoriAsnafVariant(selectedProfile.kategoriAsnaf)">
+                              {{ selectedProfile.kategoriAsnaf }}
                             </span>
                           </p>
                         </div>
@@ -544,7 +544,7 @@ const mockDatabase = [
     name: 'Ali bin Abu', 
     kariah: 'Kariah Masjid Al-Hidayah', 
     bankAccount: '001122334455', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '012-3456789',
     email: 'ali.abu@email.com',
     registrationDate: '15/01/2023'
@@ -554,7 +554,7 @@ const mockDatabase = [
     name: 'Fatimah binti Ahmad', 
     kariah: 'Kariah Masjid Al-Ikhlas', 
     bankAccount: '005566778899', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Miskin',
     phone: '019-8765432',
     email: 'fatimah.ahmad@email.com',
     registrationDate: '22/03/2023'
@@ -564,7 +564,7 @@ const mockDatabase = [
     name: 'Ahmad bin Hassan', 
     kariah: 'Kariah Masjid Al-Muttaqin', 
     bankAccount: '009988776655', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '011-2345678',
     email: 'ahmad.hassan@email.com',
     registrationDate: '08/07/2023'
@@ -574,7 +574,7 @@ const mockDatabase = [
     name: 'Siti binti Omar', 
     kariah: 'Kariah Masjid Al-Rahman', 
     bankAccount: '004433221100', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Mualaf',
     phone: '016-7890123',
     email: 'siti.omar@email.com',
     registrationDate: '12/11/2023'
@@ -584,7 +584,7 @@ const mockDatabase = [
     name: 'Mohammad bin Ismail', 
     kariah: 'Kariah Masjid Al-Salam', 
     bankAccount: '007788990011', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '013-4567890',
     email: 'mohammad.ismail@email.com',
     registrationDate: '05/02/2023'
@@ -594,7 +594,7 @@ const mockDatabase = [
     name: 'Aminah binti Zulkifli', 
     kariah: 'Kariah Masjid Al-Taqwa', 
     bankAccount: '002233445566', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Miskin',
     phone: '014-5678901',
     email: 'aminah.zulkifli@email.com',
     registrationDate: '18/04/2023'
@@ -604,7 +604,7 @@ const mockDatabase = [
     name: 'Hassan bin Abdullah', 
     kariah: 'Kariah Masjid An-Nur', 
     bankAccount: '006677889900', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '015-6789012',
     email: 'hassan.abdullah@email.com',
     registrationDate: '30/05/2023'
@@ -614,7 +614,7 @@ const mockDatabase = [
     name: 'Noraini binti Kamal', 
     kariah: 'Kariah Masjid Ar-Rahman', 
     bankAccount: '008899001122', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Mualaf',
     phone: '017-7890123',
     email: 'noraini.kamal@email.com',
     registrationDate: '14/06/2023'
@@ -624,7 +624,7 @@ const mockDatabase = [
     name: 'Ismail bin Rahman', 
     kariah: 'Kariah Masjid As-Salam', 
     bankAccount: '003344556677', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Miskin',
     phone: '018-8901234',
     email: 'ismail.rahman@email.com',
     registrationDate: '25/08/2023'
@@ -634,7 +634,7 @@ const mockDatabase = [
     name: 'Zainab binti Yusof', 
     kariah: 'Kariah Masjid At-Taqwa', 
     bankAccount: '004455667788', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '019-9012345',
     email: 'zainab.yusof@email.com',
     registrationDate: '09/09/2023'
@@ -644,7 +644,7 @@ const mockDatabase = [
     name: 'Abdul Rahman bin Ali', 
     kariah: 'Masjid Negeri', 
     bankAccount: '001122334455', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Miskin',
     phone: '010-0123456',
     email: 'abdul.rahman@email.com',
     registrationDate: '20/10/2023'
@@ -654,7 +654,7 @@ const mockDatabase = [
     name: 'Mariam binti Khalid', 
     kariah: 'Masjid Sultan Salahuddin Abdul Aziz Shah', 
     bankAccount: '005566778899', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Mualaf',
     phone: '011-1234567',
     email: 'mariam.khalid@email.com',
     registrationDate: '03/12/2023'
@@ -664,7 +664,7 @@ const mockDatabase = [
     name: 'Khalid bin Omar', 
     kariah: 'Masjid Al-Azim Pandan Indah', 
     bankAccount: '009988776655', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '012-2345678',
     email: 'khalid.omar@email.com',
     registrationDate: '17/01/2024'
@@ -674,7 +674,7 @@ const mockDatabase = [
     name: 'Salma binti Ibrahim', 
     kariah: 'Masjid Al-Amin Bangi', 
     bankAccount: '004433221100', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Miskin',
     phone: '013-3456789',
     email: 'salma.ibrahim@email.com',
     registrationDate: '28/02/2024'
@@ -684,7 +684,7 @@ const mockDatabase = [
     name: 'Ibrahim bin Ahmad', 
     kariah: 'Masjid Wilayah Persekutuan', 
     bankAccount: '007788990011', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '014-4567890',
     email: 'ibrahim.ahmad@email.com',
     registrationDate: '10/03/2024'
@@ -694,7 +694,7 @@ const mockDatabase = [
     name: 'Nurul Ain binti Zainal', 
     kariah: 'Masjid Al-Khairiyah', 
     bankAccount: '002233445566', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Mualaf',
     phone: '015-5678901',
     email: 'nurul.ain@email.com',
     registrationDate: '22/03/2024'
@@ -704,7 +704,7 @@ const mockDatabase = [
     name: 'Zainal bin Mohamed', 
     kariah: 'Taman Seri Gombak', 
     bankAccount: '006677889900', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Miskin',
     phone: '016-6789012',
     email: 'zainal.mohamed@email.com',
     registrationDate: '05/04/2024'
@@ -714,7 +714,7 @@ const mockDatabase = [
     name: 'Rohana binti Sulaiman', 
     kariah: 'Masjid Damansara Perdana', 
     bankAccount: '008899001122', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '017-7890123',
     email: 'rohana.sulaiman@email.com',
     registrationDate: '18/04/2024'
@@ -724,7 +724,7 @@ const mockDatabase = [
     name: 'Sulaiman bin Hashim', 
     kariah: 'Masjid Bandar Utama', 
     bankAccount: '003344556677', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Miskin',
     phone: '018-8901234',
     email: 'sulaiman.hashim@email.com',
     registrationDate: '30/04/2024'
@@ -734,7 +734,7 @@ const mockDatabase = [
     name: 'Haslina binti Aziz', 
     kariah: 'Batang Kali', 
     bankAccount: '004455667788', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Mualaf',
     phone: '019-9012345',
     email: 'haslina.aziz@email.com',
     registrationDate: '12/05/2024'
@@ -744,7 +744,7 @@ const mockDatabase = [
     name: 'Nur Elezza Ainna Ahmad', 
     kariah: 'Kariah Masjid Al-Hidayah', 
     bankAccount: '112233445566', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '010-1234567',
     email: 'nur.elezza@email.com',
     registrationDate: '15/06/2024'
@@ -754,7 +754,7 @@ const mockDatabase = [
     name: 'Nur Elezza Binti Mohammad Ahmad', 
     kariah: 'Kariah Masjid Al-Ikhlas', 
     bankAccount: '223344556677', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Miskin',
     phone: '011-2345678',
     email: 'nur.elezza.mohammad@email.com',
     registrationDate: '20/06/2024'
@@ -764,7 +764,7 @@ const mockDatabase = [
     name: 'Mohammad Harun Bin Ali Hassan', 
     kariah: 'Kariah Masjid Al-Muttaqin', 
     bankAccount: '334455667788', 
-    status: 'Asnaf',
+    kategoriAsnaf: 'Fakir',
     phone: '012-3456789',
     email: 'mohammad.harun@email.com',
     registrationDate: '25/06/2024'
@@ -774,7 +774,7 @@ const mockDatabase = [
     name: 'Aminah Binti Omar Bin Khalid', 
     kariah: 'Kariah Masjid Al-Rahman', 
     bankAccount: '445566778899', 
-    status: 'Bukan Asnaf',
+    kategoriAsnaf: 'Mualaf',
     phone: '013-4567890',
     email: 'aminah.omar@email.com',
     registrationDate: '30/06/2024'
@@ -815,6 +815,15 @@ const getPlaceholder = () => {
 const getSelectedIdTypeLabel = () => {
   const option = idTypeOptions.find(opt => opt.value === formData.value.idType);
   return option ? option.label : formData.value.idType;
+};
+
+const getKategoriAsnafVariant = (kategori) => {
+  const variants = {
+    'Fakir': 'text-red-600',
+    'Miskin': 'text-orange-600', 
+    'Mualaf': 'text-blue-600',
+  };
+  return variants[kategori] || 'text-gray-600';
 };
 
 // Real-time validation
