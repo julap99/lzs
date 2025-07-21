@@ -233,49 +233,49 @@
               </template>
               <template #body>
                 <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200">
+                  <table class="w-full table-fixed divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                       <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Jenis Pengenalan ID
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Pengenalan ID
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th class="w-1/4 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Nama
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th class="w-1/4 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Kariah
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Kategori Asnaf
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Tindakan
                         </th>
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                       <tr v-for="profile in searchResults" :key="profile.id" class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="px-3 py-4 text-sm text-gray-900 truncate text-center" :title="getSelectedIdTypeLabel(profile.idType)">
                           {{ getSelectedIdTypeLabel(profile.idType) }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="px-3 py-4 text-sm text-gray-900 truncate text-center" :title="profile.id">
                           {{ profile.id }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td class="px-3 py-4 text-sm font-medium text-gray-900 truncate text-center" :title="profile.name">
                           {{ profile.name }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="px-3 py-4 text-sm text-gray-900 truncate text-center" :title="profile.kariah">
                           {{ profile.kariah }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-3 py-4 text-center">
                           <span :class="getKategoriAsnafVariant(profile.kategoriAsnaf)" class="text-sm font-medium">
                             {{ profile.kategoriAsnaf }}
                           </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td class="px-3 py-4 text-sm text-gray-500 text-center">
                           <rs-button 
                             variant="primary" 
                             size="sm"
