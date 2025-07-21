@@ -58,7 +58,7 @@
                     input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     @input="validateField('searchName')"
                   />
-                  <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh</p>
+                  <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Contoh: "nur . ahmad" untuk carian tepat</p>
                 </div>
 
                 <!-- Kariah Field -->
@@ -738,6 +738,46 @@ const mockDatabase = [
     phone: '019-9012345',
     email: 'haslina.aziz@email.com',
     registrationDate: '12/05/2024'
+  },
+  { 
+    id: '777888999', 
+    name: 'Nur Elezza Ainna Ahmad', 
+    kariah: 'Kariah Masjid Al-Hidayah', 
+    bankAccount: '112233445566', 
+    status: 'Asnaf',
+    phone: '010-1234567',
+    email: 'nur.elezza@email.com',
+    registrationDate: '15/06/2024'
+  },
+  { 
+    id: '888999000', 
+    name: 'Nur Elezza Binti Mohammad Ahmad', 
+    kariah: 'Kariah Masjid Al-Ikhlas', 
+    bankAccount: '223344556677', 
+    status: 'Bukan Asnaf',
+    phone: '011-2345678',
+    email: 'nur.elezza.mohammad@email.com',
+    registrationDate: '20/06/2024'
+  },
+  { 
+    id: '666777888', 
+    name: 'Mohammad Harun Bin Ali Hassan', 
+    kariah: 'Kariah Masjid Al-Muttaqin', 
+    bankAccount: '334455667788', 
+    status: 'Asnaf',
+    phone: '012-3456789',
+    email: 'mohammad.harun@email.com',
+    registrationDate: '25/06/2024'
+  },
+  { 
+    id: '555666777', 
+    name: 'Aminah Binti Omar Bin Khalid', 
+    kariah: 'Kariah Masjid Al-Rahman', 
+    bankAccount: '445566778899', 
+    status: 'Bukan Asnaf',
+    phone: '013-4567890',
+    email: 'aminah.omar@email.com',
+    registrationDate: '30/06/2024'
   }
 ];
 
@@ -912,13 +952,34 @@ const performFlexibleSearch = async () => {
     const matches = mockDatabase.filter(profile => {
       let match = true;
       
-      // Check name with flexible search (any part of the name)
+      // Check name with advanced flexible search (handles complex name patterns)
       if (searchName) {
-        const nameParts = profile.name.toLowerCase().split(' ');
-        const searchParts = searchName.split(' ');
-        const nameMatch = nameParts.some(part => 
-          searchParts.some(searchPart => part.includes(searchPart))
-        );
+        const profileName = profile.name.toLowerCase();
+        const searchTerms = searchName.toLowerCase().split(/\s*\.\s*/); // Split by dots for pattern matching
+        
+        // Handle different search patterns
+        let nameMatch = false;
+        
+        if (searchTerms.length === 2) {
+          // Pattern: "first . last" or "middle . last" or "last . first"
+          const [term1, term2] = searchTerms;
+          
+          // Check if both terms exist in the name (in any order)
+          const nameWords = profileName.split(' ');
+          const hasTerm1 = nameWords.some(word => word.includes(term1.trim()));
+          const hasTerm2 = nameWords.some(word => word.includes(term2.trim()));
+          
+          nameMatch = hasTerm1 && hasTerm2;
+        } else {
+          // Simple search: any part of the name
+          const searchWords = searchName.toLowerCase().split(' ');
+          const nameWords = profileName.split(' ');
+          
+          nameMatch = searchWords.some(searchWord => 
+            nameWords.some(nameWord => nameWord.includes(searchWord.trim()))
+          );
+        }
+        
         match = match && nameMatch;
       }
       
