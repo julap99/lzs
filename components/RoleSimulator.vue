@@ -73,10 +73,9 @@ const selectedRole = ref(props.initialRole);
 
 const roleOptions = [
   { label: "PYB Institusi", value: "pyb" },
-  { label: "Ketua Amil", value: "ketua-amil" },
-  { label: "JPPA", value: "jppa" },
   { label: "PT", value: "pt" },
   { label: "Eksekutif", value: "eksekutif" },
+  { label: "Eksekutif Pengurusan Risiko", value: "eksekutif-pengurusan-risiko" },
   { label: "Ketua Jabatan", value: "ketua-jabatan" },
   { label: "Ketua Divisyen", value: "ketua-divisyen" },
   { label: "Penolong Amil", value: "penolong-amil" },
@@ -89,18 +88,6 @@ const roleData = {
     description: "Pengurusan Yayasan Baitulmal",
     capabilities: ["Daftar Calon", "Lihat Senarai", "Kemaskini Maklumat"],
   },
-  "ketua-amil": {
-    role: "ketua-amil",
-    label: "Ketua Amil",
-    description: "Ketua Amil Institusi",
-    capabilities: ["Lihat Senarai", "Semak Calon", "Kelulusan Awal"],
-  },
-  jppa: {
-    role: "jppa",
-    label: "JPPA",
-    description: "Jawatankuasa Penolong Penolong Amil",
-    capabilities: ["Saringan", "Semakan", "Pengesahan"],
-  },
   pt: {
     role: "pt",
     label: "PT",
@@ -112,6 +99,12 @@ const roleData = {
     label: "Eksekutif",
     description: "Sokongan Eksekutif",
     capabilities: ["Sokongan", "Pengesahan", "Hantar ke Ketua Jabatan"],
+  },
+  "eksekutif-pengurusan-risiko": {
+    role: "eksekutif-pengurusan-risiko",
+    label: "Eksekutif Pengurusan Risiko",
+    description: "Pengurusan Risiko dan Pematuhan",
+    capabilities: ["Analisis Risiko", "Pematuhan", "Pengesahan Risiko"],
   },
   "ketua-jabatan": {
     role: "ketua-jabatan",
@@ -140,10 +133,9 @@ const currentRole = computed(() => {
 const getRoleVariant = (role) => {
   const variants = {
     pyb: "primary",
-    "ketua-amil": "secondary",
-    jppa: "warning",
     pt: "info",
     eksekutif: "success",
+    "eksekutif-pengurusan-risiko": "warning",
     "ketua-jabatan": "purple",
     "ketua-divisyen": "danger",
     "penolong-amil": "default",

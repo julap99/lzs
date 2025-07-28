@@ -10,6 +10,7 @@
             Senarai Permohonan Penolong Amil
           </h2>
           <rs-button
+            v-if="currentRole !== 'eksekutif'"
             variant="primary"
             @click="navigateTo('/BF-PA/PP/pra-daftar-v3/daftar-baharu')"
           >
