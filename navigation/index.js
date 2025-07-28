@@ -1290,6 +1290,13 @@ export default [
             meta: {},
           },
           {
+            title: "Pra Daftar Penolong Amil v3",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/PP/pra-daftar-v3",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Penolong Amil",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PP/penolong-amil",
