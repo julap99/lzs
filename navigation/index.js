@@ -1092,6 +1092,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Test Bantuan Tapisan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/BU/test-bantuan/01",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
