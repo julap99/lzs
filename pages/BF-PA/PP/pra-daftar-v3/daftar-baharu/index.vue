@@ -28,32 +28,19 @@
               <Icon name="ph:building" class="w-5 h-5 text-green-400 mt-0.5" />
               <div class="ml-3">
                 <h3 class="text-sm font-medium text-green-800">
-                  Maklumat Institusi PYB
+                  Maklumat Institusi
                 </h3>
                 <p class="mt-1 text-sm text-green-700">
-                  <strong>{{ currentInstitution.name }}</strong> - {{ currentInstitution.location }}
+                  <strong>{{ currentInstitution.name }}</strong>
                 </p>
                 <p class="mt-1 text-sm text-green-600">
-                  PIC: {{ currentInstitution.pic }} ({{ currentInstitution.picEmail }})
+                  PYB: {{ currentInstitution.pic }} ({{ currentInstitution.picEmail }})
                 </p>
               </div>
             </div>
           </div>
 
-          <!-- Information Section -->
-          <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div class="flex">
-              <Icon name="ph:info" class="w-5 h-5 text-blue-400 mt-0.5" />
-              <div class="ml-3">
-                <h3 class="text-sm font-medium text-blue-800">
-                  Maklumat Pendaftaran Calon
-                </h3>
-                <p class="mt-1 text-sm text-blue-700">
-                  Sila isi maklumat calon penolong amil di bawah. Anda boleh menambah berbilang calon atau import dari fail Excel.
-                </p>
-              </div>
-            </div>
-          </div>
+
 
           <!-- Candidate Registration Form -->
           <FormKit
@@ -331,62 +318,7 @@
             </div>
           </FormKit>
 
-          <!-- Maklumat Pencalonan Section - Shared for all candidates -->
-          <div class="mb-8 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Maklumat Pencalonan (Berkongsi untuk Semua Calon)
-            </h3>
-            <p class="text-sm text-gray-600 mb-4">
-              Maklumat ini akan digunakan untuk semua calon dari {{ currentInstitution.name }}
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- ID Institusi (Hidden) -->
-              <FormKit
-                type="text"
-                name="idInstitusi"
-                label="ID Institusi"
-                :value="currentInstitution.id"
-                disabled
-                help="Diisi automatik berdasarkan institusi pengguna"
-              />
 
-              <!-- Tarikh Pendaftaran (Hidden) -->
-              <FormKit
-                type="text"
-                name="tarikhPendaftaran"
-                label="Tarikh Pendaftaran"
-                :value="currentDate"
-                disabled
-                help="Diisi automatik dengan tarikh semasa"
-              />
-            </div>
-          </div>
-
-          <!-- Supporting Documents Section - Moved to end as requested -->
-          <div v-if="candidates.length > 0" class="mb-8 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Dokumen Sokongan
-            </h3>
-            <p class="text-sm text-gray-600 mb-4">
-              Dokumen sokongan untuk semua calon yang telah ditambah
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Surat Sokongan / Minit Mesyuarat -->
-              <div class="md:col-span-2">
-                <FormKit
-                  type="file"
-                  name="suratSokongan"
-                  label="Surat Sokongan / Minit Mesyuarat"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
-                  validation="required"
-                  v-model="supportingDocuments.suratSokongan"
-                />
-              </div>
-            </div>
-          </div>
 
           <!-- Candidates List Section -->
           <div v-if="candidates.length > 0" class="mb-8 p-6 border border-gray-200 rounded-lg">
@@ -450,15 +382,6 @@
             <!-- Bulk Operations -->
             <div class="mb-4 flex items-center justify-between">
               <div class="flex items-center space-x-3">
-                <label class="flex items-center">
-                  <input 
-                    type="checkbox" 
-                    v-model="selectAll"
-                    @change="toggleSelectAll"
-                    class="mr-2"
-                  />
-                  <span class="text-sm font-medium">Pilih Semua</span>
-                </label>
                 <span class="text-sm text-gray-600">
                   {{ selectedCandidates.length }} dipilih
                 </span>
@@ -489,6 +412,14 @@
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                   <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                      <input 
+                        type="checkbox" 
+                        v-model="selectAll"
+                        @change="toggleSelectAll"
+                        class="form-checkbox h-4 w-4 text-primary-600"
+                      />
+                    </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
@@ -507,9 +438,6 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Sesi
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Tindakan
-                    </th>
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -518,6 +446,14 @@
                     :key="candidate.id"
                     :class="candidate.isActive ? 'bg-red-50' : ''"
                   >
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <input 
+                        type="checkbox" 
+                        :value="candidate.id"
+                        v-model="selectedCandidates"
+                        class="form-checkbox h-4 w-4 text-primary-600"
+                      />
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="flex items-center">
                         <div 
@@ -550,31 +486,38 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {{ Object.values(candidate.sesiPerKategori || {}).join(', ') }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div class="flex items-center space-x-2">
-                        <input 
-                          type="checkbox" 
-                          :value="candidate.id"
-                          v-model="selectedCandidates"
-                          class="rounded"
-                        />
-                        <rs-button
-                          variant="danger"
-                          size="sm"
-                          @click="removeCandidate(index)"
-                        >
-                          <Icon name="ph:trash" class="w-4 h-4 mr-1" />
-                          Hapus
-                        </rs-button>
-                      </div>
-                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <!-- Submit Button - Moved outside the candidates list -->
+          <!-- Supporting Documents Section - Moved after Candidates List -->
+          <div v-if="candidates.length > 0" class="mb-8 p-6 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">
+              Dokumen Sokongan
+            </h3>
+            <p class="text-sm text-gray-600 mb-4">
+              Dokumen sokongan untuk semua calon yang telah ditambah
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Surat Sokongan / Minit Mesyuarat -->
+              <div class="md:col-span-2">
+                <FormKit
+                  type="file"
+                  name="suratSokongan"
+                  label="Surat Sokongan / Minit Mesyuarat"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
+                  validation="required"
+                  v-model="supportingDocuments.suratSokongan"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button - Moved after Supporting Documents -->
           <div v-if="candidates.length > 0" class="flex justify-end mt-6">
             <rs-button
               variant="primary"
@@ -890,10 +833,10 @@ const institutionType = ref("masjid"); // "masjid" or "bukan-masjid"
 
 // Current institution data (based on logged-in PYB)
 const currentInstitution = ref({
-  id: "MASJID_NEGERI_001",
-  name: "Masjid Negeri",
+  id: "MASJID_NEGERI_SELANGOR_001",
+  name: "Masjid Negeri Selangor",
   type: "masjid",
-  location: "Kuala Lumpur",
+  location: "Selangor",
   pic: "Ahmad bin Abdullah",
   picEmail: "ahmad.abdullah@masjidnegeri.gov.my",
 });
@@ -1066,7 +1009,7 @@ const mockCandidatesData = [
     },
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
-    isActive: false,
+    isActive: true, // SIMULATION: This candidate is an active Penolong Amil (Tidak Layak)
   },
   {
     jenisPengenalan: "MyKad",
@@ -1141,7 +1084,7 @@ const getSesiValidationError = (kategori) => {
 const checkActivePenolongAmil = (noKP) => {
   // Mock check - in real implementation, this would query the database
   const activePenolongAmil = [
-    { noKP: "850315071234", kategori: "PAK", tempoh: "2022-2024" },
+    { noKP: "850315071234", kategori: "PAK+", tempoh: "2024-2026" }, // SIMULATION: Active Penolong Amil
     { noKP: "880420082345", kategori: "PAF", tempoh: "2023-2025" },
   ];
   
