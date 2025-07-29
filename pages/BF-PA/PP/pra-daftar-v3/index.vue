@@ -489,104 +489,7 @@
       </rs-card>
     </div>
 
-    <!-- Penolong Amil Content -->
-    <div v-else-if="currentRole === 'penolong-amil'">
-      <rs-card class="mt-4">
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">
-              Status Permohonan Penolong Amil
-            </h2>
-          </div>
-        </template>
-
-        <template #body>
-          <!-- Smart Filter Section -->
-          <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormKit
-                v-model="filters.searchQuery"
-                type="text"
-                placeholder="Cari nombor rujukan, nama calon..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.statusPendaftaran"
-                type="select"
-                :options="statusPendaftaranOptions"
-                placeholder="Status Pendaftaran"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.statusLantikan"
-                type="select"
-                :options="statusLantikanOptions"
-                placeholder="Status Lantikan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-          </div>
-
-          <!-- Applications Table -->
-          <rs-table
-            :data="filteredApplications"
-            :columns="eksekutifColumns"
-            :pageSize="pageSize"
-            :options="{
-              variant: 'default',
-              hover: true,
-              striped: true,
-            }"
-            :options-advanced="{
-              sortable: true,
-              filterable: true,
-            }"
-            advanced
-          >
-            <template v-slot:statusPendaftaran="{ text }">
-              <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:statusLantikan="{ text }">
-              <rs-badge :variant="getStatusLantikanVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-2">
-                <rs-button
-                  variant="primary"
-                  size="sm"
-                  @click="handleView(text)"
-                >
-                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                  Lihat
-                </rs-button>
-                <rs-button
-                  variant="default"
-                  size="sm"
-                  @click="handleUpdateProfile(text)"
-                >
-                  <Icon name="ph:user-circle" class="w-4 h-4 mr-1" />
-                  Kemaskini Profil
-                </rs-button>
-              </div>
-            </template>
-          </rs-table>
-        </template>
-      </rs-card>
-    </div>
-
-    <!-- Default Content for PYB and Other Roles -->
+    <!-- Default Content for Other Roles -->
     <rs-card v-else class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
@@ -1042,7 +945,7 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const currentRole = ref("pyb");
 
-// RTMF Compliant Mock Data - Role-specific
+// RTMF Compliant Mock Data - Role-specific with Institution Filtering
 const applications = ref([
   {
     no: 1,
@@ -1051,7 +954,8 @@ const applications = ref([
     noKP: "901231012345",
     kategoriPenolongAmil: "Fitrah",
     jawatan: "Penolong Amil Fitrah",
-    institusiKariah: "Masjid Wilayah Persekutuan",
+    institusiKariah: "Masjid Negeri Selangor",
+    institusiId: "MASJID_NEGERI_SELANGOR_001",
     statusPendaftaran: "Submitted",
     sesiPerkhidmatan: "Sesi 1",
     statusLantikan: "Pending",
@@ -1064,7 +968,8 @@ const applications = ref([
     noKP: "850515087654",
     kategoriPenolongAmil: "Kariah",
     jawatan: "Penolong Amil Kariah",
-    institusiKariah: "Masjid Al-Khairiyah",
+    institusiKariah: "Masjid Negeri Selangor",
+    institusiId: "MASJID_NEGERI_SELANGOR_001",
     statusPendaftaran: "Under Review",
     sesiPerkhidmatan: "Sesi 2",
     statusLantikan: "Pending",
@@ -1077,7 +982,8 @@ const applications = ref([
     noKP: "880320056789",
     kategoriPenolongAmil: "Komuniti",
     jawatan: "Penolong Amil Komuniti",
-    institusiKariah: "Masjid Bandar Utama",
+    institusiKariah: "Masjid Al-Khairiyah",
+    institusiId: "MASJID_AL_KHAIRIYAH_002",
     statusPendaftaran: "Approved",
     sesiPerkhidmatan: "Sesi 3",
     statusLantikan: "Appointed",
@@ -1090,7 +996,8 @@ const applications = ref([
     noKP: "920810034567",
     kategoriPenolongAmil: "Padi",
     jawatan: "Penolong Amil Padi",
-    institusiKariah: "Masjid Damansara Perdana",
+    institusiKariah: "Masjid Negeri Selangor",
+    institusiId: "MASJID_NEGERI_SELANGOR_001",
     statusPendaftaran: "Rejected",
     sesiPerkhidmatan: "Sesi 4",
     statusLantikan: "Terminated",
@@ -1104,6 +1011,7 @@ const applications = ref([
     kategoriPenolongAmil: "Fitrah",
     jawatan: "Penolong Amil Fitrah",
     institusiKariah: "Masjid Kg Delek",
+    institusiId: "MASJID_KG_DELEK_003",
     statusPendaftaran: "Approved",
     sesiPerkhidmatan: "Sesi 1",
     statusLantikan: "Active",
@@ -1111,7 +1019,7 @@ const applications = ref([
   },
 ]);
 
-// Completed Penolong Amil Data (with full details)
+// Completed Penolong Amil Data (with full details and institution IDs)
 const completedApplications = ref([
   {
     no: 1,
@@ -1120,7 +1028,8 @@ const completedApplications = ref([
     noKP: "850315071234",
     kategoriPenolongAmil: "Fitrah",
     jawatan: "Penolong Amil Fitrah",
-    institusiKariah: "Masjid Wilayah Persekutuan",
+    institusiKariah: "Masjid Negeri Selangor",
+    institusiId: "MASJID_NEGERI_SELANGOR_001",
     sesiPerkhidmatan: "Sesi 1",
     statusLantikan: "Active",
     tarikhLantikan: "01/01/2023",
@@ -1139,7 +1048,8 @@ const completedApplications = ref([
     noKP: "880420082345",
     kategoriPenolongAmil: "Kariah",
     jawatan: "Penolong Amil Kariah",
-    institusiKariah: "Masjid Al-Khairiyah",
+    institusiKariah: "Masjid Negeri Selangor",
+    institusiId: "MASJID_NEGERI_SELANGOR_001",
     sesiPerkhidmatan: "Sesi 2",
     statusLantikan: "Active",
     tarikhLantikan: "01/04/2023",
@@ -1158,7 +1068,8 @@ const completedApplications = ref([
     noKP: "900525093456",
     kategoriPenolongAmil: "Padi",
     jawatan: "Penolong Amil Padi",
-    institusiKariah: "Masjid Bandar Utama",
+    institusiKariah: "Masjid Al-Khairiyah",
+    institusiId: "MASJID_AL_KHAIRIYAH_002",
     sesiPerkhidmatan: "Sesi 3",
     statusLantikan: "Active",
     tarikhLantikan: "01/07/2023",
@@ -1402,34 +1313,6 @@ const roleSpecificData = {
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Approved" },
     },
   ],
-  "penolong-amil": [
-    {
-      no: 1,
-      rujukan: "PA-2024-001",
-      nama: "Ahmad bin Abdullah",
-      noKP: "901231012345",
-      kategoriPenolongAmil: "Fitrah",
-      jawatan: "Penolong Amil Fitrah",
-      institusiKariah: "Masjid Wilayah Persekutuan",
-      statusPendaftaran: "Approved",
-      sesiPerkhidmatan: "Sesi 1",
-      statusLantikan: "Appointed",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Approved" },
-    },
-    {
-      no: 2,
-      rujukan: "PA-2024-002",
-      nama: "Siti binti Mohamed",
-      noKP: "850515087654",
-      kategoriPenolongAmil: "Kariah",
-      jawatan: "Penolong Amil Kariah",
-      institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Under Review",
-      sesiPerkhidmatan: "Sesi 2",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
-    },
-  ],
 };
 
 // Computed properties
@@ -1437,6 +1320,12 @@ const filteredApplications = computed(() => {
   // Use role-specific data if available, otherwise use default data
   const dataSource = roleSpecificData[currentRole.value] || applications.value;
   let result = [...dataSource];
+
+  // Apply institution filter for PYB role (only show applications from their institution)
+  if (currentRole.value === 'pyb') {
+    const currentInstitutionId = "MASJID_NEGERI_SELANGOR_001"; // Mock current user's institution
+    result = result.filter((app) => app.institusiId === currentInstitutionId);
+  }
 
   // Apply search filter
   if (filters.value.searchQuery) {
@@ -1484,6 +1373,12 @@ const paginationEnd = computed(() => {
 // Completed applications computed properties
 const filteredCompletedApplications = computed(() => {
   let result = [...completedApplications.value];
+
+  // Apply institution filter for PYB role (only show completed applications from their institution)
+  if (currentRole.value === 'pyb') {
+    const currentInstitutionId = "MASJID_NEGERI_SELANGOR_001"; // Mock current user's institution
+    result = result.filter((app) => app.institusiId === currentInstitutionId);
+  }
 
   // Apply search filter
   if (completedFilters.value.searchQuery) {
@@ -1578,10 +1473,7 @@ const handleRiskAnalysis = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/eksekutif/detail/${actionData.rujukan}`);
 };
 
-// Penolong Amil-specific action handler
-const handleUpdateProfile = (actionData) => {
-  navigateTo(`/BF-PA/PP/pra-daftar-v3/login-penerimaan/profile/${actionData.rujukan}`);
-};
+
 
 // Completed applications action handler
 const handleViewComplete = (actionData) => {
