@@ -3,14 +3,598 @@
     <RoleSimulator :initial-role="currentRole" @role-change="handleRoleChange" />
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <!-- Dynamic Content Based on Role -->
+    <div v-if="currentRole === 'eksekutif'">
+      <!-- Eksekutif Content -->
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">
+              Senarai Penolong Amil untuk Sokongan Eksekutif
+            </h2>
+          </div>
+        </template>
+
+        <template #body>
+          <!-- Smart Filter Section -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormKit
+                v-model="filters.searchQuery"
+                type="text"
+                placeholder="Cari nombor rujukan, nama calon..."
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusPendaftaran"
+                type="select"
+                :options="statusPendaftaranOptions"
+                placeholder="Status Pendaftaran"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusLantikan"
+                type="select"
+                :options="statusLantikanOptions"
+                placeholder="Status Lantikan"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+            </div>
+          </div>
+
+          <!-- Applications Table -->
+          <rs-table
+            :data="filteredApplications"
+            :columns="eksekutifColumns"
+            :pageSize="pageSize"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: true,
+            }"
+            advanced
+          >
+            <template v-slot:statusPendaftaran="{ text }">
+              <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:statusLantikan="{ text }">
+              <rs-badge :variant="getStatusLantikanVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:tindakan="{ text }">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  size="sm"
+                  @click="handleView(text)"
+                >
+                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                  Lihat
+                </rs-button>
+                <rs-button
+                  variant="secondary"
+                  size="sm"
+                  @click="handleSupport(text)"
+                >
+                  <Icon name="ph:hand-thumbs-up" class="w-4 h-4 mr-1" />
+                  Sokong
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Ketua Jabatan Content -->
+    <div v-else-if="currentRole === 'ketua-jabatan'">
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">
+              Senarai Penolong Amil untuk Pengesahan Ketua Jabatan
+            </h2>
+          </div>
+        </template>
+
+        <template #body>
+          <!-- Smart Filter Section -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormKit
+                v-model="filters.searchQuery"
+                type="text"
+                placeholder="Cari nombor rujukan, nama calon..."
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusPendaftaran"
+                type="select"
+                :options="statusPendaftaranOptions"
+                placeholder="Status Pendaftaran"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusLantikan"
+                type="select"
+                :options="statusLantikanOptions"
+                placeholder="Status Lantikan"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+            </div>
+          </div>
+
+          <!-- Applications Table -->
+          <rs-table
+            :data="filteredApplications"
+            :columns="eksekutifColumns"
+            :pageSize="pageSize"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: true,
+            }"
+            advanced
+          >
+            <template v-slot:statusPendaftaran="{ text }">
+              <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:statusLantikan="{ text }">
+              <rs-badge :variant="getStatusLantikanVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:tindakan="{ text }">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  size="sm"
+                  @click="handleView(text)"
+                >
+                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                  Lihat
+                </rs-button>
+                <rs-button
+                  variant="success"
+                  size="sm"
+                  @click="handleConfirm(text)"
+                >
+                  <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
+                  Sahkan
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Ketua Divisyen Content -->
+    <div v-else-if="currentRole === 'ketua-divisyen'">
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">
+              Senarai Penolong Amil untuk Kelulusan Akhir
+            </h2>
+          </div>
+        </template>
+
+        <template #body>
+          <!-- Smart Filter Section -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormKit
+                v-model="filters.searchQuery"
+                type="text"
+                placeholder="Cari nombor rujukan, nama calon..."
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusPendaftaran"
+                type="select"
+                :options="statusPendaftaranOptions"
+                placeholder="Status Pendaftaran"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusLantikan"
+                type="select"
+                :options="statusLantikanOptions"
+                placeholder="Status Lantikan"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+            </div>
+          </div>
+
+          <!-- Applications Table -->
+          <rs-table
+            :data="filteredApplications"
+            :columns="eksekutifColumns"
+            :pageSize="pageSize"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: true,
+            }"
+            advanced
+          >
+            <template v-slot:statusPendaftaran="{ text }">
+              <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:statusLantikan="{ text }">
+              <rs-badge :variant="getStatusLantikanVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:tindakan="{ text }">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  size="sm"
+                  @click="handleView(text)"
+                >
+                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                  Lihat
+                </rs-button>
+                <rs-button
+                  variant="danger"
+                  size="sm"
+                  @click="handleApprove(text)"
+                >
+                  <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
+                  Lulus
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- PT Content -->
+    <div v-else-if="currentRole === 'pt'">
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">
+              Senarai Penolong Amil untuk Semakan PT
+            </h2>
+          </div>
+        </template>
+
+        <template #body>
+          <!-- Smart Filter Section -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormKit
+                v-model="filters.searchQuery"
+                type="text"
+                placeholder="Cari nombor rujukan, nama calon..."
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusPendaftaran"
+                type="select"
+                :options="statusPendaftaranOptions"
+                placeholder="Status Pendaftaran"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusLantikan"
+                type="select"
+                :options="statusLantikanOptions"
+                placeholder="Status Lantikan"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+            </div>
+          </div>
+
+          <!-- Applications Table -->
+          <rs-table
+            :data="filteredApplications"
+            :columns="eksekutifColumns"
+            :pageSize="pageSize"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: true,
+            }"
+            advanced
+          >
+            <template v-slot:statusPendaftaran="{ text }">
+              <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:statusLantikan="{ text }">
+              <rs-badge :variant="getStatusLantikanVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:tindakan="{ text }">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  size="sm"
+                  @click="handleView(text)"
+                >
+                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                  Lihat
+                </rs-button>
+                <rs-button
+                  variant="info"
+                  size="sm"
+                  @click="handleReview(text)"
+                >
+                  <Icon name="ph:clipboard-text" class="w-4 h-4 mr-1" />
+                  Semak
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Eksekutif Pengurusan Risiko Content -->
+    <div v-else-if="currentRole === 'eksekutif-pengurusan-risiko'">
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">
+              Senarai Penolong Amil untuk Analisis Risiko
+            </h2>
+          </div>
+        </template>
+
+        <template #body>
+          <!-- Smart Filter Section -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormKit
+                v-model="filters.searchQuery"
+                type="text"
+                placeholder="Cari nombor rujukan, nama calon..."
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusPendaftaran"
+                type="select"
+                :options="statusPendaftaranOptions"
+                placeholder="Status Pendaftaran"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusLantikan"
+                type="select"
+                :options="statusLantikanOptions"
+                placeholder="Status Lantikan"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+            </div>
+          </div>
+
+          <!-- Applications Table -->
+          <rs-table
+            :data="filteredApplications"
+            :columns="eksekutifColumns"
+            :pageSize="pageSize"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: true,
+            }"
+            advanced
+          >
+            <template v-slot:statusPendaftaran="{ text }">
+              <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:statusLantikan="{ text }">
+              <rs-badge :variant="getStatusLantikanVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:tindakan="{ text }">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  size="sm"
+                  @click="handleView(text)"
+                >
+                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                  Lihat
+                </rs-button>
+                <rs-button
+                  variant="warning"
+                  size="sm"
+                  @click="handleRiskAnalysis(text)"
+                >
+                  <Icon name="ph:warning" class="w-4 h-4 mr-1" />
+                  Analisis Risiko
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Penolong Amil Content -->
+    <div v-else-if="currentRole === 'penolong-amil'">
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">
+              Status Permohonan Penolong Amil
+            </h2>
+          </div>
+        </template>
+
+        <template #body>
+          <!-- Smart Filter Section -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormKit
+                v-model="filters.searchQuery"
+                type="text"
+                placeholder="Cari nombor rujukan, nama calon..."
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusPendaftaran"
+                type="select"
+                :options="statusPendaftaranOptions"
+                placeholder="Status Pendaftaran"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="filters.statusLantikan"
+                type="select"
+                :options="statusLantikanOptions"
+                placeholder="Status Lantikan"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+            </div>
+          </div>
+
+          <!-- Applications Table -->
+          <rs-table
+            :data="filteredApplications"
+            :columns="eksekutifColumns"
+            :pageSize="pageSize"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: true,
+            }"
+            advanced
+          >
+            <template v-slot:statusPendaftaran="{ text }">
+              <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:statusLantikan="{ text }">
+              <rs-badge :variant="getStatusLantikanVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:tindakan="{ text }">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  size="sm"
+                  @click="handleView(text)"
+                >
+                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                  Lihat
+                </rs-button>
+                <rs-button
+                  variant="default"
+                  size="sm"
+                  @click="handleUpdateProfile(text)"
+                >
+                  <Icon name="ph:user-circle" class="w-4 h-4 mr-1" />
+                  Kemaskini Profil
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Default Content for PYB and Other Roles -->
+    <rs-card v-else class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
             Senarai Permohonan Penolong Amil
           </h2>
           <rs-button
-            v-if="currentRole !== 'eksekutif'"
+            v-if="currentRole !== 'eksekutif' && currentRole !== 'eksekutif-pengurusan-risiko'"
             variant="primary"
             @click="navigateTo('/BF-PA/PP/pra-daftar-v3/daftar-baharu')"
           >
@@ -112,49 +696,146 @@
             </div>
           </template>
         </rs-table>
-
-        <!-- Pagination -->
-        <div class="flex items-center justify-between px-5 mt-4">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-700">Baris per halaman:</span>
-            <FormKit
-              v-model="pageSize"
-              type="select"
-              :options="[10, 25, 50]"
-              :classes="{
-                wrapper: 'w-20',
-                outer: 'mb-0',
-                input: '!rounded-lg',
-              }"
-            />
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-700">
-              Menunjukkan {{ paginationStart }} hingga
-              {{ paginationEnd }} daripada {{ totalApplications }} entri
-            </span>
-            <div class="flex gap-1">
-              <rs-button
-                variant="primary-outline"
-                class="!p-1 !w-8 !h-8"
-                :disabled="currentPage === 1"
-                @click="currentPage--"
-              >
-                <Icon name="ic:round-keyboard-arrow-left" />
-              </rs-button>
-              <rs-button
-                variant="primary-outline"
-                class="!p-1 !w-8 !h-8"
-                :disabled="currentPage === totalPages"
-                @click="currentPage++"
-              >
-                <Icon name="ic:round-keyboard-arrow-right" />
-              </rs-button>
-            </div>
-          </div>
-        </div>
       </template>
     </rs-card>
+
+    <!-- Completed Penolong Amil Section - Show for all roles -->
+    <div class="mt-8">
+      <rs-card>
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900">
+              Senarai Penolong Amil Lengkap
+            </h3>
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-gray-500">
+                {{ completedApplications.length }} Penolong Amil Aktif
+              </span>
+            </div>
+          </div>
+        </template>
+
+        <template #body>
+          <!-- Smart Filter for Completed Applications -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <FormKit
+                v-model="completedFilters.searchQuery"
+                type="text"
+                placeholder="Cari nama, no KP, institusi..."
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="completedFilters.kategoriPenolongAmil"
+                type="select"
+                :options="kategoriPenolongAmilOptions"
+                placeholder="Kategori Penolong Amil"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="completedFilters.sesiPerkhidmatan"
+                type="select"
+                :options="sesiPerkhidmatanOptions"
+                placeholder="Sesi Perkhidmatan"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <FormKit
+                v-model="completedFilters.statusLantikan"
+                type="select"
+                :options="completedStatusLantikanOptions"
+                placeholder="Status Lantikan"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+            </div>
+          </div>
+
+          <!-- Completed Applications Table -->
+          <rs-table
+            :data="filteredCompletedApplications"
+            :columns="completedColumns"
+            :pageSize="pageSize"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: true,
+            }"
+            advanced
+          >
+            <template v-slot:statusLantikan="{ text }">
+              <rs-badge :variant="getStatusLantikanVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:tindakan="{ text }">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  size="sm"
+                  @click="handleViewComplete(text)"
+                >
+                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                  Lihat Terperinci
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-between px-5 mt-4">
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-700">Baris per halaman:</span>
+        <FormKit
+          v-model="pageSize"
+          type="select"
+          :options="[10, 25, 50]"
+          :classes="{
+            wrapper: 'w-20',
+            outer: 'mb-0',
+            input: '!rounded-lg',
+          }"
+        />
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-700">
+          Menunjukkan {{ paginationStart }} hingga
+          {{ paginationEnd }} daripada {{ totalApplications }} entri
+        </span>
+        <div class="flex gap-1">
+          <rs-button
+            variant="primary-outline"
+            class="!p-1 !w-8 !h-8"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+          >
+            <Icon name="ic:round-keyboard-arrow-left" />
+          </rs-button>
+          <rs-button
+            variant="primary-outline"
+            class="!p-1 !w-8 !h-8"
+            :disabled="currentPage === totalPages"
+            @click="currentPage++"
+          >
+            <Icon name="ic:round-keyboard-arrow-right" />
+          </rs-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -244,6 +925,61 @@ const columns = [
   },
 ];
 
+// Eksekutif-specific Table Columns
+const eksekutifColumns = [
+  {
+    key: "no",
+    label: "No",
+    sortable: true,
+    width: "60px",
+  },
+  {
+    key: "rujukan",
+    label: "Rujukan",
+    sortable: true,
+  },
+  {
+    key: "nama",
+    label: "Nama",
+    sortable: true,
+  },
+  {
+    key: "noKP",
+    label: "No KP",
+    sortable: true,
+  },
+  {
+    key: "kategoriPenolongAmil",
+    label: "Kategori Penolong Amil",
+    sortable: true,
+  },
+  {
+    key: "jawatan",
+    label: "Jawatan",
+    sortable: true,
+  },
+  {
+    key: "institusiKariah",
+    label: "Institusi/Kariah",
+    sortable: true,
+  },
+  {
+    key: "statusPendaftaran",
+    label: "Status Pendaftaran",
+    sortable: true,
+  },
+  {
+    key: "statusLantikan",
+    label: "Status Lantikan",
+    sortable: true,
+  },
+  {
+    key: "tindakan",
+    label: "Tindakan",
+    sortable: false,
+  },
+];
+
 // RTMF Required Filter Options
 const statusPendaftaranOptions = [
   { label: "Semua Status", value: "" },
@@ -262,10 +998,26 @@ const sesiPerkhidmatanOptions = [
   { label: "Sesi 4 - Oktober-Disember", value: "Sesi 4" },
 ];
 
+const kategoriPenolongAmilOptions = [
+  { label: "Semua Kategori", value: "" },
+  { label: "Fitrah", value: "Fitrah" },
+  { label: "Padi", value: "Padi" },
+  { label: "Kariah", value: "Kariah" },
+  { label: "Komuniti", value: "Komuniti" },
+];
+
 const statusLantikanOptions = [
   { label: "Semua Status", value: "" },
   { label: "Pending", value: "Pending" },
   { label: "Appointed", value: "Appointed" },
+  { label: "Active", value: "Active" },
+  { label: "Inactive", value: "Inactive" },
+  { label: "Terminated", value: "Terminated" },
+];
+
+// Completed applications status options (only active statuses)
+const completedStatusLantikanOptions = [
+  { label: "Semua Status", value: "" },
   { label: "Active", value: "Active" },
   { label: "Inactive", value: "Inactive" },
   { label: "Terminated", value: "Terminated" },
@@ -278,11 +1030,19 @@ const filters = ref({
   sesiPerkhidmatan: "",
   statusLantikan: "",
 });
+
+// Completed applications filters
+const completedFilters = ref({
+  searchQuery: "",
+  kategoriPenolongAmil: "",
+  sesiPerkhidmatan: "",
+  statusLantikan: "",
+});
 const currentPage = ref(1);
 const pageSize = ref(10);
 const currentRole = ref("pyb");
 
-// RTMF Compliant Mock Data
+// RTMF Compliant Mock Data - Role-specific
 const applications = ref([
   {
     no: 1,
@@ -351,9 +1111,332 @@ const applications = ref([
   },
 ]);
 
+// Completed Penolong Amil Data (with full details)
+const completedApplications = ref([
+  {
+    no: 1,
+    rujukan: "PA-2023-001",
+    nama: "Mohd Zulkifli bin Ahmad",
+    noKP: "850315071234",
+    kategoriPenolongAmil: "Fitrah",
+    jawatan: "Penolong Amil Fitrah",
+    institusiKariah: "Masjid Wilayah Persekutuan",
+    sesiPerkhidmatan: "Sesi 1",
+    statusLantikan: "Active",
+    tarikhLantikan: "01/01/2023",
+    namaBank: "Maybank",
+    noAkaunBank: "1234567890",
+    namaPemegangAkaun: "Mohd Zulkifli bin Ahmad",
+    namaWaris: "Siti Aminah binti Hassan",
+    hubunganWaris: "Isteri",
+    telefonWaris: "0123456789",
+    tindakan: { rujukan: "PA-2023-001" },
+  },
+  {
+    no: 2,
+    rujukan: "PA-2023-002",
+    nama: "Fatimah binti Omar",
+    noKP: "880420082345",
+    kategoriPenolongAmil: "Kariah",
+    jawatan: "Penolong Amil Kariah",
+    institusiKariah: "Masjid Al-Khairiyah",
+    sesiPerkhidmatan: "Sesi 2",
+    statusLantikan: "Active",
+    tarikhLantikan: "01/04/2023",
+    namaBank: "CIMB Bank",
+    noAkaunBank: "0987654321",
+    namaPemegangAkaun: "Fatimah binti Omar",
+    namaWaris: "Ahmad bin Omar",
+    hubunganWaris: "Suami",
+    telefonWaris: "0134567890",
+    tindakan: { rujukan: "PA-2023-002" },
+  },
+  {
+    no: 3,
+    rujukan: "PA-2023-003",
+    nama: "Abdul Hamid bin Ismail",
+    noKP: "900525093456",
+    kategoriPenolongAmil: "Padi",
+    jawatan: "Penolong Amil Padi",
+    institusiKariah: "Masjid Bandar Utama",
+    sesiPerkhidmatan: "Sesi 3",
+    statusLantikan: "Active",
+    tarikhLantikan: "01/07/2023",
+    namaBank: "Public Bank",
+    noAkaunBank: "1122334455",
+    namaPemegangAkaun: "Abdul Hamid bin Ismail",
+    namaWaris: "Noraini binti Abdullah",
+    hubunganWaris: "Isteri",
+    telefonWaris: "0145678901",
+    tindakan: { rujukan: "PA-2023-003" },
+  },
+]);
+
+// Completed applications table columns
+const completedColumns = [
+  {
+    key: "no",
+    label: "No",
+    sortable: true,
+    width: "60px",
+  },
+  {
+    key: "rujukan",
+    label: "Rujukan",
+    sortable: true,
+  },
+  {
+    key: "nama",
+    label: "Nama Penolong Amil",
+    sortable: true,
+  },
+  {
+    key: "noKP",
+    label: "No KP",
+    sortable: true,
+  },
+  {
+    key: "kategoriPenolongAmil",
+    label: "Kategori Penolong Amil",
+    sortable: true,
+  },
+  {
+    key: "jawatan",
+    label: "Jawatan",
+    sortable: true,
+  },
+  {
+    key: "institusiKariah",
+    label: "Institusi/Kariah",
+    sortable: true,
+  },
+  {
+    key: "sesiPerkhidmatan",
+    label: "Sesi Perkhidmatan",
+    sortable: true,
+  },
+  {
+    key: "tarikhLantikan",
+    label: "Tarikh Lantikan",
+    sortable: true,
+  },
+  {
+    key: "statusLantikan",
+    label: "Status Lantikan/Perkhidmatan",
+    sortable: true,
+  },
+  {
+    key: "tindakan",
+    label: "Tindakan",
+    sortable: false,
+  },
+];
+
+// Role-specific mock data for different views
+const roleSpecificData = {
+  pyb: [
+    {
+      no: 1,
+      rujukan: "PA-2024-001",
+      nama: "Ahmad bin Abdullah",
+      noKP: "901231012345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Wilayah Persekutuan",
+      statusPendaftaran: "Draft",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Draft" },
+    },
+    {
+      no: 2,
+      rujukan: "PA-2024-002",
+      nama: "Siti binti Mohamed",
+      noKP: "850515087654",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Submitted",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Submitted" },
+    },
+  ],
+  pt: [
+    {
+      no: 1,
+      rujukan: "PA-2024-001",
+      nama: "Ahmad bin Abdullah",
+      noKP: "901231012345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Wilayah Persekutuan",
+      statusPendaftaran: "Submitted",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Submitted" },
+    },
+    {
+      no: 2,
+      rujukan: "PA-2024-002",
+      nama: "Siti binti Mohamed",
+      noKP: "850515087654",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Under Review",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
+    },
+  ],
+  eksekutif: [
+    {
+      no: 1,
+      rujukan: "PA-2024-001",
+      nama: "Ahmad bin Abdullah",
+      noKP: "901231012345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Wilayah Persekutuan",
+      statusPendaftaran: "Under Review",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Under Review" },
+    },
+    {
+      no: 2,
+      rujukan: "PA-2024-002",
+      nama: "Siti binti Mohamed",
+      noKP: "850515087654",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Under Review",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
+    },
+  ],
+  "eksekutif-pengurusan-risiko": [
+    {
+      no: 1,
+      rujukan: "PA-2024-001",
+      nama: "Ahmad bin Abdullah",
+      noKP: "901231012345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Wilayah Persekutuan",
+      statusPendaftaran: "Under Review",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Under Review" },
+    },
+    {
+      no: 2,
+      rujukan: "PA-2024-002",
+      nama: "Siti binti Mohamed",
+      noKP: "850515087654",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Under Review",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
+    },
+  ],
+  "ketua-jabatan": [
+    {
+      no: 1,
+      rujukan: "PA-2024-001",
+      nama: "Ahmad bin Abdullah",
+      noKP: "901231012345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Wilayah Persekutuan",
+      statusPendaftaran: "Approved",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Approved" },
+    },
+    {
+      no: 2,
+      rujukan: "PA-2024-002",
+      nama: "Siti binti Mohamed",
+      noKP: "850515087654",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Approved",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Approved" },
+    },
+  ],
+  "ketua-divisyen": [
+    {
+      no: 1,
+      rujukan: "PA-2024-001",
+      nama: "Ahmad bin Abdullah",
+      noKP: "901231012345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Wilayah Persekutuan",
+      statusPendaftaran: "Approved",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Approved" },
+    },
+    {
+      no: 2,
+      rujukan: "PA-2024-002",
+      nama: "Siti binti Mohamed",
+      noKP: "850515087654",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Approved",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Approved" },
+    },
+  ],
+  "penolong-amil": [
+    {
+      no: 1,
+      rujukan: "PA-2024-001",
+      nama: "Ahmad bin Abdullah",
+      noKP: "901231012345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Wilayah Persekutuan",
+      statusPendaftaran: "Approved",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Appointed",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Approved" },
+    },
+    {
+      no: 2,
+      rujukan: "PA-2024-002",
+      nama: "Siti binti Mohamed",
+      noKP: "850515087654",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Under Review",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Pending",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
+    },
+  ],
+};
+
 // Computed properties
 const filteredApplications = computed(() => {
-  let result = [...applications.value];
+  // Use role-specific data if available, otherwise use default data
+  const dataSource = roleSpecificData[currentRole.value] || applications.value;
+  let result = [...dataSource];
 
   // Apply search filter
   if (filters.value.searchQuery) {
@@ -398,6 +1481,42 @@ const paginationEnd = computed(() => {
   return Math.min(currentPage.value * pageSize.value, totalApplications.value);
 });
 
+// Completed applications computed properties
+const filteredCompletedApplications = computed(() => {
+  let result = [...completedApplications.value];
+
+  // Apply search filter
+  if (completedFilters.value.searchQuery) {
+    const query = completedFilters.value.searchQuery.toLowerCase();
+    result = result.filter(
+      (app) =>
+        app.rujukan.toLowerCase().includes(query) ||
+        app.nama.toLowerCase().includes(query) ||
+        app.noKP.toLowerCase().includes(query) ||
+        app.institusiKariah.toLowerCase().includes(query)
+    );
+  }
+
+  // Apply category filter
+  if (completedFilters.value.kategoriPenolongAmil) {
+    result = result.filter((app) => app.kategoriPenolongAmil === completedFilters.value.kategoriPenolongAmil);
+  }
+
+  // Apply session filter
+  if (completedFilters.value.sesiPerkhidmatan) {
+    result = result.filter((app) => app.sesiPerkhidmatan === completedFilters.value.sesiPerkhidmatan);
+  }
+
+  // Apply status filter
+  if (completedFilters.value.statusLantikan) {
+    result = result.filter((app) => app.statusLantikan === completedFilters.value.statusLantikan);
+  }
+
+  return result;
+});
+
+const totalCompletedApplications = computed(() => filteredCompletedApplications.value.length);
+
 // Helper functions
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
@@ -432,6 +1551,41 @@ const handleView = (actionData) => {
 
 const handleEdit = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/edit/${actionData.rujukan}`);
+};
+
+// Eksekutif-specific action handler
+const handleSupport = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/eksekutif/detail/${actionData.rujukan}`);
+};
+
+// Ketua Jabatan-specific action handler
+const handleConfirm = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/ketua-jabatan/detail/${actionData.rujukan}`);
+};
+
+// Ketua Divisyen-specific action handler
+const handleApprove = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/ketua-divisyen/detail/${actionData.rujukan}`);
+};
+
+// PT-specific action handler
+const handleReview = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/semakan/detail/${actionData.rujukan}`);
+};
+
+// Eksekutif Pengurusan Risiko-specific action handler
+const handleRiskAnalysis = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/eksekutif/detail/${actionData.rujukan}`);
+};
+
+// Penolong Amil-specific action handler
+const handleUpdateProfile = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/login-penerimaan/profile/${actionData.rujukan}`);
+};
+
+// Completed applications action handler
+const handleViewComplete = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/detail-complete/${actionData.rujukan}`);
 };
 
 // Watch for page size changes to reset current page
