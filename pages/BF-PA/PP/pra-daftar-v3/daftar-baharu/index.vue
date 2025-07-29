@@ -224,47 +224,73 @@
                   </p>
                 </div>
 
-                <!-- Jawatan -->
+                <!-- Kategori Details (Jawatan & Sesi Perkhidmatan) -->
                 <div class="md:col-span-2">
                   <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Jawatan *
+                    Butiran Kategori *
                   </label>
                   <div class="space-y-4">
-                    <!-- Dynamic Jawatan based on selected Kategori -->
-                    <div v-for="kategori in editingCandidate.kategoriPenolongAmil" :key="kategori" class="p-4 border border-gray-200 rounded-lg">
-                      <h4 class="text-sm font-medium text-gray-800 mb-3">
-                        {{ kategori }} - {{ getKategoriDisplayName(kategori) }}
-                      </h4>
-                      
-                      <!-- Dynamic Jawatan Options -->
-                      <div class="space-y-2">
-                        <FormKit
-                          type="select"
-                          :name="`jawatan-${kategori}`"
-                          :label="`Jawatan untuk ${kategori}`"
-                          :options="getJawatanOptionsForKategori(kategori)"
-                          placeholder="Pilih jawatan"
-                          validation="required"
-                          :validation-messages="{
-                            required: 'Sila pilih jawatan untuk kategori ini'
-                          }"
-                          v-model="editingCandidate.jawatanPerKategori[kategori]"
-                          :classes="{
-                            input: '!py-2',
-                            label: 'text-sm font-medium text-gray-700 mb-2'
-                          }"
-                        />
+                    <!-- Dynamic Category Details -->
+                    <div v-for="kategori in editingCandidate.kategoriPenolongAmil" :key="kategori" class="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                      <div class="flex items-center mb-3">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                        <h4 class="text-sm font-medium text-gray-800">
+                          {{ getKategoriDisplayName(kategori) }}
+                        </h4>
                       </div>
                       
-                      <!-- Validation Error for this category -->
-                      <p v-if="getJawatanValidationError(kategori)" class="mt-2 text-xs text-red-600">
-                        {{ getJawatanValidationError(kategori) }}
-                      </p>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Jawatan for this category -->
+                        <div>
+                          <FormKit
+                            type="select"
+                            :name="`jawatan-${kategori}`"
+                            label="Jawatan"
+                            :options="getJawatanOptionsForKategori(kategori)"
+                            placeholder="Pilih jawatan"
+                            validation="required"
+                            :validation-messages="{
+                              required: 'Sila pilih jawatan untuk kategori ini'
+                            }"
+                            v-model="editingCandidate.jawatanPerKategori[kategori]"
+                            :classes="{
+                              input: '!py-2',
+                              label: 'text-sm font-medium text-gray-700 mb-2'
+                            }"
+                          />
+                          <p v-if="getJawatanValidationError(kategori)" class="mt-1 text-xs text-red-600">
+                            {{ getJawatanValidationError(kategori) }}
+                          </p>
+                        </div>
+                        
+                        <!-- Sesi Perkhidmatan for this category -->
+                        <div>
+                          <FormKit
+                            type="select"
+                            :name="`sesi-${kategori}`"
+                            label="Sesi Perkhidmatan"
+                            :options="getSesiOptionsForKategori(kategori)"
+                            placeholder="Pilih sesi"
+                            validation="required"
+                            :validation-messages="{
+                              required: 'Sila pilih sesi perkhidmatan untuk kategori ini'
+                            }"
+                            v-model="editingCandidate.sesiPerKategori[kategori]"
+                            :classes="{
+                              input: '!py-2',
+                              label: 'text-sm font-medium text-gray-700 mb-2'
+                            }"
+                          />
+                          <p v-if="getSesiValidationError(kategori)" class="mt-1 text-xs text-red-600">
+                            {{ getSesiValidationError(kategori) }}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                     
                     <!-- Show message when no categories selected -->
-                    <div v-if="editingCandidate.kategoriPenolongAmil.length === 0" class="text-sm text-gray-500 italic">
-                      Sila pilih Kategori Penolong Amil terlebih dahulu untuk menentukan Jawatan
+                    <div v-if="editingCandidate.kategoriPenolongAmil.length === 0" class="text-sm text-gray-500 italic text-center py-4">
+                      Sila pilih Kategori Penolong Amil terlebih dahulu untuk menentukan Jawatan dan Sesi Perkhidmatan
                     </div>
                   </div>
                 </div>
@@ -323,16 +349,6 @@
                 :value="currentInstitution.id"
                 disabled
                 help="Diisi automatik berdasarkan institusi pengguna"
-              />
-
-              <!-- Sesi Perkhidmatan -->
-              <FormKit
-                type="select"
-                name="sesiPerkhidmatan"
-                label="Sesi Perkhidmatan"
-                :options="sesiPerkhidmatanOptions"
-                validation="required"
-                v-model="sharedPencalonanData.sesiPerkhidmatan"
               />
 
               <!-- Tarikh Pendaftaran (Hidden) -->
@@ -532,7 +548,7 @@
                       {{ Object.values(candidate.jawatanPerKategori || {}).join(', ') }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ candidate.sesiPerkhidmatan }}
+                      {{ Object.values(candidate.sesiPerKategori || {}).join(', ') }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div class="flex items-center space-x-2">
@@ -762,12 +778,29 @@ const breadcrumb = ref([
   },
 ]);
 
-// RTMF Required Options
-const sesiPerkhidmatanOptions = [
-  { label: "Sila pilih sesi perkhidmatan", value: "" },
-  { label: "Pelantikan Penolong Amil Fitrah 2024-2026", value: "Pelantikan Penolong Amil Fitrah 2024-2026" },
-  { label: "Pelantikan Penolong Amil Kariah 2025-2027", value: "Pelantikan Penolong Amil Kariah 2025-2027" },
-];
+// RTMF Required Options - Updated with category-specific sessions
+const sesiPerkhidmatanOptions = {
+  PAK: [
+    { label: "Sila pilih sesi perkhidmatan PAK", value: "" },
+    { label: "Pelantikan Penolong Amil Kariah 2025-2027", value: "Pelantikan Penolong Amil Kariah 2025-2027" },
+    { label: "Pelantikan Penolong Amil Kariah 2026-2028", value: "Pelantikan Penolong Amil Kariah 2026-2028" },
+  ],
+  PAF: [
+    { label: "Sila pilih sesi perkhidmatan PAF", value: "" },
+    { label: "Pelantikan Penolong Amil Fitrah 2024-2026", value: "Pelantikan Penolong Amil Fitrah 2024-2026" },
+    { label: "Pelantikan Penolong Amil Fitrah 2025-2027", value: "Pelantikan Penolong Amil Fitrah 2025-2027" },
+  ],
+  "PA Padi": [
+    { label: "Sila pilih sesi perkhidmatan PA Padi", value: "" },
+    { label: "Pelantikan Penolong Amil Padi 2024-2026", value: "Pelantikan Penolong Amil Padi 2024-2026" },
+    { label: "Pelantikan Penolong Amil Padi 2025-2027", value: "Pelantikan Penolong Amil Padi 2025-2027" },
+  ],
+  "PAK+": [
+    { label: "Sila pilih sesi perkhidmatan PAK+", value: "" },
+    { label: "Pelantikan Penolong Amil Komuniti 2024-2026", value: "Pelantikan Penolong Amil Komuniti 2024-2026" },
+    { label: "Pelantikan Penolong Amil Komuniti 2025-2027", value: "Pelantikan Penolong Amil Komuniti 2025-2027" },
+  ],
+};
 
 // Dynamic Kategori Penolong Amil Options (from database)
 const kategoriPenolongAmilOptions = ref([
@@ -874,6 +907,7 @@ const editingCandidate = ref({
   telefon: "",
   kategoriPenolongAmil: [],
   jawatanPerKategori: {}, // New field to store jawatan per kategori
+  sesiPerKategori: {}, // New field to store sesi per kategori
   salinanKadPengenalan: null,
   tarikhPendaftaran: currentDate.value,
 });
@@ -908,9 +942,8 @@ const supportingDocuments = ref({
   suratSokongan: null,
 });
 
-// Shared pencalonan data for all candidates
+// Shared pencalonan data for all candidates (removed sesiPerkhidmatan)
 const sharedPencalonanData = ref({
-  sesiPerkhidmatan: "",
   tarikhPendaftaran: currentDate.value,
 });
 
@@ -926,6 +959,9 @@ const isCandidateValid = computed(() => {
     if (!editingCandidate.value.jawatanPerKategori[kategori]) {
       return false;
     }
+    if (!editingCandidate.value.sesiPerKategori[kategori]) {
+      return false;
+    }
   }
 
   return editingCandidate.value.noKP &&
@@ -937,7 +973,6 @@ const isCandidateValid = computed(() => {
 const canSubmit = computed(() => {
   return candidates.value.length > 0 && 
          !candidates.value.some(c => c.isActive) &&
-         sharedPencalonanData.value.sesiPerkhidmatan &&
          supportingDocuments.value.suratSokongan;
 });
 
@@ -995,7 +1030,7 @@ const selectAll = computed({
   }
 });
 
-// Mock candidates data for import simulation (from V2)
+// Mock candidates data for import simulation (from V2) - Updated with sesiPerKategori
 const mockCandidatesData = [
   {
     jenisPengenalan: "MyKad",
@@ -1008,8 +1043,11 @@ const mockCandidatesData = [
       "PAK": "PAK-KETUA_PENOLONG_AMIL",
       "PAF": "PAF-PENOLONG_AMIL",
     },
+    sesiPerKategori: {
+      "PAK": "Pelantikan Penolong Amil Kariah 2025-2027",
+      "PAF": "Pelantikan Penolong Amil Fitrah 2024-2026",
+    },
     salinanKadPengenalan: null,
-    sesiPerkhidmatan: "Pelantikan Penolong Amil Fitrah 2024-2026",
     tarikhPendaftaran: currentDate.value,
     isActive: false,
   },
@@ -1023,8 +1061,10 @@ const mockCandidatesData = [
     jawatanPerKategori: {
       "PAK+": "PAK+-KETUA_PENOLONG_AMIL",
     },
+    sesiPerKategori: {
+      "PAK+": "Pelantikan Penolong Amil Komuniti 2024-2026",
+    },
     salinanKadPengenalan: null,
-    sesiPerkhidmatan: "Pelantikan Penolong Amil Kariah 2025-2027",
     tarikhPendaftaran: currentDate.value,
     isActive: false,
   },
@@ -1038,8 +1078,10 @@ const mockCandidatesData = [
     jawatanPerKategori: {
       "PA Padi": "PA Padi-PENOLONG_AMIL",
     },
+    sesiPerKategori: {
+      "PA Padi": "Pelantikan Penolong Amil Padi 2024-2026",
+    },
     salinanKadPengenalan: null,
-    sesiPerkhidmatan: "Pelantikan Penolong Amil Fitrah 2024-2026",
     tarikhPendaftaran: currentDate.value,
     isActive: false,
   },
@@ -1074,10 +1116,23 @@ const getJawatanOptionsForKategori = (kategori) => {
     }));
 };
 
+// Get sesi options for a specific category
+const getSesiOptionsForKategori = (kategori) => {
+  return sesiPerkhidmatanOptions[kategori] || [];
+};
+
 // Get validation error for jawatan
 const getJawatanValidationError = (kategori) => {
   if (!editingCandidate.value.jawatanPerKategori[kategori]) {
     return "Sila pilih jawatan untuk kategori ini.";
+  }
+  return null;
+};
+
+// Get validation error for sesi
+const getSesiValidationError = (kategori) => {
+  if (!editingCandidate.value.sesiPerKategori[kategori]) {
+    return "Sila pilih sesi perkhidmatan untuk kategori ini.";
   }
   return null;
 };
@@ -1098,15 +1153,10 @@ const checkActivePenolongAmil = (noKP) => {
   } : { isActive: false };
 };
 
-// Add candidate to list with shared pencalonan data
+// Add candidate to list with category-specific sesi data
 const handleAddCandidate = async () => {
   if (!isCandidateValid.value) {
     alert("Sila lengkapkan semua maklumat calon");
-    return;
-  }
-
-  if (!sharedPencalonanData.value.sesiPerkhidmatan) {
-    alert("Sila pilih Sesi Perkhidmatan dalam Maklumat Pencalonan terlebih dahulu");
     return;
   }
 
@@ -1121,12 +1171,11 @@ const handleAddCandidate = async () => {
       return;
     }
 
-    // Add candidate to list with shared pencalonan data
+    // Add candidate to list with category-specific sesi data
     const newCandidate = {
       ...editingCandidate.value,
       id: Date.now(),
       isActive: false,
-      sesiPerkhidmatan: sharedPencalonanData.value.sesiPerkhidmatan,
       tarikhPendaftaran: sharedPencalonanData.value.tarikhPendaftaran,
     };
 
@@ -1154,6 +1203,7 @@ const clearForm = () => {
     telefon: "",
     kategoriPenolongAmil: [],
     jawatanPerKategori: {}, // Clear new field
+    sesiPerKategori: {}, // Clear new field
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
   };
@@ -1183,7 +1233,7 @@ const removeSelectedCandidates = () => {
   selectedCandidates.value = [];
 };
 
-// Export functionality
+// Export functionality - Updated to handle sesiPerKategori
 const exportCandidates = () => {
   const exportData = candidates.value.map(candidate => ({
     'Nama': candidate.namaCalon,
@@ -1192,7 +1242,7 @@ const exportCandidates = () => {
     'Telefon': candidate.telefon,
     'Kategori': candidate.kategoriPenolongAmil.join(', '),
     'Jawatan': Object.values(candidate.jawatanPerKategori || {}).join(', '),
-    'Sesi Perkhidmatan': candidate.sesiPerkhidmatan,
+    'Sesi Perkhidmatan': Object.values(candidate.sesiPerKategori || {}).join(', '),
     'Status': candidate.isActive ? 'Penolong Amil Aktif' : 'Layak',
     'Tarikh Pendaftaran': candidate.tarikhPendaftaran,
   }));
