@@ -231,32 +231,6 @@
                 </div>
               </div>
 
-              <!-- Gambar Calon -->
-              <div>
-                <h4 class="font-medium mb-3">Gambar Calon</h4>
-                <div class="border border-gray-200 rounded-md">
-                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
-                    <div class="flex items-center">
-                      <Icon name="heroicons:photo" class="text-blue-600 mr-2" size="20" />
-                      <span>{{ application.gambarCalon }}</span>
-                    </div>
-                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('gambarCalon')">
-                      <Icon name="heroicons:eye" class="mr-1" size="16" />
-                      Lihat Dokumen
-                    </rs-button>
-                  </div>
-                  <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
-                    <div class="mb-2">
-                      <Icon name="heroicons:photo" size="48" class="text-gray-400" />
-                    </div>
-                    <p class="text-sm">Klik butang "Lihat Dokumen" untuk melihat Gambar Calon</p>
-                  </div>
-                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
-                    Dimuat naik oleh {{ application.nama }} pada {{ application.uploadDate }}
-                  </div>
-                </div>
-              </div>
-
               <!-- Surat Sokongan (if exists) -->
               <div v-if="application.suratSokongan">
                 <h4 class="font-medium mb-3">Surat Sokongan</h4>
@@ -380,7 +354,6 @@ const application = ref({
   statusPendaftaran: "Under Review",
   statusLantikan: "Pending",
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
-  gambarCalon: "gambar_ahmad.jpg",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
   uploadDate: "15/03/2024",

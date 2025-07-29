@@ -487,4 +487,4 @@ const downloadSuratTawaran = () => {
 
 <style scoped>
 /* Custom styles if needed */
-</style>
+</style> 

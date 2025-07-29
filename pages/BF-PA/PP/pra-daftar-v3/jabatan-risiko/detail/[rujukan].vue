@@ -429,14 +429,14 @@ const breadcrumb = ref([
     path: "/BF-PA/PP/pra-daftar-v3",
   },
   {
-    name: "Saringan",
+    name: "Jabatan Risiko",
     type: "link",
-    path: "/BF-PA/PP/pra-daftar-v3/saringan",
+    path: "/BF-PA/PP/pra-daftar-v3/jabatan-risiko",
   },
   {
     name: "Detail Saringan",
     type: "current",
-    path: `/BF-PA/PP/pra-daftar-v3/saringan/detail/${route.params.rujukan}`,
+    path: `/BF-PA/PP/pra-daftar-v3/jabatan-risiko/detail/${route.params.rujukan}`,
   },
 ]);
 
@@ -531,7 +531,7 @@ const getScreeningStatusVariant = (status) => {
 
 // Action handlers
 const handleBack = () => {
-  navigateTo("/BF-PA/PP/pra-daftar-v3/saringan");
+  navigateTo("/BF-PA/PP/pra-daftar-v3/jabatan-risiko");
 };
 
 const handleApproveScreening = () => {
@@ -545,7 +545,29 @@ const handleRejectScreening = () => {
 };
 
 const handleScreeningSubmit = async (formData) => {
-  // Form submission handler
+  try {
+    isSubmitting.value = true;
+    
+    // Update screening data
+    screeningData.value = {
+      ...screeningData.value,
+      ...screeningForm.value,
+      statusSaringan: screeningForm.value.statusSaringan,
+      tarikhSaringan: screeningForm.value.tarikhSaringan,
+      disaredOleh: screeningForm.value.disaredOleh,
+    };
+    
+    // Show success message
+    alert(`Saringan berjaya dihantar. Status: ${screeningForm.value.statusSaringan}`);
+    
+    // Navigate back to dashboard
+    navigateTo("/BF-PA/PP/pra-daftar-v3");
+    
+  } catch (error) {
+    alert("Ralat berlaku semasa menghantar saringan");
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 const handleSubmitDirect = async () => {
@@ -564,7 +586,7 @@ const handleSubmitDirect = async () => {
     // Screening submitted successfully
     
     // Navigate back to screening list
-    navigateTo("/BF-PA/PP/pra-daftar-v3/saringan");
+    navigateTo("/BF-PA/PP/pra-daftar-v3/jabatan-risiko");
     
   } catch (error) {
     alert("Ralat berlaku semasa menghantar saringan. Sila cuba lagi.");

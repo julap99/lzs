@@ -493,14 +493,14 @@ const breadcrumb = ref([
     path: "/BF-PA/PP/pra-daftar-v3",
   },
   {
-    name: "Semakan PT",
+    name: "PT",
     type: "link",
-    path: "/BF-PA/PP/pra-daftar-v3/semakan",
+    path: "/BF-PA/PP/pra-daftar-v3/PT",
   },
   {
     name: "Detail Semakan",
     type: "current",
-    path: `/BF-PA/PP/pra-daftar-v3/semakan/detail/${route.params.rujukan}`,
+    path: `/BF-PA/PP/pra-daftar-v3/PT/detail/${route.params.rujukan}`,
   },
 ]);
 
@@ -613,7 +613,7 @@ const getReviewStatusVariant = (status) => {
 
 // Action handlers
 const handleBack = () => {
-  navigateTo("/BF-PA/PP/pra-daftar-v3/semakan");
+  navigateTo("/BF-PA/PP/pra-daftar-v3/PT");
 };
 
 const handleApproveReview = () => {
@@ -627,15 +627,34 @@ const handleRejectReview = () => {
 };
 
 const handleReviewSubmit = async (formData) => {
-  // Form submission handler
+  try {
+    isSubmitting.value = true;
+    
+    // Update review data
+    reviewData.value = {
+      ...reviewData.value,
+      ...reviewForm.value,
+      statusSemakan: reviewForm.value.statusSemakan,
+      tarikhSemakan: reviewForm.value.tarikhSemakan,
+      disemakOleh: reviewForm.value.disemakOleh,
+    };
+    
+    // Show success message
+    alert(`Semakan PT berjaya dihantar. Status: ${reviewForm.value.statusSemakan}`);
+    
+    // Navigate back to dashboard
+    navigateTo("/BF-PA/PP/pra-daftar-v3");
+    
+  } catch (error) {
+    alert("Ralat berlaku semasa menghantar semakan PT");
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 const handleSubmitDirect = async () => {
   try {
     isSubmitting.value = true;
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Update review data
     reviewData.value.statusSemakan = reviewForm.value.statusSemakan;
@@ -646,7 +665,7 @@ const handleSubmitDirect = async () => {
     // PT review submitted successfully
     
     // Navigate back to review list
-    navigateTo("/BF-PA/PP/pra-daftar-v3/semakan");
+    navigateTo("/BF-PA/PP/pra-daftar-v3/PT");
     
   } catch (error) {
     alert("Ralat berlaku semasa menghantar semakan. Sila cuba lagi.");

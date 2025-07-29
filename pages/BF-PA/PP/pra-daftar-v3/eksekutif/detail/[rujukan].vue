@@ -357,26 +357,6 @@
                 </div>
               </div>
 
-              <!-- Gambar Calon -->
-              <div>
-                <h4 class="font-medium mb-3">Gambar Calon</h4>
-                <div class="border border-gray-200 rounded-md">
-                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
-                    <div class="flex items-center">
-                      <Icon name="heroicons:photo" class="text-blue-600 mr-2" size="20" />
-                      <span>{{ application.gambarCalon }}</span>
-                    </div>
-                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('gambarCalon')">
-                      <Icon name="heroicons:eye" class="mr-1" size="16" />
-                      Lihat Dokumen
-                    </rs-button>
-                  </div>
-                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
-                    Dimuat naik oleh {{ application.nama }} pada {{ application.uploadDate }}
-                  </div>
-                </div>
-              </div>
-
               <!-- Surat Sokongan (if exists) -->
               <div v-if="application.suratSokongan">
                 <h4 class="font-medium mb-3">Surat Sokongan</h4>
@@ -579,7 +559,6 @@ const application = ref({
   statusPendaftaran: "PT Reviewed",
   statusLantikan: "Under Review",
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
-  gambarCalon: "gambar_ahmad.jpg",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
   uploadDate: "15/03/2024",
@@ -640,15 +619,25 @@ const handleBack = () => {
 };
 
 const handleSubmit = async (formData) => {
-  // Form submission handler
+  try {
+    isSubmitting.value = true;
+    
+    // Show success message
+    alert("Sokongan eksekutif berjaya dihantar dengan Surat Sokongan");
+    
+    // Navigate back to dashboard
+    navigateTo("/BF-PA/PP/pra-daftar-v3");
+    
+  } catch (error) {
+    alert("Ralat berlaku semasa menghantar sokongan eksekutif");
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 const handleSubmitDirect = async () => {
   try {
     isSubmitting.value = true;
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Show success message
     // Executive support submitted successfully

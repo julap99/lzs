@@ -449,7 +449,7 @@ const toggleCategory = (key) => {
 const acceptOffer = () => {
   // Show success message and redirect to dashboard
   alert('Terima kasih! Pengesahan penerimaan tawaran telah dihantar. Anda akan diarahkan ke dashboard.')
-  window.location.href = '/BF-PA/PP/PD/PA_Dashboard'
+  window.location.href = '/BF-PA/PP/pra-daftar-v3/penolong-amil-dashboard'
 }
 
 const rejectOffer = () => {

@@ -72,39 +72,38 @@ const isVisible = ref(false);
 const selectedRole = ref(props.initialRole);
 
 const roleOptions = [
-  { label: "PYB Institusi", value: "pyb" },
-  { label: "PT", value: "pt" },
-  { label: "Eksekutif", value: "eksekutif" },
-  { label: "Eksekutif Pengurusan Risiko", value: "eksekutif-pengurusan-risiko" },
-  { label: "Ketua Jabatan", value: "ketua-jabatan" },
-  { label: "Ketua Divisyen", value: "ketua-divisyen" },
-  { label: "Penolong Amil", value: "penolong-amil" },
+  { label: "1 - PYB Institusi", value: "pyb" },
+  { label: "2 - Eksekutif Pengurusan Risiko", value: "eksekutif-pengurusan-risiko" },
+  { label: "3 - PT", value: "pt" },
+  { label: "4 - Eksekutif", value: "eksekutif" },
+  { label: "5 - Ketua Jabatan", value: "ketua-jabatan" },
+  { label: "6 - Ketua Divisyen", value: "ketua-divisyen" },
 ];
 
 const roleData = {
   pyb: {
     role: "pyb",
     label: "PYB Institusi",
-    description: "Pengurusan Yayasan Baitulmal",
+    description: "Pendaftaran Calon Penolong Amil",
     capabilities: ["Daftar Calon", "Lihat Senarai", "Kemaskini Maklumat"],
+  },
+  "eksekutif-pengurusan-risiko": {
+    role: "eksekutif-pengurusan-risiko",
+    label: "Eksekutif Pengurusan Risiko",
+    description: "Saringan Risiko dan Pematuhan",
+    capabilities: ["Saringan Risiko", "Pematuhan", "Pengesahan Saringan"],
   },
   pt: {
     role: "pt",
     label: "PT",
-    description: "Pegawai Tadbir",
+    description: "Semakan Dokumen PT",
     capabilities: ["Semakan PT", "Pengesahan Awal", "Hantar ke Eksekutif"],
   },
   eksekutif: {
     role: "eksekutif",
     label: "Eksekutif",
     description: "Sokongan Eksekutif",
-    capabilities: ["Sokongan", "Pengesahan", "Hantar ke Ketua Jabatan"],
-  },
-  "eksekutif-pengurusan-risiko": {
-    role: "eksekutif-pengurusan-risiko",
-    label: "Eksekutif Pengurusan Risiko",
-    description: "Pengurusan Risiko dan Pematuhan",
-    capabilities: ["Analisis Risiko", "Pematuhan", "Pengesahan Risiko"],
+    capabilities: ["Sokongan", "Upload Surat Sokongan", "Hantar ke Ketua Jabatan"],
   },
   "ketua-jabatan": {
     role: "ketua-jabatan",
@@ -116,13 +115,7 @@ const roleData = {
     role: "ketua-divisyen",
     label: "Ketua Divisyen",
     description: "Kelulusan Akhir",
-    capabilities: ["Kelulusan Akhir", "Pelantikan", "Status Akhir"],
-  },
-  "penolong-amil": {
-    role: "penolong-amil",
-    label: "Penolong Amil",
-    description: "Calon Penolong Amil",
-    capabilities: ["Terima Pelantikan", "Kemaskini Profil", "Lihat Status"],
+    capabilities: ["Kelulusan Akhir", "Pelantikan", "Integrasi NAS"],
   },
 };
 
@@ -133,12 +126,11 @@ const currentRole = computed(() => {
 const getRoleVariant = (role) => {
   const variants = {
     pyb: "primary",
+    "eksekutif-pengurusan-risiko": "warning",
     pt: "info",
     eksekutif: "success",
-    "eksekutif-pengurusan-risiko": "warning",
     "ketua-jabatan": "purple",
     "ketua-divisyen": "danger",
-    "penolong-amil": "default",
   };
   return variants[role] || "default";
 };

@@ -1498,7 +1498,7 @@ const handleApprove = (actionData) => {
 
 // PA-PP-PD-03_02: PT Review Detail - Paparan Terperinci Semakan Dokumen
 const handleReview = (actionData) => {
-  navigateTo(`/BF-PA/PP/pra-daftar-v3/semakan/detail/${actionData.rujukan}`);
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/PT/detail/${actionData.rujukan}`);
 };
 
 // PA-PP-PD-04_02: Executive Detail - Paparan Terperinci Sokongan (Risk Analysis)

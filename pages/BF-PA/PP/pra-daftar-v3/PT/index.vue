@@ -1,8 +1,8 @@
 ﻿<!-- 
-  RTMF SCREEN: PA-PP-PD-02_01
-  PURPOSE: Screening List - Senarai Semakan & Saringan (JPPA)
-  DESCRIPTION: Screening list for JPPA review and filtering
-  ROUTE: /BF-PA/PP/pra-daftar-v3/saringan
+  RTMF SCREEN: PA-PP-PD-03_01
+  PURPOSE: PT Review List - Senarai Semakan Dokumen (PT)
+  DESCRIPTION: Senarai calon penolong amil untuk semakan oleh PT
+  ROUTE: /BF-PA/PP/pra-daftar-v3/PT
 -->
 <template>
   <div>
@@ -12,17 +12,8 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Senarai Penolong Amil untuk Saringan
+            Senarai Penolong Amil untuk Semakan PT
           </h2>
-          <div class="flex gap-2">
-            <rs-button
-              variant="secondary-outline"
-              @click="handleUploadScreening"
-            >
-              <Icon name="ph:upload" class="w-4 h-4 mr-1" />
-              Muat Naik Saringan
-            </rs-button>
-          </div>
         </div>
       </template>
 
@@ -48,10 +39,10 @@
               }"
             />
             <FormKit
-              v-model="filters.sesiPerkhidmatan"
+              v-model="filters.statusLantikan"
               type="select"
-              :options="sesiPerkhidmatanOptions"
-              placeholder="Sesi Perkhidmatan"
+              :options="statusLantikanOptions"
+              placeholder="Status Lantikan"
               :classes="{
                 input: '!py-2',
               }"
@@ -81,6 +72,12 @@
             </rs-badge>
           </template>
 
+          <template v-slot:statusLantikan="{ text }">
+            <rs-badge :variant="getStatusLantikanVariant(text)">
+              {{ text }}
+            </rs-badge>
+          </template>
+
           <template v-slot:tindakan="{ text }">
             <div class="flex justify-center items-center gap-2">
               <rs-button
@@ -92,12 +89,12 @@
                 Lihat
               </rs-button>
               <rs-button
-                variant="warning"
+                variant="info"
                 size="sm"
-                @click="handleScreening(text)"
+                @click="handleReview(text)"
               >
-                <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
-                Saringan
+                <Icon name="ph:check-square" class="w-4 h-4 mr-1" />
+                Semak
               </rs-button>
             </div>
           </template>
@@ -145,75 +142,6 @@
         </div>
       </template>
     </rs-card>
-
-    <!-- Upload Screening Modal -->
-    <rs-modal
-      v-model="showUploadModal"
-      title="Muat Naik Fail Saringan"
-      size="lg"
-    >
-      <div class="p-6">
-        <div class="mb-4">
-          <p class="text-sm text-gray-600 mb-4">
-            Sila muat naik fail saringan dalam format Excel (.xlsx) atau CSV (.csv).
-            Fail mesti mengandungi maklumat saringan untuk calon penolong amil.
-          </p>
-        </div>
-
-        <FormKit
-          type="file"
-          name="screeningFile"
-          label="Fail Saringan"
-          accept=".xlsx,.csv"
-          validation="required"
-          :validation-messages="{
-            required: 'Fail saringan diperlukan',
-          }"
-          help="Format: XLSX, CSV. Saiz maksimum: 10MB"
-          v-model="uploadData.screeningFile"
-        />
-
-        <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <div class="flex">
-            <Icon name="ph:info" class="w-5 h-5 text-blue-400 mt-0.5" />
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-blue-800">
-                Format Fail Saringan
-              </h3>
-              <ul class="mt-1 text-sm text-blue-700 list-disc list-inside">
-                <li>Rujukan - Nombor rujukan calon</li>
-                <li>Status Saringan - Lulus/Tidak Lulus</li>
-                <li>Catatan - Catatan saringan (pilihan)</li>
-                <li>Tarikh Saringan - Tarikh saringan dijalankan</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <rs-button
-            variant="secondary-outline"
-            @click="showUploadModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="primary"
-            :disabled="!uploadData.screeningFile"
-            @click="handleUploadSubmit"
-          >
-            <Icon
-              v-if="isUploading"
-              name="ph:spinner"
-              class="w-4 h-4 mr-2 animate-spin"
-            />
-            {{ isUploading ? 'Memuat Naik...' : 'Muat Naik' }}
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
   </div>
 </template>
 
@@ -221,8 +149,8 @@
 import { ref, computed, watch } from "vue";
 
 definePageMeta({
-  title: "Saringan Penolong Amil",
-  description: "Senarai penolong amil untuk saringan oleh Eksekutif Jabatan Pengurusan Risiko",
+  title: "Semakan PT Penolong Amil",
+  description: "Senarai penolong amil untuk semakan oleh PT",
 });
 
 const breadcrumb = ref([
@@ -242,13 +170,13 @@ const breadcrumb = ref([
     path: "/BF-PA/PP/pra-daftar-v3",
   },
   {
-    name: "Saringan",
+    name: "PT",
     type: "current",
-    path: "/BF-PA/PP/pra-daftar-v3/saringan",
+    path: "/BF-PA/PP/pra-daftar-v3/PT",
   },
 ]);
 
-// RTMF Required Table Columns for Screening
+// RTMF Required Table Columns for PT Review
 const columns = [
   {
     key: "no",
@@ -277,6 +205,11 @@ const columns = [
     sortable: true,
   },
   {
+    key: "jawatan",
+    label: "Jawatan",
+    sortable: true,
+  },
+  {
     key: "institusiKariah",
     label: "Institusi/Kariah",
     sortable: true,
@@ -292,6 +225,11 @@ const columns = [
     sortable: true,
   },
   {
+    key: "statusLantikan",
+    label: "Status Lantikan/Perkhidmatan",
+    sortable: true,
+  },
+  {
     key: "tindakan",
     label: "Tindakan",
     sortable: false,
@@ -301,10 +239,18 @@ const columns = [
 // RTMF Required Filter Options
 const statusPendaftaranOptions = [
   { label: "Semua Status", value: "" },
-  { label: "Submitted", value: "Submitted" },
-  { label: "Under Review", value: "Under Review" },
   { label: "Screened", value: "Screened" },
-  { label: "Screening Failed", value: "Screening Failed" },
+  { label: "Under Review", value: "Under Review" },
+  { label: "PT Reviewed", value: "PT Reviewed" },
+  { label: "PT Rejected", value: "PT Rejected" },
+];
+
+const statusLantikanOptions = [
+  { label: "Semua Status", value: "" },
+  { label: "Pending", value: "Pending" },
+  { label: "Under Review", value: "Under Review" },
+  { label: "Approved", value: "Approved" },
+  { label: "Rejected", value: "Rejected" },
 ];
 
 const sesiPerkhidmatanOptions = [
@@ -319,18 +265,13 @@ const sesiPerkhidmatanOptions = [
 const filters = ref({
   searchQuery: "",
   statusPendaftaran: "",
+  statusLantikan: "",
   sesiPerkhidmatan: "",
 });
 const currentPage = ref(1);
 const pageSize = ref(10);
-const showUploadModal = ref(false);
-const isUploading = ref(false);
 
-const uploadData = ref({
-  screeningFile: null,
-});
-
-// RTMF Compliant Mock Data for Screening
+// RTMF Compliant Mock Data for PT Review
 const applications = ref([
   {
     no: 1,
@@ -338,10 +279,12 @@ const applications = ref([
     nama: "Ahmad bin Abdullah",
     noKP: "901231012345",
     kategoriPenolongAmil: "Fitrah",
+    jawatan: "Penolong Amil Fitrah",
     institusiKariah: "Masjid Wilayah Persekutuan",
-    statusPendaftaran: "Submitted",
+    statusPendaftaran: "Screened",
     sesiPerkhidmatan: "Sesi 1",
-    tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Submitted" },
+    statusLantikan: "Under Review",
+    tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Screened" },
   },
   {
     no: 2,
@@ -349,10 +292,12 @@ const applications = ref([
     nama: "Siti binti Mohamed",
     noKP: "850515087654",
     kategoriPenolongAmil: "Kariah",
+    jawatan: "Penolong Amil Kariah",
     institusiKariah: "Masjid Al-Khairiyah",
-    statusPendaftaran: "Under Review",
+    statusPendaftaran: "PT Reviewed",
     sesiPerkhidmatan: "Sesi 2",
-    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
+    statusLantikan: "Approved",
+    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "PT Reviewed" },
   },
   {
     no: 3,
@@ -360,10 +305,12 @@ const applications = ref([
     nama: "Mohd Razak bin Ibrahim",
     noKP: "880320056789",
     kategoriPenolongAmil: "Komuniti",
+    jawatan: "Penolong Amil Komuniti",
     institusiKariah: "Masjid Bandar Utama",
-    statusPendaftaran: "Screened",
+    statusPendaftaran: "Under Review",
     sesiPerkhidmatan: "Sesi 3",
-    tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Screened" },
+    statusLantikan: "Pending",
+    tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Under Review" },
   },
   {
     no: 4,
@@ -371,10 +318,12 @@ const applications = ref([
     nama: "Nurul Huda binti Ali",
     noKP: "920810034567",
     kategoriPenolongAmil: "Padi",
+    jawatan: "Penolong Amil Padi",
     institusiKariah: "Masjid Damansara Perdana",
-    statusPendaftaran: "Screening Failed",
+    statusPendaftaran: "PT Rejected",
     sesiPerkhidmatan: "Sesi 4",
-    tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Screening Failed" },
+    statusLantikan: "Rejected",
+    tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "PT Rejected" },
   },
   {
     no: 5,
@@ -382,10 +331,12 @@ const applications = ref([
     nama: "Abdul Rahman bin Hassan",
     noKP: "870625098765",
     kategoriPenolongAmil: "Fitrah",
+    jawatan: "Penolong Amil Fitrah",
     institusiKariah: "Masjid Kg Delek",
-    statusPendaftaran: "Submitted",
+    statusPendaftaran: "Screened",
     sesiPerkhidmatan: "Sesi 1",
-    tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Submitted" },
+    statusLantikan: "Under Review",
+    tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Screened" },
   },
 ]);
 
@@ -407,6 +358,10 @@ const filteredApplications = computed(() => {
   // Apply status filters
   if (filters.value.statusPendaftaran) {
     result = result.filter((app) => app.statusPendaftaran === filters.value.statusPendaftaran);
+  }
+
+  if (filters.value.statusLantikan) {
+    result = result.filter((app) => app.statusLantikan === filters.value.statusLantikan);
   }
 
   if (filters.value.sesiPerkhidmatan) {
@@ -435,10 +390,20 @@ const paginationEnd = computed(() => {
 // Helper functions
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
-    Submitted: "warning",
-    "Under Review": "info",
     Screened: "success",
-    "Screening Failed": "danger",
+    "Under Review": "info",
+    "PT Reviewed": "success",
+    "PT Rejected": "danger",
+  };
+  return statusVariants[status] || "default";
+};
+
+const getStatusLantikanVariant = (status) => {
+  const statusVariants = {
+    Pending: "warning",
+    "Under Review": "info",
+    Approved: "success",
+    Rejected: "danger",
   };
   return statusVariants[status] || "default";
 };
@@ -448,15 +413,9 @@ const handleView = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/detail/${actionData.rujukan}`);
 };
 
-const handleScreening = (actionData) => {
-  navigateTo(`/BF-PA/PP/pra-daftar-v3/saringan/detail/${actionData.rujukan}`);
+const handleReview = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/PT/detail/${actionData.rujukan}`);
 };
-
-const handleUploadScreening = () => {
-  navigateTo("/BF-PA/PP/pra-daftar-v3/saringan/upload");
-};
-
-
 
 // Watch for page size changes to reset current page
 watch(pageSize, () => {

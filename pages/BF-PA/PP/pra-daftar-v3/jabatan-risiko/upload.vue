@@ -1,8 +1,8 @@
 ﻿<!-- 
   RTMF SCREEN: PA-PP-PD-02_03
   PURPOSE: Screening Upload - Skrin Muat Naik Fail Keputusan Saringan
-  DESCRIPTION: Upload functionality for screening results
-  ROUTE: /BF-PA/PP/pra-daftar-v3/saringan/upload
+  DESCRIPTION: Skrin untuk memuat naik fail keputusan saringan
+  ROUTE: /BF-PA/PP/pra-daftar-v3/jabatan-risiko/upload
 -->
 <template>
   <div>
@@ -146,8 +146,8 @@ const breadcrumb = ref([
   { name: "Penolong Amil", type: "link", path: "/BF-PA/PP/PM/01" },
   { name: "Pendaftaran", type: "link", path: "/BF-PA/PP/PM/01" },
   { name: "Pra Daftar V3", type: "link", path: "/BF-PA/PP/pra-daftar-v3" },
-  { name: "Tapisan", type: "link", path: "/BF-PA/PP/pra-daftar-v3/saringan" },
-  { name: "Muat Naik", type: "current", path: "/BF-PA/PP/pra-daftar-v3/saringan/upload" },
+  { name: "Jabatan Risiko", type: "link", path: "/BF-PA/PP/pra-daftar-v3/jabatan-risiko" },
+  { name: "Muat Naik", type: "current", path: "/BF-PA/PP/pra-daftar-v3/jabatan-risiko/upload" },
 ]);
 
 const screeningTypeOptions = [
@@ -245,7 +245,7 @@ const handleSubmitDirect = async () => {
 };
 
 const handleCancel = () => {
-  navigateTo("/BF-PA/PP/pra-daftar-v3/saringan");
+  navigateTo("/BF-PA/PP/pra-daftar-v3/jabatan-risiko");
 };
 
 const downloadTemplate = (type) => {
@@ -256,6 +256,6 @@ const downloadTemplate = (type) => {
 
 const viewUploadDetails = (uploadData) => {
   // Navigate to upload details view
-  navigateTo(`/BF-PA/PP/pra-daftar-v3/saringan/upload-details/${uploadData.id}`);
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/jabatan-risiko/upload-details/${uploadData.id}`);
 };
 </script> 

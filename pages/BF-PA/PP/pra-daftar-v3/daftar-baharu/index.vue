@@ -1232,9 +1232,6 @@ const confirmSubmit = async () => {
     isSubmitting.value = true;
     showConfirmationModal.value = false;
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
     // Update status to "BELUM DISARING"
     candidates.value.forEach(candidate => {
       candidate.statusPendaftaran = "BELUM DISARING";
@@ -1270,9 +1267,6 @@ const handleImportExcelFile = async () => {
   try {
     isAdding.value = true;
     showImportModal.value = false;
-    
-    // Simulate file processing time
-    await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Add mock candidates to the list
     const newCandidates = mockCandidatesData.map(candidate => ({
