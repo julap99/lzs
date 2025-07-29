@@ -1,3 +1,9 @@
+﻿<!-- 
+  RTMF SCREEN: PA-PP-PD-02_01
+  PURPOSE: Screening List - Senarai Semakan & Saringan (JPPA)
+  DESCRIPTION: Screening list for JPPA review and filtering
+  ROUTE: /BF-PA/PP/pra-daftar-v3/saringan
+-->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />

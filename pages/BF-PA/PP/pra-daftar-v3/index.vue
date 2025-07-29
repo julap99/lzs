@@ -1,3 +1,9 @@
+﻿<!-- 
+  RTMF SCREEN: PA-PP-PD-01_01
+  PURPOSE: Main Dashboard - Senarai Permohonan Penolong Amil
+  DESCRIPTION: Dynamic dashboard with role-based content for Penolong Amil applications
+  ROUTE: /BF-PA/PP/pra-daftar-v3
+-->
 <template>
   <div>
     <RoleSimulator :initial-role="currentRole" @role-change="handleRoleChange" />
@@ -496,6 +502,7 @@
           <h2 class="text-xl font-semibold">
             Senarai Permohonan Penolong Amil
           </h2>
+          <!-- PA-PP-PD-01_03: Registration Form - Borang Pendaftaran Calon Penolong Amil -->
           <rs-button
             v-if="currentRole !== 'eksekutif' && currentRole !== 'eksekutif-pengurusan-risiko'"
             variant="primary"
@@ -1439,43 +1446,43 @@ const canEdit = (statusPendaftaran) => {
   return ["Draft", "Submitted"].includes(statusPendaftaran);
 };
 
-// Action handlers
+// Action handlers with RTMF screen references
+// PA-PP-PD-01_02: Detail View - Maklumat Penolong Amil Terperinci
 const handleView = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/detail/${actionData.rujukan}`);
 };
 
+// PA-PP-PD-01_04: Edit Form - Borang Kemaskini Maklumat Penolong Amil
 const handleEdit = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/edit/${actionData.rujukan}`);
 };
 
-// Eksekutif-specific action handler
+// PA-PP-PD-04_02: Executive Detail - Paparan Terperinci Sokongan
 const handleSupport = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/eksekutif/detail/${actionData.rujukan}`);
 };
 
-// Ketua Jabatan-specific action handler
+// PA-PP-PD-05_02: Department Head Detail - Paparan Terperinci Pengesahan
 const handleConfirm = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/ketua-jabatan/detail/${actionData.rujukan}`);
 };
 
-// Ketua Divisyen-specific action handler
+// PA-PP-PD-06_02: Division Head Detail - Paparan Terperinci Kelulusan
 const handleApprove = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/ketua-divisyen/detail/${actionData.rujukan}`);
 };
 
-// PT-specific action handler
+// PA-PP-PD-03_02: PT Review Detail - Paparan Terperinci Semakan Dokumen
 const handleReview = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/semakan/detail/${actionData.rujukan}`);
 };
 
-// Eksekutif Pengurusan Risiko-specific action handler
+// PA-PP-PD-04_02: Executive Detail - Paparan Terperinci Sokongan (Risk Analysis)
 const handleRiskAnalysis = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/eksekutif/detail/${actionData.rujukan}`);
 };
 
-
-
-// Completed applications action handler
+// PA-PP-PD-01_02 (Complete): Complete Detail View - Maklumat Penolong Amil Lengkap
 const handleViewComplete = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/detail-complete/${actionData.rujukan}`);
 };

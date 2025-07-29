@@ -1,3 +1,9 @@
+﻿<!-- 
+  RTMF SCREEN: PA-PP-PD-04_01
+  PURPOSE: Executive List - Senarai Sokongan (Eksekutif)
+  DESCRIPTION: Executive support list for approval workflow
+  ROUTE: /BF-PA/PP/pra-daftar-v3/eksekutif
+-->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />

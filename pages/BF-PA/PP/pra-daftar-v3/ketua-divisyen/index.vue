@@ -1,3 +1,9 @@
+﻿<!-- 
+  RTMF SCREEN: PA-PP-PD-06_01
+  PURPOSE: Division Head List - Senarai Kelulusan (Ketua Divisyen)
+  DESCRIPTION: Division head approval list
+  ROUTE: /BF-PA/PP/pra-daftar-v3/ketua-divisyen
+-->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />

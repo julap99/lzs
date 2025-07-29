@@ -1,3 +1,9 @@
+﻿<!-- 
+  RTMF SCREEN: PA-PP-PD-05_01
+  PURPOSE: Department Head List - Senarai Pengesahan (Ketua Jabatan)
+  DESCRIPTION: Department head confirmation list
+  ROUTE: /BF-PA/PP/pra-daftar-v3/ketua-jabatan
+-->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />

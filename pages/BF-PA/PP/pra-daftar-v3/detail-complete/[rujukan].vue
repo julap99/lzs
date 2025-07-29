@@ -1,3 +1,9 @@
+<!-- 
+  RTMF SCREEN: PA-PP-PD-01_02 (Complete)
+  PURPOSE: Complete Detail View - Maklumat Penolong Amil Lengkap
+  DESCRIPTION: Complete detailed information view for finished Penolong Amil applications
+  ROUTE: /BF-PA/PP/pra-daftar-v3/detail-complete/[rujukan]
+-->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />

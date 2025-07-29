@@ -1,3 +1,9 @@
+﻿<!-- 
+  RTMF SCREEN: PA-PP-PD-03_01
+  PURPOSE: PT Review List - Senarai Semakan Dokumen (PT)
+  DESCRIPTION: Document review list for PT (Pegawai Tadbir)
+  ROUTE: /BF-PA/PP/pra-daftar-v3/semakan
+-->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />

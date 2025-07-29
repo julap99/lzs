@@ -1,3 +1,9 @@
+﻿<!-- 
+  RTMF SCREEN: PA-PP-PD-01_03
+  PURPOSE: Registration Form - Borang Pendaftaran Calon Penolong Amil
+  DESCRIPTION: Multi-candidate registration form with Excel import and bulk operations
+  ROUTE: /BF-PA/PP/pra-daftar-v3/daftar-baharu
+-->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
@@ -1287,13 +1293,13 @@ const handleImportExcelFile = async () => {
   }
 };
 
-// Handle modal close
+// Handle modal close - Navigate to PA-PP-PD-02_01: Screening List
 const handleModalClose = () => {
   showSuccessModal.value = false;
   navigateTo("/BF-PA/PP/pra-daftar-v3/saringan");
 };
 
-// Handle cancel
+// Handle cancel - Navigate to PA-PP-PD-01_01: Main Dashboard
 const handleCancel = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };

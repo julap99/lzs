@@ -1,3 +1,9 @@
+﻿<!-- 
+  RTMF SCREEN: PA-PP-PD-09_01
+  PURPOSE: First Login Acceptance - Skrin Terima Tawaran Pertama Kali Login
+  DESCRIPTION: First-time login acceptance screen
+  ROUTE: /BF-PA/PP/pra-daftar-v3/login-penerimaan
+-->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />

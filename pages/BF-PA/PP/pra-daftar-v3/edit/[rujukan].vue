@@ -1,3 +1,9 @@
+<!-- 
+  RTMF SCREEN: PA-PP-PD-01_04
+  PURPOSE: Edit Form - Borang Kemaskini Maklumat Penolong Amil
+  DESCRIPTION: Edit form for updating Penolong Amil information
+  ROUTE: /BF-PA/PP/pra-daftar-v3/edit/[rujukan]
+-->
 <template>
   <div>
     <RoleSimulator :initial-role="currentRole" @role-change="handleRoleChange" />
