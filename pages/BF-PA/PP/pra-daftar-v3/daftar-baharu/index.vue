@@ -134,53 +134,94 @@
                   v-model="editingCandidate.telefon"
                 />
 
-                <!-- Kategori Penolong Amil (Checkbox) -->
+                <!-- Kategori Penolong Amil (Dynamic Multi-Select) -->
                 <div class="md:col-span-2">
                   <label class="block text-sm font-medium text-gray-700 mb-2">
                     Kategori Penolong Amil *
                   </label>
-                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <label class="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        value="PAK"
-                        v-model="editingCandidate.kategoriPenolongAmil"
-                        class="mr-2"
-                        :disabled="!canSelectCategory('PAK')"
+                  
+                  <!-- Multi-Select Dropdown -->
+                  <div class="relative" v-click-outside="closeKategoriDropdown">
+                    <button
+                      type="button"
+                      @click="toggleKategoriDropdown"
+                      class="w-full px-3 py-2 text-left border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      :class="{
+                        'border-blue-500 ring-2 ring-blue-500': showKategoriDropdown
+                      }"
+                    >
+                      <span v-if="editingCandidate.kategoriPenolongAmil.length === 0" class="text-gray-500">
+                        Pilih kategori penolong amil
+                      </span>
+                      <span v-else class="text-gray-900">
+                        {{ editingCandidate.kategoriPenolongAmil.length }} kategori dipilih
+                      </span>
+                      <Icon 
+                        name="ph:caret-down" 
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+                        :class="{ 'rotate-180': showKategoriDropdown }"
                       />
-                      <span class="text-sm">PAK (Penolong Amil Kariah)</span>
-                    </label>
-                    <label class="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        value="PAF"
-                        v-model="editingCandidate.kategoriPenolongAmil"
-                        class="mr-2"
-                        :disabled="!canSelectCategory('PAF')"
-                      />
-                      <span class="text-sm">PAF (Penolong Amil Fitrah)</span>
-                    </label>
-                    <label class="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        value="PA Padi"
-                        v-model="editingCandidate.kategoriPenolongAmil"
-                        class="mr-2"
-                        :disabled="!canSelectCategory('PA Padi')"
-                      />
-                      <span class="text-sm">PA Padi</span>
-                    </label>
-                    <label class="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        value="PAK+"
-                        v-model="editingCandidate.kategoriPenolongAmil"
-                        class="mr-2"
-                        :disabled="!canSelectCategory('PAK+')"
-                      />
-                      <span class="text-sm">PAK+ (Penolong Amil Komuniti)</span>
-                    </label>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div 
+                      v-if="showKategoriDropdown"
+                      class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                    >
+                      <div class="p-2">
+                        <div class="mb-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                          Pilih Kategori ({{ editingCandidate.kategoriPenolongAmil.length }} dipilih)
+                        </div>
+                        
+                        <div class="space-y-1">
+                          <label 
+                            v-for="option in kategoriPenolongAmilOptions" 
+                            :key="option.value"
+                            class="flex items-center px-3 py-2 rounded-md hover:bg-gray-100 cursor-pointer"
+                            :class="{ 'bg-blue-50': editingCandidate.kategoriPenolongAmil.includes(option.value) }"
+                          >
+                            <input 
+                              type="checkbox"
+                              :value="option.value"
+                              v-model="editingCandidate.kategoriPenolongAmil"
+                              :disabled="option.disabled"
+                              class="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            />
+                            <span 
+                              class="text-sm"
+                              :class="{ 'text-gray-400': option.disabled, 'text-gray-900': !option.disabled }"
+                            >
+                              {{ option.label }}
+                            </span>
+                            <span v-if="option.disabled" class="ml-2 text-xs text-gray-400">
+                              (Tidak tersedia untuk institusi ini)
+                            </span>
+                          </label>
+                        </div>
+                        
+                        <!-- Clear Selection Button -->
+                        <div v-if="editingCandidate.kategoriPenolongAmil.length > 0" class="mt-3 pt-2 border-t border-gray-200">
+                          <button
+                            type="button"
+                            @click="clearKategoriSelection"
+                            class="text-xs text-red-600 hover:text-red-800"
+                          >
+                            Kosongkan Pilihan
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                  
+                  <!-- Help Text -->
+                  <p class="mt-1 text-xs text-gray-500">
+                    Anda boleh memilih lebih daripada satu kategori
+                  </p>
+                  
+                  <!-- Validation Error -->
+                  <p v-if="kategoriValidationError" class="mt-1 text-xs text-red-600">
+                    {{ kategoriValidationError }}
+                  </p>
                 </div>
 
                 <!-- Jawatan -->
@@ -188,25 +229,43 @@
                   <label class="block text-sm font-medium text-gray-700 mb-2">
                     Jawatan *
                   </label>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <label class="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        value="Penolong Amil"
-                        v-model="editingCandidate.jawatan"
-                        class="mr-2"
-                      />
-                      <span class="text-sm">Penolong Amil</span>
-                    </label>
-                    <label class="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        value="Ketua Penolong Amil"
-                        v-model="editingCandidate.jawatan"
-                        class="mr-2"
-                      />
-                      <span class="text-sm">Ketua Penolong Amil</span>
-                    </label>
+                  <div class="space-y-4">
+                    <!-- Dynamic Jawatan based on selected Kategori -->
+                    <div v-for="kategori in editingCandidate.kategoriPenolongAmil" :key="kategori" class="p-4 border border-gray-200 rounded-lg">
+                      <h4 class="text-sm font-medium text-gray-800 mb-3">
+                        {{ kategori }} - {{ getKategoriDisplayName(kategori) }}
+                      </h4>
+                      
+                      <!-- Dynamic Jawatan Options -->
+                      <div class="space-y-2">
+                        <FormKit
+                          type="select"
+                          :name="`jawatan-${kategori}`"
+                          :label="`Jawatan untuk ${kategori}`"
+                          :options="getJawatanOptionsForKategori(kategori)"
+                          placeholder="Pilih jawatan"
+                          validation="required"
+                          :validation-messages="{
+                            required: 'Sila pilih jawatan untuk kategori ini'
+                          }"
+                          v-model="editingCandidate.jawatanPerKategori[kategori]"
+                          :classes="{
+                            input: '!py-2',
+                            label: 'text-sm font-medium text-gray-700 mb-2'
+                          }"
+                        />
+                      </div>
+                      
+                      <!-- Validation Error for this category -->
+                      <p v-if="getJawatanValidationError(kategori)" class="mt-2 text-xs text-red-600">
+                        {{ getJawatanValidationError(kategori) }}
+                      </p>
+                    </div>
+                    
+                    <!-- Show message when no categories selected -->
+                    <div v-if="editingCandidate.kategoriPenolongAmil.length === 0" class="text-sm text-gray-500 italic">
+                      Sila pilih Kategori Penolong Amil terlebih dahulu untuk menentukan Jawatan
+                    </div>
                   </div>
                 </div>
 
@@ -427,6 +486,9 @@
                       Kategori
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Jawatan
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Sesi
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -465,6 +527,9 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {{ candidate.kategoriPenolongAmil.join(', ') }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ Object.values(candidate.jawatanPerKategori || {}).join(', ') }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {{ candidate.sesiPerkhidmatan }}
@@ -646,11 +711,32 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
+
+// Click outside directive
+const vClickOutside = {
+  mounted(el, binding) {
+    el._clickOutside = (event) => {
+      if (!(el === event.target || el.contains(event.target))) {
+        binding.value(event);
+      }
+    };
+    document.addEventListener('click', el._clickOutside);
+  },
+  unmounted(el) {
+    document.removeEventListener('click', el._clickOutside);
+  }
+};
 
 definePageMeta({
   title: "Borang Pendaftaran Calon Penolong Amil",
   description: "Borang pendaftaran calon penolong amil",
+});
+
+// Fetch categories when component mounts
+onMounted(() => {
+  fetchKategoriPenolongAmil();
+  fetchJawatanOptions(); // Fetch jawatan options when component mounts
 });
 
 const breadcrumb = ref([
@@ -683,6 +769,84 @@ const sesiPerkhidmatanOptions = [
   { label: "Pelantikan Penolong Amil Kariah 2025-2027", value: "Pelantikan Penolong Amil Kariah 2025-2027" },
 ];
 
+// Dynamic Kategori Penolong Amil Options (from database)
+const kategoriPenolongAmilOptions = ref([
+  { label: "PAK (Penolong Amil Kariah)", value: "PAK" },
+  { label: "PAF (Penolong Amil Fitrah)", value: "PAF" },
+  { label: "PA Padi", value: "PA Padi" },
+  { label: "PAK+ (Penolong Amil Komuniti)", value: "PAK+" },
+]);
+
+// Dynamic Jawatan Options (from database)
+const jawatanOptions = ref([
+  { 
+    id: 1, 
+    code: "PENOLONG_AMIL", 
+    name: "Penolong Amil", 
+    description: "Jawatan utama untuk kategori ini.",
+    enabled: true,
+    applicable_categories: ["PAK", "PAF", "PA Padi", "PAK+"]
+  },
+  { 
+    id: 2, 
+    code: "KETUA_PENOLONG_AMIL", 
+    name: "Ketua Penolong Amil", 
+    description: "Jawatan pengurusan untuk kategori ini.",
+    enabled: true,
+    applicable_categories: ["PAK", "PAF", "PAK+"]
+  },
+]);
+
+// Function to fetch jawatan options from database (for future implementation)
+const fetchJawatanOptions = async () => {
+  try {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await $fetch('/api/bf-pa/konfigurasi/jawatan-penolong-amil');
+    // jawatanOptions.value = response.data.map(item => ({
+    //   id: item.id,
+    //   code: item.code,
+    //   name: item.name,
+    //   description: item.description,
+    //   enabled: item.enabled,
+    //   applicable_categories: item.applicable_categories
+    // }));
+    
+    // For now, use mock data
+    console.log('Jawatan options loaded:', jawatanOptions.value.length);
+  } catch (error) {
+    console.error('Error fetching jawatan options:', error);
+  }
+};
+
+// Function to fetch categories from database (for future implementation)
+const fetchKategoriPenolongAmil = async () => {
+  try {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await $fetch('/api/bf-pa/konfigurasi/kategori-penolong-amil');
+    // kategoriPenolongAmilOptions.value = response.data.map(item => ({
+    //   label: `${item.code} (${item.name})`,
+    //   value: item.code,
+    //   disabled: !canSelectCategory(item.code)
+    // }));
+    
+    // For now, use mock data with institution-based filtering
+    const mockCategories = [
+      { code: "PAK", name: "Penolong Amil Kariah", enabled: true },
+      { code: "PAF", name: "Penolong Amil Fitrah", enabled: true },
+      { code: "PA Padi", name: "Penolong Amil Padi", enabled: true },
+      { code: "PAK+", name: "Penolong Amil Komuniti", enabled: false },
+    ];
+    
+    kategoriPenolongAmilOptions.value = mockCategories.map(item => ({
+      label: `${item.code} (${item.name})`,
+      value: item.code,
+      disabled: !item.enabled || !canSelectCategory(item.code)
+    }));
+  } catch (error) {
+    console.error('Error fetching kategori penolong amil:', error);
+  }
+};
+
 // Current date for registration
 const currentDate = computed(() => {
   return new Date().toLocaleDateString('ms-MY');
@@ -709,7 +873,7 @@ const editingCandidate = ref({
   emel: "",
   telefon: "",
   kategoriPenolongAmil: [],
-  jawatan: [],
+  jawatanPerKategori: {}, // New field to store jawatan per kategori
   salinanKadPengenalan: null,
   tarikhPendaftaran: currentDate.value,
 });
@@ -752,12 +916,22 @@ const sharedPencalonanData = ref({
 
 // Computed properties
 const isCandidateValid = computed(() => {
+  // Check if at least one category is selected
+  if (editingCandidate.value.kategoriPenolongAmil.length === 0) {
+    return false;
+  }
+
+  // Check if all required fields are filled for each category
+  for (const kategori of editingCandidate.value.kategoriPenolongAmil) {
+    if (!editingCandidate.value.jawatanPerKategori[kategori]) {
+      return false;
+    }
+  }
+
   return editingCandidate.value.noKP &&
          editingCandidate.value.namaCalon &&
          editingCandidate.value.emel &&
-         editingCandidate.value.telefon &&
-         editingCandidate.value.kategoriPenolongAmil.length > 0 &&
-         editingCandidate.value.jawatan.length > 0;
+         editingCandidate.value.telefon;
 });
 
 const canSubmit = computed(() => {
@@ -830,7 +1004,10 @@ const mockCandidatesData = [
     emel: "ahmad.abdullah@email.com",
     telefon: "0123456789",
     kategoriPenolongAmil: ["PAK", "PAF"],
-    jawatan: ["Penolong Amil"],
+    jawatanPerKategori: {
+      "PAK": "PAK-KETUA_PENOLONG_AMIL",
+      "PAF": "PAF-PENOLONG_AMIL",
+    },
     salinanKadPengenalan: null,
     sesiPerkhidmatan: "Pelantikan Penolong Amil Fitrah 2024-2026",
     tarikhPendaftaran: currentDate.value,
@@ -843,7 +1020,9 @@ const mockCandidatesData = [
     emel: "siti.fatimah@email.com",
     telefon: "0134567890",
     kategoriPenolongAmil: ["PAK+"],
-    jawatan: ["Ketua Penolong Amil"],
+    jawatanPerKategori: {
+      "PAK+": "PAK+-KETUA_PENOLONG_AMIL",
+    },
     salinanKadPengenalan: null,
     sesiPerkhidmatan: "Pelantikan Penolong Amil Kariah 2025-2027",
     tarikhPendaftaran: currentDate.value,
@@ -856,7 +1035,9 @@ const mockCandidatesData = [
     emel: "syafiq.omar@email.com",
     telefon: "0145678901",
     kategoriPenolongAmil: ["PA Padi"],
-    jawatan: ["Penolong Amil"],
+    jawatanPerKategori: {
+      "PA Padi": "PA Padi-PENOLONG_AMIL",
+    },
     salinanKadPengenalan: null,
     sesiPerkhidmatan: "Pelantikan Penolong Amil Fitrah 2024-2026",
     tarikhPendaftaran: currentDate.value,
@@ -871,6 +1052,34 @@ const canSelectCategory = (category) => {
   } else {
     return category === "PAK+";
   }
+};
+
+// Get display name for category
+const getKategoriDisplayName = (kategori) => {
+  const categoryOption = kategoriPenolongAmilOptions.value.find(option => option.value === kategori);
+  return categoryOption ? categoryOption.label : kategori;
+};
+
+// Get jawatan options for a specific category
+const getJawatanOptionsForKategori = (kategori) => {
+  // Filter jawatan options that are applicable to this category
+  return jawatanOptions.value
+    .filter(jawatan => 
+      jawatan.enabled && 
+      jawatan.applicable_categories.includes(kategori)
+    )
+    .map(jawatan => ({
+      label: `${jawatan.name} - ${jawatan.description}`,
+      value: `${kategori}-${jawatan.code}`
+    }));
+};
+
+// Get validation error for jawatan
+const getJawatanValidationError = (kategori) => {
+  if (!editingCandidate.value.jawatanPerKategori[kategori]) {
+    return "Sila pilih jawatan untuk kategori ini.";
+  }
+  return null;
 };
 
 // Check if candidate is active Penolong Amil
@@ -944,7 +1153,7 @@ const clearForm = () => {
     emel: "",
     telefon: "",
     kategoriPenolongAmil: [],
-    jawatan: [],
+    jawatanPerKategori: {}, // Clear new field
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
   };
@@ -982,7 +1191,7 @@ const exportCandidates = () => {
     'Emel': candidate.emel,
     'Telefon': candidate.telefon,
     'Kategori': candidate.kategoriPenolongAmil.join(', '),
-    'Jawatan': candidate.jawatan.join(', '),
+    'Jawatan': Object.values(candidate.jawatanPerKategori || {}).join(', '),
     'Sesi Perkhidmatan': candidate.sesiPerkhidmatan,
     'Status': candidate.isActive ? 'Penolong Amil Aktif' : 'Layak',
     'Tarikh Pendaftaran': candidate.tarikhPendaftaran,
@@ -1095,6 +1304,34 @@ const handleModalClose = () => {
 const handleCancel = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
+
+// Multi-select dropdown logic
+const showKategoriDropdown = ref(false);
+const kategoriValidationError = ref(null);
+
+const toggleKategoriDropdown = () => {
+  showKategoriDropdown.value = !showKategoriDropdown.value;
+  kategoriValidationError.value = null;
+};
+
+const clearKategoriSelection = () => {
+  editingCandidate.value.kategoriPenolongAmil = [];
+  kategoriValidationError.value = null;
+};
+
+// Close dropdown when clicking outside
+const closeKategoriDropdown = () => {
+  showKategoriDropdown.value = false;
+};
+
+// Watch for kategori changes to update validation
+watch(() => editingCandidate.value.kategoriPenolongAmil, (newKategori) => {
+  if (newKategori.length === 0) {
+    kategoriValidationError.value = 'Sila pilih sekurang-kurangnya satu kategori';
+  } else {
+    kategoriValidationError.value = null;
+  }
+}, { immediate: true });
 </script>
 
 <style scoped>
