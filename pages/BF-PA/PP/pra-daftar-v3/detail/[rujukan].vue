@@ -30,6 +30,14 @@
               <Icon name="ph:pencil" class="w-4 h-4 mr-1" />
               Kemaskini
             </rs-button>
+            <rs-button
+              variant="info"
+              @click="handleViewProcessTrace"
+              title="PA-PP-PD-01_04: Jejak Proses"
+            >
+              <Icon name="ph:timeline" class="w-4 h-4 mr-1" />
+              Jejak Proses
+            </rs-button>
           </div>
         </div>
       </template>
@@ -429,6 +437,10 @@ const handleBack = () => {
 
 const handleEdit = () => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/edit/${route.params.rujukan}`);
+};
+
+const handleViewProcessTrace = () => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/process-trace/${route.params.rujukan}`);
 };
 
 const previewDocument = (documentType) => {

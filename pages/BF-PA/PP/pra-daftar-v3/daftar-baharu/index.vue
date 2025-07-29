@@ -649,11 +649,12 @@
             Maklumat pendaftaran calon telah disimpan
           </h3>
           <p class="text-gray-600 mb-4">
-            {{ candidates.length }} calon telah berjaya didaftarkan dan dihantar untuk proses saringan.
+            {{ candidates.length }} calon telah berjaya didaftarkan dan dihantar untuk proses saringan oleh Jabatan Pengurusan Risiko.
           </p>
           <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
             <p class="text-sm text-blue-800">
-              Status: <strong>BELUM DISARING</strong>
+              Status: <strong>BELUM DISARING</strong><br>
+              <span class="text-xs">Calon akan disaring oleh Jabatan Pengurusan Risiko</span>
             </p>
           </div>
         </div>
@@ -667,7 +668,7 @@
             Tutup
           </rs-button>
           <rs-button variant="primary" @click="handleModalClose">
-            Terus ke Senarai Saringan
+            Kembali ke Dashboard
           </rs-button>
         </div>
       </template>
@@ -1293,10 +1294,10 @@ const handleImportExcelFile = async () => {
   }
 };
 
-// Handle modal close - Navigate to PA-PP-PD-02_01: Screening List
+// Handle modal close - Navigate to PA-PP-PD-01_01: Main Dashboard
 const handleModalClose = () => {
   showSuccessModal.value = false;
-  navigateTo("/BF-PA/PP/pra-daftar-v3/saringan");
+  navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
 // Handle cancel - Navigate to PA-PP-PD-01_01: Main Dashboard

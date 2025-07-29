@@ -44,6 +44,123 @@
             </div>
           </div>
 
+          <!-- Workflow Progress -->
+          <div class="mb-6 p-6 border border-gray-200 rounded-lg bg-blue-50">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">
+              Proses Verifikasi Calon Penolong Amil
+            </h3>
+            
+            <div class="relative">
+              <!-- Progress Line -->
+              <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+              
+              <!-- Workflow Steps -->
+              <div class="space-y-4">
+                <!-- Step 1: Registration -->
+                <div class="relative flex items-start">
+                  <div class="flex-shrink-0 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                    <Icon name="ph:check-circle" class="text-green-600" size="24" />
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="text-lg font-semibold text-gray-900">1. Pendaftaran Calon</h4>
+                    <p class="text-sm text-gray-600 mb-2">PYB Institusi mendaftar calon</p>
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <p class="text-sm text-green-800">
+                        <strong>Status:</strong> Selesai<br>
+                        <span class="text-xs">Calon berjaya didaftarkan oleh PYB Institusi</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 2: Screening -->
+                <div class="relative flex items-start">
+                  <div class="flex-shrink-0 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                    <Icon name="ph:check-circle" class="text-blue-600" size="24" />
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="text-lg font-semibold text-gray-900">2. Saringan Risiko</h4>
+                    <p class="text-sm text-gray-600 mb-2">Jabatan Pengurusan Risiko</p>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <p class="text-sm text-blue-800">
+                        <strong>Status:</strong> Selesai<br>
+                        <span class="text-xs">Calon telah lulus saringan risiko</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 3: PT Review -->
+                <div class="relative flex items-start">
+                  <div class="flex-shrink-0 w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
+                    <Icon name="ph:check-circle" class="text-yellow-600" size="24" />
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="text-lg font-semibold text-gray-900">3. Semakan PT</h4>
+                    <p class="text-sm text-gray-600 mb-2">Pegawai Tadbir</p>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                      <p class="text-sm text-yellow-800">
+                        <strong>Status:</strong> Selesai<br>
+                        <span class="text-xs">Calon telah disemak oleh PT</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 4: Executive Support -->
+                <div class="relative flex items-start">
+                  <div class="flex-shrink-0 w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                    <Icon name="ph:hand-thumbs-up" class="text-purple-600" size="24" />
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="text-lg font-semibold text-gray-900">4. Sokongan Eksekutif</h4>
+                    <p class="text-sm text-gray-600 mb-2">Eksekutif</p>
+                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                      <p class="text-sm text-purple-800">
+                        <strong>Status:</strong> Dalam Proses<br>
+                        <span class="text-xs">Sedang menunggu sokongan eksekutif</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 5: Department Head Confirmation -->
+                <div class="relative flex items-start">
+                  <div class="flex-shrink-0 w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mr-4">
+                    <Icon name="ph:check-square" class="text-indigo-600" size="24" />
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="text-lg font-semibold text-gray-900">5. Pengesahan Ketua Jabatan</h4>
+                    <p class="text-sm text-gray-600 mb-2">Ketua Jabatan</p>
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3">
+                      <p class="text-sm text-indigo-800">
+                        <strong>Status:</strong> Menunggu Sokongan Eksekutif<br>
+                        <span class="text-xs">Akan disahkan selepas sokongan eksekutif</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 6: Division Head Approval -->
+                <div class="relative flex items-start">
+                  <div class="flex-shrink-0 w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                    <Icon name="ph:star" class="text-red-600" size="24" />
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="text-lg font-semibold text-gray-900">6. Kelulusan Ketua Divisyen</h4>
+                    <p class="text-sm text-gray-600 mb-2">Ketua Divisyen</p>
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <p class="text-sm text-red-800">
+                        <strong>Status:</strong> Menunggu Pengesahan Ketua Jabatan<br>
+                        <span class="text-xs">Akan diluluskan selepas pengesahan ketua jabatan</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Personal Information -->
           <div class="mb-6 p-6 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4 text-gray-900">
@@ -325,6 +442,25 @@
                     :classes="{
                       input: 'min-h-[120px]',
                     }"
+                  />
+                </div>
+
+                <!-- Surat Sokongan Upload -->
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="file"
+                    name="suratSokongan"
+                    label="Surat Sokongan Eksekutif *"
+                    accept=".pdf,.doc,.docx"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Surat sokongan eksekutif diperlukan',
+                    }"
+                    :classes="{
+                      input: '!py-2',
+                    }"
+                    v-model="formData.suratSokongan"
+                    help="Format: PDF, DOC, DOCX. Surat sokongan rasmi dari eksekutif"
                   />
                 </div>
 

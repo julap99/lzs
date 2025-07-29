@@ -502,6 +502,9 @@
           <h2 class="text-xl font-semibold">
             Senarai Permohonan Penolong Amil
           </h2>
+          <p v-if="currentRole === 'pyb'" class="text-sm text-gray-600 mt-1">
+            Sebagai PYB Institusi, anda boleh mendaftar calon baru. Proses saringan akan diuruskan oleh Jabatan Pengurusan Risiko.
+          </p>
           <!-- PA-PP-PD-01_03: Registration Form - Borang Pendaftaran Calon Penolong Amil -->
           <rs-button
             v-if="currentRole !== 'eksekutif' && currentRole !== 'eksekutif-pengurusan-risiko'"
@@ -595,6 +598,15 @@
                 Lihat
               </rs-button>
               <rs-button
+                variant="info"
+                size="sm"
+                @click="handleViewProcessTrace(text)"
+                title="PA-PP-PD-01_04: Jejak Proses"
+              >
+                <Icon name="ph:timeline" class="w-4 h-4 mr-1" />
+                Jejak
+              </rs-button>
+              <rs-button
                 v-if="canEdit(text.statusPendaftaran)"
                 variant="secondary"
                 size="sm"
@@ -617,6 +629,9 @@
             <h3 class="text-lg font-semibold text-gray-900">
               Senarai Penolong Amil Lengkap
             </h3>
+            <p v-if="currentRole === 'pyb'" class="text-sm text-gray-600 mt-1">
+              Senarai Penolong Amil yang telah dilantik dan aktif di institusi anda.
+            </p>
             <div class="flex items-center space-x-2">
               <span class="text-sm text-gray-500">
                 {{ completedApplications.length }} Penolong Amil Aktif
@@ -691,14 +706,23 @@
 
             <template v-slot:tindakan="{ text }">
               <div class="flex justify-center items-center gap-2">
-                <rs-button
-                  variant="primary"
-                  size="sm"
-                  @click="handleViewComplete(text)"
-                >
-                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                  Lihat Terperinci
-                </rs-button>
+                              <rs-button
+                variant="primary"
+                size="sm"
+                @click="handleViewComplete(text)"
+              >
+                <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                Lihat Terperinci
+              </rs-button>
+              <rs-button
+                variant="secondary"
+                size="sm"
+                @click="handleViewServiceHistory(text)"
+                title="PA-PP-PD-01_05: Sejarah Perkhidmatan"
+              >
+                <Icon name="ph:clock" class="w-4 h-4 mr-1" />
+                Sejarah
+              </rs-button>
               </div>
             </template>
           </rs-table>
@@ -1485,6 +1509,16 @@ const handleRiskAnalysis = (actionData) => {
 // PA-PP-PD-01_02 (Complete): Complete Detail View - Maklumat Penolong Amil Lengkap
 const handleViewComplete = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/detail-complete/${actionData.rujukan}`);
+};
+
+// PA-PP-PD-01_04: Process Trace - Jejak Proses Pendaftaran
+const handleViewProcessTrace = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/process-trace/${actionData.rujukan}`);
+};
+
+// PA-PP-PD-01_05: Service History - Sejarah Perkhidmatan
+const handleViewServiceHistory = (actionData) => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/service-history/${actionData.rujukan}`);
 };
 
 // Watch for page size changes to reset current page
