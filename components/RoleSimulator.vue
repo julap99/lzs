@@ -6,19 +6,25 @@
           <Icon name="ph:user-circle" class="text-gray-600" size="20" />
           <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
         </div>
-        <div class="flex items-center space-x-2">
-          <FormKit
-            type="select"
-            v-model="selectedRole"
-            :options="roleOptions"
-            :classes="{ input: '!py-1 !px-2 text-sm' }"
-            @change="handleRoleChange"
-          />
+        <div class="flex items-center space-x-3">
+          <div class="min-w-[200px]">
+            <FormKit
+              type="select"
+              v-model="selectedRole"
+              :options="roleOptions"
+              :classes="{ 
+                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
+                wrapper: '!min-w-0'
+              }"
+              @change="handleRoleChange"
+            />
+          </div>
           <rs-button
             variant="secondary-outline"
             size="sm"
             @click="toggleSimulator"
-            :class="{ 'bg-blue-100 text-blue-700': isVisible }"
+            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': isVisible }"
+            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
           >
             <Icon name="ph:eye" class="w-3 h-3 mr-1" />
             {{ isVisible ? 'Sembunyi' : 'Tunjuk' }}
@@ -26,25 +32,26 @@
         </div>
       </div>
       
-      <div v-if="isVisible" class="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div v-if="isVisible" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-2">Peranan Semasa:</h4>
-            <div class="flex items-center space-x-2">
-              <rs-badge :variant="getRoleVariant(currentRole.role)">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
+            <div class="flex items-center space-x-3">
+              <rs-badge :variant="getRoleVariant(currentRole.role)" class="!text-xs">
                 {{ currentRole.label }}
               </rs-badge>
               <span class="text-xs text-gray-600">{{ currentRole.description }}</span>
             </div>
           </div>
           <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-2">Kebolehan:</h4>
-            <div class="flex flex-wrap gap-1">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
+            <div class="flex flex-wrap gap-2">
               <rs-badge
                 v-for="capability in currentRole.capabilities"
                 :key="capability"
                 variant="secondary"
                 size="sm"
+                class="!text-xs"
               >
                 {{ capability }}
               </rs-badge>

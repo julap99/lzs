@@ -83,21 +83,25 @@
             </template>
 
             <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-2">
+              <div class="flex justify-center items-center gap-1">
                 <rs-button
                   variant="primary"
                   size="sm"
                   @click="handleView(text)"
+                  title="Lihat"
+                  class="!px-3 !py-1.5"
                 >
                   <Icon name="ph:eye" class="w-4 h-4 mr-1" />
                   Lihat
                 </rs-button>
                 <rs-button
-                  variant="secondary"
+                  variant="success"
                   size="sm"
                   @click="handleSupport(text)"
+                  title="Sokong"
+                  class="!px-3 !py-1.5"
                 >
-                  <Icon name="ph:hand-thumbs-up" class="w-4 h-4 mr-1" />
+                  <Icon name="ph:thumbs-up" class="w-4 h-4 mr-1" />
                   Sokong
                 </rs-button>
               </div>
@@ -180,11 +184,13 @@
             </template>
 
             <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-2">
+              <div class="flex justify-center items-center gap-1">
                 <rs-button
                   variant="primary"
                   size="sm"
                   @click="handleView(text)"
+                  title="Lihat"
+                  class="!px-3 !py-1.5"
                 >
                   <Icon name="ph:eye" class="w-4 h-4 mr-1" />
                   Lihat
@@ -193,6 +199,8 @@
                   variant="success"
                   size="sm"
                   @click="handleConfirm(text)"
+                  title="Sahkan"
+                  class="!px-3 !py-1.5"
                 >
                   <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
                   Sahkan
@@ -277,19 +285,23 @@
             </template>
 
             <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-2">
+              <div class="flex justify-center items-center gap-1">
                 <rs-button
                   variant="primary"
                   size="sm"
                   @click="handleView(text)"
+                  title="Lihat"
+                  class="!px-3 !py-1.5"
                 >
                   <Icon name="ph:eye" class="w-4 h-4 mr-1" />
                   Lihat
                 </rs-button>
                 <rs-button
-                  variant="danger"
+                  variant="primary"
                   size="sm"
                   @click="handleApprove(text)"
+                  title="Lulus"
+                  class="!px-3 !py-1.5"
                 >
                   <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
                   Lulus
@@ -374,11 +386,13 @@
             </template>
 
             <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-2">
+              <div class="flex justify-center items-center gap-1">
                 <rs-button
                   variant="primary"
                   size="sm"
                   @click="handleView(text)"
+                  title="Lihat"
+                  class="!px-3 !py-1.5"
                 >
                   <Icon name="ph:eye" class="w-4 h-4 mr-1" />
                   Lihat
@@ -387,6 +401,8 @@
                   variant="info"
                   size="sm"
                   @click="handleReview(text)"
+                  title="Semak"
+                  class="!px-3 !py-1.5"
                 >
                   <Icon name="ph:clipboard-text" class="w-4 h-4 mr-1" />
                   Semak
@@ -404,7 +420,7 @@
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">
-              Senarai Penolong Amil untuk Analisis Risiko
+              Senarai Penolong Amil untuk Saringan Risiko
             </h2>
           </div>
         </template>
@@ -471,22 +487,26 @@
             </template>
 
             <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-2">
+              <div class="flex justify-center items-center gap-1">
                 <rs-button
                   variant="primary"
                   size="sm"
                   @click="handleView(text)"
+                  title="Lihat"
+                  class="!px-3 !py-1.5"
                 >
                   <Icon name="ph:eye" class="w-4 h-4 mr-1" />
                   Lihat
                 </rs-button>
                 <rs-button
-                  variant="warning"
+                  variant="info"
                   size="sm"
                   @click="handleRiskAnalysis(text)"
+                  title="Saringan"
+                  class="!px-3 !py-1.5"
                 >
-                  <Icon name="ph:warning" class="w-4 h-4 mr-1" />
-                  Analisis Risiko
+                  <Icon name="ph:shield-check" class="w-4 h-4 mr-1" />
+                  Saringan
                 </rs-button>
               </div>
             </template>
@@ -500,11 +520,8 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Senarai Permohonan Penolong Amil
+            Senarai Permohonan Penolong Amil Sedang Diproses
           </h2>
-          <p v-if="currentRole === 'pyb'" class="text-sm text-gray-600 mt-1">
-            Sebagai PYB Institusi, anda boleh mendaftar calon baru. Proses saringan akan diuruskan oleh Jabatan Pengurusan Risiko.
-          </p>
           <!-- PA-PP-PD-01_03: Registration Form - Borang Pendaftaran Calon Penolong Amil -->
           <rs-button
             v-if="currentRole !== 'eksekutif' && currentRole !== 'eksekutif-pengurusan-risiko'"
@@ -520,7 +537,7 @@
       <template #body>
         <!-- Smart Filter Section -->
         <div class="mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <FormKit
               v-model="filters.searchQuery"
               type="text"
@@ -538,15 +555,7 @@
                 input: '!py-2',
               }"
             />
-            <FormKit
-              v-model="filters.sesiPerkhidmatan"
-              type="select"
-              :options="sesiPerkhidmatanOptions"
-              placeholder="Sesi Perkhidmatan"
-              :classes="{
-                input: '!py-2',
-              }"
-            />
+
             <FormKit
               v-model="filters.statusLantikan"
               type="select"
@@ -588,11 +597,13 @@
           </template>
 
           <template v-slot:tindakan="{ text }">
-            <div class="flex justify-center items-center gap-2">
+            <div class="flex justify-center items-center gap-1">
               <rs-button
                 variant="primary"
                 size="sm"
                 @click="handleView(text)"
+                title="Lihat"
+                class="!px-3 !py-1.5"
               >
                 <Icon name="ph:eye" class="w-4 h-4 mr-1" />
                 Lihat
@@ -601,9 +612,10 @@
                 variant="info"
                 size="sm"
                 @click="handleViewProcessTrace(text)"
-                title="PA-PP-PD-01_04: Jejak Proses"
+                title="Jejak Proses"
+                class="!px-3 !py-1.5"
               >
-                <Icon name="ph:timeline" class="w-4 h-4 mr-1" />
+                <Icon name="ph:flow-arrow" class="w-4 h-4 mr-1" />
                 Jejak
               </rs-button>
               <rs-button
@@ -611,6 +623,8 @@
                 variant="secondary"
                 size="sm"
                 @click="handleEdit(text)"
+                title="Kemaskini"
+                class="!px-3 !py-1.5"
               >
                 <Icon name="ph:pencil" class="w-4 h-4 mr-1" />
                 Kemaskini
@@ -643,7 +657,7 @@
         <template #body>
           <!-- Smart Filter for Completed Applications -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormKit
                 v-model="completedFilters.searchQuery"
                 type="text"
@@ -661,15 +675,7 @@
                   input: '!py-2',
                 }"
               />
-              <FormKit
-                v-model="completedFilters.sesiPerkhidmatan"
-                type="select"
-                :options="sesiPerkhidmatanOptions"
-                placeholder="Sesi Perkhidmatan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
+
               <FormKit
                 v-model="completedFilters.statusLantikan"
                 type="select"
@@ -705,20 +711,23 @@
             </template>
 
             <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-2">
-                              <rs-button
+              <div class="flex justify-center items-center gap-1">
+                <rs-button
                 variant="primary"
                 size="sm"
                 @click="handleViewComplete(text)"
+                title="Lihat Terperinci"
+                class="!px-3 !py-1.5"
               >
                 <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                Lihat Terperinci
+                Lihat
               </rs-button>
               <rs-button
                 variant="secondary"
                 size="sm"
                 @click="handleViewServiceHistory(text)"
-                title="PA-PP-PD-01_05: Sejarah Perkhidmatan"
+                title="Sejarah Perkhidmatan"
+                class="!px-3 !py-1.5"
               >
                 <Icon name="ph:clock" class="w-4 h-4 mr-1" />
                 Sejarah
@@ -799,14 +808,8 @@ const breadcrumb = ref([
   },
 ]);
 
-// RTMF Required Table Columns
+// Optimized Table Columns - Essential Information Only
 const columns = [
-  {
-    key: "no",
-    label: "No",
-    sortable: true,
-    width: "60px",
-  },
   {
     key: "rujukan",
     label: "Rujukan",
@@ -824,7 +827,7 @@ const columns = [
   },
   {
     key: "kategoriPenolongAmil",
-    label: "Kategori Penolong Amil",
+    label: "Kategori",
     sortable: true,
   },
   {
@@ -834,94 +837,38 @@ const columns = [
   },
   {
     key: "institusiKariah",
-    label: "Institusi/Kariah",
+    label: "Institusi",
     sortable: true,
   },
   {
     key: "statusPendaftaran",
-    label: "Status Pendaftaran",
-    sortable: true,
-  },
-  {
-    key: "sesiPerkhidmatan",
-    label: "Sesi Perkhidmatan",
-    sortable: true,
-  },
-  {
-    key: "statusLantikan",
-    label: "Status Lantikan/Perkhidmatan",
+    label: "Status",
     sortable: true,
   },
   {
     key: "tindakan",
     label: "Tindakan",
     sortable: false,
+    width: "140px",
   },
 ];
 
-// Eksekutif-specific Table Columns
-const eksekutifColumns = [
-  {
-    key: "no",
-    label: "No",
-    sortable: true,
-    width: "60px",
-  },
-  {
-    key: "rujukan",
-    label: "Rujukan",
-    sortable: true,
-  },
-  {
-    key: "nama",
-    label: "Nama",
-    sortable: true,
-  },
-  {
-    key: "noKP",
-    label: "No KP",
-    sortable: true,
-  },
-  {
-    key: "kategoriPenolongAmil",
-    label: "Kategori Penolong Amil",
-    sortable: true,
-  },
-  {
-    key: "jawatan",
-    label: "Jawatan",
-    sortable: true,
-  },
-  {
-    key: "institusiKariah",
-    label: "Institusi/Kariah",
-    sortable: true,
-  },
-  {
-    key: "statusPendaftaran",
-    label: "Status Pendaftaran",
-    sortable: true,
-  },
-  {
-    key: "statusLantikan",
-    label: "Status Lantikan",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-  },
-];
+// Use optimized columns for all roles
+const eksekutifColumns = columns;
 
 // RTMF Required Filter Options
 const statusPendaftaranOptions = [
   { label: "Semua Status", value: "" },
-  { label: "Draft", value: "Draft" },
-  { label: "Submitted", value: "Submitted" },
-  { label: "Under Review", value: "Under Review" },
-  { label: "Approved", value: "Approved" },
-  { label: "Rejected", value: "Rejected" },
+  { label: "Draf", value: "Draft" },
+  { label: "Dihantar", value: "Submitted" },
+  { label: "Dalam Semakan", value: "Under Review" },
+  { label: "Telah Disaring", value: "Screened" },
+  { label: "Telah Disemak", value: "PT Reviewed" },
+  { label: "Telah Disokong", value: "Executive Supported" },
+  { label: "Telah Disahkan", value: "Department Confirmed" },
+  { label: "Telah Diluluskan", value: "Division Approved" },
+  { label: "Diluluskan", value: "Approved" },
+  { label: "Ditolak", value: "Rejected" },
 ];
 
 const sesiPerkhidmatanOptions = [
@@ -942,19 +889,19 @@ const kategoriPenolongAmilOptions = [
 
 const statusLantikanOptions = [
   { label: "Semua Status", value: "" },
-  { label: "Pending", value: "Pending" },
-  { label: "Appointed", value: "Appointed" },
-  { label: "Active", value: "Active" },
-  { label: "Inactive", value: "Inactive" },
-  { label: "Terminated", value: "Terminated" },
+  { label: "Menunggu", value: "Pending" },
+  { label: "Dilantik", value: "Appointed" },
+  { label: "Aktif", value: "Active" },
+  { label: "Tidak Aktif", value: "Inactive" },
+  { label: "Ditamatkan", value: "Terminated" },
 ];
 
 // Completed applications status options (only active statuses)
 const completedStatusLantikanOptions = [
   { label: "Semua Status", value: "" },
-  { label: "Active", value: "Active" },
-  { label: "Inactive", value: "Inactive" },
-  { label: "Terminated", value: "Terminated" },
+  { label: "Aktif", value: "Active" },
+  { label: "Tidak Aktif", value: "Inactive" },
+  { label: "Ditamatkan", value: "Terminated" },
 ];
 
 // State
@@ -987,10 +934,9 @@ const applications = ref([
     jawatan: "Penolong Amil Fitrah",
     institusiKariah: "Masjid Negeri Selangor",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    statusPendaftaran: "Submitted",
-    sesiPerkhidmatan: "Sesi 1",
-    statusLantikan: "Pending",
-    tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Submitted" },
+    statusPendaftaran: "Dihantar",
+    statusLantikan: "Menunggu",
+    tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Dihantar" },
   },
   {
     no: 2,
@@ -1001,10 +947,9 @@ const applications = ref([
     jawatan: "Penolong Amil Kariah",
     institusiKariah: "Masjid Negeri Selangor",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    statusPendaftaran: "Under Review",
-    sesiPerkhidmatan: "Sesi 2",
-    statusLantikan: "Pending",
-    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
+    statusPendaftaran: "Dalam Semakan",
+    statusLantikan: "Menunggu",
+    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dalam Semakan" },
   },
   {
     no: 3,
@@ -1015,10 +960,9 @@ const applications = ref([
     jawatan: "Penolong Amil Komuniti",
     institusiKariah: "Masjid Al-Khairiyah",
     institusiId: "MASJID_AL_KHAIRIYAH_002",
-    statusPendaftaran: "Approved",
-    sesiPerkhidmatan: "Sesi 3",
-    statusLantikan: "Appointed",
-    tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Approved" },
+    statusPendaftaran: "Diluluskan",
+    statusLantikan: "Dilantik",
+    tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Diluluskan" },
   },
   {
     no: 4,
@@ -1029,10 +973,9 @@ const applications = ref([
     jawatan: "Penolong Amil Padi",
     institusiKariah: "Masjid Negeri Selangor",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    statusPendaftaran: "Rejected",
-    sesiPerkhidmatan: "Sesi 4",
-    statusLantikan: "Terminated",
-    tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Rejected" },
+    statusPendaftaran: "Ditolak",
+    statusLantikan: "Ditamatkan",
+    tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Ditolak" },
   },
   {
     no: 5,
@@ -1043,10 +986,9 @@ const applications = ref([
     jawatan: "Penolong Amil Fitrah",
     institusiKariah: "Masjid Kg Delek",
     institusiId: "MASJID_KG_DELEK_003",
-    statusPendaftaran: "Approved",
-    sesiPerkhidmatan: "Sesi 1",
-    statusLantikan: "Active",
-    tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Approved" },
+    statusPendaftaran: "Diluluskan",
+    statusLantikan: "Aktif",
+    tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Diluluskan" },
   },
 ]);
 
@@ -1061,8 +1003,7 @@ const completedApplications = ref([
     jawatan: "Penolong Amil Fitrah",
     institusiKariah: "Masjid Negeri Selangor",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    sesiPerkhidmatan: "Sesi 1",
-    statusLantikan: "Active",
+    statusLantikan: "Aktif",
     tarikhLantikan: "01/01/2023",
     namaBank: "Maybank",
     noAkaunBank: "1234567890",
@@ -1081,8 +1022,7 @@ const completedApplications = ref([
     jawatan: "Penolong Amil Kariah",
     institusiKariah: "Masjid Negeri Selangor",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    sesiPerkhidmatan: "Sesi 2",
-    statusLantikan: "Active",
+    statusLantikan: "Aktif",
     tarikhLantikan: "01/04/2023",
     namaBank: "CIMB Bank",
     noAkaunBank: "0987654321",
@@ -1101,8 +1041,7 @@ const completedApplications = ref([
     jawatan: "Penolong Amil Padi",
     institusiKariah: "Masjid Al-Khairiyah",
     institusiId: "MASJID_AL_KHAIRIYAH_002",
-    sesiPerkhidmatan: "Sesi 3",
-    statusLantikan: "Active",
+    statusLantikan: "Aktif",
     tarikhLantikan: "01/07/2023",
     namaBank: "Public Bank",
     noAkaunBank: "1122334455",
@@ -1116,12 +1055,6 @@ const completedApplications = ref([
 
 // Completed applications table columns
 const completedColumns = [
-  {
-    key: "no",
-    label: "No",
-    sortable: true,
-    width: "60px",
-  },
   {
     key: "rujukan",
     label: "Rujukan",
@@ -1153,11 +1086,6 @@ const completedColumns = [
     sortable: true,
   },
   {
-    key: "sesiPerkhidmatan",
-    label: "Sesi Perkhidmatan",
-    sortable: true,
-  },
-  {
     key: "tarikhLantikan",
     label: "Tarikh Lantikan",
     sortable: true,
@@ -1184,11 +1112,11 @@ const roleSpecificData = {
       noKP: "901231012345",
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
-      institusiKariah: "Masjid Wilayah Persekutuan",
-      statusPendaftaran: "Draft",
-      sesiPerkhidmatan: "Sesi 1",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Draft" },
+      institusiKariah: "Masjid Negeri Selangor",
+      institusiId: "MASJID_NEGERI_SELANGOR_001",
+      statusPendaftaran: "Dihantar",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Dihantar" },
     },
     {
       no: 2,
@@ -1197,67 +1125,114 @@ const roleSpecificData = {
       noKP: "850515087654",
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
-      institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Submitted",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Dalam Semakan",
       sesiPerkhidmatan: "Sesi 2",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Submitted" },
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dalam Semakan" },
     },
-  ],
-  pt: [
     {
-      no: 1,
-      rujukan: "PA-2024-001",
-      nama: "Ahmad bin Abdullah",
-      noKP: "901231012345",
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disaring",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disemak",
+      sesiPerkhidmatan: "Sesi 4",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disemak" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Abdul Rahman bin Hassan",
+      noKP: "870625098765",
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
-      institusiKariah: "Masjid Wilayah Persekutuan",
-      statusPendaftaran: "Submitted",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disokong",
       sesiPerkhidmatan: "Sesi 1",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Submitted" },
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disokong" },
     },
     {
-      no: 2,
-      rujukan: "PA-2024-002",
-      nama: "Siti binti Mohamed",
-      noKP: "850515087654",
+      no: 6,
+      rujukan: "PA-2024-006",
+      nama: "Fatimah binti Omar",
+      noKP: "880420082345",
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
-      institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Under Review",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disahkan",
       sesiPerkhidmatan: "Sesi 2",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Telah Disahkan" },
     },
-  ],
-  eksekutif: [
     {
-      no: 1,
-      rujukan: "PA-2024-001",
-      nama: "Ahmad bin Abdullah",
-      noKP: "901231012345",
+      no: 7,
+      rujukan: "PA-2024-007",
+      nama: "Zulkifli bin Ahmad",
+      noKP: "850315071234",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Diluluskan",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-007", statusPendaftaran: "Telah Diluluskan" },
+    },
+    {
+      no: 8,
+      rujukan: "PA-2024-008",
+      nama: "Noraini binti Abdullah",
+      noKP: "900525093456",
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
-      institusiKariah: "Masjid Wilayah Persekutuan",
-      statusPendaftaran: "Under Review",
-      sesiPerkhidmatan: "Sesi 1",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Under Review" },
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Ditolak",
+      sesiPerkhidmatan: "Sesi 4",
+      statusLantikan: "Ditamatkan",
+      tindakan: { rujukan: "PA-2024-008", statusPendaftaran: "Ditolak" },
     },
     {
-      no: 2,
-      rujukan: "PA-2024-002",
-      nama: "Siti binti Mohamed",
-      noKP: "850515087654",
+      no: 9,
+      rujukan: "PA-2024-009",
+      nama: "Ismail bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Draf",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-009", statusPendaftaran: "Draf" },
+    },
+    {
+      no: 10,
+      rujukan: "PA-2024-010",
+      nama: "Aminah binti Mohamed",
+      noKP: "920810034567",
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
-      institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Under Review",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Dalam Semakan",
       sesiPerkhidmatan: "Sesi 2",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Dalam Semakan" },
     },
   ],
   "eksekutif-pengurusan-risiko": [
@@ -1268,11 +1243,11 @@ const roleSpecificData = {
       noKP: "901231012345",
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
-      institusiKariah: "Masjid Wilayah Persekutuan",
-      statusPendaftaran: "Under Review",
-      sesiPerkhidmatan: "Sesi 1",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Under Review" },
+      institusiKariah: "Masjid Negeri Selangor",
+              statusPendaftaran: "Dihantar",
+        sesiPerkhidmatan: "Sesi 1",
+        statusLantikan: "Menunggu",
+        tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Dihantar" },
     },
     {
       no: 2,
@@ -1282,10 +1257,79 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Under Review",
+              statusPendaftaran: "Dihantar",
+        sesiPerkhidmatan: "Sesi 2",
+        statusLantikan: "Menunggu",
+        tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dihantar" },
+    },
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Kg Delek",
+              statusPendaftaran: "Dihantar",
+        sesiPerkhidmatan: "Sesi 3",
+        statusLantikan: "Menunggu",
+        tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Dihantar" },
+    },
+  ],
+  pt: [
+    {
+      no: 1,
+      rujukan: "PA-2024-001",
+      nama: "Ahmad bin Abdullah",
+      noKP: "901231012345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Disaring",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 2,
+      rujukan: "PA-2024-002",
+      nama: "Siti binti Mohamed",
+      noKP: "850515087654",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Disaring",
       sesiPerkhidmatan: "Sesi 2",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Under Review" },
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disaring" },
+    },
+  ],
+  eksekutif: [
+    {
+      no: 1,
+      rujukan: "PA-2024-001",
+      nama: "Ahmad bin Abdullah",
+      noKP: "901231012345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disemak",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disemak" },
+    },
+    {
+      no: 2,
+      rujukan: "PA-2024-002",
+      nama: "Siti binti Mohamed",
+      noKP: "850515087654",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Telah Disemak",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disemak" },
     },
   ],
   "ketua-jabatan": [
@@ -1296,11 +1340,11 @@ const roleSpecificData = {
       noKP: "901231012345",
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
-      institusiKariah: "Masjid Wilayah Persekutuan",
-      statusPendaftaran: "Approved",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disokong",
       sesiPerkhidmatan: "Sesi 1",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Approved" },
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disokong" },
     },
     {
       no: 2,
@@ -1310,10 +1354,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Approved",
+      statusPendaftaran: "Telah Disokong",
       sesiPerkhidmatan: "Sesi 2",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Approved" },
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disokong" },
     },
   ],
   "ketua-divisyen": [
@@ -1324,11 +1368,11 @@ const roleSpecificData = {
       noKP: "901231012345",
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
-      institusiKariah: "Masjid Wilayah Persekutuan",
-      statusPendaftaran: "Approved",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disahkan",
       sesiPerkhidmatan: "Sesi 1",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Approved" },
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disahkan" },
     },
     {
       no: 2,
@@ -1338,10 +1382,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Approved",
+      statusPendaftaran: "Telah Disahkan",
       sesiPerkhidmatan: "Sesi 2",
-      statusLantikan: "Pending",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Approved" },
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disahkan" },
     },
   ],
 };
@@ -1355,7 +1399,7 @@ const filteredApplications = computed(() => {
   // Apply institution filter for PYB role (only show applications from their institution)
   if (currentRole.value === 'pyb') {
     const currentInstitutionId = "MASJID_NEGERI_SELANGOR_001"; // Mock current user's institution
-    result = result.filter((app) => app.institusiId === currentInstitutionId);
+    result = result.filter((app) => app.institusiId === currentInstitutionId || !app.institusiId);
   }
 
   // Apply search filter
@@ -1374,13 +1418,14 @@ const filteredApplications = computed(() => {
     result = result.filter((app) => app.statusPendaftaran === filters.value.statusPendaftaran);
   }
 
-  if (filters.value.sesiPerkhidmatan) {
-    result = result.filter((app) => app.sesiPerkhidmatan === filters.value.sesiPerkhidmatan);
-  }
+
 
   if (filters.value.statusLantikan) {
     result = result.filter((app) => app.statusLantikan === filters.value.statusLantikan);
   }
+
+  // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
+  result = result.map(({ sesiPerkhidmatan, institusiId, ...rest }) => rest);
 
   return result;
 });
@@ -1408,7 +1453,7 @@ const filteredCompletedApplications = computed(() => {
   // Apply institution filter for PYB role (only show completed applications from their institution)
   if (currentRole.value === 'pyb') {
     const currentInstitutionId = "MASJID_NEGERI_SELANGOR_001"; // Mock current user's institution
-    result = result.filter((app) => app.institusiId === currentInstitutionId);
+    result = result.filter((app) => app.institusiId === currentInstitutionId || !app.institusiId);
   }
 
   // Apply search filter
@@ -1428,15 +1473,15 @@ const filteredCompletedApplications = computed(() => {
     result = result.filter((app) => app.kategoriPenolongAmil === completedFilters.value.kategoriPenolongAmil);
   }
 
-  // Apply session filter
-  if (completedFilters.value.sesiPerkhidmatan) {
-    result = result.filter((app) => app.sesiPerkhidmatan === completedFilters.value.sesiPerkhidmatan);
-  }
+
 
   // Apply status filter
   if (completedFilters.value.statusLantikan) {
     result = result.filter((app) => app.statusLantikan === completedFilters.value.statusLantikan);
   }
+
+  // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
+  result = result.map(({ sesiPerkhidmatan, institusiId, ...rest }) => rest);
 
   return result;
 });
@@ -1447,10 +1492,30 @@ const totalCompletedApplications = computed(() => filteredCompletedApplications.
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
     Draft: "default",
+    Draf: "default",
     Submitted: "warning",
+    Dihantar: "warning",
     "Under Review": "info",
+    "Dalam Semakan": "info",
+    Screened: "info",
+    Disaring: "info",
+    "Telah Disaring": "info",
+    "PT Reviewed": "info",
+    "Disemak PT": "info",
+    "Telah Disemak": "info",
+    "Executive Supported": "success",
+    "Disokong Eksekutif": "success",
+    "Telah Disokong": "success",
+    "Department Confirmed": "success",
+    "Disahkan Jabatan": "success",
+    "Telah Disahkan": "success",
+    "Division Approved": "success",
+    "Diluluskan Divisyen": "success",
+    "Telah Diluluskan": "success",
     Approved: "success",
+    Diluluskan: "success",
     Rejected: "danger",
+    Ditolak: "danger",
   };
   return statusVariants[status] || "default";
 };
@@ -1458,16 +1523,21 @@ const getStatusPendaftaranVariant = (status) => {
 const getStatusLantikanVariant = (status) => {
   const statusVariants = {
     Pending: "warning",
+    Menunggu: "warning",
     Appointed: "info",
+    Dilantik: "info",
     Active: "success",
+    Aktif: "success",
     Inactive: "secondary",
+    "Tidak Aktif": "secondary",
     Terminated: "danger",
+    Ditamatkan: "danger",
   };
   return statusVariants[status] || "default";
 };
 
 const canEdit = (statusPendaftaran) => {
-  return ["Draft", "Submitted"].includes(statusPendaftaran);
+  return ["Draft", "Draf", "Submitted", "Dihantar"].includes(statusPendaftaran);
 };
 
 // Action handlers with RTMF screen references
