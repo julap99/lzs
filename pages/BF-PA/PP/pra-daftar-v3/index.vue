@@ -1571,9 +1571,9 @@ const handleReview = (actionData) => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/PT/detail/${actionData.rujukan}`);
 };
 
-// PA-PP-PD-04_02: Executive Detail - Paparan Terperinci Sokongan (Risk Analysis)
+// PA-PP-PD-04_02: Risk Analysis Detail - Paparan Terperinci Saringan Risiko
 const handleRiskAnalysis = (actionData) => {
-  navigateTo(`/BF-PA/PP/pra-daftar-v3/eksekutif/detail/${actionData.rujukan}`);
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/jabatan-risiko/detail/${actionData.rujukan}`);
 };
 
 // PA-PP-PD-01_02 (Complete): Complete Detail View - Maklumat Penolong Amil Lengkap
