@@ -284,49 +284,80 @@
               Sejarah Semakan
             </h3>
             
-            <div class="space-y-3">
+            <div class="space-y-4">
               <!-- PYB Institusi Review -->
-              <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                <div class="flex items-center">
-                  <Icon name="ph:user-plus" class="w-5 h-5 mr-3 text-green-500" />
-                  <div>
-                    <p class="font-medium">PYB Institusi</p>
-                    <p class="text-sm text-gray-600">Mendaftar calon</p>
+              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                <div class="flex items-start">
+                  <Icon name="ph:user-plus" class="w-5 h-5 mr-3 text-green-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-green-900">PYB Institusi</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-green-700 mb-2">Mendaftar calon penolong amil</p>
+                    <div class="text-xs text-green-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Ahmad Abdullah (PYB)</p>
+                      <p><strong>Tarikh:</strong> 15/01/2024 10:30 AM</p>
+                      <p><strong>Catatan:</strong> Calon berjaya didaftarkan dengan maklumat lengkap</p>
+                    </div>
                   </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm text-gray-600">15/01/2024</p>
-                  <rs-badge variant="success">Selesai</rs-badge>
                 </div>
               </div>
 
               <!-- Jabatan Pengurusan Risiko Review -->
-              <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                <div class="flex items-center">
-                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-blue-500" />
-                  <div>
-                    <p class="font-medium">Jabatan Pengurusan Risiko</p>
-                    <p class="text-sm text-gray-600">Saringan risiko</p>
+              <div class="flex items-start justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div class="flex items-start">
+                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-blue-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-blue-900">Jabatan Pengurusan Risiko</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-blue-700 mb-2">Saringan risiko calon</p>
+                    <div class="text-xs text-blue-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Siti Fatimah binti Omar (Eksekutif Risiko)</p>
+                      <p><strong>Tarikh:</strong> 20/01/2024 14:15 PM</p>
+                      <p><strong>Catatan:</strong> Calon lulus saringan risiko. Tiada rekod jenayah atau masalah kewangan</p>
+                    </div>
                   </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm text-gray-600">20/01/2024</p>
-                  <rs-badge variant="success">Lulus</rs-badge>
                 </div>
               </div>
 
               <!-- PT Review -->
-              <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                <div class="flex items-center">
-                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-yellow-500" />
-                  <div>
-                    <p class="font-medium">PT</p>
-                    <p class="text-sm text-gray-600">Semakan dokumen</p>
+              <div class="flex items-start justify-between p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <div class="flex items-start">
+                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-yellow-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-yellow-900">Pegawai Tadbir</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-yellow-700 mb-2">Semakan dokumen dan kelayakan</p>
+                    <div class="text-xs text-yellow-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Mohd Ali bin Hassan (Pegawai Tadbir)</p>
+                      <p><strong>Tarikh:</strong> 25/01/2024 09:45 AM</p>
+                      <p><strong>Catatan:</strong> Dokumen lengkap dan memenuhi syarat. Disyorkan untuk sokongan eksekutif</p>
+                    </div>
                   </div>
                 </div>
-                <div class="text-right">
-                  <p class="text-sm text-gray-600">25/01/2024</p>
-                  <rs-badge variant="success">Lulus</rs-badge>
+              </div>
+
+              <!-- Eksekutif Review (Current) -->
+              <div class="flex items-start justify-between p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div class="flex items-start">
+                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-purple-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-purple-900">Eksekutif</h4>
+                      <rs-badge variant="warning">Dalam Proses</rs-badge>
+                    </div>
+                    <p class="text-sm text-purple-700 mb-2">Sokongan eksekutif</p>
+                    <div class="text-xs text-purple-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
+                      <p><strong>Tarikh:</strong> {{ currentDate }}</p>
+                      <p><strong>Status:</strong> Menunggu keputusan sokongan</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -350,41 +381,52 @@
                   <FormKit
                     type="select"
                     name="statusSokongan"
-                    label="Keputusan Sokongan"
+                    label="Keputusan Sokongan *"
                     :options="supportDecisionOptions"
                     validation="required"
                     :validation-messages="{
                       required: 'Keputusan sokongan diperlukan',
                     }"
                     v-model="supportForm.statusSokongan"
+                    :classes="{
+                      input: '!py-2',
+                    }"
                   />
                 </div>
 
-                <!-- Support Date -->
+                <!-- Support Date (Auto-filled, cannot edit) -->
                 <div>
                   <FormKit
                     type="date"
                     name="tarikhSokongan"
-                    label="Tarikh Sokongan"
+                    label="Tarikh Sokongan *"
                     validation="required"
                     :validation-messages="{
                       required: 'Tarikh sokongan diperlukan',
                     }"
                     v-model="supportForm.tarikhSokongan"
+                    :classes="{
+                      input: '!py-2 bg-gray-100',
+                    }"
+                    :disabled="true"
                   />
                 </div>
 
-                <!-- Supporter Name -->
+                <!-- Supporter Name (Auto-filled, cannot edit) -->
                 <div>
                   <FormKit
                     type="text"
                     name="disokongOleh"
-                    label="Disokong Oleh"
+                    label="Disokong Oleh *"
                     validation="required"
                     :validation-messages="{
                       required: 'Nama penyokong diperlukan',
                     }"
                     v-model="supportForm.disokongOleh"
+                    :classes="{
+                      input: '!py-2 bg-gray-100',
+                    }"
+                    :disabled="true"
                   />
                 </div>
 
@@ -393,7 +435,7 @@
                   <FormKit
                     type="textarea"
                     name="catatanSokongan"
-                    label="Catatan Sokongan"
+                    label="Catatan Sokongan *"
                     placeholder="Sila berikan catatan sokongan anda..."
                     validation="required"
                     :validation-messages="{
@@ -401,31 +443,12 @@
                     }"
                     v-model="supportForm.catatanSokongan"
                     :classes="{
-                      input: 'min-h-[120px]',
+                      input: 'min-h-[120px] !py-2',
                     }"
                   />
                 </div>
 
-                <!-- Support Letter Upload -->
-                <div class="md:col-span-2">
-                  <FormKit
-                    type="file"
-                    name="suratSokongan"
-                    label="Surat Sokongan Eksekutif *"
-                    accept=".pdf,.doc,.docx"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Surat sokongan eksekutif diperlukan',
-                    }"
-                    :classes="{
-                      input: '!py-2',
-                    }"
-                    v-model="supportForm.suratSokongan"
-                    help="Format: PDF, DOC, DOCX. Surat sokongan rasmi dari eksekutif"
-                  />
-                </div>
-
-                <!-- Additional Documents -->
+                <!-- Additional Documents (Optional) -->
                 <div class="md:col-span-2">
                   <FormKit
                     type="file"
@@ -437,17 +460,25 @@
                       input: '!py-2',
                     }"
                     v-model="supportForm.additionalDocuments"
+                    help="Format: PDF, DOC, DOCX, JPG, JPEG, PNG. Dokumen tambahan jika diperlukan"
                   />
                 </div>
               </div>
 
-              <!-- Submit Buttons - Standardized at the bottom -->
+              <!-- Submit Buttons -->
               <div class="flex justify-end gap-4 mt-6">
                 <rs-button
                   type="button"
-                  variant="primary"
-                  @click="handleSubmitDirect"
+                  variant="secondary-outline"
+                  @click="handleBack"
                   :disabled="isSubmitting"
+                >
+                  Batal
+                </rs-button>
+                <rs-button
+                  type="submit"
+                  variant="primary"
+                  :disabled="isSubmitting || !isFormValid"
                 >
                   <Icon
                     v-if="isSubmitting"
@@ -526,11 +557,30 @@ const supportForm = ref({
   tarikhSokongan: "",
   disokongOleh: "",
   catatanSokongan: "",
-  suratSokongan: null,
   additionalDocuments: null,
 });
 
+// State management
 const isSubmitting = ref(false);
+
+// Current user data (mock session token)
+const currentUser = ref({
+  name: "Dr. Aminah binti Abdullah",
+  role: "Eksekutif",
+  id: "EXEC001",
+  department: "Bahagian Eksekutif"
+});
+
+// Current date
+const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
+
+// Form validation
+const isFormValid = computed(() => {
+  return (
+    supportForm.value.statusSokongan &&
+    supportForm.value.catatanSokongan
+  );
+});
 
 // Mock application data based on RTMF requirements
 const application = ref({
@@ -579,7 +629,7 @@ const application = ref({
     },
     {
       action: "Menunggu Sokongan Eksekutif",
-      date: "26/03/2024 09:00 AM",
+      date: "30/03/2024 09:00 AM",
       notes: "Permohonan dalam proses sokongan eksekutif"
     }
   ]
@@ -591,7 +641,6 @@ const supportData = ref({
   tarikhSokongan: "",
   disokongOleh: "",
   catatanSokongan: "",
-  suratSokongan: null,
 });
 
 // Helper functions
@@ -634,8 +683,8 @@ const getStatusPendaftaranVariant = (status) => {
 const getSupportStatusVariant = (status) => {
   const statusVariants = {
     "Dalam Proses": "warning",
-    Sokong: "success",
-    "Tidak Sokong": "danger",
+    Lulus: "success",
+    "Tidak Lulus": "danger",
   };
   return statusVariants[status] || "default";
 };
@@ -671,39 +720,18 @@ const handleSubmit = async (formData) => {
   }
 };
 
-const handleSubmitDirect = async () => {
-  try {
-    isSubmitting.value = true;
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Update support data
-    supportData.value.statusSokongan = supportForm.value.statusSokongan;
-    supportData.value.tarikhSokongan = supportForm.value.tarikhSokongan;
-    supportData.value.catatanSokongan = supportForm.value.catatanSokongan;
-    supportData.value.disokongOleh = supportForm.value.disokongOleh;
-    
-    // Support submitted successfully
-    
-    // Navigate back to dashboard
-    navigateTo("/BF-PA/PP/pra-daftar-v3");
-    
-  } catch (error) {
-    alert("Ralat berlaku semasa menghantar sokongan eksekutif. Sila cuba lagi.");
-  } finally {
-    isSubmitting.value = false;
-  }
-};
-
 const previewDocument = (documentType) => {
   // Simulate document preview
   alert(`Melihat dokumen: ${documentType}`);
 };
 
 onMounted(() => {
+  // Auto-fill the form with current user and date
+  supportForm.value.tarikhSokongan = new Date().toISOString().split('T')[0];
+  supportForm.value.disokongOleh = currentUser.value.name;
+  
   // In real implementation, fetch application and support data based on rujukan
-  console.log("Loading executive support details");
+  console.log("Loading executive support details for:", route.params.rujukan);
 });
 </script>
 

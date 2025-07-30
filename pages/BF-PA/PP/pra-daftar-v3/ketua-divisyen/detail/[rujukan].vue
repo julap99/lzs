@@ -284,79 +284,118 @@
               Sejarah Semakan
             </h3>
             
-            <div class="space-y-3">
+            <div class="space-y-4">
               <!-- PYB Institusi Review -->
-              <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                <div class="flex items-center">
-                  <Icon name="ph:user-plus" class="w-5 h-5 mr-3 text-green-500" />
-                  <div>
-                    <p class="font-medium">PYB Institusi</p>
-                    <p class="text-sm text-gray-600">Mendaftar calon</p>
+              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                <div class="flex items-start">
+                  <Icon name="ph:user-plus" class="w-5 h-5 mr-3 text-green-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-green-900">PYB Institusi</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-green-700 mb-2">Mendaftar calon penolong amil</p>
+                    <div class="text-xs text-green-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Ahmad Abdullah (PYB)</p>
+                      <p><strong>Tarikh:</strong> 15/01/2024 10:30 AM</p>
+                      <p><strong>Catatan:</strong> Calon berjaya didaftarkan dengan maklumat lengkap</p>
+                    </div>
                   </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm text-gray-600">15/01/2024</p>
-                  <rs-badge variant="success">Selesai</rs-badge>
                 </div>
               </div>
 
               <!-- Jabatan Pengurusan Risiko Review -->
-              <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                <div class="flex items-center">
-                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-blue-500" />
-                  <div>
-                    <p class="font-medium">Jabatan Pengurusan Risiko</p>
-                    <p class="text-sm text-gray-600">Saringan risiko</p>
+              <div class="flex items-start justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div class="flex items-start">
+                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-blue-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-blue-900">Jabatan Pengurusan Risiko</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-blue-700 mb-2">Saringan risiko calon</p>
+                    <div class="text-xs text-blue-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Siti Fatimah binti Omar (Eksekutif Risiko)</p>
+                      <p><strong>Tarikh:</strong> 20/01/2024 14:15 PM</p>
+                      <p><strong>Catatan:</strong> Calon lulus saringan risiko. Tiada rekod jenayah atau masalah kewangan</p>
+                    </div>
                   </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm text-gray-600">20/01/2024</p>
-                  <rs-badge variant="success">Lulus</rs-badge>
                 </div>
               </div>
 
               <!-- PT Review -->
-              <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                <div class="flex items-center">
-                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-yellow-500" />
-                  <div>
-                    <p class="font-medium">PT</p>
-                    <p class="text-sm text-gray-600">Semakan dokumen</p>
+              <div class="flex items-start justify-between p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <div class="flex items-start">
+                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-yellow-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-yellow-900">Pegawai Tadbir</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-yellow-700 mb-2">Semakan dokumen dan kelayakan</p>
+                    <div class="text-xs text-yellow-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Mohd Ali bin Hassan (Pegawai Tadbir)</p>
+                      <p><strong>Tarikh:</strong> 25/01/2024 09:45 AM</p>
+                      <p><strong>Catatan:</strong> Dokumen lengkap dan memenuhi syarat. Disyorkan untuk sokongan eksekutif</p>
+                    </div>
                   </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm text-gray-600">25/01/2024</p>
-                  <rs-badge variant="success">Lulus</rs-badge>
                 </div>
               </div>
 
               <!-- Eksekutif Review -->
-              <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
-                <div class="flex items-center">
-                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-purple-500" />
-                  <div>
-                    <p class="font-medium">Eksekutif</p>
-                    <p class="text-sm text-gray-600">Sokongan eksekutif</p>
+              <div class="flex items-start justify-between p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div class="flex items-start">
+                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-purple-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-purple-900">Eksekutif</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-purple-700 mb-2">Sokongan eksekutif</p>
+                    <div class="text-xs text-purple-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Dr. Aminah binti Abdullah (Eksekutif)</p>
+                      <p><strong>Tarikh:</strong> 30/01/2024 11:20 AM</p>
+                      <p><strong>Catatan:</strong> Calon layak dan disokong untuk pengesahan ketua jabatan</p>
+                    </div>
                   </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm text-gray-600">30/01/2024</p>
-                  <rs-badge variant="success">Sokong</rs-badge>
                 </div>
               </div>
 
               <!-- Ketua Jabatan Review -->
-              <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                <div class="flex items-center">
-                  <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-orange-500" />
-                  <div>
-                    <p class="font-medium">Ketua Jabatan</p>
-                    <p class="text-sm text-gray-600">Pengesahan ketua jabatan</p>
+              <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div class="flex items-start">
+                  <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-orange-900">Ketua Jabatan</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-orange-700 mb-2">Pengesahan ketua jabatan</p>
+                    <div class="text-xs text-orange-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Prof. Dr. Ismail bin Ahmad (Ketua Jabatan)</p>
+                      <p><strong>Tarikh:</strong> 05/04/2024 14:30 PM</p>
+                      <p><strong>Catatan:</strong> Calon disahkan oleh ketua jabatan. Sedia untuk kelulusan akhir ketua divisyen</p>
+                    </div>
                   </div>
                 </div>
-                <div class="text-right">
-                  <p class="text-sm text-gray-600">05/02/2024</p>
-                  <rs-badge variant="success">Sah</rs-badge>
+              </div>
+
+              <!-- Ketua Divisyen Review (Current) -->
+              <div class="flex items-start justify-between p-4 bg-red-50 rounded-lg border border-red-200">
+                <div class="flex items-start">
+                  <Icon name="ph:star" class="w-5 h-5 mr-3 text-red-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-red-900">Ketua Divisyen</h4>
+                      <rs-badge variant="warning">Dalam Proses</rs-badge>
+                    </div>
+                    <p class="text-sm text-red-700 mb-2">Kelulusan akhir ketua divisyen</p>
+                    <div class="text-xs text-red-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
+                      <p><strong>Tarikh:</strong> {{ currentDate }}</p>
+                      <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -393,7 +432,7 @@
                   />
                 </div>
 
-                <!-- Approval Date -->
+                <!-- Approval Date (Auto-filled, cannot edit) -->
                 <div>
                   <FormKit
                     type="date"
@@ -405,12 +444,13 @@
                     }"
                     v-model="approvalForm.tarikhKelulusan"
                     :classes="{
-                      input: '!py-2',
+                      input: '!py-2 bg-gray-100',
                     }"
+                    :disabled="true"
                   />
                 </div>
 
-                <!-- Approver Name -->
+                <!-- Approver Name (Auto-filled, cannot edit) -->
                 <div>
                   <FormKit
                     type="text"
@@ -422,8 +462,9 @@
                     }"
                     v-model="approvalForm.diluluskanOleh"
                     :classes="{
-                      input: '!py-2',
+                      input: '!py-2 bg-gray-100',
                     }"
+                    :disabled="true"
                   />
                 </div>
 
@@ -657,12 +698,21 @@ const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 const errorMessage = ref("");
 
+// Current user data (mock session token)
+const currentUser = ref({
+  name: "Tan Sri Dato' Dr. Ahmad bin Mohamed",
+  role: "Ketua Divisyen",
+  id: "KD001",
+  department: "Bahagian Pentadbiran"
+});
+
+// Current date
+const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
+
 // Form validation
 const isFormValid = computed(() => {
   return (
     approvalForm.value.statusKelulusan &&
-    approvalForm.value.tarikhKelulusan &&
-    approvalForm.value.diluluskanOleh &&
     approvalForm.value.catatanKelulusan &&
     approvalForm.value.suratKelulusan
   );
@@ -870,11 +920,11 @@ const previewDocument = (documentType) => {
   }
 };
 
-// Initialize form with current date
+// Initialize form with current date and user
 onMounted(() => {
-  // Set default date to today
-  const today = new Date().toISOString().split('T')[0];
-  approvalForm.value.tarikhKelulusan = today;
+  // Auto-fill the form with current user and date
+  approvalForm.value.tarikhKelulusan = new Date().toISOString().split('T')[0];
+  approvalForm.value.diluluskanOleh = currentUser.value.name;
   
   // In real implementation, fetch application and approval data based on rujukan
   console.log("Loading division head approval details for:", route.params.rujukan);
