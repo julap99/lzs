@@ -733,11 +733,10 @@ const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
 
 // Form validation
 const isFormValid = computed(() => {
-  return true; // Temporarily disable validation for testing
-  // return (
-  //   approvalForm.value.statusKelulusan &&
-  //   approvalForm.value.catatanKelulusan
-  // );
+  return (
+    approvalForm.value.statusKelulusan &&
+    approvalForm.value.catatanKelulusan
+  );
 });
 
 // Mock application data based on RTMF requirements

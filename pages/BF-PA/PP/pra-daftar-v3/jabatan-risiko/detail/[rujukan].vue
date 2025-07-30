@@ -453,14 +453,9 @@
     </rs-card>
 
     <!-- Confirmation Modal -->
-    <rs-modal
-      v-model="showConfirmationModal"
-      title="Sahkan Keputusan"
-      size="md"
-    >
-      <template #body>
+    <div v-if="showConfirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4" style="background: white; border-radius: 8px; padding: 24px; max-width: 400px; width: 100%; margin: 0 16px;">
         <div class="text-center">
-          <Icon name="ph:warning-circle" class="w-16 h-16 text-yellow-500 mx-auto mb-4" />
           <h3 class="text-lg font-semibold text-gray-900 mb-2">
             Adakah anda pasti?
           </h3>
@@ -474,8 +469,6 @@
             </p>
           </div>
         </div>
-      </template>
-      <template #footer>
         <div class="flex justify-end gap-3">
           <rs-button
             variant="secondary-outline"
@@ -492,13 +485,13 @@
             Ya, Hantar Keputusan
           </rs-button>
         </div>
-      </template>
-    </rs-modal>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 
 const route = useRoute();
 const { $swal } = useNuxtApp();
@@ -578,11 +571,10 @@ const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
 
 // Form validation
 const isFormValid = computed(() => {
-  return true; // Temporarily disable validation for testing
-  // return (
-  //   screeningForm.value.statusSaringan &&
-  //   screeningForm.value.catatanSaringan
-  // );
+  return (
+    screeningForm.value.statusSaringan &&
+    screeningForm.value.catatanSaringan
+  );
 });
 
 // Mock application data based on RTMF requirements
@@ -707,6 +699,8 @@ const getLocalizedStatus = (status) => {
 const handleBack = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
+
+
 
 const confirmSubmit = async () => {
   showConfirmationModal.value = false;

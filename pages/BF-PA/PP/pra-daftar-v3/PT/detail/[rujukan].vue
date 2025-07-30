@@ -598,11 +598,10 @@ const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
 
 // Form validation
 const isFormValid = computed(() => {
-  return true; // Temporarily disable validation for testing
-  // return (
-  //   reviewForm.value.statusReview &&
-  //   reviewForm.value.catatanReview
-  // );
+  return (
+    reviewForm.value.statusReview &&
+    reviewForm.value.catatanReview
+  );
 });
 
 // Mock application data based on RTMF requirements
