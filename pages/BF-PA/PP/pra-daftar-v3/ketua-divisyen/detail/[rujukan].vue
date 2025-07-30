@@ -305,16 +305,16 @@
               </div>
 
               <!-- Jabatan Pengurusan Risiko Review -->
-              <div class="flex items-start justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
                 <div class="flex items-start">
-                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-blue-500 mt-1" />
+                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-green-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-blue-900">Jabatan Pengurusan Risiko</h4>
+                      <h4 class="font-semibold text-green-900">Jabatan Pengurusan Risiko</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
-                    <p class="text-sm text-blue-700 mb-2">Saringan risiko calon</p>
-                    <div class="text-xs text-blue-600 space-y-1">
+                    <p class="text-sm text-green-700 mb-2">Saringan risiko calon</p>
+                    <div class="text-xs text-green-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Siti Fatimah binti Omar (Eksekutif Risiko)</p>
                       <p><strong>Tarikh:</strong> 20/01/2024 14:15 PM</p>
                       <p><strong>Catatan:</strong> Calon lulus saringan risiko. Tiada rekod jenayah atau masalah kewangan</p>
@@ -324,16 +324,16 @@
               </div>
 
               <!-- PT Review -->
-              <div class="flex items-start justify-between p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
                 <div class="flex items-start">
-                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-yellow-500 mt-1" />
+                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-green-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-yellow-900">Pegawai Tadbir</h4>
+                      <h4 class="font-semibold text-green-900">Pegawai Tadbir</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
-                    <p class="text-sm text-yellow-700 mb-2">Semakan dokumen dan kelayakan</p>
-                    <div class="text-xs text-yellow-600 space-y-1">
+                    <p class="text-sm text-green-700 mb-2">Semakan dokumen dan kelayakan</p>
+                    <div class="text-xs text-green-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Mohd Ali bin Hassan (Pegawai Tadbir)</p>
                       <p><strong>Tarikh:</strong> 25/01/2024 09:45 AM</p>
                       <p><strong>Catatan:</strong> Dokumen lengkap dan memenuhi syarat. Disyorkan untuk sokongan eksekutif</p>
@@ -343,16 +343,16 @@
               </div>
 
               <!-- Eksekutif Review -->
-              <div class="flex items-start justify-between p-4 bg-purple-50 rounded-lg border border-purple-200">
+              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
                 <div class="flex items-start">
-                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-purple-500 mt-1" />
+                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-green-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-purple-900">Eksekutif</h4>
+                      <h4 class="font-semibold text-green-900">Eksekutif</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
-                    <p class="text-sm text-purple-700 mb-2">Sokongan eksekutif</p>
-                    <div class="text-xs text-purple-600 space-y-1">
+                    <p class="text-sm text-green-700 mb-2">Sokongan eksekutif</p>
+                    <div class="text-xs text-green-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Dr. Aminah binti Abdullah (Eksekutif)</p>
                       <p><strong>Tarikh:</strong> 30/01/2024 11:20 AM</p>
                       <p><strong>Catatan:</strong> Calon layak dan disokong untuk pengesahan ketua jabatan</p>
@@ -362,16 +362,16 @@
               </div>
 
               <!-- Ketua Jabatan Review -->
-              <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
                 <div class="flex items-start">
-                  <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+                  <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-green-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-orange-900">Ketua Jabatan</h4>
+                      <h4 class="font-semibold text-green-900">Ketua Jabatan</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
-                    <p class="text-sm text-orange-700 mb-2">Pengesahan ketua jabatan</p>
-                    <div class="text-xs text-orange-600 space-y-1">
+                    <p class="text-sm text-green-700 mb-2">Pengesahan ketua jabatan</p>
+                    <div class="text-xs text-green-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Prof. Dr. Ismail bin Ahmad (Ketua Jabatan)</p>
                       <p><strong>Tarikh:</strong> 05/04/2024 14:30 PM</p>
                       <p><strong>Catatan:</strong> Calon disahkan oleh ketua jabatan. Sedia untuk kelulusan akhir ketua divisyen</p>
@@ -381,16 +381,16 @@
               </div>
 
               <!-- Ketua Divisyen Review (Current) -->
-              <div class="flex items-start justify-between p-4 bg-red-50 rounded-lg border border-red-200">
+              <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
                 <div class="flex items-start">
-                  <Icon name="ph:star" class="w-5 h-5 mr-3 text-red-500 mt-1" />
+                  <Icon name="ph:star" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-red-900">Ketua Divisyen</h4>
+                      <h4 class="font-semibold text-orange-900">Ketua Divisyen</h4>
                       <rs-badge variant="warning">Dalam Proses</rs-badge>
                     </div>
-                    <p class="text-sm text-red-700 mb-2">Kelulusan akhir ketua divisyen</p>
-                    <div class="text-xs text-red-600 space-y-1">
+                    <p class="text-sm text-orange-700 mb-2">Kelulusan akhir ketua divisyen</p>
+                    <div class="text-xs text-orange-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
                       <p><strong>Tarikh:</strong> {{ currentDate }}</p>
                       <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
@@ -493,7 +493,7 @@
                   <FormKit
                     type="file"
                     name="additionalDocuments"
-                    label="Dokumen Tambahan (Opsional)"
+                    label="Dokumen Tambahan (Jika Ada)"
                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                     multiple
                     :classes="{
@@ -800,15 +800,15 @@ const getStepLineVariant = (step) => {
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
     Draft: "default",
-    Submitted: "warning",
-    "Under Review": "info",
-    Screened: "info",
-    "PT Reviewed": "info",
-    "Executive Supported": "success",
-    "Department Confirmed": "success",
-    "Division Approved": "success",
-    Approved: "success",
-    Rejected: "danger",
+    Dihantar: "warning",
+    "Dalam Semakan": "info",
+    Disaring: "info",
+    "Disemak PT": "info",
+    "Disokong Eksekutif": "success",
+    "Disahkan Jabatan": "success",
+    "Diluluskan Divisyen": "success",
+    Diluluskan: "success",
+    Ditolak: "danger",
   };
   return statusVariants[status] || "default";
 };

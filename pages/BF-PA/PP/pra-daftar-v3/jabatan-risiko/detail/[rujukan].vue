@@ -305,16 +305,16 @@
               </div>
 
               <!-- Jabatan Pengurusan Risiko Review (Current) -->
-              <div class="flex items-start justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
                 <div class="flex items-start">
-                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-blue-500 mt-1" />
+                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-blue-900">Jabatan Pengurusan Risiko</h4>
+                      <h4 class="font-semibold text-orange-900">Jabatan Pengurusan Risiko</h4>
                       <rs-badge variant="warning">Dalam Proses</rs-badge>
                     </div>
-                    <p class="text-sm text-blue-700 mb-2">Saringan risiko calon</p>
-                    <div class="text-xs text-blue-600 space-y-1">
+                    <p class="text-sm text-orange-700 mb-2">Saringan risiko calon</p>
+                    <div class="text-xs text-orange-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
                       <p><strong>Tarikh:</strong> {{ currentDate }}</p>
                       <p><strong>Status:</strong> Menunggu keputusan saringan</p>
@@ -415,7 +415,7 @@
                   <FormKit
                     type="file"
                     name="additionalDocuments"
-                    label="Dokumen Tambahan (Opsional)"
+                    label="Dokumen Tambahan (Jika Ada)"
                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                     multiple
                     :classes="{
@@ -614,15 +614,15 @@ const getStepLineVariant = (step) => {
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
     Draft: "default",
-    Submitted: "warning",
-    "Under Review": "info",
-    Screened: "info",
-    "PT Reviewed": "info",
-    "Executive Supported": "success",
-    "Department Confirmed": "success",
-    "Division Approved": "success",
-    Approved: "success",
-    Rejected: "danger",
+    Dihantar: "warning",
+    "Dalam Semakan": "info",
+    Disaring: "info",
+    "Disemak PT": "info",
+    "Disokong Eksekutif": "success",
+    "Disahkan Jabatan": "success",
+    "Diluluskan Divisyen": "success",
+    Diluluskan: "success",
+    Ditolak: "danger",
   };
   return statusVariants[status] || "default";
 };
