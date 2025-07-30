@@ -1,7 +1,7 @@
 <!-- 
   RTMF SCREEN: PA-PP-PD-09_02
-  PURPOSE: Penolong Amil Dashboard - Dashboard untuk Penolong Amil yang telah menerima tawaran
-  DESCRIPTION: Dashboard utama untuk Penolong Amil yang telah aktif
+  PURPOSE: Penolong Amil Dashboard - Dashboard untuk Penolong Amil Kariah (PAK) yang telah menerima tawaran
+  DESCRIPTION: Dashboard utama untuk Penolong Amil Kariah yang fokus pada aktiviti agihan
   ROUTE: /BF-PA/PP/penolong-amil/dashboard
 -->
 <template>
@@ -18,8 +18,9 @@
             </div>
             <div>
               <h2 class="text-lg font-semibold text-gray-900">{{ userProfile.nama }}</h2>
-              <p class="text-sm text-gray-600">Penolong Amil Aktif</p>
+              <p class="text-sm text-gray-600">Penolong Amil Kariah (PAK)</p>
               <p class="text-xs text-success font-medium">Status: {{ userProfile.status }}</p>
+              <p class="text-xs text-primary font-medium">Kariah: {{ userProfile.kariah }}</p>
             </div>
           </div>
           <div class="flex gap-2">
@@ -44,13 +45,14 @@
       </template>
     </rs-card>
 
-    <!-- Quick Stats -->
+    <!-- PAK Quick Stats - Focus on Agihan -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <rs-card>
         <template #body>
           <div class="text-center">
-            <div class="text-2xl font-bold text-primary">{{ stats.totalSessions }}</div>
-            <div class="text-sm text-gray-600">Sesi Perkhidmatan</div>
+            <div class="text-2xl font-bold text-primary">{{ stats.totalAgihan }}</div>
+            <div class="text-sm text-gray-600">Jumlah Agihan</div>
+            <div class="text-xs text-success mt-1">Bulan Ini</div>
           </div>
         </template>
       </rs-card>
@@ -58,8 +60,9 @@
       <rs-card>
         <template #body>
           <div class="text-center">
-            <div class="text-2xl font-bold text-success">{{ stats.totalCollections }}</div>
-            <div class="text-sm text-gray-600">Kutipan Zakat</div>
+            <div class="text-2xl font-bold text-success">{{ stats.asnafDibantu }}</div>
+            <div class="text-sm text-gray-600">Asnaf Dibantu</div>
+            <div class="text-xs text-info mt-1">Aktif</div>
           </div>
         </template>
       </rs-card>
@@ -67,8 +70,9 @@
       <rs-card>
         <template #body>
           <div class="text-center">
-            <div class="text-2xl font-bold text-warning">{{ stats.pendingTasks }}</div>
-            <div class="text-sm text-gray-600">Tugasan Tertunda</div>
+            <div class="text-2xl font-bold text-warning">{{ stats.tugasanTertunda }}</div>
+            <div class="text-sm text-gray-600">Tugasan Agihan</div>
+            <div class="text-xs text-warning mt-1">Tertunda</div>
           </div>
         </template>
       </rs-card>
@@ -76,97 +80,124 @@
       <rs-card>
         <template #body>
           <div class="text-center">
-            <div class="text-2xl font-bold text-info">{{ stats.performanceRating }}</div>
-            <div class="text-sm text-gray-600">Penilaian Prestasi</div>
+            <div class="text-2xl font-bold text-info">{{ stats.prestasiAgihan }}</div>
+            <div class="text-sm text-gray-600">Prestasi Agihan</div>
+            <div class="text-xs text-success mt-1">Cemerlang</div>
           </div>
         </template>
       </rs-card>
     </div>
 
-    <!-- Main Actions -->
+    <!-- PAK Main Actions - Focus on Agihan -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/pra-daftar-v3/zakat-collection')">
+      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/agihan-bantuan')">
         <template #body>
           <div class="text-center p-4">
-            <Icon name="ph:money" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Kutipan Zakat</h3>
-            <p class="text-sm text-gray-600">Urus kutipan zakat dan bayaran</p>
+            <Icon name="ph:hand-heart" class="text-primary mx-auto mb-3" size="48" />
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Agihan Bantuan</h3>
+            <p class="text-sm text-gray-600">Urus agihan bantuan kepada asnaf</p>
           </div>
         </template>
       </rs-card>
 
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/pra-daftar-v3/reports')">
+      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/senarai-asnaf')">
+        <template #body>
+          <div class="text-center p-4">
+            <Icon name="ph:users" class="text-primary mx-auto mb-3" size="48" />
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Senarai Asnaf</h3>
+            <p class="text-sm text-gray-600">Kelola maklumat asnaf kariah</p>
+          </div>
+        </template>
+      </rs-card>
+
+      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/laporan-agihan')">
         <template #body>
           <div class="text-center p-4">
             <Icon name="ph:chart-bar" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Laporan</h3>
-            <p class="text-sm text-gray-600">Lihat laporan dan statistik</p>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Laporan Agihan</h3>
+            <p class="text-sm text-gray-600">Lihat laporan prestasi agihan</p>
           </div>
         </template>
       </rs-card>
 
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/pra-daftar-v3/tasks')">
+      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/tugasan-agihan')">
         <template #body>
           <div class="text-center p-4">
             <Icon name="ph:list-checks" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tugasan</h3>
-            <p class="text-sm text-gray-600">Urus tugasan dan aktiviti</p>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tugasan Agihan</h3>
+            <p class="text-sm text-gray-600">Urus tugasan agihan harian</p>
           </div>
         </template>
       </rs-card>
 
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/pra-daftar-v3/training')">
+      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/bancian-asnaf')">
         <template #body>
           <div class="text-center p-4">
-            <Icon name="ph:graduation-cap" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Latihan</h3>
-            <p class="text-sm text-gray-600">Akses modul latihan</p>
+            <Icon name="ph:clipboard-text" class="text-primary mx-auto mb-3" size="48" />
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Bancian Asnaf</h3>
+            <p class="text-sm text-gray-600">Bancian dan kemaskini asnaf</p>
           </div>
         </template>
       </rs-card>
 
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/pra-daftar-v3/communication')">
+      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/komunikasi-kariah')">
         <template #body>
           <div class="text-center p-4">
             <Icon name="ph:chat-circle" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Komunikasi</h3>
-            <p class="text-sm text-gray-600">Hubungi penyelia dan rakan sekerja</p>
-          </div>
-        </template>
-      </rs-card>
-
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/pra-daftar-v3/settings')">
-        <template #body>
-          <div class="text-center p-4">
-            <Icon name="ph:gear" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tetapan</h3>
-            <p class="text-sm text-gray-600">Urus tetapan akaun</p>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Komunikasi Kariah</h3>
+            <p class="text-sm text-gray-600">Hubungi ahli kariah dan asnaf</p>
           </div>
         </template>
       </rs-card>
     </div>
 
-    <!-- Recent Activities -->
+    <!-- Recent Agihan Activities -->
     <rs-card class="mb-6">
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-gray-900">Aktiviti Terkini</h3>
-          <rs-button variant="primary-outline" size="sm" @click="navigateTo('/BF-PA/PP/pra-daftar-v3/activities')">
+          <h3 class="text-lg font-semibold text-gray-900">Aktiviti Agihan Terkini</h3>
+          <rs-button variant="primary-outline" size="sm" @click="navigateTo('/BF-PA/PP/penolong-amil/aktiviti-agihan')">
             Lihat Semua
           </rs-button>
         </div>
       </template>
       <template #body>
         <div class="space-y-4">
-          <div v-for="activity in recentActivities" :key="activity.id" class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg">
+          <div v-for="activity in recentAgihanActivities" :key="activity.id" class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg">
             <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
               <Icon :name="activity.icon" class="text-primary" size="16" />
             </div>
             <div class="flex-1">
               <h4 class="font-medium text-gray-900">{{ activity.title }}</h4>
               <p class="text-sm text-gray-600">{{ activity.description }}</p>
-              <p class="text-xs text-gray-500 mt-1">{{ activity.timestamp }}</p>
+              <div class="flex items-center gap-2 mt-1">
+                <p class="text-xs text-gray-500">{{ activity.timestamp }}</p>
+                <rs-badge :variant="activity.statusVariant" size="sm">{{ activity.status }}</rs-badge>
+              </div>
             </div>
+          </div>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Kariah Information -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Maklumat Kariah</h3>
+      </template>
+      <template #body>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="text-2xl font-bold text-blue-600">{{ kariahInfo.totalAhli }}</div>
+            <div class="text-sm text-gray-600">Jumlah Ahli Kariah</div>
+          </div>
+          <div class="text-center p-4 bg-green-50 rounded-lg">
+            <div class="text-2xl font-bold text-green-600">{{ kariahInfo.totalAsnaf }}</div>
+            <div class="text-sm text-gray-600">Jumlah Asnaf</div>
+          </div>
+          <div class="text-center p-4 bg-orange-50 rounded-lg">
+            <div class="text-2xl font-bold text-orange-600">{{ kariahInfo.kawasanAgihan }}</div>
+            <div class="text-sm text-gray-600">Kawasan Agihan</div>
           </div>
         </div>
       </template>
@@ -196,6 +227,10 @@
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
               <p class="text-gray-900">{{ userProfile.kategori }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Kariah</label>
+              <p class="text-gray-900">{{ userProfile.kariah }}</p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Institusi</label>
@@ -233,7 +268,7 @@
             <div class="text-center mb-6">
               <img src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" alt="LZS" class="h-16 mx-auto mb-4" />
               <h2 class="text-xl font-bold text-primary mb-2">KAD TAULIAH</h2>
-              <h3 class="text-lg font-semibold text-gray-900">PENOLONG AMIL</h3>
+              <h3 class="text-lg font-semibold text-gray-900">PENOLONG AMIL KARIAH (PAK)</h3>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -249,6 +284,10 @@
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
                   <p class="text-gray-900">{{ userProfile.kategori }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Kariah</label>
+                  <p class="text-gray-900">{{ userProfile.kariah }}</p>
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">Institusi</label>
@@ -267,7 +306,7 @@
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">Kod Kad</label>
-                  <p class="text-gray-900 font-mono">PA-{{ userProfile.noKP.slice(-6) }}</p>
+                  <p class="text-gray-900 font-mono">PAK-{{ userProfile.noKP.slice(-6) }}</p>
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">Tempoh Sah</label>
@@ -329,7 +368,7 @@
             </div>
             
             <div>
-              <p class="font-semibold text-gray-900 mb-2">Subjek: Tawaran Pelantikan Sebagai Penolong Amil</p>
+              <p class="font-semibold text-gray-900 mb-2">Subjek: Tawaran Pelantikan Sebagai Penolong Amil Kariah (PAK)</p>
             </div>
             
             <div class="space-y-3 text-gray-700">
@@ -337,7 +376,7 @@
               
               <p>
                 Dengan hormatnya dimaklumkan bahawa Lembaga Zakat Selangor (LZS) dengan sukacitanya ingin menawarkan 
-                jawatan Penolong Amil kepada Tuan/Puan.
+                jawatan Penolong Amil Kariah (PAK) kepada Tuan/Puan.
               </p>
               
               <p>
@@ -345,9 +384,11 @@
               </p>
               <ul class="list-disc list-inside space-y-1 ml-4">
                 <li>Jawatan: {{ userProfile.kategori }}</li>
+                <li>Kariah: {{ userProfile.kariah }}</li>
                 <li>Institusi: {{ userProfile.institusi }}</li>
                 <li>Tempoh: 2024 - 2027</li>
                 <li>Elaun: RM 500.00 sebulan</li>
+                <li>Skop Tugas: Agihan bantuan kepada asnaf dalam kariah</li>
               </ul>
               
               <p>
@@ -357,7 +398,8 @@
                 <li>Menerima tawaran ini dalam tempoh 14 hari</li>
                 <li>Lengkapkan maklumat profil dalam sistem</li>
                 <li>Menghadiri sesi orientasi yang akan diatur</li>
-                <li>Memulakan tugas pada tarikh yang ditetapkan</li>
+                <li>Memulakan tugas agihan pada tarikh yang ditetapkan</li>
+                <li>Bertanggungjawab terhadap agihan bantuan kepada asnaf dalam kariah</li>
               </ol>
               
               <p>
@@ -429,51 +471,67 @@ const userProfile = ref({
   noKP: "901231012345",
   emel: "ahmad.abdullah@email.com",
   telefon: "0123456789",
-  kategori: "Penolong Amil Fitrah",
+  kategori: "Penolong Amil Kariah (PAK)",
   institusi: "Masjid Wilayah Persekutuan",
   tarikhLantikan: "2024-01-15",
-  status: "Aktif"
+  status: "Aktif",
+  kariah: "Kariah A"
 });
 
-// Stats data
+// Stats data - PAK focused on Agihan
 const stats = ref({
-  totalSessions: 24,
-  totalCollections: 156,
-  pendingTasks: 3,
-  performanceRating: "4.8/5"
+  totalAgihan: 120,
+  asnafDibantu: 80,
+  tugasanTertunda: 5,
+  prestasiAgihan: "4.9/5"
 });
 
-// Recent activities
-const recentActivities = ref([
+// Recent agihan activities
+const recentAgihanActivities = ref([
   {
     id: 1,
-    title: "Kutipan Zakat Fitrah",
-    description: "Berjaya mengutip zakat fitrah sebanyak RM 50.00",
+    title: "Agihan Zakat Fitrah",
+    description: "Berjaya mengagihkan zakat fitrah kepada 50 asnaf",
     timestamp: "2 jam yang lalu",
-    icon: "ph:money"
+    icon: "ph:hand-heart",
+    status: "Berjaya",
+    statusVariant: "success"
   },
   {
     id: 2,
     title: "Laporan Bulanan",
-    description: "Menyerahkan laporan kutipan bulanan",
+    description: "Menyerahkan laporan agihan bulanan",
     timestamp: "1 hari yang lalu",
-    icon: "ph:chart-bar"
+    icon: "ph:chart-bar",
+    status: "Selesai",
+    statusVariant: "success"
   },
   {
     id: 3,
-    title: "Latihan Pengesahan",
-    description: "Menghadiri sesi latihan pengesahan dokumen",
+    title: "Tugasan Baru",
+    description: "Menerima tugasan agihan zakat di kawasan baru",
     timestamp: "2 hari yang lalu",
-    icon: "ph:graduation-cap"
+    icon: "ph:list-checks",
+    status: "Tertunda",
+    statusVariant: "warning"
   },
   {
     id: 4,
-    title: "Tugasan Baru",
-    description: "Menerima tugasan kutipan zakat di kawasan baru",
+    title: "Bancian Asnaf",
+    description: "Mengemaskini maklumat asnaf kariah",
     timestamp: "3 hari yang lalu",
-    icon: "ph:list-checks"
+    icon: "ph:clipboard-text",
+    status: "Selesai",
+    statusVariant: "success"
   }
 ]);
+
+// Kariah Information
+const kariahInfo = ref({
+  totalAhli: 150,
+  totalAsnaf: 200,
+  kawasanAgihan: "Kawasan A, Kawasan B, Kawasan C"
+});
 
 const showProfile = ref(false);
 const showKadTauliah = ref(false);
