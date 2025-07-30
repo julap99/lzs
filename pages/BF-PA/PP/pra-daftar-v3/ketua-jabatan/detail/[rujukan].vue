@@ -566,9 +566,10 @@ const workflowSteps = computed(() => {
 
 // Confirmation Decision Options
 const confirmationDecisionOptions = [
+  { label: "Sila Pilih Keputusan", value: "" },
   { label: "Sah", value: "Sah" },
   { label: "Tidak Sah", value: "Tidak Sah" },
-  { label: "Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
+  { label: "Telah Disemak dan Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
 ];
 
 // Form Data

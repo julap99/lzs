@@ -546,9 +546,10 @@ const workflowSteps = computed(() => {
 
 // Support Decision Options
 const supportDecisionOptions = [
+  { label: "Sila Pilih Keputusan", value: "" },
   { label: "Sokong", value: "Sokong" },
   { label: "Tidak Sokong", value: "Tidak Sokong" },
-  { label: "Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
+  { label: "Telah Disemak dan Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
 ];
 
 // Form Data

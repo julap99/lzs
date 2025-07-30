@@ -486,24 +486,7 @@
                   />
                 </div>
 
-                <!-- Approval Letter Upload -->
-                <div class="md:col-span-2">
-                  <FormKit
-                    type="file"
-                    name="suratKelulusan"
-                    label="Surat Kelulusan Ketua Divisyen *"
-                    accept=".pdf,.doc,.docx"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Surat kelulusan ketua divisyen diperlukan',
-                    }"
-                    :classes="{
-                      input: '!py-2',
-                    }"
-                    v-model="approvalForm.suratKelulusan"
-                    help="Format: PDF, DOC, DOCX. Surat kelulusan rasmi dari ketua divisyen"
-                  />
-                </div>
+
 
                 <!-- Additional Documents -->
                 <div class="md:col-span-2">
@@ -677,9 +660,10 @@ const workflowSteps = computed(() => {
 
 // Approval Decision Options
 const approvalDecisionOptions = [
+  { label: "Sila Pilih Keputusan", value: "" },
   { label: "Lulus", value: "Lulus" },
   { label: "Tidak Lulus", value: "Tidak Lulus" },
-  { label: "Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
+  { label: "Telah Disemak dan Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
 ];
 
 // Form Data
@@ -688,7 +672,6 @@ const approvalForm = ref({
   tarikhKelulusan: "",
   diluluskanOleh: "",
   catatanKelulusan: "",
-  suratKelulusan: null,
   additionalDocuments: null,
 });
 
@@ -713,8 +696,7 @@ const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
 const isFormValid = computed(() => {
   return (
     approvalForm.value.statusKelulusan &&
-    approvalForm.value.catatanKelulusan &&
-    approvalForm.value.suratKelulusan
+    approvalForm.value.catatanKelulusan
   );
 });
 

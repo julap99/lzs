@@ -526,9 +526,10 @@ const workflowSteps = computed(() => {
 
 // Review Decision Options
 const reviewDecisionOptions = [
+  { label: "Sila Pilih Keputusan", value: "" },
   { label: "Lulus", value: "Lulus" },
   { label: "Tidak Lulus", value: "Tidak Lulus" },
-  { label: "Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
+  { label: "Telah Disemak dan Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
 ];
 
 // Form Data
