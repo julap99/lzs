@@ -447,9 +447,9 @@ const toggleCategory = (key) => {
 }
 
 const acceptOffer = () => {
-  // Show success message and redirect to dashboard
-  alert('Terima kasih! Pengesahan penerimaan tawaran telah dihantar. Anda akan diarahkan ke dashboard.')
-  window.location.href = '/BF-PA/PP/pra-daftar-v3/penolong-amil-dashboard'
+  // Show success message and redirect to profile completion
+  alert('Terima kasih! Pengesahan penerimaan tawaran telah dihantar. Sila lengkapkan maklumat profil anda.')
+  window.location.href = '/BF-PA/PP/penolong-amil/profile-complete'
 }
 
 const rejectOffer = () => {

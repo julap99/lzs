@@ -3,21 +3,6 @@
     <!-- Breadcrumb Navigation -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Page Header -->
-    <div class="mb-6">
-      <div class="text-center mb-4">
-        <div class="text-2xl font-bold mb-2 text-gray-800" dir="rtl" lang="ar">
-          اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎
-        </div>
-        <h1 class="text-2xl font-semibold text-gray-900">
-          Dashboard Penolong Amil
-        </h1>
-        <p class="mt-2 text-sm text-gray-600">
-          Akses pantas kepada maklumat dan tugasan anda sebagai Penolong Amil Lembaga Zakat Selangor
-        </p>
-      </div>
-    </div>
-
     <!-- User Profile Card -->
     <rs-card class="mb-6">
       <template #body>
@@ -430,7 +415,7 @@ const cards = ref([
     changeText: '5 Menunggu'
   },
   {
-    title: 'Aktiviti Komuniti',
+    title: 'Tugasan',
     value: '50',
     icon: 'heroicons:calendar-days',
     description: '+3 aktiviti baru',

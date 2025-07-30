@@ -415,14 +415,14 @@
                   <FormKit
                     type="file"
                     name="additionalDocuments"
-                    label="Dokumen Tambahan (Jika Ada)"
+                    label="Sila Upload Dokumen Tapisan"
                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                     multiple
                     :classes="{
                       input: '!py-2',
                     }"
                     v-model="screeningForm.additionalDocuments"
-                    help="Format: PDF, DOC, DOCX, JPG, JPEG, PNG. Dokumen tambahan jika diperlukan"
+                    help="Format: PDF, DOC, DOCX, JPG, JPEG, PNG. Saiz maksimum 10MB"
                   />
                 </div>
               </div>

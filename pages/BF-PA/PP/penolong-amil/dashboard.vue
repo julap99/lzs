@@ -2,26 +2,11 @@
   RTMF SCREEN: PA-PP-PD-09_02
   PURPOSE: Penolong Amil Dashboard - Dashboard untuk Penolong Amil yang telah menerima tawaran
   DESCRIPTION: Dashboard utama untuk Penolong Amil yang telah aktif
-  ROUTE: /BF-PA/PP/pra-daftar-v3/penolong-amil-dashboard
+  ROUTE: /BF-PA/PP/penolong-amil/dashboard
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
-
-    <!-- Welcome Header -->
-    <div class="mb-6">
-      <div class="text-center mb-4">
-        <div class="text-2xl font-bold mb-2 text-gray-800" dir="rtl" lang="ar">
-          اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎
-        </div>
-        <h1 class="text-2xl font-semibold text-gray-900">
-          Selamat Datang ke Dashboard Penolong Amil
-        </h1>
-        <p class="mt-2 text-sm text-gray-600">
-          Sistem Pengurusan Zakat Digital - Penolong Amil Aktif
-        </p>
-      </div>
-    </div>
 
     <!-- User Profile Card -->
     <rs-card class="mb-6">
@@ -38,6 +23,14 @@
             </div>
           </div>
           <div class="flex gap-2">
+            <rs-button size="sm" variant="primary-outline" @click="showKadTauliah = true" title="Kad Tauliah">
+              <Icon name="heroicons:identification" size="16" class="mr-2" />
+              Kad Tauliah
+            </rs-button>
+            <rs-button size="sm" variant="primary-outline" @click="showSuratTawaran = true" title="Surat Tawaran">
+              <Icon name="heroicons:document-text" size="16" class="mr-2" />
+              Surat Tawaran
+            </rs-button>
             <rs-button size="sm" variant="primary-outline" @click="showProfile = true">
               <Icon name="ph:user" size="16" class="mr-2" />
               Profil
@@ -230,6 +223,177 @@
         </div>
       </template>
     </rs-modal>
+
+    <!-- Kad Tauliah Modal -->
+    <rs-modal v-model="showKadTauliah" title="Kad Tauliah Penolong Amil" size="lg" position="center">
+      <template #body>
+        <div class="space-y-6">
+          <!-- Kad Tauliah Design -->
+          <div class="bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/20 rounded-lg p-6">
+            <div class="text-center mb-6">
+              <img src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" alt="LZS" class="h-16 mx-auto mb-4" />
+              <h2 class="text-xl font-bold text-primary mb-2">KAD TAULIAH</h2>
+              <h3 class="text-lg font-semibold text-gray-900">PENOLONG AMIL</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                  <p class="text-gray-900 font-semibold">{{ userProfile.nama }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan</label>
+                  <p class="text-gray-900">{{ userProfile.noKP }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                  <p class="text-gray-900">{{ userProfile.kategori }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Institusi</label>
+                  <p class="text-gray-900">{{ userProfile.institusi }}</p>
+                </div>
+              </div>
+              
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Lantikan</label>
+                  <p class="text-gray-900">{{ userProfile.tarikhLantikan }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <rs-badge variant="success">{{ userProfile.status }}</rs-badge>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Kod Kad</label>
+                  <p class="text-gray-900 font-mono">PA-{{ userProfile.noKP.slice(-6) }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Tempoh Sah</label>
+                  <p class="text-gray-900">2024 - 2027</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-gray-200">
+              <div class="text-center text-sm text-gray-600">
+                <p>Kad ini sah sehingga 31 Disember 2027</p>
+                <p class="mt-1">Lembaga Zakat Selangor</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <rs-button variant="secondary-outline" @click="showKadTauliah = false">
+            Tutup
+          </rs-button>
+          <rs-button variant="primary" @click="downloadKadTauliah">
+            <Icon name="ph:download" class="w-4 h-4 mr-2" />
+            Muat Turun
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Surat Tawaran Modal -->
+    <rs-modal v-model="showSuratTawaran" title="Surat Tawaran Pelantikan" size="lg" position="center">
+      <template #body>
+        <div class="space-y-6">
+          <!-- Letter Header -->
+          <div class="flex justify-between items-start pb-4 border-b">
+            <div class="flex-1">
+              <img src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" alt="LZS" class="h-12 mb-4" />
+              <div class="text-sm text-gray-600">
+                <div class="font-semibold text-gray-900">Lembaga Zakat Selangor</div>
+                <div>Majlis Agama Islam Selangor</div>
+                <div>Menara Selatan, Bangunan Sultan Idris Shah</div>
+                <div>Persiaran Masjid, Seksyen 5</div>
+                <div>40000 Shah Alam, Selangor</div>
+              </div>
+            </div>
+            <div class="text-right text-sm text-gray-600">
+              <div>Rujukan: LZS/PA/2024/001</div>
+              <div>Tarikh: {{ new Date().toLocaleDateString('ms-MY') }}</div>
+            </div>
+          </div>
+
+          <!-- Letter Content -->
+          <div class="space-y-4 text-sm">
+            <div>
+              <p class="font-semibold text-gray-900 mb-2">Kepada:</p>
+              <p class="text-gray-700">{{ userProfile.nama }}</p>
+              <p class="text-gray-700">{{ userProfile.noKP }}</p>
+            </div>
+            
+            <div>
+              <p class="font-semibold text-gray-900 mb-2">Subjek: Tawaran Pelantikan Sebagai Penolong Amil</p>
+            </div>
+            
+            <div class="space-y-3 text-gray-700">
+              <p>Assalamualaikum W.B.T.</p>
+              
+              <p>
+                Dengan hormatnya dimaklumkan bahawa Lembaga Zakat Selangor (LZS) dengan sukacitanya ingin menawarkan 
+                jawatan Penolong Amil kepada Tuan/Puan.
+              </p>
+              
+              <p>
+                <strong>Butiran Tawaran:</strong>
+              </p>
+              <ul class="list-disc list-inside space-y-1 ml-4">
+                <li>Jawatan: {{ userProfile.kategori }}</li>
+                <li>Institusi: {{ userProfile.institusi }}</li>
+                <li>Tempoh: 2024 - 2027</li>
+                <li>Elaun: RM 500.00 sebulan</li>
+              </ul>
+              
+              <p>
+                Tuan/Puan dikehendaki untuk:
+              </p>
+              <ol class="list-decimal list-inside space-y-1 ml-4">
+                <li>Menerima tawaran ini dalam tempoh 14 hari</li>
+                <li>Lengkapkan maklumat profil dalam sistem</li>
+                <li>Menghadiri sesi orientasi yang akan diatur</li>
+                <li>Memulakan tugas pada tarikh yang ditetapkan</li>
+              </ol>
+              
+              <p>
+                Sekiranya Tuan/Puan bersetuju dengan tawaran ini, sila log masuk ke sistem dan lengkapkan 
+                maklumat profil yang diperlukan.
+              </p>
+              
+              <p>
+                Sekian, terima kasih.
+              </p>
+            </div>
+          </div>
+
+          <!-- Signature -->
+          <div class="mt-8 pt-4 border-t border-gray-200">
+            <div class="text-center">
+              <p class="font-semibold text-gray-900">Yang benar,</p>
+              <p class="text-gray-700 mt-4">_________________________</p>
+              <p class="text-sm text-gray-600">Ketua Eksekutif</p>
+              <p class="text-sm text-gray-600">Lembaga Zakat Selangor</p>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <rs-button variant="secondary-outline" @click="showSuratTawaran = false">
+            Tutup
+          </rs-button>
+          <rs-button variant="primary" @click="downloadSuratTawaran">
+            <Icon name="ph:download" class="w-4 h-4 mr-2" />
+            Muat Turun
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -255,7 +419,7 @@ const breadcrumb = ref([
   {
     name: "Dashboard Penolong Amil",
     type: "current",
-    path: "/BF-PA/PP/pra-daftar-v3/penolong-amil-dashboard",
+    path: "/BF-PA/PP/penolong-amil/dashboard",
   },
 ]);
 
@@ -312,12 +476,26 @@ const recentActivities = ref([
 ]);
 
 const showProfile = ref(false);
+const showKadTauliah = ref(false);
+const showSuratTawaran = ref(false);
 
 const handleLogout = () => {
   if (confirm("Adakah anda pasti ingin log keluar?")) {
     // In real implementation, clear session/token
-    navigateTo("/BF-PA/PP/penolong-amil");
+    navigateTo("/BF-PA/PP/penolong-amil/login");
   }
+};
+
+const downloadKadTauliah = () => {
+  // In real implementation, this would generate and download PDF
+  alert('Muat turun Kad Tauliah...');
+  showKadTauliah.value = false;
+};
+
+const downloadSuratTawaran = () => {
+  // In real implementation, this would generate and download PDF
+  alert('Muat turun Surat Tawaran...');
+  showSuratTawaran.value = false;
 };
 
 onMounted(() => {
