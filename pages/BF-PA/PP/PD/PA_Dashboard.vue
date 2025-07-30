@@ -426,11 +426,11 @@ const cards = ref([
     changeText: '+3 Baru'
   },
   {
-    title: 'Notifikasi Penting',
+    title: 'Insentif',
     value: '25',
     icon: 'heroicons:bell-alert',
     description: '1 notis perlu tindakan segera',
-    details: 'Laporan ringkas atau notifikasi penting berkaitan tugasan anda.\n\nContoh:\n- Notis mesyuarat\n- Pengumuman terkini\n- Peringatan deadline',
+    details: 'Laporan ringkas berkaitan tugasan anda.\n\nContoh:\n- Notis mesyuarat\n- Pengumuman terkini\n- Peringatan deadline',
     iconBg: 'bg-danger/10',
     iconColor: 'text-danger',
     changeBadge: 'bg-danger/10 text-danger',

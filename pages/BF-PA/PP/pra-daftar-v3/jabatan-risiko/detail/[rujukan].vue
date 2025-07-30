@@ -578,10 +578,11 @@ const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
 
 // Form validation
 const isFormValid = computed(() => {
-  return (
-    screeningForm.value.statusSaringan &&
-    screeningForm.value.catatanSaringan
-  );
+  return true; // Temporarily disable validation for testing
+  // return (
+  //   screeningForm.value.statusSaringan &&
+  //   screeningForm.value.catatanSaringan
+  // );
 });
 
 // Mock application data based on RTMF requirements

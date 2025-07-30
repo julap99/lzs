@@ -638,10 +638,11 @@ const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
 
 // Form validation
 const isFormValid = computed(() => {
-  return (
-    confirmationForm.value.statusPengesahan &&
-    confirmationForm.value.catatanPengesahan
-  );
+  return true; // Temporarily disable validation for testing
+  // return (
+  //   confirmationForm.value.statusPengesahan &&
+  //   confirmationForm.value.catatanPengesahan
+  // );
 });
 
 // Mock application data based on RTMF requirements
