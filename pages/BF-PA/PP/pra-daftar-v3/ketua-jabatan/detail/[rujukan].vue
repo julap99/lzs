@@ -492,7 +492,7 @@
                 <rs-button
                   type="button"
                   variant="primary"
-                  :disabled="isSubmitting || !isFormValid"
+                  :disabled="isSubmitting"
                   @click="showConfirmationModal = true"
                 >
                   <Icon
