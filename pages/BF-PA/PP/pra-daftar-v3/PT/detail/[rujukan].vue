@@ -756,10 +756,8 @@ const handleSubmit = async () => {
     // Show success notification
     alert(`Berjaya! Keputusan semakan PT berjaya dihantar. Status: ${reviewForm.value.statusReview}`);
     
-    // Navigate back to dashboard after a short delay
-    setTimeout(() => {
-      navigateTo("/BF-PA/PP/pra-daftar-v3");
-    }, 1500);
+    // Navigate back to dashboard immediately
+    navigateTo("/BF-PA/PP/pra-daftar-v3");
     
   } catch (error) {
     alert("Ralat! Ralat berlaku semasa menghantar semakan PT");

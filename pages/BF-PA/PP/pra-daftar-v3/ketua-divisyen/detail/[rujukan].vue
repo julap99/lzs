@@ -913,10 +913,8 @@ const handleSubmit = async () => {
     // Show success notification
     alert(`Berjaya! Kelulusan ketua divisyen berjaya dihantar. Status: ${approvalForm.value.statusKelulusan}`);
     
-    // Navigate back to dashboard after a short delay
-    setTimeout(() => {
-      navigateTo("/BF-PA/PP/pra-daftar-v3");
-    }, 1500);
+    // Navigate back to dashboard immediately
+    navigateTo("/BF-PA/PP/pra-daftar-v3");
     
   } catch (error) {
     alert("Ralat! Ralat berlaku semasa menghantar kelulusan ketua divisyen");

@@ -434,23 +434,9 @@
                 </rs-button>
                 <rs-button
                   type="button"
-                  variant="info"
-                  @click="testNavigation"
-                >
-                  Test Navigation
-                </rs-button>
-                <rs-button
-                  type="button"
-                  variant="warning"
-                  @click="testModal"
-                >
-                  Test Modal
-                </rs-button>
-                <rs-button
-                  type="button"
                   variant="primary"
                   :disabled="isSubmitting"
-                  @click="debugButtonClick"
+                  @click="showConfirmationModal = true"
                 >
                   <Icon
                     v-if="isSubmitting"
@@ -471,7 +457,7 @@
       <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4" style="background: white; border-radius: 8px; padding: 24px; max-width: 400px; width: 100%; margin: 0 16px;">
         <div class="text-center">
           <h3 class="text-lg font-semibold text-gray-900 mb-2">
-            Adakah anda pasti? (Modal is visible!)
+            Adakah anda pasti?
           </h3>
           <p class="text-gray-600 mb-4">
             Anda akan menghantar keputusan saringan untuk permohonan ini. 
@@ -715,32 +701,6 @@ const handleBack = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
-const testNavigation = () => {
-  console.log("Testing navigation...");
-  navigateTo("/BF-PA/PP/pra-daftar-v3");
-};
-
-const testModal = () => {
-  console.log("Testing modal...");
-  showConfirmationModal.value = true;
-  console.log("Modal should be visible now");
-};
-
-const debugButtonClick = () => {
-  console.log("Button clicked!");
-  console.log("showConfirmationModal before:", showConfirmationModal.value);
-  showConfirmationModal.value = true;
-  console.log("showConfirmationModal after:", showConfirmationModal.value);
-  console.log("isFormValid:", isFormValid.value);
-  console.log("screeningForm:", screeningForm.value);
-  
-  // Force a reactivity update
-  nextTick(() => {
-    console.log("showConfirmationModal in nextTick:", showConfirmationModal.value);
-    alert("Modal state set to: " + showConfirmationModal.value);
-  });
-};
-
 const confirmSubmit = async () => {
   showConfirmationModal.value = false;
   await handleSubmit();
@@ -762,10 +722,8 @@ const handleSubmit = async () => {
     // Show success notification
     alert(`Berjaya! Keputusan saringan berjaya dihantar. Status: ${screeningForm.value.statusSaringan}`);
     
-    // Navigate back to dashboard after a short delay
-    setTimeout(() => {
-      navigateTo("/BF-PA/PP/pra-daftar-v3");
-    }, 1500);
+    // Navigate back to dashboard immediately
+    navigateTo("/BF-PA/PP/pra-daftar-v3");
     
   } catch (error) {
     alert("Ralat! Ralat berlaku semasa menghantar saringan");
@@ -777,10 +735,6 @@ const handleSubmit = async () => {
 const previewDocument = (documentType) => {
   // Simulate document preview
   alert(`Melihat dokumen: ${documentType}`);
-};
-
-const testFunctionality = () => {
-  alert("Test Berjaya! Fungsi pengesahan berjaya diuji.");
 };
 
 onMounted(() => {
