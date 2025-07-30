@@ -88,7 +88,7 @@
               </div>
               <div class="flex gap-2">
                 <rs-badge :variant="getStatusPendaftaranVariant(application.statusPendaftaran)">
-                  {{ application.statusPendaftaran }}
+                  {{ getLocalizedStatus(application.statusPendaftaran) }}
                 </rs-badge>
                 <rs-badge :variant="getReviewStatusVariant(reviewData.statusSemakan)">
                   {{ reviewData.statusSemakan }}
@@ -457,9 +457,10 @@
                   Batal
                 </rs-button>
                 <rs-button
-                  type="submit"
+                  type="button"
                   variant="primary"
                   :disabled="isSubmitting || !isFormValid"
+                  @click="showConfirmationModal = true"
                 >
                   <Icon
                     v-if="isSubmitting"
@@ -474,6 +475,49 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmationModal"
+      title="Sahkan Keputusan"
+      size="md"
+    >
+      <template #body>
+        <div class="text-center">
+          <Icon name="ph:warning-circle" class="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            Adakah anda pasti?
+          </h3>
+          <p class="text-gray-600 mb-4">
+            Anda akan menghantar keputusan semakan PT untuk permohonan ini. 
+            Tindakan ini tidak boleh dibatalkan.
+          </p>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <p class="text-sm text-blue-800">
+              <strong>Keputusan:</strong> {{ reviewForm.statusReview || 'Belum dipilih' }}
+            </p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="showConfirmationModal = false"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="primary"
+            @click="confirmSubmit"
+            :loading="isSubmitting"
+          >
+            <Icon name="ph:check" class="w-4 h-4 mr-2" />
+            Ya, Hantar Keputusan
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -481,6 +525,7 @@
 import { ref, computed, onMounted } from "vue";
 
 const route = useRoute();
+const { $swal } = useNuxtApp();
 
 definePageMeta({
   title: "Semakan PT - Maklumat Terperinci",
@@ -543,6 +588,7 @@ const reviewForm = ref({
 
 // State management
 const isSubmitting = ref(false);
+const showConfirmationModal = ref(false);
 
 // Current user data (mock session token)
 const currentUser = ref({
@@ -581,8 +627,8 @@ const application = ref({
   jawatan: "Penolong Amil Fitrah",
   institusiKariah: "Masjid Wilayah Persekutuan",
   sesiPerkhidmatan: "Sesi 1",
-  statusPendaftaran: "Screened",
-  statusLantikan: "Pending",
+  statusPendaftaran: "Disaring",
+  statusLantikan: "Menunggu",
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
@@ -600,12 +646,12 @@ const application = ref({
     },
     {
       action: "Saringan Selesai",
-      date: "20/03/2024 11:30 AM",
-      notes: "Calon lulus saringan risiko"
+      date: "17/03/2024 09:00 AM",
+      notes: "Saringan telah diselesaikan oleh Jabatan Pengurusan Risiko"
     },
     {
       action: "Menunggu Semakan PT",
-      date: "25/03/2024 09:00 AM",
+      date: "18/03/2024 11:30 AM",
       notes: "Permohonan dalam proses semakan PT"
     }
   ]
@@ -650,6 +696,10 @@ const getStatusPendaftaranVariant = (status) => {
     "Diluluskan Divisyen": "success",
     Diluluskan: "success",
     Ditolak: "danger",
+    Submitted: "warning",
+    Pending: "info",
+    Approved: "success",
+    Rejected: "danger",
   };
   return statusVariants[status] || "default";
 };
@@ -663,12 +713,38 @@ const getReviewStatusVariant = (status) => {
   return statusVariants[status] || "default";
 };
 
+// Localize status text
+const getLocalizedStatus = (status) => {
+  const statusMap = {
+    'Submitted': 'Dihantar',
+    'Pending': 'Menunggu',
+    'Approved': 'Diluluskan',
+    'Rejected': 'Ditolak',
+    'Draft': 'Draf',
+    'Dihantar': 'Dihantar',
+    'Dalam Semakan': 'Dalam Semakan',
+    'Disaring': 'Disaring',
+    'Disemak PT': 'Disemak PT',
+    'Disokong Eksekutif': 'Disokong Eksekutif',
+    'Disahkan Jabatan': 'Disahkan Jabatan',
+    'Diluluskan Divisyen': 'Diluluskan Divisyen',
+    'Diluluskan': 'Diluluskan',
+    'Ditolak': 'Ditolak',
+  };
+  return statusMap[status] || status;
+};
+
 // Action handlers
 const handleBack = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
-const handleSubmit = async (formData) => {
+const confirmSubmit = async () => {
+  showConfirmationModal.value = false;
+  await handleSubmit();
+};
+
+const handleSubmit = async () => {
   try {
     isSubmitting.value = true;
     
@@ -681,14 +757,27 @@ const handleSubmit = async (formData) => {
       disemakOleh: reviewForm.value.disemakOleh,
     };
     
-    // Show success message
-    alert(`Semakan PT berjaya dihantar. Status: ${reviewForm.value.statusReview}`);
+    // Show success toast notification
+    $swal({
+      title: "Berjaya!",
+      text: `Keputusan semakan PT berjaya dihantar. Status: ${reviewForm.value.statusReview}`,
+      icon: "success",
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
     
-    // Navigate back to dashboard
-    navigateTo("/BF-PA/PP/pra-daftar-v3");
+    // Navigate back to dashboard after a short delay
+    setTimeout(() => {
+      navigateTo("/BF-PA/PP/pra-daftar-v3");
+    }, 1500);
     
   } catch (error) {
-    alert("Ralat berlaku semasa menghantar semakan PT");
+    $swal({
+      title: "Ralat!",
+      text: "Ralat berlaku semasa menghantar semakan PT",
+      icon: "error",
+    });
   } finally {
     isSubmitting.value = false;
   }

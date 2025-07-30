@@ -88,7 +88,7 @@
               </div>
               <div class="flex gap-2">
                 <rs-badge :variant="getStatusPendaftaranVariant(application.statusPendaftaran)">
-                  {{ application.statusPendaftaran }}
+                  {{ getLocalizedStatus(application.statusPendaftaran) }}
                 </rs-badge>
                 <rs-badge :variant="getApprovalStatusVariant(approvalData.statusKelulusan)">
                   {{ approvalData.statusKelulusan }}
@@ -516,9 +516,10 @@
                   Batal
                 </rs-button>
                 <rs-button
-                  type="submit"
+                  type="button"
                   variant="primary"
                   :disabled="isSubmitting || !isFormValid"
+                  @click="showConfirmationModal = true"
                 >
                   <Icon
                     v-if="isSubmitting"
@@ -533,6 +534,49 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmationModal"
+      title="Sahkan Keputusan"
+      size="md"
+    >
+      <template #body>
+        <div class="text-center">
+          <Icon name="ph:warning-circle" class="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            Adakah anda pasti?
+          </h3>
+          <p class="text-gray-600 mb-4">
+            Anda akan menghantar keputusan kelulusan divisyen untuk permohonan ini. 
+            Tindakan ini tidak boleh dibatalkan.
+          </p>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <p class="text-sm text-blue-800">
+              <strong>Keputusan:</strong> {{ approvalForm.statusKelulusan || 'Belum dipilih' }}
+            </p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="showConfirmationModal = false"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="primary"
+            @click="confirmSubmit"
+            :loading="isSubmitting"
+          >
+            <Icon name="ph:check" class="w-4 h-4 mr-2" />
+            Ya, Hantar Keputusan
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
 
     <!-- Success Modal -->
     <rs-modal
@@ -612,6 +656,7 @@
 import { ref, computed, onMounted } from "vue";
 
 const route = useRoute();
+const { $swal } = useNuxtApp();
 
 definePageMeta({
   title: "Kelulusan Ketua Divisyen - Maklumat Terperinci",
@@ -677,6 +722,7 @@ const approvalForm = ref({
 
 // State management
 const isSubmitting = ref(false);
+const showConfirmationModal = ref(false);
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 const errorMessage = ref("");
@@ -718,8 +764,8 @@ const application = ref({
   jawatan: "Penolong Amil Fitrah",
   institusiKariah: "Masjid Wilayah Persekutuan",
   sesiPerkhidmatan: "Sesi 1",
-  statusPendaftaran: "Department Confirmed",
-  statusLantikan: "Pending",
+  statusPendaftaran: "Disahkan Jabatan",
+  statusLantikan: "Menunggu",
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
@@ -737,28 +783,28 @@ const application = ref({
     },
     {
       action: "Saringan Selesai",
-      date: "20/03/2024 11:30 AM",
-      notes: "Calon lulus saringan risiko"
+      date: "17/03/2024 09:00 AM",
+      notes: "Saringan telah diselesaikan oleh Jabatan Pengurusan Risiko"
     },
     {
       action: "Semakan PT Selesai",
-      date: "25/03/2024 14:30 PM",
-      notes: "Calon lulus semakan PT"
+      date: "18/03/2024 11:30 AM",
+      notes: "Semakan PT telah diselesaikan"
     },
     {
       action: "Sokongan Eksekutif Selesai",
-      date: "30/03/2024 16:30 PM",
-      notes: "Calon disokong oleh eksekutif"
+      date: "19/03/2024 09:00 AM",
+      notes: "Sokongan eksekutif telah diberikan"
     },
     {
-      action: "Pengesahan Ketua Jabatan Selesai",
-      date: "05/04/2024 14:30 PM",
-      notes: "Calon disahkan oleh ketua jabatan"
+      action: "Pengesahan Jabatan Selesai",
+      date: "20/03/2024 09:00 AM",
+      notes: "Pengesahan jabatan telah diselesaikan"
     },
     {
-      action: "Menunggu Kelulusan Ketua Divisyen",
-      date: "06/04/2024 09:00 AM",
-      notes: "Permohonan dalam proses kelulusan ketua divisyen"
+      action: "Menunggu Kelulusan Divisyen",
+      date: "21/03/2024 09:00 AM",
+      notes: "Permohonan dalam proses kelulusan divisyen"
     }
   ]
 });
@@ -809,6 +855,10 @@ const getStatusPendaftaranVariant = (status) => {
     "Diluluskan Divisyen": "success",
     Diluluskan: "success",
     Ditolak: "danger",
+    Submitted: "warning",
+    Pending: "info",
+    Approved: "success",
+    Rejected: "danger",
   };
   return statusVariants[status] || "default";
 };
@@ -818,9 +868,29 @@ const getApprovalStatusVariant = (status) => {
     "Dalam Proses": "warning",
     Lulus: "success",
     "Tidak Lulus": "danger",
-    "Perlu Maklumat Tambahan": "info",
   };
   return statusVariants[status] || "default";
+};
+
+// Localize status text
+const getLocalizedStatus = (status) => {
+  const statusMap = {
+    'Submitted': 'Dihantar',
+    'Pending': 'Menunggu',
+    'Approved': 'Diluluskan',
+    'Rejected': 'Ditolak',
+    'Draft': 'Draf',
+    'Dihantar': 'Dihantar',
+    'Dalam Semakan': 'Dalam Semakan',
+    'Disaring': 'Disaring',
+    'Disemak PT': 'Disemak PT',
+    'Disokong Eksekutif': 'Disokong Eksekutif',
+    'Disahkan Jabatan': 'Disahkan Jabatan',
+    'Diluluskan Divisyen': 'Diluluskan Divisyen',
+    'Diluluskan': 'Diluluskan',
+    'Ditolak': 'Ditolak',
+  };
+  return statusMap[status] || status;
 };
 
 // Action handlers
@@ -828,32 +898,14 @@ const handleBack = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
-const handleSubmit = async (formData) => {
+const confirmSubmit = async () => {
+  showConfirmationModal.value = false;
+  await handleSubmit();
+};
+
+const handleSubmit = async () => {
   try {
     isSubmitting.value = true;
-    errorMessage.value = "";
-    
-    // Validate form data
-    if (!isFormValid.value) {
-      throw new Error("Sila lengkapkan semua maklumat yang diperlukan");
-    }
-
-    // Validate file upload
-    if (!approvalForm.value.suratKelulusan) {
-      throw new Error("Surat kelulusan ketua divisyen diperlukan");
-    }
-
-    // Simulate API call with proper error handling
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simulate random error (10% chance)
-        if (Math.random() < 0.1) {
-          reject(new Error("Ralat rangkaian. Sila cuba lagi."));
-        } else {
-          resolve();
-        }
-      }, 1500);
-    });
     
     // Update approval data
     approvalData.value = {
@@ -862,15 +914,29 @@ const handleSubmit = async (formData) => {
       statusKelulusan: approvalForm.value.statusKelulusan,
       tarikhKelulusan: approvalForm.value.tarikhKelulusan,
       diluluskanOleh: approvalForm.value.diluluskanOleh,
-      catatanKelulusan: approvalForm.value.catatanKelulusan,
     };
     
-    // Show success modal
-    showSuccessModal.value = true;
+    // Show success toast notification
+    $swal({
+      title: "Berjaya!",
+      text: `Keputusan kelulusan divisyen berjaya dihantar. Status: ${approvalForm.value.statusKelulusan}`,
+      icon: "success",
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
+    
+    // Navigate back to dashboard after a short delay
+    setTimeout(() => {
+      navigateTo("/BF-PA/PP/pra-daftar-v3");
+    }, 1500);
     
   } catch (error) {
-    errorMessage.value = error.message || "Ralat berlaku semasa menghantar kelulusan ketua divisyen";
-    showErrorModal.value = true;
+    $swal({
+      title: "Ralat!",
+      text: "Ralat berlaku semasa menghantar kelulusan divisyen",
+      icon: "error",
+    });
   } finally {
     isSubmitting.value = false;
   }

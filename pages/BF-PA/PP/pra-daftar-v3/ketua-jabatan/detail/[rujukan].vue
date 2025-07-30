@@ -88,7 +88,7 @@
               </div>
               <div class="flex gap-2">
                 <rs-badge :variant="getStatusPendaftaranVariant(application.statusPendaftaran)">
-                  {{ application.statusPendaftaran }}
+                  {{ getLocalizedStatus(application.statusPendaftaran) }}
                 </rs-badge>
                 <rs-badge :variant="getConfirmationStatusVariant(confirmationData.statusPengesahan)">
                   {{ confirmationData.statusPengesahan }}
@@ -495,9 +495,10 @@
                   Batal
                 </rs-button>
                 <rs-button
-                  type="submit"
+                  type="button"
                   variant="primary"
                   :disabled="isSubmitting || !isFormValid"
+                  @click="showConfirmationModal = true"
                 >
                   <Icon
                     v-if="isSubmitting"
@@ -512,6 +513,49 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmationModal"
+      title="Sahkan Keputusan"
+      size="md"
+    >
+      <template #body>
+        <div class="text-center">
+          <Icon name="ph:warning-circle" class="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            Adakah anda pasti?
+          </h3>
+          <p class="text-gray-600 mb-4">
+            Anda akan menghantar keputusan pengesahan jabatan untuk permohonan ini. 
+            Tindakan ini tidak boleh dibatalkan.
+          </p>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <p class="text-sm text-blue-800">
+              <strong>Keputusan:</strong> {{ confirmationForm.statusPengesahan || 'Belum dipilih' }}
+            </p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="showConfirmationModal = false"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="primary"
+            @click="confirmSubmit"
+            :loading="isSubmitting"
+          >
+            <Icon name="ph:check" class="w-4 h-4 mr-2" />
+            Ya, Hantar Keputusan
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -519,6 +563,7 @@
 import { ref, computed, onMounted } from "vue";
 
 const route = useRoute();
+const { $swal } = useNuxtApp();
 
 definePageMeta({
   title: "Pengesahan Ketua Jabatan - Maklumat Terperinci",
@@ -583,6 +628,7 @@ const confirmationForm = ref({
 
 // State management
 const isSubmitting = ref(false);
+const showConfirmationModal = ref(false);
 
 // Current user data (mock session token)
 const currentUser = ref({
@@ -621,8 +667,8 @@ const application = ref({
   jawatan: "Penolong Amil Fitrah",
   institusiKariah: "Masjid Wilayah Persekutuan",
   sesiPerkhidmatan: "Sesi 1",
-  statusPendaftaran: "Executive Supported",
-  statusLantikan: "Pending",
+  statusPendaftaran: "Disokong Eksekutif",
+  statusLantikan: "Menunggu",
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
@@ -640,23 +686,23 @@ const application = ref({
     },
     {
       action: "Saringan Selesai",
-      date: "20/03/2024 11:30 AM",
-      notes: "Calon lulus saringan risiko"
+      date: "17/03/2024 09:00 AM",
+      notes: "Saringan telah diselesaikan oleh Jabatan Pengurusan Risiko"
     },
     {
       action: "Semakan PT Selesai",
-      date: "25/03/2024 14:30 PM",
-      notes: "Calon lulus semakan PT"
+      date: "18/03/2024 11:30 AM",
+      notes: "Semakan PT telah diselesaikan"
     },
     {
       action: "Sokongan Eksekutif Selesai",
-      date: "30/03/2024 16:45 PM",
-      notes: "Calon disokong oleh eksekutif"
+      date: "19/03/2024 09:00 AM",
+      notes: "Sokongan eksekutif telah diberikan"
     },
     {
-      action: "Menunggu Pengesahan Ketua Jabatan",
-      date: "05/04/2024 09:00 AM",
-      notes: "Permohonan dalam proses pengesahan ketua jabatan"
+      action: "Menunggu Pengesahan Jabatan",
+      date: "20/03/2024 09:00 AM",
+      notes: "Permohonan dalam proses pengesahan jabatan"
     }
   ]
 });
@@ -704,6 +750,10 @@ const getStatusPendaftaranVariant = (status) => {
     "Diluluskan Divisyen": "success",
     Diluluskan: "success",
     Ditolak: "danger",
+    Submitted: "warning",
+    Pending: "info",
+    Approved: "success",
+    Rejected: "danger",
   };
   return statusVariants[status] || "default";
 };
@@ -717,12 +767,38 @@ const getConfirmationStatusVariant = (status) => {
   return statusVariants[status] || "default";
 };
 
+// Localize status text
+const getLocalizedStatus = (status) => {
+  const statusMap = {
+    'Submitted': 'Dihantar',
+    'Pending': 'Menunggu',
+    'Approved': 'Diluluskan',
+    'Rejected': 'Ditolak',
+    'Draft': 'Draf',
+    'Dihantar': 'Dihantar',
+    'Dalam Semakan': 'Dalam Semakan',
+    'Disaring': 'Disaring',
+    'Disemak PT': 'Disemak PT',
+    'Disokong Eksekutif': 'Disokong Eksekutif',
+    'Disahkan Jabatan': 'Disahkan Jabatan',
+    'Diluluskan Divisyen': 'Diluluskan Divisyen',
+    'Diluluskan': 'Diluluskan',
+    'Ditolak': 'Ditolak',
+  };
+  return statusMap[status] || status;
+};
+
 // Action handlers
 const handleBack = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
-const handleSubmit = async (formData) => {
+const confirmSubmit = async () => {
+  showConfirmationModal.value = false;
+  await handleSubmit();
+};
+
+const handleSubmit = async () => {
   try {
     isSubmitting.value = true;
     
@@ -735,14 +811,27 @@ const handleSubmit = async (formData) => {
       disahkanOleh: confirmationForm.value.disahkanOleh,
     };
     
-    // Show success message
-    alert(`Pengesahan ketua jabatan berjaya dihantar. Status: ${confirmationForm.value.statusPengesahan}`);
+    // Show success toast notification
+    $swal({
+      title: "Berjaya!",
+      text: `Keputusan pengesahan jabatan berjaya dihantar. Status: ${confirmationForm.value.statusPengesahan}`,
+      icon: "success",
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
     
-    // Navigate back to dashboard
-    navigateTo("/BF-PA/PP/pra-daftar-v3");
+    // Navigate back to dashboard after a short delay
+    setTimeout(() => {
+      navigateTo("/BF-PA/PP/pra-daftar-v3");
+    }, 1500);
     
   } catch (error) {
-    alert("Ralat berlaku semasa menghantar pengesahan ketua jabatan");
+    $swal({
+      title: "Ralat!",
+      text: "Ralat berlaku semasa menghantar pengesahan jabatan",
+      icon: "error",
+    });
   } finally {
     isSubmitting.value = false;
   }

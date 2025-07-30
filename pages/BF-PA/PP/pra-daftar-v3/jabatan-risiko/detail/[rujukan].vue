@@ -88,7 +88,7 @@
               </div>
               <div class="flex gap-2">
                 <rs-badge :variant="getStatusPendaftaranVariant(application.statusPendaftaran)">
-                  {{ application.statusPendaftaran }}
+                  {{ getLocalizedStatus(application.statusPendaftaran) }}
                 </rs-badge>
                 <rs-badge :variant="getScreeningStatusVariant(screeningData.statusSaringan)">
                   {{ screeningData.statusSaringan }}
@@ -438,9 +438,10 @@
                   Batal
                 </rs-button>
                 <rs-button
-                  type="submit"
+                  type="button"
                   variant="primary"
                   :disabled="isSubmitting || !isFormValid"
+                  @click="showConfirmationModal = true"
                 >
                   <Icon
                     v-if="isSubmitting"
@@ -455,6 +456,49 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmationModal"
+      title="Sahkan Keputusan"
+      size="md"
+    >
+      <template #body>
+        <div class="text-center">
+          <Icon name="ph:warning-circle" class="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            Adakah anda pasti?
+          </h3>
+          <p class="text-gray-600 mb-4">
+            Anda akan menghantar keputusan saringan untuk permohonan ini. 
+            Tindakan ini tidak boleh dibatalkan.
+          </p>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <p class="text-sm text-blue-800">
+              <strong>Keputusan:</strong> {{ screeningForm.statusSaringan || 'Belum dipilih' }}
+            </p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="showConfirmationModal = false"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="primary"
+            @click="confirmSubmit"
+            :loading="isSubmitting"
+          >
+            <Icon name="ph:check" class="w-4 h-4 mr-2" />
+            Ya, Hantar Keputusan
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -462,6 +506,7 @@
 import { ref, computed, onMounted } from "vue";
 
 const route = useRoute();
+const { $swal } = useNuxtApp();
 
 definePageMeta({
   title: "Saringan Calon Penolong Amil",
@@ -523,6 +568,7 @@ const screeningForm = ref({
 
 // State management
 const isSubmitting = ref(false);
+const showConfirmationModal = ref(false);
 
 // Current user data (mock session token)
 const currentUser = ref({
@@ -561,8 +607,8 @@ const application = ref({
   jawatan: "Penolong Amil Fitrah",
   institusiKariah: "Masjid Wilayah Persekutuan",
   sesiPerkhidmatan: "Sesi 1",
-  statusPendaftaran: "Submitted",
-  statusLantikan: "Pending",
+  statusPendaftaran: "Dihantar",
+  statusLantikan: "Menunggu",
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
@@ -623,6 +669,10 @@ const getStatusPendaftaranVariant = (status) => {
     "Diluluskan Divisyen": "success",
     Diluluskan: "success",
     Ditolak: "danger",
+    Submitted: "warning",
+    Pending: "info",
+    Approved: "success",
+    Rejected: "danger",
   };
   return statusVariants[status] || "default";
 };
@@ -636,12 +686,38 @@ const getScreeningStatusVariant = (status) => {
   return statusVariants[status] || "default";
 };
 
+// Localize status text
+const getLocalizedStatus = (status) => {
+  const statusMap = {
+    'Submitted': 'Dihantar',
+    'Pending': 'Menunggu',
+    'Approved': 'Diluluskan',
+    'Rejected': 'Ditolak',
+    'Draft': 'Draf',
+    'Dihantar': 'Dihantar',
+    'Dalam Semakan': 'Dalam Semakan',
+    'Disaring': 'Disaring',
+    'Disemak PT': 'Disemak PT',
+    'Disokong Eksekutif': 'Disokong Eksekutif',
+    'Disahkan Jabatan': 'Disahkan Jabatan',
+    'Diluluskan Divisyen': 'Diluluskan Divisyen',
+    'Diluluskan': 'Diluluskan',
+    'Ditolak': 'Ditolak',
+  };
+  return statusMap[status] || status;
+};
+
 // Action handlers
 const handleBack = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
-const handleSubmit = async (formData) => {
+const confirmSubmit = async () => {
+  showConfirmationModal.value = false;
+  await handleSubmit();
+};
+
+const handleSubmit = async () => {
   try {
     isSubmitting.value = true;
     
@@ -654,14 +730,27 @@ const handleSubmit = async (formData) => {
       disaredOleh: screeningForm.value.disaredOleh,
     };
     
-    // Show success message
-    alert(`Saringan berjaya dihantar. Status: ${screeningForm.value.statusSaringan}`);
+    // Show success toast notification
+    $swal({
+      title: "Berjaya!",
+      text: `Keputusan saringan berjaya dihantar. Status: ${screeningForm.value.statusSaringan}`,
+      icon: "success",
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
     
-    // Navigate back to dashboard
-    navigateTo("/BF-PA/PP/pra-daftar-v3");
+    // Navigate back to dashboard after a short delay
+    setTimeout(() => {
+      navigateTo("/BF-PA/PP/pra-daftar-v3");
+    }, 1500);
     
   } catch (error) {
-    alert("Ralat berlaku semasa menghantar saringan");
+    $swal({
+      title: "Ralat!",
+      text: "Ralat berlaku semasa menghantar saringan",
+      icon: "error",
+    });
   } finally {
     isSubmitting.value = false;
   }
