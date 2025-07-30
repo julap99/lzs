@@ -8,7 +8,39 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <!-- Loading State -->
+    <div v-if="isLoading" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <Icon name="ph:spinner" class="w-8 h-8 text-blue-600 animate-spin mr-3" />
+            <span class="text-gray-600">Memuatkan jejak proses...</span>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <div class="text-center">
+              <Icon name="ph:warning" class="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Ralat Memuatkan Data</h3>
+              <p class="text-gray-600 mb-4">{{ error }}</p>
+              <rs-button variant="primary" @click="retryLoad">
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Cuba Lagi
+              </rs-button>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Main Content -->
+    <rs-card v-else class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
@@ -69,21 +101,21 @@
                   </div>
                   <div class="flex-1">
                     <h4 class="text-lg font-semibold text-gray-900">Pendaftaran Calon</h4>
-                    <p class="text-sm text-gray-600 mb-2">{{ application.tarikhPendaftaran }}</p>
+                    <p class="text-sm text-gray-600 mb-2">{{ application.tarikhPendaftaran || 'Tarikh tidak tersedia' }}</p>
                     <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                       <h5 class="font-medium text-green-900 mb-2">Maklumat Pendaftaran</h5>
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span class="font-medium">Nama:</span> {{ application.nama }}
+                          <span class="font-medium">Nama:</span> {{ application.nama || 'Tidak tersedia' }}
                         </div>
                         <div>
-                          <span class="font-medium">No. KP:</span> {{ application.noKP }}
+                          <span class="font-medium">No. KP:</span> {{ application.noKP || 'Tidak tersedia' }}
                         </div>
                         <div>
-                          <span class="font-medium">Kategori:</span> {{ application.kategoriPenolongAmil }}
+                          <span class="font-medium">Kategori:</span> {{ application.kategoriPenolongAmil || 'Tidak tersedia' }}
                         </div>
                         <div>
-                          <span class="font-medium">Institusi:</span> {{ application.institusiKariah }}
+                          <span class="font-medium">Institusi:</span> {{ application.institusiKariah || 'Tidak tersedia' }}
                         </div>
                       </div>
                     </div>
@@ -211,7 +243,7 @@
               Audit Trail
             </h3>
             
-            <div class="space-y-3">
+            <div v-if="application.auditTrail && application.auditTrail.length > 0" class="space-y-3">
               <div v-for="(log, index) in application.auditTrail" :key="index" class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                 <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                   <Icon name="ph:user" class="text-blue-600" size="16" />
@@ -222,6 +254,11 @@
                   <p v-if="log.notes" class="text-xs text-gray-700 mt-1">{{ log.notes }}</p>
                 </div>
               </div>
+            </div>
+            
+            <div v-else class="text-center py-8">
+              <Icon name="ph:info" class="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <p class="text-gray-500">Tiada audit trail tersedia</p>
             </div>
           </div>
         </div>
@@ -240,6 +277,10 @@ definePageMeta({
 
 const route = useRoute();
 const rujukan = route.params.rujukan;
+
+// State management
+const isLoading = ref(true);
+const error = ref(null);
 
 const breadcrumb = ref([
   {
@@ -364,9 +405,41 @@ const handleBack = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
+const retryLoad = async () => {
+  error.value = null;
+  isLoading.value = true;
+  await loadData();
+};
+
+const loadData = async () => {
+  try {
+    isLoading.value = true;
+    error.value = null;
+    
+    // Simulate API call
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Simulate random error (5% chance)
+        if (Math.random() < 0.05) {
+          reject(new Error("Ralat rangkaian. Sila cuba lagi."));
+        } else {
+          resolve();
+        }
+      }, 1000);
+    });
+    
+    // In real implementation, fetch application data based on rujukan
+    console.log("Loading process trace for:", rujukan);
+    
+  } catch (err) {
+    error.value = err.message || "Ralat berlaku semasa memuatkan data";
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 onMounted(() => {
-  // In real implementation, fetch application data based on rujukan
-  console.log("Loading process trace for:", rujukan);
+  loadData();
 });
 </script>
 

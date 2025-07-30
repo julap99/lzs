@@ -1,12 +1,63 @@
 <!-- 
   RTMF SCREEN: PA-PP-PD-01_02
-  PURPOSE: Detail View - Maklumat Penolong Amil Terperinci
-  DESCRIPTION: Detailed information view for Penolong Amil applications
+  PURPOSE: Centralized Detail View - Maklumat Penolong Amil Terperinci
+  DESCRIPTION: Role-aware detailed information view for Penolong Amil applications
   ROUTE: /BF-PA/PP/pra-daftar-v3/detail/[rujukan]
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
+
+    <!-- Compact Workflow Widget -->
+    <div class="mb-4">
+      <rs-card>
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900">
+              Proses Verifikasi Calon Penolong Amil
+            </h3>
+            <rs-badge :variant="getCurrentRoleBadgeVariant()">
+              {{ getCurrentRoleLabel() }}
+            </rs-badge>
+          </div>
+        </template>
+        <template #body>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <div 
+                v-for="(step, index) in workflowSteps" 
+                :key="step.key"
+                class="flex items-center"
+              >
+                <div class="flex flex-col items-center">
+                  <div 
+                    :class="[
+                      'w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium',
+                      getStepVariant(step.key)
+                    ]"
+                  >
+                    <Icon 
+                      v-if="step.icon" 
+                      :name="step.icon" 
+                      class="w-4 h-4"
+                    />
+                    <span v-else>{{ index + 1 }}</span>
+                  </div>
+                  <span class="text-xs mt-1 text-center max-w-16">{{ step.label }}</span>
+                </div>
+                <div 
+                  v-if="index < workflowSteps.length - 1"
+                  :class="[
+                    'h-1 w-8 mx-1',
+                    getStepLineVariant(step.key)
+                  ]"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+    </div>
 
     <rs-card class="mt-4">
       <template #header>
@@ -35,7 +86,7 @@
               @click="handleViewProcessTrace"
               title="PA-PP-PD-01_04: Jejak Proses"
             >
-              <Icon name="ph:timeline" class="w-4 h-4 mr-1" />
+              <Icon name="ph:flow-arrow" class="w-4 h-4 mr-1" />
               Jejak Proses
             </rs-button>
           </div>
@@ -103,35 +154,28 @@
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Agama
+                  Tarikh Lahir
                 </label>
-                <p class="text-gray-900">{{ application.agama }}</p>
+                <p class="text-gray-900">{{ application.tarikhLahir }}</p>
               </div>
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Alamat Emel
+                  Tempat Lahir
                 </label>
-                <p class="text-gray-900">{{ application.emel }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Nombor Telefon
-                </label>
-                <p class="text-gray-900">{{ application.telefon }}</p>
+                <p class="text-gray-900">{{ application.tempatLahir }}</p>
               </div>
             </div>
           </div>
 
-          <!-- Address Information -->
+          <!-- Contact Information -->
           <div class="mb-6 p-6 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Maklumat Alamat
+              Maklumat Perhubungan
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="md:col-span-2">
+              <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                   Alamat Rumah
                 </label>
@@ -140,31 +184,31 @@
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Poskod
+                  Alamat Pejabat
                 </label>
-                <p class="text-gray-900">{{ application.poskod }}</p>
+                <p class="text-gray-900">{{ application.alamatPejabat }}</p>
               </div>
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Bandar
+                  Nombor Telefon
                 </label>
-                <p class="text-gray-900">{{ application.bandar }}</p>
+                <p class="text-gray-900">{{ application.nomborTelefon }}</p>
               </div>
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Negeri
+                  Alamat E-mel
                 </label>
-                <p class="text-gray-900">{{ application.negeri }}</p>
+                <p class="text-gray-900">{{ application.alamatEmel }}</p>
               </div>
             </div>
           </div>
 
-          <!-- Service Information -->
+          <!-- Professional Information -->
           <div class="mb-6 p-6 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Maklumat Perkhidmatan
+              Maklumat Profesional
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -184,7 +228,7 @@
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Institusi/Kariah
+                  Institusi Kariah
                 </label>
                 <p class="text-gray-900">{{ application.institusiKariah }}</p>
               </div>
@@ -219,12 +263,6 @@
                       Lihat Dokumen
                     </rs-button>
                   </div>
-                  <div class="p-4 bg-gray-100 border-b border-gray-200 text-center text-gray-500">
-                    <div class="mb-2">
-                      <Icon name="heroicons:document" size="48" class="text-gray-400" />
-                    </div>
-                    <p class="text-sm">Klik butang "Lihat Dokumen" untuk melihat Salinan Kad Pengenalan</p>
-                  </div>
                   <div class="p-3 bg-gray-50 text-sm text-gray-500">
                     Dimuat naik oleh {{ application.nama }} pada {{ application.uploadDate }}
                   </div>
@@ -250,46 +288,96 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Dokumen Lain (if exists) -->
-              <div v-if="application.dokumenLain">
-                <h4 class="font-medium mb-3">Dokumen Lain</h4>
-                <div class="border border-gray-200 rounded-md">
-                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
-                    <div class="flex items-center">
-                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
-                      <span>{{ application.dokumenLain }}</span>
-                    </div>
-                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('dokumenLain')">
-                      <Icon name="heroicons:eye" class="mr-1" size="16" />
-                      Lihat Dokumen
-                    </rs-button>
-                  </div>
-                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
-                    Dimuat naik oleh {{ application.nama }} pada {{ application.uploadDate }}
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
-          <!-- Application Timeline -->
-          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
+          <!-- Role-Specific Actions -->
+          <div v-if="showRoleActions" class="mb-6 p-6 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Timeline Permohonan
+              Tindakan {{ getCurrentRoleLabel() }}
             </h3>
             
-            <div class="space-y-4">
-              <div v-for="(timeline, index) in application.timeline" :key="index" class="flex items-start">
-                <div class="flex-shrink-0">
-                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Icon name="heroicons:check" class="w-4 h-4 text-blue-600" />
+            <div class="flex gap-3">
+              <!-- Eksekutif Pengurusan Risiko Actions -->
+              <rs-button
+                v-if="currentRole === 'eksekutif-pengurusan-risiko'"
+                variant="info"
+                @click="handleScreening"
+              >
+                <Icon name="ph:shield-check" class="w-4 h-4 mr-1" />
+                Saringan
+              </rs-button>
+
+              <!-- PT Actions -->
+              <rs-button
+                v-if="currentRole === 'pt'"
+                variant="info"
+                @click="handleReview"
+              >
+                <Icon name="ph:clipboard-text" class="w-4 h-4 mr-1" />
+                Semak
+              </rs-button>
+
+              <!-- Eksekutif Actions -->
+              <rs-button
+                v-if="currentRole === 'eksekutif'"
+                variant="success"
+                @click="handleSupport"
+              >
+                <Icon name="ph:thumbs-up" class="w-4 h-4 mr-1" />
+                Sokong
+              </rs-button>
+
+              <!-- Ketua Jabatan Actions -->
+              <rs-button
+                v-if="currentRole === 'ketua-jabatan'"
+                variant="success"
+                @click="handleConfirm"
+              >
+                <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
+                Sahkan
+              </rs-button>
+
+              <!-- Ketua Divisyen Actions -->
+              <rs-button
+                v-if="currentRole === 'ketua-divisyen'"
+                variant="primary"
+                @click="handleApprove"
+              >
+                <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
+                Lulus
+              </rs-button>
+            </div>
+          </div>
+
+          <!-- Verification History -->
+          <div v-if="showVerificationHistory" class="mb-6 p-6 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">
+              Sejarah Verifikasi
+            </h3>
+            
+            <div class="space-y-3">
+              <div 
+                v-for="verification in verificationHistory" 
+                :key="verification.id"
+                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+              >
+                <div class="flex items-center">
+                  <Icon 
+                    :name="verification.icon" 
+                    class="w-5 h-5 mr-3"
+                    :class="verification.iconColor"
+                  />
+                  <div>
+                    <p class="font-medium">{{ verification.role }}</p>
+                    <p class="text-sm text-gray-600">{{ verification.action }}</p>
                   </div>
                 </div>
-                <div class="ml-4 flex-1">
-                  <p class="text-sm font-medium text-gray-900">{{ timeline.action }}</p>
-                  <p class="text-sm text-gray-500">{{ timeline.date }}</p>
-                  <p v-if="timeline.notes" class="text-sm text-gray-600 mt-1">{{ timeline.notes }}</p>
+                <div class="text-right">
+                  <p class="text-sm text-gray-600">{{ verification.date }}</p>
+                  <rs-badge :variant="verification.statusVariant">
+                    {{ verification.status }}
+                  </rs-badge>
                 </div>
               </div>
             </div>
@@ -301,14 +389,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-
-const route = useRoute();
+import { ref, computed } from "vue";
 
 definePageMeta({
   title: "Maklumat Terperinci Penolong Amil",
-  description: "Paparan terperinci maklumat penolong amil",
+  description: "Maklumat terperinci penolong amil dengan verifikasi berperingkat",
 });
+
+const route = useRoute();
+const currentRole = ref(route.query.role || "pyb"); // Read from query parameter
 
 const breadcrumb = ref([
   {
@@ -333,79 +422,247 @@ const breadcrumb = ref([
   },
 ]);
 
-// Mock application data based on RTMF requirements
-const application = ref({
-  rujukan: route.params.rujukan,
-  noKP: "901231012345",
-  nama: "Ahmad bin Abdullah",
-  jantina: "Lelaki",
-  bangsa: "Melayu",
-  agama: "Islam",
-  emel: "ahmad.abdullah@email.com",
-  telefon: "0123456789",
-  alamatRumah: "No. 123, Jalan Utama, Taman Seri Indah",
-  poskod: "50000",
-  bandar: "Kuala Lumpur",
-  negeri: "Kuala Lumpur",
-  kategoriPenolongAmil: "Fitrah",
-  jawatan: "Penolong Amil Fitrah",
-  institusiKariah: "Masjid Wilayah Persekutuan",
-  sesiPerkhidmatan: "Sesi 1",
-  statusPendaftaran: "Under Review",
-  statusLantikan: "Pending",
-  salinanKadPengenalan: "salinan_kp_ahmad.pdf",
-  suratSokongan: "surat_sokongan_ahmad.pdf",
-  dokumenLain: null,
-  uploadDate: "15/03/2024",
-  timeline: [
-    {
-      action: "Permohonan Dihantar",
-      date: "15/03/2024 10:30 AM",
-      notes: "Permohonan berjaya dihantar untuk semakan"
-    },
-    {
-      action: "Dokumen Disemak",
-      date: "16/03/2024 02:15 PM",
-      notes: "Semua dokumen lengkap dan sah"
-    },
-    {
-      action: "Menunggu Kelulusan",
-      date: "17/03/2024 09:00 AM",
-      notes: "Permohonan dalam proses kelulusan"
-    }
-  ]
+// Workflow steps based on role hierarchy
+const workflowSteps = computed(() => {
+  const steps = [
+    { key: 'registration', label: 'Pendaftaran', icon: 'ph:user-plus' },
+    { key: 'screening', label: 'Saringan', icon: 'ph:shield-check' },
+    { key: 'review', label: 'Semakan PT', icon: 'ph:clipboard-text' },
+    { key: 'support', label: 'Sokongan', icon: 'ph:thumbs-up' },
+    { key: 'confirmation', label: 'Pengesahan', icon: 'ph:check-circle' },
+    { key: 'approval', label: 'Kelulusan', icon: 'ph:check-circle' }
+  ];
+
+  // Show only steps up to current role's position
+  const roleHierarchy = {
+    'pyb': 1,
+    'eksekutif-pengurusan-risiko': 2,
+    'pt': 3,
+    'eksekutif': 4,
+    'ketua-jabatan': 5,
+    'ketua-divisyen': 6
+  };
+
+  const maxSteps = roleHierarchy[currentRole.value] || 1;
+  return steps.slice(0, maxSteps);
 });
 
+// Mock application data
+const application = ref({
+  rujukan: route.params.rujukan,
+  nama: "Ahmad bin Abdullah",
+  noKP: "901231012345",
+  jantina: "Lelaki",
+  bangsa: "Melayu",
+  tarikhLahir: "15/12/1990",
+  tempatLahir: "Kuala Lumpur",
+  alamatRumah: "No. 123, Jalan Ampang, 68000 Ampang, Selangor",
+  alamatPejabat: "No. 456, Jalan Tun Razak, 50400 Kuala Lumpur",
+  nomborTelefon: "012-3456789",
+  alamatEmel: "ahmad.abdullah@email.com",
+  kategoriPenolongAmil: "Fitrah",
+  jawatan: "Penolong Amil Fitrah",
+  institusiKariah: "Masjid Negeri Selangor",
+  sesiPerkhidmatan: "Sesi 1",
+  statusPendaftaran: "Telah Disokong",
+  statusLantikan: "Menunggu",
+  salinanKadPengenalan: "salinan_kp_ahmad.pdf",
+  suratSokongan: "surat_sokongan_ahmad.pdf",
+  uploadDate: "15/01/2024"
+});
+
+// Verification history based on current role
+const verificationHistory = computed(() => {
+  const history = [
+    {
+      id: 1,
+      role: "PYB Institusi",
+      action: "Mendaftar calon",
+      date: "15/01/2024",
+      status: "Selesai",
+      statusVariant: "success",
+      icon: "ph:user-plus",
+      iconColor: "text-green-500"
+    }
+  ];
+
+  // Add screening if role can see it
+  if (canSeeStep('screening')) {
+    history.push({
+      id: 2,
+      role: "Jabatan Pengurusan Risiko",
+      action: "Saringan calon",
+      date: "16/01/2024",
+      status: "Selesai",
+      statusVariant: "success",
+      icon: "ph:shield-check",
+      iconColor: "text-blue-500"
+    });
+  }
+
+  // Add PT review if role can see it
+  if (canSeeStep('review')) {
+    history.push({
+      id: 3,
+      role: "PT",
+      action: "Semakan dokumen",
+      date: "17/01/2024",
+      status: "Selesai",
+      statusVariant: "success",
+      icon: "ph:clipboard-text",
+      iconColor: "text-purple-500"
+    });
+  }
+
+  // Add executive support if role can see it
+  if (canSeeStep('support')) {
+    history.push({
+      id: 4,
+      role: "Eksekutif",
+      action: "Sokongan eksekutif",
+      date: "18/01/2024",
+      status: "Selesai",
+      statusVariant: "success",
+      icon: "ph:thumbs-up",
+      iconColor: "text-green-500"
+    });
+  }
+
+  // Add department confirmation if role can see it
+  if (canSeeStep('confirmation')) {
+    history.push({
+      id: 5,
+      role: "Ketua Jabatan",
+      action: "Pengesahan jabatan",
+      date: "19/01/2024",
+      status: "Selesai",
+      statusVariant: "success",
+      icon: "ph:check-circle",
+      iconColor: "text-blue-500"
+    });
+  }
+
+  // Add division approval if role can see it
+  if (canSeeStep('approval')) {
+    history.push({
+      id: 6,
+      role: "Ketua Divisyen",
+      action: "Kelulusan akhir",
+      date: "20/01/2024",
+      status: "Dalam Proses",
+      statusVariant: "warning",
+      icon: "ph:check-circle",
+      iconColor: "text-orange-500"
+    });
+  }
+
+  return history;
+});
+
+// Computed properties
 const canEdit = computed(() => {
-  return ["Draft", "Submitted"].includes(application.value.statusPendaftaran);
+  return currentRole.value === 'pyb' && 
+         ['Draf', 'Dihantar'].includes(application.value.statusPendaftaran);
+});
+
+const showRoleActions = computed(() => {
+  return ['eksekutif-pengurusan-risiko', 'pt', 'eksekutif', 'ketua-jabatan', 'ketua-divisyen'].includes(currentRole.value);
+});
+
+const showVerificationHistory = computed(() => {
+  return verificationHistory.value.length > 0;
 });
 
 // Helper functions
-const getStatusPendaftaranVariant = (status) => {
-  const statusVariants = {
-    Draft: "default",
-    Submitted: "warning",
-    "Under Review": "info",
-    Approved: "success",
-    Rejected: "danger",
+const canSeeStep = (step) => {
+  const roleHierarchy = {
+    'pyb': ['registration'],
+    'eksekutif-pengurusan-risiko': ['registration', 'screening'],
+    'pt': ['registration', 'screening', 'review'],
+    'eksekutif': ['registration', 'screening', 'review', 'support'],
+    'ketua-jabatan': ['registration', 'screening', 'review', 'support', 'confirmation'],
+    'ketua-divisyen': ['registration', 'screening', 'review', 'support', 'confirmation', 'approval']
   };
-  return statusVariants[status] || "default";
+
+  return roleHierarchy[currentRole.value]?.includes(step) || false;
+};
+
+const getStepVariant = (step) => {
+  if (canSeeStep(step)) {
+    return 'bg-green-100 text-green-800 border-2 border-green-300';
+  }
+  return 'bg-gray-100 text-gray-400 border-2 border-gray-200';
+};
+
+const getStepLineVariant = (step) => {
+  if (canSeeStep(step)) {
+    return 'bg-green-300';
+  }
+  return 'bg-gray-200';
+};
+
+const getCurrentRoleLabel = () => {
+  const roleLabels = {
+    'pyb': 'PYB Institusi',
+    'eksekutif-pengurusan-risiko': 'Jabatan Pengurusan Risiko',
+    'pt': 'PT',
+    'eksekutif': 'Eksekutif',
+    'ketua-jabatan': 'Ketua Jabatan',
+    'ketua-divisyen': 'Ketua Divisyen'
+  };
+  return roleLabels[currentRole.value] || '';
+};
+
+const getCurrentRoleBadgeVariant = () => {
+  const badgeVariants = {
+    'pyb': 'default',
+    'eksekutif-pengurusan-risiko': 'info',
+    'pt': 'warning',
+    'eksekutif': 'success',
+    'ketua-jabatan': 'warning',
+    'ketua-divisyen': 'primary'
+  };
+  return badgeVariants[currentRole.value] || 'default';
+};
+
+const getStatusPendaftaranVariant = (status) => {
+  const variants = {
+    'Draf': 'default',
+    'Dihantar': 'warning',
+    'Telah Disaring': 'info',
+    'Telah Disemak': 'info',
+    'Telah Disokong': 'success',
+    'Telah Disahkan': 'success',
+    'Telah Diluluskan': 'success',
+    'Ditolak': 'danger'
+  };
+  return variants[status] || 'default';
 };
 
 const getStatusLantikanVariant = (status) => {
-  const statusVariants = {
-    Pending: "warning",
-    Appointed: "info",
-    Active: "success",
-    Inactive: "secondary",
-    Terminated: "danger",
+  const variants = {
+    'Menunggu': 'warning',
+    'Dilantik': 'info',
+    'Aktif': 'success',
+    'Tidak Aktif': 'secondary',
+    'Ditamatkan': 'danger'
   };
-  return statusVariants[status] || "default";
+  return variants[status] || 'default';
 };
 
-// Action handlers
+// Action handlers with proper navigation
 const handleBack = () => {
-  navigateTo("/BF-PA/PP/pra-daftar-v3");
+  // Navigate back to the appropriate dashboard based on role
+  const dashboardPaths = {
+    'pyb': '/BF-PA/PP/pra-daftar-v3',
+    'eksekutif-pengurusan-risiko': '/BF-PA/PP/pra-daftar-v3',
+    'pt': '/BF-PA/PP/pra-daftar-v3',
+    'eksekutif': '/BF-PA/PP/pra-daftar-v3',
+    'ketua-jabatan': '/BF-PA/PP/pra-daftar-v3',
+    'ketua-divisyen': '/BF-PA/PP/pra-daftar-v3'
+  };
+  
+  navigateTo(dashboardPaths[currentRole.value] || '/BF-PA/PP/pra-daftar-v3');
 };
 
 const handleEdit = () => {
@@ -416,16 +673,30 @@ const handleViewProcessTrace = () => {
   navigateTo(`/BF-PA/PP/pra-daftar-v3/process-trace/${route.params.rujukan}`);
 };
 
-const previewDocument = (documentType) => {
-  // Simulate document preview
-      // Previewing document
-  // In real implementation, this would open a modal or navigate to document viewer
+const handleScreening = () => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/jabatan-risiko/detail/${route.params.rujukan}`);
 };
 
-onMounted(() => {
-  // In real implementation, fetch application data based on rujukan
-      // Loading application details
-});
+const handleReview = () => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/PT/detail/${route.params.rujukan}`);
+};
+
+const handleSupport = () => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/eksekutif/detail/${route.params.rujukan}`);
+};
+
+const handleConfirm = () => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/ketua-jabatan/detail/${route.params.rujukan}`);
+};
+
+const handleApprove = () => {
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/ketua-divisyen/detail/${route.params.rujukan}`);
+};
+
+const previewDocument = (documentType) => {
+  // Simulate document preview
+  alert(`Melihat dokumen: ${documentType}`);
+};
 </script>
 
 <style scoped>

@@ -15,6 +15,13 @@
           <h2 class="text-xl font-semibold">
             Kemaskini Permohonan Penolong Amil
           </h2>
+          <rs-button
+            variant="secondary-outline"
+            @click="handleBack"
+          >
+            <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
+            Kembali
+          </rs-button>
         </div>
       </template>
 
@@ -445,7 +452,7 @@
             </template>
           </rs-card>
 
-          <!-- Action Buttons -->
+          <!-- Action Buttons - Standardized at the bottom -->
           <div class="flex justify-end gap-4 mt-6">
             <rs-button
               variant="secondary"
@@ -723,7 +730,31 @@ const handleSubmitDirect = async () => {
 };
 
 const handleCancel = () => {
-  navigateTo('/BF-PA/PP/pra-daftar-v3');
+  // Navigate back to the appropriate dashboard based on role
+  const dashboardPaths = {
+    'pyb': '/BF-PA/PP/pra-daftar-v3',
+    'eksekutif-pengurusan-risiko': '/BF-PA/PP/pra-daftar-v3',
+    'pt': '/BF-PA/PP/pra-daftar-v3',
+    'eksekutif': '/BF-PA/PP/pra-daftar-v3',
+    'ketua-jabatan': '/BF-PA/PP/pra-daftar-v3',
+    'ketua-divisyen': '/BF-PA/PP/pra-daftar-v3'
+  };
+  
+  navigateTo(dashboardPaths[currentRole.value] || '/BF-PA/PP/pra-daftar-v3');
+};
+
+const handleBack = () => {
+  // Navigate back to the appropriate dashboard based on role
+  const dashboardPaths = {
+    'pyb': '/BF-PA/PP/pra-daftar-v3',
+    'eksekutif-pengurusan-risiko': '/BF-PA/PP/pra-daftar-v3',
+    'pt': '/BF-PA/PP/pra-daftar-v3',
+    'eksekutif': '/BF-PA/PP/pra-daftar-v3',
+    'ketua-jabatan': '/BF-PA/PP/pra-daftar-v3',
+    'ketua-divisyen': '/BF-PA/PP/pra-daftar-v3'
+  };
+  
+  navigateTo(dashboardPaths[currentRole.value] || '/BF-PA/PP/pra-daftar-v3');
 };
 
 const handleModalClose = () => {

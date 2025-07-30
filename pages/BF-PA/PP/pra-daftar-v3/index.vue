@@ -1543,7 +1543,7 @@ const canEdit = (statusPendaftaran) => {
 // Action handlers with RTMF screen references
 // PA-PP-PD-01_02: Detail View - Maklumat Penolong Amil Terperinci
 const handleView = (actionData) => {
-  navigateTo(`/BF-PA/PP/pra-daftar-v3/detail/${actionData.rujukan}`);
+  navigateTo(`/BF-PA/PP/pra-daftar-v3/detail/${actionData.rujukan}?role=${currentRole.value}`);
 };
 
 // PA-PP-PD-01_04: Edit Form - Borang Kemaskini Maklumat Penolong Amil

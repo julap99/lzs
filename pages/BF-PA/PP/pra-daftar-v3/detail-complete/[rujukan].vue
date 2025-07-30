@@ -8,7 +8,39 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <!-- Loading State -->
+    <div v-if="isLoading" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <Icon name="ph:spinner" class="w-8 h-8 text-blue-600 animate-spin mr-3" />
+            <span class="text-gray-600">Memuatkan maklumat terperinci...</span>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <div class="text-center">
+              <Icon name="ph:warning" class="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Ralat Memuatkan Data</h3>
+              <p class="text-gray-600 mb-4">{{ error }}</p>
+              <rs-button variant="primary" @click="retryLoad">
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Cuba Lagi
+              </rs-button>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Main Content -->
+    <rs-card v-else class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
@@ -247,9 +279,10 @@
                         variant="primary"
                         size="sm"
                         @click="handleViewRegistrationDetail"
+                        :disabled="isNavigating"
                       >
                         <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                        Lihat
+                        {{ isNavigating ? 'Memuatkan...' : 'Lihat' }}
                       </rs-button>
                     </td>
                   </tr>
@@ -318,9 +351,10 @@
                         variant="primary"
                         size="sm"
                         @click="handleViewServiceDetail"
+                        :disabled="isNavigating"
                       >
                         <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                        Lihat
+                        {{ isNavigating ? 'Memuatkan...' : 'Lihat' }}
                       </rs-button>
                     </td>
                   </tr>
@@ -398,6 +432,31 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Navigation Error Modal -->
+    <rs-modal
+      v-model="showNavigationError"
+      title="Ralat Navigasi"
+      size="sm"
+    >
+      <template #body>
+        <div class="text-center">
+          <Icon name="ph:warning" class="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Halaman Tidak Tersedia</h3>
+          <p class="text-gray-600 mb-4">{{ navigationError }}</p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="showNavigationError = false"
+          >
+            Tutup
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -410,6 +469,13 @@ definePageMeta({
   title: "Maklumat Terperinci Penolong Amil Lengkap",
   description: "Paparan terperinci maklumat penolong amil yang telah lengkap",
 });
+
+// State management
+const isLoading = ref(true);
+const error = ref(null);
+const isNavigating = ref(false);
+const showNavigationError = ref(false);
+const navigationError = ref("");
 
 const breadcrumb = ref([
   {
@@ -476,19 +542,97 @@ const handleBack = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
-const handleViewRegistrationDetail = () => {
-  // Navigate to detailed registration view (EX-PA-PP-PD-01_04)
-  navigateTo(`/BF-PA/PP/pra-daftar-v3/registration-detail/${route.params.rujukan}`);
+const handleViewRegistrationDetail = async () => {
+  try {
+    isNavigating.value = true;
+    
+    // Simulate navigation delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Check if the target route exists (in real implementation, this would be a proper route check)
+    const targetRoute = `/BF-PA/PP/pra-daftar-v3/registration-detail/${route.params.rujukan}`;
+    
+    // Simulate route availability check
+    const routeExists = Math.random() > 0.1; // 90% chance route exists
+    
+    if (routeExists) {
+      // Navigate to detailed registration view (EX-PA-PP-PD-01_04)
+      navigateTo(targetRoute);
+    } else {
+      throw new Error("Halaman pendaftaran terperinci tidak tersedia pada masa ini");
+    }
+    
+  } catch (err) {
+    navigationError.value = err.message || "Ralat berlaku semasa navigasi";
+    showNavigationError.value = true;
+  } finally {
+    isNavigating.value = false;
+  }
 };
 
-const handleViewServiceDetail = () => {
-  // Navigate to detailed service view (EX-PA-PP-PD-01_05)
-  navigateTo(`/BF-PA/PP/pra-daftar-v3/service-detail/${route.params.rujukan}`);
+const handleViewServiceDetail = async () => {
+  try {
+    isNavigating.value = true;
+    
+    // Simulate navigation delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Check if the target route exists (in real implementation, this would be a proper route check)
+    const targetRoute = `/BF-PA/PP/pra-daftar-v3/service-detail/${route.params.rujukan}`;
+    
+    // Simulate route availability check
+    const routeExists = Math.random() > 0.1; // 90% chance route exists
+    
+    if (routeExists) {
+      // Navigate to detailed service view (EX-PA-PP-PD-01_05)
+      navigateTo(targetRoute);
+    } else {
+      throw new Error("Halaman perkhidmatan terperinci tidak tersedia pada masa ini");
+    }
+    
+  } catch (err) {
+    navigationError.value = err.message || "Ralat berlaku semasa navigasi";
+    showNavigationError.value = true;
+  } finally {
+    isNavigating.value = false;
+  }
+};
+
+const retryLoad = async () => {
+  error.value = null;
+  isLoading.value = true;
+  await loadData();
+};
+
+const loadData = async () => {
+  try {
+    isLoading.value = true;
+    error.value = null;
+    
+    // Simulate API call
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Simulate random error (5% chance)
+        if (Math.random() < 0.05) {
+          reject(new Error("Ralat rangkaian. Sila cuba lagi."));
+        } else {
+          resolve();
+        }
+      }, 1000);
+    });
+    
+    // In real implementation, fetch complete application data based on rujukan
+    console.log("Loading complete application details for:", route.params.rujukan);
+    
+  } catch (err) {
+    error.value = err.message || "Ralat berlaku semasa memuatkan data";
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 onMounted(() => {
-  // In real implementation, fetch complete application data based on rujukan
-  console.log("Loading complete application details for:", route.params.rujukan);
+  loadData();
 });
 </script>
 

@@ -1,6 +1,61 @@
+<!-- 
+  RTMF SCREEN: PA-PP-PD-04_02
+  PURPOSE: Executive Support Detail - Paparan Terperinci Sokongan
+  DESCRIPTION: Detailed executive support view for candidate approval
+  ROUTE: /BF-PA/PP/pra-daftar-v3/eksekutif/detail/[rujukan]
+-->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
+
+    <!-- Compact Workflow Widget -->
+    <div class="mb-4">
+      <rs-card>
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900">
+              Proses Verifikasi Calon Penolong Amil
+            </h3>
+            <rs-badge variant="success">Eksekutif</rs-badge>
+          </div>
+        </template>
+        <template #body>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <div 
+                v-for="(step, index) in workflowSteps" 
+                :key="step.key"
+                class="flex items-center"
+              >
+                <div class="flex flex-col items-center">
+                  <div 
+                    :class="[
+                      'w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium',
+                      getStepVariant(step.key)
+                    ]"
+                  >
+                    <Icon 
+                      v-if="step.icon" 
+                      :name="step.icon" 
+                      class="w-4 h-4"
+                    />
+                    <span v-else>{{ index + 1 }}</span>
+                  </div>
+                  <span class="text-xs mt-1 text-center max-w-16">{{ step.label }}</span>
+                </div>
+                <div 
+                  v-if="index < workflowSteps.length - 1"
+                  :class="[
+                    'h-1 w-8 mx-1',
+                    getStepLineVariant(step.key)
+                  ]"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+    </div>
 
     <rs-card class="mt-4">
       <template #header>
@@ -8,15 +63,13 @@
           <h2 class="text-xl font-semibold">
             Sokongan Eksekutif - Maklumat Terperinci
           </h2>
-          <div class="flex gap-2">
-            <rs-button
-              variant="secondary-outline"
-              @click="handleBack"
-            >
-              <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
-              Kembali
-            </rs-button>
-          </div>
+          <rs-button
+            variant="secondary-outline"
+            @click="handleBack"
+          >
+            <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
+            Kembali
+          </rs-button>
         </div>
       </template>
 
@@ -27,7 +80,7 @@
             <div class="flex justify-between items-center">
               <div>
                 <h3 class="text-lg font-semibold text-gray-900">
-                  Status Permohonan
+                  Status Sokongan Eksekutif
                 </h3>
                 <p class="text-sm text-gray-600">
                   Rujukan: {{ application.rujukan }}
@@ -37,126 +90,9 @@
                 <rs-badge :variant="getStatusPendaftaranVariant(application.statusPendaftaran)">
                   {{ application.statusPendaftaran }}
                 </rs-badge>
-                <rs-badge :variant="getStatusLantikanVariant(application.statusLantikan)">
-                  {{ application.statusLantikan }}
+                <rs-badge :variant="getSupportStatusVariant(supportData.statusSokongan)">
+                  {{ supportData.statusSokongan }}
                 </rs-badge>
-              </div>
-            </div>
-          </div>
-
-          <!-- Workflow Progress -->
-          <div class="mb-6 p-6 border border-gray-200 rounded-lg bg-blue-50">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Proses Verifikasi Calon Penolong Amil
-            </h3>
-            
-            <div class="relative">
-              <!-- Progress Line -->
-              <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-              
-              <!-- Workflow Steps -->
-              <div class="space-y-4">
-                <!-- Step 1: Registration -->
-                <div class="relative flex items-start">
-                  <div class="flex-shrink-0 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                    <Icon name="ph:check-circle" class="text-green-600" size="24" />
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg font-semibold text-gray-900">1. Pendaftaran Calon</h4>
-                    <p class="text-sm text-gray-600 mb-2">PYB Institusi mendaftar calon</p>
-                    <div class="bg-green-50 border border-green-200 rounded-lg p-3">
-                      <p class="text-sm text-green-800">
-                        <strong>Status:</strong> Selesai<br>
-                        <span class="text-xs">Calon berjaya didaftarkan oleh PYB Institusi</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Step 2: Screening -->
-                <div class="relative flex items-start">
-                  <div class="flex-shrink-0 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                    <Icon name="ph:check-circle" class="text-blue-600" size="24" />
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg font-semibold text-gray-900">2. Saringan Risiko</h4>
-                    <p class="text-sm text-gray-600 mb-2">Jabatan Pengurusan Risiko</p>
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                      <p class="text-sm text-blue-800">
-                        <strong>Status:</strong> Selesai<br>
-                        <span class="text-xs">Calon telah lulus saringan risiko</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Step 3: PT Review -->
-                <div class="relative flex items-start">
-                  <div class="flex-shrink-0 w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
-                    <Icon name="ph:check-circle" class="text-yellow-600" size="24" />
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg font-semibold text-gray-900">3. Semakan PT</h4>
-                    <p class="text-sm text-gray-600 mb-2">Pegawai Tadbir</p>
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                      <p class="text-sm text-yellow-800">
-                        <strong>Status:</strong> Selesai<br>
-                        <span class="text-xs">Calon telah disemak oleh PT</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Step 4: Executive Support -->
-                <div class="relative flex items-start">
-                  <div class="flex-shrink-0 w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-                    <Icon name="ph:hand-thumbs-up" class="text-purple-600" size="24" />
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg font-semibold text-gray-900">4. Sokongan Eksekutif</h4>
-                    <p class="text-sm text-gray-600 mb-2">Eksekutif</p>
-                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                      <p class="text-sm text-purple-800">
-                        <strong>Status:</strong> Dalam Proses<br>
-                        <span class="text-xs">Sedang menunggu sokongan eksekutif</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Step 5: Department Head Confirmation -->
-                <div class="relative flex items-start">
-                  <div class="flex-shrink-0 w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mr-4">
-                    <Icon name="ph:check-square" class="text-indigo-600" size="24" />
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg font-semibold text-gray-900">5. Pengesahan Ketua Jabatan</h4>
-                    <p class="text-sm text-gray-600 mb-2">Ketua Jabatan</p>
-                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3">
-                      <p class="text-sm text-indigo-800">
-                        <strong>Status:</strong> Menunggu Sokongan Eksekutif<br>
-                        <span class="text-xs">Akan disahkan selepas sokongan eksekutif</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Step 6: Division Head Approval -->
-                <div class="relative flex items-start">
-                  <div class="flex-shrink-0 w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mr-4">
-                    <Icon name="ph:star" class="text-red-600" size="24" />
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg font-semibold text-gray-900">6. Kelulusan Ketua Divisyen</h4>
-                    <p class="text-sm text-gray-600 mb-2">Ketua Divisyen</p>
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-3">
-                      <p class="text-sm text-red-800">
-                        <strong>Status:</strong> Menunggu Pengesahan Ketua Jabatan<br>
-                        <span class="text-xs">Akan diluluskan selepas pengesahan ketua jabatan</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -293,43 +229,6 @@
             </div>
           </div>
 
-          <!-- PT Review Information -->
-          <div class="mb-6 p-6 border border-blue-200 rounded-lg bg-blue-50">
-            <h3 class="text-lg font-semibold mb-4 text-blue-900">
-              Maklumat Semakan PT
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-blue-700 mb-1">
-                  Status Semakan PT
-                </label>
-                <rs-badge variant="success">{{ application.ptReview.status }}</rs-badge>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-blue-700 mb-1">
-                  Disemak Oleh
-                </label>
-                <p class="text-blue-900">{{ application.ptReview.reviewedBy }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-blue-700 mb-1">
-                  Tarikh Semakan
-                </label>
-                <p class="text-blue-900">{{ application.ptReview.reviewedAt }}</p>
-              </div>
-              
-              <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-blue-700 mb-1">
-                  Ulasan PT
-                </label>
-                <p class="text-blue-900">{{ application.ptReview.comments }}</p>
-              </div>
-            </div>
-          </div>
-
           <!-- Documents Section -->
           <div class="mb-6 p-6 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4 text-gray-900">
@@ -379,15 +278,69 @@
             </div>
           </div>
 
-          <!-- Executive Support Decision Form -->
-          <div class="mb-6 p-6 border border-green-200 rounded-lg bg-green-50">
-            <h3 class="text-lg font-semibold mb-4 text-green-900">
+          <!-- Review History -->
+          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">
+              Sejarah Semakan
+            </h3>
+            
+            <div class="space-y-3">
+              <!-- PYB Institusi Review -->
+              <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                <div class="flex items-center">
+                  <Icon name="ph:user-plus" class="w-5 h-5 mr-3 text-green-500" />
+                  <div>
+                    <p class="font-medium">PYB Institusi</p>
+                    <p class="text-sm text-gray-600">Mendaftar calon</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm text-gray-600">15/01/2024</p>
+                  <rs-badge variant="success">Selesai</rs-badge>
+                </div>
+              </div>
+
+              <!-- Jabatan Pengurusan Risiko Review -->
+              <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                <div class="flex items-center">
+                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-blue-500" />
+                  <div>
+                    <p class="font-medium">Jabatan Pengurusan Risiko</p>
+                    <p class="text-sm text-gray-600">Saringan risiko</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm text-gray-600">20/01/2024</p>
+                  <rs-badge variant="success">Lulus</rs-badge>
+                </div>
+              </div>
+
+              <!-- PT Review -->
+              <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                <div class="flex items-center">
+                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-yellow-500" />
+                  <div>
+                    <p class="font-medium">PT</p>
+                    <p class="text-sm text-gray-600">Semakan dokumen</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm text-gray-600">25/01/2024</p>
+                  <rs-badge variant="success">Lulus</rs-badge>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Executive Support Form -->
+          <div class="mb-6 p-6 border border-purple-200 rounded-lg bg-purple-50">
+            <h3 class="text-lg font-semibold mb-4 text-purple-900">
               Keputusan Sokongan Eksekutif
             </h3>
             
             <FormKit
               type="form"
-              id="executiveSupportForm"
+              id="supportForm"
               :actions="false"
               @submit="handleSubmit"
             >
@@ -396,14 +349,42 @@
                 <div class="md:col-span-2">
                   <FormKit
                     type="select"
-                    name="supportDecision"
+                    name="statusSokongan"
                     label="Keputusan Sokongan"
                     :options="supportDecisionOptions"
                     validation="required"
                     :validation-messages="{
                       required: 'Keputusan sokongan diperlukan',
                     }"
-                    v-model="formData.supportDecision"
+                    v-model="supportForm.statusSokongan"
+                  />
+                </div>
+
+                <!-- Support Date -->
+                <div>
+                  <FormKit
+                    type="date"
+                    name="tarikhSokongan"
+                    label="Tarikh Sokongan"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Tarikh sokongan diperlukan',
+                    }"
+                    v-model="supportForm.tarikhSokongan"
+                  />
+                </div>
+
+                <!-- Supporter Name -->
+                <div>
+                  <FormKit
+                    type="text"
+                    name="disokongOleh"
+                    label="Disokong Oleh"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Nama penyokong diperlukan',
+                    }"
+                    v-model="supportForm.disokongOleh"
                   />
                 </div>
 
@@ -411,21 +392,21 @@
                 <div class="md:col-span-2">
                   <FormKit
                     type="textarea"
-                    name="supportComments"
-                    label="Ulasan Sokongan"
-                    placeholder="Sila berikan ulasan sokongan anda..."
+                    name="catatanSokongan"
+                    label="Catatan Sokongan"
+                    placeholder="Sila berikan catatan sokongan anda..."
                     validation="required"
                     :validation-messages="{
-                      required: 'Ulasan sokongan diperlukan',
+                      required: 'Catatan sokongan diperlukan',
                     }"
-                    v-model="formData.supportComments"
+                    v-model="supportForm.catatanSokongan"
                     :classes="{
                       input: 'min-h-[120px]',
                     }"
                   />
                 </div>
 
-                <!-- Surat Sokongan Upload -->
+                <!-- Support Letter Upload -->
                 <div class="md:col-span-2">
                   <FormKit
                     type="file"
@@ -439,7 +420,7 @@
                     :classes="{
                       input: '!py-2',
                     }"
-                    v-model="formData.suratSokongan"
+                    v-model="supportForm.suratSokongan"
                     help="Format: PDF, DOC, DOCX. Surat sokongan rasmi dari eksekutif"
                   />
                 </div>
@@ -455,12 +436,12 @@
                     :classes="{
                       input: '!py-2',
                     }"
-                    v-model="formData.additionalDocuments"
+                    v-model="supportForm.additionalDocuments"
                   />
                 </div>
               </div>
 
-              <!-- Submit Buttons -->
+              <!-- Submit Buttons - Standardized at the bottom -->
               <div class="flex justify-end gap-4 mt-6">
                 <rs-button
                   type="button"
@@ -491,7 +472,7 @@ const route = useRoute();
 
 definePageMeta({
   title: "Sokongan Eksekutif - Maklumat Terperinci",
-  description: "Maklumat terperinci untuk sokongan eksekutif",
+  description: "Paparan terperinci sokongan eksekutif",
 });
 
 const breadcrumb = ref([
@@ -511,9 +492,9 @@ const breadcrumb = ref([
     path: "/BF-PA/PP/pra-daftar-v3",
   },
   {
-    name: "Sokongan Eksekutif",
+    name: "Eksekutif",
     type: "link",
-    path: "/BF-PA/PP/pra-daftar-v3/eksekutif",
+    path: "/BF-PA/PP/pra-daftar-v3",
   },
   {
     name: "Maklumat Terperinci",
@@ -522,17 +503,30 @@ const breadcrumb = ref([
   },
 ]);
 
+// Workflow steps for Eksekutif role
+const workflowSteps = computed(() => {
+  return [
+    { key: 'registration', label: 'Pendaftaran', icon: 'ph:user-plus' },
+    { key: 'screening', label: 'Saringan', icon: 'ph:shield-check' },
+    { key: 'review', label: 'Semakan PT', icon: 'ph:clipboard-text' },
+    { key: 'support', label: 'Sokongan', icon: 'ph:thumbs-up' }
+  ];
+});
+
 // Support Decision Options
 const supportDecisionOptions = [
-  { label: "Sokong", value: "support" },
-  { label: "Tidak Sokong", value: "reject" },
-  { label: "Perlu Maklumat Tambahan", value: "need_more_info" },
+  { label: "Sokong", value: "Sokong" },
+  { label: "Tidak Sokong", value: "Tidak Sokong" },
+  { label: "Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
 ];
 
 // Form Data
-const formData = ref({
-  supportDecision: "",
-  supportComments: "",
+const supportForm = ref({
+  statusSokongan: "",
+  tarikhSokongan: "",
+  disokongOleh: "",
+  catatanSokongan: "",
+  suratSokongan: null,
   additionalDocuments: null,
 });
 
@@ -557,17 +551,11 @@ const application = ref({
   institusiKariah: "Masjid Wilayah Persekutuan",
   sesiPerkhidmatan: "Sesi 1",
   statusPendaftaran: "PT Reviewed",
-  statusLantikan: "Under Review",
+  statusLantikan: "Pending",
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
   uploadDate: "15/03/2024",
-  ptReview: {
-    status: "Lulus",
-    reviewedBy: "Dr. Siti Aminah binti Abdullah",
-    reviewedAt: "20/03/2024 14:30",
-    comments: "Calon memenuhi semua kriteria yang ditetapkan. Rekod calon bersih dan tiada sebarang rekod negatif. Layak untuk disokong.",
-  },
   timeline: [
     {
       action: "Permohonan Dihantar",
@@ -580,50 +568,98 @@ const application = ref({
       notes: "Semua dokumen lengkap dan sah"
     },
     {
-      action: "Semakan PT",
-      date: "20/03/2024 14:30 PM",
+      action: "Saringan Selesai",
+      date: "20/03/2024 11:30 AM",
+      notes: "Calon lulus saringan risiko"
+    },
+    {
+      action: "Semakan PT Selesai",
+      date: "25/03/2024 14:30 PM",
       notes: "Calon lulus semakan PT"
     },
     {
       action: "Menunggu Sokongan Eksekutif",
-      date: "21/03/2024 09:00 AM",
+      date: "26/03/2024 09:00 AM",
       notes: "Permohonan dalam proses sokongan eksekutif"
     }
   ]
 });
 
+// Mock support data
+const supportData = ref({
+  statusSokongan: "Dalam Proses",
+  tarikhSokongan: "",
+  disokongOleh: "",
+  catatanSokongan: "",
+  suratSokongan: null,
+});
+
 // Helper functions
+const getStepVariant = (step) => {
+  const stepStatus = {
+    'registration': 'bg-green-100 text-green-800 border-2 border-green-300',
+    'screening': 'bg-green-100 text-green-800 border-2 border-green-300',
+    'review': 'bg-green-100 text-green-800 border-2 border-green-300',
+    'support': 'bg-purple-100 text-purple-800 border-2 border-purple-300'
+  };
+  return stepStatus[step] || 'bg-gray-100 text-gray-400 border-2 border-gray-200';
+};
+
+const getStepLineVariant = (step) => {
+  const lineStatus = {
+    'registration': 'bg-green-300',
+    'screening': 'bg-green-300',
+    'review': 'bg-green-300',
+    'support': 'bg-purple-300'
+  };
+  return lineStatus[step] || 'bg-gray-200';
+};
+
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
-    "PT Reviewed": "success",
+    Draft: "default",
+    Submitted: "warning",
     "Under Review": "info",
+    Screened: "info",
+    "PT Reviewed": "info",
     "Executive Supported": "success",
-    "Executive Rejected": "danger",
+    "Department Confirmed": "success",
+    "Division Approved": "success",
+    Approved: "success",
+    Rejected: "danger",
   };
   return statusVariants[status] || "default";
 };
 
-const getStatusLantikanVariant = (status) => {
+const getSupportStatusVariant = (status) => {
   const statusVariants = {
-    Pending: "warning",
-    "Under Review": "info",
-    Supported: "success",
-    Rejected: "danger",
+    "Dalam Proses": "warning",
+    Sokong: "success",
+    "Tidak Sokong": "danger",
   };
   return statusVariants[status] || "default";
 };
 
 // Action handlers
 const handleBack = () => {
-  navigateTo("/BF-PA/PP/pra-daftar-v3/eksekutif");
+  navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
 const handleSubmit = async (formData) => {
   try {
     isSubmitting.value = true;
     
+    // Update support data
+    supportData.value = {
+      ...supportData.value,
+      ...supportForm.value,
+      statusSokongan: supportForm.value.statusSokongan,
+      tarikhSokongan: supportForm.value.tarikhSokongan,
+      disokongOleh: supportForm.value.disokongOleh,
+    };
+    
     // Show success message
-    alert("Sokongan eksekutif berjaya dihantar dengan Surat Sokongan");
+    alert(`Sokongan eksekutif berjaya dihantar. Status: ${supportForm.value.statusSokongan}`);
     
     // Navigate back to dashboard
     navigateTo("/BF-PA/PP/pra-daftar-v3");
@@ -639,14 +675,22 @@ const handleSubmitDirect = async () => {
   try {
     isSubmitting.value = true;
     
-    // Show success message
-    // Executive support submitted successfully
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Navigate to success page or list
-    navigateTo("/BF-PA/PP/pra-daftar-v3/eksekutif");
+    // Update support data
+    supportData.value.statusSokongan = supportForm.value.statusSokongan;
+    supportData.value.tarikhSokongan = supportForm.value.tarikhSokongan;
+    supportData.value.catatanSokongan = supportForm.value.catatanSokongan;
+    supportData.value.disokongOleh = supportForm.value.disokongOleh;
+    
+    // Support submitted successfully
+    
+    // Navigate back to dashboard
+    navigateTo("/BF-PA/PP/pra-daftar-v3");
     
   } catch (error) {
-    alert("Ralat berlaku semasa menghantar sokongan. Sila cuba lagi.");
+    alert("Ralat berlaku semasa menghantar sokongan eksekutif. Sila cuba lagi.");
   } finally {
     isSubmitting.value = false;
   }
@@ -654,13 +698,12 @@ const handleSubmitDirect = async () => {
 
 const previewDocument = (documentType) => {
   // Simulate document preview
-      // Previewing document
-  // In real implementation, this would open a modal or navigate to document viewer
+  alert(`Melihat dokumen: ${documentType}`);
 };
 
 onMounted(() => {
-  // In real implementation, fetch application data based on rujukan
-      // Loading application details
+  // In real implementation, fetch application and support data based on rujukan
+  console.log("Loading executive support details");
 });
 </script>
 

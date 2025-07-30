@@ -8,7 +8,39 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <!-- Loading State -->
+    <div v-if="isLoading" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <Icon name="ph:spinner" class="w-8 h-8 text-blue-600 animate-spin mr-3" />
+            <span class="text-gray-600">Memuatkan sejarah perkhidmatan...</span>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <div class="text-center">
+              <Icon name="ph:warning" class="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Ralat Memuatkan Data</h3>
+              <p class="text-gray-600 mb-4">{{ error }}</p>
+              <rs-button variant="primary" @click="retryLoad">
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Cuba Lagi
+              </rs-button>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Main Content -->
+    <rs-card v-else class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
@@ -135,7 +167,7 @@
               Sejarah Perkhidmatan
             </h3>
             
-            <div class="space-y-4">
+            <div v-if="serviceHistory && serviceHistory.length > 0" class="space-y-4">
               <div v-for="(appointment, index) in serviceHistory" :key="index" 
                    class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                 <div class="flex justify-between items-start mb-3">
@@ -175,6 +207,11 @@
                 </div>
               </div>
             </div>
+            
+            <div v-else class="text-center py-8">
+              <Icon name="ph:info" class="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <p class="text-gray-500">Tiada sejarah perkhidmatan tersedia</p>
+            </div>
           </div>
 
           <!-- Performance Metrics -->
@@ -183,7 +220,7 @@
               Metrik Prestasi
             </h3>
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div class="text-center p-4 bg-blue-50 rounded-lg">
                 <div class="text-2xl font-bold text-blue-600">{{ performanceMetrics.totalSessions }}</div>
                 <div class="text-sm text-blue-800">Sesi Perkhidmatan</div>
@@ -212,7 +249,7 @@
               Sijil & Anugerah
             </h3>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div v-if="certificates && certificates.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div v-for="(certificate, index) in certificates" :key="index" 
                    class="p-4 border border-gray-200 rounded-lg">
                 <div class="flex items-center mb-2">
@@ -222,6 +259,11 @@
                 <p class="text-sm text-gray-600 mb-2">{{ certificate.issuer }}</p>
                 <p class="text-sm text-gray-500">{{ certificate.date }}</p>
               </div>
+            </div>
+            
+            <div v-else class="text-center py-8">
+              <Icon name="ph:certificate" class="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <p class="text-gray-500">Tiada sijil atau anugerah tersedia</p>
             </div>
           </div>
         </div>
@@ -240,6 +282,10 @@ definePageMeta({
 
 const route = useRoute();
 const rujukan = route.params.rujukan;
+
+// State management
+const isLoading = ref(true);
+const error = ref(null);
 
 const breadcrumb = ref([
   {
@@ -345,9 +391,41 @@ const handleBack = () => {
   navigateTo("/BF-PA/PP/pra-daftar-v3");
 };
 
+const retryLoad = async () => {
+  error.value = null;
+  isLoading.value = true;
+  await loadData();
+};
+
+const loadData = async () => {
+  try {
+    isLoading.value = true;
+    error.value = null;
+    
+    // Simulate API call
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Simulate random error (5% chance)
+        if (Math.random() < 0.05) {
+          reject(new Error("Ralat rangkaian. Sila cuba lagi."));
+        } else {
+          resolve();
+        }
+      }, 1000);
+    });
+    
+    // In real implementation, fetch appointment data based on rujukan
+    console.log("Loading service history for:", rujukan);
+    
+  } catch (err) {
+    error.value = err.message || "Ralat berlaku semasa memuatkan data";
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 onMounted(() => {
-  // In real implementation, fetch appointment data based on rujukan
-  console.log("Loading service history for:", rujukan);
+  loadData();
 });
 </script>
 
