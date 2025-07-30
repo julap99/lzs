@@ -369,12 +369,7 @@
               Keputusan Sokongan Eksekutif
             </h3>
             
-            <FormKit
-              type="form"
-              id="supportForm"
-              :actions="false"
-              @submit="handleSubmit"
-            >
+            <div class="space-y-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Support Decision -->
                 <div class="md:col-span-2">
@@ -460,7 +455,7 @@
                       input: '!py-2',
                     }"
                     v-model="supportForm.additionalDocuments"
-                    help="Format: PDF, DOC, DOCX, JPG, JPEG, PNG. Dokumen tambahan jika diperlukan"
+                    help="Format: PDF, DOC, DOCX, JPG, JPEG, PNG. Saiz maksimum 10MB"
                   />
                 </div>
               </div>
@@ -489,7 +484,7 @@
                   {{ isSubmitting ? 'Menghantar...' : 'Hantar Keputusan' }}
                 </rs-button>
               </div>
-            </FormKit>
+            </div>
           </div>
         </div>
       </template>

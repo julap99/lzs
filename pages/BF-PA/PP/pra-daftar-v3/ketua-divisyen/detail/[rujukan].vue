@@ -407,12 +407,7 @@
               Keputusan Kelulusan Ketua Divisyen
             </h3>
             
-            <FormKit
-              type="form"
-              id="approvalForm"
-              :actions="false"
-              @submit="handleSubmit"
-            >
+            <div class="space-y-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Approval Decision -->
                 <div class="md:col-span-2">
@@ -486,8 +481,6 @@
                   />
                 </div>
 
-
-
                 <!-- Additional Documents -->
                 <div class="md:col-span-2">
                   <FormKit
@@ -500,7 +493,7 @@
                       input: '!py-2',
                     }"
                     v-model="approvalForm.additionalDocuments"
-                    help="Format: PDF, DOC, DOCX, JPG, JPEG, PNG. Dokumen tambahan jika diperlukan"
+                    help="Format: PDF, DOC, DOCX, JPG, JPEG, PNG. Saiz maksimum 10MB"
                   />
                 </div>
               </div>
@@ -529,7 +522,7 @@
                   {{ isSubmitting ? 'Menghantar...' : 'Hantar Keputusan' }}
                 </rs-button>
               </div>
-            </FormKit>
+            </div>
           </div>
         </div>
       </template>
