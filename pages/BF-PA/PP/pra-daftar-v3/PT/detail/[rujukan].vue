@@ -753,15 +753,8 @@ const handleSubmit = async () => {
       disemakOleh: reviewForm.value.disemakOleh,
     };
     
-    // Show success toast notification
-    $swal({
-      title: "Berjaya!",
-      text: `Keputusan semakan PT berjaya dihantar. Status: ${reviewForm.value.statusReview}`,
-      icon: "success",
-      timer: 3000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
+    // Show success notification
+    alert(`Berjaya! Keputusan semakan PT berjaya dihantar. Status: ${reviewForm.value.statusReview}`);
     
     // Navigate back to dashboard after a short delay
     setTimeout(() => {
@@ -769,11 +762,7 @@ const handleSubmit = async () => {
     }, 1500);
     
   } catch (error) {
-    $swal({
-      title: "Ralat!",
-      text: "Ralat berlaku semasa menghantar semakan PT",
-      icon: "error",
-    });
+    alert("Ralat! Ralat berlaku semasa menghantar semakan PT");
   } finally {
     isSubmitting.value = false;
   }

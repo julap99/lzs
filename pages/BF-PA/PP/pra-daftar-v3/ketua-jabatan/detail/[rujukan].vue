@@ -807,15 +807,8 @@ const handleSubmit = async () => {
       disahkanOleh: confirmationForm.value.disahkanOleh,
     };
     
-    // Show success toast notification
-    $swal({
-      title: "Berjaya!",
-      text: `Keputusan pengesahan jabatan berjaya dihantar. Status: ${confirmationForm.value.statusPengesahan}`,
-      icon: "success",
-      timer: 3000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
+    // Show success notification
+    alert(`Berjaya! Pengesahan jabatan berjaya dihantar. Status: ${confirmationForm.value.statusPengesahan}`);
     
     // Navigate back to dashboard after a short delay
     setTimeout(() => {
@@ -823,11 +816,7 @@ const handleSubmit = async () => {
     }, 1500);
     
   } catch (error) {
-    $swal({
-      title: "Ralat!",
-      text: "Ralat berlaku semasa menghantar pengesahan jabatan",
-      icon: "error",
-    });
+    alert("Ralat! Ralat berlaku semasa menghantar pengesahan jabatan");
   } finally {
     isSubmitting.value = false;
   }

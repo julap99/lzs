@@ -780,15 +780,8 @@ const handleSubmit = async () => {
       disokongOleh: supportForm.value.disokongOleh,
     };
     
-    // Show success toast notification
-    $swal({
-      title: "Berjaya!",
-      text: `Keputusan sokongan eksekutif berjaya dihantar. Status: ${supportForm.value.statusSokongan}`,
-      icon: "success",
-      timer: 3000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
+    // Show success notification
+    alert(`Berjaya! Sokongan eksekutif berjaya dihantar. Status: ${supportForm.value.statusSokongan}`);
     
     // Navigate back to dashboard after a short delay
     setTimeout(() => {
@@ -796,11 +789,7 @@ const handleSubmit = async () => {
     }, 1500);
     
   } catch (error) {
-    $swal({
-      title: "Ralat!",
-      text: "Ralat berlaku semasa menghantar sokongan eksekutif",
-      icon: "error",
-    });
+    alert("Ralat! Ralat berlaku semasa menghantar sokongan eksekutif");
   } finally {
     isSubmitting.value = false;
   }

@@ -728,15 +728,8 @@ const handleSubmit = async () => {
       disaredOleh: screeningForm.value.disaredOleh,
     };
     
-    // Show success toast notification
-    $swal({
-      title: "Berjaya!",
-      text: `Keputusan saringan berjaya dihantar. Status: ${screeningForm.value.statusSaringan}`,
-      icon: "success",
-      timer: 3000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
+    // Show success notification
+    alert(`Berjaya! Keputusan saringan berjaya dihantar. Status: ${screeningForm.value.statusSaringan}`);
     
     // Navigate back to dashboard after a short delay
     setTimeout(() => {
@@ -744,11 +737,7 @@ const handleSubmit = async () => {
     }, 1500);
     
   } catch (error) {
-    $swal({
-      title: "Ralat!",
-      text: "Ralat berlaku semasa menghantar saringan",
-      icon: "error",
-    });
+    alert("Ralat! Ralat berlaku semasa menghantar saringan");
   } finally {
     isSubmitting.value = false;
   }
@@ -760,14 +749,7 @@ const previewDocument = (documentType) => {
 };
 
 const testFunctionality = () => {
-  $swal({
-    title: "Test Berjaya!",
-    text: "Fungsi pengesahan berjaya diuji.",
-    icon: "success",
-    timer: 2000,
-    timerProgressBar: true,
-    showConfirmButton: false,
-  });
+  alert("Test Berjaya! Fungsi pengesahan berjaya diuji.");
 };
 
 onMounted(() => {

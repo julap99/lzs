@@ -910,15 +910,8 @@ const handleSubmit = async () => {
       diluluskanOleh: approvalForm.value.diluluskanOleh,
     };
     
-    // Show success toast notification
-    $swal({
-      title: "Berjaya!",
-      text: `Keputusan kelulusan divisyen berjaya dihantar. Status: ${approvalForm.value.statusKelulusan}`,
-      icon: "success",
-      timer: 3000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
+    // Show success notification
+    alert(`Berjaya! Kelulusan ketua divisyen berjaya dihantar. Status: ${approvalForm.value.statusKelulusan}`);
     
     // Navigate back to dashboard after a short delay
     setTimeout(() => {
@@ -926,11 +919,7 @@ const handleSubmit = async () => {
     }, 1500);
     
   } catch (error) {
-    $swal({
-      title: "Ralat!",
-      text: "Ralat berlaku semasa menghantar kelulusan divisyen",
-      icon: "error",
-    });
+    alert("Ralat! Ralat berlaku semasa menghantar kelulusan ketua divisyen");
   } finally {
     isSubmitting.value = false;
   }
