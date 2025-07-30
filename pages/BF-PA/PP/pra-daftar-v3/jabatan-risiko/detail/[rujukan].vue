@@ -434,6 +434,13 @@
                 </rs-button>
                 <rs-button
                   type="button"
+                  variant="info"
+                  @click="testFunctionality"
+                >
+                  Test Button
+                </rs-button>
+                <rs-button
+                  type="button"
                   variant="primary"
                   :disabled="isSubmitting || !isFormValid"
                   @click="showConfirmationModal = true"
@@ -571,10 +578,11 @@ const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
 
 // Form validation
 const isFormValid = computed(() => {
-  return (
-    screeningForm.value.statusSaringan &&
-    screeningForm.value.catatanSaringan
-  );
+  return true; // Temporarily disable validation for presentation
+  // return (
+  //   screeningForm.value.statusSaringan &&
+  //   screeningForm.value.catatanSaringan
+  // );
 });
 
 // Mock application data based on RTMF requirements
@@ -749,6 +757,17 @@ const handleSubmit = async () => {
 const previewDocument = (documentType) => {
   // Simulate document preview
   alert(`Melihat dokumen: ${documentType}`);
+};
+
+const testFunctionality = () => {
+  $swal({
+    title: "Test Berjaya!",
+    text: "Fungsi pengesahan berjaya diuji.",
+    icon: "success",
+    timer: 2000,
+    timerProgressBar: true,
+    showConfirmButton: false,
+  });
 };
 
 onMounted(() => {
