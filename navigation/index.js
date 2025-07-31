@@ -1303,6 +1303,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Kemaskini Maklumat Perkhidmatan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/PP/KP",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
