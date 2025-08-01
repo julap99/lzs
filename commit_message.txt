@@ -1,0 +1,12 @@
+feat: implement role-specific filtering and action buttons for KP module
+
+- Add role-specific data filtering for PT, Eksekutif, Ketua Jabatan, Ketua Divisyen
+- PT only sees pending requests waiting for review
+- Eksekutif only sees pt_reviewed requests waiting for support
+- Ketua Jabatan only sees executive_supported requests waiting for confirmation
+- Ketua Divisyen only sees department_confirmed requests waiting for final approval
+- Implement dynamic action buttons: "Semak", "Sokong", "Sahkan", "Luluskan"
+- Add role-specific header descriptions and request counts
+- Update mock data with proper status distribution across workflow stages
+- Fix missing "Luluskan" action for Ketua Divisyen role
+- Enhance user experience with role-appropriate data visibility 

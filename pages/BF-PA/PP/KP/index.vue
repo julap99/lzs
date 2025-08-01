@@ -6,6 +6,68 @@
 -->
 <template>
   <div>
+    <!-- Page-specific Role Switcher -->
+    <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <Icon name="ph:user-circle" class="text-gray-600" size="20" />
+          <span class="text-sm font-medium text-gray-700">Peranan Pengguna:</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="min-w-[200px]">
+            <FormKit
+              type="select"
+              v-model="currentRole"
+              :options="roleOptions"
+              :classes="{ 
+                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
+                wrapper: '!min-w-0'
+              }"
+              @change="handleRoleChange"
+            />
+          </div>
+          <rs-button
+            variant="secondary-outline"
+            size="sm"
+            @click="toggleRoleInfo"
+            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
+            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
+          >
+            <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+            {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
+          </rs-button>
+        </div>
+      </div>
+      
+      <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
+            <div class="flex items-center space-x-3">
+              <rs-badge :variant="getRoleVariant(currentRole)" class="!text-xs">
+                {{ getRoleLabel(currentRole) }}
+              </rs-badge>
+              <span class="text-xs text-gray-600">{{ getRoleDescription(currentRole) }}</span>
+            </div>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
+            <div class="flex flex-wrap gap-2">
+              <rs-badge
+                v-for="capability in getRoleCapabilities(currentRole)"
+                :key="capability"
+                variant="secondary"
+                size="sm"
+                class="!text-xs"
+              >
+                {{ capability }}
+              </rs-badge>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <!-- Enhanced Header Section -->
@@ -16,7 +78,9 @@
             <Icon name="ph:gear" class="w-6 h-6 mr-3 text-primary" />
             Kemaskini Maklumat Perkhidmatan Penolong Amil
           </h1>
-          <p class="text-gray-600 mt-1">Urus permintaan kemaskini maklumat perkhidmatan penolong amil</p>
+          <p class="text-gray-600 mt-1">
+            {{ getRoleSpecificDescription(currentRole) }} - {{ filteredRequests.length }} permintaan menunggu tindakan
+          </p>
         </div>
         <div class="flex gap-2">
           <rs-button
@@ -30,57 +94,6 @@
           </rs-button>
         </div>
       </div>
-    </div>
-
-    <!-- Enhanced Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <rs-card class="hover:shadow-lg transition-shadow duration-200">
-        <template #body>
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-2xl font-bold text-primary">{{ stats.totalRequests }}</div>
-              <div class="text-sm text-gray-600">Jumlah Permintaan</div>
-            </div>
-            <Icon name="ph:file-text" class="w-8 h-8 text-primary opacity-60" />
-          </div>
-        </template>
-      </rs-card>
-      
-      <rs-card class="hover:shadow-lg transition-shadow duration-200">
-        <template #body>
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-2xl font-bold text-warning">{{ stats.pendingRequests }}</div>
-              <div class="text-sm text-gray-600">Menunggu Semakan</div>
-            </div>
-            <Icon name="ph:clock" class="w-8 h-8 text-warning opacity-60" />
-          </div>
-        </template>
-      </rs-card>
-      
-      <rs-card class="hover:shadow-lg transition-shadow duration-200">
-        <template #body>
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-2xl font-bold text-success">{{ stats.approvedRequests }}</div>
-              <div class="text-sm text-gray-600">Diluluskan</div>
-            </div>
-            <Icon name="ph:check-circle" class="w-8 h-8 text-success opacity-60" />
-          </div>
-        </template>
-      </rs-card>
-      
-      <rs-card class="hover:shadow-lg transition-shadow duration-200">
-        <template #body>
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-2xl font-bold text-danger">{{ stats.rejectedRequests }}</div>
-              <div class="text-sm text-gray-600">Ditolak</div>
-            </div>
-            <Icon name="ph:x-circle" class="w-8 h-8 text-danger opacity-60" />
-          </div>
-        </template>
-      </rs-card>
     </div>
 
     <!-- Simplified Filters Section -->
@@ -245,14 +258,14 @@
                       Lihat
                     </rs-button>
                     <rs-button
-                      v-if="canEditRequest(request)"
-                      variant="secondary-outline"
+                      v-if="canPerformAction(request)"
+                      :variant="getActionButtonVariant(currentRole)"
                       size="sm"
-                      @click="editRequest(request)"
+                      @click="performAction(request)"
                       class="flex items-center"
                     >
-                      <Icon name="ph:pencil" class="w-3 h-3 mr-1" />
-                      Edit
+                      <Icon :name="getActionIcon(currentRole)" class="w-3 h-3 mr-1" />
+                      {{ getActionLabel(currentRole) }}
                     </rs-button>
                   </div>
                 </td>
@@ -413,7 +426,7 @@ const institusiOptions = [
   { label: "Kompleks Islam", value: "kompleks_islam" },
 ];
 
-// Enhanced mock data
+// Enhanced mock data with role-specific filtering
 const requests = ref([
   {
     id: "KP001",
@@ -468,7 +481,7 @@ const requests = ref([
     newKategori: "Penolong Amil Padi",
     currentInstitusi: "Masjid Al-Hidayah",
     newInstitusi: "Surau Al-Amin",
-    status: "approved",
+    status: "department_confirmed",
     tarikhPermintaan: "2024-01-12",
   },
   {
@@ -499,22 +512,121 @@ const requests = ref([
     status: "resubmitted",
     tarikhPermintaan: "2024-01-10",
   },
+  {
+    id: "KP007",
+    rujukan: "KP-2024-007",
+    penolongAmil: {
+      nama: "Abdul Rahman bin Hassan",
+      noKP: "890715456789",
+    },
+    currentKategori: "Penolong Amil Kariah",
+    newKategori: "Penolong Amil Fitrah",
+    currentInstitusi: "Masjid Al-Hidayah",
+    newInstitusi: "Surau Al-Amin",
+    status: "pending",
+    tarikhPermintaan: "2024-01-09",
+  },
+  {
+    id: "KP008",
+    rujukan: "KP-2024-008",
+    penolongAmil: {
+      nama: "Noraini binti Abdullah",
+      noKP: "910825567890",
+    },
+    currentKategori: "Penolong Amil Komuniti",
+    newKategori: "Penolong Amil Padi",
+    currentInstitusi: "Surau Al-Amin",
+    newInstitusi: "Kompleks Islam",
+    status: "pt_reviewed",
+    tarikhPermintaan: "2024-01-08",
+  },
+  {
+    id: "KP009",
+    rujukan: "KP-2024-009",
+    penolongAmil: {
+      nama: "Ismail bin Hassan",
+      noKP: "870925678901",
+    },
+    currentKategori: "Penolong Amil Fitrah",
+    newKategori: "Penolong Amil Kariah",
+    currentInstitusi: "Kompleks Islam",
+    newInstitusi: "Masjid Al-Hidayah",
+    status: "executive_supported",
+    tarikhPermintaan: "2024-01-07",
+  },
+  {
+    id: "KP010",
+    rujukan: "KP-2024-010",
+    penolongAmil: {
+      nama: "Aminah binti Mohamed",
+      noKP: "920103789012",
+    },
+    currentKategori: "Penolong Amil Padi",
+    newKategori: "Penolong Amil Komuniti",
+    currentInstitusi: "Masjid Al-Hidayah",
+    newInstitusi: "Surau Al-Amin",
+    status: "department_confirmed",
+    tarikhPermintaan: "2024-01-06",
+  },
 ]);
 
-// Enhanced computed properties
+// Enhanced computed properties with role-specific filtering
 const filteredRequests = computed(() => {
-  return requests.value.filter(request => {
-    const matchesSearch = !filters.value.searchQuery || 
-      request.rujukan.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      request.penolongAmil.nama.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      request.penolongAmil.noKP.includes(filters.value.searchQuery);
-    
-    const matchesStatus = !filters.value.status || request.status === filters.value.status;
-    const matchesKategori = !filters.value.kategori || request.newKategori.toLowerCase().includes(filters.value.kategori.toLowerCase());
-    const matchesInstitusi = !filters.value.institusi || request.newInstitusi.toLowerCase().includes(filters.value.institusi.toLowerCase());
-    
-    return matchesSearch && matchesStatus && matchesKategori && matchesInstitusi;
-  });
+  let result = [...requests.value];
+  
+  // Role-specific filtering
+  const role = currentRole.value;
+  
+  // PT can only see pending requests (waiting for PT review)
+  if (role === "pt") {
+    result = result.filter(request => request.status === "pending");
+  }
+  
+  // Eksekutif can only see pt_reviewed requests (waiting for executive support)
+  else if (role === "eksekutif") {
+    result = result.filter(request => request.status === "pt_reviewed");
+  }
+  
+  // Ketua Jabatan can only see executive_supported requests (waiting for department confirmation)
+  else if (role === "ketua-jabatan") {
+    result = result.filter(request => request.status === "executive_supported");
+  }
+  
+  // Ketua Divisyen can only see department_confirmed requests (waiting for final approval)
+  else if (role === "ketua-divisyen") {
+    result = result.filter(request => request.status === "department_confirmed");
+  }
+  
+  // Apply search filter
+  if (filters.value.searchQuery) {
+    const query = filters.value.searchQuery.toLowerCase();
+    result = result.filter(request => 
+      request.rujukan.toLowerCase().includes(query) ||
+      request.penolongAmil.nama.toLowerCase().includes(query) ||
+      request.penolongAmil.noKP.includes(query)
+    );
+  }
+  
+  // Apply status filter (only if not role-specific)
+  if (filters.value.status && role === "pt") {
+    result = result.filter(request => request.status === filters.value.status);
+  }
+  
+  // Apply kategori filter
+  if (filters.value.kategori) {
+    result = result.filter(request => 
+      request.newKategori.toLowerCase().includes(filters.value.kategori.toLowerCase())
+    );
+  }
+  
+  // Apply institusi filter
+  if (filters.value.institusi) {
+    result = result.filter(request => 
+      request.newInstitusi.toLowerCase().includes(filters.value.institusi.toLowerCase())
+    );
+  }
+  
+  return result;
 });
 
 const totalPages = computed(() => Math.ceil(filteredRequests.value.length / itemsPerPage.value));
@@ -525,12 +637,28 @@ const paginatedRequests = computed(() => {
 });
 
 const stats = computed(() => {
-  const total = requests.value.length;
-  const pending = requests.value.filter((r) => r.status === "pending").length;
-  const approved = requests.value.filter((r) => r.status === "approved").length;
-  const rejected = requests.value.filter((r) => r.status === "rejected").length;
-  const needMoreInfo = requests.value.filter((r) => r.status === "need_more_info").length;
-  const resubmitted = requests.value.filter((r) => r.status === "resubmitted").length;
+  const role = currentRole.value;
+  let relevantRequests = [];
+  
+  // Get relevant requests for current role
+  if (role === "pt") {
+    relevantRequests = requests.value.filter(r => r.status === "pending");
+  } else if (role === "eksekutif") {
+    relevantRequests = requests.value.filter(r => r.status === "pt_reviewed");
+  } else if (role === "ketua-jabatan") {
+    relevantRequests = requests.value.filter(r => r.status === "executive_supported");
+  } else if (role === "ketua-divisyen") {
+    relevantRequests = requests.value.filter(r => r.status === "department_confirmed");
+  } else {
+    relevantRequests = requests.value;
+  }
+
+  const total = relevantRequests.length;
+  const pending = relevantRequests.filter((r) => r.status === "pending").length;
+  const approved = relevantRequests.filter((r) => r.status === "approved").length;
+  const rejected = relevantRequests.filter((r) => r.status === "rejected").length;
+  const needMoreInfo = relevantRequests.filter((r) => r.status === "need_more_info").length;
+  const resubmitted = relevantRequests.filter((r) => r.status === "resubmitted").length;
 
   return {
     totalRequests: total,
@@ -595,22 +723,9 @@ const applyFilters = () => {
 };
 
 const viewRequest = (request) => {
-  // Navigate to appropriate detail page based on status and role
-  let detailPath = '';
-  
-  if (request.status === 'pending') {
-    detailPath = `/BF-PA/PP/KP/pt/detail/${request.rujukan}`;
-  } else if (request.status === 'pt_reviewed') {
-    detailPath = `/BF-PA/PP/KP/eksekutif/detail/${request.rujukan}`;
-  } else if (request.status === 'executive_supported') {
-    detailPath = `/BF-PA/PP/KP/ketua-jabatan/detail/${request.rujukan}`;
-  } else if (request.status === 'department_confirmed') {
-    detailPath = `/BF-PA/PP/KP/ketua-divisyen/detail/${request.rujukan}`;
-  } else {
-    detailPath = `/BF-PA/PP/KP/kemaskini/${request.rujukan}`;
-  }
-  
-  navigateTo(detailPath);
+  // Navigate to role-specific detail page based on current role
+  const role = currentRole.value;
+  navigateTo(`/BF-PA/PP/KP/${role}/detail/${request.rujukan}`);
 };
 
 const editRequest = (request) => {
@@ -639,13 +754,151 @@ const hideNotification = () => {
 // Role-based access control
 const canCreateRequest = computed(() => {
   // Mock user role - in real app, get from auth context
-  const userRole = "PYB Institusi"; // or "Eksekutif"
-  return userRole === "PYB Institusi" || userRole === "Eksekutif";
+  const userRole = "eksekutif"; // or "Ketua Jabatan"
+  return userRole === "eksekutif" || userRole === "Ketua Jabatan";
 });
 
 const canEditRequest = (request) => {
   // Only allow editing if status is pending or need_more_info
   return request.status === "pending" || request.status === "need_more_info";
+};
+
+// Role-based action control
+const canPerformAction = (request) => {
+  const role = currentRole.value;
+  
+  // PT can act on pending requests
+  if (role === "pt" && request.status === "pending") {
+    return true;
+  }
+  
+  // Eksekutif can act on pt_reviewed requests
+  if (role === "eksekutif" && request.status === "pt_reviewed") {
+    return true;
+  }
+  
+  // Ketua Jabatan can act on executive_supported requests
+  if (role === "ketua-jabatan" && request.status === "executive_supported") {
+    return true;
+  }
+  
+  // Ketua Divisyen can act on department_confirmed requests
+  if (role === "ketua-divisyen" && request.status === "department_confirmed") {
+    return true;
+  }
+  
+  return false;
+};
+
+const getActionLabel = (role) => {
+  const labels = {
+    "pt": "Semak",
+    "eksekutif": "Sokong",
+    "ketua-jabatan": "Sahkan",
+    "ketua-divisyen": "Luluskan",
+  };
+  return labels[role] || "Tindakan";
+};
+
+const getActionIcon = (role) => {
+  const icons = {
+    "pt": "ph:check-circle",
+    "eksekutif": "ph:handshake",
+    "ketua-jabatan": "ph:shield-check",
+    "ketua-divisyen": "ph:crown",
+  };
+  return icons[role] || "ph:gear";
+};
+
+const getActionButtonVariant = (role) => {
+  const variants = {
+    "pt": "info",
+    "eksekutif": "success",
+    "ketua-jabatan": "warning",
+    "ketua-divisyen": "danger",
+  };
+  return variants[role] || "primary";
+};
+
+const getRoleSpecificDescription = (role) => {
+  const descriptions = {
+    "pt": "Semakan PT - Permintaan yang menunggu semakan PT",
+    "eksekutif": "Sokongan Eksekutif - Permintaan yang menunggu sokongan eksekutif",
+    "ketua-jabatan": "Pengesahan Jabatan - Permintaan yang menunggu pengesahan ketua jabatan",
+    "ketua-divisyen": "Kelulusan Akhir - Permintaan yang menunggu kelulusan ketua divisyen",
+  };
+  return descriptions[role] || "Urus permintaan kemaskini maklumat perkhidmatan penolong amil";
+};
+
+const performAction = (request) => {
+  const role = currentRole.value;
+  const actionLabel = getActionLabel(role);
+  
+  showNotificationMessage(
+    "Tindakan Berjaya", 
+    `Permintaan ${request.rujukan} telah ${actionLabel.toLowerCase()} oleh ${getRoleLabel(role)}.`
+  );
+  
+  // Navigate to appropriate detail page for the action
+  navigateTo(`/BF-PA/PP/KP/${role}/detail/${request.rujukan}`);
+};
+
+// Role Switcher State
+const currentRole = ref("pt"); // Default role
+const roleOptions = [
+  { label: "PT", value: "pt" },
+  { label: "Eksekutif", value: "eksekutif" },
+  { label: "Ketua Jabatan", value: "ketua-jabatan" },
+  { label: "Ketua Divisyen", value: "ketua-divisyen" },
+];
+const showRoleInfo = ref(false);
+
+const getRoleVariant = (role) => {
+  const variants = {
+    "pt": "info",
+    "eksekutif": "success",
+    "ketua-jabatan": "warning",
+    "ketua-divisyen": "danger",
+  };
+  return variants[role] || "default";
+};
+
+const getRoleLabel = (role) => {
+  const labels = {
+    "pt": "PT",
+    "eksekutif": "Eksekutif",
+    "ketua-jabatan": "Ketua Jabatan",
+    "ketua-divisyen": "Ketua Divisyen",
+  };
+  return labels[role] || role;
+};
+
+const getRoleDescription = (role) => {
+  const descriptions = {
+    "pt": "Semakan kemaskini maklumat Perkhidmatan Penolong Amil oleh PT",
+    "eksekutif": "Sokongan kemaskini maklumat Perkhidmatan Penolong Amil oleh Eksekutif",
+    "ketua-jabatan": "Pengesahan kemaskini maklumat Perkhidmatan Penolong Amil oleh Ketua Jabatan",
+    "ketua-divisyen": "Kelulusan kemaskini maklumat Perkhidmatan Penolong Amil oleh Ketua Divisyen",
+  };
+  return descriptions[role] || "Peranan ini mempunyai kebolehan yang berbeza.";
+};
+
+const getRoleCapabilities = (role) => {
+  const capabilities = {
+    "pt": ["Semak Permintaan", "Lulus/Sahkan", "Tolak", "Hantar ke Eksekutif"],
+    "eksekutif": ["Sokong Permintaan", "Sokong", "Tolak", "Hantar ke Ketua Jabatan"],
+    "ketua-jabatan": ["Sahkan Permintaan", "Sahkan", "Tolak", "Hantar ke Ketua Divisyen"],
+    "ketua-divisyen": ["Luluskan Permintaan", "Lulus", "Tolak", "Kelulusan Akhir"],
+  };
+  return capabilities[role] || ["Tidak ada kebolehan spesifik."];
+};
+
+const handleRoleChange = () => {
+  showNotificationMessage("Peranan Berubah", `User sekarang adalah "${getRoleLabel(currentRole.value)}".`);
+};
+
+const toggleRoleInfo = () => {
+  showRoleInfo.value = !showRoleInfo.value;
 };
 
 // Watch for filter changes to update applied filters
