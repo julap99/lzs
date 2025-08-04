@@ -120,8 +120,18 @@
           :key="tableKey"
           :data="filteredCategories"
           :pageSize="10"
-          :showNoColumn="true"
+          :showNoColumn="false"
           :columns="[
+            {
+              key: 'rujukan',
+              label: 'Rujukan',
+              sortable: true,
+            },
+            {
+              key: 'nama',
+              label: 'Nama',
+              sortable: true,
+            },
             {
               key: 'kategoriPenolongAmil',
               label: 'Kategori Penolong Amil',
@@ -380,7 +390,8 @@ const kategoriOptions = [
 const tableKey = ref(0);
 const categoriesList = ref([
   {
-    id: 1,
+    rujukan: "KJ-2024-001",
+    nama: "Ahmad bin Abdullah",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
     kodSingkatan: "PAF",
     status: "Aktif",
@@ -388,7 +399,8 @@ const categoriesList = ref([
     tindakan: 1
   },
   {
-    id: 2,
+    rujukan: "KJ-2024-002",
+    nama: "Siti Aminah binti Omar",
     kategoriPenolongAmil: "Penolong Amil Padi",
     kodSingkatan: "PAP",
     status: "Aktif",
@@ -396,7 +408,8 @@ const categoriesList = ref([
     tindakan: 2
   },
   {
-    id: 3,
+    rujukan: "KJ-2024-003",
+    nama: "Mohammed Ismail bin Hassan",
     kategoriPenolongAmil: "Penolong Amil Kariah",
     kodSingkatan: "PAK",
     status: "Menunggu Sokongan",
@@ -404,7 +417,8 @@ const categoriesList = ref([
     tindakan: 3
   },
   {
-    id: 4,
+    rujukan: "KJ-2024-004",
+    nama: "Fatimah binti Ahmad",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
     kodSingkatan: "PAKO",
     status: "Disokong Eksekutif",
@@ -412,7 +426,8 @@ const categoriesList = ref([
     tindakan: 4
   },
   {
-    id: 5,
+    rujukan: "KJ-2024-005",
+    nama: "Abdul Rahman bin Ali",
     kategoriPenolongAmil: "Penolong Amil Zakat",
     kodSingkatan: "PAZ",
     status: "Disahkan Ketua Jabatan",
@@ -420,7 +435,8 @@ const categoriesList = ref([
     tindakan: 5
   },
   {
-    id: 6,
+    rujukan: "KJ-2024-006",
+    nama: "Nor Azizah binti Ibrahim",
     kategoriPenolongAmil: "Penolong Amil Wakaf",
     kodSingkatan: "PAW",
     status: "Aktif",
@@ -452,6 +468,8 @@ const filteredCategories = computed(() => {
   if (filters.value.searchQuery) {
     const query = filters.value.searchQuery.toLowerCase();
     result = result.filter(category => 
+      category.rujukan.toLowerCase().includes(query) ||
+      category.nama.toLowerCase().includes(query) ||
       category.kategoriPenolongAmil.toLowerCase().includes(query) ||
       category.kodSingkatan.toLowerCase().includes(query)
     );
