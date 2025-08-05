@@ -531,13 +531,7 @@ export default [
             child: [],
             meta: {},
           },
-          {
-            title: "Senarai Peti Besi",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-TNI/tambah-nilai-tunai/senarai-peti-besi-perlu-tambah-nilai",
-            child: [],
-            meta: {},
-          },
+          // Removed old implementation - now using TNI-KO-KT workflow
         ],
         meta: {},
       }, 

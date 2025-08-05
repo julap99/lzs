@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Arahan Aktif - Terima & Sahkan Penerimaan Tunai</h2>
+          <h2 class="text-xl font-semibold">Senarai Pengesahan Tabung</h2>
         </div>
       </template>
 
@@ -117,7 +117,7 @@
                 @click="confirmReceipt(data.text.id)"
               >
                 <Icon name="material-symbols:check-circle" size="15" class="mr-1" />
-                Sahkan Penerimaan
+                Semak & Lulus
               </rs-button>
             </div>
           </template>
@@ -224,17 +224,22 @@ const formatTime = (dateTime) => {
 };
 
 const getStatusVariant = (status) => {
-  switch (status.toLowerCase()) {
+  // Clean the status string and convert to lowercase
+  const cleanStatus = status ? status.trim().toLowerCase() : '';
+  
+  switch (cleanStatus) {
     case 'diterima':
-      return 'success';
+      return 'success'; // Green badge
     case 'gagal':
-      return 'danger';
+      return 'danger'; // Red badge
     case 'ditangguh':
-      return 'warning';
+      return 'warning'; // Orange badge
     case 'belum diterima':
-      return 'default';
+      return 'warning'; // Orange badge - should be warning/orange
+    case 'belum_diterima':
+      return 'warning'; // Orange badge - should be warning/orange
     default:
-      return 'default';
+      return 'default'; // Gray badge
   }
 };
 </script>
