@@ -5,13 +5,13 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Semua Tuntutan (EOAD / ETD)</h2>
+          <h2 class="text-xl font-semibold">Senarai Tuntutan (EOAD / ETD)</h2>
         </div>
       </template>
 
       <template #body>
         <!-- Search and Filter Section -->
-        <div class="mb-6">
+        <!-- <div class="mb-6">
           <div class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
               <FormKit
@@ -35,6 +35,7 @@
             </div>
           </div>
         </div>
+        -->
 
         <!-- Main Table -->
         <rs-table
@@ -106,7 +107,7 @@
                 @click="handleSemakPengesahan(text.noTuntutan)"
               >
                 <Icon name="ph:check" class="w-4 h-4 mr-1" />
-                Semak & Buat Pengesahan
+                Semak
               </rs-button>
             </div>
           </template>
@@ -183,7 +184,7 @@ const breadcrumb = ref([
     path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad',
   },
   {
-    name: 'Senarai Tuntutan EOAD',
+    name: 'Senarai Tuntutan',
     type: 'current',
     path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad',
   },
@@ -197,7 +198,6 @@ const columns = [
   { key: 'tarikhTuntutan', label: 'Tarikh Tuntutan', sortable: true },
   { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
   { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },
-  { key: 'pegawaiETD', label: 'Pegawai ETD/EOAD', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
 
@@ -225,7 +225,6 @@ const tuntutanList = ref([
     tarikhTuntutan: new Date().toISOString(),
     amaunTuntutan: 5000.00,
     statusPermohonan: 'Dalam Semakan',
-    pegawaiETD: 'Siti Aminah',
     tindakan: { noTuntutan: 'TUN-2024-001', status: 'Dalam Semakan' }
   },
   {
@@ -235,7 +234,6 @@ const tuntutanList = ref([
     tarikhTuntutan: new Date(Date.now() - 86400000).toISOString(),
     amaunTuntutan: 8000.00,
     statusPermohonan: 'Dalam Semakan',
-    pegawaiETD: 'Siti Aminah',
     tindakan: { noTuntutan: 'TUN-2024-002', status: 'Dalam Semakan' }
   },
   {
@@ -245,7 +243,6 @@ const tuntutanList = ref([
     tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(),
     amaunTuntutan: 12000.00,
     statusPermohonan: 'Dalam Semakan',
-    pegawaiETD: 'Siti Aminah',
     tindakan: { noTuntutan: 'TUN-2024-003', status: 'Dalam Semakan' }
   },
   {
@@ -255,7 +252,6 @@ const tuntutanList = ref([
     tarikhTuntutan: new Date(Date.now() - 259200000).toISOString(),
     amaunTuntutan: 3500.00,
     statusPermohonan: 'Dalam Semakan',
-    pegawaiETD: 'Siti Aminah',
     tindakan: { noTuntutan: 'TUN-2024-004', status: 'Dalam Semakan' }
   },
   {
@@ -265,7 +261,6 @@ const tuntutanList = ref([
     tarikhTuntutan: new Date(Date.now() - 345600000).toISOString(),
     amaunTuntutan: 15000.00,
     statusPermohonan: 'Dalam Semakan',
-    pegawaiETD: 'Siti Aminah',
     tindakan: { noTuntutan: 'TUN-2024-005', status: 'Dalam Semakan' }
   },
 ]);

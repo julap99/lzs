@@ -10,7 +10,7 @@
           >
             <div>
               <h1 class="text-2xl font-bold text-gray-900">
-                Semakan & Input Maklumat Bantuan
+                Semakan Permohonan Bantuan
               </h1>
               <p class="mt-1 text-sm text-gray-600">
                 {{ formData.jenisBantuan }}
@@ -19,7 +19,7 @@
             <rs-badge
               :variant="getStatusVariant(formData.statusPermohonan)"
               class="text-sm px-4 py-2"
-            >
+            > 
               {{ formData.statusPermohonan }}
             </rs-badge>
           </div>
@@ -28,6 +28,96 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Main Content -->
           <div class="lg:col-span-2 space-y-6">
+
+          <!-- Section 1: Maklumat Pemohon -->
+            <rs-card class="shadow-sm border-0 bg-white">
+              <template #header>
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <div
+                      class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+                    >
+                      <Icon name="ph:user" class="w-6 h-6 text-blue-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900">
+                      Maklumat Pemohon
+                    </h2>
+                    <p class="text-sm text-gray-500">
+                      Butiran asas pemohon
+                    </p>
+                  </div>
+                </div>
+              </template>
+  
+              <template #body>
+                <FormKit
+                  type="form"
+                  :actions="false"
+                  v-model="formData"
+                >
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="space-y-1">
+                      <label class="text-sm font-medium text-gray-700"
+                        >ID Permohonan</label
+                      >
+                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                        <span class="text-sm text-gray-900">{{
+                          formData.idPermohonan
+                        }}</span>
+                      </div>
+                    </div>
+                    
+                   <!-- <div class="space-y-1">
+                      <label class="text-sm font-medium text-gray-700">
+                        Kategori Pemohon
+                      </label>
+                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                        <span class="text-sm text-gray-900">{{
+                          formData.kategoriPemohon
+                        }}</span>
+                      </div>
+                    </div>
+                  -->
+                    <div class="space-y-1">
+                      <label class="text-sm font-medium text-gray-700"
+                        >Tarikh Permohonan</label
+                      >
+                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                        <span class="text-sm text-gray-900">{{
+                          formData.tarikhPermohonan
+                        }}</span>
+                      </div>
+                    </div>
+
+                    <div class="space-y-1">
+                      <label class="text-sm font-medium text-gray-700">
+                        Nama Pemohon
+                      </label>
+                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                        <span class="text-sm text-gray-900">{{
+                          formData.namaPemohon
+                        }}</span>
+                      </div>
+                    </div>
+
+                    <div class="space-y-1">
+                      <label class="text-sm font-medium text-gray-700">
+                        No. Kad Pengenalan
+                      </label>
+                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                        <span class="text-sm text-gray-900">{{
+                          formData.noKp
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </FormKit>
+              </template>
+            </rs-card>
+
             <!-- Section 1: Maklumat Bantuan -->
             <rs-card class="shadow-sm border-0 bg-white">
               <template #header>
@@ -516,7 +606,7 @@
                       class="w-full !py-3 text-sm font-medium"
                     >
                       <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
-                      Hantar Kelulusan
+                      Simpan
                     </rs-button>
   
                     <rs-button
@@ -525,7 +615,7 @@
                       class="w-full !py-3 text-sm font-medium"
                     >
                       <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
-                      Simpan
+                      Simpan & Hantar
                     </rs-button>
   
                     <rs-button
@@ -534,7 +624,7 @@
                       class="w-full !py-3 text-sm font-medium"
                     >
                       <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
-                      Batal / Kembali
+                      Kembali
                     </rs-button>
                   </div>
   
@@ -550,7 +640,7 @@
                           Maklumat
                         </h3>
                         <p class="mt-1 text-xs text-blue-700">
-                          Sekiranya bantuan tanpa siasatan, sistem akan terus ke "Untuk Siasatan".
+                          Sekiranya bantuan tanpa siasatan, sistem akan terus ke "Semakan & Kelulusan".
                         </p>
                       </div>
                     </div>
@@ -622,7 +712,7 @@
   const router = useRouter();
   
   definePageMeta({
-    title: "Semakan & Input Maklumat Bantuan",
+    title: "Semakan Permohonan Bantuan",
   });
   
   const breadcrumb = ref([
@@ -632,17 +722,12 @@
       path: "/BF-BTN/permohonan/senarai-untuk-disemak",
     },
     {
-      name: "Senarai untuk Disemak",
+      name: "Senarai Permohonan untuk Disemak",
       type: "link",
-      path: "/BF-BTN/permohonan/senarai-untuk-disemak",
+      path: "/BF-BTN/PB/senarai-bts",
     },
     {
-      name: "Semakan Permohonan",
-      type: "link",
-      path: `/BF-BTN/permohonan/senarai-untuk-disemak/${route.params.id}`,
-    },
-    {
-      name: "Semakan Bantuan",
+      name: "Bantuan Tanpa Siasatan",
       type: "current",
       path: `/BF-BTN/permohonan/senarai-untuk-disemak/${route.params.id}/bantuan/${route.params.bantuanId}`,
     },
@@ -650,6 +735,13 @@
   
   // Form data
   const formData = ref({
+    // Section 1: Maklumat Bantuan
+    idPermohonan: "NAS-2025-0001",
+    kategoriPemohon: "Asnaf",
+    namaPemohon: "Ali Bin Abu",
+    noKp: "890401100453",
+    tarikhPermohonan: "15/07/2025",
+
     // Section 1: Maklumat Bantuan
     jenisBantuan: "B112 - Bantuan Sewaan/Ansuran Rumah (Miskin)",
     aidProduct: "BANTUAN SEWAAN/ANSURAN RUMAH (MISKIN)",
