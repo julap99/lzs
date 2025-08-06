@@ -1,5 +1,9 @@
 <template>
   <div>
+    <!-- Page screen: TNI-KO-KT-02 -->
+    <!-- Actor: KC/KB/Eksekutif/KOAD -->
+    <!-- Roles: Eksekutif -->
+    
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
@@ -27,36 +31,6 @@
             form: 'space-y-6',
           }"
         >
-          <!-- Header Info -->
-          <rs-fieldset>
-            <template #legend>
-              <h3 class="nas-subsection-header">
-                Maklumat Pemohon <span class="nas-required">*</span>
-              </h3>
-            </template>
-
-            <div class="nas-field-group">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="text"
-                  name="namaPemohon"
-                  label="Nama Pemohon"
-                  :value="userInfo.name"
-                  readonly
-                  help="Nama pemohon yang berdaftar"
-                />
-                <FormKit
-                  type="text"
-                  name="lokasiAkaun"
-                  label="Lokasi / Akaun Peti Besi"
-                  :value="userInfo.safeBoxAccount"
-                  readonly
-                  help="Lokasi dan nombor akaun peti besi"
-                />
-              </div>
-            </div>
-          </rs-fieldset>
-
           <!-- Form Input -->
           <rs-fieldset>
             <template #legend>
@@ -67,25 +41,50 @@
 
             <div class="nas-field-group">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="select"
+                  name="lokasiTabung"
+                  label="Lokasi Tabung"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih lokasi tabung'
+                  }"
+                  :options="lokasiTabungOptions"
+                  help="Pilih lokasi tabung yang memerlukan tambah nilai"
+                />
+                <FormKit
+                  type="select"
+                  name="kaedahTambahNilai"
+                  label="Kaedah Tambah Nilai"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih kaedah tambah nilai'
+                  }"
+                  :options="kaedahTambahNilaiOptions"
+                  help="Pilih kaedah untuk menambah nilai"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div class="nas-amount-input">
                   <FormKit
                     type="number"
-                    name="jumlahDipohon"
-                    label="Jumlah Tambah Nilai Dipohon (RM)"
-                    validation="required|number|min:1"
-                    validation-label="Jumlah Dipohon"
+                    name="jumlahTambahNilai"
+                    label="Jumlah Tambah Nilai (RM)"
+                    validation="required|number|min:0"
+                    validation-label="Jumlah Tambah Nilai"
                     :validation-messages="{
-                      required: 'Sila masukkan jumlah dipohon',
+                      required: 'Sila masukkan jumlah tambah nilai',
                       number: 'Sila masukkan nilai yang sah',
-                      min: 'Jumlah minimum ialah RM 1.00',
+                      min: 'Jumlah tidak boleh negatif',
                     }"
-                    help="Masukkan jumlah yang dipohon untuk ditambah ke dalam peti besi"
+                    help="Masukkan jumlah yang diperlukan untuk ditambah ke dalam tabung"
                     step="0.01"
-                    min="1"
+                    min="0"
                   />
                 </div>
                 <FormKit
-                  type="text"
+                  type="date"
                   name="tarikhPermohonan"
                   label="Tarikh Permohonan"
                   :value="currentDate"
@@ -97,7 +96,7 @@
               <div class="mt-4">
                 <FormKit
                   type="textarea"
-                  name="justifikasi"
+                  name="tujuan"
                   label="Justifikasi / Catatan Tambahan"
                   validation="required"
                   validation-label="Justifikasi"
@@ -166,27 +165,49 @@ definePageMeta({
 // State
 const isEdit = ref(false);
 const isSubmitting = ref(false);
-const formData = ref({});
+const formData = ref({
+  lokasiTabung: "",
+  kaedahTambahNilai: "",
+  jumlahTambahNilai: "",
+  tarikhPermohonan: "",
+  tujuan: "",
+});
 
 // Breadcrumb
 const breadcrumb = ref([
   {
+    name: "Pentadbiran",
+    type: "link",
+    path: "/BF-TNI",
+  },
+  {
     name: "Tambah Nilai Tunai",
-    type: "current",
+    type: "link",
     path: "/BF-TNI/tambah-nilai-tunai",
   },
   {
-    name: "Mohon Tambah Nilai Tunai",
+    name: "Tambah Permohonan",
     type: "current",
-    path: "/BF-TNI/tambah-nilai-tunai/mohon-tambah-nilai-tunai",
+    path: "/BF-TNI/tambah-nilai-tunai/mohon-tambah-nilai-tunai/form",
   },
 ]);
 
-// Mock user info - replace with actual user data
-const userInfo = ref({
-  name: "John Doe",
-  safeBoxAccount: "Peti Besi A-123",
-});
+// Options for dropdowns
+const lokasiTabungOptions = ref([
+  { label: "Cawangan Kuala Lumpur", value: "Cawangan Kuala Lumpur" },
+  { label: "Cawangan Johor Bahru", value: "Cawangan Johor Bahru" },
+  { label: "Cawangan Pulau Pinang", value: "Cawangan Pulau Pinang" },
+  { label: "Cawangan Melaka", value: "Cawangan Melaka" },
+  { label: "Cawangan Negeri Sembilan", value: "Cawangan Negeri Sembilan" },
+  { label: "Cawangan Perak", value: "Cawangan Perak" },
+  { label: "Cawangan Kedah", value: "Cawangan Kedah" },
+]);
+
+const kaedahTambahNilaiOptions = ref([
+  { label: "EFT", value: "EFT" },
+  { label: "Tunai", value: "Tunai" },
+  { label: "eWallet", value: "eWallet" },
+]);
 
 // Get current date in YYYY-MM-DD format
 const currentDate = new Date().toISOString().split("T")[0];
@@ -215,14 +236,18 @@ const handleSubmit = async (formData) => {
   try {
     isSubmitting.value = true;
 
+    // Set status based on action
+    const status = isEdit.value ? "Menunggu Semakan" : "Menunggu Semakan";
+    
     // TODO: Implement API call to save/update request
-    console.log("Submitting form data:", formData);
+    console.log("TNI-KO-KT-02: Borang Tambah Permohonan - Data berjaya disimpan");
+    console.log("Form data:", formData);
+    console.log("Status:", status);
 
     // Mock API call delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Show success message and redirect
-    // TODO: Replace with actual notification system
     alert(
       isEdit.value
         ? "Permohonan berjaya dikemaskini"
@@ -231,7 +256,6 @@ const handleSubmit = async (formData) => {
     goBack();
   } catch (error) {
     console.error("Error submitting form:", error);
-    // TODO: Show error message
     alert("Ralat: " + error.message);
   } finally {
     isSubmitting.value = false;

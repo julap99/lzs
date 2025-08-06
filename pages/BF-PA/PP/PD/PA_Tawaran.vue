@@ -1,9 +1,5 @@
 <template>
   <div class="p-6">
-    <div class="mb-6 text-center">
-      <div class="text-4xl font-bold mb-2 text-gray-800" dir="rtl" lang="ar">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎</div>
-      <h2 class="text-3xl font-bold mb-2">Selamat Datang ke New Agihan System (NAS)</h2>
-    </div>
     <!-- Guest Name (centered) -->
     <div class="mb-4 flex flex-col items-center">
       <div class="flex items-center gap-3">

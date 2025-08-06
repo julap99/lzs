@@ -1,5 +1,9 @@
 <template>
   <div>
+    <!-- Page screen: TNI-KO-KT-08 -->
+    <!-- Actor: Kewangan -->
+    <!-- Roles: Kewangan Pegawai -->
+    
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
@@ -41,18 +45,6 @@
           v-model="formData"
         >
           <div class="space-y-6">
-            <!-- Daerah -->
-            <FormKit
-              type="select"
-              name="daerah"
-              label="Daerah"
-              validation="required"
-              :validation-messages="{
-                required: 'Sila pilih daerah'
-              }"
-              :options="daerahOptions"
-            />
-
             <!-- Lokasi Pengambilan -->
             <FormKit
               type="select"
@@ -62,25 +54,25 @@
               :validation-messages="{
                 required: 'Sila pilih lokasi pengambilan'
               }"
-              :options="lokasiOptions"
+              :options="lokasiPengambilanOptions"
             />
 
-            <!-- Nama Pegawai LZS -->
+            <!-- Nama Pegawai Bertugas -->
             <FormKit
               type="text"
-              name="namaPegawaiLZS"
-              label="Nama Pegawai LZS Diberi Kuasa"
+              name="namaPegawaiBertugas"
+              label="Nama Pegawai Bertugas"
               validation="required"
               :validation-messages="{
                 required: 'Sila masukkan nama pegawai'
               }"
             />
 
-            <!-- No KP Pegawai -->
+            <!-- No KP -->
             <FormKit
               type="text"
-              name="noKPPegawai"
-              label="No KP Pegawai"
+              name="noKP"
+              label="No KP"
               validation="required|length:12"
               :validation-messages="{
                 required: 'Sila masukkan nombor KP',
@@ -88,15 +80,44 @@
               }"
             />
 
-            <!-- No Telefon Pegawai -->
+            <!-- No Telefon -->
             <FormKit
               type="text"
-              name="noTelefonPegawai"
-              label="No Telefon Pegawai"
+              name="noTelefon"
+              label="No Telefon"
               validation="required"
               :validation-messages="{
                 required: 'Sila masukkan nombor telefon'
               }"
+            />
+
+            <!-- Jumlah -->
+            <FormKit
+              type="number"
+              name="jumlah"
+              label="Jumlah (RM)"
+              :value="safeBoxInfo.jumlahTambahNilai"
+              readonly
+              help="Jumlah yang telah diluluskan"
+            />
+
+            <!-- Tarikh & Masa -->
+            <FormKit
+              type="datetime-local"
+              name="tarikhMasa"
+              label="Tarikh & Masa"
+              :value="currentDateTime"
+              readonly
+              help="Tarikh dan masa arahan dikeluarkan"
+            />
+
+            <!-- Catatan Tambahan -->
+            <FormKit
+              type="textarea"
+              name="catatanTambahan"
+              label="Catatan Tambahan"
+              placeholder="Masukkan catatan tambahan jika perlu..."
+              help="Catatan tambahan untuk arahan pindahan"
             />
 
             <!-- Tarikh & Masa Pindahan -->
@@ -115,7 +136,7 @@
             <div class="flex justify-end space-x-4 pt-6">
               <rs-button
                 variant="secondary"
-                @click="navigateTo('/BF-TNI/tambah-nilai-tunai/senarai-peti-besi-perlu-tambah-nilai')"
+                @click="navigateTo('/BF-TNI/tambah-nilai-tunai/mohon-tambah-nilai-tunai')"
               >
                 Kembali ke Senarai
               </rs-button>
@@ -180,11 +201,11 @@ const breadcrumb = ref([
     type: "link",
     path: "/BF-TNI/tambah-nilai-tunai",
   },
-  {
-    name: "Senarai Peti Besi Perlu Tambah Nilai",
-    type: "link",
-    path: "/BF-TNI/tambah-nilai-tunai/senarai-peti-besi-perlu-tambah-nilai",
-  },
+          {
+          name: "Senarai Permohonan Tambah Nilai",
+          type: "link",
+          path: "/BF-TNI/tambah-nilai-tunai/mohon-tambah-nilai-tunai",
+        },
   {
     name: "Form Arahan Pindahan Tunai (KP-04)",
     type: "current",
@@ -202,25 +223,24 @@ const safeBoxInfo = ref({
 
 // Form data
 const formData = ref({
-  daerah: "",
   lokasiPengambilan: "",
-  namaPegawaiLZS: "",
-  noKPPegawai: "",
-  noTelefonPegawai: "",
-  tarikhMasaPindahan: ""
+  namaPegawaiBertugas: "",
+  noKP: "",
+  noTelefon: "",
+  jumlah: "",
+  tarikhMasa: "",
+  catatanTambahan: "",
 });
 
 // Options
-const daerahOptions = [
-  { label: "Kuala Lumpur", value: "kl" },
-  { label: "Selangor", value: "selangor" },
-  { label: "Putrajaya", value: "putrajaya" }
-];
-
-const lokasiOptions = [
-  { label: "Pejabat LZS KL", value: "lzs_kl" },
-  { label: "Pejabat LZS Selangor", value: "lzs_selangor" },
-  { label: "Pejabat LZS Putrajaya", value: "lzs_putrajaya" }
+const lokasiPengambilanOptions = [
+  { label: "Maybank Kuala Lumpur", value: "Maybank Kuala Lumpur" },
+  { label: "Maybank Johor Bahru", value: "Maybank Johor Bahru" },
+  { label: "Maybank Pulau Pinang", value: "Maybank Pulau Pinang" },
+  { label: "Maybank Melaka", value: "Maybank Melaka" },
+  { label: "Maybank Negeri Sembilan", value: "Maybank Negeri Sembilan" },
+  { label: "Maybank Perak", value: "Maybank Perak" },
+  { label: "Maybank Kedah", value: "Maybank Kedah" },
 ];
 
 // Modal control
@@ -241,11 +261,13 @@ const handleConfirm = async () => {
   isSubmitting.value = true;
   try {
     // TODO: Implement API call to save arahan pindahan
-    console.log("Saving arahan pindahan:", formData.value);
+    console.log("TNI-KO-KT-04: Borang Arahan Pindahan - Data berjaya disimpan");
+    console.log("Form data:", formData.value);
+    console.log("Status: Telah Diarahkan");
     
     // Close modal and navigate back to listing
     showConfirmationModal.value = false;
-    navigateTo("/BF-TNI/tambah-nilai-tunai/senarai-peti-besi-perlu-tambah-nilai");
+    navigateTo("/BF-TNI/tambah-nilai-tunai/mohon-tambah-nilai-tunai");
   } catch (error) {
     console.error("Error saving arahan pindahan:", error);
   } finally {

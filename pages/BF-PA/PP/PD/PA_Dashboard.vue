@@ -3,21 +3,6 @@
     <!-- Breadcrumb Navigation -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Page Header -->
-    <div class="mb-6">
-      <div class="text-center mb-4">
-        <div class="text-2xl font-bold mb-2 text-gray-800" dir="rtl" lang="ar">
-          اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎
-        </div>
-        <h1 class="text-2xl font-semibold text-gray-900">
-          Dashboard Penolong Amil
-        </h1>
-        <p class="mt-2 text-sm text-gray-600">
-          Akses pantas kepada maklumat dan tugasan anda sebagai Penolong Amil Lembaga Zakat Selangor
-        </p>
-      </div>
-    </div>
-
     <!-- User Profile Card -->
     <rs-card class="mb-6">
       <template #body>
@@ -430,7 +415,7 @@ const cards = ref([
     changeText: '5 Menunggu'
   },
   {
-    title: 'Aktiviti Komuniti',
+    title: 'Tugasan',
     value: '50',
     icon: 'heroicons:calendar-days',
     description: '+3 aktiviti baru',
@@ -441,11 +426,11 @@ const cards = ref([
     changeText: '+3 Baru'
   },
   {
-    title: 'Notifikasi Penting',
+    title: 'Insentif',
     value: '25',
     icon: 'heroicons:bell-alert',
     description: '1 notis perlu tindakan segera',
-    details: 'Laporan ringkas atau notifikasi penting berkaitan tugasan anda.\n\nContoh:\n- Notis mesyuarat\n- Pengumuman terkini\n- Peringatan deadline',
+    details: 'Laporan ringkas berkaitan tugasan anda.\n\nContoh:\n- Notis mesyuarat\n- Pengumuman terkini\n- Peringatan deadline',
     iconBg: 'bg-danger/10',
     iconColor: 'text-danger',
     changeBadge: 'bg-danger/10 text-danger',
@@ -487,4 +472,4 @@ const downloadSuratTawaran = () => {
 
 <style scoped>
 /* Custom styles if needed */
-</style>
+</style> 

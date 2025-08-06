@@ -1,215 +1,629 @@
 <template>
   <div>
+    <!-- Page screen: TNI-KO-PB-Letter-History -->
+    <!-- Actor: Pentadbir Sistem, Ketua Jabatan, Pelulus -->
+    <!-- Roles: Pentadbir Sistem, Ketua Jabatan, Pelulus -->
+    
+    <!-- Page-specific Role Switcher -->
+    <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <Icon name="ph:user-circle" class="text-gray-600" size="20" />
+          <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="min-w-[200px]">
+            <FormKit
+              type="select"
+              v-model="currentRole"
+              :options="roleOptions"
+                             :classes="{ 
+                 input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
+                 wrapper: '!min-w-0'
+               }"
+               @change="handleRoleChange"
+            />
+          </div>
+          <rs-button
+            variant="secondary-outline"
+            size="sm"
+            @click="toggleRoleInfo"
+            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
+            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
+          >
+            <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+            {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
+          </rs-button>
+        </div>
+      </div>
+      
+      <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
+            <div class="flex items-center space-x-3">
+                             <rs-badge :variant="getRoleVariant(currentRole)" class="!text-xs">
+                {{ getRoleLabel(currentRole) }}
+              </rs-badge>
+              <span class="text-xs text-gray-600">{{ getRoleDescription(currentRole) }}</span>
+            </div>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
+            <div class="flex flex-wrap gap-2">
+              <rs-badge
+                v-for="capability in getRoleCapabilities(currentRole)"
+                :key="capability"
+                variant="secondary"
+                size="sm"
+                class="!text-xs"
+              >
+                {{ capability }}
+              </rs-badge>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Sejarah Surat Arahan</h2>
-        </div>
-      </template>
+    <!-- Dynamic Content Based on Role -->
+    
+    <!-- Pentadbir Sistem Content -->
+    <div v-if="currentRole === 'pentadbir-sistem'">
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">Sejarah Surat Arahan (Pentadbir Sistem)</h2>
+          </div>
+        </template>
 
-      <template #body>
-        <!-- Filter Panel -->
-        <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Daerah / Cawangan -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Daerah / Cawangan</label>
-              <div class="relative">
-                <div 
-                  class="flex items-center justify-between w-full px-3 py-2 border border-gray-300 rounded-md cursor-pointer hover:border-primary-500"
-                  @click="showDaerahDropdown = !showDaerahDropdown"
-                >
-                  <div class="flex flex-wrap gap-1">
-                    <template v-if="selectedDaerah.length > 0">
-                      <rs-badge
-                        v-for="item in selectedDaerah"
-                        :key="item.value"
-                        variant="primary"
-                        class="flex items-center gap-1"
-                      >
-                        {{ item.label }}
-                        <Icon 
-                          name="material-symbols:close" 
-                          size="14" 
-                          class="cursor-pointer"
-                          @click.stop="removeDaerah(item)"
-                        />
-                      </rs-badge>
-                    </template>
-                    <span v-else class="text-gray-500">Pilih Daerah / Cawangan</span>
-                  </div>
-                  <Icon 
-                    :name="showDaerahDropdown ? 'material-symbols:expand-less' : 'material-symbols:expand-more'" 
-                    size="20"
-                  />
-                </div>
-                
-                <!-- Dropdown Menu -->
-                <div 
-                  v-if="showDaerahDropdown"
-                  class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
-                >
-                  <div class="p-2">
-                    <FormKit
-                      type="text"
-                      v-model="daerahSearch"
-                      placeholder="Cari daerah / cawangan..."
-                      outer-class="mb-2"
+        <template #body>
+          <!-- Filter Panel -->
+          <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- Daerah / Cawangan -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Daerah / Cawangan</label>
+                <div class="relative">
+                  <div 
+                    class="flex items-center justify-between w-full px-3 py-2 border border-gray-300 rounded-md cursor-pointer hover:border-primary-500"
+                    @click="showDaerahDropdown = !showDaerahDropdown"
+                  >
+                    <div class="flex flex-wrap gap-1">
+                      <template v-if="selectedDaerah.length > 0">
+                        <rs-badge
+                          v-for="item in selectedDaerah"
+                          :key="item.value"
+                          variant="primary"
+                          class="flex items-center gap-1"
+                        >
+                          {{ item.label }}
+                          <Icon 
+                            name="material-symbols:close" 
+                            size="14" 
+                            class="cursor-pointer"
+                            @click.stop="removeDaerah(item)"
+                          />
+                        </rs-badge>
+                      </template>
+                      <span v-else class="text-gray-500">Pilih Daerah / Cawangan</span>
+                    </div>
+                    <Icon 
+                      :name="showDaerahDropdown ? 'material-symbols:expand-less' : 'material-symbols:expand-more'" 
+                      size="20"
                     />
-                    <div class="space-y-1">
-                      <div
-                        v-for="item in filteredDaerahOptions"
-                        :key="item.value"
-                        class="flex items-center px-3 py-2 hover:bg-gray-100 rounded cursor-pointer"
-                        @click="toggleDaerah(item)"
-                      >
-                        <input
-                          type="checkbox"
-                          :checked="isDaerahSelected(item)"
-                          class="mr-2"
-                          @click.stop
-                        />
-                        <span>{{ item.label }}</span>
+                  </div>
+                  
+                  <!-- Dropdown Menu -->
+                  <div 
+                    v-if="showDaerahDropdown"
+                    class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                  >
+                    <div class="p-2">
+                      <FormKit
+                        type="text"
+                        v-model="daerahSearch"
+                        placeholder="Cari daerah / cawangan..."
+                        outer-class="mb-2"
+                      />
+                      <div class="space-y-1">
+                        <div
+                          v-for="item in filteredDaerahOptions"
+                          :key="item.value"
+                          class="flex items-center px-3 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                          @click="toggleDaerah(item)"
+                        >
+                          <input
+                            type="checkbox"
+                            :checked="isDaerahSelected(item)"
+                            class="mr-2"
+                            @click.stop
+                          />
+                          <span>{{ item.label }}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Tarikh Arahan -->
-            <FormKit
-              type="date"
-              name="tarikhArahan"
-              label="Tarikh Arahan"
-              range
-              outer-class="mb-0"
-            />
+              <!-- Tarikh Arahan -->
+              <FormKit
+                type="date"
+                name="tarikhArahan"
+                label="Tarikh Arahan"
+                range
+                outer-class="mb-0"
+              />
 
-            <!-- Nama Pegawai -->
-            <FormKit
-              type="text"
-              name="namaPegawai"
-              label="Nama Pegawai Yang Diberi Kuasa"
-              outer-class="mb-0"
-            />
+              <!-- Nama Pegawai -->
+              <FormKit
+                type="text"
+                name="namaPegawai"
+                label="Nama Pegawai Yang Diberi Kuasa"
+                outer-class="mb-0"
+              />
 
-            <!-- No. Kad Pengenalan -->
-            <FormKit
-              type="text"
-              name="noKp"
-              label="No. Kad Pengenalan Pegawai"
-              outer-class="mb-0"
-            />
+              <!-- No. Kad Pengenalan -->
+              <FormKit
+                type="text"
+                name="noKp"
+                label="No. Kad Pengenalan Pegawai"
+                outer-class="mb-0"
+              />
 
-            <!-- Status Surat -->
-            <FormKit
-              type="select"
-              name="statusSurat"
-              label="Status Surat"
-              :options="statusSuratOptions"
-              outer-class="mb-0"
-            />
+              <!-- Status Surat -->
+              <FormKit
+                type="select"
+                name="statusSurat"
+                label="Status Surat"
+                :options="statusSuratOptions"
+                outer-class="mb-0"
+              />
 
-            <!-- Action Buttons -->
-            <div class="flex items-end space-x-2">
-              <rs-button variant="primary" @click="handleSearch">
-                <Icon name="material-symbols:search" class="mr-1" /> Cari
-              </rs-button>
-              <rs-button variant="secondary" @click="handleReset">
-                <Icon name="material-symbols:refresh" class="mr-1" /> Reset
-              </rs-button>
+              <!-- Action Buttons -->
+              <div class="flex items-end space-x-2">
+                <rs-button variant="primary" @click="handleSearch">
+                  <Icon name="material-symbols:search" class="mr-1" /> Cari
+                </rs-button>
+                <rs-button variant="secondary" @click="handleReset">
+                  <Icon name="material-symbols:refresh" class="mr-1" /> Reset
+                </rs-button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Table Section -->
-        <rs-table
-          class="mt-4"
-          :key="tableKey"
-          :data="suratArahanList"
-          :pageSize="10"
-          :showNoColumn="true"
-          :options="{
-            variant: 'default',
-            hover: true,
-          }"
-        >
-          <template v-slot:rujukan="data">
-            <div>
-              <div class="font-medium">{{ data.text.rujukan }}</div>
-              <div class="text-sm text-gray-500">ID: {{ data.text.idArahan }}</div>
-            </div>
-          </template>
+          <!-- Table Section -->
+          <rs-table
+            class="mt-4"
+            :key="tableKey"
+            :data="filteredPentadbirLetters"
+            :pageSize="10"
+            :showNoColumn="true"
+            :options="{
+              variant: 'default',
+              hover: true,
+            }"
+          >
+            <template v-slot:rujukan="data">
+              <div>
+                <div class="font-medium">{{ data.text.rujukan }}</div>
+                <div class="text-sm text-gray-500">ID: {{ data.text.idArahan }}</div>
+              </div>
+            </template>
 
-          <template v-slot:daerahCawangan="data">
-            <div>
-              <div class="font-medium">{{ data.text.nama }}</div>
-              <div class="text-sm text-gray-500">Kod: {{ data.text.kod }}</div>
-            </div>
-          </template>
+            <template v-slot:daerahCawangan="data">
+              <div>
+                <div class="font-medium">{{ data.text.nama }}</div>
+                <div class="text-sm text-gray-500">Kod: {{ data.text.kod }}</div>
+              </div>
+            </template>
 
-          <template v-slot:lokasiPengambilan="data">
-            {{ data.text }}
-          </template>
-
-          <template v-slot:pegawai="data">
-            <div>
-              <div class="font-medium">{{ data.text.nama }}</div>
-              <div class="text-sm text-gray-500">No. KP: {{ data.text.noKp }}</div>
-            </div>
-          </template>
-
-          <template v-slot:noTelefon="data">
-            {{ data.text }}
-          </template>
-
-          <template v-slot:jumlahWang="data">
-            <div class="font-medium text-right">
-              RM {{ formatNumber(data.text) }}
-            </div>
-          </template>
-
-          <template v-slot:tarikhMasa="data">
-            <div>
-              <div class="font-medium">{{ formatDate(data.text) }}</div>
-              <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
-            </div>
-          </template>
-
-          <template v-slot:status="data">
-            <rs-badge :variant="getStatusVariant(data.text)">
+            <template v-slot:lokasiPengambilan="data">
               {{ data.text }}
-            </rs-badge>
-          </template>
+            </template>
 
-          <template v-slot:lastDownload="data">
-            <div v-if="data.text">
-              <div class="font-medium">{{ formatDate(data.text) }}</div>
-              <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
-            </div>
-            <span v-else class="text-gray-400">-</span>
-          </template>
+            <template v-slot:pegawai="data">
+              <div>
+                <div class="font-medium">{{ data.text.nama }}</div>
+                <div class="text-sm text-gray-500">No. KP: {{ data.text.noKp }}</div>
+              </div>
+            </template>
 
-          <template v-slot:tindakan="data">
-            <div class="flex space-x-2">
-              <rs-button
-                v-if="data.text.hasPdf"
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="downloadPdf(data.text.id)"
-              >
-                <Icon name="material-symbols:download" size="15" class="mr-1" />
-                Muat Turun PDF
-              </rs-button>
+            <template v-slot:noTelefon="data">
+              {{ data.text }}
+            </template>
+
+            <template v-slot:jumlahWang="data">
+              <div class="font-medium text-right">
+                RM {{ formatNumber(data.text) }}
+              </div>
+            </template>
+
+            <template v-slot:tarikhMasa="data">
+              <div>
+                <div class="font-medium">{{ formatDate(data.text) }}</div>
+                <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
+              </div>
+            </template>
+
+            <template v-slot:status="data">
+              <rs-badge :variant="getStatusVariant(data.text)">
+                {{ data.text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:lastDownload="data">
+              <div v-if="data.text">
+                <div class="font-medium">{{ formatDate(data.text) }}</div>
+                <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
+              </div>
+              <span v-else class="text-gray-400">-</span>
+            </template>
+
+            <template v-slot:tindakan="data">
+              <div class="flex space-x-2">
+                <rs-button
+                  v-if="data.text.hasPdf"
+                  variant="primary"
+                  size="sm"
+                  class="!px-2 !py-1"
+                  @click="downloadPdf(data.text.id)"
+                >
+                  <Icon name="material-symbols:download" size="15" class="mr-1" />
+                  Muat Turun PDF
+                </rs-button>
+                <rs-button
+                  variant="secondary"
+                  size="sm"
+                  class="!px-2 !py-1"
+                  @click="viewLetterDetails(data.text.id)"
+                >
+                  <Icon name="ph:eye" size="15" class="mr-1" />
+                  Lihat Butiran
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Ketua Jabatan Content -->
+    <div v-else-if="currentRole === 'ketua-jabatan'">
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">Sejarah Surat Arahan (Ketua Jabatan)</h2>
+          </div>
+        </template>
+
+        <template #body>
+          <!-- Filter Panel -->
+          <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- Daerah / Cawangan -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Daerah / Cawangan</label>
+                <div class="relative">
+                  <div 
+                    class="flex items-center justify-between w-full px-3 py-2 border border-gray-300 rounded-md cursor-pointer hover:border-primary-500"
+                    @click="showDaerahDropdown = !showDaerahDropdown"
+                  >
+                    <div class="flex flex-wrap gap-1">
+                      <template v-if="selectedDaerah.length > 0">
+                        <rs-badge
+                          v-for="item in selectedDaerah"
+                          :key="item.value"
+                          variant="primary"
+                          class="flex items-center gap-1"
+                        >
+                          {{ item.label }}
+                          <Icon 
+                            name="material-symbols:close" 
+                            size="14" 
+                            class="cursor-pointer"
+                            @click.stop="removeDaerah(item)"
+                          />
+                        </rs-badge>
+                      </template>
+                      <span v-else class="text-gray-500">Pilih Daerah / Cawangan</span>
+                    </div>
+                    <Icon 
+                      :name="showDaerahDropdown ? 'material-symbols:expand-less' : 'material-symbols:expand-more'" 
+                      size="20"
+                    />
+                  </div>
+                  
+                  <!-- Dropdown Menu -->
+                  <div 
+                    v-if="showDaerahDropdown"
+                    class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                  >
+                    <div class="p-2">
+                      <FormKit
+                        type="text"
+                        v-model="daerahSearch"
+                        placeholder="Cari daerah / cawangan..."
+                        outer-class="mb-2"
+                      />
+                      <div class="space-y-1">
+                        <div
+                          v-for="item in filteredDaerahOptions"
+                          :key="item.value"
+                          class="flex items-center px-3 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                          @click="toggleDaerah(item)"
+                        >
+                          <input
+                            type="checkbox"
+                            :checked="isDaerahSelected(item)"
+                            class="mr-2"
+                            @click.stop
+                          />
+                          <span>{{ item.label }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tarikh Arahan -->
+              <FormKit
+                type="date"
+                name="tarikhArahan"
+                label="Tarikh Arahan"
+                range
+                outer-class="mb-0"
+              />
+
+              <!-- Status Surat -->
+              <FormKit
+                type="select"
+                name="statusSurat"
+                label="Status Surat"
+                :options="statusSuratOptions"
+                outer-class="mb-0"
+              />
+
+              <!-- Action Buttons -->
+              <div class="flex items-end space-x-2">
+                <rs-button variant="primary" @click="handleSearch">
+                  <Icon name="material-symbols:search" class="mr-1" /> Cari
+                </rs-button>
+                <rs-button variant="secondary" @click="handleReset">
+                  <Icon name="material-symbols:refresh" class="mr-1" /> Reset
+                </rs-button>
+              </div>
             </div>
-          </template>
-        </rs-table>
-      </template>
-    </rs-card>
+          </div>
+
+          <!-- Table Section -->
+          <rs-table
+            class="mt-4"
+            :key="tableKey"
+            :data="filteredKJLetters"
+            :pageSize="10"
+            :showNoColumn="true"
+            :options="{
+              variant: 'default',
+              hover: true,
+            }"
+          >
+            <template v-slot:rujukan="data">
+              <div>
+                <div class="font-medium">{{ data.text.rujukan }}</div>
+                <div class="text-sm text-gray-500">ID: {{ data.text.idArahan }}</div>
+              </div>
+            </template>
+
+            <template v-slot:daerahCawangan="data">
+              <div>
+                <div class="font-medium">{{ data.text.nama }}</div>
+                <div class="text-sm text-gray-500">Kod: {{ data.text.kod }}</div>
+              </div>
+            </template>
+
+            <template v-slot:lokasiPengambilan="data">
+              {{ data.text }}
+            </template>
+
+            <template v-slot:pegawai="data">
+              <div>
+                <div class="font-medium">{{ data.text.nama }}</div>
+                <div class="text-sm text-gray-500">No. KP: {{ data.text.noKp }}</div>
+              </div>
+            </template>
+
+            <template v-slot:jumlahWang="data">
+              <div class="font-medium text-right">
+                RM {{ formatNumber(data.text) }}
+              </div>
+            </template>
+
+            <template v-slot:tarikhMasa="data">
+              <div>
+                <div class="font-medium">{{ formatDate(data.text) }}</div>
+                <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
+              </div>
+            </template>
+
+            <template v-slot:status="data">
+              <rs-badge :variant="getStatusVariant(data.text)">
+                {{ data.text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:lastDownload="data">
+              <div v-if="data.text">
+                <div class="font-medium">{{ formatDate(data.text) }}</div>
+                <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
+              </div>
+              <span v-else class="text-gray-400">-</span>
+            </template>
+
+            <template v-slot:tindakan="data">
+              <div class="flex space-x-2">
+                <rs-button
+                  variant="secondary"
+                  size="sm"
+                  class="!px-2 !py-1"
+                  @click="viewLetterDetails(data.text.id)"
+                >
+                  <Icon name="ph:eye" size="15" class="mr-1" />
+                  Lihat Butiran
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Pelulus Content -->
+    <div v-else-if="currentRole === 'pelulus'">
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">Sejarah Surat Arahan (Pelulus)</h2>
+          </div>
+        </template>
+
+        <template #body>
+          <!-- Filter Panel -->
+          <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- Tarikh Arahan -->
+              <FormKit
+                type="date"
+                name="tarikhArahan"
+                label="Tarikh Arahan"
+                range
+                outer-class="mb-0"
+              />
+
+              <!-- Status Surat -->
+              <FormKit
+                type="select"
+                name="statusSurat"
+                label="Status Surat"
+                :options="statusSuratOptions"
+                outer-class="mb-0"
+              />
+
+              <!-- Action Buttons -->
+              <div class="flex items-end space-x-2">
+                <rs-button variant="primary" @click="handleSearch">
+                  <Icon name="material-symbols:search" class="mr-1" /> Cari
+                </rs-button>
+                <rs-button variant="secondary" @click="handleReset">
+                  <Icon name="material-symbols:refresh" class="mr-1" /> Reset
+                </rs-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Section -->
+          <rs-table
+            class="mt-4"
+            :key="tableKey"
+            :data="filteredPelulusLetters"
+            :pageSize="10"
+            :showNoColumn="true"
+            :options="{
+              variant: 'default',
+              hover: true,
+            }"
+          >
+            <template v-slot:rujukan="data">
+              <div>
+                <div class="font-medium">{{ data.text.rujukan }}</div>
+                <div class="text-sm text-gray-500">ID: {{ data.text.idArahan }}</div>
+              </div>
+            </template>
+
+            <template v-slot:daerahCawangan="data">
+              <div>
+                <div class="font-medium">{{ data.text.nama }}</div>
+                <div class="text-sm text-gray-500">Kod: {{ data.text.kod }}</div>
+              </div>
+            </template>
+
+            <template v-slot:lokasiPengambilan="data">
+              {{ data.text }}
+            </template>
+
+            <template v-slot:pegawai="data">
+              <div>
+                <div class="font-medium">{{ data.text.nama }}</div>
+                <div class="text-sm text-gray-500">No. KP: {{ data.text.noKp }}</div>
+              </div>
+            </template>
+
+            <template v-slot:jumlahWang="data">
+              <div class="font-medium text-right">
+                RM {{ formatNumber(data.text) }}
+              </div>
+            </template>
+
+            <template v-slot:tarikhMasa="data">
+              <div>
+                <div class="font-medium">{{ formatDate(data.text) }}</div>
+                <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
+              </div>
+            </template>
+
+            <template v-slot:status="data">
+              <rs-badge :variant="getStatusVariant(data.text)">
+                {{ data.text }}
+              </rs-badge>
+            </template>
+
+            <template v-slot:lastDownload="data">
+              <div v-if="data.text">
+                <div class="font-medium">{{ formatDate(data.text) }}</div>
+                <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
+              </div>
+              <span v-else class="text-gray-400">-</span>
+            </template>
+
+            <template v-slot:tindakan="data">
+              <div class="flex space-x-2">
+                <rs-button
+                  variant="info"
+                  size="sm"
+                  class="!px-2 !py-1"
+                  @click="viewLetterReport(data.text.id)"
+                >
+                  <Icon name="ph:file-text" size="15" class="mr-1" />
+                  Laporan
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Default Content (for other roles) -->
+    <div v-else>
+      <rs-card class="mt-4">
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">Sejarah Surat Arahan</h2>
+          </div>
+        </template>
+
+        <template #body>
+          <div class="text-center py-8">
+            <Icon name="ph:info" class="text-gray-400 mx-auto mb-4" size="48" />
+            <p class="text-gray-600">Tiada akses untuk peranan ini</p>
+          </div>
+        </template>
+      </rs-card>
+    </div>
   </div>
 </template>
 
@@ -219,6 +633,66 @@ import { ref, computed } from "vue";
 definePageMeta({
   title: "Sejarah Surat Arahan",
 });
+
+// Role Simulator State
+const currentRole = ref("pentadbir-sistem");
+const showRoleInfo = ref(false);
+
+// Page-specific role options for Surat Arahan
+const roleOptions = [
+  { label: "Pentadbir Sistem", value: "pentadbir-sistem" },
+  { label: "Ketua Jabatan", value: "ketua-jabatan" },
+  { label: "Pelulus", value: "pelulus" },
+];
+
+// Role data for Surat Arahan
+const roleData = {
+  "pentadbir-sistem": {
+    label: "Pentadbir Sistem",
+    description: "Pengurusan Surat Arahan Lengkap",
+    capabilities: ["Lihat Semua Surat", "Muat Turun PDF", "Lihat Butiran", "Pengurusan Lengkap"],
+  },
+  "ketua-jabatan": {
+    label: "Ketua Jabatan",
+    description: "Pemantauan Surat Arahan dalam Jurisdiction",
+    capabilities: ["Lihat Surat dalam Jurisdiction", "Lihat Butiran", "Pemantauan", "Oversight"],
+  },
+  "pelulus": {
+    label: "Pelulus",
+    description: "Laporan Surat Arahan yang Diluluskan",
+    capabilities: ["Lihat Laporan", "Analisis", "Oversight", "Pengesahan"],
+  },
+};
+
+// Role simulator helper functions
+const getRoleVariant = (role) => {
+  const variants = {
+    "pentadbir-sistem": "primary",
+    "ketua-jabatan": "warning",
+    "pelulus": "danger",
+  };
+  return variants[role] || "default";
+};
+
+const getRoleLabel = (role) => {
+  return roleData[role]?.label || role;
+};
+
+const getRoleDescription = (role) => {
+  return roleData[role]?.description || "";
+};
+
+const getRoleCapabilities = (role) => {
+  return roleData[role]?.capabilities || [];
+};
+
+const handleRoleChange = () => {
+  console.log("Role changed to:", currentRole.value);
+};
+
+const toggleRoleInfo = () => {
+  showRoleInfo.value = !showRoleInfo.value;
+};
 
 const breadcrumb = ref([
   {
@@ -245,7 +719,49 @@ const breadcrumb = ref([
 
 // Table data and reactivity control
 const tableKey = ref(0);
-const suratArahanList = ref([
+
+// Pentadbir Sistem Data (All letters)
+const pentadbirLetters = ref([
+  {
+    rujukan: { rujukan: "PB-2024-001", idArahan: "AR-2024-001" },
+    daerahCawangan: { nama: "Daerah Kuala Lumpur", kod: "KL001" },
+    lokasiPengambilan: "Cawangan Kuala Lumpur",
+    pegawai: { nama: "Ahmad bin Abdullah", noKp: "880101121234" },
+    noTelefon: "0123456789",
+    jumlahWang: 5000,
+    tarikhMasa: new Date().toISOString(),
+    status: "Dijana",
+    lastDownload: new Date().toISOString(),
+    tindakan: { id: "AR-2024-001", hasPdf: true }
+  },
+  {
+    rujukan: { rujukan: "PB-2024-002", idArahan: "AR-2024-002" },
+    daerahCawangan: { nama: "Daerah Selangor", kod: "SGR001" },
+    lokasiPengambilan: "Cawangan Shah Alam",
+    pegawai: { nama: "Siti binti Ali", noKp: "880202121234" },
+    noTelefon: "0123456788",
+    jumlahWang: 3000,
+    tarikhMasa: new Date().toISOString(),
+    status: "Tidak Dijana",
+    lastDownload: null,
+    tindakan: { id: "AR-2024-002", hasPdf: false }
+  },
+  {
+    rujukan: { rujukan: "PB-2024-003", idArahan: "AR-2024-003" },
+    daerahCawangan: { nama: "Daerah Johor", kod: "JHR001" },
+    lokasiPengambilan: "Cawangan Johor Bahru",
+    pegawai: { nama: "Mohd bin Hassan", noKp: "880303121234" },
+    noTelefon: "0123456787",
+    jumlahWang: 7500,
+    tarikhMasa: new Date().toISOString(),
+    status: "Dijana",
+    lastDownload: new Date().toISOString(),
+    tindakan: { id: "AR-2024-003", hasPdf: true }
+  }
+]);
+
+// Ketua Jabatan Data (Letters in jurisdiction)
+const kjLetters = ref([
   {
     rujukan: { rujukan: "PB-2024-001", idArahan: "AR-2024-001" },
     daerahCawangan: { nama: "Daerah Kuala Lumpur", kod: "KL001" },
@@ -271,6 +787,47 @@ const suratArahanList = ref([
     tindakan: { id: "AR-2024-002", hasPdf: false }
   }
 ]);
+
+// Pelulus Data (Approved letters for reporting)
+const pelulusLetters = ref([
+  {
+    rujukan: { rujukan: "PB-2024-001", idArahan: "AR-2024-001" },
+    daerahCawangan: { nama: "Daerah Kuala Lumpur", kod: "KL001" },
+    lokasiPengambilan: "Cawangan Kuala Lumpur",
+    pegawai: { nama: "Ahmad bin Abdullah", noKp: "880101121234" },
+    noTelefon: "0123456789",
+    jumlahWang: 5000,
+    tarikhMasa: new Date().toISOString(),
+    status: "Dijana",
+    lastDownload: new Date().toISOString(),
+    tindakan: { id: "AR-2024-001", hasPdf: true }
+  },
+  {
+    rujukan: { rujukan: "PB-2024-003", idArahan: "AR-2024-003" },
+    daerahCawangan: { nama: "Daerah Johor", kod: "JHR001" },
+    lokasiPengambilan: "Cawangan Johor Bahru",
+    pegawai: { nama: "Mohd bin Hassan", noKp: "880303121234" },
+    noTelefon: "0123456787",
+    jumlahWang: 7500,
+    tarikhMasa: new Date().toISOString(),
+    status: "Dijana",
+    lastDownload: new Date().toISOString(),
+    tindakan: { id: "AR-2024-003", hasPdf: true }
+  }
+]);
+
+// Computed properties
+const filteredPentadbirLetters = computed(() => {
+  return pentadbirLetters.value;
+});
+
+const filteredKJLetters = computed(() => {
+  return kjLetters.value;
+});
+
+const filteredPelulusLetters = computed(() => {
+  return pelulusLetters.value;
+});
 
 // Filter options
 const daerahCawanganOptions = [
@@ -323,9 +880,7 @@ const isDaerahSelected = (item) => {
 
 // Methods
 const handleSearch = () => {
-  // Use selectedDaerah.value for search
-  console.log('Selected Daerah:', selectedDaerah.value);
-  // Implement other search logic...
+  console.log("TNI-KO-PB-Letter-History: Surat Arahan - Search triggered");
   tableKey.value++; // Force table refresh
 };
 
@@ -333,13 +888,22 @@ const handleReset = () => {
   selectedDaerah.value = [];
   daerahSearch.value = "";
   showDaerahDropdown.value = false;
-  // Reset other form fields...
+  console.log("TNI-KO-PB-Letter-History: Surat Arahan - Reset triggered");
   tableKey.value++; // Force table refresh
 };
 
 const downloadPdf = (id) => {
-  // Implement PDF download logic
-  console.log("Downloading PDF for ID:", id);
+  console.log("TNI-KO-PB-Letter-History: Surat Arahan - Download PDF for ID:", id);
+};
+
+const viewLetterDetails = (id) => {
+  console.log("TNI-KO-PB-Letter-History: Surat Arahan - View letter details for ID:", id);
+  navigateTo(`/BF-TNI/peti-besi/konfigurasi/surat-arahan/butiran/${id}`);
+};
+
+const viewLetterReport = (id) => {
+  console.log("TNI-KO-PB-Letter-History: Surat Arahan - View letter report for ID:", id);
+  navigateTo(`/BF-TNI/peti-besi/konfigurasi/surat-arahan/laporan/${id}`);
 };
 
 // Helper functions

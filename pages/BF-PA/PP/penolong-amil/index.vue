@@ -1,19 +1,5 @@
 <template>
   <div>
-    <!-- Page Header -->
-    <div class="mb-6">
-      <div class="text-center mb-4">
-        <div class="text-2xl font-bold mb-2 text-gray-800" dir="rtl" lang="ar">
-          اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎
-        </div>
-        <h1 class="text-2xl font-semibold text-gray-900">
-          Selamat Datang ke New Agihan System
-        </h1>
-        <p class="mt-2 text-sm text-gray-600">
-          Sistem Pengurusan Zakat Digital - Semakan Tawaran Pelantikan
-        </p>
-      </div>
-    </div>
 
     <!-- User Profile Card -->
     <rs-card class="mb-6">
@@ -447,9 +433,9 @@ const toggleCategory = (key) => {
 }
 
 const acceptOffer = () => {
-  // Show success message and redirect to dashboard
-  alert('Terima kasih! Pengesahan penerimaan tawaran telah dihantar. Anda akan diarahkan ke dashboard.')
-  window.location.href = '/BF-PA/PP/PD/PA_Dashboard'
+  // Show success message and redirect to profile completion
+  alert('Terima kasih! Pengesahan penerimaan tawaran telah dihantar. Sila lengkapkan maklumat profil anda.')
+  window.location.href = '/BF-PA/PP/penolong-amil/profile-complete'
 }
 
 const rejectOffer = () => {
