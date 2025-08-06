@@ -1069,7 +1069,7 @@ export default [
         meta: {},
       },
       {
-        title: "BDS",
+        title: "BTS",
         icon: "iconamoon:component-fill",
         child: [
           {
