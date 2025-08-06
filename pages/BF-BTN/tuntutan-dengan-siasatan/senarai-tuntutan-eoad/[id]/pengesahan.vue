@@ -398,7 +398,7 @@ const breadcrumb = ref([
     path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad",
   },
   {
-    name: "Senarai Tuntutan EOAD",
+    name: "Senarai Tuntutan",
     type: "link",
     path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad",
   },
