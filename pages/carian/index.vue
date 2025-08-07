@@ -40,7 +40,7 @@ const performSearch = () => {
     <LayoutsBreadcrumb />
 
     <rs-card>
-      <template #header> Carian laman </template>
+      <template #header> Contoh Carian Laman </template>
       <template #body>
         <FormKit type="form" @submit="performSearch" submit-label="Search">
           <div class="flex items-center space-x-2 mb-4">

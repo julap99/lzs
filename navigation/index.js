@@ -1545,12 +1545,48 @@ export default [
   // Kitchen Sink
   {
     header: "Kitchen Sink",
-    description: "",
+    description: "LZS NAS - UI Design Standards",
     child: [
       {
         title: "Components",
         icon: "ic:outline-dashboard",
         path: "/kitchen-sink",
+        meta: {},
+      },
+      {
+        title: "Carian",
+        icon: "heroicons:magnifying-glass",
+        path: "/carian",
+        meta: {},
+      },
+      {
+        title: "Dashboard",
+        icon: "heroicons:chart-bar",
+        path: "/dashboard",
+        meta: {},
+      },
+      {
+        title: "Data Table",
+        icon: "heroicons:table-cells",
+        path: "/datatable",
+        meta: {},
+      },
+      {
+        title: "Ikon",
+        icon: "heroicons:sparkles",
+        path: "/ikon",
+        meta: {},
+      },
+      {
+        title: "Laporan",
+        icon: "heroicons:document-chart-bar",
+        path: "/laporan",
+        meta: {},
+      },
+      {
+        title: "Tipografi",
+        icon: "heroicons:document-text",
+        path: "/tipografi",
         meta: {},
       },
     ],
