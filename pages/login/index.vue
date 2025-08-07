@@ -19,11 +19,22 @@ const login = async () => {
   // Bypass all authentication and go straight to dashboard
   // No server-side validation or API calls
   userStore.setUsername("test_user");
-  userStore.setRoles(["admin"]);
   userStore.setIsAuthenticated(true);
 
-  // Simple redirect to dashboard
+
+    if (username.value === "admin") { 
+      userStore.setRoles(["Developer"]);
+
   navigateTo("/dashboard");
+
+    } else if (username.value === "kitchen") {
+      userStore.setRoles(["Kitchen"]);
+
+  navigateTo("/kitchen-sink");
+
+    }
+
+  // Simple redirect to dashboard
   
 };
 

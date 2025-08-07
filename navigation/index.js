@@ -136,7 +136,13 @@ export default [
         meta: {},
       },
     ],
+    meta: {
+      auth: {
+        role: ["Developer"],
+      },
+    },
   },
+
 
   // {
   //   header: "QS-1",
@@ -241,6 +247,11 @@ export default [
         meta: {},
       },
     ],
+    meta: {
+      auth: {
+        role: ["Developer"],
+      },
+    },
   }, 
 
   // BF-DP
@@ -257,6 +268,11 @@ export default [
         meta: {},
       },
     ],
+    meta: {
+      auth: {
+        role: ["Developer"],
+      },
+    },
   },
 
   // BF-ADN
@@ -307,6 +323,11 @@ export default [
         meta: {},
       },
     ],
+    meta: {
+      auth: {
+        role: ["Developer"],
+      },
+    },
   }, 
 
   // BF-PTPC
@@ -647,6 +668,11 @@ export default [
       //   meta: {},
       // },
     ],
+    meta: {
+      auth: {
+        role: ["Developer"],
+      },
+    },
   },
 
   // BF-PRF
@@ -936,6 +962,11 @@ export default [
         meta: {},
       },
     ],
+    meta: {
+      auth: {
+        role: ["Developer"],
+      },
+    },
   },
 
   // BF-BTN
@@ -1251,6 +1282,11 @@ export default [
         meta: {},
       },
     ],
+    meta: {
+      auth: {
+        role: ["Developer"],
+      },
+    },
   },
 
   // BF-PA
@@ -1401,6 +1437,11 @@ export default [
         meta: {},
       },
     ],
+    meta: {
+      auth: {
+        role: ["Developer"],
+      },
+    },
   },
 
   // BF-PS
@@ -1494,20 +1535,29 @@ export default [
         meta: {},
       },
     ],
+    meta: {
+      auth: {
+        role: ["Developer"],
+      },
+    },
   },
 
   // Kitchen Sink
-  // {
-  //   header: "Kitchen Sink",
-  //   description: "",
-  //   child: [
-  //     {
-  //       title: "Components",
-  //       icon: "ic:outline-dashboard",
-  //       path: "/kitchen-sink",
-  //       meta: {},
-  //     },
-  //   ],
-  //   meta: {},
-  // },
+  {
+    header: "Kitchen Sink",
+    description: "",
+    child: [
+      {
+        title: "Components",
+        icon: "ic:outline-dashboard",
+        path: "/kitchen-sink",
+        meta: {},
+      },
+    ],
+    meta: {
+      auth: {
+        role: ["Kitchen"],
+      },
+    },
+  },
 ];
