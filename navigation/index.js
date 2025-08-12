@@ -1295,7 +1295,7 @@ export default [
     description: "Pengurusan Penolong Amil",
     child: [
       {
-        title: "Pendaftaran",
+        title: "Penolong Amil",
         icon: "iconamoon:component-fill",
         child: [
           {
@@ -1306,37 +1306,23 @@ export default [
             meta: {},
           },
           {
-            title: "Pra Daftar Penolong Amil",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/PD",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Pra Daftar Penolong Amil v2",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/pra-daftar",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Pra Daftar Penolong Amil v3",
+            title: "Pendaftaran Penolong Amil",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PP/pra-daftar-v3",
             child: [],
             meta: {},
           },
           {
-            title: "Penolong Amil",
+            title: "Kemaskini Perkhidmatan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/penolong-amil/login",
+            path: "/BF-PA/PP/KP",
             child: [],
             meta: {},
           },
           {
-            title: "Kemaskini Maklumat Perkhidmatan",
+            title: "Login Penolong Amil",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/KP",
+            path: "/BF-PA/PP/penolong-amil/login",
             child: [],
             meta: {},
           },
