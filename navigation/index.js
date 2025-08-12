@@ -1334,19 +1334,19 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Senarai Jawatan",
+            title: "Kategori",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/KF/KJ",
             child: [],
             meta: {},
           },
-          {
-            title: "Senarai Elaun",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/KF/KE",
-            child: [],
-            meta: {},
-          },
+          // {
+          //   title: "Senarai Elaun",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-PA/KF/KE",
+          //   child: [],
+          //   meta: {},
+          // },
           // {
           //   title: "Mesyuarat/Program",
           //   icon: "iconamoon:arrow-right-2-duotone",
@@ -1362,7 +1362,7 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Bancian/Asnaf Review/Bantuan",
+            title: "Tugasan Penolong Amil",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PE/AB",
             child: [

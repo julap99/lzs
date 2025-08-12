@@ -8,6 +8,17 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Welcome Header -->
+    <rs-card class="mb-6 bg-gradient-to-r from-primary/5 to-secondary/5 border-l-4 border-primary">
+      <template #body>
+        <div class="text-center py-6">
+          <h1 class="text-3xl font-bold text-primary mb-2">Selamat Datang ke Dashboard Penolong Amil</h1>
+          <p class="text-xl text-gray-700 mb-3">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎</p>
+          <p class="text-lg text-gray-600">Selamat menjalankan amanah agihan zakat kepada asnaf</p>
+        </div>
+      </template>
+    </rs-card>
+
     <!-- User Profile Card -->
     <rs-card class="mb-6">
       <template #body>
