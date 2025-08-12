@@ -85,7 +85,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -110,14 +110,6 @@
               >
                 <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
                 Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="handleReset"
-                class="!py-2 !px-4"
-              >
-                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
-                Reset
               </rs-button>
             </div>
             
