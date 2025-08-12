@@ -1,5 +1,5 @@
 <!-- 
-  RTMF SCREEN: PA-KF-KJ-01_04 (Create Form)
+  RTMF SCREEN: PA-KF-KJ-01_04 (Create Category Form)
   PURPOSE: Tambah maklumat kategori penolong amil baharu
   DESCRIPTION: Create form for new Penolong Amil category (Eksekutif only)
   ROUTE: /BF-PA/KF/KJ/create
@@ -52,7 +52,7 @@
               type="text"
               name="kategoriPenolongAmil"
               label="Kategori Penolong Amil"
-              placeholder="Contoh: Penolong Amil Fitrah"
+              placeholder="Contoh: Penolong Amil Wakaf"
               validation="required"
               :validation-messages="{
                 required: 'Kategori penolong amil diperlukan',
@@ -62,10 +62,23 @@
               type="text"
               name="kodSingkatan"
               label="Kod Singkatan"
-              placeholder="Contoh: PAF"
+              placeholder="Contoh: PAW"
               validation="required"
               :validation-messages="{
                 required: 'Kod singkatan diperlukan',
+              }"
+            />
+            <FormKit
+              type="select"
+              name="jenisKategori"
+              label="Jenis Kategori"
+              :options="[
+                { label: 'Custom', value: 'Custom' },
+                { label: 'Default', value: 'Default' },
+              ]"
+              validation="required"
+              :validation-messages="{
+                required: 'Jenis kategori diperlukan',
               }"
             />
             <FormKit
@@ -90,6 +103,13 @@
                 required: 'Tarikh kuatkuasa diperlukan',
               }"
             />
+            <FormKit
+              type="textarea"
+              name="penerangan"
+              label="Penerangan Kategori"
+              placeholder="Huraian ringkas tentang kategori ini..."
+              rows="3"
+            />
           </div>
         </template>
       </rs-card>
@@ -108,7 +128,7 @@
               type="text"
               name="namaJawatan"
               label="Nama Jawatan"
-              placeholder="Contoh: Penolong Amil Fitrah"
+              placeholder="Contoh: Penolong Amil Wakaf"
               validation="required"
               :validation-messages="{
                 required: 'Nama jawatan diperlukan',
@@ -118,7 +138,7 @@
               type="text"
               name="kodJawatan"
               label="Kod Jawatan"
-              placeholder="Contoh: PAF001"
+              placeholder="Contoh: PAW001"
               validation="required"
               :validation-messages="{
                 required: 'Kod jawatan diperlukan',
@@ -146,59 +166,26 @@
                 required: 'Tarikh kuatkuasa jawatan diperlukan',
               }"
             />
-          </div>
-        </template>
-      </rs-card>
-
-      <!-- Maklumat Sesi Section -->
-      <rs-card class="mb-6">
-        <template #header>
-          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-            <Icon name="ph:calendar" class="w-5 h-5 mr-2" />
-            Maklumat Sesi
-          </h3>
-        </template>
-        <template #body>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormKit
-              type="text"
-              name="sesi"
-              label="Sesi"
-              placeholder="Contoh: Sesi 1 - 2024"
+              type="textarea"
+              name="tanggungjawab"
+              label="Tanggungjawab Jawatan"
+              placeholder="Senaraikan tanggungjawab utama..."
+              rows="3"
               validation="required"
               :validation-messages="{
-                required: 'Sesi diperlukan',
+                required: 'Tanggungjawab jawatan diperlukan',
               }"
             />
             <FormKit
-              type="select"
-              name="statusSesi"
-              label="Status Sesi"
-              :options="[
-                { label: 'Aktif', value: 'Aktif' },
-                { label: 'Tidak Aktif', value: 'Tidak Aktif' },
-              ]"
+              type="textarea"
+              name="kelayakan"
+              label="Kelayakan Minimum"
+              placeholder="Syarat kelayakan minimum..."
+              rows="3"
               validation="required"
               :validation-messages="{
-                required: 'Status sesi diperlukan',
-              }"
-            />
-            <FormKit
-              type="date"
-              name="tarikhMula"
-              label="Tarikh Mula"
-              validation="required"
-              :validation-messages="{
-                required: 'Tarikh mula diperlukan',
-              }"
-            />
-            <FormKit
-              type="date"
-              name="tarikhTamat"
-              label="Tarikh Tamat"
-              validation="required"
-              :validation-messages="{
-                required: 'Tarikh tamat diperlukan',
+                required: 'Kelayakan minimum diperlukan',
               }"
             />
           </div>
@@ -223,6 +210,7 @@
                 { label: 'Elaun Bulanan', value: 'Elaun Bulanan' },
                 { label: 'Elaun Tahunan', value: 'Elaun Tahunan' },
                 { label: 'Elaun Khas', value: 'Elaun Khas' },
+                { label: 'Elaun Perjalanan', value: 'Elaun Perjalanan' },
               ]"
               validation="required"
               :validation-messages="{
@@ -263,6 +251,60 @@
                 required: 'Status elaun diperlukan',
               }"
             />
+            <FormKit
+              type="textarea"
+              name="catatanElaun"
+              label="Catatan Elaun"
+              placeholder="Maklumat tambahan tentang elaun..."
+              rows="2"
+            />
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Maklumat Tambahan Section -->
+      <rs-card class="mb-6">
+        <template #header>
+          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <Icon name="ph:gear" class="w-5 h-5 mr-2" />
+            Maklumat Tambahan
+          </h3>
+        </template>
+        <template #body>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormKit
+              type="number"
+              name="tempohPerkhidmatan"
+              label="Tempoh Perkhidmatan (Bulan)"
+              placeholder="12"
+              validation="required|number"
+              :validation-messages="{
+                required: 'Tempoh perkhidmatan diperlukan',
+                number: 'Tempoh mestilah nombor',
+              }"
+            />
+            <FormKit
+              type="select"
+              name="tahapKesukaran"
+              label="Tahap Kesukaran"
+              :options="[
+                { label: 'Mudah', value: 'Mudah' },
+                { label: 'Sederhana', value: 'Sederhana' },
+                { label: 'Sukar', value: 'Sukar' },
+                { label: 'Sangat Sukar', value: 'Sangat Sukar' },
+              ]"
+              validation="required"
+              :validation-messages="{
+                required: 'Tahap kesukaran diperlukan',
+              }"
+            />
+            <FormKit
+              type="textarea"
+              name="catatanTambahan"
+              label="Catatan Tambahan"
+              placeholder="Maklumat lain yang berkaitan..."
+              rows="3"
+            />
           </div>
         </template>
       </rs-card>
@@ -300,7 +342,7 @@ definePageMeta({
 // Role-based access control
 onMounted(() => {
   const currentUserRole = "eksekutif"; // This would come from auth system
-  if (currentUserRole !== "pt" && currentUserRole !== "eksekutif") {
+  if (currentUserRole !== "eksekutif") {
     alert("Anda tidak mempunyai kebenaran untuk menambah kategori");
     navigateTo('/BF-PA/KF/KJ');
   }
@@ -336,9 +378,9 @@ const handleSubmit = async (formData) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Enhanced approval workflow
-    const approvalStatus = "Menunggu Kelulusan";
+    const approvalStatus = "Menunggu Pengesahan";
     const approvalMessage = `Kategori penolong amil berjaya ditambah dengan status: ${approvalStatus}. 
-    Permintaan akan dihantar kepada Ketua Jabatan untuk kelulusan.`;
+    Permintaan akan dihantar kepada Ketua Jabatan untuk pengesahan.`;
     
     // Show success message with approval workflow
     alert(approvalMessage);

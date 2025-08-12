@@ -1,3 +1,9 @@
+<!-- 
+  RTMF SCREEN: PA-KF-KJ-01_01 (Category List)
+  PURPOSE: Senarai kategori penolong amil dengan workflow kelulusan
+  DESCRIPTION: Category list with approval workflow for Penolong Amil categories
+  ROUTE: /BF-PA/KF/KJ
+-->
 <template>
   <div>
     <!-- Page-specific Role Switcher -->
@@ -76,7 +82,7 @@
             @click="navigateTo('/BF-PA/KF/KJ/create')"
             v-if="canCreateCategory"
           >
-            <Icon name="material-symbols:add" class="mr-1" /> Tambah Baru
+            <Icon name="material-symbols:add" class="mr-1" /> Tambah Kategori Baru
           </rs-button>
         </div>
       </template>
@@ -114,7 +120,7 @@
           </div>
         </div>
 
-        <!-- Updated Table Section -->
+        <!-- Updated Table Section - Now Shows Categories -->
         <rs-table
           class="mt-4"
           :key="tableKey"
@@ -128,11 +134,6 @@
               sortable: true,
             },
             {
-              key: 'nama',
-              label: 'Nama',
-              sortable: true,
-            },
-            {
               key: 'kategoriPenolongAmil',
               label: 'Kategori Penolong Amil',
               sortable: true,
@@ -140,6 +141,11 @@
             {
               key: 'kodSingkatan',
               label: 'Kod Singkatan',
+              sortable: true,
+            },
+            {
+              key: 'jenisKategori',
+              label: 'Jenis Kategori',
               sortable: true,
             },
             {
@@ -158,6 +164,15 @@
             hover: true,
           }"
         >
+          <template v-slot:jenisKategori="data">
+            <rs-badge 
+              :variant="data.text === 'Default' ? 'info' : 'secondary'"
+              class="!text-xs"
+            >
+              {{ data.text }}
+            </rs-badge>
+          </template>
+
           <template v-slot:status="data">
             <rs-badge :variant="getStatusVariant(data.text)">
               {{ data.text }}
@@ -184,26 +199,8 @@
                 Kemaskini
               </rs-button>
               <rs-button
-                v-if="canDeleteCategory(data.text)"
-                variant="danger"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="confirmDelete(data.text)"
-              >
-                Padam
-              </rs-button>
-              <rs-button
-                v-if="canSupportCategory(data.text) && getCategoryStatus(data.text) === 'Menunggu Sokongan'"
-                variant="success"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="supportCategory(data.text)"
-              >
-                Sokong
-              </rs-button>
-              <rs-button
-                v-if="canVerifyCategory(data.text) && getCategoryStatus(data.text) === 'Disokong Eksekutif'"
-                variant="info"
+                v-if="canVerifyCategory(data.text) && getCategoryStatus(data.text) === 'Menunggu Pengesahan'"
+                variant="warning"
                 size="sm"
                 class="!px-2 !py-1"
                 @click="verifyCategory(data.text)"
@@ -217,7 +214,7 @@
                 class="!px-2 !py-1"
                 @click="approveCategory(data.text)"
               >
-                Lulus
+                Luluskan
               </rs-button>
               <rs-button
                 v-if="canApproveCategory(data.text) && getCategoryStatus(data.text) === 'Disahkan Ketua Jabatan'"
@@ -233,28 +230,6 @@
         </rs-table>
       </template>
     </rs-card>
-
-    <!-- Delete Confirmation Modal -->
-    <rs-modal
-      v-model="showDeleteModal"
-      title="Sahkan Padam"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <p>Adakah anda pasti ingin memadam kategori penolong amil ini?</p>
-      </template>
-      <template #footer>
-        <div class="flex justify-end space-x-2">
-          <rs-button variant="primary-outline" @click="showDeleteModal = false">
-            Batal
-          </rs-button>
-          <rs-button variant="danger" @click="deleteCategory">
-            Sahkan Padam
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
   </div>
 </template>
 
@@ -303,23 +278,23 @@ const roleOptions = [
 const roleData = {
   pt: {
     label: "PT",
-    description: "Pengurusan Kategori Penolong Amil (Administrative)",
-    capabilities: ["Lihat Senarai", "Kemaskini Kategori", "Semak Progress"],
+    description: "Pengurusan Kategori Penolong Amil (View Only)",
+    capabilities: ["Lihat Senarai", "Monitor Progress", "Tidak Boleh Edit"],
   },
   eksekutif: {
     label: "Eksekutif",
-    description: "Sokong dan Sokongan Kategori Penolong Amil",
-    capabilities: ["Lihat Senarai", "Sokong Kategori", "Semak Kategori"],
+    description: "Tambah dan Kemaskini Kategori Penolong Amil",
+    capabilities: ["Lihat Senarai", "Tambah Kategori", "Kemaskini Kategori", "Edit Penuh"],
   },
   "ketua-jabatan": {
     label: "Ketua Jabatan",
-    description: "Pengesahan dan Sahkan Kategori Penolong Amil",
-    capabilities: ["Lihat Senarai", "Sahkan Kategori", "Semak Kategori"],
+    description: "Pengesahan Kategori Penolong Amil",
+    capabilities: ["Lihat Senarai", "Sahkan Kategori", "Monitor Progress"],
   },
   "ketua-divisyen": {
     label: "Ketua Divisyen",
     description: "Kelulusan Akhir Kategori Penolong Amil",
-    capabilities: ["Lihat Senarai", "Lulus Kategori", "Tolak Kategori", "Kelulusan Akhir"],
+    capabilities: ["Lihat Senarai", "Luluskan Kategori", "Tolak Kategori", "Kelulusan Akhir"],
   },
 };
 
@@ -373,9 +348,9 @@ const statusOptions = [
   { label: "Semua Status", value: "" },
   { label: "Aktif", value: "Aktif" },
   { label: "Tidak Aktif", value: "Tidak Aktif" },
-  { label: "Menunggu Sokongan", value: "Menunggu Sokongan" },
-  { label: "Disokong Eksekutif", value: "Disokong Eksekutif" },
+  { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
   { label: "Disahkan Ketua Jabatan", value: "Disahkan Ketua Jabatan" },
+  { label: "Diluluskan Ketua Divisyen", value: "Diluluskan Ketua Divisyen" },
 ];
 
 const kategoriOptions = [
@@ -386,62 +361,68 @@ const kategoriOptions = [
   { label: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
 ];
 
-// Table data and reactivity control
+// Table data and reactivity control - Now shows CATEGORIES, not people
 const tableKey = ref(0);
 const categoriesList = ref([
   {
     rujukan: "KJ-2024-001",
-    nama: "Ahmad bin Abdullah",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
     kodSingkatan: "PAF",
+    jenisKategori: "Default",
     status: "Aktif",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 1
+    tindakan: 1,
+    isDefault: true
   },
   {
     rujukan: "KJ-2024-002",
-    nama: "Siti Aminah binti Omar",
     kategoriPenolongAmil: "Penolong Amil Padi",
     kodSingkatan: "PAP",
+    jenisKategori: "Default",
     status: "Aktif",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 2
+    tindakan: 2,
+    isDefault: true
   },
   {
     rujukan: "KJ-2024-003",
-    nama: "Mohammed Ismail bin Hassan",
     kategoriPenolongAmil: "Penolong Amil Kariah",
     kodSingkatan: "PAK",
-    status: "Menunggu Sokongan",
+    jenisKategori: "Default",
+    status: "Aktif",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 3
+    tindakan: 3,
+    isDefault: true
   },
   {
     rujukan: "KJ-2024-004",
-    nama: "Fatimah binti Ahmad",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    kodSingkatan: "PAKO",
-    status: "Disokong Eksekutif",
+    kodSingkatan: "PK+",
+    jenisKategori: "Default",
+    status: "Aktif",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 4
+    tindakan: 4,
+    isDefault: true
   },
   {
     rujukan: "KJ-2024-005",
-    nama: "Abdul Rahman bin Ali",
-    kategoriPenolongAmil: "Penolong Amil Zakat",
-    kodSingkatan: "PAZ",
-    status: "Disahkan Ketua Jabatan",
+    kategoriPenolongAmil: "Penolong Amil Wakaf",
+    kodSingkatan: "PAW",
+    jenisKategori: "Custom",
+    status: "Menunggu Pengesahan",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 5
+    tindakan: 5,
+    isDefault: false
   },
   {
     rujukan: "KJ-2024-006",
-    nama: "Nor Azizah binti Ibrahim",
-    kategoriPenolongAmil: "Penolong Amil Wakaf",
-    kodSingkatan: "PAW",
-    status: "Aktif",
+    kategoriPenolongAmil: "Penolong Amil Zakat Perniagaan",
+    kodSingkatan: "PAZP",
+    jenisKategori: "Custom",
+    status: "Disahkan Ketua Jabatan",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 6
+    tindakan: 6,
+    isDefault: false
   }
 ]);
 
@@ -454,14 +435,21 @@ const filteredCategories = computed(() => {
     // PT sees all categories for monitoring progress
     result = result;
   } else if (currentRole.value === "eksekutif") {
-    // Eksekutif sees categories that need support
-    result = result.filter(category => category.status === "Menunggu Sokongan");
+    // Eksekutif sees all categories (can edit)
+    result = result;
   } else if (currentRole.value === "ketua-jabatan") {
     // Ketua Jabatan sees categories that need verification
-    result = result.filter(category => category.status === "Disokong Eksekutif");
+    result = result.filter(category => 
+      category.status === "Menunggu Pengesahan" || 
+      category.status === "Disahkan Ketua Jabatan" ||
+      category.status === "Diluluskan Ketua Divisyen"
+    );
   } else if (currentRole.value === "ketua-divisyen") {
     // Ketua Divisyen sees categories that need final approval
-    result = result.filter(category => category.status === "Disahkan Ketua Jabatan");
+    result = result.filter(category => 
+      category.status === "Disahkan Ketua Jabatan" ||
+      category.status === "Diluluskan Ketua Divisyen"
+    );
   }
   
   // Apply search filter
@@ -469,7 +457,6 @@ const filteredCategories = computed(() => {
     const query = filters.value.searchQuery.toLowerCase();
     result = result.filter(category => 
       category.rujukan.toLowerCase().includes(query) ||
-      category.nama.toLowerCase().includes(query) ||
       category.kategoriPenolongAmil.toLowerCase().includes(query) ||
       category.kodSingkatan.toLowerCase().includes(query)
     );
@@ -496,28 +483,16 @@ const canCreateCategory = computed(() => {
 });
 
 const canEditCategory = (categoryId) => {
-  return currentRole.value === "pt"; // Only PT can edit
-};
-
-const canDeleteCategory = (categoryId) => {
-  return currentRole.value === "eksekutif"; // Only Eksekutif can delete
-};
-
-const canApproveCategory = (categoryId) => {
-  return currentRole.value === "ketua-divisyen";
-};
-
-const canSupportCategory = (categoryId) => {
-  return currentRole.value === "eksekutif";
+  return currentRole.value === "eksekutif"; // Only Eksekutif can edit
 };
 
 const canVerifyCategory = (categoryId) => {
   return currentRole.value === "ketua-jabatan";
 };
 
-// Modal control
-const showDeleteModal = ref(false);
-const categoryToDelete = ref(null);
+const canApproveCategory = (categoryId) => {
+  return currentRole.value === "ketua-divisyen";
+};
 
 // Methods
 const viewCategory = (categoryId) => {
@@ -528,48 +503,34 @@ const editCategory = (categoryId) => {
   navigateTo(`/BF-PA/KF/KJ/edit/${categoryId}`);
 };
 
-const supportCategory = (categoryId) => {
-  // Placeholder for support logic
-  console.log("Supporting category:", categoryId);
-  toast.success("Kategori penolong amil berjaya disokong");
-};
-
 const verifyCategory = (categoryId) => {
-  // Placeholder for verification logic
-  console.log("Verifying category:", categoryId);
-  toast.success("Kategori penolong amil berjaya disahkan");
+  // Update status to "Disahkan Ketua Jabatan"
+  const category = categoriesList.value.find(c => c.tindakan === categoryId);
+  if (category) {
+    category.status = "Disahkan Ketua Jabatan";
+    refreshTable();
+    toast.success("Kategori penolong amil berjaya disahkan oleh Ketua Jabatan");
+  }
 };
 
 const approveCategory = (categoryId) => {
-  // Placeholder for approval logic
-  console.log("Approving category:", categoryId);
-  toast.success("Kategori penolong amil berjaya diluluskan");
+  // Update status to "Diluluskan Ketua Divisyen"
+  const category = categoriesList.value.find(c => c.tindakan === categoryId);
+  if (category) {
+    category.status = "Diluluskan Ketua Divisyen";
+    refreshTable();
+    toast.success("Kategori penolong amil berjaya diluluskan oleh Ketua Divisyen");
+  }
 };
 
 const rejectCategory = (categoryId) => {
-  // Placeholder for rejection logic
-  console.log("Rejecting category:", categoryId);
-  toast.error("Kategori penolong amil berjaya ditolak");
-};
-
-const confirmDelete = (categoryId) => {
-  categoryToDelete.value = categoryId;
-  showDeleteModal.value = true;
-};
-
-const deleteCategory = () => {
-  const index = categoriesList.value.findIndex(
-    (category) => category.tindakan === categoryToDelete.value
-  );
-
-  if (index !== -1) {
-    categoriesList.value.splice(index, 1);
+  // Update status to "Ditolak"
+  const category = categoriesList.value.find(c => c.tindakan === categoryId);
+  if (category) {
+    category.status = "Ditolak";
     refreshTable();
+    toast.error("Kategori penolong amil berjaya ditolak");
   }
-  showDeleteModal.value = false;
-  categoryToDelete.value = null;
-
-  toast.success("Kategori penolong amil berjaya dipadamkan");
 };
 
 const refreshTable = () => {
@@ -585,12 +546,14 @@ const getStatusVariant = (status) => {
       return "success";
     case "Tidak Aktif":
       return "danger";
-    case "Menunggu Sokongan":
+    case "Menunggu Pengesahan":
       return "warning";
-    case "Disokong Eksekutif":
-      return "info";
     case "Disahkan Ketua Jabatan":
-      return "primary";
+      return "info";
+    case "Diluluskan Ketua Divisyen":
+      return "success";
+    case "Ditolak":
+      return "danger";
     default:
       return "default";
   }
@@ -603,9 +566,9 @@ const getCategoryStatus = (categoryId) => {
 
 const getRoleSpecificDescription = () => {
   const roleData = {
-    pt: "Pengurusan Kategori Penolong Amil (Administrative) - Lihat, Kemaskini, Semak Progress",
-    eksekutif: "Sokong dan Sokongan Kategori Penolong Amil - Sokong Kategori (Tiada Kemaskini)",
-    "ketua-jabatan": "Pengesahan dan Sahkan Kategori Penolong Amil - Sahkan Kategori",
+    pt: "Pengurusan Kategori Penolong Amil (View Only) - Lihat dan Monitor Progress",
+    eksekutif: "Tambah dan Kemaskini Kategori Penolong Amil - Edit Penuh",
+    "ketua-jabatan": "Pengesahan Kategori Penolong Amil - Sahkan Kategori",
     "ketua-divisyen": "Kelulusan Akhir Kategori Penolong Amil - Lulus/Tolak Kategori",
   };
   return roleData[currentRole.value] || "Tidak Diketahui";
