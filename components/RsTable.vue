@@ -29,6 +29,16 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showSearch: {
+    type: Boolean,
+    default: true,
+    description: "Show/hide the default search input field",
+  },
+  showFilter: {
+    type: Boolean,
+    default: true,
+    description: "Show/hide the default filter button",
+  },
   options: {
     type: Object,
     default: () => ({
@@ -218,6 +228,13 @@ onMounted(() => {
   }
 });
 
+// Watch for showSearch prop changes to reset keyword when search is disabled
+watch(() => props.showSearch, (newValue) => {
+  if (!newValue) {
+    keyword.value = "";
+  }
+});
+
 // Computed data
 const computedData = computed(() => {
   let result = [];
@@ -255,7 +272,7 @@ const computedData = computed(() => {
     })
     .filter((row) => {
       // Search all json object if keyword not equal null
-      if (keyword.value === "") return true;
+      if (!props.showSearch || keyword.value === "") return true;
       let result = false;
       Object.entries(row).forEach(([key, value]) => {
         try {
@@ -461,13 +478,14 @@ watch(
         <div>
           <div class="flex gap-x-2">
             <FormKit
+              v-if="showSearch"
               v-model="keyword"
               type="search"
               placeholder="Search..."
               outer-class="mb-0"
             />
             <rs-button
-              v-if="optionsAdvanced.filterable"
+              v-if="optionsAdvanced.filterable && showFilter"
               class="!px-3 sm:!px-6"
               @click="openFilter ? (openFilter = false) : (openFilter = true)"
             >

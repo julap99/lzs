@@ -85,7 +85,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -103,14 +103,43 @@
                   input: '!py-2',
                 }"
               />
+              <rs-button
+                variant="primary"
+                @click="handleSearch"
+                class="!py-2 !px-4"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
+              <rs-button
+                variant="secondary-outline"
+                @click="handleReset"
+                class="!py-2 !px-4"
+              >
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Reset
+              </rs-button>
+            </div>
+            
+            <!-- Filter Status Indicator -->
+            <div v-if="isSearchTriggered" class="mt-3 flex items-center gap-2">
+              <rs-badge variant="info" size="sm">
+                <Icon name="ph:info" class="w-3 h-3 mr-1" />
+                Filter Aktif
+              </rs-badge>
+              <span class="text-sm text-gray-600">
+                {{ filteredApplications.length }} daripada {{ (roleSpecificData[currentRole] || applications).length }} permohonan
+              </span>
             </div>
           </div>
 
           <!-- Applications Table -->
           <rs-table
             :data="filteredApplications"
-            :columns="eksekutifColumns"
+            :columns="eksekutifColumnsWithoutStatusLantikan"
             :pageSize="pageSize"
+            :show-search="false"
+            :show-filter="false"
             :options="{
               variant: 'default',
               hover: true,
@@ -171,7 +200,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -189,23 +218,16 @@
                   input: '!py-2',
                 }"
               />
-              <FormKit
-                v-model="filters.statusLantikan"
-                type="select"
-                :options="statusLantikanOptions"
-                placeholder="Status Lantikan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
             </div>
           </div>
 
           <!-- Applications Table -->
           <rs-table
             :data="filteredApplications"
-            :columns="eksekutifColumns"
+            :columns="eksekutifColumnsWithoutStatusLantikan"
             :pageSize="pageSize"
+            :show-search="false"
+            :show-filter="false"
             :options="{
               variant: 'default',
               hover: true,
@@ -219,12 +241,6 @@
           >
             <template v-slot:statusPendaftaran="{ text }">
               <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:statusLantikan="{ text }">
-              <rs-badge :variant="getStatusLantikanVariant(text)">
                 {{ text }}
               </rs-badge>
             </template>
@@ -272,7 +288,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -290,23 +306,16 @@
                   input: '!py-2',
                 }"
               />
-              <FormKit
-                v-model="filters.statusLantikan"
-                type="select"
-                :options="statusLantikanOptions"
-                placeholder="Status Lantikan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
             </div>
           </div>
 
           <!-- Applications Table -->
           <rs-table
             :data="filteredApplications"
-            :columns="eksekutifColumns"
+            :columns="eksekutifColumnsWithoutStatusLantikan"
             :pageSize="pageSize"
+            :show-search="false"
+            :show-filter="false"
             :options="{
               variant: 'default',
               hover: true,
@@ -320,12 +329,6 @@
           >
             <template v-slot:statusPendaftaran="{ text }">
               <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:statusLantikan="{ text }">
-              <rs-badge :variant="getStatusLantikanVariant(text)">
                 {{ text }}
               </rs-badge>
             </template>
@@ -373,7 +376,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -391,23 +394,16 @@
                   input: '!py-2',
                 }"
               />
-              <FormKit
-                v-model="filters.statusLantikan"
-                type="select"
-                :options="statusLantikanOptions"
-                placeholder="Status Lantikan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
             </div>
           </div>
 
           <!-- Applications Table -->
           <rs-table
             :data="filteredApplications"
-            :columns="eksekutifColumns"
+            :columns="eksekutifColumnsWithoutStatusLantikan"
             :pageSize="pageSize"
+            :show-search="false"
+            :show-filter="false"
             :options="{
               variant: 'default',
               hover: true,
@@ -421,12 +417,6 @@
           >
             <template v-slot:statusPendaftaran="{ text }">
               <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:statusLantikan="{ text }">
-              <rs-badge :variant="getStatusLantikanVariant(text)">
                 {{ text }}
               </rs-badge>
             </template>
@@ -474,7 +464,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -492,23 +482,16 @@
                   input: '!py-2',
                 }"
               />
-              <FormKit
-                v-model="filters.statusLantikan"
-                type="select"
-                :options="statusLantikanOptions"
-                placeholder="Status Lantikan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
             </div>
           </div>
 
           <!-- Applications Table -->
           <rs-table
             :data="filteredApplications"
-            :columns="eksekutifColumns"
+            :columns="eksekutifColumnsWithoutStatusLantikan"
             :pageSize="pageSize"
+            :show-search="false"
+            :show-filter="false"
             :options="{
               variant: 'default',
               hover: true,
@@ -522,12 +505,6 @@
           >
             <template v-slot:statusPendaftaran="{ text }">
               <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:statusLantikan="{ text }">
-              <rs-badge :variant="getStatusLantikanVariant(text)">
                 {{ text }}
               </rs-badge>
             </template>
@@ -583,7 +560,7 @@
       <template #body>
         <!-- Smart Filter Section -->
         <div class="mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
               v-model="filters.searchQuery"
               type="text"
@@ -601,24 +578,16 @@
                 input: '!py-2',
               }"
             />
-
-            <FormKit
-              v-model="filters.statusLantikan"
-              type="select"
-              :options="statusLantikanOptions"
-              placeholder="Status Lantikan"
-              :classes="{
-                input: '!py-2',
-              }"
-            />
           </div>
         </div>
 
         <!-- Applications Table -->
         <rs-table
           :data="filteredApplications"
-          :columns="columns"
+          :columns="eksekutifColumnsWithoutStatusLantikan"
           :pageSize="pageSize"
+          :show-search="false"
+          :show-filter="false"
           :options="{
             variant: 'default',
             hover: true,
@@ -632,12 +601,6 @@
         >
           <template v-slot:statusPendaftaran="{ text }">
             <rs-badge :variant="getStatusPendaftaranVariant(text)">
-              {{ text }}
-            </rs-badge>
-          </template>
-
-          <template v-slot:statusLantikan="{ text }">
-            <rs-badge :variant="getStatusLantikanVariant(text)">
               {{ text }}
             </rs-badge>
           </template>
@@ -739,6 +702,8 @@
             :data="filteredCompletedApplications"
             :columns="completedColumns"
             :pageSize="pageSize"
+            :show-search="false"
+            :show-filter="false"
             :options="{
               variant: 'default',
               hover: true,
@@ -868,7 +833,7 @@ const columns = [
   },
   {
     key: "noKP",
-    label: "No KP",
+    label: "ID Pengenalan",
     sortable: true,
   },
   {
@@ -901,6 +866,51 @@ const columns = [
 
 // Use optimized columns for all roles
 const eksekutifColumns = columns;
+
+// Create specific columns for Eksekutif role (without Status Lantikan)
+const eksekutifColumnsWithoutStatusLantikan = [
+  {
+    key: "rujukan",
+    label: "Rujukan",
+    sortable: true,
+  },
+  {
+    key: "nama",
+    label: "Nama",
+    sortable: true,
+  },
+  {
+    key: "noKP",
+    label: "ID Pengenalan",
+    sortable: true,
+  },
+  {
+    key: "kategoriPenolongAmil",
+    label: "Kategori",
+    sortable: true,
+  },
+  {
+    key: "jawatan",
+    label: "Jawatan",
+    sortable: true,
+  },
+  {
+    key: "institusiKariah",
+    label: "Institusi",
+    sortable: true,
+  },
+  {
+    key: "statusPendaftaran",
+    label: "Status",
+    sortable: true,
+  },
+  {
+    key: "tindakan",
+    label: "Tindakan",
+    sortable: false,
+    width: "140px",
+  },
+];
 
 // RTMF Required Filter Options
 const statusPendaftaranOptions = [
@@ -955,8 +965,10 @@ const filters = ref({
   searchQuery: "",
   statusPendaftaran: "",
   sesiPerkhidmatan: "",
-  statusLantikan: "",
 });
+
+// Search state to control when filters are applied
+const isSearchTriggered = ref(false);
 
 // Completed applications filters
 const completedFilters = ref({
@@ -1044,6 +1056,18 @@ const getRoleCapabilities = (role) => {
 const handleRoleChange = () => {
   // Role change logic can be added here if needed
   console.log("Role changed to:", currentRole.value);
+};
+
+const handleSearch = () => {
+  isSearchTriggered.value = true;
+  currentPage.value = 1; // Reset to first page when searching
+};
+
+const handleReset = () => {
+  filters.value.searchQuery = "";
+  filters.value.statusPendaftaran = "";
+  isSearchTriggered.value = false;
+  currentPage.value = 1;
 };
 
 const toggleRoleInfo = () => {
@@ -1194,12 +1218,12 @@ const completedColumns = [
   },
   {
     key: "noKP",
-    label: "No KP",
+    label: "ID Pengenalan",
     sortable: true,
   },
   {
     key: "kategoriPenolongAmil",
-    label: "Kategori Penolong Amil",
+    label: "Kategori",
     sortable: true,
   },
   {
@@ -1209,7 +1233,7 @@ const completedColumns = [
   },
   {
     key: "institusiKariah",
-    label: "Institusi/Kariah",
+    label: "Institusi",
     sortable: true,
   },
   {
@@ -1442,7 +1466,6 @@ const roleSpecificData = {
       institusiKariah: "Masjid Negeri Selangor",
       statusPendaftaran: "Telah Disemak",
       sesiPerkhidmatan: "Sesi 1",
-      statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disemak" },
     },
     {
@@ -1455,7 +1478,6 @@ const roleSpecificData = {
       institusiKariah: "Masjid Al-Khairiyah",
       statusPendaftaran: "Telah Disemak",
       sesiPerkhidmatan: "Sesi 2",
-      statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disemak" },
     },
   ],
@@ -1529,30 +1551,30 @@ const filteredApplications = computed(() => {
     result = result.filter((app) => app.institusiId === currentInstitutionId || !app.institusiId);
   }
 
-  // Apply search filter
-  if (filters.value.searchQuery) {
-    const query = filters.value.searchQuery.toLowerCase();
-    result = result.filter(
-      (app) =>
-        app.rujukan.toLowerCase().includes(query) ||
-        app.nama.toLowerCase().includes(query) ||
-        app.noKP.toLowerCase().includes(query)
-    );
-  }
+  // Only apply filters if search button was clicked
+  if (isSearchTriggered.value) {
+    // Apply search filter
+    if (filters.value.searchQuery) {
+      const query = filters.value.searchQuery.toLowerCase();
+      result = result.filter(
+        (app) =>
+          app.rujukan.toLowerCase().includes(query) ||
+          app.nama.toLowerCase().includes(query) ||
+          app.noKP.toLowerCase().includes(query)
+      );
+    }
 
-  // Apply status filters
-  if (filters.value.statusPendaftaran) {
-    result = result.filter((app) => app.statusPendaftaran === filters.value.statusPendaftaran);
-  }
-
-
-
-  if (filters.value.statusLantikan) {
-    result = result.filter((app) => app.statusLantikan === filters.value.statusLantikan);
+    // Apply status filters
+    if (filters.value.statusPendaftaran) {
+      result = result.filter((app) => app.statusPendaftaran === filters.value.statusPendaftaran);
+    }
   }
 
   // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
   result = result.map(({ sesiPerkhidmatan, institusiId, ...rest }) => rest);
+  
+  // Remove statusLantikan field for all roles to hide the column
+  result = result.map(({ statusLantikan, ...rest }) => rest);
 
   return result;
 });
