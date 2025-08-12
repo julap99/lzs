@@ -85,7 +85,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -99,15 +99,6 @@
                 type="select"
                 :options="statusPendaftaranOptions"
                 placeholder="Status Pendaftaran"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.statusLantikan"
-                type="select"
-                :options="statusLantikanOptions"
-                placeholder="Status Lantikan"
                 :classes="{
                   input: '!py-2',
                 }"
@@ -133,12 +124,6 @@
           >
             <template v-slot:statusPendaftaran="{ text }">
               <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:statusLantikan="{ text }">
-              <rs-badge :variant="getStatusLantikanVariant(text)">
                 {{ text }}
               </rs-badge>
             </template>
@@ -791,7 +776,7 @@
                 class="!px-3 !py-1.5"
               >
                 <Icon name="ph:clock" class="w-4 h-4 mr-1" />
-                Sejarah
+                Jejak
               </rs-button>
               </div>
             </template>
@@ -919,7 +904,7 @@ const eksekutifColumns = columns;
 
 // RTMF Required Filter Options
 const statusPendaftaranOptions = [
-  { label: "Semua Status", value: "" },
+  { label: "Semua Status Pendaftaran", value: "" },
   { label: "Draf", value: "Draft" },
   { label: "Dihantar", value: "Submitted" },
   { label: "Dalam Semakan", value: "Under Review" },
@@ -949,7 +934,7 @@ const kategoriPenolongAmilOptions = [
 ];
 
 const statusLantikanOptions = [
-  { label: "Semua Status", value: "" },
+  { label: "Semua Status Lantikan", value: "" },
   { label: "Menunggu", value: "Pending" },
   { label: "Dilantik", value: "Appointed" },
   { label: "Aktif", value: "Active" },
