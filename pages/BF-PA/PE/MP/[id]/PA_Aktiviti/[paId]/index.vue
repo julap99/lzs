@@ -176,10 +176,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { 
-  getActivityById, 
-  getPenolongAmilDetailedByActivityId 
-} from '../../../mockData.js';
 
 const route = useRoute();
 const activityId = route.params.id;
@@ -674,8 +670,8 @@ const getPaymentStatusClass = (status) => {
 
 // Load data based on activity ID and PA ID
 onMounted(() => {
-  // Load activity data from centralized mockup data
-  const activityData = getActivityById(activityId);
+  // Load activity data from local data map
+  const activityData = activityDataMap[activityId];
   if (activityData) {
     activityInfo.value = {
       id: activityData.id,
@@ -687,9 +683,9 @@ onMounted(() => {
     };
   }
   
-  // Load PA data from centralized mockup data
-  const paDetailedData = getPenolongAmilDetailedByActivityId(activityId);
-  const paData = paDetailedData[paId];
+  // Load PA data from local data map
+  const paDetailedData = paDataMap[activityId];
+  const paData = paDetailedData ? paDetailedData[paId] : null;
   if (paData) {
     penolongAmil.value = {
       id: paData.id,
