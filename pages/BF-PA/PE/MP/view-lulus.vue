@@ -101,18 +101,18 @@
             </div>
           </div>
 
-          <!-- Maklumat Sokongan JPPA -->
+                           <!-- Maklumat Sokongan Eksekutif -->
           <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Maklumat Sokongan JPPA</h3>
+                   <h3 class="text-lg font-semibold mb-4">Maklumat Sokongan Eksekutif</h3>
             <div class="bg-gray-50 p-4 rounded-lg">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p class="text-sm text-gray-500">Disokong Oleh</p>
-                  <p class="font-medium">{{ activity.jppaSupport.reviewedBy }}</p>
+                         <p class="font-medium">{{ activity.eksekutifSupport.reviewedBy }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Tarikh Sokongan</p>
-                  <p class="font-medium">{{ activity.jppaSupport.reviewedAt }}</p>
+                         <p class="font-medium">{{ activity.eksekutifSupport.reviewedAt }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Status</p>
@@ -124,24 +124,24 @@
                 </div>
                 <div class="md:col-span-2">
                   <p class="text-sm text-gray-500">Catatan</p>
-                  <p class="font-medium">{{ activity.jppaSupport.comments }}</p>
+                         <p class="font-medium">{{ activity.eksekutifSupport.comments }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Maklumat Kelulusan Ketua JPPA -->
+                 <!-- Maklumat Kelulusan Ketua Jabatan -->
           <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Maklumat Kelulusan Ketua JPPA</h3>
+                   <h3 class="text-lg font-semibold mb-4">Maklumat Kelulusan Ketua Jabatan</h3>
             <div class="bg-gray-50 p-4 rounded-lg">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p class="text-sm text-gray-500">Diluluskan Oleh</p>
-                  <p class="font-medium">{{ activity.ketuaJPPA.approvedBy }}</p>
+                         <p class="font-medium">{{ activity.ketuaJabatan.approvedBy }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Tarikh Kelulusan</p>
-                  <p class="font-medium">{{ activity.ketuaJPPA.approvedAt }}</p>
+                         <p class="font-medium">{{ activity.ketuaJabatan.approvedAt }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Status</p>
@@ -153,7 +153,7 @@
                 </div>
                 <div class="md:col-span-2">
                   <p class="text-sm text-gray-500">Catatan Kelulusan</p>
-                  <p class="font-medium">{{ activity.ketuaJPPA.comments }}</p>
+                         <p class="font-medium">{{ activity.ketuaJabatan.comments }}</p>
                 </div>
               </div>
             </div>
@@ -198,23 +198,23 @@ const breadcrumb = ref([
 ]);
 
 // Get activity ID from query parameter
-const activityId = computed(() => route.query.id || 'MP/2024/002');
+const activityId = computed(() => route.query.id || 'MP2024-013');
 
 // Mock activity data
 const activity = ref({
-  id: 'MP/2024/002',
-  name: 'Program Tazkirah Bulanan',
-  date: '2024-03-16',
-  location: 'Masjid Al-Hidayah',
+  id: 'MP2024-013',
+  name: 'Program Kesedaran Zakat',
+  date: '2024-03-28',
+  location: 'Masjid Al-Amin',
   type: 'Program',
   status: 'Diluluskan',
-  jppaSupport: {
+  eksekutifSupport: {
     reviewedBy: "Sarah binti Hamid",
     reviewedAt: "15/05/2024, 10:45",
     isSupported: true,
     comments: "Berdasarkan semakan dokumen dan maklumat yang dikemukakan, aktiviti ini disokong untuk diluluskan. Aktiviti memenuhi semua kriteria yang ditetapkan.",
   },
-  ketuaJPPA: {
+  ketuaJabatan: {
     approvedBy: "Ahmad bin Ismail",
     approvedAt: "20/05/2024, 14:30",
     isApproved: true,
@@ -225,34 +225,22 @@ const activity = ref({
 // Mock Penolong Amil data
 const penolongAmil = ref([
   {
-    id: 'PA001',
-    name: 'Ahmad bin Abdullah',
+    id: 'PA026',
+    name: 'Shahrul bin Nizam',
     role: 'Pengerusi',
-    allowance: '50.00',
+    allowance: '75.00',
   },
   {
-    id: 'PA002',
-    name: 'Siti Aminah binti Hassan',
+    id: 'PA027',
+    name: 'Amirul bin Hakim',
     role: 'Setiausaha',
-    allowance: '40.00',
+    allowance: '65.00',
   },
   {
-    id: 'PA003',
-    name: 'Mohd Razak bin Ibrahim',
+    id: 'PA028',
+    name: 'Syafiq bin Jalil',
     role: 'Ahli Jawatankuasa',
-    allowance: '30.00',
-  },
-  {
-    id: 'PA004',
-    name: 'Nurul Aisyah binti Omar',
-    role: 'Ahli Jawatankuasa',
-    allowance: '30.00',
-  },
-  {
-    id: 'PA005',
-    name: 'Ali bin Hassan',
-    role: 'Ahli Jawatankuasa',
-    allowance: '30.00',
+    allowance: '45.00',
   }
 ]);
 

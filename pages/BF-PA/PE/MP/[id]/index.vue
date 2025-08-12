@@ -210,51 +210,18 @@ const penolongAmil = ref([]);
 
 // Mock data for different activity IDs
 const activityDataMap = {
-  'M001': {
-    id: 'M001',
-    name: 'Mesyuarat JPPA Bulanan',
+  'MP2024-001': {
+    id: 'MP2024-001',
+    name: 'Mesyuarat Perancangan Bulanan',
     type: 'Mesyuarat',
-    date: '15/03/2024',
-    location: 'Dewan Mesyuarat JPPA',
-    status: 'Menunggu Sokongan JPPA',
+    date: '15/04/2024',
+    location: 'Dewan Mesyuarat Eksekutif',
+    status: 'Belum Disemak',
     allowanceRate: '50.00',
     penolongAmil: [
-      {
-        id: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        attended: true,
-        checkInTime: '08:45',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA002',
-        name: 'Siti Aminah binti Hassan',
-        attended: true,
-        checkInTime: '09:00',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA003',
-        name: 'Mohd Razak bin Ibrahim',
-        attended: false,
-        checkInTime: null,
-        allowanceRate: '50.00',
-        reason: 'Sakit',
-      },
-      {
-        id: 'PA004',
-        name: 'Nurul Aisyah binti Omar',
-        attended: true,
-        checkInTime: '08:55',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA005',
-        name: 'Ali bin Hassan',
-        attended: true,
-        checkInTime: '09:10',
-        allowanceRate: '50.00',
-      }
+      { id: 'PA001', name: 'Ahmad bin Ismail', attended: true, checkInTime: '09:00', allowanceRate: '50.00' },
+      { id: 'PA002', name: 'Sarah binti Hamid', attended: true, checkInTime: '09:10', allowanceRate: '50.00' },
+      { id: 'PA003', name: 'Mohd Zulkifli bin Abdullah', attended: true, checkInTime: '09:05', allowanceRate: '50.00' }
     ]
   },
   'MP2024-002': {
@@ -263,45 +230,12 @@ const activityDataMap = {
     type: 'Latihan',
     date: '20/03/2024',
     location: 'Dewan Latihan LZS, Kompleks Zakat Selangor',
-    status: 'Belum Dihantar',
+    status: 'Belum Disemak',
     allowanceRate: '50.00',
     penolongAmil: [
-      {
-        id: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        attended: true,
-        checkInTime: '08:45',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA002',
-        name: 'Siti Aminah binti Hassan',
-        attended: true,
-        checkInTime: '09:00',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA003',
-        name: 'Mohd Razak bin Ibrahim',
-        attended: false,
-        checkInTime: null,
-        allowanceRate: '50.00',
-        reason: 'Sakit',
-      },
-      {
-        id: 'PA004',
-        name: 'Nurul Aisyah binti Omar',
-        attended: true,
-        checkInTime: '08:55',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA005',
-        name: 'Ali bin Hassan',
-        attended: true,
-        checkInTime: '09:10',
-        allowanceRate: '50.00',
-      }
+      { id: 'PA001', name: 'Ahmad bin Abdullah', attended: true, checkInTime: '08:45', allowanceRate: '50.00' },
+      { id: 'PA002', name: 'Siti Aminah binti Hassan', attended: true, checkInTime: '09:00', allowanceRate: '50.00' },
+      { id: 'PA003', name: 'Mohd Razak bin Ibrahim', attended: false, checkInTime: null, allowanceRate: '50.00', reason: 'Sakit' }
     ]
   },
   'MP2024-003': {
@@ -310,30 +244,25 @@ const activityDataMap = {
     type: 'Program',
     date: '25/03/2024',
     location: 'Masjid Al-Hidayah, Shah Alam',
-    status: 'Lulus',
+    status: 'Diluluskan',
     allowanceRate: '75.00',
     penolongAmil: [
-      {
-        id: 'PA006',
-        name: 'Zainab binti Ibrahim',
-        attended: true,
-        checkInTime: '07:30',
-        allowanceRate: '75.00',
-      },
-      {
-        id: 'PA007',
-        name: 'Ibrahim bin Ahmad',
-        attended: true,
-        checkInTime: '07:45',
-        allowanceRate: '75.00',
-      },
-      {
-        id: 'PA008',
-        name: 'Aminah binti Mohamed',
-        attended: true,
-        checkInTime: '08:00',
-        allowanceRate: '75.00',
-      }
+      { id: 'PA006', name: 'Zainab binti Ibrahim', attended: true, checkInTime: '07:30', allowanceRate: '75.00' },
+      { id: 'PA007', name: 'Ibrahim bin Ahmad', attended: true, checkInTime: '07:45', allowanceRate: '75.00' },
+      { id: 'PA008', name: 'Aminah binti Mohamed', attended: true, checkInTime: '08:00', allowanceRate: '75.00' }
+    ]
+  },
+  'MP2024-004': {
+    id: 'MP2024-004',
+    name: 'Mesyuarat Eksekutif Bulanan',
+    type: 'Mesyuarat',
+    date: '15/03/2024',
+    location: 'Dewan Mesyuarat Eksekutif',
+    status: 'Menunggu Sokongan Eksekutif',
+    allowanceRate: '50.00',
+    penolongAmil: [
+      { id: 'PA001', name: 'Ahmad bin Abdullah', attended: true, checkInTime: '08:45', allowanceRate: '50.00' },
+      { id: 'PA004', name: 'Nurul Aisyah binti Omar', attended: true, checkInTime: '08:55', allowanceRate: '50.00' }
     ]
   },
   'MP2024-005': {
@@ -342,23 +271,11 @@ const activityDataMap = {
     type: 'Latihan',
     date: '02/04/2024',
     location: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya',
-    status: 'Belum Dihantar',
+    status: 'Belum Disemak',
     allowanceRate: '60.00',
     penolongAmil: [
-      {
-        id: 'PA009',
-        name: 'Hassan bin Omar',
-        attended: true,
-        checkInTime: '09:00',
-        allowanceRate: '60.00',
-      },
-      {
-        id: 'PA010',
-        name: 'Mariam binti Ali',
-        attended: true,
-        checkInTime: '09:15',
-        allowanceRate: '60.00',
-      }
+      { id: 'PA009', name: 'Hassan bin Omar', attended: true, checkInTime: '09:00', allowanceRate: '60.00' },
+      { id: 'PA010', name: 'Mariam binti Ali', attended: true, checkInTime: '09:15', allowanceRate: '60.00' }
     ]
   },
   'MP2024-006': {
@@ -370,67 +287,22 @@ const activityDataMap = {
     status: 'Ditolak',
     allowanceRate: '50.00',
     penolongAmil: [
-      {
-        id: 'PA011',
-        name: 'Omar bin Hassan',
-        attended: true,
-        checkInTime: '08:00',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA012',
-        name: 'Fatimah binti Ahmad',
-        attended: true,
-        checkInTime: '08:15',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA013',
-        name: 'Ahmad bin Omar',
-        attended: false,
-        checkInTime: null,
-        allowanceRate: '50.00',
-        reason: 'Urusan Keluarga',
-      },
-      {
-        id: 'PA014',
-        name: 'Siti binti Hassan',
-        attended: true,
-        checkInTime: '08:30',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA015',
-        name: 'Mohamed bin Ali',
-        attended: true,
-        checkInTime: '08:45',
-        allowanceRate: '50.00',
-      }
+      { id: 'PA011', name: 'Omar bin Hassan', attended: true, checkInTime: '08:00', allowanceRate: '50.00' },
+      { id: 'PA012', name: 'Fatimah binti Ahmad', attended: true, checkInTime: '08:15', allowanceRate: '50.00' },
+      { id: 'PA013', name: 'Ahmad bin Omar', attended: false, checkInTime: null, allowanceRate: '50.00', reason: 'Urusan Keluarga' }
     ]
   },
   'MP2024-007': {
     id: 'MP2024-007',
-    name: 'Mesyuarat Perancangan Aktiviti Q2',
-    type: 'Mesyuarat',
-    date: '10/04/2024',
-    location: 'Dewan Mesyuarat JPPA, Pejabat Zakat Kajang',
-    status: 'Lulus',
-    allowanceRate: '40.00',
+    name: 'Program Khidmat Masyarakat',
+    type: 'Program',
+    date: '20/03/2024',
+    location: 'Masjid Al-Hidayah',
+    status: 'Diluluskan',
+    allowanceRate: '100.00',
     penolongAmil: [
-      {
-        id: 'PA016',
-        name: 'Ali bin Mohamed',
-        attended: true,
-        checkInTime: '09:00',
-        allowanceRate: '40.00',
-      },
-      {
-        id: 'PA017',
-        name: 'Nurul binti Omar',
-        attended: true,
-        checkInTime: '09:15',
-        allowanceRate: '40.00',
-      }
+      { id: 'PA016', name: 'Ali bin Mohamed', attended: true, checkInTime: '09:00', allowanceRate: '100.00' },
+      { id: 'PA017', name: 'Nurul binti Omar', attended: true, checkInTime: '09:15', allowanceRate: '100.00' }
     ]
   },
   'MP2024-008': {
@@ -439,200 +311,15 @@ const activityDataMap = {
     type: 'Latihan',
     date: '12/04/2024',
     location: 'Bilik Latihan, Pejabat Zakat Gombak',
-    status: 'Belum Dihantar',
+    status: 'Belum Disemak',
     allowanceRate: '70.00',
     penolongAmil: [
-      {
-        id: 'PA018',
-        name: 'Hassan bin Ibrahim',
-        attended: true,
-        checkInTime: '09:00',
-        allowanceRate: '70.00',
-      },
-      {
-        id: 'PA019',
-        name: 'Aminah binti Hassan',
-        attended: true,
-        checkInTime: '09:15',
-        allowanceRate: '70.00',
-      }
+      { id: 'PA018', name: 'Hassan bin Ibrahim', attended: true, checkInTime: '09:00', allowanceRate: '70.00' },
+      { id: 'PA019', name: 'Aminah binti Hassan', attended: true, checkInTime: '09:15', allowanceRate: '70.00' }
     ]
   },
-  'M002': {
-    id: 'M002',
-    name: 'Mesyuarat Koordinasi',
-    type: 'Mesyuarat',
-    date: '28/03/2024',
-    location: 'Pejabat Zakat',
-    status: 'Menunggu Sokongan JPPA',
-    allowanceRate: '50.00',
-    penolongAmil: [
-      {
-        id: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        attended: true,
-        checkInTime: '09:00',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA002',
-        name: 'Siti Aminah binti Hassan',
-        attended: false,
-        checkInTime: null,
-        allowanceRate: '50.00',
-        reason: 'Urusan Keluarga',
-      },
-      {
-        id: 'PA003',
-        name: 'Mohd Razak bin Ibrahim',
-        attended: true,
-        checkInTime: '09:15',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA004',
-        name: 'Nurul Aisyah binti Omar',
-        attended: true,
-        checkInTime: '08:50',
-        allowanceRate: '50.00',
-      }
-    ]
-  },
-  'M003': {
-    id: 'M003',
-    name: 'Mesyuarat Agung Tahunan',
-    type: 'Mesyuarat',
-    date: '22/03/2024',
-    location: 'Dewan Utama',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-    allowanceRate: '50.00',
-    penolongAmil: [
-      {
-        id: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        attended: true,
-        checkInTime: '08:30',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA002',
-        name: 'Siti Aminah binti Hassan',
-        attended: true,
-        checkInTime: '08:45',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA003',
-        name: 'Mohd Razak bin Ibrahim',
-        attended: true,
-        checkInTime: '09:00',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA004',
-        name: 'Nurul Aisyah binti Omar',
-        attended: true,
-        checkInTime: '08:40',
-        allowanceRate: '50.00',
-      },
-      {
-        id: 'PA005',
-        name: 'Ali bin Hassan',
-        attended: false,
-        checkInTime: null,
-        allowanceRate: '50.00',
-        reason: 'Urusan Rasmi',
-      }
-    ]
-  },
-  'P001': {
-    id: 'P001',
-    name: 'Program Khidmat Masyarakat',
-    type: 'Program',
-    date: '20/03/2024',
-    location: 'Masjid Al-Hidayah',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-    allowanceRate: '100.00',
-    penolongAmil: [
-      {
-        id: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        attended: true,
-        checkInTime: '07:30',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA002',
-        name: 'Siti Aminah binti Hassan',
-        attended: true,
-        checkInTime: '07:45',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA003',
-        name: 'Mohd Razak bin Ibrahim',
-        attended: true,
-        checkInTime: '08:00',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA004',
-        name: 'Nurul Aisyah binti Omar',
-        attended: false,
-        checkInTime: null,
-        allowanceRate: '100.00',
-        reason: 'Urusan Keluarga',
-      },
-      {
-        id: 'PA005',
-        name: 'Ali bin Hassan',
-        attended: true,
-        checkInTime: '07:55',
-        allowanceRate: '100.00',
-      }
-    ]
-  },
-  'P002': {
-    id: 'P002',
-    name: 'Program Tazkirah Bulanan',
-    type: 'Program',
-    date: '18/03/2024',
-    location: 'Masjid Al-Hidayah',
-    status: 'Menunggu Sokongan JPPA',
-    allowanceRate: '100.00',
-    penolongAmil: [
-      {
-        id: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        attended: true,
-        checkInTime: '19:00',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA002',
-        name: 'Siti Aminah binti Hassan',
-        attended: true,
-        checkInTime: '19:15',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA003',
-        name: 'Mohd Razak bin Ibrahim',
-        attended: true,
-        checkInTime: '19:30',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA004',
-        name: 'Nurul Aisyah binti Omar',
-        attended: true,
-        checkInTime: '19:10',
-        allowanceRate: '100.00',
-      }
-    ]
-  },
-  'L001': {
-    id: 'L001',
+  'MP2024-009': {
+    id: 'MP2024-009',
     name: 'Latihan Pengurusan Zakat',
     type: 'Latihan',
     date: '25/03/2024',
@@ -640,88 +327,118 @@ const activityDataMap = {
     status: 'Diluluskan',
     allowanceRate: '100.00',
     penolongAmil: [
-      {
-        id: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        attended: true,
-        checkInTime: '08:00',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA002',
-        name: 'Siti Aminah binti Hassan',
-        attended: true,
-        checkInTime: '08:15',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA003',
-        name: 'Mohd Razak bin Ibrahim',
-        attended: true,
-        checkInTime: '08:30',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA004',
-        name: 'Nurul Aisyah binti Omar',
-        attended: true,
-        checkInTime: '08:45',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA005',
-        name: 'Ali bin Hassan',
-        attended: true,
-        checkInTime: '09:00',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA006',
-        name: 'Fatimah binti Ahmad',
-        attended: true,
-        checkInTime: '08:20',
-        allowanceRate: '100.00',
-      }
+      { id: 'PA001', name: 'Ahmad bin Abdullah', attended: true, checkInTime: '08:00', allowanceRate: '100.00' },
+      { id: 'PA002', name: 'Siti Aminah binti Hassan', attended: true, checkInTime: '08:15', allowanceRate: '100.00' }
     ]
   },
-  'L002': {
-    id: 'L002',
-    name: 'Latihan Asas Pengurusan',
-    type: 'Latihan',
-    date: '27/03/2024',
-    location: 'Bilik Latihan',
-    status: 'Menunggu Sokongan JPPA',
-    allowanceRate: '100.00',
+  'MP2024-010': {
+    id: 'MP2024-010',
+    name: 'Mesyuarat Koordinasi',
+    type: 'Mesyuarat',
+    date: '30/03/2024',
+    location: 'Pejabat Zakat',
+    status: 'Diluluskan',
+    allowanceRate: '50.00',
     penolongAmil: [
-      {
-        id: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        attended: true,
-        checkInTime: '09:00',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA002',
-        name: 'Siti Aminah binti Hassan',
-        attended: false,
-        checkInTime: null,
-        allowanceRate: '100.00',
-        reason: 'Sakit',
-      },
-      {
-        id: 'PA003',
-        name: 'Mohd Razak bin Ibrahim',
-        attended: true,
-        checkInTime: '09:15',
-        allowanceRate: '100.00',
-      },
-      {
-        id: 'PA004',
-        name: 'Nurul Aisyah binti Omar',
-        attended: true,
-        checkInTime: '08:45',
-        allowanceRate: '100.00',
-      }
+      { id: 'PA021', name: 'Roslan bin Karim', attended: true, checkInTime: '09:10', allowanceRate: '50.00' },
+      { id: 'PA022', name: 'Farah binti Zain', attended: true, checkInTime: '09:20', allowanceRate: '50.00' }
+    ]
+  },
+  'MP2024-011': {
+    id: 'MP2024-011',
+    name: 'Program Latihan Amil',
+    type: 'Program',
+    date: '10/04/2024',
+    location: 'Dewan Serbaguna',
+    status: 'Ditolak',
+    allowanceRate: '75.00',
+    penolongAmil: [
+      { id: 'PA023', name: 'Hana binti Ridzuan', attended: true, checkInTime: '08:10', allowanceRate: '75.00' },
+      { id: 'PA024', name: 'Ridzuan bin Ali', attended: false, checkInTime: null, allowanceRate: '75.00', reason: 'Lewat' }
+    ]
+  },
+  'MP2024-012': {
+    id: 'MP2024-012',
+    name: 'Mesyuarat Perancangan Q2',
+    type: 'Mesyuarat',
+    date: '05/04/2024',
+    location: 'Bilik Mesyuarat',
+    status: 'Ditolak',
+    allowanceRate: '45.00',
+    penolongAmil: [
+      { id: 'PA025', name: 'Kamariah binti Omar', attended: true, checkInTime: '09:00', allowanceRate: '45.00' }
+    ]
+  },
+  'MP2024-013': {
+    id: 'MP2024-013',
+    name: 'Program Kesedaran Zakat',
+    type: 'Program',
+    date: '28/03/2024',
+    location: 'Masjid Al-Amin',
+    status: 'Diluluskan',
+    allowanceRate: '75.00',
+    penolongAmil: [
+      { id: 'PA026', name: 'Shahrul bin Nizam', attended: true, checkInTime: '07:50', allowanceRate: '75.00' }
+    ]
+  },
+  'MP2024-014': {
+    id: 'MP2024-014',
+    name: 'Latihan Pengurusan Aduan',
+    type: 'Latihan',
+    date: '22/03/2024',
+    location: 'Bilik Latihan, Pejabat Zakat Shah Alam',
+    status: 'Diluluskan',
+    allowanceRate: '65.00',
+    penolongAmil: [
+      { id: 'PA027', name: 'Amirul bin Hakim', attended: true, checkInTime: '09:05', allowanceRate: '65.00' }
+    ]
+  },
+  'MP2024-015': {
+    id: 'MP2024-015',
+    name: 'Mesyuarat Perancangan Strategik',
+    type: 'Mesyuarat',
+    date: '18/03/2024',
+    location: 'Dewan Mesyuarat Eksekutif',
+    status: 'Diluluskan',
+    allowanceRate: '45.00',
+    penolongAmil: [
+      { id: 'PA028', name: 'Syafiq bin Jalil', attended: true, checkInTime: '09:00', allowanceRate: '45.00' }
+    ]
+  },
+  'MP2024-016': {
+    id: 'MP2024-016',
+    name: 'Latihan Pengurusan Kewangan',
+    type: 'Latihan',
+    date: '08/04/2024',
+    location: 'Bilik Latihan, Pejabat Zakat Klang',
+    status: 'Ditolak',
+    allowanceRate: '80.00',
+    penolongAmil: [
+      { id: 'PA029', name: 'Faizal bin Rahman', attended: true, checkInTime: '09:00', allowanceRate: '80.00' }
+    ]
+  },
+  'MP2024-017': {
+    id: 'MP2024-017',
+    name: 'Program Khidmat Masyarakat',
+    type: 'Program',
+    date: '12/04/2024',
+    location: 'Masjid Al-Ikhlas',
+    status: 'Ditolak',
+    allowanceRate: '90.00',
+    penolongAmil: [
+      { id: 'PA030', name: 'Sabrina binti Noor', attended: true, checkInTime: '08:40', allowanceRate: '90.00' }
+    ]
+  },
+  'MP2024-018': {
+    id: 'MP2024-018',
+    name: 'Mesyuarat Koordinasi Wilayah',
+    type: 'Mesyuarat',
+    date: '15/04/2024',
+    location: 'Dewan Mesyuarat Wilayah',
+    status: 'Ditolak',
+    allowanceRate: '55.00',
+    penolongAmil: [
+      { id: 'PA031', name: 'Hidayah binti Salleh', attended: true, checkInTime: '09:20', allowanceRate: '55.00' }
     ]
   }
 };
@@ -738,8 +455,9 @@ const totalAllowance = computed(() => {
 // Helper functions
 const getStatusClass = (status) => {
   const statusClasses = {
-    'Menunggu Sokongan JPPA': 'bg-yellow-100 text-yellow-800',
-    'Menunggu Kelulusan Ketua JPPA': 'bg-blue-100 text-blue-800',
+    'Belum Disemak': 'bg-gray-100 text-gray-800',
+    'Menunggu Sokongan Eksekutif': 'bg-yellow-100 text-yellow-800',
+    'Menunggu Kelulusan Ketua Jabatan': 'bg-blue-100 text-blue-800',
     'Diluluskan': 'bg-green-100 text-green-800',
     'Ditolak': 'bg-red-100 text-red-800',
   };

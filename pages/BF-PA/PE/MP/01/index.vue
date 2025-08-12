@@ -5,65 +5,221 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Pilih Aktiviti Untuk Pembayaran Elaun</h2>
+          <h2 class="text-xl font-semibold">Semakan PT - Kiraan Jumlah Elaun</h2>
+          <rs-badge
+            v-if="formData.status"
+            :variant="getStatusVariant(formData.status)"
+          >
+            {{ formData.status }}
+          </rs-badge>
         </div>
       </template>
 
       <template #body>
-        <!-- Updated Table Section -->
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="handleSubmit"
+          v-model="formData"
+        >
+        
+          <!-- Maklumat Aktiviti Section -->
+          <div class="space-y-6">
+            <h3 class="text-lg font-medium">Maklumat Aktiviti</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">ID Aktiviti</p>
+                  <p class="font-medium">{{ formData.idAktiviti }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Nama Aktiviti</p>
+                  <p class="font-medium">{{ formData.namaAktiviti }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Jenis Aktiviti</p>
+                  <p class="font-medium">{{ formData.jenisAktiviti }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Tarikh Aktiviti</p>
+                  <p class="font-medium">{{ formData.tarikhAktiviti }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Lokasi</p>
+                  <p class="font-medium">{{ formData.lokasi }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Status</p>
+                  <span
+                    class="px-2 py-1 text-xs font-medium rounded-full"
+                    :class="getStatusClass(formData.status)"
+                  >
+                    {{ formData.status }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Senarai Penolong Amil Section -->
+          <div class="space-y-6 mt-8">
+            <h3 class="text-lg font-medium">Senarai Kehadiran Penolong Amil</h3>
         <rs-table
           class="mt-4"
           :key="tableKey"
-          :data="aktivitiList"
+              :data="formData.senaraiPenolong"
           :pageSize="10"
           :showNoColumn="true"
+              :columns="[
+                { key: 'nama', label: 'Nama Penolong Amil' },
+                { key: 'statusKehadiran', label: 'Status Kehadiran' },
+                { key: 'elaun', label: 'Elaun (RM)' }
+              ]"
           :options="{
             variant: 'default',
             hover: true,
           }"
         >
-          <template v-slot:status="data">
-            <rs-badge :variant="getStatusVariant(data.text)">
+              <template v-slot:nama="data">
+                {{ data.text }}
+              </template>
+              <template v-slot:statusKehadiran="data">
+                <rs-badge :variant="getAttendanceVariant(data.text)">
               {{ data.text }}
             </rs-badge>
           </template>
+              <template v-slot:elaun="data">
+                RM {{ data.text }}
+              </template>
+            </rs-table>
+          </div>
 
-          <template v-slot:tindakan="data">
-            <div class="flex space-x-2">
+          <!-- Maklumat Pengiraan Section -->
+          <div class="space-y-6 mt-8">
+            <h3 class="text-lg font-medium">Maklumat Pengiraan</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit 
+                type="text" 
+                name="kadarElaun" 
+                label="Kadar Elaun (RM)" 
+                disabled 
+              />
+              <FormKit
+                type="text"
+                name="jumlahElaun"
+                label="Jumlah Elaun (RM)"
+                disabled
+              />
+            </div>
+          </div>
+
+          <!-- PT Review Section -->
+          <div class="space-y-6 mt-8">
+            <h3 class="text-lg font-medium">Semakan PT</h3>
+            <div class="grid grid-cols-1 gap-4">
+              <FormKit
+                type="textarea"
+                name="ptRemarks"
+                label="Ulasan PT"
+                validation="required"
+                validation-label="Ulasan"
+                placeholder="Sila masukkan ulasan semakan anda..."
+              />
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="flex justify-end space-x-4 mt-8">
+            <rs-button
+              variant="primary-outline"
+              @click="goBack"
+            >
+              Kembali
+            </rs-button>
+            <rs-button 
+              variant="danger-outline"
+              @click="handleReject"
+            >
+              Tolak
+            </rs-button>
               <rs-button
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="editItem(data.text)"
-              >
-                Semak dan Kira Elaun
+              variant="success"
+              @click="handleApprove"
+            >
+              Semak & Hantar
               </rs-button>
             </div>
-          </template>
-        </rs-table>
+        </FormKit>
       </template>
     </rs-card>
 
-    <!-- Delete Confirmation Modal -->
+    <!-- Reject Confirmation Modal -->
     <rs-modal
-      v-model="showDeleteModal"
-      title="Sahkan Padam"
+      v-model="showRejectModal"
+      title="Sahkan Penolakan"
       size="md"
       position="center"
     >
       <template #body>
-        <p>Adakah anda pasti ingin memadam kod rujukan ini?</p>
-        <p class="text-red-600 font-medium mt-2">
-          Amaran: Pemadaman kod rujukan mungkin menjejaskan data yang berkaitan.
-        </p>
+        <div class="text-center">
+          <Icon
+            name="material-symbols:cancel-outline"
+            class="text-red-500 text-5xl mb-4"
+          />
+          <p class="text-lg mb-2">
+            Adakah anda pasti untuk menolak kiraan elaun ini?
+          </p>
+          <p class="text-gray-600">
+            Kiraan elaun ini akan dikembalikan kepada pemohon untuk pembetulan.
+          </p>
+        </div>
       </template>
       <template #footer>
-        <div class="flex justify-end space-x-2">
-          <rs-button variant="primary-outline" @click="showDeleteModal = false">
+        <div class="flex justify-center space-x-4">
+          <rs-button
+            variant="primary-outline"
+            @click="showRejectModal = false"
+          >
             Batal
           </rs-button>
-          <rs-button variant="danger" @click="deleteCodeGroup">
-            Sahkan Padam
+          <rs-button variant="danger" @click="confirmReject">
+            Ya, Tolak
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Approve Confirmation Modal -->
+    <rs-modal
+      v-model="showApproveModal"
+      title="Sahkan Semakan"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="text-center">
+          <Icon
+            name="material-symbols:check-circle-outline"
+            class="text-green-500 text-5xl mb-4"
+          />
+          <p class="text-lg mb-2">
+            Adakah anda pasti untuk meluluskan semakan dan menghantar kepada Eksekutif?
+          </p>
+          <p class="text-gray-600">
+            Kiraan elaun ini akan dihantar kepada Eksekutif untuk sokongan seterusnya.
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-center space-x-4">
+          <rs-button
+            variant="primary-outline"
+            @click="showApproveModal = false"
+          >
+            Batal
+          </rs-button>
+          <rs-button variant="success" @click="confirmApprove">
+            Ya, Hantar
           </rs-button>
         </div>
       </template>
@@ -72,12 +228,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
+import { useToast } from "vue-toastification";
 
 definePageMeta({
-  title: "Pilih Aktiviti Untuk Pembayaran Elaun",
-  description: "Pilih aktiviti mesyuarat/program/latihan untuk pembayaran elaun penolong amil",
+  title: "Semakan PT - Kiraan Jumlah Elaun",
+  description: "Semakan PT untuk kiraan jumlah elaun penolong amil",
 });
+
+const toast = useToast();
 
 const breadcrumb = ref([
   {
@@ -91,138 +250,153 @@ const breadcrumb = ref([
     path: "/BF-PA/PE/MP",
   },
   {
-    name: "Pilih Aktiviti",
+    name: "Semakan PT",
     type: "current",
     path: "/BF-PA/PE/MP/01",
   },
 ]);
 
-// Table data and reactivity control
+// Form data
+const formData = ref({
+  idAktiviti: 'MP2024-001',
+  namaAktiviti: 'Mesyuarat Perancangan Bulanan',
+  jenisAktiviti: 'Mesyuarat',
+  tarikhAktiviti: '15/04/2024',
+  lokasi: 'Dewan Mesyuarat Eksekutif',
+  status: 'Menunggu Semakan PT',
+  kadarElaun: '50.00',
+  jumlahElaun: '250.00',
+  ptRemarks: '',
+  senaraiPenolong: [
+    {
+      nama: 'Ahmad bin Ismail',
+      statusKehadiran: 'Hadir',
+      elaun: '50.00'
+    },
+    {
+      nama: 'Sarah binti Hamid',
+      statusKehadiran: 'Hadir',
+      elaun: '50.00'
+    },
+    {
+      nama: 'Mohd Zulkifli bin Abdullah',
+      statusKehadiran: 'Hadir',
+      elaun: '50.00'
+    },
+    {
+      nama: 'Nurul Ain binti Omar',
+      statusKehadiran: 'Hadir',
+      elaun: '50.00'
+    },
+    {
+      nama: 'Khairul Anuar bin Hassan',
+      statusKehadiran: 'Hadir',
+      elaun: '50.00'
+    }
+  ]
+});
+
+// Modal states
+const showRejectModal = ref(false);
+const showApproveModal = ref(false);
 const tableKey = ref(0);
-const aktivitiList = ref([
-  {
-    NamaAktiviti: "Latihan Pengurusan Zakat dan Fitrah",
-    kodAktiviti: "MP2024-002",
-    Jenis: "Latihan",
-    Kehadiran: "4/5",
-    Lokasi: "Dewan Latihan LZS, Kompleks Zakat Selangor",
-    Tarikh: "20/03/2024",
-    status: "Belum Dihantar",
-    tindakan: "MP2024-002",
-  },
-  {
-    NamaAktiviti: "Program Khidmat Masyarakat Ramadan",
-    kodAktiviti: "MP2024-003",
-    Jenis: "Program",
-    Kehadiran: "3/3",
-    Lokasi: "Masjid Al-Hidayah, Shah Alam",
-    Tarikh: "25/03/2024",
-    status: "Lulus",
-    tindakan: "MP2024-003",
-  },
-  {
-    NamaAktiviti: "Latihan Sistem e-Zakat",
-    kodAktiviti: "MP2024-005",
-    Jenis: "Latihan",
-    Kehadiran: "2/2",
-    Lokasi: "Bilik Latihan IT, Pejabat Zakat Petaling Jaya",
-    Tarikh: "02/04/2024",
-    status: "Belum Dihantar",
-    tindakan: "MP2024-005",
-  },
-  {
-    NamaAktiviti: "Program Bantuan Asnaf Bulanan",
-    kodAktiviti: "MP2024-006",
-    Jenis: "Program",
-    Kehadiran: "45/50",
-    Lokasi: "Dewan Serbaguna Masjid Kg Delek",
-    Tarikh: "05/04/2024",
-    status: "Di Tolak",
-    tindakan: "MP2024-006",
-  },
-  {
-    NamaAktiviti: "Mesyuarat Perancangan Aktiviti Q2",
-    kodAktiviti: "MP2024-007",
-    Jenis: "Mesyuarat",
-    Kehadiran: "2/2",
-    Lokasi: "Dewan Mesyuarat JPPA, Pejabat Zakat Kajang",
-    Tarikh: "10/04/2024",
-    status: "Lulus",
-    tindakan: "MP2024-007",
-  },
-  {
-    NamaAktiviti: "Latihan Pengurusan Aduan",
-    kodAktiviti: "MP2024-008",
-    Jenis: "Latihan",
-    Kehadiran: "2/2",
-    Lokasi: "Bilik Latihan, Pejabat Zakat Gombak",
-    Tarikh: "12/04/2024",
-    status: "Belum Dihantar",
-    tindakan: "MP2024-008",
-  },
-]);
 
-// Modal control
-const showDeleteModal = ref(false);
-const codeToDelete = ref(null);
-
-// Methods
-const editItem = (codeId) => {
-  // Find the activity data based on the tindakan ID
-  const activity = aktivitiList.value.find(item => item.tindakan === codeId);
-  if (activity) {
-    navigateTo(`/BF-PA/PE/MP/${activity.kodAktiviti}`);
-  } else {
-    navigateTo(`/BF-PA/PE/MP`);
-  }
-};
-
-// const auditItem = (codeId) => {
-//   navigateTo(`/BF-BTN/KB/SB/05`);
-// };
-
-// const confirmDelete = (codeId) => {
-//   codeToDelete.value = codeId;
-//   showDeleteModal.value = true;
-// };
-
-const deleteCodeGroup = () => {
-  const index = aktivitiList.value.findIndex(
-    (code) => code.tindakan === codeToDelete.value
-  );
-
-  if (index !== -1) {
-    aktivitiList.value.splice(index, 1);
-    refreshTable();
-  }
-  showDeleteModal.value = false;
-  codeToDelete.value = null;
-
-  alert("Kod rujukan berjaya dipadamkan");
-};
-
-const refreshTable = () => {
-  nextTick(() => {
-    tableKey.value++; // Force table to re-render
-  });
-};
-
-// Helper function to determine badge variant based on status
+// Helper functions
 const getStatusVariant = (status) => {
-  switch (status) {
-    case "Lulus":
-      return "success";
-    case "Di Tolak":
-    case "Ditolak":
-      return "danger";
-    case "Menunggu Kelulusan":
-    case "Menunggu Sokongan JPPA":
-    case "Menunggu Kelulusan Ketua JPPA":
-      return "warning";
-    case "Belum Dihantar":
-      return "default";
-    default:
-      return "default";
+  const variants = {
+    'Menunggu Semakan PT': 'warning',
+    'Menunggu Sokongan Eksekutif': 'warning',
+    'Menunggu Kelulusan Ketua Jabatan': 'primary',
+    'Diluluskan': 'success',
+    'Ditolak': 'danger',
+  };
+  return variants[status] || 'default';
+};
+
+const getStatusClass = (status) => {
+  const classes = {
+    'Menunggu Semakan PT': 'bg-yellow-100 text-yellow-800',
+    'Menunggu Sokongan Eksekutif': 'bg-yellow-100 text-yellow-800',
+    'Menunggu Kelulusan Ketua Jabatan': 'bg-blue-100 text-blue-800',
+    'Diluluskan': 'bg-green-100 text-green-800',
+    'Ditolak': 'bg-red-100 text-red-800',
+  };
+  return classes[status] || 'bg-gray-100 text-gray-800';
+};
+
+const getAttendanceVariant = (status) => {
+  const variants = {
+    'Hadir': 'success',
+    'Tidak Hadir': 'danger',
+    'Cuti': 'warning',
+  };
+  return variants[status] || 'default';
+};
+
+// Event handlers
+const handleSubmit = () => {
+  // Form submission logic
+};
+
+const handleReject = () => {
+  if (!formData.value.ptRemarks.trim()) {
+    toast.warning('Sila masukkan ulasan sebelum menolak');
+    return;
   }
+  showRejectModal.value = true;
+};
+
+const handleApprove = () => {
+  if (!formData.value.ptRemarks.trim()) {
+    toast.warning('Sila masukkan ulasan sebelum menghantar');
+    return;
+  }
+  showApproveModal.value = true;
+};
+
+const confirmReject = async () => {
+  try {
+    // Update status to rejected
+    formData.value.status = 'Ditolak';
+    
+    // Mock API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast.success('Kiraan elaun telah ditolak dan dikembalikan kepada pemohon');
+    showRejectModal.value = false;
+    
+    // Navigate back to dashboard
+    navigateTo('/BF-PA/PE/MP');
+  } catch (error) {
+    toast.error('Ralat semasa menolak kiraan elaun');
+    console.error('Error rejecting allowance:', error);
+  }
+};
+
+const confirmApprove = async () => {
+  try {
+    // Update status to awaiting executive support
+    formData.value.status = 'Menunggu Sokongan Eksekutif';
+    
+    // Mock API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast.success('Kiraan elaun telah disemak dan dihantar kepada Eksekutif');
+    showApproveModal.value = false;
+    
+    // Navigate back to dashboard
+    navigateTo('/BF-PA/PE/MP');
+  } catch (error) {
+    toast.error('Ralat semasa menghantar kiraan elaun');
+    console.error('Error approving allowance:', error);
+  }
+};
+
+const goBack = () => {
+  navigateTo('/BF-PA/PE/MP');
 };
 </script>
+
+<style scoped>
+/* Add any additional styles here */
+</style>

@@ -101,18 +101,18 @@
             </div>
           </div>
 
-          <!-- Maklumat Sokongan JPPA -->
+                           <!-- Maklumat Sokongan Eksekutif -->
           <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Maklumat Sokongan JPPA</h3>
+                   <h3 class="text-lg font-semibold mb-4">Maklumat Sokongan Eksekutif</h3>
             <div class="bg-gray-50 p-4 rounded-lg">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p class="text-sm text-gray-500">Disokong Oleh</p>
-                  <p class="font-medium">{{ activity.jppaSupport.reviewedBy }}</p>
+                         <p class="font-medium">{{ activity.eksekutifSupport.reviewedBy }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Tarikh Sokongan</p>
-                  <p class="font-medium">{{ activity.jppaSupport.reviewedAt }}</p>
+                         <p class="font-medium">{{ activity.eksekutifSupport.reviewedAt }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Status</p>
@@ -124,24 +124,24 @@
                 </div>
                 <div class="md:col-span-2">
                   <p class="text-sm text-gray-500">Catatan</p>
-                  <p class="font-medium">{{ activity.jppaSupport.comments }}</p>
+                         <p class="font-medium">{{ activity.eksekutifSupport.comments }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Maklumat Penolakan Ketua JPPA -->
+                 <!-- Maklumat Penolakan Ketua Jabatan -->
           <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Maklumat Penolakan Ketua JPPA</h3>
+                   <h3 class="text-lg font-semibold mb-4">Maklumat Penolakan Ketua Jabatan</h3>
             <div class="bg-gray-50 p-4 rounded-lg">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p class="text-sm text-gray-500">Ditolak Oleh</p>
-                  <p class="font-medium">{{ activity.ketuaJPPA.rejectedBy }}</p>
+                         <p class="font-medium">{{ activity.ketuaJabatan.rejectedBy }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Tarikh Penolakan</p>
-                  <p class="font-medium">{{ activity.ketuaJPPA.rejectedAt }}</p>
+                         <p class="font-medium">{{ activity.ketuaJabatan.rejectedAt }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Status</p>
@@ -153,11 +153,11 @@
                 </div>
                 <div class="md:col-span-2">
                   <p class="text-sm text-gray-500">Sebab Penolakan</p>
-                  <p class="font-medium">{{ activity.ketuaJPPA.rejectionReason }}</p>
+                         <p class="font-medium">{{ activity.ketuaJabatan.rejectionReason }}</p>
                 </div>
                 <div class="md:col-span-2">
                   <p class="text-sm text-gray-500">Catatan Penolakan</p>
-                  <p class="font-medium">{{ activity.ketuaJPPA.comments }}</p>
+                         <p class="font-medium">{{ activity.ketuaJabatan.comments }}</p>
                 </div>
               </div>
             </div>
@@ -202,23 +202,23 @@ const breadcrumb = ref([
 ]);
 
 // Get activity ID from query parameter
-const activityId = computed(() => route.query.id || 'MP/2024/006');
+const activityId = computed(() => route.query.id || 'MP2024-012');
 
 // Mock activity data
 const activity = ref({
-  id: 'MP/2024/006',
-  name: 'Mesyuarat Agung Tahunan',
-  date: '2024-03-22',
-  location: 'Dewan Utama',
+  id: 'MP2024-012',
+  name: 'Mesyuarat Perancangan Q2',
+  date: '2024-04-05',
+  location: 'Bilik Mesyuarat',
   type: 'Mesyuarat',
   status: 'Ditolak',
-  jppaSupport: {
+  eksekutifSupport: {
     reviewedBy: "Sarah binti Hamid",
     reviewedAt: "18/05/2024, 11:20",
     isSupported: true,
     comments: "Berdasarkan semakan dokumen dan maklumat yang dikemukakan, aktiviti ini disokong untuk diluluskan. Aktiviti memenuhi semua kriteria yang ditetapkan.",
   },
-  ketuaJPPA: {
+  ketuaJabatan: {
     rejectedBy: "Ahmad bin Ismail",
     rejectedAt: "22/05/2024, 16:15",
     isRejected: true,
@@ -230,34 +230,10 @@ const activity = ref({
 // Mock Penolong Amil data
 const penolongAmil = ref([
   {
-    id: 'PA001',
-    name: 'Ahmad bin Abdullah',
+    id: 'PA025',
+    name: 'Kamariah binti Omar',
     role: 'Pengerusi',
-    allowance: '50.00',
-  },
-  {
-    id: 'PA002',
-    name: 'Siti Aminah binti Hassan',
-    role: 'Setiausaha',
-    allowance: '40.00',
-  },
-  {
-    id: 'PA003',
-    name: 'Mohd Razak bin Ibrahim',
-    role: 'Ahli Jawatankuasa',
-    allowance: '30.00',
-  },
-  {
-    id: 'PA004',
-    name: 'Nurul Aisyah binti Omar',
-    role: 'Ahli Jawatankuasa',
-    allowance: '30.00',
-  },
-  {
-    id: 'PA005',
-    name: 'Ali bin Hassan',
-    role: 'Ahli Jawatankuasa',
-    allowance: '30.00',
+    allowance: '45.00',
   }
 ]);
 

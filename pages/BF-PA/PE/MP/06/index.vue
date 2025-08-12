@@ -76,7 +76,7 @@
               <FormKit
                 type="textarea"
                 name="ulasan"
-                label="Ulasan Eksekutif JPPA"
+                                       label="Ulasan Eksekutif"
                 validation="required"
                 validation-label="Ulasan"
                 disabled
@@ -85,7 +85,7 @@
               <FormKit
                 type="textarea"
                 name="ulasanKetua"
-                label="Ulasan Ketua JPPA"
+                                       label="Ulasan Ketua Jabatan"
                 validation="required"
                 validation-label="Ulasan"
                 disabled
@@ -164,8 +164,8 @@ const breadcrumb = ref([
 const formData = ref({
   kadarElaun: "100.00",
   jumlahElaun: "500.00",
-  ulasan:"Permohonan ini telah disahkan oleh Eksekutif JPPA",
-  ulasanKetua:"Permohonan ini telah disahkan oleh Ketua JPPA",
+  ulasan:"Permohonan ini telah disahkan oleh Eksekutif",
+  ulasanKetua:"Permohonan ini telah disahkan oleh Ketua Jabatan",
   idPayment:"1234567890",
   status:"Lulus",
   senaraiPenolong: [
@@ -214,8 +214,8 @@ onMounted(async () => {
   const mockData = {
     kadarElaun: "100.00",
     jumlahElaun: "500.00",
-    ulasan:"Permohonan ini telah disahkan oleh Eksekutif JPPA",
-    ulasanKetua:"Permohonan ini telah disahkan oleh Ketua JPPA",
+    ulasan:"Permohonan ini telah disahkan oleh Eksekutif",
+    ulasanKetua:"Permohonan ini telah disahkan oleh Ketua Jabatan",
     idPayment:"1234567890",
     status:"Lulus",
     senaraiPenolong: [

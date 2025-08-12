@@ -176,6 +176,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { 
+  getActivityById, 
+  getPenolongAmilDetailedByActivityId 
+} from '../../../mockData.js';
 
 const route = useRoute();
 const activityId = route.params.id;
@@ -234,6 +238,56 @@ const penolongAmil = ref({
 
 // Mock data for different activity and PA combinations
 const paDataMap = {
+  'MP2024-001': {
+    'PA001': {
+      id: 'PA001',
+      name: 'Ahmad bin Ismail',
+      icNumber: '800101-01-1234',
+      phone: '012-3456789',
+      address: 'No. 123, Jalan Melati, Taman Seri Indah, 43000 Kajang, Selangor',
+      kariah: 'Masjid Al-Hidayah',
+      attended: true,
+      checkInTime: '09:00',
+      checkOutTime: '12:30',
+      reason: '',
+      allowanceRate: '50.00',
+      paymentStatus: 'Belum Dihantar',
+      paymentAdviceNo: '',
+      accountNumber: '',
+    },
+    'PA002': {
+      id: 'PA002',
+      name: 'Sarah binti Hamid',
+      icNumber: '850505-05-5678',
+      phone: '012-9876543',
+      address: 'No. 456, Jalan Mawar, Taman Bunga Raya, 43000 Kajang, Selangor',
+      kariah: 'Masjid Al-Hidayah',
+      attended: true,
+      checkInTime: '09:10',
+      checkOutTime: '12:15',
+      reason: '',
+      allowanceRate: '50.00',
+      paymentStatus: 'Belum Dihantar',
+      paymentAdviceNo: '',
+      accountNumber: '',
+    },
+    'PA003': {
+      id: 'PA003',
+      name: 'Mohd Zulkifli bin Abdullah',
+      icNumber: '820202-02-9012',
+      phone: '012-1122334',
+      address: 'No. 789, Jalan Kenanga, Taman Kenanga, 43000 Kajang, Selangor',
+      kariah: 'Masjid Al-Hidayah',
+      attended: true,
+      checkInTime: '09:05',
+      checkOutTime: '12:20',
+      reason: '',
+      allowanceRate: '50.00',
+      paymentStatus: 'Belum Dihantar',
+      paymentAdviceNo: '',
+      accountNumber: '',
+    }
+  },
   'MP2024-002': {
     'PA001': {
       id: 'PA001',
@@ -246,7 +300,7 @@ const paDataMap = {
       checkInTime: '08:45',
       checkOutTime: '12:30',
       reason: '',
-      allowanceRate: '50.00',
+      allowanceRate: '40.00',
       paymentStatus: 'Belum Dihantar',
       paymentAdviceNo: '',
       accountNumber: '',
@@ -262,7 +316,7 @@ const paDataMap = {
       checkInTime: '09:00',
       checkOutTime: '12:15',
       reason: '',
-      allowanceRate: '50.00',
+      allowanceRate: '40.00',
       paymentStatus: 'Belum Dihantar',
       paymentAdviceNo: '',
       accountNumber: '',
@@ -278,8 +332,76 @@ const paDataMap = {
       checkInTime: '',
       checkOutTime: '',
       reason: 'Sakit',
-      allowanceRate: '50.00',
+      allowanceRate: '40.00',
       paymentStatus: 'Tidak Layak',
+      paymentAdviceNo: '',
+      accountNumber: '',
+    }
+  },
+  'MP2024-003': {
+    'PA006': {
+      id: 'PA006',
+      name: 'Zainab binti Ibrahim',
+      icNumber: '840404-04-6789',
+      phone: '012-4455667',
+      address: 'No. 567, Jalan Teratai, Taman Teratai, 43000 Kajang, Selangor',
+      kariah: 'Masjid Al-Hidayah',
+      attended: true,
+      checkInTime: '07:30',
+      checkOutTime: '16:00',
+      reason: '',
+      allowanceRate: '75.00',
+      paymentStatus: 'Diluluskan',
+      paymentAdviceNo: 'PA-2024-003-001',
+      accountNumber: '1234567890',
+    },
+    'PA007': {
+      id: 'PA007',
+      name: 'Ibrahim bin Ahmad',
+      icNumber: '860606-06-0123',
+      phone: '012-6677889',
+      address: 'No. 890, Jalan Seroja, Taman Seroja, 43000 Kajang, Selangor',
+      kariah: 'Masjid Al-Hidayah',
+      attended: true,
+      checkInTime: '07:45',
+      checkOutTime: '16:15',
+      reason: '',
+      allowanceRate: '75.00',
+      paymentStatus: 'Diluluskan',
+      paymentAdviceNo: 'PA-2024-003-002',
+      accountNumber: '0987654321',
+    },
+    'PA008': {
+      id: 'PA008',
+      name: 'Aminah binti Mohamed',
+      icNumber: '890909-09-2345',
+      phone: '012-7788990',
+      address: 'No. 432, Jalan Kemboja, Taman Kemboja, 43000 Kajang, Selangor',
+      kariah: 'Masjid Al-Hidayah',
+      attended: true,
+      checkInTime: '08:00',
+      checkOutTime: '16:30',
+      reason: '',
+      allowanceRate: '75.00',
+      paymentStatus: 'Diluluskan',
+      paymentAdviceNo: 'PA-2024-003-003',
+      accountNumber: '1122334455',
+    }
+  },
+  'MP2024-004': {
+    'PA001': {
+      id: 'PA001',
+      name: 'Ahmad bin Abdullah',
+      icNumber: '800101-01-1234',
+      phone: '012-3456789',
+      address: 'No. 123, Jalan Melati, Taman Seri Indah, 43000 Kajang, Selangor',
+      kariah: 'Masjid Al-Hidayah',
+      attended: true,
+      checkInTime: '08:45',
+      checkOutTime: '12:30',
+      reason: '',
+      allowanceRate: '50.00',
+      paymentStatus: 'Belum Dihantar',
       paymentAdviceNo: '',
       accountNumber: '',
     },
@@ -298,73 +420,7 @@ const paDataMap = {
       paymentStatus: 'Belum Dihantar',
       paymentAdviceNo: '',
       accountNumber: '',
-    },
-    'PA005': {
-      id: 'PA005',
-      name: 'Ali bin Hassan',
-      icNumber: '830303-03-4567',
-      phone: '012-2233445',
-      address: 'No. 321, Jalan Dahlia, Taman Dahlia, 43000 Kajang, Selangor',
-      kariah: 'Masjid Al-Hidayah',
-      attended: true,
-      checkInTime: '09:10',
-      checkOutTime: '12:25',
-      reason: '',
-      allowanceRate: '50.00',
-      paymentStatus: 'Belum Dihantar',
-      paymentAdviceNo: '',
-      accountNumber: '',
-    },
-  },
-  'MP2024-003': {
-    'PA006': {
-      id: 'PA006',
-      name: 'Zainab binti Ibrahim',
-      icNumber: '840404-04-6789',
-      phone: '012-4455667',
-      address: 'No. 567, Jalan Teratai, Taman Teratai, 43000 Kajang, Selangor',
-      kariah: 'Masjid Al-Hidayah',
-      attended: true,
-      checkInTime: '07:30',
-      checkOutTime: '16:00',
-      reason: '',
-      allowanceRate: '75.00',
-      paymentStatus: 'Lulus',
-      paymentAdviceNo: 'PA-2024-003-001',
-      accountNumber: '1234567890',
-    },
-    'PA007': {
-      id: 'PA007',
-      name: 'Ibrahim bin Ahmad',
-      icNumber: '860606-06-0123',
-      phone: '012-6677889',
-      address: 'No. 890, Jalan Seroja, Taman Seroja, 43000 Kajang, Selangor',
-      kariah: 'Masjid Al-Hidayah',
-      attended: true,
-      checkInTime: '07:45',
-      checkOutTime: '16:15',
-      reason: '',
-      allowanceRate: '75.00',
-      paymentStatus: 'Lulus',
-      paymentAdviceNo: 'PA-2024-003-002',
-      accountNumber: '0987654321',
-    },
-    'PA008': {
-      id: 'PA008',
-      name: 'Aminah binti Mohamed',
-      icNumber: '890909-09-2345',
-      phone: '012-7788990',
-      address: 'No. 432, Jalan Kemboja, Taman Kemboja, 43000 Kajang, Selangor',
-      kariah: 'Masjid Al-Hidayah',
-      attended: true,
-      checkInTime: '08:00',
-      checkOutTime: '16:30',
-      reason: '',
-      allowanceRate: '75.00',
-      paymentStatus: 'Lulus',
-      paymentAdviceNo: 'PA-2024-003-003',
-      accountNumber: '1122334455',
-    },
+    }
   },
   'MP2024-005': {
     'PA009': {
@@ -398,7 +454,7 @@ const paDataMap = {
       paymentStatus: 'Belum Dihantar',
       paymentAdviceNo: '',
       accountNumber: '',
-    },
+    }
   },
   'MP2024-006': {
     'PA011': {
@@ -448,39 +504,7 @@ const paDataMap = {
       paymentStatus: 'Tidak Layak',
       paymentAdviceNo: '',
       accountNumber: '',
-    },
-    'PA014': {
-      id: 'PA014',
-      name: 'Siti binti Hassan',
-      icNumber: '860606-06-4567',
-      phone: '012-3344556',
-      address: 'No. 210, Jalan Dahlia, Taman Dahlia, 43000 Kajang, Selangor',
-      kariah: 'Masjid Al-Hidayah',
-      attended: true,
-      checkInTime: '08:30',
-      checkOutTime: '16:30',
-      reason: '',
-      allowanceRate: '50.00',
-      paymentStatus: 'Ditolak',
-      paymentAdviceNo: '',
-      accountNumber: '',
-    },
-    'PA015': {
-      id: 'PA015',
-      name: 'Mohamed bin Ali',
-      icNumber: '870707-07-6789',
-      phone: '012-4455667',
-      address: 'No. 432, Jalan Teratai, Taman Teratai, 43000 Kajang, Selangor',
-      kariah: 'Masjid Al-Hidayah',
-      attended: true,
-      checkInTime: '08:45',
-      checkOutTime: '16:45',
-      reason: '',
-      allowanceRate: '50.00',
-      paymentStatus: 'Ditolak',
-      paymentAdviceNo: '',
-      accountNumber: '',
-    },
+    }
   },
   'MP2024-007': {
     'PA016': {
@@ -494,8 +518,8 @@ const paDataMap = {
       checkInTime: '09:00',
       checkOutTime: '12:00',
       reason: '',
-      allowanceRate: '40.00',
-      paymentStatus: 'Lulus',
+      allowanceRate: '100.00',
+      paymentStatus: 'Diluluskan',
       paymentAdviceNo: 'PA-2024-007-001',
       accountNumber: '2233445566',
     },
@@ -510,11 +534,11 @@ const paDataMap = {
       checkInTime: '09:15',
       checkOutTime: '12:15',
       reason: '',
-      allowanceRate: '40.00',
-      paymentStatus: 'Lulus',
+      allowanceRate: '100.00',
+      paymentStatus: 'Diluluskan',
       paymentAdviceNo: 'PA-2024-007-002',
       accountNumber: '3344556677',
-    },
+    }
   },
   'MP2024-008': {
     'PA018': {
@@ -528,7 +552,7 @@ const paDataMap = {
       checkInTime: '09:00',
       checkOutTime: '17:00',
       reason: '',
-      allowanceRate: '70.00',
+      allowanceRate: '55.00',
       paymentStatus: 'Belum Dihantar',
       paymentAdviceNo: '',
       accountNumber: '',
@@ -544,87 +568,31 @@ const paDataMap = {
       checkInTime: '09:15',
       checkOutTime: '17:15',
       reason: '',
-      allowanceRate: '70.00',
+      allowanceRate: '55.00',
       paymentStatus: 'Belum Dihantar',
       paymentAdviceNo: '',
       accountNumber: '',
-    },
-  },
-  'M001': {
-    id: 'M001',
-    name: 'Mesyuarat JPPA Bulanan',
-    type: 'Mesyuarat',
-    date: '15/03/2024',
-    location: 'Dewan Mesyuarat JPPA',
-    status: 'Menunggu Sokongan JPPA',
-  },
-  'M002': {
-    id: 'M002',
-    name: 'Mesyuarat Koordinasi',
-    type: 'Mesyuarat',
-    date: '28/03/2024',
-    location: 'Pejabat Zakat',
-    status: 'Menunggu Sokongan JPPA',
-  },
-  'M003': {
-    id: 'M003',
-    name: 'Mesyuarat Agung Tahunan',
-    type: 'Mesyuarat',
-    date: '22/03/2024',
-    location: 'Dewan Utama',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-  },
-  'M004': {
-    id: 'M004',
-    name: 'Mesyuarat Koordinasi Khas',
-    type: 'Mesyuarat',
-    date: '29/03/2024',
-    location: 'Pejabat Zakat',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-  },
-  'P001': {
-    id: 'P001',
-    name: 'Program Khidmat Masyarakat',
-    type: 'Program',
-    date: '20/03/2024',
-    location: 'Masjid Al-Hidayah',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-  },
-  'P002': {
-    id: 'P002',
-    name: 'Program Tazkirah Bulanan',
-    type: 'Program',
-    date: '18/03/2024',
-    location: 'Masjid Al-Hidayah',
-    status: 'Menunggu Sokongan JPPA',
-  },
-  'L001': {
-    id: 'L001',
-    name: 'Latihan Pengurusan Zakat',
-    type: 'Latihan',
-    date: '25/03/2024',
-    location: 'Dewan Latihan',
-    status: 'Diluluskan',
-  },
-  'L002': {
-    id: 'L002',
-    name: 'Latihan Asas Pengurusan',
-    type: 'Latihan',
-    date: '27/03/2024',
-    location: 'Bilik Latihan',
-    status: 'Menunggu Sokongan JPPA',
+    }
   }
 };
 
 // Activity data map
 const activityDataMap = {
+  'MP2024-001': {
+    id: 'MP2024-001',
+    name: 'Mesyuarat Perancangan Bulanan',
+    type: 'Mesyuarat',
+    date: '15/04/2024',
+    location: 'Dewan Mesyuarat Eksekutif',
+    status: 'Belum Disemak',
+  },
   'MP2024-002': {
     id: 'MP2024-002',
-    name: 'Latihan Pengurusan Zakat dan Fitrah',
-    type: 'Latihan',
-    date: '20/03/2024',
-    location: 'Dewan Latihan LZS, Kompleks Zakat Selangor',
-    status: 'Belum Dihantar',
+    name: 'Mesyuarat Perancangan Bulanan',
+    type: 'Mesyuarat',
+    date: '18/04/2024',
+    location: 'Dewan Mesyuarat Eksekutif',
+    status: 'Belum Disemak',
   },
   'MP2024-003': {
     id: 'MP2024-003',
@@ -632,7 +600,15 @@ const activityDataMap = {
     type: 'Program',
     date: '25/03/2024',
     location: 'Masjid Al-Hidayah, Shah Alam',
-    status: 'Lulus',
+    status: 'Diluluskan',
+  },
+  'MP2024-004': {
+    id: 'MP2024-004',
+    name: 'Mesyuarat Eksekutif Bulanan',
+    type: 'Mesyuarat',
+    date: '15/03/2024',
+    location: 'Dewan Mesyuarat Eksekutif',
+    status: 'Menunggu Sokongan Eksekutif',
   },
   'MP2024-005': {
     id: 'MP2024-005',
@@ -640,7 +616,7 @@ const activityDataMap = {
     type: 'Latihan',
     date: '02/04/2024',
     location: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya',
-    status: 'Belum Dihantar',
+    status: 'Belum Disemak',
   },
   'MP2024-006': {
     id: 'MP2024-006',
@@ -652,11 +628,11 @@ const activityDataMap = {
   },
   'MP2024-007': {
     id: 'MP2024-007',
-    name: 'Mesyuarat Perancangan Aktiviti Q2',
-    type: 'Mesyuarat',
-    date: '10/04/2024',
-    location: 'Dewan Mesyuarat JPPA, Pejabat Zakat Kajang',
-    status: 'Lulus',
+    name: 'Program Khidmat Masyarakat',
+    type: 'Program',
+    date: '20/03/2024',
+    location: 'Masjid Al-Hidayah',
+    status: 'Diluluskan',
   },
   'MP2024-008': {
     id: 'MP2024-008',
@@ -664,79 +640,15 @@ const activityDataMap = {
     type: 'Latihan',
     date: '12/04/2024',
     location: 'Bilik Latihan, Pejabat Zakat Gombak',
-    status: 'Belum Dihantar',
-  },
-  'M001': {
-    id: 'M001',
-    name: 'Mesyuarat JPPA Bulanan',
-    type: 'Mesyuarat',
-    date: '15/03/2024',
-    location: 'Dewan Mesyuarat JPPA',
-    status: 'Menunggu Sokongan JPPA',
-  },
-  'M002': {
-    id: 'M002',
-    name: 'Mesyuarat Koordinasi',
-    type: 'Mesyuarat',
-    date: '28/03/2024',
-    location: 'Pejabat Zakat',
-    status: 'Menunggu Sokongan JPPA',
-  },
-  'M003': {
-    id: 'M003',
-    name: 'Mesyuarat Agung Tahunan',
-    type: 'Mesyuarat',
-    date: '22/03/2024',
-    location: 'Dewan Utama',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-  },
-  'M004': {
-    id: 'M004',
-    name: 'Mesyuarat Koordinasi Khas',
-    type: 'Mesyuarat',
-    date: '29/03/2024',
-    location: 'Pejabat Zakat',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-  },
-  'P001': {
-    id: 'P001',
-    name: 'Program Khidmat Masyarakat',
-    type: 'Program',
-    date: '20/03/2024',
-    location: 'Masjid Al-Hidayah',
-    status: 'Menunggu Kelulusan Ketua JPPA',
-  },
-  'P002': {
-    id: 'P002',
-    name: 'Program Tazkirah Bulanan',
-    type: 'Program',
-    date: '18/03/2024',
-    location: 'Masjid Al-Hidayah',
-    status: 'Menunggu Sokongan JPPA',
-  },
-  'L001': {
-    id: 'L001',
-    name: 'Latihan Pengurusan Zakat',
-    type: 'Latihan',
-    date: '25/03/2024',
-    location: 'Dewan Latihan',
-    status: 'Diluluskan',
-  },
-  'L002': {
-    id: 'L002',
-    name: 'Latihan Asas Pengurusan',
-    type: 'Latihan',
-    date: '27/03/2024',
-    location: 'Bilik Latihan',
-    status: 'Menunggu Sokongan JPPA',
+    status: 'Belum Disemak',
   }
 };
 
 // Helper functions
 const getStatusClass = (status) => {
   const statusClasses = {
-    'Menunggu Sokongan JPPA': 'bg-yellow-100 text-yellow-800',
-    'Menunggu Kelulusan Ketua JPPA': 'bg-blue-100 text-blue-800',
+    'Menunggu Sokongan Eksekutif': 'bg-yellow-100 text-yellow-800',
+    'Menunggu Kelulusan Ketua Jabatan': 'bg-blue-100 text-blue-800',
     'Diluluskan': 'bg-green-100 text-green-800',
     'Ditolak': 'bg-red-100 text-red-800',
   };
@@ -752,7 +664,7 @@ const getAttendanceStatusClass = (attended) => {
 const getPaymentStatusClass = (status) => {
   const statusClasses = {
     'Telah Dibayar': 'bg-green-100 text-green-800',
-    'Menunggu Kelulusan Ketua JPPA': 'bg-blue-100 text-blue-800',
+    'Menunggu Kelulusan Ketua Jabatan': 'bg-blue-100 text-blue-800',
     'Diluluskan': 'bg-green-100 text-green-800',
     'Tidak Layak': 'bg-gray-100 text-gray-800',
     'Telah Ditolak': 'bg-red-100 text-red-800',
@@ -762,16 +674,39 @@ const getPaymentStatusClass = (status) => {
 
 // Load data based on activity ID and PA ID
 onMounted(() => {
-  // Load activity data
-  const activityData = activityDataMap[activityId];
+  // Load activity data from centralized mockup data
+  const activityData = getActivityById(activityId);
   if (activityData) {
-    activityInfo.value = activityData;
+    activityInfo.value = {
+      id: activityData.id,
+      name: activityData.name,
+      type: activityData.type,
+      date: activityData.date,
+      location: activityData.location,
+      status: activityData.status,
+    };
   }
   
-  // Load PA data
-  const paData = paDataMap[activityId]?.[paId];
+  // Load PA data from centralized mockup data
+  const paDetailedData = getPenolongAmilDetailedByActivityId(activityId);
+  const paData = paDetailedData[paId];
   if (paData) {
-    penolongAmil.value = paData;
+    penolongAmil.value = {
+      id: paData.id,
+      name: paData.name,
+      icNumber: paData.icNumber,
+      phone: paData.phone,
+      address: paData.address,
+      kariah: paData.kariah,
+      attended: paData.attended,
+      checkInTime: paData.checkInTime,
+      checkOutTime: paData.checkOutTime,
+      reason: paData.reason,
+      allowanceRate: paData.allowanceRate,
+      paymentStatus: paData.paymentStatus,
+      paymentAdviceNo: paData.paymentAdviceNo,
+      accountNumber: paData.accountNumber,
+    };
   }
 });
 </script>

@@ -127,7 +127,7 @@
               <FormKit
                 type="textarea"
                 name="ulasanKetua"
-                label="Ulasan Ketua JPPA"
+                                       label="Ulasan Ketua Jabatan"
                 validation="required"
                 validation-label="Ulasan"
                 disabled
@@ -136,7 +136,7 @@
               <FormKit
                 type="textarea"
                 name="ulasanSemula"
-                label="Ulasan Semula Eksekutif JPPA"
+                                       label="Ulasan Semula Eksekutif"
                 validation="required"
                 validation-label="Ulasan Semula"
                 placeholder="Sila masukkan ulasan semula anda..."
@@ -177,7 +177,7 @@
             class="text-blue-500 text-5xl mb-4"
           />
           <p class="text-lg mb-2">
-            Adakah anda pasti untuk menghantar semula Kiraan Jumlah Elaun ini kepada Ketua JPPA?
+            Adakah anda pasti untuk menghantar semula Kiraan Jumlah Elaun ini kepada Ketua Jabatan?
           </p>
           <p class="text-gray-600">
             Semakan semula ini akan dihantar kepada pelulus untuk kelulusan seterusnya.
@@ -272,12 +272,12 @@ const breadcrumb = ref([
 ]);
 
 const formData = ref({
-  idAktiviti: "MP001",
-  namaAktiviti: "Latihan Pengurusan Zakat",
-  jenisAktiviti: "Latihan",
-  tarikhAktiviti: "25/03/2024",
-  kadarElaun: "100.00",
-  jumlahElaun: "500.00",
+  idAktiviti: "MP2024-011",
+  namaAktiviti: "Program Latihan Amil",
+  jenisAktiviti: "Program",
+  tarikhAktiviti: "10/04/2024",
+  kadarElaun: "75.00",
+  jumlahElaun: "225.00",
   status: "Ditolak",
   sebabPenolakan: "Maklumat kehadiran tidak lengkap. Sila pastikan semua Penolong Amil telah mendaftar kehadiran dengan betul.",
   ulasanKetua: "Permohonan ditolak kerana maklumat kehadiran tidak lengkap. Sila semak semula dan hantar semula.",
@@ -285,32 +285,32 @@ const formData = ref({
   senaraiPenolong: [
     {
       id: 1,
-      nama: "Ahmad bin Abdullah",
-      tarikh: "25/03/2024",
+      nama: "Hana binti Ridzuan",
+      tarikh: "10/04/2024",
       statusKehadiran: "Hadir",
     },
     {
       id: 2,
-      nama: "Siti binti Mohamed",
-      tarikh: "25/03/2024",
+      nama: "Ridzuan bin Ali",
+      tarikh: "10/04/2024",
       statusKehadiran: "Tidak Hadir",
     },
     {
       id: 3,
-      nama: "Mohd Razak bin Ibrahim",
-      tarikh: "25/03/2024",
+      nama: "Ahmad bin Omar",
+      tarikh: "10/04/2024",
       statusKehadiran: "Hadir",
     },
     {
       id: 4,
-      nama: "Nurul Huda binti Ali",
-      tarikh: "25/03/2024",
+      nama: "Fatimah binti Hassan",
+      tarikh: "10/04/2024",
       statusKehadiran: "Hadir",
     },
     {
       id: 5,
-      nama: "Abdul Rahman bin Hassan",
-      tarikh: "25/03/2024",
+      nama: "Mohd Zulkifli bin Abdullah",
+      tarikh: "10/04/2024",
       statusKehadiran: "Tidak Hadir",
     },
   ],
@@ -341,7 +341,7 @@ const handleTolak = () => {
 
 const confirmResubmit = () => {
   showResubmitModal.value = false;
-  toast.success("Permohonan berjaya dihantar semula kepada Ketua JPPA");
+          toast.success("Permohonan berjaya dihantar semula kepada Ketua Jabatan");
   navigateTo('/BF-PA/PE/MP');
 };
 
