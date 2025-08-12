@@ -270,46 +270,61 @@
               </div>
             </rs-tab-item>
 
-            <!-- Maklumat Tambahan Tab -->
-            <rs-tab-item title="Maklumat Tambahan">
+            <!-- Maklumat Sesi Tab -->
+            <rs-tab-item title="Maklumat Sesi">
               <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormKit
-                    type="number"
-                    name="tempohPerkhidmatan"
-                    label="Tempoh Perkhidmatan (Bulan)"
-                    placeholder="12"
-                    validation="required|number"
-                    :validation-messages="{
-                      required: 'Tempoh perkhidmatan diperlukan',
-                      number: 'Tempoh mestilah nombor',
-                    }"
-                    :value="formData.maklumatTambahan.tempohPerkhidmatan"
-                  />
-                  <FormKit
                     type="select"
-                    name="tahapKesukaran"
-                    label="Tahap Kesukaran"
+                    name="jenisSesi"
+                    label="Jenis Sesi"
                     :options="[
-                      { label: 'Mudah', value: 'Mudah' },
-                      { label: 'Sederhana', value: 'Sederhana' },
-                      { label: 'Sukar', value: 'Sukar' },
-                      { label: 'Sangat Sukar', value: 'Sangat Sukar' },
+                      { label: 'Sesi Pengajian', value: 'Sesi Pengajian' },
+                      { label: 'Sesi Latihan', value: 'Sesi Latihan' },
+                      { label: 'Sesi Mesyuarat', value: 'Sesi Mesyuarat' },
+                      { label: 'Sesi Lain-lain', value: 'Sesi Lain-lain' },
                     ]"
                     validation="required"
                     :validation-messages="{
-                      required: 'Tahap kesukaran diperlukan',
+                      required: 'Jenis sesi diperlukan',
                     }"
-                    :value="formData.maklumatTambahan.tahapKesukaran"
+                    :value="formData.maklumatSesi.jenisSesi"
+                  />
+                  <FormKit
+                    type="text"
+                    name="tempohSesi"
+                    label="Tempoh Sesi"
+                    placeholder="Contoh: 1 jam"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Tempoh sesi diperlukan',
+                    }"
+                    :value="formData.maklumatSesi.tempohSesi"
+                  />
+                  <FormKit
+                    type="select"
+                    name="statusSesi"
+                    label="Status Sesi"
+                    :options="[
+                      { label: 'Belum Bermula', value: 'Belum Bermula' },
+                      { label: 'Sedang Berjalan', value: 'Sedang Berjalan' },
+                      { label: 'Selesai', value: 'Selesai' },
+                      { label: 'Dibatalkan', value: 'Dibatalkan' },
+                    ]"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Status sesi diperlukan',
+                    }"
+                    :value="formData.maklumatSesi.status"
                   />
                   <div class="md:col-span-2">
                     <FormKit
                       type="textarea"
-                      name="catatanTambahan"
-                      label="Catatan Tambahan"
-                      placeholder="Maklumat lain yang berkaitan..."
-                      rows="3"
-                      :value="formData.maklumatTambahan.catatanTambahan"
+                      name="catatanSesi"
+                      label="Catatan Sesi"
+                      placeholder="Maklumat tambahan tentang sesi..."
+                      rows="2"
+                      :value="formData.maklumatSesi.catatanSesi"
                     />
                   </div>
                 </div>
@@ -445,10 +460,11 @@ const formData = ref({
     status: "Aktif",
     catatanElaun: "Elaun bulanan termasuk elaun perjalanan",
   },
-  maklumatTambahan: {
-    tempohPerkhidmatan: 12,
-    tahapKesukaran: "Sederhana",
-    catatanTambahan: "Perlu latihan khusus dalam pengurusan zakat",
+  maklumatSesi: {
+    jenisSesi: "Sesi Pengajian",
+    tempohSesi: "1 jam",
+    status: "Belum Bermula",
+    catatanSesi: "Sesi pengajian tentang zakat fitrah",
   },
   maklumatPegawai: {
     diciptaOleh: "Admin User",

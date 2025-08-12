@@ -171,28 +171,34 @@
             </div>
           </rs-tab-item>
 
-          <!-- Maklumat Tambahan Tab -->
-          <rs-tab-item title="Maklumat Tambahan">
+          <!-- Maklumat Sesi Tab -->
+          <rs-tab-item title="Maklumat Sesi">
             <div class="p-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Tempoh Perkhidmatan</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Sesi</label>
                   <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-                    {{ categoryData.maklumatTambahan.tempohPerkhidmatan }} bulan
+                    {{ categoryData.maklumatSesi.jenisSesi || 'Tiada maklumat sesi' }}
                   </div>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Tahap Kesukaran</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Tempoh Sesi</label>
+                  <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
+                    {{ categoryData.maklumatSesi.tempohSesi || 'Tiada maklumat tempoh' }}
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Status Sesi</label>
                   <div class="mt-1">
-                    <rs-badge :variant="getDifficultyVariant(categoryData.maklumatTambahan.tahapKesukaran)">
-                      {{ categoryData.maklumatTambahan.tahapKesukaran }}
+                    <rs-badge :variant="getStatusVariant(categoryData.maklumatSesi.status)">
+                      {{ categoryData.maklumatSesi.status || 'Tiada status' }}
                     </rs-badge>
                   </div>
                 </div>
-                <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Sesi</label>
                   <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-                    {{ categoryData.maklumatTambahan.catatanTambahan || 'Tiada catatan tambahan' }}
+                    {{ categoryData.maklumatSesi.catatanSesi || 'Tiada catatan sesi' }}
                   </div>
                 </div>
               </div>
@@ -302,10 +308,11 @@ const categoryData = ref({
     status: "Aktif",
     catatanElaun: "Elaun bulanan termasuk elaun perjalanan",
   },
-  maklumatTambahan: {
-    tempohPerkhidmatan: 12,
-    tahapKesukaran: "Sederhana",
-    catatanTambahan: "Perlu latihan khusus dalam pengurusan zakat",
+  maklumatSesi: {
+    jenisSesi: "Sesi Pengajian",
+    tempohSesi: "1 jam",
+    status: "Selesai",
+    catatanSesi: "Pengajian berjaya dilaksanakan",
   },
   maklumatPegawai: {
     diciptaOleh: "Ahmad bin Abdullah",

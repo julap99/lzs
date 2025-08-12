@@ -70,29 +70,16 @@
             />
             <FormKit
               type="select"
-              name="jenisKategori"
-              label="Jenis Kategori"
-              :options="[
-                { label: 'Custom', value: 'Custom' },
-                { label: 'Default', value: 'Default' },
-              ]"
-              validation="required"
-              :validation-messages="{
-                required: 'Jenis kategori diperlukan',
-              }"
-            />
-            <FormKit
-              type="select"
               name="status"
               label="Status"
               :options="[
-                { label: 'Aktif', value: 'Aktif' },
-                { label: 'Tidak Aktif', value: 'Tidak Aktif' },
+                { label: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' },
               ]"
               validation="required"
               :validation-messages="{
                 required: 'Status diperlukan',
               }"
+              readonly
             />
             <FormKit
               type="date"
@@ -114,208 +101,13 @@
         </template>
       </rs-card>
 
-      <!-- Maklumat Jawatan Section -->
-      <rs-card class="mb-6">
-        <template #header>
-          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-            <Icon name="ph:briefcase" class="w-5 h-5 mr-2" />
-            Maklumat Jawatan
-          </h3>
-        </template>
-        <template #body>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormKit
-              type="text"
-              name="namaJawatan"
-              label="Nama Jawatan"
-              placeholder="Contoh: Penolong Amil Wakaf"
-              validation="required"
-              :validation-messages="{
-                required: 'Nama jawatan diperlukan',
-              }"
-            />
-            <FormKit
-              type="text"
-              name="kodJawatan"
-              label="Kod Jawatan"
-              placeholder="Contoh: PAW001"
-              validation="required"
-              :validation-messages="{
-                required: 'Kod jawatan diperlukan',
-              }"
-            />
-            <FormKit
-              type="select"
-              name="statusJawatan"
-              label="Status Jawatan"
-              :options="[
-                { label: 'Aktif', value: 'Aktif' },
-                { label: 'Tidak Aktif', value: 'Tidak Aktif' },
-              ]"
-              validation="required"
-              :validation-messages="{
-                required: 'Status jawatan diperlukan',
-              }"
-            />
-            <FormKit
-              type="date"
-              name="tarikhKuatkuasaJawatan"
-              label="Tarikh Kuatkuasa Jawatan"
-              validation="required"
-              :validation-messages="{
-                required: 'Tarikh kuatkuasa jawatan diperlukan',
-              }"
-            />
-            <FormKit
-              type="textarea"
-              name="tanggungjawab"
-              label="Tanggungjawab Jawatan"
-              placeholder="Senaraikan tanggungjawab utama..."
-              rows="3"
-              validation="required"
-              :validation-messages="{
-                required: 'Tanggungjawab jawatan diperlukan',
-              }"
-            />
-            <FormKit
-              type="textarea"
-              name="kelayakan"
-              label="Kelayakan Minimum"
-              placeholder="Syarat kelayakan minimum..."
-              rows="3"
-              validation="required"
-              :validation-messages="{
-                required: 'Kelayakan minimum diperlukan',
-              }"
-            />
-          </div>
-        </template>
-      </rs-card>
-
-      <!-- Maklumat Elaun Section -->
-      <rs-card class="mb-6">
-        <template #header>
-          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-            <Icon name="ph:money" class="w-5 h-5 mr-2" />
-            Maklumat Elaun
-          </h3>
-        </template>
-        <template #body>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormKit
-              type="select"
-              name="jenisElaun"
-              label="Jenis Elaun"
-              :options="[
-                { label: 'Elaun Bulanan', value: 'Elaun Bulanan' },
-                { label: 'Elaun Tahunan', value: 'Elaun Tahunan' },
-                { label: 'Elaun Khas', value: 'Elaun Khas' },
-                { label: 'Elaun Perjalanan', value: 'Elaun Perjalanan' },
-              ]"
-              validation="required"
-              :validation-messages="{
-                required: 'Jenis elaun diperlukan',
-              }"
-            />
-            <FormKit
-              type="number"
-              name="amaun"
-              label="Amaun (RM)"
-              placeholder="0.00"
-              validation="required|number"
-              :validation-messages="{
-                required: 'Amaun diperlukan',
-                number: 'Amaun mestilah nombor',
-              }"
-            />
-            <FormKit
-              type="text"
-              name="kodBajet"
-              label="Kod Bajet"
-              placeholder="Contoh: B001"
-              validation="required"
-              :validation-messages="{
-                required: 'Kod bajet diperlukan',
-              }"
-            />
-            <FormKit
-              type="select"
-              name="statusElaun"
-              label="Status Elaun"
-              :options="[
-                { label: 'Aktif', value: 'Aktif' },
-                { label: 'Tidak Aktif', value: 'Tidak Aktif' },
-              ]"
-              validation="required"
-              :validation-messages="{
-                required: 'Status elaun diperlukan',
-              }"
-            />
-            <FormKit
-              type="textarea"
-              name="catatanElaun"
-              label="Catatan Elaun"
-              placeholder="Maklumat tambahan tentang elaun..."
-              rows="2"
-            />
-          </div>
-        </template>
-      </rs-card>
-
-      <!-- Maklumat Tambahan Section -->
-      <rs-card class="mb-6">
-        <template #header>
-          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-            <Icon name="ph:gear" class="w-5 h-5 mr-2" />
-            Maklumat Tambahan
-          </h3>
-        </template>
-        <template #body>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormKit
-              type="number"
-              name="tempohPerkhidmatan"
-              label="Tempoh Perkhidmatan (Bulan)"
-              placeholder="12"
-              validation="required|number"
-              :validation-messages="{
-                required: 'Tempoh perkhidmatan diperlukan',
-                number: 'Tempoh mestilah nombor',
-              }"
-            />
-            <FormKit
-              type="select"
-              name="tahapKesukaran"
-              label="Tahap Kesukaran"
-              :options="[
-                { label: 'Mudah', value: 'Mudah' },
-                { label: 'Sederhana', value: 'Sederhana' },
-                { label: 'Sukar', value: 'Sukar' },
-                { label: 'Sangat Sukar', value: 'Sangat Sukar' },
-              ]"
-              validation="required"
-              :validation-messages="{
-                required: 'Tahap kesukaran diperlukan',
-              }"
-            />
-            <FormKit
-              type="textarea"
-              name="catatanTambahan"
-              label="Catatan Tambahan"
-              placeholder="Maklumat lain yang berkaitan..."
-              rows="3"
-            />
-          </div>
-        </template>
-      </rs-card>
-
       <!-- Submit Buttons -->
       <div class="flex justify-end gap-3">
         <rs-button
           variant="secondary-outline"
           @click="navigateTo('/BF-PA/KF/KJ')"
         >
-          Batal
+          Kembali
         </rs-button>
         <rs-button
           variant="primary"
@@ -323,7 +115,7 @@
           :loading="isSubmitting"
         >
           <Icon name="ph:check" class="w-4 h-4 mr-2" />
-          Tambah Kategori
+          Simpan
         </rs-button>
       </div>
     </FormKit>
@@ -350,19 +142,23 @@ onMounted(() => {
 
 const breadcrumb = ref([
   {
-    title: "Utama",
+    name: "Utama",
+    type: "link",
     path: "/"
   },
   {
-    title: "BF-PA",
+    name: "BF-PA",
+    type: "link",
     path: "/BF-PA"
   },
   {
-    title: "Konfigurasi",
+    name: "Konfigurasi",
+    type: "link",
     path: "/BF-PA/KF/KJ"
   },
   {
-    title: "Tambah Kategori",
+    name: "Tambah Kategori",
+    type: "current",
     path: "/BF-PA/KF/KJ/create"
   }
 ]);
@@ -379,8 +175,9 @@ const handleSubmit = async (formData) => {
     
     // Enhanced approval workflow
     const approvalStatus = "Menunggu Pengesahan";
-    const approvalMessage = `Kategori penolong amil berjaya ditambah dengan status: ${approvalStatus}. 
-    Permintaan akan dihantar kepada Ketua Jabatan untuk pengesahan.`;
+    const approvalMessage = `Maklumat kategori penolong amil berjaya ditambah dengan status: ${approvalStatus}. 
+    Permintaan akan dihantar kepada Ketua Jabatan untuk pengesahan. 
+    Maklumat lanjut boleh dikemaskini selepas pengesahan.`;
     
     // Show success message with approval workflow
     alert(approvalMessage);

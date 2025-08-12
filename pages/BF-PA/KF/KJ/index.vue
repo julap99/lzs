@@ -120,121 +120,422 @@
           </div>
         </div>
 
-        <!-- Updated Table Section - Now Shows Categories -->
-        <rs-table
-          class="mt-4"
-          :key="tableKey"
-          :data="filteredCategories"
-          :pageSize="10"
-          :showNoColumn="false"
-          :columns="[
-            {
-              key: 'rujukan',
-              label: 'Rujukan',
-              sortable: true,
-            },
-            {
-              key: 'kategoriPenolongAmil',
-              label: 'Kategori Penolong Amil',
-              sortable: true,
-            },
-            {
-              key: 'kodSingkatan',
-              label: 'Kod Singkatan',
-              sortable: true,
-            },
-            {
-              key: 'jenisKategori',
-              label: 'Jenis Kategori',
-              sortable: true,
-            },
-            {
-              key: 'status',
-              label: 'Status',
-              sortable: true,
-            },
-            {
-              key: 'tindakan',
-              label: 'Tindakan',
-              sortable: false,
-            },
-          ]"
-          :options="{
-            variant: 'default',
-            hover: true,
-          }"
-        >
-          <template v-slot:jenisKategori="data">
-            <rs-badge 
-              :variant="data.text === 'Default' ? 'info' : 'secondary'"
-              class="!text-xs"
-            >
-              {{ data.text }}
-            </rs-badge>
-          </template>
+        <!-- Tabbed Table Section -->
+        <!-- PT and Eksekutif Tabs -->
+        <div v-if="['pt', 'eksekutif'].includes(currentRole)">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Sedang Proses">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai kategori yang sedang dalam proses
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-process`"
+                  :data="getTableDataByStatus(['Menunggu Pengesahan', 'Menunggu Kelulusan'])"
+                  :pageSize="10"
+                  :showNoColumn="false"
+                  :columns="tableColumns"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                  }"
+                >
+                  <template v-slot:status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">
+                      {{ data.text }}
+                    </rs-badge>
+                  </template>
 
-          <template v-slot:status="data">
-            <rs-badge :variant="getStatusVariant(data.text)">
-              {{ data.text }}
-            </rs-badge>
-          </template>
+                  <template v-slot:tindakan="data">
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="viewCategory(data.text)"
+                      >
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        v-if="canEditCategory(data.text)"
+                        variant="secondary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="editCategory(data.text)"
+                      >
+                        Kemaskini
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
 
-          <template v-slot:tindakan="data">
-            <div class="flex space-x-2">
-              <rs-button
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="viewCategory(data.text)"
-              >
-                Lihat
-              </rs-button>
-              <rs-button
-                v-if="canEditCategory(data.text)"
-                variant="secondary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="editCategory(data.text)"
-              >
-                Kemaskini
-              </rs-button>
-              <rs-button
-                v-if="canVerifyCategory(data.text) && getCategoryStatus(data.text) === 'Menunggu Pengesahan'"
-                variant="warning"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="verifyCategory(data.text)"
-              >
-                Sahkan
-              </rs-button>
-              <rs-button
-                v-if="canApproveCategory(data.text) && getCategoryStatus(data.text) === 'Disahkan Ketua Jabatan'"
-                variant="success"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="approveCategory(data.text)"
-              >
-                Luluskan
-              </rs-button>
-              <rs-button
-                v-if="canApproveCategory(data.text) && getCategoryStatus(data.text) === 'Disahkan Ketua Jabatan'"
-                variant="danger"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="rejectCategory(data.text)"
-              >
-                Tolak
-              </rs-button>
-            </div>
-          </template>
-        </rs-table>
+            <rs-tab-item title="Aktif">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai kategori yang aktif
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-active`"
+                  :data="getTableDataByStatus(['Aktif'])"
+                  :pageSize="10"
+                  :showNoColumn="false"
+                  :columns="tableColumns"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                  }"
+                >
+                  <template v-slot:status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">
+                      {{ data.text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="data">
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="viewCategory(data.text)"
+                      >
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        v-if="canEditCategory(data.text)"
+                        variant="secondary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="editCategory(data.text)"
+                      >
+                        Kemaskini
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Tidak Aktif">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  Senarai kategori yang tidak aktif
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-inactive`"
+                  :data="getTableDataByStatus(['Tidak Aktif'])"
+                  :pageSize="10"
+                  :showNoColumn="false"
+                  :columns="tableColumns"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                  }"
+                >
+                  <template v-slot:status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">
+                      {{ data.text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="data">
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="viewCategory(data.text)"
+                      >
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        v-if="canEditCategory(data.text)"
+                        variant="secondary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="editCategory(data.text)"
+                      >
+                        Kemaskini
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
+
+        <!-- Ketua Jabatan Tabs -->
+        <div v-if="currentRole === 'ketua-jabatan'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Menunggu Pengesahan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai kategori yang menunggu pengesahan
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-verify`"
+                  :data="getTableDataByStatus(['Menunggu Pengesahan'])"
+                  :pageSize="10"
+                  :showNoColumn="false"
+                  :columns="tableColumns"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                  }"
+                >
+                  <template v-slot:status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">
+                      {{ data.text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="data">
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="viewCategory(data.text)"
+                      >
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="warning"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="navigateToVerification(data.text, 'verify')"
+                      >
+                        Sahkan
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Aktif">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai kategori yang aktif
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-active`"
+                  :data="getTableDataByStatus(['Aktif'])"
+                  :pageSize="10"
+                  :showNoColumn="false"
+                  :columns="tableColumns"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                  }"
+                >
+                  <template v-slot:status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">
+                      {{ data.text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="data">
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="viewCategory(data.text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Tidak Aktif">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  Senarai kategori yang tidak aktif
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-inactive`"
+                  :data="getTableDataByStatus(['Tidak Aktif'])"
+                  :pageSize="10"
+                  :showNoColumn="false"
+                  :columns="tableColumns"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                  }"
+                >
+                  <template v-slot:status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">
+                      {{ data.text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="data">
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="viewCategory(data.text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
+
+        <!-- Ketua Divisyen Tabs -->
+        <div v-if="currentRole === 'ketua-divisyen'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Menunggu Kelulusan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai kategori yang menunggu kelulusan
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-approve`"
+                  :data="getTableDataByStatus(['Menunggu Kelulusan'])"
+                  :pageSize="10"
+                  :showNoColumn="false"
+                  :columns="tableColumns"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                  }"
+                >
+                  <template v-slot:status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">
+                      {{ data.text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="data">
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="viewCategory(data.text)"
+                      >
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="success"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="navigateToVerification(data.text, 'approve')"
+                      >
+                        Luluskan
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Aktif">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai kategori yang aktif
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-active`"
+                  :data="getTableDataByStatus(['Aktif'])"
+                  :pageSize="10"
+                  :showNoColumn="false"
+                  :columns="tableColumns"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                  }"
+                >
+                  <template v-slot:status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">
+                      {{ data.text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="data">
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="viewCategory(data.text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Tidak Aktif">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  Senarai kategori yang tidak aktif
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-inactive`"
+                  :data="getTableDataByStatus(['Tidak Aktif'])"
+                  :pageSize="10"
+                  :showNoColumn="false"
+                  :columns="tableColumns"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                  }"
+                >
+                  <template v-slot:status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">
+                      {{ data.text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="data">
+                    <div class="flex space-x-2">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="viewCategory(data.text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
       </template>
     </rs-card>
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick, computed } from "vue";
+import { ref, nextTick, computed, watch } from "vue";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -245,19 +546,23 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    title: "Utama",
+    name: "Utama",
+    type: "link",
     path: "/"
   },
   {
-    title: "BF-PA",
+    name: "BF-PA",
+    type: "link",
     path: "/BF-PA"
   },
   {
-    title: "Konfigurasi",
+    name: "Konfigurasi",
+    type: "link",
     path: "/BF-PA/KF/KJ"
   },
   {
-    title: "Kategori Penolong Amil",
+    name: "Kategori Penolong Amil",
+    type: "current",
     path: "/BF-PA/KF/KJ"
   }
 ]);
@@ -349,8 +654,7 @@ const statusOptions = [
   { label: "Aktif", value: "Aktif" },
   { label: "Tidak Aktif", value: "Tidak Aktif" },
   { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
-  { label: "Disahkan Ketua Jabatan", value: "Disahkan Ketua Jabatan" },
-  { label: "Diluluskan Ketua Divisyen", value: "Diluluskan Ketua Divisyen" },
+  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
 ];
 
 const kategoriOptions = [
@@ -368,89 +672,63 @@ const categoriesList = ref([
     rujukan: "KJ-2024-001",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
     kodSingkatan: "PAF",
-    jenisKategori: "Default",
     status: "Aktif",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 1,
-    isDefault: true
+    tindakan: 1
   },
   {
     rujukan: "KJ-2024-002",
     kategoriPenolongAmil: "Penolong Amil Padi",
     kodSingkatan: "PAP",
-    jenisKategori: "Default",
     status: "Aktif",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 2,
-    isDefault: true
+    tindakan: 2
   },
   {
     rujukan: "KJ-2024-003",
     kategoriPenolongAmil: "Penolong Amil Kariah",
     kodSingkatan: "PAK",
-    jenisKategori: "Default",
     status: "Aktif",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 3,
-    isDefault: true
+    tindakan: 3
   },
   {
     rujukan: "KJ-2024-004",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
     kodSingkatan: "PK+",
-    jenisKategori: "Default",
     status: "Aktif",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 4,
-    isDefault: true
+    tindakan: 4
   },
   {
     rujukan: "KJ-2024-005",
     kategoriPenolongAmil: "Penolong Amil Wakaf",
     kodSingkatan: "PAW",
-    jenisKategori: "Custom",
     status: "Menunggu Pengesahan",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 5,
-    isDefault: false
+    tindakan: 5
   },
   {
     rujukan: "KJ-2024-006",
     kategoriPenolongAmil: "Penolong Amil Zakat Perniagaan",
     kodSingkatan: "PAZP",
-    jenisKategori: "Custom",
-    status: "Disahkan Ketua Jabatan",
+    status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "2024-01-01",
-    tindakan: 6,
-    isDefault: false
+    tindakan: 6
+  },
+  {
+    rujukan: "KJ-2024-007",
+    kategoriPenolongAmil: "Penolong Amil Zakat Emas",
+    kodSingkatan: "PAZE",
+    status: "Tidak Aktif",
+    tarikhKuatkuasa: "2024-01-01",
+    tindakan: 7
   }
 ]);
 
 // Computed properties
 const filteredCategories = computed(() => {
   let result = [...categoriesList.value];
-  
-  // Role-based data filtering
-  if (currentRole.value === "pt") {
-    // PT sees all categories for monitoring progress
-    result = result;
-  } else if (currentRole.value === "eksekutif") {
-    // Eksekutif sees all categories (can edit)
-    result = result;
-  } else if (currentRole.value === "ketua-jabatan") {
-    // Ketua Jabatan sees categories that need verification
-    result = result.filter(category => 
-      category.status === "Menunggu Pengesahan" || 
-      category.status === "Disahkan Ketua Jabatan" ||
-      category.status === "Diluluskan Ketua Divisyen"
-    );
-  } else if (currentRole.value === "ketua-divisyen") {
-    // Ketua Divisyen sees categories that need final approval
-    result = result.filter(category => 
-      category.status === "Disahkan Ketua Jabatan" ||
-      category.status === "Diluluskan Ketua Divisyen"
-    );
-  }
   
   // Apply search filter
   if (filters.value.searchQuery) {
@@ -504,32 +782,32 @@ const editCategory = (categoryId) => {
 };
 
 const verifyCategory = (categoryId) => {
-  // Update status to "Disahkan Ketua Jabatan"
+  // Update status to "Menunggu Kelulusan"
   const category = categoriesList.value.find(c => c.tindakan === categoryId);
   if (category) {
-    category.status = "Disahkan Ketua Jabatan";
+    category.status = "Menunggu Kelulusan";
     refreshTable();
     toast.success("Kategori penolong amil berjaya disahkan oleh Ketua Jabatan");
   }
 };
 
 const approveCategory = (categoryId) => {
-  // Update status to "Diluluskan Ketua Divisyen"
+  // Update status to "Aktif"
   const category = categoriesList.value.find(c => c.tindakan === categoryId);
   if (category) {
-    category.status = "Diluluskan Ketua Divisyen";
+    category.status = "Aktif";
     refreshTable();
     toast.success("Kategori penolong amil berjaya diluluskan oleh Ketua Divisyen");
   }
 };
 
 const rejectCategory = (categoryId) => {
-  // Update status to "Ditolak"
+  // Update status to "Tidak Aktif"
   const category = categoriesList.value.find(c => c.tindakan === categoryId);
   if (category) {
-    category.status = "Ditolak";
+    category.status = "Tidak Aktif";
     refreshTable();
-    toast.error("Kategori penolong amil berjaya ditolak");
+    toast.success("Kategori penolong amil berjaya ditolak");
   }
 };
 
@@ -541,22 +819,13 @@ const refreshTable = () => {
 
 // Helper function to determine badge variant based on status
 const getStatusVariant = (status) => {
-  switch (status) {
-    case "Aktif":
-      return "success";
-    case "Tidak Aktif":
-      return "danger";
-    case "Menunggu Pengesahan":
-      return "warning";
-    case "Disahkan Ketua Jabatan":
-      return "info";
-    case "Diluluskan Ketua Divisyen":
-      return "success";
-    case "Ditolak":
-      return "danger";
-    default:
-      return "default";
-  }
+  const variants = {
+    'Aktif': 'success',
+    'Tidak Aktif': 'danger',
+    'Menunggu Pengesahan': 'warning',
+    'Menunggu Kelulusan': 'info',
+  };
+  return variants[status] || 'default';
 };
 
 const getCategoryStatus = (categoryId) => {
@@ -573,4 +842,142 @@ const getRoleSpecificDescription = () => {
   };
   return roleData[currentRole.value] || "Tidak Diketahui";
 };
+
+const navigateToVerification = (categoryId, action) => {
+  if (action === 'verify') {
+    navigateTo(`/BF-PA/KF/KJ/verify/${categoryId}`);
+  } else if (action === 'approve') {
+    navigateTo(`/BF-PA/KF/KJ/approve/${categoryId}`);
+  }
+};
+
+// New computed property for table data based on status
+const getTableDataByStatus = (statuses) => {
+  return filteredCategories.value.filter(category => statuses.includes(category.status));
+};
+
+// Default active tab based on role to prevent empty screen
+const activeTab = ref("Sedang Proses");
+
+// Get the best available tab for the current role
+const getBestAvailableTabForRole = computed(() => {
+  const role = currentRole.value;
+  
+  if (role === 'ketua-jabatan') {
+    // Ketua Jabatan can see: "Menunggu Pengesahan", "Aktif", "Tidak Aktif"
+    // Priority: Menunggu Pengesahan > Aktif > Tidak Aktif
+    if (getTableDataByStatus(['Menunggu Pengesahan']).length > 0) {
+      return "Menunggu Pengesahan";
+    } else if (getTableDataByStatus(['Aktif']).length > 0) {
+      return "Aktif";
+    } else {
+      return "Tidak Aktif";
+    }
+  } else if (role === 'ketua-divisyen') {
+    // Ketua Divisyen can see: "Menunggu Kelulusan", "Aktif", "Tidak Aktif"
+    // Priority: Menunggu Kelulusan > Aktif > Tidak Aktif
+    if (getTableDataByStatus(['Menunggu Kelulusan']).length > 0) {
+      return "Menunggu Kelulusan";
+    } else if (getTableDataByStatus(['Aktif']).length > 0) {
+      return "Aktif";
+    } else {
+      return "Tidak Aktif";
+    }
+  } else {
+    // PT and Eksekutif can see: "Sedang Proses", "Aktif", "Tidak Aktif"
+    // Priority: Sedang Proses > Aktif > Tidak Aktif
+    if (getTableDataByStatus(['Menunggu Pengesahan', 'Menunggu Kelulusan']).length > 0) {
+      return "Sedang Proses";
+    } else if (getTableDataByStatus(['Aktif']).length > 0) {
+      return "Aktif";
+    } else {
+      return "Tidak Aktif";
+    }
+  }
+});
+
+// Set default tab when role changes - ensures no empty screen
+watch(currentRole, (newRole) => {
+  // Get the best available tab for the new role
+  const bestTab = getBestAvailableTabForRole.value;
+  
+  // Only change if the current tab is not available for the new role
+  const currentTabIsAvailable = (() => {
+    switch (activeTab.value) {
+      case "Sedang Proses":
+        return ['pt', 'eksekutif'].includes(newRole);
+      case "Menunggu Pengesahan":
+        return newRole === 'ketua-jabatan';
+      case "Menunggu Kelulusan":
+        return newRole === 'ketua-divisyen';
+      case "Aktif":
+      case "Tidak Aktif":
+        return true; // These tabs are always available
+      default:
+        return false;
+    }
+  })();
+  
+  if (!currentTabIsAvailable) {
+    activeTab.value = bestTab;
+  }
+}, { immediate: true });
+
+// Additional safety check: ensure activeTab is always valid for current role
+watch(activeTab, (newTab) => {
+  const role = currentRole.value;
+  let tabIsValid = false;
+  
+  switch (newTab) {
+    case "Sedang Proses":
+      tabIsValid = ['pt', 'eksekutif'].includes(role);
+      break;
+    case "Menunggu Pengesahan":
+      tabIsValid = role === 'ketua-jabatan';
+      break;
+    case "Menunggu Kelulusan":
+      tabIsValid = role === 'ketua-divisyen';
+      break;
+    case "Aktif":
+    case "Tidak Aktif":
+      tabIsValid = true; // Always valid
+      break;
+    default:
+      tabIsValid = false;
+  }
+  
+  if (!tabIsValid) {
+    // Switch to a valid tab immediately
+    activeTab.value = getBestAvailableTabForRole.value;
+  }
+});
+
+// Table columns definition
+const tableColumns = [
+  {
+    key: 'rujukan',
+    label: 'Rujukan',
+    sortable: true,
+  },
+  {
+    key: 'kategoriPenolongAmil',
+    label: 'Kategori Penolong Amil',
+    sortable: true,
+  },
+  {
+    key: 'kodSingkatan',
+    label: 'Kod Singkatan',
+    sortable: true,
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    sortable: true,
+  },
+  {
+    key: 'tindakan',
+    label: 'Tindakan',
+    sortable: false,
+  },
+];
 </script> 
