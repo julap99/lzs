@@ -379,7 +379,7 @@ const application = ref({
 // Helper functions for status badge variants
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
-    "Draft": "secondary",        // Use secondary instead of default
+    "Draft": "disabled",        // Use disabled for proper grey color
     "Submitted": "warning",
     "Under Review": "info",
     "Approved": "success",

@@ -19,7 +19,7 @@ const getStatusVariant = (status) => {
     'Lulus': 'success',      // Green
     'Menunggu': 'warning',   // Orange
     'Ditolak': 'danger',     // Red
-    'Draf': 'secondary',     // Grey
+    'Draf': 'disabled',      // Grey
     'Baru': 'info',          // Blue
     'Aktif': 'primary'       // Dark Blue
   };

@@ -205,7 +205,7 @@ const getStatusVariant = (status) => {
     "Kembali untuk Pembetulan": "warning",
     "Dalam Pemerhatian": "warning",
   };
-  return variants[status] || "default";
+  return variants[status] || "disabled"; // Use disabled for proper grey color
 };
 
 onMounted(async () => {

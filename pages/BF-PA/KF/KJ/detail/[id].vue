@@ -335,7 +335,7 @@ const getStatusVariant = (status) => {
     case "Diluluskan Ketua Divisyen":
       return "success";
     default:
-      return "default";
+      return "disabled";
   }
 };
 
@@ -350,7 +350,7 @@ const getDifficultyVariant = (tahap) => {
     case "Sangat Sukar":
       return "danger";
     default:
-      return "default";
+      return "disabled";
   }
 };
 

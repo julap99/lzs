@@ -855,7 +855,7 @@ const getStatusVariant = (status) => {
     case 'Ditolak':
       return 'danger'
     default:
-      return 'secondary'  // Use secondary instead of default
+      return 'disabled'  // Use disabled for proper grey color
   }
 }
 

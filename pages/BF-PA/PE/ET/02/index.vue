@@ -377,7 +377,7 @@ const getPAStatusVariant = (status) => {
     case 'Berjaya': return 'success';
     case 'Dalam Proses': return 'warning';
     case 'Gagal': return 'danger';
-    default: return 'default';
+    default: return 'secondary'; // Use secondary instead of default
   }
 };
 

@@ -336,7 +336,7 @@ const getStatusVariant = (status) => {
     'Diluluskan': 'success',
     'Ditolak': 'danger',
   };
-  return variants[status] || 'default';
+  return variants[status] || 'disabled'; // Use disabled for proper grey color
 };
 
 const getStatusClass = (status) => {
@@ -356,7 +356,7 @@ const getAttendanceVariant = (status) => {
     'Tidak Hadir': 'danger',
     'Cuti': 'warning',
   };
-  return variants[status] || 'default';
+  return variants[status] || 'disabled'; // Use disabled for proper grey color
 };
 
 // Event handlers

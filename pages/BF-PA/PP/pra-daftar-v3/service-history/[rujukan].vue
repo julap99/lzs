@@ -384,7 +384,7 @@ const getAppointmentStatusVariant = (status) => {
     "Ditamatkan": "danger",
     "Dalam Proses": "warning"
   };
-  return statusVariants[status] || "default";
+  return statusVariants[status] || "secondary"; // Use secondary instead of default
 };
 
 const handleBack = () => {

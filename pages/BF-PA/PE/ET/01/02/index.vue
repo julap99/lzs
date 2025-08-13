@@ -407,7 +407,7 @@ const getStatusLantikanVariant = (status) => {
     case 'Aktif': return 'success';
     case 'Tamat': return 'warning';
     case 'Digantung': return 'danger';
-    default: return 'default';
+    default: return 'disabled'; // Use disabled for proper grey color
   }
 };
 

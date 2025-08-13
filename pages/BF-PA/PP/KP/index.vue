@@ -680,7 +680,7 @@ const getStatusVariant = (status) => {
     need_more_info: "warning",
     resubmitted: "info",
   };
-  return variants[status] || "secondary"; // Use secondary instead of default
+  return variants[status] || "disabled"; // Use disabled for proper grey color
 };
 
 const getStatusLabel = (status) => {

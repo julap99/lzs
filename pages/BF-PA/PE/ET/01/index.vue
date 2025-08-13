@@ -428,7 +428,7 @@ const getStatusLantikanVariant = (status) => {
     case 'Aktif': return 'success';
     case 'Tamat': return 'warning';
     case 'Digantung': return 'danger';
-    default: return 'secondary'; // Use secondary instead of default
+    default: return 'disabled'; // Use disabled for proper grey color
   }
 };
 
@@ -437,7 +437,7 @@ const getStatusPembayaranVariant = (status) => {
     case 'Belum Dikira': return 'warning';
     case 'Telah Dikira': return 'info';
     case 'Telah Dibayar': return 'success';
-    default: return 'secondary'; // Use secondary instead of default
+    default: return 'disabled'; // Use disabled for proper grey color
   }
 };
 

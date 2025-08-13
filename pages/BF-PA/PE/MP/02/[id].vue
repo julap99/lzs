@@ -462,9 +462,9 @@ const getStatusVariant = (status) => {
     "Ditolak": "danger",
     "Kembali untuk Pembetulan": "warning",
     "Dalam Pemerhatian": "warning",
-    "Belum Dihantar": "default",
+    "Belum Dihantar": "disabled", // Use disabled for proper grey color
   };
-  return variants[status] || "default";
+  return variants[status] || "disabled"; // Use disabled for proper grey color
 };
 
 const calculateTotalAllowance = () => {

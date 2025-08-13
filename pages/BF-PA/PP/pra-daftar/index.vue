@@ -505,7 +505,7 @@ const getStatusVariant = (status) => {
     Lulus: "success",
     "Tidak Lulus": "danger",
   };
-  return statusVariants[status] || "secondary"; // Use secondary instead of default
+  return statusVariants[status] || "disabled"; // Use disabled for proper grey color
 };
 
 const getActionButtonText = (status) => {

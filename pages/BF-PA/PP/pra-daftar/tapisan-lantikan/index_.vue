@@ -758,7 +758,7 @@ const getStatusVariant = (status) => {
     Ditolak: "danger",
     "Tidak Disokong": "danger",
   };
-  return statusVariants[status] || "secondary";
+  return statusVariants[status] || "disabled";
 };
 
 // Document preview function

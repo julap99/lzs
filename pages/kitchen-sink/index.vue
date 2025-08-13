@@ -15,7 +15,7 @@ const getStatusVariant = (status) => {
     'Lulus': 'success',      // Green
     'Menunggu': 'warning',   // Orange
     'Ditolak': 'danger',     // Red
-    'Draf': 'secondary',     // Grey (fixes visibility issue)
+    'Draf': 'disabled',      // Grey (proper grey color)
     'Baru': 'info',          // Blue
     'Aktif': 'primary'       // Dark Blue
   };
@@ -549,7 +549,7 @@ onBeforeUnmount(() => {
             <rs-badge variant="success">Lulus</rs-badge>
             <rs-badge variant="warning">Menunggu</rs-badge>
             <rs-badge variant="danger">Ditolak</rs-badge>
-            <rs-badge variant="secondary">Draf</rs-badge>
+            <rs-badge variant="disabled">Draf</rs-badge>
             <rs-badge variant="info">Baru</rs-badge>
             <rs-badge variant="primary">Aktif</rs-badge>
           </div>

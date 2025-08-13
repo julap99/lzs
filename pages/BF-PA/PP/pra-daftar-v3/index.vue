@@ -1662,8 +1662,8 @@ const totalCompletedApplications = computed(() => filteredCompletedApplications.
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
     // Draft/Initial stages
-    Draft: "secondary",
-    Draf: "secondary",
+    Draft: "disabled",
+    Draf: "disabled",
     
     // Submitted/Under Review stages
     Submitted: "warning",

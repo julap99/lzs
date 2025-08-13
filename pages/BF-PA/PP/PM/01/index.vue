@@ -227,7 +227,7 @@ const getStatusVariant = (status) => {
     case "Menunggu Kelulusan":
       return "warning";
     default:
-      return "secondary"; // Use secondary instead of default
+      return "disabled"; // Use disabled for proper grey color
   }
 };
 </script>

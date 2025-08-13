@@ -825,7 +825,7 @@ const getStatusVariant = (status) => {
     'Menunggu Pengesahan': 'warning',
     'Menunggu Kelulusan': 'info',
   };
-  return variants[status] || 'secondary'; // Use secondary instead of default
+  return variants[status] || 'disabled'; // Use disabled for proper grey color
 };
 
 const getCategoryStatus = (categoryId) => {

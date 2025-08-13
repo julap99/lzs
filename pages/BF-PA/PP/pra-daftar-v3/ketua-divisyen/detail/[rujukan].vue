@@ -839,7 +839,7 @@ const getStepLineVariant = (step) => {
 
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
-    Draft: "secondary",        // Use secondary instead of default
+    Draft: "disabled",        // Use disabled for proper grey color
     Dihantar: "warning",
     "Dalam Semakan": "info",
     Disaring: "info",

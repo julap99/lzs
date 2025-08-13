@@ -627,7 +627,7 @@ const getCurrentRoleBadgeVariant = () => {
 
 const getStatusPendaftaranVariant = (status) => {
   const variants = {
-    'Draf': 'secondary',        // Use secondary instead of default
+    'Draf': 'disabled',        // Use disabled for proper grey color
     'Dihantar': 'warning',
     'Telah Disaring': 'info',
     'Telah Disemak': 'info',
