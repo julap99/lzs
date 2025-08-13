@@ -216,11 +216,13 @@ const batchId = ref('BATCH/2024/015'); // Mock batch ID
 
 // Mock data for dropdowns
 const kariahCategories = [
+  { label: 'Sila pilih...', value: '' },
   { label: 'Kariah', value: 'KARIAH' },
   { label: 'Komuniti', value: 'KOMUNITI' },
 ];
 
 const kariahLocations = [
+  { label: 'Sila pilih...', value: '' },
   { label: 'Masjid Wilayah Persekutuan', value: 'MSJ-KUL-001' },
   { label: 'Masjid Al-Khairiyah', value: 'MSJ-KUL-002' },
   { label: 'Masjid Bandar Utama', value: 'MSJ-KUL-003' },

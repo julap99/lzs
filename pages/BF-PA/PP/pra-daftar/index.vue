@@ -350,7 +350,7 @@ const columns = [
 
 // Options for filters
 const statusOptions = [
-  { label: "Semua Status", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Belum Disemak", value: "Belum Disemak" },
   {
     label: "Menunggu Sokongan JPPA",

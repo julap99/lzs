@@ -131,13 +131,15 @@
                   name="jenisPengenalan"
                   label="Jenis Pengenalan"
                   :options="[
+                    { label: 'Sila pilih...', value: '' },
                     { label: 'MyKad', value: 'MYKAD' },
                     { label: 'MyPR', value: 'MYPR' },
                     { label: 'Lain-lain', value: 'OTHERS' },
                   ]"
-                  validation="required"
+                  validation="required|not:''"
                   :validation-messages="{
                     required: 'Jenis pengenalan diperlukan',
+                    not: 'Sila pilih jenis pengenalan yang sah',
                   }"
                   :value="userData.jenisPengenalan"
                 />
@@ -161,6 +163,7 @@
                   name="kelulusanAkademik"
                   label="Kelulusan Akademik"
                   :options="[
+                    { label: 'Sila pilih...', value: '' },
                     { label: 'SPM', value: 'SPM' },
                     { label: 'STPM/Diploma', value: 'STPM_DIPLOMA' },
                     { label: 'Ijazah Sarjana Muda', value: 'DEGREE' },
@@ -168,9 +171,10 @@
                     { label: 'PhD', value: 'PHD' },
                     { label: 'Lain-lain', value: 'OTHERS' },
                   ]"
-                  validation="required"
+                  validation="required|not:''"
                   :validation-messages="{
                     required: 'Kelulusan akademik diperlukan',
+                    not: 'Sila pilih kelulusan akademik yang sah',
                   }"
                   :value="userData.kelulusanAkademik"
                 />
@@ -239,6 +243,7 @@
                       name="negeri"
                       label="Negeri"
                       :options="[
+                        { label: 'Sila pilih...', value: '' },
                         { label: 'Wilayah Persekutuan', value: 'WP' },
                         { label: 'Selangor', value: 'SGR' },
                         { label: 'Johor', value: 'JHR' },
@@ -254,9 +259,10 @@
                         { label: 'Sarawak', value: 'SWK' },
                         { label: 'Terengganu', value: 'TRG' },
                       ]"
-                      validation="required"
+                      validation="required|not:''"
                       :validation-messages="{
                         required: 'Negeri diperlukan',
+                        not: 'Sila pilih negeri yang sah',
                       }"
                       :value="userData.negeri"
                     />
@@ -275,14 +281,16 @@
                   name="kategoriAmil"
                   label="Kategori Amil"
                   :options="[
+                    { label: 'Sila pilih...', value: '' },
                     { label: 'Fitrah', value: 'FITRAH' },
                     { label: 'Padi', value: 'PADI' },
                     { label: 'Kariah', value: 'KARIAH' },
                     { label: 'Komuniti', value: 'KOMUNITI' },
                   ]"
-                  validation="required"
+                  validation="required|not:''"
                   :validation-messages="{
                     required: 'Kategori amil diperlukan',
+                    not: 'Sila pilih kategori amil yang sah',
                   }"
                   :value="userData.kategoriAmil"
                   @input="updateJawatanAmil"
@@ -295,14 +303,16 @@
                   name="jawatanAmilKomuniti"
                   label="Jawatan Amil Komuniti"
                   :options="[
+                    { label: 'Sila pilih...', value: '' },
                     { label: 'Pengerusi', value: 'PENGERUSI' },
                     { label: 'Setiausaha', value: 'SETIAUSAHA' },
                     { label: 'Bendahari', value: 'BENDAHARI' },
                     { label: 'Ahli Jawatankuasa', value: 'AJK' },
                   ]"
-                  validation="required"
+                  validation="required|not:''"
                   :validation-messages="{
                     required: 'Jawatan amil komuniti diperlukan',
+                    not: 'Sila pilih jawatan amil komuniti yang sah',
                   }"
                   :value="userData.jawatanAmilKomuniti"
                 />
@@ -313,6 +323,7 @@
                   name="jawatanMasjid"
                   label="Jawatan Dalam Masjid/Surau"
                   :options="[
+                    { label: 'Sila pilih...', value: '' },
                     { label: 'Pengerusi', value: 'PENGERUSI' },
                     { label: 'Imam', value: 'IMAM' },
                     { label: 'Bilal', value: 'BILAL' },
@@ -330,6 +341,7 @@
                   name="namaBank"
                   label="Nama Bank"
                   :options="[
+                    { label: 'Sila pilih...', value: '' },
                     { label: 'Maybank', value: 'MAYBANK' },
                     { label: 'CIMB', value: 'CIMB' },
                     { label: 'Bank Islam', value: 'BIMB' },
@@ -341,9 +353,10 @@
                     { label: 'Affin Bank', value: 'AFFIN' },
                     { label: 'Bank Muamalat', value: 'MUAMALAT' },
                   ]"
-                  validation="required"
+                  validation="required|not:''"
                   :validation-messages="{
                     required: 'Nama bank diperlukan',
+                    not: 'Sila pilih nama bank yang sah',
                   }"
                   :value="userData.namaBank"
                 />
@@ -399,6 +412,7 @@
                     name="hubunganWaris"
                     label="Hubungan dengan Waris"
                     :options="[
+                      { label: 'Sila pilih...', value: '' },
                       { label: 'Suami', value: 'HUSBAND' },
                       { label: 'Isteri', value: 'WIFE' },
                       { label: 'Anak', value: 'CHILD' },
@@ -407,9 +421,10 @@
                       { label: 'Adik-beradik', value: 'SIBLING' },
                       { label: 'Lain-lain', value: 'OTHERS' },
                     ]"
-                    validation="required"
+                    validation="required|not:''"
                     :validation-messages="{
                       required: 'Hubungan dengan waris diperlukan',
+                      not: 'Sila pilih hubungan dengan waris yang sah',
                     }"
                     :value="userData.hubunganWaris"
                   />

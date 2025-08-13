@@ -154,7 +154,7 @@
             class="flex items-center"
           >
             <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-1" />
-            Reset Penapis
+            Set Semula
           </rs-button>
           <rs-button 
             variant="primary" 
@@ -182,7 +182,7 @@
               class="flex items-center"
             >
               <Icon name="ph:download" class="w-4 h-4 mr-1" />
-              Eksport
+              Muat Turun
             </rs-button>
           </div>
         </div>
@@ -400,7 +400,7 @@ const notificationMessage = ref("");
 
 // Enhanced options
 const statusOptions = [
-  { label: "Semua Status", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Menunggu Semakan", value: "pending" },
   { label: "Disemak PT", value: "pt_reviewed" },
   { label: "Disokong Eksekutif", value: "executive_supported" },
@@ -412,7 +412,7 @@ const statusOptions = [
 ];
 
 const kategoriOptions = [
-  { label: "Semua Kategori", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Penolong Amil Fitrah", value: "fitrah" },
   { label: "Penolong Amil Padi", value: "padi" },
   { label: "Penolong Amil Kariah", value: "kariah" },
@@ -420,7 +420,7 @@ const kategoriOptions = [
 ];
 
 const institusiOptions = [
-  { label: "Semua Institusi", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Masjid Al-Hidayah", value: "masjid_al_hidayah" },
   { label: "Surau Al-Amin", value: "surau_al_amin" },
   { label: "Kompleks Islam", value: "kompleks_islam" },
@@ -734,7 +734,7 @@ const editRequest = (request) => {
 
 const exportData = () => {
   // Simulate export functionality
-  showNotificationMessage("Eksport Berjaya", "Data telah dieksport ke fail Excel.");
+  showNotificationMessage("Muat Turun Berjaya", "Data telah dieksport ke fail Excel.");
 };
 
 const showNotificationMessage = (title, message) => {
@@ -822,12 +822,12 @@ const getActionButtonVariant = (role) => {
 
 const getRoleSpecificDescription = (role) => {
   const descriptions = {
-    "pt": "Semakan PT - Permintaan yang menunggu semakan PT",
-    "eksekutif": "Sokongan Eksekutif - Permintaan yang menunggu sokongan eksekutif",
-    "ketua-jabatan": "Pengesahan Jabatan - Permintaan yang menunggu pengesahan ketua jabatan",
-    "ketua-divisyen": "Kelulusan Akhir - Permintaan yang menunggu kelulusan ketua divisyen",
+    "pt": "Semakan kemaskini maklumat Perkhidmatan Penolong Amil oleh PT",
+    "eksekutif": "Sokongan kemaskini maklumat Perkhidmatan Penolong Amil oleh Eksekutif",
+    "ketua-jabatan": "Pengesahan kemaskini maklumat Perkhidmatan Penolong Amil oleh Ketua Jabatan",
+    "ketua-divisyen": "Kelulusan kemaskini maklumat Perkhidmatan Penolong Amil oleh Ketua Divisyen",
   };
-  return descriptions[role] || "Urus permintaan kemaskini maklumat perkhidmatan penolong amil";
+  return descriptions[role] || "Peranan ini mempunyai kebolehan yang berbeza.";
 };
 
 const performAction = (request) => {

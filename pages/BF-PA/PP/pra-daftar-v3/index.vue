@@ -112,17 +112,6 @@
                 Cari
               </rs-button>
             </div>
-            
-            <!-- Filter Status Indicator -->
-            <div v-if="isSearchTriggered" class="mt-3 flex items-center gap-2">
-              <rs-badge variant="info" size="sm">
-                <Icon name="ph:info" class="w-3 h-3 mr-1" />
-                Filter Aktif
-              </rs-badge>
-              <span class="text-sm text-gray-600">
-                {{ filteredApplications.length }} daripada {{ (roleSpecificData[currentRole] || applications).length }} permohonan
-              </span>
-            </div>
           </div>
 
           <!-- Applications Table -->
@@ -192,7 +181,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -210,6 +199,14 @@
                   input: '!py-2',
                 }"
               />
+              <rs-button
+                variant="primary"
+                @click="handleSearch"
+                class="!py-2 !px-4"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
             </div>
           </div>
 
@@ -280,7 +277,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -298,6 +295,14 @@
                   input: '!py-2',
                 }"
               />
+              <rs-button
+                variant="primary"
+                @click="handleSearch"
+                class="!py-2 !px-4"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
             </div>
           </div>
 
@@ -368,7 +373,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -386,6 +391,14 @@
                   input: '!py-2',
                 }"
               />
+              <rs-button
+                variant="primary"
+                @click="handleSearch"
+                class="!py-2 !px-4"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
             </div>
           </div>
 
@@ -456,7 +469,7 @@
         <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -474,6 +487,14 @@
                   input: '!py-2',
                 }"
               />
+              <rs-button
+                variant="primary"
+                @click="handleSearch"
+                class="!py-2 !px-4"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
             </div>
           </div>
 
@@ -552,7 +573,7 @@
       <template #body>
         <!-- Smart Filter Section -->
         <div class="mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormKit
               v-model="filters.searchQuery"
               type="text"
@@ -570,6 +591,14 @@
                 input: '!py-2',
               }"
             />
+            <rs-button
+              variant="primary"
+              @click="handleSearch"
+              class="!py-2 !px-4"
+            >
+              <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+              Cari
+            </rs-button>
           </div>
         </div>
 
@@ -859,7 +888,7 @@ const columns = [
 // Use optimized columns for all roles
 const eksekutifColumns = columns;
 
-// Create specific columns for Eksekutif role (without Status Lantikan)
+// Create specific columns for Eksekutif role (without Status Lantikan) - UPDATED LABELS
 const eksekutifColumnsWithoutStatusLantikan = [
   {
     key: "rujukan",
@@ -873,12 +902,12 @@ const eksekutifColumnsWithoutStatusLantikan = [
   },
   {
     key: "noKP",
-    label: "ID Pengenalan",
+    label: "ID Pengenalan", // UPDATED: Changed from "No K P"
     sortable: true,
   },
   {
     key: "kategoriPenolongAmil",
-    label: "Kategori",
+    label: "Kategori", // UPDATED: Changed from "Kategori Penolong Amil"
     sortable: true,
   },
   {
@@ -888,7 +917,7 @@ const eksekutifColumnsWithoutStatusLantikan = [
   },
   {
     key: "institusiKariah",
-    label: "Institusi",
+    label: "Institusi", // UPDATED: Changed from "Institusi Kariah"
     sortable: true,
   },
   {
@@ -906,7 +935,7 @@ const eksekutifColumnsWithoutStatusLantikan = [
 
 // RTMF Required Filter Options
 const statusPendaftaranOptions = [
-  { label: "Semua Status Pendaftaran", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Draf", value: "Draft" },
   { label: "Dihantar", value: "Submitted" },
   { label: "Dalam Semakan", value: "Under Review" },
@@ -920,7 +949,7 @@ const statusPendaftaranOptions = [
 ];
 
 const sesiPerkhidmatanOptions = [
-  { label: "Semua Sesi", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Sesi 1 - Januari-Mac", value: "Sesi 1" },
   { label: "Sesi 2 - April-Jun", value: "Sesi 2" },
   { label: "Sesi 3 - Julai-September", value: "Sesi 3" },
@@ -928,7 +957,7 @@ const sesiPerkhidmatanOptions = [
 ];
 
 const kategoriPenolongAmilOptions = [
-  { label: "Semua Kategori", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Fitrah", value: "Fitrah" },
   { label: "Padi", value: "Padi" },
   { label: "Kariah", value: "Kariah" },
@@ -936,7 +965,7 @@ const kategoriPenolongAmilOptions = [
 ];
 
 const statusLantikanOptions = [
-  { label: "Semua Status Lantikan", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Menunggu", value: "Pending" },
   { label: "Dilantik", value: "Appointed" },
   { label: "Aktif", value: "Active" },
@@ -946,10 +975,10 @@ const statusLantikanOptions = [
 
 // Completed applications status options (only active statuses)
 const completedStatusLantikanOptions = [
-  { label: "Semua Status", value: "" },
-  { label: "Aktif", value: "Active" },
-  { label: "Tidak Aktif", value: "Inactive" },
-  { label: "Ditamatkan", value: "Terminated" },
+  { label: "Sila pilih...", value: "" },
+  { label: "Aktif", value: "Aktif" },
+  { label: "Tidak Aktif", value: "Tidak Aktif" },
+  { label: "Ditamatkan", value: "Ditamatkan" },
 ];
 
 // State

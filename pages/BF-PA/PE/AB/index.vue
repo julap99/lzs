@@ -258,7 +258,7 @@ const batches = ref([
 
 // Status options for filter
 const statusOptions = [
-  { label: 'Semua', value: '' },
+  { label: 'Sila pilih...', value: '' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];

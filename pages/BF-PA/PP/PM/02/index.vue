@@ -273,6 +273,7 @@ const showConfirmationModal = ref(false);
 
 // Options for dropdown selects
 const negeriOptions = ref([
+  { label: "Sila pilih...", value: "" },
   { label: "Selangor", value: "SLG" },
   { label: "Kuala Lumpur", value: "KUL" },
   { label: "Putrajaya", value: "PTJ" },
@@ -293,6 +294,7 @@ const negeriOptions = ref([
 const daerahOptions = ref([]);
 
 const statusOptions = ref([
+  { label: "Sila pilih...", value: "" },
   { label: "Aktif", value: "Aktif" },
   { label: "Tidak Aktif", value: "Tidak Aktif" },
 ]);

@@ -10,13 +10,13 @@
           </h2>
           <rs-button variant="secondary" @click="showImportModal = true">
             <Icon name="mdi:import" class="mr-1" size="1rem" />
-            Import
+            Muat Turun
           </rs-button>
         </div>
       </template>
 
       <!-- Import Modal -->
-      <rs-modal v-model="showImportModal" title="Import Data" size="md">
+      <rs-modal v-model="showImportModal" title="Muat Turun Data" size="md">
         <template #body>
           <div class="p-4">
             <FormKit
@@ -39,7 +39,7 @@
         <template #footer>
           <div class="flex justify-end gap-2">
             <rs-button variant="primary" @click="handleImport">
-              Import
+              Muat Turun
             </rs-button>
           </div>
         </template>
