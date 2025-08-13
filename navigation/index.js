@@ -1298,13 +1298,13 @@ export default [
         title: "Penolong Amil",
         icon: "iconamoon:component-fill",
         child: [
-          {
-            title: "PIC Masjid",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/PM/01",
-            child: [],
-            meta: {},
-          },
+          // {
+          //   title: "PIC Masjid",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-PA/PP/PM/01",
+          //   child: [],
+          //   meta: {},
+          // },
           {
             title: "Pendaftaran Penolong Amil",
             icon: "iconamoon:arrow-right-2-duotone",

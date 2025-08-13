@@ -13,6 +13,11 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  columns: {
+    type: Array,
+    default: () => [],
+    description: "Array of column objects with key and label properties for custom column labels"
+  },
   data: {
     type: Array,
     default: () => [],
@@ -84,6 +89,30 @@ const columnTitle = ref([]);
 const dataTable = ref([]);
 const dataTitle = ref([]);
 const dataLength = ref(0);
+
+// Column labels mapping for custom labels
+const columnLabels = ref({});
+
+// Function to get column label (custom label or auto-generated)
+const getColumnLabel = (columnKey) => {
+  // First check if we have a custom label
+  if (columnLabels.value[columnKey]) {
+    return columnLabels.value[columnKey];
+  }
+  // Fall back to auto-generated label
+  return camelCasetoTitle(columnKey);
+};
+
+// Function to build column labels mapping
+const buildColumnLabels = () => {
+  if (props.columns && props.columns.length > 0) {
+    props.columns.forEach(column => {
+      if (column.key && column.label) {
+        columnLabels.value[column.key] = column.label;
+      }
+    });
+  }
+};
 
 // Advanced Option Variable
 const currentSort = ref(0);
@@ -161,8 +190,11 @@ const spacingCharactertoCamelCase = (array) => {
 
 // watch props.data change and redo all the data
 watch(
-  () => [props.data, props.field],
+  () => [props.data, props.field, props.columns],
   () => {
+    // Build column labels first
+    buildColumnLabels();
+    
     if (props.data && props.data.length > 0) {
       dataTable.value = props.data;
       dataLength.value = props.data.length;
@@ -223,6 +255,9 @@ const filteredDatabyTitle = (data, title) => {
 };
 
 onMounted(() => {
+  // Build column labels
+  buildColumnLabels();
+  
   if (dataTable.value.length > 0) {
     setColumnTitle(dataTable.value[0]);
   }
@@ -509,7 +544,7 @@ watch(
         v-if="optionsAdvanced.filterable"
       >
         <rs-dropdown
-          :title="camelCasetoTitle(val)"
+          :title="getColumnLabel(val)"
           size="sm"
           class="mt-3"
           v-for="(val, index) in dataTitle"
@@ -533,7 +568,7 @@ watch(
           v-for="(val, index) in filterComputed"
           :key="index"
         >
-          {{ val ? camelCasetoTitle(val.title) : "" }}
+          {{ val ? getColumnLabel(val.title) : "" }}
           <Icon
             name="ic:round-close"
             class="mr-0 md:mr-1 hover:text-red-500 cursor-pointer"
@@ -609,7 +644,7 @@ watch(
                 v-for="(val, index) in columnTitle"
                 :key="index"
               >
-                {{ camelCasetoTitle(val) }}
+                {{ getColumnLabel(val) }}
                 <div v-if="optionsAdvanced.sortable && advanced" class="sortable">
                   <Icon
                     class="absolute top-3 right-2 opacity-20"
@@ -762,7 +797,7 @@ watch(
                   :key="index1"
                 >
                   <span>
-                    {{ camelCasetoTitle(val1[0]) }}
+                    {{ getColumnLabel(val1[0]) }}
                   </span>
                   <span>
                     {{ val1[1] }}
