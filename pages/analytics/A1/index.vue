@@ -321,7 +321,7 @@ const donutOptions = computed(() => ({
             label: "Jumlah",
             fontSize: "16px",
             fontWeight: 600,
-            formatter: function (w: any) {
+            formatter: function (w: { globals: { seriesTotals: number[] } }) {
               return w.globals.seriesTotals
                 .reduce((a: number, b: number) => a + b, 0)
                 .toLocaleString();

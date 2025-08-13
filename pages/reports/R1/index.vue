@@ -279,7 +279,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { jsPDF } from "jspdf";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 const breadcrumb = [
   {
@@ -787,12 +787,13 @@ const downloadPDF = () => {
   doc.save("Laporan_Prestasi_Agihan_Disember_2024.pdf");
 };
 
-const downloadExcel = () => {
-  // Prepare data for Excel
-  const excelData = [];
+const downloadExcel = async () => {
+  // Create a new workbook and worksheet
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Laporan Prestasi Agihan");
 
   // Add headers
-  excelData.push([
+  worksheet.addRow([
     "Nama Bantuan",
     "Jenis",
     "Fakir",
@@ -803,10 +804,19 @@ const downloadExcel = () => {
     "Total",
   ]);
 
+  // Style the header row
+  const headerRow = worksheet.getRow(1);
+  headerRow.font = { bold: true };
+  headerRow.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FFE0E0E0' }
+  };
+
   // Add data rows
   filteredTableData.value.forEach((bantuan) => {
     // Add Bil row
-    excelData.push([
+    worksheet.addRow([
       bantuan.nama,
       "Bil",
       bantuan.rows[0].fakir || "",
@@ -818,7 +828,7 @@ const downloadExcel = () => {
     ]);
 
     // Add RM row
-    excelData.push([
+    worksheet.addRow([
       "",
       "RM",
       bantuan.rows[1].fakir || "",
@@ -830,14 +840,19 @@ const downloadExcel = () => {
     ]);
   });
 
-  // Create worksheet
-  const ws = XLSX.utils.aoa_to_sheet(excelData);
+  // Auto-fit columns
+  worksheet.columns.forEach(column => {
+    column.width = 15;
+  });
 
-  // Create workbook
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Laporan Prestasi Agihan");
-
-  // Save file
-  XLSX.writeFile(wb, "Laporan_Prestasi_Agihan_Disember_2024.xlsx");
+  // Generate and download the file
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = "Laporan_Prestasi_Agihan_Disember_2024.xlsx";
+  link.click();
+  window.URL.revokeObjectURL(url);
 };
 </script>

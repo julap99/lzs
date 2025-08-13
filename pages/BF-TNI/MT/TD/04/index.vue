@@ -240,11 +240,11 @@ const formData = ref({
   status: "Menunggu Lampiran",
 });
 
-const handleSubmit = async (formData: any) => {
+const handleSubmit = async (submittedData: any) => {
   isSubmitting.value = true;
   try {
     // TODO: Implement API call to save the record
-    console.log("Form submitted:", formData);
+    console.log("Form submitted:", submittedData);
     // Show success modal
     showSuccessModal.value = true;
   } catch (error) {

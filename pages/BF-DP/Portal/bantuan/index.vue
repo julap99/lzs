@@ -132,15 +132,14 @@ const getStatusVariant = (status: string) => {
       return "danger";
     case "Selesai":
       return "success";
-    case "Tidak Lulus":
-      return "danger";
     default:
       return "default";
   }
 };
 
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString("ms-MY", {
+const formatDate = (date: string | Date) => {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  return dateObj.toLocaleDateString("ms-MY", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

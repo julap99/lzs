@@ -176,11 +176,11 @@ const formData = ref({
 
 const isSubmitting = ref(false);
 
-const handleSubmit = async (formData: any) => {
+const handleSubmit = async (submittedData: any) => {
   try {
     isSubmitting.value = true;
     // TODO: Implement form submission logic
-    console.log("Form submitted:", formData);
+    console.log("Form submitted:", submittedData);
 
     navigateTo("/BF-PTPC/PC/TD/03");
   } catch (error) {
