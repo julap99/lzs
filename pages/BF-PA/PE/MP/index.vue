@@ -88,11 +88,11 @@
       <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
-                placeholder="Cari ID Aktiviti atau Nama Aktiviti..."
+                placeholder="Cari Kod Aktiviti atau Nama Aktiviti..."
                 :classes="{
                   input: '!py-2',
                 }"
@@ -106,179 +106,53 @@
                   input: '!py-2',
                 }"
               />
-              <FormKit
-                v-model="filters.jenisAktiviti"
-                type="select"
-                :options="jenisAktivitiOptions"
-                placeholder="Jenis Aktiviti"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
+
             </div>
           </div>
 
-          <!-- Tabbed Table Section -->
-          <rs-tab>
-            <rs-tab-item title="Menunggu Sokongan" icon="heroicons:clock">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-                  <Icon name="heroicons:clock" class="mr-2" size="20" />
-                  Senarai aktiviti yang memerlukan sokongan
-                </h3>
-                <rs-table
-                  :data="filteredEksekutifActivities"
-                  :columns="eksekutifColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: true,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                          </rs-badge>
-                  </template>
+          <!-- Single Table Section -->
+          <div class="p-4">
+            <!-- <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
+              <Icon name="heroicons:clock" class="mr-2" size="20" />
+              Senarai aktiviti dengan pelbagai status
+            </h3> -->
+            <rs-table
+              :data="filteredEksekutifActivities"
+              :columns="eksekutifColumns"
+              :pageSize="pageSize"
+              :options="{
+                variant: 'default',
+                hover: true,
+                striped: true,
+              }"
+              :options-advanced="{
+                sortable: true,
+                filterable: true,
+              }"
+              advanced
+            >
+              <template v-slot:status="{ text }">
+                <rs-badge :variant="getStatusVariant(text)">
+                  {{ getStatusLabel(text) }}
+                </rs-badge>
+              </template>
 
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
-                        @click="handleView(text)"
-                        title="Lihat Butiran"
-                        class="!px-3 !py-1.5"
-                            >
-                        <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                              Lihat Butiran
-                            </rs-button>
-                            <rs-button
-                              variant="success"
-                              size="sm"
-                        @click="handleSupport(text)"
-                        title="Sokong"
-                        class="!px-3 !py-1.5"
-                            >
-                        <Icon name="ic:outline-check-circle" class="w-4 h-4 mr-1" />
-                              Sokong
-                            </rs-button>
-                          </div>
-                  </template>
-                </rs-table>
-                          </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Telah Diluluskan" icon="heroicons:check-circle">
-              <div class="p-4">
-              <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                <Icon name="heroicons:check-circle" class="mr-2" size="20" />
-                Senarai elaun yang telah diluluskan
-              </h3>
-                <rs-table
-                  :data="eksekutifApprovedActivities"
-                  :columns="eksekutifApprovedColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: true,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                          </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                          <rs-button
-                            variant="primary"
-                            size="sm"
-                        @click="handleView(text)"
-                        title="Lihat Butiran"
-                        class="!px-3 !py-1.5"
-                          >
-                        <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                            Lihat Butiran
-                          </rs-button>
-                          </div>
-                  </template>
-                </rs-table>
+              <template v-slot:tindakan="{ text }">
+                <div class="flex justify-center items-center gap-1">
+                  <Icon 
+                    name="ic:outline-remove-red-eye" 
+                    class="w-5 h-5 text-blue-600 cursor-pointer hover:text-blue-800" 
+                    @click="handleView(text)"
+                    title="Lihat Butiran"
+                  />
                 </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Telah Ditolak" icon="heroicons:x-circle">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="heroicons:x-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah ditolak
-                </h3>
-                <rs-table
-                  :data="eksekutifRejectedActivities"
-                  :columns="eksekutifApprovedColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: true,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                          </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                          <rs-button
-                            variant="primary"
-                            size="sm"
-                        @click="handleView(text)"
-                        title="Lihat Butiran"
-                        class="!px-3 !py-1.5"
-                          >
-                        <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                            Lihat Butiran
-                          </rs-button>
-                          </div>
-                  </template>
-                </rs-table>
-                </div>
-            </rs-tab-item>
-          </rs-tab>
+              </template>
+            </rs-table>
+          </div>
         </template>
       </rs-card>
 
-      <!-- Bulk Approval Button at Bottom -->
-      <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
-        <rs-button
-          variant="success"
-          @click="handleBulkSupport"
-          :disabled="processing"
-        >
-          <Icon name="material-symbols:approval" class="w-4 h-4 mr-1" />
-          Sokong (Bulk) ({{ selectedRows.length }})
-        </rs-button>
-      </div>
+
     </div>
 
     <!-- Ketua Jabatan Content -->
@@ -298,11 +172,11 @@
         <template #body>
           <!-- Smart Filter Section -->
             <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                   type="text"
-                  placeholder="Cari ID Aktiviti atau Nama Aktiviti..."
+                  placeholder="Cari Kod Aktiviti atau Nama Aktiviti..."
                 :classes="{
                   input: '!py-2',
                 }"
@@ -316,190 +190,63 @@
                   input: '!py-2',
                 }"
               />
-              <FormKit
-                v-model="filters.jenisAktiviti"
-                type="select"
-                :options="jenisAktivitiOptions"
-                placeholder="Jenis Aktiviti"
-                :classes="{
-                  input: '!py-2',
-                }"
-                />
-              </div>
+            </div>
             </div>
 
-          <!-- Tabbed Table Section -->
-          <rs-tab>
-            <rs-tab-item title="Menunggu Kelulusan" icon="heroicons:clock">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="heroicons:clock" class="mr-2" size="20" />
-                  Senarai aktiviti yang memerlukan kelulusan
-                </h3>
-                <rs-table
-                  :data="filteredKetuaJabatanActivities"
-                  :columns="ketuaJabatanColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: true,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                          </rs-badge>
-                  </template>
+          <!-- Single Table Section -->
+          <div class="p-4">
+            <!-- <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
+              <Icon name="heroicons:clock" class="mr-2" size="20" />
+              Senarai aktiviti dengan pelbagai status
+            </h3> -->
+            <rs-table
+              :data="filteredKetuaJabatanActivities"
+              :columns="ketuaJabatanColumns"
+              :pageSize="pageSize"
+              :options="{
+                variant: 'default',
+                hover: true,
+                striped: true,
+              }"
+              :options-advanced="{
+                sortable: true,
+                filterable: true,
+              }"
+              advanced
+            >
+              <template v-slot:status="{ text }">
+                <rs-badge :variant="getStatusVariant(text)">
+                  {{ getStatusLabel(text) }}
+                </rs-badge>
+              </template>
 
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
-                        @click="handleView(text)"
-                        title="Lihat Butiran"
-                        class="!px-3 !py-1.5"
-                            >
-                        <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                              Lihat Butiran
-                            </rs-button>
-                            <rs-button
-                              variant="success"
-                              size="sm"
-                        @click="handleApprove(text)"
-                        title="Lulus"
-                        class="!px-3 !py-1.5"
-                            >
-                        <Icon name="ic:outline-check-circle" class="w-4 h-4 mr-1" />
-                              Lulus
-                            </rs-button>
-                          </div>
-                  </template>
-                </rs-table>
-                          </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Telah Diluluskan" icon="heroicons:check-circle">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="heroicons:check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah diluluskan
-                </h3>
-                <rs-table
-                  :data="ketuaJabatanApprovedActivities"
-                  :columns="ketuaJabatanApprovedColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: true,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                        </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                        <rs-button
-                          variant="primary"
-                          size="sm"
-                        @click="handleView(text)"
-                        title="Lihat Butiran"
-                        class="!px-3 !py-1.5"
-                        >
-                        <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                            Lihat Butiran
-                        </rs-button>
-                          </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Telah Ditolak" icon="heroicons:x-circle">
-              <div class="p-4">
-              <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                <Icon name="heroicons:x-circle" class="mr-2" size="20" />
-                Senarai elaun yang telah ditolak
-              </h3>
-                <rs-table
-                  :data="ketuaJabatanRejectedActivities"
-                  :columns="ketuaJabatanApprovedColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: true,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                          </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                          <rs-button
-                            variant="primary"
-                            size="sm"
-                        @click="handleView(text)"
-                        title="Lihat Butiran"
-                        class="!px-3 !py-1.5"
-                          >
-                        <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                            Lihat Butiran
-                          </rs-button>
-                          </div>
-                  </template>
-                </rs-table>
+              <template v-slot:tindakan="{ text }">
+                <div class="flex justify-center items-center gap-1">
+                  <Icon 
+                    name="ic:outline-remove-red-eye" 
+                    class="w-5 h-5 text-blue-600 cursor-pointer hover:text-blue-800" 
+                    @click="handleView(text)"
+                    title="Lihat Butiran"
+                  />
                 </div>
-            </rs-tab-item>
-          </rs-tab>
+              </template>
+            </rs-table>
+          </div>
         </template>
       </rs-card>
 
-      <!-- Bulk Approval Button at Bottom -->
-      <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
-        <rs-button
-          variant="success"
-          @click="handleBulkApproval"
-          :disabled="processing"
-        >
-          <Icon name="material-symbols:approval" class="w-4 h-4 mr-1" />
-          Lulus (Bulk) ({{ selectedRows.length }})
-        </rs-button>
-      </div>
+
     </div>
 
-    <!-- PT Dashboard Content -->
-    <div v-if="currentRole === 'pt'">
+    <!-- Ketua Divisyen Dashboard Content -->
+    <div v-if="currentRole === 'ketua-divisyen'">
       <rs-card class="mt-4">
         <template #header>
           <div class="flex justify-between items-center">
             <div class="flex items-center">
               <Icon name="ic:outline-verified-user" class="mr-2" />
               <h2 class="text-xl font-semibold">
-                Senarai Elaun Penolong Amil (PT) - Mesyuarat/Program
+                Senarai Elaun Penolong Amil (Ketua Divisyen) - Mesyuarat/Program
               </h2>
             </div>
           </div>
@@ -508,11 +255,11 @@
         <template #body>
           <!-- Smart Filter Section -->
             <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                   type="text"
-                  placeholder="Cari ID Aktiviti atau Nama Aktiviti..."
+                  placeholder="Cari Kod Aktiviti atau Nama Aktiviti..."
                 :classes="{
                   input: '!py-2',
                 }"
@@ -520,185 +267,58 @@
               <FormKit
                 v-model="filters.status"
                 type="select"
-                :options="ptStatusOptions"
+                :options="ketuaDivisyenStatusOptions"
                 placeholder="Status"
                 :classes="{
                   input: '!py-2',
                 }"
               />
-              <FormKit
-                v-model="filters.jenisAktiviti"
-                type="select"
-                :options="jenisAktivitiOptions"
-                placeholder="Jenis Aktiviti"
-                :classes="{
-                  input: '!py-2',
-                }"
-                />
-              </div>
+            </div>
             </div>
 
-          <!-- Tabbed Table Section -->
-          <rs-tab>
-            <rs-tab-item title="Menunggu Semakan" icon="heroicons:clock">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-                  <Icon name="heroicons:clock" class="mr-2" size="20" />
-                  Senarai aktiviti yang memerlukan semakan
-                </h3>
-                <rs-table
-                  :data="pendingPtActivities"
-                  :columns="ptColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: true,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                          </rs-badge>
-                  </template>
+          <!-- Single Table Section -->
+          <div class="p-4">
+            <!-- <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
+              <Icon name="heroicons:clock" class="mr-2" size="20" />
+              Senarai aktiviti dengan pelbagai status
+            </h3> -->
+            <rs-table
+              :data="filteredKetuaDivisyenActivities"
+              :columns="ketuaDivisyenColumns"
+              :pageSize="pageSize"
+              :options="{
+                variant: 'default',
+                hover: true,
+                striped: true,
+              }"
+              :options-advanced="{
+                sortable: true,
+                filterable: true,
+              }"
+              advanced
+            >
+              <template v-slot:status="{ text }">
+                <rs-badge :variant="getStatusVariant(text)">
+                  {{ getStatusLabel(text) }}
+                </rs-badge>
+              </template>
 
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
-                        @click="handleView(text)"
-                        title="Lihat Butiran"
-                        class="!px-3 !py-1.5"
-                            >
-                        <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                              Lihat Butiran
-                            </rs-button>
-                            <rs-button
-                              variant="warning"
-                              size="sm"
-                        @click="handleSemak(text)"
-                        title="Semak"
-                        class="!px-3 !py-1.5"
-                            >
-                        <Icon name="ic:outline-search" class="w-4 h-4 mr-1" />
-                              Semak
-                            </rs-button>
-                          </div>
-                  </template>
-                </rs-table>
-                          </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Telah Diluluskan" icon="heroicons:check-circle">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="heroicons:check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah diluluskan
-                </h3>
-                <rs-table
-                  :data="ptApprovedActivities"
-                  :columns="ptApprovedColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: true,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                          </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                          <rs-button
-                            variant="primary"
-                            size="sm"
-                        @click="handleView(text)"
-                        title="Lihat Butiran"
-                        class="!px-3 !py-1.5"
-                          >
-                        <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                            Lihat Butiran
-                          </rs-button>
-                          </div>
-                  </template>
-                </rs-table>
+              <template v-slot:tindakan="{ text }">
+                <div class="flex justify-center items-center gap-1">
+                  <Icon 
+                    name="ic:outline-remove-red-eye" 
+                    class="w-5 h-5 text-blue-600 cursor-pointer hover:text-blue-800" 
+                    @click="handleView(text)"
+                    title="Lihat Butiran"
+                  />
                 </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Telah Ditolak" icon="heroicons:x-circle">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="heroicons:x-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah ditolak
-                </h3>
-                <rs-table
-                  :data="ptRejectedActivities"
-                  :columns="ptApprovedColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: true,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                        </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                        <rs-button
-                          variant="primary"
-                          size="sm"
-                        @click="handleView(text)"
-                        title="Lihat Butiran"
-                        class="!px-3 !py-1.5"
-                        >
-                        <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                            Lihat Butiran
-                        </rs-button>
-                          </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-          </rs-tab>
+              </template>
+            </rs-table>
+          </div>
         </template>
       </rs-card>
 
-      <!-- Bulk Semak Button at Bottom -->
-      <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
-        <rs-button
-          variant="warning"
-          @click="handleBulkSemak"
-          :disabled="processing"
-        >
-          <Icon name="material-symbols:search" class="w-4 h-4 mr-1" />
-          Semak (Bulk) ({{ selectedRows.length }})
-        </rs-button>
-      </div>
+
     </div>
 
     <!-- Modals -->
@@ -837,13 +457,13 @@ const breadcrumb = ref([
 ]);
 
 // Role Management
-const currentRole = ref('pt');
+const currentRole = ref('ketua-divisyen');
 const showRoleInfo = ref(false);
 
 const roleOptions = [
-  { label: 'PT', value: 'pt' },
-  { label: 'Eksekutif', value: 'eksekutif' },
-  { label: 'Ketua Jabatan', value: 'ketua-jabatan' },
+{ label: 'Eksekutif', value: 'eksekutif' },
+{ label: 'Ketua Jabatan', value: 'ketua-jabatan' },
+  { label: 'Ketua Divisyen', value: 'ketua-divisyen' },
 ];
 
 const getRoleVariant = (role) => {
@@ -857,7 +477,7 @@ const getRoleVariant = (role) => {
 
 const getRoleLabel = (role) => {
   const labels = {
-    'pt': 'PT',
+    'ketua-divisyen': 'Ketua Divisyen',
     'eksekutif': 'Eksekutif',
     'ketua-jabatan': 'Ketua Jabatan',
   };
@@ -866,7 +486,7 @@ const getRoleLabel = (role) => {
 
 const getRoleDescription = (role) => {
   const descriptions = {
-    'pt': 'Menyemak dan memilih aktiviti untuk pembayaran elaun',
+    'ketua-divisyen': 'Menyemak dan memilih aktiviti untuk pembayaran elaun',
     'eksekutif': 'Menyokong aktiviti elaun untuk kelulusan seterusnya',
     'ketua-jabatan': 'Meluluskan aktiviti elaun dan menjana Payment Advice',
   };
@@ -875,7 +495,7 @@ const getRoleDescription = (role) => {
 
 const getRoleCapabilities = (role) => {
   const capabilities = {
-    'pt': ['Lihat Semua Aktiviti', 'Semak Aktiviti', 'Pilih Aktiviti', 'Bulk Semak'],
+    'ketua-divisyen': ['Lihat Semua Aktiviti', 'Semak Aktiviti', 'Pilih Aktiviti', 'Bulk Semak'],
     'eksekutif': ['Lihat Aktiviti', 'Sokong Aktiviti', 'Tolak Aktiviti', 'Bulk Support'],
     'ketua-jabatan': ['Lihat Aktiviti', 'Lulus Aktiviti', 'Tolak Aktiviti', 'Bulk Approval', 'Jana Payment Advice'],
   };
@@ -886,7 +506,6 @@ const handleRoleChange = () => {
   // Reset filters when role changes
   filters.value.searchQuery = '';
   filters.value.status = '';
-  filters.value.jenisAktiviti = '';
   selectedRows.value = [];
 };
 
@@ -896,223 +515,194 @@ const toggleRoleInfo = () => {
 
 // Mock data for activities
 const activities = ref([
-  // PT specific activities - Belum Disemak
+    // PT specific activities - Belum Disemak
   {
     id: 'MP2024-001',
-    name: 'Program Khidmat Masyarakat',
-    date: '15/04/2024',
-    location: 'Dewan Serbaguna Masjid Kg Delek',
-    type: 'Program',
-    status: 'Belum Disemak',
-    allowanceRate: '50.00',
-    jumlahElaun: '250.00'
+    NamaAktiviti: 'Program Khidmat Masyarakat',
+    Tarikh: '15/04/2024',
+    Lokasi: 'Dewan Serbaguna Masjid Kg Delek, Daerah Klang',
+    status: 'Diluluskan'
   },
   {
     id: 'MP2024-002',
-    name: 'Mesyuarat Perancangan Bulanan',
-    date: '18/04/2024',
-    location: 'Dewan Mesyuarat Eksekutif',
-    type: 'Mesyuarat',
-    status: 'Belum Disemak',
-    allowanceRate: '40.00',
-    jumlahElaun: '120.00'
+    NamaAktiviti: 'Mesyuarat Perancangan Bulanan',
+    Tarikh: '18/04/2024',
+    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
+    status: 'Belum Disemak'
   },
   {
     id: 'MP2024-003',
-    name: 'Latihan Pengurusan Zakat',
-    date: '20/04/2024',
-    location: 'Dewan Latihan LZS',
-    type: 'Latihan',
-    status: 'Belum Disemak',
-    allowanceRate: '60.00',
-    jumlahElaun: '180.00'
+    NamaAktiviti: 'Latihan Pengurusan Zakat',
+    Tarikh: '20/04/2024',
+    Lokasi: 'Dewan Latihan LZS, Daerah Shah Alam',
+    status: 'Belum Disemak'
   },
-  // Activities awaiting Eksekutif support
+    // Activities with various statuses for Eksekutif role
   {
     id: 'MP2024-004',
-    name: 'Mesyuarat Eksekutif Bulanan',
-    date: '15/03/2024',
-    location: 'Dewan Mesyuarat Eksekutif',
-    type: 'Mesyuarat',
-    status: 'Menunggu Sokongan Eksekutif',
-    allowanceRate: '50.00',
-    jumlahElaun: '200.00'
+    NamaAktiviti: 'Mesyuarat Eksekutif Bulanan',
+    Tarikh: '15/03/2024',
+    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
+    status: 'Belum Disemak'
   },
   {
     id: 'MP2024-005',
-    name: 'Latihan Pengurusan Zakat dan Fitrah',
-    date: '20/03/2024',
-    location: 'Dewan Latihan LZS, Kompleks Zakat Selangor',
-    type: 'Latihan',
-    status: 'Menunggu Sokongan Eksekutif',
-    allowanceRate: '50.00',
-    jumlahElaun: '200.00'
+    NamaAktiviti: 'Latihan Pengurusan Zakat dan Fitrah',
+    Tarikh: '20/03/2024',
+    Lokasi: 'Dewan Latihan LZS, Kompleks Zakat Selangor, Daerah Shah Alam',
+    status: 'Diluluskan'
   },
   {
     id: 'MP2024-006',
-    name: 'Latihan Sistem e-Zakat',
-    date: '02/04/2024',
-    location: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya',
-    type: 'Latihan',
-    status: 'Menunggu Sokongan Eksekutif',
-    allowanceRate: '60.00',
-    jumlahElaun: '120.00'
+    NamaAktiviti: 'Latihan Sistem e-Zakat',
+    Tarikh: '02/04/2024',
+    Lokasi: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya, Daerah Petaling Jaya',
+    status: 'Ditolak'
   },
-  // Activities awaiting Ketua Jabatan approval
+  // Activities with various statuses for Ketua Jabatan role
   {
     id: 'MP2024-007',
-    name: 'Program Khidmat Masyarakat',
-    date: '20/03/2024',
-    location: 'Masjid Al-Hidayah',
-    type: 'Program',
-    status: 'Menunggu Kelulusan Ketua Jabatan',
-    allowanceRate: '100.00',
-    jumlahElaun: '300.00'
+     NamaAktiviti: 'Program Khidmat Masyarakat',
+    Tarikh: '20/03/2024',
+    Lokasi: 'Masjid Al-Hidayah, Daerah Gombak',
+    status: 'Diluluskan'
   },
   {
     id: 'MP2024-008',
-    name: 'Latihan Pengurusan Aduan',
-    date: '12/04/2024',
-    location: 'Bilik Latihan, Pejabat Zakat Gombak',
-    type: 'Latihan',
-    status: 'Menunggu Kelulusan Ketua Jabatan',
-    allowanceRate: '55.00',
-    jumlahElaun: '110.00'
+     NamaAktiviti: 'Latihan Pengurusan Aduan',
+    Tarikh: '12/04/2024',
+    Lokasi: 'Bilik Latihan, Pejabat Zakat Gombak, Daerah Gombak',
+    status: 'Diluluskan'
   },
-  // Approved activities (for all roles to see)
+  // Additional activities with various statuses for all roles
   {
     id: 'MP2024-009',
-    name: 'Latihan Pengurusan Zakat',
-    date: '25/03/2024',
-    location: 'Dewan Latihan',
-    type: 'Latihan',
-    status: 'Diluluskan',
-    allowanceRate: '100.00',
-    jumlahElaun: '400.00'
+     NamaAktiviti: 'Latihan Pengurusan Zakat',
+    Tarikh: '25/03/2024',
+    Lokasi: 'Dewan Latihan, Daerah Shah Alam',
+    status: 'Belum Disemak'
   },
   {
     id: 'MP2024-010',
-    name: 'Mesyuarat Koordinasi',
-    date: '30/03/2024',
-    location: 'Pejabat Zakat',
-    type: 'Mesyuarat',
-    status: 'Diluluskan',
-    allowanceRate: '50.00',
-    jumlahElaun: '150.00'
+     NamaAktiviti: 'Mesyuarat Koordinasi',
+    Tarikh: '30/03/2024',
+    Lokasi: 'Pejabat Zakat, Daerah Petaling Jaya',
+    status: 'Diluluskan'
   },
   {
     id: 'MP2024-013',
-    name: 'Program Kesedaran Zakat',
-    date: '28/03/2024',
-    location: 'Masjid Al-Amin',
-    type: 'Program',
-    status: 'Diluluskan',
-    allowanceRate: '75.00',
-    jumlahElaun: '225.00'
+     NamaAktiviti: 'Program Kesedaran Zakat',
+    Tarikh: '28/03/2024',
+    Lokasi: 'Masjid Al-Amin, Daerah Klang',
+    status: 'Ditolak'
   },
   {
     id: 'MP2024-014',
-    name: 'Latihan Pengurusan Aduan',
-    date: '22/03/2024',
-    location: 'Bilik Latihan, Pejabat Zakat Shah Alam',
-    type: 'Latihan',
-    status: 'Diluluskan',
-    allowanceRate: '65.00',
-    jumlahElaun: '195.00'
+     NamaAktiviti: 'Latihan Pengurusan Aduan',
+    Tarikh: '22/03/2024',
+    Lokasi: 'Bilik Latihan, Pejabat Zakat Shah Alam, Daerah Shah Alam',
+    status: 'Belum Disemak'
   },
   {
     id: 'MP2024-015',
-    name: 'Mesyuarat Perancangan Strategik',
-    date: '18/03/2024',
-    location: 'Dewan Mesyuarat Eksekutif',
-    type: 'Mesyuarat',
-    status: 'Diluluskan',
-    allowanceRate: '45.00',
-    jumlahElaun: '135.00'
+     NamaAktiviti: 'Mesyuarat Perancangan Strategik',
+    Tarikh: '18/03/2024',
+    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
+    status: 'Diluluskan'
   },
-  // Rejected activities (for all roles to see)
+  // Additional activities with mixed statuses
   {
     id: 'MP2024-011',
-    name: 'Program Latihan Amil',
-    date: '10/04/2024',
-    location: 'Dewan Serbaguna',
-    type: 'Program',
-    status: 'Ditolak',
-    allowanceRate: '75.00',
-    jumlahElaun: '225.00'
+     NamaAktiviti: 'Program Latihan Amil',
+    Tarikh: '10/04/2024',
+    Lokasi: 'Dewan Serbaguna, Daerah Petaling Jaya',
+    status: 'Belum Disemak'
   },
   {
     id: 'MP2024-012',
-    name: 'Mesyuarat Perancangan Q2',
-    date: '05/04/2024',
-    location: 'Bilik Mesyuarat',
-    type: 'Mesyuarat',
-    status: 'Ditolak',
-    allowanceRate: '45.00',
-    jumlahElaun: '135.00'
+     NamaAktiviti: 'Mesyuarat Perancangan Q2',
+    Tarikh: '05/04/2024',
+    Lokasi: 'Bilik Mesyuarat, Daerah Shah Alam',
+    status: 'Diluluskan'
   },
   {
     id: 'MP2024-016',
-    name: 'Latihan Pengurusan Kewangan',
-    date: '08/04/2024',
-    location: 'Bilik Latihan, Pejabat Zakat Klang',
-    type: 'Latihan',
-    status: 'Ditolak',
-    allowanceRate: '80.00',
-    jumlahElaun: '240.00'
+     NamaAktiviti: 'Latihan Pengurusan Kewangan',
+    Tarikh: '08/04/2024',
+    Lokasi: 'Bilik Latihan, Pejabat Zakat Klang, Daerah Klang',
+    status: 'Ditolak'
   },
   {
     id: 'MP2024-017',
-    name: 'Program Khidmat Masyarakat',
-    date: '12/04/2024',
-    location: 'Masjid Al-Ikhlas',
-    type: 'Program',
-    status: 'Ditolak',
-    allowanceRate: '90.00',
-    jumlahElaun: '270.00'
+     NamaAktiviti: 'Program Khidmat Masyarakat',
+    Tarikh: '12/04/2024',
+    Lokasi: 'Masjid Al-Ikhlas, Daerah Gombak',
+    status: 'Belum Disemak'
   },
   {
     id: 'MP2024-018',
-    name: 'Mesyuarat Koordinasi Wilayah',
-    date: '15/04/2024',
-    location: 'Dewan Mesyuarat Wilayah',
-    type: 'Mesyuarat',
-    status: 'Ditolak',
-    allowanceRate: '55.00',
-    jumlahElaun: '165.00'
+     NamaAktiviti: 'Mesyuarat Koordinasi Wilayah',
+    Tarikh: '15/04/2024',
+    Lokasi: 'Dewan Mesyuarat Wilayah, Daerah Petaling Jaya',
+    status: 'Diluluskan'
+  },
+  // Ketua Divisyen specific activities with mixed statuses
+  {
+    id: 'MP2024-019',
+     NamaAktiviti: 'Program Latihan Pengurusan Zakat',
+    Tarikh: '25/04/2024',
+    Lokasi: 'Dewan Latihan LZS, Daerah Shah Alam',
+    status: 'Belum Disemak'
+  },
+  {
+    id: 'MP2024-020',
+     NamaAktiviti: 'Mesyuarat Perancangan Strategik Q2',
+    Tarikh: '28/04/2024',
+    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
+    status: 'Diluluskan'
+  },
+  {
+    id: 'MP2024-021',
+     NamaAktiviti: 'Latihan Pengurusan Aduan Lanjutan',
+    Tarikh: '30/04/2024',
+    Lokasi: 'Bilik Latihan, Pejabat Zakat Shah Alam, Daerah Shah Alam',
+    status: 'Ditolak'
+  },
+  {
+    id: 'MP2024-022',
+     NamaAktiviti: 'Program Kesedaran Zakat dan Fitrah',
+    Tarikh: '02/05/2024',
+    Lokasi: 'Masjid Al-Hidayah, Daerah Gombak',
+    status: 'Belum Disemak'
+  },
+  {
+    id: 'MP2024-023',
+     NamaAktiviti: 'Mesyuarat Koordinasi Divisyen',
+    Tarikh: '05/05/2024',
+    Lokasi: 'Dewan Mesyuarat Divisyen, Daerah Shah Alam',
+    status: 'Diluluskan'
   }
 ]);
 
-// Status options for different roles
-const statusOptions = [
-  { label: 'Semua', value: '' },
+const eksekutifStatusOptions = [
+  { label: 'Semua Status', value: '' },
+  { label: 'Belum Disemak', value: 'Belum Disemak' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
-const eksekutifStatusOptions = [
-  { label: 'Semua', value: '' },
-  { label: 'Menunggu Sokongan Eksekutif', value: 'Menunggu Sokongan Eksekutif' },
-];
-
-const ptStatusOptions = [
-  { label: 'Semua', value: '' },
+const ketuaDivisyenStatusOptions = [
+  { label: 'Semua Status', value: '' },
   { label: 'Belum Disemak', value: 'Belum Disemak' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 const ketuaJabatanStatusOptions = [
-  { label: 'Semua', value: '' },
-  { label: 'Menunggu Kelulusan Ketua Jabatan', value: 'Menunggu Kelulusan Ketua Jabatan' },
-];
-
-// Jenis Aktiviti options
-const jenisAktivitiOptions = [
-  { label: 'Semua', value: '' },
-  { label: 'Mesyuarat', value: 'Mesyuarat' },
-  { label: 'Program', value: 'Program' },
-  { label: 'Latihan', value: 'Latihan' },
+  { label: 'Semua Status', value: '' },
+  { label: 'Belum Disemak', value: 'Belum Disemak' },
+  { label: 'Diluluskan', value: 'Diluluskan' },
+  { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 // Search and filter state
@@ -1144,7 +734,7 @@ const handleSupport = (activityId) => {
   // Update activity status to supported
   const activity = activities.value.find(a => a.id === activityId);
   if (activity) {
-    activity.status = 'Menunggu Kelulusan Ketua Jabatan';
+    activity.status = 'Diluluskan';
     toast.success('Aktiviti berjaya disokong');
   }
 };
@@ -1167,8 +757,8 @@ const handleReject = (activityId) => {
   }
 };
 
-const handleSemak = (activityId) => {
-  // Navigate to activity review page for PT role
+const handleLulusManualKuasa = (activityId) => {
+  // Navigate to activity review page for Ketua Divisyen role
   navigateTo(`/BF-PA/PE/MP/01?id=${activityId}`);
 };
 
@@ -1179,9 +769,8 @@ const filteredEksekutifActivities = computed(() => {
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
     const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    const matchesJenis = !filters.value.jenisAktiviti || activity.type === filters.value.jenisAktiviti;
-    const isEksekutifActivity = activity.status === 'Menunggu Sokongan Eksekutif';
-    return matchesSearch && matchesStatus && matchesJenis && isEksekutifActivity;
+    // Eksekutif can see activities with all three statuses
+    return matchesSearch && matchesStatus;
   }).map(activity => ({
     ...activity,
     tindakan: activity.id // Pass activity ID for action buttons
@@ -1194,8 +783,7 @@ const eksekutifApprovedActivities = computed(() => {
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
     const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    const matchesJenis = !filters.value.jenisAktiviti || activity.type === filters.value.jenisAktiviti;
-    return matchesSearch && matchesStatus && matchesJenis && activity.status === 'Diluluskan';
+    return matchesSearch && matchesStatus && activity.status === 'Diluluskan';
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1208,8 +796,7 @@ const eksekutifRejectedActivities = computed(() => {
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
     const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    const matchesJenis = !filters.value.jenisAktiviti || activity.type === filters.value.jenisAktiviti;
-    return matchesSearch && matchesStatus && matchesJenis && activity.status === 'Ditolak';
+    return matchesSearch && matchesStatus && activity.status === 'Ditolak';
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1232,9 +819,8 @@ const filteredKetuaJabatanActivities = computed(() => {
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
     const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    const matchesJenis = !filters.value.jenisAktiviti || activity.type === filters.value.jenisAktiviti;
-    const isKetuaJabatanActivity = activity.status === 'Menunggu Kelulusan Ketua Jabatan';
-    return matchesSearch && matchesStatus && matchesJenis && isKetuaJabatanActivity;
+    // Ketua Jabatan can see activities with all three statuses
+    return matchesSearch && matchesStatus;
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1269,25 +855,23 @@ const ketuaJabatanRejectedActivities = computed(() => {
   }));
 });
 
-// PT specific computed properties
-const filteredPtActivities = computed(() => {
+// Ketua Divisyen specific computed properties
+const filteredKetuaDivisyenActivities = computed(() => {
   return activities.value.filter(activity => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
     const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    const matchesJenis = !filters.value.jenisAktiviti || activity.type === filters.value.jenisAktiviti;
-    // PT can only see activities that need their review or final results
-    const isPtActivity = ['Belum Disemak', 'Diluluskan', 'Ditolak'].includes(activity.status);
-    return matchesSearch && matchesStatus && matchesJenis && isPtActivity;
+    // Ketua Divisyen can see activities with all three statuses
+    return matchesSearch && matchesStatus;
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
   }));
 });
 
-const pendingPtActivities = computed(() => {
-  return filteredPtActivities.value.filter(activity => 
+const pendingKetuaDivisyenActivities = computed(() => {
+  return filteredKetuaDivisyenActivities.value.filter(activity => 
     activity.status === 'Belum Disemak'
   ).map(activity => ({
     ...activity,
@@ -1295,16 +879,16 @@ const pendingPtActivities = computed(() => {
   }));
 });
 
-const ptApprovedActivities = computed(() => {
-  return filteredPtActivities.value.filter(activity => activity.status === 'Diluluskan')
+const ketuaDivisyenApprovedActivities = computed(() => {
+  return filteredKetuaDivisyenActivities.value.filter(activity => activity.status === 'Diluluskan')
     .map(activity => ({
       ...activity,
       tindakan: activity.id
     }));
 });
 
-const ptRejectedActivities = computed(() => {
-  return filteredPtActivities.value.filter(activity => activity.status === 'Ditolak')
+const ketuaDivisyenRejectedActivities = computed(() => {
+  return filteredKetuaDivisyenActivities.value.filter(activity => activity.status === 'Ditolak')
     .map(activity => ({
       ...activity,
       tindakan: activity.id
@@ -1313,8 +897,8 @@ const ptRejectedActivities = computed(() => {
 
 // Computed properties for bulk selection
 const isAllSelected = computed(() => {
-  if (currentRole.value === 'pt') {
-    return pendingPtActivities.value.length > 0 && selectedRows.value.length === pendingPtActivities.value.length;
+  if (currentRole.value === 'ketua-divisyen') {
+    return filteredKetuaDivisyenActivities.value.length > 0 && selectedRows.value.length === filteredKetuaDivisyenActivities.value.length;
   } else if (currentRole.value === 'eksekutif') {
     return filteredEksekutifActivities.value.length > 0 && selectedRows.value.length === filteredEksekutifActivities.value.length;
   } else if (currentRole.value === 'ketua-jabatan') {
@@ -1324,14 +908,15 @@ const isAllSelected = computed(() => {
 });
 
 // Helper functions
+const getActivityStatus = (activityId) => {
+  const activity = activities.value.find(a => a.id === activityId);
+  return activity ? activity.status : '';
+};
+
 const getStatusColor = (status) => {
   switch (status) {
     case 'Belum Disemak':
       return 'bg-gray-100 text-gray-800'
-    case 'Menunggu Sokongan Eksekutif':
-      return 'bg-yellow-100 text-yellow-800'
-    case 'Menunggu Kelulusan Ketua Jabatan':
-      return 'bg-blue-100 text-blue-800'
     case 'Diluluskan':
       return 'bg-green-100 text-green-800'
     case 'Ditolak':
@@ -1343,10 +928,8 @@ const getStatusColor = (status) => {
 
 const getStatusLabel = (status) => {
   switch (status) {
-    case 'Menunggu Sokongan Eksekutif':
-      return 'Menunggu Sokongan Eksekutif'
-    case 'Menunggu Kelulusan Ketua Jabatan':
-      return 'Menunggu Kelulusan Ketua Jabatan'
+    case 'Belum Disemak':
+      return 'Belum Disemak'
     case 'Diluluskan':
       return 'Diluluskan'
     case 'Ditolak':
@@ -1358,10 +941,8 @@ const getStatusLabel = (status) => {
 
 const getStatusVariant = (status) => {
   switch (status) {
-    case 'Menunggu Sokongan Eksekutif':
+    case 'Belum Disemak':
       return 'warning'
-    case 'Menunggu Kelulusan Ketua Jabatan':
-      return 'info'
     case 'Diluluskan':
       return 'success'
     case 'Ditolak':
@@ -1373,10 +954,8 @@ const getStatusVariant = (status) => {
 
 const getActionRoute = (status, activityId) => {
   switch (status) {
-    case 'Menunggu Sokongan Eksekutif':
-      return '/BF-PA/PE/MP/03'
-    case 'Menunggu Kelulusan Ketua Jabatan':
-      return '/BF-PA/PE/MP/04'
+    case 'Belum Disemak':
+      return '/BF-PA/PE/MP/01'
     case 'Diluluskan':
       return `/BF-PA/PE/MP/view-lulus`
     case 'Ditolak':
@@ -1388,8 +967,7 @@ const getActionRoute = (status, activityId) => {
 
 const getActionButtonText = (status) => {
   switch (status) {
-    case 'Menunggu Sokongan Eksekutif':
-    case 'Menunggu Kelulusan Ketua Jabatan':
+    case 'Belum Disemak':
       return 'Semak'
     case 'Diluluskan':
       return 'Lihat'
@@ -1411,8 +989,8 @@ const onCheckboxChange = (event, activity) => {
 
 const toggleSelectAll = (event) => {
   if (event.target.checked) {
-    if (currentRole.value === 'pt') {
-      selectedRows.value = pendingPtActivities.value.map(activity => activity.id);
+    if (currentRole.value === 'ketua-divisyen') {
+      selectedRows.value = filteredKetuaDivisyenActivities.value.map(activity => activity.id);
     } else if (currentRole.value === 'eksekutif') {
       selectedRows.value = filteredEksekutifActivities.value.map(activity => activity.id);
     } else if (currentRole.value === 'ketua-jabatan') {
@@ -1424,20 +1002,20 @@ const toggleSelectAll = (event) => {
 };
 
 // Bulk action handlers
-const handleBulkSemak = async () => {
+const handleBulkLulusManualKuasa = async () => {
   if (selectedRows.value.length === 0) {
-    toast.warning('Sila pilih aktiviti untuk disemak');
+    toast.warning('Sila pilih aktiviti untuk diluluskan manual kuasa');
     return;
   }
 
   processing.value = true;
   
   try {
-    // Navigate to activity selection for PT role
+    // Navigate to activity selection for Ketua Divisyen role
     navigateTo('/BF-PA/PE/MP/01');
   } catch (error) {
     toast.error('Ralat semasa memproses aktiviti');
-    console.error('Error in bulk semak:', error);
+    console.error('Error in bulk lulus manual kuasa:', error);
   } finally {
     processing.value = false;
   }
@@ -1456,11 +1034,11 @@ const handleBulkSupport = async () => {
     for (const activityId of selectedRows.value) {
       const activity = activities.value.find(a => a.id === activityId);
       if (activity) {
-        activity.status = 'Menunggu Kelulusan Ketua Jabatan';
+        activity.status = 'Diluluskan';
       }
     }
     
-    toast.success(`${selectedRows.value.length} aktiviti berjaya disokong dan dihantar kepada Ketua Jabatan`);
+    toast.success(`${selectedRows.value.length} aktiviti berjaya disokong dan diluluskan`);
     selectedRows.value = [];
   } catch (error) {
     toast.error('Ralat semasa menyokong aktiviti');
@@ -1517,11 +1095,11 @@ const confirmSupport = async () => {
   try {
     const activity = activities.value.find(a => a.id === selectedActivity.value);
     if (activity) {
-      activity.status = 'Menunggu Kelulusan Ketua Jabatan';
+      activity.status = 'Diluluskan';
     }
     showSupportModal.value = false;
     selectedActivity.value = null;
-    toast.success('Aktiviti berjaya disokong dan dihantar kepada Ketua Jabatan');
+    toast.success('Aktiviti berjaya disokong dan diluluskan');
   } catch (error) {
     toast.error('Ralat semasa menyokong aktiviti');
     console.error('Error supporting activity:', error);
@@ -1562,7 +1140,7 @@ const confirmApprove = async () => {
 const eksekutifColumns = [
   {
     key: "id",
-    label: "ID Aktiviti",
+    label: "Kod Aktiviti",
     sortable: true,
   },
   {
@@ -1591,7 +1169,7 @@ const eksekutifColumns = [
 const eksekutifApprovedColumns = [
   {
     key: "id",
-    label: "ID Aktiviti",
+    label: "Kod Aktiviti",
     sortable: true,
   },
   {
@@ -1620,7 +1198,7 @@ const eksekutifApprovedColumns = [
 const ketuaJabatanColumns = [
   {
     key: "id",
-    label: "ID Aktiviti",
+    label: "Kod Aktiviti",
     sortable: true,
   },
   {
@@ -1649,7 +1227,7 @@ const ketuaJabatanColumns = [
 const ketuaJabatanApprovedColumns = [
   {
     key: "id",
-    label: "ID Aktiviti",
+    label: "Kod Aktiviti",
     sortable: true,
   },
   {
@@ -1675,10 +1253,10 @@ const ketuaJabatanApprovedColumns = [
   },
 ];
 
-const ptColumns = [
+const ketuaDivisyenColumns = [
   {
     key: "id",
-    label: "ID Aktiviti",
+    label: "Kod Aktiviti",
     sortable: true,
   },
   {
@@ -1704,10 +1282,10 @@ const ptColumns = [
   },
 ];
 
-const ptApprovedColumns = [
+const ketuaDivisyenApprovedColumns = [
   {
     key: "id",
-    label: "ID Aktiviti",
+    label: "Kod Aktiviti",
     sortable: true,
   },
   {
@@ -1737,7 +1315,6 @@ const ptApprovedColumns = [
 const filters = ref({
   searchQuery: "",
   status: "",
-  jenisAktiviti: "",
 });
 
 const pageSize = ref(10);

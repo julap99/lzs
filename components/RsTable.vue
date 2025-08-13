@@ -31,12 +31,12 @@ const props = defineProps({
   },
   showSearch: {
     type: Boolean,
-    default: true,
+    default: false,
     description: "Show/hide the default search input field",
   },
   showFilter: {
     type: Boolean,
-    default: true,
+    default: false,
     description: "Show/hide the default filter button",
   },
   options: {
@@ -495,7 +495,7 @@ watch(
           </div>
         </div>
         <div class="flex justify-center items-center gap-x-2">
-          <span class="text-[rgb(var(--text-color))]">Result per page:</span>
+          <span class="text-[rgb(var(--text-color))]">Bilangan rekod per halaman:</span>
           <FormKit
             type="select"
             v-model="pageSize"
