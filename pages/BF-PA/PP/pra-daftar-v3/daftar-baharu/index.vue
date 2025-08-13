@@ -16,11 +16,21 @@
           </h2>
           <div class="flex gap-2">
             <rs-button
-              variant="secondary-outline"
+              type="button"
+              variant="primary-outline"
+              size="sm"
               @click="handleImportExcel"
+              :disabled="isImporting"
+              class="flex items-center space-x-2"
             >
-              <Icon name="ph:download" class="w-4 h-4 mr-1" />
-              Import dari Fail
+              <Icon
+                :name="isImporting ? 'ph:spinner' : 'ph:download'"
+                size="16"
+                :class="{ 'animate-spin': isImporting }"
+              />
+              <span>{{
+                isImporting ? "Mengimport..." : "Muat Turun dari Fail"
+              }}</span>
             </rs-button>
           </div>
         </div>
@@ -409,7 +419,7 @@
                   :disabled="candidates.length === 0"
                 >
                   <Icon name="ph:download" class="w-4 h-4 mr-1" />
-                  Export
+                  Muat Turun
                 </rs-button>
               </div>
             </div>
@@ -541,7 +551,7 @@
     <!-- Import Excel Modal -->
     <rs-modal
       v-model="showImportModal"
-      title="Import Calon dari Fail Excel"
+      title="Muat Turun Calon dari Fail Excel"
       size="lg"
       position="center"
     >
@@ -585,7 +595,7 @@
             @click="handleImportExcelFile"
             :disabled="!excelFile"
           >
-            Import Calon
+            Muat Turun Calon
           </rs-button>
         </div>
       </template>
@@ -883,6 +893,7 @@ const showSuccessModal = ref(false);
 // Loading states
 const isAdding = ref(false);
 const isSubmitting = ref(false);
+const isImporting = ref(false); // New state for import
 
 // Excel file for import
 const excelFile = ref(null);
@@ -1265,7 +1276,7 @@ const handleImportExcelFile = async () => {
   }
 
   try {
-    isAdding.value = true;
+    isImporting.value = true; // Set loading state for import
     showImportModal.value = false;
     
     // Add mock candidates to the list
@@ -1284,7 +1295,7 @@ const handleImportExcelFile = async () => {
   } catch (error) {
     alert("Ralat berlaku semasa mengimport data. Sila cuba lagi.");
   } finally {
-    isAdding.value = false;
+    isImporting.value = false; // Reset loading state
   }
 };
 

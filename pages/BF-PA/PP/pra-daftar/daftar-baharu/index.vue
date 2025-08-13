@@ -44,22 +44,13 @@
                 </span>
               </div>
               <div class="flex items-center space-x-3">
-                <rs-button
-                  type="button"
-                  variant="primary-outline"
-                  size="sm"
-                  @click="handleImportCandidates"
-                  :disabled="isImporting"
-                  class="flex items-center space-x-2"
-                >
+                <rs-button variant="secondary" @click="handleImportCandidates" :disabled="isImporting">
                   <Icon
                     :name="isImporting ? 'ph:spinner' : 'ph:download'"
-                    size="16"
+                    class="w-4 h-4 mr-1"
                     :class="{ 'animate-spin': isImporting }"
                   />
-                  <span>{{
-                    isImporting ? "Mengimport..." : "Import Data"
-                  }}</span>
+                  {{ isImporting ? "Mengimport..." : "Muat Turun Data" }}
                 </rs-button>
                 <rs-button
                   type="button"

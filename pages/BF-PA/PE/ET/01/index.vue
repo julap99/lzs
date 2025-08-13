@@ -25,7 +25,7 @@
               @click="exportData"
             >
               <Icon name="ic:outline-download" class="mr-2" />
-              Eksport
+              Muat Turun
             </rs-button>
             <rs-button
               variant="primary"

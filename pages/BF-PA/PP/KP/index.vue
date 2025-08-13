@@ -154,7 +154,7 @@
             class="flex items-center"
           >
             <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-1" />
-            Reset Penapis
+            Set Semula
           </rs-button>
           <rs-button 
             variant="primary" 
@@ -182,7 +182,7 @@
               class="flex items-center"
             >
               <Icon name="ph:download" class="w-4 h-4 mr-1" />
-              Eksport
+              Muat Turun
             </rs-button>
           </div>
         </div>
@@ -734,7 +734,7 @@ const editRequest = (request) => {
 
 const exportData = () => {
   // Simulate export functionality
-  showNotificationMessage("Eksport Berjaya", "Data telah dieksport ke fail Excel.");
+  showNotificationMessage("Muat Turun Berjaya", "Data telah dieksport ke fail Excel.");
 };
 
 const showNotificationMessage = (title, message) => {
