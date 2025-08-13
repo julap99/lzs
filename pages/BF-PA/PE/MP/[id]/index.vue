@@ -24,7 +24,7 @@
               </div>
               <div>
                 <p class="text-sm text-gray-500">Nama Aktiviti</p>
-                <p class="font-medium">{{ activityInfo.name }}</p>
+                <p class="font-medium">{{ activityInfo.NamaAktiviti }}</p>
               </div>
               <div>
                 <p class="text-sm text-gray-500">Jenis Aktiviti</p>
@@ -32,11 +32,15 @@
               </div>
               <div>
                 <p class="text-sm text-gray-500">Tarikh</p>
-                <p class="font-medium">{{ activityInfo.date }}</p>
+                <p class="font-medium">{{ activityInfo.Tarikh }}</p>
               </div>
               <div>
                 <p class="text-sm text-gray-500">Lokasi</p>
-                <p class="font-medium">{{ activityInfo.location }}</p>
+                <p class="font-medium">{{ activityInfo.Lokasi }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Bilangan Sesi</p>
+                <p class="font-medium">{{ activityInfo.sesiDaftar }}</p>
               </div>
               <div>
                 <p class="text-sm text-gray-500">Status</p>
@@ -51,7 +55,7 @@
           </div>
 
           <!-- Attendance Summary -->
-          <div class="mb-6">
+          <!-- <div class="mb-6">
             <h3 class="text-lg font-semibold mb-4">Ringkasan Kehadiran</h3>
             
             <div class="bg-blue-50 p-4 rounded-lg">
@@ -74,88 +78,253 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <!-- Penolong Amil Attendance List -->
-          <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Senarai Kehadiran Penolong Amil</h3>
-            
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      No.
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Nama Penolong Amil
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status Kehadiran
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Masa Daftar Masuk
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Elaun
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="(pa, index) in penolongAmil" :key="pa.id">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      {{ index + 1 }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <a 
-                        href="#" 
-                        class="text-blue-600 hover:text-blue-800"
-                        @click.prevent="navigateTo(`/BF-PA/PE/MP/${activityInfo.id}/PA_Aktiviti/${pa.id}`)"
-                      >
-                        {{ pa.name }}
-                      </a>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span
-                        class="px-2 py-1 text-xs font-medium rounded-full"
-                        :class="getAttendanceStatusClass(pa.attended)"
-                      >
-                        {{ pa.attended ? 'Hadir' : 'Tidak Hadir' }}
-                      </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      {{ pa.checkInTime || '-' }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span :class="pa.attended ? 'text-green-600 font-medium' : 'text-gray-400'">
-                        RM {{ pa.attended ? pa.allowanceRate : '0.00' }}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-                <tfoot class="bg-gray-50">
-                  <tr>
-                    <td colspan="4" class="px-6 py-4 text-right font-medium">
-                      Jumlah Keseluruhan:
-                    </td>
-                    <td class="px-6 py-4 font-medium text-blue-600">
-                      RM {{ totalAllowance }}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          </div>
+                     <!-- Penolong Amil Attendance List -->
+           <div class="mb-6">
+             <h3 class="text-lg font-semibold mb-4">Senarai Kehadiran Penolong Amil</h3>
+             
+             <div class="overflow-x-auto">
+               <table class="min-w-full divide-y divide-gray-200">
+                 <thead class="bg-gray-50">
+                   <tr>
+                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       No.
+                     </th>
+                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Nama
+                     </th>
+                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       ID Pengenalan
+                     </th>
+                     <!-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Status Kehadiran
+                     </th> -->
+                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Sesi Daftar
+                     </th>
+                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Masa Daftar
+                     </th>
+                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Daerah
+                     </th>
+                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Kadar Elaun
+                     </th>
+                   </tr>
+                 </thead>
+                 <tbody class="bg-white divide-y divide-gray-200">
+                   <tr v-for="(pa, index) in penolongAmil" :key="pa.id">
+                     <td class="px-6 py-4 whitespace-nowrap">
+                       {{ index + 1 }}
+                     </td>
+                     <td class="px-6 py-4 whitespace-nowrap">
+                       <a 
+                         href="#" 
+                         class="text-blue-600 hover:text-blue-800"
+                         @click.prevent="navigateTo(`/BF-PA/PE/MP/${activityInfo.id}/PA_Aktiviti/${pa.id}`)"
+                       >
+                         {{ pa.name }}
+                       </a>
+                     </td>
+                     <td class="px-6 py-4 whitespace-nowrap">
+                       {{ pa.idPengenalan }}
+                     </td>
+                     <!-- <td class="px-6 py-4 whitespace-nowrap">
+                       <span
+                         class="px-2 py-1 text-xs font-medium rounded-full"
+                         :class="getAttendanceStatusClass(pa.attended)"
+                       >
+                         {{ pa.attended ? 'Hadir' : 'Tidak Hadir' }}
+                       </span>
+                     </td> -->
+                                           <td class="px-6 py-4 whitespace-nowrap">
+                        <div v-if="pa.attended && pa.sesiDaftar">
+                          <div v-if="pa.checkInTime && pa.checkInTime.includes(',')" class="space-y-1">
+                            <div v-for="(time, index) in pa.checkInTime.split(', ')" :key="index" class="text-sm">
+                              <span class="font-medium">Sesi {{ index + 1 }}</span>
+                            </div>
+                          </div>
+                          <div v-else>
+                            Sesi {{ pa.sesiDaftar }}
+                          </div>
+                        </div>
+                        <span v-else class="text-gray-400">-</span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div v-if="pa.attended && pa.checkInTime">
+                          <div v-if="pa.checkInTime.includes(',')" class="space-y-1">
+                            <div v-for="time in pa.checkInTime.split(', ')" :key="time" class="text-sm">
+                              {{ time }}
+                            </div>
+                          </div>
+                          <div v-else>
+                            {{ pa.checkInTime }}
+                          </div>
+                        </div>
+                        <span v-else class="text-gray-400">-</span>
+                      </td>
+                     <td class="px-6 py-4 whitespace-nowrap">
+                       <span
+                         v-if="pa.attended"
+                         class="px-2 py-1 text-xs font-medium rounded-full"
+                         :class="getDaerahClass(pa.daerah)"
+                       >
+                         {{ pa.daerah }}
+                       </span>
+                       <span v-else class="text-gray-400">-</span>
+                     </td>
+                     <td class="px-6 py-4 whitespace-nowrap">
+                       <span :class="pa.attended ? 'text-green-600 font-medium' : 'text-gray-400'">
+                         RM {{ pa.attended ? pa.allowanceRate : '0.00' }}
+                       </span>
+                     </td>
+                   </tr>
+                 </tbody>
+                 <tfoot class="bg-gray-50">
+                   <tr>
+                     <td colspan="6" class="px-6 py-4 text-right font-medium">
+                       Jumlah Keseluruhan:
+                     </td>
+                     <td class="px-6 py-4 font-medium text-blue-600">
+                       RM {{ totalAllowance }}
+                     </td>
+                   </tr>
+                 </tfoot>
+               </table>
+             </div>
+           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex justify-end gap-4 mt-6">
-            <rs-button
-              variant="primary-outline"
-              @click="navigateTo('/BF-PA/PE/MP')"
-            >
-              Kembali
-            </rs-button>
-          </div>
+                     <!-- Action Buttons -->
+           <div class="flex justify-end gap-4 mt-6">
+             <!-- Eksekutif Role Buttons -->
+             <rs-button
+               v-if="currentRole === 'eksekutif' && activityInfo.status === 'Belum Disemak'"
+               variant="primary"
+               @click="handleSokong"
+             >
+               Sokong
+             </rs-button>
+             
+             <!-- Ketua Jabatan Role Buttons -->
+             <rs-button
+               v-if="currentRole === 'ketua-jabatan'"
+               variant="success"
+               :disabled="buttonsDisabled"
+               @click="handleLulus"
+             >
+               Lulus
+             </rs-button>
+             <rs-button
+               v-if="currentRole === 'ketua-jabatan'"
+               variant="danger"
+               :disabled="buttonsDisabled"
+               @click="handleTolakClick"
+             >
+               Tolak
+             </rs-button>
+             
+             <!-- Ketua Divisyen Role Buttons -->
+             <rs-button
+               v-if="currentRole === 'ketua-divisyen'"
+               variant="success"
+               :disabled="ketuaDivisyenButtonsDisabled"
+               @click="handleLulusKetuaDivisyen"
+             >
+               Lulus
+             </rs-button>
+             <rs-button
+               v-if="currentRole === 'ketua-divisyen'"
+               variant="danger"
+               :disabled="ketuaDivisyenButtonsDisabled"
+               @click="handleTolakClickKetuaDivisyen"
+             >
+               Tolak
+             </rs-button>
+             
+             <!-- Common Button -->
+             <rs-button
+               variant="primary-outline"
+               @click="navigateTo('/BF-PA/PE/MP')"
+             >
+               Kembali
+             </rs-button>
+           </div>
+           
+           <!-- Tolak Form (Inline) -->
+           <div v-if="currentRole === 'ketua-jabatan' && showTolakForm" class="mt-6 p-4 bg-gray-50 rounded-lg border">
+             <h4 class="text-lg font-semibold mb-4 text-red-600">Ulasan Penolakan</h4>
+             <p class="text-gray-600 mb-4">
+               Sila berikan ulasan mengapa aktiviti ini ditolak:
+             </p>
+             <FormKit
+               type="form"
+               @submit="handleTolak"
+               :actions="false"
+             >
+               <FormKit
+                 type="textarea"
+                 name="ulasan"
+                 label="Ulasan"
+                 placeholder="Masukkan ulasan penolakan..."
+                 validation="required"
+                 rows="4"
+               />
+               <div class="flex justify-end gap-3 mt-4">
+                 <rs-button
+                   variant="primary"
+                   @click="handleSetSemulaClick"
+                 >
+                   Set Semula
+                 </rs-button>
+                 <rs-button
+                   type="submit"
+                   variant="secondary"
+                   @click="handleTolak"
+                 >
+                   Hantar Ulasan
+                 </rs-button>
+               </div>
+             </FormKit>
+           </div>
+           
+           <!-- Ketua Divisyen Tolak Form (Inline) -->
+           <div v-if="currentRole === 'ketua-divisyen' && showKetuaDivisyenTolakForm" class="mt-6 p-4 bg-gray-50 rounded-lg border">
+             <h4 class="text-lg font-semibold mb-4 text-red-600">Ulasan Penolakan</h4>
+             <p class="text-gray-600 mb-4">
+               Sila berikan ulasan mengapa aktiviti ini ditolak:
+             </p>
+             <FormKit
+               type="form"
+               @submit="handleTolakKetuaDivisyen"
+               :actions="false"
+             >
+               <FormKit
+                 type="textarea"
+                 name="ulasan"
+                 label="Ulasan"
+                 placeholder="Masukkan ulasan penolakan..."
+                 validation="required"
+                 rows="4"
+               />
+               <div class="flex justify-end gap-3 mt-4">
+                 <rs-button
+                   variant="primary"
+                   @click="handleSetSemulaClickKetuaDivisyen"
+                 >
+                   Set Semula
+                 </rs-button>
+                 <rs-button
+                   type="submit"
+                   variant="secondary"
+                   @click="handleTolakKetuaDivisyen"
+                 >
+                   Hantar Ulasan
+                 </rs-button>
+                 </div>
+             </FormKit>
+           </div>
         </div>
       </template>
     </rs-card>
@@ -165,6 +334,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { navigateTo } from '#app';
 
 const route = useRoute();
 const activityId = route.params.id;
@@ -190,11 +360,12 @@ const breadcrumb = ref([
 // Mock activity data - will be loaded based on ID
 const activityInfo = ref({
   id: '',
-  name: '',
+  NamaAktiviti: '',
   type: '',
-  date: '',
-  location: '',
+  Tarikh: '',
+  Lokasi: '',
   status: '',
+  sesiDaftar: 0,
 });
 
 // Mock attendance summary
@@ -208,237 +379,152 @@ const attendanceSummary = ref({
 // Mock Penolong Amil data
 const penolongAmil = ref([]);
 
-// Mock data for different activity IDs
+// Current role from dashboard (read from URL query parameter)
+const currentRole = ref('eksekutif'); // Default fallback
+
+// Modal state for Tolak form
+const showTolakForm = ref(false);
+
+// State to track if buttons should be disabled
+const buttonsDisabled = ref(false);
+
+// State for Ketua Divisyen buttons and form
+const ketuaDivisyenButtonsDisabled = ref(false);
+const showKetuaDivisyenTolakForm = ref(false);
+
+// Mock data for different activity IDs - Limited to 10 entries
 const activityDataMap = {
   'MP2024-001': {
     id: 'MP2024-001',
-    name: 'Mesyuarat Perancangan Bulanan',
-    type: 'Mesyuarat',
-    date: '15/04/2024',
-    location: 'Dewan Mesyuarat Eksekutif',
-    status: 'Belum Disemak',
+    NamaAktiviti: 'Program Khidmat Masyarakat',
+    type: 'Program',
+    Tarikh: '15/04/2024',
+    Lokasi: 'Dewan Serbaguna Masjid Kg Delek, Daerah Klang',
+    status: 'Diluluskan',
     allowanceRate: '50.00',
     penolongAmil: [
-      { id: 'PA001', name: 'Ahmad bin Ismail', attended: true, checkInTime: '09:00', allowanceRate: '50.00' },
-      { id: 'PA002', name: 'Sarah binti Hamid', attended: true, checkInTime: '09:10', allowanceRate: '50.00' },
-      { id: 'PA003', name: 'Mohd Zulkifli bin Abdullah', attended: true, checkInTime: '09:05', allowanceRate: '50.00' }
+      { id: 'PA001', name: 'Ahmad bin Ismail', idPengenalan: '800101-01-1234', attended: true, sesiDaftar: 1, checkInTime: '09:00 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA002', name: 'Sarah binti Hamid', idPengenalan: '850315-05-5678', attended: true, sesiDaftar: 2, checkInTime: '09:10 AM, 02:30 PM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA003', name: 'Mohd Zulkifli bin Abdullah', idPengenalan: '780620-08-9012', attended: true, sesiDaftar: 1, checkInTime: '09:05 AM', daerah: 'Luar Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-002': {
     id: 'MP2024-002',
-    name: 'Latihan Pengurusan Zakat dan Fitrah',
-    type: 'Latihan',
-    date: '20/03/2024',
-    location: 'Dewan Latihan LZS, Kompleks Zakat Selangor',
+    NamaAktiviti: 'Mesyuarat Perancangan Bulanan',
+    type: 'Mesyuarat',
+    Tarikh: '18/04/2024',
+    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
     status: 'Belum Disemak',
     allowanceRate: '50.00',
     penolongAmil: [
-      { id: 'PA001', name: 'Ahmad bin Abdullah', attended: true, checkInTime: '08:45', allowanceRate: '50.00' },
-      { id: 'PA002', name: 'Siti Aminah binti Hassan', attended: true, checkInTime: '09:00', allowanceRate: '50.00' },
-      { id: 'PA003', name: 'Mohd Razak bin Ibrahim', attended: false, checkInTime: null, allowanceRate: '50.00', reason: 'Sakit' }
+      { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:45 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825-12-6789', attended: true, sesiDaftar: 1, checkInTime: '09:00 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      // { id: 'PA003', name: 'Mohd Razak bin Ibrahim', idPengenalan: '790330-06-3456', attended: false, sesiDaftar: null, checkInTime: null, daerah: null, allowanceRate: '50.00', reason: 'Sakit' }
     ]
   },
   'MP2024-003': {
     id: 'MP2024-003',
-    name: 'Program Khidmat Masyarakat Ramadan',
+    NamaAktiviti: 'Latihan Pengurusan Zakat',
     type: 'Program',
-    date: '25/03/2024',
-    location: 'Masjid Al-Hidayah, Shah Alam',
-    status: 'Diluluskan',
+    Tarikh: '20/04/2024',
+    Lokasi: 'Dewan Latihan LZS, Daerah Shah Alam',
+    status: 'Belum Disemak',
     allowanceRate: '75.00',
     penolongAmil: [
-      { id: 'PA006', name: 'Zainab binti Ibrahim', attended: true, checkInTime: '07:30', allowanceRate: '75.00' },
-      { id: 'PA007', name: 'Ibrahim bin Ahmad', attended: true, checkInTime: '07:45', allowanceRate: '75.00' },
-      { id: 'PA008', name: 'Aminah binti Mohamed', attended: true, checkInTime: '08:00', allowanceRate: '75.00' }
+      { id: 'PA006', name: 'Zainab binti Ibrahim', idPengenalan: '860415-09-4567', attended: true, sesiDaftar: 2, checkInTime: '07:30 AM, 12:45 PM', daerah: 'Dalam Daerah', allowanceRate: '75.00' },
+      { id: 'PA007', name: 'Ibrahim bin Ahmad', idPengenalan: '810728-14-7890', attended: true, sesiDaftar: 1, checkInTime: '07:45 AM', daerah: 'Dalam Daerah', allowanceRate: '75.00' },
+      { id: 'PA008', name: 'Aminah binti Mohamed', idPengenalan: '880912-07-1234', attended: true, sesiDaftar: 3, checkInTime: '08:00 AM, 01:20 PM, 05:15 PM', daerah: 'Luar Daerah', allowanceRate: '75.00' }
     ]
   },
   'MP2024-004': {
     id: 'MP2024-004',
-    name: 'Mesyuarat Eksekutif Bulanan',
+    NamaAktiviti: 'Mesyuarat Eksekutif Bulanan',
     type: 'Mesyuarat',
-    date: '15/03/2024',
-    location: 'Dewan Mesyuarat Eksekutif',
-    status: 'Menunggu Sokongan Eksekutif',
+    Tarikh: '15/03/2024',
+    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
+    status: 'Belum Disemak',
     allowanceRate: '50.00',
     penolongAmil: [
-      { id: 'PA001', name: 'Ahmad bin Abdullah', attended: true, checkInTime: '08:45', allowanceRate: '50.00' },
-      { id: 'PA004', name: 'Nurul Aisyah binti Omar', attended: true, checkInTime: '08:55', allowanceRate: '50.00' }
+      { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:45 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA004', name: 'Nurul Aisyah binti Omar', idPengenalan: '860325-14-6789', attended: true, sesiDaftar: 2, checkInTime: '08:55 AM, 02:10 PM', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-005': {
     id: 'MP2024-005',
-    name: 'Latihan Sistem e-Zakat',
-    type: 'Latihan',
-    date: '02/04/2024',
-    location: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya',
-    status: 'Belum Disemak',
+    NamaAktiviti: 'Latihan Pengurusan Zakat dan Fitrah',
+    type: 'Program',
+    Tarikh: '20/03/2024',
+    Lokasi: 'Dewan Latihan LZS, Kompleks Zakat Selangor, Daerah Shah Alam',
+    status: 'Diluluskan',
     allowanceRate: '60.00',
     penolongAmil: [
-      { id: 'PA009', name: 'Hassan bin Omar', attended: true, checkInTime: '09:00', allowanceRate: '60.00' },
-      { id: 'PA010', name: 'Mariam binti Ali', attended: true, checkInTime: '09:15', allowanceRate: '60.00' }
+      { id: 'PA009', name: 'Hassan bin Omar', idPengenalan: '810625-08-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00 AM', daerah: 'Dalam Daerah', allowanceRate: '60.00' },
+      { id: 'PA010', name: 'Mariam binti Ali', idPengenalan: '870912-14-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15 AM, 01:45 PM', daerah: 'Dalam Daerah', allowanceRate: '60.00' }
     ]
   },
   'MP2024-006': {
     id: 'MP2024-006',
-    name: 'Program Bantuan Asnaf Bulanan',
+    NamaAktiviti: 'Latihan Sistem e-Zakat',
     type: 'Program',
-    date: '05/04/2024',
-    location: 'Dewan Serbaguna Masjid Kg Delek',
+    Tarikh: '02/04/2024',
+    Lokasi: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya, Daerah Petaling Jaya',
     status: 'Ditolak',
     allowanceRate: '50.00',
     penolongAmil: [
-      { id: 'PA011', name: 'Omar bin Hassan', attended: true, checkInTime: '08:00', allowanceRate: '50.00' },
-      { id: 'PA012', name: 'Fatimah binti Ahmad', attended: true, checkInTime: '08:15', allowanceRate: '50.00' },
-      { id: 'PA013', name: 'Ahmad bin Omar', attended: false, checkInTime: null, allowanceRate: '50.00', reason: 'Urusan Keluarga' }
+      { id: 'PA011', name: 'Omar bin Hassan', idPengenalan: '820318-11-2345', attended: true, sesiDaftar: 1, checkInTime: '08:00 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA012', name: 'Fatimah binti Ahmad', idPengenalan: '860725-09-6789', attended: true, sesiDaftar: 3, checkInTime: '08:15 AM, 12:30 PM, 04:45 PM', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-007': {
     id: 'MP2024-007',
-    name: 'Program Khidmat Masyarakat',
+    NamaAktiviti: 'Program Khidmat Masyarakat',
     type: 'Program',
-    date: '20/03/2024',
-    location: 'Masjid Al-Hidayah',
+    Tarikh: '20/03/2024',
+    Lokasi: 'Masjid Al-Hidayah, Daerah Gombak',
     status: 'Diluluskan',
     allowanceRate: '100.00',
     penolongAmil: [
-      { id: 'PA016', name: 'Ali bin Mohamed', attended: true, checkInTime: '09:00', allowanceRate: '100.00' },
-      { id: 'PA017', name: 'Nurul binti Omar', attended: true, checkInTime: '09:15', allowanceRate: '100.00' }
+      { id: 'PA016', name: 'Ali bin Mohamed', idPengenalan: '830415-07-1234', attended: true, sesiDaftar: 2, checkInTime: '09:00 AM, 02:00 PM', daerah: 'Luar Daerah', allowanceRate: '100.00' },
+      { id: 'PA017', name: 'Nurul binti Omar', idPengenalan: '880625-12-5678', attended: true, sesiDaftar: 1, checkInTime: '09:15 AM', daerah: 'Dalam Daerah', allowanceRate: '100.00' }
     ]
   },
   'MP2024-008': {
     id: 'MP2024-008',
-    name: 'Latihan Pengurusan Aduan',
-    type: 'Latihan',
-    date: '12/04/2024',
-    location: 'Bilik Latihan, Pejabat Zakat Gombak',
-    status: 'Belum Disemak',
+    NamaAktiviti: 'Latihan Pengurusan Aduan',
+    type: 'Program',
+    Tarikh: '12/04/2024',
+    Lokasi: 'Bilik Latihan, Pejabat Zakat Gombak, Daerah Gombak',
+    status: 'Diluluskan',
     allowanceRate: '70.00',
     penolongAmil: [
-      { id: 'PA018', name: 'Hassan bin Ibrahim', attended: true, checkInTime: '09:00', allowanceRate: '70.00' },
-      { id: 'PA019', name: 'Aminah binti Hassan', attended: true, checkInTime: '09:15', allowanceRate: '70.00' }
+      { id: 'PA018', name: 'Hassan bin Ibrahim', idPengenalan: '810912-05-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00 AM', daerah: 'Dalam Daerah', allowanceRate: '70.00' },
+      { id: 'PA019', name: 'Aminah binti Hassan', idPengenalan: '870318-16-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15 AM, 01:30 PM', daerah: 'Dalam Daerah', allowanceRate: '70.00' }
     ]
   },
   'MP2024-009': {
     id: 'MP2024-009',
-    name: 'Latihan Pengurusan Zakat',
-    type: 'Latihan',
-    date: '25/03/2024',
-    location: 'Dewan Latihan',
-    status: 'Diluluskan',
+    NamaAktiviti: 'Latihan Pengurusan Zakat',
+    type: 'Program',
+    Tarikh: '25/03/2024',
+    Lokasi: 'Dewan Latihan, Daerah Shah Alam',
+    status: 'Belum Disemak',
     allowanceRate: '100.00',
     penolongAmil: [
-      { id: 'PA001', name: 'Ahmad bin Abdullah', attended: true, checkInTime: '08:00', allowanceRate: '100.00' },
-      { id: 'PA002', name: 'Siti Aminah binti Hassan', attended: true, checkInTime: '08:15', allowanceRate: '100.00' }
+      { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:00 AM', daerah: 'Dalam Daerah', allowanceRate: '100.00' },
+      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825-12-6789', attended: true, sesiDaftar: 3, checkInTime: '08:15 AM, 12:00 PM, 03:45 PM', daerah: 'Dalam Daerah', allowanceRate: '100.00' }
     ]
   },
   'MP2024-010': {
     id: 'MP2024-010',
-    name: 'Mesyuarat Koordinasi',
+    NamaAktiviti: 'Mesyuarat Koordinasi',
     type: 'Mesyuarat',
-    date: '30/03/2024',
-    location: 'Pejabat Zakat',
+    Tarikh: '30/03/2024',
+    Lokasi: 'Pejabat Zakat, Daerah Petaling Jaya',
     status: 'Diluluskan',
     allowanceRate: '50.00',
     penolongAmil: [
-      { id: 'PA021', name: 'Roslan bin Karim', attended: true, checkInTime: '09:10', allowanceRate: '50.00' },
-      { id: 'PA022', name: 'Farah binti Zain', attended: true, checkInTime: '09:20', allowanceRate: '50.00' }
-    ]
-  },
-  'MP2024-011': {
-    id: 'MP2024-011',
-    name: 'Program Latihan Amil',
-    type: 'Program',
-    date: '10/04/2024',
-    location: 'Dewan Serbaguna',
-    status: 'Ditolak',
-    allowanceRate: '75.00',
-    penolongAmil: [
-      { id: 'PA023', name: 'Hana binti Ridzuan', attended: true, checkInTime: '08:10', allowanceRate: '75.00' },
-      { id: 'PA024', name: 'Ridzuan bin Ali', attended: false, checkInTime: null, allowanceRate: '75.00', reason: 'Lewat' }
-    ]
-  },
-  'MP2024-012': {
-    id: 'MP2024-012',
-    name: 'Mesyuarat Perancangan Q2',
-    type: 'Mesyuarat',
-    date: '05/04/2024',
-    location: 'Bilik Mesyuarat',
-    status: 'Ditolak',
-    allowanceRate: '45.00',
-    penolongAmil: [
-      { id: 'PA025', name: 'Kamariah binti Omar', attended: true, checkInTime: '09:00', allowanceRate: '45.00' }
-    ]
-  },
-  'MP2024-013': {
-    id: 'MP2024-013',
-    name: 'Program Kesedaran Zakat',
-    type: 'Program',
-    date: '28/03/2024',
-    location: 'Masjid Al-Amin',
-    status: 'Diluluskan',
-    allowanceRate: '75.00',
-    penolongAmil: [
-      { id: 'PA026', name: 'Shahrul bin Nizam', attended: true, checkInTime: '07:50', allowanceRate: '75.00' }
-    ]
-  },
-  'MP2024-014': {
-    id: 'MP2024-014',
-    name: 'Latihan Pengurusan Aduan',
-    type: 'Latihan',
-    date: '22/03/2024',
-    location: 'Bilik Latihan, Pejabat Zakat Shah Alam',
-    status: 'Diluluskan',
-    allowanceRate: '65.00',
-    penolongAmil: [
-      { id: 'PA027', name: 'Amirul bin Hakim', attended: true, checkInTime: '09:05', allowanceRate: '65.00' }
-    ]
-  },
-  'MP2024-015': {
-    id: 'MP2024-015',
-    name: 'Mesyuarat Perancangan Strategik',
-    type: 'Mesyuarat',
-    date: '18/03/2024',
-    location: 'Dewan Mesyuarat Eksekutif',
-    status: 'Diluluskan',
-    allowanceRate: '45.00',
-    penolongAmil: [
-      { id: 'PA028', name: 'Syafiq bin Jalil', attended: true, checkInTime: '09:00', allowanceRate: '45.00' }
-    ]
-  },
-  'MP2024-016': {
-    id: 'MP2024-016',
-    name: 'Latihan Pengurusan Kewangan',
-    type: 'Latihan',
-    date: '08/04/2024',
-    location: 'Bilik Latihan, Pejabat Zakat Klang',
-    status: 'Ditolak',
-    allowanceRate: '80.00',
-    penolongAmil: [
-      { id: 'PA029', name: 'Faizal bin Rahman', attended: true, checkInTime: '09:00', allowanceRate: '80.00' }
-    ]
-  },
-  'MP2024-017': {
-    id: 'MP2024-017',
-    name: 'Program Khidmat Masyarakat',
-    type: 'Program',
-    date: '12/04/2024',
-    location: 'Masjid Al-Ikhlas',
-    status: 'Ditolak',
-    allowanceRate: '90.00',
-    penolongAmil: [
-      { id: 'PA030', name: 'Sabrina binti Noor', attended: true, checkInTime: '08:40', allowanceRate: '90.00' }
-    ]
-  },
-  'MP2024-018': {
-    id: 'MP2024-018',
-    name: 'Mesyuarat Koordinasi Wilayah',
-    type: 'Mesyuarat',
-    date: '15/04/2024',
-    location: 'Dewan Mesyuarat Wilayah',
-    status: 'Ditolak',
-    allowanceRate: '55.00',
-    penolongAmil: [
-      { id: 'PA031', name: 'Hidayah binti Salleh', attended: true, checkInTime: '09:20', allowanceRate: '55.00' }
+      { id: 'PA021', name: 'Roslan bin Karim', idPengenalan: '820625-14-2345', attended: true, sesiDaftar: 1, checkInTime: '09:10 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA022', name: 'Farah binti Zain', idPengenalan: '880912-08-6789', attended: true, sesiDaftar: 2, checkInTime: '09:20 AM, 01:50 PM', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
     ]
   }
 };
@@ -470,20 +556,135 @@ const getAttendanceStatusClass = (attended) => {
     : 'bg-red-100 text-red-800';
 };
 
+const getDaerahClass = (daerah) => {
+  return daerah === 'Dalam Daerah' 
+    ? 'bg-blue-100 text-blue-800' 
+    : 'bg-orange-100 text-orange-800';
+};
+
+// Handle Sokong button click
+const handleSokong = () => {
+  // Here you would implement the logic to approve/support the activity
+  // For now, we'll just show a success message and update the status
+  if (activityInfo.value.status === 'Belum Disemak') {
+    activityInfo.value.status = 'Menunggu Kelulusan Ketua Jabatan';
+    // You could also make an API call here to update the backend
+    alert('Aktiviti telah disokong dan dihantar untuk kelulusan Ketua Jabatan');
+    setTimeout(() => {
+    navigateTo('/BF-PA/PE/MP');
+  }, 2000); // 1 second delay to show the alert
+  }
+};
+
+// Handle Lulus button click for Ketua Jabatan
+const handleLulus = () => {
+  // Update status to approved
+  activityInfo.value.status = 'Diluluskan';
+  // You could also make an API call here to update the backend
+  alert('Aktiviti telah diluluskan oleh Ketua Jabatan');
+  // Redirect to dashboard after notification
+  setTimeout(() => {
+    navigateTo('/BF-PA/PE/MP');
+  }, 2000); // 1 second delay to show the alert
+};
+
+// Handle Tolak button click for Ketua Jabatan
+const handleTolak = (formData) => {
+  // Update status to rejected
+  activityInfo.value.status = 'Ditolak';
+  showTolakForm.value = false;
+  // You could also make an API call here to update the backend with the ulasan
+  alert(`Aktiviti telah ditolak oleh Ketua Jabatan.\n\nUlasan: ${formData.ulasan}`);
+  // Redirect to dashboard after notification
+  setTimeout(() => {
+    navigateTo('/BF-PA/PE/MP');
+  }, 2000); // 1 second delay to show the alert
+};
+
+// Handle Tolak button click to show/hide form
+const handleTolakClick = () => {
+  if (!buttonsDisabled.value) {
+    showTolakForm.value = !showTolakForm.value;
+    // Disable both Lulus and Tolak buttons when Tolak is clicked
+    buttonsDisabled.value = true;
+  }
+};
+
+// Handle Set Semula button click to re-enable buttons
+const handleSetSemulaClick = () => {
+  showTolakForm.value = false;
+  // Re-enable both Lulus and Tolak buttons
+  buttonsDisabled.value = false;
+};
+
+// Handle Lulus button click for Ketua Divisyen
+const handleLulusKetuaDivisyen = () => {
+  // Update status to approved
+  activityInfo.value.status = 'Diluluskan';
+  // You could also make an API call here to update the backend
+  alert('Aktiviti telah diluluskan oleh Ketua Divisyen');
+  // Redirect to dashboard after notification
+  setTimeout(() => {
+    navigateTo('/BF-PA/PE/MP');
+  }, 2000); // 1 second delay to show the alert
+};
+
+// Handle Tolak button click for Ketua Divisyen
+const handleTolakKetuaDivisyen = (formData) => {
+  // Update status to rejected
+  activityInfo.value.status = 'Ditolak';
+  showKetuaDivisyenTolakForm.value = false;
+  // You could also make an API call here to update the backend with the ulasan
+  alert(`Aktiviti telah ditolak oleh Ketua Divisyen.\n\nUlasan: ${formData.ulasan}`);
+  // Redirect to dashboard after notification
+  setTimeout(() => {
+    navigateTo('/BF-PA/PE/MP');
+  }, 2000); // 1 second delay to show the alert
+};
+
+// Handle Tolak button click to show/hide form for Ketua Divisyen
+const handleTolakClickKetuaDivisyen = () => {
+  if (!ketuaDivisyenButtonsDisabled.value) {
+    showKetuaDivisyenTolakForm.value = !showKetuaDivisyenTolakForm.value;
+    // Disable both Lulus and Tolak buttons when Tolak is clicked
+    ketuaDivisyenButtonsDisabled.value = true;
+  }
+};
+
+// Handle Set Semula button click to re-enable buttons for Ketua Divisyen
+const handleSetSemulaClickKetuaDivisyen = () => {
+  showKetuaDivisyenTolakForm.value = false;
+  // Re-enable both Lulus and Tolak buttons
+  ketuaDivisyenButtonsDisabled.value = false;
+};
+
 // Load data based on activity ID
 onMounted(() => {
+  // Read role from URL query parameter
+  const roleFromQuery = route.query.role;
+  if (roleFromQuery) {
+    currentRole.value = roleFromQuery;
+  }
+
   const activityData = activityDataMap[activityId];
   if (activityData) {
     activityInfo.value = {
       id: activityData.id,
-      name: activityData.name,
+      NamaAktiviti: activityData.NamaAktiviti,
       type: activityData.type,
-      date: activityData.date,
-      location: activityData.location,
+      Tarikh: activityData.Tarikh,
+      Lokasi: activityData.Lokasi,
       status: activityData.status,
+      sesiDaftar: 0,
     };
     
     penolongAmil.value = activityData.penolongAmil;
+    
+    // Calculate highest sesiDaftar value
+    const highestSesiDaftar = Math.max(...penolongAmil.value
+      .filter(pa => pa.attended && pa.sesiDaftar)
+      .map(pa => pa.sesiDaftar));
+    activityInfo.value.sesiDaftar = highestSesiDaftar || 0;
     
     // Calculate attendance summary
     const totalInvited = penolongAmil.value.length;

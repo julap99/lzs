@@ -589,99 +589,6 @@ const activities = ref([
     Lokasi: 'Pejabat Zakat, Daerah Petaling Jaya',
     status: 'Diluluskan'
   },
-  {
-    id: 'MP2024-013',
-     NamaAktiviti: 'Program Kesedaran Zakat',
-    Tarikh: '28/03/2024',
-    Lokasi: 'Masjid Al-Amin, Daerah Klang',
-    status: 'Ditolak'
-  },
-  {
-    id: 'MP2024-014',
-     NamaAktiviti: 'Latihan Pengurusan Aduan',
-    Tarikh: '22/03/2024',
-    Lokasi: 'Bilik Latihan, Pejabat Zakat Shah Alam, Daerah Shah Alam',
-    status: 'Belum Disemak'
-  },
-  {
-    id: 'MP2024-015',
-     NamaAktiviti: 'Mesyuarat Perancangan Strategik',
-    Tarikh: '18/03/2024',
-    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
-    status: 'Diluluskan'
-  },
-  // Additional activities with mixed statuses
-  {
-    id: 'MP2024-011',
-     NamaAktiviti: 'Program Latihan Amil',
-    Tarikh: '10/04/2024',
-    Lokasi: 'Dewan Serbaguna, Daerah Petaling Jaya',
-    status: 'Belum Disemak'
-  },
-  {
-    id: 'MP2024-012',
-     NamaAktiviti: 'Mesyuarat Perancangan Q2',
-    Tarikh: '05/04/2024',
-    Lokasi: 'Bilik Mesyuarat, Daerah Shah Alam',
-    status: 'Diluluskan'
-  },
-  {
-    id: 'MP2024-016',
-     NamaAktiviti: 'Latihan Pengurusan Kewangan',
-    Tarikh: '08/04/2024',
-    Lokasi: 'Bilik Latihan, Pejabat Zakat Klang, Daerah Klang',
-    status: 'Ditolak'
-  },
-  {
-    id: 'MP2024-017',
-     NamaAktiviti: 'Program Khidmat Masyarakat',
-    Tarikh: '12/04/2024',
-    Lokasi: 'Masjid Al-Ikhlas, Daerah Gombak',
-    status: 'Belum Disemak'
-  },
-  {
-    id: 'MP2024-018',
-     NamaAktiviti: 'Mesyuarat Koordinasi Wilayah',
-    Tarikh: '15/04/2024',
-    Lokasi: 'Dewan Mesyuarat Wilayah, Daerah Petaling Jaya',
-    status: 'Diluluskan'
-  },
-  // Ketua Divisyen specific activities with mixed statuses
-  {
-    id: 'MP2024-019',
-     NamaAktiviti: 'Program Latihan Pengurusan Zakat',
-    Tarikh: '25/04/2024',
-    Lokasi: 'Dewan Latihan LZS, Daerah Shah Alam',
-    status: 'Belum Disemak'
-  },
-  {
-    id: 'MP2024-020',
-     NamaAktiviti: 'Mesyuarat Perancangan Strategik Q2',
-    Tarikh: '28/04/2024',
-    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
-    status: 'Diluluskan'
-  },
-  {
-    id: 'MP2024-021',
-     NamaAktiviti: 'Latihan Pengurusan Aduan Lanjutan',
-    Tarikh: '30/04/2024',
-    Lokasi: 'Bilik Latihan, Pejabat Zakat Shah Alam, Daerah Shah Alam',
-    status: 'Ditolak'
-  },
-  {
-    id: 'MP2024-022',
-     NamaAktiviti: 'Program Kesedaran Zakat dan Fitrah',
-    Tarikh: '02/05/2024',
-    Lokasi: 'Masjid Al-Hidayah, Daerah Gombak',
-    status: 'Belum Disemak'
-  },
-  {
-    id: 'MP2024-023',
-     NamaAktiviti: 'Mesyuarat Koordinasi Divisyen',
-    Tarikh: '05/05/2024',
-    Lokasi: 'Dewan Mesyuarat Divisyen, Daerah Shah Alam',
-    status: 'Diluluskan'
-  }
 ]);
 
 const eksekutifStatusOptions = [
@@ -727,7 +634,7 @@ const filteredActivities = computed(() => {
 
 // Handler functions for table actions
 const handleView = (activityId) => {
-  navigateTo(`/BF-PA/PE/MP/${activityId}`);
+  navigateTo(`/BF-PA/PE/MP/${activityId}?role=${currentRole.value}`);
 };
 
 const handleSupport = (activityId) => {
