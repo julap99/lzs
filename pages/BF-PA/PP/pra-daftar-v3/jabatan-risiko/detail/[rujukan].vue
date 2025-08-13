@@ -648,7 +648,7 @@ const getStepLineVariant = (step) => {
 
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
-    Draft: "default",
+    Draft: "secondary",        // Use secondary instead of default
     Dihantar: "warning",
     "Dalam Semakan": "info",
     Disaring: "info",
@@ -663,7 +663,7 @@ const getStatusPendaftaranVariant = (status) => {
     Approved: "success",
     Rejected: "danger",
   };
-  return statusVariants[status] || "default";
+  return statusVariants[status] || "secondary"; // Use secondary instead of default
 };
 
 const getScreeningStatusVariant = (status) => {
@@ -672,7 +672,7 @@ const getScreeningStatusVariant = (status) => {
     Lulus: "success",
     "Tidak Lulus": "danger",
   };
-  return statusVariants[status] || "default";
+  return statusVariants[status] || "secondary"; // Use secondary instead of default
 };
 
 // Localize status text

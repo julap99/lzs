@@ -1658,52 +1658,76 @@ const filteredCompletedApplications = computed(() => {
 
 const totalCompletedApplications = computed(() => filteredCompletedApplications.value.length);
 
-// Helper functions
+// Helper functions for status badge variants
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
-    Draft: "default",
-    Draf: "default",
+    // Draft/Initial stages
+    Draft: "secondary",
+    Draf: "secondary",
+    
+    // Submitted/Under Review stages
     Submitted: "warning",
     Dihantar: "warning",
     "Under Review": "info",
     "Dalam Semakan": "info",
+    
+    // Screening stages
     Screened: "info",
     Disaring: "info",
     "Telah Disaring": "info",
+    
+    // Review stages
     "PT Reviewed": "info",
     "Disemak PT": "info",
     "Telah Disemak": "info",
+    
+    // Support stages
     "Executive Supported": "success",
     "Disokong Eksekutif": "success",
     "Telah Disokong": "success",
+    
+    // Confirmation stages
     "Department Confirmed": "success",
     "Disahkan Jabatan": "success",
     "Telah Disahkan": "success",
+    
+    // Approval stages
     "Division Approved": "success",
     "Diluluskan Divisyen": "success",
     "Telah Diluluskan": "success",
     Approved: "success",
     Diluluskan: "success",
+    
+    // Rejection
     Rejected: "danger",
     Ditolak: "danger",
   };
-  return statusVariants[status] || "default";
+  return statusVariants[status] || "secondary"; // Use secondary instead of default
 };
 
 const getStatusLantikanVariant = (status) => {
   const statusVariants = {
+    // Pending stages
     Pending: "warning",
     Menunggu: "warning",
+    
+    // Appointment stages
     Appointed: "info",
     Dilantik: "info",
+    
+    // Active stages
     Active: "success",
     Aktif: "success",
+    
+    // Inactive stages
     Inactive: "secondary",
     "Tidak Aktif": "secondary",
+    
+    // Termination
     Terminated: "danger",
     Ditamatkan: "danger",
   };
-  return statusVariants[status] || "default";
+  return statusVariants[status] || "secondary"; // Use secondary instead of default
 };
 
 const canEdit = (statusPendaftaran) => {

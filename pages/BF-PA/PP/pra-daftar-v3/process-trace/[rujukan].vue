@@ -376,17 +376,17 @@ const application = ref({
   ]
 });
 
-// Helper functions
+// Helper functions for status badge variants
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
-    "Draft": "default",
+    "Draft": "secondary",        // Use secondary instead of default
     "Submitted": "warning",
     "Under Review": "info",
     "Approved": "success",
     "Rejected": "danger",
     "Diluluskan": "success"
   };
-  return statusVariants[status] || "default";
+  return statusVariants[status] || "secondary"; // Use secondary instead of default
 };
 
 const getStatusLantikanVariant = (status) => {
@@ -398,7 +398,7 @@ const getStatusLantikanVariant = (status) => {
     "Terminated": "danger",
     "Aktif": "success"
   };
-  return statusVariants[status] || "default";
+  return statusVariants[status] || "secondary"; // Use secondary instead of default
 };
 
 const handleBack = () => {
