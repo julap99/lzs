@@ -297,8 +297,7 @@ const handleCashWithdrawal = async () => {
   }
 };
 
-const handleSubmit = (data: any) => {
-  console.log("Form submitted:", data);
+const handleSubmit = () => {
   validateAndSearch();
 };
 </script>

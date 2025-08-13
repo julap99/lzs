@@ -327,7 +327,7 @@ onMounted(async () => {
   // No need to set mock data here anymore
 });
 
-const handleSubmit = async (formData: any) => {
+const handleSubmit = async (submittedData: any) => {
   showConfirmationModal.value = true;
 };
 

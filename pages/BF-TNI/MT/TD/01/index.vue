@@ -174,7 +174,7 @@ const resetForm = () => {
   };
 };
 
-const handleSubmit = async (formData: any) => {
+const handleSubmit = async (submittedData: any) => {
   try {
     isSubmitting.value = true;
     // TODO: Implement API call to submit cash withdrawal request

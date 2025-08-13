@@ -10,6 +10,7 @@
   "resolutions": {
     "entities": "^4.5.0"
   },
+
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@nuxtjs/vercel-builder": "^0.25.0",
@@ -21,7 +22,8 @@
     "nuxt-icon": "^0.1.7",
     "nuxt-security": "^0.13.0",
     "nuxt-typed-router": "^3.2.5",
-    "postcss-import": "^15.1.0"
+    "postcss-import": "^15.1.0",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.19.1",
@@ -57,11 +59,12 @@
     "codemirror": "^6.0.1",
     "cross-env": "^7.0.3",
     "crypto-js": "^4.1.1",
+    "exceljs": "^4.4.0",
     "floating-vue": "^2.0.0-beta.24",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.2",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
-    "luxon": "^3.1.0",
+    "luxon": "^2.5.2",
     "maska": "^1.5.0",
     "pinia": "^2.1.6",
     "prettier": "^2.8.1",
@@ -70,6 +73,7 @@
     "thememirror": "^2.0.1",
     "uuid": "^10.0.0",
     "v-calendar": "^3.0.3",
+    "vue": "^3.4.0",
     "vue-chart-3": "^3.1.8",
     "vue-code-highlight": "^0.7.8",
     "vue-codemirror": "^6.1.1",
@@ -84,7 +88,6 @@
     "vue3-dropzone": "^2.0.1",
     "vue3-recaptcha-v2": "^2.0.2",
     "vue3-signature-pad": "^1.0.7",
-    "vuedraggable": "^4.1.0",
-    "xlsx": "^0.18.5"
+    "vuedraggable": "^4.1.0"
   }
 }

@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "static",
-    compatibilityDate: '2025-07-11',
+    compatibilityDate: '2025-08-13',
   },
   modules: isStatic
     ? [
@@ -59,6 +59,14 @@ export default defineNuxtConfig({
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
   css: ["~/assets/style/scss/main.scss"],
+  postcss: {
+    plugins: {
+      "postcss-import": {},
+      "tailwindcss/nesting": {},
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
   tailwindcss: {
     cssPath: "~/assets/style/css/tailwind.css",
     configPath: "tailwind.config",
