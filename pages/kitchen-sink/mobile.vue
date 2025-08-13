@@ -13,6 +13,19 @@ definePageMeta({
   ],
 });
 
+// Status Badge Helper Function for Malay terms
+const getStatusVariant = (status) => {
+  const variants = {
+    'Lulus': 'success',      // Green
+    'Menunggu': 'warning',   // Orange
+    'Ditolak': 'danger',     // Red
+    'Draf': 'secondary',     // Grey
+    'Baru': 'info',          // Blue
+    'Aktif': 'primary'       // Dark Blue
+  };
+  return variants[status] || 'secondary';
+};
+
 // Demo data for Asnaf Zakat users (recipients)
 const exampleData = ref({
   headerTitle: "Dashboard Zakat",

@@ -2,6 +2,19 @@
 import { ref, computed, watch } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 
+// Status Badge Helper Function for Malay terms
+const getStatusVariant = (status) => {
+  const variants = {
+    'Lulus': 'success',      // Green
+    'Menunggu': 'warning',   // Orange
+    'Ditolak': 'danger',     // Red
+    'Draf': 'secondary',     // Grey
+    'Baru': 'info',          // Blue
+    'Aktif': 'primary'       // Dark Blue
+  };
+  return variants[status] || 'secondary';
+};
+
 definePageMeta({
   title: "Form Input Standards",
   breadcrumb: [
@@ -94,13 +107,13 @@ const performSearch = () => {
     // Mock results based on search term
     if (validatedSearchTerm.value.toLowerCase().includes("ahmad")) {
       searchResults.value = [
-        { id: "APP-001", name: "Ahmad bin Hassan", status: "LULUS" },
-        { id: "APP-008", name: "Ahmad Zulkifli", status: "MENUNGGU" },
+        { id: "APP-001", name: "Ahmad bin Hassan", status: "Lulus" },
+        { id: "APP-008", name: "Ahmad Zulkifli", status: "Menunggu" },
       ];
     } else if (validatedSearchTerm.value.toLowerCase().includes("app")) {
       searchResults.value = [
-        { id: "APP-001", name: "Ahmad bin Hassan", status: "LULUS" },
-        { id: "APP-002", name: "Siti Aminah", status: "MENUNGGU" },
+        { id: "APP-001", name: "Ahmad bin Hassan", status: "Lulus" },
+        { id: "APP-002", name: "Siti Aminah", status: "Menunggu" },
       ];
     } else {
       searchResults.value = [];
@@ -575,7 +588,7 @@ watch(validatedSearchTerm, (newVal) => {
                     <div class="text-xs text-gray-500">{{ result.id }}</div>
                   </div>
                   <div>
-                    <rs-badge :type="result.status.toLowerCase()">{{
+                    <rs-badge :variant="getStatusVariant(result.status)">{{
                       result.status
                     }}</rs-badge>
                   </div>
@@ -832,7 +845,7 @@ watch(validatedSearchTerm, (newVal) => {
                       <div class="text-xs text-gray-500">APP-001</div>
                     </div>
                     <div>
-                      <rs-badge type="lulus">LULUS</rs-badge>
+                      <rs-badge variant="success">Lulus</rs-badge>
                     </div>
                   </div>
                 </div>
@@ -843,7 +856,7 @@ watch(validatedSearchTerm, (newVal) => {
                       <div class="text-xs text-gray-500">APP-008</div>
                     </div>
                     <div>
-                      <rs-badge type="menunggu">MENUNGGU</rs-badge>
+                      <rs-badge variant="warning">Menunggu</rs-badge>
                     </div>
                   </div>
                 </div>
@@ -854,7 +867,7 @@ watch(validatedSearchTerm, (newVal) => {
                       <div class="text-xs text-gray-500">APP-015</div>
                     </div>
                     <div>
-                      <rs-badge type="ditolak">DITOLAK</rs-badge>
+                      <rs-badge variant="danger">Ditolak</rs-badge>
                     </div>
                   </div>
                 </div>

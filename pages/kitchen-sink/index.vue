@@ -9,6 +9,19 @@ definePageMeta({
   ],
 });
 
+// Status Badge Helper Function for Malay terms
+const getStatusVariant = (status) => {
+  const variants = {
+    'Lulus': 'success',      // Green
+    'Menunggu': 'warning',   // Orange
+    'Ditolak': 'danger',     // Red
+    'Draf': 'secondary',     // Grey (fixes visibility issue)
+    'Baru': 'info',          // Blue
+    'Aktif': 'primary'       // Dark Blue
+  };
+  return variants[status] || 'secondary';
+};
+
 const tooltips = ref({});
 const showCodeSections = ref({});
 
@@ -29,10 +42,10 @@ const tableFields = ref([
 ]);
 const sortConfig = ref({ key: 'id', direction: 'asc' });
 const tableData = ref([
-  { id: 'APP-001', nama: 'Ahmad bin Hassan', tarikh: '2023-05-12', jenisBantuan: 'Bantuan Perubatan', status: 'LULUS' },
-  { id: 'APP-002', nama: 'Siti Aminah', tarikh: '2023-05-13', jenisBantuan: 'Bantuan Pendidikan', status: 'MENUNGGU' },
-  { id: 'APP-003', nama: 'Mohammed Ismail', tarikh: '2023-05-14', jenisBantuan: 'Bantuan Rumah', status: 'DALAM PROSES' },
-  { id: 'APP-004', nama: 'Roslinda Othman', tarikh: '2023-05-15', jenisBantuan: 'Bantuan Perubatan', status: 'DITOLAK' }
+  { id: 'APP-001', nama: 'Ahmad bin Hassan', tarikh: '2023-05-12', jenisBantuan: 'Bantuan Perubatan', status: 'Lulus' },
+  { id: 'APP-002', nama: 'Siti Aminah', tarikh: '2023-05-13', jenisBantuan: 'Bantuan Pendidikan', status: 'Menunggu' },
+  { id: 'APP-003', nama: 'Mohammed Ismail', tarikh: '2023-05-14', jenisBantuan: 'Bantuan Rumah', status: 'Draf' },
+  { id: 'APP-004', nama: 'Roslinda Othman', tarikh: '2023-05-15', jenisBantuan: 'Bantuan Perubatan', status: 'Ditolak' }
 ]);
 
 // Search state
@@ -533,21 +546,21 @@ onBeforeUnmount(() => {
         <div class="mb-6">
           <h3 class="text-base font-semibold mb-4">Status Badges</h3>
           <div class="flex flex-wrap items-center gap-4 mb-4">
-            <rs-badge variant="success">APPROVED</rs-badge>
-            <rs-badge variant="warning">PENDING</rs-badge>
-            <rs-badge variant="danger">REJECTED</rs-badge>
-            <rs-badge variant="disabled">DRAFT</rs-badge>
-            <rs-badge variant="info">NEW</rs-badge>
-            <rs-badge variant="primary">ACTIVE</rs-badge>
+            <rs-badge variant="success">Lulus</rs-badge>
+            <rs-badge variant="warning">Menunggu</rs-badge>
+            <rs-badge variant="danger">Ditolak</rs-badge>
+            <rs-badge variant="secondary">Draf</rs-badge>
+            <rs-badge variant="info">Baru</rs-badge>
+            <rs-badge variant="primary">Aktif</rs-badge>
           </div>
         </div>
 
         <div class="mb-6">
           <h3 class="text-base font-semibold mb-4">Badges with Icons</h3>
           <div class="flex flex-wrap items-center gap-4 mb-4">
-            <rs-badge variant="success" icon="ic:outline-check-circle">APPROVED</rs-badge>
-            <rs-badge variant="warning" icon="ic:outline-access-time">PENDING</rs-badge>
-            <rs-badge variant="danger" icon="ic:outline-cancel">REJECTED</rs-badge>
+            <rs-badge variant="success" icon="ic:outline-check-circle">Lulus</rs-badge>
+            <rs-badge variant="warning" icon="ic:outline-access-time">Menunggu</rs-badge>
+            <rs-badge variant="danger" icon="ic:outline-cancel">Ditolak</rs-badge>
           </div>
         </div>
       </template>
@@ -686,10 +699,10 @@ onBeforeUnmount(() => {
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="(user, index) in [
-                { id: 'USR-001', name: 'Ahmad bin Hassan', email: 'ahmad@example.com', role: 'Admin', status: 'AKTIF' },
-                { id: 'USR-002', name: 'Siti Aminah', email: 'siti@example.com', role: 'Editor', status: 'AKTIF' },
-                { id: 'USR-003', name: 'Mohammed Ismail', email: 'ismail@example.com', role: 'Viewer', status: 'BARU' },
-                { id: 'USR-004', name: 'Roslinda Othman', email: 'ros@example.com', role: 'Manager', status: 'TIDAK AKTIF' }
+                { id: 'USR-001', name: 'Ahmad bin Hassan', email: 'ahmad@example.com', role: 'Admin', status: 'Aktif' },
+                { id: 'USR-002', name: 'Siti Aminah', email: 'siti@example.com', role: 'Editor', status: 'Aktif' },
+                { id: 'USR-003', name: 'Mohammed Ismail', email: 'ismail@example.com', role: 'Viewer', status: 'Baru' },
+                { id: 'USR-004', name: 'Roslinda Othman', email: 'ros@example.com', role: 'Manager', status: 'Draf' }
               ]" :key="index">
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.id }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.name }}</td>
@@ -697,7 +710,7 @@ onBeforeUnmount(() => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.role }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <rs-badge 
-                    :variant="user.status === 'AKTIF' ? 'success' : user.status === 'BARU' ? 'info' : 'disabled'"
+                    :variant="getStatusVariant(user.status)"
                   >
                     {{ user.status }}
                   </rs-badge>
@@ -1102,10 +1115,10 @@ onBeforeUnmount(() => {
                   <span
                     class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full"
                     :class="{
-                      'bg-green-100 text-green-800': app.status === 'LULUS',
-                      'bg-yellow-100 text-yellow-800': app.status === 'MENUNGGU',
-                      'bg-blue-100 text-blue-800': app.status === 'DALAM PROSES',
-                      'bg-red-100 text-red-800': app.status === 'DITOLAK'
+                      'bg-green-100 text-green-800': app.status === 'Lulus',
+                      'bg-yellow-100 text-yellow-800': app.status === 'Menunggu',
+                      'bg-blue-100 text-blue-800': app.status === 'Draf',
+                      'bg-red-100 text-red-800': app.status === 'Ditolak'
                     }"
                   >
                     {{ app.status }}
