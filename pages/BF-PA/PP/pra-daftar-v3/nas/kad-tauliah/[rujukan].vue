@@ -241,7 +241,7 @@
                 
                 <div>
                   <p class="text-xs opacity-75">Tempoh Sah</p>
-                  <p class="font-semibold">{{ cardData.issueDate || '01/01/2024' }} - {{ cardData.expiryDate || '31/12/2024' }}</p>
+                  <p class="font-semibold">{{ cardData.issueDate || '01-01-2024' }} - {{ cardData.expiryDate || '31-12-2024' }}</p>
                 </div>
               </div>
               

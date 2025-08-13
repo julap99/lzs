@@ -458,11 +458,11 @@ const breadcrumb = ref([
 // Mock application data (would be fetched from API in real app)
 const application = ref({
   referenceNo: "PA-2025-0542",
-  applicationDate: "12/05/2025",
+  applicationDate: "12-05-2025",
   masjidName: "Masjid Wilayah Persekutuan",
   picName: "Mohd Razak bin Ibrahim",
   status: "Menunggu Sokongan JPPA",
-  uploadDate: "12/05/2025, 14:32",
+  uploadDate: "12-05-2025, 14:32",
   documentSalinanKadPengenalan: "Salinan_Kad_Pengenalan.pdf",
   documentGambarCalon: "Gambar_Calon.jpg",
   documentSuratSokongan: "Surat_Sokongan.pdf",

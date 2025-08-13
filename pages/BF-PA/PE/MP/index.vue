@@ -519,21 +519,21 @@ const activities = ref([
   {
     id: 'MP2024-001',
     NamaAktiviti: 'Program Khidmat Masyarakat',
-    Tarikh: '15/04/2024',
+    Tarikh: '15-04-2024',
     Lokasi: 'Dewan Serbaguna Masjid Kg Delek, Daerah Klang',
     status: 'Diluluskan'
   },
   {
     id: 'MP2024-002',
     NamaAktiviti: 'Mesyuarat Perancangan Bulanan',
-    Tarikh: '18/04/2024',
+    Tarikh: '18-04-2024',
     Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
     status: 'Belum Disemak'
   },
   {
     id: 'MP2024-003',
     NamaAktiviti: 'Latihan Pengurusan Zakat',
-    Tarikh: '20/04/2024',
+    Tarikh: '20-04-2024',
     Lokasi: 'Dewan Latihan LZS, Daerah Shah Alam',
     status: 'Belum Disemak'
   },
@@ -541,21 +541,21 @@ const activities = ref([
   {
     id: 'MP2024-004',
     NamaAktiviti: 'Mesyuarat Eksekutif Bulanan',
-    Tarikh: '15/03/2024',
+    Tarikh: '15-03-2024',
     Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
     status: 'Belum Disemak'
   },
   {
     id: 'MP2024-005',
     NamaAktiviti: 'Latihan Pengurusan Zakat dan Fitrah',
-    Tarikh: '20/03/2024',
+    Tarikh: '20-03-2024',
     Lokasi: 'Dewan Latihan LZS, Kompleks Zakat Selangor, Daerah Shah Alam',
     status: 'Diluluskan'
   },
   {
     id: 'MP2024-006',
     NamaAktiviti: 'Latihan Sistem e-Zakat',
-    Tarikh: '02/04/2024',
+    Tarikh: '02-04-2024',
     Lokasi: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya, Daerah Petaling Jaya',
     status: 'Ditolak'
   },
@@ -563,14 +563,14 @@ const activities = ref([
   {
     id: 'MP2024-007',
      NamaAktiviti: 'Program Khidmat Masyarakat',
-    Tarikh: '20/03/2024',
+    Tarikh: '20-03-2024',
     Lokasi: 'Masjid Al-Hidayah, Daerah Gombak',
     status: 'Diluluskan'
   },
   {
     id: 'MP2024-008',
      NamaAktiviti: 'Latihan Pengurusan Aduan',
-    Tarikh: '12/04/2024',
+    Tarikh: '12-04-2024',
     Lokasi: 'Bilik Latihan, Pejabat Zakat Gombak, Daerah Gombak',
     status: 'Diluluskan'
   },
@@ -578,14 +578,14 @@ const activities = ref([
   {
     id: 'MP2024-009',
      NamaAktiviti: 'Latihan Pengurusan Zakat',
-    Tarikh: '25/03/2024',
+    Tarikh: '25-03-2024',
     Lokasi: 'Dewan Latihan, Daerah Shah Alam',
     status: 'Belum Disemak'
   },
   {
     id: 'MP2024-010',
      NamaAktiviti: 'Mesyuarat Koordinasi',
-    Tarikh: '30/03/2024',
+    Tarikh: '30-03-2024',
     Lokasi: 'Pejabat Zakat, Daerah Petaling Jaya',
     status: 'Diluluskan'
   },

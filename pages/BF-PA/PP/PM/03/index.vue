@@ -404,7 +404,7 @@ const picData = reactive({
   status: "Menunggu Kelulusan", // Menunggu Kelulusan, Diluluskan, Ditolak
   namaPemohon: "Aminah binti Hussain",
   jawatanPemohon: "Pegawai Pentadbiran",
-  tarikhPermohonan: "2025-05-15T09:30:00",
+  tarikhPermohonan: "15-05-2025T09:30:00",
   tarikhKeputusan: null,
   namaPelulus: null,
   jawatanPelulus: null,

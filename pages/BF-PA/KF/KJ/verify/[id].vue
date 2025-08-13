@@ -257,7 +257,7 @@ const categoryData = ref({
   kategoriPenolongAmil: "Penolong Amil Wakaf",
   kodSingkatan: "PAW",
   status: "Menunggu Pengesahan",
-  tarikhKuatkuasa: "2024-01-01",
+      tarikhKuatkuasa: "01-01-2024",
   penerangan: "Kategori untuk menguruskan zakat wakaf",
 });
 
@@ -271,7 +271,10 @@ const verificationData = ref({
 const formatDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
-  return date.toLocaleDateString('ms-MY');
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
 };
 
 const verifyCategory = async () => {

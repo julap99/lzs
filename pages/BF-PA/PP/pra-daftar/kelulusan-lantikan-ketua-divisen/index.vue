@@ -674,11 +674,11 @@ const breadcrumb = ref([
 // Mock application data (would be fetched from API in real app)
 const application = ref({
   referenceNo: "PA-2025-0542",
-  applicationDate: "12/05/2025",
+  applicationDate: "12-05-2025",
   masjidName: "Masjid Wilayah Persekutuan",
   picName: "Mohd Razak bin Ibrahim",
   status: "Menunggu Kelulusan Ketua Divisyen",
-  uploadDate: "12/05/2025, 14:32",
+  uploadDate: "12-05-2025, 14:32",
   documentName: "Surat_Tapisan_Jabatan_Pengurusan_Risiko.pdf",
   notes:
     "Calon telah melengkapkan semua syarat dan berkelayakan untuk dilantik sebagai Penolong Amil Fitrah.",
@@ -693,14 +693,14 @@ const application = ref({
     comments:
       "Berdasarkan semakan dokumen, calon memenuhi semua kriteria dan layak untuk dilantik sebagai Penolong Amil Fitrah. Rekod calon juga bersih dan tiada sebarang rekod negatif.",
     reviewedBy: "Sarah binti Hamid",
-    reviewedAt: "15/05/2025, 10:45",
+    reviewedAt: "15-05-2025, 10:45",
   },
   jppaApproval: {
     recommendation: "approve",
     comments:
       "Setelah meneliti sokongan dari Eksekutif JPPA dan dokumen yang dikemukakan, saya bersetuju untuk menyokong permohonan ini. Calon memenuhi semua kriteria yang ditetapkan.",
     reviewedBy: "Dr. Azman bin Abdul Rahman",
-    reviewedAt: "16/05/2025, 14:30",
+    reviewedAt: "16-05-2025, 14:30",
   },
   isQualified: true,
 });

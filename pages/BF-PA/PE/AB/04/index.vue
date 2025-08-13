@@ -47,7 +47,7 @@
                   type="date"
                   name="paymentDate"
                   label="Tarikh Bayaran"
-                  value="2024-03-01"
+                  value="01-03-2024"
                 />
 
                 <FormKit

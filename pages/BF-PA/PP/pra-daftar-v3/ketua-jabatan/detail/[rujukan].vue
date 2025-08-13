@@ -297,7 +297,7 @@
                     <p class="text-sm text-green-700 mb-2">Mendaftar calon penolong amil</p>
                     <div class="text-xs text-green-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Ahmad Abdullah (PYB)</p>
-                      <p><strong>Tarikh:</strong> 15/01/2024 10:30 AM</p>
+                      <p><strong>Tarikh:</strong> 15-01-2024 10:30</p>
                       <p><strong>Catatan:</strong> Calon berjaya didaftarkan dengan maklumat lengkap</p>
                     </div>
                   </div>
@@ -316,7 +316,7 @@
                     <p class="text-sm text-green-700 mb-2">Saringan risiko calon</p>
                     <div class="text-xs text-green-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Siti Fatimah binti Omar (Eksekutif Risiko)</p>
-                      <p><strong>Tarikh:</strong> 20/01/2024 14:15 PM</p>
+                      <p><strong>Tarikh:</strong> 20-01-2024 14:15</p>
                       <p><strong>Catatan:</strong> Calon lulus saringan risiko. Tiada rekod jenayah atau masalah kewangan</p>
                     </div>
                   </div>
@@ -335,7 +335,7 @@
                     <p class="text-sm text-green-700 mb-2">Semakan dokumen dan kelayakan</p>
                     <div class="text-xs text-green-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Mohd Ali bin Hassan (Pegawai Tadbir)</p>
-                      <p><strong>Tarikh:</strong> 25/01/2024 09:45 AM</p>
+                      <p><strong>Tarikh:</strong> 25-01-2024 09:45</p>
                       <p><strong>Catatan:</strong> Dokumen lengkap dan memenuhi syarat. Disyorkan untuk sokongan eksekutif</p>
                     </div>
                   </div>
@@ -354,7 +354,7 @@
                     <p class="text-sm text-green-700 mb-2">Sokongan eksekutif</p>
                     <div class="text-xs text-green-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Dr. Aminah binti Abdullah (Eksekutif)</p>
-                      <p><strong>Tarikh:</strong> 30/01/2024 11:20 AM</p>
+                      <p><strong>Tarikh:</strong> 30-01-2024 11:20</p>
                       <p><strong>Catatan:</strong> Calon layak dan disokong untuk pengesahan ketua jabatan</p>
                     </div>
                   </div>
@@ -668,36 +668,36 @@ const application = ref({
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
-  uploadDate: "15/03/2024",
+      uploadDate: "15-03-2024",
   timeline: [
     {
       action: "Permohonan Dihantar",
-      date: "15/03/2024 10:30 AM",
+              date: "15-03-2024 10:30",
       notes: "Permohonan berjaya dihantar untuk semakan"
     },
     {
       action: "Dokumen Disemak",
-      date: "16/03/2024 02:15 PM",
+              date: "16-03-2024 14:15",
       notes: "Semua dokumen lengkap dan sah"
     },
     {
       action: "Saringan Selesai",
-      date: "17/03/2024 09:00 AM",
+              date: "17-03-2024 09:00",
       notes: "Saringan telah diselesaikan oleh Jabatan Pengurusan Risiko"
     },
     {
       action: "Semakan PT Selesai",
-      date: "18/03/2024 11:30 AM",
+              date: "18-03-2024 11:30",
       notes: "Semakan PT telah diselesaikan"
     },
     {
       action: "Sokongan Eksekutif Selesai",
-      date: "19/03/2024 09:00 AM",
+              date: "19-03-2024 09:00",
       notes: "Sokongan eksekutif telah diberikan"
     },
     {
       action: "Menunggu Pengesahan Jabatan",
-      date: "20/03/2024 09:00 AM",
+              date: "20-03-2024 09:00",
       notes: "Permohonan dalam proses pengesahan jabatan"
     }
   ]

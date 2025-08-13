@@ -419,12 +419,12 @@ const request = ref({
   newKategori: "Penolong Amil Kariah",
   currentInstitusi: "Masjid Al-Hidayah",
   newInstitusi: "Surau Al-Amin",
-  currentTarikhMula: "2023-01-15",
-  newTarikhMula: "2024-02-01",
+      currentTarikhMula: "15-01-2023",
+    newTarikhMula: "01-02-2024",
   reason: "Pindah tempat tinggal dan perubahan kategori perkhidmatan",
   supportingDocuments: "surat_permintaan.pdf",
   submittedBy: "Ahmad bin Abdullah",
-  submittedDate: "2024-01-15",
+  submittedDate: "15-01-2024",
 });
 
 const penolongAmil = ref({
@@ -439,7 +439,7 @@ const ptReview = ref({
   decision: "",
   remarks: "",
   reviewedBy: "Siti Fatimah binti Omar",
-  reviewDate: "2024-01-16",
+  reviewDate: "16-01-2024",
 });
 
 // Enhanced computed properties

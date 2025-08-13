@@ -285,8 +285,8 @@ const penolongAmil = ref([
     tahunPerkhidmatan: 5,
     kadarElaun: '1,200.00',
     elaunTahunan: '6,000.00',
-    tarikhLantikan: '15/01/2020',
-    tarikhTamat: '14/01/2025',
+    tarikhLantikan: '15-01-2020',
+    tarikhTamat: '14-01-2025',
   },
   {
     id: 'PA002',
@@ -298,8 +298,8 @@ const penolongAmil = ref([
     tahunPerkhidmatan: 3,
     kadarElaun: '800.00',
     elaunTahunan: '2,400.00',
-    tarikhLantikan: '20/03/2021',
-    tarikhTamat: '19/03/2026',
+    tarikhLantikan: '20-03-2021',
+    tarikhTamat: '19-03-2026',
   },
   {
     id: 'PA003',
@@ -311,8 +311,8 @@ const penolongAmil = ref([
     tahunPerkhidmatan: 1,
     kadarElaun: '600.00',
     elaunTahunan: '600.00',
-    tarikhLantikan: '10/06/2023',
-    tarikhTamat: '09/06/2028',
+    tarikhLantikan: '10-06-2023',
+    tarikhTamat: '09-06-2028',
   },
   {
     id: 'PA004',
@@ -324,8 +324,8 @@ const penolongAmil = ref([
     tahunPerkhidmatan: 7,
     kadarElaun: '1,200.00',
     elaunTahunan: '8,400.00',
-    tarikhLantikan: '05/02/2018',
-    tarikhTamat: '04/02/2025',
+    tarikhLantikan: '05-02-2018',
+    tarikhTamat: '04-02-2025',
   },
   {
     id: 'PA005',
@@ -337,8 +337,8 @@ const penolongAmil = ref([
     tahunPerkhidmatan: 2,
     kadarElaun: '800.00',
     elaunTahunan: '1,600.00',
-    tarikhLantikan: '12/08/2022',
-    tarikhTamat: '11/08/2027',
+    tarikhLantikan: '12-08-2022',
+    tarikhTamat: '11-08-2027',
   },
 ]);
 

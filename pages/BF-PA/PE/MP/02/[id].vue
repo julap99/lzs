@@ -219,7 +219,7 @@ const aktivitiData = {
   "MP2024-002": {
     namaAktiviti: "Latihan Pengurusan Zakat dan Fitrah",
     jenisAktiviti: "Latihan",
-    tarikhAktiviti: "20/03/2024",
+    tarikhAktiviti: "20-03-2024",
     lokasiAktiviti: "Dewan Latihan LZS, Kompleks Zakat Selangor",
     kehadiran: "4/5",
     status: "Belum Dihantar",
@@ -271,7 +271,7 @@ const aktivitiData = {
   "MP2024-003": {
     namaAktiviti: "Program Khidmat Masyarakat Ramadan",
     jenisAktiviti: "Program",
-    tarikhAktiviti: "25/03/2024",
+    tarikhAktiviti: "25-03-2024",
     lokasiAktiviti: "Masjid Al-Hidayah, Shah Alam",
     kehadiran: "3/3",
     status: "Lulus",
@@ -307,7 +307,7 @@ const aktivitiData = {
   "MP2024-005": {
     namaAktiviti: "Latihan Sistem e-Zakat",
     jenisAktiviti: "Latihan",
-    tarikhAktiviti: "02/04/2024",
+    tarikhAktiviti: "02-04-2024",
     lokasiAktiviti: "Bilik Latihan IT, Pejabat Zakat Petaling Jaya",
     kehadiran: "2/2",
     status: "Belum Dihantar",
@@ -335,7 +335,7 @@ const aktivitiData = {
   "MP2024-006": {
     namaAktiviti: "Program Bantuan Asnaf Bulanan",
     jenisAktiviti: "Program",
-    tarikhAktiviti: "05/04/2024",
+    tarikhAktiviti: "05-04-2024",
     lokasiAktiviti: "Dewan Serbaguna Masjid Kg Delek",
     kehadiran: "45/50",
     status: "Di Tolak",
@@ -387,7 +387,7 @@ const aktivitiData = {
   "MP2024-007": {
     namaAktiviti: "Mesyuarat Perancangan Aktiviti Q2",
     jenisAktiviti: "Mesyuarat",
-    tarikhAktiviti: "10/04/2024",
+    tarikhAktiviti: "10-04-2024",
     lokasiAktiviti: "Dewan Mesyuarat JPPA, Pejabat Zakat Kajang",
     kehadiran: "2/2",
     status: "Lulus",
@@ -415,7 +415,7 @@ const aktivitiData = {
   "MP2024-008": {
     namaAktiviti: "Latihan Pengurusan Aduan",
     jenisAktiviti: "Latihan",
-    tarikhAktiviti: "12/04/2024",
+    tarikhAktiviti: "12-04-2024",
     lokasiAktiviti: "Bilik Latihan, Pejabat Zakat Gombak",
     kehadiran: "2/2",
     status: "Belum Dihantar",

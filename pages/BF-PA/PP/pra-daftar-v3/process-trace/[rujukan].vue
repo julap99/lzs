@@ -314,18 +314,18 @@ const application = ref({
   institusiKariah: "Masjid Negeri Selangor",
   statusPendaftaran: "Diluluskan",
   statusLantikan: "Aktif",
-  tarikhPendaftaran: "2024-01-15",
-  screeningDate: "2024-01-20",
+  tarikhPendaftaran: "15-01-2024",
+  screeningDate: "20-01-2024",
   screeningNotes: "Calon telah lulus saringan risiko. Tiada rekod jenayah atau masalah kewangan.",
-  ptReviewDate: "2024-01-25",
+  ptReviewDate: "25-01-2024",
   ptNotes: "Dokumen lengkap dan memenuhi syarat. Disyorkan untuk sokongan eksekutif.",
-  executiveDate: "2024-02-01",
+  executiveDate: "01-02-2024",
   executiveNotes: "Sokongan diberikan berdasarkan merit dan keperluan institusi.",
-  departmentHeadDate: "2024-02-05",
+  departmentHeadDate: "05-02-2024",
   departmentHeadNotes: "Disahkan berdasarkan kelayakan dan keperluan jabatan.",
-  divisionHeadDate: "2024-02-10",
+  divisionHeadDate: "10-02-2024",
   divisionHeadNotes: "Diluluskan untuk pelantikan sebagai Penolong Amil.",
-  nasRegistrationDate: "2024-02-15",
+  nasRegistrationDate: "15-02-2024",
   nasAccountId: "PA-2024-001",
   nasAccountStatus: "Aktif",
   icDocument: true,
@@ -333,43 +333,43 @@ const application = ref({
   auditTrail: [
     {
       action: "Pendaftaran calon baharu",
-      timestamp: "2024-01-15 10:30:00",
+      timestamp: "15-01-2024 10:30:00",
       user: "Ahmad Abdullah (PYB)",
       notes: "Calon didaftarkan melalui borang pendaftaran"
     },
     {
       action: "Saringan risiko selesai",
-      timestamp: "2024-01-20 14:15:00",
+      timestamp: "20-01-2024 14:15:00",
       user: "Siti Fatimah (Eksekutif Risiko)",
       notes: "Calon lulus saringan risiko"
     },
     {
       action: "Semakan PT selesai",
-      timestamp: "2024-01-25 09:45:00",
+      timestamp: "25-01-2024 09:45:00",
       user: "Mohd Ali (Pegawai Tadbir)",
       notes: "Dokumen lengkap dan memenuhi syarat"
     },
     {
       action: "Sokongan eksekutif diberikan",
-      timestamp: "2024-02-01 11:20:00",
+      timestamp: "01-02-2024 11:20:00",
       user: "Dr. Aminah (Eksekutif)",
       notes: "Sokongan berdasarkan merit dan keperluan"
     },
     {
       action: "Pengesahan ketua jabatan",
-      timestamp: "2024-02-05 16:30:00",
+      timestamp: "05-02-2024 16:30:00",
       user: "Tuan Haji Omar (Ketua Jabatan)",
       notes: "Disahkan berdasarkan kelayakan"
     },
     {
       action: "Kelulusan ketua divisyen",
-      timestamp: "2024-02-10 13:45:00",
+      timestamp: "10-02-2024 13:45:00",
       user: "Dato' Ahmad (Ketua Divisyen)",
       notes: "Diluluskan untuk pelantikan"
     },
     {
       action: "Pendaftaran sistem NAS",
-      timestamp: "2024-02-15 08:15:00",
+      timestamp: "15-02-2024 08:15:00",
       user: "Sistem NAS",
       notes: "Akaun berjaya dicipta"
     }

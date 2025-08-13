@@ -442,14 +442,14 @@ const formData = ref({
   kategoriPenolongAmil: "Penolong Amil Fitrah",
   kodSingkatan: "PAF",
   status: "Aktif",
-  tarikhKuatkuasa: "2024-01-01",
+  tarikhKuatkuasa: "01-01-2024",
   penerangan: "Kategori untuk menguruskan zakat fitrah",
   isDefault: true,
   maklumatJawatan: {
     namaJawatan: "Penolong Amil Fitrah",
     kodJawatan: "PAF001",
     status: "Aktif",
-    tarikhKuatkuasa: "2024-01-01",
+    tarikhKuatkuasa: "01-01-2024",
     tanggungjawab: "Menguruskan kutipan dan pengagihan zakat fitrah",
     kelayakan: "Sijil SPM, pengalaman dalam kerja sosial",
   },
@@ -468,9 +468,9 @@ const formData = ref({
   },
   maklumatPegawai: {
     diciptaOleh: "Admin User",
-    tarikhCipta: "2023-10-27",
+    tarikhCipta: "27-10-2023",
     diluluskanOleh: "Manager",
-    tarikhLulus: "2023-10-28",
+    tarikhLulus: "28-10-2023",
   },
 });
 

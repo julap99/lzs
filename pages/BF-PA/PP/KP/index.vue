@@ -440,7 +440,7 @@ const requests = ref([
     currentInstitusi: "Masjid Al-Hidayah",
     newInstitusi: "Surau Al-Amin",
     status: "pending",
-    tarikhPermintaan: "2024-01-15",
+    tarikhPermintaan: "15-01-2024",
   },
   {
     id: "KP002",
@@ -454,7 +454,7 @@ const requests = ref([
     currentInstitusi: "Surau Al-Amin",
     newInstitusi: "Kompleks Islam",
     status: "pt_reviewed",
-    tarikhPermintaan: "2024-01-14",
+    tarikhPermintaan: "14-01-2024",
   },
   {
     id: "KP003",
@@ -468,7 +468,7 @@ const requests = ref([
     currentInstitusi: "Kompleks Islam",
     newInstitusi: "Masjid Al-Hidayah",
     status: "executive_supported",
-    tarikhPermintaan: "2024-01-13",
+    tarikhPermintaan: "13-01-2024",
   },
   {
     id: "KP004",
@@ -482,7 +482,7 @@ const requests = ref([
     currentInstitusi: "Masjid Al-Hidayah",
     newInstitusi: "Surau Al-Amin",
     status: "department_confirmed",
-    tarikhPermintaan: "2024-01-12",
+    tarikhPermintaan: "12-01-2024",
   },
   {
     id: "KP005",
@@ -496,7 +496,7 @@ const requests = ref([
     currentInstitusi: "Surau Al-Amin",
     newInstitusi: "Kompleks Islam",
     status: "need_more_info",
-    tarikhPermintaan: "2024-01-11",
+    tarikhPermintaan: "11-01-2024",
   },
   {
     id: "KP006",
@@ -510,7 +510,7 @@ const requests = ref([
     currentInstitusi: "Kompleks Islam",
     newInstitusi: "Masjid Al-Hidayah",
     status: "resubmitted",
-    tarikhPermintaan: "2024-01-10",
+    tarikhPermintaan: "10-01-2024",
   },
   {
     id: "KP007",
@@ -524,7 +524,7 @@ const requests = ref([
     currentInstitusi: "Masjid Al-Hidayah",
     newInstitusi: "Surau Al-Amin",
     status: "pending",
-    tarikhPermintaan: "2024-01-09",
+    tarikhPermintaan: "09-01-2024",
   },
   {
     id: "KP008",
@@ -538,7 +538,7 @@ const requests = ref([
     currentInstitusi: "Surau Al-Amin",
     newInstitusi: "Kompleks Islam",
     status: "pt_reviewed",
-    tarikhPermintaan: "2024-01-08",
+    tarikhPermintaan: "08-01-2024",
   },
   {
     id: "KP009",
@@ -552,7 +552,7 @@ const requests = ref([
     currentInstitusi: "Kompleks Islam",
     newInstitusi: "Masjid Al-Hidayah",
     status: "executive_supported",
-    tarikhPermintaan: "2024-01-07",
+    tarikhPermintaan: "07-01-2024",
   },
   {
     id: "KP010",
@@ -566,7 +566,7 @@ const requests = ref([
     currentInstitusi: "Masjid Al-Hidayah",
     newInstitusi: "Surau Al-Amin",
     status: "department_confirmed",
-    tarikhPermintaan: "2024-01-06",
+    tarikhPermintaan: "06-01-2024",
   },
 ]);
 

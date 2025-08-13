@@ -204,19 +204,19 @@ const activityId = computed(() => route.query.id || 'MP2024-013');
 const activity = ref({
   id: 'MP2024-013',
   name: 'Program Kesedaran Zakat',
-  date: '2024-03-28',
+      date: '28-03-2024',
   location: 'Masjid Al-Amin',
   type: 'Program',
   status: 'Diluluskan',
   eksekutifSupport: {
     reviewedBy: "Sarah binti Hamid",
-    reviewedAt: "15/05/2024, 10:45",
+            reviewedAt: "15-05-2024, 10:45",
     isSupported: true,
     comments: "Berdasarkan semakan dokumen dan maklumat yang dikemukakan, aktiviti ini disokong untuk diluluskan. Aktiviti memenuhi semua kriteria yang ditetapkan.",
   },
   ketuaJabatan: {
     approvedBy: "Ahmad bin Ismail",
-    approvedAt: "20/05/2024, 14:30",
+            approvedAt: "20-05-2024, 14:30",
     isApproved: true,
     comments: "Aktiviti mesyuarat/program telah disemak dengan teliti dan memenuhi semua kriteria kelayakan. Dokumen sokongan lengkap dan sah. Amaun elaun adalah munasabah dan dalam had yang dibenarkan. Aktiviti ini diluluskan.",
   },

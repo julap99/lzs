@@ -178,7 +178,7 @@ const uploadColumns = [
 const recentUploads = ref([
   {
     no: 1,
-    tarikhMuatNaik: "2024-01-15 14:30:00",
+    tarikhMuatNaik: "15-01-2024 14:30:00",
     namaFail: "tapisan_background_jan2024.xlsx",
     jenisTapisan: "Tapisan Latar Belakang",
     bilanganRekod: 45,
@@ -187,7 +187,7 @@ const recentUploads = ref([
   },
   {
     no: 2,
-    tarikhMuatNaik: "2024-01-14 09:15:00",
+    tarikhMuatNaik: "14-01-2024 09:15:00",
     namaFail: "tapisan_security_jan2024.csv",
     jenisTapisan: "Tapisan Keselamatan",
     bilanganRekod: 38,
@@ -196,7 +196,7 @@ const recentUploads = ref([
   },
   {
     no: 3,
-    tarikhMuatNaik: "2024-01-13 16:45:00",
+    tarikhMuatNaik: "14-01-2024 16:45:00",
     namaFail: "tapisan_health_jan2024.xlsx",
     jenisTapisan: "Tapisan Kesihatan",
     bilanganRekord: 52,

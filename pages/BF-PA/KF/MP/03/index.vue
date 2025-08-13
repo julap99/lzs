@@ -90,6 +90,6 @@ const breadcrumb = ref([
 
 // Example data - in real implementation, this would come from the API
 const aktivitiId = ref("ACT001");
-const aktivitiTarikh = ref("20/03/2024");
+const aktivitiTarikh = ref("20-03-2024");
 const bilanganSesi = ref("2"); // This would come from the form data
 </script> 

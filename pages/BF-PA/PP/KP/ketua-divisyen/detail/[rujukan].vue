@@ -475,7 +475,7 @@ const request = ref({
   reason: "Pindah tempat tinggal ke kawasan baru",
   supportingDocuments: "surat_pindah_ahmad.pdf",
   submittedBy: "Siti Fatimah binti Omar",
-  submittedDate: "15/01/2024",
+      submittedDate: "15-01-2024",
   status: "department_confirmed"
 });
 
@@ -492,7 +492,7 @@ const penolongAmil = ref({
 // Mock PT Review data
 const ptReview = ref({
   reviewedBy: "Ustaz Haitham Ismail",
-  reviewDate: "16/01/2024",
+      reviewDate: "16-01-2024",
   decision: "approved",
   remarks: "Permintaan kemaskini maklumat perkhidmatan adalah munasabah dan memenuhi kriteria yang ditetapkan. Sokongan diberikan untuk perubahan kategori dan institusi perkhidmatan."
 });
@@ -500,7 +500,7 @@ const ptReview = ref({
 // Mock Executive Support data
 const executiveSupport = ref({
   supportedBy: "Dr. Aminah binti Hassan",
-  supportDate: "17/01/2024",
+      supportDate: "17-01-2024",
   decision: "supported",
   remarks: "Sokongan diberikan berdasarkan justifikasi yang kukuh dan memenuhi keperluan organisasi. Perubahan ini akan meningkatkan keberkesanan perkhidmatan penolong amil."
 });
@@ -508,7 +508,7 @@ const executiveSupport = ref({
 // Mock Ketua Jabatan Confirmation data
 const ketuaJabatanConfirmation = ref({
   confirmedBy: "Tuan Haji Mohd Zain bin Abdullah",
-  confirmDate: "18/01/2024",
+      confirmDate: "18-01-2024",
   decision: "confirmed",
   remarks: "Pengesahan diberikan berdasarkan semakan menyeluruh dan memenuhi semua keperluan organisasi. Perubahan ini adalah wajar dan akan meningkatkan keberkesanan perkhidmatan."
 });

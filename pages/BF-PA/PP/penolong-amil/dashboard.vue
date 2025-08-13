@@ -484,7 +484,7 @@ const userProfile = ref({
   telefon: "0123456789",
   kategori: "Penolong Amil Kariah (PAK)",
   institusi: "Masjid Wilayah Persekutuan",
-  tarikhLantikan: "2024-01-15",
+      tarikhLantikan: "15-01-2024",
   status: "Aktif",
   kariah: "Kariah A"
 });

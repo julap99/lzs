@@ -125,8 +125,8 @@ const aktivitiList = ref([
   {
     namaAktiviti: "Mesyuarat Bulanan Penolong Amil",
     lokasi: "Dewan Utama",
-    tarikhMasaMula: "20/03/2024 09:00",
-    tarikhMasaTamat: "20/03/2024 12:00",
+    tarikhMasaMula: "20-03-2024 09:00",
+    tarikhMasaTamat: "20-03-2024 12:00",
     jenisAktiviti: "Mesyuarat",
     kategoriAmil: "FITRAH",
     status: "Aktif",
@@ -135,8 +135,8 @@ const aktivitiList = ref([
   {
     namaAktiviti: "Program Latihan Asas",
     lokasi: "Bilik Latihan",
-    tarikhMasaMula: "25/03/2024 08:00",
-    tarikhMasaTamat: "25/03/2024 17:00",
+    tarikhMasaMula: "25-03-2024 08:00",
+    tarikhMasaTamat: "25-03-2024 17:00",
     jenisAktiviti: "Latihan",
     kategoriAmil: "PADI",
     status: "Aktif",
@@ -145,8 +145,8 @@ const aktivitiList = ref([
   {
     namaAktiviti: "Program Khidmat Masyarakat",
     lokasi: "Masjid Al-Hidayah",
-    tarikhMasaMula: "30/03/2024 08:00",
-    tarikhMasaTamat: "30/03/2024 13:00",
+    tarikhMasaMula: "30-03-2024 08:00",
+    tarikhMasaTamat: "30-03-2024 13:00",
     jenisAktiviti: "Program",
     kategoriAmil: "KARIAH",
     status: "Menunggu Kelulusan",
@@ -155,8 +155,8 @@ const aktivitiList = ref([
   {
     namaAktiviti: "Mesyuarat Koordinasi",
     lokasi: "Pejabat Zakat",
-    tarikhMasaMula: "15/04/2024 10:00",
-    tarikhMasaTamat: "15/04/2024 12:00",
+    tarikhMasaMula: "15-04-2024 10:00",
+    tarikhMasaTamat: "15-04-2024 12:00",
     jenisAktiviti: "Mesyuarat",
     kategoriAmil: "KOMUNITI",
     status: "Aktif",

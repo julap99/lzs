@@ -282,7 +282,7 @@ const formData = ref({
   idAktiviti: 'MP2024-001',
   namaAktiviti: 'Mesyuarat Perancangan Bulanan',
   jenisAktiviti: 'Mesyuarat',
-  tarikhAktiviti: '15/04/2024',
+      tarikhAktiviti: '15-04-2024',
   lokasi: 'Dewan Mesyuarat Eksekutif',
   status: 'Menunggu Sokongan Eksekutif',
   kadarElaun: '50.00',
@@ -290,7 +290,7 @@ const formData = ref({
   eksekutifRemarks: '',
   ptReview: {
     reviewedBy: 'Ahmad bin Ismail',
-    reviewedAt: '16/04/2024, 10:30',
+    reviewedAt: '16-04-2024, 10:30',
     remarks: 'Kiraan elaun telah disemak dan didapati tepat. Semua dokumen sokongan lengkap dan memenuhi kriteria yang ditetapkan. Aktiviti ini disokong untuk diteruskan kepada Eksekutif untuk sokongan seterusnya.'
   },
   senaraiPenolong: [

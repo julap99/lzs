@@ -211,27 +211,27 @@ const formData = ref({
     {
       id: 1,
       nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
+      tarikh: "31-12-2024",
     },
     {
       id: 2,
       nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
+      tarikh: "31-12-2024",
     },
     {
       id: 3,
       nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
+      tarikh: "31-12-2024",
     },
     {
       id: 4,
       nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
+      tarikh: "31-12-2024",
     },
     {
       id: 5,
       nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
+      tarikh: "31-12-2024",
     },
   ],
 });
@@ -258,23 +258,23 @@ onMounted(async () => {
     senaraiPenolong: [
       {
         nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
+        tarikh: "31-12-2024",
       },
       {
         nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
+        tarikh: "31-12-2024",
       },
       {
         nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
+        tarikh: "31-12-2024",
       },
       {
         nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
+        tarikh: "31-12-2024",
       },
       {
         nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
+        tarikh: "31-12-2024",
       },
     ],
   };

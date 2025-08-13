@@ -228,7 +228,7 @@ const batches = ref([
     institution: 'Masjid Al-Amin',
     category: 'Kariah',
     status: 'Diluluskan',
-    createdAt: '2024-03-10'
+    createdAt: '10-03-2024'
   },
   {
     id: 2,
@@ -236,7 +236,7 @@ const batches = ref([
     institution: 'Masjid Al-Falah',
     category: 'Kariah',
     status: 'Ditolak',
-    createdAt: '2024-03-12'
+    createdAt: '12-03-2024'
   },
   {
     id: 3,
@@ -244,7 +244,7 @@ const batches = ref([
     institution: 'Masjid Kg Delek',
     category: 'Kariah',
     status: 'Diluluskan',
-    createdAt: '2024-03-14'
+    createdAt: '14-03-2024'
   },
   {
     id: 4,
@@ -252,7 +252,7 @@ const batches = ref([
     institution: 'Masjid Bandar Utama',
     category: 'Kariah',
     status: 'Ditolak',
-    createdAt: '2024-03-21'
+    createdAt: '21-03-2024'
   }
 ]);
 

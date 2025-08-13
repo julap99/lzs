@@ -246,7 +246,7 @@ const paInfo = ref({
   id: 'PA001',
   name: 'Ahmad bin Abdullah',
   location: 'Masjid Al-Hidayah',
-  endDate: '31/12/2024',
+  endDate: '31-12-2024',
   assignmentType: 'Kariah',
   status: 'Disokong',
   paymentStatus: 'Telah Ditolak',
@@ -258,7 +258,7 @@ const paInfo = ref({
 const activities = ref([
   {
     id: 'B001',
-    date: '01/03/2024',
+    date: '01-03-2024',
     name: 'Bancian Baru',
     asnafName: 'Abdul Rahman bin Mohamed',
     referenceNo: 'ASN-2024-001',
@@ -267,7 +267,7 @@ const activities = ref([
   },
   {
     id: 'AR001',
-    date: '02/03/2024',
+    date: '02-03-2024',
     name: 'Asnaf Review',
     asnafName: 'Fatimah binti Omar',
     referenceNo: 'ASN-2024-002',
@@ -276,7 +276,7 @@ const activities = ref([
   },
   {
     id: 'PB001',
-    date: '03/03/2024',
+    date: '03-03-2024',
     name: 'Permohonan Bantuan',
     asnafName: 'Hassan bin Ismail',
     referenceNo: 'ASN-2024-003',
@@ -285,7 +285,7 @@ const activities = ref([
   },
   {
     id: 'B002',
-    date: '04/03/2024',
+    date: '04-03-2024',
     name: 'Bancian Baru',
     asnafName: 'Zainab binti Abdullah',
     referenceNo: 'ASN-2024-004',
@@ -294,7 +294,7 @@ const activities = ref([
   },
   {
     id: 'AR002',
-    date: '05/03/2024',
+    date: '05-03-2024',
     name: 'Asnaf Review',
     asnafName: 'Mohamed bin Yusof',
     referenceNo: 'ASN-2024-005',

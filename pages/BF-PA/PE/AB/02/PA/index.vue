@@ -154,7 +154,7 @@ const batchInfo = ref({
   id: 'BATCH-2024-001',
   institution: 'Masjid Al-Hidayah',
   category: 'Kariah',
-  date: '01/03/2024',
+  date: '01-03-2024',
 });
 
 // Mock Penolong Amil data

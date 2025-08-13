@@ -261,7 +261,7 @@ const formData = ref({
   idAktiviti: 'MP2024-001',
   namaAktiviti: 'Mesyuarat Perancangan Bulanan',
   jenisAktiviti: 'Mesyuarat',
-  tarikhAktiviti: '15/04/2024',
+      tarikhAktiviti: '15-04-2024',
   lokasi: 'Dewan Mesyuarat Eksekutif',
   status: 'Menunggu Semakan PT',
   kadarElaun: '50.00',

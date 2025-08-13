@@ -258,32 +258,32 @@ const application = ref({
   kategoriPenolongAmil: "Fitrah",
   institusiKariah: "Masjid Wilayah Persekutuan",
   sesiPerkhidmatan: "Sesi 1",
-  approvalDate: "05/04/2024",
+      approvalDate: "05-04-2024",
   status: "Approved",
   timeline: [
     {
       action: "Permohonan Dihantar",
-      date: "15/03/2024 10:30 AM",
+              date: "15-03-2024 10:30",
       notes: "Permohonan berjaya dihantar untuk semakan"
     },
     {
       action: "Semakan PT",
-      date: "20/03/2024 14:30 PM",
+              date: "20-03-2024 14:30",
       notes: "Calon lulus semakan PT"
     },
     {
       action: "Sokongan Eksekutif",
-      date: "25/03/2024 11:30 AM",
+              date: "25-03-2024 11:30",
       notes: "Calon disokong oleh eksekutif"
     },
     {
       action: "Pengesahan Ketua Jabatan",
-      date: "30/03/2024 15:45 PM",
+              date: "30-03-2024 15:45",
       notes: "Calon disahkan oleh ketua jabatan"
     },
     {
       action: "Kelulusan Ketua Divisyen",
-      date: "05/04/2024 10:00 AM",
+              date: "05-04-2024 10:00",
       notes: "Calon diluluskan oleh ketua divisyen"
     }
   ]

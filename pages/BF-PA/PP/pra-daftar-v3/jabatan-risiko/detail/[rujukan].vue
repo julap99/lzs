@@ -297,7 +297,7 @@
                     <p class="text-sm text-green-700 mb-2">Mendaftar calon penolong amil</p>
                     <div class="text-xs text-green-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Ahmad Abdullah (PYB)</p>
-                      <p><strong>Tarikh:</strong> 15/01/2024 10:30 AM</p>
+                      <p><strong>Tarikh:</strong> 15-01-2024 10:30</p>
                       <p><strong>Catatan:</strong> Calon berjaya didaftarkan dengan maklumat lengkap</p>
                     </div>
                   </div>
@@ -601,21 +601,21 @@ const application = ref({
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
-  uploadDate: "15/03/2024",
+  uploadDate: "15-03-2024",
   timeline: [
     {
       action: "Permohonan Dihantar",
-      date: "15/03/2024 10:30 AM",
+      date: "15-03-2024 10:30",
       notes: "Permohonan berjaya dihantar untuk semakan"
     },
     {
       action: "Dokumen Disemak",
-      date: "16/03/2024 02:15 PM",
+      date: "16-03-2024 14:15",
       notes: "Semua dokumen lengkap dan sah"
     },
     {
       action: "Menunggu Saringan",
-      date: "17/03/2024 09:00 AM",
+      date: "17-03-2024 09:00",
       notes: "Permohonan dalam proses saringan"
     }
   ]

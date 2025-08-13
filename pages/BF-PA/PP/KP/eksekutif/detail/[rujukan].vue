@@ -411,7 +411,7 @@ const request = ref({
   reason: "Pindah tempat tinggal ke kawasan baru",
   supportingDocuments: "surat_pindah_ahmad.pdf",
   submittedBy: "Siti Fatimah binti Omar",
-  submittedDate: "15/01/2024",
+      submittedDate: "15-01-2024",
   status: "pt_reviewed"
 });
 
@@ -428,7 +428,7 @@ const penolongAmil = ref({
 // Mock PT Review data
 const ptReview = ref({
   reviewedBy: "Ustaz Haitham Ismail",
-  reviewDate: "16/01/2024",
+      reviewDate: "16-01-2024",
   decision: "approved",
   remarks: "Permintaan kemaskini maklumat perkhidmatan adalah munasabah dan memenuhi kriteria yang ditetapkan. Sokongan diberikan untuk perubahan kategori dan institusi perkhidmatan."
 });

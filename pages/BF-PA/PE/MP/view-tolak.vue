@@ -208,19 +208,19 @@ const activityId = computed(() => route.query.id || 'MP2024-012');
 const activity = ref({
   id: 'MP2024-012',
   name: 'Mesyuarat Perancangan Q2',
-  date: '2024-04-05',
+      date: '05-04-2024',
   location: 'Bilik Mesyuarat',
   type: 'Mesyuarat',
   status: 'Ditolak',
   eksekutifSupport: {
     reviewedBy: "Sarah binti Hamid",
-    reviewedAt: "18/05/2024, 11:20",
+            reviewedAt: "18-05-2024, 11:20",
     isSupported: true,
     comments: "Berdasarkan semakan dokumen dan maklumat yang dikemukakan, aktiviti ini disokong untuk diluluskan. Aktiviti memenuhi semua kriteria yang ditetapkan.",
   },
   ketuaJabatan: {
     rejectedBy: "Ahmad bin Ismail",
-    rejectedAt: "22/05/2024, 16:15",
+            rejectedAt: "22-05-2024, 16:15",
     isRejected: true,
     rejectionReason: "Dokumen sokongan tidak lengkap dan tidak memenuhi kriteria kelayakan yang ditetapkan.",
     comments: "Aktiviti mesyuarat/program telah disemak dengan teliti. Dokumen sokongan yang dikemukakan tidak lengkap dan tidak memenuhi kriteria kelayakan yang ditetapkan. Amaun elaun yang dipohon melebihi had yang dibenarkan. Aktiviti ini ditolak.",

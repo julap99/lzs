@@ -91,7 +91,7 @@
                 <td class="px-6 py-4 text-center">
                   <rs-badge variant="danger">Tindakan Segera</rs-badge>
                 </td>
-                <td class="px-6 py-4 text-center text-gray-600">01/06/2024</td>
+                <td class="px-6 py-4 text-center text-gray-600">01-06-2024</td>
                 <td class="px-6 py-4 text-center">
                   <rs-button size="sm" variant="primary-outline" @click="navigateTo('/BF-PA/PP/PD/09')">
                     <Icon name="heroicons:pencil-square" class="mr-1" size="16" />
@@ -104,7 +104,7 @@
                 <td class="px-6 py-4 text-center">
                   <rs-badge variant="warning">Dalam Proses</rs-badge>
                 </td>
-                <td class="px-6 py-4 text-center text-gray-600">02/06/2024</td>
+                <td class="px-6 py-4 text-center text-gray-600">02-06-2024</td>
                 <td class="px-6 py-4 text-center">
                   <rs-button size="sm" variant="primary-outline">
                     <Icon name="heroicons:arrow-up-tray" class="mr-1" size="16" />
@@ -117,7 +117,7 @@
                 <td class="px-6 py-4 text-center">
                   <rs-badge variant="warning">Dalam Proses</rs-badge>
                 </td>
-                <td class="px-6 py-4 text-center text-gray-600">03/06/2024</td>
+                <td class="px-6 py-4 text-center text-gray-600">03-06-2024</td>
                 <td class="px-6 py-4 text-center">
                   <rs-button size="sm" variant="primary-outline">
                     <Icon name="heroicons:document-text" class="mr-1" size="16" />
@@ -138,7 +138,7 @@
                 <td class="px-6 py-4 text-center">
                   <rs-badge variant="info">Sedang Berjalan</rs-badge>
                 </td>
-                <td class="px-6 py-4 text-center text-gray-600">04/06/2024</td>
+                <td class="px-6 py-4 text-center text-gray-600">04-06-2024</td>
                 <td class="px-6 py-4 text-center">
                   <rs-button size="sm" variant="primary-outline">
                     <Icon name="heroicons:check-circle" class="mr-1" size="16" />
@@ -151,7 +151,7 @@
                 <td class="px-6 py-4 text-center">
                   <rs-badge variant="info">Sedang Berjalan</rs-badge>
                 </td>
-                <td class="px-6 py-4 text-center text-gray-600">05/06/2024</td>
+                <td class="px-6 py-4 text-center text-gray-600">05-06-2024</td>
                 <td class="px-6 py-4 text-center">
                   <rs-button size="sm" variant="primary-outline">
                     <Icon name="heroicons:document-text" class="mr-1" size="16" />
@@ -172,7 +172,7 @@
                 <td class="px-6 py-4 text-center">
                   <rs-badge variant="success">Selesai</rs-badge>
                 </td>
-                <td class="px-6 py-4 text-center text-gray-600">06/06/2024</td>
+                <td class="px-6 py-4 text-center text-gray-600">06-06-2024</td>
                 <td class="px-6 py-4 text-center text-gray-400">-</td>
               </tr>
               <tr class="bg-white border-b hover:bg-gray-50">
@@ -180,7 +180,7 @@
                 <td class="px-6 py-4 text-center">
                   <rs-badge variant="success">Selesai</rs-badge>
                 </td>
-                <td class="px-6 py-4 text-center text-gray-600">07/06/2024</td>
+                <td class="px-6 py-4 text-center text-gray-600">07-06-2024</td>
                 <td class="px-6 py-4 text-center text-gray-400">-</td>
               </tr>
             </tbody>

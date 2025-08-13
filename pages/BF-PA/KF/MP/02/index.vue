@@ -194,8 +194,8 @@ const breadcrumb = ref([
 const formData = ref({
   namaAktiviti: "Mesyuarat Bulanan Penolong Amil",
   lokasi: "Dewan Utama",
-  tarikhMasaMula: "2024-03-20T09:00",
-  tarikhMasaTamat: "2024-03-20T12:00",
+      tarikhMasaMula: "20-03-2024T09:00",
+    tarikhMasaTamat: "20-03-2024T12:00",
   jenisAktiviti: "MESYUARAT",
   kategoriAmil: "KOMUNITI",
   senaraiPeserta: "SEMUA"

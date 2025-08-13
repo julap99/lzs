@@ -96,7 +96,7 @@
                   type="datetime-local"
                   name="notificationDateTime"
                   label="Tarikh & Masa Notifikasi"
-                  value="2024-03-01T10:00"
+                  value="01-03-2024T10:00"
                 />
               </div>
             </div>
@@ -191,7 +191,7 @@ const paymentAdviceId = computed(() => 'PAY-2024-001');
 const paymentStatus = computed(() => 'Sudah Dihantar ke SAP');
 const paName = computed(() => 'Ahmad bin Abdullah');
 const paymentAmount = computed(() => '1,500.00');
-const paymentDate = computed(() => '01/03/2024');
+const paymentDate = computed(() => '01-03-2024');
 const paymentLocation = computed(() => 'Pejabat LZS Shah Alam');
 
 // Helper functions

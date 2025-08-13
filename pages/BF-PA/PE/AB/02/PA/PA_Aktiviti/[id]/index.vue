@@ -311,7 +311,7 @@ const paDataMap = {
     id: 'PA001',
     name: 'Ahmad bin Abdullah',
     location: 'Masjid Al-Hidayah',
-    endDate: '31/12/2024',
+    endDate: '31-12-2024',
     assignmentType: 'Kariah',
     status: 'Disokong',
     paymentStatus: 'Telah Ditolak',
@@ -320,7 +320,7 @@ const paDataMap = {
     activities: [
       {
         id: 'B001',
-        date: '01/03/2024',
+        date: '01-03-2024',
         name: 'Bancian Baru',
         asnafName: 'Abdul Rahman bin Mohamed',
         referenceNo: 'ASN-2024-001',
@@ -329,7 +329,7 @@ const paDataMap = {
       },
       {
         id: 'AR001',
-        date: '02/03/2024',
+        date: '02-03-2024',
         name: 'Asnaf Review',
         asnafName: 'Fatimah binti Omar',
         referenceNo: 'ASN-2024-002',
@@ -338,7 +338,7 @@ const paDataMap = {
       },
       {
         id: 'PB001',
-        date: '03/03/2024',
+        date: '03-03-2024',
         name: 'Permohonan Bantuan',
         asnafName: 'Hassan bin Ismail',
         referenceNo: 'ASN-2024-003',
@@ -347,7 +347,7 @@ const paDataMap = {
       },
       {
         id: 'B002',
-        date: '04/03/2024',
+        date: '04-03-2024',
         name: 'Bancian Baru',
         asnafName: 'Zainab binti Abdullah',
         referenceNo: 'ASN-2024-004',
@@ -356,7 +356,7 @@ const paDataMap = {
       },
       {
         id: 'AR002',
-        date: '05/03/2024',
+        date: '05-03-2024',
         name: 'Asnaf Review',
         asnafName: 'Mohamed bin Yusof',
         referenceNo: 'ASN-2024-005',
@@ -369,7 +369,7 @@ const paDataMap = {
     id: 'PA002',
     name: 'Siti Aminah binti Hassan',
     location: 'Masjid Al-Ikhlas',
-    endDate: '31/12/2024',
+    endDate: '31-12-2024',
     assignmentType: 'Kariah',
     status: 'Disokong',
     paymentStatus: 'Belum Dibayar',
@@ -378,7 +378,7 @@ const paDataMap = {
     activities: [
       {
         id: 'B003',
-        date: '01/03/2024',
+        date: '01-03-2024',
         name: 'Bancian Baru',
         asnafName: 'Rahman bin Ali',
         referenceNo: 'ASN-2024-006',
@@ -387,7 +387,7 @@ const paDataMap = {
       },
       {
         id: 'AR003',
-        date: '02/03/2024',
+        date: '02-03-2024',
         name: 'Asnaf Review',
         asnafName: 'Aminah binti Hassan',
         referenceNo: 'ASN-2024-007',
@@ -400,7 +400,7 @@ const paDataMap = {
     id: 'PA003',
     name: 'Mohd Razak bin Ibrahim',
     location: 'Masjid Al-Amin',
-    endDate: '31/12/2024',
+    endDate: '31-12-2024',
     assignmentType: 'Kariah',
     status: 'Disokong',
     paymentStatus: 'Telah Dibayar',
@@ -409,7 +409,7 @@ const paDataMap = {
     activities: [
       {
         id: 'PB002',
-        date: '01/03/2024',
+        date: '01-03-2024',
         name: 'Permohonan Bantuan',
         asnafName: 'Ibrahim bin Mohamed',
         referenceNo: 'ASN-2024-008',
@@ -418,7 +418,7 @@ const paDataMap = {
       },
       {
         id: 'AR004',
-        date: '02/03/2024',
+        date: '02-03-2024',
         name: 'Asnaf Review',
         asnafName: 'Siti binti Omar',
         referenceNo: 'ASN-2024-009',
@@ -431,7 +431,7 @@ const paDataMap = {
     id: 'PA004',
     name: 'Nurul Aisyah binti Omar',
     location: 'Masjid Al-Falah',
-    endDate: '31/12/2024',
+    endDate: '31-12-2024',
     assignmentType: 'Kariah',
     status: 'Disokong',
     paymentStatus: 'Belum Dibayar',
@@ -440,7 +440,7 @@ const paDataMap = {
     activities: [
       {
         id: 'B004',
-        date: '01/03/2024',
+        date: '01-03-2024',
         name: 'Bancian Baru',
         asnafName: 'Omar bin Abdullah',
         referenceNo: 'ASN-2024-010',
@@ -449,7 +449,7 @@ const paDataMap = {
       },
       {
         id: 'PB003',
-        date: '02/03/2024',
+        date: '02-03-2024',
         name: 'Permohonan Bantuan',
         asnafName: 'Aisyah binti Hassan',
         referenceNo: 'ASN-2024-011',
@@ -462,7 +462,7 @@ const paDataMap = {
     id: 'PA005',
     name: 'Ali bin Hassan',
     location: 'Masjid Kg Delek',
-    endDate: '31/12/2024',
+    endDate: '31-12-2024',
     assignmentType: 'Kariah',
     status: 'Disokong',
     paymentStatus: 'Telah Dibayar',
@@ -471,7 +471,7 @@ const paDataMap = {
     activities: [
       {
         id: 'B005',
-        date: '01/03/2024',
+        date: '01-03-2024',
         name: 'Bancian Baru',
         asnafName: 'Hassan bin Mohamed',
         referenceNo: 'ASN-2024-012',
@@ -480,7 +480,7 @@ const paDataMap = {
       },
       {
         id: 'AR005',
-        date: '02/03/2024',
+        date: '02-03-2024',
         name: 'Asnaf Review',
         asnafName: 'Fatimah binti Ali',
         referenceNo: 'ASN-2024-013',
@@ -489,7 +489,7 @@ const paDataMap = {
       },
       {
         id: 'PB004',
-        date: '03/03/2024',
+        date: '03-03-2024',
         name: 'Permohonan Bantuan',
         asnafName: 'Mohamed bin Omar',
         referenceNo: 'ASN-2024-014',

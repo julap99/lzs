@@ -579,7 +579,7 @@ const penolongAmil = ref({
   alamat: "No. 123, Jalan Utama, Taman Seri, 43000 Kajang, Selangor",
   currentKategori: "Penolong Amil Fitrah",
   currentInstitusi: "Masjid Al-Hidayah",
-  currentTarikhMula: "2023-01-15",
+      currentTarikhMula: "15-01-2023",
 });
 
 // Computed properties
@@ -638,7 +638,7 @@ const selectPenolongAmil = (item) => {
     alamat: "No. 123, Jalan Utama, Taman Seri, 43000 Kajang, Selangor",
     currentKategori: item.kategori,
     currentInstitusi: item.institusi,
-    currentTarikhMula: "2023-01-15",
+    currentTarikhMula: "15-01-2023",
   };
 };
 

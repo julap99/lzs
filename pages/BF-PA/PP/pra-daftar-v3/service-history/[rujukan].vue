@@ -319,8 +319,8 @@ const currentAppointment = ref({
   jawatan: "Ketua Penolong Amil",
   institusi: "Masjid Negeri Selangor",
   sesiPerkhidmatan: "Pelantikan Penolong Amil Kariah 2024-2026",
-  tarikhLantikan: "2024-01-15",
-  tarikhTamat: "2026-01-15",
+      tarikhLantikan: "15-01-2024",
+    tarikhTamat: "15-01-2026",
   status: "Aktif",
   tempohPerkhidmatan: "2 tahun"
 });
@@ -332,8 +332,8 @@ const serviceHistory = ref([
     institusi: "Masjid Negeri Selangor",
     kategori: "PAK",
     jawatan: "Penolong Amil",
-    tarikhLantikan: "2022-01-15",
-    tarikhTamat: "2024-01-15",
+    tarikhLantikan: "15-01-2022",
+    tarikhTamat: "15-01-2024",
     status: "Tamat",
     notes: "Perkhidmatan cemerlang dengan kadar kehadiran 95%"
   },
@@ -342,8 +342,8 @@ const serviceHistory = ref([
     institusi: "Masjid Al-Amin",
     kategori: "PAK",
     jawatan: "Penolong Amil",
-    tarikhLantikan: "2020-01-15",
-    tarikhTamat: "2022-01-15",
+    tarikhLantikan: "15-01-2020",
+    tarikhTamat: "15-01-2022",
     status: "Tamat",
     notes: "Perkhidmatan yang memuaskan"
   }
@@ -362,17 +362,17 @@ const certificates = ref([
   {
     name: "Sijil Penolong Amil Cemerlang",
     issuer: "Jabatan Agama Islam Selangor",
-    date: "2023-12-15"
+          date: "15-12-2023"
   },
   {
     name: "Sijil Kursus Pengurusan Zakat",
     issuer: "Institut Latihan Islam Malaysia",
-    date: "2022-06-20"
+          date: "20-06-2022"
   },
   {
     name: "Anugerah Penolong Amil Terbaik",
     issuer: "Masjid Negeri Selangor",
-    date: "2023-01-15"
+          date: "15-01-2023"
   }
 ]);
 

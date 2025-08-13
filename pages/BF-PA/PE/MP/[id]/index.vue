@@ -398,27 +398,27 @@ const activityDataMap = {
     id: 'MP2024-001',
     NamaAktiviti: 'Program Khidmat Masyarakat',
     type: 'Program',
-    Tarikh: '15/04/2024',
+          Tarikh: '15-04-2024',
     Lokasi: 'Dewan Serbaguna Masjid Kg Delek, Daerah Klang',
     status: 'Diluluskan',
     allowanceRate: '50.00',
     penolongAmil: [
-      { id: 'PA001', name: 'Ahmad bin Ismail', idPengenalan: '800101-01-1234', attended: true, sesiDaftar: 1, checkInTime: '09:00 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
-      { id: 'PA002', name: 'Sarah binti Hamid', idPengenalan: '850315-05-5678', attended: true, sesiDaftar: 2, checkInTime: '09:10 AM, 02:30 PM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
-      { id: 'PA003', name: 'Mohd Zulkifli bin Abdullah', idPengenalan: '780620-08-9012', attended: true, sesiDaftar: 1, checkInTime: '09:05 AM', daerah: 'Luar Daerah', allowanceRate: '50.00' }
+      { id: 'PA001', name: 'Ahmad bin Ismail', idPengenalan: '800101-01-1234', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA002', name: 'Sarah binti Hamid', idPengenalan: '850315-05-5678', attended: true, sesiDaftar: 2, checkInTime: '09:10, 14:30', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA003', name: 'Mohd Zulkifli bin Abdullah', idPengenalan: '780620-08-9012', attended: true, sesiDaftar: 1, checkInTime: '09:05', daerah: 'Luar Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-002': {
     id: 'MP2024-002',
     NamaAktiviti: 'Mesyuarat Perancangan Bulanan',
     type: 'Mesyuarat',
-    Tarikh: '18/04/2024',
+          Tarikh: '18-04-2024',
     Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
     status: 'Belum Disemak',
     allowanceRate: '50.00',
     penolongAmil: [
       { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:45 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
-      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825-12-6789', attended: true, sesiDaftar: 1, checkInTime: '09:00 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825-12-6789', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
       // { id: 'PA003', name: 'Mohd Razak bin Ibrahim', idPengenalan: '790330-06-3456', attended: false, sesiDaftar: null, checkInTime: null, daerah: null, allowanceRate: '50.00', reason: 'Sakit' }
     ]
   },
@@ -426,99 +426,99 @@ const activityDataMap = {
     id: 'MP2024-003',
     NamaAktiviti: 'Latihan Pengurusan Zakat',
     type: 'Program',
-    Tarikh: '20/04/2024',
+    Tarikh: '20-04-2024',
     Lokasi: 'Dewan Latihan LZS, Daerah Shah Alam',
     status: 'Belum Disemak',
     allowanceRate: '75.00',
     penolongAmil: [
-      { id: 'PA006', name: 'Zainab binti Ibrahim', idPengenalan: '860415-09-4567', attended: true, sesiDaftar: 2, checkInTime: '07:30 AM, 12:45 PM', daerah: 'Dalam Daerah', allowanceRate: '75.00' },
-      { id: 'PA007', name: 'Ibrahim bin Ahmad', idPengenalan: '810728-14-7890', attended: true, sesiDaftar: 1, checkInTime: '07:45 AM', daerah: 'Dalam Daerah', allowanceRate: '75.00' },
-      { id: 'PA008', name: 'Aminah binti Mohamed', idPengenalan: '880912-07-1234', attended: true, sesiDaftar: 3, checkInTime: '08:00 AM, 01:20 PM, 05:15 PM', daerah: 'Luar Daerah', allowanceRate: '75.00' }
+      { id: 'PA006', name: 'Zainab binti Ibrahim', idPengenalan: '860415-09-4567', attended: true, sesiDaftar: 2, checkInTime: '07:30, 12:45', daerah: 'Dalam Daerah', allowanceRate: '75.00' },
+      { id: 'PA007', name: 'Ibrahim bin Ahmad', idPengenalan: '810728-14-7890', attended: true, sesiDaftar: 1, checkInTime: '07:45', daerah: 'Dalam Daerah', allowanceRate: '75.00' },
+      { id: 'PA008', name: 'Aminah binti Mohamed', idPengenalan: '880912-07-1234', attended: true, sesiDaftar: 3, checkInTime: '08:00, 13:20, 17:15', daerah: 'Luar Daerah', allowanceRate: '75.00' }
     ]
   },
   'MP2024-004': {
     id: 'MP2024-004',
     NamaAktiviti: 'Mesyuarat Eksekutif Bulanan',
     type: 'Mesyuarat',
-    Tarikh: '15/03/2024',
+    Tarikh: '15-03-2024',
     Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
     status: 'Belum Disemak',
     allowanceRate: '50.00',
     penolongAmil: [
       { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:45 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
-      { id: 'PA004', name: 'Nurul Aisyah binti Omar', idPengenalan: '860325-14-6789', attended: true, sesiDaftar: 2, checkInTime: '08:55 AM, 02:10 PM', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
+      { id: 'PA004', name: 'Nurul Aisyah binti Omar', idPengenalan: '860325-14-6789', attended: true, sesiDaftar: 2, checkInTime: '08:55, 14:10', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-005': {
     id: 'MP2024-005',
     NamaAktiviti: 'Latihan Pengurusan Zakat dan Fitrah',
     type: 'Program',
-    Tarikh: '20/03/2024',
+    Tarikh: '20-03-2024',
     Lokasi: 'Dewan Latihan LZS, Kompleks Zakat Selangor, Daerah Shah Alam',
     status: 'Diluluskan',
     allowanceRate: '60.00',
     penolongAmil: [
-      { id: 'PA009', name: 'Hassan bin Omar', idPengenalan: '810625-08-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00 AM', daerah: 'Dalam Daerah', allowanceRate: '60.00' },
-      { id: 'PA010', name: 'Mariam binti Ali', idPengenalan: '870912-14-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15 AM, 01:45 PM', daerah: 'Dalam Daerah', allowanceRate: '60.00' }
+      { id: 'PA009', name: 'Hassan bin Omar', idPengenalan: '810625-08-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '60.00' },
+      { id: 'PA010', name: 'Mariam binti Ali', idPengenalan: '870912-14-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15, 13:45', daerah: 'Dalam Daerah', allowanceRate: '60.00' }
     ]
   },
   'MP2024-006': {
     id: 'MP2024-006',
     NamaAktiviti: 'Latihan Sistem e-Zakat',
     type: 'Program',
-    Tarikh: '02/04/2024',
+    Tarikh: '02-04-2024',
     Lokasi: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya, Daerah Petaling Jaya',
     status: 'Ditolak',
     allowanceRate: '50.00',
     penolongAmil: [
-      { id: 'PA011', name: 'Omar bin Hassan', idPengenalan: '820318-11-2345', attended: true, sesiDaftar: 1, checkInTime: '08:00 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
-      { id: 'PA012', name: 'Fatimah binti Ahmad', idPengenalan: '860725-09-6789', attended: true, sesiDaftar: 3, checkInTime: '08:15 AM, 12:30 PM, 04:45 PM', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
+      { id: 'PA011', name: 'Omar bin Hassan', idPengenalan: '820318-11-2345', attended: true, sesiDaftar: 1, checkInTime: '08:00', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA012', name: 'Fatimah binti Ahmad', idPengenalan: '860725-09-6789', attended: true, sesiDaftar: 3, checkInTime: '08:15, 12:30, 16:45', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-007': {
     id: 'MP2024-007',
     NamaAktiviti: 'Program Khidmat Masyarakat',
     type: 'Program',
-    Tarikh: '20/03/2024',
+    Tarikh: '20-03-2024',
     Lokasi: 'Masjid Al-Hidayah, Daerah Gombak',
     status: 'Diluluskan',
     allowanceRate: '100.00',
     penolongAmil: [
-      { id: 'PA016', name: 'Ali bin Mohamed', idPengenalan: '830415-07-1234', attended: true, sesiDaftar: 2, checkInTime: '09:00 AM, 02:00 PM', daerah: 'Luar Daerah', allowanceRate: '100.00' },
-      { id: 'PA017', name: 'Nurul binti Omar', idPengenalan: '880625-12-5678', attended: true, sesiDaftar: 1, checkInTime: '09:15 AM', daerah: 'Dalam Daerah', allowanceRate: '100.00' }
+      { id: 'PA016', name: 'Ali bin Mohamed', idPengenalan: '830415-07-1234', attended: true, sesiDaftar: 2, checkInTime: '09:00, 14:00', daerah: 'Luar Daerah', allowanceRate: '100.00' },
+      { id: 'PA017', name: 'Nurul binti Omar', idPengenalan: '880625-12-5678', attended: true, sesiDaftar: 1, checkInTime: '09:15', daerah: 'Dalam Daerah', allowanceRate: '100.00' }
     ]
   },
   'MP2024-008': {
     id: 'MP2024-008',
     NamaAktiviti: 'Latihan Pengurusan Aduan',
     type: 'Program',
-    Tarikh: '12/04/2024',
+    Tarikh: '12-04-2024',
     Lokasi: 'Bilik Latihan, Pejabat Zakat Gombak, Daerah Gombak',
     status: 'Diluluskan',
     allowanceRate: '70.00',
     penolongAmil: [
-      { id: 'PA018', name: 'Hassan bin Ibrahim', idPengenalan: '810912-05-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00 AM', daerah: 'Dalam Daerah', allowanceRate: '70.00' },
-      { id: 'PA019', name: 'Aminah binti Hassan', idPengenalan: '870318-16-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15 AM, 01:30 PM', daerah: 'Dalam Daerah', allowanceRate: '70.00' }
+      { id: 'PA018', name: 'Hassan bin Ibrahim', idPengenalan: '810912-05-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '70.00' },
+      { id: 'PA019', name: 'Aminah binti Hassan', idPengenalan: '870318-16-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15, 13:30', daerah: 'Dalam Daerah', allowanceRate: '70.00' }
     ]
   },
   'MP2024-009': {
     id: 'MP2024-009',
     NamaAktiviti: 'Latihan Pengurusan Zakat',
     type: 'Program',
-    Tarikh: '25/03/2024',
+    Tarikh: '25-03-2024',
     Lokasi: 'Dewan Latihan, Daerah Shah Alam',
     status: 'Belum Disemak',
     allowanceRate: '100.00',
     penolongAmil: [
-      { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:00 AM', daerah: 'Dalam Daerah', allowanceRate: '100.00' },
-      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825-12-6789', attended: true, sesiDaftar: 3, checkInTime: '08:15 AM, 12:00 PM, 03:45 PM', daerah: 'Dalam Daerah', allowanceRate: '100.00' }
+      { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:00', daerah: 'Dalam Daerah', allowanceRate: '100.00' },
+      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825-12-6789', attended: true, sesiDaftar: 3, checkInTime: '08:15, 12:00, 15:45', daerah: 'Dalam Daerah', allowanceRate: '100.00' }
     ]
   },
   'MP2024-010': {
     id: 'MP2024-010',
     NamaAktiviti: 'Mesyuarat Koordinasi',
     type: 'Mesyuarat',
-    Tarikh: '30/03/2024',
+    Tarikh: '30-03-2024',
     Lokasi: 'Pejabat Zakat, Daerah Petaling Jaya',
     status: 'Diluluskan',
     allowanceRate: '50.00',

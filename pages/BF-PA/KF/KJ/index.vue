@@ -673,7 +673,7 @@ const categoriesList = ref([
     kategoriPenolongAmil: "Penolong Amil Fitrah",
     kodSingkatan: "PAF",
     status: "Aktif",
-    tarikhKuatkuasa: "2024-01-01",
+    tarikhKuatkuasa: "01-01-2024",
     tindakan: 1
   },
   {
@@ -681,7 +681,7 @@ const categoriesList = ref([
     kategoriPenolongAmil: "Penolong Amil Padi",
     kodSingkatan: "PAP",
     status: "Aktif",
-    tarikhKuatkuasa: "2024-01-01",
+    tarikhKuatkuasa: "01-01-2024",
     tindakan: 2
   },
   {
@@ -689,7 +689,7 @@ const categoriesList = ref([
     kategoriPenolongAmil: "Penolong Amil Kariah",
     kodSingkatan: "PAK",
     status: "Aktif",
-    tarikhKuatkuasa: "2024-01-01",
+    tarikhKuatkuasa: "01-01-2024",
     tindakan: 3
   },
   {
@@ -697,7 +697,7 @@ const categoriesList = ref([
     kategoriPenolongAmil: "Penolong Amil Komuniti",
     kodSingkatan: "PK+",
     status: "Aktif",
-    tarikhKuatkuasa: "2024-01-01",
+    tarikhKuatkuasa: "01-01-2024",
     tindakan: 4
   },
   {
@@ -705,7 +705,7 @@ const categoriesList = ref([
     kategoriPenolongAmil: "Penolong Amil Wakaf",
     kodSingkatan: "PAW",
     status: "Menunggu Pengesahan",
-    tarikhKuatkuasa: "2024-01-01",
+    tarikhKuatkuasa: "01-01-2024",
     tindakan: 5
   },
   {
@@ -713,7 +713,7 @@ const categoriesList = ref([
     kategoriPenolongAmil: "Penolong Amil Zakat Perniagaan",
     kodSingkatan: "PAZP",
     status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "2024-01-01",
+    tarikhKuatkuasa: "01-01-2024",
     tindakan: 6
   },
   {
@@ -721,7 +721,7 @@ const categoriesList = ref([
     kategoriPenolongAmil: "Penolong Amil Zakat Emas",
     kodSingkatan: "PAZE",
     status: "Tidak Aktif",
-    tarikhKuatkuasa: "2024-01-01",
+    tarikhKuatkuasa: "01-01-2024",
     tindakan: 7
   }
 ]);

@@ -162,7 +162,7 @@ const formData = ref({
   namaJawatan: "Ketua Penolong Amil Komuniti",
   kategoriAmil: "KOMUNITI",
   status: "AKTIF",
-  tempohPerkhidmatan: "2025-05-13",
+  tempohPerkhidmatan: "13-05-2025",
 });
 
 // Modal state

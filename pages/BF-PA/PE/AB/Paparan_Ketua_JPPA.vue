@@ -164,7 +164,7 @@ const batches = ref([
     institution: 'Masjid Al-Ikhlas',
     category: 'Kariah',
     status: 'Menunggu Kelulusan Ketua JPPA',
-    createdAt: '2024-03-16'
+    createdAt: '16-03-2024'
   },
   {
     id: 2,
@@ -172,7 +172,7 @@ const batches = ref([
     institution: 'Masjid Al-Amin',
     category: 'Kariah',
     status: 'Menunggu Kelulusan Ketua JPPA',
-    createdAt: '2024-03-18'
+    createdAt: '18-03-2024'
   },
   {
     id: 3,
@@ -180,7 +180,7 @@ const batches = ref([
     institution: 'Masjid Al-Falah',
     category: 'Kariah',
     status: 'Menunggu Kelulusan Ketua JPPA',
-    createdAt: '2024-03-19'
+    createdAt: '19-03-2024'
   },
   {
     id: 4,
@@ -188,7 +188,7 @@ const batches = ref([
     institution: 'Masjid Kg Delek',
     category: 'Kariah',
     status: 'Menunggu Kelulusan Ketua JPPA',
-    createdAt: '2024-03-20'
+    createdAt: '20-03-2024'
   }
 ]);
 

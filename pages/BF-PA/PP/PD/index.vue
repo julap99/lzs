@@ -159,7 +159,7 @@ const applications = ref([
     candidateName: "Ahmad bin Abdullah",
     masjidName: "Masjid Wilayah Persekutuan",
     category: "FITRAH",
-    applicationDate: "01/03/2024",
+    applicationDate: "01-03-2024",
     status: "Belum Disemak",
   },
   {
@@ -167,7 +167,7 @@ const applications = ref([
     candidateName: "Siti binti Mohamed",
     masjidName: "Masjid Al-Khairiyah",
     category: "KARIAH",
-    applicationDate: "02/03/2024",
+    applicationDate: "02-03-2024",
     status: "Menunggu Sokongan JPPA",
   },
   {
@@ -175,7 +175,7 @@ const applications = ref([
     candidateName: "Mohd Razak bin Ibrahim",
     masjidName: "Masjid Bandar Utama",
     category: "KOMUNITI",
-    applicationDate: "03/03/2024",
+    applicationDate: "03-03-2024",
     status: "Menunggu Kelulusan Ketua JPPA",
   },
   {
@@ -183,7 +183,7 @@ const applications = ref([
     candidateName: "Nurul Huda binti Ali",
     masjidName: "Masjid Damansara Perdana",
     category: "PADI",
-    applicationDate: "04/03/2024",
+    applicationDate: "04-03-2024",
     status: "Menunggu Kelulusan Ketua Divisyen",
   },
   {
@@ -191,7 +191,7 @@ const applications = ref([
     candidateName: "Abdul Rahman bin Hassan",
     masjidName: "Masjid Kg Delek",
     category: "FITRAH",
-    applicationDate: "05/03/2024",
+    applicationDate: "05-03-2024",
     status: "Lulus",
   },
   {
@@ -199,7 +199,7 @@ const applications = ref([
     candidateName: "Fatimah binti Ismail",
     masjidName: "Masjid Al-Hidayah",
     category: "KOMUNITI",
-    applicationDate: "06/03/2024",
+    applicationDate: "06-03-2024",
     status: "Tidak Lulus",
   },
 ]);
