@@ -505,7 +505,7 @@ const getStatusVariant = (status) => {
     Lulus: "success",
     "Tidak Lulus": "danger",
   };
-  return statusVariants[status] || "default";
+  return statusVariants[status] || "secondary"; // Use secondary instead of default
 };
 
 const getActionButtonText = (status) => {

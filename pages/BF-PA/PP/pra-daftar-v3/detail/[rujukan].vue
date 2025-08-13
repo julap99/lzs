@@ -615,19 +615,19 @@ const getCurrentRoleLabel = () => {
 
 const getCurrentRoleBadgeVariant = () => {
   const badgeVariants = {
-    'pyb': 'default',
+    'pyb': 'primary',        // Use primary instead of default
     'eksekutif-pengurusan-risiko': 'info',
     'pt': 'warning',
     'eksekutif': 'success',
     'ketua-jabatan': 'warning',
     'ketua-divisyen': 'primary'
   };
-  return badgeVariants[currentRole.value] || 'default';
+  return badgeVariants[currentRole.value] || 'secondary'; // Use secondary instead of default
 };
 
 const getStatusPendaftaranVariant = (status) => {
   const variants = {
-    'Draf': 'default',
+    'Draf': 'secondary',        // Use secondary instead of default
     'Dihantar': 'warning',
     'Telah Disaring': 'info',
     'Telah Disemak': 'info',
@@ -636,7 +636,7 @@ const getStatusPendaftaranVariant = (status) => {
     'Telah Diluluskan': 'success',
     'Ditolak': 'danger'
   };
-  return variants[status] || 'default';
+  return variants[status] || 'secondary'; // Use secondary instead of default
 };
 
 const getStatusLantikanVariant = (status) => {
@@ -647,7 +647,7 @@ const getStatusLantikanVariant = (status) => {
     'Tidak Aktif': 'secondary',
     'Ditamatkan': 'danger'
   };
-  return variants[status] || 'default';
+  return variants[status] || 'secondary'; // Use secondary instead of default
 };
 
 // Action handlers with proper navigation

@@ -213,7 +213,7 @@ const getStatusVariant = (status) => {
     case "Menunggu Kelulusan":
       return "warning";
     default:
-      return "default";
+      return "secondary"; // Use secondary instead of default
   }
 };
 </script> 
