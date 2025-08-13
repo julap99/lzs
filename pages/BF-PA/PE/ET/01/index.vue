@@ -253,21 +253,21 @@ const nextYear = currentYear + 1;
 
 // Filter options
 const jawatanOptions = [
-  { label: 'Semua', value: '' },
+  { label: 'Sila pilih...', value: '' },
   { label: 'Penolong Amil Kanan', value: 'Penolong Amil Kanan' },
   { label: 'Penolong Amil', value: 'Penolong Amil' },
   { label: 'Penolong Amil Muda', value: 'Penolong Amil Muda' },
 ];
 
 const statusLantikanOptions = [
-  { label: 'Semua', value: '' },
+  { label: 'Sila pilih...', value: '' },
   { label: 'Aktif', value: 'Aktif' },
   { label: 'Tamat', value: 'Tamat' },
   { label: 'Digantung', value: 'Digantung' },
 ];
 
 const statusPembayaranOptions = [
-  { label: 'Semua', value: '' },
+  { label: 'Sila pilih...', value: '' },
   { label: 'Belum Dikira', value: 'Belum Dikira' },
   { label: 'Telah Dikira', value: 'Telah Dikira' },
   { label: 'Telah Dibayar', value: 'Telah Dibayar' },

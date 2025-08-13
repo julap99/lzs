@@ -362,7 +362,7 @@
                   v-model="candidateFilters.kategori"
                   type="select"
                   :options="[
-                    { label: 'Semua Kategori', value: '' },
+                    { label: 'Sila pilih...', value: '' },
                     { label: 'PAK', value: 'PAK' },
                     { label: 'PAF', value: 'PAF' },
                     { label: 'PA Padi', value: 'PA Padi' },
@@ -375,7 +375,7 @@
                   v-model="candidateFilters.status"
                   type="select"
                   :options="[
-                    { label: 'Semua Status', value: '' },
+                    { label: 'Sila pilih...', value: '' },
                     { label: 'Layak', value: 'layak' },
                     { label: 'Penolong Amil Aktif', value: 'active' }
                   ]"

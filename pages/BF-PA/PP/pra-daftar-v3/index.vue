@@ -935,7 +935,7 @@ const eksekutifColumnsWithoutStatusLantikan = [
 
 // RTMF Required Filter Options
 const statusPendaftaranOptions = [
-  { label: "Semua Status Pendaftaran", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Draf", value: "Draft" },
   { label: "Dihantar", value: "Submitted" },
   { label: "Dalam Semakan", value: "Under Review" },
@@ -949,7 +949,7 @@ const statusPendaftaranOptions = [
 ];
 
 const sesiPerkhidmatanOptions = [
-  { label: "Semua Sesi", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Sesi 1 - Januari-Mac", value: "Sesi 1" },
   { label: "Sesi 2 - April-Jun", value: "Sesi 2" },
   { label: "Sesi 3 - Julai-September", value: "Sesi 3" },
@@ -957,7 +957,7 @@ const sesiPerkhidmatanOptions = [
 ];
 
 const kategoriPenolongAmilOptions = [
-  { label: "Semua Kategori", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Fitrah", value: "Fitrah" },
   { label: "Padi", value: "Padi" },
   { label: "Kariah", value: "Kariah" },
@@ -965,7 +965,7 @@ const kategoriPenolongAmilOptions = [
 ];
 
 const statusLantikanOptions = [
-  { label: "Semua Status Lantikan", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Menunggu", value: "Pending" },
   { label: "Dilantik", value: "Appointed" },
   { label: "Aktif", value: "Active" },
@@ -975,7 +975,7 @@ const statusLantikanOptions = [
 
 // Completed applications status options (only active statuses)
 const completedStatusLantikanOptions = [
-  { label: "Semua Status", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Aktif", value: "Aktif" },
   { label: "Tidak Aktif", value: "Tidak Aktif" },
   { label: "Ditamatkan", value: "Ditamatkan" },

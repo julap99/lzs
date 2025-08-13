@@ -764,6 +764,7 @@ const canSubmit = computed(() => {
 
 // Kariah Institusi Options
 const kariahInstitusiOptions = [
+  { label: "Sila pilih...", value: "" },
   { label: "Masjid Kariah", value: "MASJID_KARIAH" },
   { label: "Masjid Al-Khairiyah", value: "MASJID_AL_KHAIRIYAH" },
   { label: "Taman Seri Gombak", value: "TAMAN_SERI_GOMBAK" },

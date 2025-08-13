@@ -650,7 +650,7 @@ const filters = ref({
 
 // Filter options
 const statusOptions = [
-  { label: "Semua Status", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Aktif", value: "Aktif" },
   { label: "Tidak Aktif", value: "Tidak Aktif" },
   { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
@@ -658,7 +658,7 @@ const statusOptions = [
 ];
 
 const kategoriOptions = [
-  { label: "Semua Kategori", value: "" },
+  { label: "Sila pilih...", value: "" },
   { label: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
   { label: "Penolong Amil Padi", value: "Penolong Amil Padi" },
   { label: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },

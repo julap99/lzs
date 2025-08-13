@@ -31,7 +31,7 @@
                 name="status"
                 placeholder="Status"
                 :options="[
-                  { label: 'Semua Status', value: '' },
+                  { label: 'Sila pilih...', value: '' },
                   { label: 'Belum Disemak', value: 'BELUM_DISEMAK' },
                   { label: 'Menunggu Sokongan JPPA', value: 'MENUNGGU_SOKONGAN' },
                   { label: 'Menunggu Kelulusan Ketua JPPA', value: 'MENUNGGU_KELULUSAN_KETUA_JPPA' },

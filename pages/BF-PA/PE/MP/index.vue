@@ -685,21 +685,21 @@ const activities = ref([
 ]);
 
 const eksekutifStatusOptions = [
-  { label: 'Semua Status', value: '' },
+  { label: 'Sila pilih...', value: '' },
   { label: 'Belum Disemak', value: 'Belum Disemak' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 const ketuaDivisyenStatusOptions = [
-  { label: 'Semua Status', value: '' },
+  { label: 'Sila pilih...', value: '' },
   { label: 'Belum Disemak', value: 'Belum Disemak' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 const ketuaJabatanStatusOptions = [
-  { label: 'Semua Status', value: '' },
+  { label: 'Sila pilih...', value: '' },
   { label: 'Belum Disemak', value: 'Belum Disemak' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },

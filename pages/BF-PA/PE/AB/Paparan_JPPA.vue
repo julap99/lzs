@@ -194,7 +194,7 @@ const batches = ref([
 
 // Status options for filter
 const statusOptions = [
-  { label: 'Semua', value: '' },
+  { label: 'Sila pilih...', value: '' },
   { label: 'Menunggu sokongan JPPA', value: 'Menunggu Sokongan JPPA' },
 ];
 

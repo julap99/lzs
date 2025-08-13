@@ -39,6 +39,7 @@
           label="Sesi"
           placeholder="Pilih bilangan sesi"
           :options="[
+            { label: 'Sila pilih...', value: '' },
             { label: '1 Sesi', value: '1' },
             { label: '2 Sesi', value: '2' }
           ]"
@@ -71,6 +72,7 @@
           label="Jenis Aktiviti"
           placeholder="Pilih jenis aktiviti"
           :options="[
+            { label: 'Sila pilih...', value: '' },
             { label: 'Mesyuarat', value: 'MESYUARAT' },
             { label: 'Program', value: 'PROGRAM' },
             { label: 'Latihan', value: 'LATIHAN' }
@@ -86,6 +88,7 @@
           label="Kategori Amil"
           placeholder="Pilih kategori amil"
           :options="[
+            { label: 'Sila pilih...', value: '' },
             { label: 'Fitrah', value: 'FITRAH' },
             { label: 'Padi', value: 'PADI' },
             { label: 'Kariah', value: 'KARIAH' },
@@ -102,6 +105,7 @@
           label="Senarai Peserta"
           placeholder="Pilih peserta"
           :options="[
+            { label: 'Sila pilih...', value: '' },
             { label: 'Semua Penolong Amil', value: 'SEMUA' },
             { label: 'Berdasarkan Kategori', value: 'KATEGORI' },
             { label: 'Berdasarkan Daerah', value: 'DAERAH' },
