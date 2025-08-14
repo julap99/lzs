@@ -65,7 +65,56 @@
                   Hasil Pengiraan Had Kifayah
                 </h3>
                 <div v-if="kifayahLimit" class="text-lg font-semibold">
-                  Total Had Kifayah: RM {{ kifayahLimit.toFixed(2) }}
+                  <div class="mb-2">Baki Pendapatan: <span class="font-bold">RM {{ bakiPendapatan.toFixed(2) }}</span></div>
+                  <div class="mb-2">Peratusan Perbezaan: <span class="font-bold">{{ peratusanPendapatan.toFixed(2) }}%</span></div>
+                  <div class="mb-2">Kategori Keluarga Asnaf: <span class="text-blue-600 font-bold">{{ kategoriKeluarga }}</span></div>
+                  <div class="mb-4">Kategori Asnaf: <span class="text-blue-600 font-bold">{{ kategoriAsnaf }}</span></div>
+
+                  <!-- Household Breakdown Table -->
+                  <div class="overflow-x-auto mb-2">
+                    <table class="min-w-max w-full text-sm border border-blue-300 mb-2">
+                      <thead class="bg-blue-100">
+                        <tr>
+                          <th class="border px-2 py-1">Kategori</th>
+                          <th class="border px-2 py-1">Had Kifayah</th>
+                          <th class="border px-2 py-1">Bil</th>
+                          <th class="border px-2 py-1">Jumlah</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="border px-2 py-1">Rumah Tidak Berbayar</td>
+                          <td class="border px-2 py-1">780.00</td>
+                          <td class="border px-2 py-1">1</td>
+                          <td class="border px-2 py-1">780.00</td>
+                        </tr>
+                        <tr>
+                          <td class="border px-2 py-1">Dewasa Tidak Bekerja</td>
+                          <td class="border px-2 py-1">167.00</td>
+                          <td class="border px-2 py-1">1</td>
+                          <td class="border px-2 py-1">167.00</td>
+                        </tr>
+                        <tr>
+                          <td class="border px-2 py-1">Tanggungan 7-17 tahun</td>
+                          <td class="border px-2 py-1">408.00</td>
+                          <td class="border px-2 py-1">1</td>
+                          <td class="border px-2 py-1">408.00</td>
+                        </tr>
+                        <tr>
+                          <td class="border px-2 py-1">Tanggungan Belajar IPT</td>
+                          <td class="border px-2 py-1">613.00</td>
+                          <td class="border px-2 py-1">1</td>
+                          <td class="border px-2 py-1">613.00</td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr class="bg-blue-100 font-bold">
+                          <td class="border px-2 py-1 text-right" colspan="3">Jumlah Had Kifayah</td>
+                          <td class="border px-2 py-1">1968.00</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
                 </div>
                 <div v-else class="text-gray-500">
                   Masukkan maklumat untuk pengiraan
@@ -101,7 +150,7 @@
                   v-else
                   variant="primary"
                   class="ml-auto"
-                  @click="navigateTo(`/BF-PRF/AS/FR/05`)"
+                  @click="goToSummary"
                   :disabled="processing"
                 >
 
@@ -138,13 +187,40 @@ const breadcrumb = ref([
 ]);
 
 const formData = ref({
-  icNumber: "000000000000",
+  icNumber: "770319035991",
   name: "",
-  income: 2000,
-  dependentsIncome: 1000,
+  income: 1000,
+  dependentsIncome: 0,
 });
 
 const kifayahLimit = ref(null);
+
+// Computed values for calculation and categorization
+const totalIncome = computed(() => {
+  // Pendapatan Isi Rumah
+  return Number(formData.value.income) || 0;
+});
+
+const bakiPendapatan = computed(() => {
+  // Baki Pendapatan = Pendapatan Isi Rumah - Jumlah Had Kifayah
+  if (!kifayahLimit.value) return 0;
+  return totalIncome.value - kifayahLimit.value;
+});
+
+const peratusanPendapatan = computed(() => {
+  // Peratusan = (Pendapatan Isi Rumah / Jumlah Had Kifayah) × 100
+  if (!kifayahLimit.value || kifayahLimit.value === 0) return 0;
+  return (totalIncome.value / kifayahLimit.value) * 100;
+});
+
+const kategoriKeluarga = computed(() => {
+  if (!kifayahLimit.value || kifayahLimit.value === 0) return '-';
+  if (peratusanPendapatan.value < 50) return 'Fakir';
+  if (peratusanPendapatan.value <= 100) return 'Miskin';
+  return 'Non-FM';
+});
+
+const kategoriAsnaf = computed(() => kategoriKeluarga.value);
 
 const resetForm = () => {
   formData.value = {
@@ -159,27 +235,45 @@ const resetForm = () => {
 const calculateKifayahLimit = () => {
   if (
     !formData.value.icNumber ||
-    !formData.value.income ||
-    !formData.value.dependentsIncome
+    formData.value.income === null ||
+    formData.value.dependentsIncome === null
   ) {
     return;
   }
 
   processing.value = true;
 
-  // Simulate calculation process
-  setTimeout(() => {
-    // Example calculation logic - replace with your actual formula
-    const basicNeed = 1500; // Basic living cost
-    const dependentsNeed = formData.value.dependentsIncome * 0.6; // Example calculation
-
-    kifayahLimit.value = basicNeed + dependentsNeed;
-    processing.value = false;
-  }, 1000);
+  // Hardcoded household category values as per example
+  // Rumah Percuma: 780
+  // Dewasa Tidak Bekerja: 167
+  // Tanggungan 7-17 tahun: 408
+  // Tanggungan Belajar IPT: 613
+  // Jumlah Had Kifayah = 780 + 167 + 408 + 613 = 1968
+  const jumlahHadKifayah = 780 + 167 + 408 + 613;
+  kifayahLimit.value = jumlahHadKifayah;
+  processing.value = false;
 };
 
 const handleSubmit = (data) => {
   console.log("Form submitted:", data);
   calculateKifayahLimit();
 };
+
+function goToSummary() {
+  // Save Had Kifayah results to localStorage
+  localStorage.setItem('hadKifayahResult', JSON.stringify({
+    bakiPendapatan: bakiPendapatan.value,
+    peratusanPendapatan: peratusanPendapatan.value,
+    kategoriKeluarga: kategoriKeluarga.value,
+    kategoriAsnaf: kategoriAsnaf.value,
+    kifayahLimit: kifayahLimit.value,
+    breakdown: [
+      { kategori: 'Rumah Tidak Berbayar', had: 780, bil: 1, jumlah: 780 },
+      { kategori: 'Dewasa Tidak Bekerja', had: 167, bil: 1, jumlah: 167 },
+      { kategori: 'Tanggungan 7-17 tahun', had: 408, bil: 1, jumlah: 408 },
+      { kategori: 'Tanggungan Belajar IPT', had: 613, bil: 1, jumlah: 613 }
+    ]
+  }))
+  navigateTo('/BF-PRF/AS/FR/05_01')
+}
 </script>

@@ -1268,6 +1268,19 @@ export default [
         meta: {},
       },
       {
+        title: "Kelulusan Khas",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Senarai Kelulusan Khas",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/PB/KH/01",
+            child: [],
+            meta: {},
+          },
+        ]
+        },
+      {
         title: "Bantuan Bulk",
         icon: "iconamoon:component-fill",
         child: [
@@ -1292,15 +1305,13 @@ export default [
             child: [],
             meta: {},
           },
+          
         ],
         meta: {},
+        
       },
+      
     ],
-    meta: {
-      auth: {
-        role: ["Developer"],
-      },
-    },
   },
 
   // BF-PA
@@ -1383,16 +1394,23 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Tugasan",
+            title: "Bancian/Asnaf Review/Bantuan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PE/AB2",
+            path: "/BF-PA/PE/AB",
             child: [],
             meta: {},
           },
           {
-            title: "Mesyuarat/Program",
+            title: "Elaun Tahunan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PE/MP",
+            path: "/BF-PA/PE/ET",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Elaun Tugasan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/PE/AB",
             child: [],
             meta: {},
           },
