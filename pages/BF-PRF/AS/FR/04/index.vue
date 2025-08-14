@@ -274,6 +274,6 @@ function goToSummary() {
       { kategori: 'Tanggungan Belajar IPT', had: 613, bil: 1, jumlah: 613 }
     ]
   }))
-  navigateTo('/BF-PRF/AS/FR/05')
+  navigateTo('/BF-PRF/AS/FR/05_01')
 }
 </script>
