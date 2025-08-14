@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Bancian/Asnaf Review/Bantuan
+            Elaun Tugasan
           </h2>
           <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/AB/01')">Tambah Baru</rs-button>
         </div>

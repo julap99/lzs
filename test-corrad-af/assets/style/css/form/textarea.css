@@ -1,0 +1,8 @@
+.formkit-input-textarea {
+  @apply block 
+  w-full 
+  px-3 py-2 
+  placeholder-[rgb(var(--fk-placeholder-color))] 
+  bg-[rgb(var(--bg-2))] 
+  focus:outline-none;
+}

@@ -1,0 +1,65 @@
+/* Example Custom Theme for corradAF Base Project */
+/* This file demonstrates how custom themes should be structured */
+/* Define your custom theme variables here */
+/* For example:
+:root {
+  --primary-color: #yourColor;
+}
+*/
+
+:root {
+  /* Custom color variables */
+  --color-primary: 46, 125, 50; /* Green theme */
+  --color-secondary: 117, 117, 117;
+  --color-success: 76, 175, 80;
+  --color-info: 33, 150, 243;
+  --color-warning: 255, 152, 0;
+  --color-danger: 244, 67, 54;
+  
+  /* Custom background colors */
+  --bg-primary: 245, 245, 245;
+  --bg-secondary: 255, 255, 255;
+}
+
+/* Dark theme overrides */
+.dark {
+  --bg-primary: 18, 18, 18;
+  --bg-secondary: 30, 30, 30;
+}
+
+/* Custom component styles */
+.btn-primary {
+  background-color: rgb(var(--color-primary));
+  border-color: rgb(var(--color-primary));
+}
+
+.btn-primary:hover {
+  background-color: rgba(var(--color-primary), 0.8);
+  border-color: rgba(var(--color-primary), 0.8);
+}
+
+/* Header customizations */
+.w-header {
+  background: linear-gradient(135deg, rgb(var(--color-primary)), rgba(var(--color-primary), 0.8));
+  color: white;
+}
+
+/* Sidebar customizations */
+.vertical-menu {
+  background-color: rgb(var(--bg-secondary));
+  border-right: 1px solid rgba(var(--color-primary), 0.1);
+}
+
+/* Card customizations */
+.card {
+  background-color: rgb(var(--bg-secondary));
+  border: 1px solid rgba(var(--color-primary), 0.1);
+  box-shadow: 0 2px 4px rgba(var(--color-primary), 0.1);
+}
+
+/* Example of responsive design */
+@media (max-width: 768px) {
+  .w-header {
+    background: rgb(var(--color-primary));
+  }
+} 

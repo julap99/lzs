@@ -5,287 +5,158 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Kiraan Jumlah Elaun Mengikut Penolong Amil</h2>
-          <rs-badge
-            v-if="formData.status"
-            :variant="getStatusVariant(formData.status)"
-          >
-            {{ formData.status }}
-          </rs-badge>
+          <h2 class="text-xl font-semibold">Semakan & Kelulusan Manual Kuasa</h2>
         </div>
       </template>
 
       <template #body>
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="handleSubmit"
-          v-model="formData"
-        >
-        
-          <!-- Senarai Penolong Amil Section -->
-          <div class="space-y-6 mt-8">
-            <h3 class="text-lg font-medium">Senarai Kehadiran Penolong Amil</h3>
-            <rs-table
-              class="mt-4"
-              :key="tableKey"
-              :data="formData.senaraiPenolong"
-              :pageSize="10"
-              :showNoColumn="true"
-              :columns="[
-                { key: 'nama', label: 'Nama Penolong Amil' },
-                { key: 'tarikh', label: 'Tarikh Aktiviti' }
-              ]"
-              :options="{
-                variant: 'default',
-                hover: true,
-              }"
-            >
-              <template v-slot:nama="data">
-                {{ data.text }}
-              </template>
-              <template v-slot:tarikh="data">
-                {{ data.text }}
-              </template>
-            </rs-table>
+        <!-- 1. Maklumat Aktiviti -->
+        <div class="space-y-4 mt-6">
+          <h3 class="text-lg font-medium">Maklumat Aktiviti</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit type="text" name="idAktiviti" label="ID Aktiviti" :value="formData.idAktiviti" disabled />
+            <FormKit type="text" name="namaAktiviti" label="Nama Aktiviti" :value="formData.namaAktiviti" disabled />
+            <FormKit type="text" name="tarikhAktiviti" label="Tarikh Aktiviti" :value="formData.tarikhAktiviti" disabled />
+            <FormKit type="text" name="jenisAktiviti" label="Jenis Aktiviti" :value="formData.jenisAktiviti" disabled />
+          </div>
+        </div>
+
+        <!-- 2. Filter + Cetak -->
+        <div class="space-y-4 mt-8">
+          <h3 class="text-lg font-medium">Senarai Penolong Amil</h3>
+          <div class="flex flex-wrap gap-4">
+            <rs-button :variant="selectedFilter === 'Semua' ? 'primary' : 'primary-outline'" @click="filterStatus('Semua')">Semua</rs-button>
+            <rs-button :variant="selectedFilter === 'Hadir' ? 'primary' : 'primary-outline'" @click="filterStatus('Hadir')">Hadir</rs-button>
+            <rs-button :variant="selectedFilter === 'Tidak Hadir' ? 'primary' : 'primary-outline'" @click="filterStatus('Tidak Hadir')">Tidak Hadir</rs-button>
+            <rs-button variant="primary-outline" icon="material-symbols:download" @click="cetakXLSX">Cetak XLSX</rs-button>
+            <rs-button variant="primary-outline" icon="material-symbols:picture-as-pdf" @click="cetakPDF">Cetak PDF</rs-button>
           </div>
 
-          <!-- Maklumat Pengiraan Section -->
-          <div class="space-y-6 mt-8">
-            <h3 class="text-lg font-medium">Maklumat Pengiraan</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit 
-              type="text" 
-              name="kadarElaun" 
-              label="Kadar Elaun" 
-              disabled 
-              />
-              <FormKit
-                type="text"
-                name="jumlahElaun"
-                label="Jumlah Elaun"
-                disabled
-              />
-            </div>
+          <rs-table
+            class="mt-4"
+            :data="filteredPeserta"
+            :pageSize="10"
+            :showNoColumn="true"
+            :columns="[
+              { key: 'nama', label: 'Nama' },
+              { key: 'noKP', label: 'No KP' },
+              { key: 'kategori', label: 'Kategori' },
+              { key: 'jawatan', label: 'Jawatan' },
+              { key: 'daerah', label: 'Daerah' },
+              { key: 'status', label: 'Status Kehadiran' },
+              { key: 'elaun', label: 'Elaun (RM)' }
+            ]"
+          >
+            <template v-slot:status="data">
+              <rs-badge :variant="data.text === 'Hadir' ? 'success' : 'danger'">{{ data.text }}</rs-badge>
+            </template>
+            <template v-slot:elaun="data">
+              RM {{ parseFloat(data.text).toFixed(2) }}
+            </template>
+          </rs-table>
+
+          <div class="text-right font-semibold text-lg mt-4">
+            Jumlah Keseluruhan Elaun: RM {{ jumlahKeseluruhan.toFixed(2) }}
           </div>
 
-          <!-- Remarks Section -->
-          <div class="space-y-6 mt-8">
-            <h3 class="text-lg font-medium">Ulasan</h3>
-            <div class="grid grid-cols-1 gap-4">
-              <FormKit
-                type="textarea"
-                name="ulasan"
-                label="Ulasan Eksekutif JPPA"
-                validation="required"
-                validation-label="Ulasan"
-                disabled
-              />
-
-              <FormKit
-                type="textarea"
-                name="ulasanKetua"
-                label="Ulasan Ketua JPPA"
-                validation="required"
-                validation-label="Ulasan"
-                disabled
-              />
-            </div>
+          <div class="mt-2 text-sm" :class="hadLulus ? 'text-green-600' : 'text-red-600'">
+            <span v-if="hadLulus">
+              ✅ Jumlah elaun berada dalam had kelulusan anda. Sila teruskan kelulusan jika bersetuju.
+            </span>
+            <span v-else>
+              ❌ Kelulusan tidak tersedia kerana jumlah melebihi had kelulusan yang dibenarkan.
+            </span>
           </div>
-          
+        </div>
 
-          <!-- Form Actions -->
-          <div class="flex justify-end space-x-4 mt-8">
-            <rs-button
-              variant="primary-outline"
-              @click="navigateTo('/BF-PA/PE/MP/01')"
-            >
-              Kembali
-            </rs-button>
-            <rs-button variant="primary" @click="handleSubmit">
-              Jana ID 
-            </rs-button>
+        <!-- 3. Keputusan Kelulusan -->
+        <div class="space-y-4 mt-8">
+          <h3 class="text-lg font-medium">Keputusan Ketua Jabatan</h3>
+          <div class="flex gap-4">
+            <rs-button variant="success" :disabled="!hadLulus" @click="setKeputusan('Lulus')">Lulus</rs-button>
+            <rs-button variant="danger" @click="setKeputusan('Tidak Lulus')">Tidak Lulus</rs-button>
           </div>
-        </FormKit>
+
+          <div v-if="keputusan === 'Tidak Lulus'" class="mt-4">
+            <FormKit
+              type="textarea"
+              name="ulasan"
+              label="Ulasan Penolakan"
+              placeholder="Sila nyatakan sebab penolakan permohonan ini."
+              v-model="ulasan"
+              validation="required"
+            />
+          </div>
+        </div>
+
+        <!-- 4. Tindakan Akhir -->
+        <div class="flex justify-end space-x-4 mt-8">
+          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/MP/01')">Kembali</rs-button>
+          <rs-button variant="primary" :disabled="keputusan === null || (keputusan === 'Tidak Lulus' && !ulasan)" @click="sahkanKeputusan">
+            Sahkan Keputusan
+          </rs-button>
+        </div>
       </template>
     </rs-card>
-
-    <!-- Confirmation Modal -->
-    <rs-modal
-      v-model="showSuccessModal"
-      title="Hantar ke Pelulus"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="text-center">
-          <Icon
-            name="material-symbols:help-outline"
-            class="text-blue-500 text-5xl mb-4"
-          />
-          <p class="text-lg mb-2">
-            Adakah anda pasti untuk Menjana ID Payment Advice?
-          </p>
-          <!-- <p class="text-gray-600">
-            Semakan ini akan dihantar kepada pelulus untuk kelulusan seterusnya.
-          </p> -->
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-center space-x-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showSuccessModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button variant="primary" @click="confirmSubmit">
-            Ya
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useToast } from "vue-toastification";
-import { useRoute } from "vue-router";
+import { ref, computed } from 'vue'
+import { useToast } from 'vue-toastification'
 
-definePageMeta({
-  title: "Semakan Bantuan",
-  description: "Semak dan ulas permohonan bantuan",
-});
-
-const route = useRoute();
-const toast = useToast();
-const showSuccessModal = ref(false);
+const toast = useToast()
+const selectedFilter = ref('Semua')
+const keputusan = ref(null)
+const ulasan = ref('')
+const hadKelulusan = 200 // Had kelulusan Ketua Jabatan
 
 const breadcrumb = ref([
-  {
-    name: "Pengurusan Penolong Amil",
-    type: "link",
-    path: "/BF-PA/PE/MP/01",
-  },
-  {
-    name: "Jana Payment Advice",
-    type: "current",
-    path: "/BF-PA/PE/MP/05",
-  },
-]);
+  { name: "Pengurusan Penolong Amil", type: "link", path: "/BF-PA/PE/MP/01" },
+  { name: "Semakan & Kelulusan Manual Kuasa", type: "current", path: "/BF-PA/PE/MP/03" }
+])
 
 const formData = ref({
-  kadarElaun: "100.00",
-  jumlahElaun: "500.00",
-  ulasan:"Permohonan ini telah disahkan oleh Eksekutif JPPA",
-  ulasanKetua:"Permohonan ini telah disahkan oleh Ketua JPPA",
-  senaraiPenolong: [
-    {
-      id: 1,
-      nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
-    },
-    {
-      id: 2,
-      nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
-    },
-    {
-      id: 3,
-      nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
-    },
-    {
-      id: 4,
-      nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
-    },
-    {
-      id: 5,
-      nama: "Nama Penolong Amil",
-      tarikh: "2024-12-31",
-    },
-  ],
-});
+  idAktiviti: "ACT-456",
+  namaAktiviti: "Mesyuarat Zon Selatan",
+  tarikhAktiviti: "2025-08-05",
+  jenisAktiviti: "Mesyuarat",
+  senaraiPeserta: [
+    { nama: "Hasan bin Omar", noKP: "801212-01-1111", kategori: "PAK", jawatan: "Pembantu", daerah: "Sepang", status: "Hadir", elaun: 90 },
+    { nama: "Ramlah binti Musa", noKP: "850505-02-2222", kategori: "PAF", jawatan: "Setiausaha", daerah: "Klang", status: "Tidak Hadir", elaun: 0 },
+    { nama: "Jamilah binti Ghani", noKP: "870101-03-3333", kategori: "PAK", jawatan: "Pembantu", daerah: "Sabak Bernam", status: "Hadir", elaun: 110 }
+  ]
+})
 
-const getStatusVariant = (status) => {
-  const variants = {
-    "Menunggu Semakan": "warning",
-    Lulus: "success",
-    Tolak: "danger",
-    "Kembali untuk Pembetulan": "warning",
-    "Dalam Pemerhatian": "warning",
-  };
-  return variants[status] || "default";
-};
+const filteredPeserta = computed(() => {
+  if (selectedFilter.value === 'Semua') return formData.value.senaraiPeserta
+  return formData.value.senaraiPeserta.filter(p => p.status === selectedFilter.value)
+})
 
-onMounted(async () => {
-  // TODO: Fetch bantuan data based on ID from route.params.id
-  // For now using mock data
-  const mockData = {
-    kadarElaun: "100.00",
-    jumlahElaun: "500.00",
-    ulasan:"Permohonan ini telah disahkan oleh Eksekutif JPPA",
-    ulasanKetua:"Permohonan ini telah disahkan oleh Ketua JPPA",
-    senaraiPenolong: [
-      {
-        nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
-      },
-      {
-        nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
-      },
-      {
-        nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
-      },
-      {
-        nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
-      },
-      {
-        nama: "Nama Penolong Amil",
-        tarikh: "2024-12-31",
-      },
-    ],
-  };
+const jumlahKeseluruhan = computed(() => {
+  return formData.value.senaraiPeserta.reduce((sum, p) => sum + (parseFloat(p.elaun) || 0), 0)
+})
 
-  formData.value = { ...mockData };
-});
+const hadLulus = computed(() => jumlahKeseluruhan.value <= hadKelulusan)
 
-const handleSubmit = async (formData) => {
-  try {
-    // Show confirmation modal
-    showSuccessModal.value = true;
-  } catch (error) {
-    toast.error("Ralat semasa mengemaskini status bantuan");
-    console.error("Error updating bantuan status:", error);
+const filterStatus = (status) => {
+  selectedFilter.value = status
+}
+
+const setKeputusan = (val) => {
+  keputusan.value = val
+  if (val === 'Lulus') ulasan.value = ''
+}
+
+const sahkanKeputusan = () => {
+  if (keputusan.value === 'Lulus') {
+    toast.success("Elaun telah diluluskan. Terus ke proses Payment Advice.")
+  } else {
+    toast.error(`Elaun ditolak. Ulasan: ${ulasan.value}`)
   }
-};
+  navigateTo('/BF-PA/PE/MP/06')
+}
 
-const confirmSubmit = async () => {
-  try {
-    // TODO: Implement API call to update bantuan status
-    console.log("Updating bantuan status:", formData.value);
-
-    // Close modal
-    showSuccessModal.value = false;
-
-    // Show success toast
-    toast.success("Semakan telah berjaya dihantar kepada pelulus");
-
-    // Navigate back to list
-    // navigateToList();
-    navigateTo("/BF-PA/PE/MP/06");
-  } catch (error) {
-    toast.error("Ralat semasa mengemaskini status bantuan");
-    console.error("Error updating bantuan status:", error);
-  }
-};
-
-const navigateToList = () => {
-  navigateTo("/BF-BTN/PB/BTLB/01");
-};
+const cetakXLSX = () => toast.info("Fungsi eksport ke .xlsx belum disambung.")
+const cetakPDF = () => toast.info("Fungsi eksport ke .pdf belum disambung.")
 </script>

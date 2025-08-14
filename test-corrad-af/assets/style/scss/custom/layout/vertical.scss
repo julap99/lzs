@@ -1,0 +1,166 @@
+$small: 640px;
+$medium: 768px;
+$large: 1024px;
+$xlarge: 1280px;
+
+@media screen and (max-width: $medium) {
+  body:has(.menu-overlay:not(.hide)) {
+    overflow: hidden;
+  }
+
+  .menu-overlay {
+    position: fixed;
+    top: 0;
+    height: 120vh;
+    z-index: 45;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    transition: all 0.5s ease;
+    background-color: rgba(34, 41, 47, 0.5);
+    left: 0;
+    right: 0;
+  }
+
+  .menu-overlay {
+    &.hide {
+      visibility: hidden;
+      opacity: 0;
+    }
+  }
+}
+
+// Layout Vertical CSS
+.v-layout {
+  .content-page {
+    height: 100%;
+  }
+
+  .w-header-search {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    height: 64px;
+  }
+
+  .w-header,
+  .w-header-search {
+    width: calc(100% - 256px);
+
+    @media screen and (max-width: $medium) {
+      width: 100%;
+    }
+  }
+
+  .vertical-menu {
+    left: 0;
+  }
+
+  .content-page {
+    margin-left: 256px;
+    padding: 6rem 2rem 10px 2rem;
+
+    @media screen and (max-width: $medium) {
+      margin-left: 0px;
+      padding: 6rem 1.25rem 0 1.25rem;
+    }
+  }
+
+  &.menu-hide {
+    .w-header {
+      width: calc(100% - 0px);
+    }
+
+    .vertical-menu {
+      left: -260px;
+    }
+
+    .content-page {
+      margin-left: 0;
+    }
+  }
+
+  .menu-content,
+  .menu-content-child {
+    max-height: 1000px;
+    overflow: hidden;
+
+    &.hide {
+      max-height: 0px;
+    }
+  }
+
+  .menu-content-max,
+  .menu-content-child-max {
+    max-height: 100vh;
+  }
+
+  svg.side-menu-arrow {
+    transition: 0.25s ease-in-out;
+  }
+
+  .nav-open {
+    svg.side-menu-arrow {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+// Custom styles for LZS theme
+html[data-theme="LZS"] {
+  .v-layout {
+    .active-menu {
+      position: relative;
+      transition: all 0.2s ease;
+      
+      // Yellow glow on active menu items
+      &:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background-color: rgb(var(--active-menu-border));
+      }
+      
+      // Icon color for active menu
+      svg {
+        color: rgb(var(--active-menu-border));
+      }
+    }
+    
+    // Form focus states with yellow accent
+    input:focus, textarea:focus, select:focus {
+      outline: 2px solid rgba(var(--focus-ring));
+      outline-offset: 2px;
+    }
+    
+    // Button hover with yellow accent
+    .btn-primary:hover, button.bg-primary:hover {
+      box-shadow: 0 0 0 2px rgba(var(--active-menu-border), 0.3);
+    }
+    
+    // Card headers with subtle yellow accent
+    .rs-card {
+      .card-header {
+        border-bottom: 1px solid rgba(var(--border-color));
+        
+        h2, h3, h4 {
+          position: relative;
+          
+          &:before {
+            content: "";
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 60%;
+            width: 3px;
+            background-color: rgb(var(--active-menu-border));
+          }
+        }
+      }
+    }
+  }
+}

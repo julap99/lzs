@@ -1,0 +1,27 @@
+$small: 640px;
+$medium: 768px;
+$large: 1024px;
+$xlarge: 1280px;
+
+.s-dropdown {
+  background-color: white;
+  padding: 10px 0;
+  border-radius: 5px;
+  top: 65px !important;
+  border: 1px solid rgb(229, 231, 235);
+  box-shadow: 0px 0px 10px rgba(226, 232, 240, 0.2);
+
+  @media screen and (max-width: $medium) {
+    left: 0px !important;
+    width: 100% !important;
+    margin: 0px 2px !important;
+  }
+}
+
+.dark {
+  .s-dropdown {
+    background-color: #1e293b;
+    box-shadow: 0px 0px 10px rgba(15, 23, 42, 0.2);
+    border: 1px solid #182130;
+  }
+}

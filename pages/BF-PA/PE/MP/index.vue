@@ -1,326 +1,243 @@
 <template>
-  <div>
-    <LayoutsBreadcrumb :items="breadcrumb" />
+  <div class="p-4 space-y-4">
+    <!-- Breadcrumb ringkas -->
+    <nav class="text-sm text-gray-500">
+      Pengurusan Elaun › Elaun Tahunan › <span class="text-gray-900 font-medium">Isi Maklumat Penerima</span>
+    </nav>
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Pengurusan Elaun bagi Mesyuarat/Program
-          </h2>
-          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/MP/01')">Tambah Aktiviti</rs-button>
-        </div>
-      </template>
+    <!-- KAD UTAMA -->
+    <div class="rounded-xl border bg-white shadow-sm">
+      <!-- Header -->
+      <div class="px-5 py-4 border-b flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Borang Isi Maklumat Penerima Elaun Tahunan</h2>
+        <span v-if="locked" class="text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-700">Draft Terkunci</span>
+      </div>
 
-      <template #body>
-        <div class="p-4">
-          <!-- Key Metrics Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-blue-600">Jumlah Aktiviti</p>
-                  <h3 class="text-2xl font-bold text-blue-700">156</h3>
-                </div>
-                <Icon name="heroicons:calendar" class="text-blue-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-green-50 p-4 rounded-lg border border-green-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-green-600">Jumlah Kehadiran</p>
-                  <h3 class="text-2xl font-bold text-green-700">1,234</h3>
-                </div>
-                <Icon name="heroicons:user-group" class="text-green-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-yellow-600">Menunggu Sokongan</p>
-                  <h3 class="text-2xl font-bold text-yellow-700">45</h3>
-                </div>
-                <Icon name="heroicons:clock" class="text-yellow-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-red-50 p-4 rounded-lg border border-red-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-red-600">Tidak Hadir</p>
-                  <h3 class="text-2xl font-bold text-red-700">23</h3>
-                </div>
-                <Icon name="heroicons:x-circle" class="text-red-500" size="24" />
-              </div>
-            </div>
+      <!-- Body -->
+      <div class="p-5 space-y-5">
+
+        <!-- Filter -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="text-sm font-medium">Tahun Elaun <span class="text-red-500">*</span></label>
+            <select class="mt-1 w-full border rounded-lg px-3 py-2"
+                    v-model="filters.year" :disabled="locked">
+              <option value="" disabled>Pilih tahun…</option>
+              <option v-for="y in yearOptions" :key="y" :value="y">{{ y }}</option>
+            </select>
+            <p class="text-xs text-gray-500 mt-1">Wajib dipilih; memandu skop data penerima & kawalan konflik tahun.</p>
           </div>
 
-          <!-- Search and Filter Section -->
-          <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormKit
-                type="text"
-                name="search"
-                placeholder="Cari ID Aktiviti atau Nama Aktiviti"
-                :value="searchQuery"
-                @input="handleSearch"
-              />
-              <FormKit
-                type="select"
-                name="status"
-                placeholder="Status"
-                :options="statusOptions"
-                :value="selectedStatus"
-                @input="handleStatusChange"
-              />
-              <FormKit
-                type="select"
-                name="jenisAktiviti"
-                placeholder="Jenis Aktiviti"
-                :options="jenisAktivitiOptions"
-                :value="selectedJenisAktiviti"
-                @input="handleJenisAktivitiChange"
-              />
-            </div>
+          <div>
+            <label class="text-sm font-medium">Jawatan (pilihan)</label>
+            <select class="mt-1 w-full border rounded-lg px-3 py-2"
+                    v-model="filters.role" :disabled="locked">
+              <option value="">Semua</option>
+              <option value="Penolong Amil">Penolong Amil</option>
+              <option value="Ketua Penolong Amil">Ketua Penolong Amil</option>
+            </select>
+            <p class="text-xs text-gray-500 mt-1">Menapis paparan jadual; tidak mengubah kelayakan asas.</p>
           </div>
 
-          <!-- Table Section -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID Aktiviti
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nama Aktiviti
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tarikh
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Lokasi
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Jenis
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tindakan
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="activity in activities" :key="activity.id">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <a 
-                      href="#" 
-                      class="text-blue-600 hover:text-blue-800"
-                      @click.prevent="navigateTo(getActionRoute(activity.status))"
-                    >
-                      {{ activity.id }}
-                    </a>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.name }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.date }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.location }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ activity.type }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getStatusColor(activity.status)"
-                    >
-                      {{ getStatusLabel(activity.status) }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <rs-button
-                      variant="primary"
-                      size="sm"
-                      @click="navigateTo(getActionRoute(activity.status))"
-                    >
-                      {{ getActionButtonText(activity.status) }}
-                    </rs-button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="self-end">
+            <div class="text-sm">
+              <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border">
+                <span class="font-medium">Dipilih:</span> {{ selectedCount }}
+              </span>
+            </div>
           </div>
         </div>
-      </template>
-    </rs-card>
+
+        <!-- Jadual penerima -->
+        <div class="overflow-x-auto rounded-lg border">
+          <table class="min-w-full text-sm">
+            <thead class="bg-gray-50">
+              <tr class="text-left">
+                <th class="px-4 py-3 w-10">
+                  <input type="checkbox" :disabled="locked || !canBulkToggle"
+                         :checked="allVisibleChecked" @change="toggleAll($event.target.checked)" />
+                </th>
+                <th class="px-4 py-3">Nama Penuh</th>
+                <th class="px-4 py-3">ID Pengenalan</th>
+                <th class="px-4 py-3">Jawatan</th>
+                <th class="px-4 py-3">Tahun Elaun</th>
+                <th class="px-4 py-3">Status Perkhidmatan</th>
+                <th class="px-4 py-3">Kategori</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="pa in visibleRows" :key="pa.id"
+                  class="border-t">
+                <td class="px-4 py-2">
+                  <input type="checkbox" v-model="selectedIds"
+                         :value="pa.id" :disabled="locked || !pa.isActive"/>
+                </td>
+                <td class="px-4 py-2">{{ pa.name }}</td>
+                <td class="px-4 py-2">{{ pa.nric }}</td>
+                <td class="px-4 py-2">{{ pa.role }}</td>
+                <td class="px-4 py-2">{{ filters.year || '—' }}</td>
+                <td class="px-4 py-2">
+                  <span class="px-2 py-1 rounded-full text-xs"
+                        :class="pa.isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                            : 'bg-rose-50 text-rose-700 border border-rose-200'">
+                    {{ pa.isActive ? 'Aktif' : 'Tidak Aktif' }}
+                  </span>
+                </td>
+                <td class="px-4 py-2">{{ pa.category }}</td>
+              </tr>
+              <tr v-if="visibleRows.length === 0">
+                <td colspan="7" class="px-4 py-6 text-center text-gray-500">Tiada rekod untuk penapis semasa.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Nota kelayakan -->
+        <div class="text-xs text-gray-600">
+          <p>• Sumber data: rekod PA <b>Aktif</b> pada tarikh rujukan <i>Tahun Elaun</i>. PA tidak aktif disembunyikan daripada pemilihan.</p>
+          <p>• Checkbox “Layak” menandakan penerima untuk batch tahun berkenaan (disahkan ketika Simpan).</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-between pt-2">
+          <button type="button" class="px-4 py-2 rounded-lg border hover:bg-gray-50"
+                  @click="goBack" :disabled="saving">Kembali</button>
+
+          <!-- Butang Simpan -->
+          <button type="button"
+                  class="px-4 py-2 rounded-lg text-white disabled:opacity-50"
+                  :class="locked ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'"
+                  :disabled="!canSave || locked || saving"
+                  @click="saveBatch">
+            <span v-if="!locked">Simpan</span>
+            <span v-else>Draft Terkunci</span>
+          </button>
+        </div>
+
+        <!-- Mesej berjaya -->
+        <div v-if="toast" class="mt-2 text-sm px-3 py-2 rounded-md border bg-green-50 text-green-700">
+          {{ toast }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
-definePageMeta({
-  title: "Pengurusan Elaun bagi Mesyuarat/Program",
-  description: "Senarai aktiviti mesyuarat dan program untuk pengurusan elaun",
-});
+// ---------- MOCK DATA: Senarai PA aktif (contoh) ----------
+const allCandidates = ref([
+  { id: 'PA001', name: 'Ahmad bin Ismail', nric: '880101-14-1234', role: 'Penolong Amil', category: 'PAK', isActive: true },
+  { id: 'PA002', name: 'Siti Aisyah binti Zainal', nric: '900202-10-5678', role: 'Penolong Amil', category: 'PAF', isActive: true },
+  { id: 'PA003', name: 'Faizal bin Rahman', nric: '850909-01-1122', role: 'Ketua Penolong Amil', category: 'PAK+', isActive: true },
+  { id: 'PA004', name: 'Noraini binti Omar', nric: '920606-08-7788', role: 'Penolong Amil', category: 'PAP', isActive: false }, // akan disorok
+])
 
-const breadcrumb = ref([
-  {
-    name: "Pengurusan Elaun",
-    type: "link",
-    path: "/BF-PA/PE/MP",
-  },
-  {
-    name: "Mesyuarat/Program",
-    type: "current",
-    path: "/BF-PA/PE/MP",
-  },
-]);
+// ---------- State Filter ----------
+const currentYear = new Date().getFullYear()
+const yearOptions = Array.from({length: 5}, (_,i) => currentYear - 1 + i) // contoh: tahun semasa ±
+const filters = ref({
+  year: '',
+  role: '' // '' | 'Penolong Amil' | 'Ketua Penolong Amil'
+})
 
-// Mock data for activities
-const activities = ref([
-  {
-    id: 'MP/2024/001',
-    name: 'Mesyuarat JPPA Bulanan',
-    date: '2024-03-15',
-    location: 'Dewan Mesyuarat JPPA',
-    type: 'Mesyuarat',
-    status: 'Menunggu Sokongan JPPA'
-  },
-  {
-    id: 'MP/2024/002',
-    name: 'Program Tazkirah Bulanan',
-    date: '2024-03-16',
-    location: 'Masjid Al-Hidayah',
-    type: 'Program',
-    status: 'Menunggu Kelulusan Ketua JPPA'
-  },
-  {
-    id: 'MP/2024/003',
-    name: 'Latihan Pengurusan Zakat',
-    date: '2024-03-10',
-    location: 'Dewan Latihan',
-    type: 'Latihan',
-    status: 'Diluluskan'
-  },
-  {
-    id: 'MP/2024/004',
-    name: 'Mesyuarat Agung Tahunan',
-    date: '2024-03-12',
-    location: 'Dewan Utama',
-    type: 'Mesyuarat',
-    status: 'Ditolak'
-  }
-]);
+// ---------- Pemilihan ----------
+const selectedIds = ref([]) // ID PA ditandakan 'Layak'
 
-// Status options for filter
-const statusOptions = [
-  { label: 'Semua', value: '' },
-  { label: 'Menunggu Sokongan JPPA', value: 'Menunggu Sokongan JPPA' },
-  { label: 'Menunggu Kelulusan Ketua JPPA', value: 'Menunggu Kelulusan Ketua JPPA' },
-  { label: 'Diluluskan', value: 'Diluluskan' },
-  { label: 'Ditolak', value: 'Ditolak' },
-];
+// ---------- Status Simpan / Kunci Draft ----------
+const locked = ref(false)
+const saving = ref(false)
+const toast = ref('')
 
-// Jenis Aktiviti options
-const jenisAktivitiOptions = [
-  { label: 'Semua', value: '' },
-  { label: 'Mesyuarat', value: 'Mesyuarat' },
-  { label: 'Program', value: 'Program' },
-  { label: 'Latihan', value: 'Latihan' },
-];
+// ---------- Derivations ----------
+const visibleRows = computed(() => {
+  // hanya PA aktif, dan ikut filter jawatan
+  return allCandidates.value
+    .filter(pa => pa.isActive)
+    .filter(pa => !filters.value.role || pa.role === filters.value.role)
+})
 
-// Search and filter state
-const searchQuery = ref('');
-const selectedStatus = ref('');
-const selectedJenisAktiviti = ref('');
+const selectedCount = computed(() => selectedIds.value.length)
 
-// Computed filtered activities
-const filteredActivities = computed(() => {
-  return activities.value.filter(activity => {
-    const matchesSearch = !searchQuery.value || 
-      activity.id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      activity.name.toLowerCase().includes(searchQuery.value.toLowerCase());
-    const matchesStatus = !selectedStatus.value || activity.status === selectedStatus.value;
-    const matchesJenis = !selectedJenisAktiviti.value || activity.type === selectedJenisAktiviti.value;
-    return matchesSearch && matchesStatus && matchesJenis;
-  });
-});
+const canBulkToggle = computed(() => visibleRows.value.length > 0 && !locked.value)
+const allVisibleChecked = computed(() => {
+  if (visibleRows.value.length === 0) return false
+  return visibleRows.value.every(pa => selectedIds.value.includes(pa.id))
+})
 
-// Helper functions
-const getStatusColor = (status) => {
-  switch (status) {
-    case 'Menunggu Sokongan JPPA':
-      return 'bg-yellow-100 text-yellow-800'
-    case 'Menunggu Kelulusan Ketua JPPA':
-      return 'bg-blue-100 text-blue-800'
-    case 'Diluluskan':
-      return 'bg-green-100 text-green-800'
-    case 'Ditolak':
-      return 'bg-red-100 text-red-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
+const canSave = computed(() => {
+  return !!filters.value.year && selectedIds.value.length > 0
+})
+
+// ---------- Actions ----------
+function toggleAll(checked) {
+  if (!canBulkToggle.value) return
+  if (checked) {
+    selectedIds.value = visibleRows.value.map(pa => pa.id)
+  } else {
+    selectedIds.value = []
   }
 }
 
-const getStatusLabel = (status) => {
-  switch (status) {
-    case 'Menunggu Sokongan JPPA':
-      return 'Menunggu Sokongan JPPA'
-    case 'Menunggu Kelulusan Ketua JPPA':
-      return 'Menunggu Kelulusan Ketua JPPA'
-    case 'Diluluskan':
-      return 'Diluluskan'
-    case 'Ditolak':
-      return 'Ditolak'
-    default:
-      return status
+function goBack() {
+  // letak routing sebenar jika ada
+  console.info('Kembali ke senarai Elaun Tahunan')
+}
+
+function generateBatchId(year) {
+  const rand = Math.floor(100000 + Math.random() * 900000)
+  return `ET01-${year}-${rand}`
+}
+
+async function saveBatch() {
+  if (!canSave.value || locked.value) return
+  saving.value = true
+  toast.value = ''
+
+  try {
+    // 1) Validasi server-side (disimulasikan)
+    // - Pastikan semua PA masih aktif & tiada duplikasi pada tahun
+    const chosen = allCandidates.value.filter(x => selectedIds.value.includes(x.id))
+    const invalid = chosen.filter(x => !x.isActive)
+    if (invalid.length) throw new Error('Terdapat calon tidak aktif.')
+
+    // 2) Simpan dataset penerima + metadata batch
+    const batchId = generateBatchId(filters.value.year)
+    const payload = {
+      batchId,
+      year: filters.value.year,
+      creator: 'LOGIN_USER_ID', // ganti dengan ID login sebenar
+      timestamp: new Date().toISOString(),
+      recipients: chosen.map(x => ({
+        id: x.id, name: x.name, nric: x.nric, role: x.role, category: x.category
+      }))
+    }
+    console.debug('SIMPAN ET-01 PAYLOAD', payload)
+
+    // 3) Tetapkan status proses: Draft Terkunci
+    locked.value = true
+
+    // 4) Trigger ET-02 (asynchronous) — simulasi
+    triggerET02(batchId)
+
+    // 5) Mesej berjaya
+    toast.value = 'Senarai penerima elaun tahunan berjaya disimpan dan dihantar untuk proses pengiraan.'
+  } catch (e) {
+    toast.value = e?.message || 'Ralat tidak dijangka semasa simpanan.'
+  } finally {
+    saving.value = false
+    // auto-clear mesej
+    setTimeout(() => (toast.value = ''), 5000)
   }
 }
 
-const getActionRoute = (status) => {
-  switch (status) {
-    case 'Menunggu Sokongan JPPA':
-      return '/BF-PA/PE/MP/03'
-    case 'Menunggu Kelulusan Ketua JPPA':
-      return '/BF-PA/PE/MP/04'
-    default:
-      return '#'
-  }
+function triggerET02(batchId) {
+  // Di dunia sebenar: panggil API /jobs/et02?batchId=...
+  console.info(`Trigger ET-02 untuk batch: ${batchId}`)
 }
-
-const getActionButtonText = (status) => {
-  switch (status) {
-    case 'Menunggu Sokongan JPPA':
-    case 'Menunggu Kelulusan Ketua JPPA':
-      return 'Semak'
-    case 'Diluluskan':
-    case 'Ditolak':
-      return 'Lihat'
-    default:
-      return 'Lihat'
-  }
-}
-
-// Event handlers
-const handleSearch = (event) => {
-  searchQuery.value = event.target.value;
-};
-
-const handleStatusChange = (event) => {
-  selectedStatus.value = event.target.value;
-};
-
-const handleJenisAktivitiChange = (event) => {
-  selectedJenisAktiviti.value = event.target.value;
-};
 </script>
 
 <style scoped>
-/* Add any additional styles here */
+/* gaya ringkas; gantikan dengan design system projek jika ada */
 </style>

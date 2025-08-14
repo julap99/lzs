@@ -1,0 +1,237 @@
+$small: 640px;
+$medium: 768px;
+$large: 1024px;
+$xlarge: 1280px;
+
+.formkit-form {
+  .form-wizard {
+    border-radius: 0.5rem;
+  }
+
+  &.top-form {
+    .formkit-actions {
+      button[type="submit"] {
+        display: block;
+        margin-right: 0;
+        margin-left: auto;
+      }
+    }
+    ul.top-steps {
+      display: flex;
+      justify-content: space-evenly;
+      margin-bottom: 1rem;
+      gap: 1rem;
+
+      @media screen and (max-width: $medium) {
+        flex-direction: column;
+        justify-content: start;
+      }
+
+      li {
+        flex-grow: 1;
+        display: inline-block;
+
+        .progress {
+          position: relative;
+          bottom: -8px;
+          width: 0%;
+          height: 8px;
+          border-radius: 10px;
+          background-color: rgb(var(--color-primary));
+          transition: width 0.25s ease-in;
+        }
+
+        .step--errors {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          float: right;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background-color: #f23131;
+          color: #fff;
+          font-size: 12px;
+        }
+
+        .counter {
+          display: inline-block;
+        }
+
+        &:after {
+          content: "";
+          display: block;
+          width: 100%;
+          height: 8px;
+          border-radius: 10px;
+          background-color: rgb(var(--bg-1));
+        }
+
+        &[data-step-active="true"] {
+          color: rgb(var(--color-primary));
+          font-weight: 600;
+
+          .progress {
+            width: 100%;
+          }
+        }
+
+        &[data-step-active="false"] {
+          color: rgb(var(--bg-1));
+          .progress {
+            width: 0%;
+          }
+        }
+
+        &[data-step-completed="true"] {
+          color: rgb(var(--color-primary));
+          font-weight: 600;
+          .progress {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  &.left-form {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 230px auto;
+
+    @media screen and (max-width: $medium) {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 0rem;
+    }
+
+    .formkit-actions {
+      grid-column: span 2 / span 2;
+
+      @media screen and (max-width: $medium) {
+        grid-column: span 1 / span 1;
+      }
+
+      button[type="submit"] {
+        float: right;
+      }
+    }
+
+    ul.left-steps {
+      display: block;
+      li {
+        margin-bottom: 1rem;
+        .progress {
+          position: relative;
+          bottom: -8px;
+          width: 0%;
+          height: 8px;
+          border-radius: 10px;
+          background-color: rgb(var(--color-primary));
+          transition: width 0.25s ease-in;
+        }
+
+        .step--errors {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          float: right;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background-color: #f23131;
+          color: #fff;
+          font-size: 12px;
+        }
+
+        .counter {
+          display: inline-block;
+        }
+
+        &:after {
+          content: "";
+          display: block;
+          width: 100%;
+          height: 8px;
+          border-radius: 10px;
+          background-color: rgb(var(--bg-1));
+        }
+
+        &[data-step-active="true"] {
+          color: rgb(var(--color-primary));
+          font-weight: 600;
+
+          .progress {
+            width: 100%;
+          }
+        }
+
+        &[data-step-active="false"] {
+          color: rgb(var(--bg-1));
+          .progress {
+            width: 0%;
+          }
+        }
+
+        &[data-step-completed="true"] {
+          color: rgb(var(--color-primary));
+          font-weight: 600;
+          .progress {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Custom Formkit Input for VSelect
+.formkit-vselect {
+  margin-bottom: 1rem;
+
+  .vs__dropdown-menu {
+    background: rgb(var(--bg-2));
+  }
+
+  .vs__dropdown-menu li {
+    background: rgb(var(--bg-1));
+    color: rgb(var(--text-color));
+  }
+
+  .vs__dropdown-toggle {
+    min-height: 2.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(var(--color-primary));
+
+    border-width: 1px;
+    border-radius: 0.5rem;
+    margin-bottom: 0px;
+    border-color: rgb(var(--fk-border-color));
+
+    .vs__selected {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+
+      background-color: rgb(var(--color-primary));
+      color: white;
+
+      border: 0;
+      border-radius: 0.5rem;
+
+      gap: 0.25rem;
+      margin-right: 0.35rem;
+      margin-left: 0;
+    }
+  }
+}
+
+// Custom Decorator
+input[type="checkbox"]:checked.icon-check + .formkit-decorator::before {
+  content: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg>');
+  position: absolute;
+  top: -1px;
+}
