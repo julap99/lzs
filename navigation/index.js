@@ -1340,13 +1340,13 @@ export default [
             child: [],
             meta: {},
           },
-          // {
-          //   title: "Senarai Elaun",
-          //   icon: "iconamoon:arrow-right-2-duotone",
-          //   path: "/BF-PA/KF/KE",
-          //   child: [],
-          //   meta: {},
-          // },
+          {
+            title: "Senarai Elaun",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/KF/KE",
+            child: [],
+            meta: {},
+          },
           // {
           //   title: "Mesyuarat/Program",
           //   icon: "iconamoon:arrow-right-2-duotone",
