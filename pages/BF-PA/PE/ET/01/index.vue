@@ -1,221 +1,233 @@
 <!-- 
-  RTMF SCREEN: PA-PE-ET-01_01
-  PURPOSE: Senarai Penolong Amil Layak Elaun Tahunan
-  DESCRIPTION: List of eligible Penolong Amil for annual allowance with filtering and actions
+  RTMF SCREEN: PA-PE-ET-01
+  PURPOSE: Maklumat Penerima — Senarai Nama Penolong Amil
+  DESCRIPTION: Recipient selection and management for annual allowance batches
   ROUTE: /BF-PA/PE/ET/01
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Header Section -->
+    <!-- Header -->
     <rs-card class="mt-4">
       <template #header>
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
           <div class="flex items-center">
             <Icon name="ic:outline-people" class="mr-3 text-blue-600" size="24" />
-            <h2 class="text-xl font-semibold">
-              Senarai Penolong Amil Layak Elaun Tahunan
-            </h2>
+            <h2 class="text-lg font-semibold">Maklumat Penerima — Senarai Nama Penolong Amil</h2>
           </div>
-          <div class="flex items-center space-x-3">
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              @click="exportData"
-            >
-              <Icon name="ic:outline-download" class="mr-2" />
-              Muat Turun
-            </rs-button>
-            <rs-button
-              variant="primary"
-              size="sm"
-              @click="refreshData"
-            >
-              <Icon name="ic:outline-refresh" class="mr-2" />
-              Kemas Kini
-            </rs-button>
+          <div class="text-xs text-gray-500">
+            Tahun: <b>{{ query.year || '—' }}</b> · Jenis Elaun: <b>{{ typeLabel || '—' }}</b>
           </div>
         </div>
       </template>
 
       <template #body>
-        <!-- Info Banner -->
-        <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <div class="flex items-start">
-            <Icon name="ic:outline-info" class="text-blue-600 mt-1 mr-3" />
-            <div>
-              <h4 class="font-semibold text-blue-900 mb-2">Maklumat Kelayakan Elaun Tahunan</h4>
-              <div class="text-sm text-blue-800 space-y-1">
-                <p>• Penolong Amil mesti berstatus "Aktif" pada tahun semasa</p>
-                <p>• Elaun tahunan hanya boleh dikira dan dibayar sekali setahun</p>
-                <p>• Kadar elaun berdasarkan kategori jawatan dan tahun perkhidmatan</p>
-                <p>• Tahun perkhidmatan: {{ currentYear }} - {{ nextYear }}</p>
-                <p>• Klik "Lihat" untuk maklumat terperinci seperti kadar elaun, tahun perkhidmatan, dan tarikh lantikan</p>
-                <p>• Jadual memaparkan: No, Nama, Jawatan, Institusi, Status Lantikan, Status Pembayaran, dan Tindakan</p>
-              </div>
-            </div>
+        <!-- 3.1.1 Maklumat Penerima (Table Read-only + Checkbox Pilih untuk calon baharu sahaja) -->
+        <div class="space-y-3 mb-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold">Senarai Nama — {{ typeLabel || 'Jenis Elaun' }}</h3>
+            <p class="text-xs text-gray-500">Ditapis kepada: <b>KPAK sahaja</b></p>
           </div>
-        </div>
 
-        <!-- Smart Filter Section -->
-        <div class="mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="flex items-center gap-2">
             <FormKit
-              v-model="filters.searchQuery"
+              v-model="search"
               type="text"
-              placeholder="Cari nama atau ID Penolong Amil..."
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-            <FormKit
-              v-model="filters.jawatan"
-              type="select"
-              :options="jawatanOptions"
-              placeholder="Jawatan/Kategori"
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-            <FormKit
-              v-model="filters.statusLantikan"
-              type="select"
-              :options="statusLantikanOptions"
-              placeholder="Status Lantikan"
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-            <FormKit
-              v-model="filters.statusPembayaran"
-              type="select"
-              :options="statusPembayaranOptions"
-              placeholder="Status Pembayaran"
+              placeholder="Cari nama / ID Pengenalan / Kariah…"
               :classes="{
                 input: '!py-2',
               }"
             />
           </div>
-        </div>
 
-        <!-- Summary Stats -->
-        <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-blue-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-blue-600">{{ totalEligible }}</div>
-            <p class="text-sm text-blue-700">Jumlah Layak</p>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-green-600">{{ totalCalculated }}</div>
-            <p class="text-sm text-green-700">Telah Dikira</p>
-          </div>
-          <div class="bg-orange-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-orange-600">{{ totalPending }}</div>
-            <p class="text-sm text-orange-700">Menunggu</p>
-          </div>
-          <div class="bg-purple-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-purple-600">{{ totalAmount }}</div>
-            <p class="text-sm text-purple-700">Jumlah Elaun (RM)</p>
-          </div>
-        </div>
+          <div class="overflow-x-auto rounded-lg border">
+            <rs-table
+              :data="pagedRows"
+              :columns="candidateColumns"
+              :options="{
+                variant: 'default',
+                hover: true,
+                striped: true,
+                responsive: true,
+              }"
+              :loading="false"
+              empty-message="Tiada data KPAK untuk kombinasi Tahun & Jenis Elaun ini."
+            >
+              <template v-slot:selection="{ text }">
+                <template v-if="isInRecipients(text.paId)">
+                  <rs-badge variant="success" class="text-xs">
+                    Dalam Senarai
+                  </rs-badge>
+                </template>
+                <template v-else>
+                  <FormKit
+                    v-model="text._checked"
+                    type="checkbox"
+                    :classes="{
+                      input: '!w-4 !h-4',
+                    }"
+                  />
+                </template>
+              </template>
 
-        <!-- Main Table -->
-        <rs-table
-          :data="filteredPenolongAmil"
-          :columns="columns"
-          :pageSize="pageSize"
-          :options="{
-            variant: 'default',
-            hover: true,
-            striped: true,
-            responsive: true,
-          }"
-          :options-advanced="{
-            sortable: true,
-            filterable: true,
-          }"
-          advanced
-        >
-          <template v-slot:statusLantikan="{ text }">
-            <rs-badge :variant="getStatusLantikanVariant(text)">
-              {{ text }}
-            </rs-badge>
-          </template>
+              <template v-slot:activities="{ text }">
+                <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
+                  <li v-for="a in aggregateActivities(text.activities)" :key="a.name">
+                    <span class="font-medium">{{ a.name }}</span>
+                  </li>
+                  <li v-if="!text.activities || !text.activities.length" class="list-none text-gray-500">
+                    Tiada rekod aktiviti.
+                  </li>
+                </ul>
+              </template>
 
-          <template v-slot:statusPembayaran="{ text }">
-            <rs-badge :variant="getStatusPembayaranVariant(text)">
-              {{ text }}
-            </rs-badge>
-          </template>
+              <template v-slot:activityCount="{ text }">
+                {{ totalActivityCount(text.activities) }}
+              </template>
+            </rs-table>
+          </div>
 
-          <template v-slot:tindakan="{ text }">
-            <div class="flex justify-center items-center gap-2">
+          <!-- Pagination -->
+          <div class="flex items-center justify-between" v-if="total > pageSize">
+            <div class="text-sm text-gray-500">
+              Menunjukkan {{ startIndex + 1 }}–{{ endIndex }} daripada {{ total }} rekod
+            </div>
+            <div class="flex items-center gap-2">
               <rs-button
-                variant="primary"
+                variant="secondary-outline"
                 size="sm"
-                @click="handleView(text)"
-                title="Lihat Butiran"
-                class="!px-3 !py-1.5"
+                :disabled="page === 1"
+                @click="page--"
               >
-                <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                Lihat
+                Sebelum
               </rs-button>
+              <div class="text-sm">Halaman {{ page }}</div>
               <rs-button
-                v-if="canCalculateElaun(text)"
-                variant="success"
+                variant="secondary-outline"
                 size="sm"
-                @click="handleCalculateElaun(text)"
-                title="Kira Elaun"
-                class="!px-3 !py-1.5"
+                :disabled="endIndex >= total"
+                @click="page++"
               >
-                <Icon name="ic:outline-calculate" class="w-4 h-4 mr-1" />
-                Kira Elaun
-              </rs-button>
-              <rs-button
-                v-else
-                variant="secondary"
-                size="sm"
-                disabled
-                title="Elaun telah dikira"
-                class="!px-3 !py-1.5"
-              >
-                <Icon name="ic:outline-check-circle" class="w-4 h-4 mr-1" />
-                Telah Dikira
+                Seterusnya
               </rs-button>
             </div>
-          </template>
-        </rs-table>
+          </div>
+        </div>
+
+        <!-- Button 2.2: "Pilih" (kira calon baharu sahaja) -->
+        <div class="flex items-center justify-end mb-6">
+          <rs-button
+            variant="primary"
+            :disabled="newCheckedCount === 0"
+            @click="commitSelected"
+          >
+            <Icon name="ic:outline-check" class="mr-2" />
+            Pilih ({{ newCheckedCount }})
+          </rs-button>
+        </div>
+
+        <!-- Maklumat Penerima (Paparan) - Elaun tetap bila ET-KPAK/ET-KPAF -->
+        <div class="rounded-lg border p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold">Maklumat Penerima (Paparan)</h3>
+            <div class="text-xs text-gray-500">Status: <b>{{ statusLabel }}</b></div>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border">
+            <rs-table
+              :data="recipients"
+              :columns="recipientColumns"
+              :options="{
+                variant: 'default',
+                hover: true,
+                striped: true,
+                responsive: true,
+              }"
+              :loading="false"
+              empty-message="Tiada penerima dipilih lagi. Tandakan dan klik 'Pilih'."
+            >
+              <template v-slot:allowance="{ text }">
+                <template v-if="isFixedAllowance">
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold">{{ fixedAllowanceValue.toFixed(2) }}</span>
+                  </div>
+                </template>
+                <template v-else>
+                  <FormKit
+                    v-model.number="text.allowance"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    :classes="{
+                      input: '!py-1 !px-2',
+                    }"
+                  />
+                </template>
+              </template>
+            </rs-table>
+          </div>
+
+          <!-- Footer with total -->
+          <div class="bg-gray-50 p-3 rounded-lg">
+            <div class="flex justify-between items-center">
+              <span class="font-medium">Jumlah (RM)</span>
+              <span class="font-semibold text-lg">{{ totalAllowance.toFixed(2) }}</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center justify-end gap-2">
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              @click="goBack"
+            >
+              Kembali
+            </rs-button>
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              :disabled="saving"
+              @click="saveDraft"
+            >
+              <Icon name="ic:outline-save" class="mr-2" />
+              Simpan draf
+            </rs-button>
+            <rs-button
+              variant="success"
+              size="sm"
+              :disabled="!canSubmit || saving"
+              @click="submitForApproval"
+            >
+              <Icon name="ic:outline-send" class="mr-2" />
+              Hantar
+            </rs-button>
+          </div>
+        </div>
       </template>
     </rs-card>
-
-    <!-- Bulk Actions -->
-    <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
-      <rs-button
-        variant="success"
-        @click="handleBulkCalculate"
-        :disabled="processing"
-      >
-        <Icon name="ic:outline-calculate" class="w-4 h-4 mr-1" />
-        Kira Elaun (Bulk) ({{ selectedRows.length }})
-      </rs-button>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
-import { navigateTo } from '#app';
+import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '#components';
 import { FormKit } from '@formkit/vue';
 import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue';
 
 definePageMeta({
-  title: "Senarai Penolong Amil Layak Elaun Tahunan",
-  description: "Senarai Penolong Amil yang layak untuk elaun tahunan",
+  title: "Maklumat Penerima — Senarai Nama Penolong Amil",
+  description: "Recipient selection and management for annual allowance batches",
 });
 
 const toast = useToast();
+const router = useRouter();
+const route = useRoute();
+const goBack = () => router.back();
 
 const breadcrumb = ref([
   {
@@ -229,274 +241,329 @@ const breadcrumb = ref([
     path: "/BF-PA/PE/ET",
   },
   {
-    name: "Senarai Penolong Amil Layak",
+    name: "Senarai Nama PA",
     type: "current",
     path: "/BF-PA/PE/ET/01",
   },
 ]);
 
-// Filters state
-const filters = ref({
-  searchQuery: "",
-  jawatan: "",
-  statusLantikan: "",
-  statusPembayaran: "",
+const query = reactive({
+  year: route.query.year ? Number(route.query.year) : '',
+  type: route.query.type ? String(route.query.type) : ''
 });
 
-// Table state
-const selectedRows = ref([]);
-const processing = ref(false);
-const pageSize = ref(10);
+const typeOptions = {
+  'ET-KPAK': 'Elaun Tahunan KPAK',
+  'ET-KPAF': 'Elaun Tahunan KPAF',
+  'ET-ANUG': 'Anugerah Penolong Amil',
+  'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
+  'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
+  'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
+  'ANUG-PAF': 'Penolong Amil Fitrah (PAF) terbaik',
+  'ANUG-PAP': 'Penolong Amil Padi (PAP) terbaik',
+  'ANUG-PAKPLUS': 'Penolong Amil Komuniti (PAK+) terbaik'
+};
 
-const currentYear = new Date().getFullYear();
-const nextYear = currentYear + 1;
+const typeLabel = computed(() => typeOptions[query.type] || '');
 
-// Filter options
-const jawatanOptions = [
-  { label: 'Sila pilih...', value: '' },
-  { label: 'Penolong Amil Kanan', value: 'Penolong Amil Kanan' },
-  { label: 'Penolong Amil', value: 'Penolong Amil' },
-  { label: 'Penolong Amil Muda', value: 'Penolong Amil Muda' },
-];
+/* ====== Kadar elaun tetap ikut jenis elaun ====== */
+const fixedAllowanceByType = { 'ET-KPAK': 500, 'ET-KPAF': 300 };
+const isFixedAllowance = computed(() => fixedAllowanceByType[query.type] != null);
+const fixedAllowanceValue = computed(() => fixedAllowanceByType[query.type] ?? 0);
 
-const statusLantikanOptions = [
-  { label: 'Sila pilih...', value: '' },
-  { label: 'Aktif', value: 'Aktif' },
-  { label: 'Tamat', value: 'Tamat' },
-  { label: 'Digantung', value: 'Digantung' },
-];
+/* ====== State ====== */
+const candidates = ref([]);
+const recipients = ref([]); // penerima sedia ada (draf) + yang baru dipilih
+const search = ref('');
+const page = ref(1);
+const pageSize = 12;
+const saving = ref(false);
 
-const statusPembayaranOptions = [
-  { label: 'Sila pilih...', value: '' },
-  { label: 'Belum Dikira', value: 'Belum Dikira' },
-  { label: 'Telah Dikira', value: 'Telah Dikira' },
-  { label: 'Telah Dibayar', value: 'Telah Dibayar' },
-];
-
-// Mock data - replace with actual API calls
-const penolongAmil = ref([
+// Table columns for candidates
+const candidateColumns = [
   {
-    id: 'PA001',
-    nama: 'Ahmad bin Abdullah',
-    jawatan: 'Penolong Amil Kanan',
-    institusi: 'Masjid Al-Hidayah',
-    statusLantikan: 'Aktif',
-    statusPembayaran: 'Belum Dikira',
-    tahunPerkhidmatan: 5,
-    kadarElaun: '1,200.00',
-    elaunTahunan: '6,000.00',
-    tarikhLantikan: '15-01-2020',
-    tarikhTamat: '14-01-2025',
+    key: "selection",
+    label: "Pilih",
+    sortable: false,
+    width: "120px",
   },
   {
-    id: 'PA002',
-    nama: 'Siti binti Mohamed',
-    jawatan: 'Penolong Amil',
-    institusi: 'Masjid Al-Amin',
-    statusLantikan: 'Aktif',
-    statusPembayaran: 'Telah Dikira',
-    tahunPerkhidmatan: 3,
-    kadarElaun: '800.00',
-    elaunTahunan: '2,400.00',
-    tarikhLantikan: '20-03-2021',
-    tarikhTamat: '19-03-2026',
-  },
-  {
-    id: 'PA003',
-    nama: 'Mohamed bin Ismail',
-    jawatan: 'Penolong Amil Muda',
-    institusi: 'Masjid Al-Ikhlas',
-    statusLantikan: 'Aktif',
-    statusPembayaran: 'Belum Dikira',
-    tahunPerkhidmatan: 1,
-    kadarElaun: '600.00',
-    elaunTahunan: '600.00',
-    tarikhLantikan: '10-06-2023',
-    tarikhTamat: '09-06-2028',
-  },
-  {
-    id: 'PA004',
-    nama: 'Fatimah binti Ali',
-    jawatan: 'Penolong Amil Kanan',
-    institusi: 'Masjid Al-Falah',
-    statusLantikan: 'Aktif',
-    statusPembayaran: 'Telah Dibayar',
-    tahunPerkhidmatan: 7,
-    kadarElaun: '1,200.00',
-    elaunTahunan: '8,400.00',
-    tarikhLantikan: '05-02-2018',
-    tarikhTamat: '04-02-2025',
-  },
-  {
-    id: 'PA005',
-    nama: 'Abdul Rahman bin Omar',
-    jawatan: 'Penolong Amil',
-    institusi: 'Masjid Al-Rahman',
-    statusLantikan: 'Aktif',
-    statusPembayaran: 'Belum Dikira',
-    tahunPerkhidmatan: 2,
-    kadarElaun: '800.00',
-    elaunTahunan: '1,600.00',
-    tarikhLantikan: '12-08-2022',
-    tarikhTamat: '11-08-2027',
-  },
-]);
-
-// Table columns - Following RTMF requirements exactly
-const columns = [
-  {
-    key: "id",
-    label: "No",
-    sortable: true,
-    width: "70px",
-  },
-  {
-    key: "nama",
+    key: "name",
     label: "Nama",
     sortable: true,
-    width: "160px",
+    width: "200px",
   },
   {
-    key: "jawatan",
-    label: "Jawatan",
+    key: "ic",
+    label: "ID Pengenalan",
     sortable: true,
-    width: "120px",
+    width: "150px",
   },
   {
-    key: "institusi",
-    label: "Institusi",
+    key: "category",
+    label: "Kategori/Jawatan",
     sortable: true,
-    width: "140px",
+    width: "150px",
   },
   {
-    key: "statusLantikan",
-    label: "Status Lantikan",
+    key: "parish",
+    label: "Kariah/Daerah",
     sortable: true,
-    width: "120px",
+    width: "150px",
   },
   {
-    key: "statusPembayaran",
-    label: "Status Pembayaran",
-    sortable: true,
-    width: "120px",
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
+    key: "activities",
+    label: "Senarai Aktiviti Dihadiri",
     sortable: false,
-    width: "140px",
+    width: "200px",
+  },
+  {
+    key: "activityCount",
+    label: "Hadir Aktiviti (kali)",
+    sortable: true,
+    width: "120px",
   },
 ];
 
-// Computed properties
-const filteredPenolongAmil = computed(() => {
-  return penolongAmil.value.filter(pa => {
-    const matchesSearch = !filters.value.searchQuery || 
-      pa.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      pa.nama.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesJawatan = !filters.value.jawatan || pa.jawatan === filters.value.jawatan;
-    const matchesStatusLantikan = !filters.value.statusLantikan || pa.statusLantikan === filters.value.statusLantikan;
-    const matchesStatusPembayaran = !filters.value.statusPembayaran || pa.statusPembayaran === filters.value.statusPembayaran;
-    
-    return matchesSearch && matchesJawatan && matchesStatusLantikan && matchesStatusPembayaran;
-  }).map(pa => ({
-    // Include all required columns as per RTMF requirements
-    id: pa.id,
-    nama: pa.nama,
-    jawatan: pa.jawatan,
-    institusi: pa.institusi,
-    statusLantikan: pa.statusLantikan,
-    statusPembayaran: pa.statusPembayaran,
-    tindakan: pa.id, // Pass ID for action buttons
+// Table columns for recipients
+const recipientColumns = [
+  {
+    key: "name",
+    label: "Nama",
+    sortable: true,
+    width: "200px",
+  },
+  {
+    key: "ic",
+    label: "ID Pengenalan",
+    sortable: true,
+    width: "150px",
+  },
+  {
+    key: "category",
+    label: "Kategori",
+    sortable: true,
+    width: "150px",
+  },
+  {
+    key: "allowance",
+    label: "Elaun (RM)",
+    sortable: true,
+    width: "150px",
+  },
+];
+
+/* === Helpers aktiviti (gabung + jumlah count) === */
+function aggregateActivities(acts = []) {
+  const map = new Map();
+  for (const a of acts || []) {
+    const name = a?.name?.trim();
+    if (!name) continue;
+    const c = Number.isFinite(a?.count) ? Number(a.count) : 1;
+    map.set(name, (map.get(name) || 0) + c);
+  }
+  return Array.from(map.entries()).map(([name, count]) => ({ name, count }));
+}
+
+function totalActivityCount(acts = []) {
+  return aggregateActivities(acts).reduce((s, a) => s + (Number(a.count) || 0), 0);
+}
+
+/* === Seed sample data + load draft recipients === */
+function seedData() {
+  const seed = String(query.year) + String(query.type);
+  const rng = mulberry32(hashCode(seed || 'seed'));
+  const cats = ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'];
+  const parish = ['Kariah A', 'Kariah B', 'Kariah C', 'Kariah D'];
+  const actPool = ['Taklimat', 'Kutipan Fitrah', 'Agihan Tunai', 'Mesyuarat Kariah', 'Audit Tunai', 'Program Komuniti', 'Edaran Bantuan', 'Bimbingan Asnaf'];
+
+  const ROWS = 20;
+  candidates.value = Array.from({ length: ROWS }, (_, i) => {
+    const n = i + 1;
+    // 0..5 jenis aktiviti; setiap satu diberi "count" 1..4 kali (random)
+    const rawKinds = Math.floor(rng() * 6);
+    const names = new Set();
+    while (names.size < rawKinds) {
+      names.add(actPool[Math.floor(rng() * actPool.length)]);
+    }
+    const acts = Array.from(names).map((nm, idx) => ({
+      id: `A${n}-${idx}`,
+      name: nm,
+      count: 1 + Math.floor(rng() * 4) // 1..4 kali
+    }));
+    return {
+      paId: `PA${String(query.year || 'XX')}${String(n).padStart(3, '0')}`,
+      name: `Nama PA ${n}`,
+      ic: `80010114${(1000 + Math.floor(rng() * 9000)).toString()}`,
+      category: cats[Math.floor(rng() * cats.length)],
+      parish: parish[Math.floor(rng() * actPool.length)],
+      activities: acts,
+      _checked: false
+    };
+  });
+
+  // Load draft recipients from localStorage
+  loadDraftRecipients();
+}
+
+/* === Load draft recipients dari localStorage === */
+function loadDraftRecipients() {
+  const year = route.query.year ?? '';
+  const type = route.query.type ?? '';
+  const key = `et:recipients:${year}:${type}`;
+  try {
+    const raw = localStorage.getItem(key);
+    const list = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(list)) {
+      // Ensure allowance follows fixed rate if needed
+      recipients.value = list.map(r => ({
+        ...r,
+        allowance: isFixedAllowance.value ? fixedAllowanceValue.value : (Number(r.allowance) || 0)
+      }));
+    } else {
+      recipients.value = [];
+    }
+  } catch {
+    recipients.value = [];
+  }
+}
+
+/* === KPAK ONLY FILTER === */
+const baseRows = computed(() => candidates.value.filter(r => r.category === 'KPAK'));
+
+/* baris yang boleh dipilih (tidak berada dalam recipients sedia ada) */
+function isInRecipients(paId) {
+  return recipients.value.some(r => r.paId === paId);
+}
+
+const filteredRows = computed(() => {
+  const rows = baseRows.value;
+  if (!search.value) return rows;
+  const q = search.value.toLowerCase();
+  return rows.filter(r =>
+    r.name.toLowerCase().includes(q) ||
+    r.ic.toLowerCase().includes(q) ||
+    r.parish.toLowerCase().includes(q)
+  );
+});
+
+const total = computed(() => filteredRows.value.length);
+const startIndex = computed(() => (page.value - 1) * pageSize);
+const endIndex = computed(() => Math.min(startIndex.value + pageSize, total.value));
+const pagedRows = computed(() => filteredRows.value.slice(startIndex.value, endIndex.value));
+
+/* kira 'select all' hanya atas calon baharu dalam view */
+const allVisibleChecked = computed(() => {
+  const visibleNew = pagedRows.value.filter(r => !isInRecipients(r.paId));
+  return visibleNew.length > 0 && visibleNew.every(r => r._checked);
+});
+
+/* bilangan calon baharu yang ditick */
+const newCheckedCount = computed(() =>
+  filteredRows.value.filter(r => !isInRecipients(r.paId) && r._checked).length
+);
+
+function toggleSelectVisible(e) {
+  const v = e.target.checked;
+  pagedRows.value.forEach(r => {
+    if (!isInRecipients(r.paId)) r._checked = v;
+  });
+}
+
+function commitSelected() {
+  // ambil yang baru ditick sahaja
+  const selectedNew = filteredRows.value.filter(r => !isInRecipients(r.paId) && r._checked);
+  if (!selectedNew.length) return;
+
+  const map = new Map(recipients.value.map(x => [x.paId, x]));
+  selectedNew.forEach(s => {
+    const allowance = isFixedAllowance.value ? fixedAllowanceValue.value : 0;
+    if (!map.has(s.paId)) {
+      map.set(s.paId, { ...s, allowance });
+    }
+  });
+  recipients.value = Array.from(map.values());
+
+  // bersihkan tick
+  filteredRows.value.forEach(r => (r._checked = false));
+}
+
+/* Jenis elaun bertukar → set elaun tetap */
+watch(() => query.type, () => {
+  if (isFixedAllowance.value) {
+    recipients.value.forEach(r => (r.allowance = fixedAllowanceValue.value));
+  }
+});
+
+const totalAllowance = computed(() => recipients.value.reduce((sum, r) => sum + (Number(r.allowance) || 0), 0));
+const canSubmit = computed(() => recipients.value.length > 0 && recipients.value.every(r => isFinite(r.allowance) && Number(r.allowance) >= 0));
+const status = ref('DRAF');
+const statusLabel = computed(() => status.value === 'MENUNGGU KELULUSAN' ? 'menunggu kelulusan' : status.value.toLowerCase());
+
+/* Simpan draf → persist penerima & status, count, balik ke skrin 1 */
+async function saveDraft() {
+  saving.value = true;
+  try {
+    await wait(400);
+    status.value = 'DRAF';
+    persistRecipients();
+    persistCountAndStatusAndBack('DRAF');
+    toast.success('Draf berjaya disimpan');
+  } finally {
+    saving.value = false;
+  }
+}
+
+/* Hantar → status MENUNGGU KELULUSAN, persist & balik ke skrin 1 */
+async function submitForApproval() {
+  if (!canSubmit.value) return;
+  saving.value = true;
+  try {
+    await wait(600);
+    status.value = 'MENUNGGU KELULUSAN';
+    persistRecipients();
+    persistCountAndStatusAndBack('MENUNGGU KELULUSAN');
+    toast.success('Permohonan berjaya dihantar untuk kelulusan');
+  } finally {
+    saving.value = false;
+  }
+}
+
+/* Persist helpers */
+function persistRecipients() {
+  const year = route.query.year ?? '';
+  const type = route.query.type ?? '';
+  const key = `et:recipients:${year}:${type}`;
+  // hanya simpan field penting
+  const compact = recipients.value.map(r => ({
+    paId: r.paId,
+    name: r.name,
+    ic: r.ic,
+    category: r.category,
+    parish: r.parish,
+    allowance: Number(r.allowance) || 0
   }));
-});
+  localStorage.setItem(key, JSON.stringify(compact));
+}
 
-const totalEligible = computed(() => filteredPenolongAmil.value.length);
-const totalCalculated = computed(() => filteredPenolongAmil.value.filter(pa => pa.statusPembayaran === 'Telah Dikira').length);
-const totalPending = computed(() => filteredPenolongAmil.value.filter(pa => pa.statusPembayaran === 'Belum Dikira').length);
-const totalAmount = computed(() => {
-  // We need to calculate from the original data since filtered data doesn't include elaunTahunan
-  const total = penolongAmil.value
-    .filter(pa => pa.statusPembayaran === 'Telah Dikira')
-    .reduce((sum, pa) => sum + parseFloat(pa.elaunTahunan.replace(',', '')), 0);
-  return total.toLocaleString('en-MY', { minimumFractionDigits: 2 });
-});
+function persistCountAndStatusAndBack(newStatus) {
+  const year = route.query.year ?? '';
+  const type = route.query.type ?? '';
+  const count = Array.isArray(recipients.value) ? recipients.value.length : 0;
+  localStorage.setItem(`et:count:${year}:${type}`, String(count));
+  localStorage.setItem(`et:status:${year}:${type}`, newStatus);
+  router.push({ path: '/BF-PA/PE/ET', query: { year, type } });
+}
 
-// Helper functions
-const getStatusLantikanVariant = (status) => {
-  switch (status) {
-    case 'Aktif': return 'success';
-    case 'Tamat': return 'warning';
-    case 'Digantung': return 'danger';
-    default: return 'disabled'; // Use disabled for proper grey color
-  }
-};
+/* utils */
+function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
+function hashCode(str) { let h = 0; for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h |= 0 } return h; }
+function mulberry32(a) { return function () { let t = (a += 0x6D2B79F5); t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 } }
 
-const getStatusPembayaranVariant = (status) => {
-  switch (status) {
-    case 'Belum Dikira': return 'warning';
-    case 'Telah Dikira': return 'info';
-    case 'Telah Dibayar': return 'success';
-    default: return 'disabled'; // Use disabled for proper grey color
-  }
-};
-
-const canCalculateElaun = (paId) => {
-  const pa = penolongAmil.value.find(p => p.id === paId);
-  return pa && pa.statusPembayaran === 'Belum Dikira';
-};
-
-// Action handlers
-const handleView = (paId) => {
-  navigateTo(`/BF-PA/PE/ET/01/${paId}`);
-};
-
-const handleCalculateElaun = (paId) => {
-  navigateTo(`/BF-PA/PE/ET/01/02?id=${paId}`);
-};
-
-const handleBulkCalculate = async () => {
-  if (selectedRows.value.length === 0) {
-    toast.warning('Sila pilih Penolong Amil untuk dikira elaun');
-    return;
-  }
-
-  processing.value = true;
-  
-  try {
-    // Navigate to bulk calculation page
-    navigateTo('/BF-PA/PE/ET/01/02?bulk=true');
-  } catch (error) {
-    toast.error('Ralat semasa memproses pengiraan bulk');
-    console.error('Error in bulk calculation:', error);
-  } finally {
-    processing.value = false;
-  }
-};
-
-const exportData = () => {
-  toast.info('Fungsi eksport akan diimplementasikan');
-};
-
-const refreshData = async () => {
-  try {
-    processing.value = true;
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast.success('Data telah dikemas kini');
-  } catch (error) {
-    toast.error('Ralat semasa mengemas kini data');
-  } finally {
-    processing.value = false;
-  }
-};
-
-onMounted(() => {
-  // Load initial data
-  refreshData();
-});
+/* Load data + draft on first mount or when query changes */
+watch(() => [query.year, query.type], () => seedData(), { immediate: true });
 </script>
 
 <style scoped>
-/* Add any additional styles here */
+/* gaya ringkas, ikut Tailwind */
 </style> 
