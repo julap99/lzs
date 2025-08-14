@@ -120,12 +120,9 @@
             <!-- Maklumat Jawatan Tab -->
             <rs-tab-item title="Maklumat Jawatan">
               <div class="p-6">
-                <!-- Header with Add Button -->
-                <div class="flex justify-between items-center mb-4">
+                <!-- Header -->
+                <div class="mb-4">
                   <h4 class="text-lg font-semibold text-gray-900">Jawatan dalam Kategori</h4>
-                  <rs-button variant="primary" size="sm" @click="tambahJawatan">
-                    + Tambah Jawatan
-                  </rs-button>
                 </div>
                 
                 <!-- Table for Jawatan -->
@@ -174,17 +171,23 @@
                         </td>
                         <td class="p-3 border">
                           <rs-button 
-                            v-if="index > 0" 
                             variant="danger" 
                             size="sm" 
                             @click="hapusJawatan(index)"
                           >
-                            Hapus
+                            <Icon name="ph:trash" class="w-4 h-4" />
                           </rs-button>
                         </td>
                       </tr>
                     </tbody>
                   </table>
+                </div>
+                
+                <!-- Add Button Below Table -->
+                <div class="mt-4 flex justify-end">
+                  <rs-button variant="secondary" size="sm" @click="tambahJawatan">
+                    <Icon name="ph:plus" class="w-4 h-4" />
+                  </rs-button>
                 </div>
               </div>
             </rs-tab-item>
@@ -192,12 +195,9 @@
             <!-- Maklumat Elaun Tab -->
             <rs-tab-item title="Maklumat Elaun">
               <div class="p-6">
-                <!-- Header with Add Button -->
-                <div class="flex justify-between items-center mb-4">
+                <!-- Header -->
+                <div class="mb-4">
                   <h4 class="text-lg font-semibold text-gray-900">Elaun dalam Kategori</h4>
-                  <rs-button variant="primary" size="sm" @click="tambahElaun">
-                    + Tambah Elaun
-                  </rs-button>
                 </div>
                 
                 <!-- Table for Elaun -->
@@ -255,17 +255,122 @@
                         </td>
                         <td class="p-3 border">
                           <rs-button 
-                            v-if="index > 0" 
                             variant="danger" 
                             size="sm" 
                             @click="hapusElaun(index)"
                           >
-                            Hapus
+                            <Icon name="ph:trash" class="w-4 h-4" />
                           </rs-button>
                         </td>
                       </tr>
                     </tbody>
                   </table>
+                </div>
+                
+                <!-- Add Button Below Table -->
+                <div class="mt-4 flex justify-end">
+                  <rs-button variant="secondary" size="sm" @click="tambahElaun">
+                    <Icon name="ph:plus" class="w-4 h-4" />
+                  </rs-button>
+                </div>
+
+                <!-- Elaun Khas Section -->
+                <div class="mt-8">
+                  <!-- Header -->
+                  <div class="mb-4">
+                    <h4 class="text-lg font-semibold text-gray-900">Elaun Khas</h4>
+                  </div>
+                  
+                  <!-- Table for Elaun Khas -->
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Jenis Elaun</th>
+                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Kategori PA</th>
+                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Amaun</th>
+                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Kod Bajet</th>
+                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Status</th>
+                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Kuatkuasa</th>
+                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Target KPI</th>
+                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Tindakan</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="(elaunKhas, index) in formData.maklumatElaunKhas" :key="index">
+                          <td class="p-3 border">
+                            <input 
+                              v-model="elaunKhas.jenis" 
+                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="Contoh: KHAS - 48 AKTIVITI/TAHUN"
+                            />
+                          </td>
+                          <td class="p-3 border">
+                            <input 
+                              v-model="elaunKhas.kategoriPA" 
+                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="Contoh: PAK+"
+                            />
+                          </td>
+                          <td class="p-3 border">
+                            <input 
+                              type="number" 
+                              v-model="elaunKhas.amaun" 
+                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="0"
+                            />
+                          </td>
+                          <td class="p-3 border">
+                            <input 
+                              v-model="elaunKhas.kod" 
+                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="Contoh: B31702"
+                            />
+                          </td>
+                          <td class="p-3 border">
+                            <select 
+                              v-model="elaunKhas.status" 
+                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                              <option value="AKTIF">AKTIF</option>
+                              <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                            </select>
+                          </td>
+                          <td class="p-3 border">
+                            <input 
+                              type="date" 
+                              v-model="elaunKhas.tarikh" 
+                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                          </td>
+                          <td class="p-3 border">
+                            <input 
+                              type="number"
+                              v-model="elaunKhas.targetKPI" 
+                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="48"
+                            />
+                          </td>
+                                                  <td class="p-3 border">
+                                                      <rs-button 
+                              variant="danger" 
+                              size="sm" 
+                              @click="hapusElaunKhas(index)"
+                            >
+                              <Icon name="ph:trash" class="w-4 h-4" />
+                            </rs-button>
+                        </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <!-- Add Button Below Table -->
+                  <div class="mt-4 flex justify-end">
+                    <rs-button variant="secondary" size="sm" @click="tambahElaunKhas">
+                      <Icon name="ph:plus" class="w-4 h-4" />
+                    </rs-button>
+                  </div>
                 </div>
               </div>
             </rs-tab-item>
@@ -273,12 +378,9 @@
             <!-- Maklumat Sesi Tab -->
             <rs-tab-item title="Maklumat Sesi">
               <div class="p-6">
-                <!-- Header with Add Button -->
-                <div class="flex justify-between items-center mb-4">
+                <!-- Header -->
+                <div class="mb-4">
                   <h4 class="text-lg font-semibold text-gray-900">Sesi dalam Kategori</h4>
-                  <rs-button variant="primary" size="sm" @click="tambahSesi">
-                    + Tambah Sesi
-                  </rs-button>
                 </div>
                 
                 <!-- Table for Sesi -->
@@ -335,17 +437,23 @@
                         </td>
                         <td class="p-3 border">
                           <rs-button 
-                            v-if="index > 0" 
                             variant="danger" 
                             size="sm" 
                             @click="hapusSesi(index)"
                           >
-                            Hapus
+                            <Icon name="ph:trash" class="w-4 h-4" />
                           </rs-button>
                         </td>
                       </tr>
                     </tbody>
                   </table>
+                </div>
+                
+                <!-- Add Button Below Table -->
+                <div class="mt-4 flex justify-end">
+                  <rs-button variant="secondary" size="sm" @click="tambahSesi">
+                    <Icon name="ph:plus" class="w-4 h-4" />
+                  </rs-button>
                 </div>
               </div>
             </rs-tab-item>
@@ -481,18 +589,43 @@ const formData = ref({
   ],
   maklumatElaun: [
     {
-      jenis: "Bancian Baru: Per Borang Permohonan",
+      jenis: "Elaun Bancian Baru : per borang permohonan",
       amaun: 30,
       kod: "B34106",
       status: "AKTIF",
       tarikh: "2025-01-01",
     },
     {
-      jenis: "Kemaskini: Per Borang Permohonan",
+      jenis: "Elaun Kemaskini/permohonan bantuan : per borang permohonan",
       amaun: 20,
       kod: "B34106",
       status: "AKTIF",
       tarikh: "2025-01-01",
+    },
+    {
+      jenis: "Elaun Tahunan KPAK",
+      amaun: 500,
+      kod: "B34107",
+      status: "AKTIF",
+      tarikh: "2025-01-01",
+    },
+    {
+      jenis: "Elaun Tahunan KPAF",
+      amaun: 300,
+      kod: "B34108",
+      status: "AKTIF",
+      tarikh: "2025-01-01",
+    },
+  ],
+  maklumatElaunKhas: [
+    {
+      jenis: "KHAS - 48 AKTIVITI/TAHUN",
+      kategoriPA: "PAF",
+      amaun: 400,
+      kod: "B31702",
+      status: "AKTIF",
+      tarikh: "2025-01-01",
+      targetKPI: 48,
     },
   ],
   maklumatSesi: [
@@ -532,6 +665,7 @@ const handleSubmit = async (formData) => {
       penerangan: formData.penerangan,
       maklumatJawatan: formData.maklumatJawatan, // Array of job positions
       maklumatElaun: formData.maklumatElaun,     // Array of allowances
+      maklumatElaunKhas: formData.maklumatElaunKhas, // Array of special allowances
       maklumatSesi: formData.maklumatSesi,       // Array of sessions
       maklumatPegawai: formData.maklumatPegawai
     });
@@ -585,6 +719,26 @@ const hapusElaun = (index) => {
 
 const updateElaun = (index, field, value) => {
   formData.value.maklumatElaun[index][field] = value;
+};
+
+const tambahElaunKhas = () => {
+  formData.value.maklumatElaunKhas.push({
+    jenis: "",
+    kategoriPA: "",
+    amaun: 0,
+    kod: "",
+    status: "AKTIF",
+    tarikh: "",
+    targetKPI: 0,
+  });
+};
+
+const hapusElaunKhas = (index) => {
+  formData.value.maklumatElaunKhas.splice(index, 1);
+};
+
+const updateElaunKhas = (index, field, value) => {
+  formData.value.maklumatElaunKhas[index][field] = value;
 };
 
 const tambahSesi = () => {

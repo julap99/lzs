@@ -1313,7 +1313,7 @@ export default [
             meta: {},
           },
           {
-            title: "Kemaskini Perkhidmatan",
+            title: "Penamatan Jawatan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PP/KP",
             child: [],
