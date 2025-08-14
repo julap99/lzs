@@ -206,7 +206,7 @@
     <rs-card class="mb-6">
       <template #header>
         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:clipboard-check" class="w-5 h-5 mr-2" />
+          <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
           Semakan PT
         </h3>
       </template>
@@ -409,7 +409,6 @@ const decisionOptions = [
   { label: "Sila Pilih Keputusan", value: "" },
   { label: "Lulus", value: "approve" },
   { label: "Tolak", value: "reject" },
-  { label: "Telah Disemak dan Perlu Maklumat Tambahan", value: "need_more_info" },
 ];
 
 // Enhanced mock data

@@ -120,80 +120,85 @@
             <!-- Maklumat Jawatan Tab -->
             <rs-tab-item title="Maklumat Jawatan">
               <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormKit
-                    type="text"
-                    name="namaJawatan"
-                    label="Nama Jawatan"
-                    placeholder="Contoh: Penolong Amil Fitrah"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Nama jawatan diperlukan',
-                    }"
-                    :value="formData.maklumatJawatan.namaJawatan"
-                  />
-                  <FormKit
-                    type="text"
-                    name="kodJawatan"
-                    label="Kod Jawatan"
-                    placeholder="Contoh: PAF001"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Kod jawatan diperlukan',
-                    }"
-                    :value="formData.maklumatJawatan.kodJawatan"
-                  />
-                  <FormKit
-                    type="select"
-                    name="statusJawatan"
-                    label="Status Jawatan"
-                    :options="[
-                      { label: 'Aktif', value: 'Aktif' },
-                      { label: 'Tidak Aktif', value: 'Tidak Aktif' },
-                    ]"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Status jawatan diperlukan',
-                    }"
-                    :value="formData.maklumatJawatan.status"
-                  />
-                  <FormKit
-                    type="date"
-                    name="tarikhKuatkuasaJawatan"
-                    label="Tarikh Kuatkuasa Jawatan"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Tarikh kuatkuasa jawatan diperlukan',
-                    }"
-                    :value="convertToHTMLDateInput(formData.maklumatJawatan.tarikhKuatkuasa)"
-                  />
-                  <div class="md:col-span-2">
-                    <FormKit
-                      type="textarea"
-                      name="tanggungjawab"
-                      label="Tanggungjawab Jawatan"
-                      placeholder="Senaraikan tanggungjawab utama..."
-                      rows="3"
-                      validation="required"
-                      :validation-messages="{
-                        required: 'Tanggungjawab jawatan diperlukan',
-                      }"
-                      :value="formData.maklumatJawatan.tanggungjawab"
-                    />
+                <!-- Header with Add Button -->
+                <div class="flex justify-between items-center mb-4">
+                  <h4 class="text-lg font-semibold text-gray-900">Jawatan dalam Kategori</h4>
+                  <rs-button variant="primary" size="sm" @click="tambahJawatan">
+                    + Tambah Jawatan
+                  </rs-button>
+                </div>
+                
+                <!-- Dynamic Rows -->
+                <div v-for="(jawatan, index) in formData.maklumatJawatan" :key="index" class="mb-4 p-4 border border-gray-200 rounded-lg">
+                  <div class="flex justify-between items-center mb-3">
+                    <h5 class="font-medium text-gray-700">Jawatan #{{ index + 1 }}</h5>
+                    <rs-button 
+                      v-if="index > 0" 
+                      variant="danger" 
+                      size="sm" 
+                      @click="hapusJawatan(index)"
+                    >
+                      Hapus
+                    </rs-button>
                   </div>
-                  <div class="md:col-span-2">
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormKit
-                      type="textarea"
-                      name="kelayakan"
-                      label="Kelayakan Minimum"
-                      placeholder="Syarat kelayakan minimum..."
-                      rows="3"
-                      validation="required"
-                      :validation-messages="{
-                        required: 'Kelayakan minimum diperlukan',
-                      }"
-                      :value="formData.maklumatJawatan.kelayakan"
+                      type="text"
+                      :name="`namaJawatan_${index}`"
+                      label="Nama Jawatan"
+                      placeholder="Contoh: Penolong Amil Fitrah"
+                      :value="jawatan.namaJawatan"
+                      @input="(value) => updateJawatan(index, 'namaJawatan', value)"
                     />
+                    <FormKit
+                      type="text"
+                      :name="`kodJawatan_${index}`"
+                      label="Kod Jawatan"
+                      placeholder="Contoh: PAF001"
+                      :value="jawatan.kodJawatan"
+                      @input="(value) => updateJawatan(index, 'kodJawatan', value)"
+                    />
+                    <FormKit
+                      type="select"
+                      :name="`statusJawatan_${index}`"
+                      label="Status Jawatan"
+                      :options="[
+                        { label: 'Aktif', value: 'Aktif' },
+                        { label: 'Tidak Aktif', value: 'Tidak Aktif' },
+                      ]"
+                      :value="jawatan.status"
+                      @input="(value) => updateJawatan(index, 'status', value)"
+                    />
+                    <FormKit
+                      type="date"
+                      :name="`tarikhKuatkuasaJawatan_${index}`"
+                      label="Tarikh Kuatkuasa Jawatan"
+                      :value="convertToHTMLDateInput(jawatan.tarikhKuatkuasa)"
+                      @input="(value) => updateJawatan(index, 'tarikhKuatkuasa', value)"
+                    />
+                    <div class="md:col-span-2">
+                      <FormKit
+                        type="textarea"
+                        :name="`tanggungjawab_${index}`"
+                        label="Tanggungjawab Jawatan"
+                        placeholder="Senaraikan tanggungjawab utama..."
+                        rows="3"
+                        :value="jawatan.tanggungjawab"
+                        @input="(value) => updateJawatan(index, 'tanggungjawab', value)"
+                      />
+                    </div>
+                    <div class="md:col-span-2">
+                      <FormKit
+                        type="textarea"
+                        :name="`kelayakan_${index}`"
+                        label="Kelayakan Minimum"
+                        placeholder="Syarat kelayakan minimum..."
+                        rows="3"
+                        :value="jawatan.kelayakan"
+                        @input="(value) => updateJawatan(index, 'kelayakan', value)"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -202,69 +207,80 @@
             <!-- Maklumat Elaun Tab -->
             <rs-tab-item title="Maklumat Elaun">
               <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormKit
-                    type="select"
-                    name="jenisElaun"
-                    label="Jenis Elaun"
-                    :options="[
-                      { label: 'Elaun Bulanan', value: 'Elaun Bulanan' },
-                      { label: 'Elaun Tahunan', value: 'Elaun Tahunan' },
-                      { label: 'Elaun Khas', value: 'Elaun Khas' },
-                      { label: 'Elaun Perjalanan', value: 'Elaun Perjalanan' },
-                    ]"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Jenis elaun diperlukan',
-                    }"
-                    :value="formData.maklumatElaun.jenisElaun"
-                  />
-                  <FormKit
-                    type="number"
-                    name="amaun"
-                    label="Amaun (RM)"
-                    placeholder="0.00"
-                    validation="required|number"
-                    :validation-messages="{
-                      required: 'Amaun diperlukan',
-                      number: 'Amaun mestilah nombor',
-                    }"
-                    :value="formData.maklumatElaun.amaun"
-                  />
-                  <FormKit
-                    type="text"
-                    name="kodBajet"
-                    label="Kod Bajet"
-                    placeholder="Contoh: B001"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Kod bajet diperlukan',
-                    }"
-                    :value="formData.maklumatElaun.kodBajet"
-                  />
-                  <FormKit
-                    type="select"
-                    name="statusElaun"
-                    label="Status Elaun"
-                    :options="[
-                      { label: 'Aktif', value: 'Aktif' },
-                      { label: 'Tidak Aktif', value: 'Tidak Aktif' },
-                    ]"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Status elaun diperlukan',
-                    }"
-                    :value="formData.maklumatElaun.status"
-                  />
-                  <div class="md:col-span-2">
+                <!-- Header with Add Button -->
+                <div class="flex justify-between items-center mb-4">
+                  <h4 class="text-lg font-semibold text-gray-900">Elaun dalam Kategori</h4>
+                  <rs-button variant="primary" size="sm" @click="tambahElaun">
+                    + Tambah Elaun
+                  </rs-button>
+                </div>
+                
+                <!-- Dynamic Rows -->
+                <div v-for="(elaun, index) in formData.maklumatElaun" :key="index" class="mb-4 p-4 border border-gray-200 rounded-lg">
+                  <div class="flex justify-between items-center mb-3">
+                    <h5 class="font-medium text-gray-700">Elaun #{{ index + 1 }}</h5>
+                    <rs-button 
+                      v-if="index > 0" 
+                      variant="danger" 
+                      size="sm" 
+                      @click="hapusElaun(index)"
+                    >
+                      Hapus
+                    </rs-button>
+                  </div>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormKit
-                      type="textarea"
-                      name="catatanElaun"
-                      label="Catatan Elaun"
-                      placeholder="Maklumat tambahan tentang elaun..."
-                      rows="2"
-                      :value="formData.maklumatElaun.catatanElaun"
+                      type="select"
+                      :name="`jenisElaun_${index}`"
+                      label="Jenis Elaun"
+                      :options="[
+                        { label: 'Elaun Bulanan', value: 'Elaun Bulanan' },
+                        { label: 'Elaun Tahunan', value: 'Elaun Tahunan' },
+                        { label: 'Elaun Khas', value: 'Elaun Khas' },
+                        { label: 'Elaun Perjalanan', value: 'Elaun Perjalanan' },
+                      ]"
+                      :value="elaun.jenisElaun"
+                      @input="(value) => updateElaun(index, 'jenisElaun', value)"
                     />
+                    <FormKit
+                      type="number"
+                      :name="`amaun_${index}`"
+                      label="Amaun (RM)"
+                      placeholder="0.00"
+                      :value="elaun.amaun"
+                      @input="(value) => updateElaun(index, 'amaun', value)"
+                    />
+                    <FormKit
+                      type="text"
+                      :name="`kodBajet_${index}`"
+                      label="Kod Bajet"
+                      placeholder="Contoh: B001"
+                      :value="elaun.kodBajet"
+                      @input="(value) => updateElaun(index, 'kodBajet', value)"
+                    />
+                    <FormKit
+                      type="select"
+                      :name="`statusElaun_${index}`"
+                      label="Status Elaun"
+                      :options="[
+                        { label: 'Aktif', value: 'Aktif' },
+                        { label: 'Tidak Aktif', value: 'Tidak Aktif' },
+                      ]"
+                      :value="elaun.status"
+                      @input="(value) => updateElaun(index, 'status', value)"
+                    />
+                    <div class="md:col-span-2">
+                      <FormKit
+                        type="textarea"
+                        :name="`catatanElaun_${index}`"
+                        label="Catatan Elaun"
+                        placeholder="Maklumat tambahan tentang elaun..."
+                        rows="2"
+                        :value="elaun.catatanElaun"
+                        @input="(value) => updateElaun(index, 'catatanElaun', value)"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -273,59 +289,74 @@
             <!-- Maklumat Sesi Tab -->
             <rs-tab-item title="Maklumat Sesi">
               <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormKit
-                    type="select"
-                    name="jenisSesi"
-                    label="Jenis Sesi"
-                    :options="[
-                      { label: 'Sesi Pengajian', value: 'Sesi Pengajian' },
-                      { label: 'Sesi Latihan', value: 'Sesi Latihan' },
-                      { label: 'Sesi Mesyuarat', value: 'Sesi Mesyuarat' },
-                      { label: 'Sesi Lain-lain', value: 'Sesi Lain-lain' },
-                    ]"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Jenis sesi diperlukan',
-                    }"
-                    :value="formData.maklumatSesi.jenisSesi"
-                  />
-                  <FormKit
-                    type="text"
-                    name="tempohSesi"
-                    label="Tempoh Sesi"
-                    placeholder="Contoh: 1 jam"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Tempoh sesi diperlukan',
-                    }"
-                    :value="formData.maklumatSesi.tempohSesi"
-                  />
-                  <FormKit
-                    type="select"
-                    name="statusSesi"
-                    label="Status Sesi"
-                    :options="[
-                      { label: 'Belum Bermula', value: 'Belum Bermula' },
-                      { label: 'Sedang Berjalan', value: 'Sedang Berjalan' },
-                      { label: 'Selesai', value: 'Selesai' },
-                      { label: 'Dibatalkan', value: 'Dibatalkan' },
-                    ]"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Status sesi diperlukan',
-                    }"
-                    :value="formData.maklumatSesi.status"
-                  />
-                  <div class="md:col-span-2">
+                <!-- Header with Add Button -->
+                <div class="flex justify-between items-center mb-4">
+                  <h4 class="text-lg font-semibold text-gray-900">Sesi dalam Kategori</h4>
+                  <rs-button variant="primary" size="sm" @click="tambahSesi">
+                    + Tambah Sesi
+                  </rs-button>
+                </div>
+                
+                <!-- Dynamic Rows -->
+                <div v-for="(sesi, index) in formData.maklumatSesi" :key="index" class="mb-4 p-4 border border-gray-200 rounded-lg">
+                  <div class="flex justify-between items-center mb-3">
+                    <h5 class="font-medium text-gray-700">Sesi #{{ index + 1 }}</h5>
+                    <rs-button 
+                      v-if="index > 0" 
+                      variant="danger" 
+                      size="sm" 
+                      @click="hapusSesi(index)"
+                    >
+                      Hapus
+                    </rs-button>
+                  </div>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormKit
-                      type="textarea"
-                      name="catatanSesi"
-                      label="Catatan Sesi"
-                      placeholder="Maklumat tambahan tentang sesi..."
-                      rows="2"
-                      :value="formData.maklumatSesi.catatanSesi"
+                      type="select"
+                      :name="`jenisSesi_${index}`"
+                      label="Jenis Sesi"
+                      :options="[
+                        { label: 'Sesi Pengajian', value: 'Sesi Pengajian' },
+                        { label: 'Sesi Latihan', value: 'Sesi Latihan' },
+                        { label: 'Sesi Mesyuarat', value: 'Sesi Mesyuarat' },
+                        { label: 'Sesi Lain-lain', value: 'Sesi Lain-lain' },
+                      ]"
+                      :value="sesi.jenisSesi"
+                      @input="(value) => updateSesi(index, 'jenisSesi', value)"
                     />
+                    <FormKit
+                      type="text"
+                      :name="`tempohSesi_${index}`"
+                      label="Tempoh Sesi"
+                      placeholder="Contoh: 1 jam"
+                      :value="sesi.tempohSesi"
+                      @input="(value) => updateSesi(index, 'tempohSesi', value)"
+                    />
+                    <FormKit
+                      type="select"
+                      :name="`statusSesi_${index}`"
+                      label="Status Sesi"
+                      :options="[
+                        { label: 'Belum Bermula', value: 'Belum Bermula' },
+                        { label: 'Sedang Berjalan', value: 'Sedang Berjalan' },
+                        { label: 'Selesai', value: 'Selesai' },
+                        { label: 'Dibatalkan', value: 'Dibatalkan' },
+                      ]"
+                      :value="sesi.status"
+                      @input="(value) => updateSesi(index, 'status', value)"
+                    />
+                    <div class="md:col-span-2">
+                      <FormKit
+                        type="textarea"
+                        :name="`catatanSesi_${index}`"
+                        label="Catatan Sesi"
+                        placeholder="Maklumat tambahan tentang sesi..."
+                        rows="2"
+                        :value="sesi.catatanSesi"
+                        @input="(value) => updateSesi(index, 'catatanSesi', value)"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -446,27 +477,33 @@ const formData = ref({
   tarikhKuatkuasa: "01-01-2024",
   penerangan: "Kategori untuk menguruskan zakat fitrah",
   isDefault: true,
-  maklumatJawatan: {
-    namaJawatan: "Penolong Amil Fitrah",
-    kodJawatan: "PAF001",
-    status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
-    tanggungjawab: "Menguruskan kutipan dan pengagihan zakat fitrah",
-    kelayakan: "Sijil SPM, pengalaman dalam kerja sosial",
-  },
-  maklumatElaun: {
-    jenisElaun: "Elaun Bulanan",
-    amaun: "500.00",
-    kodBajet: "B001",
-    status: "Aktif",
-    catatanElaun: "Elaun bulanan termasuk elaun perjalanan",
-  },
-  maklumatSesi: {
-    jenisSesi: "Sesi Pengajian",
-    tempohSesi: "1 jam",
-    status: "Belum Bermula",
-    catatanSesi: "Sesi pengajian tentang zakat fitrah",
-  },
+  maklumatJawatan: [
+    {
+      namaJawatan: "Penolong Amil Fitrah",
+      kodJawatan: "PAF001",
+      status: "Aktif",
+      tarikhKuatkuasa: "01-01-2024",
+      tanggungjawab: "Menguruskan kutipan dan pengagihan zakat fitrah",
+      kelayakan: "Sijil SPM, pengalaman dalam kerja sosial",
+    },
+  ],
+  maklumatElaun: [
+    {
+      jenisElaun: "Elaun Bulanan",
+      amaun: "500.00",
+      kodBajet: "B001",
+      status: "Aktif",
+      catatanElaun: "Elaun bulanan termasuk elaun perjalanan",
+    },
+  ],
+  maklumatSesi: [
+    {
+      jenisSesi: "Sesi Pengajian",
+      tempohSesi: "1 jam",
+      status: "Belum Bermula",
+      catatanSesi: "Sesi pengajian tentang zakat fitrah",
+    },
+  ],
   maklumatPegawai: {
     diciptaOleh: "Admin User",
     tarikhCipta: "27-10-2023",
@@ -479,6 +516,19 @@ const handleSubmit = async (formData) => {
   isSubmitting.value = true;
   
   try {
+    // Log the complete form data structure for backend
+    console.log('Form Data for Backend:', {
+      kategoriPenolongAmil: formData.kategoriPenolongAmil,
+      kodSingkatan: formData.kodSingkatan,
+      status: formData.status,
+      tarikhKuatkuasa: formData.tarikhKuatkuasa,
+      penerangan: formData.penerangan,
+      maklumatJawatan: formData.maklumatJawatan, // Array of job positions
+      maklumatElaun: formData.maklumatElaun,     // Array of allowances
+      maklumatSesi: formData.maklumatSesi,       // Array of sessions
+      maklumatPegawai: formData.maklumatPegawai
+    });
+    
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
@@ -493,6 +543,60 @@ const handleSubmit = async (formData) => {
   } finally {
     isSubmitting.value = false;
   }
+};
+
+const tambahJawatan = () => {
+  formData.value.maklumatJawatan.push({
+    namaJawatan: "",
+    kodJawatan: "",
+    status: "Aktif",
+    tarikhKuatkuasa: "",
+    tanggungjawab: "",
+    kelayakan: "",
+  });
+};
+
+const hapusJawatan = (index) => {
+  formData.value.maklumatJawatan.splice(index, 1);
+};
+
+const updateJawatan = (index, field, value) => {
+  formData.value.maklumatJawatan[index][field] = value;
+};
+
+const tambahElaun = () => {
+  formData.value.maklumatElaun.push({
+    jenisElaun: "Elaun Bulanan",
+    amaun: "0.00",
+    kodBajet: "",
+    status: "Aktif",
+    catatanElaun: "",
+  });
+};
+
+const hapusElaun = (index) => {
+  formData.value.maklumatElaun.splice(index, 1);
+};
+
+const updateElaun = (index, field, value) => {
+  formData.value.maklumatElaun[index][field] = value;
+};
+
+const tambahSesi = () => {
+  formData.value.maklumatSesi.push({
+    jenisSesi: "Sesi Pengajian",
+    tempohSesi: "1 jam",
+    status: "Belum Bermula",
+    catatanSesi: "",
+  });
+};
+
+const hapusSesi = (index) => {
+  formData.value.maklumatSesi.splice(index, 1);
+};
+
+const updateSesi = (index, field, value) => {
+  formData.value.maklumatSesi[index][field] = value;
 };
 
 onMounted(() => {

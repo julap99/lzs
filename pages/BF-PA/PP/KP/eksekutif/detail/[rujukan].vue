@@ -449,7 +449,6 @@ const decisionOptions = [
   { label: "Sila pilih keputusan", value: "" },
   { label: "Sokong", value: "supported" },
   { label: "Tidak Sokong", value: "not_supported" },
-  { label: "Perlu Maklumat Tambahan", value: "need_more_info" },
 ];
 
 // Actions

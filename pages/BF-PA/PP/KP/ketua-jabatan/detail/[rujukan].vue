@@ -494,7 +494,6 @@ const decisionOptions = [
   { label: "Sila pilih keputusan", value: "" },
   { label: "Sahkan", value: "confirmed" },
   { label: "Tidak Sahkan", value: "not_confirmed" },
-  { label: "Perlu Maklumat Tambahan", value: "need_more_info" },
 ];
 
 // Actions

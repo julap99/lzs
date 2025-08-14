@@ -529,7 +529,6 @@ const decisionOptions = [
   { label: "Sila pilih keputusan", value: "" },
   { label: "Lulus", value: "approved" },
   { label: "Tidak Lulus", value: "rejected" },
-  { label: "Perlu Maklumat Tambahan", value: "need_more_info" },
 ];
 
 // Actions
