@@ -128,78 +128,63 @@
                   </rs-button>
                 </div>
                 
-                <!-- Dynamic Rows -->
-                <div v-for="(jawatan, index) in formData.maklumatJawatan" :key="index" class="mb-4 p-4 border border-gray-200 rounded-lg">
-                  <div class="flex justify-between items-center mb-3">
-                    <h5 class="font-medium text-gray-700">Jawatan #{{ index + 1 }}</h5>
-                    <rs-button 
-                      v-if="index > 0" 
-                      variant="danger" 
-                      size="sm" 
-                      @click="hapusJawatan(index)"
-                    >
-                      Hapus
-                    </rs-button>
-                  </div>
-                  
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormKit
-                      type="text"
-                      :name="`namaJawatan_${index}`"
-                      label="Nama Jawatan"
-                      placeholder="Contoh: Penolong Amil Fitrah"
-                      :value="jawatan.namaJawatan"
-                      @input="(value) => updateJawatan(index, 'namaJawatan', value)"
-                    />
-                    <FormKit
-                      type="text"
-                      :name="`kodJawatan_${index}`"
-                      label="Kod Jawatan"
-                      placeholder="Contoh: PAF001"
-                      :value="jawatan.kodJawatan"
-                      @input="(value) => updateJawatan(index, 'kodJawatan', value)"
-                    />
-                    <FormKit
-                      type="select"
-                      :name="`statusJawatan_${index}`"
-                      label="Status Jawatan"
-                      :options="[
-                        { label: 'Aktif', value: 'Aktif' },
-                        { label: 'Tidak Aktif', value: 'Tidak Aktif' },
-                      ]"
-                      :value="jawatan.status"
-                      @input="(value) => updateJawatan(index, 'status', value)"
-                    />
-                    <FormKit
-                      type="date"
-                      :name="`tarikhKuatkuasaJawatan_${index}`"
-                      label="Tarikh Kuatkuasa Jawatan"
-                      :value="convertToHTMLDateInput(jawatan.tarikhKuatkuasa)"
-                      @input="(value) => updateJawatan(index, 'tarikhKuatkuasa', value)"
-                    />
-                    <div class="md:col-span-2">
-                      <FormKit
-                        type="textarea"
-                        :name="`tanggungjawab_${index}`"
-                        label="Tanggungjawab Jawatan"
-                        placeholder="Senaraikan tanggungjawab utama..."
-                        rows="3"
-                        :value="jawatan.tanggungjawab"
-                        @input="(value) => updateJawatan(index, 'tanggungjawab', value)"
-                      />
-                    </div>
-                    <div class="md:col-span-2">
-                      <FormKit
-                        type="textarea"
-                        :name="`kelayakan_${index}`"
-                        label="Kelayakan Minimum"
-                        placeholder="Syarat kelayakan minimum..."
-                        rows="3"
-                        :value="jawatan.kelayakan"
-                        @input="(value) => updateJawatan(index, 'kelayakan', value)"
-                      />
-                    </div>
-                  </div>
+                <!-- Table for Jawatan -->
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Jawatan</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Kod Singkatan</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Status</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Kuatkuasa</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="(jawatan, index) in formData.maklumatJawatan" :key="index">
+                        <td class="p-3 border">
+                          <input 
+                            v-model="jawatan.jawatan" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Contoh: Ketua Penolong Amil"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <input 
+                            v-model="jawatan.kod" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Contoh: PAF"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <select 
+                            v-model="jawatan.status" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          >
+                            <option value="AKTIF">AKTIF</option>
+                            <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                          </select>
+                        </td>
+                        <td class="p-3 border">
+                          <input 
+                            type="date" 
+                            v-model="jawatan.tarikh" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <rs-button 
+                            v-if="index > 0" 
+                            variant="danger" 
+                            size="sm" 
+                            @click="hapusJawatan(index)"
+                          >
+                            Hapus
+                          </rs-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </rs-tab-item>
@@ -215,73 +200,72 @@
                   </rs-button>
                 </div>
                 
-                <!-- Dynamic Rows -->
-                <div v-for="(elaun, index) in formData.maklumatElaun" :key="index" class="mb-4 p-4 border border-gray-200 rounded-lg">
-                  <div class="flex justify-between items-center mb-3">
-                    <h5 class="font-medium text-gray-700">Elaun #{{ index + 1 }}</h5>
-                    <rs-button 
-                      v-if="index > 0" 
-                      variant="danger" 
-                      size="sm" 
-                      @click="hapusElaun(index)"
-                    >
-                      Hapus
-                    </rs-button>
-                  </div>
-                  
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormKit
-                      type="select"
-                      :name="`jenisElaun_${index}`"
-                      label="Jenis Elaun"
-                      :options="[
-                        { label: 'Elaun Bulanan', value: 'Elaun Bulanan' },
-                        { label: 'Elaun Tahunan', value: 'Elaun Tahunan' },
-                        { label: 'Elaun Khas', value: 'Elaun Khas' },
-                        { label: 'Elaun Perjalanan', value: 'Elaun Perjalanan' },
-                      ]"
-                      :value="elaun.jenisElaun"
-                      @input="(value) => updateElaun(index, 'jenisElaun', value)"
-                    />
-                    <FormKit
-                      type="number"
-                      :name="`amaun_${index}`"
-                      label="Amaun (RM)"
-                      placeholder="0.00"
-                      :value="elaun.amaun"
-                      @input="(value) => updateElaun(index, 'amaun', value)"
-                    />
-                    <FormKit
-                      type="text"
-                      :name="`kodBajet_${index}`"
-                      label="Kod Bajet"
-                      placeholder="Contoh: B001"
-                      :value="elaun.kodBajet"
-                      @input="(value) => updateElaun(index, 'kodBajet', value)"
-                    />
-                    <FormKit
-                      type="select"
-                      :name="`statusElaun_${index}`"
-                      label="Status Elaun"
-                      :options="[
-                        { label: 'Aktif', value: 'Aktif' },
-                        { label: 'Tidak Aktif', value: 'Tidak Aktif' },
-                      ]"
-                      :value="elaun.status"
-                      @input="(value) => updateElaun(index, 'status', value)"
-                    />
-                    <div class="md:col-span-2">
-                      <FormKit
-                        type="textarea"
-                        :name="`catatanElaun_${index}`"
-                        label="Catatan Elaun"
-                        placeholder="Maklumat tambahan tentang elaun..."
-                        rows="2"
-                        :value="elaun.catatanElaun"
-                        @input="(value) => updateElaun(index, 'catatanElaun', value)"
-                      />
-                    </div>
-                  </div>
+                <!-- Table for Elaun -->
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Jenis Elaun</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Amaun</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Kod Bajet</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Status</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Kuatkuasa</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="(elaun, index) in formData.maklumatElaun" :key="index">
+                        <td class="p-3 border">
+                          <input 
+                            v-model="elaun.jenis" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Contoh: Bancian Baru: Per Borang Permohonan"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <input 
+                            type="number" 
+                            v-model="elaun.amaun" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="0"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <input 
+                            v-model="elaun.kod" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Contoh: B34106"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <select 
+                            v-model="elaun.status" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          >
+                            <option value="AKTIF">AKTIF</option>
+                            <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                          </select>
+                        </td>
+                        <td class="p-3 border">
+                          <input 
+                            type="date" 
+                            v-model="elaun.tarikh" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <rs-button 
+                            v-if="index > 0" 
+                            variant="danger" 
+                            size="sm" 
+                            @click="hapusElaun(index)"
+                          >
+                            Hapus
+                          </rs-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </rs-tab-item>
@@ -297,67 +281,71 @@
                   </rs-button>
                 </div>
                 
-                <!-- Dynamic Rows -->
-                <div v-for="(sesi, index) in formData.maklumatSesi" :key="index" class="mb-4 p-4 border border-gray-200 rounded-lg">
-                  <div class="flex justify-between items-center mb-3">
-                    <h5 class="font-medium text-gray-700">Sesi #{{ index + 1 }}</h5>
-                    <rs-button 
-                      v-if="index > 0" 
-                      variant="danger" 
-                      size="sm" 
-                      @click="hapusSesi(index)"
-                    >
-                      Hapus
-                    </rs-button>
-                  </div>
-                  
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormKit
-                      type="select"
-                      :name="`jenisSesi_${index}`"
-                      label="Jenis Sesi"
-                      :options="[
-                        { label: 'Sesi Pengajian', value: 'Sesi Pengajian' },
-                        { label: 'Sesi Latihan', value: 'Sesi Latihan' },
-                        { label: 'Sesi Mesyuarat', value: 'Sesi Mesyuarat' },
-                        { label: 'Sesi Lain-lain', value: 'Sesi Lain-lain' },
-                      ]"
-                      :value="sesi.jenisSesi"
-                      @input="(value) => updateSesi(index, 'jenisSesi', value)"
-                    />
-                    <FormKit
-                      type="text"
-                      :name="`tempohSesi_${index}`"
-                      label="Tempoh Sesi"
-                      placeholder="Contoh: 1 jam"
-                      :value="sesi.tempohSesi"
-                      @input="(value) => updateSesi(index, 'tempohSesi', value)"
-                    />
-                    <FormKit
-                      type="select"
-                      :name="`statusSesi_${index}`"
-                      label="Status Sesi"
-                      :options="[
-                        { label: 'Belum Bermula', value: 'Belum Bermula' },
-                        { label: 'Sedang Berjalan', value: 'Sedang Berjalan' },
-                        { label: 'Selesai', value: 'Selesai' },
-                        { label: 'Dibatalkan', value: 'Dibatalkan' },
-                      ]"
-                      :value="sesi.status"
-                      @input="(value) => updateSesi(index, 'status', value)"
-                    />
-                    <div class="md:col-span-2">
-                      <FormKit
-                        type="textarea"
-                        :name="`catatanSesi_${index}`"
-                        label="Catatan Sesi"
-                        placeholder="Maklumat tambahan tentang sesi..."
-                        rows="2"
-                        :value="sesi.catatanSesi"
-                        @input="(value) => updateSesi(index, 'catatanSesi', value)"
-                      />
-                    </div>
-                  </div>
+                <!-- Table for Sesi -->
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Sesi</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Mula</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Tamat</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Status</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Kuatkuasa</th>
+                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="(sesi, index) in formData.maklumatSesi" :key="index">
+                        <td class="p-3 border">
+                          <input 
+                            v-model="sesi.sesi" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Contoh: SESI 2025-2027"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <input 
+                            type="date" 
+                            v-model="sesi.mula" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <input 
+                            type="date" 
+                            v-model="sesi.tamat" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <select 
+                            v-model="sesi.status" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          >
+                            <option value="AKTIF">AKTIF</option>
+                            <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                          </select>
+                        </td>
+                        <td class="p-3 border">
+                          <input 
+                            type="date" 
+                            v-model="sesi.tarikh" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </td>
+                        <td class="p-3 border">
+                          <rs-button 
+                            v-if="index > 0" 
+                            variant="danger" 
+                            size="sm" 
+                            @click="hapusSesi(index)"
+                          >
+                            Hapus
+                          </rs-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </rs-tab-item>
@@ -479,29 +467,48 @@ const formData = ref({
   isDefault: true,
   maklumatJawatan: [
     {
-      namaJawatan: "Penolong Amil Fitrah",
-      kodJawatan: "PAF001",
-      status: "Aktif",
-      tarikhKuatkuasa: "01-01-2024",
-      tanggungjawab: "Menguruskan kutipan dan pengagihan zakat fitrah",
-      kelayakan: "Sijil SPM, pengalaman dalam kerja sosial",
+      jawatan: "Ketua Penolong Amil",
+      kod: "PAF",
+      status: "AKTIF",
+      tarikh: "2025-01-01",
+    },
+    {
+      jawatan: "Penolong Amil",
+      kod: "PAF",
+      status: "AKTIF",
+      tarikh: "2025-01-01",
     },
   ],
   maklumatElaun: [
     {
-      jenisElaun: "Elaun Bulanan",
-      amaun: "500.00",
-      kodBajet: "B001",
-      status: "Aktif",
-      catatanElaun: "Elaun bulanan termasuk elaun perjalanan",
+      jenis: "Bancian Baru: Per Borang Permohonan",
+      amaun: 30,
+      kod: "B34106",
+      status: "AKTIF",
+      tarikh: "2025-01-01",
+    },
+    {
+      jenis: "Kemaskini: Per Borang Permohonan",
+      amaun: 20,
+      kod: "B34106",
+      status: "AKTIF",
+      tarikh: "2025-01-01",
     },
   ],
   maklumatSesi: [
     {
-      jenisSesi: "Sesi Pengajian",
-      tempohSesi: "1 jam",
-      status: "Belum Bermula",
-      catatanSesi: "Sesi pengajian tentang zakat fitrah",
+      sesi: "SESI 2025-2027",
+      mula: "2025-01-01",
+      tamat: "2027-12-31",
+      status: "AKTIF",
+      tarikh: "2025-01-01",
+    },
+    {
+      sesi: "SESI 2022-2024",
+      mula: "2022-01-01",
+      tamat: "2024-12-31",
+      status: "TIDAK AKTIF",
+      tarikh: "2022-01-01",
     },
   ],
   maklumatPegawai: {
@@ -547,12 +554,10 @@ const handleSubmit = async (formData) => {
 
 const tambahJawatan = () => {
   formData.value.maklumatJawatan.push({
-    namaJawatan: "",
-    kodJawatan: "",
-    status: "Aktif",
-    tarikhKuatkuasa: "",
-    tanggungjawab: "",
-    kelayakan: "",
+    jawatan: "",
+    kod: "",
+    status: "AKTIF",
+    tarikh: "",
   });
 };
 
@@ -566,11 +571,11 @@ const updateJawatan = (index, field, value) => {
 
 const tambahElaun = () => {
   formData.value.maklumatElaun.push({
-    jenisElaun: "Elaun Bulanan",
-    amaun: "0.00",
-    kodBajet: "",
-    status: "Aktif",
-    catatanElaun: "",
+    jenis: "",
+    amaun: 0,
+    kod: "",
+    status: "AKTIF",
+    tarikh: "",
   });
 };
 
@@ -584,10 +589,11 @@ const updateElaun = (index, field, value) => {
 
 const tambahSesi = () => {
   formData.value.maklumatSesi.push({
-    jenisSesi: "Sesi Pengajian",
-    tempohSesi: "1 jam",
-    status: "Belum Bermula",
-    catatanSesi: "",
+    sesi: "",
+    mula: "",
+    tamat: "",
+    status: "AKTIF",
+    tarikh: "",
   });
 };
 

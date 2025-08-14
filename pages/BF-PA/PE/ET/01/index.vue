@@ -42,50 +42,75 @@
           </div>
 
           <div class="overflow-x-auto rounded-lg border">
-            <rs-table
-              :data="pagedRows"
-              :columns="candidateColumns"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-                responsive: true,
-              }"
-              :loading="false"
-              empty-message="Tiada data KPAK untuk kombinasi Tahun & Jenis Elaun ini."
-            >
-              <template v-slot:selection="{ text }">
-                <template v-if="isInRecipients(text.paId)">
-                  <rs-badge variant="success" class="text-xs">
-                    Dalam Senarai
-                  </rs-badge>
-                </template>
-                <template v-else>
-                  <FormKit
-                    v-model="text._checked"
-                    type="checkbox"
-                    :classes="{
-                      input: '!w-4 !h-4',
-                    }"
-                  />
-                </template>
-              </template>
-
-              <template v-slot:activities="{ text }">
-                <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
-                  <li v-for="a in aggregateActivities(text.activities)" :key="a.name">
-                    <span class="font-medium">{{ a.name }}</span>
-                  </li>
-                  <li v-if="!text.activities || !text.activities.length" class="list-none text-gray-500">
-                    Tiada rekod aktiviti.
-                  </li>
-                </ul>
-              </template>
-
-              <template v-slot:activityCount="{ text }">
-                {{ totalActivityCount(text.activities) }}
-              </template>
-            </rs-table>
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 w-28">
+                    <div class="flex items-center gap-2">
+                      <FormKit
+                        type="checkbox"
+                        :checked="allVisibleChecked"
+                        @change="toggleSelectVisible"
+                        :classes="{
+                          input: '!w-4 !h-4',
+                        }"
+                      />
+                      <span class="text-xs text-gray-500">Pilih semua</span>
+                    </div>
+                    <div class="text-[11px] text-gray-500">(* Hanya calon baharu)</div>
+                  </th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kategori/Jawatan</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kariah/Daerah</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Senarai Aktiviti Dihadiri</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Hadir Aktiviti (kali)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="row in pagedRows" :key="row.paId" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <!-- Jika sudah dalam draf (recipients), jangan papar checkbox -->
+                    <template v-if="isInRecipients(row.paId)">
+                      <rs-badge variant="success" class="text-xs">
+                        Dalam Senarai
+                      </rs-badge>
+                    </template>
+                    <template v-else>
+                      <FormKit
+                        v-model="row._checked"
+                        type="checkbox"
+                        :classes="{
+                          input: '!w-4 !h-4',
+                        }"
+                      />
+                    </template>
+                  </td>
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ row.name }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ row.ic }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ row.category }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ row.parish }}</td>
+                  <td class="px-4 py-3">
+                    <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
+                      <li v-for="a in aggregateActivities(row.activities)" :key="a.name">
+                        <span class="font-medium">{{ a.name }}</span>
+                      </li>
+                      <li v-if="!row.activities || !row.activities.length" class="list-none text-gray-500">
+                        Tiada rekod aktiviti.
+                      </li>
+                    </ul>
+                  </td>
+                  <td class="px-4 py-3 text-gray-900">
+                    {{ totalActivityCount(row.activities) }}
+                  </td>
+                </tr>
+                <tr v-if="!filteredRows.length" class="hover:bg-gray-50">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                    Tiada data KPAK untuk kombinasi Tahun & Jenis Elaun ini.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <!-- Pagination -->
@@ -135,38 +160,53 @@
           </div>
 
           <div class="overflow-x-auto rounded-lg border">
-            <rs-table
-              :data="recipients"
-              :columns="recipientColumns"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-                responsive: true,
-              }"
-              :loading="false"
-              empty-message="Tiada penerima dipilih lagi. Tandakan dan klik 'Pilih'."
-            >
-              <template v-slot:allowance="{ text }">
-                <template v-if="isFixedAllowance">
-                  <div class="flex items-center gap-2">
-                    <span class="font-semibold">{{ fixedAllowanceValue.toFixed(2) }}</span>
-                  </div>
-                </template>
-                <template v-else>
-                  <FormKit
-                    v-model.number="text.allowance"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="0.00"
-                    :classes="{
-                      input: '!py-1 !px-2',
-                    }"
-                  />
-                </template>
-              </template>
-            </rs-table>
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Elaun (RM)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="r in recipients" :key="r.paId" class="hover:bg-gray-50">
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ r.name }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ r.ic }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ r.category }}</td>
+                  <td class="px-4 py-3 w-48">
+                    <template v-if="isFixedAllowance">
+                      <div class="flex items-center gap-2">
+                        <span class="font-semibold">{{ fixedAllowanceValue.toFixed(2) }}</span>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <FormKit
+                        v-model.number="r.allowance"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                        :classes="{
+                          input: '!py-1 !px-2',
+                        }"
+                      />
+                    </template>
+                  </td>
+                </tr>
+                <tr v-if="!recipients.length" class="hover:bg-gray-50">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="4">
+                    Tiada penerima dipilih lagi. Tandakan dan klik 'Pilih'.
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot class="bg-gray-50">
+                <tr>
+                  <td class="px-4 py-3 text-right font-medium" colspan="3">Jumlah (RM)</td>
+                  <td class="px-4 py-3 font-semibold">{{ totalAllowance.toFixed(2) }}</td>
+                </tr>
+              </tfoot>
+            </table>
           </div>
 
           <!-- Footer with total -->
@@ -279,80 +319,6 @@ const page = ref(1);
 const pageSize = 12;
 const saving = ref(false);
 
-// Table columns for candidates
-const candidateColumns = [
-  {
-    key: "selection",
-    label: "Pilih",
-    sortable: false,
-    width: "120px",
-  },
-  {
-    key: "name",
-    label: "Nama",
-    sortable: true,
-    width: "200px",
-  },
-  {
-    key: "ic",
-    label: "ID Pengenalan",
-    sortable: true,
-    width: "150px",
-  },
-  {
-    key: "category",
-    label: "Kategori/Jawatan",
-    sortable: true,
-    width: "150px",
-  },
-  {
-    key: "parish",
-    label: "Kariah/Daerah",
-    sortable: true,
-    width: "150px",
-  },
-  {
-    key: "activities",
-    label: "Senarai Aktiviti Dihadiri",
-    sortable: false,
-    width: "200px",
-  },
-  {
-    key: "activityCount",
-    label: "Hadir Aktiviti (kali)",
-    sortable: true,
-    width: "120px",
-  },
-];
-
-// Table columns for recipients
-const recipientColumns = [
-  {
-    key: "name",
-    label: "Nama",
-    sortable: true,
-    width: "200px",
-  },
-  {
-    key: "ic",
-    label: "ID Pengenalan",
-    sortable: true,
-    width: "150px",
-  },
-  {
-    key: "category",
-    label: "Kategori",
-    sortable: true,
-    width: "150px",
-  },
-  {
-    key: "allowance",
-    label: "Elaun (RM)",
-    sortable: true,
-    width: "150px",
-  },
-];
-
 /* === Helpers aktiviti (gabung + jumlah count) === */
 function aggregateActivities(acts = []) {
   const map = new Map();
@@ -463,8 +429,8 @@ const newCheckedCount = computed(() =>
   filteredRows.value.filter(r => !isInRecipients(r.paId) && r._checked).length
 );
 
-function toggleSelectVisible(e) {
-  const v = e.target.checked;
+function toggleSelectVisible(checked) {
+  const v = checked;
   pagedRows.value.forEach(r => {
     if (!isInRecipients(r.paId)) r._checked = v;
   });

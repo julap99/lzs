@@ -84,8 +84,21 @@
 
         <!-- Toolbar: Actions -->
         <div class="flex flex-col md:flex-row md:items-center gap-3 mb-6">
-          <div class="flex-1"></div>
+          <div class="flex-1">
+            <span class="text-sm text-gray-600">
+              Jumlah batch dalam jadual: <strong>{{ rows.length }}</strong>
+            </span>
+          </div>
           <div class="flex items-center gap-2">
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              @click="clearTable"
+              :disabled="!rows.length"
+            >
+              <Icon name="ic:outline-delete" class="mr-2" />
+              Kosongkan Jadual
+            </rs-button>
             <rs-button
               variant="secondary-outline"
               size="sm"
@@ -108,37 +121,56 @@
         </div>
 
         <!-- Status Table (Read-only) -->
-        <div class="overflow-x-auto rounded-lg border">
-          <rs-table
-            :data="rows"
-            :columns="columns"
-            :options="{
-              variant: 'default',
-              hover: true,
-              striped: true,
-              responsive: true,
-            }"
-            :loading="loading"
-            empty-message="Tiada rekod. Pilih Tahun & Jenis Elaun, kemudian klik 'Simpan' untuk cipta batch."
-          >
-            <template v-slot:status="{ text }">
-              <rs-badge :variant="getStatusVariant(text)">
-                {{ batchStatusLabel(text) }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:tindakan="{ text }">
-              <rs-button
-                variant="primary"
-                size="sm"
-                @click="viewRecipients(text)"
-                class="!px-3 !py-1.5"
-              >
-                <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                Lihat Senarai Nama
-              </rs-button>
-            </template>
-          </rs-table>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-gray-900">Status Batch Elaun Tahunan</h3>
+            <div class="text-xs text-gray-500">
+              Tahun: <b>{{ filters.year || '—' }}</b> · Jenis: <b>{{ typeLabel || '—' }}</b>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto rounded-lg border">
+          <table class="min-w-full text-sm divide-y">
+            <thead class="bg-gray-50 text-left">
+              <tr>
+                <th class="px-4 py-3 font-medium text-gray-900">Tahun Elaun</th>
+                <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                <th class="px-4 py-3 w-40 font-medium text-gray-900">Tindakan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y bg-white">
+              <tr v-if="loading" class="hover:bg-gray-50">
+                <td class="px-4 py-6 text-center text-gray-500" colspan="5">Memuatkan status senarai…</td>
+              </tr>
+              <tr v-for="row in rows" :key="row.id" class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-gray-900">{{ row.year }}</td>
+                <td class="px-4 py-3 text-gray-900">{{ typeOptions.find(opt => opt.value === row.typeCode)?.label || row.typeCode }}</td>
+                <td class="px-4 py-3">
+                  <rs-badge :variant="getStatusVariant(row.status)">
+                    {{ batchStatusLabel(row.status) }}
+                  </rs-badge>
+                </td>
+                <td class="px-4 py-3 text-gray-900">{{ row.count ?? '—' }}</td>
+                <td class="px-4 py-3">
+                  <rs-button
+                    variant="primary"
+                    size="sm"
+                    @click="viewRecipients(row)"
+                    class="!px-3 !py-1.5"
+                  >
+                    <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
+                    Lihat Senarai Nama
+                  </rs-button>
+                </td>
+              </tr>
+              <tr v-if="!loading && !rows.length" class="hover:bg-gray-50">
+                <td class="px-4 py-6 text-center text-gray-500" colspan="5">Tiada rekod. Pilih Tahun & Jenis Elaun, kemudian klik 'Simpan' untuk cipta batch.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         </div>
       </template>
     </rs-card>
@@ -212,40 +244,6 @@ const batchStatus = ref('DRAF');
 const rows = ref([]);
 const loading = ref(false);
 
-// Table columns
-const columns = [
-  {
-    key: "year",
-    label: "Tahun Elaun",
-    sortable: true,
-    width: "120px",
-  },
-  {
-    key: "typeCode",
-    label: "Jenis Elaun",
-    sortable: true,
-    width: "200px",
-  },
-  {
-    key: "status",
-    label: "Status",
-    sortable: true,
-    width: "150px",
-  },
-  {
-    key: "count",
-    label: "Bilangan Penerima",
-    sortable: true,
-    width: "150px",
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-    width: "180px",
-  },
-];
-
 // Status helpers
 function getStatusVariant(status) {
   switch (status) {
@@ -269,15 +267,25 @@ const totalCountDisplay = computed(() => {
   return r.count ?? '—';
 });
 
-// Router & filter
+/* ---------- Router & filter ---------- */
 function onFilterChanged() {
   const q = {};
   if (filters.year) q.year = String(filters.year);
   if (filters.type) q.type = String(filters.type);
   router.replace({ query: q });
 
-  rows.value = [];
-  batchStatus.value = 'DRAF';
+  // Only clear rows if we're changing to a completely different year/type combination
+  const currentKey = `${filters.year}-${filters.type}`;
+  const hasExistingData = rows.value.some(row => 
+    `${row.year}-${row.typeCode}` === currentKey
+  );
+  
+  if (!hasExistingData) {
+    // Only clear if we don't have data for this combination
+    rows.value = [];
+    batchStatus.value = 'DRAF';
+  }
+  
   if (canQuery.value) reloadBatchStatus();
 }
 
@@ -309,7 +317,7 @@ async function apiFetchBatchStatus({ year, type }) {
     if (count == null && !statusFromLocal) return [];
     return [{
       id: `BATCH-${year}-${type}`,
-      year,
+      year: year,
       typeCode: type,
       status: statusFromLocal || 'DRAF',
       count: count ?? 0
@@ -318,6 +326,8 @@ async function apiFetchBatchStatus({ year, type }) {
   // Overlay count & status from localStorage if exists
   return [{
     ...row,
+    year: year, // Ensure year is always present
+    typeCode: type, // Ensure typeCode is always present
     count: count ?? row.count,
     status: statusFromLocal || row.status
   }];
@@ -348,9 +358,33 @@ async function reloadBatchStatus() {
   if (!canQuery.value) return;
   loading.value = true;
   try {
+    console.log('Reloading batch status for:', { year: filters.year, type: filters.type }); // Debug log
     const list = await apiFetchBatchStatus({ year: filters.year, type: filters.type });
-    rows.value = list;
-    batchStatus.value = list[0]?.status || 'DRAF';
+    console.log('Fetched batch status:', list); // Debug log
+    
+    // Merge new data with existing rows instead of replacing
+    if (list.length > 0) {
+      const newRow = list[0];
+      const existingIndex = rows.value.findIndex(row => 
+        `${row.year}-${row.typeCode}` === `${newRow.year}-${newRow.typeCode}`
+      );
+      
+      if (existingIndex >= 0) {
+        // Update existing row
+        rows.value[existingIndex] = { ...rows.value[existingIndex], ...newRow };
+      } else {
+        // Add new row
+        rows.value.push(newRow);
+      }
+    }
+    
+    // Update batch status for current selection
+    const currentRow = rows.value.find(row => 
+      `${row.year}-${row.typeCode}` === `${filters.year}-${filters.type}`
+    );
+    batchStatus.value = currentRow?.status || 'DRAF';
+    
+    console.log('Updated rows and batchStatus:', { rows: rows.value, batchStatus: batchStatus.value }); // Debug log
   } catch (e) {
     console.error(e);
     toast.error('Gagal memuatkan status senarai.');
@@ -364,9 +398,36 @@ async function onSave() {
   if (!canSave.value) return;
   loading.value = true;
   try {
+    console.log('Saving batch with filters:', filters); // Debug log
     const res = await apiSaveBatchLight({ year: filters.year, typeCode: filters.type });
+    console.log('Save result:', res); // Debug log
+    
+    // Create new row data
+    const newRow = {
+      id: res.batchId,
+      year: filters.year,
+      typeCode: filters.type,
+      status: res.status || 'SEDANG PROSES',
+      count: 0, // Will be updated when recipients are added
+      updatedAt: Date.now()
+    };
+    
+    // Check if row already exists
+    const existingIndex = rows.value.findIndex(row => 
+      `${row.year}-${row.typeCode}` === `${filters.year}-${filters.type}`
+    );
+    
+    if (existingIndex >= 0) {
+      // Update existing row
+      rows.value[existingIndex] = { ...rows.value[existingIndex], ...newRow };
+    } else {
+      // Add new row to the table
+      rows.value.push(newRow);
+    }
+    
     batchStatus.value = res.status || 'SEDANG PROSES';
-    await reloadBatchStatus();
+    
+    console.log('After adding/updating row, rows:', rows.value); // Debug log
     toast.success('Berjaya disimpan. Status batch kini: "sedang proses".');
   } catch (e) {
     console.error(e);
@@ -378,12 +439,40 @@ async function onSave() {
 
 // Navigate to second screen
 function viewRecipients(row) {
-  router.push({ path: '/BF-PA/PE/ET/01', query: { year: row.year, type: row.typeCode } });
+  console.log('viewRecipients called with:', row); // Debug log
+  if (row && row.year && row.typeCode) {
+    router.push({ path: '/BF-PA/PE/ET/01', query: { year: row.year, type: row.typeCode } });
+  } else {
+    console.error('Invalid row data for navigation:', row);
+    toast.error('Ralat: Data batch tidak sah untuk navigasi');
+  }
+}
+
+// Clear table
+function clearTable() {
+  rows.value = [];
+  batchStatus.value = 'DRAF';
+  toast.success('Jadual berjaya dikosongkan.');
 }
 
 // Watch for filter changes
 watch(() => [filters.year, filters.type], ([y, t]) => {
-  if (y && t && !rows.value.length) reloadBatchStatus();
+  if (y && t) {
+    // Only reload if we don't have any data for this combination
+    const hasData = rows.value.some(row => 
+      `${row.year}-${row.typeCode}` === `${y}-${t}`
+    );
+    
+    if (!hasData) {
+      reloadBatchStatus();
+    } else {
+      // Update batch status for existing data
+      const currentRow = rows.value.find(row => 
+        `${row.year}-${row.typeCode}` === `${y}-${t}`
+      );
+      batchStatus.value = currentRow?.status || 'DRAF';
+    }
+  }
 }, { immediate: true });
 </script>
 
