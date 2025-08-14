@@ -360,6 +360,7 @@
 
 <script setup>
 import { ref, reactive, computed } from "vue";
+import { formatDate } from "~/utils/dateFormatter";
 
 definePageMeta({
   title: "Pengesahan PIC Masjid",
@@ -449,18 +450,6 @@ const getNegeriLabel = (value) => {
 const formatKP = (kp) => {
   if (!kp || kp.length !== 12) return kp;
   return `${kp.substring(0, 6)}-${kp.substring(6, 8)}-${kp.substring(8)}`;
-};
-
-const formatDate = (dateString) => {
-  if (!dateString) return "-";
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat("ms-MY", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
 };
 
 // Form submission

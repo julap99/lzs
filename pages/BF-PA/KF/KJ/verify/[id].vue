@@ -207,6 +207,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { formatDate } from "~/utils/dateFormatter";
 
 const route = useRoute();
 
@@ -267,15 +268,6 @@ const verificationData = ref({
   tarikhPengesahan: new Date().toISOString().split('T')[0],
   ulasan: "",
 });
-
-const formatDate = (dateString) => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}-${month}-${year}`;
-};
 
 const verifyCategory = async () => {
   isProcessing.value = true;

@@ -101,7 +101,7 @@
                     :validation-messages="{
                       required: 'Tarikh kuatkuasa diperlukan',
                     }"
-                    :value="formData.tarikhKuatkuasa"
+                    :value="convertToHTMLDateInput(formData.tarikhKuatkuasa)"
                   />
                   <div class="md:col-span-2">
                     <FormKit
@@ -165,7 +165,7 @@
                     :validation-messages="{
                       required: 'Tarikh kuatkuasa jawatan diperlukan',
                     }"
-                    :value="formData.maklumatJawatan.tarikhKuatkuasa"
+                    :value="convertToHTMLDateInput(formData.maklumatJawatan.tarikhKuatkuasa)"
                   />
                   <div class="md:col-span-2">
                     <FormKit
@@ -403,6 +403,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { formatDate, convertToHTMLDateInput } from "~/utils/dateFormatter";
 
 const route = useRoute();
 
@@ -473,12 +474,6 @@ const formData = ref({
     tarikhLulus: "28-10-2023",
   },
 });
-
-const formatDate = (dateString) => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('ms-MY');
-};
 
 const handleSubmit = async (formData) => {
   isSubmitting.value = true;

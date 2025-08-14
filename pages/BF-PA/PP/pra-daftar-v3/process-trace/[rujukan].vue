@@ -101,7 +101,7 @@
                   </div>
                   <div class="flex-1">
                     <h4 class="text-lg font-semibold text-gray-900">Pendaftaran Calon</h4>
-                    <p class="text-sm text-gray-600 mb-2">{{ application.tarikhPendaftaran || 'Tarikh tidak tersedia' }}</p>
+                    <p class="text-sm text-gray-600 mb-2">{{ formatDate(application.tarikhPendaftaran) || 'Tarikh tidak tersedia' }}</p>
                     <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                       <h5 class="font-medium text-green-900 mb-2">Maklumat Pendaftaran</h5>
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -129,7 +129,7 @@
                   </div>
                   <div class="flex-1">
                     <h4 class="text-lg font-semibold text-gray-900">Saringan Risiko</h4>
-                    <p class="text-sm text-gray-600 mb-2">{{ application.screeningDate || 'Belum disaring' }}</p>
+                    <p class="text-sm text-gray-600 mb-2">{{ formatDate(application.screeningDate) || 'Belum disaring' }}</p>
                     <div v-if="application.screeningNotes" class="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <h5 class="font-medium text-blue-900 mb-2">Catatan Saringan</h5>
                       <p class="text-sm text-blue-800">{{ application.screeningNotes }}</p>
@@ -144,7 +144,7 @@
                   </div>
                   <div class="flex-1">
                     <h4 class="text-lg font-semibold text-gray-900">Semakan Pegawai Tadbir</h4>
-                    <p class="text-sm text-gray-600 mb-2">{{ application.ptReviewDate || 'Belum disemak' }}</p>
+                    <p class="text-sm text-gray-600 mb-2">{{ formatDate(application.ptReviewDate) || 'Belum disemak' }}</p>
                     <div v-if="application.ptNotes" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                       <h5 class="font-medium text-yellow-900 mb-2">Catatan PT</h5>
                       <p class="text-sm text-yellow-800">{{ application.ptNotes }}</p>
@@ -159,7 +159,7 @@
                   </div>
                   <div class="flex-1">
                     <h4 class="text-lg font-semibold text-gray-900">Sokongan Eksekutif</h4>
-                    <p class="text-sm text-gray-600 mb-2">{{ application.executiveDate || 'Belum disokong' }}</p>
+                    <p class="text-sm text-gray-600 mb-2">{{ formatDate(application.executiveDate) || 'Belum disokong' }}</p>
                     <div v-if="application.executiveNotes" class="bg-purple-50 border border-purple-200 rounded-lg p-4">
                       <h5 class="font-medium text-purple-900 mb-2">Catatan Eksekutif</h5>
                       <p class="text-sm text-purple-800">{{ application.executiveNotes }}</p>
@@ -174,7 +174,7 @@
                   </div>
                   <div class="flex-1">
                     <h4 class="text-lg font-semibold text-gray-900">Pengesahan Ketua Jabatan</h4>
-                    <p class="text-sm text-gray-600 mb-2">{{ application.departmentHeadDate || 'Belum disahkan' }}</p>
+                    <p class="text-sm text-gray-600 mb-2">{{ formatDate(application.departmentHeadDate) || 'Belum disahkan' }}</p>
                     <div v-if="application.departmentHeadNotes" class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
                       <h5 class="font-medium text-indigo-900 mb-2">Catatan Ketua Jabatan</h5>
                       <p class="text-sm text-indigo-800">{{ application.departmentHeadNotes }}</p>
@@ -189,7 +189,7 @@
                   </div>
                   <div class="flex-1">
                     <h4 class="text-lg font-semibold text-gray-900">Kelulusan Ketua Divisyen</h4>
-                    <p class="text-sm text-gray-600 mb-2">{{ application.divisionHeadDate || 'Belum diluluskan' }}</p>
+                    <p class="text-sm text-gray-600 mb-2">{{ formatDate(application.divisionHeadDate) || 'Belum diluluskan' }}</p>
                     <div v-if="application.divisionHeadNotes" class="bg-red-50 border border-red-200 rounded-lg p-4">
                       <h5 class="font-medium text-red-900 mb-2">Catatan Ketua Divisyen</h5>
                       <p class="text-sm text-red-800">{{ application.divisionHeadNotes }}</p>
@@ -204,7 +204,7 @@
                   </div>
                   <div class="flex-1">
                     <h4 class="text-lg font-semibold text-gray-900">Pendaftaran Sistem NAS</h4>
-                    <p class="text-sm text-gray-600 mb-2">{{ application.nasRegistrationDate || 'Belum didaftarkan' }}</p>
+                    <p class="text-sm text-gray-600 mb-2">{{ formatDate(application.nasRegistrationDate) || 'Belum didaftarkan' }}</p>
                     <div v-if="application.nasAccountId" class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                       <h5 class="font-medium text-gray-900 mb-2">Maklumat Akaun NAS</h5>
                       <div class="text-sm text-gray-800">
@@ -269,6 +269,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { formatDate } from "~/utils/dateFormatter";
 
 definePageMeta({
   title: "Jejak Proses Pendaftaran",

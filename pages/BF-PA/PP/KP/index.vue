@@ -341,6 +341,9 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from "vue";
+import { formatDate } from "~/utils/dateFormatter";
+
 definePageMeta({
   title: "Kemaskini Maklumat Perkhidmatan",
   breadcrumb: [
@@ -695,14 +698,6 @@ const getStatusLabel = (status) => {
     resubmitted: "Dihantar Semula",
   };
   return labels[status] || status;
-};
-
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('ms-MY', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
 };
 
 // Enhanced methods

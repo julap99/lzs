@@ -252,6 +252,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { formatDate } from "~/utils/dateFormatter";
 
 const route = useRoute();
 
@@ -352,15 +353,6 @@ const getDifficultyVariant = (tahap) => {
     default:
       return "disabled";
   }
-};
-
-const formatDate = (dateString) => {
-  if (!dateString) return "-";
-  return new Date(dateString).toLocaleDateString('ms-MY', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
 };
 
 onMounted(() => {

@@ -135,14 +135,14 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                   Tarikh Lantikan
                 </label>
-                <p class="text-gray-900">{{ currentAppointment.tarikhLantikan }}</p>
+                <p class="text-gray-900">{{ formatDate(currentAppointment.tarikhLantikan) }}</p>
               </div>
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                   Tarikh Tamat
                 </label>
-                <p class="text-gray-900">{{ currentAppointment.tarikhTamat }}</p>
+                <p class="text-gray-900">{{ formatDate(currentAppointment.tarikhTamat) }}</p>
               </div>
               
               <div>
@@ -192,11 +192,11 @@
                   </div>
                   <div>
                     <span class="font-medium text-gray-700">Tarikh Lantikan:</span>
-                    <p class="text-gray-900">{{ appointment.tarikhLantikan }}</p>
+                    <p class="text-gray-900">{{ formatDate(appointment.tarikhLantikan) }}</p>
                   </div>
                   <div>
                     <span class="font-medium text-gray-700">Tarikh Tamat:</span>
-                    <p class="text-gray-900">{{ appointment.tarikhTamat }}</p>
+                    <p class="text-gray-900">{{ formatDate(appointment.tarikhTamat) }}</p>
                   </div>
                 </div>
                 
@@ -274,6 +274,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { formatDate } from "~/utils/dateFormatter";
 
 definePageMeta({
   title: "Maklumat Lantikan & Perkhidmatan",

@@ -114,7 +114,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                   Tarikh Lahir
                 </label>
-                <p class="text-gray-900">{{ application.tarikhLahir }}</p>
+                <p class="text-gray-900">{{ formatDate(application.tarikhLahir) }}</p>
               </div>
               
               <div>
@@ -264,7 +264,7 @@
                       {{ application.institusiKariah }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ application.tarikhPendaftaran }}
+                      {{ formatDate(application.tarikhPendaftaran) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {{ application.sesiPerkhidmatan }}
@@ -336,7 +336,7 @@
                       {{ application.institusiKariah }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ application.tarikhLantikan }}
+                      {{ formatDate(application.tarikhLantikan) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {{ application.sesiPerkhidmatan }}
@@ -462,6 +462,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { formatDate } from "~/utils/dateFormatter";
 
 const route = useRoute();
 
