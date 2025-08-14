@@ -91,24 +91,6 @@
           </div>
           <div class="flex items-center gap-2">
             <rs-button
-              variant="secondary-outline"
-              size="sm"
-              @click="clearTable"
-              :disabled="!rows.length"
-            >
-              <Icon name="ic:outline-delete" class="mr-2" />
-              Kosongkan Jadual
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              @click="reloadBatchStatus"
-              :disabled="!canQuery || loading"
-            >
-              <Icon name="ic:outline-refresh" class="mr-2" />
-              Set Semula
-            </rs-button>
-            <rs-button
               variant="primary"
               size="sm"
               :disabled="!canSave"
