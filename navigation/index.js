@@ -1341,7 +1341,21 @@ export default [
             meta: {},
           },
           {
-            title: "Senarai Elaun",
+            title: "Jawatan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Sesi",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Elaun",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/KF/KE",
             child: [],
