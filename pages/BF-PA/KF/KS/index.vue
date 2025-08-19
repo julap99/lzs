@@ -1,8 +1,8 @@
 <!-- 
-  RTMF SCREEN: PA-KF-KE-01_01 (Allowance List)
-  PURPOSE: Senarai elaun penolong amil dengan workflow kelulusan
-  DESCRIPTION: Allowance list with approval workflow for Penolong Amil allowances
-  ROUTE: /BF-PA/KF/KE
+  RTMF SCREEN: PA-KF-KS-01_01 (Session List)
+  PURPOSE: Senarai sesi penolong amil dengan workflow kelulusan
+  DESCRIPTION: Session list with approval workflow for Penolong Amil sessions
+  ROUTE: /BF-PA/KF/KS
 -->
 <template>
   <div>
@@ -74,10 +74,10 @@
       <template #header>
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-xl font-semibold">Senarai Elaun Penolong Amil</h2>
+            <h2 class="text-xl font-semibold">Senarai Sesi Penolong Amil</h2>
             <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
           </div>
-          <!-- Create new allowance functionality removed - KF/KE only edits existing allowances linked to approved categories -->
+          <!-- Create new session functionality removed - KF/KS only edits existing sessions linked to approved categories -->
         </div>
       </template>
 
@@ -88,7 +88,7 @@
             <FormKit
               v-model="filters.searchQuery"
               type="text"
-              placeholder="Cari rujukan, kategori, atau jenis elaun..."
+              placeholder="Cari rujukan, kategori, atau nama sesi..."
               :classes="{
                 input: '!py-2',
               }"
@@ -105,10 +105,10 @@
               class="min-w-[200px]"
             />
             <FormKit
-              v-model="filters.kategoriPenolongAmil"
+              v-model="filters.namaSesi"
               type="select"
-              :options="kategoriOptions"
-              placeholder="Kategori Penolong Amil"
+              :options="namaSesiOptions"
+              placeholder="Nama Sesi"
               :classes="{
                 input: '!py-2',
               }"
@@ -141,7 +141,7 @@
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
                   <Icon name="ph:check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah aktif
+                  Senarai sesi yang telah aktif
                 </h3>
                 <rs-table
                   :key="`table-${tableKey}-active`"
@@ -171,16 +171,16 @@
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
                         Lihat
                       </rs-button>
                       <rs-button
-                        v-if="canEditAllowance(data.text)"
+                        v-if="canEditSession(data.text)"
                         variant="secondary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="editAllowance(data.text)"
+                        @click="editSession(data.text)"
                       >
                         Kemaskini
                       </rs-button>
@@ -194,7 +194,7 @@
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
                   <Icon name="ph:clock" class="mr-2" size="20" />
-                  Senarai elaun yang sedang dalam proses
+                  Senarai sesi yang sedang dalam proses
                 </h3>
                 <rs-table
                   :key="`table-${tableKey}-process`"
@@ -224,7 +224,7 @@
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
                         Lihat
                       </rs-button>
@@ -238,7 +238,7 @@
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
                   <Icon name="ph:x-circle" class="mr-2" size="20" />
-                  Senarai elaun yang tidak aktif
+                  Senarai sesi yang tidak aktif
                 </h3>
                 <rs-table
                   :key="`table-${tableKey}-inactive`"
@@ -268,16 +268,16 @@
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
                         Lihat
                       </rs-button>
                       <rs-button
-                        v-if="canEditAllowance(data.text)"
+                        v-if="canEditSession(data.text)"
                         variant="secondary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="editAllowance(data.text)"
+                        @click="editSession(data.text)"
                       >
                         Kemaskini
                       </rs-button>
@@ -296,7 +296,7 @@
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
                   <Icon name="ph:check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah aktif
+                  Senarai sesi yang telah aktif
                 </h3>
                 <rs-table
                   :key="`table-${tableKey}-active`"
@@ -326,7 +326,7 @@
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
                         Lihat
                       </rs-button>
@@ -340,7 +340,7 @@
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
                   <Icon name="ph:clock" class="mr-2" size="20" />
-                  Senarai elaun yang menunggu pengesahan
+                  Senarai sesi yang menunggu pengesahan
                 </h3>
                 <rs-table
                   :key="`table-${tableKey}-pending`"
@@ -370,7 +370,7 @@
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
                         Lihat
                       </rs-button>
@@ -392,7 +392,7 @@
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
                   <Icon name="ph:x-circle" class="mr-2" size="20" />
-                  Senarai elaun yang tidak aktif
+                  Senarai sesi yang tidak aktif
                 </h3>
                 <rs-table
                   :key="`table-${tableKey}-inactive`"
@@ -411,18 +411,13 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
-                    <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
-                    <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
-                  </template>
-
                   <template v-slot:tindakan="data">
                     <div class="flex space-x-2">
                       <rs-button
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
                         Lihat
                       </rs-button>
@@ -441,7 +436,7 @@
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
                   <Icon name="ph:check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah aktif
+                  Senarai sesi yang telah aktif
                 </h3>
                 <rs-table
                   :key="`table-${tableKey}-active`"
@@ -471,7 +466,7 @@
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
                         Lihat
                       </rs-button>
@@ -486,7 +481,7 @@
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="text-lg font-semibold text-green-700 flex items-center">
                     <Icon name="ph:check-circle" class="mr-2" size="20" />
-                    Senarai elaun yang disahkan untuk kelulusan
+                    Senarai sesi yang disahkan untuk kelulusan
                   </h3>
                   
                   <!-- Bulk Approval Button - Only in this tab -->
@@ -530,7 +525,7 @@
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
                         Lihat
                       </rs-button>
@@ -552,8 +547,17 @@
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
                   <Icon name="ph:warning" class="mr-2" size="20" />
-                  Senarai elaun yang ditolak oleh Ketua Jabatan
+                  Senarai sesi yang ditolak oleh Ketua Jabatan
                 </h3>
+                <div class="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div class="flex items-start">
+                    <Icon name="ph:info" class="w-5 h-5 text-orange-600 mr-3 mt-0.5" />
+                    <div class="text-sm text-orange-800">
+                      <p class="font-medium mb-1">Perhatian:</p>
+                      <p>Sila semak setiap sesi yang ditolak secara individu untuk memahami sebab penolakan oleh Ketua Jabatan. Kelulusan beramai-ramai tidak disediakan untuk item yang telah ditolak.</p>
+                    </div>
+                  </div>
+                </div>
                 
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
@@ -583,9 +587,9 @@
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
-                        Lihat
+                        Semak Sebab
                       </rs-button>
                       <rs-button
                         variant="warning"
@@ -593,7 +597,7 @@
                         class="!px-2 !py-1"
                         @click="navigateToVerification(data.text, 'approve')"
                       >
-                        Semak
+                        Keputusan Akhir
                       </rs-button>
                     </div>
                   </template>
@@ -605,7 +609,7 @@
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
                   <Icon name="ph:x-circle" class="mr-2" size="20" />
-                  Senarai elaun yang tidak aktif
+                  Senarai sesi yang tidak aktif
                 </h3>
                 <rs-table
                   :key="`table-${tableKey}-inactive`"
@@ -624,18 +628,13 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
-                    <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
-                    <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
-                  </template>
-
                   <template v-slot:tindakan="data">
                     <div class="flex space-x-2">
                       <rs-button
                         variant="primary"
                         size="sm"
                         class="!px-2 !py-1"
-                        @click="viewAllowance(data.text)"
+                        @click="viewSession(data.text)"
                       >
                         Lihat
                       </rs-button>
@@ -655,7 +654,7 @@
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 flex items-center">
             <Icon name="ph:check-circle" class="w-6 h-6 mr-3 text-success" />
-            Lulus Semua Elaun Yang Telah Disahkan
+            Lulus Semua Sesi Yang Telah Disahkan
           </h3>
           <button
             @click="closeBulkApprovalModal"
@@ -667,7 +666,7 @@
         
         <div class="mb-4">
           <p class="text-gray-600 mb-2">
-            Anda akan meluluskan <strong>{{ selectedItems.length }} elaun</strong> yang telah disahkan oleh Ketua Jabatan.
+            Anda akan meluluskan <strong>{{ selectedItems.length }} sesi</strong> yang telah disahkan oleh Ketua Jabatan.
           </p>
           
           <!-- Selected Items Table -->
@@ -677,8 +676,7 @@
                 <tr>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Elaun</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Sesi</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 </tr>
               </thead>
@@ -686,8 +684,7 @@
                 <tr v-for="item in selectedItems" :key="item.tindakan" class="hover:bg-gray-50">
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
-                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.jenisElaun }}</td>
-                  <td class="px-4 py-3 text-sm text-gray-900">RM {{ item.amaun }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.namaSesi }}</td>
                   <td class="px-4 py-3">
                     <rs-badge variant="info" size="sm">{{ item.status }}</rs-badge>
                   </td>
@@ -735,47 +732,48 @@
 <script setup>
 import { ref, nextTick, computed, watch } from "vue";
 import { useToast } from "vue-toastification";
+import { formatDate } from "~/utils/dateFormatter";
 
 const toast = useToast();
 
 definePageMeta({
-  title: "Senarai Elaun Penolong Amil",
+  title: "Senarai Sesi Penolong Amil",
 });
 
 const breadcrumb = [
   { label: 'Laman Utama', to: '/' },
   { label: 'Modul BF-PA', to: '/BF-PA' },
   { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Elaun', to: null }
+  { label: 'Maklumat Sesi', to: null }
 ];
 
 // Role Simulator State
 const currentRole = ref("eksekutif"); // Default role
 const showRoleInfo = ref(false);
 
-// Page-specific role options for KF/KE module
+// Page-specific role options for KF/KS module
 const roleOptions = [
   { label: "Eksekutif", value: "eksekutif" },
   { label: "Ketua Jabatan", value: "ketua-jabatan" },
   { label: "Ketua Divisyen", value: "ketua-divisyen" },
 ];
 
-// Role data for KF/KE module
+// Role data for KF/KS module
 const roleData = {
       eksekutif: {
       label: "Eksekutif",
-      description: "Kemaskini Elaun Penolong Amil",
-      capabilities: ["Lihat Senarai", "Kemaskini Elaun", "Edit Penuh"],
+      description: "Kemaskini Sesi Penolong Amil",
+      capabilities: ["Lihat Senarai", "Kemaskini Sesi", "Edit Penuh"],
   },
   "ketua-jabatan": {
     label: "Ketua Jabatan",
-    description: "Pengesahan Elaun Penolong Amil",
-    capabilities: ["Lihat Senarai", "Sahkan Elaun", "Monitor Progress"],
+    description: "Pengesahan Sesi Penolong Amil",
+    capabilities: ["Lihat Senarai", "Sahkan Sesi", "Monitor Progress"],
   },
   "ketua-divisyen": {
     label: "Ketua Divisyen",
-    description: "Kelulusan Akhir Elaun Penolong Amil",
-    capabilities: ["Lihat Senarai", "Sahkan/Tolak Elaun", "Kelulusan Akhir"],
+    description: "Kelulusan Akhir Sesi Penolong Amil",
+    capabilities: ["Lihat Senarai", "Sahkan/Tolak Sesi", "Kelulusan Akhir"],
   },
 };
 
@@ -820,7 +818,7 @@ const toggleRoleInfo = () => {
 const filters = ref({
   searchQuery: "",
   status: "",
-  kategoriPenolongAmil: "",
+  namaSesi: "",
 });
 
 // Search state
@@ -842,118 +840,110 @@ const statusOptions = [
   { label: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
 ];
 
-const kategoriOptions = [
+const namaSesiOptions = [
   { label: "Sila pilih...", value: "" },
-  { label: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
-  { label: "Penolong Amil Padi", value: "Penolong Amil Padi" },
-  { label: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },
-  { label: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
-  { label: "Penolong Amil Wakaf", value: "Penolong Amil Wakaf" },
+  { label: "Sesi 2028", value: "Sesi 2028" },
+  { label: "Sesi 2027", value: "Sesi 2027" },
+  { label: "Sesi 2026", value: "Sesi 2026" },
+  { label: "Sesi 2025", value: "Sesi 2025" },
+  { label: "Sesi 2024", value: "Sesi 2024" },
+  { label: "Sesi 2023", value: "Sesi 2023" },
+  { label: "Sesi 2022", value: "Sesi 2022" },
+  { label: "Sesi 2021", value: "Sesi 2021" },
 ];
 
 // Table data and reactivity control
 const tableKey = ref(0);
-const allowancesList = ref([
+const sessionsList = ref([
   {
-    rujukan: "KE-2024-001",
+    rujukan: "KS-2024-001",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
-    jenisElaun: "Elaun Bancian Baru : per borang permohonan",
-    amaun: 30,
-    kodBajet: "B34106",
+    namaSesi: "Sesi 2025",
+    tarikhMula: "01-01-2025",
+    tarikhTamat: "31-12-2025",
+    tarikhKuatkuasa: "01-01-2025",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
     tindakan: 1
   },
   {
-    rujukan: "KE-2024-002",
+    rujukan: "KS-2024-002",
     kategoriPenolongAmil: "Penolong Amil Padi",
-    jenisElaun: "Elaun Bancian Semula : per borang permohonan",
-    amaun: 25,
-    kodBajet: "B34107",
-    status: "Aktif",
+    namaSesi: "Sesi 2024",
+    tarikhMula: "01-01-2024",
+    tarikhTamat: "31-12-2024",
     tarikhKuatkuasa: "01-01-2024",
+    status: "Aktif",
     tindakan: 2
   },
   {
-    rujukan: "KE-2024-003",
+    rujukan: "KS-2024-003",
     kategoriPenolongAmil: "Penolong Amil Kariah",
-    jenisElaun: "Elaun Bancian Pindah : per borang permohonan",
-    amaun: 20,
-    kodBajet: "B34108",
+    namaSesi: "Sesi 2023",
+    tarikhMula: "01-01-2023",
+    tarikhTamat: "31-12-2023",
+    tarikhKuatkuasa: "01-01-2023",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
     tindakan: 3
   },
   {
-    rujukan: "KE-2024-004",
+    rujukan: "KS-2024-004",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    jenisElaun: "Elaun Bancian Khas : per borang permohonan",
-    amaun: 35,
-    kodBajet: "B34109",
+    namaSesi: "Sesi 2026",
+    tarikhMula: "01-01-2026",
+    tarikhTamat: "31-12-2026",
+    tarikhKuatkuasa: "",
     status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 4
   },
   {
-    rujukan: "KE-2024-005",
+    rujukan: "KS-2024-005",
     kategoriPenolongAmil: "Penolong Amil Wakaf",
-    jenisElaun: "Elaun Bancian Luar Bandar : per borang permohonan",
-    amaun: 40,
-    kodBajet: "B34110",
+    namaSesi: "Sesi 2022",
+    tarikhMula: "01-01-2022",
+    tarikhTamat: "31-12-2022",
+    tarikhKuatkuasa: "01-01-2022",
     status: "Tidak Aktif",
-    tarikhKuatkuasa: "01-01-2024",
     tindakan: 5
   },
   {
-    rujukan: "KE-2024-006",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
-    jenisElaun: "Elaun Kemaskini/permohonan bantuan : per borang",
-    amaun: 45,
-    kodBajet: "B34115",
-    status: "Ditolak Ketua Jabatan",
-    tarikhKuatkuasa: "", // Empty - rejected
+    rujukan: "KS-2024-006",
+    kategoriPenolongAmil: "Penolong Amil Fitrah",
+    namaSesi: "Sesi 2027",
+    tarikhMula: "01-01-2027",
+    tarikhTamat: "31-12-2027",
+    tarikhKuatkuasa: "",
+    status: "Menunggu Pengesahan",
     tindakan: 6
   },
-  // Additional items for "Sedang Proses - Lulus" to showcase bulk approval
   {
-    rujukan: "KE-2024-007",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
-    jenisElaun: "Elaun Bancian Khas : per borang permohonan",
-    amaun: 50,
-    kodBajet: "B34116",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
+    rujukan: "KS-2024-007",
+    kategoriPenolongAmil: "Penolong Amil Padi",
+    namaSesi: "Sesi 2028",
+    tarikhMula: "01-01-2028",
+    tarikhTamat: "31-12-2028",
+    tarikhKuatkuasa: "",
+    status: "Menunggu Pengesahan",
     tindakan: 7
   },
   {
-    rujukan: "KE-2024-008",
-    kategoriPenolongAmil: "Penolong Amil Padi",
-    jenisElaun: "Elaun Bancian Semula : per borang permohonan",
-    amaun: 55,
-    kodBajet: "B34117",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
+    rujukan: "KS-2024-008",
+    kategoriPenolongAmil: "Penolong Amil Kariah",
+    namaSesi: "Sesi 2021",
+    tarikhMula: "01-01-2021",
+    tarikhTamat: "31-12-2021",
+    tarikhKuatkuasa: "01-01-2021",
+    status: "Ditolak Ketua Jabatan",
     tindakan: 8
   },
   {
-    rujukan: "KE-2024-009",
-    kategoriPenolongAmil: "Penolong Amil Komuniti",
-    jenisElaun: "Elaun Bancian Pindah : per borang permohonan",
-    amaun: 60,
-    kodBajet: "B34118",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
+    rujukan: "KS-2024-009",
+    kategoriPenolongAmil: "Penolong Amil Kariah",
+    namaSesi: "Sesi 2023 Khas",
+    tarikhMula: "01-07-2023",
+    tarikhTamat: "31-12-2023",
+    tarikhKuatkuasa: "",
+    status: "Ditolak Ketua Jabatan",
     tindakan: 9
-  },
-  {
-    rujukan: "KE-2024-010",
-    kategoriPenolongAmil: "Penolong Amil Wakaf",
-    jenisElaun: "Elaun Bancian Khas : per borang permohonan",
-    amaun: 65,
-    kodBajet: "B34119",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 10
   }
 ]);
 
@@ -970,28 +960,28 @@ const tableColumns = [
     sortable: true,
   },
   {
-    key: 'jenisElaun',
-    label: 'Jenis Elaun',
+    key: 'namaSesi',
+    label: 'Nama Sesi',
     sortable: true,
   },
   {
-    key: 'amaun',
-    label: 'Amaun (RM)',
+    key: 'tarikhMula',
+    label: 'Tarikh Mula',
     sortable: true,
   },
   {
-    key: 'kodBajet',
-    label: 'Kod Bajet',
-    sortable: true,
-  },
-  {
-    key: 'status',
-    label: 'Status',
+    key: 'tarikhTamat',
+    label: 'Tarikh Tamat',
     sortable: true,
   },
   {
     key: 'tarikhKuatkuasa',
     label: 'Tarikh Kuatkuasa',
+    sortable: true,
+  },
+  {
+    key: 'status',
+    label: 'Status',
     sortable: true,
   },
   {
@@ -1081,8 +1071,8 @@ const getValidTabsForRole = (role) => {
 
 // Filter table data based on status
 const getTableDataByStatus = (statuses) => {
-  let result = allowancesList.value.filter(allowance => 
-    statuses.includes(allowance.status)
+  let result = sessionsList.value.filter(session => 
+    statuses.includes(session.status)
   );
   
   // Only apply filters if search has been performed
@@ -1090,25 +1080,24 @@ const getTableDataByStatus = (statuses) => {
     // Apply search filter
     if (filters.value.searchQuery) {
       const query = filters.value.searchQuery.toLowerCase();
-      result = result.filter(allowance => 
-        allowance.rujukan.toLowerCase().includes(query) ||
-        allowance.kategoriPenolongAmil.toLowerCase().includes(query) ||
-        allowance.jenisElaun.toLowerCase().includes(query) ||
-        allowance.kodBajet.toLowerCase().includes(query)
+      result = result.filter(session => 
+        session.rujukan.toLowerCase().includes(query) ||
+        session.kategoriPenolongAmil.toLowerCase().includes(query) ||
+        session.namaSesi.toLowerCase().includes(query)
       );
     }
     
     // Apply status filter
     if (filters.value.status) {
-      result = result.filter(allowance => 
-        allowance.status === filters.value.status
+      result = result.filter(session => 
+        session.status === filters.value.status
       );
     }
     
-    // Apply kategori filter
-    if (filters.value.kategoriPenolongAmil) {
-      result = result.filter(allowance => 
-        allowance.kategoriPenolongAmil === filters.value.kategoriPenolongAmil
+    // Apply nama sesi filter
+    if (filters.value.namaSesi) {
+      result = result.filter(session => 
+        session.namaSesi === filters.value.namaSesi
       );
     }
   }
@@ -1117,54 +1106,42 @@ const getTableDataByStatus = (statuses) => {
 };
 
 // Role-based access control
-// Create functionality removed - KF/KE only edits existing allowances linked to approved categories
+// Create functionality removed - KF/KS only edits existing sessions linked to approved categories
 
-const canEditAllowance = (allowanceId) => {
+const canEditSession = (sessionId) => {
   return currentRole.value === "eksekutif"; // Only Eksekutif can edit
 };
 
-const canVerifyAllowance = (allowanceId) => {
+const canVerifySession = (sessionId) => {
   return currentRole.value === "ketua-jabatan";
 };
 
-const canApproveAllowance = (allowanceId) => {
+const canApproveSession = (sessionId) => {
   return currentRole.value === "ketua-divisyen";
 };
 
 // Methods
-const viewAllowance = (allowanceId) => {
-  navigateTo(`/BF-PA/KF/KE/detail/${allowanceId}`);
+const viewSession = (sessionId) => {
+  navigateTo(`/BF-PA/KF/KS/detail/${sessionId}`);
 };
 
-const editAllowance = (allowanceId) => {
-  navigateTo(`/BF-PA/KF/KE/edit/${allowanceId}`);
+const editSession = (sessionId) => {
+  navigateTo(`/BF-PA/KF/KS/edit/${sessionId}`);
 };
 
-const verifyAllowance = (allowanceId) => {
-  // Update status to "Menunggu Kelulusan"
-  const allowance = allowancesList.value.find(a => a.tindakan === allowanceId);
-  if (allowance) {
-    allowance.status = "Menunggu Kelulusan";
-    refreshTable();
-    toast.success("Elaun penolong amil berjaya disahkan oleh Ketua Jabatan");
-  }
+const verifySession = (sessionId) => {
+  navigateTo(`/BF-PA/KF/KS/verify/${sessionId}`);
 };
 
-const approveAllowance = (allowanceId) => {
-  // Update status to "Aktif"
-  const allowance = allowancesList.value.find(a => a.tindakan === allowanceId);
-  if (allowance) {
-    allowance.status = "Aktif";
-    refreshTable();
-    toast.success("Elaun penolong amil berjaya diluluskan oleh Ketua Divisyen");
-  }
+const approveSession = (sessionId) => {
+  navigateTo(`/BF-PA/KF/KS/approve/${sessionId}`);
 };
 
-const navigateToVerification = (allowanceId, action) => {
+const navigateToVerification = (sessionId, action) => {
   if (action === 'verify') {
-    navigateTo(`/BF-PA/KF/KE/verify/${allowanceId}`);
+    navigateTo(`/BF-PA/KF/KS/verify/${sessionId}`);
   } else if (action === 'approve') {
-    navigateTo(`/BF-PA/KF/KE/approve/${allowanceId}`);
+    navigateTo(`/BF-PA/KF/KS/approve/${sessionId}`);
   }
 };
 
@@ -1186,11 +1163,19 @@ const getStatusVariant = (status) => {
   return variants[status] || 'disabled';
 };
 
+// Helper function to format tarikhKuatkuasa display
+const formatTarikhKuatkuasa = (date) => {
+  if (!date || date === '') {
+    return 'Belum ditetapkan';
+  }
+  return formatDate(date);
+};
+
 const getRoleSpecificDescription = () => {
   const roleData = {
-    eksekutif: "Kemaskini Elaun Penolong Amil - Edit Penuh",
-    "ketua-jabatan": "Pengesahan Elaun Penolong Amil - Sahkan Elaun",
-    "ketua-divisyen": "Kelulusan Akhir Elaun Penolong Amil - Sahkan/Tolak dalam Borang",
+    eksekutif: "Kemaskini Sesi Penolong Amil - Edit Penuh",
+    "ketua-jabatan": "Pengesahan Sesi Penolong Amil - Sahkan Sesi",
+    "ketua-divisyen": "Kelulusan Akhir Sesi Penolong Amil - Sahkan/Tolak dalam Borang",
   };
   return roleData[currentRole.value] || "Tidak Diketahui";
 };
@@ -1205,7 +1190,7 @@ onMounted(() => {
 
 // Search functionality
 const performSearch = () => {
-  if (!filters.value.searchQuery && !filters.value.status && !filters.value.kategoriPenolongAmil) {
+  if (!filters.value.searchQuery && !filters.value.status && !filters.value.namaSesi) {
     toast.warning('Sila masukkan kriteria carian');
     return;
   }
@@ -1218,28 +1203,28 @@ const performSearch = () => {
 const clearSearch = () => {
   filters.value.searchQuery = "";
   filters.value.status = "";
-  filters.value.kategoriPenolongAmil = "";
+  filters.value.namaSesi = "";
   isSearchPerformed.value = false;
   refreshTable();
-  toast.info('Carian telah diset semula');
+  toast.info('Carian telah direset');
 };
 
 // Bulk approval functionality
 const hasPendingApprovals = computed(() => {
-  return allowancesList.value.filter(allowance => 
-    allowance.status === 'Menunggu Kelulusan'
+  return sessionsList.value.filter(session => 
+    session.status === 'Menunggu Kelulusan'
   ).length > 0;
 });
 
 const pendingApprovalCount = computed(() => {
-  return allowancesList.value.filter(allowance => 
-    allowance.status === 'Menunggu Kelulusan'
+  return sessionsList.value.filter(session => 
+    session.status === 'Menunggu Kelulusan'
   ).length;
 });
 
 const openBulkApprovalModal = () => {
-  selectedItems.value = allowancesList.value.filter(allowance => 
-    allowance.status === 'Menunggu Kelulusan'
+  selectedItems.value = sessionsList.value.filter(session => 
+    session.status === 'Menunggu Kelulusan'
   );
   showBulkApprovalModal.value = true;
 };
@@ -1268,16 +1253,16 @@ const performBulkApproval = async () => {
     const formattedDate = `${day}-${month}-${year}`;
     
     // Update all selected items
-    selectedItems.value.forEach(allowance => {
-      allowance.status = 'Aktif';
-      allowance.tarikhKuatkuasa = formattedDate;
+    selectedItems.value.forEach(session => {
+      session.status = 'Aktif';
+      session.tarikhKuatkuasa = formattedDate;
     });
     
-    toast.success(`${selectedItems.value.length} elaun berjaya diluluskan`);
+    toast.success(`${selectedItems.value.length} sesi berjaya diluluskan secara beramai-ramai`);
     closeBulkApprovalModal();
     refreshTable();
   } catch (error) {
-    toast.error('Ralat semasa meluluskan elaun');
+    toast.error('Ralat semasa kelulusan beramai-ramai');
   }
 };
 </script> 

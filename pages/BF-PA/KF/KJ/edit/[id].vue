@@ -1,773 +1,658 @@
 <!-- 
-  RTMF SCREEN: PA-KF-KJ-01_03 (Edit Form)
-  PURPOSE: Kemaskini maklumat kategori penolong amil
-  DESCRIPTION: Edit form for existing Penolong Amil category with tabbed interface (Eksekutif only)
+  RTMF SCREEN: PA-KF-KJ-03_01 (Position Edit)
+  PURPOSE: Kemaskini maklumat jawatan untuk kategori penolong amil
+  DESCRIPTION: Table-based edit interface for multiple positions within a category
   ROUTE: /BF-PA/KF/KJ/edit/[id]
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Enhanced Header Section -->
-    <div class="mb-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <Icon name="ph:pencil" class="w-6 h-6 mr-3 text-primary" />
-            Kemaskini Kategori Penolong Amil
-          </h1>
-          <p class="text-gray-600 mt-1">Kemaskini maklumat kategori penolong amil</p>
+    <rs-card class="mt-4">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-semibold flex items-center">
+              <Icon name="ph:pencil-line" class="mr-2" size="24" />
+              Kemaskini Maklumat Jawatan
+            </h2>
+            <p class="text-sm text-gray-600 mt-1">
+              Kemaskini maklumat jawatan untuk kategori: {{ formData.kategoriPenolongAmil }}
+            </p>
+          </div>
         </div>
-        <div class="flex gap-2">
+      </template>
+
+      <template #body>
+        <!-- Category Context -->
+        <rs-card class="mb-6 bg-gray-50 border-gray-300">
+          <template #header>
+            <div class="flex items-center">
+              <Icon name="ph:tag" class="mr-2" size="20" />
+              <h3 class="text-lg font-semibold">Maklumat Kategori</h3>
+            </div>
+          </template>
+          
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Penolong Amil</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+                  {{ formData.kategoriPenolongAmil }}
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Kod Singkatan Kategori</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+                  {{ categoryData.kodSingkatan }}
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status Kategori</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+                  <rs-badge :variant="getStatusVariant(categoryData.status)">
+                    {{ categoryData.status }}
+                  </rs-badge>
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Rujukan</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+                  {{ route.params.id }}
+                </div>
+              </div>
+            </div>
+          </template>
+        </rs-card>
+
+        <!-- Positions Table -->
+        <rs-card class="mb-6">
+          <template #header>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <Icon name="ph:identification-card" class="mr-2" size="20" />
+                <h3 class="text-lg font-semibold">Maklumat Jawatan dalam Kategori</h3>
+              </div>
+              
+              <rs-button
+                variant="success"
+                size="sm"
+                @click="tambahJawatan"
+                class="flex items-center"
+                title="Tambah Jawatan Baharu"
+              >
+                <Icon name="ph:plus" class="w-4 h-4 mr-1" />
+                Tambah Jawatan
+              </rs-button>
+            </div>
+          </template>
+          
+          <template #body>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse">
+                <thead>
+                  <tr class="bg-gray-50 border-b border-gray-200">
+                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">No.</th>
+                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Nama Jawatan</th>
+                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Kod Singkatan</th>
+                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Status</th>
+                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Tarikh Kuatkuasa</th>
+                    <th class="text-left p-3 font-semibold text-gray-700">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr 
+                    v-for="(jawatan, index) in formData.maklumatJawatan" 
+                    :key="index"
+                    class="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    <td class="p-3 border-r border-gray-200">
+                      {{ index + 1 }}
+                    </td>
+                    
+                    <!-- Nama Jawatan -->
+                    <td class="p-3 border-r border-gray-200">
+                      <input
+                        v-model="jawatan.namaJawatan"
+                        type="text"
+                        placeholder="Masukkan nama jawatan"
+                        class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        @input="generateChangeLog"
+                      />
+                    </td>
+                    
+                    <!-- Kod Singkatan -->
+                    <td class="p-3 border-r border-gray-200">
+                      <input
+                        v-model="jawatan.kodSingkatan"
+                        type="text"
+                        placeholder="Kod"
+                        class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        @input="generateChangeLog"
+                      />
+                    </td>
+                    
+                    <!-- Status -->
+                    <td class="p-3 border-r border-gray-200">
+                      <select
+                        v-model="jawatan.status"
+                        :disabled="isNewRow(jawatan)"
+                        class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        @change="generateChangeLog"
+                      >
+                        <option value="AKTIF">AKTIF</option>
+                        <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                      </select>
+                      <p v-if="isNewRow(jawatan)" class="text-xs text-gray-500 mt-1">
+                        Akan diaktifkan selepas kelulusan
+                      </p>
+                    </td>
+                    
+                    <!-- Tarikh Kuatkuasa -->
+                    <td class="p-3 border-r border-gray-200">
+                      <input
+                        v-model="jawatan.tarikhKuatkuasa"
+                        type="date"
+                        :disabled="true"
+                        class="w-full px-2 py-1 border border-gray-300 rounded text-sm bg-gray-100 cursor-not-allowed"
+                      />
+                      <p v-if="!jawatan.tarikhKuatkuasa" class="text-xs text-gray-500 mt-1">
+                        Akan ditetapkan selepas kelulusan
+                      </p>
+                    </td>
+                    
+                    <!-- Tindakan -->
+                    <td class="p-3">
+                      <rs-button
+                        variant="danger"
+                        size="sm"
+                        @click="hapusJawatan(index)"
+                        class="flex items-center"
+                        title="Hapus Jawatan"
+                      >
+                        <Icon name="ph:trash" class="w-3 h-3" />
+                      </rs-button>
+                    </td>
+                  </tr>
+                  
+                  <tr v-if="formData.maklumatJawatan.length === 0">
+                    <td colspan="6" class="p-8 text-center text-gray-500">
+                      <Icon name="ph:plus-circle" class="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                      <p>Tiada jawatan dalam kategori ini</p>
+                      <p class="text-sm">Klik "Tambah Jawatan" untuk menambah jawatan baharu</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </template>
+        </rs-card>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-between items-center pt-6 border-t border-gray-200">
           <rs-button
-            variant="secondary-outline"
+            variant="secondary"
             @click="navigateTo('/BF-PA/KF/KJ')"
             class="flex items-center"
           >
             <Icon name="ph:arrow-left" class="w-4 h-4 mr-2" />
-            Batal
+            Kembali
+          </rs-button>
+          
+          <rs-button
+            variant="success"
+            @click="showConfirmationModal = true"
+            class="flex items-center"
+          >
+            <Icon name="ph:floppy-disk" class="w-4 h-4 mr-2" />
+            Simpan Perubahan
           </rs-button>
         </div>
-      </div>
-    </div>
 
-    <!-- Form with Tabbed Interface -->
-    <FormKit
-      type="form"
-      id="editCategoryForm"
-      :actions="false"
-      @submit="handleSubmit"
-    >
-      <rs-card>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900">Kemaskini Maklumat</h3>
-            <div class="text-sm text-gray-500">
-              <Icon name="ph:info-fill" class="w-4 h-4 inline mr-1" />
-              {{ formData.kategoriPenolongAmil }} - {{ formData.kodSingkatan }}
-            </div>
-          </div>
-        </template>
-        
-        <template #body>
-          <rs-tab v-model="activeTab">
-            <!-- Maklumat Kategori Tab -->
-            <rs-tab-item title="Maklumat Kategori">
-              <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormKit
-                    type="text"
-                    name="kategoriPenolongAmil"
-                    label="Kategori Penolong Amil"
-                    placeholder="Contoh: Penolong Amil Fitrah"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Kategori penolong amil diperlukan',
-                    }"
-                    :value="formData.kategoriPenolongAmil"
-                    :disabled="formData.isDefault"
-                  />
-                  <FormKit
-                    type="text"
-                    name="kodSingkatan"
-                    label="Kod Singkatan"
-                    placeholder="Contoh: PAF"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Kod singkatan diperlukan',
-                    }"
-                    :value="formData.kodSingkatan"
-                    readonly
-                  />
-                  <FormKit
-                    type="select"
-                    name="status"
-                    label="Status"
-                    :options="[
-                      { label: 'Aktif', value: 'Aktif' },
-                      { label: 'Tidak Aktif', value: 'Tidak Aktif' },
-                    ]"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Status diperlukan',
-                    }"
-                    :value="formData.status"
-                  />
-                  <FormKit
-                    type="date"
-                    name="tarikhKuatkuasa"
-                    label="Tarikh Kuatkuasa"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Tarikh kuatkuasa diperlukan',
-                    }"
-                    :value="convertToHTMLDateInput(formData.tarikhKuatkuasa)"
-                  />
-                  <div class="md:col-span-2">
-                    <FormKit
-                      type="textarea"
-                      name="penerangan"
-                      label="Penerangan Kategori"
-                      placeholder="Huraian ringkas tentang kategori ini..."
-                      rows="3"
-                      :value="formData.penerangan"
-                    />
-                  </div>
-                </div>
-              </div>
-            </rs-tab-item>
-
-            <!-- Maklumat Jawatan Tab -->
-            <rs-tab-item title="Maklumat Jawatan">
-              <div class="p-6">
-                <!-- Header -->
-                <div class="mb-4">
-                  <h4 class="text-lg font-semibold text-gray-900">Jawatan dalam Kategori</h4>
-                </div>
-                
-                <!-- Table for Jawatan -->
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-                    <thead class="bg-gray-50">
-                      <tr>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Jawatan</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Kod Singkatan</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Status</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Kuatkuasa</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="(jawatan, index) in formData.maklumatJawatan" :key="index">
-                        <td class="p-3 border">
-                          <input 
-                            v-model="jawatan.jawatan" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Contoh: Ketua Penolong Amil"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <input 
-                            v-model="jawatan.kod" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Contoh: PAF"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <select 
-                            v-model="jawatan.status" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          >
-                            <option value="AKTIF">AKTIF</option>
-                            <option value="TIDAK AKTIF">TIDAK AKTIF</option>
-                          </select>
-                        </td>
-                        <td class="p-3 border">
-                          <input 
-                            type="date" 
-                            v-model="jawatan.tarikh" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <rs-button 
-                            variant="danger" 
-                            size="sm" 
-                            @click="hapusJawatan(index)"
-                          >
-                            <Icon name="ph:trash" class="w-4 h-4" />
-                          </rs-button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                
-                <!-- Add Button Below Table -->
-                <div class="mt-4 flex justify-end">
-                  <rs-button variant="secondary" size="sm" @click="tambahJawatan">
-                    <Icon name="ph:plus" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
-            </rs-tab-item>
-
-            <!-- Maklumat Elaun Tab -->
-            <rs-tab-item title="Maklumat Elaun">
-              <div class="p-6">
-                <!-- Header -->
-                <div class="mb-4">
-                  <h4 class="text-lg font-semibold text-gray-900">Elaun dalam Kategori</h4>
-                </div>
-                
-                <!-- Table for Elaun -->
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-                    <thead class="bg-gray-50">
-                      <tr>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Jenis Elaun</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Amaun</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Kod Bajet</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Status</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Kuatkuasa</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="(elaun, index) in formData.maklumatElaun" :key="index">
-                        <td class="p-3 border">
-                          <input 
-                            v-model="elaun.jenis" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Contoh: Bancian Baru: Per Borang Permohonan"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <input 
-                            type="number" 
-                            v-model="elaun.amaun" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="0"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <input 
-                            v-model="elaun.kod" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Contoh: B34106"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <select 
-                            v-model="elaun.status" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          >
-                            <option value="AKTIF">AKTIF</option>
-                            <option value="TIDAK AKTIF">TIDAK AKTIF</option>
-                          </select>
-                        </td>
-                        <td class="p-3 border">
-                          <input 
-                            type="date" 
-                            v-model="elaun.tarikh" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <rs-button 
-                            variant="danger" 
-                            size="sm" 
-                            @click="hapusElaun(index)"
-                          >
-                            <Icon name="ph:trash" class="w-4 h-4" />
-                          </rs-button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                
-                <!-- Add Button Below Table -->
-                <div class="mt-4 flex justify-end">
-                  <rs-button variant="secondary" size="sm" @click="tambahElaun">
-                    <Icon name="ph:plus" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-
-                <!-- Elaun Khas Section -->
-                <div class="mt-8">
-                  <!-- Header -->
-                  <div class="mb-4">
-                    <h4 class="text-lg font-semibold text-gray-900">Elaun Khas</h4>
-                  </div>
-                  
-                  <!-- Table for Elaun Khas -->
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-                      <thead class="bg-gray-50">
-                        <tr>
-                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Jenis Elaun</th>
-                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Kategori PA</th>
-                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Amaun</th>
-                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Kod Bajet</th>
-                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Status</th>
-                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Kuatkuasa</th>
-                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Target KPI</th>
-                          <th class="p-3 border text-left text-sm font-medium text-gray-700">Tindakan</th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(elaunKhas, index) in formData.maklumatElaunKhas" :key="index">
-                          <td class="p-3 border">
-                            <input 
-                              v-model="elaunKhas.jenis" 
-                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                              placeholder="Contoh: KHAS - 48 AKTIVITI/TAHUN"
-                            />
-                          </td>
-                          <td class="p-3 border">
-                            <input 
-                              v-model="elaunKhas.kategoriPA" 
-                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                              placeholder="Contoh: PAK+"
-                            />
-                          </td>
-                          <td class="p-3 border">
-                            <input 
-                              type="number" 
-                              v-model="elaunKhas.amaun" 
-                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                              placeholder="0"
-                            />
-                          </td>
-                          <td class="p-3 border">
-                            <input 
-                              v-model="elaunKhas.kod" 
-                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                              placeholder="Contoh: B31702"
-                            />
-                          </td>
-                          <td class="p-3 border">
-                            <select 
-                              v-model="elaunKhas.status" 
-                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                              <option value="AKTIF">AKTIF</option>
-                              <option value="TIDAK AKTIF">TIDAK AKTIF</option>
-                            </select>
-                          </td>
-                          <td class="p-3 border">
-                            <input 
-                              type="date" 
-                              v-model="elaunKhas.tarikh" 
-                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                          </td>
-                          <td class="p-3 border">
-                            <input 
-                              type="number"
-                              v-model="elaunKhas.targetKPI" 
-                              class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                              placeholder="48"
-                            />
-                          </td>
-                                                  <td class="p-3 border">
-                                                      <rs-button 
-                              variant="danger" 
-                              size="sm" 
-                              @click="hapusElaunKhas(index)"
-                            >
-                              <Icon name="ph:trash" class="w-4 h-4" />
-                            </rs-button>
-                        </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  
-                  <!-- Add Button Below Table -->
-                  <div class="mt-4 flex justify-end">
-                    <rs-button variant="secondary" size="sm" @click="tambahElaunKhas">
-                      <Icon name="ph:plus" class="w-4 h-4" />
-                    </rs-button>
-                  </div>
-                </div>
-              </div>
-            </rs-tab-item>
-
-            <!-- Maklumat Sesi Tab -->
-            <rs-tab-item title="Maklumat Sesi">
-              <div class="p-6">
-                <!-- Header -->
-                <div class="mb-4">
-                  <h4 class="text-lg font-semibold text-gray-900">Sesi dalam Kategori</h4>
-                </div>
-                
-                <!-- Table for Sesi -->
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-                    <thead class="bg-gray-50">
-                      <tr>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Sesi</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Mula</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Tamat</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Status</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tarikh Kuatkuasa</th>
-                        <th class="p-3 border text-left text-sm font-medium text-gray-700">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="(sesi, index) in formData.maklumatSesi" :key="index">
-                        <td class="p-3 border">
-                          <input 
-                            v-model="sesi.sesi" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Contoh: SESI 2025-2027"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <input 
-                            type="date" 
-                            v-model="sesi.mula" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <input 
-                            type="date" 
-                            v-model="sesi.tamat" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <select 
-                            v-model="sesi.status" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          >
-                            <option value="AKTIF">AKTIF</option>
-                            <option value="TIDAK AKTIF">TIDAK AKTIF</option>
-                          </select>
-                        </td>
-                        <td class="p-3 border">
-                          <input 
-                            type="date" 
-                            v-model="sesi.tarikh" 
-                            class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </td>
-                        <td class="p-3 border">
-                          <rs-button 
-                            variant="danger" 
-                            size="sm" 
-                            @click="hapusSesi(index)"
-                          >
-                            <Icon name="ph:trash" class="w-4 h-4" />
-                          </rs-button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                
-                <!-- Add Button Below Table -->
-                <div class="mt-4 flex justify-end">
-                  <rs-button variant="secondary" size="sm" @click="tambahSesi">
-                    <Icon name="ph:plus" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
-            </rs-tab-item>
-          </rs-tab>
-        </template>
-      </rs-card>
-
-      <!-- Maklumat Pegawai Section (Separate from tabs) -->
-      <rs-card class="mt-6">
-        <template #header>
-          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-            <Icon name="ph:user" class="w-5 h-5 mr-2" />
-            Maklumat Pegawai (Audit Trail)
-          </h3>
-        </template>
-        <template #body>
-          <div class="p-6">
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <!-- Jejak Audit Section (Positioned at bottom) -->
+        <rs-card class="mt-8 bg-gray-50 border-gray-300">
+          <template #header>
+            <div class="bg-gray-100 border-b border-gray-300 flex items-center justify-between">
               <div class="flex items-center">
-                <Icon name="ph:info" class="w-5 h-5 text-blue-600 mr-2" />
-                <span class="text-sm text-blue-800 font-medium">Maklumat Audit Trail (Tidak Boleh Diedit)</span>
+                <Icon name="ph:clock-clockwise" class="mr-2 text-gray-600" size="18" />
+                <h3 class="text-lg font-semibold text-gray-600">Jejak Audit</h3>
               </div>
+              <p class="text-sm text-gray-500">Maklumat rujukan sahaja</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          </template>
+          
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Dicipta Oleh</label>
-                <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
+                <label class="block text-sm font-medium text-gray-500 mb-1">Dicipta Oleh</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
                   {{ formData.maklumatPegawai.diciptaOleh }}
                 </div>
               </div>
+              
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Cipta</label>
-                <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
+                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Cipta</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
                   {{ formatDate(formData.maklumatPegawai.tarikhCipta) }}
                 </div>
               </div>
+
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Diluluskan Oleh</label>
-                <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
+                <label class="block text-sm font-medium text-gray-500 mb-1">Dikemaskini Oleh</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+                  {{ formData.maklumatPegawai.dikemaskiniBoleh || 'Belum dikemaskini' }}
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Kemaskini</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+                  {{ formData.maklumatPegawai.tarikhKemaskini ? formatDate(formData.maklumatPegawai.tarikhKemaskini) : 'Belum dikemaskini' }}
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-500 mb-1">Disahkan Oleh</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+                  {{ formData.maklumatPegawai.disahkanOleh || 'Belum disahkan' }}
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Pengesahan</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+                  {{ formData.maklumatPegawai.tarikhPengesahan ? formatDate(formData.maklumatPegawai.tarikhPengesahan) : 'Belum disahkan' }}
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-500 mb-1">Diluluskan Oleh</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
                   {{ formData.maklumatPegawai.diluluskanOleh || 'Belum diluluskan' }}
                 </div>
               </div>
+              
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Lulus</label>
-                <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-                  {{ formData.maklumatPegawai.tarikhLulus ? formatDate(formData.maklumatPegawai.tarikhLulus) : 'Belum diluluskan' }}
+                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Kelulusan</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+                  {{ formData.maklumatPegawai.tarikhKelulusan ? formatDate(formData.maklumatPegawai.tarikhKelulusan) : 'Belum diluluskan' }}
                 </div>
               </div>
             </div>
-          </div>
-        </template>
-      </rs-card>
+          </template>
+        </rs-card>
+      </template>
+    </rs-card>
 
-      <!-- Submit Buttons -->
-      <div class="flex justify-end gap-3 mt-6">
-        <rs-button
-          variant="secondary-outline"
-          @click="navigateTo('/BF-PA/KF/KJ')"
-        >
-          Batal
-        </rs-button>
-        <rs-button
-          variant="primary"
-          type="submit"
-          :loading="isSubmitting"
-        >
-          <Icon name="ph:check" class="w-4 h-4 mr-2" />
-          Simpan Perubahan
-        </rs-button>
+    <!-- Confirmation Modal -->
+    <div v-if="showConfirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <Icon name="ph:check-circle" class="w-6 h-6 text-green-600 mr-3" />
+            <h3 class="text-lg font-semibold text-gray-900">Pengesahan Sokongan Eksekutif</h3>
+          </div>
+          
+          <FormKit
+            type="form"
+            @submit="handleConfirmationSubmit"
+            :actions="false"
+          >
+            <FormKit
+              type="textarea"
+              name="ulasanSokongan"
+              label="Ulasan Sokongan"
+              validation="required|length:10,300"
+              rows="3"
+              help="Berikan ulasan sokongan untuk perubahan jawatan ini"
+            />
+
+            <div class="grid grid-cols-2 gap-4 mt-4">
+              <FormKit
+                type="text"
+                name="namaPenyokong"
+                label="Nama Penyokong"
+                :value="confirmationData.namaPenyokong"
+                :disabled="true"
+                help="Berdasarkan akaun semasa"
+              />
+
+              <FormKit
+                type="date"
+                name="tarikhSokongan"
+                label="Tarikh Sokongan"
+                :value="confirmationData.tarikhSokongan"
+                :disabled="true"
+                help="Tarikh semasa"
+              />
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-6">
+              <rs-button
+                variant="secondary"
+                @click="showConfirmationModal = false"
+              >
+                Batal
+              </rs-button>
+              <rs-button
+                variant="success"
+                type="submit"
+                :loading="isSubmitting"
+              >
+                Simpan dan Sokong
+              </rs-button>
+            </div>
+          </FormKit>
+        </div>
       </div>
-    </FormKit>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { formatDate, convertToHTMLDateInput } from "~/utils/dateFormatter";
+import { ref, computed, onMounted } from "vue";
+import { formatDate } from "~/utils/dateFormatter";
+import { useToast } from "vue-toastification";
 
-const route = useRoute();
+const toast = useToast();
 
 definePageMeta({
-  title: "Kemaskini Kategori Penolong Amil",
+  title: "Kemaskini Maklumat Jawatan",
 });
 
-const breadcrumb = ref([
-  {
-    name: "Utama",
-    type: "link",
-    path: "/"
-  },
-  {
-    name: "BF-PA",
-    type: "link",
-    path: "/BF-PA"
-  },
-  {
-    name: "Konfigurasi",
-    type: "link",
-    path: "/BF-PA/KF/KJ"
-  },
-  {
-    name: "Kemaskini Maklumat",
-    type: "current",
-    path: "/BF-PA/KF/KJ/edit"
-  }
-]);
-
-// Form state
+const route = useRoute();
 const isSubmitting = ref(false);
-const activeTab = ref('kategori');
+const showConfirmationModal = ref(false);
 
-// Mock form data (would be fetched from API in real app)
+// Breadcrumb
+const breadcrumb = [
+  { label: 'Laman Utama', to: '/' },
+  { label: 'Modul BF-PA', to: '/BF-PA' },
+  { label: 'Konfigurasi', to: '/BF-PA/KF' },
+  { label: 'Maklumat Jawatan', to: '/BF-PA/KF/KJ' },
+  { label: 'Kemaskini', to: null }
+];
+
+// Form data with original values for change tracking
+const originalData = ref({});
 const formData = ref({
   kategoriPenolongAmil: "Penolong Amil Fitrah",
-  kodSingkatan: "PAF",
-  status: "Aktif",
-  tarikhKuatkuasa: "01-01-2024",
-  penerangan: "Kategori untuk menguruskan zakat fitrah",
-  isDefault: true,
   maklumatJawatan: [
     {
-      jawatan: "Ketua Penolong Amil",
-      kod: "PAF",
+      namaJawatan: "Ketua Penolong Amil",
+      kodSingkatan: "KPA",
       status: "AKTIF",
-      tarikh: "2025-01-01",
+      tarikhKuatkuasa: "01-01-2024"
     },
     {
-      jawatan: "Penolong Amil",
-      kod: "PAF",
+      namaJawatan: "Penolong Ketua Amil",
+      kodSingkatan: "PKA",
       status: "AKTIF",
-      tarikh: "2025-01-01",
-    },
-  ],
-  maklumatElaun: [
-    {
-      jenis: "Elaun Bancian Baru : per borang permohonan",
-      amaun: 30,
-      kod: "B34106",
-      status: "AKTIF",
-      tarikh: "2025-01-01",
+      tarikhKuatkuasa: "01-01-2024"
     },
     {
-      jenis: "Elaun Kemaskini/permohonan bantuan : per borang permohonan",
-      amaun: 20,
-      kod: "B34106",
+      namaJawatan: "Penolong Amil Eksekutif",
+      kodSingkatan: "PAE",
       status: "AKTIF",
-      tarikh: "2025-01-01",
-    },
-    {
-      jenis: "Elaun Tahunan KPAK",
-      amaun: 500,
-      kod: "B34107",
-      status: "AKTIF",
-      tarikh: "2025-01-01",
-    },
-    {
-      jenis: "Elaun Tahunan KPAF",
-      amaun: 300,
-      kod: "B34108",
-      status: "AKTIF",
-      tarikh: "2025-01-01",
-    },
-  ],
-  maklumatElaunKhas: [
-    {
-      jenis: "KHAS - 48 AKTIVITI/TAHUN",
-      kategoriPA: "PAF",
-      amaun: 400,
-      kod: "B31702",
-      status: "AKTIF",
-      tarikh: "2025-01-01",
-      targetKPI: 48,
-    },
-  ],
-  maklumatSesi: [
-    {
-      sesi: "SESI 2025-2027",
-      mula: "2025-01-01",
-      tamat: "2027-12-31",
-      status: "AKTIF",
-      tarikh: "2025-01-01",
-    },
-    {
-      sesi: "SESI 2022-2024",
-      mula: "2022-01-01",
-      tamat: "2024-12-31",
-      status: "TIDAK AKTIF",
-      tarikh: "2022-01-01",
-    },
+      tarikhKuatkuasa: "01-01-2024"
+    }
   ],
   maklumatPegawai: {
-    diciptaOleh: "Admin User",
-    tarikhCipta: "27-10-2023",
-    diluluskanOleh: "Manager",
-    tarikhLulus: "28-10-2023",
-  },
+    diciptaOleh: "Ahmad bin Ali",
+    tarikhCipta: "2024-01-15",
+    dikemaskiniBoleh: "Siti binti Ahmad",
+    tarikhKemaskini: "2024-02-01",
+    disahkanOleh: "Hasan bin Omar",
+    tarikhPengesahan: "2024-02-03",
+    diluluskanOleh: "Fatimah binti Ibrahim",
+    tarikhKelulusan: "2024-02-05"
+  }
 });
 
-const handleSubmit = async (formData) => {
+// Category context data
+const categoryData = ref({
+  kodSingkatan: "PAF",
+  status: "Aktif"
+});
+
+// Store original data for change tracking
+originalData.value = JSON.parse(JSON.stringify(formData.value));
+
+// Confirmation modal data
+const confirmationData = ref({
+  namaPenyokong: "Eksekutif User (Mock)",
+  tarikhSokongan: new Date().toISOString().split('T')[0],
+});
+
+// Methods for managing table data
+const tambahJawatan = () => {
+  formData.value.maklumatJawatan.push({
+    namaJawatan: '',
+    kodSingkatan: '',
+    status: 'TIDAK AKTIF', // Default for new rows
+    tarikhKuatkuasa: '' // Will be set by Ketua Divisyen upon approval
+  });
+  
+  generateChangeLog();
+};
+
+const hapusJawatan = (index) => {
+  formData.value.maklumatJawatan.splice(index, 1);
+  generateChangeLog();
+};
+
+// Check if a row is newly added
+const isNewRow = (jawatan) => {
+  return !jawatan.tarikhKuatkuasa || jawatan.tarikhKuatkuasa === '';
+};
+
+// Generate change log
+const changeLog = ref([]);
+
+const generateChangeLog = () => {
+  const changes = [];
+  const originalJawatan = originalData.value.maklumatJawatan || [];
+  const currentJawatan = formData.value.maklumatJawatan || [];
+
+  // Check for additions
+  currentJawatan.forEach((current, index) => {
+    if (!originalJawatan[index]) {
+      changes.push({
+        type: 'added',
+        section: 'Jawatan dalam Kategori',
+        description: `Ditambah: ${current.namaJawatan}`,
+        oldValue: null,
+        newValue: `${current.namaJawatan} (${current.kodSingkatan})`
+      });
+    }
+  });
+
+  // Check for modifications
+  originalJawatan.forEach((original, index) => {
+    const current = currentJawatan[index];
+    if (current) {
+      if (original.namaJawatan !== current.namaJawatan) {
+        changes.push({
+          type: 'modified',
+          section: 'Jawatan dalam Kategori',
+          description: `Diubah: Nama Jawatan baris ${index + 1}`,
+          oldValue: original.namaJawatan,
+          newValue: current.namaJawatan
+        });
+      }
+      
+      if (original.kodSingkatan !== current.kodSingkatan) {
+        changes.push({
+          type: 'modified',
+          section: 'Jawatan dalam Kategori',
+          description: `Diubah: Kod Singkatan baris ${index + 1}`,
+          oldValue: original.kodSingkatan,
+          newValue: current.kodSingkatan
+        });
+      }
+      
+      if (original.status !== current.status) {
+        changes.push({
+          type: 'modified',
+          section: 'Jawatan dalam Kategori',
+          description: `Diubah: Status baris ${index + 1}`,
+          oldValue: original.status,
+          newValue: current.status
+        });
+      }
+    }
+  });
+
+  // Check for removals
+  originalJawatan.forEach((original, index) => {
+    if (!currentJawatan[index]) {
+      changes.push({
+        type: 'removed',
+        section: 'Jawatan dalam Kategori',
+        description: `Dipadamkan: ${original.namaJawatan}`,
+        oldValue: `${original.namaJawatan} (${original.kodSingkatan})`,
+        newValue: null
+      });
+    }
+  });
+
+  changeLog.value = changes;
+  return changes;
+};
+
+// Helper functions
+const getStatusVariant = (status) => {
+  const variants = {
+    'Aktif': 'success',
+    'Tidak Aktif': 'danger',
+    'Menunggu Pengesahan': 'warning',
+    'Menunggu Kelulusan': 'info',
+  };
+  return variants[status] || 'disabled';
+};
+
+const handleConfirmationSubmit = async (confirmationFormData) => {
   isSubmitting.value = true;
   
   try {
-    // Log the complete form data structure for backend
-    console.log('Form Data for Backend:', {
-      kategoriPenolongAmil: formData.kategoriPenolongAmil,
-      kodSingkatan: formData.kodSingkatan,
-      status: formData.status,
-      tarikhKuatkuasa: formData.tarikhKuatkuasa,
-      penerangan: formData.penerangan,
-      maklumatJawatan: formData.maklumatJawatan, // Array of job positions
-      maklumatElaun: formData.maklumatElaun,     // Array of allowances
-      maklumatElaunKhas: formData.maklumatElaunKhas, // Array of special allowances
-      maklumatSesi: formData.maklumatSesi,       // Array of sessions
-      maklumatPegawai: formData.maklumatPegawai
-    });
+    const changeLogData = generateChangeLog();
+    
+    // Log complete data for backend
+    const updateData = {
+      categoryId: route.params.id,
+      kategoriPenolongAmil: formData.value.kategoriPenolongAmil,
+      maklumatJawatan: formData.value.maklumatJawatan,
+      changeLog: changeLogData,
+      sokonganEksekutif: {
+        ulasan: confirmationFormData.ulasanSokongan,
+        namaPenyokong: confirmationData.value.namaPenyokong,
+        tarikhSokongan: confirmationData.value.tarikhSokongan,
+      },
+      updatedBy: "Eksekutif User",
+      updatedAt: new Date().toISOString(),
+    };
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Show success message
-    alert("Kategori penolong amil berjaya dikemaskini");
+    toast.success("Maklumat jawatan berjaya dikemaskini dan disokong");
     
     // Navigate back to list
     navigateTo('/BF-PA/KF/KJ');
   } catch (error) {
-    console.error('Error updating category:', error);
-    alert("Ralat semasa mengemaskini kategori");
+    // Error updating positions
+    toast.error("Ralat semasa menyimpan perubahan");
   } finally {
     isSubmitting.value = false;
+    showConfirmationModal.value = false;
   }
 };
 
-const tambahJawatan = () => {
-  formData.value.maklumatJawatan.push({
-    jawatan: "",
-    kod: "",
-    status: "AKTIF",
-    tarikh: "",
-  });
-};
-
-const hapusJawatan = (index) => {
-  formData.value.maklumatJawatan.splice(index, 1);
-};
-
-const updateJawatan = (index, field, value) => {
-  formData.value.maklumatJawatan[index][field] = value;
-};
-
-const tambahElaun = () => {
-  formData.value.maklumatElaun.push({
-    jenis: "",
-    amaun: 0,
-    kod: "",
-    status: "AKTIF",
-    tarikh: "",
-  });
-};
-
-const hapusElaun = (index) => {
-  formData.value.maklumatElaun.splice(index, 1);
-};
-
-const updateElaun = (index, field, value) => {
-  formData.value.maklumatElaun[index][field] = value;
-};
-
-const tambahElaunKhas = () => {
-  formData.value.maklumatElaunKhas.push({
-    jenis: "",
-    kategoriPA: "",
-    amaun: 0,
-    kod: "",
-    status: "AKTIF",
-    tarikh: "",
-    targetKPI: 0,
-  });
-};
-
-const hapusElaunKhas = (index) => {
-  formData.value.maklumatElaunKhas.splice(index, 1);
-};
-
-const updateElaunKhas = (index, field, value) => {
-  formData.value.maklumatElaunKhas[index][field] = value;
-};
-
-const tambahSesi = () => {
-  formData.value.maklumatSesi.push({
-    sesi: "",
-    mula: "",
-    tamat: "",
-    status: "AKTIF",
-    tarikh: "",
-  });
-};
-
-const hapusSesi = (index) => {
-  formData.value.maklumatSesi.splice(index, 1);
-};
-
-const updateSesi = (index, field, value) => {
-  formData.value.maklumatSesi[index][field] = value;
-};
-
-onMounted(() => {
-  // In real app, fetch category data based on route.params.id
-  console.log("Loading category data for editing ID:", route.params.id);
+// Load data on mount
+onMounted(async () => {
+  const categoryId = route.params.id;
   
-  // Role-based access control
-  const currentUserRole = "eksekutif"; // This would come from auth system
-  if (currentUserRole !== "pt" && currentUserRole !== "eksekutif") {
-    alert("Anda tidak mempunyai kebenaran untuk mengemaskini kategori");
-    navigateTo('/BF-PA/KF/KJ');
+  try {
+    // Simulate API call to get category data
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Mock original data - what was in system before changes
+    const loadedData = {
+      kategoriPenolongAmil: "Penolong Amil Fitrah",
+      maklumatJawatan: [
+        {
+          namaJawatan: "Ketua Penolong Amil",
+          kodSingkatan: "KPA",
+          status: "AKTIF",
+          tarikhKuatkuasa: "01-01-2024"
+        },
+        {
+          namaJawatan: "Penolong Ketua Amil",
+          kodSingkatan: "PKA", 
+          status: "AKTIF",
+          tarikhKuatkuasa: "01-01-2024"
+        }
+        // Note: Penolong Amil Eksekutif will be added as new item
+      ],
+      maklumatPegawai: {
+        diciptaOleh: "Ahmad bin Ali",
+        tarikhCipta: "2024-01-15",
+        dikemaskiniBoleh: "Siti binti Ahmad",
+        tarikhKemaskini: "2024-02-01",
+        disahkanOleh: "Hasan bin Omar",
+        tarikhPengesahan: "2024-02-03",
+        diluluskanOleh: "Fatimah binti Ibrahim",
+        tarikhKelulusan: "2024-02-05"
+      }
+    };
+    
+    // Store original data for comparison
+    originalData.value = JSON.parse(JSON.stringify(loadedData));
+    
+    // Current data with changes applied - simulating user adding new position
+    formData.value = {
+      kategoriPenolongAmil: "Penolong Amil Fitrah",
+      maklumatJawatan: [
+        {
+          namaJawatan: "Ketua Penolong Amil",
+          kodSingkatan: "KPA",
+          status: "AKTIF",
+          tarikhKuatkuasa: "01-01-2024"
+        },
+        {
+          namaJawatan: "Penolong Ketua Amil",
+          kodSingkatan: "PKA",
+          status: "AKTIF", 
+          tarikhKuatkuasa: "01-01-2024"
+        },
+        {
+          namaJawatan: "Penolong Amil Eksekutif", // New addition
+          kodSingkatan: "PAE",
+          status: "TIDAK AKTIF", // New rows default to TIDAK AKTIF
+          tarikhKuatkuasa: "" // Will be set upon approval
+        }
+      ],
+      maklumatPegawai: {
+        diciptaOleh: "Ahmad bin Ali",
+        tarikhCipta: "2024-01-15",
+        dikemaskiniBoleh: "Siti binti Ahmad",
+        tarikhKemaskini: "2024-02-01",
+        disahkanOleh: "Hasan bin Omar",
+        tarikhPengesahan: "2024-02-03",
+        diluluskanOleh: "Fatimah binti Ibrahim",
+        tarikhKelulusan: "2024-02-05"
+      }
+    };
+    
+    // Generate initial change log
+    generateChangeLog();
+  } catch (error) {
+    // Error loading position data
+    toast.error('Ralat semasa memuatkan data jawatan');
   }
 });
 </script> 

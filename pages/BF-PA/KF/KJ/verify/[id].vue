@@ -1,313 +1,437 @@
 <!-- 
-  RTMF SCREEN: PA-KF-KJ-01_05 (Verification Screen)
-  PURPOSE: Pengesahan kategori penolong amil baharu oleh Ketua Jabatan
-  DESCRIPTION: Verification screen for new Penolong Amil categories by Ketua Jabatan
+  RTMF SCREEN: PA-KF-KJ-05_01 (Position Verification)
+  PURPOSE: Pengesahan jawatan penolong amil oleh Ketua Jabatan
+  DESCRIPTION: Verification screen for Penolong Amil positions by Ketua Jabatan
   ROUTE: /BF-PA/KF/KJ/verify/[id]
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Enhanced Header Section -->
-    <div class="mb-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <Icon name="ph:check-circle" class="w-6 h-6 mr-3 text-warning" />
-            Pengesahan Kategori Penolong Amil
-          </h1>
-          <p class="text-gray-600 mt-1">Pengesahan kategori penolong amil baharu oleh Ketua Jabatan</p>
-        </div>
-        <div class="flex gap-2">
-          <rs-button
-            variant="secondary-outline"
-            @click="navigateTo('/BF-PA/KF/KJ')"
-            class="flex items-center"
-          >
-            <Icon name="ph:arrow-left" class="w-4 h-4 mr-2" />
-            Kembali
-          </rs-button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Category Information Section -->
-    <rs-card class="mb-6">
+    <rs-card class="mt-4">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:info-fill" class="w-5 h-5 mr-2" />
-          Maklumat Kategori
-        </h3>
-      </template>
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="flex justify-between items-center">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Penolong Amil</label>
-            <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-              {{ categoryData.kategoriPenolongAmil }}
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Kod Singkatan</label>
-            <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-              {{ categoryData.kodSingkatan }}
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Status Semasa</label>
-            <div class="mt-1">
-              <rs-badge variant="warning">
-                Menunggu Pengesahan
-              </rs-badge>
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Kuatkuasa</label>
-            <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-              {{ formatDate(categoryData.tarikhKuatkuasa) }}
-            </div>
-          </div>
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Penerangan Kategori</label>
-            <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-              {{ categoryData.penerangan || 'Tiada penerangan' }}
-            </div>
+            <h2 class="text-xl font-semibold flex items-center">
+              <Icon name="ph:clipboard-text" class="mr-2" size="24" />
+              Pengesahan Jawatan Penolong Amil
+            </h2>
+            <p class="text-sm text-gray-600 mt-1">
+              Semakan dan pengesahan jawatan oleh Ketua Jabatan
+            </p>
           </div>
         </div>
+      </template>
+
+      <template #body>
+        <!-- Category Context Section -->
+        <rs-card class="mb-6 bg-gray-50 border-gray-300">
+          <template #header>
+            <div class="flex items-center">
+              <Icon name="ph:tag" class="mr-2" size="20" />
+              <h3 class="text-lg font-semibold">Maklumat Kategori</h3>
+            </div>
+          </template>
+          
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Penolong Amil</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+                  {{ categoryData.kategoriPenolongAmil }}
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Kod Singkatan Kategori</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+                  {{ categoryData.kodSingkatan }}
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status Kategori</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+                  <rs-badge :variant="getStatusVariant(categoryData.status)">
+                    {{ categoryData.status }}
+                  </rs-badge>
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Rujukan Jawatan</label>
+                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+                  {{ positionData.rujukan }}
+                </div>
+              </div>
+            </div>
+          </template>
+        </rs-card>
+
+        <!-- Position Changes Section -->
+        <rs-card class="mb-6">
+          <template #header>
+            <div class="flex items-center">
+              <Icon name="ph:list-checks" class="mr-2" size="20" />
+              <h3 class="text-lg font-semibold">Maklumat Perubahan Jawatan Yang Dibuat</h3>
+            </div>
+          </template>
+          
+          <template #body>
+            <div v-if="changeLog.length > 0" class="space-y-4">
+              <div v-for="(change, index) in changeLog" :key="index" class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-start space-x-3">
+                  <div class="flex-shrink-0">
+                    <Icon 
+                      :name="change.type === 'added' ? 'ph:plus-circle' : change.type === 'removed' ? 'ph:minus-circle' : 'ph:pencil-circle'" 
+                      :class="change.type === 'added' ? 'text-green-600' : change.type === 'removed' ? 'text-red-600' : 'text-blue-600'"
+                      size="20"
+                    />
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-2 mb-2">
+                      <span class="text-sm font-medium text-gray-900">{{ change.section }}</span>
+                      <rs-badge 
+                        :variant="change.type === 'added' ? 'success' : change.type === 'removed' ? 'danger' : 'info'"
+                        size="sm"
+                      >
+                        {{ change.type === 'added' ? 'Ditambah' : change.type === 'removed' ? 'Dipadamkan' : 'Diubah' }}
+                      </rs-badge>
+                    </div>
+                    
+                    <div class="text-sm text-gray-700 mb-2">
+                      {{ change.description }}
+                    </div>
+                    
+                    <div v-if="change.type === 'modified'" class="space-y-1">
+                      <div class="text-sm text-gray-600">
+                        <span class="font-medium">Nilai Lama:</span> {{ change.oldValue }}
+                      </div>
+                      <div class="text-sm text-gray-600">
+                        <span class="font-medium">Nilai Baharu:</span> {{ change.newValue }}
+                      </div>
+                    </div>
+                    
+                    <div v-else-if="change.type === 'added'" class="text-sm text-gray-600">
+                      <span class="font-medium">Nilai Baharu:</span> {{ change.newValue }}
+                    </div>
+                    
+                    <div v-else-if="change.type === 'removed'" class="text-sm text-gray-600">
+                      <span class="font-medium">Nilai Dipadamkan:</span> {{ change.oldValue }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div v-else class="text-center py-8 text-gray-500">
+              <Icon name="ph:info" class="w-8 h-8 mx-auto mb-2" />
+              <p>Tiada perubahan khusus untuk jawatan ini</p>
+            </div>
+          </template>
+        </rs-card>
+
+        <!-- Previous Remarks Section -->
+        <rs-card class="mb-6">
+          <template #header>
+            <div class="flex items-center">
+              <Icon name="ph:chat-text" class="mr-2" size="20" />
+              <h3 class="text-lg font-semibold">Ulasan Dari Eksekutif</h3>
+            </div>
+          </template>
+          
+          <template #body>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div class="flex items-start space-x-3">
+                <Icon name="ph:user-circle" class="w-8 h-8 text-blue-600 flex-shrink-0 mt-1" />
+                <div class="flex-1">
+                  <div class="text-sm text-blue-900 font-medium mb-1">
+                    Sokongan Eksekutif - {{ previousRemarks.namaPenyokong }}
+                  </div>
+                  <div class="text-sm text-blue-700 mb-2">
+                    {{ formatDate(previousRemarks.tarikhSokongan) }}
+                  </div>
+                  <div class="text-sm text-blue-800 bg-white rounded px-3 py-2 border border-blue-200">
+                    {{ previousRemarks.ulasan }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </rs-card>
+
+        <!-- Verification Form -->
+        <rs-card class="mb-6">
+          <template #header>
+            <div class="flex items-center">
+              <Icon name="ph:clipboard-text" class="mr-2" size="20" />
+              <h3 class="text-lg font-semibold">Borang Pengesahan</h3>
+            </div>
+          </template>
+          
+          <template #body>
+            <FormKit
+              type="form"
+              @submit="handleVerificationSubmit"
+              :loading="isSubmitting"
+              :actions="false"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <FormKit
+                  type="select"
+                  name="verificationDecision"
+                  label="Keputusan Pengesahan"
+                  :options="verificationOptions"
+                  validation="required"
+                  help="Pilih keputusan pengesahan anda"
+                />
+
+                <FormKit
+                  type="date"
+                  name="verificationDate"
+                  label="Tarikh Pengesahan"
+                  :value="formData.verificationDate"
+                  :disabled="true"
+                  help="Tarikh pengesahan akan ditetapkan secara automatik"
+                />
+
+                <FormKit
+                  type="text"
+                  name="verifierName"
+                  label="Nama Pengesah"
+                  :value="formData.verifierName"
+                  :disabled="true"
+                  help="Nama pengesah berdasarkan akaun semasa"
+                />
+              </div>
+
+              <div class="mb-6">
+                <FormKit
+                  type="textarea"
+                  name="verificationNotes"
+                  label="Ulasan Pengesahan"
+                  validation="required|length:10,500"
+                  rows="4"
+                  help="Berikan ulasan dan justifikasi untuk keputusan pengesahan"
+                />
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+                <rs-button
+                  variant="secondary"
+                  @click="navigateTo('/BF-PA/KF/KJ')"
+                  class="flex items-center"
+                >
+                  <Icon name="ph:arrow-left" class="w-4 h-4 mr-2" />
+                  Kembali
+                </rs-button>
+                
+                <div class="flex space-x-3">
+                  <rs-button
+                    variant="danger"
+                    @click="showConfirmationModal = true"
+                    :disabled="!isFormValid"
+                    class="flex items-center"
+                  >
+                    <Icon name="ph:x" class="w-4 h-4 mr-2" />
+                    Tolak
+                  </rs-button>
+                  
+                  <rs-button
+                    variant="success"
+                    @click="showConfirmationModal = true"
+                    :disabled="!isFormValid"
+                    class="flex items-center"
+                  >
+                    <Icon name="ph:check" class="w-4 h-4 mr-2" />
+                    Sahkan
+                  </rs-button>
+                </div>
+              </div>
+            </FormKit>
+          </template>
+        </rs-card>
       </template>
     </rs-card>
 
-    <!-- Verification Section -->
-    <rs-card class="mb-6">
-      <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:user-check" class="w-5 h-5 mr-2" />
-          Maklumat Pengesahan
-        </h3>
-      </template>
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Ketua Jabatan</label>
-            <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-              {{ verificationData.namaKetuaJabatan }}
-            </div>
+    <!-- Confirmation Modal -->
+    <div v-if="showConfirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <Icon name="ph:warning" class="w-6 h-6 text-orange-600 mr-3" />
+            <h3 class="text-lg font-semibold text-gray-900">Pengesahan Tindakan</h3>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Pengesahan</label>
-            <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-              {{ formatDate(verificationData.tarikhPengesahan) }}
-            </div>
-          </div>
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Ulasan</label>
-            <textarea
-              v-model="verificationData.ulasan"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              rows="4"
-              placeholder="Masukkan ulasan pengesahan..."
-            ></textarea>
+          
+          <p class="text-gray-600 mb-4">
+            Adakah anda pasti untuk melakukan tindakan ini? Tindakan ini tidak boleh dibatalkan.
+          </p>
+
+          <div class="flex justify-end space-x-3">
+            <rs-button
+              variant="secondary"
+              @click="showConfirmationModal = false"
+            >
+              Batal
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="confirmAction"
+              :loading="isSubmitting"
+            >
+              Ya, Teruskan
+            </rs-button>
           </div>
         </div>
-      </template>
-    </rs-card>
-
-    <!-- Action Buttons -->
-    <div class="flex justify-end gap-3">
-      <rs-button
-        variant="secondary-outline"
-        @click="navigateTo('/BF-PA/KF/KJ')"
-      >
-        Kembali
-      </rs-button>
-      <rs-button
-        variant="danger"
-        @click="showRejectModal = true"
-      >
-        <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
-        Tolak
-      </rs-button>
-      <rs-button
-        variant="warning"
-        @click="showVerifyModal = true"
-        :loading="isProcessing"
-      >
-        <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
-        Sahkan
-      </rs-button>
+      </div>
     </div>
-
-    <!-- Verification Confirmation Modal -->
-    <rs-modal
-      v-model="showVerifyModal"
-      title="Sahkan Kategori"
-      size="md"
-    >
-      <div class="p-4">
-        <p class="text-gray-700 mb-4">
-          Adakah anda pasti mahu <strong>mengesahkan</strong> kategori ini?
-        </p>
-        <p class="text-sm text-gray-600">
-          Kategori akan dihantar kepada Ketua Divisyen untuk kelulusan akhir.
-        </p>
-      </div>
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <rs-button
-            variant="secondary-outline"
-            @click="showVerifyModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="warning"
-            @click="verifyCategory"
-            :loading="isProcessing"
-          >
-            Sahkan
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Rejection Confirmation Modal -->
-    <rs-modal
-      v-model="showRejectModal"
-      title="Tolak Kategori"
-      size="md"
-    >
-      <div class="p-4">
-        <p class="text-gray-700 mb-4">
-          Adakah anda pasti mahu <strong>menolak</strong> kategori ini?
-        </p>
-        <p class="text-sm text-gray-600">
-          Kategori akan dikembalikan kepada Eksekutif untuk pembetulan.
-        </p>
-      </div>
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <rs-button
-            variant="secondary-outline"
-            @click="showRejectModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="danger"
-            @click="rejectCategory"
-            :loading="isProcessing"
-          >
-            Tolak
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { formatDate } from "~/utils/dateFormatter";
+import { useToast } from "vue-toastification";
 
-const route = useRoute();
+const toast = useToast();
 
 definePageMeta({
-  title: "Pengesahan Kategori Penolong Amil",
+  title: "Pengesahan Jawatan Penolong Amil",
 });
 
-// Role-based access control
-onMounted(() => {
-  const currentUserRole = "ketua-jabatan"; // This would come from auth system
-  if (currentUserRole !== "ketua-jabatan") {
-    alert("Anda tidak mempunyai kebenaran untuk mengesahkan kategori");
-    navigateTo('/BF-PA/KF/KJ');
-  }
+const route = useRoute();
+const positionId = route.params.id;
+
+const breadcrumb = [
+  { label: 'Laman Utama', to: '/' },
+  { label: 'Modul BF-PA', to: '/BF-PA' },
+  { label: 'Konfigurasi', to: '/BF-PA/KF' },
+  { label: 'Maklumat Jawatan', to: '/BF-PA/KF/KJ' },
+  { label: 'Pengesahan Ketua Jabatan', to: null }
+];
+
+const isSubmitting = ref(false);
+const showConfirmationModal = ref(false);
+
+// Verification options
+const verificationOptions = [
+  { label: "Sila pilih keputusan...", value: "" },
+  { label: "Sahkan", value: "sahkan" },
+  { label: "Tolak", value: "tolak" },
+];
+
+// Form data
+const formData = ref({
+  verificationDate: new Date().toISOString().split('T')[0],
+  verifierName: "Ketua Jabatan User (Mock)",
 });
 
-const breadcrumb = ref([
+// Mock position data
+const positionData = ref({
+  rujukan: "KJ-2024-001",
+  namaJawatan: "Ketua Penolong Amil",
+  kodSingkatan: "KPA",
+  status: "Menunggu Pengesahan",
+});
+
+// Mock category data for context
+const categoryData = ref({
+  kategoriPenolongAmil: "Penolong Amil Fitrah",
+  kodSingkatan: "PAF",
+  status: "Aktif",
+});
+
+// Mock change log
+const changeLog = ref([
   {
-    name: "Utama",
-    type: "link",
-    path: "/"
+    type: "added",
+    section: "Jawatan dalam Kategori",
+    description: "Ditambah: Penolong Amil Eksekutif",
+    oldValue: null,
+    newValue: "Penolong Amil Eksekutif (PAE)"
   },
   {
-    name: "BF-PA",
-    type: "link",
-    path: "/BF-PA"
+    type: "modified",
+    section: "Jawatan dalam Kategori", 
+    description: "Diubah: Nama Jawatan baris 1",
+    oldValue: "Ketua Penolong Amil Fitrah",
+    newValue: "Ketua Penolong Amil"
   },
   {
-    name: "Konfigurasi",
-    type: "link",
-    path: "/BF-PA/KF/KJ"
-  },
-  {
-    name: "Pengesahan Kategori",
-    type: "current",
-    path: "/BF-PA/KF/KJ/verify"
+    type: "modified",
+    section: "Jawatan dalam Kategori",
+    description: "Diubah: Kod Singkatan baris 1",
+    oldValue: "KPAF",
+    newValue: "KPA"
   }
 ]);
 
-// Component state
-const isProcessing = ref(false);
-const showVerifyModal = ref(false);
-const showRejectModal = ref(false);
-
-// Mock category data (would be fetched from API in real app)
-const categoryData = ref({
-  id: route.params.id,
-  kategoriPenolongAmil: "Penolong Amil Wakaf",
-  kodSingkatan: "PAW",
-  status: "Menunggu Pengesahan",
-      tarikhKuatkuasa: "01-01-2024",
-  penerangan: "Kategori untuk menguruskan zakat wakaf",
+// Mock previous remarks
+const previousRemarks = ref({
+  namaPenyokong: "Eksekutif User",
+  tarikhSokongan: "2024-02-01",
+  ulasan: "Penambahan jawatan Ketua Penolong Amil adalah perlu untuk menguatkan struktur organisasi dalam kategori Penolong Amil Fitrah. Kod singkatan KPA akan memudahkan pengenalan dan rujukan."
 });
 
-// Mock verification data
-const verificationData = ref({
-  namaKetuaJabatan: "Encik Ahmad bin Abdullah",
-  tarikhPengesahan: new Date().toISOString().split('T')[0],
-  ulasan: "",
+// Form validation
+const isFormValid = computed(() => {
+  return formData.value.verificationDecision && formData.value.verificationNotes;
 });
 
-const verifyCategory = async () => {
-  isProcessing.value = true;
-  
-  try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Show success message
-    alert("Kategori penolong amil berjaya disahkan. Akan dihantar kepada Ketua Divisyen untuk kelulusan akhir.");
-    
-    // Navigate back to list
-    navigateTo('/BF-PA/KF/KJ');
-  } catch (error) {
-    console.error('Error verifying category:', error);
-    alert("Ralat semasa mengesahkan kategori");
-  } finally {
-    isProcessing.value = false;
-    showVerifyModal.value = false;
-  }
+// Helper functions
+const getStatusVariant = (status) => {
+  const variants = {
+    'Aktif': 'success',
+    'Tidak Aktif': 'danger',
+    'Menunggu Pengesahan': 'warning',
+    'Menunggu Kelulusan': 'info',
+  };
+  return variants[status] || 'disabled';
 };
 
-const rejectCategory = async () => {
-  isProcessing.value = true;
+const handleVerificationSubmit = (formData) => {
+  // Store form data for confirmation
+  Object.assign(formData.value, formData);
+  showConfirmationModal.value = true;
+};
+
+const confirmAction = async () => {
+  isSubmitting.value = true;
   
   try {
+    // Determine new status based on decision
+    const newStatus = formData.value.verificationDecision === 'sahkan' 
+      ? 'Menunggu Kelulusan' 
+      : 'Tidak Aktif';
+    
+    // Log complete data for backend
+    const verificationData = {
+      positionId: positionId,
+      verificationDecision: formData.value.verificationDecision,
+      verificationNotes: formData.value.verificationNotes,
+      verificationDate: formData.value.verificationDate,
+      verifierName: formData.value.verifierName,
+      newStatus: newStatus,
+      verifiedBy: "Ketua Jabatan User",
+      verifiedAt: new Date().toISOString(),
+    };
+    
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Show success message
-    alert("Kategori penolong amil berjaya ditolak. Akan dikembalikan kepada Eksekutif untuk pembetulan.");
+    const actionText = formData.value.verificationDecision === 'sahkan' ? 'disahkan' : 'ditolak';
+    toast.success(`Jawatan penolong amil berjaya ${actionText}`);
     
     // Navigate back to list
     navigateTo('/BF-PA/KF/KJ');
   } catch (error) {
-    console.error('Error rejecting category:', error);
-    alert("Ralat semasa menolak kategori");
+    // Error verifying position
+    toast.error("Ralat semasa memproses pengesahan");
   } finally {
-    isProcessing.value = false;
-    showRejectModal.value = false;
+    isSubmitting.value = false;
+    showConfirmationModal.value = false;
   }
 };
 </script> 
