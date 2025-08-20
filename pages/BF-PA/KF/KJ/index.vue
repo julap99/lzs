@@ -755,10 +755,10 @@ definePageMeta({
 });
 
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Jawatan', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Jawatan', path: null }
 ];
 
 // Role Simulator State
@@ -767,25 +767,25 @@ const showRoleInfo = ref(false);
 
 // Page-specific role options for KF/KJ module
 const roleOptions = [
-  { label: "Eksekutif", value: "eksekutif" },
-  { label: "Ketua Jabatan", value: "ketua-jabatan" },
-  { label: "Ketua Divisyen", value: "ketua-divisyen" },
+  { name: "Eksekutif", value: "eksekutif" },
+  { name: "Ketua Jabatan", value: "ketua-jabatan" },
+  { name: "Ketua Divisyen", value: "ketua-divisyen" },
 ];
 
 // Role data for KF/KJ module
 const roleData = {
   eksekutif: {
-    label: "Eksekutif",
+    name: "Eksekutif",
     description: "Kemaskini Jawatan Penolong Amil",
     capabilities: ["Lihat Senarai", "Kemaskini Jawatan", "Edit Penuh"],
   },
   "ketua-jabatan": {
-    label: "Ketua Jabatan",
+    name: "Ketua Jabatan",
     description: "Pengesahan Jawatan Penolong Amil",
     capabilities: ["Lihat Senarai", "Sahkan Jawatan", "Monitor Progress"],
   },
   "ketua-divisyen": {
-    label: "Ketua Divisyen",
+    name: "Ketua Divisyen",
     description: "Kelulusan Akhir Jawatan Penolong Amil",
     capabilities: ["Lihat Senarai", "Sahkan/Tolak Jawatan", "Kelulusan Akhir"],
   },
@@ -837,20 +837,20 @@ const filters = ref({
 
 // Filter options
 const statusOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Aktif", value: "Aktif" },
-  { label: "Tidak Aktif", value: "Tidak Aktif" },
-  { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
-  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
-  { label: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
+  { name: "Sila pilih...", value: "" },
+  { name: "Aktif", value: "Aktif" },
+  { name: "Tidak Aktif", value: "Tidak Aktif" },
+  { name: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
+  { name: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+  { name: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
 ];
 
 const kategoriOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
-  { label: "Penolong Amil Padi", value: "Penolong Amil Padi" },
-  { label: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },
-  { label: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
+  { name: "Sila pilih...", value: "" },
+  { name: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
+  { name: "Penolong Amil Padi", value: "Penolong Amil Padi" },
+  { name: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },
+  { name: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
 ];
 
 // Table data and reactivity control
@@ -980,37 +980,37 @@ const positionsList = ref([
 const tableColumns = [
   {
     key: 'rujukan',
-    label: 'Rujukan',
+    name: 'Rujukan',
     sortable: true,
   },
   {
     key: 'kategoriPenolongAmil',
-    label: 'Kategori',
+    name: 'Kategori',
     sortable: true,
   },
   {
     key: 'namaJawatan',
-    label: 'Nama Jawatan',
+    name: 'Nama Jawatan',
     sortable: true,
   },
   {
     key: 'kodSingkatan',
-    label: 'Kod Singkatan',
+    name: 'Kod Singkatan',
     sortable: true,
   },
   {
     key: 'tarikhKuatkuasa',
-    label: 'Tarikh Kuatkuasa',
+    name: 'Tarikh Kuatkuasa',
     sortable: true,
   },
   {
     key: 'status',
-    label: 'Status',
+    name: 'Status',
     sortable: true,
   },
   {
     key: 'tindakan',
-    label: 'Tindakan',
+    name: 'Tindakan',
     sortable: false,
   },
 ];

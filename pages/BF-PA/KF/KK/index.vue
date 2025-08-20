@@ -166,12 +166,6 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
-                    </rs-badge>
-                  </template>
-
                   <template v-slot:tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
@@ -225,12 +219,6 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
-                    </rs-badge>
-                  </template>
-
                   <template v-slot:tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
@@ -272,12 +260,6 @@
                   <template v-slot:status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">
                       {{ data.text }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
                     </rs-badge>
                   </template>
 
@@ -330,12 +312,6 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
-                    </rs-badge>
-                  </template>
-
                   <template v-slot:tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
@@ -377,12 +353,6 @@
                   <template v-slot:status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">
                       {{ data.text }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
                     </rs-badge>
                   </template>
 
@@ -439,12 +409,6 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
-                    </rs-badge>
-                  </template>
-
                   <template v-slot:tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
@@ -491,12 +455,6 @@
                   <template v-slot:status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">
                       {{ data.text }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
                     </rs-badge>
                   </template>
 
@@ -556,12 +514,6 @@
                   <template v-slot:status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">
                       {{ data.text }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
                     </rs-badge>
                   </template>
 
@@ -628,12 +580,6 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
-                    </rs-badge>
-                  </template>
-
                   <template v-slot:tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
@@ -683,12 +629,6 @@
                   <template v-slot:status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">
                       {{ data.text }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:isDefault="data">
-                    <rs-badge :variant="data.text ? 'info' : 'secondary'" size="sm">
-                      {{ data.text ? 'Asas' : 'Kustom' }}
                     </rs-badge>
                   </template>
 
@@ -752,7 +692,7 @@
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="item in selectedItems" :key="item.tindakan" class="hover:bg-gray-50">
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
-                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.namaKategori }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.kodSingkatan }}</td>
                   <td class="px-4 py-3">
                     <rs-badge variant="info" size="sm">{{ item.status }}</rs-badge>
@@ -809,10 +749,10 @@ definePageMeta({
 });
 
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Kategori', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Kategori', path: null }
 ];
 
 // Role Simulator State
@@ -821,25 +761,25 @@ const showRoleInfo = ref(false);
 
 // Page-specific role options for KF/KK module
 const roleOptions = [
-  { label: "Eksekutif", value: "eksekutif" },
-  { label: "Ketua Jabatan", value: "ketua-jabatan" },
-  { label: "Ketua Divisyen", value: "ketua-divisyen" },
+  { name: "Eksekutif", value: "eksekutif" },
+  { name: "Ketua Jabatan", value: "ketua-jabatan" },
+  { name: "Ketua Divisyen", value: "ketua-divisyen" },
 ];
 
 // Role data for KF/KK module
 const roleData = {
   eksekutif: {
-    label: "Eksekutif",
+    name: "Eksekutif",
     description: "Tambah dan Kemaskini Kategori Penolong Amil",
     capabilities: ["Lihat Senarai", "Tambah Kategori", "Kemaskini Kategori", "Edit Penuh"],
   },
   "ketua-jabatan": {
-    label: "Ketua Jabatan",
+    name: "Ketua Jabatan",
     description: "Pengesahan Kategori Penolong Amil",
     capabilities: ["Lihat Senarai", "Sahkan Kategori", "Monitor Progress"],
   },
   "ketua-divisyen": {
-    label: "Ketua Divisyen",
+    name: "Ketua Divisyen",
     description: "Kelulusan Akhir Kategori Penolong Amil",
     capabilities: ["Lihat Senarai", "Luluskan Kategori", "Kelulusan Akhir"],
   },
@@ -891,22 +831,22 @@ const filters = ref({
 
 // Filter options
 const statusOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Aktif", value: "Aktif" },
-  { label: "Tidak Aktif", value: "Tidak Aktif" },
-  { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
-  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
-  { label: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
+  { name: "Sila pilih...", value: "" },
+  { name: "Aktif", value: "Aktif" },
+  { name: "Tidak Aktif", value: "Tidak Aktif" },
+  { name: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
+  { name: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+  { name: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
 ];
 
 const kategoriOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
-  { label: "Penolong Amil Padi", value: "Penolong Amil Padi" },
-  { label: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },
-  { label: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
-  { label: "Penolong Amil Wakaf", value: "Penolong Amil Wakaf" },
-  { label: "Penolong Amil Zakat Perniagaan", value: "Penolong Amil Zakat Perniagaan" },
+  { name: "Sila pilih...", value: "" },
+  { name: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
+  { name: "Penolong Amil Padi", value: "Penolong Amil Padi" },
+  { name: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },
+  { name: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
+  { name: "Penolong Amil Wakaf", value: "Penolong Amil Wakaf" },
+  { name: "Penolong Amil Zakat Perniagaan", value: "Penolong Amil Zakat Perniagaan" },
 ];
 
 // Table data and reactivity control
@@ -918,8 +858,6 @@ const categoriesList = ref([
     kodSingkatan: "PAF",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
-    isDefault: true, // Fixed foundation category
-    penerangan: "Kategori untuk menguruskan penolong amil dalam kutipan dan pengagihan zakat fitrah",
     tindakan: 1
   },
   {
@@ -928,8 +866,6 @@ const categoriesList = ref([
     kodSingkatan: "PAP",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
-    isDefault: true, // Fixed foundation category
-    penerangan: "Kategori untuk menguruskan penolong amil dalam kutipan dan pengagihan zakat padi",
     tindakan: 2
   },
   {
@@ -938,8 +874,6 @@ const categoriesList = ref([
     kodSingkatan: "PAK",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
-    isDefault: true, // Fixed foundation category
-    penerangan: "Kategori untuk menguruskan penolong amil di peringkat kariah tempatan",
     tindakan: 3
   },
   {
@@ -948,8 +882,6 @@ const categoriesList = ref([
     kodSingkatan: "PK+",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
-    isDefault: true, // Fixed foundation category
-    penerangan: "Kategori untuk menguruskan penolong amil yang berkhidmat dalam komuniti tertentu",
     tindakan: 4
   },
   {
@@ -958,8 +890,6 @@ const categoriesList = ref([
     kodSingkatan: "PAW",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
-    isDefault: false, // Custom category - can be edited
-    penerangan: "Kategori untuk menguruskan penolong amil yang mengendalikan urusan wakaf",
     tindakan: 5
   },
   {
@@ -968,8 +898,6 @@ const categoriesList = ref([
     kodSingkatan: "PAZP",
     status: "Tidak Aktif",
     tarikhKuatkuasa: "01-01-2024",
-    isDefault: false, // Custom category - can be edited
-    penerangan: "Kategori untuk menguruskan penolong amil dalam kutipan zakat perniagaan",
     tindakan: 6
   },
   // Additional items for "Sedang Proses - Lulus" to showcase bulk approval
@@ -979,8 +907,6 @@ const categoriesList = ref([
     kodSingkatan: "PAZE",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
-    isDefault: false, // Custom category - can be edited
-    penerangan: "Kategori untuk menguruskan penolong amil dalam kutipan zakat emas",
     tindakan: 7
   },
   {
@@ -989,8 +915,6 @@ const categoriesList = ref([
     kodSingkatan: "PAZPH",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
-    isDefault: false, // Custom category - can be edited
-    penerangan: "Kategori untuk menguruskan penolong amil dalam kutipan zakat perkhidmatan",
     tindakan: 8
   },
   {
@@ -999,8 +923,6 @@ const categoriesList = ref([
     kodSingkatan: "PAZPL",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
-    isDefault: false, // Custom category - can be edited
-    penerangan: "Kategori untuk menguruskan penolong amil dalam kutipan zakat pelaburan",
     tindakan: 9
   },
   {
@@ -1009,18 +931,14 @@ const categoriesList = ref([
     kodSingkatan: "PAZH",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
-    isDefault: false, // Custom category - can be edited
-    penerangan: "Kategori untuk menguruskan penolong amil dalam kutipan zakat hartanah",
     tindakan: 10
   },
   {
     rujukan: "KK-2024-011",
     kategoriPenolongAmil: "Penolong Amil Zakat Ternakan",
     kodSingkatan: "PAZT",
-    status: "Ditolak Ketua Jabatan",
-    tarikhKuatkuasa: "", // Empty - rejected
-    isDefault: false, // Custom category - can be edited
-    penerangan: "Kategori untuk menguruskan penolong amil dalam kutipan zakat ternakan",
+    status: "Menunggu Kelulusan",
+    tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 11
   }
 ]);
@@ -1029,37 +947,32 @@ const categoriesList = ref([
 const tableColumns = [
   {
     key: 'rujukan',
-    label: 'Rujukan',
+    name: 'Rujukan',
     sortable: true,
   },
   {
     key: 'kategoriPenolongAmil',
-    label: 'Kategori Penolong Amil',
+    name: 'Kategori Penolong Amil',
     sortable: true,
   },
   {
     key: 'kodSingkatan',
-    label: 'Kod Singkatan',
-    sortable: true,
-  },
-  {
-    key: 'isDefault',
-    label: 'Jenis',
+    name: 'Kod Singkatan',
     sortable: true,
   },
   {
     key: 'status',
-    label: 'Status',
+    name: 'Status',
     sortable: true,
   },
   {
     key: 'tarikhKuatkuasa',
-    label: 'Tarikh Kuatkuasa',
+    name: 'Tarikh Kuatkuasa',
     sortable: true,
   },
   {
     key: 'tindakan',
-    label: 'Tindakan',
+    name: 'Tindakan',
     sortable: false,
   },
 ];

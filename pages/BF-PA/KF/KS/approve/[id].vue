@@ -331,11 +331,11 @@ onMounted(() => {
 });
 
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Sesi', to: '/BF-PA/KF/KS' },
-  { label: 'Kelulusan Ketua Divisyen', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Sesi', path: '/BF-PA/KF/KS' },
+  { name: 'Kelulusan Ketua Divisyen', path: null }
 ];
 
 // Form state

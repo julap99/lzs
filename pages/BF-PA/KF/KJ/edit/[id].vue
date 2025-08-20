@@ -8,60 +8,72 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-semibold flex items-center">
-              <Icon name="ph:pencil-line" class="mr-2" size="24" />
-              Kemaskini Maklumat Jawatan
-            </h2>
-            <p class="text-sm text-gray-600 mt-1">
-              Kemaskini maklumat jawatan untuk kategori: {{ formData.kategoriPenolongAmil }}
-            </p>
-          </div>
+    <!-- Enhanced Header Section -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <Icon name="ph:pencil" class="w-6 h-6 mr-3 text-primary" />
+            Kemaskini Maklumat Jawatan Penolong Amil
+          </h1>
+          <p class="text-gray-600 mt-1">
+            Kemaskini maklumat jawatan untuk kategori: 
+            <span class="font-medium text-gray-800">{{ formData.kategoriPenolongAmil }}</span>
+          </p>
         </div>
-      </template>
+      </div>
+    </div>
 
+    <!-- Main Edit Form -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+          <Icon name="ph:identification-card" class="w-5 h-5 mr-2" />
+          Maklumat Jawatan dalam Kategori
+        </h3>
+      </template>
+      
       <template #body>
         <!-- Category Context -->
-        <rs-card class="mb-6 bg-gray-50 border-gray-300">
+        <rs-card class="mb-6">
           <template #header>
-            <div class="flex items-center">
-              <Icon name="ph:tag" class="mr-2" size="20" />
-              <h3 class="text-lg font-semibold">Maklumat Kategori</h3>
-            </div>
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <Icon name="ph:tag" class="w-5 h-5 mr-2" />
+              Maklumat Kategori
+            </h3>
           </template>
           
           <template #body>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Penolong Amil</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
-                  {{ formData.kategoriPenolongAmil }}
+            <div class="p-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Kategori Penolong Amil</label>
+                  <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
+                    {{ formData.kategoriPenolongAmil }}
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Kod Singkatan Kategori</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
-                  {{ categoryData.kodSingkatan }}
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Kod Singkatan Kategori</label>
+                  <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                    {{ categoryData.kodSingkatan }}
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status Kategori</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
-                  <rs-badge :variant="getStatusVariant(categoryData.status)">
-                    {{ categoryData.status }}
-                  </rs-badge>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Status Kategori</label>
+                  <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                    <rs-badge :variant="getStatusVariant(categoryData.status)">
+                      {{ categoryData.status }}
+                    </rs-badge>
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Rujukan</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
-                  {{ route.params.id }}
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Rujukan</label>
+                  <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-mono">
+                    {{ route.params.id }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -72,10 +84,10 @@
         <rs-card class="mb-6">
           <template #header>
             <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <Icon name="ph:identification-card" class="mr-2" size="20" />
-                <h3 class="text-lg font-semibold">Maklumat Jawatan dalam Kategori</h3>
-              </div>
+              <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                <Icon name="ph:identification-card" class="w-5 h-5 mr-2" />
+                Maklumat Jawatan dalam Kategori
+              </h3>
               
               <rs-button
                 variant="success"
@@ -91,110 +103,112 @@
           </template>
           
           <template #body>
-            <div class="overflow-x-auto">
-              <table class="w-full border-collapse">
-                <thead>
-                  <tr class="bg-gray-50 border-b border-gray-200">
-                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">No.</th>
-                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Nama Jawatan</th>
-                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Kod Singkatan</th>
-                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Status</th>
-                    <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Tarikh Kuatkuasa</th>
-                    <th class="text-left p-3 font-semibold text-gray-700">Tindakan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr 
-                    v-for="(jawatan, index) in formData.maklumatJawatan" 
-                    :key="index"
-                    class="border-b border-gray-100 hover:bg-gray-50"
-                  >
-                    <td class="p-3 border-r border-gray-200">
-                      {{ index + 1 }}
-                    </td>
+            <div class="p-6">
+              <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                  <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200">
+                      <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">No.</th>
+                      <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Nama Jawatan</th>
+                      <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Kod Singkatan</th>
+                      <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Status</th>
+                      <th class="text-left p-3 font-semibold text-gray-700 border-r border-gray-200">Tarikh Kuatkuasa</th>
+                      <th class="text-left p-3 font-semibold text-gray-700">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr 
+                      v-for="(jawatan, index) in formData.maklumatJawatan" 
+                      :key="index"
+                      class="border-b border-gray-100 hover:bg-gray-50"
+                    >
+                      <td class="p-3 border-r border-gray-200">
+                        {{ index + 1 }}
+                      </td>
+                      
+                      <!-- Nama Jawatan -->
+                      <td class="p-3 border-r border-gray-200">
+                        <input
+                          v-model="jawatan.namaJawatan"
+                          type="text"
+                          placeholder="Masukkan nama jawatan"
+                          class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          @input="generateChangeLog"
+                        />
+                      </td>
+                      
+                      <!-- Kod Singkatan -->
+                      <td class="p-3 border-r border-gray-200">
+                        <input
+                          v-model="jawatan.kodSingkatan"
+                          type="text"
+                          placeholder="Kod"
+                          class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          @input="generateChangeLog"
+                        />
+                      </td>
+                      
+                      <!-- Status -->
+                      <td class="p-3 border-r border-gray-200">
+                        <select
+                          v-model="jawatan.status"
+                          :disabled="isNewRow(jawatan)"
+                          class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                          @change="generateChangeLog"
+                        >
+                          <option value="AKTIF">AKTIF</option>
+                          <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                        </select>
+                        <p v-if="isNewRow(jawatan)" class="text-xs text-gray-500 mt-1">
+                          Akan diaktifkan selepas kelulusan
+                        </p>
+                      </td>
+                      
+                      <!-- Tarikh Kuatkuasa -->
+                      <td class="p-3 border-r border-gray-200">
+                        <input
+                          v-model="jawatan.tarikhKuatkuasa"
+                          type="date"
+                          :disabled="true"
+                          class="w-full px-2 py-1 border border-gray-300 rounded text-sm bg-gray-100 cursor-not-allowed"
+                        />
+                        <p v-if="!jawatan.tarikhKuatkuasa" class="text-xs text-gray-500 mt-1">
+                          Akan ditetapkan selepas kelulusan
+                        </p>
+                      </td>
+                      
+                      <!-- Tindakan -->
+                      <td class="p-3">
+                        <rs-button
+                          variant="danger"
+                          size="sm"
+                          @click="hapusJawatan(index)"
+                          class="flex items-center"
+                          title="Hapus Jawatan"
+                        >
+                          <Icon name="ph:trash" class="w-3 h-3" />
+                        </rs-button>
+                      </td>
+                    </tr>
                     
-                    <!-- Nama Jawatan -->
-                    <td class="p-3 border-r border-gray-200">
-                      <input
-                        v-model="jawatan.namaJawatan"
-                        type="text"
-                        placeholder="Masukkan nama jawatan"
-                        class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        @input="generateChangeLog"
-                      />
-                    </td>
-                    
-                    <!-- Kod Singkatan -->
-                    <td class="p-3 border-r border-gray-200">
-                      <input
-                        v-model="jawatan.kodSingkatan"
-                        type="text"
-                        placeholder="Kod"
-                        class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        @input="generateChangeLog"
-                      />
-                    </td>
-                    
-                    <!-- Status -->
-                    <td class="p-3 border-r border-gray-200">
-                      <select
-                        v-model="jawatan.status"
-                        :disabled="isNewRow(jawatan)"
-                        class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                        @change="generateChangeLog"
-                      >
-                        <option value="AKTIF">AKTIF</option>
-                        <option value="TIDAK AKTIF">TIDAK AKTIF</option>
-                      </select>
-                      <p v-if="isNewRow(jawatan)" class="text-xs text-gray-500 mt-1">
-                        Akan diaktifkan selepas kelulusan
-                      </p>
-                    </td>
-                    
-                    <!-- Tarikh Kuatkuasa -->
-                    <td class="p-3 border-r border-gray-200">
-                      <input
-                        v-model="jawatan.tarikhKuatkuasa"
-                        type="date"
-                        :disabled="true"
-                        class="w-full px-2 py-1 border border-gray-300 rounded text-sm bg-gray-100 cursor-not-allowed"
-                      />
-                      <p v-if="!jawatan.tarikhKuatkuasa" class="text-xs text-gray-500 mt-1">
-                        Akan ditetapkan selepas kelulusan
-                      </p>
-                    </td>
-                    
-                    <!-- Tindakan -->
-                    <td class="p-3">
-                      <rs-button
-                        variant="danger"
-                        size="sm"
-                        @click="hapusJawatan(index)"
-                        class="flex items-center"
-                        title="Hapus Jawatan"
-                      >
-                        <Icon name="ph:trash" class="w-3 h-3" />
-                      </rs-button>
-                    </td>
-                  </tr>
-                  
-                  <tr v-if="formData.maklumatJawatan.length === 0">
-                    <td colspan="6" class="p-8 text-center text-gray-500">
-                      <Icon name="ph:plus-circle" class="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                      <p>Tiada jawatan dalam kategori ini</p>
-                      <p class="text-sm">Klik "Tambah Jawatan" untuk menambah jawatan baharu</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    <tr v-if="formData.maklumatJawatan.length === 0">
+                      <td colspan="6" class="p-8 text-center text-gray-500">
+                        <Icon name="ph:plus-circle" class="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                        <p>Tiada jawatan dalam kategori ini</p>
+                        <p class="text-sm">Klik "Tambah Jawatan" untuk menambah jawatan baharu</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </template>
         </rs-card>
 
         <!-- Action Buttons -->
-        <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+        <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
           <rs-button
-            variant="secondary"
+            variant="secondary-outline"
             @click="navigateTo('/BF-PA/KF/KJ')"
             class="flex items-center"
           >
@@ -203,7 +217,7 @@
           </rs-button>
           
           <rs-button
-            variant="success"
+            variant="primary"
             @click="showConfirmationModal = true"
             class="flex items-center"
           >
@@ -211,79 +225,6 @@
             Simpan Perubahan
           </rs-button>
         </div>
-
-        <!-- Jejak Audit Section (Positioned at bottom) -->
-        <rs-card class="mt-8 bg-gray-50 border-gray-300">
-          <template #header>
-            <div class="bg-gray-100 border-b border-gray-300 flex items-center justify-between">
-              <div class="flex items-center">
-                <Icon name="ph:clock-clockwise" class="mr-2 text-gray-600" size="18" />
-                <h3 class="text-lg font-semibold text-gray-600">Jejak Audit</h3>
-              </div>
-              <p class="text-sm text-gray-500">Maklumat rujukan sahaja</p>
-            </div>
-          </template>
-          
-          <template #body>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Dicipta Oleh</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ formData.maklumatPegawai.diciptaOleh }}
-                </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Cipta</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ formatDate(formData.maklumatPegawai.tarikhCipta) }}
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Dikemaskini Oleh</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ formData.maklumatPegawai.dikemaskiniBoleh || 'Belum dikemaskini' }}
-                </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Kemaskini</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ formData.maklumatPegawai.tarikhKemaskini ? formatDate(formData.maklumatPegawai.tarikhKemaskini) : 'Belum dikemaskini' }}
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Disahkan Oleh</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ formData.maklumatPegawai.disahkanOleh || 'Belum disahkan' }}
-                </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Pengesahan</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ formData.maklumatPegawai.tarikhPengesahan ? formatDate(formData.maklumatPegawai.tarikhPengesahan) : 'Belum disahkan' }}
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Diluluskan Oleh</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ formData.maklumatPegawai.diluluskanOleh || 'Belum diluluskan' }}
-                </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Kelulusan</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ formData.maklumatPegawai.tarikhKelulusan ? formatDate(formData.maklumatPegawai.tarikhKelulusan) : 'Belum diluluskan' }}
-                </div>
-              </div>
-            </div>
-          </template>
-        </rs-card>
       </template>
     </rs-card>
 
@@ -292,60 +233,29 @@
       <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
         <div class="p-6">
           <div class="flex items-center mb-4">
-            <Icon name="ph:check-circle" class="w-6 h-6 text-green-600 mr-3" />
-            <h3 class="text-lg font-semibold text-gray-900">Pengesahan Sokongan Eksekutif</h3>
+            <Icon name="ph:warning" class="w-6 h-6 text-orange-600 mr-3" />
+            <h3 class="text-lg font-semibold text-gray-900">Pengesahan Tindakan</h3>
           </div>
           
-          <FormKit
-            type="form"
-            @submit="handleConfirmationSubmit"
-            :actions="false"
-          >
-            <FormKit
-              type="textarea"
-              name="ulasanSokongan"
-              label="Ulasan Sokongan"
-              validation="required|length:10,300"
-              rows="3"
-              help="Berikan ulasan sokongan untuk perubahan jawatan ini"
-            />
+          <p class="text-gray-600 mb-4">
+            Adakah anda pasti untuk menyimpan perubahan ini? Perubahan akan dihantar untuk pengesahan.
+          </p>
 
-            <div class="grid grid-cols-2 gap-4 mt-4">
-              <FormKit
-                type="text"
-                name="namaPenyokong"
-                label="Nama Penyokong"
-                :value="confirmationData.namaPenyokong"
-                :disabled="true"
-                help="Berdasarkan akaun semasa"
-              />
-
-              <FormKit
-                type="date"
-                name="tarikhSokongan"
-                label="Tarikh Sokongan"
-                :value="confirmationData.tarikhSokongan"
-                :disabled="true"
-                help="Tarikh semasa"
-              />
-            </div>
-
-            <div class="flex justify-end space-x-3 mt-6">
-              <rs-button
-                variant="secondary"
-                @click="showConfirmationModal = false"
-              >
-                Batal
-              </rs-button>
-              <rs-button
-                variant="success"
-                type="submit"
-                :loading="isSubmitting"
-              >
-                Simpan dan Sokong
-              </rs-button>
-            </div>
-          </FormKit>
+          <div class="flex justify-end space-x-3">
+            <rs-button
+              variant="secondary"
+              @click="showConfirmationModal = false"
+            >
+              Batal
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="confirmAction"
+              :loading="isSubmitting"
+            >
+              Ya, Simpan
+            </rs-button>
+          </div>
         </div>
       </div>
     </div>
@@ -369,11 +279,11 @@ const showConfirmationModal = ref(false);
 
 // Breadcrumb
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Jawatan', to: '/BF-PA/KF/KJ' },
-  { label: 'Kemaskini', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Jawatan', path: '/BF-PA/KF/KJ' },
+  { name: 'Kemaskini', path: null }
 ];
 
 // Form data with original values for change tracking

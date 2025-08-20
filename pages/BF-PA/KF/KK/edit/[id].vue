@@ -134,7 +134,7 @@
         </rs-card>
 
         <!-- Action Buttons -->
-        <div class="flex justify-between mb-6">
+        <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
           <rs-button
             variant="secondary-outline"
             @click="navigateTo('/BF-PA/KF/KK')"
@@ -156,65 +156,65 @@
       </FormKit>
     </div>
 
-    <!-- Jejak Audit (Separate Card - Scroll Down Section) -->
-    <rs-card class="mt-8" style="background-color: #f8f9fa; border-color: #e9ecef;">
+    <!-- Jejak Audit (Read-Only Reference Section) -->
+    <rs-card class="mt-8 bg-gray-50 border-gray-300">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-600 flex items-center">
-          <Icon name="ph:clock-clockwise" class="w-5 h-5 mr-2" />
-          Jejak Audit
-        </h3>
+        <div class="bg-gray-100 border-b border-gray-300 px-6 py-4">
+          <h3 class="text-lg font-medium text-gray-600 flex items-center">
+            <Icon name="ph:clock-clockwise" class="w-5 h-5 mr-2 text-gray-500" />
+            Jejak Audit
+          </h3>
+          <p class="text-sm text-gray-500 mt-1">Maklumat rujukan sahaja</p>
+        </div>
       </template>
       <template #body>
-        <div class="p-6">
-          <div class="mb-4">
-            <p class="text-sm text-gray-500 italic">Maklumat rujukan sahaja</p>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="p-6 bg-gray-50">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">Dicipta Oleh</label>
-              <div class="text-sm text-gray-700 bg-gray-100 px-3 py-2 rounded-md">
+              <label class="block text-sm font-medium text-gray-500 mb-2">Dicipta Oleh</label>
+              <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ formData.maklumatPegawai.diciptaOleh }}
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Cipta</label>
-              <div class="text-sm text-gray-700 bg-gray-100 px-3 py-2 rounded-md">
+              <label class="block text-sm font-medium text-gray-500 mb-2">Tarikh Cipta</label>
+              <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ formatDate(formData.maklumatPegawai.tarikhCipta) }}
               </div>
             </div>
             <div v-if="formData.maklumatPegawai.dikemaskiniBoleh">
-              <label class="block text-sm font-medium text-gray-600 mb-1">Dikemaskini Oleh</label>
-              <div class="text-sm text-gray-700 bg-gray-100 px-3 py-2 rounded-md">
+              <label class="block text-sm font-medium text-gray-500 mb-2">Dikemaskini Oleh</label>
+              <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ formData.maklumatPegawai.dikemaskiniBoleh }}
               </div>
             </div>
             <div v-if="formData.maklumatPegawai.tarikhKemaskini">
-              <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Kemaskini</label>
-              <div class="text-sm text-gray-700 bg-gray-100 px-3 py-2 rounded-md">
+              <label class="block text-sm font-medium text-gray-500 mb-2">Tarikh Kemaskini</label>
+              <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ formatDate(formData.maklumatPegawai.tarikhKemaskini) }}
               </div>
             </div>
             <div v-if="formData.maklumatPegawai.disahkanOleh">
-              <label class="block text-sm font-medium text-gray-600 mb-1">Disahkan Oleh</label>
-              <div class="text-sm text-gray-700 bg-gray-100 px-3 py-2 rounded-md">
+              <label class="block text-sm font-medium text-gray-500 mb-2">Disahkan Oleh</label>
+              <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ formData.maklumatPegawai.disahkanOleh }}
               </div>
             </div>
             <div v-if="formData.maklumatPegawai.tarikhPengesahan">
-              <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Pengesahan</label>
-              <div class="text-sm text-gray-700 bg-gray-100 px-3 py-2 rounded-md">
+              <label class="block text-sm font-medium text-gray-500 mb-2">Tarikh Pengesahan</label>
+              <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ formatDate(formData.maklumatPegawai.tarikhPengesahan) }}
               </div>
             </div>
             <div v-if="formData.maklumatPegawai.diluluskanOleh">
-              <label class="block text-sm font-medium text-gray-600 mb-1">Diluluskan Oleh</label>
-              <div class="text-sm text-gray-700 bg-gray-100 px-3 py-2 rounded-md">
+              <label class="block text-sm font-medium text-gray-500 mb-2">Diluluskan Oleh</label>
+              <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ formData.maklumatPegawai.diluluskanOleh }}
               </div>
             </div>
             <div v-if="formData.maklumatPegawai.tarikhKelulusan">
-              <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Kelulusan</label>
-              <div class="text-sm text-gray-700 bg-gray-100 px-3 py-2 rounded-md">
+              <label class="block text-sm font-medium text-gray-500 mb-2">Tarikh Kelulusan</label>
+              <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ formatDate(formData.maklumatPegawai.tarikhKelulusan) }}
               </div>
             </div>
@@ -304,11 +304,11 @@ const currentRole = ref('eksekutif') // Mock - should come from actual auth stat
 
 // Breadcrumb
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Kategori', to: '/BF-PA/KF/KK' },
-  { label: 'Kemaskini', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Kategori', path: '/BF-PA/KF/KK' },
+  { name: 'Kemaskini', path: null }
 ]
 
 // Status options for the form

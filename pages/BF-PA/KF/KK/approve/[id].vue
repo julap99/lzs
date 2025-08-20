@@ -320,11 +320,11 @@ const currentRole = ref('ketua-divisyen') // Mock - should come from actual auth
 
 // Breadcrumb
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Kategori', to: '/BF-PA/KF/KK' },
-  { label: 'Kelulusan', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Kategori', path: '/BF-PA/KF/KK' },
+  { name: 'Kelulusan', path: null }
 ]
 
 // Category data for context

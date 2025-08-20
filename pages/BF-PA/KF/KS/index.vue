@@ -70,15 +70,26 @@
 
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-semibold">Senarai Sesi Penolong Amil</h2>
-            <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
-          </div>
-          <!-- Create new session functionality removed - KF/KS only edits existing sessions linked to approved categories -->
+    <!-- Enhanced Header Section -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <Icon name="ph:table" class="w-6 h-6 mr-3 text-primary" />
+            Senarai Sesi Penolong Amil
+          </h1>
+          <p class="text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
         </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+          <Icon name="ph:list" class="w-5 h-5 mr-2" />
+          Senarai Sesi
+        </h3>
       </template>
 
       <template #body>
@@ -741,10 +752,10 @@ definePageMeta({
 });
 
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Sesi', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Sesi', path: null }
 ];
 
 // Role Simulator State
@@ -753,25 +764,25 @@ const showRoleInfo = ref(false);
 
 // Page-specific role options for KF/KS module
 const roleOptions = [
-  { label: "Eksekutif", value: "eksekutif" },
-  { label: "Ketua Jabatan", value: "ketua-jabatan" },
-  { label: "Ketua Divisyen", value: "ketua-divisyen" },
+  { name: "Eksekutif", value: "eksekutif" },
+  { name: "Ketua Jabatan", value: "ketua-jabatan" },
+  { name: "Ketua Divisyen", value: "ketua-divisyen" },
 ];
 
 // Role data for KF/KS module
 const roleData = {
       eksekutif: {
-      label: "Eksekutif",
+      name: "Eksekutif",
       description: "Kemaskini Sesi Penolong Amil",
       capabilities: ["Lihat Senarai", "Kemaskini Sesi", "Edit Penuh"],
   },
   "ketua-jabatan": {
-    label: "Ketua Jabatan",
+    name: "Ketua Jabatan",
     description: "Pengesahan Sesi Penolong Amil",
     capabilities: ["Lihat Senarai", "Sahkan Sesi", "Monitor Progress"],
   },
   "ketua-divisyen": {
-    label: "Ketua Divisyen",
+    name: "Ketua Divisyen",
     description: "Kelulusan Akhir Sesi Penolong Amil",
     capabilities: ["Lihat Senarai", "Sahkan/Tolak Sesi", "Kelulusan Akhir"],
   },
@@ -832,24 +843,24 @@ const bulkApprovalNotes = ref("");
 
 // Filter options
 const statusOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Aktif", value: "Aktif" },
-  { label: "Tidak Aktif", value: "Tidak Aktif" },
-  { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
-  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
-  { label: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
+  { name: "Sila pilih...", value: "" },
+  { name: "Aktif", value: "Aktif" },
+  { name: "Tidak Aktif", value: "Tidak Aktif" },
+  { name: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
+  { name: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+  { name: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
 ];
 
 const namaSesiOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Sesi 2028", value: "Sesi 2028" },
-  { label: "Sesi 2027", value: "Sesi 2027" },
-  { label: "Sesi 2026", value: "Sesi 2026" },
-  { label: "Sesi 2025", value: "Sesi 2025" },
-  { label: "Sesi 2024", value: "Sesi 2024" },
-  { label: "Sesi 2023", value: "Sesi 2023" },
-  { label: "Sesi 2022", value: "Sesi 2022" },
-  { label: "Sesi 2021", value: "Sesi 2021" },
+  { name: "Sila pilih...", value: "" },
+  { name: "Sesi 2028", value: "Sesi 2028" },
+  { name: "Sesi 2027", value: "Sesi 2027" },
+  { name: "Sesi 2026", value: "Sesi 2026" },
+  { name: "Sesi 2025", value: "Sesi 2025" },
+  { name: "Sesi 2024", value: "Sesi 2024" },
+  { name: "Sesi 2023", value: "Sesi 2023" },
+  { name: "Sesi 2022", value: "Sesi 2022" },
+  { name: "Sesi 2021", value: "Sesi 2021" },
 ];
 
 // Table data and reactivity control
@@ -951,42 +962,42 @@ const sessionsList = ref([
 const tableColumns = [
   {
     key: 'rujukan',
-    label: 'Rujukan',
+    name: 'Rujukan',
     sortable: true,
   },
   {
     key: 'kategoriPenolongAmil',
-    label: 'Kategori',
+    name: 'Kategori',
     sortable: true,
   },
   {
     key: 'namaSesi',
-    label: 'Nama Sesi',
+    name: 'Nama Sesi',
     sortable: true,
   },
   {
     key: 'tarikhMula',
-    label: 'Tarikh Mula',
+    name: 'Tarikh Mula',
     sortable: true,
   },
   {
     key: 'tarikhTamat',
-    label: 'Tarikh Tamat',
+    name: 'Tarikh Tamat',
     sortable: true,
   },
   {
     key: 'tarikhKuatkuasa',
-    label: 'Tarikh Kuatkuasa',
+    name: 'Tarikh Kuatkuasa',
     sortable: true,
   },
   {
     key: 'status',
-    label: 'Status',
+    name: 'Status',
     sortable: true,
   },
   {
     key: 'tindakan',
-    label: 'Tindakan',
+    name: 'Tindakan',
     sortable: false,
   },
 ];

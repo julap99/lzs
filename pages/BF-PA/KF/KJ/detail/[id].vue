@@ -8,68 +8,67 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <!-- Enhanced Header Section -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <Icon name="ph:file-text" class="w-6 h-6 mr-3 text-primary" />
+            Paparan Terperinci Jawatan Penolong Amil
+          </h1>
+          <p class="text-sm text-gray-600 mt-1">Maklumat lengkap jawatan untuk kategori: <span class="font-medium text-gray-800">{{ categoryData.kategoriPenolongAmil }}</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Context Section -->
+    <rs-card class="mb-6">
       <template #header>
-        <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-semibold flex items-center">
-              <Icon name="ph:file-text" class="mr-2" size="24" />
-              Paparan Terperinci Jawatan Penolong Amil
-            </h2>
-            <p class="text-sm text-gray-600 mt-1">
-              Maklumat lengkap jawatan untuk kategori: {{ categoryData.kategoriPenolongAmil }}
-            </p>
-          </div>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <Icon name="ph:tag" class="w-5 h-5 mr-2" />
+            Maklumat Kategori
+          </h3>
+          <rs-badge :variant="categoryData.status === 'Aktif' ? 'success' : 'secondary'">
+            {{ categoryData.status }}
+          </rs-badge>
         </div>
       </template>
-
       <template #body>
-        <!-- Category Context Section -->
-        <rs-card class="mb-6 bg-gray-50 border-gray-300">
-          <template #header>
-            <div class="flex items-center">
-              <Icon name="ph:tag" class="mr-2" size="20" />
-              <h3 class="text-lg font-semibold">Maklumat Kategori</h3>
-            </div>
-          </template>
-          
-          <template #body>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Penolong Amil</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Kategori Penolong Amil</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
                   {{ categoryData.kategoriPenolongAmil }}
                 </div>
               </div>
-              
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Kod Singkatan Kategori</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Kod Singkatan Kategori</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
                   {{ categoryData.kodSingkatan }}
                 </div>
               </div>
-
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status Kategori</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Status Kategori</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
                   <rs-badge :variant="getStatusVariant(categoryData.status)">
                     {{ categoryData.status }}
                   </rs-badge>
                 </div>
               </div>
-              
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Kuatkuasa Kategori</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Tarikh Kuatkuasa Kategori</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
                   {{ formatDate(categoryData.tarikhKuatkuasa) }}
                 </div>
               </div>
-
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Rujukan Jawatan</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Rujukan Jawatan</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-mono">
                   {{ positionData.rujukan }}
                 </div>
+            </div>
               </div>
             </div>
           </template>
@@ -78,42 +77,40 @@
         <!-- Position Details Section -->
         <rs-card class="mb-6">
           <template #header>
-            <div class="flex items-center">
-              <Icon name="ph:identification-card" class="mr-2" size="20" />
-              <h3 class="text-lg font-semibold">Maklumat Jawatan</h3>
-            </div>
+        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+          <Icon name="ph:identification-card" class="w-5 h-5 mr-2" />
+          Maklumat Jawatan
+        </h3>
           </template>
-          
           <template #body>
+        <div class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Jawatan</label>
-                <div class="bg-white border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 font-medium">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Nama Jawatan</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-medium">
                   {{ positionData.namaJawatan }}
                 </div>
               </div>
-              
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Kod Singkatan Jawatan</label>
-                <div class="bg-white border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 font-medium">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Kod Singkatan Jawatan</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-medium">
                   {{ positionData.kodSingkatan }}
                 </div>
               </div>
-
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status Jawatan</label>
-                <div class="bg-white border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Status Jawatan</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
                   <rs-badge :variant="getStatusVariant(positionData.status)">
                     {{ positionData.status }}
                   </rs-badge>
                 </div>
               </div>
-              
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Kuatkuasa Jawatan</label>
-                <div class="bg-white border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Tarikh Kuatkuasa Jawatan</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
                   {{ formatDate(positionData.tarikhKuatkuasa) || 'Belum ditetapkan' }}
                 </div>
+            </div>
               </div>
             </div>
           </template>
@@ -122,64 +119,97 @@
         <!-- Enhanced Workflow Status -->
         <rs-card class="mb-6">
           <template #header>
-            <div class="flex items-center">
-              <Icon name="ph:flow-arrow" class="mr-2" size="20" />
-              <h3 class="text-lg font-semibold">Status Aliran Kerja Kelulusan</h3>
-            </div>
+        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+          <Icon name="ph:flow-arrow" class="w-5 h-5 mr-2" />
+          Status Aliran Kerja Kelulusan
+        </h3>
           </template>
-          
           <template #body>
-            <div class="space-y-4">
-              <!-- Workflow Steps -->
-              <div class="flex items-center justify-between space-x-4">
+        <div class="p-6">
+          <div class="space-y-6">
+            <!-- Workflow Timeline -->
+            <div class="relative">
+              <!-- Progress Line -->
+              <div class="absolute left-4 top-8 bottom-0 w-0.5 bg-gray-200"></div>
+              
                 <!-- Step 1: Eksekutif -->
-                <div class="flex flex-col items-center flex-1">
-                  <div :class="getWorkflowStepClass('eksekutif')" class="w-12 h-12 rounded-full flex items-center justify-center mb-2">
-                    <Icon :name="getWorkflowStepIcon('eksekutif')" class="w-6 h-6 text-white" />
-                  </div>
-                  <div class="text-sm font-medium text-gray-900">Eksekutif</div>
-                  <div class="text-xs text-gray-500 text-center">{{ getWorkflowStepStatus('eksekutif') }}</div>
-                  <div class="text-xs text-gray-400 mt-1 text-center">{{ getWorkflowStepDescription('eksekutif') }}</div>
-                </div>
-
-                <!-- Arrow 1 -->
+              <div class="relative flex items-start space-x-4 pb-6">
                 <div class="flex-shrink-0">
-                  <Icon name="ph:arrow-right" class="w-5 h-5 text-gray-400" />
-                </div>
-
-                <!-- Step 2: Ketua Jabatan -->
-                <div class="flex flex-col items-center flex-1">
-                  <div :class="getWorkflowStepClass('ketua-jabatan')" class="w-12 h-12 rounded-full flex items-center justify-center mb-2">
-                    <Icon :name="getWorkflowStepIcon('ketua-jabatan')" class="w-6 h-6 text-white" />
+                  <div :class="[
+                    'w-8 h-8 rounded-full flex items-center justify-center',
+                    getWorkflowStepClass(1)
+                  ]">
+                    <Icon :name="getWorkflowStepIcon(1)" class="w-4 h-4 text-white" />
                   </div>
-                  <div class="text-sm font-medium text-gray-900">Ketua Jabatan</div>
-                  <div class="text-xs text-gray-500 text-center">{{ getWorkflowStepStatus('ketua-jabatan') }}</div>
-                  <div class="text-xs text-gray-400 mt-1 text-center">{{ getWorkflowStepDescription('ketua-jabatan') }}</div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-sm font-medium text-gray-900">Eksekutif - Sokongan</p>
+                      <p class="text-sm text-gray-500">{{ getWorkflowStepDescription(1) }}</p>
+                    </div>
+                    <rs-badge :variant="getWorkflowStepBadge(1)" size="sm">
+                      {{ getWorkflowStepStatus(1) }}
+                    </rs-badge>
+                  </div>
+                </div>
                 </div>
 
-                <!-- Arrow 2 -->
+              <!-- Step 2: Ketua Jabatan -->
+              <div class="relative flex items-start space-x-4 pb-6">
                 <div class="flex-shrink-0">
-                  <Icon name="ph:arrow-right" class="w-5 h-5 text-gray-400" />
+                  <div :class="[
+                    'w-8 h-8 rounded-full flex items-center justify-center',
+                    getWorkflowStepClass(2)
+                  ]">
+                    <Icon :name="getWorkflowStepIcon(2)" class="w-4 h-4 text-white" />
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-sm font-medium text-gray-900">Ketua Jabatan - Pengesahan</p>
+                      <p class="text-sm text-gray-500">{{ getWorkflowStepDescription(2) }}</p>
+                    </div>
+                    <rs-badge :variant="getWorkflowStepBadge(2)" size="sm">
+                      {{ getWorkflowStepStatus(2) }}
+                    </rs-badge>
+                  </div>
+                </div>
                 </div>
 
-                <!-- Step 3: Ketua Divisyen -->
-                <div class="flex flex-col items-center flex-1">
-                  <div :class="getWorkflowStepClass('ketua-divisyen')" class="w-12 h-12 rounded-full flex items-center justify-center mb-2">
-                    <Icon :name="getWorkflowStepIcon('ketua-divisyen')" class="w-6 h-6 text-white" />
+              <!-- Step 3: Ketua Divisyen -->
+              <div class="relative flex items-start space-x-4">
+                <div class="flex-shrink-0">
+                  <div :class="[
+                    'w-8 h-8 rounded-full flex items-center justify-center',
+                    getWorkflowStepClass(3)
+                  ]">
+                    <Icon :name="getWorkflowStepIcon(3)" class="w-4 h-4 text-white" />
                   </div>
-                  <div class="text-sm font-medium text-gray-900">Ketua Divisyen</div>
-                  <div class="text-xs text-gray-500 text-center">{{ getWorkflowStepStatus('ketua-divisyen') }}</div>
-                  <div class="text-xs text-gray-400 mt-1 text-center">{{ getWorkflowStepDescription('ketua-divisyen') }}</div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-sm font-medium text-gray-900">Ketua Divisyen - Kelulusan Akhir</p>
+                      <p class="text-sm text-gray-500">{{ getWorkflowStepDescription(3) }}</p>
+                    </div>
+                    <rs-badge :variant="getWorkflowStepBadge(3)" size="sm">
+                      {{ getWorkflowStepStatus(3) }}
+                    </rs-badge>
+                  </div>
+                </div>
                 </div>
               </div>
 
               <!-- Current Status Summary -->
-              <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                 <div class="flex items-center">
-                  <Icon name="ph:info" class="w-5 h-5 text-blue-600 mr-2" />
+                <Icon name="ph:info" class="w-5 h-5 text-blue-600 mr-3" />
                   <div>
-                    <div class="text-sm font-medium text-blue-900">Status Semasa: {{ positionData.status }}</div>
-                    <div class="text-xs text-blue-700 mt-1">{{ getCurrentStatusDescription() }}</div>
+                  <p class="text-sm font-medium text-gray-900">Status Semasa</p>
+                  <p class="text-sm text-gray-600">{{ getCurrentStatusDescription() }}</p>
+                </div>
                   </div>
                 </div>
               </div>
@@ -231,10 +261,21 @@
               <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
               Luluskan
             </rs-button>
+
+        <!-- Ketua Divisyen: Reject if pending approval -->
+        <rs-button
+          v-if="canRejectPosition()"
+          variant="danger"
+          @click="rejectPosition()"
+          class="flex items-center"
+        >
+          <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
+          Tolak
+        </rs-button>
           </div>
         </div>
 
-        <!-- Audit Trail Section (Positioned at bottom) -->
+    <!-- Audit Trail Section -->
         <rs-card class="mt-8 bg-gray-50 border-gray-300">
           <template #header>
             <div class="bg-gray-100 border-b border-gray-300 flex items-center">
@@ -302,8 +343,6 @@
                 </div>
               </div>
             </div>
-          </template>
-        </rs-card>
       </template>
     </rs-card>
   </div>
@@ -321,11 +360,11 @@ const route = useRoute();
 const positionId = route.params.id;
 
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Jawatan', to: '/BF-PA/KF/KJ' },
-  { label: 'Paparan Terperinci', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Jawatan', path: '/BF-PA/KF/KJ' },
+  { name: 'Paparan Terperinci', path: null }
 ];
 
 // Mock position data
@@ -370,17 +409,17 @@ const getStatusVariant = (status) => {
 };
 
 // Workflow visualization helpers
-const getWorkflowStepClass = (role) => {
+const getWorkflowStepClass = (step) => {
   const status = positionData.value.status;
   
-  if (role === 'eksekutif') {
+  if (step === 1) { // Eksekutif
     return 'bg-green-500'; // Always completed for created items
-  } else if (role === 'ketua-jabatan') {
+  } else if (step === 2) { // Ketua Jabatan
     if (status === 'Menunggu Pengesahan') return 'bg-yellow-500'; // In progress
     if (status === 'Menunggu Kelulusan' || status === 'Aktif') return 'bg-green-500'; // Completed
     if (status === 'Tidak Aktif') return 'bg-red-500'; // Rejected
     return 'bg-gray-300'; // Not started
-  } else if (role === 'ketua-divisyen') {
+  } else if (step === 3) { // Ketua Divisyen
     if (status === 'Menunggu Kelulusan') return 'bg-blue-500'; // In progress
     if (status === 'Aktif') return 'bg-green-500'; // Completed (approved)
     if (status === 'Tidak Aktif') return 'bg-red-500'; // Rejected
@@ -389,17 +428,17 @@ const getWorkflowStepClass = (role) => {
   return 'bg-gray-300';
 };
 
-const getWorkflowStepIcon = (role) => {
+const getWorkflowStepIcon = (step) => {
   const status = positionData.value.status;
   
-  if (role === 'eksekutif') {
+  if (step === 1) { // Eksekutif
     return 'ph:check';
-  } else if (role === 'ketua-jabatan') {
+  } else if (step === 2) { // Ketua Jabatan
     if (status === 'Menunggu Pengesahan') return 'ph:clock';
     if (status === 'Menunggu Kelulusan' || status === 'Aktif') return 'ph:check';
     if (status === 'Tidak Aktif') return 'ph:x';
     return 'ph:minus';
-  } else if (role === 'ketua-divisyen') {
+  } else if (step === 3) { // Ketua Divisyen
     if (status === 'Menunggu Kelulusan') return 'ph:clock';
     if (status === 'Aktif') return 'ph:check';
     if (status === 'Tidak Aktif') return 'ph:x';
@@ -408,17 +447,17 @@ const getWorkflowStepIcon = (role) => {
   return 'ph:minus';
 };
 
-const getWorkflowStepStatus = (role) => {
+const getWorkflowStepStatus = (step) => {
   const status = positionData.value.status;
   
-  if (role === 'eksekutif') {
+  if (step === 1) { // Eksekutif
     return 'Selesai';
-  } else if (role === 'ketua-jabatan') {
+  } else if (step === 2) { // Ketua Jabatan
     if (status === 'Menunggu Pengesahan') return 'Dalam Proses';
     if (status === 'Menunggu Kelulusan' || status === 'Aktif') return 'Selesai';
     if (status === 'Tidak Aktif') return 'Ditolak';
     return 'Belum Mula';
-  } else if (role === 'ketua-divisyen') {
+  } else if (step === 3) { // Ketua Divisyen
     if (status === 'Menunggu Kelulusan') return 'Dalam Proses';
     if (status === 'Aktif') return 'Diluluskan';
     if (status === 'Tidak Aktif') return 'Ditolak';
@@ -427,15 +466,33 @@ const getWorkflowStepStatus = (role) => {
   return 'Belum Mula';
 };
 
-const getWorkflowStepDescription = (role) => {
-  if (role === 'eksekutif') {
+const getWorkflowStepDescription = (step) => {
+  if (step === 1) { // Eksekutif
     return 'Jawatan dicipta dan disokong';
-  } else if (role === 'ketua-jabatan') {
+  } else if (step === 2) { // Ketua Jabatan
     return 'Pengesahan jawatan';
-  } else if (role === 'ketua-divisyen') {
+  } else if (step === 3) { // Ketua Divisyen
     return 'Kelulusan akhir jawatan';
   }
   return '';
+};
+
+const getWorkflowStepBadge = (step) => {
+  const status = positionData.value.status;
+  if (step === 1) { // Eksekutif
+    return 'success';
+  } else if (step === 2) { // Ketua Jabatan
+    if (status === 'Menunggu Pengesahan') return 'warning';
+    if (status === 'Menunggu Kelulusan' || status === 'Aktif') return 'success';
+    if (status === 'Tidak Aktif') return 'danger';
+    return 'secondary';
+  } else if (step === 3) { // Ketua Divisyen
+    if (status === 'Menunggu Kelulusan') return 'info';
+    if (status === 'Aktif') return 'success';
+    if (status === 'Tidak Aktif') return 'danger';
+    return 'secondary';
+  }
+  return 'secondary';
 };
 
 const getCurrentStatusDescription = () => {
@@ -465,6 +522,11 @@ const canApprovePosition = () => {
          positionData.value.status === "Menunggu Kelulusan";
 };
 
+const canRejectPosition = () => {
+  return currentRole.value === "ketua-divisyen" && 
+         positionData.value.status === "Menunggu Kelulusan";
+};
+
 // Navigation methods
 const editPosition = () => {
   navigateTo(`/BF-PA/KF/KJ/edit/${positionId}`);
@@ -476,5 +538,9 @@ const verifyPosition = () => {
 
 const approvePosition = () => {
   navigateTo(`/BF-PA/KF/KJ/approve/${positionId}`);
+};
+
+const rejectPosition = () => {
+  navigateTo(`/BF-PA/KF/KJ/reject/${positionId}`);
 };
 </script> 

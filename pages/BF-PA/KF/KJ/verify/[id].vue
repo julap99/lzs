@@ -1,67 +1,78 @@
 <!-- 
-  RTMF SCREEN: PA-KF-KJ-05_01 (Position Verification)
+  RTMF SCREEN: PA-KF-KJ-03_02 (Position Verification)
   PURPOSE: Pengesahan jawatan penolong amil oleh Ketua Jabatan
-  DESCRIPTION: Verification screen for Penolong Amil positions by Ketua Jabatan
+  DESCRIPTION: Verification form for position changes with change log display
   ROUTE: /BF-PA/KF/KJ/verify/[id]
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-semibold flex items-center">
-              <Icon name="ph:clipboard-text" class="mr-2" size="24" />
-              Pengesahan Jawatan Penolong Amil
-            </h2>
-            <p class="text-sm text-gray-600 mt-1">
-              Semakan dan pengesahan jawatan oleh Ketua Jabatan
-            </p>
-          </div>
+    <!-- Enhanced Header Section -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <Icon name="ph:clipboard-text" class="w-6 h-6 mr-3 text-primary" />
+            Pengesahan Jawatan Penolong Amil
+          </h1>
+          <p class="text-gray-600 mt-1">
+            Semakan dan pengesahan jawatan oleh Ketua Jabatan
+          </p>
         </div>
-      </template>
+      </div>
+    </div>
 
+    <!-- Main Verification Form -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+          <Icon name="ph:identification-card" class="w-5 h-5 mr-2" />
+          Maklumat Perubahan Jawatan
+        </h3>
+      </template>
+      
       <template #body>
         <!-- Category Context Section -->
-        <rs-card class="mb-6 bg-gray-50 border-gray-300">
+        <rs-card class="mb-6">
           <template #header>
-            <div class="flex items-center">
-              <Icon name="ph:tag" class="mr-2" size="20" />
-              <h3 class="text-lg font-semibold">Maklumat Kategori</h3>
-            </div>
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <Icon name="ph:tag" class="w-5 h-5 mr-2" />
+              Maklumat Kategori
+            </h3>
           </template>
           
           <template #body>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Penolong Amil</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
-                  {{ categoryData.kategoriPenolongAmil }}
+            <div class="p-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Kategori Penolong Amil</label>
+                  <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                    {{ categoryData.kategoriPenolongAmil }}
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Kod Singkatan Kategori</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
-                  {{ categoryData.kodSingkatan }}
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Kod Singkatan Kategori</label>
+                  <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                    {{ categoryData.kodSingkatan }}
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status Kategori</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
-                  <rs-badge :variant="getStatusVariant(categoryData.status)">
-                    {{ categoryData.status }}
-                  </rs-badge>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Status Kategori</label>
+                  <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                    <rs-badge :variant="getStatusVariant(categoryData.status)">
+                      {{ categoryData.status }}
+                    </rs-badge>
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Rujukan Jawatan</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-900">
-                  {{ positionData.rujukan }}
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Rujukan Jawatan</label>
+                  <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                    {{ positionData.rujukan }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -71,62 +82,64 @@
         <!-- Position Changes Section -->
         <rs-card class="mb-6">
           <template #header>
-            <div class="flex items-center">
-              <Icon name="ph:list-checks" class="mr-2" size="20" />
-              <h3 class="text-lg font-semibold">Maklumat Perubahan Jawatan Yang Dibuat</h3>
-            </div>
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <Icon name="ph:list-checks" class="w-5 h-5 mr-2" />
+              Maklumat Perubahan Jawatan Yang Dibuat
+            </h3>
           </template>
           
           <template #body>
-            <div v-if="changeLog.length > 0" class="space-y-4">
-              <div v-for="(change, index) in changeLog" :key="index" class="border border-gray-200 rounded-lg p-4">
-                <div class="flex items-start space-x-3">
-                  <div class="flex-shrink-0">
-                    <Icon 
-                      :name="change.type === 'added' ? 'ph:plus-circle' : change.type === 'removed' ? 'ph:minus-circle' : 'ph:pencil-circle'" 
-                      :class="change.type === 'added' ? 'text-green-600' : change.type === 'removed' ? 'text-red-600' : 'text-blue-600'"
-                      size="20"
-                    />
-                  </div>
-                  <div class="flex-1">
-                    <div class="flex items-center space-x-2 mb-2">
-                      <span class="text-sm font-medium text-gray-900">{{ change.section }}</span>
-                      <rs-badge 
-                        :variant="change.type === 'added' ? 'success' : change.type === 'removed' ? 'danger' : 'info'"
-                        size="sm"
-                      >
-                        {{ change.type === 'added' ? 'Ditambah' : change.type === 'removed' ? 'Dipadamkan' : 'Diubah' }}
-                      </rs-badge>
+            <div class="p-6">
+              <div v-if="changeLog.length > 0" class="space-y-4">
+                <div v-for="(change, index) in changeLog" :key="index" class="border border-gray-200 rounded-lg p-4">
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                      <Icon 
+                        :name="change.type === 'added' ? 'ph:plus-circle' : change.type === 'removed' ? 'ph:minus-circle' : 'ph:pencil-circle'" 
+                        :class="change.type === 'added' ? 'text-green-600' : change.type === 'removed' ? 'text-red-600' : 'text-blue-600'"
+                        size="20"
+                      />
                     </div>
-                    
-                    <div class="text-sm text-gray-700 mb-2">
-                      {{ change.description }}
-                    </div>
-                    
-                    <div v-if="change.type === 'modified'" class="space-y-1">
-                      <div class="text-sm text-gray-600">
-                        <span class="font-medium">Nilai Lama:</span> {{ change.oldValue }}
+                    <div class="flex-1">
+                      <div class="flex items-center space-x-2 mb-2">
+                        <span class="text-sm font-medium text-gray-900">{{ change.section }}</span>
+                        <rs-badge 
+                          :variant="change.type === 'added' ? 'success' : change.type === 'removed' ? 'danger' : 'info'"
+                          size="sm"
+                        >
+                          {{ change.type === 'added' ? 'Ditambah' : change.type === 'removed' ? 'Dipadamkan' : 'Diubah' }}
+                        </rs-badge>
                       </div>
-                      <div class="text-sm text-gray-600">
+                      
+                      <div class="text-sm text-gray-700 mb-2">
+                        {{ change.description }}
+                      </div>
+                      
+                      <div v-if="change.type === 'modified'" class="space-y-1">
+                        <div class="text-sm text-gray-600">
+                          <span class="font-medium">Nilai Lama:</span> {{ change.oldValue }}
+                        </div>
+                        <div class="text-sm text-gray-600">
+                          <span class="font-medium">Nilai Baharu:</span> {{ change.newValue }}
+                        </div>
+                      </div>
+                      
+                      <div v-else-if="change.type === 'added'" class="text-sm text-gray-600">
                         <span class="font-medium">Nilai Baharu:</span> {{ change.newValue }}
                       </div>
-                    </div>
-                    
-                    <div v-else-if="change.type === 'added'" class="text-sm text-gray-600">
-                      <span class="font-medium">Nilai Baharu:</span> {{ change.newValue }}
-                    </div>
-                    
-                    <div v-else-if="change.type === 'removed'" class="text-sm text-gray-600">
-                      <span class="font-medium">Nilai Dipadamkan:</span> {{ change.oldValue }}
+                      
+                      <div v-else-if="change.type === 'removed'" class="text-sm text-gray-600">
+                        <span class="font-medium">Nilai Dipadamkan:</span> {{ change.oldValue }}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <div v-else class="text-center py-8 text-gray-500">
-              <Icon name="ph:info" class="w-8 h-8 mx-auto mb-2" />
-              <p>Tiada perubahan khusus untuk jawatan ini</p>
+              
+              <div v-else class="text-center py-8 text-gray-500">
+                <Icon name="ph:info" class="w-8 h-8 mx-auto mb-2" />
+                <p>Tiada perubahan khusus untuk jawatan ini</p>
+              </div>
             </div>
           </template>
         </rs-card>
@@ -134,25 +147,27 @@
         <!-- Previous Remarks Section -->
         <rs-card class="mb-6">
           <template #header>
-            <div class="flex items-center">
-              <Icon name="ph:chat-text" class="mr-2" size="20" />
-              <h3 class="text-lg font-semibold">Ulasan Dari Eksekutif</h3>
-            </div>
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <Icon name="ph:chat-text" class="w-5 h-5 mr-2" />
+              Ulasan Dari Eksekutif
+            </h3>
           </template>
           
           <template #body>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div class="flex items-start space-x-3">
-                <Icon name="ph:user-circle" class="w-8 h-8 text-blue-600 flex-shrink-0 mt-1" />
-                <div class="flex-1">
-                  <div class="text-sm text-blue-900 font-medium mb-1">
-                    Sokongan Eksekutif - {{ previousRemarks.namaPenyokong }}
-                  </div>
-                  <div class="text-sm text-blue-700 mb-2">
-                    {{ formatDate(previousRemarks.tarikhSokongan) }}
-                  </div>
-                  <div class="text-sm text-blue-800 bg-white rounded px-3 py-2 border border-blue-200">
-                    {{ previousRemarks.ulasan }}
+            <div class="p-6">
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex items-start space-x-3">
+                  <Icon name="ph:user-circle" class="w-8 h-8 text-blue-600 flex-shrink-0 mt-1" />
+                  <div class="flex-1">
+                    <div class="text-sm text-blue-900 font-medium mb-1">
+                      Sokongan Eksekutif - {{ previousRemarks.namaPenyokong }}
+                    </div>
+                    <div class="text-sm text-blue-700 mb-2">
+                      {{ formatDate(previousRemarks.tarikhSokongan) }}
+                    </div>
+                    <div class="text-sm text-blue-800 bg-white rounded px-3 py-2 border border-blue-200">
+                      {{ previousRemarks.ulasan }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -163,93 +178,97 @@
         <!-- Verification Form -->
         <rs-card class="mb-6">
           <template #header>
-            <div class="flex items-center">
-              <Icon name="ph:clipboard-text" class="mr-2" size="20" />
-              <h3 class="text-lg font-semibold">Borang Pengesahan</h3>
-            </div>
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
+              Borang Pengesahan
+            </h3>
           </template>
           
           <template #body>
-            <FormKit
-              type="form"
-              @submit="handleVerificationSubmit"
-              :loading="isSubmitting"
-              :actions="false"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <FormKit
-                  type="select"
-                  name="verificationDecision"
-                  label="Keputusan Pengesahan"
-                  :options="verificationOptions"
-                  validation="required"
-                  help="Pilih keputusan pengesahan anda"
-                />
+            <div class="p-6">
+              <FormKit
+                type="form"
+                @submit="handleVerificationSubmit"
+                :loading="isSubmitting"
+                :actions="false"
+              >
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <FormKit
+                    type="select"
+                    name="verificationDecision"
+                    label="Keputusan Pengesahan"
+                    :options="verificationOptions"
+                    validation="required"
+                    help="Pilih keputusan pengesahan anda"
+                  />
 
-                <FormKit
-                  type="date"
-                  name="verificationDate"
-                  label="Tarikh Pengesahan"
-                  :value="formData.verificationDate"
-                  :disabled="true"
-                  help="Tarikh pengesahan akan ditetapkan secara automatik"
-                />
+                  <FormKit
+                    type="date"
+                    name="verificationDate"
+                    label="Tarikh Pengesahan"
+                    :value="formData.verificationDate"
+                    :disabled="true"
+                    help="Tarikh semasa"
+                  />
+                </div>
 
-                <FormKit
-                  type="text"
-                  name="verifierName"
-                  label="Nama Pengesah"
-                  :value="formData.verifierName"
-                  :disabled="true"
-                  help="Nama pengesah berdasarkan akaun semasa"
-                />
-              </div>
+                <div class="mb-6">
+                  <FormKit
+                    type="text"
+                    name="verifierName"
+                    label="Nama Pengesah"
+                    :value="formData.verifierName"
+                    :disabled="true"
+                    help="Nama pengesah berdasarkan akaun semasa"
+                  />
+                </div>
 
-              <div class="mb-6">
-                <FormKit
-                  type="textarea"
-                  name="verificationNotes"
-                  label="Ulasan Pengesahan"
-                  validation="required|length:10,500"
-                  rows="4"
-                  help="Berikan ulasan dan justifikasi untuk keputusan pengesahan"
-                />
-              </div>
+                <div class="mb-6">
+                  <FormKit
+                    type="textarea"
+                    name="verificationNotes"
+                    label="Ulasan Pengesahan"
+                    validation="required|length:10,500"
+                    rows="4"
+                    help="Berikan ulasan dan justifikasi untuk keputusan pengesahan"
+                  />
+                </div>
 
-              <!-- Action Buttons -->
-              <div class="flex justify-between items-center pt-6 border-t border-gray-200">
-                <rs-button
-                  variant="secondary"
-                  @click="navigateTo('/BF-PA/KF/KJ')"
-                  class="flex items-center"
-                >
-                  <Icon name="ph:arrow-left" class="w-4 h-4 mr-2" />
-                  Kembali
-                </rs-button>
-                
-                <div class="flex space-x-3">
+                <!-- Action Buttons -->
+                <div class="flex justify-between items-center pt-6 border-t border-gray-200">
                   <rs-button
-                    variant="danger"
-                    @click="showConfirmationModal = true"
-                    :disabled="!isFormValid"
+                    variant="secondary-outline"
+                    @click="navigateTo('/BF-PA/KF/KJ')"
                     class="flex items-center"
                   >
-                    <Icon name="ph:x" class="w-4 h-4 mr-2" />
-                    Tolak
+                    <Icon name="ph:arrow-left" class="w-4 h-4 mr-2" />
+                    Kembali
                   </rs-button>
                   
-                  <rs-button
-                    variant="success"
-                    @click="showConfirmationModal = true"
-                    :disabled="!isFormValid"
-                    class="flex items-center"
-                  >
-                    <Icon name="ph:check" class="w-4 h-4 mr-2" />
-                    Sahkan
-                  </rs-button>
+                  <div class="flex space-x-3">
+                    <rs-button
+                      variant="danger"
+                      @click="showConfirmationModal = true"
+                      :disabled="!isFormValid"
+                      class="flex items-center"
+                    >
+                      <Icon name="ph:x" class="w-4 h-4 mr-2" />
+                      Tolak
+                    </rs-button>
+                    
+                    <rs-button
+                      variant="success"
+                      @click="showConfirmationModal = true"
+                      :disabled="!isFormValid"
+                      class="flex items-center"
+                    >
+                      <Icon name="ph:check" class="w-4 h-4 mr-2" />
+                      Sahkan
+                    </rs-button>
+                  </div>
                 </div>
-              </div>
-            </FormKit>
+              </FormKit>
+            </div>
           </template>
         </rs-card>
       </template>
@@ -304,11 +323,11 @@ const route = useRoute();
 const positionId = route.params.id;
 
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Jawatan', to: '/BF-PA/KF/KJ' },
-  { label: 'Pengesahan Ketua Jabatan', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Jawatan', path: '/BF-PA/KF/KJ' },
+  { name: 'Pengesahan Ketua Jabatan', path: null }
 ];
 
 const isSubmitting = ref(false);

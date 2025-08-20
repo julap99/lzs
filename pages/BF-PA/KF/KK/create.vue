@@ -108,7 +108,7 @@
                   name="status"
                   label="Status Awal"
                   :options="[
-                    { label: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' }
+                    { name: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' }
                   ]"
                   validation="required"
                   :validation-messages="{
@@ -256,11 +256,11 @@ const currentRole = ref('eksekutif') // Mock - should come from actual auth stat
 
 // Breadcrumb
 const breadcrumb = [
-  { label: 'Laman Utama', to: '/' },
-  { label: 'Modul BF-PA', to: '/BF-PA' },
-  { label: 'Konfigurasi', to: '/BF-PA/KF' },
-  { label: 'Maklumat Kategori', to: '/BF-PA/KF/KK' },
-  { label: 'Tambah Baharu', to: null }
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Konfigurasi', path: '/BF-PA/KF' },
+  { name: 'Maklumat Kategori', path: '/BF-PA/KF/KK' },
+  { name: 'Tambah Baharu', path: null }
 ]
 
 // Confirmation modal state
