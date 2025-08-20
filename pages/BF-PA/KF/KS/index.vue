@@ -764,9 +764,9 @@ const showRoleInfo = ref(false);
 
 // Page-specific role options for KF/KS module
 const roleOptions = [
-  { name: "Eksekutif", value: "eksekutif" },
-  { name: "Ketua Jabatan", value: "ketua-jabatan" },
-  { name: "Ketua Divisyen", value: "ketua-divisyen" },
+  { label: "Eksekutif", value: "eksekutif" },
+  { label: "Ketua Jabatan", value: "ketua-jabatan" },
+  { label: "Ketua Divisyen", value: "ketua-divisyen" },
 ];
 
 // Role data for KF/KS module
@@ -799,7 +799,7 @@ const getRoleVariant = (role) => {
 };
 
 const getRoleLabel = (role) => {
-  return roleData[role]?.label || role;
+  return roleData[role]?.name || role;
 };
 
 const getRoleDescription = (role) => {
@@ -843,24 +843,24 @@ const bulkApprovalNotes = ref("");
 
 // Filter options
 const statusOptions = [
-  { name: "Sila pilih...", value: "" },
-  { name: "Aktif", value: "Aktif" },
-  { name: "Tidak Aktif", value: "Tidak Aktif" },
-  { name: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
-  { name: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
-  { name: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
+  { label: "Sila pilih...", value: "" },
+  { label: "Aktif", value: "Aktif" },
+  { label: "Tidak Aktif", value: "Tidak Aktif" },
+  { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
+  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+  { label: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
 ];
 
 const namaSesiOptions = [
-  { name: "Sila pilih...", value: "" },
-  { name: "Sesi 2028", value: "Sesi 2028" },
-  { name: "Sesi 2027", value: "Sesi 2027" },
-  { name: "Sesi 2026", value: "Sesi 2026" },
-  { name: "Sesi 2025", value: "Sesi 2025" },
-  { name: "Sesi 2024", value: "Sesi 2024" },
-  { name: "Sesi 2023", value: "Sesi 2023" },
-  { name: "Sesi 2022", value: "Sesi 2022" },
-  { name: "Sesi 2021", value: "Sesi 2021" },
+  { label: "Sila pilih...", value: "" },
+  { label: "Sesi 2028", value: "Sesi 2028" },
+  { label: "Sesi 2027", value: "Sesi 2027" },
+  { label: "Sesi 2026", value: "Sesi 2026" },
+  { label: "Sesi 2025", value: "Sesi 2025" },
+  { label: "Sesi 2024", value: "Sesi 2024" },
+  { label: "Sesi 2023", value: "Sesi 2023" },
+  { label: "Sesi 2022", value: "Sesi 2022" },
+  { label: "Sesi 2021", value: "Sesi 2021" },
 ];
 
 // Table data and reactivity control

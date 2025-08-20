@@ -402,7 +402,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute } from 'nuxt/app'
 import { useToast } from 'vue-toastification'
 import { formatDate } from '~/utils/dateFormatter'
 

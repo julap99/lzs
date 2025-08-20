@@ -118,7 +118,7 @@
                   </thead>
                   <tbody>
                     <tr 
-                      v-for="(jawatan, index) in formData.maklumatJawatan" 
+                      v-for="(jawatan, index) in formData.value.maklumatJawatan" 
                       :key="index"
                       class="border-b border-gray-100 hover:bg-gray-50"
                     >
@@ -191,7 +191,7 @@
                       </td>
                     </tr>
                     
-                    <tr v-if="formData.maklumatJawatan.length === 0">
+                    <tr v-if="formData.value.maklumatJawatan.length === 0">
                       <td colspan="6" class="p-8 text-center text-gray-500">
                         <Icon name="ph:plus-circle" class="w-8 h-8 mx-auto mb-2 text-gray-400" />
                         <p>Tiada jawatan dalam kategori ini</p>
@@ -264,6 +264,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { useRoute } from "nuxt/app";
 import { formatDate } from "~/utils/dateFormatter";
 import { useToast } from "vue-toastification";
 
@@ -458,6 +459,45 @@ const handleConfirmationSubmit = async (confirmationFormData) => {
       changeLog: changeLogData,
       sokonganEksekutif: {
         ulasan: confirmationFormData.ulasanSokongan,
+        namaPenyokong: confirmationData.value.namaPenyokong,
+        tarikhSokongan: confirmationData.value.tarikhSokongan,
+      },
+      updatedBy: "Eksekutif User",
+      updatedAt: new Date().toISOString(),
+    };
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Show success message
+    toast.success("Maklumat jawatan berjaya dikemaskini dan disokong");
+    
+    // Navigate back to list
+    navigateTo('/BF-PA/KF/KJ');
+  } catch (error) {
+    // Error updating positions
+    toast.error("Ralat semasa menyimpan perubahan");
+  } finally {
+    isSubmitting.value = false;
+    showConfirmationModal.value = false;
+  }
+};
+
+// Add missing confirmAction function for the modal
+const confirmAction = async () => {
+  isSubmitting.value = true;
+  
+  try {
+    const changeLogData = generateChangeLog();
+    
+    // Log complete data for backend
+    const updateData = {
+      categoryId: route.params.id,
+      kategoriPenolongAmil: formData.value.kategoriPenolongAmil,
+      maklumatJawatan: formData.value.maklumatJawatan,
+      changeLog: changeLogData,
+      sokonganEksekutif: {
+        ulasan: "Pengesahan perubahan jawatan",
         namaPenyokong: confirmationData.value.namaPenyokong,
         tarikhSokongan: confirmationData.value.tarikhSokongan,
       },

@@ -761,9 +761,9 @@ const showRoleInfo = ref(false);
 
 // Page-specific role options for KF/KK module
 const roleOptions = [
-  { name: "Eksekutif", value: "eksekutif" },
-  { name: "Ketua Jabatan", value: "ketua-jabatan" },
-  { name: "Ketua Divisyen", value: "ketua-divisyen" },
+  { label: "Eksekutif", value: "eksekutif" },
+  { label: "Ketua Jabatan", value: "ketua-jabatan" },
+  { label: "Ketua Divisyen", value: "ketua-divisyen" },
 ];
 
 // Role data for KF/KK module
@@ -796,7 +796,7 @@ const getRoleVariant = (role) => {
 };
 
 const getRoleLabel = (role) => {
-  return roleData[role]?.label || role;
+  return roleData[role]?.name || role;
 };
 
 const getRoleDescription = (role) => {
@@ -831,22 +831,22 @@ const filters = ref({
 
 // Filter options
 const statusOptions = [
-  { name: "Sila pilih...", value: "" },
-  { name: "Aktif", value: "Aktif" },
-  { name: "Tidak Aktif", value: "Tidak Aktif" },
-  { name: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
-  { name: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
-  { name: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
+  { label: "Sila pilih...", value: "" },
+  { label: "Aktif", value: "Aktif" },
+  { label: "Tidak Aktif", value: "Tidak Aktif" },
+  { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
+  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+  { label: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
 ];
 
 const kategoriOptions = [
-  { name: "Sila pilih...", value: "" },
-  { name: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
-  { name: "Penolong Amil Padi", value: "Penolong Amil Padi" },
-  { name: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },
-  { name: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
-  { name: "Penolong Amil Wakaf", value: "Penolong Amil Wakaf" },
-  { name: "Penolong Amil Zakat Perniagaan", value: "Penolong Amil Zakat Perniagaan" },
+  { label: "Sila pilih...", value: "" },
+  { label: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
+  { label: "Penolong Amil Padi", value: "Penolong Amil Padi" },
+  { label: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },
+  { label: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
+  { label: "Penolong Amil Wakaf", value: "Penolong Amil Wakaf" },
+  { label: "Penolong Amil Zakat Perniagaan", value: "Penolong Amil Zakat Perniagaan" },
 ];
 
 // Table data and reactivity control
