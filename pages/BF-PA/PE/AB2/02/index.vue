@@ -278,14 +278,19 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Bancian/Asnaf",
+    name: "Pengurusan Elaun",
     type: "link",
-    path: "/BF-PA/PE/AB",
+    path: "/BF-PA/PE",
   },
   {
-    name: "Semakan dan Sokongan",
+    name: "Elaun Tugasan",
+    type: "link",
+    path: "/BF-PA/PE/AB2",
+  },
+  {
+    name: "Semakan dan Sokongan (JPPA)",
     type: "current",
-    path: "/BF-PA/PE/AB/02",
+    path: "/BF-PA/PE/AB2/02",
   },
 ]);
 

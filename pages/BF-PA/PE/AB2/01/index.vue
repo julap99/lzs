@@ -203,10 +203,76 @@
       <div class="flex justify-end mt-6">
         <rs-button
           variant="primary"
-          @click="handleSimpan"
+          @click="showConfirmationModal = true"
         >
           Simpan
         </rs-button>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div v-if="showConfirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <Icon name="ph:warning" class="w-6 h-6 text-orange-600 mr-3" />
+            <h3 class="text-lg font-semibold text-gray-900">Pengesahan Tindakan</h3>
+          </div>
+          
+          <p class="text-gray-600 mb-4">
+            Adakah anda pasti untuk menyimpan perubahan ini? Perubahan akan dihantar untuk pengesahan Ketua Jabatan.
+          </p>
+
+          <!-- Confirmation Fields -->
+          <div class="space-y-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Ulasan Sokongan</label>
+              <textarea
+                v-model="confirmationData.ulasanSokongan"
+                rows="3"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Masukkan ulasan sokongan anda..."
+                required
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Nama Penyokong</label>
+              <input
+                v-model="confirmationData.namaPenyokong"
+                type="text"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Masukkan nama anda..."
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Tarikh Sokongan</label>
+              <input
+                v-model="confirmationData.tarikhSokongan"
+                type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-3">
+            <rs-button
+              variant="secondary"
+              @click="showConfirmationModal = false"
+            >
+              Batal
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="confirmAction"
+              :disabled="!confirmationData.ulasanSokongan.trim() || !confirmationData.namaPenyokong.trim()"
+              :loading="isSubmitting"
+            >
+              Ya, Simpan
+            </rs-button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -225,18 +291,18 @@
             size="48"
           />
           <p class="text-gray-700">
-            Maklumat pengiraan elaun telah berjaya disimpan.
+            Maklumat pengiraan elaun telah berjaya disimpan dan dihantar untuk pengesahan Ketua Jabatan.
           </p>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-center">
-          <rs-button
-            variant="primary"
-            @click="navigateTo('/BF-PA/PE/AB')"
-          >
-            OK
-          </rs-button>
+                      <rs-button
+              variant="primary"
+              @click="navigateTo('/BF-PA/PE/AB2')"
+            >
+              OK
+            </rs-button>
         </div>
       </template>
     </rs-modal>
@@ -253,14 +319,19 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Bancian/Asnaf",
+    name: "Pengurusan Elaun",
     type: "link",
-    path: "/BF-PA/PE/AB",
+    path: "/BF-PA/PE",
+  },
+  {
+    name: "Elaun Tugasan",
+    type: "link",
+    path: "/BF-PA/PE/AB2",
   },
   {
     name: "Kira Jumlah Elaun",
     type: "current",
-    path: "/BF-PA/PE/AB/01",
+    path: "/BF-PA/PE/AB2/01",
   },
 ]);
 
@@ -268,6 +339,14 @@ const breadcrumb = ref([
 const isSubmitting = ref(false);
 const showSuccessModal = ref(false);
 const showCalculationTable = ref(false);
+const showConfirmationModal = ref(false);
+
+// Confirmation data
+const confirmationData = ref({
+  ulasanSokongan: '',
+  namaPenyokong: '',
+  tarikhSokongan: new Date().toISOString().split('T')[0]
+});
 
 // Checkbox selection state
 const selectedRows = ref([]);
@@ -447,8 +526,39 @@ const handleSimpan = () => {
     return;
   }
   
-  alert(`Memproses ${selectedRows.value.length} baris yang dipilih...`);
-  navigateTo('/BF-PA/PE/AB2/02');
+  // Show confirmation modal instead of direct navigation
+  showConfirmationModal.value = true;
+};
+
+const confirmAction = async () => {
+  if (!confirmationData.value.ulasanSokongan.trim() || !confirmationData.value.namaPenyokong.trim()) {
+    return;
+  }
+
+  isSubmitting.value = true;
+  
+  try {
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Close confirmation modal
+    showConfirmationModal.value = false;
+    
+    // Show success message
+    showSuccessModal.value = true;
+    
+    // Reset confirmation data
+    confirmationData.value = {
+      ulasanSokongan: '',
+      namaPenyokong: '',
+      tarikhSokongan: new Date().toISOString().split('T')[0]
+    };
+    
+  } catch (error) {
+    console.error('Error saving:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
 

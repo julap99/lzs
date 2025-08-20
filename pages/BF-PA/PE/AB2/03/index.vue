@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Semakan dan Kelulusan (Ketua JPPA)
+            Semakan dan Kelulusan (Ketua Jabatan)
           </h2>
         </div>
       </template>
@@ -204,7 +204,7 @@
                   <FormKit
                     type="checkbox"
                     name="confirmationCheck"
-                    label="Saya mengesahkan bahawa semua maklumat dan dokumen telah disemak dan keputusan saya adalah berdasarkan penilaian yang teliti dan meluluskan permohonan elaun ini"
+                    label="Saya mengesahkan bahawa semua maklumat dan dokumen telah disemak dan keputusan saya adalah berdasarkan penilaian yang teliti dan menyahkan permohonan elaun ini"
                     validation="accepted"
                     :validation-messages="{
                       accepted: 'Sila buat pengesahan sebelum hantar',
@@ -233,7 +233,7 @@
               variant="primary"
               @click="showApproveModal = true"
             >
-              Lulus
+              Sahkan
             </rs-button>
           </div>
         </div>
@@ -243,7 +243,7 @@
     <!-- Approve Confirmation Modal -->
     <rs-modal
       v-model="showApproveModal"
-      title="Sahkan Kelulusan"
+      title="Sahkan Permohonan"
       size="sm"
       position="center"
     >
@@ -375,14 +375,19 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Bancian/Asnaf",
+    name: "Pengurusan Elaun",
     type: "link",
-    path: "/BF-PA/PE/AB",
+    path: "/BF-PA/PE",
   },
   {
-    name: "Semakan dan Kelulusan",
+    name: "Elaun Tugasan",
+    type: "link",
+    path: "/BF-PA/PE/AB2",
+  },
+  {
+    name: "Semakan dan Kelulusan (Ketua Jabatan)",
     type: "current",
-    path: "/BF-PA/PE/AB/03",
+    path: "/BF-PA/PE/AB2/03",
   },
 ]);
 
@@ -393,7 +398,7 @@ const application = ref({
   kariahName: "Masjid Wilayah Persekutuan",
   bantuanType: "KEWANGAN",
   applicationDate: "01/03/2024",
-  status: "Menunggu Kelulusan Ketua JPPA",
+  status: "Menunggu Pengesahan Ketua Jabatan",
   paId: "PA-2024-001",
   kariahLocation: "Masjid Wilayah Persekutuan",
   assignmentEndDate: "31/12/2024",
@@ -402,7 +407,7 @@ const application = ref({
     reviewedBy: "Sarah binti Hamid",
     reviewedAt: "15/05/2024, 10:45",
     isSupported: true,
-    comments: "Berdasarkan semakan dokumen dan maklumat yang dikemukakan, permohonan ini disokong untuk diluluskan. Asnaf memenuhi semua kriteria yang ditetapkan.",
+    comments: "Berdasarkan semakan dokumen dan maklumat yang dikemukakan, permohonan ini disahkan. Asnaf memenuhi semua kriteria yang ditetapkan.",
   },
 });
 
@@ -473,7 +478,7 @@ const getStatusClass = (status) => {
   const statusClasses = {
     "Belum Disemak": "bg-yellow-100 text-yellow-800",
     "Menunggu Sokongan JPPA": "bg-blue-100 text-blue-800",
-    "Menunggu Kelulusan Ketua JPPA": "bg-purple-100 text-purple-800",
+    "Menunggu Pengesahan Ketua Jabatan": "bg-purple-100 text-purple-800",
     Lulus: "bg-green-100 text-green-800",
     "Tidak Lulus": "bg-red-100 text-red-800",
   };
@@ -497,7 +502,7 @@ const handleApprove = async () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     showApproveModal.value = false;
-    successMessage.value = "Permohonan telah berjaya diluluskan.";
+    successMessage.value = "Permohonan telah berjaya disahkan.";
     showSuccessModal.value = true;
   } catch (error) {
     console.error('Error approving application:', error);

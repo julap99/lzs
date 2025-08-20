@@ -1,5 +1,67 @@
 <template>
   <div>
+    <!-- Page-specific Role Switcher -->
+    <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <Icon name="ph:user-circle" class="text-gray-600" size="20" />
+          <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="min-w-[200px]">
+            <FormKit
+              type="select"
+              v-model="currentRole"
+              :options="roleOptions"
+              :classes="{ 
+                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
+                wrapper: '!min-w-0'
+              }"
+              @change="handleRoleChange"
+            />
+          </div>
+          <rs-button
+            variant="secondary-outline"
+            size="sm"
+            @click="toggleRoleInfo"
+            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
+            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
+          >
+            <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+            {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
+          </rs-button>
+        </div>
+      </div>
+      
+      <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
+            <div class="flex items-center space-x-3">
+              <rs-badge :variant="getRoleVariant(currentRole)" class="!text-xs">
+                {{ getRoleLabel(currentRole) }}
+              </rs-badge>
+              <span class="text-xs text-gray-600">{{ getRoleDescription(currentRole) }}</span>
+            </div>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
+            <div class="flex flex-wrap gap-2">
+              <rs-badge
+                v-for="capability in getRoleCapabilities(currentRole)"
+                :key="capability"
+                variant="secondary"
+                size="sm"
+                class="!text-xs"
+              >
+                {{ capability }}
+              </rs-badge>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
@@ -68,7 +130,7 @@
                 type="select"
                 name="status"
                 placeholder="Status"
-                :options="statusOptions"
+                :options="getFilteredStatusOptions()"
                 :value="selectedStatus"
                 @input="handleStatusChange"
               />
@@ -101,7 +163,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="batch in batches" :key="batch.id">
+                <tr v-for="batch in getFilteredBatches()" :key="batch.id">
                   <td class="px-6 py-4 whitespace-nowrap">
                     <a 
                       href="#" 
@@ -151,31 +213,62 @@
 import { ref, computed } from 'vue';
 
 definePageMeta({
-  title: "Bancian/Asnaf Review/Bantuan",
-  description: "Senarai permohonan bantuan asnaf untuk semakan dan kelulusan",
+  title: "Elaun Tugasan",
+  description: "Pengurusan elaun tugasan untuk penolong amil",
 });
 
 const breadcrumb = ref([
   {
-    name: "Bancian/Asnaf",
+    name: "Pengurusan Elaun",
     type: "link",
-    path: "/BF-PA/PE/AB2",
+    path: "/BF-PA/PE",
   },
   {
-    name: "Review/Bantuan",
+    name: "Elaun Tugasan",
     type: "current",
     path: "/BF-PA/PE/AB2",
   },
 ]);
 
-// Mock data for batches
+// Role simulation
+const currentRole = ref('eksekutif');
+const showRoleInfo = ref(false);
+
+const roleOptions = [
+  { label: 'Eksekutif', value: 'eksekutif' },
+  { label: 'Ketua Jabatan', value: 'ketua-jabatan' },
+  { label: 'Ketua Divisyen', value: 'ketua-divisyen' },
+];
+
+const roleData = {
+  eksekutif: {
+    name: 'Eksekutif',
+    description: 'Penciptaan dan pengurusan asas elaun',
+    capabilities: ['Cipta elaun', 'Semak status', 'Kemaskini maklumat'],
+    variant: 'primary'
+  },
+  'ketua-jabatan': {
+    name: 'Ketua Jabatan',
+    description: 'Semakan dan kelulusan elaun',
+    capabilities: ['Semak elaun', 'Sokong elaun', 'Hantar untuk kelulusan'],
+    variant: 'warning'
+  },
+  'ketua-divisyen': {
+    name: 'Ketua Divisyen',
+    description: 'Kelulusan akhir dan pengesahan',
+    capabilities: ['Kelulusan akhir', 'Pengesahan pembayaran', 'Laporan'],
+    variant: 'success'
+  }
+};
+
+// Mock data for batches with complete workflow statuses
 const batches = ref([
   {
     id: 1,
     batchNo: 'BATCH/2024/001',
     institution: 'Masjid Al-Hidayah',
     category: 'Kariah',
-    status: 'Menunggu Sokongan JPPA',
+    status: 'Menunggu Pengesahan Ketua Jabatan',
     createdAt: '2024-03-15'
   },
   {
@@ -183,7 +276,7 @@ const batches = ref([
     batchNo: 'BATCH/2024/002',
     institution: 'Masjid Al-Ikhlas',
     category: 'Kariah',
-    status: 'Menunggu Kelulusan Ketua JPPA',
+    status: 'Menunggu Pengesahan Ketua Jabatan',
     createdAt: '2024-03-16'
   },
   {
@@ -191,7 +284,7 @@ const batches = ref([
     batchNo: 'BATCH/2024/003',
     institution: 'Masjid Al-Amin',
     category: 'Kariah',
-    status: 'Diluluskan',
+    status: 'Menunggu Kelulusan Ketua Divisyen',
     createdAt: '2024-03-10'
   },
   {
@@ -199,42 +292,117 @@ const batches = ref([
     batchNo: 'BATCH/2024/004',
     institution: 'Masjid Al-Falah',
     category: 'Kariah',
-    status: 'Ditolak',
+    status: 'Diluluskan',
     createdAt: '2024-03-12'
+  },
+  {
+    id: 5,
+    batchNo: 'BATCH/2024/005',
+    institution: 'Masjid Al-Muttaqin',
+    category: 'Kariah',
+    status: 'Ditolak',
+    createdAt: '2024-03-18'
   }
 ]);
 
-// Status options for filter
+// Complete status options for the verification workflow
 const statusOptions = [
   { label: 'Semua', value: '' },
-  { label: 'Menunggu sokongan JPPA', value: 'Menunggu sokongan JPPA' },
-  { label: 'Menunggu Kelulusan Ketua JPPA', value: 'Menunggu Kelulusan Ketua JPPA' },
+  { label: 'Menunggu Pengesahan Ketua Jabatan', value: 'Menunggu Pengesahan Ketua Jabatan' },
+  { label: 'Menunggu Kelulusan Ketua Divisyen', value: 'Menunggu Kelulusan Ketua Divisyen' },
   { label: 'Diluluskan', value: 'Diluluskan' },
-  { label: 'Tidak Layak', value: 'Tidak Layak' },
+  { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 // Search and filter state
 const searchQuery = ref('');
 const selectedStatus = ref('');
 
-// Computed filtered batches
-const filteredBatches = computed(() => {
-  return batches.value.filter(batch => {
+// Role-based functions
+const getRoleLabel = (role) => {
+  return roleData[role]?.name || role;
+};
+
+const getRoleDescription = (role) => {
+  return roleData[role]?.description || '';
+};
+
+const getRoleCapabilities = (role) => {
+  return roleData[role]?.capabilities || [];
+};
+
+const getRoleVariant = (role) => {
+  return roleData[role]?.variant || 'secondary';
+};
+
+const handleRoleChange = () => {
+  // Reset filters when role changes
+  selectedStatus.value = '';
+  showRoleInfo.value = false;
+};
+
+const toggleRoleInfo = () => {
+  showRoleInfo.value = !showRoleInfo.value;
+};
+
+// Role-based filtering
+const getFilteredStatusOptions = () => {
+  if (currentRole.value === 'eksekutif') {
+    return statusOptions.filter(option => 
+      ['Menunggu Pengesahan Ketua Jabatan', 'Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(option.value)
+    );
+  } else if (currentRole.value === 'ketua-jabatan') {
+    return statusOptions.filter(option => 
+      ['Menunggu Pengesahan Ketua Jabatan', 'Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(option.value)
+    );
+  } else if (currentRole.value === 'ketua-divisyen') {
+    return statusOptions.filter(option => 
+      ['Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(option.value)
+    );
+  }
+  return statusOptions;
+};
+
+const getFilteredBatches = () => {
+  let filtered = batches.value.filter(batch => {
     const matchesSearch = !searchQuery.value || 
-      batch.id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      batch.batchNo.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       batch.institution.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesStatus = !selectedStatus.value || batch.status === selectedStatus.value;
     return matchesSearch && matchesStatus;
   });
+
+  // Role-based filtering
+  if (currentRole.value === 'eksekutif') {
+    // Eksekutif can see all batches
+    return filtered;
+  } else if (currentRole.value === 'ketua-jabatan') {
+    // Ketua Jabatan can see batches that need their attention or have passed their level
+    return filtered.filter(batch => 
+      ['Menunggu Pengesahan Ketua Jabatan', 'Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(batch.status)
+    );
+  } else if (currentRole.value === 'ketua-divisyen') {
+    // Ketua Divisyen can only see batches that need final approval or have been processed
+    return filtered.filter(batch => 
+      ['Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(batch.status)
+    );
+  }
+
+  return filtered;
+};
+
+// Computed filtered batches
+const filteredBatches = computed(() => {
+  return getFilteredBatches();
 });
 
 // Helper functions
 const getStatusColor = (status) => {
   switch (status) {
-    case 'Menunggu Sokongan JPPA':
-      return 'bg-yellow-100 text-yellow-800'
-    case 'Menunggu Kelulusan Ketua JPPA':
+    case 'Menunggu Pengesahan Ketua Jabatan':
       return 'bg-blue-100 text-blue-800'
+    case 'Menunggu Kelulusan Ketua Divisyen':
+      return 'bg-purple-100 text-purple-800'
     case 'Diluluskan':
       return 'bg-green-100 text-green-800'
     case 'Ditolak':
@@ -246,10 +414,10 @@ const getStatusColor = (status) => {
 
 const getStatusLabel = (status) => {
   switch (status) {
-    case 'Menunggu Sokongan JPPA':
-      return 'Menunggu Sokongan JPPA'
-    case 'Menunggu Kelulusan Ketua JPPA':
-      return 'Menunggu Kelulusan Ketua JPPA'
+    case 'Menunggu Pengesahan Ketua Jabatan':
+      return 'Menunggu Pengesahan Ketua Jabatan'
+    case 'Menunggu Kelulusan Ketua Divisyen':
+      return 'Menunggu Kelulusan Ketua Divisyen'
     case 'Diluluskan':
       return 'Diluluskan'
     case 'Ditolak':
@@ -261,10 +429,14 @@ const getStatusLabel = (status) => {
 
 const getActionRoute = (status) => {
   switch (status) {
-    case 'Menunggu Sokongan JPPA':
-      return '/BF-PA/PE/AB2/02'
-    case 'Menunggu Kelulusan Ketua JPPA':
+    case 'Menunggu Pengesahan Ketua Jabatan':
       return '/BF-PA/PE/AB2/03'
+    case 'Menunggu Kelulusan Ketua Divisyen':
+      return '/BF-PA/PE/AB2/06'
+    case 'Diluluskan':
+      return '/BF-PA/PE/AB2/04'
+    case 'Ditolak':
+      return '/BF-PA/PE/AB2/07'
     default:
       return '#'
   }
@@ -272,8 +444,8 @@ const getActionRoute = (status) => {
 
 const getActionButtonText = (status) => {
   switch (status) {
-    case 'Menunggu Sokongan JPPA':
-    case 'Menunggu Kelulusan Ketua JPPA':
+    case 'Menunggu Pengesahan Ketua Jabatan':
+    case 'Menunggu Kelulusan Ketua Divisyen':
       return 'Semak'
     case 'Diluluskan':
     case 'Ditolak':

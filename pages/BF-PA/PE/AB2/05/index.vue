@@ -143,12 +143,12 @@
       </template>
       <template #footer>
         <div class="flex justify-center">
-          <rs-button
-            variant="primary"
-            @click="navigateTo('/BF-PA/PE/AB')"
-          >
-            OK
-          </rs-button>
+                      <rs-button
+              variant="primary"
+              @click="navigateTo('/BF-PA/PE/AB2')"
+            >
+              OK
+            </rs-button>
         </div>
       </template>
     </rs-modal>
@@ -165,14 +165,19 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Bancian/Asnaf",
+    name: "Pengurusan Elaun",
     type: "link",
-    path: "/BF-PA/PE/AB",
+    path: "/BF-PA/PE",
+  },
+  {
+    name: "Elaun Tugasan",
+    type: "link",
+    path: "/BF-PA/PE/AB2",
   },
   {
     name: "Notifikasi Status Bayaran",
     type: "current",
-    path: "/BF-PA/PE/AB/05",
+    path: "/BF-PA/PE/AB2/05",
   },
 ]);
 

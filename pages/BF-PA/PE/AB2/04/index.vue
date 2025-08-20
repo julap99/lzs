@@ -84,7 +84,7 @@
             <div class="flex justify-end gap-4 mt-6">
               <rs-button
                 variant="primary-outline"
-                @click="navigateTo('/BF-PA/PE/AB')"
+                @click="navigateTo('/BF-PA/PE/AB2')"
               >
                 Kembali
               </rs-button>
