@@ -117,6 +117,27 @@
       </template>
     </rs-card>
 
+    <!-- Notes Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Ulasan Eksekutif</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <FormKit
+            v-model="batchData.notes"
+            type="textarea"
+            rows="3"
+            placeholder="Masukkan ulasan atau catatan mengenai elaun tahunan ini..."
+            :classes="{
+              input: '!py-2',
+            }"
+          />
+          <p class="text-xs text-gray-500 mt-1">Ulasan ini akan dilihat oleh Ketua Jabatan dan Ketua Divisyen semasa proses kelulusan</p>
+        </div>
+      </template>
+    </rs-card>
+
     <!-- Recipients Management Card -->
     <rs-card class="mb-6">
       <template #header>
@@ -407,9 +428,11 @@ function loadBatchData() {
     // Load from localStorage
     const recipientsKey = `et:recipients:${year}:${type}`;
     const statusKey = `et:status:${year}:${type}`;
+    const notesKey = `et:notes:${year}:${type}`;
     
     const recipientsData = localStorage.getItem(recipientsKey);
     const status = localStorage.getItem(statusKey);
+    const notes = localStorage.getItem(notesKey);
     
     if (recipientsData) {
       recipients.value = JSON.parse(recipientsData);
@@ -428,7 +451,7 @@ function loadBatchData() {
       typeLabel: typeOptions[type] || type,
       status: status || 'DRAF',
       budget: 10000, // Default budget
-      notes: ''
+      notes: notes || ''
     };
     
     // Check if editing is allowed
@@ -550,10 +573,12 @@ async function saveDraft() {
     const recipientsKey = `et:recipients:${year}:${type}`;
     const countKey = `et:count:${year}:${type}`;
     const statusKey = `et:status:${year}:${type}`;
+    const notesKey = `et:notes:${year}:${type}`;
     
     localStorage.setItem(recipientsKey, JSON.stringify(recipients.value));
     localStorage.setItem(countKey, String(count));
     localStorage.setItem(statusKey, 'DRAF');
+    localStorage.setItem(notesKey, batchData.value.notes);
     
     // Update original data for change detection
     originalData.value = {
@@ -594,10 +619,12 @@ async function submitForApproval() {
     const recipientsKey = `et:recipients:${year}:${type}`;
     const countKey = `et:count:${year}:${type}`;
     const statusKey = `et:status:${year}:${type}`;
+    const notesKey = `et:notes:${year}:${type}`;
     
     localStorage.setItem(recipientsKey, JSON.stringify(recipients.value));
     localStorage.setItem(countKey, String(count));
     localStorage.setItem(statusKey, 'MENUNGGU KELULUSAN');
+    localStorage.setItem(notesKey, batchData.value.notes);
     
     // Show appropriate message based on budget
     if (excessAmount.value > 0) {

@@ -1,266 +1,415 @@
 <!-- 
-  RTMF SCREEN: PA-PE-ET-05-APPROVE-KD
-  PURPOSE: Kelulusan Akhir Elaun Tahunan — Ketua Divisyen
-  DESCRIPTION: Halaman kelulusan akhir untuk Ketua Divisyen memeriksa dan meluluskan elaun tahunan
+  RTMF SCREEN: PA-PE-ET-05-03 (Final Approval)
+  PURPOSE: Kelulusan Akhir Elaun — Ketua Divisyen
+  DESCRIPTION: Final approval page for Ketua Divisyen to approve all allowances (including excess budget cases)
   ROUTE: /BF-PA/PE/ET/05/approve-kd/[id]
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Kad Header -->
-    <rs-card class="mt-4">
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <Icon name="ic:outline-gavel" class="w-6 h-6 mr-3 text-purple-600" />
+            Kelulusan Akhir Elaun Tahunan
+          </h1>
+          <p class="text-gray-600 mt-1">
+            Rujukan: <span class="font-medium">{{ batchData.rujukan || '—' }}</span> · 
+            Status: <rs-badge variant="warning" size="sm">{{ batchData.status || 'SEDANG PROSES' }}</rs-badge>
+          </p>
+        </div>
+        <!-- Loading Indicator -->
+        <div v-if="loading" class="flex items-center text-blue-600">
+          <Icon name="ic:outline-refresh" class="w-5 h-5 mr-2 animate-spin" />
+          <span class="text-sm">Memuatkan data...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Summary Card -->
+    <rs-card class="mb-6">
       <template #header>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <Icon name="ic:outline-check-circle" class="mr-3 text-purple-600" size="24" />
-            <h2 class="text-lg font-semibold">Kelulusan Akhir Elaun Tahunan</h2>
+        <h3 class="text-lg font-semibold text-gray-900">Ringkasan Perubahan</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <!-- Budget Warning (if applicable) -->
+          <div v-if="excessAmount > 0" class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+            <div class="flex items-start">
+              <Icon name="ic:outline-warning" class="text-orange-400 mr-3 flex-shrink-0 mt-0.5" size="20" />
+              <div>
+                <h4 class="text-sm font-medium text-orange-800">Elaun Melebihi Bajet - Telah Disahkan</h4>
+                <p class="text-sm text-orange-700 mt-1">
+                  Jumlah elaun <span class="font-medium">RM {{ formatCurrency(totalAllowance) }}</span> 
+                  melebihi bajet <span class="font-medium">RM {{ formatCurrency(batchData.budget) }}</span> 
+                  sebanyak <span class="font-medium">RM {{ formatCurrency(excessAmount) }}</span>.
+                  <br><span class="font-medium">Ketua Jabatan telah mengesahkan keperluan ini.</span>
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="text-xs text-gray-500">
-            Rujukan: <b>{{ allowanceData.rujukan || '—' }}</b>
+          
+          <!-- Normal Budget Status -->
+          <div v-else class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+            <div class="flex items-start">
+              <Icon name="ic:outline-check-circle" class="text-green-400 mr-3 flex-shrink-0 mt-0.5" size="20" />
+              <div>
+                <h4 class="text-sm font-medium text-green-800">Elaun Dalam Bajet</h4>
+                <p class="text-sm text-green-700 mt-1">
+                  Jumlah elaun <span class="font-medium">RM {{ formatCurrency(totalAllowance) }}</span> 
+                  berada dalam bajet <span class="font-medium">RM {{ formatCurrency(batchData.budget) }}</span>.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Elaun</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
+                {{ batchData.year || '—' }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Elaun</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                {{ batchData.typeLabel || '—' }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bilangan Penerima</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
+                {{ recipients.length }}
+              </div>
+            </div>
           </div>
         </div>
       </template>
+    </rs-card>
 
+    <!-- Financial Information Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Maklumat Kewangan</h3>
+      </template>
       <template #body>
-        <!-- Amaran Bajet (jika melebihi) -->
-        <div v-if="allowanceData.totalAmount > allowanceData.budget" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-          <div class="flex items-center">
-            <Icon name="ic:outline-warning" class="text-red-400 mr-3" size="20" />
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <h4 class="text-sm font-medium text-red-800">Amaran: Elaun Melebihi Bajet</h4>
-              <p class="text-sm text-red-700 mt-1">
-                Jumlah elaun (RM {{ formatCurrency(allowanceData.totalAmount) }}) melebihi bajet (RM {{ formatCurrency(allowanceData.budget) }}).
-                Lebihan: RM {{ formatCurrency(allowanceData.excessAmount) }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Ringkasan Elaun -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
-          <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <div class="text-xs text-blue-600">Tahun Elaun</div>
-            <div class="text-base font-medium text-blue-900">{{ allowanceData.year || '—' }}</div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-            <div class="text-xs text-green-600">Jenis Elaun</div>
-            <div class="text-base font-medium text-green-900">{{ allowanceData.typeLabel || '—' }}</div>
-          </div>
-          <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-            <div class="text-xs text-orange-600">Status</div>
-            <div class="text-base">
-              <rs-badge :variant="getStatusVariant(allowanceData.status)">
-                {{ allowanceData.status || '—' }}
-              </rs-badge>
-            </div>
-          </div>
-          <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
-            <div class="text-xs text-purple-600">Jumlah Penerima</div>
-            <div class="text-base font-medium text-purple-900">{{ allowanceData.count || '—' }}</div>
-          </div>
-        </div>
-
-        <!-- Maklumat Bajet -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div class="text-xs text-gray-600">Bajet (RM)</div>
-            <div class="text-base font-medium text-gray-900">{{ formatCurrency(allowanceData.budget) }}</div>
-          </div>
-          <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <div class="text-xs text-yellow-600">Jumlah Elaun (RM)</div>
-            <div class="text-base font-medium" :class="allowanceData.totalAmount > allowanceData.budget ? 'text-red-600' : 'text-yellow-900'">
-              {{ formatCurrency(allowanceData.totalAmount) }}
-            </div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-            <div class="text-xs text-green-600">Baki (RM)</div>
-            <div class="text-base font-medium" :class="allowanceData.totalAmount > allowanceData.budget ? 'text-red-600' : 'text-green-900'">
-              {{ formatCurrency(allowanceData.budget - allowanceData.totalAmount) }}
-            </div>
-          </div>
-        </div>
-
-        <!-- Timeline Kelulusan -->
-        <div class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Timeline Kelulusan</h3>
-          <div class="space-y-3">
-            <div class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <div class="text-sm">
-                <span class="font-medium">Dibuat oleh:</span> {{ allowanceData.createdBy || '—' }}
-                <span class="text-gray-500 ml-2">{{ formatDate(allowanceData.createdAt) }}</span>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bajet Diperuntukkan</label>
+              <div class="px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-900 font-semibold">
+                RM {{ formatCurrency(batchData.budget) }}
               </div>
             </div>
-            <div v-if="allowanceData.submittedAt" class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <div class="text-sm">
-                <span class="font-medium">Dihantar untuk kelulusan:</span>
-                <span class="text-gray-500 ml-2">{{ formatDate(allowanceData.submittedAt) }}</span>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Elaun</label>
+              <div :class="[
+                'px-3 py-2 border rounded-md font-semibold text-lg',
+                excessAmount > 0 
+                  ? 'bg-red-50 border-red-200 text-red-900' 
+                  : 'bg-green-50 border-green-200 text-green-900'
+              ]">
+                RM {{ formatCurrency(totalAllowance) }}
               </div>
             </div>
-            <div v-if="allowanceData.approvedByKJ" class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-              <div class="text-sm">
-                <span class="font-medium">Diluluskan Ketua Jabatan:</span> {{ allowanceData.approvedByKJ }}
-                <span class="text-gray-500 ml-2">{{ formatDate(allowanceData.approvedAtKJ) }}</span>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ excessAmount > 0 ? 'Lebihan' : 'Baki' }}
+              </label>
+              <div :class="[
+                'px-3 py-2 border rounded-md font-semibold text-lg',
+                excessAmount > 0 
+                  ? 'bg-red-50 border-red-200 text-red-900' 
+                  : 'bg-green-50 border-green-200 text-green-900'
+              ]">
+                RM {{ formatCurrency(excessAmount > 0 ? excessAmount : remainingBudget) }}
               </div>
             </div>
           </div>
         </div>
+      </template>
+    </rs-card>
 
-        <!-- Nota -->
-        <div v-if="allowanceData.notes" class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Nota</h3>
-          <div class="bg-gray-50 p-3 rounded-lg border">
-            <p class="text-sm text-gray-700">{{ allowanceData.notes }}</p>
+    <!-- Full Approval Timeline Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Aliran Kerja Kelulusan Lengkap</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="space-y-4">
+            <!-- Eksekutif -->
+            <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
+                  <Icon name="ic:outline-person" class="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Eksekutif</p>
+                  <p class="text-sm text-gray-600">Dibuat & Dihantar</p>
+                </div>
+              </div>
+              <rs-badge variant="success" size="sm">Selesai</rs-badge>
+            </div>
+            
+            <!-- Ketua Jabatan -->
+            <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
+                  <Icon name="ic:outline-check-circle" class="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Ketua Jabatan</p>
+                  <p class="text-sm text-gray-600">
+                    {{ excessAmount > 0 ? 'Pengesahan (Selesai)' : 'Kelulusan (Selesai)' }}
+                  </p>
+                </div>
+              </div>
+              <rs-badge variant="success" size="sm">Selesai</rs-badge>
+            </div>
+            
+            <!-- Ketua Divisyen (Current) -->
+            <div class="flex items-center justify-between p-3 bg-purple-50 border border-purple-200 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center mr-3">
+                  <Icon name="ic:outline-gavel" class="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Ketua Divisyen</p>
+                  <p class="text-sm text-gray-600">Kelulusan Akhir (Sedang Proses)</p>
+                </div>
+              </div>
+              <rs-badge variant="warning" size="sm">Sedang Proses</rs-badge>
+            </div>
           </div>
         </div>
+      </template>
+    </rs-card>
 
-        <!-- Jadual Penerima -->
-        <div class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Senarai Penerima</h3>
+    <!-- Previous Approvals Card -->
+    <rs-card v-if="previousApprovals.length > 0" class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Keputusan Sebelumnya</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="space-y-4">
+            <div v-for="approval in previousApprovals" :key="approval.id" class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center mb-2">
+                    <Icon 
+                      :name="approval.status === 'approved' ? 'ic:outline-check-circle' : 'ic:outline-verified-user'" 
+                      :class="[
+                        'mr-2',
+                        approval.status === 'approved' ? 'text-green-500' : 'text-orange-500'
+                      ]" 
+                      size="16" 
+                    />
+                    <span class="text-sm font-medium text-gray-900">
+                      {{ approval.approvedBy || approval.verifiedBy }}
+                    </span>
+                    <rs-badge 
+                      :variant="approval.status === 'approved' ? 'success' : 'warning'" 
+                      size="sm" 
+                      class="ml-2"
+                    >
+                      {{ approval.status === 'approved' ? 'Lulus' : 'Sahkan' }}
+                    </rs-badge>
+                  </div>
+                  <p class="text-sm text-gray-600 mb-2">
+                    {{ approval.comments }}
+                  </p>
+                  <p class="text-xs text-gray-500">
+                    {{ formatDate(approval.approvedAt || approval.verifiedAt) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Eksekutif Notes Card -->
+    <rs-card v-if="batchData.notes" class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Ulasan Eksekutif</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p class="text-gray-700">{{ batchData.notes }}</p>
+          </div>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Recipients List Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Senarai Penerima</h3>
+          <div class="text-sm text-gray-500">
+            Jumlah: <span class="font-medium">{{ recipients.length }}</span> penerima
+          </div>
+        </div>
+      </template>
+      <template #body>
+        <div class="p-6">
           <div class="overflow-x-auto rounded-lg border">
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900">Bil.</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kariah/Daerah</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Elaun (RM)</th>
+                  <th class="px-4 py-3 font-medium text-gray-900 text-right">Elaun (RM)</th>
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
-                <tr v-for="recipient in recipients" :key="recipient.paId" class="hover:bg-gray-50">
+                <tr v-for="(recipient, index) in recipients" :key="recipient.paId" class="hover:bg-gray-50">
+                  <td class="px-4 py-3 text-gray-500">{{ index + 1 }}</td>
                   <td class="px-4 py-3 font-medium text-gray-900">{{ recipient.name }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.ic }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.category }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.parish }}</td>
-                  <td class="px-4 py-3 font-medium text-gray-900">{{ formatCurrency(recipient.allowance) }}</td>
-                </tr>
-                <tr v-if="!recipients.length" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="5">
-                    Tiada penerima dalam senarai ini.
+                  <td class="px-4 py-3 text-gray-700">{{ recipient.ic }}</td>
+                  <td class="px-4 py-3">
+                    <rs-badge variant="secondary" size="sm">{{ recipient.category }}</rs-badge>
+                  </td>
+                  <td class="px-4 py-3 text-gray-700">{{ recipient.parish }}</td>
+                  <td class="px-4 py-3 text-right font-medium text-gray-900">
+                    {{ formatCurrency(recipient.allowance) }}
                   </td>
                 </tr>
               </tbody>
               <tfoot class="bg-gray-50">
                 <tr>
-                  <td class="px-4 py-3 text-right font-medium" colspan="4">Jumlah (RM)</td>
-                  <td class="px-4 py-3 font-semibold">{{ formatCurrency(totalAllowance) }}</td>
+                  <td class="px-4 py-3 text-right font-medium" colspan="5">Jumlah Keseluruhan (RM)</td>
+                  <td class="px-4 py-3 text-right font-bold text-lg">{{ formatCurrency(totalAllowance) }}</td>
                 </tr>
               </tfoot>
             </table>
           </div>
         </div>
+      </template>
+    </rs-card>
 
-        <!-- Borang Kelulusan Akhir -->
-        <div class="bg-gray-50 p-4 rounded-lg border mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Borang Kelulusan Akhir</h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <!-- Final Approval Form Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Borang Kelulusan Akhir</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="space-y-6">
+            <!-- Decision -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Keputusan <span class="text-red-500">*</span>
+                Keputusan Akhir <span class="text-red-500">*</span>
               </label>
-              <FormKit
-                v-model="approval.decision"
-                type="select"
-                :options="decisionOptions"
-                placeholder="Pilih keputusan…"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-            
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Tarikh Kelulusan <span class="text-red-500">*</span>
-              </label>
-              <FormKit
-                v-model="approval.date"
-                type="date"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Ulasan Kelulusan <span class="text-red-500">*</span>
-            </label>
-            <FormKit
-              v-model="approval.comments"
-              type="textarea"
-              rows="3"
-              placeholder="Masukkan ulasan kelulusan akhir anda..."
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-          </div>
-
-          <div v-if="approval.decision === 'reject'" class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Sebab Penolakan <span class="text-red-500">*</span>
-            </label>
-            <FormKit
-              v-model="approval.rejectionReason"
-              type="textarea"
-              rows="2"
-              placeholder="Nyatakan sebab penolakan..."
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-          </div>
-
-          <!-- Nota Khas untuk Elaun Melebihi Bajet -->
-          <div v-if="allowanceData.totalAmount > allowanceData.budget" class="bg-yellow-50 p-3 rounded-lg border border-yellow-200 mb-4">
-            <div class="flex items-center">
-              <Icon name="ic:outline-info" class="text-yellow-600 mr-2" size="16" />
-              <div class="text-sm text-yellow-800">
-                <strong>Nota:</strong> Elaun ini telah disahkan oleh Ketua Jabatan walaupun melebihi bajet. 
-                Sila semak semula sebelum membuat keputusan akhir.
+              <div class="flex space-x-4">
+                <label class="flex items-center">
+                  <input
+                    v-model="finalApprovalData.decision"
+                    type="radio"
+                    value="approve"
+                    class="mr-2 text-purple-600 focus:ring-purple-500"
+                  />
+                  <span class="text-sm font-medium text-gray-900">Luluskan</span>
+                </label>
+                <label class="flex items-center">
+                  <input
+                    v-model="finalApprovalData.decision"
+                    type="radio"
+                    value="reject"
+                    class="mr-2 text-red-600 focus:ring-red-500"
+                  />
+                  <span class="text-sm font-medium text-gray-900">Tolak</span>
+                </label>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Tindakan -->
-        <div class="flex items-center justify-end gap-2">
-          <rs-button
-            variant="secondary-outline"
-            size="sm"
-            @click="goBack"
-          >
-            Kembali
-          </rs-button>
-          <rs-button
-            variant="danger"
-            size="sm"
-            :disabled="!canSubmit || submitting"
-            @click="rejectAllowance"
-          >
-            <Icon name="ic:outline-x" class="w-4 h-4 mr-2" />
-            Tolak
-          </rs-button>
-          <rs-button
-            variant="success"
-            size="sm"
-            :disabled="!canSubmit || submitting"
-            @click="approveAllowance"
-          >
-            <Icon name="ic:outline-check" class="w-4 h-4 mr-2" />
-            Luluskan
-          </rs-button>
+            <!-- Date -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Tarikh Kelulusan Akhir <span class="text-red-500">*</span>
+              </label>
+              <input
+                v-model="finalApprovalData.date"
+                type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                required
+              />
+            </div>
+
+            <!-- Comments -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Ulasan Kelulusan Akhir <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                v-model="finalApprovalData.comments"
+                rows="4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                placeholder="Masukkan ulasan mengenai kelulusan akhir ini..."
+                required
+              ></textarea>
+            </div>
+
+            <!-- Rejection Reason (Conditional) -->
+            <div v-if="finalApprovalData.decision === 'reject'">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Sebab Penolakan <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                v-model="finalApprovalData.rejectionReason"
+                rows="3"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                placeholder="Nyatakan sebab penolakan..."
+                required
+              ></textarea>
+            </div>
+          </div>
         </div>
       </template>
     </rs-card>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-between items-center">
+      <rs-button
+        variant="secondary-outline"
+        @click="goBack"
+        class="flex items-center"
+      >
+        <Icon name="ic:outline-arrow-back" class="w-4 h-4 mr-2" />
+        Kembali
+      </rs-button>
+      
+      <div class="flex gap-3">
+        <rs-button
+          variant="danger"
+          :disabled="!canSubmit || submitting"
+          @click="rejectAllowance"
+          class="flex items-center"
+        >
+          <Icon name="ic:outline-x-circle" class="w-4 h-4 mr-2" />
+          {{ submitting ? 'Memproses...' : 'Tolak' }}
+        </rs-button>
+        <rs-button
+          variant="success"
+          :disabled="!canSubmit || submitting"
+          @click="approveAllowance"
+          class="flex items-center"
+        >
+          <Icon name="ic:outline-check-circle" class="w-4 h-4 mr-2" />
+          {{ submitting ? 'Memproses...' : 'Luluskan' }}
+        </rs-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -269,24 +418,23 @@ import { ref, computed, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '#components';
-import { FormKit } from '@formkit/vue';
 import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue';
 
 definePageMeta({
   title: "Kelulusan Akhir Elaun Tahunan",
-  description: "Halaman kelulusan akhir untuk Ketua Divisyen memeriksa dan meluluskan elaun tahunan",
+  description: "Final approval page for Ketua Divisyen to approve all allowances",
 });
 
 const toast = useToast();
 const router = useRouter();
 const route = useRoute();
 
-const goBack = () => router.back();
+const goBack = () => router.push('/BF-PA/PE/ET');
 
 const breadcrumb = ref([
   {
     name: "Pengurusan Elaun",
-    type: "link",
+    type: "link", 
     path: "/BF-PA/PE",
   },
   {
@@ -301,51 +449,66 @@ const breadcrumb = ref([
   },
 ]);
 
-const allowanceData = ref({
-  id: '', rujukan: '', year: '', type: '', typeLabel: '', status: '', count: 0, totalAmount: 0,
-  budget: 10000, excessAmount: 0, createdBy: '', createdAt: '', submittedAt: '',
-  approvedByKJ: '', approvedAtKJ: '', approvedByKD: '', approvedAtKD: '', notes: ''
+// Data
+const batchData = ref({
+  id: '',
+  rujukan: '',
+  year: '',
+  type: '',
+  typeLabel: '',
+  status: '',
+  budget: 10000,
+  notes: ''
 });
 
 const recipients = ref([]);
+const submitting = ref(false);
+const previousApprovals = ref([]);
+const loading = ref(false);
 
-const approval = ref({
+// Final approval form data
+const finalApprovalData = ref({
   decision: '',
-  date: '',
+  date: new Date().toISOString().split('T')[0],
   comments: '',
   rejectionReason: ''
 });
 
-const submitting = ref(false);
+// Type mapping
+const typeOptions = {
+  'ET-KPAK': 'Elaun Tahunan KPAK',
+  'ET-KPAF': 'Elaun Tahunan KPAF', 
+  'ET-ANUG': 'Anugerah Penolong Amil',
+  'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
+  'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
+  'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
+  'ANUG-PAF': 'Penolong Amil Fitrah (PAF) terbaik',
+  'ANUG-PAP': 'Penolong Amil Padi (PAP) terbaik',
+  'ANUG-PAKPLUS': 'Penolong Amil Komuniti (PAK+) terbaik'
+};
 
+// Computed values
 const totalAllowance = computed(() => {
   return recipients.value.reduce((sum, r) => sum + (Number(r.allowance) || 0), 0);
 });
 
-const canSubmit = computed(() => {
-  return approval.value.decision && 
-         approval.value.date && 
-         approval.value.comments &&
-         (approval.value.decision !== 'reject' || approval.value.rejectionReason);
+const excessAmount = computed(() => {
+  return Math.max(0, totalAllowance.value - batchData.value.budget);
 });
 
-const decisionOptions = [
-  { label: 'Pilih keputusan…', value: '' },
-  { label: 'Luluskan', value: 'approve' },
-  { label: 'Tolak', value: 'reject' }
-];
+const remainingBudget = computed(() => {
+  return Math.max(0, batchData.value.budget - totalAllowance.value);
+});
 
-function getStatusVariant(status) {
-  switch (status) {
-    case 'DRAF': return 'secondary';
-    case 'SEDANG PROSES': return 'info';
-    case 'PERLU PENGESAHAN': return 'warning';
-    case 'LULUS': return 'success';
-    case 'DITOLAK': return 'danger';
-    default: return 'secondary';
-  }
-}
+const canSubmit = computed(() => {
+  if (!finalApprovalData.value.decision) return false;
+  if (!finalApprovalData.value.date) return false;
+  if (!finalApprovalData.value.comments.trim()) return false;
+  if (finalApprovalData.value.decision === 'reject' && !finalApprovalData.value.rejectionReason.trim()) return false;
+  return true;
+});
 
+// Helper functions
 function formatCurrency(amount) {
   return Number(amount || 0).toLocaleString('en-MY', {
     minimumFractionDigits: 2,
@@ -367,132 +530,214 @@ function formatDate(dateString) {
   }
 }
 
-function loadAllowanceData() {
-  const id = route.params.id;
-  if (!id) { 
-    toast.error('ID elaun tidak ditemui'); 
-    goBack(); 
-    return; 
-  }
-
-  // Load from localStorage or use sample data
-  const year = route.query.year;
-  const type = route.query.type;
+// Load data function
+async function loadBatchData() {
+  loading.value = true;
   
-  if (year && type) {
-    const recipientsKey = `et:recipients:${year}:${type}`;
-    const countKey = `et:count:${year}:${type}`;
-    const statusKey = `et:status:${year}:${type}`;
+  try {
+    const id = route.params.id;
+    const year = route.query.year;
+    const type = route.query.type;
     
-    try {
-      const recipientsData = localStorage.getItem(recipientsKey);
-      const count = localStorage.getItem(countKey);
-      const status = localStorage.getItem(statusKey);
-      
-      if (recipientsData) { 
-        recipients.value = JSON.parse(recipientsData); 
-      }
-      
-      allowanceData.value = {
-        ...allowanceData.value, 
-        id: id, 
-        rujukan: id, 
-        year: Number(year), 
-        type: type,
-        typeLabel: getTypeLabel(type), 
-        status: status || 'SEDANG PROSES', 
-        count: Number(count) || 0,
-        totalAmount: totalAllowance.value, 
-        budget: 10000, 
-        excessAmount: Math.max(0, totalAllowance.value - 10000)
-      };
-    } catch (error) { 
-      toast.error('Gagal memuatkan data elaun'); 
+    if (!id || !year || !type) {
+      // Load mock data for demonstration if no parameters
+      loadMockData();
+      return;
     }
-  } else {
-    // Sample data for demonstration
-    allowanceData.value = {
+    
+    // Load from localStorage
+    const recipientsKey = `et:recipients:${year}:${type}`;
+    const statusKey = `et:status:${year}:${type}`;
+    const notesKey = `et:notes:${year}:${type}`;
+    const verificationKey = `et:verification:${year}:${type}`;
+    const approvalKey = `et:approval:${year}:${type}`;
+    const budgetKey = `et:budget:${year}:${type}`;
+    
+    const recipientsData = localStorage.getItem(recipientsKey);
+    const status = localStorage.getItem(statusKey);
+    const notes = localStorage.getItem(notesKey);
+    const verification = localStorage.getItem(verificationKey);
+    const approval = localStorage.getItem(approvalKey);
+    const budget = localStorage.getItem(budgetKey);
+    
+    if (recipientsData) {
+      recipients.value = JSON.parse(recipientsData);
+    } else {
+      // Fallback to mock data if no localStorage data
+      loadMockData();
+      return;
+    }
+    
+    // Set batch data with enhanced budget loading
+    batchData.value = {
       id: id,
       rujukan: id,
-      year: 2024,
-      type: 'ET-KPAK',
-      typeLabel: 'Elaun Tahunan KPAK',
-      status: 'SEDANG PROSES',
-      count: 25,
-      totalAmount: 12500.00,
-      budget: 10000.00,
-      excessAmount: 2500.00,
-      createdBy: 'eksekutif',
-      createdAt: '2024-01-15T10:00:00Z',
-      submittedAt: '2024-01-15T11:00:00Z',
-      approvedByKJ: 'KJ001',
-      approvedAtKJ: '2024-01-16T10:00:00Z',
-      notes: 'Elaun melebihi bajet - telah disahkan Ketua Jabatan'
+      year: Number(year),
+      type: type,
+      typeLabel: typeOptions[type] || type,
+      status: status || 'SEDANG PROSES',
+      budget: Number(budget) || 10000, // Load from actual data or use default
+      notes: notes || ''
     };
     
-    recipients.value = [
-      {
-        paId: 'PA001',
-        name: 'Ahmad bin Ali',
-        ic: '800101-01-1234',
-        category: 'KPAK',
-        parish: 'Masjid Al-Hidayah',
-        allowance: 500.00
-      },
-      {
-        paId: 'PA002',
-        name: 'Siti binti Omar',
-        ic: '850505-05-5678',
-        category: 'KPAK',
-        parish: 'Masjid Al-Hidayah',
-        allowance: 500.00
+    // Load previous approvals
+    previousApprovals.value = [];
+    if (verification) {
+      try {
+        const verificationData = JSON.parse(verification);
+        previousApprovals.value.push({
+          id: 'verification',
+          ...verificationData
+        });
+      } catch (e) {
+        console.error('Error parsing verification data:', e);
       }
-    ];
+    }
+    if (approval) {
+      try {
+        const approvalData = JSON.parse(approval);
+        previousApprovals.value.push({
+          id: 'approval',
+          ...approvalData
+        });
+      } catch (e) {
+        console.error('Error parsing approval data:', e);
+      }
+    }
+    
+  } catch (error) {
+    console.error('Error loading data:', error);
+    // Fallback to mock data on error
+    loadMockData();
+  } finally {
+    loading.value = false;
   }
 }
 
-function getTypeLabel(type) {
-  const typeLabels = {
-    'ET-KPAK': 'Elaun Tahunan KPAK',
-    'ET-KPAF': 'Elaun Tahunan KPAF',
-    'ET-ANUG': 'Anugerah Penolong Amil',
-    'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
-    'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
-    'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
-    'ANUG-PAF': 'Penolong Amil Fitrah (PAF) terbaik',
-    'ANUG-PAP': 'Penolong Amil Padi (PAP) terbaik',
-    'ANUG-PAKPLUS': 'Penolong Amil Komuniti (PAK+) terbaik'
+// Mock data function
+function loadMockData() {
+  // Generate mock batch data
+  const mockYear = 2024;
+  const mockType = 'ET-KPAK';
+  const mockStatus = 'SEDANG PROSES';
+  
+  batchData.value = {
+    id: 'ET-2024-003',
+    rujukan: 'ET-2024-003',
+    year: mockYear,
+    type: mockType,
+    typeLabel: typeOptions[mockType] || mockType,
+    status: mockStatus,
+    budget: 10000,
+    notes: 'Elaun tahunan untuk KPAK tahun 2024. Jumlah elaun melebihi bajet dan telah disahkan oleh Ketua Jabatan.'
   };
-  return typeLabels[type] || type;
+  
+  // Generate mock recipients data
+  recipients.value = [
+    {
+      paId: 'PA2024012',
+      name: 'Ahmad bin Abdullah',
+      ic: '800101-01-1234',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
+      allowance: 800.00
+    },
+    {
+      paId: 'PA2024013',
+      name: 'Mohd Zain bin Ismail',
+      ic: '750315-08-5678',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Amin',
+      allowance: 800.00
+    },
+    {
+      paId: 'PA2024014',
+      name: 'Abdul Rahman bin Hassan',
+      ic: '820520-14-9012',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Hidayah',
+      allowance: 800.00
+    },
+    {
+      paId: 'PA2024015',
+      name: 'Mohd Faiz bin Omar',
+      ic: '780812-06-3456',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
+      allowance: 800.00
+    },
+    {
+      paId: 'PA2024016',
+      name: 'Zulkifli bin Ahmad',
+      ic: '790325-12-7890',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Amin',
+      allowance: 800.00
+    },
+    {
+      paId: 'PA2024017',
+      name: 'Ahmad Fadzil bin Ibrahim',
+      ic: '810415-03-2345',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Hidayah',
+      allowance: 800.00
+    },
+    {
+      paId: 'PA2024018',
+      name: 'Mohd Hafiz bin Zainal',
+      ic: '760628-09-6789',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
+      allowance: 800.00
+    }
+  ];
+  
+  // Mock previous approvals
+  previousApprovals.value = [
+    {
+      id: 'verification',
+      status: 'verified',
+      verifiedBy: 'Ketua Jabatan',
+      verifiedAt: '2024-01-20T10:00:00Z',
+      comments: 'Elaun melebihi bajet adalah wajar kerana bilangan penerima yang tinggi dan elaun yang diperlukan untuk aktiviti tahunan.',
+      decision: 'verify',
+      date: '2024-01-20'
+    }
+  ];
 }
 
+// Final approval functions
 async function approveAllowance() {
   if (!canSubmit.value) return;
   
   submitting.value = true;
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await wait(600);
     
-    // Update status
-    allowanceData.value.status = 'LULUS';
-    allowanceData.value.approvedByKD = 'KD001';
-    allowanceData.value.approvedAtKD = new Date().toISOString();
+    // Update localStorage with enhanced error handling
+    const year = batchData.value.year;
+    const type = batchData.value.type;
+    const statusKey = `et:status:${year}:${type}`;
+    const finalApprovalKey = `et:finalApproval:${year}:${type}`;
     
-    // Save to localStorage
-    const year = allowanceData.value.year;
-    const type = allowanceData.value.type;
-    localStorage.setItem(`et:status:${year}:${type}`, 'LULUS');
-    
-    toast.success('Elaun berjaya diluluskan');
-    
-    // Navigate back to main dashboard
-    setTimeout(() => {
-      router.push('/BF-PA/PE/ET');
-    }, 1500);
-    
+    try {
+      localStorage.setItem(statusKey, 'LULUS');
+      localStorage.setItem(finalApprovalKey, JSON.stringify({
+        ...finalApprovalData.value,
+        approvedBy: 'Ketua Divisyen',
+        approvedAt: new Date().toISOString(),
+        status: 'approved'
+      }));
+      
+      toast.success('Elaun berjaya diluluskan secara muktamad. Status telah dikemas kini.');
+      goBack();
+    } catch (storageError) {
+      console.error('Failed to save final approval data:', storageError);
+      toast.error('Gagal menyimpan data kelulusan akhir. Sila cuba lagi atau hubungi pentadbir sistem.');
+    }
   } catch (error) {
-    toast.error('Gagal meluluskan elaun');
+    console.error('Final approval process failed:', error);
+    toast.error('Proses kelulusan akhir gagal. Sila cuba lagi.');
   } finally {
     submitting.value = false;
   }
@@ -503,32 +748,48 @@ async function rejectAllowance() {
   
   submitting.value = true;
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await wait(600);
     
-    // Update status
-    allowanceData.value.status = 'DITOLAK';
+    // Update localStorage with enhanced error handling
+    const year = batchData.value.year;
+    const type = batchData.value.type;
+    const statusKey = `et:status:${year}:${type}`;
+    const finalRejectionKey = `et:finalRejection:${year}:${type}`;
     
-    // Save to localStorage
-    const year = allowanceData.value.year;
-    const type = allowanceData.value.type;
-    localStorage.setItem(`et:status:${year}:${type}`, 'DITOLAK');
-    
-    toast.success('Elaun berjaya ditolak');
-    
-    // Navigate back to main dashboard
-    setTimeout(() => {
-      router.push('/BF-PA/PE/ET');
-    }, 1500);
-    
+    try {
+      localStorage.setItem(statusKey, 'DITOLAK');
+      localStorage.setItem(finalRejectionKey, JSON.stringify({
+        ...finalApprovalData.value,
+        rejectedBy: 'Ketua Divisyen',
+        rejectedAt: new Date().toISOString(),
+        status: 'rejected'
+      }));
+      
+      toast.success('Elaun telah ditolak secara muktamad. Status telah dikemas kini.');
+      goBack();
+    } catch (storageError) {
+      console.error('Failed to save final rejection data:', storageError);
+      toast.error('Gagal menyimpan data penolakan akhir. Sila cuba lagi atau hubungi pentadbir sistem.');
+    }
   } catch (error) {
-    toast.error('Gagal menolak elaun');
+    console.error('Final rejection process failed:', error);
+    toast.error('Proses penolakan akhir gagal. Sila cuba lagi.');
   } finally {
     submitting.value = false;
   }
 }
 
+// Utility functions
+function wait(ms) { 
+  return new Promise(res => setTimeout(res, ms)); 
+}
+
+// Load data on mount
 onMounted(() => {
-  loadAllowanceData();
+  loadBatchData();
 });
-</script> 
+</script>
+
+<style scoped>
+/* Add any additional styles here */
+</style> 

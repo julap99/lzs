@@ -33,15 +33,31 @@
             </p>
           </div>
 
-          <div class="flex items-center gap-2">
+          <!-- Search -->
+          <div class="mb-4">
             <FormKit
-              v-model="search"
+              v-model="searchQuery"
               type="text"
-              placeholder="Cari nama / ID Pengenalan / Kariah…"
-              :classes="{
-                input: '!py-2',
-              }"
+              placeholder="Cari penerima..."
+              :classes="{ input: '!py-2' }"
+              class="max-w-md"
             />
+          </div>
+
+          <!-- Ulasan Section -->
+          <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h4 class="text-sm font-medium text-blue-900 mb-3 flex items-center">
+              <Icon name="ic:outline-chat-bubble" class="mr-2" size="16" />
+              Ulasan Eksekutif
+            </h4>
+            <FormKit
+              v-model="batchNotes"
+              type="textarea"
+              rows="3"
+              placeholder="Masukkan ulasan atau catatan mengenai elaun tahunan ini..."
+              :classes="{ input: '!py-2' }"
+            />
+            <p class="text-xs text-blue-600 mt-1">Ulasan ini akan dilihat oleh Ketua Jabatan dan Ketua Divisyen semasa proses kelulusan</p>
           </div>
 
           <div class="overflow-x-auto rounded-lg border">
@@ -331,6 +347,7 @@ const search = ref('');
 const page = ref(1);
 const pageSize = 12;
 const saving = ref(false);
+const batchNotes = ref(''); // Ulasan dari Eksekutif
 
 /* === Helpers aktiviti (gabung + jumlah count) === */
 function aggregateActivities(acts = []) {
@@ -495,20 +512,21 @@ function loadDraftRecipients() {
   const year = route.query.year ?? '';
   const type = route.query.type ?? '';
   const key = `et:recipients:${year}:${type}`;
+  const notesKey = `et:notes:${year}:${type}`;
+  
   try {
-    const raw = localStorage.getItem(key);
-    const list = raw ? JSON.parse(raw) : [];
-    if (Array.isArray(list)) {
-      // Ensure allowance follows fixed rate if needed
-      recipients.value = list.map(r => ({
-        ...r,
-        allowance: isFixedAllowance.value ? fixedAllowanceValue.value : (Number(r.allowance) || 0)
-      }));
-    } else {
-      recipients.value = [];
+    const existing = localStorage.getItem(key);
+    if (existing) {
+      recipients.value = JSON.parse(existing);
     }
-  } catch {
-    recipients.value = [];
+    
+    // Load existing notes
+    const existingNotes = localStorage.getItem(notesKey);
+    if (existingNotes) {
+      batchNotes.value = existingNotes;
+    }
+  } catch (error) {
+    console.error('Error loading draft data:', error);
   }
 }
 
@@ -634,6 +652,8 @@ function persistRecipients() {
   const year = route.query.year ?? '';
   const type = route.query.type ?? '';
   const key = `et:recipients:${year}:${type}`;
+  const notesKey = `et:notes:${year}:${type}`;
+  
   // hanya simpan field penting
   const compact = recipients.value.map(r => ({
     paId: r.paId,
@@ -643,7 +663,9 @@ function persistRecipients() {
     parish: r.parish,
     allowance: Number(r.allowance) || 0
   }));
+  
   localStorage.setItem(key, JSON.stringify(compact));
+  localStorage.setItem(notesKey, batchNotes.value); // Save batch notes separately
 }
 
 function persistCountAndStatusAndBack(newStatus) {

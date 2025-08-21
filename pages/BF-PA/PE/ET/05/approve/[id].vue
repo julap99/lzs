@@ -1,230 +1,325 @@
 <!-- 
-  RTMF SCREEN: PA-PE-ET-05-APPROVE-KJ
-  PURPOSE: Kelulusan Elaun Tahunan — Ketua Jabatan
-  DESCRIPTION: Halaman kelulusan untuk Ketua Jabatan memeriksa dan meluluskan elaun tahunan
+  RTMF SCREEN: PA-PE-ET-05-02 (Approval)
+  PURPOSE: Kelulusan Elaun — Ketua Jabatan
+  DESCRIPTION: Approval page for Ketua Jabatan to approve regular allowances (within budget)
   ROUTE: /BF-PA/PE/ET/05/approve/[id]
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Kad Header -->
-    <rs-card class="mt-4">
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <Icon name="ic:outline-check-circle" class="w-6 h-6 mr-3 text-green-600" />
+            Kelulusan Elaun Tahunan
+          </h1>
+          <p class="text-gray-600 mt-1">
+            Rujukan: <span class="font-medium">{{ batchData.rujukan || '—' }}</span> · 
+            Status: <rs-badge variant="info" size="sm">SEDANG PROSES</rs-badge>
+          </p>
+        </div>
+        <!-- Loading Indicator -->
+        <div v-if="loading" class="flex items-center text-blue-600">
+          <Icon name="ic:outline-refresh" class="w-5 h-5 mr-2 animate-spin" />
+          <span class="text-sm">Memuatkan data...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Summary Card -->
+    <rs-card class="mb-6">
       <template #header>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <Icon name="ic:outline-check-circle" class="mr-3 text-green-600" size="24" />
-            <h2 class="text-lg font-semibold">Kelulusan Elaun Tahunan</h2>
+        <h3 class="text-lg font-semibold text-gray-900">Ringkasan Perubahan</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+            <div class="flex items-start">
+              <Icon name="ic:outline-check-circle" class="text-green-400 mr-3 flex-shrink-0 mt-0.5" size="20" />
+              <div>
+                <h4 class="text-sm font-medium text-green-800">Elaun Dalam Bajet</h4>
+                <p class="text-sm text-green-700 mt-1">
+                  Jumlah elaun <span class="font-medium">RM {{ formatCurrency(totalAllowance) }}</span> 
+                  berada dalam bajet <span class="font-medium">RM {{ formatCurrency(batchData.budget) }}</span>.
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="text-xs text-gray-500">
-            Rujukan: <b>{{ allowanceData.rujukan || '—' }}</b>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Elaun</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
+                {{ batchData.year || '—' }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Elaun</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                {{ batchData.typeLabel || '—' }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bilangan Penerima</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
+                {{ recipients.length }}
+              </div>
+            </div>
           </div>
         </div>
       </template>
+    </rs-card>
 
+    <!-- Financial Information Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Maklumat Kewangan</h3>
+      </template>
       <template #body>
-        <!-- Ringkasan Elaun -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
-          <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <div class="text-xs text-blue-600">Tahun Elaun</div>
-            <div class="text-base font-medium text-blue-900">{{ allowanceData.year || '—' }}</div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-            <div class="text-xs text-green-600">Jenis Elaun</div>
-            <div class="text-base font-medium text-green-900">{{ allowanceData.typeLabel || '—' }}</div>
-          </div>
-          <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-            <div class="text-xs text-orange-600">Status</div>
-            <div class="text-base">
-              <rs-badge variant="info">
-                {{ allowanceData.status || '—' }}
-              </rs-badge>
-            </div>
-          </div>
-          <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
-            <div class="text-xs text-purple-600">Jumlah Penerima</div>
-            <div class="text-base font-medium text-purple-900">{{ allowanceData.count || '—' }}</div>
-          </div>
-        </div>
-
-        <!-- Maklumat Bajet -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div class="text-xs text-gray-600">Bajet (RM)</div>
-            <div class="text-base font-medium text-gray-900">{{ formatCurrency(allowanceData.budget) }}</div>
-          </div>
-          <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <div class="text-xs text-yellow-600">Jumlah Elaun (RM)</div>
-            <div class="text-base font-medium text-yellow-900">{{ formatCurrency(allowanceData.totalAmount) }}</div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-            <div class="text-xs text-green-600">Baki (RM)</div>
-            <div class="text-base font-medium text-green-900">{{ formatCurrency(allowanceData.budget - allowanceData.totalAmount) }}</div>
-          </div>
-        </div>
-
-        <!-- Timeline Kelulusan -->
-        <div class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Timeline Kelulusan</h3>
-          <div class="space-y-3">
-            <div class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <div class="text-sm">
-                <span class="font-medium">Dibuat oleh:</span> {{ allowanceData.createdBy || '—' }}
-                <span class="text-gray-500 ml-2">{{ formatDate(allowanceData.createdAt) }}</span>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bajet Diperuntukkan</label>
+              <div class="px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-900 font-semibold">
+                RM {{ formatCurrency(batchData.budget) }}
               </div>
             </div>
-            <div v-if="allowanceData.submittedAt" class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <div class="text-sm">
-                <span class="font-medium">Dihantar untuk kelulusan:</span>
-                <span class="text-gray-500 ml-2">{{ formatDate(allowanceData.submittedAt) }}</span>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Elaun</label>
+              <div class="px-3 py-2 bg-green-50 border border-green-200 rounded-md text-green-900 font-semibold text-lg">
+                RM {{ formatCurrency(totalAllowance) }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Baki</label>
+              <div class="px-3 py-2 bg-green-50 border border-green-200 rounded-md text-green-900 font-semibold text-lg">
+                RM {{ formatCurrency(remainingBudget) }}
               </div>
             </div>
           </div>
         </div>
+      </template>
+    </rs-card>
 
-        <!-- Nota -->
-        <div v-if="allowanceData.notes" class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Nota</h3>
-          <div class="bg-gray-50 p-3 rounded-lg border">
-            <p class="text-sm text-gray-700">{{ allowanceData.notes }}</p>
+    <!-- Approval Timeline Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Aliran Kerja Kelulusan</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="space-y-4">
+            <!-- Eksekutif -->
+            <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
+                  <Icon name="ic:outline-person" class="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Eksekutif</p>
+                  <p class="text-sm text-gray-600">Dibuat & Dihantar</p>
+                </div>
+              </div>
+              <rs-badge variant="success" size="sm">Selesai</rs-badge>
+            </div>
+            
+            <!-- Ketua Jabatan (Current) -->
+            <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center mr-3">
+                  <Icon name="ic:outline-check-circle" class="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Ketua Jabatan</p>
+                  <p class="text-sm text-gray-600">Kelulusan (Sedang Proses)</p>
+                </div>
+              </div>
+              <rs-badge variant="info" size="sm">Sedang Proses</rs-badge>
+            </div>
           </div>
         </div>
+      </template>
+    </rs-card>
 
-        <!-- Jadual Penerima -->
-        <div class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Senarai Penerima</h3>
+    <!-- Eksekutif Notes Card -->
+    <rs-card v-if="batchData.notes" class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Ulasan Eksekutif</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p class="text-gray-700">{{ batchData.notes }}</p>
+          </div>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Recipients List Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Senarai Penerima</h3>
+          <div class="text-sm text-gray-500">
+            Jumlah: <span class="font-medium">{{ recipients.length }}</span> penerima
+          </div>
+        </div>
+      </template>
+      <template #body>
+        <div class="p-6">
           <div class="overflow-x-auto rounded-lg border">
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900">Bil.</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kariah/Daerah</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Elaun (RM)</th>
+                  <th class="px-4 py-3 font-medium text-gray-900 text-right">Elaun (RM)</th>
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
-                <tr v-for="recipient in recipients" :key="recipient.paId" class="hover:bg-gray-50">
+                <tr v-for="(recipient, index) in recipients" :key="recipient.paId" class="hover:bg-gray-50">
+                  <td class="px-4 py-3 text-gray-500">{{ index + 1 }}</td>
                   <td class="px-4 py-3 font-medium text-gray-900">{{ recipient.name }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.ic }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.category }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.parish }}</td>
-                  <td class="px-4 py-3 font-medium text-gray-900">{{ formatCurrency(recipient.allowance) }}</td>
-                </tr>
-                <tr v-if="!recipients.length" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="5">
-                    Tiada penerima dalam senarai ini.
+                  <td class="px-4 py-3 text-gray-700">{{ recipient.ic }}</td>
+                  <td class="px-4 py-3">
+                    <rs-badge variant="secondary" size="sm">{{ recipient.category }}</rs-badge>
+                  </td>
+                  <td class="px-4 py-3 text-gray-700">{{ recipient.parish }}</td>
+                  <td class="px-4 py-3 text-right font-medium text-gray-900">
+                    {{ formatCurrency(recipient.allowance) }}
                   </td>
                 </tr>
               </tbody>
               <tfoot class="bg-gray-50">
                 <tr>
-                  <td class="px-4 py-3 text-right font-medium" colspan="4">Jumlah (RM)</td>
-                  <td class="px-4 py-3 font-semibold">{{ formatCurrency(totalAllowance) }}</td>
+                  <td class="px-4 py-3 text-right font-medium" colspan="5">Jumlah Keseluruhan (RM)</td>
+                  <td class="px-4 py-3 text-right font-bold text-lg">{{ formatCurrency(totalAllowance) }}</td>
                 </tr>
               </tfoot>
             </table>
           </div>
         </div>
+      </template>
+    </rs-card>
 
-        <!-- Borang Kelulusan -->
-        <div class="bg-gray-50 p-4 rounded-lg border mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Borang Kelulusan</h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <!-- Approval Form Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Borang Kelulusan</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="space-y-6">
+            <!-- Decision -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 Keputusan <span class="text-red-500">*</span>
               </label>
-              <FormKit
-                v-model="approval.decision"
-                type="select"
-                :options="decisionOptions"
-                placeholder="Pilih keputusan…"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
+              <div class="flex space-x-4">
+                <label class="flex items-center">
+                  <input
+                    v-model="approvalData.decision"
+                    type="radio"
+                    value="approve"
+                    class="mr-2 text-green-600 focus:ring-green-500"
+                  />
+                  <span class="text-sm font-medium text-gray-900">Luluskan</span>
+                </label>
+                <label class="flex items-center">
+                  <input
+                    v-model="approvalData.decision"
+                    type="radio"
+                    value="reject"
+                    class="mr-2 text-red-600 focus:ring-red-500"
+                  />
+                  <span class="text-sm font-medium text-gray-900">Tolak</span>
+                </label>
+              </div>
             </div>
-            
+
+            <!-- Date -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 Tarikh Kelulusan <span class="text-red-500">*</span>
               </label>
-              <FormKit
-                v-model="approval.date"
+              <input
+                v-model="approvalData.date"
                 type="date"
-                :classes="{
-                  input: '!py-2',
-                }"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                required
               />
             </div>
-          </div>
 
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Ulasan Kelulusan <span class="text-red-500">*</span>
-            </label>
-            <FormKit
-              v-model="approval.comments"
-              type="textarea"
-              rows="3"
-              placeholder="Masukkan ulasan kelulusan anda..."
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-          </div>
+            <!-- Comments -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Ulasan Kelulusan <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                v-model="approvalData.comments"
+                rows="4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                placeholder="Masukkan ulasan mengenai kelulusan ini..."
+                required
+              ></textarea>
+            </div>
 
-          <div v-if="approval.decision === 'reject'" class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Sebab Penolakan <span class="text-red-500">*</span>
-            </label>
-            <FormKit
-              v-model="approval.rejectionReason"
-              type="textarea"
-              rows="2"
-              placeholder="Nyatakan sebab penolakan..."
-              :classes="{
-                input: '!py-2',
-              }"
-            />
+            <!-- Rejection Reason (Conditional) -->
+            <div v-if="approvalData.decision === 'reject'">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Sebab Penolakan <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                v-model="approvalData.rejectionReason"
+                rows="3"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                placeholder="Nyatakan sebab penolakan..."
+                required
+              ></textarea>
+            </div>
           </div>
-        </div>
-
-        <!-- Tindakan -->
-        <div class="flex items-center justify-end gap-2">
-          <rs-button
-            variant="secondary-outline"
-            size="sm"
-            @click="goBack"
-          >
-            Kembali
-          </rs-button>
-          <rs-button
-            variant="danger"
-            size="sm"
-            :disabled="!canSubmit || submitting"
-            @click="rejectAllowance"
-          >
-            <Icon name="ic:outline-x" class="w-4 h-4 mr-2" />
-            Tolak
-          </rs-button>
-          <rs-button
-            variant="success"
-            size="sm"
-            :disabled="!canSubmit || submitting"
-            @click="approveAllowance"
-          >
-            <Icon name="ic:outline-check" class="w-4 h-4 mr-2" />
-            Luluskan
-          </rs-button>
         </div>
       </template>
     </rs-card>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-between items-center">
+      <rs-button
+        variant="secondary-outline"
+        @click="goBack"
+        class="flex items-center"
+      >
+        <Icon name="ic:outline-arrow-back" class="w-4 h-4 mr-2" />
+        Kembali
+      </rs-button>
+      
+      <div class="flex gap-3">
+        <rs-button
+          variant="danger"
+          :disabled="!canSubmit || submitting"
+          @click="rejectAllowance"
+          class="flex items-center"
+        >
+          <Icon name="ic:outline-x-circle" class="w-4 h-4 mr-2" />
+          {{ submitting ? 'Memproses...' : 'Tolak' }}
+        </rs-button>
+        <rs-button
+          variant="success"
+          :disabled="!canSubmit || submitting"
+          @click="approveAllowance"
+          class="flex items-center"
+        >
+          <Icon name="ic:outline-check-circle" class="w-4 h-4 mr-2" />
+          {{ submitting ? 'Memproses...' : 'Luluskan' }}
+        </rs-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -233,24 +328,23 @@ import { ref, computed, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '#components';
-import { FormKit } from '@formkit/vue';
 import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue';
 
 definePageMeta({
   title: "Kelulusan Elaun Tahunan",
-  description: "Halaman kelulusan untuk Ketua Jabatan memeriksa dan meluluskan elaun tahunan",
+  description: "Approval page for Ketua Jabatan to approve regular allowances",
 });
 
 const toast = useToast();
 const router = useRouter();
 const route = useRoute();
 
-const goBack = () => router.back();
+const goBack = () => router.push('/BF-PA/PE/ET');
 
 const breadcrumb = ref([
   {
     name: "Pengurusan Elaun",
-    type: "link",
+    type: "link", 
     path: "/BF-PA/PE",
   },
   {
@@ -259,57 +353,67 @@ const breadcrumb = ref([
     path: "/BF-PA/PE/ET",
   },
   {
-    name: "Kelulusan Elaun",
+    name: "Kelulusan",
     type: "current",
     path: "/BF-PA/PE/ET/05/approve",
   },
 ]);
 
-const allowanceData = ref({
-  id: '', rujukan: '', year: '', type: '', typeLabel: '', status: '', count: 0, totalAmount: 0,
-  budget: 10000, excessAmount: 0, createdBy: '', createdAt: '', submittedAt: '',
-  approvedByKJ: '', approvedAtKJ: '', approvedByKD: '', approvedAtKD: '', notes: ''
+// Data
+const batchData = ref({
+  id: '',
+  rujukan: '',
+  year: '',
+  type: '',
+  typeLabel: '',
+  status: '',
+  budget: 10000,
+  notes: ''
 });
 
 const recipients = ref([]);
+const submitting = ref(false);
+const loading = ref(false);
 
-const approval = ref({
+// Approval form data
+const approvalData = ref({
   decision: '',
-  date: '',
+  date: new Date().toISOString().split('T')[0],
   comments: '',
   rejectionReason: ''
 });
 
-const submitting = ref(false);
+// Type mapping
+const typeOptions = {
+  'ET-KPAK': 'Elaun Tahunan KPAK',
+  'ET-KPAF': 'Elaun Tahunan KPAF', 
+  'ET-ANUG': 'Anugerah Penolong Amil',
+  'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
+  'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
+  'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
+  'ANUG-PAF': 'Penolong Amil Fitrah (PAF) terbaik',
+  'ANUG-PAP': 'Penolong Amil Padi (PAP) terbaik',
+  'ANUG-PAKPLUS': 'Penolong Amil Komuniti (PAK+) terbaik'
+};
 
+// Computed values
 const totalAllowance = computed(() => {
   return recipients.value.reduce((sum, r) => sum + (Number(r.allowance) || 0), 0);
 });
 
-const canSubmit = computed(() => {
-  return approval.value.decision && 
-         approval.value.date && 
-         approval.value.comments &&
-         (approval.value.decision !== 'reject' || approval.value.rejectionReason);
+const remainingBudget = computed(() => {
+  return Math.max(0, batchData.value.budget - totalAllowance.value);
 });
 
-const decisionOptions = [
-  { label: 'Pilih keputusan…', value: '' },
-  { label: 'Luluskan', value: 'approve' },
-  { label: 'Tolak', value: 'reject' }
-];
+const canSubmit = computed(() => {
+  if (!approvalData.value.decision) return false;
+  if (!approvalData.value.date) return false;
+  if (!approvalData.value.comments.trim()) return false;
+  if (approvalData.value.decision === 'reject' && !approvalData.value.rejectionReason.trim()) return false;
+  return true;
+});
 
-function getStatusVariant(status) {
-  switch (status) {
-    case 'DRAF': return 'secondary';
-    case 'SEDANG PROSES': return 'info';
-    case 'PERLU PENGESAHAN': return 'warning';
-    case 'LULUS': return 'success';
-    case 'DITOLAK': return 'danger';
-    default: return 'secondary';
-  }
-}
-
+// Helper functions
 function formatCurrency(amount) {
   return Number(amount || 0).toLocaleString('en-MY', {
     minimumFractionDigits: 2,
@@ -317,144 +421,148 @@ function formatCurrency(amount) {
   });
 }
 
-function formatDate(dateString) {
-  if (!dateString) return '—';
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ms-MY', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  } catch {
-    return '—';
-  }
-}
-
-function loadAllowanceData() {
-  const id = route.params.id;
-  if (!id) { 
-    toast.error('ID elaun tidak ditemui'); 
-    goBack(); 
-    return; 
-  }
-
-  // Load from localStorage or use sample data
-  const year = route.query.year;
-  const type = route.query.type;
+// Load data function
+async function loadBatchData() {
+  loading.value = true;
   
-  if (year && type) {
-    const recipientsKey = `et:recipients:${year}:${type}`;
-    const countKey = `et:count:${year}:${type}`;
-    const statusKey = `et:status:${year}:${type}`;
+  try {
+    const id = route.params.id;
+    const year = route.query.year;
+    const type = route.query.type;
     
-    try {
-      const recipientsData = localStorage.getItem(recipientsKey);
-      const count = localStorage.getItem(countKey);
-      const status = localStorage.getItem(statusKey);
-      
-      if (recipientsData) { 
-        recipients.value = JSON.parse(recipientsData); 
-      }
-      
-      allowanceData.value = {
-        ...allowanceData.value, 
-        id: id, 
-        rujukan: id, 
-        year: Number(year), 
-        type: type,
-        typeLabel: getTypeLabel(type), 
-        status: status || 'SEDANG PROSES', 
-        count: Number(count) || 0,
-        totalAmount: totalAllowance.value, 
-        budget: 10000, 
-        excessAmount: Math.max(0, totalAllowance.value - 10000)
-      };
-    } catch (error) { 
-      toast.error('Gagal memuatkan data elaun'); 
+    if (!id || !year || !type) {
+      // Load mock data for demonstration if no parameters
+      loadMockData();
+      return;
     }
-  } else {
-    // Sample data for demonstration
-    allowanceData.value = {
+    
+    // Load from localStorage
+    const recipientsKey = `et:recipients:${year}:${type}`;
+    const statusKey = `et:status:${year}:${type}`;
+    const notesKey = `et:notes:${year}:${type}`;
+    const budgetKey = `et:budget:${year}:${type}`;
+    
+    const recipientsData = localStorage.getItem(recipientsKey);
+    const status = localStorage.getItem(statusKey);
+    const notes = localStorage.getItem(notesKey);
+    const budget = localStorage.getItem(budgetKey);
+    
+    if (recipientsData) {
+      recipients.value = JSON.parse(recipientsData);
+    } else {
+      // Fallback to mock data if no localStorage data
+      loadMockData();
+      return;
+    }
+    
+    // Set batch data with enhanced budget loading
+    batchData.value = {
       id: id,
       rujukan: id,
-      year: 2024,
-      type: 'ET-KPAF',
-      typeLabel: 'Elaun Tahunan KPAF',
-      status: 'SEDANG PROSES',
-      count: 30,
-      totalAmount: 9000.00,
-      budget: 10000.00,
-      excessAmount: 0.00,
-      createdBy: 'eksekutif',
-      createdAt: '2024-01-16T14:30:00Z',
-      submittedAt: '2024-01-16T15:00:00Z',
-      notes: 'Elaun dalam had bajet'
+      year: Number(year),
+      type: type,
+      typeLabel: typeOptions[type] || type,
+      status: status || 'SEDANG PROSES',
+      budget: Number(budget) || 10000, // Load from actual data or use default
+      notes: notes || ''
     };
     
-    recipients.value = [
-      {
-        paId: 'PA003',
-        name: 'Mohd bin Hassan',
-        ic: '820202-02-2345',
-        category: 'KPAF',
-        parish: 'Masjid Al-Amin',
-        allowance: 300.00
-      },
-      {
-        paId: 'PA004',
-        name: 'Aminah binti Ismail',
-        ic: '870707-07-6789',
-        category: 'KPAF',
-        parish: 'Masjid Al-Amin',
-        allowance: 300.00
-      }
-    ];
+  } catch (error) {
+    console.error('Error loading data:', error);
+    // Fallback to mock data on error
+    loadMockData();
+  } finally {
+    loading.value = false;
   }
 }
 
-function getTypeLabel(type) {
-  const typeLabels = {
-    'ET-KPAK': 'Elaun Tahunan KPAK',
-    'ET-KPAF': 'Elaun Tahunan KPAF',
-    'ET-ANUG': 'Anugerah Penolong Amil',
-    'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
-    'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
-    'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
-    'ANUG-PAF': 'Penolong Amil Fitrah (PAF) terbaik',
-    'ANUG-PAP': 'Penolong Amil Padi (PAP) terbaik',
-    'ANUG-PAKPLUS': 'Penolong Amil Komuniti (PAK+) terbaik'
+// Mock data function
+function loadMockData() {
+  // Generate mock batch data
+  const mockYear = 2024;
+  const mockType = 'ET-KPAF';
+  const mockStatus = 'SEDANG PROSES';
+  
+  batchData.value = {
+    id: 'ET-2024-002',
+    rujukan: 'ET-2024-002',
+    year: mockYear,
+    type: mockType,
+    typeLabel: typeOptions[mockType] || mockType,
+    status: mockStatus,
+    budget: 10000,
+    notes: 'Elaun tahunan untuk KPAF tahun 2024. Semua elaun berada dalam bajet yang diperuntukkan.'
   };
-  return typeLabels[type] || type;
+  
+  // Generate mock recipients data
+  recipients.value = [
+    {
+      paId: 'PA2024008',
+      name: 'Siti binti Ahmad',
+      ic: '820315-05-1234',
+      category: 'KPAF',
+      parish: 'Kariah Masjid Al-Hidayah',
+      allowance: 600.00
+    },
+    {
+      paId: 'PA2024009',
+      name: 'Mohd Aziz bin Hassan',
+      ic: '780520-12-5678',
+      category: 'KPAF',
+      parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
+      allowance: 600.00
+    },
+    {
+      paId: 'PA2024010',
+      name: 'Ahmad Fadzil bin Omar',
+      ic: '810812-08-9012',
+      category: 'KPAF',
+      parish: 'Kariah Masjid Al-Amin',
+      allowance: 600.00
+    },
+    {
+      paId: 'PA2024011',
+      name: 'Zulkifli bin Ibrahim',
+      ic: '790325-14-3456',
+      category: 'KPAF',
+      parish: 'Kariah Masjid Al-Hidayah',
+      allowance: 600.00
+    }
+  ];
 }
 
+// Approval functions
 async function approveAllowance() {
   if (!canSubmit.value) return;
   
   submitting.value = true;
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await wait(600);
     
-    // Update status
-    allowanceData.value.status = 'LULUS';
-    allowanceData.value.approvedByKJ = 'KJ001';
-    allowanceData.value.approvedAtKJ = new Date().toISOString();
+    // Update localStorage with enhanced error handling
+    const year = batchData.value.year;
+    const type = batchData.value.type;
+    const statusKey = `et:status:${year}:${type}`;
+    const approvalKey = `et:approval:${year}:${type}`;
     
-    // Save to localStorage
-    const year = allowanceData.value.year;
-    const type = allowanceData.value.type;
-    localStorage.setItem(`et:status:${year}:${type}`, 'LULUS');
-    
-    toast.success('Elaun berjaya diluluskan');
-    
-    // Navigate back to main dashboard
-    setTimeout(() => {
-      router.push('/BF-PA/PE/ET');
-    }, 1500);
-    
+    try {
+      localStorage.setItem(statusKey, 'LULUS');
+      localStorage.setItem(approvalKey, JSON.stringify({
+        ...approvalData.value,
+        approvedBy: 'Ketua Jabatan',
+        approvedAt: new Date().toISOString(),
+        status: 'approved'
+      }));
+      
+      toast.success('Elaun berjaya diluluskan. Status telah dikemas kini.');
+      goBack();
+    } catch (storageError) {
+      console.error('Failed to save approval data:', storageError);
+      toast.error('Gagal menyimpan data kelulusan. Sila cuba lagi atau hubungi pentadbir sistem.');
+    }
   } catch (error) {
-    toast.error('Gagal meluluskan elaun');
+    console.error('Approval process failed:', error);
+    toast.error('Proses kelulusan gagal. Sila cuba lagi.');
   } finally {
     submitting.value = false;
   }
@@ -465,32 +573,48 @@ async function rejectAllowance() {
   
   submitting.value = true;
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await wait(600);
     
-    // Update status
-    allowanceData.value.status = 'DITOLAK';
+    // Update localStorage with enhanced error handling
+    const year = batchData.value.year;
+    const type = batchData.value.type;
+    const statusKey = `et:status:${year}:${type}`;
+    const rejectionKey = `et:rejection:${year}:${type}`;
     
-    // Save to localStorage
-    const year = allowanceData.value.year;
-    const type = allowanceData.value.type;
-    localStorage.setItem(`et:status:${year}:${type}`, 'DITOLAK');
-    
-    toast.success('Elaun berjaya ditolak');
-    
-    // Navigate back to main dashboard
-    setTimeout(() => {
-      router.push('/BF-PA/PE/ET');
-    }, 1500);
-    
+    try {
+      localStorage.setItem(statusKey, 'DITOLAK');
+      localStorage.setItem(rejectionKey, JSON.stringify({
+        ...approvalData.value,
+        rejectedBy: 'Ketua Jabatan',
+        rejectedAt: new Date().toISOString(),
+        status: 'rejected'
+      }));
+      
+      toast.success('Elaun telah ditolak. Status telah dikemas kini.');
+      goBack();
+    } catch (storageError) {
+      console.error('Failed to save rejection data:', storageError);
+      toast.error('Gagal menyimpan data penolakan. Sila cuba lagi atau hubungi pentadbir sistem.');
+    }
   } catch (error) {
-    toast.error('Gagal menolak elaun');
+    console.error('Rejection process failed:', error);
+    toast.error('Proses penolakan gagal. Sila cuba lagi.');
   } finally {
     submitting.value = false;
   }
 }
 
+// Utility functions
+function wait(ms) { 
+  return new Promise(res => setTimeout(res, ms)); 
+}
+
+// Load data on mount
 onMounted(() => {
-  loadAllowanceData();
+  loadBatchData();
 });
-</script> 
+</script>
+
+<style scoped>
+/* Add any additional styles here */
+</style> 
