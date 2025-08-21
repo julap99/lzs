@@ -1,183 +1,163 @@
 <!-- 
   RTMF SCREEN: PA-PE-ET-04
-  PURPOSE: Kemaskini Maklumat Elaun Tahunan — Kemaskini
-  DESCRIPTION: Kemaskini maklumat elaun tahunan untuk pengguna Eksekutif sahaja
+  PURPOSE: Kemaskini Maklumat Elaun Tahunan — Eksekutif Sahaja
+  DESCRIPTION: Kemaskini maklumat elaun tahunan yang telah dihantar (hanya untuk Eksekutif, sebelum kelulusan)
   ROUTE: /BF-PA/PE/ET/04
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Kad Header -->
-    <rs-card class="mt-4">
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <Icon name="ic:outline-edit" class="w-6 h-6 mr-3 text-blue-600" />
+            Kemaskini Maklumat Elaun Tahunan
+          </h1>
+          <p class="text-gray-600 mt-1">
+            Rujukan: <span class="font-medium">{{ batchData.rujukan || '—' }}</span> · 
+            Status: <rs-badge :variant="getStatusVariant(batchData.status)" size="sm">{{ batchData.status }}</rs-badge>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Basic Information Card -->
+    <rs-card class="mb-6">
       <template #header>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <Icon name="ic:outline-edit" class="mr-3 text-blue-600" size="24" />
-            <h2 class="text-lg font-semibold">Kemaskini Maklumat Elaun Tahunan</h2>
-          </div>
-          <div class="text-xs text-gray-500">
-            Rujukan: <b>{{ allowanceData.rujukan || '—' }}</b>
+        <h3 class="text-lg font-semibold text-gray-900">Maklumat Asas</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Elaun</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
+                {{ batchData.year || '—' }}
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Tidak boleh diubah selepas dibuat</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Elaun</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                {{ batchData.typeLabel || '—' }}
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Tidak boleh diubah selepas dibuat</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bilangan Penerima</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
+                {{ recipients.length }}
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Dikemas kini secara automatik</p>
+            </div>
           </div>
         </div>
       </template>
+    </rs-card>
 
+    <!-- Financial Information Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Maklumat Kewangan</h3>
+      </template>
       <template #body>
-        <!-- Borang Maklumat Asas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Tahun Elaun <span class="text-red-500">*</span>
-            </label>
-            <FormKit
-              v-model="allowanceData.year"
-              type="select"
-              :options="yearOptions"
-              placeholder="Pilih tahun…"
-              :classes="{
-                input: '!py-2',
-              }"
-              :disabled="true"
-            />
-            <p class="text-xs text-gray-500 mt-1">Tahun tidak boleh diubah selepas dibuat.</p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Jenis Elaun <span class="text-red-500">*</span>
-            </label>
-            <FormKit
-              v-model="allowanceData.type"
-              type="select"
-              :options="typeOptions"
-              placeholder="Pilih jenis elaun…"
-              :classes="{
-                input: '!py-2',
-              }"
-              :disabled="true"
-            />
-            <p class="text-xs text-gray-500 mt-1">Jenis elaun tidak boleh diubah selepas dibuat.</p>
-          </div>
-        </div>
-
-        <!-- Bahagian Nota -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            Nota
-          </label>
-          <FormKit
-            v-model="allowanceData.notes"
-            type="textarea"
-            rows="3"
-            placeholder="Masukkan nota atau ulasan untuk elaun ini..."
-            :classes="{
-              input: '!py-2',
-            }"
-          />
-          <p class="text-xs text-gray-500 mt-1">Nota pilihan untuk rujukan dan audit.</p>
-        </div>
-
-        <!-- Pengurusan Penerima -->
-        <div class="mb-6">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-sm font-semibold text-gray-900">Senarai Penerima</h3>
-            <div class="text-xs text-gray-500">
-              Jumlah: <b>{{ recipients.length }}</b> penerima
-            </div>
-          </div>
-
-          <!-- Tambah Penerima Baharu -->
-          <div class="bg-gray-50 p-4 rounded-lg border mb-4">
-            <h4 class="text-sm font-medium text-gray-900 mb-3">Tambah Penerima Baharu</h4>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bajet (RM)</label>
               <FormKit
-                v-model="newRecipient.name"
-                type="text"
-                placeholder="Nama"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="newRecipient.ic"
-                type="text"
-                placeholder="ID Pengenalan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="newRecipient.category"
-                type="select"
-                :options="categoryOptions"
-                placeholder="Kategori"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="newRecipient.parish"
-                type="text"
-                placeholder="Kariah/Daerah"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model.number="newRecipient.allowance"
+                v-model.number="batchData.budget"
                 type="number"
                 min="0"
-                step="0.01"
-                placeholder="Elaun (RM)"
+                step="100"
                 :classes="{
-                  input: '!py-2',
+                  input: '!py-2 !px-3 !text-lg !font-semibold !text-gray-900 !bg-white !border-gray-300 !rounded-md',
                 }"
               />
+              <p class="text-xs text-blue-600 mt-1">Boleh dikemas kini</p>
             </div>
-            <div class="flex justify-end mt-3">
-              <rs-button
-                variant="primary"
-                size="sm"
-                :disabled="!canAddRecipient"
-                @click="addRecipient"
-              >
-                <Icon name="ic:outline-plus" class="w-4 h-4 mr-2" />
-                Tambah Penerima
-              </rs-button>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Elaun (RM)</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold text-lg">
+                {{ formatCurrency(totalAllowance) }}
+              </div>
+              <p class="text-xs text-gray-600 mt-1">Dikira secara automatik</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ excessAmount > 0 ? 'Lebihan (RM)' : 'Baki (RM)' }}
+              </label>
+              <div class="px-3 py-2 border rounded-md font-semibold text-lg" 
+                   :class="excessAmount > 0 ? 'bg-red-50 border-red-200 text-red-900' : 'bg-gray-50 border-gray-200 text-gray-900'">
+                {{ formatCurrency(Math.abs(balanceAmount)) }}
+              </div>
+              <p class="text-xs mt-1" :class="excessAmount > 0 ? 'text-red-600' : 'text-gray-600'">
+                {{ excessAmount > 0 ? 'Perlu pengesahan' : 'Dalam had bajet' }}
+              </p>
             </div>
           </div>
+          
+          <!-- Budget Warning -->
+          <div v-if="excessAmount > 0" class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div class="flex items-start">
+              <Icon name="ic:outline-warning" class="text-red-400 mr-3 flex-shrink-0 mt-0.5" size="20" />
+              <div>
+                <h4 class="text-sm font-medium text-red-800">Amaran: Elaun Melebihi Bajet</h4>
+                <p class="text-sm text-red-700 mt-1">
+                  Jumlah elaun melebihi bajet sebanyak <span class="font-medium">RM {{ formatCurrency(excessAmount) }}</span>.
+                  Permohonan ini akan memerlukan pengesahan dari Ketua Jabatan sebelum diluluskan.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </rs-card>
 
-          <!-- Jadual Penerima -->
-          <div class="overflow-x-auto rounded-lg border">
+    <!-- Recipients Management Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Pengurusan Penerima</h3>
+          <div class="text-sm text-gray-500">
+            Jumlah: <span class="font-medium">{{ recipients.length }}</span> penerima
+          </div>
+        </div>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <!-- Recipients Table -->
+          <div class="overflow-x-auto rounded-lg border mb-6">
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900">Bil.</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kariah/Daerah</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Elaun (RM)</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                  <th class="px-4 py-3 font-medium text-gray-900 text-right">Elaun (RM)</th>
+                  <th class="px-4 py-3 font-medium text-gray-900 text-center">Tindakan</th>
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
                 <tr v-for="(recipient, index) in recipients" :key="recipient.paId" class="hover:bg-gray-50">
+                  <td class="px-4 py-3 text-gray-500">{{ index + 1 }}</td>
                   <td class="px-4 py-3">
                     <FormKit
                       v-model="recipient.name"
                       type="text"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
+                      :classes="{ input: '!py-1 !px-2 !text-sm' }"
                     />
                   </td>
                   <td class="px-4 py-3">
                     <FormKit
                       v-model="recipient.ic"
                       type="text"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
+                      :classes="{ input: '!py-1 !px-2 !text-sm' }"
                     />
                   </td>
                   <td class="px-4 py-3">
@@ -185,18 +165,14 @@
                       v-model="recipient.category"
                       type="select"
                       :options="categoryOptions"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
+                      :classes="{ input: '!py-1 !px-2 !text-sm' }"
                     />
                   </td>
                   <td class="px-4 py-3">
                     <FormKit
                       v-model="recipient.parish"
                       type="text"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
+                      :classes="{ input: '!py-1 !px-2 !text-sm' }"
                     />
                   </td>
                   <td class="px-4 py-3">
@@ -205,90 +181,90 @@
                       type="number"
                       min="0"
                       step="0.01"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
+                      :classes="{ input: '!py-1 !px-2 !text-sm !text-right' }"
                     />
                   </td>
-                  <td class="px-4 py-3">
+                  <td class="px-4 py-3 text-center">
                     <rs-button
                       variant="danger"
                       size="sm"
                       @click="removeRecipient(index)"
                       class="!px-2 !py-1"
                     >
-                      <Icon name="ic:outline-trash" class="w-4 h-4" />
+                      <Icon name="ic:outline-delete" class="w-4 h-4" />
                     </rs-button>
                   </td>
                 </tr>
-                <tr v-if="!recipients.length" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="6">
-                    Tiada penerima dalam senarai ini. Tambah penerima baharu.
+                <tr v-if="!recipients.length">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                    Tiada penerima dalam senarai. Tambah penerima baharu.
                   </td>
                 </tr>
               </tbody>
               <tfoot class="bg-gray-50">
                 <tr>
-                  <td class="px-4 py-3 text-right font-medium" colspan="4">Jumlah (RM)</td>
-                  <td class="px-4 py-3 font-semibold">{{ formatCurrency(totalAllowance) }}</td>
-                  <td></td>
+                  <td class="px-4 py-3 text-right font-medium" colspan="5">Jumlah Keseluruhan (RM)</td>
+                  <td class="px-4 py-3 text-right font-bold text-lg">{{ formatCurrency(totalAllowance) }}</td>
+                  <td class="px-4 py-3 text-center">
+                    <rs-button 
+                      variant="success" 
+                      size="sm" 
+                      @click="addNewRecipient"
+                      class="flex items-center"
+                      title="Tambah Penerima Baharu"
+                    >
+                      <Icon name="ic:outline-plus" class="w-4 h-4" />
+                    </rs-button>
+                  </td>
                 </tr>
               </tfoot>
             </table>
           </div>
         </div>
-
-        <!-- Amaran Bajet -->
-        <div v-if="totalAllowance > allowanceData.budget" class="mb-6">
-          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div class="flex items-center">
-              <Icon name="ic:outline-warning" class="text-red-400 mr-3" size="20" />
-              <div>
-                <h4 class="text-sm font-medium text-red-800">Amaran Bajet</h4>
-                <p class="text-sm text-red-700 mt-1">
-                  Jumlah elaun (RM {{ formatCurrency(totalAllowance) }}) melebihi bajet (RM {{ formatCurrency(allowanceData.budget) }}).
-                  Lebihan: RM {{ formatCurrency(excessAmount) }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tindakan -->
-        <div class="flex items-center justify-end gap-2">
-          <rs-button
-            variant="secondary-outline"
-            size="sm"
-            @click="goBack"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="secondary"
-            size="sm"
-            :disabled="saving"
-            @click="saveDraft"
-          >
-            <Icon name="ic:outline-save" class="w-4 h-4 mr-2" />
-            Simpan Draf
-          </rs-button>
-          <rs-button
-            variant="success"
-            size="sm"
-            :disabled="!canSubmit || saving"
-            @click="submitForApproval"
-          >
-            <Icon name="ic:outline-send" class="w-4 h-4 mr-2" />
-            Hantar untuk Kelulusan
-          </rs-button>
-        </div>
       </template>
     </rs-card>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-between items-center">
+      <div class="text-sm text-gray-500">
+        <Icon name="ic:outline-info" class="inline mr-1" />
+        Kemaskini hanya dibenarkan sebelum kelulusan
+      </div>
+      
+      <div class="flex gap-3">
+        <rs-button
+          variant="secondary-outline"
+          @click="goBack"
+          class="flex items-center"
+        >
+          <Icon name="ic:outline-close" class="w-4 h-4 mr-2" />
+          Batal
+        </rs-button>
+        <rs-button
+          variant="secondary"
+          :disabled="saving || !hasChanges"
+          @click="saveDraft"
+          class="flex items-center"
+        >
+          <Icon name="ic:outline-save" class="w-4 h-4 mr-2" />
+          {{ saving ? 'Menyimpan...' : 'Simpan Draf' }}
+        </rs-button>
+        <rs-button
+          variant="success"
+          :disabled="!canSubmit || saving || hasChanges"
+          @click="submitForApproval"
+          class="flex items-center"
+        >
+          <Icon name="ic:outline-send" class="w-4 h-4 mr-2" />
+          {{ saving ? 'Menghantar...' : 'Hantar untuk Kelulusan' }}
+        </rs-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '#components';
@@ -297,7 +273,7 @@ import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue';
 
 definePageMeta({
   title: "Kemaskini Maklumat Elaun Tahunan",
-  description: "Edit allowance details for Eksekutif users only",
+  description: "Edit allowance details for Eksekutif users before approval",
 });
 
 const toast = useToast();
@@ -313,7 +289,7 @@ const breadcrumb = ref([
     path: "/BF-PA/PE",
   },
   {
-    name: "Elaun Tahunan",
+    name: "Elaun Tahunan", 
     type: "link",
     path: "/BF-PA/PE/ET",
   },
@@ -324,54 +300,38 @@ const breadcrumb = ref([
   },
 ]);
 
-// Form data
-const allowanceData = ref({
+// Data
+const batchData = ref({
   id: '',
   rujukan: '',
   year: '',
   type: '',
   typeLabel: '',
   status: '',
-  count: 0,
-  totalAmount: 0,
   budget: 10000,
   notes: ''
 });
 
-// Recipients data
 const recipients = ref([]);
-
-// New recipient form
-const newRecipient = ref({
-  name: '',
-  ic: '',
-  category: '',
-  parish: '',
-  allowance: 0
-});
+const originalData = ref({});
 
 // State
 const saving = ref(false);
 
-// Options
-const currentYear = new Date().getFullYear();
-const yearOptions = [
-  { label: String(currentYear - 1), value: currentYear - 1 },
-  { label: String(currentYear), value: currentYear }
-];
+// Type mapping
+const typeOptions = {
+  'ET-KPAK': 'Elaun Tahunan KPAK',
+  'ET-KPAF': 'Elaun Tahunan KPAF',
+  'ET-ANUG': 'Anugerah Penolong Amil',
+  'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
+  'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
+  'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
+  'ANUG-PAF': 'Penolong Amil Fitrah (PAF) terbaik',
+  'ANUG-PAP': 'Penolong Amil Padi (PAP) terbaik',
+  'ANUG-PAKPLUS': 'Penolong Amil Komuniti (PAK+) terbaik'
+};
 
-const typeOptions = [
-  { label: 'Elaun Tahunan KPAK', value: 'ET-KPAK' },
-  { label: 'Elaun Tahunan KPAF', value: 'ET-KPAF' },
-  { label: 'Anugerah Penolong Amil', value: 'ET-ANUG' },
-  { label: 'Ketua Penolong Amil Kariah (KPAK) terbaik', value: 'ANUG-KPAK' },
-  { label: 'Penolong Amil Kariah (PAK) terbaik', value: 'ANUG-PAK' },
-  { label: 'Ketua Penolong Amil Fitrah (KPAF) terbaik', value: 'ANUG-KPAF' },
-  { label: 'Penolong Amil Fitrah (PAF) terbaik', value: 'ANUG-PAF' },
-  { label: 'Penolong Amil Padi (PAP) terbaik', value: 'ANUG-PAP' },
-  { label: 'Penolong Amil Komuniti (PAK+) terbaik', value: 'ANUG-PAKPLUS' }
-];
-
+// Category options
 const categoryOptions = [
   { label: 'PAK', value: 'PAK' },
   { label: 'KPAK', value: 'KPAK' },
@@ -387,15 +347,15 @@ const totalAllowance = computed(() => {
 });
 
 const excessAmount = computed(() => {
-  return Math.max(0, totalAllowance.value - allowanceData.value.budget);
+  return Math.max(0, totalAllowance.value - batchData.value.budget);
+});
+
+const balanceAmount = computed(() => {
+  return totalAllowance.value - batchData.value.budget;
 });
 
 const canAddRecipient = computed(() => {
-  return newRecipient.value.name && 
-         newRecipient.value.ic && 
-         newRecipient.value.category && 
-         newRecipient.value.parish && 
-         newRecipient.value.allowance > 0;
+  return recipients.value.length < 10; // Allow up to 10 recipients
 });
 
 const canSubmit = computed(() => {
@@ -406,6 +366,11 @@ const canSubmit = computed(() => {
          );
 });
 
+const hasChanges = computed(() => {
+  return JSON.stringify(batchData.value) !== JSON.stringify(originalData.value.batchData) ||
+         JSON.stringify(recipients.value) !== JSON.stringify(originalData.value.recipients);
+});
+
 // Helper functions
 function formatCurrency(amount) {
   return Number(amount || 0).toLocaleString('en-MY', {
@@ -414,131 +379,172 @@ function formatCurrency(amount) {
   });
 }
 
-function getTypeLabel(type) {
-  const option = typeOptions.find(opt => opt.value === type);
-  return option ? option.label : type;
+function getStatusVariant(status) {
+  switch (status) {
+    case 'DRAF': return 'secondary';
+    case 'SEDANG PROSES': return 'info';
+    case 'MENUNGGU KELULUSAN': return 'warning';
+    case 'PERLU PENGESAHAN': return 'warning';
+    case 'LULUS': return 'success';
+    case 'DITOLAK': return 'danger';
+    default: return 'secondary';
+  }
 }
 
-// Load allowance data
-function loadAllowanceData() {
+// Load data function
+function loadBatchData() {
   const id = route.query.id;
-  if (!id) {
-    toast.error('ID elaun tidak ditemui');
-    goBack();
-    return;
-  }
-
-  // Load from localStorage or use sample data
   const year = route.query.year;
   const type = route.query.type;
   
-  if (year && type) {
+  if (!id || !year || !type) {
+    // Load mock data for demonstration if no parameters
+    loadMockData();
+    return;
+  }
+  
+  try {
     // Load from localStorage
     const recipientsKey = `et:recipients:${year}:${type}`;
-    const countKey = `et:count:${year}:${type}`;
     const statusKey = `et:status:${year}:${type}`;
     
-    try {
-      const recipientsData = localStorage.getItem(recipientsKey);
-      const count = localStorage.getItem(countKey);
-      const status = localStorage.getItem(statusKey);
-      
-      if (recipientsData) {
-        recipients.value = JSON.parse(recipientsData);
-      }
-      
-      // Update allowance data
-      allowanceData.value = {
-        ...allowanceData.value,
-        id: id,
-        rujukan: id,
-        year: Number(year),
-        type: type,
-        typeLabel: getTypeLabel(type),
-        status: status || 'DRAF',
-        count: Number(count) || 0,
-        totalAmount: totalAllowance.value,
-        budget: 10000, // Default budget
-        notes: ''
-      };
-    } catch (error) {
-      console.error('Error loading data:', error);
-      toast.error('Gagal memuatkan data elaun');
+    const recipientsData = localStorage.getItem(recipientsKey);
+    const status = localStorage.getItem(statusKey);
+    
+    if (recipientsData) {
+      recipients.value = JSON.parse(recipientsData);
+    } else {
+      // Fallback to mock data if no localStorage data
+      loadMockData();
+      return;
     }
-  } else {
-    // Use sample data for demonstration
-    allowanceData.value = {
+    
+    // Set batch data
+    batchData.value = {
       id: id,
       rujukan: id,
-      year: 2024,
-      type: 'ET-KPAK',
-      typeLabel: 'Elaun Tahunan KPAK',
-      status: 'DRAF',
-      count: 25,
-      totalAmount: 12500.00,
-      budget: 10000.00,
-      notes: 'Elaun untuk KPAK tahun 2024'
+      year: Number(year),
+      type: type,
+      typeLabel: typeOptions[type] || type,
+      status: status || 'DRAF',
+      budget: 10000, // Default budget
+      notes: ''
     };
     
-    // Sample recipients
-    recipients.value = [
-      {
-        paId: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        ic: '800101145678',
-        category: 'KPAK',
-        parish: 'Kariah A',
-        allowance: 500.00
-      },
-      {
-        paId: 'PA002',
-        name: 'Siti binti Mohamed',
-        ic: '820315123456',
-        category: 'KPAK',
-        parish: 'Kariah B',
-        allowance: 500.00
-      }
-    ];
+    // Check if editing is allowed
+    if (!['DRAF', 'SEDANG PROSES'].includes(batchData.value.status)) {
+      toast.error('Kemaskini tidak dibenarkan selepas kelulusan');
+      goBack();
+      return;
+    }
+    
+    // Store original data for change detection
+    originalData.value = {
+      batchData: JSON.parse(JSON.stringify(batchData.value)),
+      recipients: JSON.parse(JSON.stringify(recipients.value))
+    };
+    
+  } catch (error) {
+    console.error('Error loading data:', error);
+    // Fallback to mock data on error
+    loadMockData();
   }
 }
 
-// Recipient management functions
-function addRecipient() {
-  if (!canAddRecipient.value) return;
+// Mock data function
+function loadMockData() {
+  // Generate mock batch data
+  const mockYear = 2024;
+  const mockType = 'ET-KPAK';
+  const mockStatus = 'DRAF';
   
-  const recipient = {
-    paId: `PA${Date.now()}`,
-    ...newRecipient.value
+  batchData.value = {
+    id: 'ET-2024-001',
+    rujukan: 'ET-2024-001',
+    year: mockYear,
+    type: mockType,
+    typeLabel: typeOptions[mockType] || mockType,
+    status: mockStatus,
+    budget: 15000,
+    notes: 'Elaun tahunan untuk KPAK tahun 2024. Permohonan ini sedang dalam draf dan boleh dikemas kini.'
   };
   
-  recipients.value.push(recipient);
+  // Generate mock recipients data
+  recipients.value = [
+    {
+      paId: 'PA2024001',
+      name: 'Ahmad bin Abdullah',
+      ic: '800101-01-1234',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
+      allowance: 500.00
+    },
+    {
+      paId: 'PA2024002',
+      name: 'Mohd Zain bin Ismail',
+      ic: '750315-08-5678',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Amin',
+      allowance: 500.00
+    },
+    {
+      paId: 'PA2024003',
+      name: 'Abdul Rahman bin Hassan',
+      ic: '820520-14-9012',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Hidayah',
+      allowance: 500.00
+    }
+  ];
   
-  // Reset form
-  newRecipient.value = {
+  // Store original data for change detection
+  originalData.value = {
+    batchData: JSON.parse(JSON.stringify(batchData.value)),
+    recipients: JSON.parse(JSON.stringify(recipients.value))
+  };
+  
+
+}
+
+// Recipient management
+function addNewRecipient() {
+  if (!canAddRecipient.value) {
+    toast.error('Maksimum 10 penerima telah ditetapkan.');
+    return;
+  }
+  
+  recipients.value.push({
+    paId: `PA${Date.now()}`,
     name: '',
     ic: '',
     category: '',
     parish: '',
     allowance: 0
-  };
+  });
   
   toast.success('Penerima berjaya ditambah');
 }
 
 function removeRecipient(index) {
+  const recipient = recipients.value[index];
   recipients.value.splice(index, 1);
-  toast.success('Penerima berjaya dibuang');
+  toast.success(`${recipient.name} telah dibuang dari senarai`);
 }
 
 // Save functions
 async function saveDraft() {
+  if (!hasChanges.value) {
+    toast.info('Tiada perubahan untuk disimpan');
+    return;
+  }
+  
   saving.value = true;
   try {
     await wait(400);
     
     // Update localStorage
-    const year = allowanceData.value.year;
-    const type = allowanceData.value.type;
+    const year = batchData.value.year;
+    const type = batchData.value.type;
     const count = recipients.value.length;
     
     const recipientsKey = `et:recipients:${year}:${type}`;
@@ -549,23 +555,40 @@ async function saveDraft() {
     localStorage.setItem(countKey, String(count));
     localStorage.setItem(statusKey, 'DRAF');
     
-    toast.success('Draf berjaya disimpan');
-    goBack();
+    // Update original data for change detection
+    originalData.value = {
+      batchData: JSON.parse(JSON.stringify(batchData.value)),
+      recipients: JSON.parse(JSON.stringify(recipients.value))
+    };
+    
+    toast.success('Draf berjaya disimpan. Anda boleh terus mengedit atau hantar untuk kelulusan.');
+  } catch (error) {
+    toast.error('Gagal menyimpan draf. Sila cuba lagi.');
   } finally {
     saving.value = false;
   }
 }
 
 async function submitForApproval() {
-  if (!canSubmit.value) return;
+  // Validate required fields
+  if (!canSubmit.value) {
+    toast.error('Sila pastikan semua maklumat lengkap sebelum hantar untuk kelulusan');
+    return;
+  }
+  
+  // Check if there are unsaved changes
+  if (hasChanges.value) {
+    toast.warning('Sila simpan draf terlebih dahulu sebelum hantar untuk kelulusan');
+    return;
+  }
   
   saving.value = true;
   try {
     await wait(600);
     
-    // Update localStorage
-    const year = allowanceData.value.year;
-    const type = allowanceData.value.type;
+    // Update localStorage with final data
+    const year = batchData.value.year;
+    const type = batchData.value.type;
     const count = recipients.value.length;
     
     const recipientsKey = `et:recipients:${year}:${type}`;
@@ -574,10 +597,19 @@ async function submitForApproval() {
     
     localStorage.setItem(recipientsKey, JSON.stringify(recipients.value));
     localStorage.setItem(countKey, String(count));
-    localStorage.setItem(statusKey, 'SEDANG PROSES');
+    localStorage.setItem(statusKey, 'MENUNGGU KELULUSAN');
     
-    toast.success('Permohonan berjaya dihantar untuk kelulusan');
-    goBack();
+    // Show appropriate message based on budget
+    if (excessAmount.value > 0) {
+      toast.success('Permohonan berjaya dihantar! Status: MENUNGGU KELULUSAN. Permohonan ini memerlukan pengesahan kerana melebihi bajet.');
+    } else {
+      toast.success('Permohonan berjaya dihantar! Status: MENUNGGU KELULUSAN. Permohonan ini akan diproses untuk kelulusan.');
+    }
+    
+    // Navigate back to main ET dashboard
+    await navigateTo('/BF-PA/PE/ET');
+  } catch (error) {
+    toast.error('Gagal menghantar permohonan. Sila cuba lagi.');
   } finally {
     saving.value = false;
   }
@@ -588,9 +620,23 @@ function wait(ms) {
   return new Promise(res => setTimeout(res, ms)); 
 }
 
+// Warn user before leaving if there are unsaved changes
+watch(hasChanges, (newValue) => {
+  if (newValue) {
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+  } else {
+    window.removeEventListener('beforeunload', beforeUnloadHandler);
+  }
+});
+
+function beforeUnloadHandler(event) {
+  event.preventDefault();
+  event.returnValue = 'Anda mempunyai perubahan yang belum disimpan. Adakah anda pasti untuk meninggalkan halaman ini?';
+}
+
 // Load data on mount
 onMounted(() => {
-  loadAllowanceData();
+  loadBatchData();
 });
 </script>
 
