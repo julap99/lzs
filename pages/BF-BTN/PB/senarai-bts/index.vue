@@ -13,7 +13,7 @@
   
         <template #body>
           <!-- Search and Filter Section -->
-          <div class="mb-6">
+          <!-- <div class="mb-6">
             <div class="flex flex-col md:flex-row gap-4">
               <div class="flex-1">
                 <FormKit
@@ -36,7 +36,7 @@
                 />
               </div>
             </div>
-          </div>
+          </div> -->
   
           <!-- Applications Table -->
           <rs-table
@@ -68,7 +68,6 @@
                   class="p-1 flex gap-2"
                   @click="handleReview(text)"
                 >
-                  <Icon name="ph:check" class="w-4 h-4" />
                   Semak
                 </rs-button>
               </div>
@@ -134,7 +133,7 @@
       path: "/BF-BTN/PB/senarai-bts",
     },
     {
-      name: "Senarai untuk Disemak",
+      name: "Senarai Permohonan untuk Disemak",
       type: "current",
       path: "/BF-BTN/PB/senarai-bts",
     },

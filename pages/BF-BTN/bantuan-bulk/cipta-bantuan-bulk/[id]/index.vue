@@ -67,6 +67,16 @@
               }"
             />
 
+            <!-- Nama Pegawai -->
+            <FormKit
+              type="text"
+              name="namaPegawai"
+              label="Nama Pegawai"
+              v-model="formData.namaPegawai"
+              disabled
+              help="Auto-fill selepas simpan"
+            />
+
             <!-- Tarikh Mohon -->
             <FormKit
               type="text"
@@ -74,24 +84,7 @@
               label="Tarikh Mohon"
               v-model="formData.tarikhMohon"
               disabled
-            />
-
-            <!-- Dicipta Oleh -->
-            <FormKit
-              type="text"
-              name="diciptaOleh"
-              label="Dicipta Oleh"
-              v-model="formData.diciptaOleh"
-              disabled
-            />
-
-            <!-- Dicipta Pada -->
-            <FormKit
-              type="text"
-              name="diciptaPada"
-              label="Dicipta Pada"
-              v-model="formData.diciptaPada"
-              disabled
+              help="Auto-fill selepas simpan"
             />
           </div>
         </template>
@@ -175,9 +168,6 @@
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada</h2>
-            <rs-button variant="primary" @click="handleAddPayment">
-              <Icon name="material-symbols:add" class="mr-1" /> Tambah
-            </rs-button>
           </div>
         </template>
         <template #body>
@@ -220,14 +210,45 @@
         </template>
       </rs-card>
 
-      <!-- Senarai Penerima Section -->
+      <!-- Maklumat Data Rosak Section -->
+      <rs-card>
+        <template #header>
+          <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
+        </template>
+        <template #body>
+          <rs-table
+            :data="damagedDataList"
+            :columns="damagedDataColumns"
+            :pageSize="5"
+            :showNoColumn="true"
+            :options="{ variant: 'default', hover: true, striped: true }"
+            :options-advanced="{ sortable: true, filterable: true }"
+            advanced
+          >
+            <template v-slot:default>
+              <div v-if="damagedDataList.length === 0" class="text-center py-8 text-gray-500">
+                Tiada maklumat data rosak. Klik "Tambah" untuk menambah maklumat data rosak.
+              </div>
+            </template>
+            <template v-slot:actions="{ row }">
+              <div class="flex space-x-2 justify-center">
+                <a :href="`/details/${row.namaPenerima}`" class="text-blue-500 hover:underline">
+                  {{ row.namaPenerima }}
+                </a>
+                <rs-button variant="primary" size="sm" @click="handleEditDamagedData(row)">
+                  Kemaskini
+                </rs-button>
+              </div>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+
+      <!-- Maklumat Senarai Penerima Section -->
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Senarai Penerima</h2>
-            <rs-button variant="primary" @click="handleAddRecipient">
-              <Icon name="material-symbols:add" class="mr-1" /> Tambah
-            </rs-button>
+            <h2 class="text-xl font-semibold">Maklumat Senarai Penerima</h2>
           </div>
         </template>
         <template #body>
@@ -273,7 +294,7 @@
       <!-- Dokumen Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Dokumen Berkaitan</h2>
+          <h2 class="text-xl font-semibold">Maklumat Dokumen Sokongan</h2>
         </template>
         <template #body>
           <div v-if="documentList.length === 0" class="text-center py-8 text-gray-500">
@@ -308,23 +329,23 @@
             variant="secondary"
             @click="navigateBack"
           >
-            <Icon name="material-symbols:arrow-back" class="mr-1" />
+            <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
             Kembali
           </rs-button>
           <div class="flex space-x-2">
             <rs-button
-              variant="warning"
+              variant="info"
               @click="editBantuan"
             >
-              <Icon name="material-symbols:edit" class="mr-1" />
+              <Icon name="ph:floppy-disk" class="w-4 h-4 mr-1" />
               Simpan
             </rs-button>
             <rs-button
               variant="primary"
-              @click="printDetails"
+              @click="submitBantuan"
             >
-              <Icon name="material-symbols:print" class="mr-1" />
-              Cetak
+              <Icon name="ph:paper-plane-tilt" class="w-4 h-4 mr-1" />
+              Hantar
             </rs-button>
           </div>
         </div>
@@ -591,16 +612,15 @@ const formData = ref({
   status: "Draf",
   jumlahAmaun: "5,000.00",
   catatan: "Tuntutan wang saku pelajar untuk bulan Mac 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.",
-  tarikhMohon: "15/01/2025",
-  diciptaOleh: "Ahmad bin Ali",
-  diciptaPada: "15/01/2025 10:30 AM",
+  namaPegawai: "Ahmad bin Ali",
+  tarikhMohon: "15/01/2025 10:30 AM",
   kategoriBantuan: "Bantuan Pendidikan",
   subKategori: "Wang Saku",
   bantuan: "Bantuan Pendidikan",
   kodBantuan: "BTN-PENDIDIKAN-202501",
   produkBantuan: "Wang Saku",
   penyiasat: "Ahmad bin Hassan",
-  cawangan: "Cawangan Kuala Lumpur"
+  cawangan: "Cawangan Ibu Pejabat LZS"
 });
 
 // Options
@@ -647,9 +667,7 @@ const recipientList = ref([
     agihanSemula: "Ya",
     bulkProcessing: "Tidak",
     kategoriAsnaf: "Fakir",
-    bayaranKepada: "Individu",
-    negeri: "Selangor",
-    negara: "Malaysia"
+    bayaranKepada: "Individu"
   },
   {
     id: "RCP-002",
@@ -658,9 +676,7 @@ const recipientList = ref([
     agihanSemula: "Ya",
     bulkProcessing: "Tidak",
     kategoriAsnaf: "Fakir",
-    bayaranKepada: "Individu",
-    negeri: "Selangor",
-    negara: "Malaysia"
+    bayaranKepada: "Individu"
   },
   {
     id: "RCP-003",
@@ -669,9 +685,7 @@ const recipientList = ref([
     agihanSemula: "Tidak",
     bulkProcessing: "Ya",
     kategoriAsnaf: "Fakir",
-    bayaranKepada: "Individu",
-    negeri: "Kuala Lumpur",
-    negara: "Malaysia"
+    bayaranKepada: "Individu"
   }
 ]);
 
@@ -713,9 +727,7 @@ const recipientForm = ref({
   agihanSemula: "Tidak",
   bulkProcessing: "Tidak",
   kategoriAsnaf: "",
-  bayaranKepada: "Individu",
-  negeri: "",
-  negara: "Malaysia",
+  bayaranKepada: "Individu"
 });
 
 // Computed Properties
@@ -848,9 +860,7 @@ const handleAddRecipient = () => {
     agihanSemula: "Tidak",
     bulkProcessing: "Tidak",
     kategoriAsnaf: formData.value.kategoriAsnaf || "",
-    bayaranKepada: "Individu",
-    negeri: "",
-    negara: "Malaysia",
+    bayaranKepada: "Individu"
   };
 
   recipientModalMode.value = "add";
@@ -933,6 +943,51 @@ onMounted(async () => {
     console.error('Error loading bantuan details:', error);
   }
 });
+
+// Damaged Data Table Configuration
+const damagedDataColumns = [
+  { key: "namaPenerima", label: "Nama Penerima" },
+  { key: "catatan", label: "Catatan" },
+  {
+     key: "actions",
+    label: "Tindakan",
+    sortable: false,
+    align: "center",
+  },
+];
+
+// Sample data for damaged data list (you can replace this with your actual data)
+const damagedDataList = ref([
+  { namaPenerima: "Ali bin Abu", catatan: "Data tidak lengkap"},
+  { namaPenerima: "Siti binti Ali", catatan: "Dokumen hilang" },
+]);
+
+const handleEditDamagedData = (data) => {
+  // Logic to handle editing damaged data
+  console.log("Editing damaged data for:", data.namaPenerima);
+  // Implement the logic to open the edit modal or navigate to the edit page
+};
+
+// Methods for Damaged Data
+const handleAddDamagedData = () => {
+  // Logic to add new damaged data
+  const newDamagedData = {
+    no: damagedDataList.value.length + 1,
+    namaPenerima: "Contoh Penerima",
+    catatan: "Contoh catatan untuk data rosak",
+  };
+  damagedDataList.value.push(newDamagedData);
+  alert("success", "Maklumat data rosak berjaya ditambah");
+};
+
+const handleDeleteDamagedData = (data) => {
+  const index = damagedDataList.value.findIndex(d => d.no === data.no);
+  if (index !== -1) {
+    damagedDataList.value.splice(index, 1);
+    alert("success", "Data rosak berjaya dipadam");
+  }
+};
+
 </script>
 
 <style lang="scss" scoped>

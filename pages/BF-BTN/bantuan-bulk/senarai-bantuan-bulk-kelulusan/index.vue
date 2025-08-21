@@ -6,20 +6,20 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Senarai Bantuan Bulk (Kelulusan)
+            Senarai Bulk Processing
           </h2>
         </div>
       </template>
 
       <template #body>
         <!-- Search and Filter Section -->
-        <div class="mb-6">
+        <!-- <div class="mb-6">
           <div class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
               <FormKit
                 v-model="searchQuery"
                 type="text"
-                placeholder="Cari Kod BP, Tajuk Bantuan..."
+                placeholder="Cari Kod BP, Tajuk..."
                 :classes="{
                   input: '!py-2',
                 }"
@@ -37,8 +37,9 @@
             </div>
           </div>
         </div>
+        -->
 
-        <!-- Bantuan Bulk Table -->
+        <!-- Bulk Processing Table -->
         <rs-table
           :data="filteredBantuanBulk"
           :columns="columns"
@@ -57,7 +58,7 @@
         >
           <template v-slot:status="{ text }">
             <rs-badge :variant="getStatusVariant(text)">
-              {{ text }}
+              <center> {{ text }} </center>
             </rs-badge>
           </template>
 
@@ -69,7 +70,7 @@
                 @click="handleProses(text)"
               >
                 <Icon name="ph:eye" class="w-4 h-4" />
-                Lebih
+                Lihat
               </rs-button>
             </div>
           </template>
@@ -124,7 +125,7 @@
 import { ref, computed } from "vue";
 
 definePageMeta({
-  title: "Senarai Bantuan Bulk - Sokongan",
+  title: "Senarai Bulk Processing",
 });
 
 const breadcrumb = ref([
@@ -134,7 +135,7 @@ const breadcrumb = ref([
     path: "/BF-BTN",
   },
   {
-    name: "Bantuan Bulk",
+    name: "Bulk Processing",
     type: "link", 
     path: "/BF-BTN/bantuan-bulk",
   },
@@ -153,18 +154,18 @@ const columns = [
     sortable: true,
   },
   {
-    key: "tajukBantuan",
-    label: "Tajuk Bantuan",
+    key: "tajuk",
+    label: "Tajuk",
     sortable: true,
   },
   {
-    key: "bantuan",
-    label: "Bantuan (Aid)",
+    key: "aid",
+    label: "Aid",
     sortable: true,
   },
   {
-    key: "produkBantuan",
-    label: "Produk Bantuan (Product Aid)",
+    key: "aidProduct",
+    label: "Aid Product",
     sortable: true,
   },
   {
@@ -199,25 +200,31 @@ const pageSize = ref(10);
 const bantuanBulkList = ref([
   {
     kodBP: "BP-2025-00001",
-    tajukBantuan: "Wang Saku Fakir Jan 2025",
-    bantuan: "B314 - Bantuan Keperluan Pendidikan IPT (Fakir)",
-    produkBantuan: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
+    tajuk: "Wang Saku Fakir Jan 2025",
+    aid: "B314 - Bantuan Keperluan Pendidikan IPT (Fakir)",
+    aidProduct: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
+    jumlahAmaun: 'RM20,000.00',
+    tarikhHantar: '03/03/2025',
     status: "Dalam Tindakan",
     tindakan: "BP-2025-00001",
   },
   {
     kodBP: "BP-2025-00002",
-    tajukBantuan: "Wang Saku Fakir Feb 2025",
-    bantuan: "B314 - Bantuan Keperluan Pendidikan IPT (Fakir)",
-    produkBantuan: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
+    tajuk: "Wang Saku Fakir Feb 2025",
+    aid: "B314 - Bantuan Keperluan Pendidikan IPT (Fakir)",
+    aidProduct: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
+    jumlahAmaun: 'RM23,000.00',
+    tarikhHantar: '02/03/2025',
     status: "Dalam Tindakan",
     tindakan: "BP-2025-00002",
   },
   {
     kodBP: "BP-2025-00004",
-    tajukBantuan: "Wang Saku Fakir Mac 2025",
-    bantuan: "B314 - Bantuan Keperluan Pendidikan IPT (Fakir)",
-    produkBantuan: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
+    tajuk: "Wang Saku Fakir Mac 2025",
+    aid: "B314 - Bantuan Keperluan Pendidikan IPT (Fakir)",
+    aidProduct: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
+    jumlahAmaun: 'RM25,000.00',
+    tarikhHantar: '01/03/2025',
     status: "Dalam Tindakan",
     tindakan: "BP-2025-00004",
   },
