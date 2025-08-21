@@ -165,6 +165,18 @@ onMounted(() => {
   profileForm.value.nama = "Ahmad bin Abdullah";
   profileForm.value.noKadPengenalan = "880429105605";
   profileForm.value.emel = "ahmad.abdullah@email.com";
+  
+  // Hide the sidebar by adding menu-hide class to v-layout
+  const vLayout = document.querySelector('.v-layout')
+  if (vLayout) {
+    vLayout.classList.add('menu-hide')
+  }
+  
+  // Also hide any menu overlay
+  const menuOverlay = document.querySelector('.menu-overlay')
+  if (menuOverlay) {
+    menuOverlay.classList.add('hide')
+  }
 });
 </script>
 

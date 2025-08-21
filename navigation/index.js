@@ -1550,7 +1550,7 @@ export default [
       {
         title: "Dashboard Penolong Amil",
         icon: "iconamoon:arrow-right-2-duotone",
-        path: "/BF-PA/PP/penolong-amil",
+        path: "/BF-PA/PP/penolong-amil/dashboard",
         meta: {
           auth: {
             role: ["PenolongAmil"]
@@ -1558,7 +1558,7 @@ export default [
         },
       },
       {
-        title: "Kad Tauliah",
+        title: "Senarai Asnaf",
         icon: "iconamoon:arrow-right-2-duotone",
         path: "/BF-PA/PP/kad-tauliah",
         meta: {
@@ -1568,7 +1568,7 @@ export default [
         },
       },
       {
-        title: "Surat Tawaran",
+        title: "Laporan Agihan",
         icon: "iconamoon:arrow-right-2-duotone",
         path: "/BF-PA/PP/surat-tawaran",
         meta: {
@@ -1576,17 +1576,7 @@ export default [
             role: ["PenolongAmil"]
           }
         },
-      },
-      {
-        title: "Profil",
-        icon: "iconamoon:arrow-right-2-duotone",
-        path: "/BF-PA/PP/profil",
-        meta: {
-          auth: {
-            role: ["PenolongAmil"]
-          }
-        },
-      },
+      }
     ],
     meta: {
       auth: {

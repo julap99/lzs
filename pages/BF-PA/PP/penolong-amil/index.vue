@@ -432,6 +432,21 @@ const toggleCategory = (key) => {
   selectedKategori[key] = !selectedKategori[key]
 }
 
+// Hide sidebar when page loads
+onMounted(() => {
+  // Hide the sidebar by adding menu-hide class to v-layout
+  const vLayout = document.querySelector('.v-layout')
+  if (vLayout) {
+    vLayout.classList.add('menu-hide')
+  }
+  
+  // Also hide any menu overlay
+  const menuOverlay = document.querySelector('.menu-overlay')
+  if (menuOverlay) {
+    menuOverlay.classList.add('hide')
+  }
+})
+
 const acceptOffer = () => {
   // Show success message and redirect to profile completion
   alert('Terima kasih! Pengesahan penerimaan tawaran telah dihantar. Sila lengkapkan maklumat profil anda.')

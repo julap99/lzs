@@ -570,6 +570,18 @@ const downloadSuratTawaran = () => {
 onMounted(() => {
   // In real implementation, fetch user profile and stats
   console.log("Loading Penolong Amil dashboard");
+  
+  // Ensure sidebar is visible by removing menu-hide class
+  const vLayout = document.querySelector('.v-layout')
+  if (vLayout) {
+    vLayout.classList.remove('menu-hide')
+  }
+  
+  // Also ensure menu overlay is not hidden
+  const menuOverlay = document.querySelector('.menu-overlay')
+  if (menuOverlay) {
+    menuOverlay.classList.remove('hide')
+  }
 });
 </script>
 
