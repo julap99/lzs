@@ -34,7 +34,6 @@ const login = async () => {
 
     } else if (username.value === "penolongamil") {
       userStore.setRoles(["PenolongAmil"]);
-      console.log("Setting PenolongAmil role:", userStore.roles);
       navigateTo("/BF-PA/PP/penolong-amil");
     }
 
