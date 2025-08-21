@@ -43,14 +43,6 @@
               <Icon name="heroicons:document-text" size="16" class="mr-2" />
               Surat Tawaran
             </rs-button>
-            <rs-button size="sm" variant="primary-outline" @click="showProfile = true">
-              <Icon name="ph:user" size="16" class="mr-2" />
-              Profil
-            </rs-button>
-            <rs-button size="sm" variant="secondary-outline" @click="handleLogout">
-              <Icon name="ph:sign-out" size="16" class="mr-2" />
-              Log Keluar
-            </rs-button>
           </div>
         </div>
       </template>
@@ -99,120 +91,79 @@
       </rs-card>
     </div>
 
-    <!-- PAK Main Actions - Focus on Agihan -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/agihan-bantuan')">
-        <template #body>
-          <div class="text-center p-4">
-            <Icon name="ph:hand-heart" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Agihan Bantuan</h3>
-            <p class="text-sm text-gray-600">Urus agihan bantuan kepada asnaf</p>
-          </div>
-        </template>
-      </rs-card>
-
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/senarai-asnaf')">
-        <template #body>
-          <div class="text-center p-4">
-            <Icon name="ph:users" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Senarai Asnaf</h3>
-            <p class="text-sm text-gray-600">Kelola maklumat asnaf kariah</p>
-          </div>
-        </template>
-      </rs-card>
-
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/laporan-agihan')">
-        <template #body>
-          <div class="text-center p-4">
-            <Icon name="ph:chart-bar" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Laporan Agihan</h3>
-            <p class="text-sm text-gray-600">Lihat laporan prestasi agihan</p>
-          </div>
-        </template>
-      </rs-card>
-
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/tugasan-agihan')">
-        <template #body>
-          <div class="text-center p-4">
-            <Icon name="ph:list-checks" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tugasan Agihan</h3>
-            <p class="text-sm text-gray-600">Urus tugasan agihan harian</p>
-          </div>
-        </template>
-      </rs-card>
-
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/bancian-asnaf')">
-        <template #body>
-          <div class="text-center p-4">
-            <Icon name="ph:clipboard-text" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Bancian Asnaf</h3>
-            <p class="text-sm text-gray-600">Bancian dan kemaskini asnaf</p>
-          </div>
-        </template>
-      </rs-card>
-
-      <rs-card class="cursor-pointer hover:shadow-lg transition-shadow" @click="navigateTo('/BF-PA/PP/penolong-amil/komunikasi-kariah')">
-        <template #body>
-          <div class="text-center p-4">
-            <Icon name="ph:chat-circle" class="text-primary mx-auto mb-3" size="48" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Komunikasi Kariah</h3>
-            <p class="text-sm text-gray-600">Hubungi ahli kariah dan asnaf</p>
-          </div>
-        </template>
-      </rs-card>
-    </div>
-
-    <!-- Recent Agihan Activities -->
+    <!-- Senarai Tugasan Table -->
     <rs-card class="mb-6">
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-gray-900">Aktiviti Agihan Terkini</h3>
-          <rs-button variant="primary-outline" size="sm" @click="navigateTo('/BF-PA/PP/penolong-amil/aktiviti-agihan')">
-            Lihat Semua
-          </rs-button>
+          <h3 class="text-lg font-semibold text-gray-900">Senarai Tugasan</h3>
         </div>
       </template>
       <template #body>
-        <div class="space-y-4">
-          <div v-for="activity in recentAgihanActivities" :key="activity.id" class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg">
-            <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-              <Icon :name="activity.icon" class="text-primary" size="16" />
+        <rs-table
+          class="mt-4"
+          :key="filteredAduanData"
+          :data="filteredAduanData"
+          :columns="aduanColumns"
+          :pageSize="5"
+          :showNoColumn="true"
+          :options="{
+            variant: 'default',
+            hover: true,
+          }"
+        >
+          <template v-slot:kategoriAduan="{ text }">
+            <rs-badge
+              :variant="getKategoriAduanVariant(text)"
+              size="sm"
+              class="w-4 h-4 rounded-full"
+              :title="getKategoriAduanLabel(text)"
+            >
+            </rs-badge>
+          </template>
+          <template v-slot:status="{ text }">
+            <rs-badge :variant="getStatusVariant(text)" size="sm">
+              {{ text }}
+            </rs-badge>
+          </template>
+          <template v-slot:prioriti="{ text }">
+            <rs-badge
+              :variant="getPrioritiVariant(text)"
+              size="sm"
+              class="w-4 h-4 rounded-full"
+              :title="text"
+            />
+          </template>
+          <template v-slot:tarikhAduan="{ text }">
+            <span class="font-medium">{{ formatDate(text) }}</span>
+          </template>
+          <template v-slot:aksi="{ value }">
+            <div class="flex gap-2">
+              <rs-button
+                variant="secondary"
+                size="sm"
+                class="!px-2 !py-1"
+                @click="viewAduan(value.noRujukan)"
+              >
+                Lihat
+                <Icon name="mdi:eye" class="ml-1" size="1rem" />
+              </rs-button>
+              <rs-button
+                v-if="!isStatusFinal(value.status)"
+                variant="primary"
+                size="sm"
+                class="!px-2 !py-1"
+                @click="handleAduan(value.noRujukan)"
+              >
+                Semak
+                <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
+              </rs-button>
             </div>
-            <div class="flex-1">
-              <h4 class="font-medium text-gray-900">{{ activity.title }}</h4>
-              <p class="text-sm text-gray-600">{{ activity.description }}</p>
-              <div class="flex items-center gap-2 mt-1">
-                <p class="text-xs text-gray-500">{{ activity.timestamp }}</p>
-                <rs-badge :variant="activity.statusVariant" size="sm">{{ activity.status }}</rs-badge>
-              </div>
-            </div>
-          </div>
-        </div>
+          </template>
+        </rs-table>
       </template>
     </rs-card>
 
-    <!-- Kariah Information -->
-    <rs-card class="mb-6">
-      <template #header>
-        <h3 class="text-lg font-semibold text-gray-900">Maklumat Kariah</h3>
-      </template>
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="text-center p-4 bg-blue-50 rounded-lg">
-            <div class="text-2xl font-bold text-blue-600">{{ kariahInfo.totalAhli }}</div>
-            <div class="text-sm text-gray-600">Jumlah Ahli Kariah</div>
-          </div>
-          <div class="text-center p-4 bg-green-50 rounded-lg">
-            <div class="text-2xl font-bold text-green-600">{{ kariahInfo.totalAsnaf }}</div>
-            <div class="text-sm text-gray-600">Jumlah Asnaf</div>
-          </div>
-          <div class="text-center p-4 bg-orange-50 rounded-lg">
-            <div class="text-2xl font-bold text-orange-600">{{ kariahInfo.kawasanAgihan }}</div>
-            <div class="text-sm text-gray-600">Kawasan Agihan</div>
-          </div>
-        </div>
-      </template>
-    </rs-card>
+   
 
     <!-- Profile Modal -->
     <rs-modal v-model="showProfile" title="Profil Penolong Amil">
@@ -544,16 +495,72 @@ const kariahInfo = ref({
   kawasanAgihan: "Kawasan A, Kawasan B, Kawasan C"
 });
 
+// Aduan data for Penolong Amil
+const aduanData = ref([
+  {
+    noRujukan: "ADN-2024-001",
+    namaIndividu: "Ahmad bin Ismail",
+    kategoriAduan: 1,
+    prioriti: "Tinggi",
+    tarikhAduan: "2024-03-15",
+    status: "Aduan Baru",
+    aksi: "Aduan Baru",
+  },
+  {
+    noRujukan: "ADN-2024-002",
+    namaIndividu: "Siti binti Hassan",
+    kategoriAduan: 2,
+    prioriti: "Sederhana",
+    tarikhAduan: "2024-03-14",
+    status: "Dalam Proses",
+    aksi: "Dalam Proses",
+  },
+  {
+    noRujukan: "ADN-2024-003",
+    namaIndividu: "Mohamad bin Ali",
+    kategoriAduan: 3,
+    prioriti: "Rendah",
+    tarikhAduan: "2024-03-13",
+    status: "Selesai",
+    aksi: "Selesai",
+  },
+  {
+    noRujukan: "ADN-2024-004",
+    namaIndividu: "Noraini binti Omar",
+    kategoriAduan: 1,
+    prioriti: "Tinggi",
+    tarikhAduan: "2024-03-12",
+    status: "Menunggu Kelulusan",
+    aksi: "Menunggu Kelulusan",
+  },
+  {
+    noRujukan: "ADN-2024-005",
+    namaIndividu: "Zulkifli bin Rashid",
+    kategoriAduan: 2,
+    prioriti: "Sederhana",
+    tarikhAduan: "2024-03-11",
+    status: "Ditutup",
+    aksi: "Ditutup",
+  },
+]);
+
+const filteredAduanData = ref([...aduanData.value]);
+
+// Table columns for Aduan
+const aduanColumns = [
+  { key: "noRujukan", label: "No. Rujukan", sortable: true },
+  { key: "namaIndividu", label: "Nama Individu", sortable: true },
+  { key: "kategoriAduan", label: "Kategori Aduan", sortable: true },
+  { key: "prioriti", label: "Prioriti", sortable: true },
+  { key: "tarikhAduan", label: "Tarikh Aduan", sortable: true },
+  { key: "status", label: "Status", sortable: true },
+  { key: "aksi", label: "Tindakan", sortable: false },
+];
+
 const showProfile = ref(false);
 const showKadTauliah = ref(false);
 const showSuratTawaran = ref(false);
 
-const handleLogout = () => {
-  if (confirm("Adakah anda pasti ingin log keluar?")) {
-    // In real implementation, clear session/token
-    navigateTo("/BF-PA/PP/penolong-amil/login");
-  }
-};
 
 const downloadKadTauliah = () => {
   // In real implementation, this would generate and download PDF
@@ -565,6 +572,67 @@ const downloadSuratTawaran = () => {
   // In real implementation, this would generate and download PDF
   alert('Muat turun Surat Tawaran...');
   showSuratTawaran.value = false;
+};
+
+// Helper functions for Aduan table
+const getKategoriAduanVariant = (kategoriAduan) => {
+  const variants = {
+    1: "danger",    // Keselamatan
+    2: "warning",   // Kebersihan
+    3: "success",   // Infrastruktur
+  };
+  return variants[kategoriAduan] || "default";
+};
+
+const getKategoriAduanLabel = (kategoriAduan) => {
+  const labels = {
+    1: "Keselamatan",
+    2: "Kebersihan", 
+    3: "Infrastruktur",
+  };
+  return labels[kategoriAduan] || "Lain-lain";
+};
+
+const getStatusVariant = (status) => {
+  const variants = {
+    "Aduan Baru": "warning",
+    "Dalam Proses": "primary",
+    "Menunggu Kelulusan": "info",
+    "Selesai": "success",
+    "Ditutup": "danger",
+  };
+  return variants[status] || "default";
+};
+
+const getPrioritiVariant = (prioriti) => {
+  const variants = {
+    "Tinggi": "danger",
+    "Sederhana": "warning",
+    "Rendah": "success",
+  };
+  return variants[prioriti] || "default";
+};
+
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("ms-MY", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
+const isStatusFinal = (status) => {
+  return ["Ditutup", "Selesai"].includes(status);
+};
+
+const viewAduan = (aduanId) => {
+  // Navigate to aduan detail view
+  navigateTo(`/BF-PA/PP/penolong-amil/aduan/${aduanId}`);
+};
+
+const handleAduan = (aduanId) => {
+  // Navigate to aduan handling page
+  navigateTo(`/BF-PA/PP/penolong-amil/aduan/${aduanId}/urus`);
 };
 
 onMounted(() => {
@@ -585,6 +653,3 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-/* Custom styles for Penolong Amil dashboard */
-</style> 
