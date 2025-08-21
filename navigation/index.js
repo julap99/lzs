@@ -1558,6 +1558,16 @@ export default [
         },
       },
       {
+        title: "Profil",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-PA/PP/penolong-amil/profil",
+        meta: {
+          auth: {
+            role: ["PenolongAmil"]
+          }
+        },
+      },
+      {
         title: "Senarai Asnaf",
         icon: "iconamoon:arrow-right-2-duotone",
         path: "/BF-PA/PP/kad-tauliah",
@@ -1568,7 +1578,7 @@ export default [
         },
       },
       {
-        title: "Laporan Agihan",
+        title: "Elaun",
         icon: "iconamoon:arrow-right-2-duotone",
         path: "/BF-PA/PP/surat-tawaran",
         meta: {
