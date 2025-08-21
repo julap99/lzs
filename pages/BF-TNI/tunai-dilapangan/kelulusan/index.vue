@@ -2,7 +2,8 @@
   <div>
     <!-- Page screen: TNI-TD-Kelulusan -->
     <!-- Actor: Ketua Jabatan, Ketua Divisyen -->
-
+    <!-- Roles: Ketua Jabatan, Ketua Divisyen -->
+    
     <!-- Page-specific Role Switcher -->
     <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
       <div class="flex items-center justify-between">
@@ -35,7 +36,7 @@
           </rs-button>
         </div>
       </div>
-
+      
       <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -67,6 +68,8 @@
 
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Dynamic Content Based on Role -->
+    
     <!-- Ketua Jabatan Content -->
     <div v-if="currentRole === 'ketua-jabatan'">
       <rs-card class="mt-4">
@@ -77,84 +80,87 @@
         </template>
 
         <template #body>
-          <!-- Filters -->
-          <div class="flex flex-wrap gap-4 mb-6">
-            <FormKit
-              type="text"
-              label="ID Permohonan"
-              v-model="filters.idPermohonan"
-              placeholder="Cari ID Permohonan..."
-              class="w-full md:w-48"
-            />
-            <FormKit
-              type="text"
-              label="Nama EOAD Pemohon"
-              v-model="filters.namaEoad"
-              placeholder="Cari nama pemohon..."
-              class="w-full md:w-64"
-            />
-            <FormKit
-              type="text"
-              label="Lokasi Lapangan"
-              v-model="filters.lokasiLapangan"
-              placeholder="Cari lokasi..."
-              class="w-full md:w-64"
-            />
-            <div class="flex items-end space-x-2">
-              <rs-button variant="primary" @click="handleSearch">
-                <Icon name="material-symbols:search" class="mr-1" /> Cari
-              </rs-button>
-              <rs-button variant="secondary" @click="handleReset">
-                <Icon name="material-symbols:refresh" class="mr-1" /> Reset
-              </rs-button>
-            </div>
+        <!-- Filters -->
+        <div class="flex flex-wrap gap-4 mb-6">
+          <FormKit
+            type="text"
+            label="ID Permohonan"
+            v-model="filters.idPermohonan"
+            placeholder="Cari ID Permohonan..."
+            class="w-full md:w-48"
+          />
+          <FormKit
+            type="text"
+            label="Nama EOAD Pemohon"
+            v-model="filters.namaEoad"
+            placeholder="Cari nama pemohon..."
+            class="w-full md:w-64"
+          />
+          <FormKit
+            type="text"
+            label="Lokasi Lapangan"
+            v-model="filters.lokasiLapangan"
+            placeholder="Cari lokasi..."
+            class="w-full md:w-64"
+          />
+          <div class="flex items-end space-x-2">
+            <rs-button variant="primary" @click="handleSearch">
+              <Icon name="material-symbols:search" class="mr-1" /> Cari
+            </rs-button>
+            <rs-button variant="secondary" @click="handleReset">
+              <Icon name="material-symbols:refresh" class="mr-1" /> Reset
+            </rs-button>
           </div>
+        </div>
 
-          <!-- Table -->
-          <rs-table
-            class="mt-4"
-            :key="tableKey"
-            :data="filteredKJPermohonanList"
-            :pageSize="10"
-            :showNoColumn="true"
-            :options="{ variant: 'default', hover: true }"
-          >
-            <template v-slot:idPermohonan="data">
-              <a 
-                href="#" 
-                class="text-primary-600 hover:text-primary-800"
-                @click.prevent="viewPermohonan(data.text)"
-              >
-                {{ data.text }}
-              </a>
-            </template>
-
-            <template v-slot:tarikhPermohonan="data">
-              <div>
-                <div class="font-medium">{{ formatDate(data.text) }}</div>
-                <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
-              </div>
-            </template>
-
-            <template v-slot:namaEoad="data">
+                    <!-- Table -->
+            <rs-table
+              class="mt-4"
+              :key="tableKey"
+              :data="filteredKJPermohonanList"
+              :pageSize="10"
+              :showNoColumn="true"
+              :options="{
+                variant: 'default',
+                hover: true,
+              }"
+            >
+          <template v-slot:idPermohonan="data">
+            <a 
+              href="#" 
+              class="text-primary-600 hover:text-primary-800"
+              @click.prevent="viewPermohonan(data.text)"
+            >
               {{ data.text }}
-            </template>
+            </a>
+          </template>
 
-            <template v-slot:lokasiLapangan="data">
+          <template v-slot:tarikhPermohonan="data">
+            <div>
+              <div class="font-medium">{{ formatDate(data.text) }}</div>
+              <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
+            </div>
+          </template>
+
+          <template v-slot:namaEoad="data">
+            {{ data.text }}
+          </template>
+
+          <template v-slot:lokasiLapangan="data">
+            {{ data.text }}
+          </template>
+
+          <template v-slot:jumlahTunai="data">
+            <div class="font-medium text-right">
+              RM {{ formatNumber(data.text) }}
+            </div>
+          </template>
+
+          <template v-slot:status="data">
+            <rs-badge variant="warning">
               {{ data.text }}
-            </template>
-
-            <template v-slot:jumlahTunai="data">
-              <div class="font-medium text-right">
-                RM {{ formatNumber(data.text) }}
-              </div>
-            </template>
-
-            <template v-slot:status="data">
-              <rs-badge variant="warning">
-                {{ data.text }}
-              </rs-badge>
-            </template>
+            </rs-badge>
+          </template>
 
           <template v-slot:tindakan="data">
             <div class="flex space-x-2">
@@ -173,6 +179,147 @@
       </template>
     </rs-card>
   </div>
+
+  <!-- Ketua Divisyen Content -->
+  <div v-else-if="currentRole === 'ketua-divisyen'">
+    <rs-card class="mt-4">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Senarai Permohonan Menunggu Kelulusan (Ketua Divisyen)</h2>
+        </div>
+      </template>
+
+      <template #body>
+        <!-- Filters -->
+        <div class="flex flex-wrap gap-4 mb-6">
+          <FormKit
+            type="text"
+            label="ID Permohonan"
+            v-model="filters.idPermohonan"
+            placeholder="Cari ID Permohonan..."
+            class="w-full md:w-48"
+          />
+          <FormKit
+            type="text"
+            label="Nama EOAD Pemohon"
+            v-model="filters.namaEoad"
+            placeholder="Cari nama pemohon..."
+            class="w-full md:w-64"
+          />
+          <FormKit
+            type="text"
+            label="Lokasi Lapangan"
+            v-model="filters.lokasiLapangan"
+            placeholder="Cari lokasi..."
+            class="w-full md:w-64"
+          />
+          <div class="flex items-end space-x-2">
+            <rs-button variant="primary" @click="handleSearch">
+              <Icon name="material-symbols:search" class="mr-1" /> Cari
+            </rs-button>
+            <rs-button variant="secondary" @click="handleReset">
+              <Icon name="material-symbols:refresh" class="mr-1" /> Reset
+            </rs-button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <rs-table
+          class="mt-4"
+          :key="tableKey"
+          :data="filteredKDPermohonanList"
+          :pageSize="10"
+          :showNoColumn="true"
+          :options="{
+            variant: 'default',
+            hover: true,
+          }"
+        >
+          <template v-slot:idPermohonan="data">
+            <a 
+              href="#" 
+              class="text-primary-600 hover:text-primary-800"
+              @click.prevent="viewPermohonan(data.text)"
+            >
+              {{ data.text }}
+            </a>
+          </template>
+
+          <template v-slot:tarikhPermohonan="data">
+            <div>
+              <div class="font-medium">{{ formatDate(data.text) }}</div>
+              <div class="text-sm text-gray-500">{{ formatTime(data.text) }}</div>
+            </div>
+          </template>
+
+          <template v-slot:namaEoad="data">
+            {{ data.text }}
+          </template>
+
+          <template v-slot:lokasiLapangan="data">
+            {{ data.text }}
+          </template>
+
+          <template v-slot:jumlahTunai="data">
+            <div class="font-medium text-right">
+              RM {{ formatNumber(data.text) }}
+            </div>
+          </template>
+
+          <template v-slot:status="data">
+            <rs-badge variant="warning">
+              {{ data.text }}
+            </rs-badge>
+          </template>
+
+          <template v-slot:tindakan="data">
+            <div class="flex space-x-2">
+              <rs-button
+                variant="primary"
+                size="sm"
+                class="!px-2 !py-1"
+                @click="approvePermohonan(data.text)"
+              >
+                <Icon name="material-symbols:check" size="15" class="mr-1" />
+                Lulus
+              </rs-button>
+              <rs-button
+                variant="danger"
+                size="sm"
+                class="!px-2 !py-1"
+                @click="rejectPermohonan(data.text)"
+              >
+                <Icon name="material-symbols:close" size="15" class="mr-1" />
+                Tolak
+              </rs-button>
+            </div>
+          </template>
+        </rs-table>
+      </template>
+    </rs-card>
+  </div>
+
+  <!-- Default Content (for other roles) -->
+  <div v-else>
+    <rs-card class="mt-4">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Senarai Permohonan Menunggu Kelulusan</h2>
+        </div>
+      </template>
+
+      <template #body>
+        <div class="text-center py-8">
+          <Icon name="ph:info" class="text-gray-400 mx-auto mb-4" size="48" />
+          <p class="text-gray-600">Tiada akses untuk peranan ini</p>
+        </div>
+      </template>
+    </rs-card>
+  </div>
+
+
+
+</div>
 </template>
 
 <script setup>
@@ -360,11 +507,11 @@ const handleReset = () => {
 };
 
 const viewPermohonan = (id) => {
-  navigateTo(/BF-TNI/tunai-dilapangan/kelulusan/form/${id});
+  navigateTo(`/BF-TNI/tunai-dilapangan/kelulusan/form/${id}`);
 };
 
 const viewAndProcess = (id) => {
-  navigateTo(/BF-TNI/tunai-dilapangan/kelulusan/form/${id});
+  navigateTo(`/BF-TNI/tunai-dilapangan/kelulusan/form/${id}`);
 };
 
 const approvePermohonan = (id) => {
