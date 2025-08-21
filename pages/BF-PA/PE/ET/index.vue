@@ -205,8 +205,8 @@
                       </tr>
                     </tbody>
                   </table>
-                </div>
-              </div>
+          </div>
+          </div>
             </rs-tab-item>
 
             <rs-tab-item title="Sedang Proses">
@@ -236,7 +236,7 @@
                         <td class="px-4 py-3">
                           <rs-badge :variant="getStatusVariant(item.status)">
                             {{ item.status }}
-                          </rs-badge>
+              </rs-badge>
                         </td>
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
@@ -260,8 +260,8 @@
                       </tr>
                     </tbody>
                   </table>
-                </div>
-              </div>
+            </div>
+          </div>
             </rs-tab-item>
 
             <rs-tab-item title="Lulus">
@@ -316,7 +316,7 @@
                     </tbody>
                   </table>
                 </div>
-              </div>
+          </div>
             </rs-tab-item>
           </rs-tab>
         </div>
@@ -447,7 +447,7 @@
                     </tbody>
                   </table>
                 </div>
-              </div>
+          </div>
             </rs-tab-item>
 
             <rs-tab-item title="Lulus">
@@ -483,15 +483,15 @@
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
                         <td class="px-4 py-3">
                           <div class="flex space-x-2">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
+            <rs-button
+              variant="primary"
+              size="sm"
                               class="!px-2 !py-1"
                               @click="viewAllowance(item)"
-                            >
+            >
                               Lihat
-                            </rs-button>
-                          </div>
+            </rs-button>
+          </div>
                         </td>
                       </tr>
                       <tr v-if="getTableDataByStatus(['LULUS']).length === 0" class="hover:bg-gray-50">
@@ -569,8 +569,8 @@
                       </tr>
                     </tbody>
                   </table>
-                </div>
-              </div>
+            </div>
+          </div>
             </rs-tab-item>
 
             <rs-tab-item title="Lulus">
@@ -579,52 +579,52 @@
                   <Icon name="ph:check-circle" class="mr-2" size="20" />
                   Senarai elaun yang telah diluluskan divisyen
                 </h3>
-                <div class="overflow-x-auto rounded-lg border">
-                  <table class="min-w-full text-sm divide-y">
-                    <thead class="bg-gray-50 text-left">
-                      <tr>
+          <div class="overflow-x-auto rounded-lg border">
+          <table class="min-w-full text-sm divide-y">
+            <thead class="bg-gray-50 text-left">
+              <tr>
                         <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                         <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
                         <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
                         <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y bg-white">
+              </tr>
+            </thead>
+            <tbody class="divide-y bg-white">
                       <tr v-for="item in getTableDataByStatus(['LULUS'])" :key="item.id" class="hover:bg-gray-50">
                         <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
                         <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
                         <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
-                        <td class="px-4 py-3">
+                <td class="px-4 py-3">
                           <rs-badge :variant="getStatusVariant(item.status)">
                             {{ item.status }}
-                          </rs-badge>
-                        </td>
+                  </rs-badge>
+                </td>
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
-                        <td class="px-4 py-3">
+                <td class="px-4 py-3">
                           <div class="flex space-x-2">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
+                  <rs-button
+                    variant="primary"
+                    size="sm"
                               class="!px-2 !py-1"
                               @click="viewAllowance(item)"
-                            >
+                  >
                               Lihat
-                            </rs-button>
+                  </rs-button>
                           </div>
-                        </td>
-                      </tr>
+                </td>
+              </tr>
                       <tr v-if="getTableDataByStatus(['LULUS']).length === 0" class="hover:bg-gray-50">
                         <td class="px-4 py-6 text-center text-gray-500" colspan="7">
                           Tiada elaun yang diluluskan.
                         </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+              </tr>
+            </tbody>
+          </table>
+        </div>
               </div>
             </rs-tab-item>
           </rs-tab>

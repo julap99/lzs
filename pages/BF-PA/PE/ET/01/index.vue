@@ -41,18 +41,18 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Jenis Elaun <span class="text-red-500">*</span>
             </label>
-            <FormKit
+                      <FormKit
               v-model="filters.type"
               type="select"
               :options="filteredTypeOptions"
               placeholder="Pilih jenis elaun…"
-              :classes="{
+                        :classes="{
                 input: '!py-2',
-              }"
+                        }"
               @change="validateTypeSelection"
-            />
+                      />
           </div>
-        </div>
+                    </div>
 
         <!-- Ringkasan / Bar Status -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
@@ -63,7 +63,7 @@
           <div class="bg-green-50 p-4 rounded-lg border border-green-200">
             <div class="text-xs text-green-600">Jenis Elaun</div>
             <div class="text-base font-medium text-green-900">{{ typeLabel || '—' }}</div>
-          </div>
+            </div>
           <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
             <div class="text-xs text-orange-600">Status Senarai</div>
             <div class="text-base">
@@ -86,8 +86,8 @@
             </span>
           </div>
           <div class="flex items-center gap-2">
-            <rs-button
-              variant="primary"
+          <rs-button
+            variant="primary"
               size="sm"
               :disabled="!canSave"
               :loading="saving"
@@ -95,7 +95,7 @@
             >
               <Icon name="ic:outline-save" class="mr-2" />
               {{ saving ? 'Menyimpan...' : 'Simpan' }}
-            </rs-button>
+          </rs-button>
           </div>
         </div>
 
@@ -107,19 +107,19 @@
               Tahun: <b>{{ filters.year || '—' }}</b> · Jenis: <b>{{ typeLabel || '—' }}</b>
             </div>
           </div>
-          
+
           <div class="overflow-x-auto rounded-lg border">
-          <table class="min-w-full text-sm divide-y">
-            <thead class="bg-gray-50 text-left">
-              <tr>
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
                 <th class="px-4 py-3 font-medium text-gray-900">Tahun Elaun</th>
                 <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
                 <th class="px-4 py-3 font-medium text-gray-900">Status</th>
                 <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
                 <th class="px-4 py-3 w-40 font-medium text-gray-900">Tindakan</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y bg-white">
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
               <tr v-if="loading" class="hover:bg-gray-50">
                 <td class="px-4 py-6 text-center text-gray-500" colspan="5">Memuatkan status senarai…</td>
               </tr>
@@ -142,14 +142,14 @@
                     <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
                     Lihat Senarai Nama
                   </rs-button>
-                </td>
-              </tr>
+                  </td>
+                </tr>
               <tr v-if="!loading && !rows.length" class="hover:bg-gray-50">
                 <td class="px-4 py-6 text-center text-gray-500" colspan="5">Tiada rekod. Pilih Tahun & Jenis Elaun, kemudian klik 'Simpan' untuk cipta batch.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -210,37 +210,37 @@ const availableYears = [2023, 2024, 2025];
 // Note: Years are hardcoded to match yearOptions exactly (2023, 2024, 2025)
 const mockCounts = {
   2023: {
-    'ET-KPAK': 13,
-    'ET-KPAF': 16,
-    'ET-ANUG': 15,
+    'ET-KPAK': 7,
+    'ET-KPAF': 4,
+    'ET-ANUG': 6,
     'ANUG-KPAK': 8,
-    'ANUG-PAK': 12,
-    'ANUG-KPAF': 10,
-    'ANUG-PAF': 18,
-    'ANUG-PAP': 6,
+    'ANUG-PAK': 7,
+    'ANUG-KPAF': 5,
+    'ANUG-PAF': 8,
+    'ANUG-PAP': 3,
     'ANUG-PAKPLUS': 9
   },
   2024: {
-    'ET-KPAK': 13,
-    'ET-KPAF': 17,
-    'ET-ANUG': 18,
-    'ANUG-KPAK': 10,
-    'ANUG-PAK': 15,
-    'ANUG-KPAF': 12,
-    'ANUG-PAF': 22,
-    'ANUG-PAP': 8,
-    'ANUG-PAKPLUS': 11
+    'ET-KPAK': 7,
+    'ET-KPAF': 4,
+    'ET-ANUG': 6,
+    'ANUG-KPAK': 8,
+    'ANUG-PAK': 7,
+    'ANUG-KPAF': 5,
+    'ANUG-PAF': 8,
+    'ANUG-PAP': 3,
+    'ANUG-PAKPLUS': 9
   },
   2025: {
-    'ET-KPAK': 11,
-    'ET-KPAF': 15,
-    'ET-ANUG': 18,
-    'ANUG-KPAK': 12,
-    'ANUG-PAK': 18,
-    'ANUG-KPAF': 15,
-    'ANUG-PAF': 13,
-    'ANUG-PAP': 10,
-    'ANUG-PAKPLUS': 14
+    'ET-KPAK': 7,
+    'ET-KPAF': 4,
+    'ET-ANUG': 6,
+    'ANUG-KPAK': 8,
+    'ANUG-PAK': 7,
+    'ANUG-KPAF': 5,
+    'ANUG-PAF': 8,
+    'ANUG-PAP': 3,
+    'ANUG-PAKPLUS': 9
   }
 };
 
@@ -400,7 +400,7 @@ function updateTotalCountDisplay() {
   }
 }
 
-// Set initial form state
+// Set initial form state AFTER all variables are declared
 updateFormState();
 
 // Also update total count display on mount to show mock data
@@ -645,4 +645,4 @@ onUnmounted(() => {
   border-color: #3b82f6; /* border-blue-500 */
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
-</style>
+</style> 

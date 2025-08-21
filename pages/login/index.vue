@@ -32,6 +32,10 @@ const login = async () => {
 
   navigateTo("/kitchen-sink");
 
+    } else if (username.value === "penolongamil") {
+      userStore.setRoles(["PenolongAmil"]);
+
+navigateTo("/BF-PA/PP/penolong-amil/login");
     }
 
   // Simple redirect to dashboard

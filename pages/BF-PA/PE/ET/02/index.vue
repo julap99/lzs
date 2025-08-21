@@ -27,7 +27,10 @@
         <div class="space-y-3 mb-6">
           <div class="flex items-center justify-between">
             <h3 class="text-sm font-semibold">Senarai Nama — {{ typeLabel || 'Jenis Elaun' }}</h3>
-            <p class="text-xs text-gray-500">Ditapis kepada: <b>KPAK sahaja</b></p>
+            <p class="text-xs text-gray-500">
+              Ditapis kepada: 
+              <b>{{ getCategoryFilterText() }}</b>
+            </p>
           </div>
 
           <div class="flex items-center gap-2">
@@ -106,7 +109,7 @@
                 </tr>
                 <tr v-if="!filteredRows.length" class="hover:bg-gray-50">
                   <td class="px-4 py-6 text-center text-gray-500" colspan="7">
-                    Tiada data KPAK untuk kombinasi Tahun & Jenis Elaun ini.
+                    Tiada data {{ getCategoryFilterText() }} untuk kombinasi Tahun & Jenis Elaun ini.
                   </td>
                 </tr>
               </tbody>
@@ -259,6 +262,16 @@ import { Icon } from '#components';
 import { FormKit } from '@formkit/vue';
 import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue';
 
+/*
+  CORRELATION WITH ET/01:
+  - This page uses static mock data that EXACTLY matches the mock data from ET/01
+  - Category filtering is dynamic based on allowance type (ET-KPAK shows KPAK only, etc.)
+  - Candidate counts are EXACTLY the same as "Bilangan Penerima" shown in ET/01
+  - This ensures PERFECT correlation between the two screens
+  - Using static mock data approach (similar to KF module) for simplicity and consistency
+  - Counts: ET-KPAK: 7, ET-KPAF: 4, ET-ANUG: 6, ANUG-KPAK: 8, ANUG-PAK: 7, ANUG-KPAF: 5, ANUG-PAF: 8, ANUG-PAP: 3, ANUG-PAKPLUS: 9
+*/
+
 definePageMeta({
   title: "Maklumat Penerima — Senarai Nama Penolong Amil",
   description: "Recipient selection and management for annual allowance batches",
@@ -335,41 +348,146 @@ function totalActivityCount(acts = []) {
   return aggregateActivities(acts).reduce((s, a) => s + (Number(a.count) || 0), 0);
 }
 
-/* === Seed sample data + load draft recipients === */
+/* === Simple static mock data (similar to KF module approach) === */
 function seedData() {
-  const seed = String(query.year) + String(query.type);
-  const rng = mulberry32(hashCode(seed || 'seed'));
-  const cats = ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'];
-  const parish = ['Kariah A', 'Kariah B', 'Kariah C', 'Kariah D'];
-  const actPool = ['Taklimat', 'Kutipan Fitrah', 'Agihan Tunai', 'Mesyuarat Kariah', 'Audit Tunai', 'Program Komuniti', 'Edaran Bantuan', 'Bimbingan Asnaf'];
-
-  const ROWS = 20;
-  candidates.value = Array.from({ length: ROWS }, (_, i) => {
-    const n = i + 1;
-    // 0..5 jenis aktiviti; setiap satu diberi "count" 1..4 kali (random)
-    const rawKinds = Math.floor(rng() * 6);
-    const names = new Set();
-    while (names.size < rawKinds) {
-      names.add(actPool[Math.floor(rng() * actPool.length)]);
-    }
-    const acts = Array.from(names).map((nm, idx) => ({
-      id: `A${n}-${idx}`,
-      name: nm,
-      count: 1 + Math.floor(rng() * 4) // 1..4 kali
-    }));
-    return {
-      paId: `PA${String(query.year || 'XX')}${String(n).padStart(3, '0')}`,
-      name: `Nama PA ${n}`,
-      ic: `80010114${(1000 + Math.floor(rng() * 9000)).toString()}`,
-      category: cats[Math.floor(rng() * cats.length)],
-      parish: parish[Math.floor(rng() * actPool.length)],
-      activities: acts,
-      _checked: false
-    };
-  });
-
+  // Load candidates based on allowance type
+  candidates.value = getMockCandidates(query.year, query.type);
+  
   // Load draft recipients from localStorage
   loadDraftRecipients();
+}
+
+// Static mock data for candidates - simple and realistic
+function getMockCandidates(year, type) {
+  const mockData = {
+    'ET-KPAK': [
+      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101-01-1234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315-08-5678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520-14-9012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}004`, name: 'Mohd Faiz bin Omar', ic: '780812-06-3456', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}005`, name: 'Zulkifli bin Ahmad', ic: '790325-12-7890', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}006`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415-03-2345', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}007`, name: 'Mohd Hafiz bin Zainal', ic: '760628-09-6789', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() }
+    ],
+    'ET-KPAF': [
+      { paId: `PA${year}001`, name: 'Siti Aminah binti Omar', ic: '820520-14-9012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}002`, name: 'Nor Azizah binti Ahmad', ic: '830615-08-3456', category: 'KPAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}003`, name: 'Fatimah binti Hassan', ic: '810723-12-7890', category: 'KPAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}004`, name: 'Aishah binti Ibrahim', ic: '840812-06-2345', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() }
+    ],
+    'ET-ANUG': [
+      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101-01-1234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315-08-5678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}003`, name: 'Siti Aminah binti Omar', ic: '820520-14-9012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}004`, name: 'Abdul Rahman bin Hassan', ic: '780812-06-3456', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615-08-3456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}006`, name: 'Mohd Faiz bin Omar', ic: '790325-12-7890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() }
+    ],
+    'ANUG-KPAK': [
+      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101-01-1234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315-08-5678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520-14-9012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}004`, name: 'Mohd Faiz bin Omar', ic: '780812-06-3456', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}005`, name: 'Zulkifli bin Ahmad', ic: '790325-12-7890', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}006`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415-03-2345', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}007`, name: 'Mohd Hafiz bin Zainal', ic: '760628-09-6789', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}008`, name: 'Abdul Aziz bin Mohd', ic: '830710-15-0123', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() }
+    ],
+    'ANUG-PAK': [
+      { paId: `PA${year}001`, name: 'Abdul Rahman bin Hassan', ic: '780812-06-3456', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}002`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415-03-2345', category: 'PAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}003`, name: 'Mohd Hafiz bin Zainal', ic: '830710-15-0123', category: 'PAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}004`, name: 'Mohd Rizal bin Kamal', ic: '840123-16-8901', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}005`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215-10-2345', category: 'PAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}006`, name: 'Abdul Aziz bin Mohd', ic: '770912-07-4567', category: 'PAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}007`, name: 'Mohd Faiz bin Omar', ic: '790325-12-7890', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() }
+    ],
+    'ANUG-KPAF': [
+      { paId: `PA${year}001`, name: 'Siti Aminah binti Omar', ic: '820520-14-9012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}002`, name: 'Nor Azizah binti Ahmad', ic: '830615-08-3456', category: 'KPAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}003`, name: 'Fatimah binti Hassan', ic: '810723-12-7890', category: 'KPAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}004`, name: 'Aishah binti Ibrahim', ic: '840812-06-2345', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}005`, name: 'Khadijah binti Zainal', ic: '800915-03-6789', category: 'KPAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() }
+    ],
+    'ANUG-PAF': [
+      { paId: `PA${year}001`, name: 'Nor Azizah binti Ahmad', ic: '830615-08-3456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}002`, name: 'Khadijah binti Zainal', ic: '800915-03-6789', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}003`, name: 'Safiyyah binti Salleh', ic: '830330-15-8901', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}004`, name: 'Fatimah binti Ahmad', ic: '840920-16-2345', category: 'PAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}005`, name: 'Aishah binti Hassan', ic: '820025-14-6789', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}006`, name: 'Zainab binti Ibrahim', ic: '830130-15-0123', category: 'PAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}007`, name: 'Hafsah binti Zainal', ic: '810235-12-4567', category: 'PAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}008`, name: 'Siti Aminah binti Omar', ic: '820520-14-9012', category: 'PAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() }
+    ],
+    'ANUG-PAP': [
+      { paId: `PA${year}001`, name: 'Mohd Faiz bin Omar', ic: '790325-12-7890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}002`, name: 'Mohd Hafiz bin Zainal', ic: '830710-15-0123', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}003`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215-10-2345', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() }
+    ],
+    'ANUG-PAKPLUS': [
+      { paId: `PA${year}001`, name: 'Fatimah binti Hassan', ic: '810723-12-7890', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}002`, name: 'Zainab binti Mohd', ic: '850110-17-0123', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '780812-06-3456', category: 'PAK+', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}004`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415-03-2345', category: 'PAK+', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}005`, name: 'Mohd Rizal bin Kamal', ic: '840123-16-8901', category: 'PAK+', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}006`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215-10-2345', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
+      { paId: `PA${year}007`, name: 'Abdul Aziz bin Mohd', ic: '770912-07-4567', category: 'PAK+', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
+      { paId: `PA${year}008`, name: 'Mohd Faiz bin Omar', ic: '790325-12-7890', category: 'PAK+', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
+      { paId: `PA${year}009`, name: 'Zulkifli bin Ahmad', ic: '760628-09-6789', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() }
+    ]
+  };
+  
+  // Return candidates for the specific type, or empty array if not found
+  return mockData[type] || [];
+}
+
+// Simple activity generation - much simpler than before
+function generateSimpleActivities() {
+  const activityPool = [
+    { name: 'Taklimat', count: 3 },
+    { name: 'Kutipan Fitrah', count: 2 },
+    { name: 'Agihan Tunai', count: 1 },
+    { name: 'Mesyuarat Kariah', count: 4 },
+    { name: 'Audit Tunai', count: 2 },
+    { name: 'Program Komuniti', count: 3 },
+    { name: 'Edaran Bantuan', count: 1 },
+    { name: 'Bimbingan Asnaf', count: 2 }
+  ];
+  
+  // Randomly select 3-5 activities
+  const selectedCount = Math.floor(Math.random() * 3) + 3; // 3-5 activities
+  const shuffled = [...activityPool].sort(() => 0.5 - Math.random());
+  
+  return shuffled.slice(0, selectedCount).map((activity, index) => ({
+    id: `A${index + 1}`,
+    name: activity.name,
+    count: activity.count
+  }));
+}
+
+// Helper function to get readable category filter text
+function getCategoryFilterText() {
+  const categoryMapping = {
+    'ET-KPAK': ['KPAK'],
+    'ET-KPAF': ['KPAF'],
+    'ET-ANUG': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'],
+    'ANUG-KPAK': ['KPAK'],
+    'ANUG-PAK': ['PAK'],
+    'ANUG-KPAF': ['KPAF'],
+    'ANUG-PAF': ['PAF'],
+    'ANUG-PAP': ['PAP'],
+    'ANUG-PAKPLUS': ['PAK+']
+  };
+  
+  const allowedCategories = categoryMapping[query.type] || ['KPAK'];
+  
+  if (allowedCategories.length === 1) {
+    return `${allowedCategories[0]} sahaja`;
+  } else if (allowedCategories.length <= 3) {
+    return allowedCategories.join(', ');
+  } else {
+    return `${allowedCategories.length} kategori (semua)`;
+  }
 }
 
 /* === Load draft recipients dari localStorage === */
@@ -394,8 +512,24 @@ function loadDraftRecipients() {
   }
 }
 
-/* === KPAK ONLY FILTER === */
-const baseRows = computed(() => candidates.value.filter(r => r.category === 'KPAK'));
+/* === Dynamic category filtering based on allowance type === */
+const baseRows = computed(() => {
+  // Define which categories are allowed for each allowance type
+  const categoryMapping = {
+    'ET-KPAK': ['KPAK'],           // Elaun Tahunan KPAK - only KPAK
+    'ET-KPAF': ['KPAF'],           // Elaun Tahunan KPAF - only KPAF  
+    'ET-ANUG': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'], // Anugerah - all categories
+    'ANUG-KPAK': ['KPAK'],         // Anugerah KPAK - only KPAK
+    'ANUG-PAK': ['PAK'],           // Anugerah PAK - only PAK
+    'ANUG-KPAF': ['KPAF'],         // Anugerah KPAF - only KPAF
+    'ANUG-PAF': ['PAF'],           // Anugerah PAF - only PAF
+    'ANUG-PAP': ['PAP'],           // Anugerah PAP - only PAP
+    'ANUG-PAKPLUS': ['PAK+']       // Anugerah PAK+ - only PAK+
+  };
+  
+  const allowedCategories = categoryMapping[query.type] || ['KPAK'];
+  return candidates.value.filter(r => allowedCategories.includes(r.category));
+});
 
 /* baris yang boleh dipilih (tidak berada dalam recipients sedia ada) */
 function isInRecipients(paId) {
@@ -523,8 +657,6 @@ function persistCountAndStatusAndBack(newStatus) {
 
 /* utils */
 function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
-function hashCode(str) { let h = 0; for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h |= 0 } return h; }
-function mulberry32(a) { return function () { let t = (a += 0x6D2B79F5); t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 } }
 
 /* Load data + draft on first mount or when query changes */
 watch(() => [query.year, query.type], () => seedData(), { immediate: true });

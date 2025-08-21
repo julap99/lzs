@@ -1542,7 +1542,24 @@ export default [
       },
     },
   },
-
+  // Penolong Amil
+  {
+    header: "Penolong Amil Menu",
+    description: "PA Menu",
+    child: [
+      {
+        title: "Login Penolong Amil",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-PA/PP/penolong-amil/login",
+        meta: {},
+      },
+    ],
+    meta: {
+      auth: {
+        role: ["PenolongAmil"],
+      },
+    },
+  },
   // Kitchen Sink
   {
     header: "Kitchen Sink",
