@@ -1,188 +1,266 @@
 <!-- 
   RTMF SCREEN: PA-PE-ET-03
-  PURPOSE: Paparan Maklumat Elaun Tahunan — Paparan Sahaja
-  DESCRIPTION: Paparan baca sahaja untuk maklumat elaun tahunan untuk semua peranan
+  PURPOSE: Lihat Maklumat Elaun Tahunan — Paparan Lengkap
+  DESCRIPTION: Paparan lengkap maklumat elaun tahunan yang telah dihantar (untuk semua peranan)
   ROUTE: /BF-PA/PE/ET/03
 -->
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Kad Header -->
-    <rs-card class="mt-4">
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <Icon name="ic:outline-visibility" class="w-6 h-6 mr-3 text-blue-600" />
+            Maklumat Elaun Tahunan
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Basic Information Card -->
+    <rs-card class="mb-6">
       <template #header>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <Icon name="ic:outline-remove-red-eye" class="mr-3 text-blue-600" size="24" />
-            <h2 class="text-lg font-semibold">Paparan Maklumat Elaun Tahunan</h2>
-          </div>
-          <div class="text-xs text-gray-500">
-            Rujukan: <b>{{ allowanceData.rujukan || '—' }}</b>
+        <h3 class="text-lg font-semibold text-gray-900">Maklumat Asas</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Elaun</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
+                {{ batchData.year || '—' }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Elaun</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+                {{ batchData.typeLabel || '—' }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+              <div class="px-3 py-2">
+                <rs-badge :variant="getStatusVariant(batchData.status)">
+                  {{ batchData.status || '—' }}
+                </rs-badge>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bilangan Penerima</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-semibold">
+                {{ recipients.length }}
+              </div>
+            </div>
           </div>
         </div>
       </template>
+    </rs-card>
 
+    <!-- Financial Information Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Maklumat Kewangan</h3>
+      </template>
       <template #body>
-        <!-- Ringkasan Elaun -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
-          <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <div class="text-xs text-blue-600">Tahun Elaun</div>
-            <div class="text-base font-medium text-blue-900">{{ allowanceData.year || '—' }}</div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bajet Diperuntukkan</label>
+              <div class="px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-900 font-semibold">
+                RM {{ formatCurrency(batchData.budget) }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Elaun</label>
+              <div class="px-3 py-2 bg-green-50 border border-green-200 rounded-md text-green-900 font-semibold">
+                RM {{ formatCurrency(totalAllowance) }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ excessAmount > 0 ? 'Lebihan' : 'Baki' }}
+              </label>
+              <div class="px-3 py-2 border rounded-md font-semibold" 
+                   :class="excessAmount > 0 ? 'bg-red-50 border-red-200 text-red-900' : 'bg-gray-50 border-gray-200 text-gray-900'">
+                RM {{ formatCurrency(Math.abs(balanceAmount)) }}
+              </div>
+            </div>
           </div>
-          <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-            <div class="text-xs text-green-600">Jenis Elaun</div>
-            <div class="text-base font-medium text-green-900">{{ allowanceData.typeLabel || '—' }}</div>
+          
+          <!-- Budget Warning -->
+          <div v-if="excessAmount > 0" class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div class="flex items-start">
+              <Icon name="ic:outline-warning" class="text-red-400 mr-3 flex-shrink-0 mt-0.5" size="20" />
+              <div>
+                <h4 class="text-sm font-medium text-red-800">Amaran: Elaun Melebihi Bajet</h4>
+                <p class="text-sm text-red-700 mt-1">
+                  Jumlah elaun melebihi bajet sebanyak <span class="font-medium">RM {{ formatCurrency(excessAmount) }}</span>.
+                  Permohonan ini memerlukan pengesahan dari Ketua Jabatan.
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-            <div class="text-xs text-orange-600">Status</div>
-            <div class="text-base">
-              <rs-badge :variant="getStatusVariant(allowanceData.status)">
-                {{ allowanceData.status || '—' }}
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Approval Workflow Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-900">Aliran Kerja Kelulusan</h3>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <div class="space-y-4">
+            <!-- Eksekutif -->
+            <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
+                  <Icon name="ic:outline-person" class="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Eksekutif</p>
+                  <p class="text-sm text-gray-600">Dibuat</p>
+                </div>
+              </div>
+              <rs-badge variant="success" size="sm">Selesai</rs-badge>
+            </div>
+            
+            <!-- Ketua Jabatan -->
+            <div class="flex items-center justify-between p-3 border rounded-lg" 
+                 :class="getTimelineClass('KETUA_JABATAN')">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3"
+                     :class="getTimelineStatus('KETUA_JABATAN')">
+                  <Icon name="ic:outline-person" class="w-4 h-4" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Ketua Jabatan</p>
+                  <p class="text-sm text-gray-600">{{ getTimelineText('KETUA_JABATAN') }}</p>
+                </div>
+              </div>
+              <rs-badge :variant="getTimelineBadge('KETUA_JABATAN')" size="sm">
+                {{ getTimelineStatusText('KETUA_JABATAN') }}
+              </rs-badge>
+            </div>
+            
+            <!-- Ketua Divisyen -->
+            <div class="flex items-center justify-between p-3 border rounded-lg"
+                 :class="getTimelineClass('KETUA_DIVISYEN')">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3"
+                     :class="getTimelineStatus('KETUA_DIVISYEN')">
+                  <Icon name="ic:outline-person" class="w-4 h-4" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Ketua Divisyen</p>
+                  <p class="text-sm text-gray-600">{{ getTimelineText('KETUA_DIVISYEN') }}</p>
+                </div>
+              </div>
+              <rs-badge :variant="getTimelineBadge('KETUA_DIVISYEN')" size="sm">
+                {{ getTimelineStatusText('KETUA_DIVISYEN') }}
               </rs-badge>
             </div>
           </div>
-          <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
-            <div class="text-xs text-purple-600">Jumlah Penerima</div>
-            <div class="text-base font-medium text-purple-900">{{ allowanceData.count || '—' }}</div>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Recipients List Card -->
+    <rs-card class="mb-6">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Senarai Penerima</h3>
+          <div class="text-sm text-gray-500">
+            Jumlah: <span class="font-medium">{{ recipients.length }}</span> penerima
           </div>
         </div>
+      </template>
+      <template #body>
+        <div class="p-6">
+          <!-- Search -->
+          <div class="mb-4">
+            <FormKit
+              v-model="searchQuery"
+              type="text"
+              placeholder="Cari nama, ID pengenalan, atau kariah..."
+              :classes="{
+                input: '!py-2',
+              }"
+              class="max-w-md"
+            />
+          </div>
 
-        <!-- Maklumat Bajet -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div class="text-xs text-gray-600">Bajet (RM)</div>
-            <div class="text-base font-medium text-gray-900">{{ formatCurrency(allowanceData.budget) }}</div>
-          </div>
-          <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <div class="text-xs text-yellow-600">Jumlah Elaun (RM)</div>
-            <div class="text-base font-medium text-yellow-900">{{ formatCurrency(allowanceData.totalAmount) }}</div>
-          </div>
-          <div class="bg-red-50 p-4 rounded-lg border border-red-200">
-            <div class="text-xs text-red-600">Lebihan (RM)</div>
-            <div class="text-base font-medium text-red-900">{{ formatCurrency(allowanceData.excessAmount) }}</div>
-          </div>
-        </div>
-
-        <!-- Timeline Kelulusan -->
-        <div class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Timeline Kelulusan</h3>
-          <div class="space-y-3">
-            <div class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <div class="text-sm">
-                <span class="font-medium">Dibuat oleh:</span> {{ allowanceData.createdBy || '—' }}
-                <span class="text-gray-500 ml-2">{{ formatDate(allowanceData.createdAt) }}</span>
-              </div>
-            </div>
-            <div v-if="allowanceData.submittedAt" class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <div class="text-sm">
-                <span class="font-medium">Dihantar untuk kelulusan:</span>
-                <span class="text-gray-500 ml-2">{{ formatDate(allowanceData.submittedAt) }}</span>
-              </div>
-            </div>
-            <div v-if="allowanceData.approvedByKJ" class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-              <div class="text-sm">
-                <span class="font-medium">Diluluskan Ketua Jabatan:</span> {{ allowanceData.approvedByKJ }}
-                <span class="text-gray-500 ml-2">{{ formatDate(allowanceData.approvedAtKJ) }}</span>
-              </div>
-            </div>
-            <div v-if="allowanceData.approvedByKD" class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
-              <div class="text-sm">
-                <span class="font-medium">Diluluskan Ketua Divisyen:</span> {{ allowanceData.approvedByKD }}
-                <span class="text-gray-500 ml-2">{{ formatDate(allowanceData.approvedAtKD) }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Nota -->
-        <div v-if="allowanceData.notes" class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Nota</h3>
-          <div class="bg-gray-50 p-3 rounded-lg border">
-            <p class="text-sm text-gray-700">{{ allowanceData.notes }}</p>
-          </div>
-        </div>
-
-        <!-- Jadual Penerima -->
-        <div class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Senarai Penerima</h3>
+          <!-- Recipients Table -->
           <div class="overflow-x-auto rounded-lg border">
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900">Bil.</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kariah/Daerah</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Elaun (RM)</th>
+                  <th class="px-4 py-3 font-medium text-gray-900 text-right">Elaun (RM)</th>
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
-                <tr v-for="recipient in recipients" :key="recipient.paId" class="hover:bg-gray-50">
+                <tr v-for="(recipient, index) in filteredRecipients" :key="recipient.paId" class="hover:bg-gray-50">
+                  <td class="px-4 py-3 text-gray-500">{{ index + 1 }}</td>
                   <td class="px-4 py-3 font-medium text-gray-900">{{ recipient.name }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.ic }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.category }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.parish }}</td>
-                  <td class="px-4 py-3 font-medium text-gray-900">{{ formatCurrency(recipient.allowance) }}</td>
+                  <td class="px-4 py-3 text-gray-700">{{ recipient.ic }}</td>
+                  <td class="px-4 py-3">
+                    <rs-badge variant="secondary" size="sm">{{ recipient.category }}</rs-badge>
+                  </td>
+                  <td class="px-4 py-3 text-gray-700">{{ recipient.parish }}</td>
+                  <td class="px-4 py-3 text-right font-medium text-gray-900">
+                    {{ formatCurrency(recipient.allowance) }}
+                  </td>
                 </tr>
-                <tr v-if="!recipients.length" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="5">
-                    Tiada penerima dalam senarai ini.
+                <tr v-if="!filteredRecipients.length" class="hover:bg-gray-50">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="6">
+                    {{ searchQuery ? 'Tiada hasil carian ditemui.' : 'Tiada penerima dalam senarai.' }}
                   </td>
                 </tr>
               </tbody>
               <tfoot class="bg-gray-50">
                 <tr>
-                  <td class="px-4 py-3 text-right font-medium" colspan="4">Jumlah (RM)</td>
-                  <td class="px-4 py-3 font-semibold">{{ formatCurrency(totalAllowance) }}</td>
+                  <td class="px-4 py-3 text-right font-medium" colspan="5">Jumlah Keseluruhan (RM)</td>
+                  <td class="px-4 py-3 text-right font-bold text-lg">{{ formatCurrency(totalAllowance) }}</td>
                 </tr>
               </tfoot>
             </table>
           </div>
         </div>
-
-        <!-- Tindakan -->
-        <div class="flex items-center justify-end gap-2">
-          <rs-button
-            variant="secondary-outline"
-            size="sm"
-            @click="goBack"
-          >
-            Kembali
-          </rs-button>
-          <rs-button
-            v-if="currentRole === 'eksekutif' && allowanceData.status === 'DRAF'"
-            variant="secondary"
-            size="sm"
-            @click="editAllowance"
-          >
-            <Icon name="ic:outline-edit" class="w-4 h-4 mr-2" />
-            Kemaskini
-          </rs-button>
-          <rs-button
-            v-if="currentRole === 'ketua-jabatan' && allowanceData.status === 'SEDANG PROSES'"
-            variant="success"
-            size="sm"
-            @click="approveAllowance"
-          >
-            <Icon name="ic:outline-check" class="w-4 h-4 mr-2" />
-            Luluskan
-          </rs-button>
-          <rs-button
-            v-if="currentRole === 'ketua-divisyen' && allowanceData.status === 'SEDANG PROSES'"
-            variant="success"
-            size="sm"
-            @click="approveAllowance"
-          >
-            <Icon name="ic:outline-check" class="w-4 h-4 mr-2" />
-            Luluskan
-          </rs-button>
-        </div>
       </template>
     </rs-card>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-between items-center">
+      <rs-button
+        variant="secondary-outline"
+        @click="goBack"
+        class="flex items-center"
+      >
+        <Icon name="ic:outline-arrow-back" class="w-4 h-4 mr-2" />
+        Kembali
+      </rs-button>
+      
+      <div class="flex gap-3">
+        <rs-button
+          variant="secondary"
+          @click="exportData"
+          :disabled="!recipients.length"
+          class="flex items-center"
+        >
+          <Icon name="ic:outline-download" class="w-4 h-4 mr-2" />
+          Eksport
+        </rs-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -191,11 +269,12 @@ import { ref, computed, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '#components';
+import { FormKit } from '@formkit/vue';
 import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue';
 
 definePageMeta({
-  title: "Paparan Maklumat Elaun Tahunan",
-  description: "Read-only view of allowance details for all roles",
+  title: "Lihat Maklumat Elaun Tahunan",
+  description: "View complete allowance details for all roles",
 });
 
 const toast = useToast();
@@ -207,7 +286,7 @@ const goBack = () => router.back();
 const breadcrumb = ref([
   {
     name: "Pengurusan Elaun",
-    type: "link",
+    type: "link", 
     path: "/BF-PA/PE",
   },
   {
@@ -216,46 +295,72 @@ const breadcrumb = ref([
     path: "/BF-PA/PE/ET",
   },
   {
-    name: "Paparan Maklumat",
+    name: "Maklumat Elaun",
     type: "current",
     path: "/BF-PA/PE/ET/03",
   },
 ]);
 
-// Get current role from localStorage or default to eksekutif
-const currentRole = ref(localStorage.getItem('et:currentRole') || 'eksekutif');
-
-// Allowance data
-const allowanceData = ref({
+// Data
+const batchData = ref({
   id: '',
   rujukan: '',
   year: '',
   type: '',
   typeLabel: '',
   status: '',
-  count: 0,
-  totalAmount: 0,
   budget: 10000,
-  excessAmount: 0,
-  createdBy: '',
-  createdAt: '',
-  submittedAt: '',
-  approvedByKJ: '',
-  approvedAtKJ: '',
-  approvedByKD: '',
-  approvedAtKD: '',
   notes: ''
 });
 
-// Recipients data
 const recipients = ref([]);
+const searchQuery = ref('');
+
+// Type mapping
+const typeOptions = {
+  'ET-KPAK': 'Elaun Tahunan KPAK',
+  'ET-KPAF': 'Elaun Tahunan KPAF', 
+  'ET-ANUG': 'Anugerah Penolong Amil',
+  'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
+  'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
+  'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
+  'ANUG-PAF': 'Penolong Amil Fitrah (PAF) terbaik',
+  'ANUG-PAP': 'Penolong Amil Padi (PAP) terbaik',
+  'ANUG-PAKPLUS': 'Penolong Amil Komuniti (PAK+) terbaik'
+};
 
 // Computed values
 const totalAllowance = computed(() => {
   return recipients.value.reduce((sum, r) => sum + (Number(r.allowance) || 0), 0);
 });
 
+const excessAmount = computed(() => {
+  return Math.max(0, totalAllowance.value - batchData.value.budget);
+});
+
+const balanceAmount = computed(() => {
+  return totalAllowance.value - batchData.value.budget;
+});
+
+const filteredRecipients = computed(() => {
+  if (!searchQuery.value) return recipients.value;
+  
+  const query = searchQuery.value.toLowerCase();
+  return recipients.value.filter(r =>
+    r.name.toLowerCase().includes(query) ||
+    r.ic.toLowerCase().includes(query) ||
+    r.parish.toLowerCase().includes(query)
+  );
+});
+
 // Helper functions
+function formatCurrency(amount) {
+  return Number(amount || 0).toLocaleString('en-MY', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
 function getStatusVariant(status) {
   switch (status) {
     case 'DRAF': return 'secondary';
@@ -268,163 +373,274 @@ function getStatusVariant(status) {
   }
 }
 
-function formatCurrency(amount) {
-  return Number(amount || 0).toLocaleString('en-MY', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-}
-
-function formatDate(dateString) {
-  if (!dateString) return '—';
-  try {
-    return new Date(dateString).toLocaleDateString('ms-MY', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } catch {
-    return dateString;
+function getTimelineStatus(role) {
+  const status = batchData.value.status;
+  
+  if (role === 'KETUA_JABATAN') {
+    if (['LULUS', 'DITOLAK'].includes(status)) {
+      return 'bg-green-500 text-white';
+    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
+      return 'bg-yellow-500 text-white';
+    } else {
+      return 'bg-gray-300 text-gray-600';
+    }
   }
+  
+  if (role === 'KETUA_DIVISYEN') {
+    if (status === 'LULUS') {
+      return 'bg-green-500 text-white';
+    } else if (status === 'DITOLAK') {
+      return 'bg-red-500 text-white';
+    } else {
+      return 'bg-gray-300 text-gray-600';
+    }
+  }
+  
+  return 'bg-gray-300 text-gray-600';
 }
 
-// Load allowance data
-function loadAllowanceData() {
+function getTimelineClass(role) {
+  const status = batchData.value.status;
+  
+  if (role === 'KETUA_JABATAN') {
+    if (['LULUS', 'DITOLAK'].includes(status)) {
+      return 'bg-green-50 border-green-200';
+    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
+      return 'bg-yellow-50 border-yellow-200';
+    } else {
+      return 'bg-gray-50 border-gray-200';
+    }
+  }
+  
+  if (role === 'KETUA_DIVISYEN') {
+    if (status === 'LULUS') {
+      return 'bg-green-50 border-green-200';
+    } else if (status === 'DITOLAK') {
+      return 'bg-red-50 border-red-200';
+    } else {
+      return 'bg-gray-50 border-gray-200';
+    }
+  }
+  
+  return 'bg-gray-50 border-gray-200';
+}
+
+function getTimelineText(role) {
+  const status = batchData.value.status;
+  
+  if (role === 'KETUA_JABATAN') {
+    if (status === 'LULUS' || status === 'DITOLAK') {
+      return 'Selesai';
+    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
+      return 'Sedang Proses';
+    } else {
+      return 'Menunggu';
+    }
+  }
+  
+  if (role === 'KETUA_DIVISYEN') {
+    if (status === 'LULUS') {
+      return 'Diluluskan';
+    } else if (status === 'DITOLAK') {
+      return 'Ditolak';
+    } else {
+      return 'Menunggu';
+    }
+  }
+  
+  return 'Menunggu';
+}
+
+function getTimelineStatusText(role) {
+  const status = batchData.value.status;
+  
+  if (role === 'KETUA_JABATAN') {
+    if (status === 'LULUS' || status === 'DITOLAK') {
+      return 'Selesai';
+    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
+      return 'Dalam Proses';
+    } else {
+      return 'Belum Mula';
+    }
+  }
+  
+  if (role === 'KETUA_DIVISYEN') {
+    if (status === 'LULUS') {
+      return 'Diluluskan';
+    } else if (status === 'DITOLAK') {
+      return 'Ditolak';
+    } else {
+      return 'Belum Mula';
+    }
+  }
+  
+  return 'Belum Mula';
+}
+
+function getTimelineBadge(role) {
+  const status = batchData.value.status;
+  
+  if (role === 'KETUA_JABATAN') {
+    if (['LULUS', 'DITOLAK'].includes(status)) {
+      return 'success';
+    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
+      return 'warning';
+    } else {
+      return 'secondary';
+    }
+  }
+  
+  if (role === 'KETUA_DIVISYEN') {
+    if (status === 'LULUS') {
+      return 'success';
+    } else if (status === 'DITOLAK') {
+      return 'danger';
+    } else if (status === 'MENUNGGU KELULUSAN') {
+      return 'info';
+    } else {
+      return 'secondary';
+    }
+  }
+  
+  return 'secondary';
+}
+
+// Load data function
+function loadBatchData() {
   const id = route.query.id;
-  if (!id) {
-    toast.error('ID elaun tidak ditemui');
-    goBack();
-    return;
-  }
-
-  // Load from localStorage or use sample data
   const year = route.query.year;
   const type = route.query.type;
   
-  if (year && type) {
-    // Load from localStorage
-    const recipientsKey = `et:recipients:${year}:${type}`;
-    const countKey = `et:count:${year}:${type}`;
-    const statusKey = `et:status:${year}:${type}`;
-    
-    try {
-      const recipientsData = localStorage.getItem(recipientsKey);
-      const count = localStorage.getItem(countKey);
-      const status = localStorage.getItem(statusKey);
-      
-      if (recipientsData) {
-        recipients.value = JSON.parse(recipientsData);
-      }
-      
-      // Update allowance data
-      allowanceData.value = {
-        ...allowanceData.value,
-        id: id,
-        rujukan: id,
-        year: Number(year),
-        type: type,
-        typeLabel: getTypeLabel(type),
-        status: status || 'DRAF',
-        count: Number(count) || 0,
-        totalAmount: totalAllowance.value,
-        budget: 10000, // Default budget
-        excessAmount: Math.max(0, totalAllowance.value - 10000)
-      };
-    } catch (error) {
-      console.error('Error loading data:', error);
-      toast.error('Gagal memuatkan data elaun');
-    }
-  } else {
-    // Use sample data for demonstration
-    allowanceData.value = {
-      id: id,
-      rujukan: id,
-      year: 2024,
-      type: 'ET-KPAK',
-      typeLabel: 'Elaun Tahunan KPAK',
-      status: 'SEDANG PROSES',
-      count: 25,
-      totalAmount: 12500.00,
-      budget: 10000.00,
-      excessAmount: 2500.00,
-      createdBy: 'eksekutif',
-      createdAt: '2024-01-15T10:00:00Z',
-      submittedAt: '2024-01-16T15:00:00Z',
-      approvedByKJ: null,
-      approvedAtKJ: null,
-      approvedByKD: null,
-      approvedAtKD: null,
-      notes: 'Elaun untuk KPAK tahun 2024'
-    };
-    
-    // Sample recipients
-    recipients.value = [
-      {
-        paId: 'PA001',
-        name: 'Ahmad bin Abdullah',
-        ic: '800101145678',
-        category: 'KPAK',
-        parish: 'Kariah A',
-        allowance: 500.00
-      },
-      {
-        paId: 'PA002',
-        name: 'Siti binti Mohamed',
-        ic: '820315123456',
-        category: 'KPAK',
-        parish: 'Kariah B',
-        allowance: 500.00
-      }
-    ];
-  }
-}
-
-function getTypeLabel(type) {
-  const typeOptions = {
-    'ET-KPAK': 'Elaun Tahunan KPAK',
-    'ET-KPAF': 'Elaun Tahunan KPAF',
-    'ET-ANUG': 'Anugerah Penolong Amil',
-    'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
-    'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
-    'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
-    'ANUG-PAF': 'Penolong Amil Fitrah (PAF) terbaik',
-    'ANUG-PAP': 'Penolong Amil Padi (PAP) terbaik',
-    'ANUG-PAKPLUS': 'Penolong Amil Komuniti (PAK+) terbaik'
-  };
-  return typeOptions[type] || type;
-}
-
-// Action functions
-function editAllowance() {
-  router.push(`/BF-PA/PE/ET/04?id=${allowanceData.value.id}`);
-}
-
-function approveAllowance() {
-  // Check if allowance exceeds budget
-  if (allowanceData.value.totalAmount > allowanceData.value.budget) {
-    if (currentRole.value === 'ketua-jabatan') {
-      allowanceData.value.status = 'PERLU PENGESAHAN';
-      toast.warning('Elaun melebihi bajet - perlu pengesahan');
-    } else {
-      allowanceData.value.status = 'LULUS';
-      toast.success('Elaun berjaya diluluskan');
-    }
-  } else {
-    allowanceData.value.status = 'LULUS';
-    toast.success('Elaun berjaya diluluskan');
+  if (!id || !year || !type) {
+    // Load mock data for demonstration if no parameters
+    loadMockData();
+    return;
   }
   
-  // Update localStorage
-  const year = allowanceData.value.year;
-  const type = allowanceData.value.type;
-  localStorage.setItem(`et:status:${year}:${type}`, allowanceData.value.status);
+  try {
+    // Load from localStorage
+    const recipientsKey = `et:recipients:${year}:${type}`;
+    const statusKey = `et:status:${year}:${type}`;
+    
+    const recipientsData = localStorage.getItem(recipientsKey);
+    const status = localStorage.getItem(statusKey);
+    
+    if (recipientsData) {
+      recipients.value = JSON.parse(recipientsData);
+    } else {
+      // Fallback to mock data if no localStorage data
+      loadMockData();
+      return;
+    }
+    
+    // Set batch data
+    batchData.value = {
+      id: id,
+      rujukan: id,
+      year: Number(year),
+      type: type,
+      typeLabel: typeOptions[type] || type,
+      status: status || 'DRAF',
+      budget: 10000, // Default budget
+      notes: excessAmount.value > 0 ? 'Jumlah elaun melebihi bajet yang diperuntukkan.' : ''
+    };
+    
+  } catch (error) {
+    console.error('Error loading data:', error);
+    // Fallback to mock data on error
+    loadMockData();
+  }
+}
+
+// Mock data function
+function loadMockData() {
+  // Generate mock batch data
+  const mockYear = 2024;
+  const mockType = 'ET-KPAK';
+  const mockStatus = 'MENUNGGU KELULUSAN';
+  
+  batchData.value = {
+    id: 'ET-2024-001',
+    rujukan: 'ET-2024-001',
+    year: mockYear,
+    type: mockType,
+    typeLabel: typeOptions[mockType] || mockType,
+    status: mockStatus,
+    budget: 15000,
+    notes: 'Elaun tahunan untuk KPAK tahun 2024. Permohonan ini telah disemak dan disokong oleh eksekutif.'
+  };
+  
+  // Generate mock recipients data
+  recipients.value = [
+    {
+      paId: 'PA2024001',
+      name: 'Ahmad bin Abdullah',
+      ic: '800101-01-1234',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
+      allowance: 500.00
+    },
+    {
+      paId: 'PA2024002',
+      name: 'Mohd Zain bin Ismail',
+      ic: '750315-08-5678',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Amin',
+      allowance: 500.00
+    },
+    {
+      paId: 'PA2024003',
+      name: 'Abdul Rahman bin Hassan',
+      ic: '820520-14-9012',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Hidayah',
+      allowance: 500.00
+    },
+    {
+      paId: 'PA2024004',
+      name: 'Mohd Faiz bin Omar',
+      ic: '780812-06-3456',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
+      allowance: 500.00
+    },
+    {
+      paId: 'PA2024005',
+      name: 'Zulkifli bin Ahmad',
+      ic: '790325-12-7890',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Amin',
+      allowance: 500.00
+    },
+    {
+      paId: 'PA2024006',
+      name: 'Ahmad Fadzil bin Ibrahim',
+      ic: '810415-03-2345',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Al-Hidayah',
+      allowance: 500.00
+    },
+    {
+      paId: 'PA2024007',
+      name: 'Mohd Hafiz bin Zainal',
+      ic: '760628-09-6789',
+      category: 'KPAK',
+      parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
+      allowance: 500.00
+    }
+  ];
+  
+
+}
+
+// Export function
+function exportData() {
+  toast.info('Fungsi eksport akan dilaksanakan');
 }
 
 // Load data on mount
 onMounted(() => {
-  loadAllowanceData();
+  loadBatchData();
 });
 </script>
 
