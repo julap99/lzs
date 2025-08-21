@@ -31,10 +31,13 @@ const profileForm = ref({
   agama: "Islam",
   
   // Contact Information
-  alamatTempatTinggal: "",
+  alamat1: "",
+  alamat2: "",
+  alamat3: "",
   poskod: "",
   bandar: "",
   negeri: "",
+  daerah: "",
   noTelefon: "",
   noTelefonBimbit: "",
   emel: "",
@@ -102,6 +105,13 @@ const negeriOptions = [
   { label: "Perlis", value: "Perlis" },
   { label: "Kedah", value: "Kedah" },
   { label: "Pulau Pinang", value: "Pulau Pinang" },
+];
+
+const daerahOptions = [
+  { label: "Sila Pilih Daerah", value: "" },
+  { label: "Kuala Lumpur", value: "Kuala Lumpur" },
+  { label: "Putrajaya", value: "Putrajaya" },
+  { label: "Selangor", value: "Selangor" },
 ];
 
 const tahapPendidikanOptions = [
@@ -276,7 +286,7 @@ onMounted(() => {
                 }"
               />
               
-              <FormKit
+              <!-- <FormKit
                 type="text"
                 name="agama"
                 label="Agama"
@@ -285,7 +295,7 @@ onMounted(() => {
                   input: '!py-2',
                 }"
                 disabled
-              />
+              /> -->
             </div>
           </div>
 
@@ -298,24 +308,56 @@ onMounted(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit
                 type="textarea"
-                name="alamatTempatTinggal"
-                label="Alamat Tempat Tinggal"
-                v-model="profileForm.alamatTempatTinggal"
+                name="alamat1"
+                label="Alamat 1"
+                v-model="profileForm.alamat1"
                 :classes="{
                   input: '!py-2',
                 }"
               />
-              
+
               <FormKit
-                type="text"
-                name="poskod"
-                label="Poskod"
-                v-model="profileForm.poskod"
+                type="select"
+                name="negeri"
+                label="Negeri"
+                v-model="profileForm.negeri"
+                :options="negeriOptions"
                 :classes="{
                   input: '!py-2',
                 }"
               />
-              
+
+              <FormKit
+                type="textarea"
+                name="alamat2"
+                label="Alamat 2"
+                v-model="profileForm.alamat2"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="daerah"
+                label="Daerah"
+                v-model="profileForm.daerah"
+                :options="daerahOptions"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+
+              <FormKit
+                type="textarea"
+                name="alamat3"
+                label="Alamat 3"
+                v-model="profileForm.alamat3"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />      
+
               <FormKit
                 type="text"
                 name="bandar"
@@ -325,13 +367,13 @@ onMounted(() => {
                   input: '!py-2',
                 }"
               />
-              
+                
+
               <FormKit
-                type="select"
-                name="negeri"
-                label="Negeri"
-                v-model="profileForm.negeri"
-                :options="negeriOptions"
+                type="text"
+                name="poskod"
+                label="Poskod"
+                v-model="profileForm.poskod"
                 :classes="{
                   input: '!py-2',
                 }"
@@ -509,7 +551,7 @@ onMounted(() => {
           </div>
 
           <!-- Additional Information -->
-          <div class="space-y-6">
+          <!-- <div class="space-y-6">
             <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">
               Maklumat Tambahan
             </h3>
@@ -548,12 +590,12 @@ onMounted(() => {
                 placeholder="Nyatakan sebab anda memohon jawatan Penolong Amil"
               />
             </div>
-          </div>
+          </div> -->
 
           <!-- Submit Button -->
           <div class="flex justify-end gap-4 pt-6 border-t">
             <rs-button variant="secondary-outline" @click="handleBack">
-              Batal
+              Reset
             </rs-button>
             <rs-button
               variant="primary"
