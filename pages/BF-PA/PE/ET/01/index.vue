@@ -191,20 +191,27 @@ const breadcrumb = ref([
   },
 ]);
 
-const currentYear = new Date().getFullYear();
+// Year options with hardcoded values to match mock data exactly
+// Note: Using hardcoded years ensures data consistency between UI options and mock data
+// This prevents users from selecting years that don't have corresponding data
 const yearOptions = [
   { label: 'Pilih tahun…', value: '' },
-  { label: String(currentYear - 1), value: currentYear - 1 },
-  { label: String(currentYear), value: currentYear }
+  { label: '2023', value: 2023 },
+  { label: '2024', value: 2024 },
+  { label: '2025', value: 2025 }
 ];
+
+// Available years for data operations (excluding placeholder)
+const availableYears = [2023, 2024, 2025];
 
 // No pre-existing batches - all batches are created dynamically by users
 
 // Mock data for every allowance type in every year
+// Note: Years are hardcoded to match yearOptions exactly (2023, 2024, 2025)
 const mockCounts = {
   2023: {
-    'ET-KPAK': 25,
-    'ET-KPAF': 30,
+    'ET-KPAK': 13,
+    'ET-KPAF': 16,
     'ET-ANUG': 15,
     'ANUG-KPAK': 8,
     'ANUG-PAK': 12,
@@ -214,8 +221,8 @@ const mockCounts = {
     'ANUG-PAKPLUS': 9
   },
   2024: {
-    'ET-KPAK': 28,
-    'ET-KPAF': 32,
+    'ET-KPAK': 13,
+    'ET-KPAF': 17,
     'ET-ANUG': 18,
     'ANUG-KPAK': 10,
     'ANUG-PAK': 15,
@@ -225,13 +232,13 @@ const mockCounts = {
     'ANUG-PAKPLUS': 11
   },
   2025: {
-    'ET-KPAK': 30,
-    'ET-KPAF': 35,
-    'ET-ANUG': 20,
+    'ET-KPAK': 11,
+    'ET-KPAF': 15,
+    'ET-ANUG': 18,
     'ANUG-KPAK': 12,
     'ANUG-PAK': 18,
     'ANUG-KPAF': 15,
-    'ANUG-PAF': 25,
+    'ANUG-PAF': 13,
     'ANUG-PAP': 10,
     'ANUG-PAKPLUS': 14
   }
@@ -291,8 +298,8 @@ function validateFilters() {
   // Validate year
   if (!filters.year) {
     errors.push('Tahun Elaun adalah wajib');
-  } else if (!Number.isInteger(filters.year) || filters.year < 2020 || filters.year > 2030) {
-    errors.push('Tahun Elaun mestilah antara 2020-2030');
+  } else if (!Number.isInteger(filters.year) || !availableYears.includes(filters.year)) {
+    errors.push('Tahun Elaun mestilah antara 2023-2025');
   }
   
   // Validate type
@@ -331,7 +338,7 @@ const loadingData = ref(false); // Specific loading state for data loading
 // Load existing data from localStorage on component mount
 const loadExistingData = () => {
   // Check if there are any existing batches in localStorage
-  const years = yearOptions.filter(opt => opt.value !== '').map(opt => opt.value);
+  const years = availableYears; // Use constant instead of hardcoded array
   const types = typeOptions.filter(opt => opt.value !== '').map(opt => opt.value);
   
   years.forEach(year => {
