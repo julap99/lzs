@@ -1548,10 +1548,44 @@ export default [
     description: "PA Menu",
     child: [
       {
-        title: "Login Penolong Amil",
+        title: "Dashboard Penolong Amil",
         icon: "iconamoon:arrow-right-2-duotone",
-        path: "/BF-PA/PP/penolong-amil/login",
-        meta: {},
+        path: "/BF-PA/PP/penolong-amil",
+        meta: {
+          auth: {
+            role: ["PenolongAmil"]
+          }
+        },
+      },
+      {
+        title: "Kad Tauliah",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-PA/PP/kad-tauliah",
+        meta: {
+          auth: {
+            role: ["PenolongAmil"]
+          }
+        },
+      },
+      {
+        title: "Surat Tawaran",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-PA/PP/surat-tawaran",
+        meta: {
+          auth: {
+            role: ["PenolongAmil"]
+          }
+        },
+      },
+      {
+        title: "Profil",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-PA/PP/profil",
+        meta: {
+          auth: {
+            role: ["PenolongAmil"]
+          }
+        },
       },
     ],
     meta: {
