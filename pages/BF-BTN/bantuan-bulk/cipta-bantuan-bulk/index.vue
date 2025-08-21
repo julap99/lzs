@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Bantuan Bulk</h2>
+          <h2 class="text-xl font-semibold">Senarai Bulk Processing</h2>
           <rs-button variant="primary" @click="navigateTo('cipta-bantuan-bulk/tambah')">
             <Icon name="material-symbols:add" class="mr-1" /> Tambah
           </rs-button>
@@ -13,33 +13,6 @@
       </template>
 
       <template #body>
-        <!-- Search and Filter Section -->
-        <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-              <FormKit
-                v-model="searchQuery"
-                type="text"
-                placeholder="Cari kod BP, tajuk bantuan..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-            <div class="flex gap-2">
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                placeholder="Status"
-                :options="statusOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-          </div>
-        </div>
-
         <!-- Main Table -->
         <rs-table
           :data="filteredBantuanList"
@@ -58,7 +31,7 @@
           advanced
         >
           <!-- Custom column templates -->
-          <template v-slot:kodBP="{ text }">
+          <template v-slot:id="{ text }">
             <a 
               href="#" 
               class="text-primary-600 hover:text-primary-800"
@@ -77,6 +50,16 @@
           <template v-slot:tindakan="{ text }">
             <div class="flex space-x-2">
               <rs-button
+                v-if="text.status === 'Draf'"
+                variant="primary"
+                size="sm"
+                class="!px-2 !py-1"
+                @click="editBantuan(text.id)"
+              >
+                <Icon name="material-symbols:edit" class="w-4 h-4 mr-1" />
+                Edit
+              </rs-button>
+              <rs-button
                 variant="primary"
                 size="sm"
                 class="!px-2 !py-1"
@@ -84,16 +67,6 @@
               >
                 <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" />
                 Lihat
-              </rs-button>
-              <!-- <rs-button
-                v-if="text.status === 'Draf'"
-                variant="warning"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="editBantuan(text.id)"
-              >
-                <Icon name="material-symbols:edit" class="w-4 h-4 mr-1" />
-                Edit
               </rs-button>
               <rs-button
                 v-if="text.status === 'Draf'"
@@ -103,8 +76,8 @@
                 @click="confirmDelete(text.id)"
               >
                 <Icon name="material-symbols:delete" class="w-4 h-4 mr-1" />
-                Padam
-              </rs-button> -->
+                Hapus
+              </rs-button> 
             </div>
           </template>
         </rs-table>
@@ -160,15 +133,15 @@
       position="center"
     >
       <template #body>
-        <p>Adakah anda pasti untuk memadam rekod bantuan bulk ini?</p>
+        <p>Adakah anda pasti untuk hapus rekod bulk processing ini?</p>
       </template>
       <template #footer>
         <div class="flex justify-end space-x-2">
           <rs-button variant="secondary" @click="showDeleteModal = false">
-            Batal
+            Tidak
           </rs-button>
           <rs-button variant="danger" @click="handleDelete">
-            Padam
+            Ya
           </rs-button>
         </div>
       </template>
@@ -180,7 +153,7 @@
 import { ref, computed } from 'vue';
 
 definePageMeta({
-  title: 'Senarai Bantuan Bulk',
+  title: 'Senarai Bulk Processing',
 });
 
 const breadcrumb = ref([
@@ -190,12 +163,12 @@ const breadcrumb = ref([
     path: '/BF-BTN/bantuan-bulk',
   },
   {
-    name: 'Bantuan Bulk',
+    name: 'Bulk Processing',
     type: 'link',
     path: '/BF-BTN/bantuan-bulk',
   },
   {
-    name: 'Senarai Bantuan Bulk',
+    name: 'Senarai Bulk Processing',
     type: 'current',
     path: '/BF-BTN/bantuan-bulk/cipta-bantuan-bulk',
   },
@@ -209,23 +182,33 @@ const columns = [
     sortable: true,
   },
   {
-    key: 'kodBP',
+    key: 'id',
     label: 'Kod BP',
     sortable: true,
   },
   {
-    key: 'tajukBantuan',
-    label: 'Tajuk Bantuan',
+    key: 'tajuk',
+    label: 'Tajuk',
     sortable: true,
   },
   {
-    key: 'bantuan',
-    label: 'Bantuan (Aid)',
+    key: 'aid',
+    label: 'Aid',
     sortable: true,
   },
   {
-    key: 'produkBantuan',
-    label: 'Produk Bantuan',
+    key: 'aidProduct',
+    label: 'Aid Product',
+    sortable: true,
+  },
+  {
+    key: 'jumlahAmaun',
+    label: 'Jumlah Amaun',
+    sortable: true,
+  },
+  {
+    key: 'tarikhMohon',
+    label: 'Tarikh Mohon',
     sortable: true,
   },
   {
@@ -253,36 +236,44 @@ const selectedBantuanId = ref(null);
 // Mock data (replace with actual API calls)
 const bantuanList = ref([
   {
-    kodBP: 'BP-2025-00001',
-    tajukBantuan: 'Wang Saku Fakir Mac 2025',
-    bantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
-    produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
-    status: 'Draft',
-    tindakan: { id: 'BP-2025-00001', status: 'Draft' }
+    id: 'BP-2025-00001',
+    tajuk: 'Wang Saku Fakir Mac 2025',
+    aid: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+    aidProduct: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+    jumlahAmaun: 'RM20,000.00',
+    tarikhMohon: '01/03/2025',
+    status: 'Draf',
+    tindakan: { id: 'BP-2025-00001', status: 'Draf' }
   },
   {
-    kodBP: 'BP-2025-00002',
-    tajukBantuan: 'Wang Saku Fakir Feb 2025',
-    bantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
-    produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
-    status: 'Draft',
-    tindakan: { id: 'BP-2025-00002', status: 'Draft' }
+    id: 'BP-2025-00002',
+    tajuk: 'Wang Saku Fakir Feb 2025',
+    aid: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+    aidProduct: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+    jumlahAmaun: 'RM23,000.00',
+    tarikhMohon: '01/02/2025',
+    status: 'Draf',
+    tindakan: { id: 'BP-2025-00002', status: 'Draf' }
   },
   {
-    kodBP: 'BP-2025-00003',
-    tajukBantuan: 'Wang Saku Fakir Mac 2025',
-    bantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
-    produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
-    status: 'Draft',
-    tindakan: { id: 'BP-2025-00003', status: 'Draft' }
+    id: 'BP-2025-00003',
+    tajuk: 'Wang Saku Miskin Feb 2025',
+    aid: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+    aidProduct: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+    jumlahAmaun: 'RM28,000.00',
+    tarikhMohon: '02/02/2025',
+    status: 'Draf',
+    tindakan: { id: 'BP-2025-00003', status: 'Draf' }
   },
   {
-    kodBP: 'BP-2025-00004',
-    tajukBantuan: 'Bantuan bencana Feb 2025',
-    bantuan: 'B146 - (HQ) BANTUAN BENCANA (FAKIR)',
-    produkBantuan: '(HQ) BANTUAN BANJIR (FAKIR)',
-    status: 'Draft',
-    tindakan: { id: 'BP-2025-00004', status: 'Draft' }
+    id: 'BP-2025-00004',
+    tajuk: 'Bantuan bencana Feb 2025',
+    aid: 'B146 - (HQ) BANTUAN BENCANA (FAKIR)',
+    aidProduct: '(HQ) BANTUAN BANJIR (FAKIR)',
+    jumlahAmaun: 'RM35,000.00',
+    tarikhMohon: '25/02/2025',
+    status: 'Draf',
+    tindakan: { id: 'BP-2025-00004', status: 'Draf' }
   },
 ]);
 
@@ -300,8 +291,8 @@ const filteredBantuanList = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
     filtered = filtered.filter(item => 
-      item.kodBP.toLowerCase().includes(query) ||
-      item.tajukBantuan.toLowerCase().includes(query)
+      item.id.toLowerCase().includes(query) ||
+      item.tajuk.toLowerCase().includes(query)
     );
   }
 
@@ -335,12 +326,8 @@ const getStatusVariant = (status) => {
   }
 };
 
-const viewBantuan = (id) => {
-  navigateTo(`cipta-bantuan-bulk/${id}`);
-};
-
 const editBantuan = (id) => {
-  navigateTo(`cipta-bantuan-bulk/${id}/edit`);
+  navigateTo(`cipta-bantuan-bulk/${id}`);
 };
 
 const confirmDelete = (id) => {
@@ -350,8 +337,8 @@ const confirmDelete = (id) => {
 
 const handleDelete = async () => {
   try {
-    // Implement delete logic here
     console.log('Deleting bantuan:', selectedBantuanId.value);
+    bantuanList.value = bantuanList.value.filter(item => item.id !== selectedBantuanId.value);
     showDeleteModal.value = false;
     selectedBantuanId.value = null;
   } catch (error) {

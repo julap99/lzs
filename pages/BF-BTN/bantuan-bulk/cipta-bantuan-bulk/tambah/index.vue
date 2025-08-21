@@ -58,7 +58,7 @@
               label="Jumlah Amaun (RM)"
               v-model="formData.jumlahAmaun"
               disabled
-              help="Auto-calculate selepas import Excel"
+              help="Auto-calculate selepas import Data"
             />
 
             <!-- Catatan -->
@@ -74,31 +74,22 @@
               }"
             />
 
+            <!-- Nama Pegawai -->
+            <FormKit
+              type="text"
+              name="namaPegawai"
+              label="Nama Pegawai"
+              v-model="formData.namaPegawai"
+              disabled
+              help="Auto-fill selepas simpan"
+            />
+
             <!-- Tarikh Mohon -->
             <FormKit
               type="text"
               name="tarikhMohon"
               label="Tarikh Mohon"
               v-model="formData.tarikhMohon"
-              disabled
-            />
-
-            <!-- Dicipta Oleh -->
-            <FormKit
-              type="text"
-              name="diciptaOleh"
-              label="Dicipta Oleh"
-              v-model="formData.diciptaOleh"
-              disabled
-              help="Auto-fill selepas simpan"
-            />
-
-            <!-- Dicipta Pada -->
-            <FormKit
-              type="text"
-              name="diciptaPada"
-              label="Dicipta Pada"
-              v-model="formData.diciptaPada"
               disabled
               help="Auto-fill selepas simpan"
             />
@@ -114,10 +105,10 @@
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <CustomSelect
-                v-model="formData.jenisBantuan"
-                :options="jenisBantuanOptions"
-                label="Jenis Bantuan Dipohon"
-                search-placeholder="Cari jenis bantuan..."
+                v-model="formData.aid"
+                :options="aid"
+                label="Aid"
+                search-placeholder="Cari aid..."
                 :disabled="false"
               />
               <FormKit
@@ -236,7 +227,7 @@
               name="importFile"
               label="Muat Naik Fail"
               accept=".xlsx,.xls"
-              help="Format fail: Excel (.xlsx, .xls)"
+              help="Format fail: Excel (.xlsx, .xls, .csv)"
               validation="required"
               @change="handleFileUpload"
             />
@@ -258,7 +249,7 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada</h2>
+            <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
             <rs-button variant="primary" @click="handleAddPayment">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah
             </rs-button>
@@ -304,11 +295,45 @@
         </template>
       </rs-card>
 
-      <!-- Senarai Penerima Section -->
+      <!-- Maklumat Data Rosak Section -->
+      <rs-card>
+        <template #header>
+          <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
+        </template>
+        <template #body>
+          <div v-if="damagedDataList.length === 0" class="text-center py-8 text-gray-500">
+            Tiada maklumat data rosak. Klik "Tambah" untuk menambah maklumat data rosak.
+          </div>
+          <div v-else>
+            <rs-table
+              :data="damagedDataList"
+              :columns="damagedDataColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: true }"
+              advanced
+            >
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button variant="info" size="sm" @click="handleEditDamagedData(row)">
+                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" /> Lihat
+                  </rs-button>
+                  <rs-button variant="danger" size="sm" @click="handleDeleteDamagedData(row)">
+                    <Icon name="material-symbols:delete" class="w-4 h-4" />
+                  </rs-button>
+                </div>
+              </template>
+            </rs-table>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Maklumat Senarai Penerima Section -->
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Senarai Penerima</h2>
+            <h2 class="text-xl font-semibold">Maklumat Senarai Penerima (Beneficiary List)</h2>
             <rs-button variant="primary" @click="handleAddRecipient">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah
             </rs-button>
@@ -354,10 +379,10 @@
         </template>
       </rs-card>
 
-      <!-- Muat Naik Dokumen Section -->
+      <!-- Maklumat Dokumen Sokongan Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Muat Naik Dokumen</h2>
+          <h2 class="text-xl font-semibold">Maklumat Dokumen Sokongan</h2>
         </template>
         <template #body>
           <div class="space-y-4" :class="{ loading: isLoading }">
@@ -382,22 +407,30 @@
       </rs-card>
 
       <!-- Action Buttons -->
-      <div class="form-actions">
-        <div class="flex justify-end space-x-4">
-          <rs-button
-            variant="secondary"
-            @click="navigateBack"
-            :disabled="isSubmitting"
-          >
-            Batal
+      <div class="">
+        <div class="flex justify-between space-x-4">
+          <rs-button variant="secondary" @click="handleKembali">
+            <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
+            Kembali
           </rs-button>
+          <div class="flex space-x-2">
           <rs-button
             variant="primary"
             @click="handleSave"
             :disabled="isSubmitting"
           >
-            {{ isSubmitting ? "Sedang Simpan..." : "Sahkan Senarai" }}
+             <Icon name="ph:floppy-disk" class="w-4 h-4 mr-1" />
+            {{ isSubmitting ? "Sedang Simpan..." : "Simpan" }}
           </rs-button>
+          <rs-button
+              variant="primary"
+              @click="handleHantar"
+              :disabled="isSubmitting"
+            >
+              <Icon name="ph:paper-plane-tilt" class="w-4 h-4 mr-1" />
+              Hantar
+            </rs-button>
+            </div>
         </div>
       </div>
     </div>
@@ -494,7 +527,7 @@
       <template #footer>
         <div class="flex justify-end space-x-3">
           <rs-button variant="secondary" @click="handleClosePaymentModal">
-            Batal
+            Kembali
           </rs-button>
           <rs-button variant="primary" @click="handleSavePaymentModal">
             {{ paymentModalMode === "add" ? "Tambah" : "Kemaskini" }}
@@ -609,7 +642,7 @@
       <template #footer>
         <div class="flex justify-end space-x-3">
           <rs-button variant="secondary" @click="handleCloseRecipientModal">
-            Batal
+            Kembali
           </rs-button>
           <rs-button variant="primary" @click="handleSaveRecipientModal">
             {{ recipientModalMode === "add" ? "Tambah" : "Kemaskini" }}
@@ -624,7 +657,7 @@
 import { ref, computed, watch } from "vue";
 
 definePageMeta({
-  title: "Tambah Bantuan Bulk",
+  title: "Tambah Bulk Processing",
 });
 
 // Simple alert function to replace toast
@@ -642,9 +675,8 @@ const formData = ref({
   status: "Dalam Proses",
   jumlahAmaun: "0.00",
   catatan: "",
-  tarikhMohon: computed(() => new Date().toLocaleDateString("ms-MY")),
-  diciptaOleh: "",
-  diciptaPada: "",
+  namaPegawai: "",
+  tarikhMohon: "",
   kategoriBantuan: "",
   subKategori: "",
   bantuan: "",
@@ -680,17 +712,12 @@ const breadcrumb = ref([
     path: "/BF-BTN/bantuan-bulk",
   },
   {
-    name: "Bantuan Bulk",
-    type: "link",
-    path: "/BF-BTN/bantuan-bulk",
-  },
-  {
-    name: "Cipta Bantuan Bulk",
+    name: "Bulk Processing",
     type: "link",
     path: "/BF-BTN/bantuan-bulk/cipta-bantuan-bulk",
   },
   {
-    name: "Tambah",
+    name: "Cipta Bulk Processing",
     type: "current",
     path: "/BF-BTN/bantuan-bulk/cipta-bantuan-bulk/tambah",
   },
@@ -728,10 +755,10 @@ const penyiasatOptions = [
 ];
 
 const cawanganOptions = [
-  { label: "Cawangan Kuala Lumpur", value: "kl" },
-  { label: "Cawangan Selangor", value: "selangor" },
-  { label: "Cawangan Putrajaya", value: "putrajaya" },
-  { label: "Cawangan Johor", value: "johor" },
+  { label: "Cawangan Ibu Pejabat LZS", value: "hq" },
+  { label: "Cawangan Kuala Selangor", value: "kualaSelangor" },
+  { label: "Cawangan Klang", value: "klang" },
+  { label: "Cawangan Damansara", value: "damansara" },
 ];
 
 // Payment Table Configuration
@@ -760,8 +787,6 @@ const recipientColumns = [
   { key: "bulkProcessing", label: "Bulk Processing" },
   { key: "kategoriAsnaf", label: "Kategori Asnaf" },
   { key: "bayaranKepada", label: "Bayaran Kepada" },
-  { key: "negeri", label: "Negeri" },
-  { key: "negara", label: "Negara" },
   {
     key: "actions",
     label: "Tindakan",
@@ -808,8 +833,6 @@ const recipientForm = ref({
   bulkProcessing: "Tidak",
   kategoriAsnaf: "",
   bayaranKepada: "Individu",
-  negeri: "",
-  negara: "Malaysia",
 });
 
 // Computed Properties
@@ -910,8 +933,6 @@ const handleImport = async () => {
         bulkProcessing: "BP-2025-00004",
         kategoriAsnaf: "Fakir",
         bayaranKepada: "Asnaf",
-        negeri: "Selangor",
-        negara: "Malaysia",
       },
       {
         id: generateUniqueId("RCP"),
@@ -921,8 +942,6 @@ const handleImport = async () => {
         bulkProcessing: "BP-2025-00004",
         kategoriAsnaf: "Fakir",
         bayaranKepada: "Asnaf",
-        negeri: "Selangor",
-        negara: "Malaysia",
       },
       {
         id: generateUniqueId("RCP"),
@@ -932,8 +951,6 @@ const handleImport = async () => {
         bulkProcessing: "BP-2025-00004",
         kategoriAsnaf: "Fakir",
         bayaranKepada: "Asnaf",
-        negeri: "Selangor",
-        negara: "Malaysia",
       },
       {
         id: generateUniqueId("RCP"),
@@ -943,8 +960,6 @@ const handleImport = async () => {
         bulkProcessing: "BP-2025-00004",
         kategoriAsnaf: "Fakir",
         bayaranKepada: "Asnaf",
-        negeri: "Selangor",
-        negara: "Malaysia",
       },
     ];
 
@@ -1008,7 +1023,7 @@ const handleImport = async () => {
 };
 
 // Compute jenis bantuan options from the JSON data
-const jenisBantuanOptions = computed(() => {
+const aid = computed(() => {
   if (!bantuanData.value.bantuan) return [];
   
   const options = Object.entries(bantuanData.value.bantuan).map(([categoryName]) => ({
@@ -1089,8 +1104,6 @@ const productPackageOptions = computed(() => {
       bulkProcessing: "Tidak",
       kategoriAsnaf: "Fakir",
       bayaranKepada: "Individu",
-      negeri: "Selangor",
-      negara: "Malaysia",
     });
 
     paymentList.value = [
@@ -1253,8 +1266,6 @@ const handleAddRecipient = () => {
     bulkProcessing: "Tidak",
     kategoriAsnaf: formData.value.kategoriAsnaf || "",
     bayaranKepada: "Individu",
-    negeri: "",
-    negara: "Malaysia",
   };
 
   recipientModalMode.value = "add";
@@ -1399,12 +1410,12 @@ const handleSave = async () => {
     //   body: payload
     // });
 
-    alert("success", "Bantuan bulk berjaya disimpan");
+    alert("success", "Bulk Processing berjaya disimpan");
     // Navigate back after successful save
     navigateBack();
   } catch (error) {
-    console.error("Error saving bantuan bulk:", error);
-    alert("error", "Gagal menyimpan bantuan bulk");
+    console.error("Error saving bulk processing:", error);
+    alert("error", "Gagal menyimpan bulk processing");
   } finally {
     isSubmitting.value = false;
   }
@@ -1470,6 +1481,54 @@ const handleClosePaymentModal = () => {
 const handleCloseRecipientModal = () => {
   showRecipientModal.value = false;
 };
+
+// State Management
+const damagedDataList = ref([]); // State for damaged data
+
+// Damaged Data Table Configuration
+const damagedDataColumns = [
+  { key: "no", label: "No." },
+  { key: "namaPenerima", label: "Nama Penerima" },
+  { key: "catatan", label: "Catatan" },
+  {
+    key: "actions",
+    label: "Tindakan",
+    sortable: false,
+    align: "center",
+  },
+];
+
+// Sample data for damaged data list (you can replace this with your actual data)
+damagedDataList.value = [
+  //{ no: 1, namaPenerima: "Ali bin Abu", catatan: "Data tidak lengkap" },
+  //{ no: 2, namaPenerima: "Siti binti Ali", catatan: "Dokumen hilang" },
+];
+
+// Methods for Damaged Data
+const handleAddDamagedData = () => {
+  // Logic to add new damaged data
+  const newDamagedData = {
+    no: damagedDataList.value.length + 1,
+    namaPenerima: "Contoh Penerima",
+    catatan: "Contoh catatan untuk data rosak",
+  };
+  damagedDataList.value.push(newDamagedData);
+  alert("success", "Maklumat data rosak berjaya ditambah");
+};
+
+const handleDeleteDamagedData = (data) => {
+  const index = damagedDataList.value.findIndex(d => d.no === data.no);
+  if (index !== -1) {
+    damagedDataList.value.splice(index, 1);
+    alert("success", "Data rosak berjaya dipadam");
+  }
+};
+
+const handleEditDamagedData = (data) => {
+  // Logic to handle editing damaged data
+  alert("info", `Editing data for ${data.namaPenerima}`);
+};
+
 </script>
 
 <style lang="scss" scoped>

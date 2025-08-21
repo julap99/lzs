@@ -259,7 +259,7 @@
       <!-- Dokumen Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Dokumen Berkaitan</h2>
+          <h2 class="text-xl font-semibold">Dokumen Sokongan</h2>
         </template>
         <template #body>
           <div
@@ -461,14 +461,6 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">Bulk Processing</label>
             <p class="text-gray-900">{{ selectedRecipient.bulkProcessing }}</p>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Negeri</label>
-            <p class="text-gray-900">{{ selectedRecipient.negeri }}</p>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Negara</label>
-            <p class="text-gray-900">{{ selectedRecipient.negara }}</p>
-          </div>
         </div>
       </div>
       <template #footer>
@@ -488,7 +480,7 @@ import { ref, computed } from "vue";
 const route = useRoute();
 
 definePageMeta({
-  title: "Maklumat Bantuan Bulk - Sokongan",
+  title: "Maklumat Bulk Processing",
 });
 
 const breadcrumb = ref([
@@ -498,7 +490,7 @@ const breadcrumb = ref([
     path: "/BF-BTN",
   },
   {
-    name: "Bantuan Bulk",
+    name: "Bulk Processing",
     type: "link",
     path: "/BF-BTN/bantuan-bulk",
   },
@@ -523,7 +515,7 @@ const bantuanDetail = ref({
   jumlahAmaun: "RM 191,200.00",
   catatan:
     "Tuntutan wang saku pelajar batch 3\nJumlah Pelajar: 50\nJumlah Bayaran: RM 191,200.00",
-  tarikhMohon: "14/03/2025",
+  tarikhMohon: "14/03/2025 03:15pm",
   diciptaOleh: "Norlida Binti Mat Nor",
   diciptaPada: "17/02/2025 3:17pm",
   kategoriBantuan: "Pendidikan Fakir",
@@ -591,9 +583,7 @@ const penerimaList = ref([
     agihanSemula: "",
     bulkProcessing: "BP-2025-00004",
     kategoriAsnaf: "Fakir",
-    bayaranKepada: "Asnaf",
-    negeri: "Selangor",
-    negara: "Malaysia",
+    bayaranKepada: "Asnaf"
   },
   {
     namaPenuh: "Nur safiyya Binti Rosly",
@@ -601,9 +591,7 @@ const penerimaList = ref([
     agihanSemula: "",
     bulkProcessing: "BP-2025-00004",
     kategoriAsnaf: "Fakir",
-    bayaranKepada: "Asnaf",
-    negeri: "Selangor",
-    negara: "Malaysia",
+    bayaranKepada: "Asnaf"
   },
   {
     namaPenuh: "Mohd Nazrin Bin Mokhtar",
@@ -611,9 +599,7 @@ const penerimaList = ref([
     agihanSemula: "",
     bulkProcessing: "BP-2025-00004",
     kategoriAsnaf: "Fakir",
-    bayaranKepada: "Asnaf",
-    negeri: "Selangor",
-    negara: "Malaysia",
+    bayaranKepada: "Asnaf"
   },
   {
     namaPenuh: "Intan Nadia Binti Mohd Zamri",
@@ -621,9 +607,7 @@ const penerimaList = ref([
     agihanSemula: "",
     bulkProcessing: "BP-2025-00004",
     kategoriAsnaf: "Fakir",
-    bayaranKepada: "Asnaf",
-    negeri: "Selangor",
-    negara: "Malaysia",
+    bayaranKepada: "Asnaf"
   },
 ]);
 
@@ -659,7 +643,7 @@ const statusSemakanOptions = [
   { label: "Pilih Status", value: "" },
   { label: "Disokong", value: "Disokong" },
   { label: "Tidak Disokong", value: "Tidak Disokong" },
-  { label: "Perlu Kajian Semula", value: "Perlu Kajian Semula" },
+  { label: "Tidak Lengkap", value: "Tidak Lengkap" },
 ];
 
 // Modal states
