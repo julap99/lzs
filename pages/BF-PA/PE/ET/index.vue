@@ -1,158 +1,633 @@
 <!-- 
   RTMF SCREEN: PA-PE-ET
-  PURPOSE: Borang Isi Maklumat Penerima — Elaun Tahunan
-  DESCRIPTION: Batch management for annual allowance recipients
+  PURPOSE: Dashboard Elaun Tahunan — Pengurusan Berasaskan Peranan
+  DESCRIPTION: Dashboard berasaskan peranan untuk pengurusan elaun tahunan dengan aliran kerja kelulusan
   ROUTE: /BF-PA/PE/ET
 -->
 <template>
   <div>
+    <!-- Penukar Peranan Halaman Khusus -->
+    <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <Icon name="ph:user-circle" class="text-gray-600" size="20" />
+          <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="min-w-[200px]">
+            <FormKit
+              type="select"
+              v-model="currentRole"
+              :options="roleOptions"
+              :classes="{ 
+                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
+                wrapper: '!min-w-0'
+              }"
+              @change="handleRoleChange"
+            />
+          </div>
+          <rs-button
+            variant="secondary-outline"
+            size="sm"
+            @click="toggleRoleInfo"
+            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
+            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
+          >
+            <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+            {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
+          </rs-button>
+        </div>
+      </div>
+      
+      <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
+            <div class="flex items-center space-x-3">
+              <rs-badge :variant="getRoleVariant(currentRole)" class="!text-xs">
+                {{ getRoleLabel(currentRole) }}
+              </rs-badge>
+              <span class="text-xs text-gray-600">{{ getRoleDescription(currentRole) }}</span>
+            </div>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
+            <div class="flex flex-wrap gap-2">
+              <rs-badge
+                v-for="capability in getRoleCapabilities(currentRole)"
+                :key="capability"
+                variant="secondary"
+                size="sm"
+                class="!text-xs"
+              >
+                {{ capability }}
+              </rs-badge>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Header Card -->
     <rs-card class="mt-4">
       <template #header>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <Icon name="ic:outline-people" class="mr-3 text-blue-600" size="24" />
-            <h2 class="text-lg font-semibold">Borang Isi Maklumat Penerima — Elaun Tahunan</h2>
-          </div>
-          <div class="text-xs text-gray-500">Kod Skrin: BF-PA/PE/ET/01</div>
+        <div>
+          <h2 class="text-xl font-semibold">Dashboard Elaun Tahunan</h2>
+          <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
         </div>
       </template>
 
       <template #body>
-        <!-- Filters (Required) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Tahun Elaun <span class="text-red-500">*</span>
-            </label>
+        <!-- Bahagian Penapis Pintar -->
+        <div class="mb-6">
+          <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <FormKit
+              v-model="filters.searchQuery"
+              type="text"
+              placeholder="Cari rujukan, tahun, atau jenis elaun..."
+              :classes="{
+                input: '!py-2',
+              }"
+              class="flex-1"
+            />
             <FormKit
               v-model="filters.year"
               type="select"
               :options="yearOptions"
-              placeholder="Pilih tahun…"
+              placeholder="Tahun"
               :classes="{
                 input: '!py-2',
               }"
-              @change="onFilterChanged"
+              class="min-w-[150px]"
             />
-            <p class="text-xs text-gray-500 mt-1">Wajib dipilih; memandu skop data penerima.</p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Jenis Elaun <span class="text-red-500">*</span>
-            </label>
             <FormKit
               v-model="filters.type"
               type="select"
               :options="typeOptions"
-              placeholder="Pilih jenis elaun…"
+              placeholder="Jenis Elaun"
               :classes="{
                 input: '!py-2',
               }"
-              @change="onFilterChanged"
+              class="min-w-[200px]"
             />
-            <p class="text-xs text-gray-500 mt-1">Wajib dipilih; memandu senarai calon & kawalan konflik tahun.</p>
-          </div>
-        </div>
-
-        <!-- Summary / Status Bar -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
-          <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <div class="text-xs text-blue-600">Tahun Elaun</div>
-            <div class="text-base font-medium text-blue-900">{{ filters.year || '—' }}</div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-            <div class="text-xs text-green-600">Jenis Elaun</div>
-            <div class="text-base font-medium text-green-900">{{ typeLabel || '—' }}</div>
-          </div>
-          <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-            <div class="text-xs text-orange-600">Status Senarai</div>
-            <div class="text-base">
-              <rs-badge :variant="getStatusVariant(batchStatus)">
-                {{ batchStatusLabel(batchStatus) }}
-              </rs-badge>
-            </div>
-          </div>
-          <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
-            <div class="text-xs text-purple-600">Bilangan Dalam Senarai</div>
-            <div class="text-base font-medium text-purple-900">{{ totalCountDisplay }}</div>
-          </div>
-        </div>
-
-        <!-- Toolbar: Actions -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3 mb-6">
-          <div class="flex-1">
-            <span class="text-sm text-gray-600">
-              Jumlah batch dalam jadual: <strong>{{ rows.length }}</strong>
-            </span>
-          </div>
-          <div class="flex items-center gap-2">
             <rs-button
               variant="primary"
-              size="sm"
-              :disabled="!canSave"
-              @click="onSave"
+              @click="performSearch"
+              class="flex items-center whitespace-nowrap"
             >
-              <Icon name="ic:outline-save" class="mr-2" />
-              Simpan
+              <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+              Cari
+            </rs-button>
+            <rs-button
+              variant="secondary-outline"
+              @click="clearSearch"
+              class="flex items-center whitespace-nowrap"
+            >
+              <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+              Set Semula
             </rs-button>
           </div>
         </div>
 
-        <!-- Status Table (Read-only) -->
-        <div class="space-y-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-gray-900">Status Batch Elaun Tahunan</h3>
-            <div class="text-xs text-gray-500">
-              Tahun: <b>{{ filters.year || '—' }}</b> · Jenis: <b>{{ typeLabel || '—' }}</b>
-            </div>
-          </div>
-          
-          <div class="overflow-x-auto rounded-lg border">
-          <table class="min-w-full text-sm divide-y">
-            <thead class="bg-gray-50 text-left">
-              <tr>
-                <th class="px-4 py-3 font-medium text-gray-900">Tahun Elaun</th>
-                <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
-                <th class="px-4 py-3 font-medium text-gray-900">Status</th>
-                <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
-                <th class="px-4 py-3 w-40 font-medium text-gray-900">Tindakan</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y bg-white">
-              <tr v-if="loading" class="hover:bg-gray-50">
-                <td class="px-4 py-6 text-center text-gray-500" colspan="5">Memuatkan status senarai…</td>
-              </tr>
-              <tr v-for="row in rows" :key="row.id" class="hover:bg-gray-50">
-                <td class="px-4 py-3 text-gray-900">{{ row.year }}</td>
-                <td class="px-4 py-3 text-gray-900">{{ typeOptions.find(opt => opt.value === row.typeCode)?.label || row.typeCode }}</td>
-                <td class="px-4 py-3">
-                  <rs-badge :variant="getStatusVariant(row.status)">
-                    {{ batchStatusLabel(row.status) }}
-                  </rs-badge>
-                </td>
-                <td class="px-4 py-3 text-gray-900">{{ row.count ?? '—' }}</td>
-                <td class="px-4 py-3">
-                  <rs-button
-                    variant="primary"
-                    size="sm"
-                    @click="viewRecipients(row)"
-                    class="!px-3 !py-1.5"
-                  >
-                    <Icon name="ic:outline-remove-red-eye" class="w-4 h-4 mr-1" />
-                    Lihat Senarai Nama
-                  </rs-button>
-                </td>
-              </tr>
-              <tr v-if="!loading && !rows.length" class="hover:bg-gray-50">
-                <td class="px-4 py-6 text-center text-gray-500" colspan="5">Tiada rekod. Pilih Tahun & Jenis Elaun, kemudian klik 'Simpan' untuk cipta batch.</td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Butang Tambah untuk Eksekutif -->
+        <div v-if="currentRole === 'eksekutif'" class="mb-6">
+          <rs-button
+            variant="success"
+            @click="addNewAllowance"
+            class="flex items-center whitespace-nowrap"
+          >
+            <Icon name="ph:plus" class="w-4 h-4 mr-2" />
+            Tambah Maklumat Elaun Tahunan
+          </rs-button>
         </div>
+
+        <!-- Bahagian Jadual Bertab -->
+        <!-- Tab Eksekutif -->
+        <div v-if="currentRole === 'eksekutif'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Draf">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                  <Icon name="ph:file-text" class="mr-2" size="20" />
+                  Senarai elaun yang dalam draf
+                </h3>
+                <div class="overflow-x-auto rounded-lg border">
+                  <table class="min-w-full text-sm divide-y">
+                    <thead class="bg-gray-50 text-left">
+                      <tr>
+                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white">
+                      <tr v-for="item in getTableDataByStatus(['DRAF'])" :key="item.id" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
+                        <td class="px-4 py-3">
+                          <rs-badge :variant="getStatusVariant(item.status)">
+                            {{ item.status }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
+                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
+                        <td class="px-4 py-3">
+                          <div class="flex space-x-2">
+                            <rs-button
+                              variant="primary"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="viewAllowance(item)"
+                            >
+                              Lihat
+                            </rs-button>
+                            <rs-button
+                              variant="secondary"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="editAllowance(item)"
+                            >
+                              Kemaskini
+                            </rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="getTableDataByStatus(['DRAF']).length === 0" class="hover:bg-gray-50">
+                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                          Tiada elaun dalam draf.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Sedang Proses">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai elaun yang sedang dalam proses
+                </h3>
+                <div class="overflow-x-auto rounded-lg border">
+                  <table class="min-w-full text-sm divide-y">
+                    <thead class="bg-gray-50 text-left">
+                      <tr>
+                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white">
+                      <tr v-for="item in getTableDataByStatus(['SEDANG PROSES', 'MENUNGGU KELULUSAN'])" :key="item.id" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
+                        <td class="px-4 py-3">
+                          <rs-badge :variant="getStatusVariant(item.status)">
+                            {{ item.status }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
+                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
+                        <td class="px-4 py-3">
+                          <div class="flex space-x-2">
+                            <rs-button
+                              variant="primary"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="viewAllowance(item)"
+                            >
+                              Lihat
+                            </rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="getTableDataByStatus(['SEDANG PROSES', 'MENUNGGU KELULUSAN']).length === 0" class="hover:bg-gray-50">
+                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                          Tiada elaun dalam proses.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Lulus">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai elaun yang telah diluluskan
+                </h3>
+                <div class="overflow-x-auto rounded-lg border">
+                  <table class="min-w-full text-sm divide-y">
+                    <thead class="bg-gray-50 text-left">
+                      <tr>
+                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white">
+                      <tr v-for="item in getTableDataByStatus(['LULUS'])" :key="item.id" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
+                        <td class="px-4 py-3">
+                          <rs-badge :variant="getStatusVariant(item.status)">
+                            {{ item.status }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
+                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
+                        <td class="px-4 py-3">
+                          <div class="flex space-x-2">
+                            <rs-button
+                              variant="primary"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="viewAllowance(item)"
+                            >
+                              Lihat
+                            </rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="getTableDataByStatus(['LULUS']).length === 0" class="hover:bg-gray-50">
+                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                          Tiada elaun yang diluluskan.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
+
+        <!-- Tab Ketua Jabatan -->
+        <div v-if="currentRole === 'ketua-jabatan'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Sedang Proses">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai elaun yang menunggu pengesahan jabatan
+                </h3>
+                <div class="overflow-x-auto rounded-lg border">
+                  <table class="min-w-full text-sm divide-y">
+                    <thead class="bg-gray-50 text-left">
+                      <tr>
+                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white">
+                      <tr v-for="item in getTableDataByStatus(['SEDANG PROSES'])" :key="item.id" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
+                        <td class="px-4 py-3">
+                          <rs-badge :variant="getStatusVariant(item.status)">
+                            {{ item.status }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
+                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
+                        <td class="px-4 py-3">
+                          <div class="flex space-x-2">
+                            <rs-button
+                              variant="primary"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="viewAllowance(item)"
+                            >
+                              Lihat
+                            </rs-button>
+                            <rs-button
+                              variant="success"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="approveAllowance(item)"
+                            >
+                              Luluskan
+                            </rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="getTableDataByStatus(['SEDANG PROSES']).length === 0" class="hover:bg-gray-50">
+                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                          Tiada elaun yang menunggu pengesahan.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Perlu Pengesahan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
+                  <Icon name="ph:warning" class="mr-2" size="20" />
+                  Senarai elaun yang melebihi bajet dan memerlukan pengesahan
+                </h3>
+                <div class="overflow-x-auto rounded-lg border">
+                  <table class="min-w-full text-sm divide-y">
+                    <thead class="bg-gray-50 text-left">
+                      <tr>
+                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white">
+                      <tr v-for="item in getTableDataByStatus(['PERLU PENGESAHAN'])" :key="item.id" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
+                        <td class="px-4 py-3">
+                          <rs-badge :variant="getStatusVariant(item.status)">
+                            {{ item.status }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
+                        <td class="px-4 py-3 text-red-600 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
+                        <td class="px-4 py-3">
+                          <div class="flex space-x-2">
+                            <rs-button
+                              variant="primary"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="viewAllowance(item)"
+                            >
+                              Lihat
+                            </rs-button>
+                            <rs-button
+                              variant="warning"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="verifyExcessAllowance(item)"
+                            >
+                              Sahkan
+                            </rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="getTableDataByStatus(['PERLU PENGESAHAN']).length === 0" class="hover:bg-gray-50">
+                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                          Tiada elaun yang memerlukan pengesahan.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Lulus">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai elaun yang telah disahkan jabatan
+                </h3>
+                <div class="overflow-x-auto rounded-lg border">
+                  <table class="min-w-full text-sm divide-y">
+                    <thead class="bg-gray-50 text-left">
+                      <tr>
+                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white">
+                      <tr v-for="item in getTableDataByStatus(['LULUS'])" :key="item.id" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
+                        <td class="px-4 py-3">
+                          <rs-badge :variant="getStatusVariant(item.status)">
+                            {{ item.status }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
+                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
+                        <td class="px-4 py-3">
+                          <div class="flex space-x-2">
+                            <rs-button
+                              variant="primary"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="viewAllowance(item)"
+                            >
+                              Lihat
+                            </rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="getTableDataByStatus(['LULUS']).length === 0" class="hover:bg-gray-50">
+                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                          Tiada elaun yang disahkan.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
+
+        <!-- Tab Ketua Divisyen -->
+        <div v-if="currentRole === 'ketua-divisyen'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Sedang Proses">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai elaun yang menunggu kelulusan akhir divisyen
+                </h3>
+                <div class="overflow-x-auto rounded-lg border">
+                  <table class="min-w-full text-sm divide-y">
+                    <thead class="bg-gray-50 text-left">
+                      <tr>
+                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white">
+                      <tr v-for="item in getTableDataByStatus(['SEDANG PROSES'])" :key="item.id" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
+                        <td class="px-4 py-3">
+                          <rs-badge :variant="getStatusVariant(item.status)">
+                            {{ item.status }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
+                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
+                        <td class="px-4 py-3">
+                          <div class="flex space-x-2">
+                            <rs-button
+                              variant="primary"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="viewAllowance(item)"
+                            >
+                              Lihat
+                            </rs-button>
+                            <rs-button
+                              variant="success"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="approveAllowance(item)"
+                            >
+                              Luluskan
+                            </rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="getTableDataByStatus(['SEDANG PROSES']).length === 0" class="hover:bg-gray-50">
+                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                          Tiada elaun yang menunggu kelulusan.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Lulus">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai elaun yang telah diluluskan divisyen
+                </h3>
+                <div class="overflow-x-auto rounded-lg border">
+                  <table class="min-w-full text-sm divide-y">
+                    <thead class="bg-gray-50 text-left">
+                      <tr>
+                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
+                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white">
+                      <tr v-for="item in getTableDataByStatus(['LULUS'])" :key="item.id" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
+                        <td class="px-4 py-3">
+                          <rs-badge :variant="getStatusVariant(item.status)">
+                            {{ item.status }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
+                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
+                        <td class="px-4 py-3">
+                          <div class="flex space-x-2">
+                            <rs-button
+                              variant="primary"
+                              size="sm"
+                              class="!px-2 !py-1"
+                              @click="viewAllowance(item)"
+                            >
+                              Lihat
+                            </rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="getTableDataByStatus(['LULUS']).length === 0" class="hover:bg-gray-50">
+                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                          Tiada elaun yang diluluskan.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
         </div>
       </template>
     </rs-card>
@@ -160,302 +635,353 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue';
-import { useToast } from 'vue-toastification';
-import { useRoute, useRouter } from 'vue-router';
-import { Icon } from '#components';
-import { FormKit } from '@formkit/vue';
-import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue';
-
-definePageMeta({
-  title: "Borang Isi Maklumat Penerima — Elaun Tahunan",
-  description: "Batch management for annual allowance recipients",
-});
+import { ref, nextTick, computed, watch, onMounted } from "vue";
+import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
+import { Icon } from "#components";
+import { FormKit } from "@formkit/vue";
+import LayoutsBreadcrumb from "~/components/layouts/Breadcrumb.vue";
 
 const toast = useToast();
 const router = useRouter();
-const route = useRoute();
 
-const breadcrumb = ref([
-  {
-    name: "Pengurusan Elaun",
-    type: "link",
-    path: "/BF-PA/PE",
-  },
-  {
-    name: "Elaun Tahunan",
-    type: "current",
-    path: "/BF-PA/PE/ET",
-  },
-]);
+definePageMeta({
+  title: "Dashboard Elaun Tahunan",
+});
 
+const breadcrumb = [
+  { name: 'Laman Utama', path: '/' },
+  { name: 'Modul BF-PA', path: '/BF-PA' },
+  { name: 'Pengurusan Elaun', path: '/BF-PA/PE' },
+  { name: 'Elaun Tahunan', path: null }
+];
+
+// Role Simulator State
+const currentRole = ref("eksekutif"); // Default role
+const showRoleInfo = ref(false);
+
+// Page-specific role options for ET module
+const roleOptions = [
+  { label: "Eksekutif", value: "eksekutif" },
+  { label: "Ketua Jabatan", value: "ketua-jabatan" },
+  { label: "Ketua Divisyen", value: "ketua-divisyen" },
+];
+
+// Role data for ET module
+const roleData = {
+  eksekutif: {
+    name: "Eksekutif",
+    description: "Pengurusan Elaun Tahunan",
+    capabilities: ["Tambah Elaun", "Lihat Senarai", "Kemaskini Elaun", "Hantar untuk Kelulusan"],
+  },
+  "ketua-jabatan": {
+    name: "Ketua Jabatan",
+    description: "Pengesahan Elaun Tahunan",
+    capabilities: ["Lihat Senarai", "Sahkan Elaun", "Monitor Progress", "Pengesahan Lebihan"],
+  },
+  "ketua-divisyen": {
+    name: "Ketua Divisyen", 
+    description: "Kelulusan Akhir Elaun Tahunan",
+    capabilities: ["Lihat Senarai", "Kelulusan Akhir", "Monitor Keseluruhan"],
+  },
+};
+
+// Role simulator helper functions
+const getRoleVariant = (role) => {
+  const variants = {
+    eksekutif: "success",
+    "ketua-jabatan": "warning",
+    "ketua-divisyen": "danger",
+  };
+  return variants[role] || "default";
+};
+
+const getRoleLabel = (role) => {
+  return roleData[role]?.name || role;
+};
+
+const getRoleDescription = (role) => {
+  return roleData[role]?.description || "";
+};
+
+const getRoleCapabilities = (role) => {
+  return roleData[role]?.capabilities || [];
+};
+
+const handleRoleChange = () => {
+  // Role changed
+  const roleLabel = getRoleLabel(currentRole.value);
+  toast.info(`Peranan berubah kepada: ${roleLabel}`);
+  
+  // Refresh table to show role-specific data
+  refreshTable();
+};
+
+const toggleRoleInfo = () => {
+  showRoleInfo.value = !showRoleInfo.value;
+};
+
+const getRoleSpecificDescription = () => {
+  const role = currentRole.value;
+  switch (role) {
+    case 'eksekutif':
+      return 'Urus elaun tahunan, tambah maklumat baru, dan kemaskini data sedia ada';
+    case 'ketua-jabatan':
+      return 'Sahkan elaun tahunan dan kelulusan untuk elaun yang melebihi bajet';
+    case 'ketua-divisyen':
+      return 'Kelulusan akhir untuk semua elaun tahunan';
+    default:
+      return 'Pilih peranan untuk melihat fungsi yang tersedia';
+  }
+};
+
+// Filters
+const filters = ref({
+  searchQuery: "",
+  year: "",
+  type: "",
+});
+
+// Filter options
 const currentYear = new Date().getFullYear();
 const yearOptions = [
-  { label: 'Pilih tahun…', value: '' },
+  { label: "Sila pilih...", value: "" },
   { label: String(currentYear - 1), value: currentYear - 1 },
   { label: String(currentYear), value: currentYear }
 ];
 
 const typeOptions = [
-  { label: 'Pilih jenis elaun…', value: '' },
-  { label: 'Elaun Tahunan KPAK', value: 'ET-KPAK' },
-  { label: 'Elaun Tahunan KPAF', value: 'ET-KPAF' },
-  { label: 'Anugerah Penolong Amil', value: 'ET-ANUG' },
-  { label: 'Ketua Penolong Amil Kariah (KPAK) terbaik', value: 'ANUG-KPAK' },
-  { label: 'Penolong Amil Kariah (PAK) terbaik', value: 'ANUG-PAK' },
-  { label: 'Ketua Penolong Amil Fitrah (KPAF) terbaik', value: 'ANUG-KPAF' },
-  { label: 'Penolong Amil Fitrah (PAF) terbaik', value: 'ANUG-PAF' },
-  { label: 'Penolong Amil Padi (PAP) terbaik', value: 'ANUG-PAP' },
-  { label: 'Penolong Amil Komuniti (PAK+) terbaik', value: 'ANUG-PAKPLUS' }
+  { label: "Sila pilih...", value: "" },
+  { label: "Elaun Tahunan KPAK", value: "ET-KPAK" },
+  { label: "Elaun Tahunan KPAF", value: "ET-KPAF" },
+  { label: "Anugerah Penolong Amil", value: "ET-ANUG" },
+  { label: "Ketua Penolong Amil Kariah (KPAK) terbaik", value: "ANUG-KPAK" },
+  { label: "Penolong Amil Kariah (PAK) terbaik", value: "ANUG-PAK" },
+  { label: "Ketua Penolong Amil Fitrah (KPAF) terbaik", value: "ANUG-KPAF" },
+  { label: "Penolong Amil Fitrah (PAF) terbaik", value: "ANUG-PAF" },
+  { label: "Penolong Amil Padi (PAP) terbaik", value: "ANUG-PAP" },
+  { label: "Penolong Amil Komuniti (PAK+) terbaik", value: "ANUG-PAKPLUS" }
 ];
 
-const filters = reactive({
-  year: route.query.year ? Number(route.query.year) : '',
-  type: route.query.type ? String(route.query.type) : ''
-});
+// Table data and reactivity control
+const tableKey = ref(0);
+const activeTab = ref(0);
 
-const typeLabel = computed(() => {
-  const option = typeOptions.find(opt => opt.value === filters.type);
-  return option ? option.label : '';
-});
+// Sample data for demonstration
+const allowancesList = ref([
+  {
+    id: "ET-2024-001",
+    rujukan: "ET-2024-001",
+    year: 2024,
+    type: "ET-KPAK",
+    typeLabel: "Elaun Tahunan KPAK",
+    status: "DRAF",
+    count: 25,
+    totalAmount: 12500.00,
+    budget: 10000.00,
+    excessAmount: 2500.00,
+    createdBy: "eksekutif",
+    createdAt: "2024-01-15T10:00:00Z",
+    submittedAt: null,
+    approvedByKJ: null,
+    approvedAtKJ: null,
+    approvedByKD: null,
+    approvedAtKD: null,
+    notes: ""
+  },
+  {
+    id: "ET-2024-002",
+    rujukan: "ET-2024-002",
+    year: 2024,
+    type: "ET-KPAF",
+    typeLabel: "Elaun Tahunan KPAF",
+    status: "SEDANG PROSES",
+    count: 30,
+    totalAmount: 9000.00,
+    budget: 10000.00,
+    excessAmount: 0.00,
+    createdBy: "eksekutif",
+    createdAt: "2024-01-16T14:30:00Z",
+    submittedAt: "2024-01-16T15:00:00Z",
+    approvedByKJ: null,
+    approvedAtKJ: null,
+    approvedByKD: null,
+    approvedAtKD: null,
+    notes: ""
+  },
+  {
+    id: "ET-2024-003",
+    rujukan: "ET-2024-003",
+    year: 2024,
+    type: "ET-ANUG",
+    typeLabel: "Anugerah Penolong Amil",
+    status: "PERLU PENGESAHAN",
+    count: 15,
+    totalAmount: 15000.00,
+    budget: 10000.00,
+    excessAmount: 5000.00,
+    createdBy: "eksekutif",
+    createdAt: "2024-01-17T09:15:00Z",
+    submittedAt: "2024-01-17T10:00:00Z",
+    approvedByKJ: null,
+    approvedAtKJ: null,
+    approvedByKD: null,
+    approvedAtKD: null,
+    notes: "Elaun melebihi bajet - memerlukan pengesahan"
+  },
+  {
+    id: "ET-2024-004",
+    rujukan: "ET-2024-004",
+    year: 2024,
+    type: "ANUG-KPAK",
+    typeLabel: "Ketua Penolong Amil Kariah (KPAK) terbaik",
+    status: "LULUS",
+    count: 5,
+    totalAmount: 5000.00,
+    budget: 10000.00,
+    excessAmount: 0.00,
+    createdBy: "eksekutif",
+    createdAt: "2024-01-18T11:00:00Z",
+    submittedAt: "2024-01-18T12:00:00Z",
+    approvedByKJ: "KJ001",
+    approvedAtKJ: "2024-01-19T10:00:00Z",
+    approvedByKD: "KD001",
+    approvedAtKD: "2024-01-20T14:00:00Z",
+    notes: "Diluluskan sepenuhnya"
+  },
+  {
+    id: "ET-2024-005",
+    rujukan: "ET-2024-005",
+    year: 2024,
+    type: "ET-KPAK",
+    typeLabel: "Elaun Tahunan KPAK",
+    status: "DRAF",
+    count: 20,
+    totalAmount: 10000.00,
+    budget: 10000.00,
+    excessAmount: 0.00,
+    createdBy: "eksekutif",
+    createdAt: "2024-01-20T08:00:00Z",
+    submittedAt: null,
+    approvedByKJ: null,
+    approvedAtKJ: null,
+    approvedByKD: null,
+    approvedAtKD: null,
+    notes: "Draf baru untuk KPAK"
+  },
+  {
+    id: "ET-2024-006",
+    rujukan: "ET-2024-006",
+    year: 2024,
+    type: "ET-KPAF",
+    typeLabel: "Elaun Tahunan KPAF",
+    status: "SEDANG PROSES",
+    count: 18,
+    totalAmount: 5400.00,
+    budget: 10000.00,
+    excessAmount: 0.00,
+    createdBy: "eksekutif",
+    createdAt: "2024-01-21T09:00:00Z",
+    submittedAt: "2024-01-21T10:00:00Z",
+    approvedByKJ: null,
+    approvedAtKJ: null,
+    approvedByKD: null,
+    approvedAtKD: null,
+    notes: "Dalam proses kelulusan"
+  }
+]);
 
-const canQuery = computed(() => !!filters.year && !!filters.type);
-const canSave = computed(() => canQuery.value && !loading.value);
-
-const batchStatus = ref('DRAF');
-const rows = ref([]);
-const loading = ref(false);
-
-// Status helpers
+// Helper functions
 function getStatusVariant(status) {
   switch (status) {
-    case 'MENUNGGU KELULUSAN': return 'warning';
-    case 'SEDANG PROSES': return 'info';
-    case 'DILULUSKAN': return 'success';
-    case 'DITOLAK': return 'danger';
     case 'DRAF': return 'secondary';
+    case 'SEDANG PROSES': return 'info';
+    case 'MENUNGGU KELULUSAN': return 'warning';
+    case 'PERLU PENGESAHAN': return 'warning';
+    case 'LULUS': return 'success';
+    case 'DITOLAK': return 'danger';
     default: return 'secondary';
   }
 }
 
-function batchStatusLabel(status) {
-  return status ? status.toLowerCase() : '—';
+function formatCurrency(amount) {
+  return Number(amount || 0).toLocaleString('en-MY', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
-// Total count display
-const totalCountDisplay = computed(() => {
-  if (!rows.value.length) return '—';
-  const r = rows.value[0];
-  return r.count ?? '—';
-});
-
-/* ---------- Router & filter ---------- */
-function onFilterChanged() {
-  const q = {};
-  if (filters.year) q.year = String(filters.year);
-  if (filters.type) q.type = String(filters.type);
-  router.replace({ query: q });
-
-  // Only clear rows if we're changing to a completely different year/type combination
-  const currentKey = `${filters.year}-${filters.type}`;
-  const hasExistingData = rows.value.some(row => 
-    `${row.year}-${row.typeCode}` === currentKey
+function getTableDataByStatus(statuses) {
+  let filteredData = allowancesList.value.filter(item => 
+    statuses.includes(item.status)
   );
-  
-  if (!hasExistingData) {
-    // Only clear if we don't have data for this combination
-    rows.value = [];
-    batchStatus.value = 'DRAF';
-  }
-  
-  if (canQuery.value) reloadBatchStatus();
-}
 
-// Simulated "DB" & LocalStorage
-const savedBatches = new Map();
-
-// Get saved count from second screen
-function getSavedCount(year, type) {
-  const raw = localStorage.getItem(`et:count:${year}:${type}`);
-  if (raw == null) return undefined;
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : undefined;
-}
-
-// Get saved status from second screen
-function getSavedStatus(year, type) {
-  const s = localStorage.getItem(`et:status:${year}:${type}`);
-  return s || undefined;
-}
-
-async function apiFetchBatchStatus({ year, type }) {
-  await sleep(300);
-  const key = `${year}-${type}`;
-  const row = savedBatches.get(key);
-  const count = getSavedCount(year, type);
-  const statusFromLocal = getSavedStatus(year, type);
-
-  if (!row) {
-    if (count == null && !statusFromLocal) return [];
-    return [{
-      id: `BATCH-${year}-${type}`,
-      year: year,
-      typeCode: type,
-      status: statusFromLocal || 'DRAF',
-      count: count ?? 0
-    }];
-  }
-  // Overlay count & status from localStorage if exists
-  return [{
-    ...row,
-    year: year, // Ensure year is always present
-    typeCode: type, // Ensure typeCode is always present
-    count: count ?? row.count,
-    status: statusFromLocal || row.status
-  }];
-}
-
-async function apiSaveBatchLight({ year, typeCode }) {
-  await sleep(500);
-  const key = `${year}-${typeCode}`;
-  const existing = savedBatches.get(key);
-  const countFromLocal = getSavedCount(year, typeCode);
-  // Save as "SEDANG PROSES" when Save is clicked on first screen
-  const payload = {
-    id: `BATCH-${year}-${typeCode}`,
-    year,
-    typeCode,
-    status: 'SEDANG PROSES',
-    count: countFromLocal ?? existing?.count ?? 0,
-    updatedAt: Date.now()
-  };
-  savedBatches.set(key, payload);
-  return { batchId: payload.id, status: 'SEDANG PROSES' };
-}
-
-function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
-
-// Load status
-async function reloadBatchStatus() {
-  if (!canQuery.value) return;
-  loading.value = true;
-  try {
-    console.log('Reloading batch status for:', { year: filters.year, type: filters.type }); // Debug log
-    const list = await apiFetchBatchStatus({ year: filters.year, type: filters.type });
-    console.log('Fetched batch status:', list); // Debug log
-    
-    // Merge new data with existing rows instead of replacing
-    if (list.length > 0) {
-      const newRow = list[0];
-      const existingIndex = rows.value.findIndex(row => 
-        `${row.year}-${row.typeCode}` === `${newRow.year}-${newRow.typeCode}`
-      );
-      
-      if (existingIndex >= 0) {
-        // Update existing row
-        rows.value[existingIndex] = { ...rows.value[existingIndex], ...newRow };
-      } else {
-        // Add new row
-        rows.value.push(newRow);
-      }
-    }
-    
-    // Update batch status for current selection
-    const currentRow = rows.value.find(row => 
-      `${row.year}-${row.typeCode}` === `${filters.year}-${filters.type}`
+  // Apply search filters
+  if (filters.value.searchQuery) {
+    const query = filters.value.searchQuery.toLowerCase();
+    filteredData = filteredData.filter(item =>
+      item.rujukan.toLowerCase().includes(query) ||
+      item.typeLabel.toLowerCase().includes(query)
     );
-    batchStatus.value = currentRow?.status || 'DRAF';
-    
-    console.log('Updated rows and batchStatus:', { rows: rows.value, batchStatus: batchStatus.value }); // Debug log
-  } catch (e) {
-    console.error(e);
-    toast.error('Gagal memuatkan status senarai.');
-  } finally {
-    loading.value = false;
+  }
+
+  if (filters.value.year) {
+    filteredData = filteredData.filter(item => item.year === filters.value.year);
+  }
+
+  if (filters.value.type) {
+    filteredData = filteredData.filter(item => item.type === filters.value.type);
+  }
+
+  return filteredData;
+}
+
+function performSearch() {
+  tableKey.value++;
+  toast.success('Carian berjaya dilakukan');
+}
+
+function clearSearch() {
+  filters.value.searchQuery = "";
+  filters.value.year = "";
+  filters.value.type = "";
+  tableKey.value++;
+  toast.success('Filter telah diset semula');
+}
+
+function refreshTable() {
+  tableKey.value++;
+}
+
+// Navigation functions
+function addNewAllowance() {
+  router.push('/BF-PA/PE/ET/01');
+}
+
+function viewAllowance(allowance) {
+  router.push(`/BF-PA/PE/ET/03?id=${allowance.id}&year=${allowance.year}&type=${allowance.type}`);
+}
+
+function editAllowance(allowance) {
+  router.push(`/BF-PA/PE/ET/04?id=${allowance.id}&year=${allowance.year}&type=${allowance.type}`);
+}
+
+function verifyExcessAllowance(allowance) {
+  router.push(`/BF-PA/PE/ET/05/verify/${allowance.id}?year=${allowance.year}&type=${allowance.type}`);
+}
+
+function approveAllowance(allowance) {
+  if (currentRole.value === 'ketua-jabatan') {
+    router.push(`/BF-PA/PE/ET/05/approve/${allowance.id}?year=${allowance.year}&type=${allowance.type}`);
+  } else if (currentRole.value === 'ketua-divisyen') {
+    router.push(`/BF-PA/PE/ET/05/approve-kd/${allowance.id}?year=${allowance.year}&type=${allowance.type}`);
   }
 }
 
-// Save batch
-async function onSave() {
-  if (!canSave.value) return;
-  loading.value = true;
-  try {
-    console.log('Saving batch with filters:', filters); // Debug log
-    const res = await apiSaveBatchLight({ year: filters.year, typeCode: filters.type });
-    console.log('Save result:', res); // Debug log
-    
-    // Create new row data
-    const newRow = {
-      id: res.batchId,
-      year: filters.year,
-      typeCode: filters.type,
-      status: res.status || 'SEDANG PROSES',
-      count: 0, // Will be updated when recipients are added
-      updatedAt: Date.now()
-    };
-    
-    // Check if row already exists
-    const existingIndex = rows.value.findIndex(row => 
-      `${row.year}-${row.typeCode}` === `${filters.year}-${filters.type}`
-    );
-    
-    if (existingIndex >= 0) {
-      // Update existing row
-      rows.value[existingIndex] = { ...rows.value[existingIndex], ...newRow };
-    } else {
-      // Add new row to the table
-      rows.value.push(newRow);
-    }
-    
-    batchStatus.value = res.status || 'SEDANG PROSES';
-    
-    console.log('After adding/updating row, rows:', rows.value); // Debug log
-    toast.success('Berjaya disimpan. Status batch kini: "sedang proses".');
-  } catch (e) {
-    console.error(e);
-    toast.error('Gagal menyimpan batch. Sila cuba lagi.');
-  } finally {
-    loading.value = false;
-  }
-}
-
-// Navigate to second screen
-function viewRecipients(row) {
-  console.log('viewRecipients called with:', row); // Debug log
-  if (row && row.year && row.typeCode) {
-    router.push({ path: '/BF-PA/PE/ET/01', query: { year: row.year, type: row.typeCode } });
-  } else {
-    console.error('Invalid row data for navigation:', row);
-    toast.error('Ralat: Data batch tidak sah untuk navigasi');
-  }
-}
-
-// Clear table
-function clearTable() {
-  rows.value = [];
-  batchStatus.value = 'DRAF';
-  toast.success('Jadual berjaya dikosongkan.');
-}
-
-// Watch for filter changes
-watch(() => [filters.year, filters.type], ([y, t]) => {
-  if (y && t) {
-    // Only reload if we don't have any data for this combination
-    const hasData = rows.value.some(row => 
-      `${row.year}-${row.typeCode}` === `${y}-${t}`
-    );
-    
-    if (!hasData) {
-      reloadBatchStatus();
-    } else {
-      // Update batch status for existing data
-      const currentRow = rows.value.find(row => 
-        `${row.year}-${row.typeCode}` === `${y}-${t}`
-      );
-      batchStatus.value = currentRow?.status || 'DRAF';
-    }
-  }
-}, { immediate: true });
+// Watch for role changes
+watch(currentRole, () => {
+  activeTab.value = 0; // Reset to first tab when role changes
+});
 </script>
 
 <style scoped>
