@@ -525,7 +525,7 @@ function loadMockData() {
     {
       paId: 'PA2024001',
       name: 'Ahmad bin Abdullah',
-      ic: '800101-01-1234',
+      ic: '800101011234',
       category: 'KPAK',
       parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
       allowance: 800.00
@@ -533,7 +533,7 @@ function loadMockData() {
     {
       paId: 'PA2024002',
       name: 'Mohd Zain bin Ismail',
-      ic: '750315-08-5678',
+      ic: '750315085678',
       category: 'KPAK',
       parish: 'Kariah Masjid Al-Amin',
       allowance: 800.00
@@ -541,7 +541,7 @@ function loadMockData() {
     {
       paId: 'PA2024003',
       name: 'Abdul Rahman bin Hassan',
-      ic: '820520-14-9012',
+      ic: '820520149012',
       category: 'KPAK',
       parish: 'Kariah Masjid Al-Hidayah',
       allowance: 800.00
@@ -549,7 +549,7 @@ function loadMockData() {
     {
       paId: 'PA2024004',
       name: 'Mohd Faiz bin Omar',
-      ic: '780812-06-3456',
+      ic: '780812063456',
       category: 'KPAK',
       parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
       allowance: 800.00
@@ -557,7 +557,7 @@ function loadMockData() {
     {
       paId: 'PA2024005',
       name: 'Zulkifli bin Ahmad',
-      ic: '790325-12-7890',
+      ic: '790325127890',
       category: 'KPAK',
       parish: 'Kariah Masjid Al-Amin',
       allowance: 800.00
@@ -565,7 +565,7 @@ function loadMockData() {
     {
       paId: 'PA2024006',
       name: 'Ahmad Fadzil bin Ibrahim',
-      ic: '810415-03-2345',
+      ic: '810415032345',
       category: 'KPAK',
       parish: 'Kariah Masjid Al-Hidayah',
       allowance: 800.00
@@ -573,7 +573,7 @@ function loadMockData() {
     {
       paId: 'PA2024007',
       name: 'Mohd Hafiz bin Zainal',
-      ic: '760628-09-6789',
+      ic: '760628096789',
       category: 'KPAK',
       parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
       allowance: 800.00
