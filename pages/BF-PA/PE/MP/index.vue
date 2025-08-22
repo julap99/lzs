@@ -88,7 +88,7 @@
       <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -96,6 +96,7 @@
                 :classes="{
                   input: '!py-2',
                 }"
+                class="flex-1"
               />
               <FormKit
                 v-model="filters.status"
@@ -105,50 +106,158 @@
                 :classes="{
                   input: '!py-2',
                 }"
+                class="min-w-[200px]"
               />
-
+              <rs-button
+                variant="primary"
+                @click="performSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
+              <rs-button
+                variant="secondary-outline"
+                @click="clearSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Set Semula
+              </rs-button>
             </div>
           </div>
 
-          <!-- Single Table Section -->
-          <div class="p-4">
-            <!-- <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-              <Icon name="heroicons:clock" class="mr-2" size="20" />
-              Senarai aktiviti dengan pelbagai status
-            </h3> -->
-            <rs-table
-              :data="filteredEksekutifActivities"
-              :columns="eksekutifColumns"
-              :pageSize="pageSize"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-              }"
-              :options-advanced="{
-                sortable: true,
-                filterable: true,
-              }"
-              advanced
-            >
-              <template v-slot:status="{ text }">
-                <rs-badge :variant="getStatusVariant(text)">
-                  {{ getStatusLabel(text) }}
-                </rs-badge>
-              </template>
+          <!-- Tabbed Table Section -->
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Belum Disemak">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai aktiviti yang belum disemak
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-pending`"
+                  :data="getTableDataByStatus(['Belum Disemak'])"
+                  :pageSize="pageSize"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ getStatusLabel(text) }}
+                    </rs-badge>
+                  </template>
 
-              <template v-slot:tindakan="{ text }">
-                <div class="flex justify-center items-center gap-1">
-                  <Icon 
-                    name="ic:outline-remove-red-eye" 
-                    class="w-5 h-5 text-blue-600 cursor-pointer hover:text-blue-800" 
-                    @click="handleView(text)"
-                    title="Lihat Butiran"
-                  />
-                </div>
-              </template>
-            </rs-table>
-          </div>
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="handleView(text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Diluluskan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai aktiviti yang telah diluluskan
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-approved`"
+                  :data="getTableDataByStatus(['Diluluskan'])"
+                  :pageSize="pageSize"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ getStatusLabel(text) }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="handleView(text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Ditolak">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  Senarai aktiviti yang telah ditolak
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-rejected`"
+                  :data="getTableDataByStatus(['Ditolak'])"
+                  :pageSize="pageSize"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ getStatusLabel(text) }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="handleView(text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
         </template>
       </rs-card>
 
@@ -172,7 +281,7 @@
         <template #body>
           <!-- Smart Filter Section -->
             <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
               <FormKit
                 v-model="filters.searchQuery"
                   type="text"
@@ -180,6 +289,7 @@
                 :classes="{
                   input: '!py-2',
                 }"
+                class="flex-1"
               />
               <FormKit
                 v-model="filters.status"
@@ -189,49 +299,158 @@
                 :classes="{
                   input: '!py-2',
                 }"
+                class="min-w-[200px]"
               />
+              <rs-button
+                variant="primary"
+                @click="performSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
+              <rs-button
+                variant="secondary-outline"
+                @click="clearSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Set Semula
+              </rs-button>
             </div>
             </div>
 
-          <!-- Single Table Section -->
-          <div class="p-4">
-            <!-- <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-              <Icon name="heroicons:clock" class="mr-2" size="20" />
-              Senarai aktiviti dengan pelbagai status
-            </h3> -->
-            <rs-table
-              :data="filteredKetuaJabatanActivities"
-              :columns="ketuaJabatanColumns"
-              :pageSize="pageSize"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-              }"
-              :options-advanced="{
-                sortable: true,
-                filterable: true,
-              }"
-              advanced
-            >
-              <template v-slot:status="{ text }">
-                <rs-badge :variant="getStatusVariant(text)">
-                  {{ getStatusLabel(text) }}
-                </rs-badge>
-              </template>
+          <!-- Tabbed Table Section -->
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Sedang Proses">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai aktiviti yang belum disemak
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-pending`"
+                  :data="getTableDataByStatus(['Belum Disemak'])"
+                  :pageSize="pageSize"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ getStatusLabel(text) }}
+                    </rs-badge>
+                  </template>
 
-              <template v-slot:tindakan="{ text }">
-                <div class="flex justify-center items-center gap-1">
-                  <Icon 
-                    name="ic:outline-remove-red-eye" 
-                    class="w-5 h-5 text-blue-600 cursor-pointer hover:text-blue-800" 
-                    @click="handleView(text)"
-                    title="Lihat Butiran"
-                  />
-                </div>
-              </template>
-            </rs-table>
-          </div>
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="handleView(text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Diluluskan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai aktiviti yang telah diluluskan
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-approved`"
+                  :data="getTableDataByStatus(['Diluluskan'])"
+                  :pageSize="pageSize"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ getStatusLabel(text) }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="handleView(text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Ditolak">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  Senarai aktiviti yang telah ditolak
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-rejected`"
+                  :data="getTableDataByStatus(['Ditolak'])"
+                  :pageSize="pageSize"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ getStatusLabel(text) }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="handleView(text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
         </template>
       </rs-card>
 
@@ -255,7 +474,7 @@
         <template #body>
           <!-- Smart Filter Section -->
             <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
               <FormKit
                 v-model="filters.searchQuery"
                   type="text"
@@ -263,6 +482,7 @@
                 :classes="{
                   input: '!py-2',
                 }"
+                class="flex-1"
               />
               <FormKit
                 v-model="filters.status"
@@ -272,49 +492,158 @@
                 :classes="{
                   input: '!py-2',
                 }"
+                class="min-w-[200px]"
               />
+              <rs-button
+                variant="primary"
+                @click="performSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
+              <rs-button
+                variant="secondary-outline"
+                @click="clearSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Set Semula
+              </rs-button>
             </div>
             </div>
 
-          <!-- Single Table Section -->
-          <div class="p-4">
-            <!-- <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-              <Icon name="heroicons:clock" class="mr-2" size="20" />
-              Senarai aktiviti dengan pelbagai status
-            </h3> -->
-            <rs-table
-              :data="filteredKetuaDivisyenActivities"
-              :columns="ketuaDivisyenColumns"
-              :pageSize="pageSize"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-              }"
-              :options-advanced="{
-                sortable: true,
-                filterable: true,
-              }"
-              advanced
-            >
-              <template v-slot:status="{ text }">
-                <rs-badge :variant="getStatusVariant(text)">
-                  {{ getStatusLabel(text) }}
-                </rs-badge>
-              </template>
+          <!-- Tabbed Table Section -->
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Belum Disemak">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai aktiviti yang belum disemak
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-pending`"
+                  :data="getTableDataByStatus(['Belum Disemak'])"
+                  :pageSize="pageSize"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ getStatusLabel(text) }}
+                    </rs-badge>
+                  </template>
 
-              <template v-slot:tindakan="{ text }">
-                <div class="flex justify-center items-center gap-1">
-                  <Icon 
-                    name="ic:outline-remove-red-eye" 
-                    class="w-5 h-5 text-blue-600 cursor-pointer hover:text-blue-800" 
-                    @click="handleView(text)"
-                    title="Lihat Butiran"
-                  />
-                </div>
-              </template>
-            </rs-table>
-          </div>
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="handleView(text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Diluluskan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai aktiviti yang telah diluluskan
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-approved`"
+                  :data="getTableDataByStatus(['Diluluskan'])"
+                  :pageSize="pageSize"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ getStatusLabel(text) }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="handleView(text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Ditolak">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  Senarai aktiviti yang telah ditolak
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-rejected`"
+                  :data="getTableDataByStatus(['Ditolak'])"
+                  :pageSize="pageSize"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ getStatusLabel(text) }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        class="!px-2 !py-1"
+                        @click="handleView(text)"
+                      >
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
         </template>
       </rs-card>
 
@@ -433,7 +762,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 
 definePageMeta({
@@ -457,7 +786,7 @@ const breadcrumb = ref([
 ]);
 
 // Role Management
-const currentRole = ref('ketua-divisyen');
+const currentRole = ref('eksekutif');
 const showRoleInfo = ref(false);
 
 const roleOptions = [
@@ -619,6 +948,14 @@ const showSupportModal = ref(false);
 const showRejectModal = ref(false);
 const showApproveModal = ref(false);
 const selectedActivity = ref(null);
+
+// Search state
+const isSearchPerformed = ref(false);
+const searchResults = ref([]);
+
+// Tab management
+const activeTab = ref("Belum Disemak");
+const tableKey = ref(0);
 
 // Computed filtered activities based on role
 const filteredActivities = computed(() => {
@@ -818,6 +1155,63 @@ const isAllSelected = computed(() => {
 const getActivityStatus = (activityId) => {
   const activity = activities.value.find(a => a.id === activityId);
   return activity ? activity.status : '';
+};
+
+// Search functionality
+const performSearch = () => {
+  if (!filters.value.searchQuery && !filters.value.status) {
+    toast.warning('Sila masukkan kriteria carian');
+    return;
+  }
+  
+  isSearchPerformed.value = true;
+  toast.success('Carian berjaya dilakukan');
+  refreshTable();
+};
+
+const clearSearch = () => {
+  filters.value.searchQuery = "";
+  filters.value.status = "";
+  isSearchPerformed.value = false;
+  refreshTable();
+  toast.info('Carian telah diset semula');
+};
+
+// Filter table data based on status and search criteria
+const getTableDataByStatus = (statuses) => {
+  let result = activities.value.filter(activity => 
+    statuses.includes(activity.status)
+  );
+  
+  // Only apply filters if search has been performed
+  if (isSearchPerformed.value) {
+    // Apply search filter
+    if (filters.value.searchQuery) {
+      const query = filters.value.searchQuery.toLowerCase();
+      result = result.filter(activity => 
+        activity.id.toLowerCase().includes(query) ||
+        activity.NamaAktiviti.toLowerCase().includes(query)
+      );
+    }
+    
+    // Apply status filter
+    if (filters.value.status) {
+      result = result.filter(activity => 
+        activity.status === filters.value.status
+      );
+    }
+  }
+  
+  return result.map(activity => ({
+    ...activity,
+    tindakan: activity.id // Pass activity ID for action buttons
+  }));
+};
+
+const refreshTable = () => {
+  nextTick(() => {
+    tableKey.value++; // Force table to re-render
+  });
 };
 
 const getStatusColor = (status) => {
@@ -1051,13 +1445,18 @@ const eksekutifColumns = [
     sortable: true,
   },
   {
-    key: "name",
+    key: "NamaAktiviti",
     label: "Nama Aktiviti",
     sortable: true,
   },
   {
-    key: "date",
+    key: "Tarikh",
     label: "Tarikh",
+    sortable: true,
+  },
+  {
+    key: "Lokasi",
+    label: "Lokasi",
     sortable: true,
   },
   {
@@ -1080,13 +1479,18 @@ const eksekutifApprovedColumns = [
     sortable: true,
   },
   {
-    key: "name",
+    key: "NamaAktiviti",
     label: "Nama Aktiviti",
     sortable: true,
   },
   {
-    key: "date",
+    key: "Tarikh",
     label: "Tarikh",
+    sortable: true,
+  },
+  {
+    key: "Lokasi",
+    label: "Lokasi",
     sortable: true,
   },
   {
@@ -1109,13 +1513,18 @@ const ketuaJabatanColumns = [
     sortable: true,
   },
   {
-    key: "name",
+    key: "NamaAktiviti",
     label: "Nama Aktiviti",
     sortable: true,
   },
   {
-    key: "date",
+    key: "Tarikh",
     label: "Tarikh",
+    sortable: true,
+  },
+  {
+    key: "Lokasi",
+    label: "Lokasi",
     sortable: true,
   },
   {
@@ -1138,13 +1547,18 @@ const ketuaJabatanApprovedColumns = [
     sortable: true,
   },
   {
-    key: "name",
+    key: "NamaAktiviti",
     label: "Nama Aktiviti",
     sortable: true,
   },
   {
-    key: "date",
+    key: "Tarikh",
     label: "Tarikh",
+    sortable: true,
+  },
+  {
+    key: "Lokasi",
+    label: "Lokasi",
     sortable: true,
   },
   {
@@ -1167,13 +1581,18 @@ const ketuaDivisyenColumns = [
     sortable: true,
   },
   {
-    key: "name",
+    key: "NamaAktiviti",
     label: "Nama Aktiviti",
     sortable: true,
   },
   {
-    key: "date",
+    key: "Tarikh",
     label: "Tarikh",
+    sortable: true,
+  },
+  {
+    key: "Lokasi",
+    label: "Lokasi",
     sortable: true,
   },
   {
@@ -1196,13 +1615,18 @@ const ketuaDivisyenApprovedColumns = [
     sortable: true,
   },
   {
-    key: "name",
+    key: "NamaAktiviti",
     label: "Nama Aktiviti",
     sortable: true,
   },
   {
-    key: "date",
+    key: "Tarikh",
     label: "Tarikh",
+    sortable: true,
+  },
+  {
+    key: "Lokasi",
+    label: "Lokasi",
     sortable: true,
   },
   {
@@ -1225,6 +1649,22 @@ const filters = ref({
 });
 
 const pageSize = ref(10);
+
+// Initialize with best available tab
+onMounted(() => {
+  // Set default tab based on available data
+  const hasPending = activities.value.some(a => a.status === 'Belum Disemak');
+  const hasApproved = activities.value.some(a => a.status === 'Diluluskan');
+  const hasRejected = activities.value.some(a => a.status === 'Ditolak');
+  
+  if (hasPending) {
+    activeTab.value = "Belum Disemak";
+  } else if (hasApproved) {
+    activeTab.value = "Diluluskan";
+  } else if (hasRejected) {
+    activeTab.value = "Ditolak";
+  }
+});
 </script>
 
 <style scoped>

@@ -76,133 +76,219 @@
 
       <template #body>
         <div class="p-4">
-          <!-- Key Metrics Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-blue-600">Jumlah Penolong Amil</p>
-                  <h3 class="text-2xl text-centerfont-bold text-blue-700">1,234</h3>
-                </div>
-                <Icon name="heroicons:users" class="text-blue-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-green-50 p-4 rounded-lg border border-green-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-green-600">Jumlah Elaun Yang Sudah Dibayar</p>
-                  <h3 class="text-2xl font-bold text-green-700">856</h3>
-                </div>
-                <Icon name="heroicons:check-circle" class="text-green-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-yellow-600">Jumlah Elaun Yang Masih Diproses</p>
-                  <h3 class="text-2xl font-bold text-yellow-700">245</h3>
-                </div>
-                <Icon name="heroicons:clock" class="text-yellow-500" size="24" />
-              </div>
-            </div>
-            <div class="bg-red-50 p-4 rounded-lg border border-red-100">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-red-600">Jumlah Elaun Yang Sudah Ditolak</p>
-                  <h3 class="text-2xl font-bold text-red-700">133</h3>
-                </div>
-                <Icon name="heroicons:x-circle" class="text-red-500" size="24" />
-              </div>
-            </div>
-          </div>
-
           <!-- Search and Filter Section -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
               <FormKit
+                v-model="searchQuery"
                 type="text"
-                name="search"
                 placeholder="Cari Batch No atau Institusi"
-                :value="searchQuery"
-                @input="handleSearch"
+                :classes="{
+                  input: '!py-2',
+                }"
+                class="flex-1"
               />
               <FormKit
+                v-model="selectedStatus"
                 type="select"
-                name="status"
-                placeholder="Status"
                 :options="getFilteredStatusOptions()"
-                :value="selectedStatus"
-                @input="handleStatusChange"
+                placeholder="Status"
+                :classes="{
+                  input: '!py-2',
+                }"
+                class="min-w-[200px]"
               />
+              <rs-button
+                variant="primary"
+                @click="performSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
+              <rs-button
+                variant="secondary-outline"
+                @click="clearSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Set Semula
+              </rs-button>
             </div>
           </div>
 
-          <!-- Table Section -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    No. Batch
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Institusi
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kategori
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tarikh
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tindakan
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="batch in getFilteredBatches()" :key="batch.id">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <a 
-                      href="#" 
-                      class="text-blue-600 hover:text-blue-800"
-                      @click.prevent="navigateTo(getActionRoute(batch.status))"
-                    >
-                      {{ batch.batchNo }}
-                    </a>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.institution }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.category }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ batch.createdAt }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getStatusColor(batch.status)"
-                    >
-                      {{ getStatusLabel(batch.status) }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <rs-button
-                      variant="primary"
-                      size="sm"
-                      @click="navigateTo(getActionRoute(batch.status))"
-                    >
-                      {{ getActionButtonText(batch.status) }}
-                    </rs-button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <!-- Tabbed Table Section -->
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Sedang Proses">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai elaun yang sedang dalam proses (Menunggu Pengesahan & Kelulusan)
+                </h3>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institution</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="batch in getTableDataByStatus(['Menunggu Pengesahan', 'Menunggu Kelulusan'])" :key="batch.id">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <a 
+                            href="#" 
+                            class="text-blue-600 hover:text-blue-800"
+                            @click.prevent="navigateTo(getActionRoute(batch.status))"
+                          >
+                            {{ batch.batchNo }}
+                          </a>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institution }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.category }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <span
+                            class="px-2 py-1 text-xs font-medium rounded-full"
+                            :class="getStatusColor(batch.status)"
+                          >
+                            {{ getStatusLabel(batch.status) }}
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <rs-button
+                            variant="primary"
+                            size="sm"
+                            @click="navigateTo(getActionRoute(batch.status))"
+                          >
+                            {{ getActionButtonText(batch.status) }}
+                          </rs-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+
+
+
+            <rs-tab-item title="Diluluskan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai elaun yang telah diluluskan
+                </h3>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institution</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="batch in getTableDataByStatus(['Diluluskan'])" :key="batch.id">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <a 
+                            href="#" 
+                            class="text-blue-600 hover:text-blue-800"
+                            @click.prevent="navigateTo(getActionRoute(batch.status))"
+                          >
+                            {{ batch.batchNo }}
+                          </a>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institution }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.category }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <span
+                            class="px-2 py-1 text-xs font-medium rounded-full"
+                            :class="getStatusColor(batch.status)"
+                          >
+                            {{ getStatusLabel(batch.status) }}
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <rs-button
+                            variant="primary"
+                            size="sm"
+                            @click="navigateTo(getActionRoute(batch.status))"
+                          >
+                            {{ getActionButtonText(batch.status) }}
+                          </rs-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Ditolak">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  Senarai elaun yang telah ditolak
+                </h3>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institution</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="batch in getTableDataByStatus(['Ditolak'])" :key="batch.id">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <a 
+                            href="#" 
+                            class="text-blue-600 hover:text-blue-800"
+                            @click.prevent="navigateTo(getActionRoute(batch.status))"
+                          >
+                            {{ batch.batchNo }}
+                          </a>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institution }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.category }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <span
+                            class="px-2 py-1 text-xs font-medium rounded-full"
+                            :class="getStatusColor(batch.status)"
+                          >
+                            {{ getStatusLabel(batch.status) }}
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <rs-button
+                            variant="primary"
+                            size="sm"
+                            @click="navigateTo(getActionRoute(batch.status))"
+                          >
+                            {{ getActionButtonText(batch.status) }}
+                          </rs-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
         </div>
       </template>
     </rs-card>
@@ -210,7 +296,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 
 definePageMeta({
   title: "Elaun Tugasan",
@@ -233,6 +319,15 @@ const breadcrumb = ref([
 // Role simulation
 const currentRole = ref('eksekutif');
 const showRoleInfo = ref(false);
+
+// Tab management
+const activeTab = ref("Sedang Proses");
+const tableKey = ref(0);
+
+// Search and filter state
+const searchQuery = ref('');
+const selectedStatus = ref('');
+const isSearchPerformed = ref(false);
 
 const roleOptions = [
   { label: 'Eksekutif', value: 'eksekutif' },
@@ -268,7 +363,7 @@ const batches = ref([
     batchNo: 'BATCH/2024/001',
     institution: 'Masjid Al-Hidayah',
     category: 'Kariah',
-    status: 'Menunggu Pengesahan Ketua Jabatan',
+    status: 'Menunggu Pengesahan',
     createdAt: '2024-03-15'
   },
   {
@@ -276,7 +371,7 @@ const batches = ref([
     batchNo: 'BATCH/2024/002',
     institution: 'Masjid Al-Ikhlas',
     category: 'Kariah',
-    status: 'Menunggu Pengesahan Ketua Jabatan',
+    status: 'Menunggu Pengesahan',
     createdAt: '2024-03-16'
   },
   {
@@ -284,7 +379,7 @@ const batches = ref([
     batchNo: 'BATCH/2024/003',
     institution: 'Masjid Al-Amin',
     category: 'Kariah',
-    status: 'Menunggu Kelulusan Ketua Divisyen',
+    status: 'Menunggu Kelulusan',
     createdAt: '2024-03-10'
   },
   {
@@ -308,15 +403,13 @@ const batches = ref([
 // Complete status options for the verification workflow
 const statusOptions = [
   { label: 'Semua', value: '' },
-  { label: 'Menunggu Pengesahan Ketua Jabatan', value: 'Menunggu Pengesahan Ketua Jabatan' },
-  { label: 'Menunggu Kelulusan Ketua Divisyen', value: 'Menunggu Kelulusan Ketua Divisyen' },
+  { label: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' },
+  { label: 'Menunggu Kelulusan', value: 'Menunggu Kelulusan' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
-// Search and filter state
-const searchQuery = ref('');
-const selectedStatus = ref('');
+
 
 // Role-based functions
 const getRoleLabel = (role) => {
@@ -339,6 +432,7 @@ const handleRoleChange = () => {
   // Reset filters when role changes
   selectedStatus.value = '';
   showRoleInfo.value = false;
+  refreshTable();
 };
 
 const toggleRoleInfo = () => {
@@ -349,15 +443,15 @@ const toggleRoleInfo = () => {
 const getFilteredStatusOptions = () => {
   if (currentRole.value === 'eksekutif') {
     return statusOptions.filter(option => 
-      ['Menunggu Pengesahan Ketua Jabatan', 'Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(option.value)
+      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(option.value)
     );
   } else if (currentRole.value === 'ketua-jabatan') {
     return statusOptions.filter(option => 
-      ['Menunggu Pengesahan Ketua Jabatan', 'Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(option.value)
+      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(option.value)
     );
   } else if (currentRole.value === 'ketua-divisyen') {
     return statusOptions.filter(option => 
-      ['Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(option.value)
+      ['Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(option.value)
     );
   }
   return statusOptions;
@@ -379,16 +473,44 @@ const getFilteredBatches = () => {
   } else if (currentRole.value === 'ketua-jabatan') {
     // Ketua Jabatan can see batches that need their attention or have passed their level
     return filtered.filter(batch => 
-      ['Menunggu Pengesahan Ketua Jabatan', 'Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(batch.status)
+      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(batch.status)
     );
   } else if (currentRole.value === 'ketua-divisyen') {
     // Ketua Divisyen can only see batches that need final approval or have been processed
     return filtered.filter(batch => 
-      ['Menunggu Kelulusan Ketua Divisyen', 'Diluluskan', 'Ditolak'].includes(batch.status)
+      ['Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(batch.status)
     );
   }
 
   return filtered;
+};
+
+// Filter table data based on status
+const getTableDataByStatus = (statuses) => {
+  let result = getFilteredBatches().filter(batch => 
+    statuses.includes(batch.status)
+  );
+  
+  // Only apply filters if search has been performed
+  if (isSearchPerformed.value) {
+    // Apply search filter
+    if (searchQuery.value) {
+      const query = searchQuery.value.toLowerCase();
+      result = result.filter(batch => 
+        batch.batchNo.toLowerCase().includes(query) ||
+        batch.institution.toLowerCase().includes(query)
+      );
+    }
+    
+    // Apply status filter
+    if (selectedStatus.value) {
+      result = result.filter(batch => 
+        batch.status === selectedStatus.value
+      );
+    }
+  }
+  
+  return result;
 };
 
 // Computed filtered batches
@@ -397,11 +519,26 @@ const filteredBatches = computed(() => {
 });
 
 // Helper functions
+const getStatusVariant = (status) => {
+  switch (status) {
+    case 'Menunggu Pengesahan':
+      return 'warning'
+    case 'Menunggu Kelulusan':
+      return 'info'
+    case 'Diluluskan':
+      return 'success'
+    case 'Ditolak':
+      return 'danger'
+    default:
+      return 'secondary'
+  }
+}
+
 const getStatusColor = (status) => {
   switch (status) {
-    case 'Menunggu Pengesahan Ketua Jabatan':
+    case 'Menunggu Pengesahan':
       return 'bg-blue-100 text-blue-800'
-    case 'Menunggu Kelulusan Ketua Divisyen':
+    case 'Menunggu Kelulusan':
       return 'bg-purple-100 text-purple-800'
     case 'Diluluskan':
       return 'bg-green-100 text-green-800'
@@ -414,10 +551,10 @@ const getStatusColor = (status) => {
 
 const getStatusLabel = (status) => {
   switch (status) {
-    case 'Menunggu Pengesahan Ketua Jabatan':
-      return 'Menunggu Pengesahan Ketua Jabatan'
-    case 'Menunggu Kelulusan Ketua Divisyen':
-      return 'Menunggu Kelulusan Ketua Divisyen'
+    case 'Menunggu Pengesahan':
+      return 'Menunggu Pengesahan'
+    case 'Menunggu Kelulusan':
+      return 'Menunggu Kelulusan'
     case 'Diluluskan':
       return 'Diluluskan'
     case 'Ditolak':
@@ -429,9 +566,9 @@ const getStatusLabel = (status) => {
 
 const getActionRoute = (status) => {
   switch (status) {
-    case 'Menunggu Pengesahan Ketua Jabatan':
+    case 'Menunggu Pengesahan':
       return '/BF-PA/PE/AB2/03'
-    case 'Menunggu Kelulusan Ketua Divisyen':
+    case 'Menunggu Kelulusan':
       return '/BF-PA/PE/AB2/06'
     case 'Diluluskan':
       return '/BF-PA/PE/AB2/04'
@@ -444,8 +581,8 @@ const getActionRoute = (status) => {
 
 const getActionButtonText = (status) => {
   switch (status) {
-    case 'Menunggu Pengesahan Ketua Jabatan':
-    case 'Menunggu Kelulusan Ketua Divisyen':
+    case 'Menunggu Pengesahan':
+    case 'Menunggu Kelulusan':
       return 'Semak'
     case 'Diluluskan':
     case 'Ditolak':
@@ -454,6 +591,30 @@ const getActionButtonText = (status) => {
       return 'Lihat'
   }
 }
+
+// Search functionality
+const performSearch = () => {
+  if (!searchQuery.value && !selectedStatus.value) {
+    // You can add toast notification here if needed
+    return;
+  }
+  
+  isSearchPerformed.value = true;
+  refreshTable();
+};
+
+const clearSearch = () => {
+  searchQuery.value = '';
+  selectedStatus.value = '';
+  isSearchPerformed.value = false;
+  refreshTable();
+};
+
+const refreshTable = () => {
+  nextTick(() => {
+    tableKey.value++; // Force table to re-render
+  });
+};
 
 // Event handlers
 const handleSearch = (event) => {
