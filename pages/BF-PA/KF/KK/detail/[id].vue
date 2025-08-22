@@ -197,42 +197,7 @@
       </rs-button>
       
       <div class="flex gap-3">
-        <rs-button
-          v-if="canEditCategory"
-          variant="primary"
-          @click="editCategory"
-          class="flex items-center"
-        >
-          <Icon name="ph:pencil" class="w-4 h-4 mr-2" />
-          Kemaskini
-        </rs-button>
-        <rs-button
-          v-if="canVerifyCategory"
-          variant="warning"
-          @click="verifyCategory"
-          class="flex items-center"
-        >
-          <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
-          Sahkan
-        </rs-button>
-        <rs-button
-          v-if="canApproveCategory"
-          variant="success"
-          @click="approveCategory"
-          class="flex items-center"
-        >
-          <Icon name="ph:check" class="w-4 h-4 mr-2" />
-          Luluskan
-        </rs-button>
-        <rs-button
-          v-if="canRejectCategory"
-          variant="danger"
-          @click="rejectCategory"
-          class="flex items-center"
-        >
-          <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
-          Tolak
-        </rs-button>
+        <!-- Action buttons removed - this is a view-only screen -->
       </div>
     </div>
 
@@ -306,7 +271,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'nuxt/app'
 import { useToast } from 'vue-toastification'
 import { formatDate } from '~/utils/dateFormatter'
@@ -318,8 +283,7 @@ definePageMeta({
 const route = useRoute()
 const toast = useToast()
 
-// Current role (from global state/store)
-const currentRole = ref('eksekutif') // Mock - should come from actual auth state
+// Current role removed - not needed for view-only screen
 
 // Breadcrumb
 const breadcrumb = [
@@ -351,26 +315,7 @@ const categoryData = ref({
   }
 })
 
-// Role-based access control
-const canEditCategory = computed(() => {
-  return currentRole.value === 'eksekutif' && 
-         ['Aktif', 'Tidak Aktif'].includes(categoryData.value.status)
-})
-
-const canVerifyCategory = computed(() => {
-  return currentRole.value === 'ketua-jabatan' && 
-         categoryData.value.status === 'Menunggu Pengesahan'
-})
-
-const canApproveCategory = computed(() => {
-  return currentRole.value === 'ketua-divisyen' && 
-         categoryData.value.status === 'Menunggu Kelulusan'
-})
-
-const canRejectCategory = computed(() => {
-  return currentRole.value === 'ketua-divisyen' && 
-         categoryData.value.status === 'Menunggu Kelulusan'
-})
+// Role-based access control removed - not needed for view-only screen
 
 // Status variant helper
 const getStatusVariant = (status) => {
@@ -400,22 +345,7 @@ const isWorkflowStepActive = (step) => {
   }
 }
 
-// Navigation methods
-const editCategory = () => {
-  navigateTo(`/BF-PA/KF/KK/edit/${route.params.id}`)
-}
-
-const verifyCategory = () => {
-  navigateTo(`/BF-PA/KF/KK/verify/${route.params.id}`)
-}
-
-const approveCategory = () => {
-  navigateTo(`/BF-PA/KF/KK/approve/${route.params.id}`)
-}
-
-const rejectCategory = () => {
-  navigateTo(`/BF-PA/KF/KK/reject/${route.params.id}`)
-}
+// Navigation methods removed - not needed for view-only screen
 
 // Enhanced workflow visualization helpers
 const getWorkflowStepClass = (step) => {

@@ -228,51 +228,7 @@
             Kembali
           </rs-button>
           
-          <div class="flex space-x-3">
-            <!-- Eksekutif: Edit if active or inactive -->
-            <rs-button
-              v-if="canEditPosition()"
-              variant="secondary"
-              @click="editPosition()"
-              class="flex items-center"
-            >
-              <Icon name="ph:pencil" class="w-4 h-4 mr-2" />
-              Kemaskini
-            </rs-button>
-
-            <!-- Ketua Jabatan: Verify if pending verification -->
-            <rs-button
-              v-if="canVerifyPosition()"
-              variant="warning"
-              @click="verifyPosition()"
-              class="flex items-center"
-            >
-              <Icon name="ph:clipboard-text" class="w-4 h-4 mr-2" />
-              Sahkan
-            </rs-button>
-
-            <!-- Ketua Divisyen: Approve if pending approval -->
-            <rs-button
-              v-if="canApprovePosition()"
-              variant="success"
-              @click="approvePosition()"
-              class="flex items-center"
-            >
-              <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
-              Luluskan
-            </rs-button>
-
-        <!-- Ketua Divisyen: Reject if pending approval -->
-        <rs-button
-          v-if="canRejectPosition()"
-          variant="danger"
-          @click="rejectPosition()"
-          class="flex items-center"
-        >
-          <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
-          Tolak
-        </rs-button>
-          </div>
+          <!-- Action buttons removed - this is a view-only screen -->
         </div>
 
     <!-- Audit Trail Section -->
@@ -349,7 +305,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { formatDate } from "~/utils/dateFormatter";
 
 definePageMeta({
@@ -394,8 +350,7 @@ const categoryData = ref({
       tarikhKuatkuasa: "01-01-2024"
 });
 
-// Mock current user role
-const currentRole = ref("eksekutif"); // This would come from auth system
+// Current user role removed - not needed for view-only screen
 
 // Helper functions
 const getStatusVariant = (status) => {
@@ -506,41 +461,5 @@ const getCurrentStatusDescription = () => {
   return descriptions[status] || 'Status tidak diketahui';
 };
 
-// Role-based action permissions
-const canEditPosition = () => {
-  return currentRole.value === "eksekutif" && 
-         (positionData.value.status === "Aktif" || positionData.value.status === "Tidak Aktif");
-};
-
-const canVerifyPosition = () => {
-  return currentRole.value === "ketua-jabatan" && 
-         positionData.value.status === "Menunggu Pengesahan";
-};
-
-const canApprovePosition = () => {
-  return currentRole.value === "ketua-divisyen" && 
-         positionData.value.status === "Menunggu Kelulusan";
-};
-
-const canRejectPosition = () => {
-  return currentRole.value === "ketua-divisyen" && 
-         positionData.value.status === "Menunggu Kelulusan";
-};
-
-// Navigation methods
-const editPosition = () => {
-  navigateTo(`/BF-PA/KF/KJ/edit/${positionId}`);
-};
-
-const verifyPosition = () => {
-  navigateTo(`/BF-PA/KF/KJ/verify/${positionId}`);
-};
-
-const approvePosition = () => {
-  navigateTo(`/BF-PA/KF/KJ/approve/${positionId}`);
-};
-
-const rejectPosition = () => {
-  navigateTo(`/BF-PA/KF/KJ/reject/${positionId}`);
-};
+// Role-based action permissions and navigation methods removed - not needed for view-only screen
 </script> 

@@ -227,45 +227,7 @@
       
       <div class="flex gap-3">
         <!-- Role-based Action Buttons -->
-        <rs-button
-          v-if="canEditSession"
-          variant="primary"
-          @click="editSession"
-          class="flex items-center"
-        >
-          <Icon name="ph:pencil" class="w-4 h-4 mr-2" />
-          Kemaskini
-        </rs-button>
-        
-        <rs-button
-          v-if="canVerifySession"
-          variant="warning"
-          @click="verifySession"
-          class="flex items-center"
-        >
-          <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
-          Sahkan
-        </rs-button>
-        
-        <rs-button
-          v-if="canApproveSession"
-          variant="success"
-          @click="approveSession"
-          class="flex items-center"
-        >
-          <Icon name="ph:check" class="w-4 h-4 mr-2" />
-          Luluskan
-        </rs-button>
-        
-        <rs-button
-          v-if="canRejectSession"
-          variant="danger"
-          @click="rejectSession"
-          class="flex items-center"
-        >
-          <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
-          Tolak
-        </rs-button>
+        <!-- Action buttons removed - this is a view-only screen -->
       </div>
     </div>
 
@@ -339,7 +301,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { formatDate } from "~/utils/dateFormatter";
 
 const route = useRoute();
@@ -357,8 +319,7 @@ const breadcrumb = [
   { name: 'Paparan Terperinci', path: null }
 ];
 
-// Mock current user role - would come from auth system
-const currentUserRole = ref("eksekutif");
+// Current user role removed - not needed for view-only screen
 
 // Category data
 const categoryData = ref({
@@ -400,23 +361,7 @@ const sessionData = ref({
   }
 });
 
-// Role-based access control
-const canEditSession = computed(() => {
-  return currentUserRole.value === "eksekutif" && ['Aktif', 'Tidak Aktif'].includes(sessionData.value.status);
-});
-
-const canVerifySession = computed(() => {
-  return currentUserRole.value === "ketua-jabatan" && sessionData.value.status === "Menunggu Pengesahan";
-});
-
-const canApproveSession = computed(() => {
-  return currentUserRole.value === "ketua-divisyen" && sessionData.value.status === "Menunggu Kelulusan";
-});
-
-const canRejectSession = computed(() => {
-  return (currentUserRole.value === "ketua-jabatan" && sessionData.value.status === "Menunggu Pengesahan") ||
-         (currentUserRole.value === "ketua-divisyen" && sessionData.value.status === "Menunggu Kelulusan");
-});
+// Role-based access control removed - not needed for view-only screen
 
 // Enhanced Workflow Helper Functions
 const getWorkflowStepClass = (step) => {
@@ -575,26 +520,7 @@ const getCurrentStatusDescription = () => {
   return descriptions[status] || 'Status tidak diketahui';
 };
 
-// Action methods
-const editSession = () => {
-  navigateTo(`/BF-PA/KF/KS/edit/${route.params.id}`);
-};
-
-const verifySession = () => {
-  navigateTo(`/BF-PA/KF/KS/verify/${route.params.id}`);
-};
-
-const approveSession = () => {
-  navigateTo(`/BF-PA/KF/KS/approve/${route.params.id}`);
-};
-
-const rejectSession = () => {
-  if (currentUserRole.value === "ketua-jabatan") {
-    navigateTo(`/BF-PA/KF/KS/verify/${route.params.id}`);
-  } else if (currentUserRole.value === "ketua-divisyen") {
-    navigateTo(`/BF-PA/KF/KS/approve/${route.params.id}`);
-  }
-};
+// Action methods removed - not needed for view-only screen
 
 onMounted(() => {
   // Fetch session data from API in real app

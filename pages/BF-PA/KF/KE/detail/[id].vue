@@ -260,48 +260,7 @@
         Kembali
       </rs-button>
       
-      <div class="flex gap-3">
-        <!-- Role-based Action Buttons -->
-        <rs-button
-          v-if="canEditAllowance"
-          variant="primary"
-          @click="editAllowance"
-          class="flex items-center"
-        >
-          <Icon name="ph:pencil" class="w-4 h-4 mr-2" />
-          Kemaskini
-        </rs-button>
-        
-        <rs-button
-          v-if="canVerifyAllowance"
-          variant="warning"
-          @click="verifyAllowance"
-          class="flex items-center"
-        >
-          <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
-          Sahkan
-        </rs-button>
-        
-        <rs-button
-          v-if="canApproveAllowance"
-          variant="success"
-          @click="approveAllowance"
-          class="flex items-center"
-        >
-          <Icon name="ph:check" class="w-4 h-4 mr-2" />
-          Luluskan
-        </rs-button>
-        
-        <rs-button
-          v-if="canRejectAllowance"
-          variant="danger"
-          @click="rejectAllowance"
-          class="flex items-center"
-        >
-          <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
-          Tolak
-        </rs-button>
-      </div>
+      <!-- Action buttons removed - this is a view-only screen -->
     </div>
 
     <!-- Jejak Audit (Read-Only Reference Section) -->
@@ -374,7 +333,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { formatDate } from "~/utils/dateFormatter";
 
 const route = useRoute();
@@ -392,8 +351,7 @@ const breadcrumb = [
   { name: 'Paparan Terperinci', path: null }
 ];
 
-// Mock current user role - would come from auth system
-const currentUserRole = ref("eksekutif");
+// Current user role removed - not needed for view-only screen
 
 // Category data
 const categoryData = ref({
@@ -453,23 +411,7 @@ const allowanceData = ref({
   }
 });
 
-// Role-based access control
-const canEditAllowance = computed(() => {
-  return currentUserRole.value === "eksekutif" && ['Aktif', 'Tidak Aktif'].includes(allowanceData.value.status);
-});
-
-const canVerifyAllowance = computed(() => {
-  return currentUserRole.value === "ketua-jabatan" && allowanceData.value.status === "Menunggu Pengesahan";
-});
-
-const canApproveAllowance = computed(() => {
-  return currentUserRole.value === "ketua-divisyen" && allowanceData.value.status === "Menunggu Kelulusan";
-});
-
-const canRejectAllowance = computed(() => {
-  return (currentUserRole.value === "ketua-jabatan" && allowanceData.value.status === "Menunggu Pengesahan") ||
-         (currentUserRole.value === "ketua-divisyen" && allowanceData.value.status === "Menunggu Kelulusan");
-});
+// Role-based access control removed - not needed for view-only screen
 
 // Enhanced Workflow Helper Functions
 const getWorkflowStepClass = (step) => {
@@ -628,26 +570,7 @@ const getCurrentStatusDescription = () => {
   return descriptions[status] || 'Status tidak diketahui';
 };
 
-// Action methods
-const editAllowance = () => {
-  navigateTo(`/BF-PA/KF/KE/edit/${route.params.id}`);
-};
-
-const verifyAllowance = () => {
-  navigateTo(`/BF-PA/KF/KE/verify/${route.params.id}`);
-};
-
-const approveAllowance = () => {
-  navigateTo(`/BF-PA/KF/KE/approve/${route.params.id}`);
-};
-
-const rejectAllowance = () => {
-  if (currentUserRole.value === "ketua-jabatan") {
-    navigateTo(`/BF-PA/KF/KE/verify/${route.params.id}`);
-  } else if (currentUserRole.value === "ketua-divisyen") {
-    navigateTo(`/BF-PA/KF/KE/approve/${route.params.id}`);
-  }
-};
+// Action methods removed - not needed for view-only screen
 
 onMounted(() => {
   // Fetch allowance data from API in real app

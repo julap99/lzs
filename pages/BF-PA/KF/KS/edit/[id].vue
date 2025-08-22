@@ -107,6 +107,20 @@
                 </tbody>
               </table>
             </div>
+            
+            <!-- Add New Sesi Button -->
+            <div class="mt-4 flex justify-end">
+              <rs-button 
+                variant="success" 
+                size="sm" 
+                @click="tambahSesi"
+                class="flex items-center"
+                title="Tambah Sesi Baru"
+              >
+                <Icon name="ph:plus" class="w-4 h-4 mr-2" />
+                Tambah Sesi
+              </rs-button>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -344,6 +358,19 @@ const formData = ref({
 })
 
 // Methods for managing table data
+const tambahSesi = () => {
+  formData.value.maklumatSesi.push({
+    sesi: '',
+    mula: '',
+    tamat: '',
+    status: 'TIDAK AKTIF', // Default for new rows
+    tarikh: '' // Tarikh Kuatkuasa will be set by Ketua Divisyen upon approval
+  })
+  
+  // Regenerate change log
+  changeLog.value = generateChangeLog()
+}
+
 const hapusSesi = (index) => {
   formData.value.maklumatSesi.splice(index, 1)
   
