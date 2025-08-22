@@ -693,7 +693,7 @@ function loadMockData() {
     {
       paId: 'PA2024001',
       name: 'Ahmad bin Abdullah',
-      ic: '800101-01-1234',
+      ic: '800101011234',
       category: 'KPAK',
       parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
       allowance: 500.00
@@ -701,7 +701,7 @@ function loadMockData() {
     {
       paId: 'PA2024002',
       name: 'Mohd Zain bin Ismail',
-      ic: '750315-08-5678',
+      ic: '750315085678',
       category: 'KPAK',
       parish: 'Kariah Masjid Al-Amin',
       allowance: 500.00
@@ -709,7 +709,7 @@ function loadMockData() {
     {
       paId: 'PA2024003',
       name: 'Abdul Rahman bin Hassan',
-      ic: '820520-14-9012',
+      ic: '820520149012',
       category: 'KPAK',
       parish: 'Kariah Masjid Al-Hidayah',
       allowance: 500.00

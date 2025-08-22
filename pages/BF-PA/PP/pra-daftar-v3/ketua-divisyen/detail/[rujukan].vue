@@ -402,8 +402,8 @@
           </div>
 
           <!-- Division Head Approval Form -->
-          <div class="mb-6 p-6 border border-blue-200 rounded-lg bg-blue-50">
-            <h3 class="text-lg font-semibold mb-4 text-blue-900">
+          <div class="mb-6 p-6 border border-gray-200 rounded-lg bg-gray-50">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">
               Keputusan Kelulusan Ketua Divisyen
             </h3>
             
@@ -411,20 +411,34 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Approval Decision -->
                 <div class="md:col-span-2">
-                  <FormKit
-                    type="select"
-                    name="statusKelulusan"
-                    label="Keputusan Kelulusan *"
-                    :options="approvalDecisionOptions"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Keputusan kelulusan diperlukan',
-                    }"
-                    v-model="approvalForm.statusKelulusan"
-                    :classes="{
-                      input: '!py-2',
-                    }"
-                  />
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Keputusan Kelulusan <span class="text-red-500">*</span>
+                  </label>
+                  <div class="flex space-x-4">
+                    <label class="flex items-center">
+                      <input
+                        v-model="approvalForm.statusKelulusan"
+                        type="radio"
+                        value="Lulus"
+                        class="mr-2 text-green-600 focus:ring-green-500"
+                        required
+                      />
+                      <span class="text-sm font-medium text-gray-900">Lulus</span>
+                    </label>
+                    <label class="flex items-center">
+                      <input
+                        v-model="approvalForm.statusKelulusan"
+                        type="radio"
+                        value="Tidak Lulus"
+                        class="mr-2 text-red-600 focus:ring-red-500"
+                        required
+                      />
+                      <span class="text-sm font-medium text-gray-900">Tidak Lulus</span>
+                    </label>
+                  </div>
+                  <div v-if="!approvalForm.statusKelulusan" class="mt-1 text-sm text-red-600">
+                    Keputusan kelulusan diperlukan
+                  </div>
                 </div>
 
                 <!-- Approval Date (Auto-filled, cannot edit) -->
@@ -696,13 +710,13 @@ const workflowSteps = computed(() => {
   ];
 });
 
-// Approval Decision Options
-const approvalDecisionOptions = [
-  { label: "Sila Pilih Keputusan", value: "" },
-  { label: "Lulus", value: "Lulus" },
-  { label: "Tidak Lulus", value: "Tidak Lulus" },
-  { label: "Telah Disemak dan Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
-];
+// Approval Decision Options (No longer used - replaced with radio buttons)
+// const approvalDecisionOptions = [
+//   { label: "Sila Pilih Keputusan", value: "" },
+//   { label: "Lulus", value: "Lulus" },
+//   { label: "Tidak Lulus", value: "Tidak Lulus" },
+//   { label: "Telah Disemak dan Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
+// ];
 
 // Form Data
 const approvalForm = ref({

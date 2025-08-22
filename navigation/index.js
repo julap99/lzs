@@ -1372,59 +1372,14 @@ export default [
             title: "Tugasan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PE/AB2",
-            child: [
-              {
-                title: "Senarai Elaun Penolong Amil",
-                icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-PA/PE/AB2",
-                child: [],
-                meta: {},
-              },
-              //
-              // {
-              //   title: "Senarai Elaun Penolong Amil (JPPA)",
-              //   icon: "iconamoon:arrow-right-2-duotone",
-              //   path: "/BF-PA/PE/AB/Paparan_JPPA",
-              //   child: [],
-              //   meta: {},
-              // },
-              // {
-              //   title: "Senarai Elaun Penolong Amil (Ketua JPPA)",
-              //   icon: "iconamoon:arrow-right-2-duotone",
-              //   path: "/BF-PA/PE/AB/Paparan_Ketua_JPPA",
-              //   child: [],
-              //   meta: {},
-              // },
-            ],
+            child: [],
             meta: {},
           },
           {
             title: "Mesyuarat/Program",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PE/MP",
-            child: [
-              {
-                title: "Senarai Elaun Penolong Amil",
-                icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-PA/PE/MP",
-                child: [],
-                meta: {},
-              },
-              // {
-              //   title: "Senarai Elaun Penolong Amil (JPPA)",
-              //   icon: "iconamoon:arrow-right-2-duotone",
-              //   path: "/BF-PA/PE/MP/Paparan_JPPA",
-              //   child: [],
-              //   meta: {},
-              // },
-              // {
-              //   title: "Senarai Elaun Penolong Amil (Ketua JPPA)",
-              //   icon: "iconamoon:arrow-right-2-duotone",
-              //   path: "/BF-PA/PE/MP/Paparan_Ketua_JPPA",
-              //   child: [],
-              //   meta: {},
-              // },
-            ],
+            child: [],
             meta: {},
           },
           {
