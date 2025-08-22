@@ -214,6 +214,20 @@
                         Surat Amaran
                       </rs-button>
                     </template>
+                    
+                    <!-- Ketua Divisyen specific actions -->
+                    <template v-if="currentRole === 'ketua-divisyen'">
+                      <rs-button
+                        v-if="request.status === 'aktif' || request.status === 'suspended'"
+                        variant="success"
+                        size="sm"
+                        @click="approveService(request)"
+                        class="flex items-center"
+                      >
+                        <Icon name="ph:check-circle" class="w-3 h-3 mr-1" />
+                        Lulus
+                      </rs-button>
+                    </template>
                   </div>
                 </td>
               </tr>
@@ -796,6 +810,18 @@ const terminateService = (request) => {
   // For now, just show notification
 };
 
+// Ketua Divisyen specific actions
+const approveService = (request) => {
+  const statusText = request.status === 'aktif' ? 'Aktif' : 'Dalam Pemerhatian';
+  showNotificationMessage(
+    "Perkhidmatan Diluluskan", 
+    `Perkhidmatan ${request.noRujukan || request.rujukan} untuk ${request.nama || request.penolongAmil?.nama} dengan status ${statusText} telah diluluskan.`
+  );
+  
+  // In real app, this would update the approval status
+  // For now, just show notification
+};
+
 const validateNotes = () => {
   // This function can be used for additional validation if needed
   // The FormKit validation will handle the basic validation
@@ -938,7 +964,7 @@ const getRoleSpecificDescription = (role) => {
     "pt": "Lihat maklumat Perkhidmatan Penolong Amil",
     "eksekutif": "Lihat maklumat Perkhidmatan Penolong Amil",
     "ketua-jabatan": "Lihat maklumat Perkhidmatan Penolong Amil",
-    "ketua-divisyen": "Lihat maklumat Perkhidmatan Penolong Amil",
+    "ketua-divisyen": "Lihat dan meluluskan maklumat Perkhidmatan Penolong Amil",
     "pyb-institusi": "Pengurusan maklumat Perkhidmatan Penolong Amil oleh PYB Institusi",
   };
   return descriptions[role] || "Peranan ini mempunyai kebolehan yang berbeza.";
@@ -982,7 +1008,7 @@ const getRoleDescription = (role) => {
     "pt": "Lihat maklumat Perkhidmatan Penolong Amil",
     "eksekutif": "Lihat maklumat Perkhidmatan Penolong Amil",
     "ketua-jabatan": "Lihat maklumat Perkhidmatan Penolong Amil",
-    "ketua-divisyen": "Lihat maklumat Perkhidmatan Penolong Amil",
+    "ketua-divisyen": "Lihat dan meluluskan maklumat Perkhidmatan Penolong Amil",
     "pyb-institusi": "Pengurusan maklumat Perkhidmatan Penolong Amil oleh PYB Institusi",
   };
   return descriptions[role] || "Peranan ini mempunyai kebolehan yang berbeza.";
@@ -993,7 +1019,7 @@ const getRoleCapabilities = (role) => {
     "pt": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran"],
     "eksekutif": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran"],
     "ketua-jabatan": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran"],
-    "ketua-divisyen": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran"],
+    "ketua-divisyen": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran", "Meluluskan Perkhidmatan"],
     "pyb-institusi": ["Lihat Maklumat", "Terminate Perkhidmatan", "Surat Amaran", "Pengurusan Status"],
   };
   return capabilities[role] || ["Tidak ada kebolehan spesifik."];
