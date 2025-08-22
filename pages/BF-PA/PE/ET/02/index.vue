@@ -13,7 +13,7 @@
       <template #header>
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <Icon name="ic:outline-people" class="mr-3 text-blue-600" size="24" />
+            <Icon name="ph:users" class="mr-3 text-blue-600" size="24" />
             <h2 class="text-lg font-semibold">Maklumat Penerima — Senarai Nama Penolong Amil</h2>
           </div>
           <div class="text-xs text-gray-500">
@@ -33,78 +33,14 @@
             </p>
           </div>
 
-          <!-- Search -->
-          <div class="mb-4">
-            <FormKit
-              v-model="searchQuery"
-              type="text"
-              placeholder="Cari penerima..."
-              :classes="{ input: '!py-2' }"
-              class="max-w-md"
-            />
-          </div>
 
-          <!-- Ulasan Section -->
-          <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 class="text-sm font-medium text-blue-900 mb-3 flex items-center">
-              <Icon name="ic:outline-chat-bubble" class="mr-2" size="16" />
-              Ulasan Eksekutif
-            </h4>
-            <FormKit
-              v-model="batchNotes"
-              type="textarea"
-              rows="3"
-              placeholder="Masukkan ulasan atau catatan mengenai elaun tahunan ini..."
-              :classes="{ input: '!py-2' }"
-            />
-            <p class="text-xs text-blue-600 mt-1">Ulasan ini akan dilihat oleh Ketua Jabatan dan Ketua Divisyen semasa proses kelulusan</p>
-          </div>
 
-          <!-- Bulk Operations -->
-          <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="text-sm font-medium text-gray-900">Operasi Pukal</h4>
-              <div class="text-xs text-gray-500">
-                {{ filteredRows.filter(r => r._checked && !isInRecipients(r.paId)).length }} penerima dipilih
-              </div>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <rs-button
-                variant="secondary-outline"
-                size="sm"
-                @click="bulkSelectAll"
-                class="!text-xs"
-              >
-                <Icon name="ic:outline-check-square" class="w-3 h-3 mr-1" />
-                Pilih Semua
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                size="sm"
-                @click="bulkDeselectAll"
-                class="!text-xs"
-              >
-                <Icon name="ic:outline-square" class="w-3 h-3 mr-1" />
-                Hapus Pilihan
-              </rs-button>
-              <rs-button
-                variant="info"
-                size="sm"
-                @click="bulkAdjustAllowance(50)"
-                class="!text-xs"
-              >
-                <Icon name="ic:outline-plus" class="w-3 h-3 mr-1" />
-                +RM 50
-              </rs-button>
-              <rs-button
-                variant="warning"
-                size="sm"
-                @click="bulkAdjustAllowance(-50)"
-                class="!text-xs"
-              >
-                <Icon name="ic:outline-minus" class="w-3 h-3 mr-1" />
-                -RM 50
-              </rs-button>
+
+
+          <!-- Simple Selection Info -->
+          <div class="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+            <div class="text-sm text-gray-600">
+              <span class="font-medium">{{ filteredRows.filter(r => r._checked && !isInRecipients(r.paId)).length }}</span> penerima dipilih untuk ditambah
             </div>
           </div>
 
@@ -214,7 +150,7 @@
             :disabled="newCheckedCount === 0"
             @click="commitSelected"
           >
-            <Icon name="ic:outline-check" class="mr-2" />
+            <Icon name="ph:check" class="mr-2" />
             Pilih ({{ newCheckedCount }})
           </rs-button>
         </div>
@@ -234,6 +170,7 @@
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Elaun (RM)</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
@@ -293,26 +230,48 @@
                     </template>
                   </td>
                   <td class="px-4 py-3 text-right">
-                    <rs-button
-                      variant="secondary-outline"
-                      size="sm"
-                      @click="r._isEditing = true"
-                      v-if="!r._isEditing && !r._isNew"
-                    >
-                      <Icon name="ic:outline-edit" size="16" />
-                    </rs-button>
-                    <rs-button
-                      variant="danger"
-                      size="sm"
-                      @click="removeRecipient(recipients.indexOf(r))"
-                      v-if="!r._isEditing && !r._isNew"
-                    >
-                      <Icon name="ic:outline-delete" size="16" />
-                    </rs-button>
+                    <div class="flex items-center justify-end gap-2">
+                      <!-- Edit Button - Only visible when not editing -->
+                      <rs-button
+                        variant="secondary-outline"
+                        size="sm"
+                        @click="r._isEditing = true"
+                        v-if="!r._isEditing"
+                      >
+                        <Icon name="ph:pencil" size="16" />
+                      </rs-button>
+                      <!-- Save Button - Only visible when editing -->
+                      <rs-button
+                        variant="success"
+                        size="sm"
+                        @click="saveRecipient(r)"
+                        v-if="r._isEditing"
+                      >
+                        <Icon name="ph:check" size="16" />
+                      </rs-button>
+                      <!-- Cancel Button - Only visible when editing -->
+                      <rs-button
+                        variant="secondary-outline"
+                        size="sm"
+                        @click="cancelEdit(r)"
+                        v-if="r._isEditing"
+                      >
+                        <Icon name="ph:x" size="16" />
+                      </rs-button>
+                      <!-- Delete Button - Always visible (except for new recipients) -->
+                      <rs-button
+                        variant="danger"
+                        size="sm"
+                        @click="removeRecipient(recipients.indexOf(r))"
+                        v-if="!r._isNew"
+                      >
+                        <Icon name="ph:trash" size="16" />
+                      </rs-button>
+                    </div>
                   </td>
                 </tr>
                 <tr v-if="recipients.length === 0" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="4">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="5">
                     Tiada penerima dipilih lagi. Tandakan dan klik 'Pilih'.
                   </td>
                 </tr>
@@ -349,22 +308,65 @@
               :disabled="saving"
               @click="saveDraft"
             >
-              <Icon name="ic:outline-save" class="mr-2" />
+              <Icon name="ph:floppy-disk" class="mr-2" />
               Simpan draf
             </rs-button>
             <rs-button
               variant="success"
               size="sm"
               :disabled="!canSubmit || saving"
-              @click="submitForApproval"
+              @click="openSubmitModal"
             >
-              <Icon name="ic:outline-send" class="mr-2" />
+              <Icon name="ph:paper-plane-right" class="mr-2" />
               Hantar
             </rs-button>
           </div>
         </div>
       </template>
     </rs-card>
+
+
+
+    <!-- Submit Confirmation Modal -->
+    <div v-if="showSubmitModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+        <div class="p-6">
+          <h3 class="text-lg font-semibold mb-4">Hantar untuk Kelulusan</h3>
+          <p class="text-sm text-gray-600 mb-4">Pastikan semua maklumat adalah betul sebelum menghantar untuk kelulusan.</p>
+          
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Ulasan Eksekutif</label>
+            <FormKit
+              v-model="submitNotes"
+              type="textarea"
+              rows="3"
+              placeholder="Masukkan ulasan akhir sebelum menghantar..."
+              :classes="{ input: '!py-2' }"
+            />
+            <p class="text-xs text-gray-600 mt-1">Ulasan ini akan dilihat oleh Ketua Jabatan dan Ketua Divisyen</p>
+          </div>
+          
+          <div class="flex items-center justify-end gap-3 mt-6">
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              @click="closeSubmitModal"
+            >
+              Batal
+            </rs-button>
+            <rs-button
+              variant="success"
+              size="sm"
+              @click="confirmSubmit"
+              :disabled="saving"
+            >
+              <Icon name="ph:paper-plane-right" class="mr-2" />
+              {{ saving ? 'Menghantar...' : 'Hantar' }}
+            </rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -441,11 +443,13 @@ const fixedAllowanceValue = computed(() => fixedAllowanceByType[query.type] ?? 0
 /* ====== State ====== */
 const candidates = ref([]);
 const recipients = ref([]); // penerima sedia ada (draf) + yang baru dipilih
-const searchQuery = ref(''); // Missing variable for search
 const page = ref(1);
 const pageSize = 12;
 const saving = ref(false);
-const batchNotes = ref(''); // Ulasan dari Eksekutif
+
+// Modal states
+const showSubmitModal = ref(false);
+const submitNotes = ref('');
 
 // Missing category options for editing
 const categoryOptions = [
@@ -486,79 +490,79 @@ function seedData() {
 function getMockCandidates(year, type) {
   const mockData = {
     'ET-KPAK': [
-      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101-01-1234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315-08-5678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520-14-9012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}004`, name: 'Mohd Faiz bin Omar', ic: '780812-06-3456', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}005`, name: 'Zulkifli bin Ahmad', ic: '790325-12-7890', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}006`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415-03-2345', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}007`, name: 'Mohd Hafiz bin Zainal', ic: '760628-09-6789', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() }
+      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520149012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Mohd Faiz bin Omar', ic: '780812063456', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}005`, name: 'Zulkifli bin Ahmad', ic: '790325127890', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}006`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415032345', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}007`, name: 'Mohd Hafiz bin Zainal', ic: '760628096789', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false }
     ],
     'ET-KPAF': [
-      { paId: `PA${year}001`, name: 'Siti Aminah binti Omar', ic: '820520-14-9012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}002`, name: 'Nor Azizah binti Ahmad', ic: '830615-08-3456', category: 'KPAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}003`, name: 'Fatimah binti Hassan', ic: '810723-12-7890', category: 'KPAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}004`, name: 'Aishah binti Ibrahim', ic: '840812-06-2345', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() }
+      { paId: `PA${year}001`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'KPAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Fatimah binti Hassan', ic: '810723127890', category: 'KPAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Aishah binti Ibrahim', ic: '840812062345', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
     ],
     'ET-ANUG': [
-      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101-01-1234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315-08-5678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}003`, name: 'Siti Aminah binti Omar', ic: '820520-14-9012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}004`, name: 'Abdul Rahman bin Hassan', ic: '780812-06-3456', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615-08-3456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}006`, name: 'Mohd Faiz bin Omar', ic: '790325-12-7890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() }
+      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Abdul Rahman bin Hassan', ic: '780812063456', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}006`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
     ],
     'ANUG-KPAK': [
-      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101-01-1234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315-08-5678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520-14-9012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}004`, name: 'Mohd Faiz bin Omar', ic: '780812-06-3456', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}005`, name: 'Zulkifli bin Ahmad', ic: '790325-12-7890', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}006`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415-03-2345', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}007`, name: 'Mohd Hafiz bin Zainal', ic: '760628-09-6789', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}008`, name: 'Abdul Aziz bin Mohd', ic: '830710-15-0123', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() }
+      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520149012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Mohd Faiz bin Omar', ic: '780812063456', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}005`, name: 'Zulkifli bin Ahmad', ic: '790325127890', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}006`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415032345', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}007`, name: 'Mohd Hafiz bin Zainal', ic: '760628096789', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}008`, name: 'Abdul Aziz bin Mohd', ic: '830710150123', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false }
     ],
     'ANUG-PAK': [
-      { paId: `PA${year}001`, name: 'Abdul Rahman bin Hassan', ic: '780812-06-3456', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}002`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415-03-2345', category: 'PAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}003`, name: 'Mohd Hafiz bin Zainal', ic: '830710-15-0123', category: 'PAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}004`, name: 'Mohd Rizal bin Kamal', ic: '840123-16-8901', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}005`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215-10-2345', category: 'PAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}006`, name: 'Abdul Aziz bin Mohd', ic: '770912-07-4567', category: 'PAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}007`, name: 'Mohd Faiz bin Omar', ic: '790325-12-7890', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() }
+      { paId: `PA${year}001`, name: 'Abdul Rahman bin Hassan', ic: '780812063456', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415032345', category: 'PAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Mohd Hafiz bin Zainal', ic: '830710150123', category: 'PAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Mohd Rizal bin Kamal', ic: '840123168901', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}005`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215102345', category: 'PAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}006`, name: 'Abdul Aziz bin Mohd', ic: '770912074567', category: 'PAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}007`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false }
     ],
     'ANUG-KPAF': [
-      { paId: `PA${year}001`, name: 'Siti Aminah binti Omar', ic: '820520-14-9012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}002`, name: 'Nor Azizah binti Ahmad', ic: '830615-08-3456', category: 'KPAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}003`, name: 'Fatimah binti Hassan', ic: '810723-12-7890', category: 'KPAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}004`, name: 'Aishah binti Ibrahim', ic: '840812-06-2345', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}005`, name: 'Khadijah binti Zainal', ic: '800915-03-6789', category: 'KPAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() }
+      { paId: `PA${year}001`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'KPAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Fatimah binti Hassan', ic: '810723127890', category: 'KPAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Aishah binti Ibrahim', ic: '840812062345', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}005`, name: 'Khadijah binti Zainal', ic: '800915036789', category: 'KPAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false }
     ],
     'ANUG-PAF': [
-      { paId: `PA${year}001`, name: 'Nor Azizah binti Ahmad', ic: '830615-08-3456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}002`, name: 'Khadijah binti Zainal', ic: '800915-03-6789', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}003`, name: 'Safiyyah binti Salleh', ic: '830330-15-8901', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}004`, name: 'Fatimah binti Ahmad', ic: '840920-16-2345', category: 'PAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}005`, name: 'Aishah binti Hassan', ic: '820025-14-6789', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}006`, name: 'Zainab binti Ibrahim', ic: '830130-15-0123', category: 'PAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}007`, name: 'Hafsah binti Zainal', ic: '810235-12-4567', category: 'PAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}008`, name: 'Siti Aminah binti Omar', ic: '820520-14-9012', category: 'PAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() }
+      { paId: `PA${year}001`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Khadijah binti Zainal', ic: '800915036789', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Safiyyah binti Salleh', ic: '830330158901', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Fatimah binti Ahmad', ic: '840920162345', category: 'PAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}005`, name: 'Aishah binti Hassan', ic: '820025146789', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}006`, name: 'Zainab binti Ibrahim', ic: '830130150123', category: 'PAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}007`, name: 'Hafsah binti Zainal', ic: '810235124567', category: 'PAF', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}008`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'PAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
     ],
     'ANUG-PAP': [
-      { paId: `PA${year}001`, name: 'Mohd Faiz bin Omar', ic: '790325-12-7890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}002`, name: 'Mohd Hafiz bin Zainal', ic: '830710-15-0123', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}003`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215-10-2345', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() }
+      { paId: `PA${year}001`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Mohd Hafiz bin Zainal', ic: '830710150123', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215102345', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
     ],
     'ANUG-PAKPLUS': [
-      { paId: `PA${year}001`, name: 'Fatimah binti Hassan', ic: '810723-12-7890', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}002`, name: 'Zainab binti Mohd', ic: '850110-17-0123', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '780812-06-3456', category: 'PAK+', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}004`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415-03-2345', category: 'PAK+', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}005`, name: 'Mohd Rizal bin Kamal', ic: '840123-16-8901', category: 'PAK+', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}006`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215-10-2345', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() },
-      { paId: `PA${year}007`, name: 'Abdul Aziz bin Mohd', ic: '770912-07-4567', category: 'PAK+', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities() },
-      { paId: `PA${year}008`, name: 'Mohd Faiz bin Omar', ic: '790325-12-7890', category: 'PAK+', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities() },
-      { paId: `PA${year}009`, name: 'Zulkifli bin Ahmad', ic: '760628-09-6789', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities() }
+      { paId: `PA${year}001`, name: 'Fatimah binti Hassan', ic: '810723127890', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Zainab binti Mohd', ic: '850110170123', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '780812063456', category: 'PAK+', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Ahmad Fadzil bin Ibrahim', ic: '810415032345', category: 'PAK+', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}005`, name: 'Mohd Rizal bin Kamal', ic: '840123168901', category: 'PAK+', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}006`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215102345', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}007`, name: 'Abdul Aziz bin Mohd', ic: '770912074567', category: 'PAK+', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}008`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAK+', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}009`, name: 'Zulkifli bin Ahmad', ic: '760628096789', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false }
     ]
   };
   
@@ -623,23 +627,18 @@ function loadDraftRecipients() {
     
     if (year && type) {
       const recipientsKey = `et:recipients:${year}:${type}`;
-      const notesKey = `et:notes:${year}:${type}`;
       
       const savedRecipients = localStorage.getItem(recipientsKey);
-      const savedNotes = localStorage.getItem(notesKey);
       
       if (savedRecipients) {
-        recipients.value = JSON.parse(savedRecipients);
-      }
-      
-      if (savedNotes) {
-        batchNotes.value = savedNotes;
+        const parsed = JSON.parse(savedRecipients);
+        // Ensure all loaded recipients have _checked: false
+        recipients.value = parsed.map(r => ({ ...r, _checked: false }));
       }
     }
   } catch (error) {
     // Fallback to empty recipients if loading fails
     recipients.value = [];
-    batchNotes.value = '';
   }
 }
 
@@ -669,13 +668,7 @@ function isInRecipients(paId) {
 
 const filteredRows = computed(() => {
   const rows = baseRows.value;
-  if (!searchQuery.value) return rows;
-  const q = searchQuery.value.toLowerCase();
-  return rows.filter(r =>
-    r.name.toLowerCase().includes(q) ||
-    r.ic.toLowerCase().includes(q) ||
-    r.parish.toLowerCase().includes(q)
-  );
+  return rows;
 });
 
 const total = computed(() => filteredRows.value.length);
@@ -710,7 +703,7 @@ function commitSelected() {
   selectedNew.forEach(s => {
     const allowance = isFixedAllowance.value ? fixedAllowanceValue.value : 0;
     if (!map.has(s.paId)) {
-      map.set(s.paId, { ...s, allowance });
+      map.set(s.paId, { ...s, allowance, _checked: false });
     }
   });
   recipients.value = Array.from(map.values());
@@ -745,6 +738,36 @@ async function saveDraft() {
   }
 }
 
+
+
+/* Modal functions for submit confirmation */
+function openSubmitModal() {
+  if (!canSubmit.value) return;
+  submitNotes.value = ''; // Start with empty notes
+  showSubmitModal.value = true;
+}
+
+function closeSubmitModal() {
+  showSubmitModal.value = false;
+  submitNotes.value = '';
+}
+
+async function confirmSubmit() {
+  saving.value = true;
+  try {
+    await wait(600);
+    status.value = 'MENUNGGU KELULUSAN';
+    persistRecipients();
+    persistCountAndStatusAndBack('MENUNGGU KELULUSAN');
+    
+    showSubmitModal.value = false;
+    submitNotes.value = '';
+    toast.success('Permohonan berjaya dihantar untuk kelulusan');
+  } finally {
+    saving.value = false;
+  }
+}
+
 /* Hantar → status MENUNGGU KELULUSAN, persist & balik ke skrin 1 */
 async function submitForApproval() {
   if (!canSubmit.value) return;
@@ -765,7 +788,6 @@ function persistRecipients() {
   const year = route.query.year ?? '';
   const type = route.query.type ?? '';
   const key = `et:recipients:${year}:${type}`;
-  const notesKey = `et:notes:${year}:${type}`;
   
   // hanya simpan field penting
   const compact = recipients.value.map(r => ({
@@ -778,7 +800,7 @@ function persistRecipients() {
   }));
   
   localStorage.setItem(key, JSON.stringify(compact));
-  localStorage.setItem(notesKey, batchNotes.value); // Save batch notes separately
+  // Notes are now handled only in the submit modal
 }
 
 function persistCountAndStatusAndBack(newStatus) {
@@ -839,11 +861,7 @@ function validateRecipientData(recipient) {
   };
 }
 
-// Bulk operations
-function bulkSelectAll() {
-  const selectableRows = filteredRows.value.filter(r => !isInRecipients(r.paId));
-  selectableRows.forEach(r => r._checked = true);
-}
+
 
 function bulkDeselectAll() {
   filteredRows.value.forEach(r => r._checked = false);
@@ -880,7 +898,8 @@ function addNewRecipient() {
     parish: '',
     allowance: isFixedAllowance.value ? fixedAllowanceValue.value : 0,
     _isNew: true,
-    _isEditing: true
+    _isEditing: true,
+    _checked: false
   };
   
   recipients.value.push(newRecipient);
@@ -930,8 +949,15 @@ function removeRecipient(index) {
     }
   }
 }
+
+// Cancel edit function
+function cancelEdit(recipient) {
+  recipient._isEditing = false;
+  // Reset to original values if needed
+  toast.info('Penyuntingan dibatalkan');
+}
 </script>
 
 <style scoped>
 /* gaya ringkas, ikut Tailwind */
-</style> 
+</style>  
