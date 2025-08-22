@@ -1525,7 +1525,7 @@ export default [
       {
         title: "Senarai Asnaf",
         icon: "iconamoon:arrow-right-2-duotone",
-        path: "/BF-PA/PP/kad-tauliah",
+        path: "/BF-PA/PP/penolong-amil/senarai-asnaf",
         meta: {
           auth: {
             role: ["PenolongAmil"]
