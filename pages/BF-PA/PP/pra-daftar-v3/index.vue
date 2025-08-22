@@ -71,493 +71,15 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <!-- Dynamic Content Based on Role -->
-    <div v-if="currentRole === 'eksekutif'">
-      <!-- Eksekutif Content -->
-      <rs-card class="mt-4">
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">
-              Senarai Penolong Amil untuk Sokongan Eksekutif
-            </h2>
-          </div>
-        </template>
-
-        <template #body>
-          <!-- Smart Filter Section -->
-          <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormKit
-                v-model="filters.searchQuery"
-                type="text"
-                placeholder="Cari nombor rujukan, nama calon..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.statusPendaftaran"
-                type="select"
-                :options="statusPendaftaranOptions"
-                placeholder="Status Pendaftaran"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <rs-button
-                variant="primary"
-                @click="handleSearch"
-                class="!py-2 !px-4"
-              >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-            </div>
-          </div>
-
-          <!-- Applications Table -->
-          <rs-table
-            :data="filteredApplications"
-            :columns="eksekutifColumnsWithoutStatusLantikan"
-            :pageSize="pageSize"
-            :show-search="false"
-            :show-filter="false"
-            :options="{
-              variant: 'default',
-              hover: true,
-              striped: true,
-            }"
-            :options-advanced="{
-              sortable: true,
-              filterable: true,
-            }"
-            advanced
-          >
-            <template v-slot:statusPendaftaran="{ text }">
-              <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-1">
-                <rs-button
-                  variant="primary"
-                  size="sm"
-                  @click="handleView(text)"
-                  title="Lihat"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                  Lihat
-                </rs-button>
-                <rs-button
-                  variant="success"
-                  size="sm"
-                  @click="handleSupport(text)"
-                  title="Sokong"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:thumbs-up" class="w-4 h-4 mr-1" />
-                  Sokong
-                </rs-button>
-              </div>
-            </template>
-          </rs-table>
-        </template>
-      </rs-card>
-    </div>
-
-    <!-- Ketua Jabatan Content -->
-    <div v-else-if="currentRole === 'ketua-jabatan'">
-      <rs-card class="mt-4">
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">
-              Senarai Penolong Amil untuk Pengesahan Ketua Jabatan
-            </h2>
-          </div>
-        </template>
-
-        <template #body>
-          <!-- Smart Filter Section -->
-          <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormKit
-                v-model="filters.searchQuery"
-                type="text"
-                placeholder="Cari nombor rujukan, nama calon..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.statusPendaftaran"
-                type="select"
-                :options="statusPendaftaranOptions"
-                placeholder="Status Pendaftaran"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <rs-button
-                variant="primary"
-                @click="handleSearch"
-                class="!py-2 !px-4"
-              >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-            </div>
-          </div>
-
-          <!-- Applications Table -->
-          <rs-table
-            :data="filteredApplications"
-            :columns="eksekutifColumnsWithoutStatusLantikan"
-            :pageSize="pageSize"
-            :show-search="false"
-            :show-filter="false"
-            :options="{
-              variant: 'default',
-              hover: true,
-              striped: true,
-            }"
-            :options-advanced="{
-              sortable: true,
-              filterable: true,
-            }"
-            advanced
-          >
-            <template v-slot:statusPendaftaran="{ text }">
-              <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-1">
-                <rs-button
-                  variant="primary"
-                  size="sm"
-                  @click="handleView(text)"
-                  title="Lihat"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                  Lihat
-                </rs-button>
-                <rs-button
-                  variant="success"
-                  size="sm"
-                  @click="handleConfirm(text)"
-                  title="Sahkan"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
-                  Sahkan
-                </rs-button>
-              </div>
-            </template>
-          </rs-table>
-        </template>
-      </rs-card>
-    </div>
-
-    <!-- Ketua Divisyen Content -->
-    <div v-else-if="currentRole === 'ketua-divisyen'">
-      <rs-card class="mt-4">
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">
-              Senarai Penolong Amil untuk Kelulusan Akhir
-            </h2>
-          </div>
-        </template>
-
-        <template #body>
-          <!-- Smart Filter Section -->
-          <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormKit
-                v-model="filters.searchQuery"
-                type="text"
-                placeholder="Cari nombor rujukan, nama calon..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.statusPendaftaran"
-                type="select"
-                :options="statusPendaftaranOptions"
-                placeholder="Status Pendaftaran"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <rs-button
-                variant="primary"
-                @click="handleSearch"
-                class="!py-2 !px-4"
-              >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-            </div>
-          </div>
-
-          <!-- Applications Table -->
-          <rs-table
-            :data="filteredApplications"
-            :columns="eksekutifColumnsWithoutStatusLantikan"
-            :pageSize="pageSize"
-            :show-search="false"
-            :show-filter="false"
-            :options="{
-              variant: 'default',
-              hover: true,
-              striped: true,
-            }"
-            :options-advanced="{
-              sortable: true,
-              filterable: true,
-            }"
-            advanced
-          >
-            <template v-slot:statusPendaftaran="{ text }">
-              <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-1">
-                <rs-button
-                  variant="primary"
-                  size="sm"
-                  @click="handleView(text)"
-                  title="Lihat"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                  Lihat
-                </rs-button>
-                <rs-button
-                  variant="primary"
-                  size="sm"
-                  @click="handleApprove(text)"
-                  title="Lulus"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
-                  Lulus
-                </rs-button>
-              </div>
-            </template>
-          </rs-table>
-        </template>
-      </rs-card>
-    </div>
-
-    <!-- PT Content -->
-    <div v-else-if="currentRole === 'pt'">
-      <rs-card class="mt-4">
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">
-              Senarai Penolong Amil untuk Semakan PT
-            </h2>
-          </div>
-        </template>
-
-        <template #body>
-          <!-- Smart Filter Section -->
-          <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormKit
-                v-model="filters.searchQuery"
-                type="text"
-                placeholder="Cari nombor rujukan, nama calon..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.statusPendaftaran"
-                type="select"
-                :options="statusPendaftaranOptions"
-                placeholder="Status Pendaftaran"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <rs-button
-                variant="primary"
-                @click="handleSearch"
-                class="!py-2 !px-4"
-              >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-            </div>
-          </div>
-
-          <!-- Applications Table -->
-          <rs-table
-            :data="filteredApplications"
-            :columns="eksekutifColumnsWithoutStatusLantikan"
-            :pageSize="pageSize"
-            :show-search="false"
-            :show-filter="false"
-            :options="{
-              variant: 'default',
-              hover: true,
-              striped: true,
-            }"
-            :options-advanced="{
-              sortable: true,
-              filterable: true,
-            }"
-            advanced
-          >
-            <template v-slot:statusPendaftaran="{ text }">
-              <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-1">
-                <rs-button
-                  variant="primary"
-                  size="sm"
-                  @click="handleView(text)"
-                  title="Lihat"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                  Lihat
-                </rs-button>
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  @click="handleReview(text)"
-                  title="Semak"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:clipboard-text" class="w-4 h-4 mr-1" />
-                  Semak
-                </rs-button>
-              </div>
-            </template>
-          </rs-table>
-        </template>
-      </rs-card>
-    </div>
-
-    <!-- Eksekutif Pengurusan Risiko Content -->
-    <div v-else-if="currentRole === 'eksekutif-pengurusan-risiko'">
-      <rs-card class="mt-4">
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">
-              Senarai Penolong Amil untuk Saringan Risiko
-            </h2>
-          </div>
-        </template>
-
-        <template #body>
-          <!-- Smart Filter Section -->
-          <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormKit
-                v-model="filters.searchQuery"
-                type="text"
-                placeholder="Cari nombor rujukan, nama calon..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.statusPendaftaran"
-                type="select"
-                :options="statusPendaftaranOptions"
-                placeholder="Status Pendaftaran"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <rs-button
-                variant="primary"
-                @click="handleSearch"
-                class="!py-2 !px-4"
-              >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-            </div>
-          </div>
-
-          <!-- Applications Table -->
-          <rs-table
-            :data="filteredApplications"
-            :columns="eksekutifColumnsWithoutStatusLantikan"
-            :pageSize="pageSize"
-            :show-search="false"
-            :show-filter="false"
-            :options="{
-              variant: 'default',
-              hover: true,
-              striped: true,
-            }"
-            :options-advanced="{
-              sortable: true,
-              filterable: true,
-            }"
-            advanced
-          >
-            <template v-slot:statusPendaftaran="{ text }">
-              <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-1">
-                <rs-button
-                  variant="primary"
-                  size="sm"
-                  @click="handleView(text)"
-                  title="Lihat"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                  Lihat
-                </rs-button>
-                <rs-button
-                  variant="info"
-                  size="sm"
-                  @click="handleRiskAnalysis(text)"
-                  title="Saringan"
-                  class="!px-3 !py-1.5"
-                >
-                  <Icon name="ph:shield-check" class="w-4 h-4 mr-1" />
-                  Saringan
-                </rs-button>
-              </div>
-            </template>
-          </rs-table>
-        </template>
-      </rs-card>
-    </div>
-
-    <!-- Default Content for Other Roles -->
-    <rs-card v-else class="mt-4">
+    <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Senarai Permohonan Penolong Amil Sedang Diproses
-          </h2>
+          <div>
+            <h2 class="text-xl font-semibold">
+              Senarai Permohonan Penolong Amil
+            </h2>
+            <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
+          </div>
           <!-- PA-PP-PD-01_03: Registration Form - Borang Pendaftaran Calon Penolong Amil -->
           <rs-button
             v-if="currentRole !== 'eksekutif' && currentRole !== 'eksekutif-pengurusan-risiko'"
@@ -602,174 +124,802 @@
           </div>
         </div>
 
-        <!-- Applications Table -->
-        <rs-table
-          :data="filteredApplications"
-          :columns="eksekutifColumnsWithoutStatusLantikan"
-          :pageSize="pageSize"
-          :show-search="false"
-          :show-filter="false"
-          :options="{
-            variant: 'default',
-            hover: true,
-            striped: true,
-          }"
-          :options-advanced="{
-            sortable: true,
-            filterable: true,
-          }"
-          advanced
-        >
-          <template v-slot:statusPendaftaran="{ text }">
-            <rs-badge :variant="getStatusPendaftaranVariant(text)">
-              {{ text }}
-            </rs-badge>
-          </template>
+        <!-- Tabbed Table Section -->
+        <!-- PYB Role Tabs -->
+        <div v-if="currentRole === 'pyb'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Draf">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                  <Icon name="ph:file-text" class="mr-2" size="20" />
+                  Senarai permohonan dalam draf
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-draft`"
+                  :data="getTableDataByStatus(['Draf', 'Draft'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
 
-          <template v-slot:tindakan="{ text }">
-            <div class="flex justify-center items-center gap-1">
-              <rs-button
-                variant="primary"
-                size="sm"
-                @click="handleView(text)"
-                title="Lihat"
-                class="!px-3 !py-1.5"
-              >
-                <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                Lihat
-              </rs-button>
-              <rs-button
-                variant="info"
-                size="sm"
-                @click="handleViewProcessTrace(text)"
-                title="Jejak Proses"
-                class="!px-3 !py-1.5"
-              >
-                <Icon name="ph:flow-arrow" class="w-4 h-4 mr-1" />
-                Jejak
-              </rs-button>
-              <rs-button
-                v-if="canEdit(text.statusPendaftaran)"
-                variant="secondary"
-                size="sm"
-                @click="handleEdit(text)"
-                title="Kemaskini"
-                class="!px-3 !py-1.5"
-              >
-                <Icon name="ph:pencil" class="w-4 h-4 mr-1" />
-                Kemaskini
-              </rs-button>
-            </div>
-          </template>
-        </rs-table>
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="secondary"
+                        size="sm"
+                        @click="handleEdit(text)"
+                        title="Kemaskini"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:pencil" class="w-4 h-4 mr-1" />
+                        Kemaskini
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Sedang Proses">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai permohonan yang sedang dalam proses
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-process`"
+                  :data="getTableDataByStatus(['Dihantar', 'Dalam Semakan', 'Telah Disaring', 'Telah Disemak', 'Telah Disokong', 'Telah Disahkan'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="info"
+                        size="sm"
+                        @click="handleViewProcessTrace(text)"
+                        title="Jejak Proses"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:flow-arrow" class="w-4 h-4 mr-1" />
+                        Jejak
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Lulus">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai permohonan yang telah diluluskan
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-approved`"
+                  :data="getTableDataByStatus(['Diluluskan', 'Approved'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="info"
+                        size="sm"
+                        @click="handleViewProcessTrace(text)"
+                        title="Jejak Proses"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:flow-arrow" class="w-4 h-4 mr-1" />
+                        Jejak
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Ditolak">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
+                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  Senarai permohonan yang ditolak
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-rejected`"
+                  :data="getTableDataByStatus(['Ditolak', 'Rejected'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="info"
+                        size="sm"
+                        @click="handleViewProcessTrace(text)"
+                        title="Jejak Proses"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:flow-arrow" class="w-4 h-4 mr-1" />
+                        Jejak
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
+
+        <!-- Eksekutif Pengurusan Risiko Tabs -->
+        <div v-if="currentRole === 'eksekutif-pengurusan-risiko'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Menunggu Saringan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai permohonan yang menunggu saringan risiko
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-pending-screening`"
+                  :data="getTableDataByStatus(['Dihantar'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="info"
+                        size="sm"
+                        @click="handleRiskAnalysis(text)"
+                        title="Saringan"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:shield-check" class="w-4 h-4 mr-1" />
+                        Saringan
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Telah Disaring">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai permohonan yang telah disaring
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-screened`"
+                  :data="getTableDataByStatus(['Telah Disaring'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
+
+        <!-- PT Tabs -->
+        <div v-if="currentRole === 'pt'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Menunggu Semakan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai permohonan yang menunggu semakan PT
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-pending-pt-review`"
+                  :data="getTableDataByStatus(['Telah Disaring'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="info"
+                        size="sm"
+                        @click="handleReview(text)"
+                        title="Semak"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:clipboard-text" class="w-4 h-4 mr-1" />
+                        Semak
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Telah Disemak">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai permohonan yang telah disemak PT
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-pt-reviewed`"
+                  :data="getTableDataByStatus(['Telah Disemak'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
+
+        <!-- Eksekutif Tabs -->
+        <div v-if="currentRole === 'eksekutif'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Menunggu Sokongan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai permohonan yang menunggu sokongan eksekutif
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-pending-support`"
+                  :data="getTableDataByStatus(['Telah Disemak'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="success"
+                        size="sm"
+                        @click="handleSupport(text)"
+                        title="Sokong"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:thumbs-up" class="w-4 h-4 mr-1" />
+                        Sokong
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Telah Disokong">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai permohonan yang telah disokong eksekutif
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-supported`"
+                  :data="getTableDataByStatus(['Telah Disokong'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
+
+        <!-- Ketua Jabatan Tabs -->
+        <div v-if="currentRole === 'ketua-jabatan'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Menunggu Pengesahan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai permohonan yang menunggu pengesahan ketua jabatan
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-pending-confirmation`"
+                  :data="getTableDataByStatus(['Telah Disokong'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="success"
+                        size="sm"
+                        @click="handleConfirm(text)"
+                        title="Sahkan"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
+                        Sahkan
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Telah Disahkan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai permohonan yang telah disahkan ketua jabatan
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-confirmed`"
+                  :data="getTableDataByStatus(['Telah Disahkan'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
+
+        <!-- Ketua Divisyen Tabs -->
+        <div v-if="currentRole === 'ketua-divisyen'">
+          <rs-tab v-model="activeTab" class="mt-4">
+            <rs-tab-item title="Menunggu Kelulusan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
+                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  Senarai permohonan yang menunggu kelulusan akhir
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-pending-approval`"
+                  :data="getTableDataByStatus(['Telah Disahkan'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleApprove(text)"
+                        title="Lulus"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
+                        Lulus
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+
+            <rs-tab-item title="Telah Diluluskan">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
+                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  Senarai permohonan yang telah diluluskan
+                </h3>
+                <rs-table
+                  :key="`table-${tableKey}-approved`"
+                  :data="getTableDataByStatus(['Diluluskan', 'Approved'])"
+                  :columns="eksekutifColumnsWithoutStatusLantikan"
+                  :pageSize="10"
+                  :show-search="false"
+                  :show-filter="false"
+                  :options="{
+                    variant: 'default',
+                    hover: true,
+                    striped: true,
+                  }"
+                  :options-advanced="{
+                    sortable: true,
+                    filterable: true,
+                  }"
+                  advanced
+                >
+                  <template v-slot:statusPendaftaran="{ text }">
+                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex justify-center items-center gap-1">
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="handleView(text)"
+                        title="Lihat"
+                        class="!px-3 !py-1.5"
+                      >
+                        <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                        Lihat
+                      </rs-button>
+                    </div>
+                  </template>
+                </rs-table>
+              </div>
+            </rs-tab-item>
+          </rs-tab>
+        </div>
       </template>
     </rs-card>
 
-    <!-- Completed Penolong Amil Section - Show for all roles -->
-    <div class="mt-8">
-      <rs-card>
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900">
-              Senarai Penolong Amil Lengkap
-            </h3>
-            <p v-if="currentRole === 'pyb'" class="text-sm text-gray-600 mt-1">
-              Senarai Penolong Amil yang telah dilantik dan aktif di institusi anda.
-            </p>
-            <div class="flex items-center space-x-2">
-              <span class="text-sm text-gray-500">
-                {{ completedApplications.length }} Penolong Amil Aktif
-              </span>
-            </div>
-          </div>
-        </template>
 
-        <template #body>
-          <!-- Smart Filter for Completed Applications -->
-          <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <FormKit
-                v-model="completedFilters.searchQuery"
-                type="text"
-                placeholder="Cari nama, no KP, institusi..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="completedFilters.kategoriPenolongAmil"
-                type="select"
-                :options="kategoriPenolongAmilOptions"
-                placeholder="Kategori Penolong Amil"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-
-              <FormKit
-                v-model="completedFilters.statusLantikan"
-                type="select"
-                :options="completedStatusLantikanOptions"
-                placeholder="Status Lantikan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-          </div>
-
-          <!-- Completed Applications Table -->
-          <rs-table
-            :data="filteredCompletedApplications"
-            :columns="completedColumns"
-            :pageSize="pageSize"
-            :show-search="false"
-            :show-filter="false"
-            :options="{
-              variant: 'default',
-              hover: true,
-              striped: true,
-            }"
-            :options-advanced="{
-              sortable: true,
-              filterable: true,
-            }"
-            advanced
-          >
-            <template v-slot:statusLantikan="{ text }">
-              <rs-badge :variant="getStatusLantikanVariant(text)">
-                {{ text }}
-              </rs-badge>
-            </template>
-
-            <template v-slot:tindakan="{ text }">
-              <div class="flex justify-center items-center gap-1">
-                <rs-button
-                variant="primary"
-                size="sm"
-                @click="handleViewComplete(text)"
-                title="Lihat Terperinci"
-                class="!px-3 !py-1.5"
-              >
-                <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                Lihat
-              </rs-button>
-              <rs-button
-                variant="secondary"
-                size="sm"
-                @click="handleViewServiceHistory(text)"
-                title="Sejarah Perkhidmatan"
-                class="!px-3 !py-1.5"
-              >
-                <Icon name="ph:clock" class="w-4 h-4 mr-1" />
-                Jejak
-              </rs-button>
-              </div>
-            </template>
-          </rs-table>
-        </template>
-      </rs-card>
-    </div>
 
     <!-- Pagination -->
     <div class="flex items-center justify-between px-5 mt-4">
@@ -789,7 +939,7 @@
       <div class="flex items-center gap-2">
         <span class="text-sm text-gray-700">
           Menunjukkan {{ paginationStart }} hingga
-          {{ paginationEnd }} daripada {{ totalApplications }} entri
+          {{ paginationEnd }} daripada {{ getCurrentTabDataCount() }} entri
         </span>
         <div class="flex gap-1">
           <rs-button
@@ -815,7 +965,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, nextTick, onMounted } from "vue";
+import { navigateTo } from "#app";
 
 definePageMeta({
   title: "Senarai Permohonan Penolong Amil",
@@ -1002,6 +1153,10 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const currentRole = ref("pyb");
 
+// Tab management
+const activeTab = ref("Draf");
+const tableKey = ref(0);
+
 // Role Simulator State
 const showRoleInfo = ref(false);
 
@@ -1077,6 +1232,87 @@ const getRoleCapabilities = (role) => {
 const handleRoleChange = () => {
   // Role change logic can be added here if needed
   console.log("Role changed to:", currentRole.value);
+  
+  // Reset to first available tab for the new role
+  const validTabs = getValidTabsForRole(currentRole.value);
+  if (validTabs.length > 0) {
+    activeTab.value = validTabs[0];
+  }
+  
+  // Refresh table
+  refreshTable();
+};
+
+// Tab management helper functions
+const getValidTabsForRole = (role) => {
+  const roleTabs = {
+    pyb: ["Draf", "Sedang Proses", "Lulus", "Ditolak"],
+    "eksekutif-pengurusan-risiko": ["Menunggu Saringan", "Telah Disaring"],
+    pt: ["Menunggu Semakan", "Telah Disemak"],
+    eksekutif: ["Menunggu Sokongan", "Telah Disokong"],
+    "ketua-jabatan": ["Menunggu Pengesahan", "Telah Disahkan"],
+    "ketua-divisyen": ["Menunggu Kelulusan", "Telah Diluluskan"],
+  };
+  return roleTabs[role] || ["Draf"];
+};
+
+const refreshTable = () => {
+  nextTick(() => {
+    tableKey.value++; // Force table to re-render
+  });
+};
+
+const getRoleSpecificDescription = () => {
+  const roleDescriptions = {
+    pyb: "Urus permohonan penolong amil - Draf, Proses, Lulus, dan Ditolak",
+    "eksekutif-pengurusan-risiko": "Saringan risiko untuk permohonan penolong amil",
+    pt: "Semakan dokumen PT untuk permohonan penolong amil",
+    eksekutif: "Sokongan eksekutif untuk permohonan penolong amil",
+    "ketua-jabatan": "Pengesahan ketua jabatan untuk permohonan penolong amil",
+    "ketua-divisyen": "Kelulusan akhir untuk permohonan penolong amil",
+  };
+  return roleDescriptions[currentRole.value] || "Pilih peranan untuk melihat fungsi yang tersedia";
+};
+
+// Get current tab data count for pagination
+const getCurrentTabDataCount = () => {
+  const role = currentRole.value;
+  const tab = activeTab.value;
+  
+  // Define status mappings for each tab
+  const tabStatusMap = {
+    pyb: {
+      "Draf": ["Draf", "Draft"],
+      "Sedang Proses": ["Dihantar", "Dalam Semakan", "Telah Disaring", "Telah Disemak", "Telah Disokong", "Telah Disahkan"],
+      "Lulus": ["Diluluskan", "Approved"],
+      "Ditolak": ["Ditolak", "Rejected"],
+    },
+    "eksekutif-pengurusan-risiko": {
+      "Menunggu Saringan": ["Dihantar"],
+      "Telah Disaring": ["Telah Disaring"],
+    },
+    pt: {
+      "Menunggu Semakan": ["Telah Disaring"],
+      "Telah Disemak": ["Telah Disemak"],
+    },
+    eksekutif: {
+      "Menunggu Sokongan": ["Telah Disemak"],
+      "Telah Disokong": ["Telah Disokong"],
+    },
+    "ketua-jabatan": {
+      "Menunggu Pengesahan": ["Telah Disokong"],
+      "Telah Disahkan": ["Telah Disahkan"],
+    },
+    "ketua-divisyen": {
+      "Menunggu Kelulusan": ["Telah Disahkan"],
+      "Telah Diluluskan": ["Diluluskan", "Approved"],
+    },
+  };
+  
+  const statuses = tabStatusMap[role]?.[tab] || [];
+  if (statuses.length === 0) return 0;
+  
+  return getTableDataByStatus(statuses).length;
 };
 
 const handleSearch = () => {
@@ -1603,17 +1839,17 @@ const filteredApplications = computed(() => {
 const totalApplications = computed(() => filteredApplications.value.length);
 
 const totalPages = computed(() =>
-  Math.ceil(totalApplications.value / pageSize.value)
+  Math.ceil(getCurrentTabDataCount() / pageSize.value)
 );
 
 const paginationStart = computed(() => {
-  return totalApplications.value > 0
+  return getCurrentTabDataCount() > 0
     ? (currentPage.value - 1) * pageSize.value + 1
     : 0;
 });
 
 const paginationEnd = computed(() => {
-  return Math.min(currentPage.value * pageSize.value, totalApplications.value);
+  return Math.min(currentPage.value * pageSize.value, getCurrentTabDataCount());
 });
 
 // Completed applications computed properties
@@ -1657,6 +1893,49 @@ const filteredCompletedApplications = computed(() => {
 });
 
 const totalCompletedApplications = computed(() => filteredCompletedApplications.value.length);
+
+// Filter table data based on status for tabs
+const getTableDataByStatus = (statuses) => {
+  // Use role-specific data if available, otherwise use default data
+  const dataSource = roleSpecificData[currentRole.value] || applications.value;
+  let result = [...dataSource];
+
+  // Apply institution filter for PYB role (only show applications from their institution)
+  if (currentRole.value === 'pyb') {
+    const currentInstitutionId = "MASJID_NEGERI_SELANGOR_001"; // Mock current user's institution
+    result = result.filter((app) => app.institusiId === currentInstitutionId || !app.institusiId);
+  }
+
+  // Filter by status
+  result = result.filter((app) => statuses.includes(app.statusPendaftaran));
+
+  // Only apply filters if search button was clicked
+  if (isSearchTriggered.value) {
+    // Apply search filter
+    if (filters.value.searchQuery) {
+      const query = filters.value.searchQuery.toLowerCase();
+      result = result.filter(
+        (app) =>
+          app.rujukan.toLowerCase().includes(query) ||
+          app.nama.toLowerCase().includes(query) ||
+          app.noKP.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply status filters
+    if (filters.value.statusPendaftaran) {
+      result = result.filter((app) => app.statusPendaftaran === filters.value.statusPendaftaran);
+    }
+  }
+
+  // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
+  result = result.map(({ sesiPerkhidmatan, institusiId, ...rest }) => rest);
+  
+  // Remove statusLantikan field for all roles to hide the column
+  result = result.map(({ statusLantikan, ...rest }) => rest);
+
+  return result;
+};
 
 // Helper functions for status badge variants
 const getStatusPendaftaranVariant = (status) => {
@@ -1788,6 +2067,29 @@ const handleViewServiceHistory = (actionData) => {
 // Watch for page size changes to reset current page
 watch(pageSize, () => {
   currentPage.value = 1;
+});
+
+// Watch for role changes and adjust active tab
+watch(currentRole, (newRole) => {
+  const validTabs = getValidTabsForRole(newRole);
+  if (validTabs.length > 0) {
+    activeTab.value = validTabs[0];
+  }
+  currentPage.value = 1; // Reset to first page
+  refreshTable();
+});
+
+// Watch for tab changes and reset pagination
+watch(activeTab, () => {
+  currentPage.value = 1; // Reset to first page when switching tabs
+});
+
+// Initialize with best available tab
+onMounted(() => {
+  const validTabs = getValidTabsForRole(currentRole.value);
+  if (validTabs.length > 0) {
+    activeTab.value = validTabs[0];
+  }
 });
 
 </script>
