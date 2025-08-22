@@ -182,51 +182,43 @@
                   </rs-badge>
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                  <div class="flex items-center gap-2">
-                    <rs-button
-                      variant="primary"
-                      size="sm"
+                  <div class="flex items-center gap-3">
+                    <button
                       @click="viewRequest(request)"
-                      class="flex items-center justify-center w-8 h-8 p-0"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       title="Lihat"
                     >
-                      <Icon name="ph:eye" class="w-4 h-4" />
-                    </rs-button>
+                      <Icon name="ph:eye" class="w-5 h-5 text-primary" />
+                    </button>
                     <!-- PYB Institusi specific actions -->
                     <template v-if="currentRole === 'pyb-institusi'">
-                      <rs-button
+                      <button
                         v-if="request.status === 'aktif'"
-                        variant="danger"
-                        size="sm"
                         @click="terminateService(request)"
-                        class="flex items-center justify-center w-8 h-8 p-0"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                         title="Tamatkan"
                       >
-                        <Icon name="ph:stop-circle" class="w-4 h-4" />
-                      </rs-button>
-                      <rs-button
-                        variant="warning"
-                        size="sm"
+                        <Icon name="ph:stop-circle" class="w-5 h-5 text-danger" />
+                      </button>
+                      <button
                         @click="sendWarningLetter(request)"
-                        class="flex items-center justify-center w-8 h-8 p-0"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                         title="Surat Amaran"
                       >
-                        <Icon name="ph:envelope" class="w-4 h-4" />
-                      </rs-button>
+                        <Icon name="ph:envelope" class="w-5 h-5 text-warning" />
+                      </button>
                     </template>
                     
                     <!-- Ketua Divisyen specific actions -->
                     <template v-if="currentRole === 'ketua-divisyen'">
-                      <rs-button
+                      <button
                         v-if="request.status === 'aktif' || request.status === 'suspended'"
-                        variant="success"
-                        size="sm"
                         @click="approveService(request)"
-                        class="flex items-center justify-center w-8 h-8 p-0"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                         title="Lulus"
                       >
-                        <Icon name="ph:check-circle" class="w-4 h-4" />
-                      </rs-button>
+                        <Icon name="ph:check-circle" class="w-5 h-5 text-success" />
+                      </button>
                     </template>
                   </div>
                 </td>
