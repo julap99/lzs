@@ -1580,7 +1580,7 @@ export default [
       {
         title: "Elaun",
         icon: "iconamoon:arrow-right-2-duotone",
-        path: "/BF-PA/PP/surat-tawaran",
+        path: "/BF-PA/PP/penolong-amil/elaun",
         meta: {
           auth: {
             role: ["PenolongAmil"]
