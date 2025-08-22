@@ -441,11 +441,21 @@ const fixedAllowanceValue = computed(() => fixedAllowanceByType[query.type] ?? 0
 /* ====== State ====== */
 const candidates = ref([]);
 const recipients = ref([]); // penerima sedia ada (draf) + yang baru dipilih
-const search = ref('');
+const searchQuery = ref(''); // Missing variable for search
 const page = ref(1);
 const pageSize = 12;
 const saving = ref(false);
 const batchNotes = ref(''); // Ulasan dari Eksekutif
+
+// Missing category options for editing
+const categoryOptions = [
+  { label: 'KPAK', value: 'KPAK' },
+  { label: 'KPAF', value: 'KPAF' },
+  { label: 'PAK', value: 'PAK' },
+  { label: 'PAF', value: 'PAF' },
+  { label: 'PAP', value: 'PAP' },
+  { label: 'PAK+', value: 'PAK+' }
+];
 
 /* === Helpers aktiviti (gabung + jumlah count) === */
 function aggregateActivities(acts = []) {
