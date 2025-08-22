@@ -101,7 +101,7 @@ watch(
           class="modal-dialog"
           :class="dialogClass"
           :style="{
-            width: size == 'sm' ? '300px' : size == 'md' ? '500px' : '800px',
+            width: size == 'sm' ? '300px' : size == 'md' ? '500px' : size == 'lg' ? '800px' : size == 'xl' ? '1000px' : '1200px',
           }"
         >
           <div class="modal-content">

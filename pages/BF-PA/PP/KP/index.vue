@@ -96,136 +96,6 @@
       </div>
     </div>
 
-    <!-- Status Dashboard Tabs -->
-    <div class="bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
-      <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:chart-bar" class="w-5 h-5 mr-2" />
-          Dashboard Status
-        </h3>
-      </div>
-      <div class="p-6">
-        <!-- Simple Tab Navigation -->
-        <div class="border-b border-gray-200 mb-4">
-          <nav class="-mb-px flex space-x-8">
-            <button
-              v-for="tab in statusTabs"
-              :key="tab.value"
-              @click="activeStatusTab = tab.value"
-              :class="[
-                'py-2 px-1 border-b-2 font-medium text-sm',
-                activeStatusTab === tab.value
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              ]"
-            >
-              {{ tab.label }}
-            </button>
-          </nav>
-        </div>
-        
-        <!-- Tab Content -->
-        <div class="p-4">
-          <div v-if="activeStatusTab === 'aktif'" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="text-center">
-              <div class="text-2xl font-bold text-success">{{ getStatusCount('aktif') }}</div>
-              <div class="text-sm text-gray-600">Perkhidmatan Aktif</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-warning">{{ getStatusCount('suspended') }}</div>
-              <div class="text-sm text-gray-600">Dalam Pemerhatian</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-danger">{{ getStatusCount('terminated') }}</div>
-              <div class="text-sm text-gray-600">Telah Ditamatkan</div>
-            </div>
-          </div>
-          
-          <div v-else-if="activeStatusTab === 'suspended'" class="text-center">
-            <div class="text-2xl font-bold text-warning">{{ getStatusCount('suspended') }}</div>
-            <div class="text-sm text-gray-600">Perkhidmatan Dalam Pemerhatian</div>
-          </div>
-          
-          <div v-else-if="activeStatusTab === 'terminated'" class="text-center">
-            <div class="text-2xl font-bold text-danger">{{ getStatusCount('terminated') }}</div>
-            <div class="text-sm text-gray-600">Perkhidmatan Telah Ditamatkan</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Simplified Filters Section -->
-    <rs-card class="mb-6">
-      <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:funnel" class="w-5 h-5 mr-2" />
-          Penapis
-        </h3>
-      </template>
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
-            <FormKit
-              type="text"
-              v-model="filters.searchQuery"
-              placeholder="No Rujukan, nama, ID Pengenalan..."
-              outer-class="mb-0"
-            >
-              <template #prefixIcon>
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 text-gray-500" />
-              </template>
-            </FormKit>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <FormKit
-              type="select"
-              v-model="filters.status"
-              :options="statusOptions"
-              outer-class="mb-0"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-            <FormKit
-              type="select"
-              v-model="filters.kategori"
-              :options="kategoriOptions"
-              outer-class="mb-0"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Institusi</label>
-            <FormKit
-              type="select"
-              v-model="filters.institusi"
-              :options="institusiOptions"
-              outer-class="mb-0"
-            />
-          </div>
-        </div>
-        <div class="flex justify-end gap-2 mt-4">
-          <rs-button 
-            variant="secondary-outline" 
-            @click="clearFilters"
-            class="flex items-center"
-          >
-            <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-1" />
-            Set Semula
-          </rs-button>
-          <rs-button 
-            variant="primary" 
-            @click="applyFilters"
-            class="flex items-center"
-          >
-            <Icon name="ph:check" class="w-4 h-4 mr-1" />
-            Guna Penapis
-          </rs-button>
-        </div>
-      </template>
-    </rs-card>
-
     <!-- Enhanced Data Table -->
     <rs-card>
       <template #header>
@@ -263,12 +133,18 @@
                   Kategori
                 </th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Sesi
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Daerah
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Institusi
                 </th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 
                   Tindakan
                 </th>
               </tr>
@@ -290,6 +166,12 @@
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap">
                   <div class="text-sm text-gray-900">{{ request.kategori || request.newKategori }}</div>
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900">{{ request.sesi || request.newSesi }}</div>
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900">{{ request.daerah || request.newDaerah }}</div>
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap">
                   <div class="text-sm text-gray-900">{{ request.institusi || request.newInstitusi }}</div>
@@ -330,6 +212,20 @@
                       >
                         <Icon name="ph:envelope" class="w-3 h-3 mr-1" />
                         Surat Amaran
+                      </rs-button>
+                    </template>
+                    
+                    <!-- Ketua Divisyen specific actions -->
+                    <template v-if="currentRole === 'ketua-divisyen'">
+                      <rs-button
+                        v-if="request.status === 'aktif' || request.status === 'suspended'"
+                        variant="success"
+                        size="sm"
+                        @click="approveService(request)"
+                        class="flex items-center"
+                      >
+                        <Icon name="ph:check-circle" class="w-3 h-3 mr-1" />
+                        Lulus
                       </rs-button>
                     </template>
                   </div>
@@ -402,6 +298,126 @@
         </template>
       </rs-card>
     </div>
+
+    <!-- Warning Letter Modal -->
+    <rs-modal v-model="showWarningModal" title="Hantar Surat Amaran" size="xl">
+      <template #header>
+        <div class="flex items-center">
+          <Icon name="ph:warning" class="w-5 h-5 text-warning mr-2" />
+          <h3 class="text-lg font-semibold text-gray-900">Hantar Surat Amaran</h3>
+        </div>
+      </template>
+      
+      <div class="p-6">
+        <!-- Request Information Display -->
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+          <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+            <Icon name="ph:info" class="w-4 h-4 mr-2 text-gray-600" />
+            Maklumat Penolong Amil
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Nama</label>
+              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.nama || 'N/A' }}</div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">ID Pengenalan</label>
+              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.idPengenalan || 'N/A' }}</div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Kategori</label>
+              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.kategori || 'N/A' }}</div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Sesi</label>
+              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.sesi || 'N/A' }}</div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Daerah</label>
+              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.daerah || 'N/A' }}</div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Institusi</label>
+              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.institusi || 'N/A' }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Warning Letter Form -->
+        <div class="space-y-6">
+          <!-- File Upload Field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Muat Naik Fail Surat Amaran
+            </label>
+            <FormKit
+              type="file"
+              v-model="warningLetterData.file"
+              accept=".pdf,.doc,.docx"
+              :classes="{
+                input: 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary-dark',
+                wrapper: 'w-full'
+              }"
+              validation="required"
+              validation-label="Fail surat amaran"
+              @change="handleFileChange"
+            />
+            <p class="mt-1 text-xs text-gray-500">
+              Format yang diterima: PDF, DOC, DOCX (Maksimum 5MB)
+            </p>
+          </div>
+          
+          <!-- Notes Field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Catatan
+            </label>
+            <FormKit
+              type="textarea"
+              v-model="warningLetterData.notes"
+              placeholder="Masukkan catatan atau arahan tambahan untuk surat amaran ini..."
+              :classes="{
+                input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                wrapper: 'w-full'
+              }"
+              rows="6"
+              maxlength="500"
+              validation="required|length:10,500"
+              validation-label="Catatan"
+              @input="validateNotes"
+            />
+            <div class="flex justify-between items-center mt-1">
+              <p class="text-xs text-gray-500">
+                Minimum 10 aksara, maksimum 500 aksara
+              </p>
+              <span class="text-xs" :class="getNotesCounterClass()">
+                {{ warningLetterData.notes.length }}/500
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="closeWarningModal"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="warning"
+            @click="submitWarningLetter"
+            :disabled="!isFormValid || isSubmitting"
+          >
+            <Icon v-if="!isSubmitting" name="ph:paper-plane" class="w-4 h-4 mr-2" />
+            <Icon v-else name="ph:spinner" class="w-4 h-4 mr-2 animate-spin" />
+            {{ isSubmitting ? 'Menghantar...' : 'Hantar Surat Amaran' }}
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -455,6 +471,8 @@ const filters = ref({
   status: "",
   kategori: "",
   institusi: "",
+  sesi: "",
+  daerah: "",
 });
 
 // Enhanced pagination
@@ -475,6 +493,16 @@ const statusTabs = [
 const showNotification = ref(false);
 const notificationTitle = ref("");
 const notificationMessage = ref("");
+
+// Warning Letter Modal State
+const showWarningModal = ref(false);
+const warningLetterData = ref({
+  file: null,
+  notes: "",
+});
+const currentWarningRequest = ref(null);
+const fileError = ref("");
+const isSubmitting = ref(false);
 
 // Enhanced options
 const statusOptions = [
@@ -499,6 +527,27 @@ const institusiOptions = [
   { label: "Kompleks Islam", value: "kompleks_islam" },
 ];
 
+const sesiOptions = [
+  { label: "Sila pilih...", value: "" },
+  { label: "2023/2024", value: "2023/2024" },
+  { label: "2024/2025", value: "2024/2025" },
+  { label: "2025/2026", value: "2025/2026" },
+];
+
+const daerahOptions = [
+  { label: "Sila pilih...", value: "" },
+  { label: "Kuala Lumpur", value: "kuala_lumpur" },
+  { label: "Selangor", value: "selangor" },
+  { label: "Johor", value: "johor" },
+  { label: "Pahang", value: "pahang" },
+  { label: "Terengganu", value: "terengganu" },
+  { label: "Kedah", value: "kedah" },
+  { label: "Negeri Sembilan", value: "negeri_sembilan" },
+  { label: "Melaka", value: "melaka" },
+  { label: "Perak", value: "perak" },
+  { label: "Kelantan", value: "kelantan" },
+];
+
 // Enhanced mock data with new structure
 const requests = ref([
   {
@@ -507,6 +556,8 @@ const requests = ref([
     nama: "Ahmad bin Abdullah",
     idPengenalan: "901231012345",
     kategori: "Penolong Amil Kariah",
+    sesi: "2024/2025",
+    daerah: "Kuala Lumpur",
     institusi: "Surau Al-Amin",
     status: "aktif",
   },
@@ -516,6 +567,8 @@ const requests = ref([
     nama: "Mohd Ali bin Hassan",
     idPengenalan: "850315045678",
     kategori: "Penolong Amil Komuniti",
+    sesi: "2024/2025",
+    daerah: "Selangor",
     institusi: "Kompleks Islam",
     status: "aktif",
   },
@@ -525,6 +578,8 @@ const requests = ref([
     nama: "Fatimah binti Omar",
     idPengenalan: "920512078901",
     kategori: "Penolong Amil Fitrah",
+    sesi: "2024/2025",
+    daerah: "Perak",
     institusi: "Masjid Al-Hidayah",
     status: "suspended",
   },
@@ -534,6 +589,8 @@ const requests = ref([
     nama: "Siti Aminah binti Ismail",
     idPengenalan: "880723123456",
     kategori: "Penolong Amil Padi",
+    sesi: "2024/2025",
+    daerah: "Kedah",
     institusi: "Surau Al-Amin",
     status: "aktif",
   },
@@ -543,6 +600,8 @@ const requests = ref([
     nama: "Zainal bin Ibrahim",
     idPengenalan: "870415234567",
     kategori: "Penolong Amil Kariah",
+    sesi: "2024/2025",
+    daerah: "Kelantan",
     institusi: "Kompleks Islam",
     status: "terminated",
   },
@@ -552,6 +611,8 @@ const requests = ref([
     nama: "Nurul Huda binti Ahmad",
     idPengenalan: "930625345678",
     kategori: "Penolong Amil Komuniti",
+    sesi: "2024/2025",
+    daerah: "Terengganu",
     institusi: "Masjid Al-Hidayah",
     status: "aktif",
   },
@@ -561,6 +622,8 @@ const requests = ref([
     nama: "Abdul Rahman bin Hassan",
     idPengenalan: "890715456789",
     kategori: "Penolong Amil Fitrah",
+    sesi: "2024/2025",
+    daerah: "Pahang",
     institusi: "Surau Al-Amin",
     status: "suspended",
   },
@@ -570,6 +633,8 @@ const requests = ref([
     nama: "Noraini binti Mohamed",
     idPengenalan: "910318567890",
     kategori: "Penolong Amil Padi",
+    sesi: "2024/2025",
+    daerah: "Negeri Sembilan",
     institusi: "Kompleks Islam",
     status: "aktif",
   },
@@ -579,6 +644,8 @@ const requests = ref([
     nama: "Ismail bin Yusof",
     idPengenalan: "860420678901",
     kategori: "Penolong Amil Kariah",
+    sesi: "2024/2025",
+    daerah: "Melaka",
     institusi: "Masjid Al-Hidayah",
     status: "terminated",
   },
@@ -588,6 +655,8 @@ const requests = ref([
     nama: "Rohana binti Sulaiman",
     idPengenalan: "940712789012",
     kategori: "Penolong Amil Komuniti",
+    sesi: "2024/2025",
+    daerah: "Johor",
     institusi: "Surau Al-Amin",
     status: "aktif",
   },
@@ -608,7 +677,11 @@ const filteredRequests = computed(() => {
     result = result.filter(request => 
       (request.noRujukan || request.rujukan)?.toLowerCase().includes(query) ||
       (request.nama || request.penolongAmil?.nama)?.toLowerCase().includes(query) ||
-      (request.idPengenalan || request.penolongAmil?.noKP)?.includes(query)
+      (request.idPengenalan || request.penolongAmil?.noKP)?.includes(query) ||
+      (request.kategori || request.newKategori)?.toLowerCase().includes(query) ||
+      (request.sesi || request.newSesi)?.toLowerCase().includes(query) ||
+      (request.daerah || request.newDaerah)?.toLowerCase().includes(query) ||
+      (request.institusi || request.newInstitusi)?.toLowerCase().includes(query)
     );
   }
   
@@ -630,6 +703,20 @@ const filteredRequests = computed(() => {
       (request.institusi || request.newInstitusi)?.toLowerCase().includes(filters.value.institusi.toLowerCase())
     );
   }
+
+  // Apply sesi filter
+  if (filters.value.sesi) {
+    result = result.filter(request => 
+      (request.sesi || request.newSesi)?.toLowerCase().includes(filters.value.sesi.toLowerCase())
+    );
+  }
+
+  // Apply daerah filter
+  if (filters.value.daerah) {
+    result = result.filter(request => 
+      (request.daerah || request.newDaerah)?.toLowerCase().includes(filters.value.daerah.toLowerCase())
+    );
+  }
   
   return result;
 });
@@ -639,6 +726,15 @@ const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value);
 const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage.value, filteredRequests.value.length));
 const paginatedRequests = computed(() => {
   return filteredRequests.value.slice(startIndex.value, endIndex.value);
+});
+
+// Form validation computed property
+const isFormValid = computed(() => {
+  return warningLetterData.value.file && 
+         warningLetterData.value.notes && 
+         warningLetterData.value.notes.length >= 10 && 
+         warningLetterData.value.notes.length <= 500 && 
+         !fileError.value;
 });
 
 // Enhanced helper functions
@@ -672,6 +768,8 @@ const clearFilters = () => {
     status: "",
     kategori: "",
     institusi: "",
+    sesi: "",
+    daerah: "",
   };
   currentPage.value = 1;
   showNotificationMessage("Penapis telah dikosongkan", "Semua penapis telah dikosongkan dan senarai telah dikemaskini.");
@@ -712,14 +810,121 @@ const terminateService = (request) => {
   // For now, just show notification
 };
 
-const sendWarningLetter = (request) => {
+// Ketua Divisyen specific actions
+const approveService = (request) => {
+  const statusText = request.status === 'aktif' ? 'Aktif' : 'Dalam Pemerhatian';
   showNotificationMessage(
-    "Surat Amaran Dihantar", 
-    `Surat amaran telah dihantar kepada ${request.nama || request.penolongAmil?.nama} untuk ${request.noRujukan || request.rujukan}.`
+    "Perkhidmatan Diluluskan", 
+    `Perkhidmatan ${request.noRujukan || request.rujukan} untuk ${request.nama || request.penolongAmil?.nama} dengan status ${statusText} telah diluluskan.`
   );
   
-  // In real app, this would trigger warning letter generation
+  // In real app, this would update the approval status
   // For now, just show notification
+};
+
+const validateNotes = () => {
+  // This function can be used for additional validation if needed
+  // The FormKit validation will handle the basic validation
+};
+
+const getNotesCounterClass = () => {
+  const length = warningLetterData.value.notes.length;
+  if (length < 10) {
+    return 'text-red-500';
+  } else if (length > 450) {
+    return 'text-orange-500';
+  } else {
+    return 'text-gray-500';
+  }
+};
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  fileError.value = "";
+  
+  if (file) {
+    // Check file size (5MB = 5 * 1024 * 1024 bytes)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      fileError.value = "Saiz fail terlalu besar. Maksimum 5MB dibenarkan.";
+      warningLetterData.value.file = null;
+      event.target.value = "";
+      return;
+    }
+    
+    // Check file type
+    const allowedTypes = ['.pdf', '.doc', '.docx'];
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    if (!allowedTypes.includes(fileExtension)) {
+      fileError.value = "Format fail tidak dibenarkan. Hanya PDF, DOC, dan DOCX dibenarkan.";
+      warningLetterData.value.file = null;
+      event.target.value = "";
+      return;
+    }
+    
+    // File is valid
+    warningLetterData.value.file = file;
+  }
+};
+
+const sendWarningLetter = (request) => {
+  currentWarningRequest.value = request;
+  warningLetterData.value = {
+    file: null,
+    notes: "",
+  };
+  fileError.value = "";
+  showWarningModal.value = true;
+};
+
+const submitWarningLetter = async () => {
+  if (warningLetterData.value.file && warningLetterData.value.notes && !fileError.value) {
+    isSubmitting.value = true;
+    
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Here you would typically send the data to your backend
+      // For now, we'll just show a success message
+      showNotificationMessage(
+        "Surat Amaran Dihantar", 
+        `Surat amaran telah dihantar kepada ${currentWarningRequest.value?.nama || currentWarningRequest.value?.penolongAmil?.nama} untuk ${currentWarningRequest.value?.noRujukan || currentWarningRequest.value?.rujukan}.`
+      );
+      
+      // Reset modal and close
+      closeWarningModal();
+    } catch (error) {
+      showNotificationMessage(
+        "Ralat", 
+        "Gagal menghantar surat amaran. Sila cuba lagi."
+      );
+    } finally {
+      isSubmitting.value = false;
+    }
+  }
+};
+
+const closeWarningModal = () => {
+  // Check if user has entered data and confirm before closing
+  if ((warningLetterData.value.file || warningLetterData.value.notes) && !isSubmitting.value) {
+    if (confirm('Anda pasti mahu menutup modal ini? Data yang telah dimasukkan akan hilang.')) {
+      resetWarningModal();
+    }
+  } else {
+    resetWarningModal();
+  }
+};
+
+const resetWarningModal = () => {
+  showWarningModal.value = false;
+  warningLetterData.value = {
+    file: null,
+    notes: "",
+  };
+  currentWarningRequest.value = null;
+  fileError.value = "";
+  isSubmitting.value = false;
 };
 
 const showNotificationMessage = (title, message) => {
@@ -759,7 +964,7 @@ const getRoleSpecificDescription = (role) => {
     "pt": "Lihat maklumat Perkhidmatan Penolong Amil",
     "eksekutif": "Lihat maklumat Perkhidmatan Penolong Amil",
     "ketua-jabatan": "Lihat maklumat Perkhidmatan Penolong Amil",
-    "ketua-divisyen": "Lihat maklumat Perkhidmatan Penolong Amil",
+    "ketua-divisyen": "Lihat dan meluluskan maklumat Perkhidmatan Penolong Amil",
     "pyb-institusi": "Pengurusan maklumat Perkhidmatan Penolong Amil oleh PYB Institusi",
   };
   return descriptions[role] || "Peranan ini mempunyai kebolehan yang berbeza.";
@@ -803,7 +1008,7 @@ const getRoleDescription = (role) => {
     "pt": "Lihat maklumat Perkhidmatan Penolong Amil",
     "eksekutif": "Lihat maklumat Perkhidmatan Penolong Amil",
     "ketua-jabatan": "Lihat maklumat Perkhidmatan Penolong Amil",
-    "ketua-divisyen": "Lihat maklumat Perkhidmatan Penolong Amil",
+    "ketua-divisyen": "Lihat dan meluluskan maklumat Perkhidmatan Penolong Amil",
     "pyb-institusi": "Pengurusan maklumat Perkhidmatan Penolong Amil oleh PYB Institusi",
   };
   return descriptions[role] || "Peranan ini mempunyai kebolehan yang berbeza.";
@@ -814,7 +1019,7 @@ const getRoleCapabilities = (role) => {
     "pt": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran"],
     "eksekutif": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran"],
     "ketua-jabatan": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran"],
-    "ketua-divisyen": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran"],
+    "ketua-divisyen": ["Lihat Maklumat", "Lihat Status", "Lihat Butiran", "Meluluskan Perkhidmatan"],
     "pyb-institusi": ["Lihat Maklumat", "Terminate Perkhidmatan", "Surat Amaran", "Pengurusan Status"],
   };
   return capabilities[role] || ["Tidak ada kebolehan spesifik."];
@@ -838,7 +1043,7 @@ watch(filters, () => {
   // Auto-apply filters after a delay
   clearTimeout(window.filterTimeout);
   window.filterTimeout = setTimeout(() => {
-    if (filters.value.searchQuery || filters.value.status || filters.value.kategori || filters.value.institusi) {
+    if (filters.value.searchQuery || filters.value.status || filters.value.kategori || filters.value.institusi || filters.value.sesi || filters.value.daerah) {
       applyFilters();
     }
   }, 500);
