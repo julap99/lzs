@@ -83,11 +83,21 @@
           <div class="flex-1">
             <span class="text-sm text-gray-600">
               Jumlah batch dalam jadual: <strong>{{ rows.length }}</strong>
+              <span v-if="rows.length === 0" class="text-gray-400 ml-2">(Kosong - klik Simpan untuk cipta batch)</span>
             </span>
           </div>
           <div class="flex items-center gap-2">
-          <rs-button
-            variant="primary"
+            <rs-button
+              variant="secondary"
+              size="sm"
+              @click="clearAllBatchData"
+              class="!px-3"
+            >
+              <Icon name="ic:outline-delete" class="mr-2" />
+              Clear All
+            </rs-button>
+            <rs-button
+              variant="primary"
               size="sm"
               :disabled="!canSave"
               :loading="saving"
@@ -95,7 +105,7 @@
             >
               <Icon name="ic:outline-save" class="mr-2" />
               {{ saving ? 'Menyimpan...' : 'Simpan' }}
-          </rs-button>
+            </rs-button>
           </div>
         </div>
 
@@ -145,8 +155,14 @@
                   </td>
                 </tr>
               <tr v-if="!loading && !rows.length" class="hover:bg-gray-50">
-                <td class="px-4 py-6 text-center text-gray-500" colspan="5">Tiada rekod. Pilih Tahun & Jenis Elaun, kemudian klik 'Simpan' untuk cipta batch.</td>
-                </tr>
+                <td class="px-4 py-6 text-center text-gray-500" colspan="5">
+                  <div class="text-center">
+                    <Icon name="ic:outline-info" class="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                    <p class="text-gray-500 mb-2">Tiada batch elaun tahunan wujud lagi.</p>
+                    <p class="text-sm text-gray-400">Pilih Tahun & Jenis Elaun, kemudian klik 'Simpan' untuk cipta batch baru.</p>
+                  </div>
+                </td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -323,48 +339,24 @@ const loadingData = ref(false); // Specific loading state for data loading
 
 // Start with empty rows - batches will be added when users click "Simpan"
 
-// Load existing data from localStorage on component mount
+// Load existing data from in-memory storage on component mount
+// For prototype purposes, start with empty data
 const loadExistingData = () => {
-  // Check if there are any existing batches in localStorage
-  const years = availableYears; // Use constant instead of hardcoded array
-  const types = typeOptions.filter(opt => opt.value !== '').map(opt => opt.value);
-  
-  years.forEach(year => {
-    types.forEach(type => {
-      const savedCount = getSavedCount(year, type);
-      const savedStatus = getSavedStatus(year, type);
-      
-      if (savedCount !== undefined || savedStatus) {
-        // Add to rows if not already present
-        const existingRow = rows.value.find(row => 
-          `${row.year}-${row.typeCode}` === `${year}-${type}`
-        );
-        
-        if (!existingRow) {
-          rows.value.push({
-            id: `BATCH-${year}-${type}`,
-            year: year,
-            typeCode: type,
-            status: savedStatus || 'DRAF',
-            count: savedCount ?? mockCounts[year]?.[type] ?? 0, // Use mock data if no saved count
-            updatedAt: Date.now()
-          });
-        }
-      }
-    });
-  });
+  // For prototype purposes, we start with no existing batches
+  // All batches will be created fresh when users click "Simpan"
+  rows.value = [];
 };
 
 // Load existing data on mount
 onMounted(() => {
-  // Check localStorage availability first
-  checkLocalStorageAvailability();
+  // For prototype purposes, start with clean slate
+  // No localStorage needed - data resets on page refresh
   
-  // Load existing data
+  // Load existing data (empty for prototype)
   loadExistingData();
   
-  // Set initial form state
-  updateFormState();
+  // Don't update router query for presentation purposes
+  // updateFormState();
   
   // Update total count display
   updateTotalCountDisplay();
@@ -388,20 +380,14 @@ function updateTotalCountDisplay() {
   if (currentRow) {
     totalCountDisplay.value = currentRow.count ?? 0;
   } else {
-    // If no current row, check localStorage for saved data
-    const savedCount = getSavedCount(filters.year, filters.type);
-    if (savedCount !== undefined) {
-      totalCountDisplay.value = savedCount;
-    } else {
-      // Show mock data for the selected year and type
-      const mockCount = mockCounts[filters.year]?.[filters.type];
-      totalCountDisplay.value = mockCount ?? '—';
-    }
+    // Show mock data for the selected year and type
+    const mockCount = mockCounts[filters.year]?.[filters.type];
+    totalCountDisplay.value = mockCount ?? '—';
   }
 }
 
-// Set initial form state AFTER all variables are declared
-updateFormState();
+// Don't update router query for presentation purposes
+// updateFormState();
 
 // Also update total count display on mount to show mock data
 updateTotalCountDisplay();
@@ -434,30 +420,55 @@ function batchStatusLabel(status) {
 
 /* ---------- Router & filter ---------- */
 
-// Simulated "DB" & LocalStorage
-// Note: We're using localStorage directly, so savedBatches Map is not needed
+// Prototype in-memory storage
+// No localStorage needed - data resets on page refresh
 
-// Get saved count from second screen
-function getSavedCount(year, type) {
-  return safeLocalStorageGet(`et:count:${year}:${type}`);
+// Simple in-memory storage for prototype purposes
+// No localStorage needed - data resets on page refresh
+const inMemoryBatches = ref(new Map());
+
+// Get count for a batch (use mock data as fallback)
+function getBatchCount(year, type) {
+  const batchKey = `${year}-${type}`;
+  return inMemoryBatches.value.get(batchKey)?.count ?? mockCounts[year]?.[type] ?? 0;
 }
 
-// Get saved status from second screen
-function getSavedStatus(year, type) {
-  return safeLocalStorageGet(`et:status:${year}:${type}`);
+// Get status for a batch
+function getBatchStatus(year, type) {
+  const batchKey = `${year}-${type}`;
+  return inMemoryBatches.value.get(batchKey)?.status;
+}
+
+// Save batch to in-memory storage
+function saveBatchToMemory(year, type, status, count) {
+  const batchKey = `${year}-${type}`;
+  inMemoryBatches.value.set(batchKey, {
+    year,
+    type,
+    status,
+    count,
+    updatedAt: Date.now()
+  });
+}
+
+// Clear all batch data (for presentation purposes)
+function clearAllBatchData() {
+  inMemoryBatches.value.clear();
+  rows.value = [];
 }
 
 async function apiSaveBatchLight({ year, typeCode }) {
   try {
     await sleepWithTimeout(500, 5000); // 5 second timeout for save operation
-    const countFromLocal = getSavedCount(year, typeCode);
+    // For prototype purposes, use mock data directly
+    const mockCount = mockCounts[year]?.[typeCode] ?? 0;
     // Save as "DRAF" when Save is clicked on first screen
     const payload = {
       id: `BATCH-${year}-${typeCode}`,
       year,
       typeCode,
       status: 'DRAF',
-      count: countFromLocal ?? mockCounts[year]?.[typeCode] ?? 0, // Use mock data as fallback
+      count: mockCount,
       updatedAt: Date.now()
     };
     return { batchId: payload.id, status: 'DRAF' };
@@ -544,9 +555,9 @@ async function onSave() {
   }
   
   // Budget validation (if we have recipient data)
-  const savedCount = getSavedCount(filters.year, filters.type);
-  if (savedCount && savedCount > 0) {
-    const estimatedAllowance = savedCount * 500; // Assume average RM500 per recipient
+  const mockCount = mockCounts[filters.year]?.[filters.type];
+  if (mockCount && mockCount > 0) {
+    const estimatedAllowance = mockCount * 500; // Assume average RM500 per recipient
     const budgetValidation = validateBudgetOverflow(estimatedAllowance, 10000); // Default budget
     
     if (budgetValidation.severity === 'warning') {
@@ -573,16 +584,27 @@ async function onSave() {
         typeCode: filters.type,
         typeLabel: typeOptions.find(opt => opt.value === filters.type)?.label || filters.type,
         status: 'DRAF',
-        count: getSavedCount(filters.year, filters.type) || mockCounts[filters.year]?.[filters.type] || 0,
+        count: mockCounts[filters.year]?.[filters.type] || 0,
         updatedAt: new Date().toISOString()
       };
       
       rows.value.push(newRow);
       
+      // Save batch to in-memory storage (for prototype purposes)
+      saveBatchToMemory(filters.year, filters.type, 'DRAF', newRow.count);
+      
       toast.success(`Batch berjaya dibuat: ${result.batchId}`);
       
-      // Update form state
-      updateFormState();
+      // Reset form selections to allow creating another batch
+      // Don't call updateFormState() as we want to stay on the same page
+      filters.year = '';
+      filters.type = '';
+      
+      // Update total count display
+      updateTotalCountDisplay();
+      
+      // Force a small delay to ensure UI updates properly
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
   } catch (error) {
     // Enhanced error handling with recovery suggestions
@@ -611,7 +633,14 @@ function viewRecipients(row) {
 }
 
 // Manual update function - only call when needed
+// DISABLED for presentation purposes to prevent navigation
 function updateFormState() {
+  // For presentation purposes, don't update router query
+  // This prevents unwanted navigation behavior
+  return;
+  
+  // Original code (commented out):
+  /*
   if (filters.year || filters.type) {
     // Update router query
     const q = {};
@@ -625,6 +654,7 @@ function updateFormState() {
       router.replace({ query: q });
     }
   }
+  */
 }
 
 // Function to validate type selection and show toast if disabled
@@ -653,94 +683,12 @@ onUnmounted(() => {
   }
 });
 
-// localStorage availability and error recovery
-const localStorageAvailable = ref(true);
-const offlineMode = ref(false);
+// Prototype mode - no localStorage needed
 
-// Check localStorage availability
-function checkLocalStorageAvailability() {
-  try {
-    const test = '__test__';
-    localStorage.setItem(test, test);
-    localStorage.removeItem(test);
-    localStorageAvailable.value = true;
-    offlineMode.value = false;
-  } catch (error) {
-    localStorageAvailable.value = false;
-    offlineMode.value = true;
-    showOfflineMode();
-  }
-}
+// No localStorage checks needed for prototype
 
 // Show offline mode with recovery options
-function showOfflineMode() {
-  toast.warning('Mod luar talian diaktifkan. Data akan disimpan dalam memori sementara.');
-  
-  // Enable data export functionality
-  enableDataExport();
-}
-
-// Enable data export when offline
-function enableDataExport() {
-  // Add export button to UI
-  const exportButton = document.createElement('button');
-  exportButton.textContent = 'Eksport Data';
-  exportButton.className = 'px-3 py-2 bg-blue-600 text-white rounded-md text-sm';
-  exportButton.onclick = exportCurrentData;
-  
-  // Add to appropriate location in UI
-  const actionBar = document.querySelector('.flex.items-center.gap-2');
-  if (actionBar) {
-    actionBar.appendChild(exportButton);
-  }
-}
-
-// Export current data
-function exportCurrentData() {
-  const data = {
-    batches: rows.value,
-    filters: filters.value,
-    timestamp: new Date().toISOString()
-  };
-  
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `elaun-tahunan-${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  
-  toast.success('Data berjaya dieksport');
-}
-
-// Enhanced localStorage functions with fallback
-function safeLocalStorageGet(key, fallback = null) {
-  if (!localStorageAvailable.value) {
-    return fallback;
-  }
-  
-  try {
-    const value = localStorage.getItem(key);
-    return value !== null ? value : fallback;
-  } catch (error) {
-    return fallback;
-  }
-}
-
-function safeLocalStorageSet(key, value) {
-  if (!localStorageAvailable.value) {
-    // Store in memory as fallback
-    return false;
-  }
-  
-  try {
-    localStorage.setItem(key, value);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
+// All localStorage functionality removed for prototype simplicity
 </script>
 
 <style scoped>
