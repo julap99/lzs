@@ -187,10 +187,10 @@
                       variant="primary"
                       size="sm"
                       @click="viewRequest(request)"
-                      class="flex items-center"
+                      class="flex items-center justify-center w-8 h-8 p-0"
+                      title="Lihat"
                     >
-                      <Icon name="ph:eye" class="w-3 h-3 mr-1" />
-                      Lihat
+                      <Icon name="ph:eye" class="w-4 h-4" />
                     </rs-button>
                     <!-- PYB Institusi specific actions -->
                     <template v-if="currentRole === 'pyb-institusi'">
@@ -199,19 +199,19 @@
                         variant="danger"
                         size="sm"
                         @click="terminateService(request)"
-                        class="flex items-center"
+                        class="flex items-center justify-center w-8 h-8 p-0"
+                        title="Tamatkan"
                       >
-                        <Icon name="ph:stop-circle" class="w-3 h-3 mr-1" />
-                        Tamatkan
+                        <Icon name="ph:stop-circle" class="w-4 h-4" />
                       </rs-button>
                       <rs-button
                         variant="warning"
                         size="sm"
                         @click="sendWarningLetter(request)"
-                        class="flex items-center"
+                        class="flex items-center justify-center w-8 h-8 p-0"
+                        title="Surat Amaran"
                       >
-                        <Icon name="ph:envelope" class="w-3 h-3 mr-1" />
-                        Surat Amaran
+                        <Icon name="ph:envelope" class="w-4 h-4" />
                       </rs-button>
                     </template>
                     
@@ -222,10 +222,10 @@
                         variant="success"
                         size="sm"
                         @click="approveService(request)"
-                        class="flex items-center"
+                        class="flex items-center justify-center w-8 h-8 p-0"
+                        title="Lulus"
                       >
-                        <Icon name="ph:check-circle" class="w-3 h-3 mr-1" />
-                        Lulus
+                        <Icon name="ph:check-circle" class="w-4 h-4" />
                       </rs-button>
                     </template>
                   </div>
@@ -348,7 +348,7 @@
           <!-- File Upload Field -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              Muat Naik Fail Surat Amaran
+              Muat Naik Minit Mesyuarat
             </label>
             <FormKit
               type="file"
