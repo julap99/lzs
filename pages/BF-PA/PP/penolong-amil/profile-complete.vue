@@ -146,12 +146,85 @@ const handlePhotoUpload = (event) => {
 };
 
 const handleSubmit = async () => {
-  // Simple redirect for presentation
-  // In real implementation, this would save data and show loading
-  console.log('Submitting profile data...');
-  
-  // Redirect to dashboard immediately
-  navigateTo('/BF-PA/PP/penolong-amil/dashboard');
+  // Show PDPA and conflict of interest modal
+  const result = await $swal.fire({
+    title: 'Terma dan Syarat',
+    html: `
+      <div class="text-left space-y-4 max-h-96 overflow-y-auto">
+        <!-- PDPA Section -->
+        <div class="border-b pb-3">
+          <h4 class="font-semibold text-gray-900 mb-2">PDPA</h4>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Saya dengan ini bersetuju memberi persetujuan secara nyata (explicit consent) kepada Lembaga Zakat Selangor untuk 
+            mengumpul, memproses, menggunakan data peribadi saya bagi tujuan pentadbiran, kajian, dakwah, promosi dan 
+            aktiviti-aktiviti lain berkaitan fungsi Zakat Selangor seperti yang dinyatakan di dalam Notis Privasi Zakat Selangor di 
+            www.zakatselangor.com.my
+          </p>
+          <div class="mt-3">
+            <label class="flex items-center">
+              <input type="checkbox" id="pdpa-consent" class="mr-2 rounded border-gray-300 text-primary focus:ring-primary">
+              <span class="text-sm text-gray-700">Saya bersetuju dengan terma PDPA</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Conflict of Interest Section -->
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-2">Akaun Konflik</h4>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Saya mengesahkan bahawa segala maklumat dan data yang diberikan adalah BENAR, TEPAT, LENGKAP dan 
+            TERKINI. Saya faham dan bersetuju sekiranya saya memberi maklumat palsu dan tidak benar, pihak Lembaga Zakat 
+            Selangor berhak mengambil tindakan ke atas saya.
+          </p>
+          <div class="mt-3">
+            <label class="flex items-center">
+              <input type="checkbox" id="conflict-consent" class="mr-2 rounded border-gray-300 text-primary focus:ring-primary">
+              <span class="text-sm text-gray-700">Saya mengesahkan maklumat adalah benar dan tepat</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Simpan & Teruskan',
+    cancelButtonText: 'Batal',
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    reverseButtons: true,
+    allowOutsideClick: false,
+    didOpen: () => {
+      // Disable confirm button initially
+      const confirmButton = document.querySelector('.swal2-confirm');
+      if (confirmButton) {
+        confirmButton.disabled = true;
+        confirmButton.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      
+      // Add event listeners to checkboxes
+      const pdpaCheckbox = document.getElementById('pdpa-consent');
+      const conflictCheckbox = document.getElementById('conflict-consent');
+      
+      const updateButtonState = () => {
+        if (pdpaCheckbox && conflictCheckbox && confirmButton) {
+          if (pdpaCheckbox.checked && conflictCheckbox.checked) {
+            confirmButton.disabled = false;
+            confirmButton.classList.remove('opacity-50', 'cursor-not-allowed');
+          } else {
+            confirmButton.disabled = true;
+            confirmButton.classList.add('opacity-50', 'cursor-not-allowed');
+          }
+        }
+      };
+      
+      pdpaCheckbox?.addEventListener('change', updateButtonState);
+      conflictCheckbox?.addEventListener('change', updateButtonState);
+    }
+  });
+
+  if (result.isConfirmed) {
+    // Redirect to dashboard directly
+    navigateTo('/BF-PA/PP/penolong-amil/dashboard');
+  }
 };
 
 const handleBack = () => {
