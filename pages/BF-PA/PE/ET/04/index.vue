@@ -124,16 +124,20 @@
       </template>
       <template #body>
         <div class="p-6">
-          <FormKit
-            v-model="batchData.notes"
-            type="textarea"
-            rows="3"
-            placeholder="Masukkan ulasan atau catatan mengenai elaun tahunan ini..."
-            :classes="{
-              input: '!py-2',
-            }"
-          />
-          <p class="text-xs text-gray-500 mt-1">Ulasan ini akan dilihat oleh Ketua Jabatan dan Ketua Divisyen semasa proses kelulusan</p>
+          <div class="mb-4">
+            <p class="text-sm text-gray-600 mb-2">Ulasan semasa:</p>
+            <div class="p-3 bg-gray-50 border border-gray-200 rounded-md">
+              <p class="text-gray-900">{{ batchData.notes || 'Tiada ulasan' }}</p>
+            </div>
+          </div>
+          <rs-button
+            variant="primary"
+            @click="openNotesModal"
+            class="flex items-center"
+          >
+            <Icon name="ic:outline-edit" class="w-4 h-4 mr-2" />
+            {{ batchData.notes ? 'Kemaskini Ulasan' : 'Tambah Ulasan' }}
+          </rs-button>
         </div>
       </template>
     </rs-card>
@@ -281,6 +285,107 @@
         </rs-button>
       </div>
     </div>
+
+    <!-- Validation Summary -->
+    <rs-card v-if="showValidationSummary" class="mb-6" variant="danger">
+      <template #header>
+        <h3 class="text-lg font-semibold text-red-900">Ralat Validasi</h3>
+      </template>
+      <template #body>
+        <div class="p-4">
+          <div class="space-y-2">
+            <div v-if="validationErrors.budget" class="flex items-start">
+              <Icon name="ic:outline-error" class="text-red-500 mr-2 mt-0.5 flex-shrink-0" size="16" />
+              <div>
+                <span class="font-medium text-red-900">Bajet:</span>
+                <span class="text-red-700 ml-2">{{ validationErrors.budget }}</span>
+              </div>
+            </div>
+            
+            <div v-if="validationErrors.notes" class="flex items-start">
+              <Icon name="ic:outline-error" class="text-red-500 mr-2 mt-0.5 flex-shrink-0" size="16" />
+              <div>
+                <span class="font-medium text-red-900">Ulasan:</span>
+                <span class="text-red-700 ml-2">{{ validationErrors.notes }}</span>
+              </div>
+            </div>
+            
+            <div v-for="(error, key) in validationErrors" :key="key" 
+                 v-if="key.startsWith('recipient_')" class="flex items-start">
+              <Icon name="ic:outline-error" class="text-red-500 mr-2 mt-0.5 flex-shrink-0" size="16" />
+              <div>
+                <span class="font-medium text-red-900">Penerima {{ parseInt(key.split('_')[1]) + 1 }}:</span>
+                <span class="text-red-700 ml-2">{{ error }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 flex justify-end">
+            <rs-button variant="secondary-outline" @click="showValidationSummary = false">
+              Tutup
+            </rs-button>
+          </div>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Notes Modal -->
+    <div v-if="showNotesModal" class="fixed inset-0 z-50 overflow-y-auto">
+      <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+          <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10 bg-blue-100">
+                <Icon name="ic:outline-edit" class="h-6 w-6 text-blue-600" />
+              </div>
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                  {{ batchData.notes ? 'Kemaskini Ulasan' : 'Tambah Ulasan' }}
+                </h3>
+                <div class="mt-4">
+                  <p class="text-sm text-gray-500 mb-4">
+                    Masukkan ulasan atau catatan mengenai elaun tahunan ini. Ulasan ini akan dilihat oleh Ketua Jabatan dan Ketua Divisyen semasa proses kelulusan.
+                  </p>
+                  
+                  <FormKit
+                    v-model="tempNotes"
+                    type="textarea"
+                    rows="4"
+                    placeholder="Masukkan ulasan anda di sini..."
+                    :classes="{
+                      input: '!py-2 !px-3 !border-gray-300 !rounded-md !focus:ring-2 !focus:ring-blue-500 !focus:border-blue-500',
+                    }"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <rs-button
+              variant="primary"
+              class="w-full sm:w-auto sm:ml-3"
+              @click="confirmNotes"
+              :loading="saving"
+            >
+              <Icon name="ic:outline-check" class="w-4 h-4 mr-2" />
+              Simpan Ulasan
+            </rs-button>
+            <rs-button
+              variant="secondary-outline"
+              class="mt-3 w-full sm:mt-0 sm:w-auto"
+              @click="closeNotesModal"
+              :disabled="saving"
+            >
+              Batal
+            </rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -338,6 +443,11 @@ const originalData = ref({});
 
 // State
 const saving = ref(false);
+const submitting = ref(false); // Added for submitForApproval
+
+// Notes modal state
+const showNotesModal = ref(false);
+const tempNotes = ref('');
 
 // Type mapping
 const typeOptions = {
@@ -392,6 +502,91 @@ const hasChanges = computed(() => {
          JSON.stringify(recipients.value) !== JSON.stringify(originalData.value.recipients);
 });
 
+// Enhanced validation and keyboard shortcuts
+const validationErrors = ref({});
+const showValidationSummary = ref(false);
+
+// Advanced validation functions
+function validateBudget(budget) {
+  if (!budget || budget <= 0) {
+    return { valid: false, message: 'Bajet mestilah lebih daripada RM 0' };
+  }
+  if (budget > 1000000) {
+    return { valid: false, message: 'Bajet tidak boleh melebihi RM 1,000,000' };
+  }
+  return { valid: true };
+}
+
+function validateRecipientData(recipient) {
+  const errors = [];
+  
+  if (!recipient.name || recipient.name.trim().length < 2) {
+    errors.push('Nama penerima mestilah sekurang-kurangnya 2 aksara');
+  }
+  
+  if (!recipient.ic || !/^\d{12}$/.test(recipient.ic)) {
+    errors.push('Nombor IC mestilah 12 digit');
+  }
+  
+  if (!recipient.category) {
+    errors.push('Kategori penerima diperlukan');
+  }
+  
+  if (!recipient.parish) {
+    errors.push('Kariah/daerah diperlukan');
+  }
+  
+  if (recipient.allowance < 0) {
+    errors.push('Elaun tidak boleh negatif');
+  }
+  
+  if (recipient.allowance > 10000) {
+    errors.push('Elaun tidak boleh melebihi RM 10,000 setiap penerima');
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors,
+    message: errors.join('; ')
+  };
+}
+
+// Comprehensive validation before save/submit
+function validateAllData() {
+  validationErrors.value = {};
+  let hasErrors = false;
+  
+  // Validate budget
+  const budgetValidation = validateBudget(batchData.value.budget);
+  if (!budgetValidation.valid) {
+    validationErrors.value.budget = budgetValidation.message;
+    hasErrors = true;
+  }
+  
+  // Validate all recipients
+  recipients.value.forEach((recipient, index) => {
+    const recipientValidation = validateRecipientData(recipient);
+    if (!recipientValidation.valid) {
+      validationErrors.value[`recipient_${index}`] = recipientValidation.message;
+      hasErrors = true;
+    }
+  });
+  
+  // Validate batch notes
+  if (!batchData.value.notes || batchData.value.notes.trim().length < 10) {
+    validationErrors.value.notes = 'Ulasan mestilah sekurang-kurangnya 10 aksara';
+    hasErrors = true;
+  }
+  
+  if (hasErrors) {
+    showValidationSummary.value = true;
+    toast.error('Sila betulkan ralat validasi sebelum menyimpan');
+    return false;
+  }
+  
+  return true;
+}
+
 // Helper functions
 function formatCurrency(amount) {
   return Number(amount || 0).toLocaleString('en-MY', {
@@ -414,7 +609,7 @@ function getStatusVariant(status) {
 
 // Load data function
 function loadBatchData() {
-  const id = route.query.id;
+  const id = route.params.id;
   const year = route.query.year;
   const type = route.query.type;
   
@@ -429,10 +624,12 @@ function loadBatchData() {
     const recipientsKey = `et:recipients:${year}:${type}`;
     const statusKey = `et:status:${year}:${type}`;
     const notesKey = `et:notes:${year}:${type}`;
+    const budgetKey = `et:budget:${year}:${type}`;
     
     const recipientsData = localStorage.getItem(recipientsKey);
     const status = localStorage.getItem(statusKey);
     const notes = localStorage.getItem(notesKey);
+    const budget = localStorage.getItem(budgetKey);
     
     if (recipientsData) {
       recipients.value = JSON.parse(recipientsData);
@@ -450,12 +647,12 @@ function loadBatchData() {
       type: type,
       typeLabel: typeOptions[type] || type,
       status: status || 'DRAF',
-      budget: 10000, // Default budget
+      budget: Number(budget) || 10000,
       notes: notes || ''
     };
     
     // Check if editing is allowed
-    if (!['DRAF', 'SEDANG PROSES'].includes(batchData.value.status)) {
+    if (status === 'LULUS' || status === 'DITOLAK') {
       toast.error('Kemaskini tidak dibenarkan selepas kelulusan');
       goBack();
       return;
@@ -468,7 +665,6 @@ function loadBatchData() {
     };
     
   } catch (error) {
-    console.error('Error loading data:', error);
     // Fallback to mock data on error
     loadMockData();
   }
@@ -529,64 +725,71 @@ function loadMockData() {
 
 }
 
-// Recipient management
+// Enhanced recipient management
 function addNewRecipient() {
-  if (!canAddRecipient.value) {
-    toast.error('Maksimum 10 penerima telah ditetapkan.');
+  if (recipients.value.length >= 50) {
+    toast.error('Maksimum 50 penerima dibenarkan setiap batch');
     return;
   }
   
-  recipients.value.push({
-    paId: `PA${Date.now()}`,
+  const newRecipient = {
+    paId: `PA-${Date.now()}`,
     name: '',
     ic: '',
     category: '',
     parish: '',
-    allowance: 0
-  });
+    allowance: 0,
+    _isNew: true,
+    _isEditing: true
+  };
   
-  toast.success('Penerima berjaya ditambah');
+  recipients.value.push(newRecipient);
+  
+  // Scroll to the new recipient
+  nextTick(() => {
+    const lastRow = document.querySelector('tbody tr:last-child');
+    if (lastRow) {
+      lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
 }
 
 function removeRecipient(index) {
   const recipient = recipients.value[index];
-  recipients.value.splice(index, 1);
-  toast.success(`${recipient.name} telah dibuang dari senarai`);
+  
+  if (recipient._isNew) {
+    recipients.value.splice(index, 1);
+    toast.success('Penerima baharu telah dibuang');
+  } else {
+    if (confirm(`Adakah anda pasti mahu membuang ${recipient.name} dari senarai?`)) {
+      recipients.value.splice(index, 1);
+      toast.success('Penerima telah dibuang dari senarai');
+      hasChanges.value = true;
+    }
+  }
 }
 
-// Save functions
+// Enhanced save functions with validation
 async function saveDraft() {
-  if (!hasChanges.value) {
-    toast.info('Tiada perubahan untuk disimpan');
-    return;
-  }
+  if (!validateAllData()) return;
   
   saving.value = true;
   try {
-    await wait(400);
+    await wait(600);
     
-    // Update localStorage
+    // Save to localStorage
     const year = batchData.value.year;
     const type = batchData.value.type;
-    const count = recipients.value.length;
-    
     const recipientsKey = `et:recipients:${year}:${type}`;
-    const countKey = `et:count:${year}:${type}`;
-    const statusKey = `et:status:${year}:${type}`;
     const notesKey = `et:notes:${year}:${type}`;
+    const budgetKey = `et:budget:${year}:${type}`;
     
     localStorage.setItem(recipientsKey, JSON.stringify(recipients.value));
-    localStorage.setItem(countKey, String(count));
-    localStorage.setItem(statusKey, 'DRAF');
     localStorage.setItem(notesKey, batchData.value.notes);
+    localStorage.setItem(budgetKey, String(batchData.value.budget));
     
-    // Update original data for change detection
-    originalData.value = {
-      batchData: JSON.parse(JSON.stringify(batchData.value)),
-      recipients: JSON.parse(JSON.stringify(recipients.value))
-    };
-    
-    toast.success('Draf berjaya disimpan. Anda boleh terus mengedit atau hantar untuk kelulusan.');
+    toast.success('Draf berjaya disimpan');
+    hasChanges.value = false;
   } catch (error) {
     toast.error('Gagal menyimpan draf. Sila cuba lagi.');
   } finally {
@@ -595,48 +798,66 @@ async function saveDraft() {
 }
 
 async function submitForApproval() {
-  // Validate required fields
-  if (!canSubmit.value) {
-    toast.error('Sila pastikan semua maklumat lengkap sebelum hantar untuk kelulusan');
+  if (!validateAllData()) return;
+  
+  if (hasChanges.value) {
+    toast.warning('Sila simpan perubahan terlebih dahulu sebelum menghantar untuk kelulusan');
     return;
   }
   
-  // Check if there are unsaved changes
-  if (hasChanges.value) {
-    toast.warning('Sila simpan draf terlebih dahulu sebelum hantar untuk kelulusan');
+  submitting.value = true;
+  try {
+    await wait(800);
+    
+    // Update status and save
+    const year = batchData.value.year;
+    const type = batchData.value.type;
+    const statusKey = `et:status:${year}:${type}`;
+    
+    localStorage.setItem(statusKey, 'MENUNGGU KELULUSAN');
+    
+    toast.success('Permohonan berjaya dihantar untuk kelulusan');
+    
+    // Navigate back to main dashboard
+    router.push('/BF-PA/PE/ET');
+  } catch (error) {
+    toast.error('Gagal menghantar permohonan. Sila cuba lagi.');
+  } finally {
+    submitting.value = false;
+  }
+}
+
+// Notes modal functions
+function openNotesModal() {
+  tempNotes.value = batchData.value.notes || '';
+  showNotesModal.value = true;
+}
+
+function closeNotesModal() {
+  showNotesModal.value = false;
+  tempNotes.value = '';
+}
+
+async function confirmNotes() {
+  if (!tempNotes.value.trim()) {
+    toast.warning('Sila masukkan ulasan');
     return;
   }
   
   saving.value = true;
   try {
-    await wait(600);
+    batchData.value.notes = tempNotes.value.trim();
     
-    // Update localStorage with final data
+    // Save to localStorage
     const year = batchData.value.year;
     const type = batchData.value.type;
-    const count = recipients.value.length;
-    
-    const recipientsKey = `et:recipients:${year}:${type}`;
-    const countKey = `et:count:${year}:${type}`;
-    const statusKey = `et:status:${year}:${type}`;
     const notesKey = `et:notes:${year}:${type}`;
-    
-    localStorage.setItem(recipientsKey, JSON.stringify(recipients.value));
-    localStorage.setItem(countKey, String(count));
-    localStorage.setItem(statusKey, 'MENUNGGU KELULUSAN');
     localStorage.setItem(notesKey, batchData.value.notes);
     
-    // Show appropriate message based on budget
-    if (excessAmount.value > 0) {
-      toast.success('Permohonan berjaya dihantar! Status: MENUNGGU KELULUSAN. Permohonan ini memerlukan pengesahan kerana melebihi bajet.');
-    } else {
-      toast.success('Permohonan berjaya dihantar! Status: MENUNGGU KELULUSAN. Permohonan ini akan diproses untuk kelulusan.');
-    }
-    
-    // Navigate back to main ET dashboard
-    await navigateTo('/BF-PA/PE/ET');
+    toast.success('Ulasan berjaya disimpan');
+    closeNotesModal();
   } catch (error) {
-    toast.error('Gagal menghantar permohonan. Sila cuba lagi.');
+    toast.error('Gagal menyimpan ulasan. Sila cuba lagi.');
   } finally {
     saving.value = false;
   }
@@ -665,6 +886,8 @@ function beforeUnloadHandler(event) {
 onMounted(() => {
   loadBatchData();
 });
+
+
 </script>
 
 <style scoped>

@@ -60,6 +60,54 @@
             <p class="text-xs text-blue-600 mt-1">Ulasan ini akan dilihat oleh Ketua Jabatan dan Ketua Divisyen semasa proses kelulusan</p>
           </div>
 
+          <!-- Bulk Operations -->
+          <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-sm font-medium text-gray-900">Operasi Pukal</h4>
+              <div class="text-xs text-gray-500">
+                {{ filteredRows.filter(r => r._checked && !isInRecipients(r.paId)).length }} penerima dipilih
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <rs-button
+                variant="secondary-outline"
+                size="sm"
+                @click="bulkSelectAll"
+                class="!text-xs"
+              >
+                <Icon name="ic:outline-check-square" class="w-3 h-3 mr-1" />
+                Pilih Semua
+              </rs-button>
+              <rs-button
+                variant="secondary-outline"
+                size="sm"
+                @click="bulkDeselectAll"
+                class="!text-xs"
+              >
+                <Icon name="ic:outline-square" class="w-3 h-3 mr-1" />
+                Hapus Pilihan
+              </rs-button>
+              <rs-button
+                variant="info"
+                size="sm"
+                @click="bulkAdjustAllowance(50)"
+                class="!text-xs"
+              >
+                <Icon name="ic:outline-plus" class="w-3 h-3 mr-1" />
+                +RM 50
+              </rs-button>
+              <rs-button
+                variant="warning"
+                size="sm"
+                @click="bulkAdjustAllowance(-50)"
+                class="!text-xs"
+              >
+                <Icon name="ic:outline-minus" class="w-3 h-3 mr-1" />
+                -RM 50
+              </rs-button>
+            </div>
+          </div>
+
           <div class="overflow-x-auto rounded-lg border">
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
@@ -189,31 +237,81 @@
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
-                <tr v-for="r in recipients" :key="r.paId" class="hover:bg-gray-50">
-                  <td class="px-4 py-3 font-medium text-gray-900">{{ r.name }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ r.ic }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ r.category }}</td>
+                <tr v-for="(r, index) in recipients" :key="r.paId" class="hover:bg-gray-50">
+                  <td class="px-4 py-3 font-medium text-gray-900">
+                    <FormKit
+                      v-if="r._isEditing"
+                      v-model="r.name"
+                      type="text"
+                      placeholder="Nama penerima"
+                      :classes="{
+                        input: '!py-1 !px-2',
+                      }"
+                    />
+                    <span v-else>{{ r.name }}</span>
+                  </td>
+                  <td class="px-4 py-3 text-gray-900">
+                    <FormKit
+                      v-if="r._isEditing"
+                      v-model="r.ic"
+                      type="text"
+                      placeholder="Nombor IC"
+                      :classes="{
+                        input: '!py-1 !px-2',
+                      }"
+                    />
+                    <span v-else>{{ r.ic }}</span>
+                  </td>
+                  <td class="px-4 py-3 text-gray-900">
+                    <FormKit
+                      v-if="r._isEditing"
+                      v-model="r.category"
+                      type="select"
+                      :options="categoryOptions"
+                      :classes="{
+                        input: '!py-1 !px-2',
+                      }"
+                    />
+                    <span v-else>{{ r.category }}</span>
+                  </td>
                   <td class="px-4 py-3 w-48">
-                    <template v-if="isFixedAllowance">
+                    <FormKit
+                      v-if="r._isEditing"
+                      v-model.number="r.allowance"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                      :classes="{
+                        input: '!py-1 !px-2',
+                      }"
+                    />
+                    <template v-else>
                       <div class="flex items-center gap-2">
-                        <span class="font-semibold">{{ fixedAllowanceValue.toFixed(2) }}</span>
+                        <span class="font-semibold">{{ r.allowance.toFixed(2) }}</span>
                       </div>
                     </template>
-                    <template v-else>
-                      <FormKit
-                        v-model.number="r.allowance"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="0.00"
-                        :classes="{
-                          input: '!py-1 !px-2',
-                        }"
-                      />
-                    </template>
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <rs-button
+                      variant="secondary-outline"
+                      size="sm"
+                      @click="r._isEditing = true"
+                      v-if="!r._isEditing && !r._isNew"
+                    >
+                      <Icon name="ic:outline-edit" size="16" />
+                    </rs-button>
+                    <rs-button
+                      variant="danger"
+                      size="sm"
+                      @click="removeRecipient(recipients.indexOf(r))"
+                      v-if="!r._isEditing && !r._isNew"
+                    >
+                      <Icon name="ic:outline-delete" size="16" />
+                    </rs-button>
                   </td>
                 </tr>
-                <tr v-if="!recipients.length" class="hover:bg-gray-50">
+                <tr v-if="recipients.length === 0" class="hover:bg-gray-50">
                   <td class="px-4 py-6 text-center text-gray-500" colspan="4">
                     Tiada penerima dipilih lagi. Tandakan dan klik 'Pilih'.
                   </td>
@@ -271,7 +369,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch, nextTick } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '#components';
@@ -509,24 +607,29 @@ function getCategoryFilterText() {
 
 /* === Load draft recipients dari localStorage === */
 function loadDraftRecipients() {
-  const year = route.query.year ?? '';
-  const type = route.query.type ?? '';
-  const key = `et:recipients:${year}:${type}`;
-  const notesKey = `et:notes:${year}:${type}`;
-  
   try {
-    const existing = localStorage.getItem(key);
-    if (existing) {
-      recipients.value = JSON.parse(existing);
-    }
+    const year = route.query.year;
+    const type = route.query.type;
     
-    // Load existing notes
-    const existingNotes = localStorage.getItem(notesKey);
-    if (existingNotes) {
-      batchNotes.value = existingNotes;
+    if (year && type) {
+      const recipientsKey = `et:recipients:${year}:${type}`;
+      const notesKey = `et:notes:${year}:${type}`;
+      
+      const savedRecipients = localStorage.getItem(recipientsKey);
+      const savedNotes = localStorage.getItem(notesKey);
+      
+      if (savedRecipients) {
+        recipients.value = JSON.parse(savedRecipients);
+      }
+      
+      if (savedNotes) {
+        batchNotes.value = savedNotes;
+      }
     }
   } catch (error) {
-    console.error('Error loading draft data:', error);
+    // Fallback to empty recipients if loading fails
+    recipients.value = [];
+    batchNotes.value = '';
   }
 }
 
@@ -556,8 +659,8 @@ function isInRecipients(paId) {
 
 const filteredRows = computed(() => {
   const rows = baseRows.value;
-  if (!search.value) return rows;
-  const q = search.value.toLowerCase();
+  if (!searchQuery.value) return rows;
+  const q = searchQuery.value.toLowerCase();
   return rows.filter(r =>
     r.name.toLowerCase().includes(q) ||
     r.ic.toLowerCase().includes(q) ||
@@ -682,6 +785,141 @@ function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
 
 /* Load data + draft on first mount or when query changes */
 watch(() => [query.year, query.type], () => seedData(), { immediate: true });
+
+// Enhanced validation functions
+function validateDuplicateRecipient(newRecipient) {
+  const existingRecipient = recipients.value.find(r => r.ic === newRecipient.ic);
+  if (existingRecipient) {
+    return {
+      valid: false,
+      message: `Penerima dengan IC ${newRecipient.ic} sudah wujud dalam senarai`,
+      severity: 'error'
+    };
+  }
+  return { valid: true };
+}
+
+function validateRecipientData(recipient) {
+  const errors = [];
+  
+  if (!recipient.name || recipient.name.trim().length < 2) {
+    errors.push('Nama penerima mestilah sekurang-kurangnya 2 aksara');
+  }
+  
+  if (!recipient.ic || !/^\d{12}$/.test(recipient.ic)) {
+    errors.push('Nombor IC mestilah 12 digit');
+  }
+  
+  if (!recipient.category) {
+    errors.push('Kategori penerima diperlukan');
+  }
+  
+  if (!recipient.parish) {
+    errors.push('Kariah/daerah diperlukan');
+  }
+  
+  if (recipient.allowance < 0) {
+    errors.push('Elaun tidak boleh negatif');
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors,
+    message: errors.join('; ')
+  };
+}
+
+// Bulk operations
+function bulkSelectAll() {
+  const selectableRows = filteredRows.value.filter(r => !isInRecipients(r.paId));
+  selectableRows.forEach(r => r._checked = true);
+}
+
+function bulkDeselectAll() {
+  filteredRows.value.forEach(r => r._checked = false);
+}
+
+function bulkAdjustAllowance(adjustment) {
+  const selectedRecipients = filteredRows.value.filter(r => r._checked && !isInRecipients(r.paId));
+  
+  if (selectedRecipients.length === 0) {
+    toast.warning('Tiada penerima dipilih untuk pelarasan elaun');
+    return;
+  }
+  
+  selectedRecipients.forEach(r => {
+    const newAllowance = Math.max(0, (r.allowance || 0) + adjustment);
+    r.allowance = newAllowance;
+  });
+  
+  toast.success(`${selectedRecipients.length} penerima telah diselaraskan elaun`);
+}
+
+// Enhanced add recipient function
+function addNewRecipient() {
+  if (recipients.value.length >= 50) {
+    toast.error('Maksimum 50 penerima dibenarkan setiap batch');
+    return;
+  }
+  
+  const newRecipient = {
+    paId: `PA-${Date.now()}`,
+    name: '',
+    ic: '',
+    category: '',
+    parish: '',
+    allowance: isFixedAllowance.value ? fixedAllowanceValue.value : 0,
+    _isNew: true,
+    _isEditing: true
+  };
+  
+  recipients.value.push(newRecipient);
+  
+  // Scroll to the new recipient
+  nextTick(() => {
+    const lastRow = document.querySelector('tbody tr:last-child');
+    if (lastRow) {
+      lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+}
+
+// Enhanced save recipient function
+function saveRecipient(recipient) {
+  const validation = validateRecipientData(recipient);
+  if (!validation.valid) {
+    toast.error(validation.message);
+    return;
+  }
+  
+  const duplicateCheck = validateDuplicateRecipient(recipient);
+  if (!duplicateCheck.valid) {
+    toast.error(duplicateCheck.message);
+    return;
+  }
+  
+  recipient._isEditing = false;
+  recipient._isNew = false;
+  
+  toast.success('Maklumat penerima berjaya disimpan');
+}
+
+// Enhanced remove recipient function
+function removeRecipient(index) {
+  const recipient = recipients.value[index];
+  
+  if (recipient._isNew) {
+    // Remove new recipient immediately
+    recipients.value.splice(index, 1);
+    toast.success('Penerima baharu telah dibuang');
+  } else {
+    // Confirm removal for existing recipients
+    if (confirm(`Adakah anda pasti mahu membuang ${recipient.name} dari senarai?`)) {
+      recipients.value.splice(index, 1);
+      toast.success('Penerima telah dibuang dari senarai');
+    }
+  }
+}
 </script>
 
 <style scoped>

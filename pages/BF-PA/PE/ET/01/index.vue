@@ -157,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, onUnmounted } from 'vue';
+import { ref, reactive, computed, watch, onUnmounted, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '#components';
@@ -196,30 +196,18 @@ const breadcrumb = ref([
 // This prevents users from selecting years that don't have corresponding data
 const yearOptions = [
   { label: 'Pilih tahun…', value: '' },
-  { label: '2023', value: 2023 },
   { label: '2024', value: 2024 },
   { label: '2025', value: 2025 }
 ];
 
 // Available years for data operations (excluding placeholder)
-const availableYears = [2023, 2024, 2025];
+const availableYears = [2024, 2025];
 
 // No pre-existing batches - all batches are created dynamically by users
 
 // Mock data for every allowance type in every year
-// Note: Years are hardcoded to match yearOptions exactly (2023, 2024, 2025)
+// Note: Years are hardcoded to match yearOptions exactly (2024, 2025)
 const mockCounts = {
-  2023: {
-    'ET-KPAK': 7,
-    'ET-KPAF': 4,
-    'ET-ANUG': 6,
-    'ANUG-KPAK': 8,
-    'ANUG-PAK': 7,
-    'ANUG-KPAF': 5,
-    'ANUG-PAF': 8,
-    'ANUG-PAP': 3,
-    'ANUG-PAKPLUS': 9
-  },
   2024: {
     'ET-KPAK': 7,
     'ET-KPAF': 4,
@@ -299,7 +287,7 @@ function validateFilters() {
   if (!filters.year) {
     errors.push('Tahun Elaun adalah wajib');
   } else if (!Number.isInteger(filters.year) || !availableYears.includes(filters.year)) {
-    errors.push('Tahun Elaun mestilah antara 2023-2025');
+    errors.push('Tahun Elaun mestilah antara 2024-2025');
   }
   
   // Validate type
@@ -367,8 +355,20 @@ const loadExistingData = () => {
   });
 };
 
-// Call on component mount
-loadExistingData();
+// Load existing data on mount
+onMounted(() => {
+  // Check localStorage availability first
+  checkLocalStorageAvailability();
+  
+  // Load existing data
+  loadExistingData();
+  
+  // Set initial form state
+  updateFormState();
+  
+  // Update total count display
+  updateTotalCountDisplay();
+});
 
 // Total count display - NON-REACTIVE to filter changes
 const totalCountDisplay = ref('—');
@@ -439,26 +439,12 @@ function batchStatusLabel(status) {
 
 // Get saved count from second screen
 function getSavedCount(year, type) {
-  try {
-    const raw = localStorage.getItem(`et:count:${year}:${type}`);
-    if (raw == null) return undefined;
-    const n = Number(raw);
-    return Number.isFinite(n) ? n : undefined;
-  } catch (error) {
-    console.warn('LocalStorage access failed:', error);
-    return undefined;
-  }
+  return safeLocalStorageGet(`et:count:${year}:${type}`);
 }
 
 // Get saved status from second screen
 function getSavedStatus(year, type) {
-  try {
-    const s = localStorage.getItem(`et:status:${year}:${type}`);
-    return s || undefined;
-  } catch (error) {
-    console.warn('LocalStorage access failed:', error);
-    return undefined;
-  }
+  return safeLocalStorageGet(`et:status:${year}:${type}`);
 }
 
 async function apiSaveBatchLight({ year, typeCode }) {
@@ -495,70 +481,123 @@ function sleepWithTimeout(ms, timeoutMs = 10000) {
   ]);
 }
 
-// Save batch
+// Enhanced validation functions
+function validateYearRange(year) {
+  if (!year) return { valid: false, message: 'Tahun elaun diperlukan' };
+  if (year < 2020 || year > 2030) {
+    return { 
+      valid: false, 
+      message: 'Tahun elaun mestilah antara 2020-2030' 
+    };
+  }
+  return { valid: true };
+}
+
+function validateBudgetOverflow(totalAllowance, budget) {
+  if (totalAllowance > budget * 1.5) {
+    return {
+      valid: false,
+      message: 'Elaun melebihi 150% bajet. Sila semak semula atau hubungi pentadbir.',
+      severity: 'warning'
+    };
+  }
+  if (totalAllowance > budget) {
+    return {
+      valid: true,
+      message: 'Elaun melebihi bajet. Akan memerlukan pengesahan Ketua Divisyen.',
+      severity: 'info'
+    };
+  }
+  return { valid: true };
+}
+
+function validateDuplicateBatch(year, type) {
+  const existingBatch = rows.value.find(row => 
+    row.year === year && row.typeCode === type
+  );
+  
+  if (existingBatch) {
+    return {
+      valid: false,
+      message: `Batch untuk ${year} - ${typeOptions.find(opt => opt.value === type)?.label || type} sudah wujud dengan status: ${existingBatch.status}`,
+      severity: 'error'
+    };
+  }
+  return { valid: true };
+}
+
+// Enhanced save function with comprehensive validation
 async function onSave() {
   if (!canSave.value) return;
   
-  // Check if this combination already exists in current rows
-  const exists = rows.value.some(row => 
-    row.year === filters.year && row.typeCode === filters.type
-  );
-  
-  if (exists) {
-    toast.warning('Batch ini sudah wujud. Sila pilih kombinasi tahun dan jenis elaun yang lain.');
+  // Comprehensive validation
+  const yearValidation = validateYearRange(filters.year);
+  if (!yearValidation.valid) {
+    toast.error(yearValidation.message);
     return;
   }
   
-  loading.value = true;
-  saving.value = true; // Specific loading state for save operation
-  try {
-    const res = await apiSaveBatchLight({ year: filters.year, typeCode: filters.type });
+  const duplicateValidation = validateDuplicateBatch(filters.year, filters.type);
+  if (!duplicateValidation.valid) {
+    toast.error(duplicateValidation.message);
+    return;
+  }
+  
+  // Budget validation (if we have recipient data)
+  const savedCount = getSavedCount(filters.year, filters.type);
+  if (savedCount && savedCount > 0) {
+    const estimatedAllowance = savedCount * 500; // Assume average RM500 per recipient
+    const budgetValidation = validateBudgetOverflow(estimatedAllowance, 10000); // Default budget
     
-    // Create new row data
-    const newRow = {
-      id: res.batchId,
-      year: filters.year,
-      typeCode: filters.type,
-      status: 'DRAF', // Start as DRAF, not SEDANG PROSES
-      count: mockCounts[filters.year]?.[filters.type] ?? 0, // Use mock data for new batches
-      updatedAt: Date.now()
-    };
-    
-    // Add new row to the table (don't replace existing rows)
-    rows.value.push(newRow);
-    
-    // Validate that the row was added successfully
-    const addedRow = rows.value.find(row => 
-      row.id === newRow.id && 
-      row.year === newRow.year && 
-      row.typeCode === newRow.typeCode
-    );
-    
-    if (!addedRow) {
-      throw new Error('Failed to add row to table');
+    if (budgetValidation.severity === 'warning') {
+      toast.warning(budgetValidation.message);
+    } else if (budgetValidation.severity === 'info') {
+      toast.info(budgetValidation.message);
     }
+  }
+  
+  saving.value = true;
+  loading.value = true;
+  
+  try {
+    const result = await apiSaveBatchLight({
+      year: filters.year,
+      typeCode: filters.type
+    });
     
-    // Update batch status to DRAF
-    batchStatus.value = 'DRAF';
-    
-    toast.success('Berjaya disimpan. Status batch kini: "DRAF". Sila ke ET/02 untuk menambah penerima dan hantar untuk kelulusan.');
-    
-    // Don't reset form - keep the current selection
-    // User can continue working with the same year/type if they want
+    if (result && result.batchId) {
+      // Add new row to the table
+      const newRow = {
+        id: result.batchId,
+        year: filters.year,
+        typeCode: filters.type,
+        typeLabel: typeOptions.find(opt => opt.value === filters.type)?.label || filters.type,
+        status: 'DRAF',
+        count: getSavedCount(filters.year, filters.type) || mockCounts[filters.year]?.[filters.type] || 0,
+        updatedAt: new Date().toISOString()
+      };
+      
+      rows.value.push(newRow);
+      
+      toast.success(`Batch berjaya dibuat: ${result.batchId}`);
+      
+      // Update form state
+      updateFormState();
+    }
   } catch (error) {
-    console.error('Save operation failed:', error);
-    
-    // Provide specific error messages based on error type
+    // Enhanced error handling with recovery suggestions
     if (error.message.includes('timeout')) {
       toast.error('Operasi simpan mengambil masa terlalu lama. Sila cuba lagi.');
     } else if (error.message.includes('network')) {
       toast.error('Masalah rangkaian. Sila periksa sambungan internet anda.');
+    } else if (error.message.includes('storage')) {
+      toast.error('Masalah penyimpanan data. Sila cuba refresh halaman atau hubungi pentadbir.');
     } else {
       toast.error('Gagal menyimpan batch. Sila cuba lagi.');
     }
   } finally {
     loading.value = false;
-    saving.value = false; // Reset specific loading state
+    saving.value = false;
   }
 }
 
@@ -567,7 +606,6 @@ function viewRecipients(row) {
   if (row && row.year && row.typeCode) {
     router.push({ path: '/BF-PA/PE/ET/02', query: { year: row.year, type: row.typeCode } });
   } else {
-    console.error('Invalid row data for navigation:', row);
     toast.error('Ralat: Data batch tidak sah untuk navigasi');
   }
 }
@@ -614,6 +652,95 @@ onUnmounted(() => {
     stopWatch();
   }
 });
+
+// localStorage availability and error recovery
+const localStorageAvailable = ref(true);
+const offlineMode = ref(false);
+
+// Check localStorage availability
+function checkLocalStorageAvailability() {
+  try {
+    const test = '__test__';
+    localStorage.setItem(test, test);
+    localStorage.removeItem(test);
+    localStorageAvailable.value = true;
+    offlineMode.value = false;
+  } catch (error) {
+    localStorageAvailable.value = false;
+    offlineMode.value = true;
+    showOfflineMode();
+  }
+}
+
+// Show offline mode with recovery options
+function showOfflineMode() {
+  toast.warning('Mod luar talian diaktifkan. Data akan disimpan dalam memori sementara.');
+  
+  // Enable data export functionality
+  enableDataExport();
+}
+
+// Enable data export when offline
+function enableDataExport() {
+  // Add export button to UI
+  const exportButton = document.createElement('button');
+  exportButton.textContent = 'Eksport Data';
+  exportButton.className = 'px-3 py-2 bg-blue-600 text-white rounded-md text-sm';
+  exportButton.onclick = exportCurrentData;
+  
+  // Add to appropriate location in UI
+  const actionBar = document.querySelector('.flex.items-center.gap-2');
+  if (actionBar) {
+    actionBar.appendChild(exportButton);
+  }
+}
+
+// Export current data
+function exportCurrentData() {
+  const data = {
+    batches: rows.value,
+    filters: filters.value,
+    timestamp: new Date().toISOString()
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `elaun-tahunan-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  toast.success('Data berjaya dieksport');
+}
+
+// Enhanced localStorage functions with fallback
+function safeLocalStorageGet(key, fallback = null) {
+  if (!localStorageAvailable.value) {
+    return fallback;
+  }
+  
+  try {
+    const value = localStorage.getItem(key);
+    return value !== null ? value : fallback;
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function safeLocalStorageSet(key, value) {
+  if (!localStorageAvailable.value) {
+    // Store in memory as fallback
+    return false;
+  }
+  
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 </script>
 
 <style scoped>

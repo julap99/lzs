@@ -13,7 +13,7 @@
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <Icon name="ic:outline-verified-user" class="w-6 h-6 mr-3 text-orange-600" />
+            <Icon name="ph:user-circle-gear" class="w-6 h-6 mr-3 text-orange-600" />
             Pengesahan Elaun Melebihi Bajet
           </h1>
           <p class="text-gray-600 mt-1">
@@ -23,7 +23,7 @@
         </div>
         <!-- Loading Indicator -->
         <div v-if="loading" class="flex items-center text-blue-600">
-          <Icon name="ic:outline-refresh" class="w-5 h-5 mr-2 animate-spin" />
+          <Icon name="ph:arrow-clockwise" class="w-5 h-5 mr-2 animate-spin" />
           <span class="text-sm">Memuatkan data...</span>
         </div>
       </div>
@@ -38,7 +38,7 @@
         <div class="p-6">
           <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
             <div class="flex items-start">
-              <Icon name="ic:outline-warning" class="text-orange-400 mr-3 flex-shrink-0 mt-0.5" size="20" />
+              <Icon name="ph:warning" class="text-orange-400 mr-3 flex-shrink-0 mt-0.5" size="20" />
               <div>
                 <h4 class="text-sm font-medium text-orange-800">Elaun Melebihi Bajet</h4>
                 <p class="text-sm text-orange-700 mt-1">
@@ -117,7 +117,7 @@
             <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
               <div class="flex items-center">
                 <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
-                  <Icon name="ic:outline-person" class="w-4 h-4 text-white" />
+                  <Icon name="ph:user" class="w-4 h-4 text-white" />
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-900">Eksekutif</p>
@@ -131,7 +131,7 @@
             <div class="flex items-center justify-between p-3 bg-orange-50 border border-orange-200 rounded-lg">
               <div class="flex items-center">
                 <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center mr-3">
-                  <Icon name="ic:outline-verified-user" class="w-4 h-4 text-white" />
+                  <Icon name="ph:user-circle-gear" class="w-4 h-4 text-white" />
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-900">Ketua Jabatan</p>
@@ -145,7 +145,7 @@
             <div class="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg">
               <div class="flex items-center">
                 <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center mr-3">
-                  <Icon name="ic:outline-person" class="w-4 h-4 text-gray-600" />
+                  <Icon name="ph:user" class="w-4 h-4 text-gray-600" />
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-900">Ketua Divisyen</p>
@@ -322,7 +322,7 @@
         @click="goBack"
         class="flex items-center"
       >
-        <Icon name="ic:outline-arrow-back" class="w-4 h-4 mr-2" />
+        <Icon name="ph:arrow-left" class="w-4 h-4 mr-2" />
         Kembali
       </rs-button>
       
@@ -333,7 +333,7 @@
           @click="rejectAllowance"
           class="flex items-center"
         >
-          <Icon name="ic:outline-x-circle" class="w-4 h-4 mr-2" />
+          <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
           {{ submitting ? 'Memproses...' : 'Tolak' }}
         </rs-button>
         <rs-button
@@ -342,7 +342,7 @@
           @click="verifyAllowance"
           class="flex items-center"
         >
-          <Icon name="ic:outline-check-circle" class="w-4 h-4 mr-2" />
+          <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
           {{ submitting ? 'Memproses...' : 'Sahkan' }}
         </rs-button>
       </div>
@@ -495,7 +495,6 @@ async function loadBatchData() {
     };
     
   } catch (error) {
-    console.error('Error loading data:', error);
     // Fallback to mock data on error
     loadMockData();
   } finally {
@@ -594,4 +593,74 @@ async function verifyAllowance() {
     const year = batchData.value.year;
     const type = batchData.value.type;
     const statusKey = `et:status:${year}:${type}`;
-    const verificationKey = `et:verification:${year}:${type}`
+    const verificationKey = `et:verification:${year}:${type}`;
+    
+    try {
+      localStorage.setItem(statusKey, 'SEDANG PROSES');
+      localStorage.setItem(verificationKey, JSON.stringify({
+        ...verificationData.value,
+        verifiedBy: 'Ketua Jabatan',
+        verifiedAt: new Date().toISOString(),
+        status: 'verified'
+      }));
+      
+      toast.success('Elaun berjaya disahkan. Status telah dikemas kini.');
+      goBack();
+    } catch (storageError) {
+      toast.error('Gagal menyimpan data pengesahan. Sila cuba lagi atau hubungi pentadbir sistem.');
+    }
+  } catch (error) {
+    toast.error('Proses pengesahan gagal. Sila cuba lagi.');
+  } finally {
+    submitting.value = false;
+  }
+}
+
+async function rejectAllowance() {
+  if (!canSubmit.value) return;
+  
+  submitting.value = true;
+  try {
+    await wait(600);
+    
+    // Update localStorage with enhanced error handling
+    const year = batchData.value.year;
+    const type = batchData.value.type;
+    const statusKey = `et:status:${year}:${type}`;
+    const rejectionKey = `et:rejection:${year}:${type}`;
+    
+    try {
+      localStorage.setItem(statusKey, 'DITOLAK');
+      localStorage.setItem(rejectionKey, JSON.stringify({
+        ...verificationData.value,
+        rejectedBy: 'Ketua Jabatan',
+        rejectedAt: new Date().toISOString(),
+        status: 'rejected'
+      }));
+      
+      toast.success('Elaun telah ditolak. Status telah dikemas kini.');
+      goBack();
+    } catch (storageError) {
+      toast.error('Gagal menyimpan data penolakan. Sila cuba lagi atau hubungi pentadbir sistem.');
+    }
+  } catch (error) {
+    toast.error('Proses penolakan gagal. Sila cuba lagi.');
+  } finally {
+    submitting.value = false;
+  }
+}
+
+// Helper function for async operations
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Load data on mount
+onMounted(() => {
+  loadBatchData();
+});
+</script>
+
+<style scoped>
+/* Add any additional styles here */
+</style>

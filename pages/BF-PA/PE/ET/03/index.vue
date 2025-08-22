@@ -194,6 +194,8 @@
             />
           </div>
 
+
+
           <!-- Recipients Table -->
           <div class="overflow-x-auto rounded-lg border">
             <table class="min-w-full text-sm divide-y">
@@ -239,27 +241,39 @@
     </rs-card>
 
     <!-- Action Buttons -->
-    <div class="flex justify-between items-center">
-      <rs-button
-        variant="secondary-outline"
-        @click="goBack"
-        class="flex items-center"
-      >
-        <Icon name="ic:outline-arrow-back" class="w-4 h-4 mr-2" />
-        Kembali
-      </rs-button>
+    <div class="flex flex-col sm:flex-row gap-3 mt-6">
+
       
-      <div class="flex gap-3">
+      <div class="flex gap-2">
         <rs-button
-          variant="secondary"
-          @click="exportData"
-          :disabled="!recipients.length"
+          variant="info"
+          @click="exportToCSV"
+          :loading="exportLoading"
           class="flex items-center"
         >
           <Icon name="ic:outline-download" class="w-4 h-4 mr-2" />
-          Eksport
+          Eksport CSV
+        </rs-button>
+        
+        <rs-button
+          variant="warning"
+          @click="exportToPDF"
+          :loading="exportLoading"
+          class="flex items-center"
+        >
+          <Icon name="ic:outline-picture-as-pdf" class="w-4 h-4 mr-2" />
+          Eksport PDF
         </rs-button>
       </div>
+      
+      <rs-button
+        variant="primary"
+        @click="goBack"
+        class="flex items-center"
+      >
+        <Icon name="ic:outline-arrow-left" class="w-4 h-4 mr-2" />
+        Kembali
+      </rs-button>
     </div>
   </div>
 </template>
@@ -329,6 +343,37 @@ const typeOptions = {
   'ANUG-PAKPLUS': 'Penolong Amil Komuniti (PAK+) terbaik'
 };
 
+// Advanced filtering and export functionality
+const advancedFilters = ref({
+  dateRange: { start: null, end: null },
+  amountRange: { min: 0, max: null },
+  status: [],
+  category: []
+});
+
+const showAdvancedFilters = ref(false);
+const exportLoading = ref(false);
+
+// Available filter options
+const filterOptions = {
+  status: [
+    { label: 'DRAF', value: 'DRAF' },
+    { label: 'SEDANG PROSES', value: 'SEDANG PROSES' },
+    { label: 'MENUNGGU KELULUSAN', value: 'MENUNGGU KELULUSAN' },
+    { label: 'PERLU PENGESAHAN', value: 'PERLU PENGESAHAN' },
+    { label: 'LULUS', value: 'LULUS' },
+    { label: 'DITOLAK', value: 'DITOLAK' }
+  ],
+  category: [
+    { label: 'KPAK', value: 'KPAK' },
+    { label: 'KPAF', value: 'KPAF' },
+    { label: 'PAK', value: 'PAK' },
+    { label: 'PAF', value: 'PAF' },
+    { label: 'PAP', value: 'PAP' },
+    { label: 'PAK+', value: 'PAKPLUS' }
+  ]
+};
+
 // Computed values
 const totalAllowance = computed(() => {
   return recipients.value.reduce((sum, r) => sum + (Number(r.allowance) || 0), 0);
@@ -342,15 +387,24 @@ const balanceAmount = computed(() => {
   return totalAllowance.value - batchData.value.budget;
 });
 
+// Filtered recipients based on advanced filters
 const filteredRecipients = computed(() => {
-  if (!searchQuery.value) return recipients.value;
+  let filtered = recipients.value;
   
-  const query = searchQuery.value.toLowerCase();
-  return recipients.value.filter(r =>
-    r.name.toLowerCase().includes(query) ||
-    r.ic.toLowerCase().includes(query) ||
-    r.parish.toLowerCase().includes(query)
-  );
+  // Status filter
+  if (advancedFilters.value.status.length > 0) {
+    filtered = filtered.filter(r => advancedFilters.value.status.includes(r.category));
+  }
+  
+  // Amount range filter
+  if (advancedFilters.value.amountRange.min > 0) {
+    filtered = filtered.filter(r => r.allowance >= advancedFilters.value.amountRange.min);
+  }
+  if (advancedFilters.value.amountRange.max) {
+    filtered = filtered.filter(r => r.allowance <= advancedFilters.value.amountRange.max);
+  }
+  
+  return filtered;
 });
 
 // Helper functions
@@ -507,7 +561,7 @@ function getTimelineBadge(role) {
 
 // Load data function
 function loadBatchData() {
-  const id = route.query.id;
+  const id = route.params.id;
   const year = route.query.year;
   const type = route.query.type;
   
@@ -521,9 +575,13 @@ function loadBatchData() {
     // Load from localStorage
     const recipientsKey = `et:recipients:${year}:${type}`;
     const statusKey = `et:status:${year}:${type}`;
+    const notesKey = `et:notes:${year}:${type}`;
+    const budgetKey = `et:budget:${year}:${type}`;
     
     const recipientsData = localStorage.getItem(recipientsKey);
     const status = localStorage.getItem(statusKey);
+    const notes = localStorage.getItem(notesKey);
+    const budget = localStorage.getItem(budgetKey);
     
     if (recipientsData) {
       recipients.value = JSON.parse(recipientsData);
@@ -540,13 +598,12 @@ function loadBatchData() {
       year: Number(year),
       type: type,
       typeLabel: typeOptions[type] || type,
-      status: status || 'DRAF',
-      budget: 10000, // Default budget
-      notes: excessAmount.value > 0 ? 'Jumlah elaun melebihi bajet yang diperuntukkan.' : ''
+      status: status || 'SEDANG PROSES',
+      budget: Number(budget) || 10000,
+      notes: notes || ''
     };
     
   } catch (error) {
-    console.error('Error loading data:', error);
     // Fallback to mock data on error
     loadMockData();
   }
@@ -634,8 +691,56 @@ function loadMockData() {
 }
 
 // Export function
-function exportData() {
-  toast.info('Fungsi eksport akan dilaksanakan');
+async function exportData() {
+  exportLoading.value = true;
+  
+  try {
+    const data = [
+      ['Nama', 'IC', 'Kategori', 'Kariah/Daerah', 'Elaun (RM)', 'Status'],
+      ...filteredRecipients.value.map(r => [
+        r.name,
+        r.ic,
+        r.category,
+        r.parish,
+        r.allowance.toFixed(2),
+        batchData.value.status
+      ])
+    ];
+    
+    const csvContent = data.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `elaun-tahunan-${batchData.value.year}-${batchData.value.type}-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success('Data berjaya dieksport ke CSV');
+  } catch (error) {
+    toast.error('Gagal mengeksport data. Sila cuba lagi.');
+  } finally {
+    exportLoading.value = false;
+  }
+}
+
+// Clear all filters
+function clearAdvancedFilters() {
+  advancedFilters.value = {
+    dateRange: { start: null, end: null },
+    amountRange: { min: 0, max: null },
+    status: [],
+    category: []
+  };
+}
+
+// Toggle advanced filters
+function toggleAdvancedFilters() {
+  showAdvancedFilters.value = !showAdvancedFilters.value;
 }
 
 // Load data on mount

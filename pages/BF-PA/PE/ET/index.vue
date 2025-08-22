@@ -99,7 +99,6 @@
               :classes="{
                 input: '!py-2',
               }"
-              class="min-w-[150px]"
             />
             <FormKit
               v-model="filters.type"
@@ -109,38 +108,34 @@
               :classes="{
                 input: '!py-2',
               }"
-              class="min-w-[200px]"
             />
-            <rs-button
-              variant="primary"
-              @click="performSearch"
-              class="flex items-center whitespace-nowrap"
-            >
-              <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
-              Cari
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              @click="clearSearch"
-              class="flex items-center whitespace-nowrap"
-            >
-              <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
-              Set Semula
-            </rs-button>
+            <div class="flex gap-2">
+              <rs-button
+                variant="primary"
+                @click="performSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                Cari
+              </rs-button>
+              <rs-button
+                variant="secondary-outline"
+                @click="clearSearch"
+                class="flex items-center whitespace-nowrap"
+              >
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Set Semula
+              </rs-button>
+            </div>
           </div>
+          
+
+
+          
+
         </div>
 
-        <!-- Butang Tambah untuk Eksekutif -->
-        <div v-if="currentRole === 'eksekutif'" class="mb-6">
-          <rs-button
-            variant="success"
-            @click="addNewAllowance"
-            class="flex items-center whitespace-nowrap"
-          >
-            <Icon name="ph:plus" class="w-4 h-4 mr-2" />
-            Tambah Maklumat Elaun Tahunan
-          </rs-button>
-        </div>
+
 
         <!-- Bahagian Jadual Bertab -->
         <!-- Tab Eksekutif -->
@@ -148,10 +143,20 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Draf">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                  <Icon name="ph:file-text" class="mr-2" size="20" />
-                  Senarai elaun yang dalam draf
-                </h3>
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                    <Icon name="ph:file-text" class="mr-2" size="20" />
+                    Senarai elaun yang dalam draf
+                  </h3>
+                  <rs-button
+                    variant="success"
+                    @click="addNewAllowance"
+                    class="flex items-center whitespace-nowrap"
+                  >
+                    <Icon name="ph:plus" class="w-4 h-4 mr-2" />
+                    Tambah Maklumat Elaun Tahunan
+                  </rs-button>
+                </div>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -746,8 +751,8 @@ const filters = ref({
 const currentYear = new Date().getFullYear();
 const yearOptions = [
   { label: "Sila pilih...", value: "" },
-  { label: String(currentYear - 1), value: currentYear - 1 },
-  { label: String(currentYear), value: currentYear }
+  { label: "2024", value: 2024 },
+  { label: "2025", value: 2025 }
 ];
 
 const typeOptions = [
@@ -890,6 +895,14 @@ const allowancesList = ref([
     notes: "Dalam proses kelulusan"
   }
 ]);
+
+
+
+
+
+
+
+
 
 // Helper functions
 function getStatusVariant(status) {
