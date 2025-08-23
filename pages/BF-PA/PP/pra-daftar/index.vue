@@ -105,15 +105,14 @@
           </template>
 
           <template v-slot:tindakan="{ text }">
-            <div class="flex justify-center items-center gap-2">
-              <rs-button
-                variant="primary"
-                size="sm"
+            <div class="flex justify-center items-center gap-3">
+              <button
                 @click="handleAction(text)"
+                :title="getActionButtonText(text.status)"
+                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
               >
-                <Icon name="ph:check" class="w-4 h-4 mr-1" />
-                {{ getActionButtonText(text.status) }}
-              </rs-button>
+                <Icon name="ic:baseline-check" class="w-5 h-5 text-primary" />
+              </button>
             </div>
           </template>
 

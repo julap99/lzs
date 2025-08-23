@@ -10,7 +10,7 @@
             variant="primary"
             @click="navigateTo(`/BF-PA/PP/PM/02`)"
           >
-            <Icon name="material-symbols:add" class="mr-1" size="15" /> Daftar
+            <Icon name="ic:baseline-add" class="mr-1" size="15" /> Daftar
             Baru
           </rs-button>
         </div>
@@ -36,35 +36,31 @@
           </template>
 
           <template v-slot:tindakan="data">
-            <div class="flex space-x-2">
-              <rs-button
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
+            <div class="flex space-x-3">
+              <button
                 @click="viewItem(data.text)"
                 v-if="hasPermission('view')"
+                title="Lihat"
+                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
               >
                 <Icon
-                  name="material-symbols:visibility"
-                  size="15"
-                  class="mr-1"
+                  name="ic:baseline-visibility"
+                  size="20"
+                  class="text-primary"
                 ></Icon>
-                Lihat
-              </rs-button>
-              <rs-button
-                variant="warning"
-                size="sm"
-                class="!px-2 !py-1"
+              </button>
+              <button
                 @click="editItem(data.text)"
                 v-if="hasPermission('update')"
+                title="Kemaskini"
+                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
               >
                 <Icon
-                  name="material-symbols:edit"
-                  size="15"
-                  class="mr-1"
+                  name="ic:outline-edit"
+                  size="20"
+                  class="text-warning"
                 ></Icon>
-                Kemaskini
-              </rs-button>
+              </button>
             </div>
           </template>
         </rs-table>

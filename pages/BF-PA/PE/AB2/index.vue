@@ -4,7 +4,7 @@
     <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
-          <Icon name="ph:user-circle" class="text-gray-600" size="20" />
+          <Icon name="ic:baseline-account-circle" class="text-gray-600" size="20" />
           <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
         </div>
         <div class="flex items-center space-x-3">
@@ -27,7 +27,7 @@
             :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
             class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
           >
-            <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
             {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
           </rs-button>
         </div>
@@ -103,7 +103,7 @@
                 @click="performSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
               </rs-button>
               <rs-button
@@ -111,7 +111,7 @@
                 @click="clearSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
                 Set Semula
               </rs-button>
             </div>
@@ -122,7 +122,7 @@
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
                   Senarai elaun yang sedang dalam proses (Menunggu Pengesahan & Kelulusan)
                 </h3>
                 <div class="overflow-x-auto">
@@ -160,13 +160,13 @@
                           </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <rs-button
-                            variant="primary"
-                            size="sm"
+                          <button
                             @click="navigateTo(getActionRoute(batch.status))"
+                            :title="getActionButtonText(batch.status)"
+                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                           >
-                            {{ getActionButtonText(batch.status) }}
-                          </rs-button>
+                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                          </button>
                         </td>
                       </tr>
                     </tbody>
@@ -180,7 +180,7 @@
             <rs-tab-item title="Diluluskan">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
                   Senarai elaun yang telah diluluskan
                 </h3>
                 <div class="overflow-x-auto">
@@ -218,13 +218,13 @@
                           </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <rs-button
-                            variant="primary"
-                            size="sm"
+                          <button
                             @click="navigateTo(getActionRoute(batch.status))"
+                            :title="getActionButtonText(batch.status)"
+                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                           >
-                            {{ getActionButtonText(batch.status) }}
-                          </rs-button>
+                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                          </button>
                         </td>
                       </tr>
                     </tbody>
@@ -236,7 +236,7 @@
             <rs-tab-item title="Ditolak">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
                   Senarai elaun yang telah ditolak
                 </h3>
                 <div class="overflow-x-auto">
@@ -274,13 +274,13 @@
                           </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <rs-button
-                            variant="primary"
-                            size="sm"
+                          <button
                             @click="navigateTo(getActionRoute(batch.status))"
+                            :title="getActionButtonText(batch.status)"
+                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                           >
-                            {{ getActionButtonText(batch.status) }}
-                          </rs-button>
+                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                          </button>
                         </td>
                       </tr>
                     </tbody>

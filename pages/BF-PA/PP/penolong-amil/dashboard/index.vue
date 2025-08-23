@@ -137,26 +137,22 @@
             <span class="font-medium">{{ formatDate(text) }}</span>
           </template>
           <template v-slot:aksi="{ value }">
-            <div class="flex gap-2">
-              <rs-button
-                variant="secondary"
-                size="sm"
-                class="!px-2 !py-1"
+            <div class="flex gap-3">
+              <button
                 @click="viewAduan(value.noRujukan)"
+                title="Lihat"
+                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
               >
-                Lihat
-                <Icon name="mdi:eye" class="ml-1" size="1rem" />
-              </rs-button>
-              <rs-button
+                <Icon name="ic:baseline-visibility" size="20" class="text-secondary" />
+              </button>
+              <button
                 v-if="!isStatusFinal(value.status)"
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
                 @click="handleAduan(value.noRujukan)"
+                title="Semak"
+                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
               >
-                Semak
-                <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
-              </rs-button>
+                <Icon name="ic:baseline-chevron-right" size="20" class="text-primary" />
+              </button>
             </div>
           </template>
         </rs-table>
@@ -292,7 +288,7 @@
             Tutup
           </rs-button>
           <rs-button variant="primary" @click="downloadKadTauliah">
-            <Icon name="ph:download" class="w-4 h-4 mr-2" />
+            <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
             Muat Turun
           </rs-button>
         </div>
@@ -392,7 +388,7 @@
             Tutup
           </rs-button>
           <rs-button variant="primary" @click="downloadSuratTawaran">
-            <Icon name="ph:download" class="w-4 h-4 mr-2" />
+            <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
             Muat Turun
           </rs-button>
         </div>
@@ -455,7 +451,7 @@ const recentAgihanActivities = ref([
     title: "Agihan Zakat Fitrah",
     description: "Berjaya mengagihkan zakat fitrah kepada 50 asnaf",
     timestamp: "2 jam yang lalu",
-    icon: "ph:hand-heart",
+    icon: "ic:baseline-favorite",
     status: "Berjaya",
     statusVariant: "success"
   },
@@ -464,7 +460,7 @@ const recentAgihanActivities = ref([
     title: "Laporan Bulanan",
     description: "Menyerahkan laporan agihan bulanan",
     timestamp: "1 hari yang lalu",
-    icon: "ph:chart-bar",
+    icon: "ic:baseline-bar-chart",
     status: "Selesai",
     statusVariant: "success"
   },
@@ -473,7 +469,7 @@ const recentAgihanActivities = ref([
     title: "Tugasan Baru",
     description: "Menerima tugasan agihan zakat di kawasan baru",
     timestamp: "2 hari yang lalu",
-    icon: "ph:list-checks",
+    icon: "ic:baseline-checklist",
     status: "Tertunda",
     statusVariant: "warning"
   },
@@ -482,7 +478,7 @@ const recentAgihanActivities = ref([
     title: "Bancian Asnaf",
     description: "Mengemaskini maklumat asnaf kariah",
     timestamp: "3 hari yang lalu",
-    icon: "ph:clipboard-text",
+    icon: "ic:baseline-assignment",
     status: "Selesai",
     statusVariant: "success"
   }

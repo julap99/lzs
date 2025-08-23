@@ -10,7 +10,7 @@
     <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
-          <Icon name="ph:user-circle" class="text-gray-600" size="20" />
+          <Icon name="ic:baseline-account-circle" class="text-gray-600" size="20" />
           <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
         </div>
         <div class="flex items-center space-x-3">
@@ -33,7 +33,7 @@
             :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
             class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
           >
-            <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
             {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
           </rs-button>
         </div>
@@ -77,7 +77,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <div class="flex items-center">
-            <Icon name="ic:outline-assignment" class="mr-2" />
+            <Icon name="ic:baseline-assignment" class="mr-2" />
             <h2 class="text-xl font-semibold">
               Senarai Elaun Penolong Amil (Eksekutif) - Mesyuarat/Program
             </h2>
@@ -113,7 +113,7 @@
                 @click="performSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
               </rs-button>
               <rs-button
@@ -121,7 +121,7 @@
                 @click="clearSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
                 Set Semula
               </rs-button>
             </div>
@@ -132,7 +132,7 @@
             <rs-tab-item title="Belum Disemak">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
                   Senarai aktiviti yang belum disemak
                 </h3>
                 <rs-table
@@ -158,14 +158,13 @@
 
                   <template v-slot:tindakan="{ text }">
                     <div class="flex justify-center items-center gap-1">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                      <button
                         @click="handleView(text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -175,7 +174,7 @@
             <rs-tab-item title="Diluluskan">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
                   Senarai aktiviti yang telah diluluskan
                 </h3>
                 <rs-table
@@ -201,14 +200,13 @@
 
                   <template v-slot:tindakan="{ text }">
                     <div class="flex justify-center items-center gap-1">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                      <button
                         @click="handleView(text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -218,7 +216,7 @@
             <rs-tab-item title="Ditolak">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
                   Senarai aktiviti yang telah ditolak
                 </h3>
                 <rs-table
@@ -244,14 +242,13 @@
 
                   <template v-slot:tindakan="{ text }">
                     <div class="flex justify-center items-center gap-1">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                      <button
                         @click="handleView(text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -270,7 +267,7 @@
         <template #header>
           <div class="flex justify-between items-center">
             <div class="flex items-center">
-              <Icon name="ic:outline-admin-panel-settings" class="mr-2" />
+              <Icon name="ic:baseline-admin-panel-settings" class="mr-2" />
               <h2 class="text-xl font-semibold">
                 Senarai Elaun Penolong Amil (Ketua Jabatan) - Mesyuarat/Program
               </h2>
@@ -306,7 +303,7 @@
                 @click="performSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
               </rs-button>
               <rs-button
@@ -314,7 +311,7 @@
                 @click="clearSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
                 Set Semula
               </rs-button>
             </div>
@@ -325,7 +322,7 @@
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
                   Senarai aktiviti yang belum disemak
                 </h3>
                 <rs-table
@@ -351,14 +348,13 @@
 
                   <template v-slot:tindakan="{ text }">
                     <div class="flex justify-center items-center gap-1">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                      <button
                         @click="handleView(text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -368,7 +364,7 @@
             <rs-tab-item title="Diluluskan">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
                   Senarai aktiviti yang telah diluluskan
                 </h3>
                 <rs-table
@@ -394,14 +390,13 @@
 
                   <template v-slot:tindakan="{ text }">
                     <div class="flex justify-center items-center gap-1">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                      <button
                         @click="handleView(text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -411,7 +406,7 @@
             <rs-tab-item title="Ditolak">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
                   Senarai aktiviti yang telah ditolak
                 </h3>
                 <rs-table
@@ -437,14 +432,13 @@
 
                   <template v-slot:tindakan="{ text }">
                     <div class="flex justify-center items-center gap-1">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                      <button
                         @click="handleView(text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -463,7 +457,7 @@
         <template #header>
           <div class="flex justify-between items-center">
             <div class="flex items-center">
-              <Icon name="ic:outline-verified-user" class="mr-2" />
+              <Icon name="ic:baseline-verified-user" class="mr-2" />
               <h2 class="text-xl font-semibold">
                 Senarai Elaun Penolong Amil (Ketua Divisyen) - Mesyuarat/Program
               </h2>
@@ -499,7 +493,7 @@
                 @click="performSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
               </rs-button>
               <rs-button
@@ -507,7 +501,7 @@
                 @click="clearSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
                 Set Semula
               </rs-button>
             </div>
@@ -518,7 +512,7 @@
             <rs-tab-item title="Belum Disemak">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
                   Senarai aktiviti yang belum disemak
                 </h3>
                 <rs-table
@@ -544,14 +538,13 @@
 
                   <template v-slot:tindakan="{ text }">
                     <div class="flex justify-center items-center gap-1">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                      <button
                         @click="handleView(text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -561,7 +554,7 @@
             <rs-tab-item title="Diluluskan">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
                   Senarai aktiviti yang telah diluluskan
                 </h3>
                 <rs-table
@@ -587,14 +580,13 @@
 
                   <template v-slot:tindakan="{ text }">
                     <div class="flex justify-center items-center gap-1">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                      <button
                         @click="handleView(text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -604,7 +596,7 @@
             <rs-tab-item title="Ditolak">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
                   Senarai aktiviti yang telah ditolak
                 </h3>
                 <rs-table
@@ -630,14 +622,13 @@
 
                   <template v-slot:tindakan="{ text }">
                     <div class="flex justify-center items-center gap-1">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                      <button
                         @click="handleView(text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -661,7 +652,7 @@
       <template #body>
         <div class="text-center">
           <Icon
-            name="material-symbols:check-circle-outline"
+            name="ic:baseline-check-circle"
             class="text-green-500 text-5xl mb-4"
           />
           <p class="text-lg mb-2">
@@ -697,7 +688,7 @@
       <template #body>
         <div class="text-center">
           <Icon
-            name="material-symbols:cancel-outline"
+            name="ic:outline-cancel"
             class="text-red-500 text-5xl mb-4"
           />
           <p class="text-lg mb-2">
@@ -733,7 +724,7 @@
       <template #body>
         <div class="text-center">
           <Icon
-            name="material-symbols:check-circle-outline"
+            name="ic:baseline-check-circle"
             class="text-green-500 text-5xl mb-4"
           />
           <p class="text-lg mb-2">

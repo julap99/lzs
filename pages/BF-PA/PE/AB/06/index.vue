@@ -130,7 +130,7 @@
                 
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
                   <div class="flex items-start space-x-3">
-                    <Icon name="ph:warning" class="w-5 h-5 text-yellow-600 mt-0.5" />
+                    <Icon name="ic:baseline-warning" class="w-5 h-5 text-yellow-600 mt-0.5" />
                     <div>
                       <h4 class="font-medium text-yellow-900">
                         Maklumat Penting
@@ -173,7 +173,7 @@
               :disabled="processing"
               :loading="processing"
             >
-              <Icon name="ph:arrow-clockwise" class="w-5 h-5 mr-2" />
+              <Icon name="ic:baseline-refresh" class="w-5 h-5 mr-2" />
               Jana Semula Payment Advice
             </rs-button>
           </div>

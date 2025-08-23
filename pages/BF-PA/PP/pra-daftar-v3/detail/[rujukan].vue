@@ -291,65 +291,6 @@
             </div>
           </div>
 
-          <!-- Role-Specific Actions -->
-          <div v-if="showRoleActions" class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Tindakan {{ getCurrentRoleLabel() }}
-            </h3>
-            
-            <div class="flex gap-3">
-              <!-- Eksekutif Pengurusan Risiko Actions -->
-              <rs-button
-                v-if="currentRole === 'eksekutif-pengurusan-risiko'"
-                variant="info"
-                @click="handleScreening"
-              >
-                <Icon name="ph:shield-check" class="w-4 h-4 mr-1" />
-                Saringan
-              </rs-button>
-
-              <!-- PT Actions -->
-              <rs-button
-                v-if="currentRole === 'pt'"
-                variant="info"
-                @click="handleReview"
-              >
-                <Icon name="ph:clipboard-text" class="w-4 h-4 mr-1" />
-                Semak
-              </rs-button>
-
-              <!-- Eksekutif Actions -->
-              <rs-button
-                v-if="currentRole === 'eksekutif'"
-                variant="success"
-                @click="handleSupport"
-              >
-                <Icon name="ph:thumbs-up" class="w-4 h-4 mr-1" />
-                Sokong
-              </rs-button>
-
-              <!-- Ketua Jabatan Actions -->
-              <rs-button
-                v-if="currentRole === 'ketua-jabatan'"
-                variant="success"
-                @click="handleConfirm"
-              >
-                <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
-                Sahkan
-              </rs-button>
-
-              <!-- Ketua Divisyen Actions -->
-              <rs-button
-                v-if="currentRole === 'ketua-divisyen'"
-                variant="primary"
-                @click="handleApprove"
-              >
-                <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
-                Lulus
-              </rs-button>
-            </div>
-          </div>
-
           <!-- Verification History -->
           <div v-if="showVerificationHistory" class="mb-6 p-6 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4 text-gray-900">

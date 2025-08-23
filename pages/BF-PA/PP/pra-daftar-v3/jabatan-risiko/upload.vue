@@ -20,7 +20,7 @@
           <!-- Upload Instructions -->
           <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div class="flex items-center mb-3">
-              <Icon name="ph:info" class="text-blue-600 mr-2" size="20" />
+              <Icon name="ic:baseline-info" class="text-blue-600 mr-2" size="20" />
               <h3 class="text-lg font-semibold text-blue-900">Arahan Muat Naik</h3>
             </div>
             <ul class="text-blue-800 text-sm space-y-1">
@@ -75,7 +75,7 @@
                   Batal
                 </rs-button>
                               <rs-button type="button" variant="primary" @click="handleSubmitDirect" :disabled="isSubmitting">
-                <Icon v-if="isSubmitting" name="ph:spinner" class="w-4 h-4 mr-2 animate-spin" />
+                <Icon v-if="isSubmitting" name="ic:baseline-refresh" class="w-4 h-4 mr-2 animate-spin" />
                 {{ isSubmitting ? 'Memuat Naik...' : 'Muat Naik Fail' }}
               </rs-button>
               </div>
@@ -89,22 +89,22 @@
               <div class="p-4 border border-green-300 rounded-lg bg-white">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="font-semibold text-green-800">Template Excel</h4>
-                  <Icon name="ph:file-xls" class="text-green-600" size="20" />
+                  <Icon name="ic:baseline-table-chart" class="text-green-600" size="20" />
                 </div>
                 <p class="text-sm text-green-700 mb-3">Template standard untuk muat naik hasil tapisan dalam format Excel</p>
                 <rs-button variant="secondary" size="sm" @click="downloadTemplate('excel')">
-                  <Icon name="ph:download" class="w-4 h-4 mr-1" />
+                  <Icon name="ic:baseline-download" class="w-4 h-4 mr-1" />
                   Muat Turun Template Excel
                 </rs-button>
               </div>
               <div class="p-4 border border-green-300 rounded-lg bg-white">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="font-semibold text-green-800">Template CSV</h4>
-                  <Icon name="ph:file-csv" class="text-green-600" size="20" />
+                  <Icon name="ic:baseline-insert-chart" class="text-green-600" size="20" />
                 </div>
                 <p class="text-sm text-green-700 mb-3">Template untuk muat naik hasil tapisan dalam format CSV</p>
                 <rs-button variant="secondary" size="sm" @click="downloadTemplate('csv')">
-                  <Icon name="ph:download" class="w-4 h-4 mr-1" />
+                  <Icon name="ic:baseline-download" class="w-4 h-4 mr-1" />
                   Muat Turun Template CSV
                 </rs-button>
               </div>
@@ -119,11 +119,14 @@
                 <rs-badge :variant="getUploadStatusVariant(text)">{{ text }}</rs-badge>
               </template>
               <template v-slot:tindakan="{ text }">
-                <div class="flex justify-center items-center gap-2">
-                  <rs-button variant="primary" size="sm" @click="viewUploadDetails(text)">
-                    <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                    Lihat
-                  </rs-button>
+                <div class="flex justify-center items-center gap-3">
+                  <button
+                    @click="viewUploadDetails(text)"
+                    title="Lihat"
+                    class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                  >
+                    <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                  </button>
                 </div>
               </template>
             </rs-table>

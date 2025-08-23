@@ -10,7 +10,7 @@
     <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
-          <Icon name="ph:user-circle" class="text-gray-600" size="20" />
+          <Icon name="ic:baseline-account-circle" class="text-gray-600" size="20" />
           <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
         </div>
         <div class="flex items-center space-x-3">
@@ -33,7 +33,7 @@
             :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
             class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
           >
-            <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
             {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
           </rs-button>
         </div>
@@ -125,7 +125,7 @@
               @click="performSearch"
               class="flex items-center whitespace-nowrap"
             >
-              <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+              <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
               Cari
             </rs-button>
             <rs-button
@@ -133,7 +133,7 @@
               @click="clearSearch"
               class="flex items-center whitespace-nowrap"
             >
-              <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+              <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
               Set Semula
             </rs-button>
           </div>
@@ -146,7 +146,7 @@
             <rs-tab-item title="Aktif">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
                   Senarai kategori yang telah aktif
                 </h3>
                 <rs-table
@@ -172,24 +172,22 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
-                      <rs-button
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
+                      <button
                         v-if="canEditCategory(data.text)"
-                        variant="secondary"
-                        size="sm"
-                        class="!px-2 !py-1"
                         @click="editCategory(data.text)"
+                        title="Kemaskini"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Kemaskini
-                      </rs-button>
+                        <Icon name="ic:outline-edit" class="w-5 h-5 text-secondary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -199,7 +197,7 @@
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
                   Senarai kategori yang sedang dalam proses
                 </h3>
                 <rs-table
@@ -225,15 +223,14 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -243,7 +240,7 @@
             <rs-tab-item title="Tidak Aktif">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
                   Senarai kategori yang tidak aktif
                 </h3>
                 <rs-table
@@ -269,15 +266,14 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -292,7 +288,7 @@
             <rs-tab-item title="Aktif">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
                   Senarai kategori yang telah aktif
                 </h3>
                 <rs-table
@@ -318,15 +314,14 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -336,7 +331,7 @@
             <rs-tab-item title="Menunggu Pengesahan">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ph:clock" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
                   Senarai kategori yang menunggu pengesahan
                 </h3>
                 <rs-table
@@ -362,24 +357,21 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
-                      <rs-button
-                        variant="warning"
-                        size="sm"
-                        class="!px-2 !py-1"
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
+                      <button
                         @click="navigateToVerification(data.text, 'verify')"
+                        title="Sahkan"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Sahkan
-                      </rs-button>
-
+                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-warning" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -389,7 +381,7 @@
             <rs-tab-item title="Tidak Aktif">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
                   Senarai kategori yang tidak aktif
                 </h3>
                 <rs-table
@@ -415,15 +407,14 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -438,7 +429,7 @@
             <rs-tab-item title="Aktif">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
                   Senarai kategori yang telah aktif
                 </h3>
                 <rs-table
@@ -464,15 +455,14 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -483,7 +473,7 @@
               <div class="p-4">
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="text-lg font-semibold text-green-700 flex items-center">
-                    <Icon name="ph:check-circle" class="mr-2" size="20" />
+                    <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
                     Senarai kategori yang disahkan untuk kelulusan
                   </h3>
                   
@@ -494,7 +484,7 @@
                       @click="openBulkApprovalModal"
                       class="flex items-center"
                     >
-                      <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
+                      <Icon name="ic:baseline-check-circle" class="w-4 h-4 mr-2" />
                       Lulus Semua ({{ pendingApprovalCount }})
                     </rs-button>
                   </div>
@@ -523,23 +513,21 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
-                      <rs-button
-                        variant="success"
-                        size="sm"
-                        class="!px-2 !py-1"
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
+                      <button
                         @click="navigateToVerification(data.text, 'approve')"
+                        title="Luluskan"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Luluskan
-                      </rs-button>
+                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -549,13 +537,13 @@
             <rs-tab-item title="Sedang Proses - Ditolak">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ph:warning" class="mr-2" size="20" />
+                  <Icon name="ic:baseline-warning" class="mr-2" size="20" />
                   Senarai kategori yang ditolak oleh Ketua Jabatan
                 </h3>
                 
                 <div class="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
                   <div class="flex items-start">
-                    <Icon name="ph:info" class="w-5 h-5 text-orange-600 mr-3 mt-0.5" />
+                    <Icon name="ic:baseline-info" class="w-5 h-5 text-orange-600 mr-3 mt-0.5" />
                     <div class="text-sm text-orange-800">
                       <p class="font-medium mb-1">Perhatian:</p>
                       <p>Sila semak setiap kategori yang ditolak secara individu untuk memahami sebab penolakan oleh Ketua Jabatan. Kelulusan beramai-ramai tidak disediakan untuk item yang telah ditolak.</p>
@@ -586,23 +574,21 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
-                      <rs-button
-                        variant="warning"
-                        size="sm"
-                        class="!px-2 !py-1"
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
+                      <button
                         @click="navigateToVerification(data.text, 'approve')"
+                        title="Semak"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Semak
-                      </rs-button>
+                        <Icon name="ic:baseline-search" class="w-5 h-5 text-warning" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -612,7 +598,7 @@
             <rs-tab-item title="Tidak Aktif">
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ph:x-circle" class="mr-2" size="20" />
+                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
                   Senarai kategori yang tidak aktif
                 </h3>
                 <rs-table
@@ -638,15 +624,14 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewCategory(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -662,14 +647,14 @@
       <div class="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-            <Icon name="ph:check-circle" class="w-6 h-6 mr-3 text-success" />
+            <Icon name="ic:baseline-check-circle" class="w-6 h-6 mr-3 text-success" />
             Lulus Semua Kategori Yang Telah Disahkan
           </h3>
           <button
             @click="closeBulkApprovalModal"
             class="text-gray-400 hover:text-gray-600"
           >
-            <Icon name="ph:x" class="w-6 h-6" />
+            <Icon name="ic:baseline-close" class="w-6 h-6" />
           </button>
         </div>
         
@@ -729,7 +714,7 @@
             @click="performBulkApproval"
             :loading="false"
           >
-            <Icon name="ph:check" class="w-4 h-4 mr-2" />
+            <Icon name="ic:baseline-check" class="w-4 h-4 mr-2" />
             Luluskan Semua ({{ selectedItems.length }})
           </rs-button>
         </div>
