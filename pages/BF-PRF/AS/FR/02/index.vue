@@ -963,70 +963,84 @@
           </h3>
 
           <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Bank</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- <h4 class="text-md font-medium mb-3">Maklumat Bank</h4> -->
+            
+            <!-- Kaedah Pembayaran -->
+            <div class="mb-6">
               <FormKit
-                type="select"
-                name="nama_bank"
-                label="Nama Bank"
-                placeholder="Pilih nama bank"
-                :options="bankOptions"
-                validation="required"
-                v-model="formData.nama_bank"
-              />
-
-                <FormKit
-                  v-if="formData.nama_bank"
-                  type="text"
-                  name="swift_code"
-                  label="SWIFT Code"
-                  v-model="formData.swift_code"
-                  :value="selectedBankSwiftCode"
-                  readonly
-                  help="SWIFT Code untuk bank yang dipilih"
-                />
-
-              <FormKit
-                type="text"
-                name="no_akaun_bank"
-                label="No Akaun Bank"
-                validation="required"
-                v-model="formData.no_akaun_bank"
-              />
-
-              <FormKit
-                type="text"
-                name="nama_pemegang_akaun"
-                label="Nama Pemegang Akaun Bank"
-                validation="required"
-                v-model="formData.nama_pemegang_akaun"
-              />
-
-              <FormKit
-                type="select"
+                type="radio"
                 name="kaedah_pembayaran"
-                label="Kaedah Pembayaran"
-                validation="required"
+                label="Kaedah Pembayaran *"
                 :options="paymentMethodOptions"
-                placeholder="Pilih kaedah pembayaran"
+                validation="required"
                 v-model="formData.kaedah_pembayaran"
                 :validation-messages="{
                   required: 'Kaedah pembayaran adalah wajib'
                 }"
               />
+            </div>
 
-              <!-- Conditional checkboxes when Tiada is selected -->
-              <div v-if="formData.kaedah_pembayaran === 'tiada'" class="md:col-span-2">
+            <!-- A. Jika Kaedah Pembayaran = Akaun -->
+            <div v-if="formData.kaedah_pembayaran === 'akaun'" class="mb-6">
+              <h5 class="text-md font-medium mb-4 text-primary">A. Maklumat Akaun Bank</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Nama Bank -->
                 <FormKit
-                  type="checkbox"
-                  name="noPaymentReason"
-                  label="Nyatakan sebab"
+                  type="select"
+                  name="nama_bank"
+                  label="Nama Bank *"
+                  placeholder="Pilih nama bank"
+                  :options="bankOptions"
+                  validation="required"
+                  v-model="formData.nama_bank"
+                />
+
+                <!-- Swift Code (Read Only) -->
+                <FormKit
+                  v-if="formData.nama_bank"
+                  type="text"
+                  name="swift_code"
+                  label="Swift Code"
+                  v-model="formData.swift_code"
+                  :value="selectedBankSwiftCode"
+                  readonly
+                  help="Swift Code dipaparkan secara automatik"
+                />
+
+                <!-- No. Akaun Bank -->
+                <FormKit
+                  type="text"
+                  name="no_akaun_bank"
+                  label="No. Akaun Bank *"
+                  validation="required"
+                  v-model="formData.no_akaun_bank"
+                />
+
+                <!-- Nama Pemegang Akaun -->
+                <FormKit
+                  type="text"
+                  name="nama_pemegang_akaun"
+                  label="Nama Pemegang Akaun *"
+                  validation="required"
+                  v-model="formData.nama_pemegang_akaun"
+                />
+              </div>
+            </div>
+
+            <!-- B. Jika Kaedah Pembayaran = Tiada -->
+            <div v-if="formData.kaedah_pembayaran === 'tiada'" class="mb-6">
+              <h5 class="text-md font-medium mb-4 text-primary">B. Sebab Tiada Akaun Bank</h5>
+              <div class="md:col-span-2">
+                <FormKit
+                  type="select"
+                  name="sebab_tiada_akaun"
+                  label="Sebab *"
                   :options="noPaymentReasonOptions"
-                  v-model="formData.noPaymentReason"
-                  validation="required|min:1"
+                  validation="required"
+                  placeholder="Pilih sebab tiada akaun bank"
+                  v-model="formData.sebab_tiada_akaun"
                   :validation-messages="{
-                    required: 'Sila pilih sekurang-kurangnya satu sebab',
-                    min: 'Sila pilih sekurang-kurangnya satu sebab'
+                    required: 'Sila pilih sebab tiada akaun bank'
                   }"
                 />
               </div>
@@ -1061,118 +1075,169 @@
         >
           <h3 class="text-lg font-semibold mb-4">V. Maklumat Kesihatan</h3>
 
-          <FormKit
-            type="select"
-            name="tahap_kesihatan"
-            label="Tahap Kesihatan"
-            :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
-            validation="required"
-            v-model="healthStatus"
-          />
-
-          <div v-if="healthStatus === 'Sakit Kronik'" class="ml-6 mt-2">
+          <!-- Tahap Kesihatan -->
+          <div class="mb-6">
             <FormKit
               type="select"
-              name="keadaan_kesihatan_sakit"
-              label="a. Keadaan Kesihatan"
-              :options="['Terlantar', 'Tidak Terlantar']"
-            />
-
-            <FormKit
-              type="select"
-              name="kos_penjagaan_sakit"
-              label="b. Kos Penjagaan"
-              :options="['Berbayar', 'Tidak berbayar']"
-            />
-
-            <FormKit
-              type="number"
-              name="perbelanjaan_bulanan_sakit"
-              label="c. Jumlah Perbelanjaan Bulanan (RM)"
-              step="0.01"
-              min="0"
-            />
-
-            <FormKit
-              type="file"
-              name="dokumen_sakit_kronik"
-              label="d. Upload Dokumen Sakit Kronik"
-              accept=".pdf,.jpg,.jpeg,.png"
-              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              name="tahap_kesihatan"
+              label="Tahap Kesihatan *"
+              :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
+              validation="required"
+              v-model="formData.tahap_kesihatan"
+              placeholder="Pilih tahap kesihatan"
             />
           </div>
 
-          <div v-if="healthStatus === 'OKU'" class="ml-6 mt-2">
-            <FormKit
-              type="select"
-              name="kesempurnaan_fizikal"
-              label="a. Kesempurnaan Fizikal"
-              :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
-            />
+          <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
+          <div v-if="formData.tahap_kesihatan === 'Sakit Kronik'" class="mb-8">
+            <h5 class="text-lg font-semibold mb-4 text-primary">Maklumat Sakit Kronik</h5>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Keadaan Kesihatan -->
+              <FormKit
+                type="select"
+                name="keadaan_kesihatan_sakit"
+                label="Keadaan Kesihatan *"
+                :options="['Terlantar', 'Tidak Terlantar']"
+                validation="required"
+                v-model="formData.keadaan_kesihatan_sakit"
+                placeholder="Pilih keadaan kesihatan"
+              />
 
-            <FormKit
-              type="select"
-              name="sebab_kecacatan"
-              label="b. Sebab Kecacatan (Jika Cacat)"
-              :options="['Sejak Lahir', 'Musibah']"
-            />
+              <!-- Kos Penjagaan -->
+              <FormKit
+                type="select"
+                name="kos_penjagaan_sakit"
+                label="Kos Penjagaan *"
+                :options="['Berbayar', 'Tidak Berbayar']"
+                validation="required"
+                v-model="formData.kos_penjagaan_sakit"
+                placeholder="Pilih kos penjagaan"
+              />
+            </div>
 
-            <FormKit
-              type="select"
-              name="tahap_kecacatan"
-              label="c. Tahap Kecacatan"
-              :options="['Terlantar', 'Tidak Terlantar']"
-            />
-
-            <FormKit
-              type="number"
-              name="perbelanjaan_bulanan_oku"
-              label="d. Jumlah Perbelanjaan Bulanan (RM)"
-              step="0.01"
-              min="0"
-            />
-
-            <FormKit
-              type="file"
-              name="dokumen_oku"
-              label="e. Upload Dokumen OKU"
-              accept=".pdf,.jpg,.jpeg,.png"
-              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-            />
+            <!-- Jumlah Perbelanjaan Bulanan -->
+            <div class="mt-4">
+              <FormKit
+                type="text"
+                name="perbelanjaan_bulanan_sakit"
+                label="Jumlah Perbelanjaan Bulanan (RM) *"
+                validation="required"
+                placeholder="9999.99"
+                v-model="formData.perbelanjaan_bulanan_sakit"
+                help="Format: 9999.99"
+              />
+            </div>
           </div>
 
-          <div v-if="healthStatus === 'Uzur'" class="ml-6 mt-2">
-            <FormKit
-              type="select"
-              name="keadaan_kesihatan_uzur"
-              label="a. Keadaan Kesihatan"
-              :options="['Terlantar', 'Tidak Terlantar']"
-            />
+          <!-- B. Jika Tahap Kesihatan = "OKU" -->
+          <div v-if="formData.tahap_kesihatan === 'OKU'" class="mb-8">
+            <h5 class="text-lg font-semibold mb-4 text-primary"> Maklumat OKU</h5>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Kesempurnaan Fizikal -->
+              <FormKit
+                type="select"
+                name="kesempurnaan_fizikal"
+                label="Kesempurnaan Fizikal *"
+                :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
+                validation="required"
+                v-model="formData.kesempurnaan_fizikal"
+                placeholder="Pilih kesempurnaan fizikal"
+              />
 
-            <FormKit
-              type="select"
-              name="kos_penjagaan_uzur"
-              label="b. Kos Penjagaan"
-              :options="['Berbayar', 'Tidak berbayar']"
-            />
+              <!-- Sebab Kecacatan -->
+              <FormKit
+                type="select"
+                name="sebab_kecacatan"
+                label="Sebab Kecacatan (Jika Cacat) *"
+                :options="['Sejak Lahir', 'Musibah']"
+                validation="required"
+                v-model="formData.sebab_kecacatan"
+                placeholder="Pilih sebab kecacatan"
+              />
+            </div>
 
-            <FormKit
-              type="number"
-              name="perbelanjaan_bulanan_uzur"
-              label="c. Jumlah Perbelanjaan Bulanan (RM)"
-              step="0.01"
-              min="0"
-            />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <!-- Tahap Kecacatan -->
+              <FormKit
+                type="select"
+                name="tahap_kecacatan"
+                label="Tahap Kecacatan *"
+                :options="['Terlantar', 'Tidak Terlantar']"
+                validation="required"
+                v-model="formData.tahap_kecacatan"
+                placeholder="Pilih tahap kecacatan"
+              />
 
+              <!-- Jumlah Perbelanjaan Bulanan -->
+              <FormKit
+                type="text"
+                name="perbelanjaan_bulanan_oku"
+                label="Jumlah Perbelanjaan Bulanan (RM) *"
+                validation="required"
+                placeholder="9999.99"
+                v-model="formData.perbelanjaan_bulanan_oku"
+                help="Format: 9999.99"
+              />
+            </div>
+          </div>
+
+          <!-- C. Jika Tahap Kesihatan = "Uzur" -->
+          <div v-if="formData.tahap_kesihatan === 'Uzur'" class="mb-8">
+            <h5 class="text-lg font-semibold mb-4 text-primary"> Maklumat Uzur</h5>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Keadaan Kesihatan -->
+              <FormKit
+                type="select"
+                name="keadaan_kesihatan_uzur"
+                label="Keadaan Kesihatan *"
+                :options="['Terlantar', 'Tidak Terlantar']"
+                validation="required"
+                v-model="formData.keadaan_kesihatan_uzur"
+                placeholder="Pilih keadaan kesihatan"
+              />
+
+              <!-- Kos Penjagaan -->
+              <FormKit
+                type="select"
+                name="kos_penjagaan_uzur"
+                label="Kos Penjagaan *"
+                :options="['Berbayar', 'Tidak Berbayar']"
+                validation="required"
+                v-model="formData.kos_penjagaan_uzur"
+                placeholder="Pilih kos penjagaan"
+              />
+            </div>
+
+            <!-- Jumlah Perbelanjaan Bulanan -->
+            <div class="mt-4">
+              <FormKit
+                type="text"
+                name="perbelanjaan_bulanan_uzur"
+                label="Jumlah Perbelanjaan Bulanan (RM) *"
+                validation="required"
+                placeholder="9999.99"
+                v-model="formData.perbelanjaan_bulanan_uzur"
+                help="Format: 9999.99"
+              />
+            </div>
+          </div>
+
+          <!-- D. Upload Dokumen Sokongan (Jika Tahap Kesihatan ≠ "Sihat") -->
+          <div v-if="formData.tahap_kesihatan && formData.tahap_kesihatan !== 'Sihat'" class="mb-6">
+            <h5 class="text-lg font-semibold mb-4 text-primary">Dokumen Sokongan</h5>
+            
             <FormKit
               type="file"
-              name="dokumen_uzur"
-              label="d. Upload Dokumen Uzur"
+              name="dokumen_sokongan_kesihatan"
+              label="Upload Dokumen Sokongan Berkaitan Kesihatan *"
               accept=".pdf,.jpg,.jpeg,.png"
-              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              multiple="true"
+              help="Format yang dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
+              validation="required"
+              v-model="formData.dokumen_sokongan_kesihatan"
             />
           </div>
 
@@ -1222,6 +1287,17 @@
               'Lain-lain',
             ]"
             validation="required"
+            v-model="formData.kemahiran"
+            placeholder="Pilih kemahiran"
+          />
+
+          <FormKit
+            type="text"
+            name="lain_lain_kemahiran"
+            label="Lain-lain Kemahiran"
+            validation="required"
+            v-if="formData.kemahiran === 'Lain-lain'"
+            placeholder="Nyatakan kemahiran lain"
           />
 
           <div class="flex justify-between gap-3 mt-6">
@@ -2738,69 +2814,83 @@
 
           <div class="mb-6">
             <h4 class="text-md font-medium mb-3">Maklumat Bank</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Kaedah Pembayaran -->
+            <div class="mb-6">
               <FormKit
-                type="select"
-                name="nama_bank_tanggungan"
-                label="Nama Bank"
-                placeholder="Pilih nama bank"
-                :options="bankOptions"
-                validation="required"
-                v-model="formData.nama_bank_tanggungan"
-              />
-
-              <FormKit
-                v-if="formData.nama_bank_tanggungan"
-                type="text"
-                name="swift_code_tanggungan"
-                label="SWIFT Code"
-                v-model="formData.swift_code_tanggungan"
-                :value="selectedBankSwiftCodeTanggungan"
-                readonly
-                help="SWIFT Code untuk bank yang dipilih"
-              />
-
-              <FormKit
-                type="text"
-                name="no_akaun_bank_tanggungan"
-                label="No Akaun Bank"
-                validation="required"
-                v-model="formData.no_akaun_bank_tanggungan"
-              />
-
-              <FormKit
-                type="text"
-                name="nama_pemegang_akaun_tanggungan"
-                label="Nama Pemegang Akaun Bank"
-                validation="required"
-                v-model="formData.nama_pemegang_akaun_tanggungan"
-              />
-
-              <FormKit
-                type="select"
+                type="radio"
                 name="kaedah_pembayaran_tanggungan"
-                label="Kaedah Pembayaran"
-                validation="required"
+                label="Kaedah Pembayaran *"
                 :options="paymentMethodOptions"
-                placeholder="Pilih kaedah pembayaran"
+                validation="required"
                 v-model="formData.kaedah_pembayaran_tanggungan"
                 :validation-messages="{
                   required: 'Kaedah pembayaran adalah wajib'
                 }"
               />
+            </div>
 
-              <!-- Conditional checkboxes when Tiada is selected -->
-              <div v-if="formData.kaedah_pembayaran_tanggungan === 'tiada'" class="md:col-span-2">
+            <!-- A. Jika Kaedah Pembayaran = Akaun -->
+            <div v-if="formData.kaedah_pembayaran_tanggungan === 'akaun'" class="mb-6">
+              <h5 class="text-md font-medium mb-4 text-primary">A. Maklumat Akaun Bank</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Nama Bank -->
                 <FormKit
-                  type="checkbox"
-                  name="noPaymentReasonTanggungan"
-                  label="Nyatakan sebab"
+                  type="select"
+                  name="nama_bank_tanggungan"
+                  label="Nama Bank *"
+                  placeholder="Pilih nama bank"
+                  :options="bankOptions"
+                  validation="required"
+                  v-model="formData.nama_bank_tanggungan"
+                />
+
+                <!-- Swift Code (Read Only) -->
+                <FormKit
+                  v-if="formData.nama_bank_tanggungan"
+                  type="text"
+                  name="swift_code_tanggungan"
+                  label="Swift Code"
+                  v-model="formData.swift_code_tanggungan"
+                  :value="selectedBankSwiftCodeTanggungan"
+                  readonly
+                  help="Swift Code dipaparkan secara automatik"
+                />
+
+                <!-- No. Akaun Bank -->
+                <FormKit
+                  type="text"
+                  name="no_akaun_bank_tanggungan"
+                  label="No. Akaun Bank *"
+                  validation="required"
+                  v-model="formData.no_akaun_bank_tanggungan"
+                />
+
+                <!-- Nama Pemegang Akaun -->
+                <FormKit
+                  type="text"
+                  name="nama_pemegang_akaun_tanggungan"
+                  label="Nama Pemegang Akaun *"
+                  validation="required"
+                  v-model="formData.nama_pemegang_akaun_tanggungan"
+                />
+              </div>
+            </div>
+
+            <!-- B. Jika Kaedah Pembayaran = Tiada -->
+            <div v-if="formData.kaedah_pembayaran_tanggungan === 'tiada'" class="mb-6">
+              <h5 class="text-md font-medium mb-4 text-primary">B. Sebab Tiada Akaun Bank</h5>
+              <div class="md:col-span-2">
+                <FormKit
+                  type="select"
+                  name="sebab_tiada_akaun_tanggungan"
+                  label="Sebab *"
                   :options="noPaymentReasonOptions"
-                  v-model="formData.noPaymentReasonTanggungan"
-                  validation="required|min:1"
+                  validation="required"
+                  placeholder="Pilih sebab tiada akaun bank"
+                  v-model="formData.sebab_tiada_akaun_tanggungan"
                   :validation-messages="{
-                    required: 'Sila pilih sekurang-kurangnya satu sebab',
-                    min: 'Sila pilih sekurang-kurangnya satu sebab'
+                    required: 'Sila pilih sebab tiada akaun bank'
                   }"
                 />
               </div>
@@ -3779,7 +3869,7 @@ const formData = ref({
   nama_pemegang_akaun: '',
   swift_code: '',
   kaedah_pembayaran: '',
-  noPaymentReason: [],
+  sebab_tiada_akaun: '',
   sebab_tunai: '',
 
   // Section B - Maklumat Kesihatan
@@ -3794,9 +3884,11 @@ const formData = ref({
   keadaan_kesihatan_uzur: '',
   kos_penjagaan_uzur: '',
   perbelanjaan_bulanan_uzur: '',
+  dokumen_sokongan_kesihatan: null,
 
   // Section C - Kemahiran
   kemahiran: '',
+  lain_lain_kemahiran: '',
 
   // Section D - Maklumat Pekerjaan
   status_pekerjaan: '',
@@ -3952,7 +4044,7 @@ const formData = ref({
   no_akaun_bank_tanggungan: '',
   nama_pemegang_akaun_tanggungan: '',
   kaedah_pembayaran_tanggungan: '',
-  noPaymentReasonTanggungan: [],
+  sebab_tiada_akaun_tanggungan: '',
 
   // Pendidikan Tanggungan
   bersekolah_tanggungan: '',
@@ -4016,7 +4108,9 @@ const paymentMethodOptions = [
 // No Payment Reason Options
 const noPaymentReasonOptions = [
   { label: 'Muflis', value: 'muflis' },
-  { label: 'Bukan Warganegara', value: 'bukan-warganegara' }
+  { label: 'Senarai Hitam Bank', value: 'senarai-hitam-bank' },
+  { label: 'Bukan Warganegara', value: 'bukan-warganegara' },
+  { label: 'Sakit', value: 'sakit' }
 ];
 
 // Bank Options with SWIFT Codes
