@@ -410,6 +410,367 @@
         </div>
       </template>
     </rs-modal>
+
+    <!-- Terminate Service Modal -->
+    <rs-modal v-model="showTerminateModal" title="Tamatkan Perkhidmatan Penolong Amil" size="2xl">
+      <template #header>
+        <div class="flex items-center">
+          <Icon name="ic:outline-cancel" class="w-6 h-6 text-danger mr-3" />
+          <h3 class="text-lg font-semibold text-gray-900">Tamatkan Perkhidmatan Penolong Amil</h3>
+        </div>
+      </template>
+      
+      <div class="p-6">
+        <!-- Warning Alert -->
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <div class="flex items-start">
+            <Icon name="ph:warning" class="w-5 h-5 text-red-600 mr-3 mt-0.5" />
+            <div>
+              <h4 class="font-semibold text-red-900 mb-2">Peringatan Penting</h4>
+              <p class="text-sm text-red-800">
+                Tindakan ini akan menamatkan perkhidmatan penolong amil secara kekal. 
+                Sila pastikan semua prosedur telah diikuti dan dokumentasi lengkap sebelum meneruskan.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Penolong Amil Full Profile Information -->
+        <div class="space-y-6">
+          <!-- Personal Information -->
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Icon name="ph:user" class="w-4 h-4 mr-2 text-gray-600" />
+              Maklumat Peribadi
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nama Penuh</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.nama || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nombor Kad Pengenalan</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.idPengenalan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Jantina</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.jantina || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Status Perkahwinan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.statusPerkahwinan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Bangsa</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.bangsa || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Agama</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.agama || 'Islam' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Information -->
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Icon name="ph:phone" class="w-4 h-4 mr-2 text-gray-600" />
+              Maklumat Perhubungan
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Alamat</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.alamat || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Negeri</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.negeri || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Daerah</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.daerah || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Bandar</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.bandar || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Poskod</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.poskod || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nombor Telefon</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.noTelefon || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nombor Telefon Bimbit</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.noTelefonBimbit || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Alamat E-mel</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.emel || 'N/A' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Information -->
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Icon name="ph:briefcase" class="w-4 h-4 mr-2 text-gray-600" />
+              Maklumat Perkhidmatan
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Kategori</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.kategori || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Sesi</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.sesi || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Institusi</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.institusi || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Status Semasa</label>
+                <div class="text-sm">
+                  <rs-badge variant="success">Aktif</rs-badge>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employment & Education Information -->
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Icon name="ph:graduation-cap" class="w-4 h-4 mr-2 text-gray-600" />
+              Maklumat Pekerjaan & Pendidikan
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Pekerjaan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.pekerjaan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nama Majikan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.namaMajikan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Tahap Pendidikan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.tahapPendidikan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Institusi Pendidikan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.institusiPendidikan || 'N/A' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Warning Letter History -->
+          <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            <h4 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
+              <Icon name="ph:warning" class="w-4 h-4 mr-2 text-yellow-600" />
+              Sejarah Surat Amaran
+            </h4>
+            <div class="space-y-2">
+              <div class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">Surat Amaran #1</div>
+                  <div class="text-xs text-gray-600">Tarikh: 15-01-2024 | Sebab: Tidak hadir mesyuarat</div>
+                </div>
+                <rs-badge variant="warning" size="sm">Dihantar</rs-badge>
+              </div>
+              <div class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">Surat Amaran #2</div>
+                  <div class="text-xs text-gray-600">Tarikh: 20-02-2024 | Sebab: Gagal mematuhi arahan</div>
+                </div>
+                <rs-badge variant="warning" size="sm">Dihantar</rs-badge>
+              </div>
+              <div class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">Surat Amaran #3</div>
+                  <div class="text-xs text-gray-600">Tarikh: 10-03-2024 | Sebab: Pelanggaran berulang</div>
+                </div>
+                <rs-badge variant="danger" size="sm">Final Warning</rs-badge>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Termination Form -->
+        <div class="mt-6 space-y-6">
+          <h4 class="text-md font-semibold text-gray-900 border-b pb-2">
+            Maklumat Penamatan
+          </h4>
+          
+                     <!-- Termination Reason -->
+           <div>
+             <div v-if="!terminateData.reason" class="mb-2 text-sm text-red-600">
+               Sila pilih sebab penamatan perkhidmatan
+             </div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Sebab Penamatan Perkhidmatan *
+            </label>
+                         <FormKit
+               type="select"
+               v-model="terminateData.reason"
+               :options="terminationReasonOptions"
+               :classes="{
+                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                 wrapper: 'w-full'
+               }"
+               validation="required"
+               validation-label="Sebab penamatan"
+               @change="validateTerminationReason"
+             />
+          </div>
+
+                     <!-- Custom Reason -->
+           <div v-if="terminateData.reason === 'lain-lain'">
+             <div v-if="terminateData.reason === 'lain-lain' && !terminateData.customReason" class="mb-2 text-sm text-red-600">
+               Sila nyatakan sebab penamatan yang spesifik
+             </div>
+             <label class="block text-sm font-medium text-gray-700 mb-2">
+               Sebab Lain-lain *
+             </label>
+             <FormKit
+               type="textarea"
+               v-model="terminateData.customReason"
+               placeholder="Nyatakan sebab penamatan yang spesifik..."
+               :classes="{
+                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                 wrapper: 'w-full'
+               }"
+               rows="4"
+               maxlength="500"
+               validation="required|length:10,500"
+               validation-label="Sebab penamatan"
+               @input="validateCustomReason"
+             />
+             <div class="flex justify-between items-center mt-1">
+               <p class="text-xs text-gray-500">
+                 Maksimum 500 aksara
+               </p>
+               <span class="text-xs text-gray-500">
+                 {{ terminateData.customReason.length }}/500
+               </span>
+             </div>
+           </div>
+
+                     <!-- Supporting Documents -->
+           <div>
+             <div v-if="!terminateData.supportingDocuments" class="mb-2 text-sm text-red-600">
+               Sila muat naik dokumen sokongan
+             </div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Dokumen Sokongan *
+            </label>
+                         <FormKit
+               type="file"
+               v-model="terminateData.supportingDocuments"
+               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+               :classes="{
+                 input: 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-danger file:text-white hover:file:bg-red-700',
+                 wrapper: 'w-full'
+               }"
+               validation="required"
+               validation-label="Dokumen sokongan"
+               @change="handleTerminateFileChange"
+             />
+             <div v-if="terminateFileError" class="mt-1 text-sm text-red-600">
+               {{ terminateFileError }}
+             </div>
+            <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+              <div class="flex items-start">
+                <Icon name="ph:info" class="w-4 h-4 text-blue-600 mr-2 mt-0.5" />
+                <div class="text-sm text-blue-800">
+                  <p class="font-medium">Format yang diterima:</p>
+                  <p>PDF, DOC, DOCX, JPG, JPEG, PNG (Maksimum 5MB)</p>
+                  <p class="mt-1 text-xs">Contoh: Minit mesyuarat, laporan insiden, surat amaran, dll.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Notes -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Catatan Tambahan
+            </label>
+                         <FormKit
+               type="textarea"
+               v-model="terminateData.additionalNotes"
+               placeholder="Masukkan catatan tambahan atau arahan khusus untuk penamatan ini..."
+               :classes="{
+                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                 wrapper: 'w-full'
+               }"
+               rows="4"
+               maxlength="1000"
+               @input="validateAdditionalNotes"
+             />
+            <div class="flex justify-between items-center mt-1">
+              <p class="text-xs text-gray-500">
+                Maksimum 1000 aksara
+              </p>
+              <span class="text-xs text-gray-500">
+                {{ terminateData.additionalNotes.length }}/1000
+              </span>
+            </div>
+          </div>
+
+                     <!-- Confirmation Checkbox -->
+           <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+             <div v-if="!terminateData.confirmation" class="mb-2 text-sm text-red-600">
+               Sila sahkan bahawa anda bersetuju untuk menamatkan perkhidmatan
+             </div>
+            <div class="flex items-start">
+                             <FormKit
+                 type="checkbox"
+                 v-model="terminateData.confirmation"
+                 :classes="{
+                   input: 'mt-1 h-4 w-4 text-danger focus:ring-danger border-gray-300 rounded',
+                   wrapper: 'flex items-start'
+                 }"
+                 validation="required"
+                 validation-label="Pengesahan"
+                 @change="validateConfirmation"
+               />
+              <div class="ml-3">
+                <label class="text-sm font-medium text-red-900">
+                  Saya mengesahkan bahawa saya telah mempertimbangkan semua aspek dan bersetuju untuk menamatkan perkhidmatan penolong amil ini
+                </label>
+                <p class="text-xs text-red-700 mt-1">
+                  Tindakan ini tidak boleh dibatalkan dan akan menamatkan perkhidmatan secara kekal.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="closeTerminateModal"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="danger"
+            @click="submitTermination"
+            :disabled="!isTerminateFormValid || isTerminateSubmitting"
+          >
+            <Icon v-if="!isTerminateSubmitting" name="ph:check" class="w-4 h-4 mr-2" />
+            <Icon v-else name="ph:spinner" class="w-4 h-4 mr-2 animate-spin" />
+            {{ isTerminateSubmitting ? 'Memproses...' : 'Tamatkan Perkhidmatan' }}
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -496,6 +857,19 @@ const currentWarningRequest = ref(null);
 const fileError = ref("");
 const isSubmitting = ref(false);
 
+// Terminate Service Modal State
+const showTerminateModal = ref(false);
+const terminateData = ref({
+  reason: "",
+  customReason: "",
+  supportingDocuments: null,
+  additionalNotes: "",
+  confirmation: false,
+});
+const currentTerminateRequest = ref(null);
+const terminateFileError = ref("");
+const isTerminateSubmitting = ref(false);
+
 // Enhanced options
 const statusOptions = [
   { label: "Sila pilih...", value: "" },
@@ -538,6 +912,14 @@ const daerahOptions = [
   { label: "Melaka", value: "melaka" },
   { label: "Perak", value: "perak" },
   { label: "Kelantan", value: "kelantan" },
+];
+
+const terminationReasonOptions = [
+  { label: "Sila pilih...", value: "" },
+  { label: "Tidak hadir mesyuarat", value: "tidak_hadir_mesyuarat" },
+  { label: "Gagal mematuhi arahan", value: "gagal_mematuhi_arahan" },
+  { label: "Pelanggaran berulang", value: "pelanggaran_berulang" },
+  { label: "Lain-lain", value: "lain-lain" },
 ];
 
 // Enhanced mock data with new structure
@@ -729,6 +1111,23 @@ const isFormValid = computed(() => {
          !fileError.value;
 });
 
+// Termination Form validation computed property
+const isTerminateFormValid = computed(() => {
+  if (terminateData.value.reason === "lain-lain") {
+    return terminateData.value.customReason && 
+           terminateData.value.customReason.length >= 10 && 
+           terminateData.value.customReason.length <= 500 && 
+           terminateData.value.supportingDocuments && 
+           terminateData.value.confirmation &&
+           !terminateFileError.value;
+  } else {
+    return terminateData.value.reason && 
+           terminateData.value.supportingDocuments && 
+           terminateData.value.confirmation &&
+           !terminateFileError.value;
+  }
+});
+
 // Enhanced helper functions
 const getStatusVariant = (status) => {
   const variants = {
@@ -793,13 +1192,16 @@ const exportData = () => {
 
 // PYB Institusi specific actions
 const terminateService = (request) => {
-  showNotificationMessage(
-    "Perkhidmatan Ditamatkan", 
-    `Perkhidmatan ${request.noRujukan || request.rujukan} untuk ${request.nama || request.penolongAmil?.nama} telah ditamatkan.`
-  );
-  
-  // In real app, this would update the status to 'terminated'
-  // For now, just show notification
+  currentTerminateRequest.value = request;
+  terminateData.value = {
+    reason: "",
+    customReason: "",
+    supportingDocuments: null,
+    additionalNotes: "",
+    confirmation: false,
+  };
+  terminateFileError.value = "";
+  showTerminateModal.value = true;
 };
 
 // Ketua Divisyen specific actions
@@ -815,6 +1217,26 @@ const approveService = (request) => {
 };
 
 const validateNotes = () => {
+  // This function can be used for additional validation if needed
+  // The FormKit validation will handle the basic validation
+};
+
+const validateConfirmation = () => {
+  // This function can be used for additional validation if needed
+  // The FormKit validation will handle the basic validation
+};
+
+const validateTerminationReason = () => {
+  // This function can be used for additional validation if needed
+  // The FormKit validation will handle the basic validation
+};
+
+const validateCustomReason = () => {
+  // This function can be used for additional validation if needed
+  // The FormKit validation will handle the basic validation
+};
+
+const validateAdditionalNotes = () => {
   // This function can be used for additional validation if needed
   // The FormKit validation will handle the basic validation
 };
@@ -931,6 +1353,89 @@ const showNotificationMessage = (title, message) => {
 
 const hideNotification = () => {
   showNotification.value = false;
+};
+
+// Termination methods
+const handleTerminateFileChange = (event) => {
+  const file = event.target.files[0];
+  terminateFileError.value = "";
+  
+  if (file) {
+    // Check file size (5MB = 5 * 1024 * 1024 bytes)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      terminateFileError.value = "Saiz fail terlalu besar. Maksimum 5MB dibenarkan.";
+      terminateData.value.supportingDocuments = null;
+      event.target.value = "";
+      return;
+    }
+    
+    // Check file type
+    const allowedTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    if (!allowedTypes.includes(fileExtension)) {
+      terminateFileError.value = "Format fail tidak dibenarkan. Hanya PDF, DOC, DOCX, JPG, JPEG, PNG dibenarkan.";
+      terminateData.value.supportingDocuments = null;
+      event.target.value = "";
+      return;
+    }
+    
+    // File is valid
+    terminateData.value.supportingDocuments = file;
+  }
+};
+
+const submitTermination = async () => {
+  if (isTerminateFormValid.value) {
+    isTerminateSubmitting.value = true;
+    
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Here you would typically send the data to your backend
+      // For now, we'll just show a success message
+      showNotificationMessage(
+        "Perkhidmatan Ditamatkan", 
+        `Perkhidmatan ${currentTerminateRequest.value?.noRujukan || currentTerminateRequest.value?.rujukan} untuk ${currentTerminateRequest.value?.nama || currentTerminateRequest.value?.penolongAmil?.nama} telah ditamatkan.`
+      );
+      
+      // Reset modal and close
+      closeTerminateModal();
+    } catch (error) {
+      showNotificationMessage(
+        "Ralat", 
+        "Gagal menamatkan perkhidmatan. Sila cuba lagi."
+      );
+    } finally {
+      isTerminateSubmitting.value = false;
+    }
+  }
+};
+
+const closeTerminateModal = () => {
+  // Check if user has entered data and confirm before closing
+  if ((terminateData.value.reason || terminateData.value.customReason || terminateData.value.supportingDocuments || terminateData.value.additionalNotes || terminateData.value.confirmation) && !isTerminateSubmitting.value) {
+    if (confirm('Anda pasti mahu menutup modal ini? Data yang telah dimasukkan akan hilang.')) {
+      resetTerminateModal();
+    }
+  } else {
+    resetTerminateModal();
+  }
+};
+
+const resetTerminateModal = () => {
+  showTerminateModal.value = false;
+  terminateData.value = {
+    reason: "",
+    customReason: "",
+    supportingDocuments: null,
+    additionalNotes: "",
+    confirmation: false,
+  };
+  currentTerminateRequest.value = null;
+  terminateFileError.value = "";
+  isTerminateSubmitting.value = false;
 };
 
 // Role-based access control
