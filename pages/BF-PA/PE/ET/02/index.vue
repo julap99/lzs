@@ -48,20 +48,7 @@
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
-                  <th class="px-4 py-3 w-28">
-                    <div class="flex items-center gap-2">
-                      <FormKit
-                        type="checkbox"
-                        :checked="allVisibleChecked"
-                        @change="toggleSelectVisible"
-                        :classes="{
-                          input: '!w-4 !h-4',
-                        }"
-                      />
-                      <span class="text-xs text-gray-500">Pilih semua</span>
-                    </div>
-                    <div class="text-[11px] text-gray-500">(* Hanya calon baharu)</div>
-                  </th>
+
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori/Jawatan</th>
@@ -234,8 +221,8 @@
                       </div>
                     </template>
                   </td>
-                  <td class="px-4 py-3 text-right">
-                    <div class="flex items-center justify-center gap-2">
+                  <td class="px-4 py-3 text-left">
+                    <div class="flex items-center justify-start gap-2">
                       <!-- Edit Button - Only visible when not editing and allowance is editable -->
                       <rs-button
                         variant="secondary-outline"
