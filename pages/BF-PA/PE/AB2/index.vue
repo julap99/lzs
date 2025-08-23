@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Page-specific Role Switcher -->
+    <!-- Penukar Peranan Halaman Khusus -->
     <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
@@ -76,13 +76,13 @@
 
       <template #body>
         <div class="p-4">
-          <!-- Search and Filter Section -->
+          <!-- Bahagian Carian dan Penapis -->
           <div class="mb-6">
             <div class="flex flex-col md:flex-row gap-4 mb-4">
               <FormKit
                 v-model="searchQuery"
                 type="text"
-                placeholder="Cari Batch No atau Institusi"
+                placeholder="Cari No. Batch atau Institusi"
                 :classes="{
                   input: '!py-2',
                 }"
@@ -117,7 +117,7 @@
             </div>
           </div>
 
-          <!-- Tabbed Table Section -->
+          <!-- Bahagian Jadual Bertab -->
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
@@ -126,9 +126,9 @@
                     <thead class="bg-gray-50">
                       <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch No</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institution</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Batch</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
                       </tr>
@@ -142,11 +142,11 @@
                             class="text-blue-600 hover:text-blue-800"
                             @click.prevent="navigateTo(getActionRoute(batch.status))"
                           >
-                            {{ batch.batchNo }}
+                            {{ batch.noBatch }}
                           </a>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institution }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.category }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                           <span
                             class="px-2 py-1 text-xs font-medium rounded-full"
@@ -178,9 +178,9 @@
                     <thead class="bg-gray-50">
                       <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch No</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institution</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Batch</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
                       </tr>
@@ -194,11 +194,11 @@
                             class="text-blue-600 hover:text-blue-800"
                             @click.prevent="navigateTo(getActionRoute(batch.status))"
                           >
-                            {{ batch.batchNo }}
+                            {{ batch.noBatch }}
                           </a>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institution }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.category }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                           <span
                             class="px-2 py-1 text-xs font-medium rounded-full"
@@ -230,9 +230,9 @@
                     <thead class="bg-gray-50">
                       <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch No</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institution</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Batch</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
                       </tr>
@@ -246,11 +246,11 @@
                             class="text-blue-600 hover:text-blue-800"
                             @click.prevent="navigateTo(getActionRoute(batch.status))"
                           >
-                            {{ batch.batchNo }}
+                            {{ batch.noBatch }}
                           </a>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institution }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.category }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                           <span
                             class="px-2 py-1 text-xs font-medium rounded-full"
@@ -302,15 +302,15 @@ const breadcrumb = ref([
   },
 ]);
 
-// Role simulation
+// Simulasi peranan
 const currentRole = ref('eksekutif');
 const showRoleInfo = ref(false);
 
-// Tab management
+// Pengurusan tab
 const activeTab = ref("Sedang Proses");
 const tableKey = ref(0);
 
-// Search and filter state
+// Keadaan carian dan penapis
 const searchQuery = ref('');
 const selectedStatus = ref('');
 const isSearchPerformed = ref(false);
@@ -342,51 +342,51 @@ const roleData = {
   }
 };
 
-// Mock data for batches with complete workflow statuses
+// Data mock untuk batch dengan status aliran kerja lengkap
 const batches = ref([
   {
     id: 1,
-    batchNo: 'BATCH/2024/001',
-    institution: 'Masjid Al-Hidayah',
-    category: 'Kariah',
+    noBatch: 'BATCH/2024/001',
+    institusi: 'Masjid Al-Hidayah',
+    kategori: 'Kariah',
     status: 'Menunggu Pengesahan',
-    createdAt: '2024-03-15'
+    tarikhCipta: '2024-03-15'
   },
   {
     id: 2,
-    batchNo: 'BATCH/2024/002',
-    institution: 'Masjid Al-Ikhlas',
-    category: 'Kariah',
+    noBatch: 'BATCH/2024/002',
+    institusi: 'Masjid Al-Ikhlas',
+    kategori: 'Kariah',
     status: 'Menunggu Pengesahan',
-    createdAt: '2024-03-16'
+    tarikhCipta: '2024-03-16'
   },
   {
     id: 3,
-    batchNo: 'BATCH/2024/003',
-    institution: 'Masjid Al-Amin',
-    category: 'Kariah',
+    noBatch: 'BATCH/2024/003',
+    institusi: 'Masjid Al-Amin',
+    kategori: 'Kariah',
     status: 'Menunggu Kelulusan',
-    createdAt: '2024-03-10'
+    tarikhCipta: '2024-03-10'
   },
   {
     id: 4,
-    batchNo: 'BATCH/2024/004',
-    institution: 'Masjid Al-Falah',
-    category: 'Kariah',
+    noBatch: 'BATCH/2024/004',
+    institusi: 'Masjid Al-Falah',
+    kategori: 'Kariah',
     status: 'Diluluskan',
-    createdAt: '2024-03-12'
+    tarikhCipta: '2024-03-12'
   },
   {
     id: 5,
-    batchNo: 'BATCH/2024/005',
-    institution: 'Masjid Al-Muttaqin',
-    category: 'Kariah',
+    noBatch: 'BATCH/2024/005',
+    institusi: 'Masjid Al-Muttaqin',
+    kategori: 'Kariah',
     status: 'Ditolak',
-    createdAt: '2024-03-18'
+    tarikhCipta: '2024-03-18'
   }
 ]);
 
-// Complete status options for the verification workflow
+// Pilihan status lengkap untuk aliran kerja pengesahan
 const statusOptions = [
   { label: 'Semua', value: '' },
   { label: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' },
@@ -397,7 +397,7 @@ const statusOptions = [
 
 
 
-// Role-based functions
+// Fungsi berasaskan peranan
 const getRoleLabel = (role) => {
   return roleData[role]?.name || role;
 };
@@ -415,7 +415,7 @@ const getRoleVariant = (role) => {
 };
 
 const handleRoleChange = () => {
-  // Reset filters when role changes
+  // Set semula penapis apabila peranan berubah
   selectedStatus.value = '';
   showRoleInfo.value = false;
   refreshTable();
@@ -446,23 +446,23 @@ const getFilteredStatusOptions = () => {
 const getFilteredBatches = () => {
   let filtered = batches.value.filter(batch => {
     const matchesSearch = !searchQuery.value || 
-      batch.batchNo.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      batch.institution.toLowerCase().includes(searchQuery.value.toLowerCase());
+      batch.noBatch.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      batch.institusi.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesStatus = !selectedStatus.value || batch.status === selectedStatus.value;
     return matchesSearch && matchesStatus;
   });
 
-  // Role-based filtering
+  // Penapisan berasaskan peranan
   if (currentRole.value === 'eksekutif') {
-    // Eksekutif can see all batches
+    // Eksekutif boleh melihat semua batch
     return filtered;
   } else if (currentRole.value === 'ketua-jabatan') {
-    // Ketua Jabatan can see batches that need their attention or have passed their level
+    // Ketua Jabatan boleh melihat batch yang memerlukan perhatian mereka atau telah melalui tahap mereka
     return filtered.filter(batch => 
       ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(batch.status)
     );
   } else if (currentRole.value === 'ketua-divisyen') {
-    // Ketua Divisyen can only see batches that need final approval or have been processed
+    // Ketua Divisyen hanya boleh melihat batch yang memerlukan kelulusan akhir atau telah diproses
     return filtered.filter(batch => 
       ['Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(batch.status)
     );
@@ -471,24 +471,24 @@ const getFilteredBatches = () => {
   return filtered;
 };
 
-// Filter table data based on status
+// Tapis data jadual berdasarkan status
 const getTableDataByStatus = (statuses) => {
   let result = getFilteredBatches().filter(batch => 
     statuses.includes(batch.status)
   );
   
-  // Only apply filters if search has been performed
+  // Hanya gunakan penapis jika carian telah dilakukan
   if (isSearchPerformed.value) {
-    // Apply search filter
+    // Gunakan penapis carian
     if (searchQuery.value) {
       const query = searchQuery.value.toLowerCase();
       result = result.filter(batch => 
-        batch.batchNo.toLowerCase().includes(query) ||
-        batch.institution.toLowerCase().includes(query)
+        batch.noBatch.toLowerCase().includes(query) ||
+        batch.institusi.toLowerCase().includes(query)
       );
     }
     
-    // Apply status filter
+    // Gunakan penapis status
     if (selectedStatus.value) {
       result = result.filter(batch => 
         batch.status === selectedStatus.value
@@ -499,12 +499,12 @@ const getTableDataByStatus = (statuses) => {
   return result;
 };
 
-// Computed filtered batches
+// Batch yang ditapis dikira
 const filteredBatches = computed(() => {
   return getFilteredBatches();
 });
 
-// Helper functions
+// Fungsi pembantu
 const getStatusVariant = (status) => {
   switch (status) {
     case 'Menunggu Pengesahan':
@@ -578,10 +578,10 @@ const getActionButtonText = (status) => {
   }
 }
 
-// Search functionality
+// Fungsi carian
 const performSearch = () => {
   if (!searchQuery.value && !selectedStatus.value) {
-    // You can add toast notification here if needed
+    // Anda boleh menambah notifikasi toast di sini jika diperlukan
     return;
   }
   
@@ -598,11 +598,11 @@ const clearSearch = () => {
 
 const refreshTable = () => {
   nextTick(() => {
-    tableKey.value++; // Force table to re-render
+    tableKey.value++; // Paksa jadual untuk di-render semula
   });
 };
 
-// Event handlers
+// Pengendali acara
 const handleSearch = (event) => {
   searchQuery.value = event.target.value;
 };
