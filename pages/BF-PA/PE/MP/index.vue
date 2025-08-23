@@ -131,10 +131,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Belum Disemak">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai aktiviti yang belum disemak
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-pending`"
                   :data="getTableDataByStatus(['Belum Disemak'])"
@@ -146,7 +142,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -173,10 +169,6 @@
 
             <rs-tab-item title="Diluluskan">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai aktiviti yang telah diluluskan
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-approved`"
                   :data="getTableDataByStatus(['Diluluskan'])"
@@ -188,7 +180,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -215,10 +207,6 @@
 
             <rs-tab-item title="Ditolak">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
-                  Senarai aktiviti yang telah ditolak
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak'])"
@@ -230,7 +218,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -321,10 +309,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai aktiviti yang belum disemak
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-pending`"
                   :data="getTableDataByStatus(['Belum Disemak'])"
@@ -336,7 +320,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -363,10 +347,6 @@
 
             <rs-tab-item title="Diluluskan">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai aktiviti yang telah diluluskan
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-approved`"
                   :data="getTableDataByStatus(['Diluluskan'])"
@@ -378,7 +358,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -405,10 +385,6 @@
 
             <rs-tab-item title="Ditolak">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
-                  Senarai aktiviti yang telah ditolak
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak'])"
@@ -420,7 +396,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -511,10 +487,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Belum Disemak">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-yellow-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai aktiviti yang belum disemak
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-pending`"
                   :data="getTableDataByStatus(['Belum Disemak'])"
@@ -526,7 +498,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -553,10 +525,6 @@
 
             <rs-tab-item title="Diluluskan">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai aktiviti yang telah diluluskan
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-approved`"
                   :data="getTableDataByStatus(['Diluluskan'])"
@@ -568,7 +536,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -595,10 +563,6 @@
 
             <rs-tab-item title="Ditolak">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
-                  Senarai aktiviti yang telah ditolak
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak'])"
@@ -610,7 +574,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >

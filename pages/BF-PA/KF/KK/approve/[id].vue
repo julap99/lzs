@@ -136,46 +136,71 @@
         </template>
       </rs-card>
 
-      <!-- Ulasan Terdahulu -->
+      <!-- Review History -->
       <rs-card class="mb-6">
         <template #header>
           <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-            <Icon name="ph:chat-text" class="w-5 h-5 mr-2" />
-            Ulasan Terdahulu
+            <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
+            Sejarah Semakan
           </h3>
         </template>
         <template #body>
-          <div class="p-6 space-y-4">
-            <!-- Eksekutif's Sokongan -->
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div class="flex items-start">
-                <Icon name="ph:user" class="w-5 h-5 text-blue-600 mr-3 mt-1" />
-                <div class="flex-1">
-                  <div class="flex items-center mb-2">
-                    <span class="font-medium text-blue-900">{{ formData.namaPenyokong }}</span>
-                    <rs-badge variant="info" size="sm" class="ml-2">Eksekutif</rs-badge>
-                    <span class="text-sm text-blue-600 ml-2">{{ formatDate(formData.tarikhSokongan) }}</span>
+          <div class="p-6">
+            <div class="space-y-4">
+              <!-- Eksekutif Review -->
+              <div class="flex items-start justify-between p-4">
+                <div class="flex items-start">
+                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-gray-900">Eksekutif</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
+                    <div class="text-xs text-gray-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> {{ formData.namaPenyokong }} (Eksekutif)</p>
+                      <p><strong>Tarikh:</strong> {{ formatDate(formData.tarikhSokongan) }}</p>
+                      <p><strong>Catatan:</strong> {{ formData.ulasanSokongan || 'Tiada ulasan tambahan.' }}</p>
+                    </div>
                   </div>
-                  <p class="text-blue-800 text-sm leading-relaxed">
-                    {{ formData.ulasanSokongan || 'Tiada ulasan tambahan.' }}
-                  </p>
                 </div>
               </div>
-            </div>
 
-            <!-- Ketua Jabatan's Pengesahan -->
-            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div class="flex items-start">
-                <Icon name="ph:user-check" class="w-5 h-5 text-green-600 mr-3 mt-1" />
-                <div class="flex-1">
-                  <div class="flex items-center mb-2">
-                    <span class="font-medium text-green-900">{{ formData.namaPengesah }}</span>
-                    <rs-badge variant="success" size="sm" class="ml-2">Ketua Jabatan</rs-badge>
-                    <span class="text-sm text-green-600 ml-2">{{ formatDate(formData.tarikhPengesahan) }}</span>
+              <!-- Ketua Jabatan Review -->
+              <div class="flex items-start justify-between p-4">
+                <div class="flex items-start">
+                  <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-gray-900">Ketua Jabatan</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">Pengesahan ketua jabatan</p>
+                    <div class="text-xs text-gray-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> {{ formData.namaPengesah }} (Ketua Jabatan)</p>
+                      <p><strong>Tarikh:</strong> {{ formatDate(formData.tarikhPengesahan) }}</p>
+                      <p><strong>Catatan:</strong> {{ formData.ulasanPengesahan || 'Tiada ulasan tambahan.' }}</p>
+                    </div>
                   </div>
-                  <p class="text-green-800 text-sm leading-relaxed">
-                    {{ formData.ulasanPengesahan || 'Tiada ulasan tambahan.' }}
-                  </p>
+                </div>
+              </div>
+
+              <!-- Ketua Divisyen Review (Current) -->
+              <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div class="flex items-start">
+                  <Icon name="ph:star" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-orange-900">Ketua Divisyen</h4>
+                      <rs-badge variant="warning">Dalam Proses</rs-badge>
+                    </div>
+                    <p class="text-sm text-orange-700 mb-2">Kelulusan akhir ketua divisyen</p>
+                    <div class="text-xs text-orange-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
+                      <p><strong>Tarikh:</strong> {{ currentDate }}</p>
+                      <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

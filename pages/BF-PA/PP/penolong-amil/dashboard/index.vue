@@ -111,27 +111,10 @@
             hover: true,
           }"
         >
-          <template v-slot:kategoriAduan="{ text }">
-            <rs-badge
-              :variant="getKategoriAduanVariant(text)"
-              size="sm"
-              class="w-4 h-4 rounded-full"
-              :title="getKategoriAduanLabel(text)"
-            >
-            </rs-badge>
-          </template>
           <template v-slot:status="{ text }">
             <rs-badge :variant="getStatusVariant(text)" size="sm">
               {{ text }}
             </rs-badge>
-          </template>
-          <template v-slot:prioriti="{ text }">
-            <rs-badge
-              :variant="getPrioritiVariant(text)"
-              size="sm"
-              class="w-4 h-4 rounded-full"
-              :title="text"
-            />
           </template>
           <template v-slot:tarikhAduan="{ text }">
             <span class="font-medium">{{ formatDate(text) }}</span>
@@ -496,8 +479,6 @@ const aduanData = ref([
   {
     noRujukan: "ADN-2024-001",
     namaIndividu: "Ahmad bin Ismail",
-    kategoriAduan: 1,
-    prioriti: "Tinggi",
     tarikhAduan: "2024-03-15",
     status: "Aduan Baru",
     aksi: "Aduan Baru",
@@ -505,8 +486,6 @@ const aduanData = ref([
   {
     noRujukan: "ADN-2024-002",
     namaIndividu: "Siti binti Hassan",
-    kategoriAduan: 2,
-    prioriti: "Sederhana",
     tarikhAduan: "2024-03-14",
     status: "Dalam Proses",
     aksi: "Dalam Proses",
@@ -514,8 +493,6 @@ const aduanData = ref([
   {
     noRujukan: "ADN-2024-003",
     namaIndividu: "Mohamad bin Ali",
-    kategoriAduan: 3,
-    prioriti: "Rendah",
     tarikhAduan: "2024-03-13",
     status: "Selesai",
     aksi: "Selesai",
@@ -523,8 +500,6 @@ const aduanData = ref([
   {
     noRujukan: "ADN-2024-004",
     namaIndividu: "Noraini binti Omar",
-    kategoriAduan: 1,
-    prioriti: "Tinggi",
     tarikhAduan: "2024-03-12",
     status: "Menunggu Kelulusan",
     aksi: "Menunggu Kelulusan",
@@ -532,8 +507,6 @@ const aduanData = ref([
   {
     noRujukan: "ADN-2024-005",
     namaIndividu: "Zulkifli bin Rashid",
-    kategoriAduan: 2,
-    prioriti: "Sederhana",
     tarikhAduan: "2024-03-11",
     status: "Ditutup",
     aksi: "Ditutup",
@@ -546,8 +519,6 @@ const filteredAduanData = ref([...aduanData.value]);
 const aduanColumns = [
   { key: "noRujukan", label: "No. Rujukan", sortable: true },
   { key: "namaIndividu", label: "Nama Individu", sortable: true },
-  { key: "kategoriAduan", label: "Kategori Aduan", sortable: true },
-  { key: "prioriti", label: "Prioriti", sortable: true },
   { key: "tarikhAduan", label: "Tarikh Aduan", sortable: true },
   { key: "status", label: "Status", sortable: true },
   { key: "aksi", label: "Tindakan", sortable: false },
@@ -571,24 +542,6 @@ const downloadSuratTawaran = () => {
 };
 
 // Helper functions for Aduan table
-const getKategoriAduanVariant = (kategoriAduan) => {
-  const variants = {
-    1: "danger",    // Keselamatan
-    2: "warning",   // Kebersihan
-    3: "success",   // Infrastruktur
-  };
-  return variants[kategoriAduan] || "default";
-};
-
-const getKategoriAduanLabel = (kategoriAduan) => {
-  const labels = {
-    1: "Keselamatan",
-    2: "Kebersihan", 
-    3: "Infrastruktur",
-  };
-  return labels[kategoriAduan] || "Lain-lain";
-};
-
 const getStatusVariant = (status) => {
   const variants = {
     "Aduan Baru": "warning",
@@ -598,15 +551,6 @@ const getStatusVariant = (status) => {
     "Ditutup": "danger",
   };
   return variants[status] || "default";
-};
-
-const getPrioritiVariant = (prioriti) => {
-  const variants = {
-    "Tinggi": "danger",
-    "Sederhana": "warning",
-    "Rendah": "success",
-  };
-  return variants[prioriti] || "default";
 };
 
 const formatDate = (date) => {

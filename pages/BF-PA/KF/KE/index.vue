@@ -139,10 +139,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Aktif">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah aktif
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-active`"
                   :data="getTableDataByStatus(['Aktif'])"
@@ -190,10 +186,6 @@
 
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai elaun yang sedang dalam proses
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-process`"
                   :data="getTableDataByStatus(['Menunggu Pengesahan', 'Menunggu Kelulusan'])"
@@ -233,10 +225,6 @@
 
             <rs-tab-item title="Tidak Aktif">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
-                  Senarai elaun yang tidak aktif
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-inactive`"
                   :data="getTableDataByStatus(['Tidak Aktif'])"
@@ -289,10 +277,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Aktif">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah aktif
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-active`"
                   :data="getTableDataByStatus(['Aktif'])"
@@ -332,10 +316,6 @@
 
             <rs-tab-item title="Menunggu Pengesahan">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai elaun yang menunggu pengesahan
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-pending`"
                   :data="getTableDataByStatus(['Menunggu Pengesahan'])"
@@ -382,10 +362,6 @@
 
             <rs-tab-item title="Tidak Aktif">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
-                  Senarai elaun yang tidak aktif
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-inactive`"
                   :data="getTableDataByStatus(['Tidak Aktif'])"
@@ -430,10 +406,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Aktif">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah aktif
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-active`"
                   :data="getTableDataByStatus(['Aktif'])"
@@ -475,11 +447,6 @@
             <rs-tab-item title="Sedang Proses - Lulus">
               <div class="p-4">
                 <div class="flex justify-between items-center mb-4">
-                  <h3 class="text-lg font-semibold text-green-700 flex items-center">
-                    <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                    Senarai elaun yang disahkan untuk kelulusan
-                  </h3>
-                  
                   <!-- Bulk Approval Button - Only in this tab -->
                   <div v-if="hasPendingApprovals" class="flex space-x-3">
                     <rs-button
@@ -539,11 +506,6 @@
 
             <rs-tab-item title="Sedang Proses - Ditolak">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ic:baseline-warning" class="mr-2" size="20" />
-                  Senarai elaun yang ditolak oleh Ketua Jabatan
-                </h3>
-                
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak Ketua Jabatan'])"
@@ -590,10 +552,6 @@
 
             <rs-tab-item title="Tidak Aktif">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
-                  Senarai elaun yang tidak aktif
-                </h3>
                 <rs-table
                   :key="`table-${tableKey}-inactive`"
                   :data="getTableDataByStatus(['Tidak Aktif'])"

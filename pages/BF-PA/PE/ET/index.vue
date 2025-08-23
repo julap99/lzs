@@ -144,10 +144,6 @@
             <rs-tab-item title="Draf">
               <div class="p-4">
                 <div class="flex justify-between items-center mb-4">
-                  <h3 class="text-lg font-semibold text-gray-700 flex items-center">
-                    <Icon name="ic:baseline-description" class="mr-2" size="20" />
-                    Senarai elaun yang dalam draf
-                  </h3>
                   <rs-button
                     variant="success"
                     @click="addNewAllowance"
@@ -214,10 +210,6 @@
 
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai elaun yang sedang dalam proses
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -268,10 +260,6 @@
 
             <rs-tab-item title="Lulus">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah diluluskan
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -327,10 +315,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai elaun yang menunggu pengesahan jabatan
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -388,10 +372,6 @@
 
             <rs-tab-item title="Perlu Pengesahan">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ic:baseline-warning" class="mr-2" size="20" />
-                  Senarai elaun yang melebihi bajet dan memerlukan pengesahan
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -449,10 +429,6 @@
 
             <rs-tab-item title="Lulus">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah disahkan jabatan
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -508,10 +484,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai elaun yang menunggu kelulusan akhir divisyen
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -569,10 +541,6 @@
 
             <rs-tab-item title="Lulus">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah diluluskan divisyen
-                </h3>
           <div class="overflow-x-auto rounded-lg border">
           <table class="min-w-full text-sm divide-y">
             <thead class="bg-gray-50 text-left">

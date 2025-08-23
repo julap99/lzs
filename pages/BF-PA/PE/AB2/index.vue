@@ -121,10 +121,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai elaun yang sedang dalam proses (Menunggu Pengesahan & Kelulusan)
-                </h3>
                 <div class="overflow-x-auto">
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -175,14 +171,8 @@
               </div>
             </rs-tab-item>
 
-
-
             <rs-tab-item title="Diluluskan">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah diluluskan
-                </h3>
                 <div class="overflow-x-auto">
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -235,10 +225,6 @@
 
             <rs-tab-item title="Ditolak">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
-                  Senarai elaun yang telah ditolak
-                </h3>
                 <div class="overflow-x-auto">
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">

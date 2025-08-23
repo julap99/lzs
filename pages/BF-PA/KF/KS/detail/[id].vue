@@ -113,99 +113,70 @@
       </template>
     </rs-card>
 
-    <!-- Enhanced Workflow Status -->
+    <!-- Review History -->
     <rs-card class="mb-6">
       <template #header>
         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:flow-arrow" class="w-5 h-5 mr-2" />
-          Status Aliran Kerja Kelulusan
+          <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
+          Sejarah Semakan
         </h3>
       </template>
       <template #body>
         <div class="p-6">
-          <div class="space-y-6">
-            <!-- Workflow Timeline -->
-            <div class="relative">
-              <!-- Progress Line -->
-              <div class="absolute left-4 top-8 bottom-0 w-0.5 bg-gray-200"></div>
-              
-              <!-- Step 1: Eksekutif -->
-              <div class="relative flex items-start space-x-4 pb-6">
-                <div class="flex-shrink-0">
-                  <div :class="[
-                    'w-8 h-8 rounded-full flex items-center justify-center',
-                    getWorkflowStepClass(1)
-                  ]">
-                    <Icon :name="getWorkflowStepIcon(1)" class="w-4 h-4 text-white" />
+          <div class="space-y-4">
+            <!-- Eksekutif Review -->
+            <div class="flex items-start justify-between p-4">
+              <div class="flex items-start">
+                <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-semibold text-gray-900">Eksekutif</h4>
+                    <rs-badge variant="success">Selesai</rs-badge>
                   </div>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">Eksekutif - Sokongan</p>
-                      <p class="text-sm text-gray-500">{{ getWorkflowStepDescription(1) }}</p>
-                    </div>
-                    <rs-badge :variant="getWorkflowStepBadge(1)" size="sm">
-                      {{ getWorkflowStepStatus(1) }}
-                    </rs-badge>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Step 2: Ketua Jabatan -->
-              <div class="relative flex items-start space-x-4 pb-6">
-                <div class="flex-shrink-0">
-                  <div :class="[
-                    'w-8 h-8 rounded-full flex items-center justify-center',
-                    getWorkflowStepClass(2)
-                  ]">
-                    <Icon :name="getWorkflowStepIcon(2)" class="w-4 h-4 text-white" />
-                  </div>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">Ketua Jabatan - Pengesahan</p>
-                      <p class="text-sm text-gray-500">{{ getWorkflowStepDescription(2) }}</p>
-                    </div>
-                    <rs-badge :variant="getWorkflowStepBadge(2)" size="sm">
-                      {{ getWorkflowStepStatus(2) }}
-                    </rs-badge>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Step 3: Ketua Divisyen -->
-              <div class="relative flex items-start space-x-4">
-                <div class="flex-shrink-0">
-                  <div :class="[
-                    'w-8 h-8 rounded-full flex items-center justify-center',
-                    getWorkflowStepClass(3)
-                  ]">
-                    <Icon :name="getWorkflowStepIcon(3)" class="w-4 h-4 text-white" />
-                  </div>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">Ketua Divisyen - Kelulusan Akhir</p>
-                      <p class="text-sm text-gray-500">{{ getWorkflowStepDescription(3) }}</p>
-                    </div>
-                    <rs-badge :variant="getWorkflowStepBadge(3)" size="sm">
-                      {{ getWorkflowStepStatus(3) }}
-                    </rs-badge>
+                  <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
+                  <div class="text-xs text-gray-600 space-y-1">
+                    <p><strong>Disemak oleh:</strong> Dr. Aminah binti Abdullah (Eksekutif)</p>
+                    <p><strong>Tarikh:</strong> 15-01-2024 10:30</p>
+                    <p><strong>Catatan:</strong> Sokongan diberikan untuk perubahan tempoh sesi perkhidmatan</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Current Status Summary -->
-            <div class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-              <div class="flex items-center">
-                <Icon name="ph:info" class="w-5 h-5 text-blue-600 mr-3" />
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Status Semasa</p>
-                  <p class="text-sm text-gray-600">{{ getCurrentStatusDescription() }}</p>
+            <!-- Ketua Jabatan Review -->
+            <div class="flex items-start justify-between p-4">
+              <div class="flex items-start">
+                <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-semibold text-gray-900">Ketua Jabatan</h4>
+                    <rs-badge variant="success">Selesai</rs-badge>
+                  </div>
+                  <p class="text-sm text-gray-700 mb-2">Pengesahan ketua jabatan</p>
+                  <div class="text-xs text-gray-600 space-y-1">
+                    <p><strong>Disemak oleh:</strong> Prof. Dr. Ismail bin Ahmad (Ketua Jabatan)</p>
+                    <p><strong>Tarikh:</strong> 20-01-2024 14:15</p>
+                    <p><strong>Catatan:</strong> Perubahan tempoh sesi disahkan dan layak untuk kelulusan ketua divisyen</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ketua Divisyen Review (Current) -->
+            <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+              <div class="flex items-start">
+                <Icon name="ph:star" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-semibold text-orange-900">Ketua Divisyen</h4>
+                    <rs-badge variant="warning">Dalam Proses</rs-badge>
+                  </div>
+                  <p class="text-sm text-orange-700 mb-2">Kelulusan akhir ketua divisyen</p>
+                  <div class="text-xs text-orange-600 space-y-1">
+                    <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
+                    <p><strong>Tarikh:</strong> {{ currentDate }}</p>
+                    <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
+                  </div>
                 </div>
               </div>
             </div>

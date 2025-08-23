@@ -127,57 +127,72 @@
       </template>
     </rs-card>
 
-    <!-- Previous Remarks Section -->
+    <!-- Review History -->
     <rs-card class="mb-6">
       <template #header>
         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:chat-text" class="w-5 h-5 mr-2" />
-          Ulasan Terdahulu
+          <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
+          Sejarah Semakan
         </h3>
       </template>
       <template #body>
-        <!-- Eksekutif Remarks -->
-        <div class="p-6 bg-blue-50 border border-blue-200 rounded-lg mb-4">
-          <div class="mb-4">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-medium text-blue-900">Ulasan Sokongan dari Eksekutif:</span>
-              <rs-badge variant="info" size="sm">Eksekutif</rs-badge>
+        <div class="p-6">
+          <div class="space-y-4">
+            <!-- Eksekutif Review -->
+            <div class="flex items-start justify-between p-4">
+              <div class="flex items-start">
+                <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-semibold text-gray-900">Eksekutif</h4>
+                    <rs-badge variant="success">Selesai</rs-badge>
+                  </div>
+                  <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
+                  <div class="text-xs text-gray-600 space-y-1">
+                    <p><strong>Disemak oleh:</strong> {{ previousRemarks.eksekutif.nama }} (Eksekutif)</p>
+                    <p><strong>Tarikh:</strong> {{ formatDate(previousRemarks.eksekutif.tarikh) }}</p>
+                    <p><strong>Catatan:</strong> {{ previousRemarks.eksekutif.ulasan }}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="bg-white p-4 rounded-md border border-blue-200">
-              <p class="text-gray-800">{{ previousRemarks.eksekutif.ulasan }}</p>
-            </div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <span class="font-medium text-blue-900">Nama:</span>
-              <span class="text-gray-700 ml-2">{{ previousRemarks.eksekutif.nama }}</span>
-            </div>
-            <div>
-              <span class="font-medium text-blue-900">Tarikh:</span>
-              <span class="text-gray-700 ml-2">{{ formatDate(previousRemarks.eksekutif.tarikh) }}</span>
-            </div>
-          </div>
-        </div>
 
-        <!-- Ketua Jabatan Remarks -->
-        <div class="p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <div class="mb-4">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-medium text-yellow-900">Ulasan Pengesahan dari Ketua Jabatan:</span>
-              <rs-badge variant="warning" size="sm">Ketua Jabatan</rs-badge>
+            <!-- Ketua Jabatan Review -->
+            <div class="flex items-start justify-between p-4">
+              <div class="flex items-start">
+                <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-semibold text-gray-900">Ketua Jabatan</h4>
+                    <rs-badge variant="success">Selesai</rs-badge>
+                  </div>
+                  <p class="text-sm text-gray-700 mb-2">Pengesahan ketua jabatan</p>
+                  <div class="text-xs text-gray-600 space-y-1">
+                    <p><strong>Disemak oleh:</strong> {{ previousRemarks.ketuaJabatan.nama }} (Ketua Jabatan)</p>
+                    <p><strong>Tarikh:</strong> {{ formatDate(previousRemarks.ketuaJabatan.tarikh) }}</p>
+                    <p><strong>Catatan:</strong> {{ previousRemarks.ketuaJabatan.ulasan }}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="bg-white p-4 rounded-md border border-yellow-200">
-              <p class="text-gray-800">{{ previousRemarks.ketuaJabatan.ulasan }}</p>
-            </div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <span class="font-medium text-yellow-900">Nama:</span>
-              <span class="text-gray-700 ml-2">{{ previousRemarks.ketuaJabatan.nama }}</span>
-            </div>
-            <div>
-              <span class="font-medium text-yellow-900">Tarikh:</span>
-              <span class="text-gray-700 ml-2">{{ formatDate(previousRemarks.ketuaJabatan.tarikh) }}</span>
+
+            <!-- Ketua Divisyen Review (Current) -->
+            <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+              <div class="flex items-start">
+                <Icon name="ph:star" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-semibold text-orange-900">Ketua Divisyen</h4>
+                    <rs-badge variant="warning">Dalam Proses</rs-badge>
+                  </div>
+                  <p class="text-sm text-orange-700 mb-2">Kelulusan akhir ketua divisyen</p>
+                  <div class="text-xs text-orange-600 space-y-1">
+                    <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
+                    <p><strong>Tarikh:</strong> {{ currentDate }}</p>
+                    <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

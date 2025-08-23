@@ -1,4 +1,4 @@
-﻿<!-- 
+<!-- 
   RTMF SCREEN: PA-PP-PD-01_01
   PURPOSE: Main Dashboard - Senarai Permohonan Penolong Amil
   DESCRIPTION: Dynamic dashboard with role-based content for Penolong Amil applications
@@ -129,11 +129,7 @@
         <div v-if="currentRole === 'pyb'">
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Draf">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                  <Icon name="ic:baseline-description" class="mr-2" size="20" />
-                  Senarai permohonan dalam draf
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-draft`"
                   :data="getTableDataByStatus(['Draf', 'Draft'])"
@@ -148,7 +144,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -181,11 +177,7 @@
             </rs-tab-item>
 
             <rs-tab-item title="Sedang Proses">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai permohonan yang sedang dalam proses
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-process`"
                   :data="getTableDataByStatus(['Dihantar', 'Dalam Semakan', 'Telah Disaring', 'Telah Disemak', 'Telah Disokong', 'Telah Disahkan'])"
@@ -200,7 +192,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -233,11 +225,7 @@
             </rs-tab-item>
 
             <rs-tab-item title="Lulus">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai permohonan yang telah diluluskan
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-approved`"
                   :data="getTableDataByStatus(['Diluluskan', 'Approved'])"
@@ -252,7 +240,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -285,11 +273,7 @@
             </rs-tab-item>
 
             <rs-tab-item title="Ditolak">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-red-700 flex items-center">
-                  <Icon name="ic:outline-cancel" class="mr-2" size="20" />
-                  Senarai permohonan yang ditolak
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak', 'Rejected'])"
@@ -304,7 +288,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -342,11 +326,7 @@
         <div v-if="currentRole === 'eksekutif-pengurusan-risiko'">
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Menunggu Saringan">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai permohonan yang menunggu saringan risiko
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-screening`"
                   :data="getTableDataByStatus(['Dihantar'])"
@@ -361,7 +341,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -394,11 +374,7 @@
             </rs-tab-item>
 
             <rs-tab-item title="Telah Disaring">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai permohonan yang telah disaring
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-screened`"
                   :data="getTableDataByStatus(['Telah Disaring'])"
@@ -413,7 +389,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -444,11 +420,7 @@
         <div v-if="currentRole === 'pt'">
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Menunggu Semakan">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai permohonan yang menunggu semakan PT
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-pt-review`"
                   :data="getTableDataByStatus(['Telah Disaring'])"
@@ -463,7 +435,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -487,7 +459,7 @@
                         title="Semak"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-assignment" class="w-5 h-5 text-info" />
+                        <Icon name="ic:baseline-security" class="w-5 h-5 text-info" />
                       </button>
                     </div>
                   </template>
@@ -496,11 +468,7 @@
             </rs-tab-item>
 
             <rs-tab-item title="Telah Disemak">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai permohonan yang telah disemak PT
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pt-reviewed`"
                   :data="getTableDataByStatus(['Telah Disemak'])"
@@ -515,7 +483,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -546,11 +514,7 @@
         <div v-if="currentRole === 'eksekutif'">
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Menunggu Sokongan">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai permohonan yang menunggu sokongan eksekutif
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-support`"
                   :data="getTableDataByStatus(['Telah Disemak'])"
@@ -565,7 +529,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -598,11 +562,7 @@
             </rs-tab-item>
 
             <rs-tab-item title="Telah Disokong">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai permohonan yang telah disokong eksekutif
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-supported`"
                   :data="getTableDataByStatus(['Telah Disokong'])"
@@ -617,7 +577,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -648,11 +608,7 @@
         <div v-if="currentRole === 'ketua-jabatan'">
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Menunggu Pengesahan">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai permohonan yang menunggu pengesahan ketua jabatan
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-confirmation`"
                   :data="getTableDataByStatus(['Telah Disokong'])"
@@ -667,7 +623,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -700,11 +656,7 @@
             </rs-tab-item>
 
             <rs-tab-item title="Telah Disahkan">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai permohonan yang telah disahkan ketua jabatan
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-confirmed`"
                   :data="getTableDataByStatus(['Telah Disahkan'])"
@@ -719,7 +671,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -750,11 +702,7 @@
         <div v-if="currentRole === 'ketua-divisyen'">
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Menunggu Kelulusan">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai permohonan yang menunggu kelulusan akhir
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-approval`"
                   :data="getTableDataByStatus(['Telah Disahkan'])"
@@ -769,7 +717,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
@@ -802,11 +750,7 @@
             </rs-tab-item>
 
             <rs-tab-item title="Telah Diluluskan">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai permohonan yang telah diluluskan
-                </h3>
+              <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-approved`"
                   :data="getTableDataByStatus(['Diluluskan', 'Approved'])"
@@ -821,7 +765,7 @@
                   }"
                   :options-advanced="{
                     sortable: true,
-                    filterable: true,
+                    filterable: false,
                   }"
                   advanced
                 >
