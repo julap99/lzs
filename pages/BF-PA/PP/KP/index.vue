@@ -33,7 +33,7 @@
             :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
             class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
           >
-            <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
             {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
           </rs-button>
         </div>
@@ -188,7 +188,7 @@
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       title="Lihat"
                     >
-                      <Icon name="ph:eye" class="w-5 h-5 text-primary" />
+                      <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
                     </button>
                     <!-- PYB Institusi specific actions -->
                     <template v-if="currentRole === 'pyb-institusi'">
@@ -198,14 +198,14 @@
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                         title="Tamatkan"
                       >
-                        <Icon name="ph:stop-circle" class="w-5 h-5 text-danger" />
+                        <Icon name="ic:outline-cancel" class="w-5 h-5 text-danger" />
                       </button>
                       <button
                         @click="sendWarningLetter(request)"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                         title="Surat Amaran"
                       >
-                        <Icon name="ph:envelope" class="w-5 h-5 text-warning" />
+                        <Icon name="ic:baseline-mail" class="w-5 h-5 text-warning" />
                       </button>
                     </template>
                     
@@ -217,7 +217,7 @@
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                         title="Lulus"
                       >
-                        <Icon name="ph:check-circle" class="w-5 h-5 text-success" />
+                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
                       </button>
                     </template>
                   </div>
@@ -242,7 +242,7 @@
               :disabled="currentPage === 1"
               @click="currentPage = 1"
             >
-              <Icon name="ph:caret-double-left" class="w-4 h-4" />
+              <Icon name="ic:baseline-first-page" class="w-4 h-4" />
             </rs-button>
             <rs-button
               variant="secondary-outline"
@@ -250,7 +250,7 @@
               :disabled="currentPage === 1"
               @click="currentPage--"
             >
-              <Icon name="ph:caret-left" class="w-4 h-4" />
+              <Icon name="ic:baseline-chevron-left" class="w-4 h-4" />
             </rs-button>
             <rs-button
               variant="secondary-outline"
@@ -258,7 +258,7 @@
               :disabled="currentPage === totalPages"
               @click="currentPage++"
             >
-              <Icon name="ph:caret-right" class="w-4 h-4" />
+              <Icon name="ic:baseline-chevron-right" class="w-4 h-4" />
             </rs-button>
             <rs-button
               variant="secondary-outline"
@@ -266,7 +266,7 @@
               :disabled="currentPage === totalPages"
               @click="currentPage = totalPages"
             >
-              <Icon name="ph:caret-double-right" class="w-4 h-4" />
+              <Icon name="ic:baseline-last-page" class="w-4 h-4" />
             </rs-button>
           </div>
         </div>
@@ -278,13 +278,13 @@
       <rs-card class="shadow-lg border-l-4 border-success">
         <template #body>
           <div class="flex items-center">
-            <Icon name="ph:check-circle" class="w-5 h-5 text-success mr-3" />
+            <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success mr-3" />
             <div>
               <div class="font-medium text-gray-900">{{ notificationTitle }}</div>
               <div class="text-sm text-gray-600">{{ notificationMessage }}</div>
             </div>
             <button @click="hideNotification" class="ml-4 text-gray-400 hover:text-gray-600">
-              <Icon name="ph:x" class="w-4 h-4" />
+              <Icon name="ic:baseline-close" class="w-4 h-4" />
             </button>
           </div>
         </template>
@@ -295,7 +295,7 @@
     <rs-modal v-model="showWarningModal" title="Hantar Surat Amaran" size="xl">
       <template #header>
         <div class="flex items-center">
-          <Icon name="ph:warning" class="w-5 h-5 text-warning mr-2" />
+          <Icon name="ic:baseline-warning" class="w-5 h-5 text-warning mr-2" />
           <h3 class="text-lg font-semibold text-gray-900">Hantar Surat Amaran</h3>
         </div>
       </template>

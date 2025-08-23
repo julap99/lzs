@@ -207,7 +207,7 @@
       <template #body>
         <div class="text-center">
             <Icon
-            name="material-symbols:cancel-outline"
+            name="ic:outline-cancel"
             class="text-red-500 text-5xl mb-4"
           />
           <p class="text-lg mb-2">
@@ -243,7 +243,7 @@
       <template #body>
         <div class="text-center">
             <Icon
-            name="material-symbols:check-circle-outline"
+            name="ic:baseline-check-circle"
             class="text-green-500 text-5xl mb-4"
             />
           <p class="text-lg mb-2">

@@ -13,7 +13,7 @@
       <template #header>
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <Icon name="ph:users" class="mr-3 text-blue-600" size="24" />
+            <Icon name="ic:baseline-group" class="mr-3 text-blue-600" size="24" />
             <h2 class="text-lg font-semibold">Maklumat Penerima — Senarai Nama Penolong Amil</h2>
           </div>
           <div class="text-xs text-gray-500">
@@ -150,7 +150,7 @@
             :disabled="newCheckedCount === 0"
             @click="commitSelected"
           >
-            <Icon name="ph:check" class="mr-2" />
+            <Icon name="ic:baseline-check" class="mr-2" />
             Pilih ({{ newCheckedCount }})
           </rs-button>
         </div>
@@ -238,7 +238,7 @@
                         @click="r._isEditing = true"
                         v-if="!r._isEditing"
                       >
-                        <Icon name="ph:pencil" size="16" />
+                        <Icon name="ic:outline-edit" size="16" />
                       </rs-button>
                       <!-- Save Button - Only visible when editing -->
                       <rs-button
@@ -247,7 +247,7 @@
                         @click="saveRecipient(r)"
                         v-if="r._isEditing"
                       >
-                        <Icon name="ph:check" size="16" />
+                        <Icon name="ic:baseline-check" size="16" />
                       </rs-button>
                       <!-- Cancel Button - Only visible when editing -->
                       <rs-button
@@ -256,7 +256,7 @@
                         @click="cancelEdit(r)"
                         v-if="r._isEditing"
                       >
-                        <Icon name="ph:x" size="16" />
+                        <Icon name="ic:baseline-close" size="16" />
                       </rs-button>
                       <!-- Delete Button - Always visible (except for new recipients) -->
                       <rs-button
@@ -265,7 +265,7 @@
                         @click="removeRecipient(recipients.indexOf(r))"
                         v-if="!r._isNew"
                       >
-                        <Icon name="ph:trash" size="16" />
+                        <Icon name="ic:outline-delete" size="16" />
                       </rs-button>
                     </div>
                   </td>
@@ -308,7 +308,7 @@
               :disabled="saving"
               @click="saveDraft"
             >
-              <Icon name="ph:floppy-disk" class="mr-2" />
+              <Icon name="ic:baseline-save" class="mr-2" />
               Simpan draf
             </rs-button>
             <rs-button
@@ -317,7 +317,7 @@
               :disabled="!canSubmit || saving"
               @click="openSubmitModal"
             >
-              <Icon name="ph:paper-plane-right" class="mr-2" />
+              <Icon name="ic:baseline-send" class="mr-2" />
               Hantar
             </rs-button>
           </div>
@@ -360,7 +360,7 @@
               @click="confirmSubmit"
               :disabled="saving"
             >
-              <Icon name="ph:paper-plane-right" class="mr-2" />
+              <Icon name="ic:baseline-send" class="mr-2" />
               {{ saving ? 'Menghantar...' : 'Hantar' }}
             </rs-button>
           </div>

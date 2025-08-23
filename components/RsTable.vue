@@ -529,15 +529,6 @@ watch(
             </rs-button>
           </div>
         </div>
-        <div class="flex justify-center items-center gap-x-2">
-          <span class="text-[rgb(var(--text-color))]">Bilangan rekod per halaman:</span>
-          <FormKit
-            type="select"
-            v-model="pageSize"
-            :options="[5, 10, 25, 100]"
-            outer-class="mb-0"
-          />
-        </div>
       </div>
       <div
         class="flex flex-wrap items-center justify-start gap-x-3"
@@ -561,7 +552,7 @@ watch(
         </rs-dropdown>
       </div>
     </div>
-    <div v-if="filterComputed.length > 0" class="table-header-filter-list w-full m-4">
+    <div v-if="filterComputed.length > 0" class="table-header-filter-list w-full mt-2 mb-1">
       <div class="flex flex-wrap items-center justify-start gap-x-2">
         <div
           class="flex items-center justify-center gap-x-2 border border-primary text-primary rounded-lg py-1 px-2"
@@ -644,7 +635,9 @@ watch(
                 v-for="(val, index) in columnTitle"
                 :key="index"
               >
-                {{ getColumnLabel(val) }}
+                <slot :name="'header-' + val" :columnKey="val">
+                  {{ getColumnLabel(val) }}
+                </slot>
                 <div v-if="optionsAdvanced.sortable && advanced" class="sortable">
                   <Icon
                     class="absolute top-3 right-2 opacity-20"
@@ -877,7 +870,7 @@ watch(
       </div>
     </div>
   </div>
-  <div v-else class="table-wrapper p-4">
+  <div v-else class="table-wrapper pt-2 pb-1">
     <div class="border border-[rgb(var(--border-color))] rounded-lg overflow-hidden">
       <div class="bg-[rgb(var(--bg-2))] p-4 border-b border-[rgb(var(--border-color))]">
         <h3 class="text-lg font-semibold text-[rgb(var(--text-color))]"></h3>

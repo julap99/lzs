@@ -286,16 +286,16 @@
             
             <div class="space-y-4">
               <!-- PYB Institusi Review -->
-              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+              <div class="flex items-start justify-between p-4">
                 <div class="flex items-start">
-                  <Icon name="ph:user-plus" class="w-5 h-5 mr-3 text-green-500 mt-1" />
+                  <Icon name="ph:user-plus" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-green-900">PYB Institusi</h4>
+                      <h4 class="font-semibold text-gray-900">PYB Institusi</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
-                    <p class="text-sm text-green-700 mb-2">Mendaftar calon penolong amil</p>
-                    <div class="text-xs text-green-600 space-y-1">
+                    <p class="text-sm text-gray-700 mb-2">Mendaftar calon penolong amil</p>
+                    <div class="text-xs text-gray-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Ahmad Abdullah (PYB)</p>
                       <p><strong>Tarikh:</strong> 15-01-2024 10:30</p>
                       <p><strong>Catatan:</strong> Calon berjaya didaftarkan dengan maklumat lengkap</p>
@@ -305,16 +305,16 @@
               </div>
 
               <!-- Jabatan Pengurusan Risiko Review -->
-              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+              <div class="flex items-start justify-between p-4">
                 <div class="flex items-start">
-                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-green-500 mt-1" />
+                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-green-900">Jabatan Pengurusan Risiko</h4>
+                      <h4 class="font-semibold text-gray-900">Jabatan Pengurusan Risiko</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
-                    <p class="text-sm text-green-700 mb-2">Saringan risiko calon</p>
-                    <div class="text-xs text-green-600 space-y-1">
+                    <p class="text-sm text-gray-700 mb-2">Saringan risiko calon</p>
+                    <div class="text-xs text-gray-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Siti Fatimah binti Omar (Eksekutif Risiko)</p>
                       <p><strong>Tarikh:</strong> 20-01-2024 14:15</p>
                       <p><strong>Catatan:</strong> Calon lulus saringan risiko. Tiada rekod jenayah atau masalah kewangan</p>
@@ -324,16 +324,16 @@
               </div>
 
               <!-- PT Review -->
-              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+              <div class="flex items-start justify-between p-4">
                 <div class="flex items-start">
-                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-green-500 mt-1" />
+                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-green-900">Pegawai Tadbir</h4>
+                      <h4 class="font-semibold text-gray-900">Pegawai Tadbir</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
-                    <p class="text-sm text-green-700 mb-2">Semakan dokumen dan kelayakan</p>
-                    <div class="text-xs text-green-600 space-y-1">
+                    <p class="text-sm text-gray-700 mb-2">Semakan dokumen dan kelayakan</p>
+                    <div class="text-xs text-gray-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Mohd Ali bin Hassan (Pegawai Tadbir)</p>
                       <p><strong>Tarikh:</strong> 25-01-2024 09:45</p>
                       <p><strong>Catatan:</strong> Dokumen lengkap dan memenuhi syarat. Disyorkan untuk sokongan eksekutif</p>
@@ -343,16 +343,16 @@
               </div>
 
               <!-- Eksekutif Review -->
-              <div class="flex items-start justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+              <div class="flex items-start justify-between p-4">
                 <div class="flex items-start">
-                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-green-500 mt-1" />
+                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-green-900">Eksekutif</h4>
+                      <h4 class="font-semibold text-gray-900">Eksekutif</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
-                    <p class="text-sm text-green-700 mb-2">Sokongan eksekutif</p>
-                    <div class="text-xs text-green-600 space-y-1">
+                    <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
+                    <div class="text-xs text-gray-600 space-y-1">
                       <p><strong>Disemak oleh:</strong> Dr. Aminah binti Abdullah (Eksekutif)</p>
                       <p><strong>Tarikh:</strong> 30-01-2024 11:20</p>
                       <p><strong>Catatan:</strong> Calon layak dan disokong untuk pengesahan ketua jabatan</p>

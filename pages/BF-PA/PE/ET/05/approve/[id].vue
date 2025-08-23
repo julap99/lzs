@@ -13,7 +13,7 @@
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <Icon name="ph:check-circle" class="w-6 h-6 mr-3 text-green-600" />
+            <Icon name="ic:baseline-check-circle" class="w-6 h-6 mr-3 text-green-600" />
             Kelulusan Elaun Tahunan
           </h1>
           <p class="text-gray-600 mt-1">
@@ -23,7 +23,7 @@
         </div>
         <!-- Loading Indicator -->
         <div v-if="loading" class="flex items-center text-blue-600">
-          <Icon name="ph:arrow-clockwise" class="w-5 h-5 mr-2 animate-spin" />
+          <Icon name="ic:baseline-refresh" class="w-5 h-5 mr-2 animate-spin" />
           <span class="text-sm">Memuatkan data...</span>
         </div>
       </div>
@@ -38,7 +38,7 @@
         <div class="p-6">
           <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
             <div class="flex items-start">
-              <Icon name="ph:check-circle" class="text-green-400 mr-3 flex-shrink-0 mt-0.5" size="20" />
+              <Icon name="ic:baseline-check-circle" class="text-green-400 mr-3 flex-shrink-0 mt-0.5" size="20" />
               <div>
                 <h4 class="text-sm font-medium text-green-800">Elaun Dalam Bajet</h4>
                 <p class="text-sm text-green-700 mt-1">
@@ -116,7 +116,7 @@
             <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
               <div class="flex items-center">
                 <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
-                  <Icon name="ph:user" class="w-4 h-4 text-white" />
+                  <Icon name="ic:baseline-person" class="w-4 h-4 text-white" />
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-900">Eksekutif</p>
@@ -130,7 +130,7 @@
             <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div class="flex items-center">
                 <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center mr-3">
-                  <Icon name="ph:check-circle" class="w-4 h-4 text-white" />
+                  <Icon name="ic:baseline-check-circle" class="w-4 h-4 text-white" />
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-900">Ketua Jabatan</p>
@@ -295,7 +295,7 @@
         @click="goBack"
         class="flex items-center"
       >
-        <Icon name="ph:arrow-left" class="w-4 h-4 mr-2" />
+        <Icon name="ic:baseline-arrow-back" class="w-4 h-4 mr-2" />
         Kembali
       </rs-button>
       
@@ -306,7 +306,7 @@
           @click="rejectAllowance"
           class="flex items-center"
         >
-          <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
+          <Icon name="ic:outline-cancel" class="w-4 h-4 mr-2" />
           {{ submitting ? 'Memproses...' : 'Tolak' }}
         </rs-button>
         <rs-button
@@ -315,7 +315,7 @@
           @click="approveAllowance"
           class="flex items-center"
         >
-          <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
+          <Icon name="ic:baseline-check-circle" class="w-4 h-4 mr-2" />
           {{ submitting ? 'Memproses...' : 'Luluskan' }}
         </rs-button>
       </div>

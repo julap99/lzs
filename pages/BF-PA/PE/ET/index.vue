@@ -10,7 +10,7 @@
     <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
-          <Icon name="ph:user-circle" class="text-gray-600" size="20" />
+          <Icon name="ic:baseline-account-circle" class="text-gray-600" size="20" />
           <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
         </div>
         <div class="flex items-center space-x-3">
@@ -33,7 +33,7 @@
             :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
             class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
           >
-            <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
             {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
           </rs-button>
         </div>
@@ -115,7 +115,7 @@
                 @click="performSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
               </rs-button>
               <rs-button
@@ -123,7 +123,7 @@
                 @click="clearSearch"
                 class="flex items-center whitespace-nowrap"
               >
-                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
                 Set Semula
               </rs-button>
             </div>
@@ -144,16 +144,12 @@
             <rs-tab-item title="Draf">
               <div class="p-4">
                 <div class="flex justify-between items-center mb-4">
-                  <h3 class="text-lg font-semibold text-gray-700 flex items-center">
-                    <Icon name="ph:file-text" class="mr-2" size="20" />
-                    Senarai elaun yang dalam draf
-                  </h3>
                   <rs-button
                     variant="success"
                     @click="addNewAllowance"
                     class="flex items-center whitespace-nowrap"
                   >
-                    <Icon name="ph:plus" class="w-4 h-4 mr-2" />
+                    <Icon name="ic:baseline-add" class="w-4 h-4 mr-2" />
                     Tambah Maklumat Elaun Tahunan
                   </rs-button>
                 </div>
@@ -183,23 +179,21 @@
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
                         <td class="px-4 py-3">
-                          <div class="flex space-x-2">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
-                              class="!px-2 !py-1"
+                          <div class="flex space-x-3">
+                            <button
                               @click="viewAllowance(item)"
+                              title="Lihat"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Lihat
-                            </rs-button>
-                            <rs-button
-                              variant="secondary"
-                              size="sm"
-                              class="!px-2 !py-1"
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
+                            <button
                               @click="editAllowance(item)"
+                              title="Kemaskini"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Kemaskini
-                            </rs-button>
+                              <Icon name="ic:outline-edit" class="w-5 h-5 text-secondary" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -216,10 +210,6 @@
 
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ph:clock" class="mr-2" size="20" />
-                  Senarai elaun yang sedang dalam proses
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -246,15 +236,14 @@
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
                         <td class="px-4 py-3">
-                          <div class="flex space-x-2">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
-                              class="!px-2 !py-1"
+                          <div class="flex space-x-3">
+                            <button
                               @click="viewAllowance(item)"
+                              title="Lihat"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Lihat
-                            </rs-button>
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -271,10 +260,6 @@
 
             <rs-tab-item title="Lulus">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah diluluskan
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -301,15 +286,14 @@
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
                         <td class="px-4 py-3">
-                          <div class="flex space-x-2">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
-                              class="!px-2 !py-1"
+                          <div class="flex space-x-3">
+                            <button
                               @click="viewAllowance(item)"
+                              title="Lihat"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Lihat
-                            </rs-button>
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -331,10 +315,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ph:clock" class="mr-2" size="20" />
-                  Senarai elaun yang menunggu pengesahan jabatan
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -361,23 +341,21 @@
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
                         <td class="px-4 py-3">
-                          <div class="flex space-x-2">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
-                              class="!px-2 !py-1"
+                          <div class="flex space-x-3">
+                            <button
                               @click="viewAllowance(item)"
+                              title="Lihat"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Lihat
-                            </rs-button>
-                            <rs-button
-                              variant="success"
-                              size="sm"
-                              class="!px-2 !py-1"
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
+                            <button
                               @click="approveAllowance(item)"
+                              title="Luluskan"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Luluskan
-                            </rs-button>
+                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -394,10 +372,6 @@
 
             <rs-tab-item title="Perlu Pengesahan">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-orange-700 flex items-center">
-                  <Icon name="ph:warning" class="mr-2" size="20" />
-                  Senarai elaun yang melebihi bajet dan memerlukan pengesahan
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -424,23 +398,21 @@
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-red-600 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
                         <td class="px-4 py-3">
-                          <div class="flex space-x-2">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
-                              class="!px-2 !py-1"
+                          <div class="flex space-x-3">
+                            <button
                               @click="viewAllowance(item)"
+                              title="Lihat"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Lihat
-                            </rs-button>
-                            <rs-button
-                              variant="warning"
-                              size="sm"
-                              class="!px-2 !py-1"
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
+                            <button
                               @click="verifyExcessAllowance(item)"
+                              title="Sahkan"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Sahkan
-                            </rs-button>
+                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-warning" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -457,10 +429,6 @@
 
             <rs-tab-item title="Lulus">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah disahkan jabatan
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -487,16 +455,15 @@
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
                         <td class="px-4 py-3">
-                          <div class="flex space-x-2">
-            <rs-button
-              variant="primary"
-              size="sm"
-                              class="!px-2 !py-1"
+                          <div class="flex space-x-3">
+                            <button
                               @click="viewAllowance(item)"
-            >
-                              Lihat
-            </rs-button>
-          </div>
+                              title="Lihat"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                       <tr v-if="getTableDataByStatus(['LULUS']).length === 0" class="hover:bg-gray-50">
@@ -517,10 +484,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Sedang Proses">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ph:clock" class="mr-2" size="20" />
-                  Senarai elaun yang menunggu kelulusan akhir divisyen
-                </h3>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">
@@ -547,23 +510,21 @@
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
                         <td class="px-4 py-3">
-                          <div class="flex space-x-2">
-                            <rs-button
-                              variant="primary"
-                              size="sm"
-                              class="!px-2 !py-1"
+                          <div class="flex space-x-3">
+                            <button
                               @click="viewAllowance(item)"
+                              title="Lihat"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Lihat
-                            </rs-button>
-                            <rs-button
-                              variant="success"
-                              size="sm"
-                              class="!px-2 !py-1"
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
+                            <button
                               @click="approveAllowance(item)"
+                              title="Luluskan"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              Luluskan
-                            </rs-button>
+                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -580,10 +541,6 @@
 
             <rs-tab-item title="Lulus">
               <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ph:check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah diluluskan divisyen
-                </h3>
           <div class="overflow-x-auto rounded-lg border">
           <table class="min-w-full text-sm divide-y">
             <thead class="bg-gray-50 text-left">
@@ -610,15 +567,14 @@
                         <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
                         <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
                 <td class="px-4 py-3">
-                          <div class="flex space-x-2">
-                  <rs-button
-                    variant="primary"
-                    size="sm"
-                              class="!px-2 !py-1"
+                          <div class="flex space-x-3">
+                            <button
                               @click="viewAllowance(item)"
-                  >
-                              Lihat
-                  </rs-button>
+                              title="Lihat"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
                           </div>
                 </td>
               </tr>

@@ -215,7 +215,7 @@
       <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
         <div class="p-6">
           <div class="flex items-center mb-4">
-            <Icon name="ph:warning" class="w-6 h-6 text-orange-600 mr-3" />
+            <Icon name="ic:baseline-warning" class="w-6 h-6 text-orange-600 mr-3" />
             <h3 class="text-lg font-semibold text-gray-900">Pengesahan Tindakan</h3>
           </div>
           
@@ -286,7 +286,7 @@
       <template #body>
         <div class="text-center p-4">
           <Icon
-            name="heroicons:check-circle"
+            name="ic:baseline-check-circle"
             class="text-green-500 mx-auto mb-4"
             size="48"
           />

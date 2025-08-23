@@ -132,7 +132,7 @@
             <div class="flex items-center space-x-3">
               <div class="flex-shrink-0">
                 <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                  <Icon name="ph:gear" class="w-6 h-6 text-red-600" />
+                  <Icon name="ic:baseline-settings" class="w-6 h-6 text-red-600" />
                 </div>
               </div>
               <div>
@@ -147,7 +147,7 @@
               <!-- Status Info -->
               <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div class="flex items-center space-x-2">
-                  <Icon name="ph:info" class="w-5 h-5 text-blue-600" />
+                  <Icon name="ic:baseline-info" class="w-5 h-5 text-blue-600" />
                   <span class="font-medium text-blue-800">Status Pembayaran</span>
                 </div>
                 <p class="text-sm text-blue-700 mt-1">
@@ -164,7 +164,7 @@
                     @click="handleBack"
                     class="w-full !py-3 text-sm font-medium"
                   >
-                    <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
+                    <Icon name="ic:baseline-arrow-back" class="w-5 h-5 mr-2" />
                     Kembali
                   </rs-button>
                 </template>
@@ -178,7 +178,7 @@
                     :loading="processing"
                     class="w-full !py-3 text-sm font-medium"
                   >
-                    <Icon name="ph:money" class="w-5 h-5 mr-2" />
+                    <Icon name="ic:baseline-attach-money" class="w-5 h-5 mr-2" />
                     Bayar
                   </rs-button>
 
@@ -187,7 +187,7 @@
                     @click="handleBack"
                     class="w-full !py-3 text-sm font-medium"
                   >
-                    <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
+                    <Icon name="ic:baseline-arrow-back" class="w-5 h-5 mr-2" />
                     Kembali
                   </rs-button>
                 </template>
@@ -201,7 +201,7 @@
                     :loading="processing"
                     class="w-full !py-3 text-sm font-medium"
                   >
-                    <Icon name="ph:arrow-clockwise" class="w-5 h-5 mr-2" />
+                    <Icon name="ic:baseline-refresh" class="w-5 h-5 mr-2" />
                     Semakan Semula
                   </rs-button>
 
@@ -210,7 +210,7 @@
                     @click="handleBack"
                     class="w-full !py-3 text-sm font-medium"
                   >
-                    <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
+                    <Icon name="ic:baseline-arrow-back" class="w-5 h-5 mr-2" />
                     Kembali
                   </rs-button>
                 </template>
@@ -232,7 +232,7 @@
         <div class="text-center">
           <div class="flex justify-center mb-4">
             <Icon
-              name="material-symbols:check-circle"
+              name="ic:baseline-check-circle"
               class="text-green-500"
               size="48"
             />
