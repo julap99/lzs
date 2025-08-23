@@ -22,7 +22,6 @@
         </div>
         <div class="flex gap-2">
           <rs-button
-            variant="secondary-outline"
             @click="navigateTo('/BF-PA/PP/KP')"
             class="flex items-center"
           >
@@ -31,7 +30,6 @@
           </rs-button>
           <rs-button
             v-if="serviceData.status === 'aktif'"
-            variant="danger"
             @click="showTerminateModal = true"
             class="flex items-center"
           >
@@ -39,7 +37,6 @@
             Tamatkan Perkhidmatan
           </rs-button>
           <rs-button
-            variant="warning"
             @click="showWarningModal = true"
             class="flex items-center"
           >
@@ -125,33 +122,123 @@
       </rs-card>
     </div>
 
-    <!-- Action History -->
-    <rs-card>
+    <!-- Review History -->
+    <rs-card class="mb-6">
       <template #header>
         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:clock-counter-clockwise" class="w-5 h-5 mr-2" />
-          Sejarah Tindakan
+          <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
+          Sejarah Semakan
         </h3>
       </template>
       <template #body>
-        <div class="space-y-4">
-          <div
-            v-for="(action, index) in actionHistory"
-            :key="index"
-            class="flex items-start space-x-4"
-          >
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                <Icon :name="action.icon" class="w-4 h-4 text-white" />
+        <div class="space-y-6">
+          <!-- Warning Letter History -->
+          <div>
+            <h4 class="text-md font-semibold text-gray-900 mb-4 flex items-center">
+              <Icon name="ph:warning" class="w-4 h-4 mr-2 text-yellow-600" />
+              Sejarah Surat Amaran
+            </h4>
+            <div class="space-y-3">
+              <div v-if="warningLetterHistory.length === 0" class="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
+                <div class="text-sm text-green-800">
+                  <Icon name="ph:check-circle" class="w-4 h-4 inline mr-1" />
+                  Tiada surat amaran dihantar - Rekod bersih
+                </div>
+              </div>
+              <div v-for="(letter, index) in warningLetterHistory" :key="letter.id" class="border-l-4 border-yellow-500 pl-4">
+                <div class="flex items-center justify-between mb-2">
+                  <h5 class="font-medium text-gray-900">Surat Amaran #{{ index + 1 }}</h5>
+                  <rs-badge :variant="getWarningLetterStatusVariant(letter.status)" size="sm">
+                    {{ getWarningLetterStatusLabel(letter.status) }}
+                  </rs-badge>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span class="text-gray-600">Tarikh Dihantar:</span>
+                    <span class="text-gray-900 ml-2">{{ letter.date }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-600">Dihantar oleh:</span>
+                    <span class="text-gray-900 ml-2">{{ letter.sentBy }}</span>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <span class="text-gray-600">Sebab:</span>
+                  <p class="text-gray-900 mt-1">{{ letter.reason }}</p>
+                </div>
+                <div class="mt-2">
+                  <span class="text-gray-600">Catatan:</span>
+                  <p class="text-gray-900 mt-1">{{ letter.notes }}</p>
+                </div>
+                <div v-if="letter.attachments && letter.attachments.length > 0" class="mt-2">
+                  <span class="text-gray-600">Lampiran:</span>
+                  <div class="flex flex-wrap gap-2 mt-1">
+                    <span v-for="attachment in letter.attachments" :key="attachment" class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                      <Icon name="ph:paperclip" class="w-3 h-3 mr-1" />
+                      {{ attachment }}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between">
-                <p class="text-sm font-medium text-gray-900">{{ action.title }}</p>
-                <p class="text-sm text-gray-500">{{ formatDateTime(action.timestamp) }}</p>
+          </div>
+
+          <!-- Termination Service History -->
+          <div>
+            <h4 class="text-md font-semibold text-gray-900 mb-4 flex items-center">
+              <Icon name="ph:stop-circle" class="w-4 h-4 mr-2 text-red-600" />
+              Sejarah Penamatan Jawatan
+            </h4>
+            <div class="space-y-3">
+              <div v-if="terminationHistory.length === 0" class="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
+                <div class="text-sm text-green-800">
+                  <Icon name="ph:check-circle" class="w-4 h-4 inline mr-1" />
+                  Tiada permohonan penamatan - Rekod bersih
+                </div>
               </div>
-              <p class="text-sm text-gray-600 mt-1">{{ action.description }}</p>
-              <p class="text-xs text-gray-500 mt-1">Oleh: {{ action.by }}</p>
+              <div v-for="(termination, index) in terminationHistory" :key="termination.id" class="border-l-4 border-red-500 pl-4">
+                <div class="flex items-center justify-between mb-2">
+                  <h5 class="font-medium text-gray-900">Permohonan Penamatan #{{ index + 1 }}</h5>
+                  <rs-badge :variant="getTerminationStatusVariant(termination.status)" size="sm">
+                    {{ getTerminationStatusLabel(termination.status) }}
+                  </rs-badge>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span class="text-gray-600">Tarikh Permohonan:</span>
+                    <span class="text-gray-900 ml-2">{{ termination.date }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-600">Dimulakan oleh:</span>
+                    <span class="text-gray-900 ml-2">{{ termination.initiatedBy }}</span>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <span class="text-gray-600">Sebab Penamatan:</span>
+                  <p class="text-gray-900 mt-1">{{ termination.reason }}</p>
+                </div>
+                <div class="mt-2">
+                  <span class="text-gray-600">Catatan:</span>
+                  <p class="text-gray-900 mt-1">{{ termination.notes }}</p>
+                </div>
+                <div v-if="termination.supportingDocuments && termination.supportingDocuments.length > 0" class="mt-2">
+                  <span class="text-gray-600">Dokumen Sokongan:</span>
+                  <div class="flex flex-wrap gap-2 mt-1">
+                    <span v-for="document in termination.supportingDocuments" :key="document" class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                      <Icon name="ph:file-text" class="w-3 h-3 mr-1" />
+                      {{ document }}
+                    </span>
+                  </div>
+                </div>
+                <div v-if="termination.approvalDate" class="mt-2">
+                  <span class="text-gray-600">Tarikh Kelulusan:</span>
+                  <span class="text-gray-900 ml-2">{{ termination.approvalDate }}</span>
+                </div>
+                <div v-if="termination.approvedBy" class="mt-2">
+                  <span class="text-gray-600">Diluluskan oleh:</span>
+                  <span class="text-gray-900 ml-2">{{ termination.approvedBy }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -169,13 +256,11 @@
           </p>
           <div class="flex justify-center space-x-3">
             <rs-button
-              variant="secondary-outline"
               @click="showTerminateModal = false"
             >
               Batal
             </rs-button>
             <rs-button
-              variant="danger"
               @click="terminateService"
             >
               Tamatkan
@@ -196,13 +281,11 @@
           </p>
           <div class="flex justify-center space-x-3">
             <rs-button
-              variant="secondary-outline"
               @click="showWarningModal = false"
             >
               Batal
             </rs-button>
             <rs-button
-              variant="warning"
               @click="sendWarningLetter"
             >
               Hantar
@@ -278,30 +361,26 @@ const breadcrumb = ref([
 
 // Mock service data
 const serviceData = ref({
-  noRujukan: route.params.rujukan,
+  noRujukan: "KP-2024-001",
   nama: "Ahmad bin Abdullah",
-  idPengenalan: "901231012345",
+  idPengenalan: "880429-10-5605",
   kategori: "Penolong Amil Kariah",
-  institusi: "Surau Al-Amin",
+  institusi: "Masjid Al-Hidayah",
   status: "aktif",
   tarikhMula: "2024-01-15",
   gaji: "1,200.00",
   catatan: "Perkhidmatan berjalan dengan baik",
+  reviewedBy: "Siti Fatimah binti Omar",
+  reviewDate: "15-01-2024",
+  reviewRemarks: "Semakan awal telah diselesaikan dan perkhidmatan diluluskan.",
 });
 
 // Mock action history
 const actionHistory = ref([
   {
     icon: "ph:user-plus",
-    title: "Perkhidmatan Dimulakan",
-    description: "Perkhidmatan telah dimulakan dan diaktifkan",
-    timestamp: "2024-01-15T09:00:00",
-    by: "Admin Sistem",
-  },
-  {
-    icon: "ph:check-circle",
-    title: "Pengesahan Status",
-    description: "Status perkhidmatan telah disahkan aktif",
+    title: "Perkhidmatan Dibuka",
+    description: "Perkhidmatan penolong amil telah dibuka",
     timestamp: "2024-01-15T10:30:00",
     by: "PYB Institusi",
   },
@@ -311,6 +390,41 @@ const actionHistory = ref([
     description: "Pemeriksaan bulanan telah dijalankan",
     timestamp: "2024-02-15T14:00:00",
     by: "PYB Institusi",
+  },
+]);
+
+// Mock warning letter history
+const warningLetterHistory = ref([
+  {
+    id: 1,
+    date: "2024-01-20",
+    sentBy: "PYB Institusi",
+    reason: "Perkhidmatan tidak memenuhi syarat kelayakan",
+    notes: "Dokumen yang disokong tidak lengkap.",
+    status: "pending", // 'pending', 'sent', 'received', 'rejected'
+    attachments: ["dokumen_syarat.pdf", "surat_pernyataan.docx"],
+  },
+  {
+    id: 2,
+    date: "2024-02-05",
+    sentBy: "PYB Institusi",
+    reason: "Perkhidmatan tidak memenuhi syarat kelayakan",
+    notes: "Dokumen yang disokong tidak lengkap.",
+    status: "sent",
+    attachments: ["dokumen_syarat.pdf", "surat_pernyataan.docx"],
+  },
+]);
+
+// Mock termination history
+const terminationHistory = ref([
+  {
+    id: 1,
+    date: "2024-03-10",
+    initiatedBy: "PYB Institusi",
+    reason: "Perkhidmatan tidak memenuhi syarat kelayakan",
+    notes: "Dokumen yang disokong tidak lengkap.",
+    status: "pending", // 'pending', 'approved', 'rejected'
+    supportingDocuments: ["dokumen_syarat.pdf", "surat_pernyataan.docx"],
   },
 ]);
 
@@ -383,6 +497,44 @@ const sendWarningLetter = () => {
   
   // Show success message
   // You can implement a notification system here
+};
+
+const getWarningLetterStatusVariant = (status) => {
+  const variants = {
+    pending: "warning",
+    sent: "info",
+    received: "success",
+    rejected: "danger",
+  };
+  return variants[status] || "info";
+};
+
+const getWarningLetterStatusLabel = (status) => {
+  const labels = {
+    pending: "Menunggu",
+    sent: "Dihantar",
+    received: "Diterima",
+    rejected: "Ditolak",
+  };
+  return labels[status] || status;
+};
+
+const getTerminationStatusVariant = (status) => {
+  const variants = {
+    pending: "warning",
+    approved: "success",
+    rejected: "danger",
+  };
+  return variants[status] || "info";
+};
+
+const getTerminationStatusLabel = (status) => {
+  const labels = {
+    pending: "Menunggu",
+    approved: "Diluluskan",
+    rejected: "Ditolak",
+  };
+  return labels[status] || status;
 };
 
 onMounted(() => {

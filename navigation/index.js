@@ -1010,6 +1010,13 @@ export default [
         meta: {},
       },
       {
+        title: "Tugasan",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-BTN/tugasan",
+        child: [],
+        meta: {},
+      },
+      {
         title: "BDS",
         icon: "iconamoon:component-fill",
         child: [

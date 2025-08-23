@@ -78,20 +78,9 @@
             <Icon name="ph:gear" class="w-6 h-6 mr-3 text-primary" />
             Penamatan Jawatan
           </h1>
-          <p class="text-gray-600 mt-1">
-            {{ getRoleSpecificDescription(currentRole) }} - {{ filteredRequests.length }} rekod perkhidmatan
-          </p>
         </div>
         <div class="flex gap-2">
-          <rs-button
-            variant="primary"
-            @click="navigateTo('/BF-PA/PP/KP/kemaskini/new')"
-            v-if="canCreateRequest(currentRole)"
-            class="flex items-center"
-          >
-            <Icon name="ph:plus" class="w-4 h-4 mr-2" />
-            Tambah Perkhidmatan
-          </rs-button>
+          <!-- Button removed as PP/KP doesn't handle adding new data/services -->
         </div>
       </div>
     </div>
@@ -116,160 +105,228 @@
         </div>
       </template>
       <template #body>
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  No Rujukan
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nama
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  ID Pengenalan
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kategori
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Sesi
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Daerah
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Institusi
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 
-                  Tindakan
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr 
-                v-for="request in paginatedRequests" 
-                :key="request.id"
-                class="hover:bg-gray-50 transition-colors duration-150"
-              >
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ request.noRujukan || request.rujukan }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.kategori || request.newKategori }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.sesi || request.newSesi }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.daerah || request.newDaerah }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.institusi || request.newInstitusi }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <rs-badge :variant="getStatusVariant(request.status)">
-                    {{ getStatusLabel(request.status) }}
-                  </rs-badge>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                  <div class="flex items-center gap-3">
-                    <button
-                      @click="viewRequest(request)"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      title="Lihat"
-                    >
-                      <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                    </button>
-                    <!-- PYB Institusi specific actions -->
-                    <template v-if="currentRole === 'pyb-institusi'">
-                      <button
-                        v-if="request.status === 'aktif'"
-                        @click="terminateService(request)"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                        title="Tamatkan"
-                      >
-                        <Icon name="ic:outline-cancel" class="w-5 h-5 text-danger" />
-                      </button>
-                      <button
-                        @click="sendWarningLetter(request)"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                        title="Surat Amaran"
-                      >
-                        <Icon name="ic:baseline-mail" class="w-5 h-5 text-warning" />
-                      </button>
-                    </template>
-                    
-                    <!-- Ketua Divisyen specific actions -->
-                    <template v-if="currentRole === 'ketua-divisyen'">
-                      <button
-                        v-if="request.status === 'aktif' || request.status === 'suspended'"
-                        @click="approveService(request)"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                        title="Lulus"
-                      >
-                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
-                      </button>
-                    </template>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <!-- Status Tabs -->
+        <rs-tab v-model="activeStatusTab" class="mt-4">
+          <rs-tab-item title="Aktif">
+            <div class="p-4">
+              <div class="overflow-x-auto rounded-lg border">
+                <table class="min-w-full text-sm divide-y">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Sesi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Daerah</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Institusi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y bg-white">
+                    <tr v-for="request in getTabRequests('aktif')" :key="request.id" class="hover:bg-gray-50">
+                      <td class="px-4 py-3 text-gray-900">{{ request.noRujukan || request.rujukan }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.kategori || request.newKategori }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.sesi || request.newSesi }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.daerah || request.newDaerah }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.institusi || request.newInstitusi }}</td>
+                      <td class="px-4 py-3">
+                        <rs-badge :variant="getStatusVariant(request.status)">
+                          {{ getStatusLabel(request.status) }}
+                        </rs-badge>
+                      </td>
+                      <td class="px-4 py-3">
+                        <div class="flex space-x-3">
+                          <button
+                            @click="viewRequest(request)"
+                            title="Lihat"
+                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                          >
+                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                          </button>
+                          <!-- PYB Institusi specific actions -->
+                          <template v-if="currentRole === 'pyb-institusi'">
+                            <button
+                              v-if="request.status === 'aktif'"
+                              @click="terminateService(request)"
+                              title="Tamatkan"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:outline-cancel" class="w-5 h-5 text-danger" />
+                            </button>
+                            <button
+                              @click="sendWarningLetter(request)"
+                              title="Surat Amaran"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-mail" class="w-5 h-5 text-warning" />
+                            </button>
+                          </template>
+                          
+                          <!-- Ketua Divisyen specific actions -->
+                          <template v-if="currentRole === 'ketua-divisyen'">
+                            <button
+                              v-if="request.status === 'aktif' || request.status === 'suspended'"
+                              @click="approveService(request)"
+                              title="Lulus"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                            </button>
+                          </template>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="getTabRequests('aktif').length === 0" class="hover:bg-gray-50">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="9">
+                        Tiada rekod Aktif ditemui.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </rs-tab-item>
 
-        <!-- Simple Pagination -->
-        <div class="flex items-center justify-between mt-4">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-700">
-              {{ startIndex + 1 }}-{{ endIndex }} daripada {{ filteredRequests.length }}
-            </span>
-          </div>
-          
-          <div class="flex items-center gap-1">
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              :disabled="currentPage === 1"
-              @click="currentPage = 1"
-            >
-              <Icon name="ic:baseline-first-page" class="w-4 h-4" />
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              :disabled="currentPage === 1"
-              @click="currentPage--"
-            >
-              <Icon name="ic:baseline-chevron-left" class="w-4 h-4" />
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              :disabled="currentPage === totalPages"
-              @click="currentPage++"
-            >
-              <Icon name="ic:baseline-chevron-right" class="w-4 h-4" />
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              :disabled="currentPage === totalPages"
-              @click="currentPage = totalPages"
-            >
-              <Icon name="ic:baseline-last-page" class="w-4 h-4" />
-            </rs-button>
-          </div>
-        </div>
+          <rs-tab-item title="Dalam Pemerhatian">
+            <div class="p-4">
+              <div class="overflow-x-auto rounded-lg border">
+                <table class="min-w-full text-sm divide-y">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Sesi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Daerah</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Institusi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y bg-white">
+                    <tr v-for="request in getTabRequests('suspended')" :key="request.id" class="hover:bg-gray-50">
+                      <td class="px-4 py-3 text-gray-900">{{ request.noRujukan || request.rujukan }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.kategori || request.newKategori }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.sesi || request.newSesi }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.daerah || request.newDaerah }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.institusi || request.newInstitusi }}</td>
+                      <td class="px-4 py-3">
+                        <rs-badge :variant="getStatusVariant(request.status)">
+                          {{ getStatusLabel(request.status) }}
+                        </rs-badge>
+                      </td>
+                      <td class="px-4 py-3">
+                        <div class="flex space-x-3">
+                          <button
+                            @click="viewRequest(request)"
+                            title="Lihat"
+                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                          >
+                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                          </button>
+                          <!-- PYB Institusi specific actions -->
+                          <template v-if="currentRole === 'pyb-institusi'">
+                            <button
+                              @click="terminateService(request)"
+                              title="Tamatkan"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:outline-cancel" class="w-5 h-5 text-danger" />
+                            </button>
+                            <button
+                              @click="sendWarningLetter(request)"
+                              title="Surat Amaran"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-mail" class="w-5 h-5 text-warning" />
+                            </button>
+                          </template>
+                          
+                          <!-- Ketua Divisyen specific actions -->
+                          <template v-if="currentRole === 'ketua-divisyen'">
+                            <button
+                              @click="approveService(request)"
+                              title="Lulus"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                            </button>
+                          </template>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="getTabRequests('suspended').length === 0" class="hover:bg-gray-50">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="9">
+                        Tiada rekod Dalam Pemerhatian ditemui.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </rs-tab-item>
+
+          <rs-tab-item title="Telah Ditamatkan">
+            <div class="p-4">
+              <div class="overflow-x-auto rounded-lg border">
+                <table class="min-w-full text-sm divide-y">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Sesi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Daerah</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Institusi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y bg-white">
+                    <tr v-for="request in getTabRequests('terminated')" :key="request.id" class="hover:bg-gray-50">
+                      <td class="px-4 py-3 text-gray-900">{{ request.noRujukan || request.rujukan }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.kategori || request.newKategori }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.sesi || request.newSesi }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.daerah || request.newDaerah }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.institusi || request.newInstitusi }}</td>
+                      <td class="px-4 py-3">
+                        <rs-badge :variant="getStatusVariant(request.status)">
+                          {{ getStatusLabel(request.status) }}
+                        </rs-badge>
+                      </td>
+                      <td class="px-4 py-3">
+                        <div class="flex space-x-3">
+                          <button
+                            @click="viewRequest(request)"
+                            title="Lihat"
+                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                          >
+                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="getTabRequests('terminated').length === 0" class="hover:bg-gray-50">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="9">
+                        Tiada rekod Telah Ditamatkan ditemui.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </rs-tab-item>
+        </rs-tab>
       </template>
     </rs-card>
 
@@ -410,6 +467,397 @@
         </div>
       </template>
     </rs-modal>
+
+    <!-- Terminate Service Modal -->
+    <rs-modal v-model="showTerminateModal" title="Tamatkan Perkhidmatan Penolong Amil" size="2xl">
+      <template #header>
+        <div class="flex items-center">
+          <Icon name="ic:outline-cancel" class="w-6 h-6 text-danger mr-3" />
+          <h3 class="text-lg font-semibold text-gray-900">Tamatkan Perkhidmatan Penolong Amil</h3>
+        </div>
+      </template>
+      
+      <div class="p-6">
+        <!-- Warning Alert -->
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <div class="flex items-start">
+            <Icon name="ph:warning" class="w-5 h-5 text-red-600 mr-3 mt-0.5" />
+            <div>
+              <h4 class="font-semibold text-red-900 mb-2">Peringatan Penting</h4>
+              <p class="text-sm text-red-800">
+                Tindakan ini akan menamatkan perkhidmatan penolong amil secara kekal. 
+                Sila pastikan semua prosedur telah diikuti dan dokumentasi lengkap sebelum meneruskan.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Penolong Amil Full Profile Information -->
+        <div class="space-y-6">
+          <!-- Personal Information -->
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Icon name="ph:user" class="w-4 h-4 mr-2 text-gray-600" />
+              Maklumat Peribadi
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nama Penuh</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.nama || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nombor Kad Pengenalan</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.idPengenalan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Jantina</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.jantina || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Status Perkahwinan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.statusPerkahwinan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Bangsa</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.bangsa || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Agama</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.agama || 'Islam' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Information -->
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Icon name="ph:phone" class="w-4 h-4 mr-2 text-gray-600" />
+              Maklumat Perhubungan
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Alamat</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.alamat || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Negeri</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.negeri || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Daerah</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.daerah || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Bandar</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.bandar || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Poskod</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.poskod || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nombor Telefon</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.noTelefon || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nombor Telefon Bimbit</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.noTelefonBimbit || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Alamat E-mel</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.emel || 'N/A' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Information -->
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Icon name="ph:briefcase" class="w-4 h-4 mr-2 text-gray-600" />
+              Maklumat Perkhidmatan
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Kategori</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.kategori || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Sesi</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.sesi || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Institusi</label>
+                <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.institusi || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Status Semasa</label>
+                <div class="text-sm">
+                  <rs-badge variant="success">Aktif</rs-badge>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employment & Education Information -->
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Icon name="ph:graduation-cap" class="w-4 h-4 mr-2 text-gray-600" />
+              Maklumat Pekerjaan & Pendidikan
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Pekerjaan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.pekerjaan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nama Majikan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.namaMajikan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Tahap Pendidikan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.tahapPendidikan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Institusi Pendidikan</label>
+                <div class="text-sm text-gray-900">{{ currentTerminateRequest?.institusiPendidikan || 'N/A' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Performance & Context -->
+          <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <h4 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+              <Icon name="ph:chart-line" class="w-4 h-4 mr-2 text-blue-600" />
+              Maklumat Prestasi & Konteks Perkhidmatan
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-blue-700 mb-1">Tarikh Mula Perkhidmatan</label>
+                <div class="text-sm text-blue-900 font-medium">{{ currentTerminateRequest?.tarikhMulaPerkhidmatan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-blue-700 mb-1">Tempoh Perkhidmatan</label>
+                <div class="text-sm text-blue-900 font-medium">{{ currentTerminateRequest?.tempohPerkhidmatan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-blue-700 mb-1">Jumlah Surat Amaran</label>
+                <div class="text-sm">
+                  <rs-badge :variant="getWarningCountVariant(currentTerminateRequest?.jumlahSuratAmaran)" size="sm">
+                    {{ currentTerminateRequest?.jumlahSuratAmaran || '0' }} surat
+                  </rs-badge>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-blue-700 mb-1">Status Terakhir</label>
+                <div class="text-sm">
+                  <rs-badge :variant="getStatusVariant(currentTerminateRequest?.statusTerakhir)" size="sm">
+                    {{ currentTerminateRequest?.statusTerakhir || 'N/A' }}
+                  </rs-badge>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Warning Letter History -->
+          <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            <h4 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
+              <Icon name="ph:warning" class="w-4 h-4 mr-2 text-yellow-600" />
+              Sejarah Surat Amaran
+            </h4>
+            <div class="space-y-2">
+              <div v-if="currentTerminateRequest?.jumlahSuratAmaran >= 1" class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">Surat Amaran #1</div>
+                  <div class="text-xs text-gray-600">Tarikh: 15-01-2024 | Sebab: Tidak hadir mesyuarat bulanan tanpa sebab yang munasabah</div>
+                </div>
+                <rs-badge variant="warning" size="sm">Dihantar</rs-badge>
+              </div>
+              <div v-if="currentTerminateRequest?.jumlahSuratAmaran >= 2" class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">Surat Amaran #2</div>
+                  <div class="text-xs text-gray-600">Tarikh: 20-02-2024 | Sebab: Gagal mematuhi arahan dan peraturan yang ditetapkan</div>
+                </div>
+                <rs-badge variant="warning" size="sm">Dihantar</rs-badge>
+              </div>
+              <div v-if="currentTerminateRequest?.jumlahSuratAmaran >= 3" class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">Surat Amaran #3</div>
+                  <div class="text-xs text-gray-600">Tarikh: 10-03-2024 | Sebab: Pelanggaran berulang terhadap kod etika perkhidmatan</div>
+                </div>
+                <rs-badge variant="danger" size="sm">Final Warning</rs-badge>
+              </div>
+              <div v-if="!currentTerminateRequest?.jumlahSuratAmaran || currentTerminateRequest?.jumlahSuratAmaran === '0'" class="p-3 bg-green-50 border border-green-200 rounded text-center">
+                <div class="text-sm text-green-800">
+                  <Icon name="ph:check-circle" class="w-4 h-4 inline mr-1" />
+                  Tiada surat amaran dihantar - Rekod bersih
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Termination Form -->
+        <div class="mt-6 space-y-6">
+          <h4 class="text-md font-semibold text-gray-900 border-b pb-2">
+            Maklumat Penamatan
+          </h4>
+          
+                     <!-- Termination Reason -->
+           <div>
+             <div v-if="!terminateData.reason" class="mb-2 text-sm text-red-600">
+               Sila pilih sebab penamatan perkhidmatan
+             </div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Sebab Penamatan Perkhidmatan *
+            </label>
+                         <FormKit
+               type="select"
+               v-model="terminateData.reason"
+               :options="terminationReasonOptions"
+               :classes="{
+                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                 wrapper: 'w-full'
+               }"
+               validation="required"
+               validation-label="Sebab penamatan"
+               @change="validateTerminationReason"
+             />
+          </div>
+
+                     <!-- Custom Reason -->
+           <div v-if="terminateData.reason === 'lain-lain'">
+             <div v-if="terminateData.reason === 'lain-lain' && !terminateData.customReason" class="mb-2 text-sm text-red-600">
+               Sila nyatakan sebab penamatan yang spesifik
+             </div>
+             <label class="block text-sm font-medium text-gray-700 mb-2">
+               Sebab Lain-lain *
+             </label>
+             <FormKit
+               type="textarea"
+               v-model="terminateData.customReason"
+               placeholder="Nyatakan sebab penamatan yang spesifik..."
+               :classes="{
+                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                 wrapper: 'w-full'
+               }"
+               rows="4"
+               maxlength="500"
+               validation="required|length:10,500"
+               validation-label="Sebab penamatan"
+               @input="validateCustomReason"
+             />
+             <div class="flex justify-between items-center mt-1">
+               <p class="text-xs text-gray-500">
+                 Maksimum 500 aksara
+               </p>
+               <span class="text-xs text-gray-500">
+                 {{ terminateData.customReason.length }}/500
+               </span>
+             </div>
+           </div>
+
+                     <!-- Supporting Documents -->
+           <div>
+             <div v-if="!terminateData.supportingDocuments" class="mb-2 text-sm text-red-600">
+               Sila muat naik minit mesyuarat
+             </div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Muat Naik Minit Mesyuarat *
+            </label>
+            <FormKit
+               type="file"
+               v-model="terminateData.supportingDocuments"
+               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+               :classes="{
+                 input: 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-danger file:text-white hover:file:bg-red-700',
+                 wrapper: 'w-full'
+               }"
+               validation="required"
+               validation-label="Minit mesyuarat"
+               @change="handleTerminateFileChange"
+             />
+             <div v-if="terminateFileError" class="mt-1 text-sm text-red-600">
+               {{ terminateFileError }}
+             </div>
+          </div>
+
+          <!-- Additional Notes -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Catatan Tambahan
+            </label>
+                         <FormKit
+               type="textarea"
+               v-model="terminateData.additionalNotes"
+               placeholder="Masukkan catatan tambahan atau arahan khusus untuk penamatan ini..."
+               :classes="{
+                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                 wrapper: 'w-full'
+               }"
+               rows="4"
+               maxlength="1000"
+               @input="validateAdditionalNotes"
+             />
+            <div class="flex justify-between items-center mt-1">
+              <p class="text-xs text-gray-500">
+                Maksimum 1000 aksara
+              </p>
+              <span class="text-xs text-gray-500">
+                {{ terminateData.additionalNotes.length }}/1000
+              </span>
+            </div>
+          </div>
+
+                     <!-- Confirmation Checkbox -->
+           <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+             <div v-if="!terminateData.confirmation" class="mb-2 text-sm text-red-600">
+               Sila sahkan bahawa anda bersetuju untuk menamatkan perkhidmatan
+             </div>
+            <div class="flex items-start">
+                             <FormKit
+                 type="checkbox"
+                 v-model="terminateData.confirmation"
+                 :classes="{
+                   input: 'mt-1 h-4 w-4 text-danger focus:ring-danger border-gray-300 rounded',
+                   wrapper: 'flex items-start'
+                 }"
+                 validation="required"
+                 validation-label="Pengesahan"
+                 @change="validateConfirmation"
+               />
+              <div class="ml-3">
+                <label class="text-sm font-medium text-red-900">
+                  Saya mengesahkan bahawa saya telah mempertimbangkan semua aspek dan bersetuju untuk menamatkan perkhidmatan penolong amil ini
+                </label>
+                <p class="text-xs text-red-700 mt-1">
+                  Tindakan ini tidak boleh dibatalkan dan akan menamatkan perkhidmatan secara kekal.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="closeTerminateModal"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="danger"
+            @click="submitTermination"
+            :disabled="!isTerminateFormValid || isTerminateSubmitting"
+          >
+            <Icon v-if="!isTerminateSubmitting" name="ph:check" class="w-4 h-4 mr-2" />
+            <Icon v-else name="ph:spinner" class="w-4 h-4 mr-2 animate-spin" />
+            {{ isTerminateSubmitting ? 'Memproses...' : 'Tamatkan Perkhidmatan' }}
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -496,6 +944,19 @@ const currentWarningRequest = ref(null);
 const fileError = ref("");
 const isSubmitting = ref(false);
 
+// Terminate Service Modal State
+const showTerminateModal = ref(false);
+const terminateData = ref({
+  reason: "",
+  customReason: "",
+  supportingDocuments: null,
+  additionalNotes: "",
+  confirmation: false,
+});
+const currentTerminateRequest = ref(null);
+const terminateFileError = ref("");
+const isTerminateSubmitting = ref(false);
+
 // Enhanced options
 const statusOptions = [
   { label: "Sila pilih...", value: "" },
@@ -540,6 +1001,17 @@ const daerahOptions = [
   { label: "Kelantan", value: "kelantan" },
 ];
 
+const terminationReasonOptions = [
+  { label: "Sila pilih...", value: "" },
+  { label: "Tidak hadir mesyuarat tanpa sebab yang munasabah", value: "tidak_hadir_mesyuarat" },
+  { label: "Gagal mematuhi arahan dan peraturan yang ditetapkan", value: "gagal_mematuhi_arahan" },
+  { label: "Pelanggaran berulang terhadap kod etika perkhidmatan", value: "pelanggaran_berulang" },
+  { label: "Tidak menunaikan tanggungjawab sebagai Penolong Amil", value: "tidak_menunaikan_tanggungjawab" },
+  { label: "Tingkah laku yang tidak sesuai dengan imej institusi", value: "tingkah_laku_tidak_sesuai" },
+  { label: "Kemudaratan kepada kepentingan awam dan agama", value: "kemudaratan_kepentingan_awam" },
+  { label: "Lain-lain", value: "lain-lain" },
+];
+
 // Enhanced mock data with new structure
 const requests = ref([
   {
@@ -552,6 +1024,27 @@ const requests = ref([
     daerah: "Kuala Lumpur",
     institusi: "Surau Al-Amin",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 123, Jalan Utama, Taman Seri Indah, 43000 Kajang, Selangor",
+    negeri: "Selangor",
+    daerah: "Hulu Langat",
+    bandar: "Kajang",
+    poskod: "43000",
+    noTelefon: "03-8736 1234",
+    noTelefonBimbit: "012-345 6789",
+    emel: "ahmad.abdullah@email.com",
+    pekerjaan: "Pegawai Kerajaan",
+    namaMajikan: "Jabatan Agama Islam Selangor",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Islam Antarabangsa Malaysia",
+    tarikhMulaPerkhidmatan: "15-01-2023",
+    tempohPerkhidmatan: "1 tahun 3 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP002",
@@ -563,6 +1056,27 @@ const requests = ref([
     daerah: "Selangor",
     institusi: "Kompleks Islam",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 45, Jalan Masjid, Taman Islam, 40100 Shah Alam, Selangor",
+    negeri: "Selangor",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40100",
+    noTelefon: "03-5510 2345",
+    noTelefonBimbit: "013-456 7890",
+    emel: "mohd.ali@email.com",
+    pekerjaan: "Guru",
+    namaMajikan: "Sekolah Menengah Kebangsaan Shah Alam",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Malaya",
+    tarikhMulaPerkhidmatan: "01-03-2023",
+    tempohPerkhidmatan: "1 tahun 1 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP003",
@@ -574,6 +1088,27 @@ const requests = ref([
     daerah: "Perak",
     institusi: "Masjid Al-Hidayah",
     status: "suspended",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 78, Jalan Sultan, Taman Diraja, 30000 Ipoh, Perak",
+    negeri: "Perak",
+    daerah: "Kinta",
+    bandar: "Ipoh",
+    poskod: "30000",
+    noTelefon: "05-255 1234",
+    noTelefonBimbit: "014-567 8901",
+    emel: "fatimah.omar@email.com",
+    pekerjaan: "Pegawai Bank",
+    namaMajikan: "Bank Islam Malaysia Berhad",
+    tahapPendidikan: "Diploma",
+    institusiPendidikan: "Kolej Islam Sultan Alam Shah",
+    tarikhMulaPerkhidmatan: "20-06-2023",
+    tempohPerkhidmatan: "9 bulan",
+    jumlahSuratAmaran: "1",
+    statusTerakhir: "Dalam Pemerhatian"
   },
   {
     id: "KP004",
@@ -585,6 +1120,27 @@ const requests = ref([
     daerah: "Kedah",
     institusi: "Surau Al-Amin",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Bujang",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 12, Kampung Padi, Mukim Alor Setar, 05000 Alor Setar, Kedah",
+    negeri: "Kedah",
+    daerah: "Alor Setar",
+    bandar: "Alor Setar",
+    poskod: "05000",
+    noTelefon: "04-733 4567",
+    noTelefonBimbit: "015-678 9012",
+    emel: "siti.aminah@email.com",
+    pekerjaan: "Pegawai Pertanian",
+    namaMajikan: "Lembaga Pertubuhan Peladang",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Putra Malaysia",
+    tarikhMulaPerkhidmatan: "10-09-2023",
+    tempohPerkhidmatan: "7 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP005",
@@ -596,6 +1152,27 @@ const requests = ref([
     daerah: "Kelantan",
     institusi: "Kompleks Islam",
     status: "terminated",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 56, Jalan Kota Bharu, Taman Islam, 15000 Kota Bharu, Kelantan",
+    negeri: "Kelantan",
+    daerah: "Kota Bharu",
+    bandar: "Kota Bharu",
+    poskod: "15000",
+    noTelefon: "09-744 5678",
+    noTelefonBimbit: "016-789 0123",
+    emel: "zainal.ibrahim@email.com",
+    pekerjaan: "Peniaga",
+    namaMajikan: "Perusahaan Zainal Enterprise",
+    tahapPendidikan: "Pendidikan Menengah",
+    institusiPendidikan: "Sekolah Menengah Kebangsaan Kota Bharu",
+    tarikhMulaPerkhidmatan: "05-01-2023",
+    tempohPerkhidmatan: "1 tahun 3 bulan",
+    jumlahSuratAmaran: "3",
+    statusTerakhir: "Telah Ditamatkan"
   },
   {
     id: "KP006",
@@ -607,6 +1184,27 @@ const requests = ref([
     daerah: "Terengganu",
     institusi: "Masjid Al-Hidayah",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 89, Jalan Kuala Terengganu, Taman Islam, 20000 Kuala Terengganu, Terengganu",
+    negeri: "Terengganu",
+    daerah: "Kuala Terengganu",
+    bandar: "Kuala Terengganu",
+    poskod: "20000",
+    noTelefon: "09-622 6789",
+    noTelefonBimbit: "017-890 1234",
+    emel: "nurul.huda@email.com",
+    pekerjaan: "Pegawai Kesihatan",
+    namaMajikan: "Hospital Sultanah Nur Zahirah",
+    tahapPendidikan: "Ijazah Sarjana",
+    institusiPendidikan: "Universiti Sains Malaysia",
+    tarikhMulaPerkhidmatan: "15-03-2023",
+    tempohPerkhidmatan: "1 tahun 1 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP007",
@@ -618,6 +1216,27 @@ const requests = ref([
     daerah: "Pahang",
     institusi: "Surau Al-Amin",
     status: "suspended",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Bercerai",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 34, Jalan Kuantan, Taman Islam, 25000 Kuantan, Pahang",
+    negeri: "Pahang",
+    daerah: "Kuantan",
+    bandar: "Kuantan",
+    poskod: "25000",
+    noTelefon: "09-516 7890",
+    noTelefonBimbit: "018-901 2345",
+    emel: "abdul.rahman@email.com",
+    pekerjaan: "Pegawai Perhutanan",
+    namaMajikan: "Jabatan Perhutanan Negeri Pahang",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Teknologi Mara",
+    tarikhMulaPerkhidmatan: "01-05-2023",
+    tempohPerkhidmatan: "11 bulan",
+    jumlahSuratAmaran: "2",
+    statusTerakhir: "Dalam Pemerhatian"
   },
   {
     id: "KP008",
@@ -629,6 +1248,27 @@ const requests = ref([
     daerah: "Negeri Sembilan",
     institusi: "Kompleks Islam",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 67, Jalan Seremban, Taman Islam, 70000 Seremban, Negeri Sembilan",
+    negeri: "Negeri Sembilan",
+    daerah: "Seremban",
+    bandar: "Seremban",
+    poskod: "70000",
+    noTelefon: "06-762 8901",
+    noTelefonBimbit: "019-012 3456",
+    emel: "noraini.mohamed@email.com",
+    pekerjaan: "Guru",
+    namaMajikan: "Sekolah Rendah Kebangsaan Seremban",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Pendidikan Sultan Idris",
+    tarikhMulaPerkhidmatan: "20-07-2023",
+    tempohPerkhidmatan: "9 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP009",
@@ -640,6 +1280,27 @@ const requests = ref([
     daerah: "Melaka",
     institusi: "Masjid Al-Hidayah",
     status: "terminated",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Janda/Duda",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 23, Jalan Melaka, Taman Islam, 75000 Melaka, Melaka",
+    negeri: "Melaka",
+    daerah: "Melaka Tengah",
+    bandar: "Bandaraya Melaka",
+    poskod: "75000",
+    noTelefon: "06-283 9012",
+    noTelefonBimbit: "011-123 4567",
+    emel: "ismail.yusof@email.com",
+    pekerjaan: "Pegawai Pelancongan",
+    namaMajikan: "Lembaga Pelancongan Melaka",
+    tahapPendidikan: "Diploma",
+    institusiPendidikan: "Kolej Komuniti Melaka",
+    tarikhMulaPerkhidmatan: "10-02-2023",
+    tempohPerkhidmatan: "1 tahun 2 bulan",
+    jumlahSuratAmaran: "3",
+    statusTerakhir: "Telah Ditamatkan"
   },
   {
     id: "KP010",
@@ -651,6 +1312,27 @@ const requests = ref([
     daerah: "Johor",
     institusi: "Surau Al-Amin",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Bujang",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 90, Jalan Johor Bahru, Taman Islam, 80000 Johor Bahru, Johor",
+    negeri: "Johor",
+    daerah: "Johor Bahru",
+    bandar: "Johor Bahru",
+    poskod: "80000",
+    noTelefon: "07-224 0123",
+    noTelefonBimbit: "010-234 5678",
+    emel: "rohana.sulaiman@email.com",
+    pekerjaan: "Pegawai Undang-undang",
+    namaMajikan: "Jabatan Peguam Negara",
+    tahapPendidikan: "Ijazah Sarjana",
+    institusiPendidikan: "Universiti Teknologi Malaysia",
+    tarikhMulaPerkhidmatan: "05-04-2023",
+    tempohPerkhidmatan: "1 tahun",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
 ]);
 
@@ -729,12 +1411,32 @@ const isFormValid = computed(() => {
          !fileError.value;
 });
 
+// Termination Form validation computed property
+const isTerminateFormValid = computed(() => {
+  if (terminateData.value.reason === "lain-lain") {
+    return terminateData.value.customReason && 
+           terminateData.value.customReason.length >= 10 && 
+           terminateData.value.customReason.length <= 500 && 
+           terminateData.value.supportingDocuments && 
+           terminateData.value.confirmation &&
+           !terminateFileError.value;
+  } else {
+    return terminateData.value.reason && 
+           terminateData.value.supportingDocuments && 
+           terminateData.value.confirmation &&
+           !terminateFileError.value;
+  }
+});
+
 // Enhanced helper functions
 const getStatusVariant = (status) => {
   const variants = {
     aktif: "success",
     terminated: "danger",
     suspended: "warning",
+    "Final Warning": "danger",
+    "Dalam Pemerhatian": "warning",
+    "Telah Ditamatkan": "danger",
   };
   return variants[status] || "disabled";
 };
@@ -748,9 +1450,76 @@ const getStatusLabel = (status) => {
   return labels[status] || status;
 };
 
+const getWarningCountVariant = (count) => {
+  const countNum = parseInt(count) || 0;
+  if (countNum === 0) return "success";
+  if (countNum === 1) return "warning";
+  if (countNum === 2) return "danger";
+  return "danger"; // 3 or more
+};
+
 // Helper method for status dashboard
 const getStatusCount = (status) => {
   return requests.value.filter(request => request.status === status).length;
+};
+
+// Helper method for tab requests
+const getTabRequests = (status) => {
+  let result = [...requests.value];
+  
+  // Filter by status tab
+  if (status) {
+    result = result.filter(request => request.status === status);
+  }
+  
+  // Apply search filter
+  if (filters.value.searchQuery) {
+    const query = filters.value.searchQuery.toLowerCase();
+    result = result.filter(request => 
+      (request.noRujukan || request.rujukan)?.toLowerCase().includes(query) ||
+      (request.nama || request.penolongAmil?.nama)?.toLowerCase().includes(query) ||
+      (request.idPengenalan || request.penolongAmil?.noKP)?.includes(query) ||
+      (request.kategori || request.newKategori)?.toLowerCase().includes(query) ||
+      (request.sesi || request.newSesi)?.toLowerCase().includes(query) ||
+      (request.daerah || request.newDaerah)?.toLowerCase().includes(query) ||
+      (request.institusi || request.newInstitusi)?.toLowerCase().includes(query)
+    );
+  }
+  
+  // Apply status filter
+  if (filters.value.status) {
+    result = result.filter(request => request.status === filters.value.status);
+  }
+  
+  // Apply kategori filter
+  if (filters.value.kategori) {
+    result = result.filter(request => 
+      (request.kategori || request.newKategori)?.toLowerCase().includes(filters.value.kategori.toLowerCase())
+    );
+  }
+  
+  // Apply institusi filter
+  if (filters.value.institusi) {
+    result = result.filter(request => 
+      (request.institusi || request.newInstitusi)?.toLowerCase().includes(filters.value.institusi.toLowerCase())
+    );
+  }
+
+  // Apply sesi filter
+  if (filters.value.sesi) {
+    result = result.filter(request => 
+      (request.sesi || request.newSesi)?.toLowerCase().includes(filters.value.sesi.toLowerCase())
+    );
+  }
+
+  // Apply daerah filter
+  if (filters.value.daerah) {
+    result = result.filter(request => 
+      (request.daerah || request.newDaerah)?.toLowerCase().includes(filters.value.daerah.toLowerCase())
+    );
+  }
+  
+  return result;
 };
 
 // Enhanced methods
@@ -793,13 +1562,56 @@ const exportData = () => {
 
 // PYB Institusi specific actions
 const terminateService = (request) => {
-  showNotificationMessage(
-    "Perkhidmatan Ditamatkan", 
-    `Perkhidmatan ${request.noRujukan || request.rujukan} untuk ${request.nama || request.penolongAmil?.nama} telah ditamatkan.`
-  );
+  // Populate with comprehensive mock data for presentation
+  currentTerminateRequest.value = {
+    // Basic request info
+    ...request,
+    
+    // Personal Information
+    nama: request.nama || "Ahmad bin Abdullah",
+    idPengenalan: request.idPengenalan || "901231012345",
+    jantina: "Lelaki",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    
+    // Contact Information
+    alamat: "No. 123, Jalan Utama, Taman Seri Indah, 43000 Kajang, Selangor",
+    negeri: "Selangor",
+    daerah: "Hulu Langat",
+    bandar: "Kajang",
+    poskod: "43000",
+    noTelefon: "03-8736 1234",
+    noTelefonBimbit: "012-345 6789",
+    emel: "ahmad.abdullah@email.com",
+    
+    // Service Information
+    kategori: request.kategori || "Penolong Amil Kariah",
+    sesi: request.sesi || "2024/2025",
+    institusi: request.institusi || "Masjid Al-Hidayah",
+    
+    // Employment & Education
+    pekerjaan: "Pegawai Kerajaan",
+    namaMajikan: "Jabatan Agama Islam Selangor",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Islam Antarabangsa Malaysia",
+    
+    // Additional context for termination
+    tarikhMulaPerkhidmatan: "15-01-2023",
+    tempohPerkhidmatan: "1 tahun 3 bulan",
+    jumlahSuratAmaran: "3",
+    statusTerakhir: "Final Warning"
+  };
   
-  // In real app, this would update the status to 'terminated'
-  // For now, just show notification
+  terminateData.value = {
+    reason: "",
+    customReason: "",
+    supportingDocuments: null,
+    additionalNotes: "",
+    confirmation: false,
+  };
+  terminateFileError.value = "";
+  showTerminateModal.value = true;
 };
 
 // Ketua Divisyen specific actions
@@ -815,6 +1627,26 @@ const approveService = (request) => {
 };
 
 const validateNotes = () => {
+  // This function can be used for additional validation if needed
+  // The FormKit validation will handle the basic validation
+};
+
+const validateConfirmation = () => {
+  // This function can be used for additional validation if needed
+  // The FormKit validation will handle the basic validation
+};
+
+const validateTerminationReason = () => {
+  // This function can be used for additional validation if needed
+  // The FormKit validation will handle the basic validation
+};
+
+const validateCustomReason = () => {
+  // This function can be used for additional validation if needed
+  // The FormKit validation will handle the basic validation
+};
+
+const validateAdditionalNotes = () => {
   // This function can be used for additional validation if needed
   // The FormKit validation will handle the basic validation
 };
@@ -860,7 +1692,47 @@ const handleFileChange = (event) => {
 };
 
 const sendWarningLetter = (request) => {
-  currentWarningRequest.value = request;
+  // Populate with comprehensive mock data for presentation
+  currentWarningRequest.value = {
+    // Basic request info
+    ...request,
+    
+    // Personal Information
+    nama: request.nama || "Ahmad bin Abdullah",
+    idPengenalan: request.idPengenalan || "901231012345",
+    jantina: request.jantina || "Lelaki",
+    statusPerkahwinan: request.statusPerkahwinan || "Berkahwin",
+    bangsa: request.bangsa || "Melayu",
+    agama: request.agama || "Islam",
+    
+    // Contact Information
+    alamat: request.alamat || "No. 123, Jalan Utama, Taman Seri Indah, 43000 Kajang, Selangor",
+    negeri: request.negeri || "Selangor",
+    daerah: request.daerah || "Hulu Langat",
+    bandar: request.bandar || "Kajang",
+    poskod: request.poskod || "43000",
+    noTelefon: request.noTelefon || "03-8736 1234",
+    noTelefonBimbit: request.noTelefonBimbit || "012-345 6789",
+    emel: request.emel || "ahmad.abdullah@email.com",
+    
+    // Service Information
+    kategori: request.kategori || "Penolong Amil Kariah",
+    sesi: request.sesi || "2024/2025",
+    institusi: request.institusi || "Masjid Al-Hidayah",
+    
+    // Employment & Education
+    pekerjaan: request.pekerjaan || "Pegawai Kerajaan",
+    namaMajikan: request.namaMajikan || "Jabatan Agama Islam Selangor",
+    tahapPendidikan: request.tahapPendidikan || "Ijazah Sarjana Muda",
+    institusiPendidikan: request.institusiPendidikan || "Universiti Islam Antarabangsa Malaysia",
+    
+    // Additional context for warning letter
+    tarikhMulaPerkhidmatan: request.tarikhMulaPerkhidmatan || "15-01-2023",
+    tempohPerkhidmatan: request.tempohPerkhidmatan || "1 tahun 3 bulan",
+    jumlahSuratAmaran: request.jumlahSuratAmaran || "0",
+    statusTerakhir: request.statusTerakhir || "Aktif"
+  };
+  
   warningLetterData.value = {
     file: null,
     notes: "",
@@ -933,11 +1805,90 @@ const hideNotification = () => {
   showNotification.value = false;
 };
 
-// Role-based access control
-const canCreateRequest = (role) => {
-  // Only PYB Institusi can create new services
-  return role === "pyb-institusi";
+// Termination methods
+const handleTerminateFileChange = (event) => {
+  const file = event.target.files[0];
+  terminateFileError.value = "";
+  
+  if (file) {
+    // Check file size (5MB = 5 * 1024 * 1024 bytes)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      terminateFileError.value = "Saiz fail terlalu besar. Maksimum 5MB dibenarkan.";
+      terminateData.value.supportingDocuments = null;
+      event.target.value = "";
+      return;
+    }
+    
+    // Check file type
+    const allowedTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    if (!allowedTypes.includes(fileExtension)) {
+      terminateFileError.value = "Format fail tidak dibenarkan. Hanya PDF, DOC, DOCX, JPG, JPEG, PNG dibenarkan.";
+      terminateData.value.supportingDocuments = null;
+      event.target.value = "";
+      return;
+    }
+    
+    // File is valid
+    terminateData.value.supportingDocuments = file;
+  }
 };
+
+const submitTermination = async () => {
+  if (isTerminateFormValid.value) {
+    isTerminateSubmitting.value = true;
+    
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Here you would typically send the data to your backend
+      // For now, we'll just show a success message
+      showNotificationMessage(
+        "Perkhidmatan Ditamatkan", 
+        `Perkhidmatan ${currentTerminateRequest.value?.noRujukan || currentTerminateRequest.value?.rujukan} untuk ${currentTerminateRequest.value?.nama || currentTerminateRequest.value?.penolongAmil?.nama} telah ditamatkan.`
+      );
+      
+      // Reset modal and close
+      closeTerminateModal();
+    } catch (error) {
+      showNotificationMessage(
+        "Ralat", 
+        "Gagal menamatkan perkhidmatan. Sila cuba lagi."
+      );
+    } finally {
+      isTerminateSubmitting.value = false;
+    }
+  }
+};
+
+const closeTerminateModal = () => {
+  // Check if user has entered data and confirm before closing
+  if ((terminateData.value.reason || terminateData.value.customReason || terminateData.value.supportingDocuments || terminateData.value.additionalNotes || terminateData.value.confirmation) && !isTerminateSubmitting.value) {
+    if (confirm('Anda pasti mahu menutup modal ini? Data yang telah dimasukkan akan hilang.')) {
+      resetTerminateModal();
+    }
+  } else {
+    resetTerminateModal();
+  }
+};
+
+const resetTerminateModal = () => {
+  showTerminateModal.value = false;
+  terminateData.value = {
+    reason: "",
+    customReason: "",
+    supportingDocuments: null,
+    additionalNotes: "",
+    confirmation: false,
+  };
+  currentTerminateRequest.value = null;
+  terminateFileError.value = "";
+  isTerminateSubmitting.value = false;
+};
+
+// Role-based access control - removed canCreateRequest as PP/KP doesn't handle adding new data
 
 const canEditRequest = (request) => {
   // Only allow editing if status is pending or need_more_info
