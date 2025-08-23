@@ -437,13 +437,15 @@
           <h3 class="text-lg font-semibold mb-4">
             II. Maklumat Islam
           </h3>
-            <h4 class="text-md font-medium mb-3 text-gray-800">Maklumat Islam</h4>
+            <!-- <h4 class="text-md font-medium mb-3 text-gray-800">Maklumat Islam</h4> -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Adakah anda seorang Muallaf? -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+              <label class="block text-sm font-medium text-black-700">Adakah anda seorang Muallaf?</label>
               <FormKit
                 type="radio"
                 name="adakah_muallaf"
-                label="Adakah anda seorang Muallaf?"
                 :options="[
                   { label: 'Ya', value: 'Y' },
                   { label: 'Tidak', value: 'T' }
@@ -455,6 +457,8 @@
                 }"
                 v-model="formData.adakah_muallaf"
               />
+              </div>
+              </div>
 
               <!-- Tarikh Masuk Islam -->
               <div v-if="formData.adakah_muallaf === 'Y'">
@@ -602,10 +606,12 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Masih Bersekolah -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+              <label class="block text-sm font-medium text-black-700">Adakah anda seorang Muallaf?</label>
               <FormKit
                 type="radio"
                 name="masih_bersekolah"
-                label="Masih Bersekolah *"
                 :options="[
                   { label: 'Ya', value: 'Y' },
                   { label: 'Tidak', value: 'T' }
@@ -613,6 +619,8 @@
                 validation="required"
                 v-model="formData.masih_bersekolah"
               />
+              </div>
+              </div>
 
               <!-- Pendidikan Tertinggi -->
               <FormKit
@@ -1308,7 +1316,460 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA3"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA7"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Alamat</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 8: Maklumat Alamat -->
+        <FormKit
+          v-if="currentStepA === 8"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionA8"
+        >
+          <h3 class="text-lg font-semibold mb-4">VII. Maklumat Alamat</h3>
+
+          <!-- Alamat Section -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Alamat</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="md:col-span-2">
+                <FormKit
+                  type="textarea"
+                  name="alamat1"
+                  label="Alamat 1"
+                  validation="required"
+                  placeholder="Sila masukkan alamat 1"
+                  v-model="formData.addressInfo.alamat1"
+                  :validation-messages="{
+                    required: 'Alamat 1 adalah wajib',
+                  }"
+                />
+
+                <FormKit
+                  type="textarea"
+                  name="alamat2"
+                  label="Alamat 2"
+                  placeholder="Sila masukkan alamat 2 (tidak wajib)"
+                  v-model="formData.addressInfo.alamat2"
+                  v-if="formData.addressInfo.alamat1"
+                />
+
+                <FormKit
+                  type="textarea"
+                  name="alamat3"
+                  label="Alamat 3"
+                  placeholder="Sila masukkan alamat 3 (tidak wajib)"
+                  v-model="formData.addressInfo.alamat3"
+                  v-if="formData.addressInfo.alamat1"
+                />
+              </div>
+
+              <FormKit
+                type="select"
+                name="negeri"
+                label="Negeri"
+                value="Selangor"
+                disabled
+                v-model="formData.addressInfo.negeri"
+              />
+
+              <FormKit
+                type="select"
+                name="daerah"
+                label="Daerah"
+                placeholder="Pilih daerah"
+                :options="daerahOptions"
+                validation="required"
+                v-model="formData.addressInfo.daerah"
+                :validation-messages="{
+                  required: 'Daerah adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="bandar"
+                label="Bandar"
+                placeholder="Pilih bandar"
+                :options="bandarOptions"
+                validation="required"
+                v-model="formData.addressInfo.bandar"
+                :validation-messages="{
+                  required: 'Bandar adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="poskod"
+                label="Poskod"
+                placeholder="Pilih poskod"
+                :options="poskodOptions"
+                validation="required"
+                v-model="formData.addressInfo.poskod"
+                :validation-messages="{
+                  required: 'Poskod adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="kariah"
+                label="Kariah"
+                placeholder="Pilih kariah"
+                :options="kariahOptions"
+                validation="required"
+                v-model="formData.addressInfo.kariah"
+                :validation-messages="{
+                  required: 'Kariah adalah wajib'
+                }"
+              />
+
+              <div class="flex gap-2">
+                <FormKit
+                  v-model="formData.addressInfo.geolokasi"
+                  label="Geolokasi"
+                  type="text"
+                  placeholder="Auto isi lokasi berdasarkan alamat"
+                  class="flex-1"
+                  readonly
+                />
+                <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="getLocation('addressInfo')"
+                  class="whitespace-nowrap mt-7"
+                >
+                  <i class="fas fa-location-dot mr-2"></i>
+                  Dapatkan Lokasi
+                </rs-button>
+              </div>
+
+              <FormKit
+                type="number"
+                name="tempoh_menetap_selangor"
+                label="Tempoh Menetap di Selangor (Tahun)"
+                min="0"
+                validation="required|min:0"
+                v-model="formData.addressInfo.tempoh_menetap_selangor"
+                :validation-messages="{
+                  required: 'Tempoh menetap adalah wajib',
+                  min: 'Tempoh menetap mesti 0 atau lebih'
+                }"
+              />
+            </div>
+          </div>
+
+          <!-- Maklumat Tempat Tinggal Section -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Tempat Tinggal</h4>
+            
+            <!-- Hidden field for ID type -->
+            <FormKit
+              type="hidden"
+              name="jenis_id_alamat"
+              :value="jenisId"
+            />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="select"
+                name="status_kediaman"
+                label="Status Kediaman Tempat Tinggal"
+                :options="[
+                  'Milik Sendiri Tidak Berbayar',
+                  'Milik Sendiri Berbayar',
+                  'Sewa',
+                  'Kuarters Majikan',
+                  'Tumpang Rumah Ibu/Bapa/Mertua',
+                  'Pusaka',
+                  'Sumbangan LZS / PPRT / RISDA',
+                  'Lain-lain'
+                ]"
+                validation="required"
+                v-model="formData.addressInfo.status_kediaman"
+                :validation-messages="{
+                  required: 'Status kediaman adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="lain_lain_status_kediaman"
+                label="Lain-lain Status Kediaman Tempat Tinggal"
+                validation="required"
+                v-if="formData.addressInfo.status_kediaman === 'Lain-lain'"
+                placeholder="Nyatakan status kediaman lain"
+                :validation-messages="{
+                  required: 'Sila nyatakan status kediaman lain'
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="tapak_rumah"
+                label="Tapak Rumah"
+                :options="[
+                  'Milik Sendiri',
+                  'Tanah Wakaf',
+                  'Tanah Kerajaan / Persendirian / Setinggan (Izin)',
+                  'Kebenaran Menduduki Sementara (TOL)',
+                  'Menumpang / Sewa / Pajak daripada Orang Lain',
+                  'Tanah Keluarga',
+                  'Lain-lain'
+                ]"
+                validation="required"
+                v-model="formData.addressInfo.tapak_rumah"
+                :validation-messages="{
+                  required: 'Tapak rumah adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="lain_lain_tapak_rumah"
+                label="Lain-lain Tapak Rumah"
+                validation="required"
+                v-if="formData.addressInfo.tapak_rumah === 'Lain-lain'"
+                placeholder="Nyatakan tapak rumah lain"
+                :validation-messages="{
+                  required: 'Sila nyatakan tapak rumah lain'
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="jenis_rumah"
+                label="Jenis Rumah"
+                :options="[
+                  'Kos Rendah',
+                  'Kos Sederhana',
+                  'Pangsapuri/Flat',
+                  'Teres',
+                  'Lain-lain'
+                ]"
+                validation="required"
+                v-model="formData.addressInfo.jenis_rumah"
+                :validation-messages="{
+                  required: 'Jenis rumah adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="lain_lain_jenis_rumah"
+                label="Lain-lain Jenis Rumah"
+                validation="required"
+                v-if="formData.addressInfo.jenis_rumah === 'Lain-lain'"
+                placeholder="Nyatakan jenis rumah lain"
+                :validation-messages="{
+                  required: 'Sila nyatakan jenis rumah lain'
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="binaan_rumah"
+                label="Binaan Rumah"
+                :options="[
+                  'Batu',
+                  'Kayu',
+                  'Separa Batu',
+                  'Lain-lain'
+                ]"
+                validation="required"
+                v-model="formData.addressInfo.binaan_rumah"
+                :validation-messages="{
+                  required: 'Binaan rumah adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="lain_lain_binaan_rumah"
+                label="Lain-lain Binaan Rumah"
+                validation="required"
+                v-if="formData.addressInfo.binaan_rumah === 'Lain-lain'"
+                    placeholder="Nyatakan binaan rumah lain"
+                :validation-messages="{
+                  required: 'Sila nyatakan binaan rumah lain'
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="keadaan_kediaman"
+                label="Keadaan Kediaman"
+                :options="[
+                  'Baik',
+                  'Sempurna',
+                  'Uzur',
+                  'Separa Uzur'
+                ]"
+                validation="required"
+                v-model="formData.addressInfo.keadaan_kediaman"
+                :validation-messages="{
+                  required: 'Keadaan kediaman adalah wajib'
+                }"
+              />
+            </div>
+
+            <!-- Kemudahan Asas Section -->
+            <div class="mt-6">
+              <h5 class="text-md font-medium mb-3">Kemudahan Asas</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">Bekalan Air</label>
+                  <FormKit
+                    type="radio"
+                    name="bekalan_air"
+                    :options="[
+                      { label: 'Ada', value: 'ada' },
+                      { label: 'Tiada', value: 'tiada' }
+                    ]"
+                    validation="required"
+                    v-model="formData.addressInfo.bekalan_air"
+                    :validation-messages="{
+                      required: 'Sila pilih status bekalan air'
+                    }"
+                  />
+                </div>
+
+                <FormKit
+                  type="number"
+                  name="bil_air"
+                  label="Anggaran Bil Air Sebulan (RM)"
+                  step="0.01"
+                  min="0"
+                  validation="required"
+                  v-model="formData.addressInfo.bil_air"
+                  :validation-messages="{
+                    required: 'Anggaran bil air adalah wajib'
+                  }"
+                />
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">Bekalan Elektrik</label>
+                  <FormKit
+                    type="radio"
+                    name="bekalan_elektrik"
+                    :options="[
+                      { label: 'Ada', value: 'ada' },
+                      { label: 'Tiada', value: 'tiada' }
+                    ]"
+                    validation="required"
+                    v-model="formData.addressInfo.bekalan_elektrik"
+                    :validation-messages="{
+                      required: 'Sila pilih status bekalan elektrik'
+                    }"
+                  />
+                </div>
+
+                <FormKit
+                  type="number"
+                  name="bil_elektrik"
+                  label="Anggaran Bil Elektrik Sebulan (RM)"
+                  step="0.01"
+                  min="0"
+                  validation="required"
+                  v-model="formData.addressInfo.bil_elektrik"
+                  :validation-messages="{
+                    required: 'Anggaran bil elektrik adalah wajib'
+                  }"
+                />
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">Bil Penyelenggaraan</label>
+                  <FormKit
+                    type="radio"
+                    name="penyelenggaraan"
+                    :options="[
+                      { label: 'Ada', value: 'ada' },
+                      { label: 'Tiada', value: 'tiada' }
+                    ]"
+                    validation="required"
+                    v-model="formData.addressInfo.penyelenggaraan"
+                    :validation-messages="{
+                      required: 'Sila pilih status bil penyelenggaraan'
+                    }"
+                  />
+                </div>
+
+                <FormKit
+                  type="number"
+                  name="bil_penyelenggaraan"
+                  label="Anggaran Bil Penyelenggaraan Sebulan (RM)"
+                  step="0.01"
+                  min="0"
+                  validation="required"
+                  v-model="formData.addressInfo.bil_penyelenggaraan"
+                  :validation-messages="{
+                    required: 'Anggaran bil penyelenggaraan adalah wajib'
+                  }"
+                />
+              </div>
+            </div>
+
+            <!-- Kos Tempat Tinggal Section -->
+            <div class="mt-6">
+              <!-- <h5 class="text-md font-medium mb-3">Kos Tempat Tinggal</h5> -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="number"
+                  name="kadar_bayaran_bulanan"
+                  label="Status Kediaman jika Milik Sendiri Berbayar"
+                  step="0.01"
+                  min="0"
+                  placeholder="Isi kadar bayaran bulanan (RM)"
+                  v-if="formData.addressInfo.status_kediaman === 'Milik Sendiri Berbayar'"
+                  v-model="formData.addressInfo.kadar_bayaran_bulanan"
+                />
+
+                <FormKit
+                  type="number"
+                  name="kadar_sewa_bulanan"
+                  label="Status Kediaman jika Sewa"
+                  step="0.01"
+                  min="0"
+                  placeholder="Isi kadar sewa bulanan (RM)"
+                  v-if="formData.addressInfo.status_kediaman === 'Sewa'"
+                  v-model="formData.addressInfo.kadar_sewa_bulanan"
+                />
+
+                <FormKit
+                  type="file"
+                  name="dokumen_perjanjian_sewa"
+                  label="Dokumen Perjanjian Sewa"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  v-if="formData.addressInfo.status_kediaman === 'Sewa'"
+                  v-model="formData.addressInfo.dokumen_perjanjian_sewa"
+                  :validation-messages="{
+                    required: 'Dokumen perjanjian sewa adalah wajib untuk status sewa'
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA8"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1318,15 +1779,15 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 8: Maklumat Pekerjaan -->
+        <!-- Section A Form - Step 9: Maklumat Pekerjaan -->
         <FormKit
-          v-if="currentStepA === 8"
+          v-if="currentStepA === 9"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA8"
+          id="sectionA9"
         >
-          <h3 class="text-lg font-semibold mb-4">VII. Maklumat Pekerjaan</h3>
+          <h3 class="text-lg font-semibold mb-4">VIII. Maklumat Pekerjaan</h3>
 
           <!-- Hidden field for ID type -->
           <FormKit
@@ -1363,6 +1824,7 @@
                 name="jenis_pekerjaan"
                 label="Jenis Pekerjaan"
                 validation="required"
+                v-model="formData.jenis_pekerjaan"
                 :validation-messages="{
                   required: 'Jenis pekerjaan adalah wajib'
                 }"
@@ -1376,7 +1838,8 @@
                   'Kerajaan',
                   'Swasta',
                   'Badan Berkanun',
-                  'Kerja Sendiri'
+                  'Kerja Sendiri',
+                  'Lain-lain'
                 ]"
                 validation="required"
                 v-model="formData.sektor_pekerjaan"
@@ -1391,6 +1854,7 @@
                 name="lain_lain_sektor"
                 label="Lain-lain Sektor Pekerjaan"
                 validation="required"
+                v-model="formData.lain_lain_sektor"
                 :validation-messages="{
                   required: 'Sila nyatakan sektor pekerjaan lain'
                 }"
@@ -1401,6 +1865,7 @@
                 name="no_telefon_pejabat"
                 label="No. Telefon Pejabat"
                 validation="required"
+                v-model="formData.no_telefon_pejabat"
                 :validation-messages="{
                   required: 'No. telefon pejabat adalah wajib'
                 }"
@@ -1411,6 +1876,7 @@
                 name="nama_majikan"
                 label="Nama Majikan"
                 validation="required"
+                v-model="formData.nama_majikan"
                 :validation-messages="{
                   required: 'Nama majikan adalah wajib'
                 }"
@@ -1421,6 +1887,7 @@
                 name="no_telefon_majikan"
                 label="No. Telefon Majikan"
                 validation="required"
+                v-model="formData.no_telefon_majikan"
                 :validation-messages="{
                   required: 'No. telefon majikan adalah wajib'
                 }"
@@ -1432,6 +1899,7 @@
                   name="alamat_majikan_1"
                   label="Alamat Majikan 1"
                   validation="required"
+                  v-model="formData.alamat_majikan_1"
                   :validation-messages="{
                     required: 'Alamat majikan adalah wajib'
                   }"
@@ -1442,6 +1910,7 @@
                   name="alamat_majikan_2"
                   label="Alamat Majikan 2"
                   placeholder="(Tidak wajib)"
+                  v-model="formData.alamat_majikan_2"
                 />
 
                 <FormKit
@@ -1449,6 +1918,7 @@
                   name="alamat_majikan_3"
                   label="Alamat Majikan 3"
                   placeholder="(Tidak wajib)"
+                  v-model="formData.alamat_majikan_3"
                 />
               </div>
 
@@ -1457,6 +1927,7 @@
                 name="bandar_majikan"
                 label="Bandar"
                 validation="required"
+                v-model="formData.bandar_majikan"
                 :validation-messages="{
                   required: 'Bandar adalah wajib'
                 }"
@@ -1467,6 +1938,7 @@
                 name="poskod_majikan"
                 label="Poskod"
                 validation="required"
+                v-model="formData.poskod_majikan"
                 :validation-messages="{
                   required: 'Poskod adalah wajib'
                 }"
@@ -1477,6 +1949,7 @@
                 name="daerah_majikan"
                 label="Daerah"
                 validation="required"
+                v-model="formData.daerah_majikan"
                 :validation-messages="{
                   required: 'Daerah adalah wajib'
                 }"
@@ -1487,6 +1960,7 @@
                 name="negeri_majikan"
                 label="Negeri"
                 validation="required"
+                v-model="formData.negeri_majikan"
                 :validation-messages="{
                   required: 'Negeri adalah wajib'
                 }"
@@ -1497,6 +1971,7 @@
                 name="negara_majikan"
                 label="Negara"
                 validation="required"
+                v-model="formData.negara_majikan"
                 :validation-messages="{
                   required: 'Negara adalah wajib'
                 }"
@@ -1507,6 +1982,7 @@
                 name="jawatan"
                 label="Jawatan"
                 validation="required"
+                v-model="formData.jawatan"
                 :validation-messages="{
                   required: 'Jawatan adalah wajib'
                 }"
@@ -1522,6 +1998,7 @@
                   'Sementara'
                 ]"
                 validation="required"
+                v-model="formData.status_jawatan"
                 :validation-messages="{
                   required: 'Status jawatan adalah wajib'
                 }"
@@ -1534,6 +2011,7 @@
                 step="0.01"
                 min="0"
                 validation="required"
+                v-model="formData.pendapatan_kasar"
                 :validation-messages="{
                   required: 'Pendapatan kasar adalah wajib'
                 }"
@@ -1585,6 +2063,7 @@
                 name="lain_lain_sumber_pendapatan"
                 label="Lain-lain Sumber Pendapatan"
                 validation="required"
+                v-model="formData.lain_lain_sumber_pendapatan"
                 :validation-messages="{
                   required: 'Sila nyatakan sumber pendapatan lain'
                 }"
@@ -1600,7 +2079,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA8"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA9"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1610,16 +2089,16 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 9: Maklumat Pendapatan -->
+        <!-- Section A Form - Step 10: Maklumat Pendapatan -->
         <FormKit
-          v-if="currentStepA === 9"
+          v-if="currentStepA === 10"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA9"
+          id="sectionA10"
         >
           <h3 class="text-lg font-semibold mb-4">
-            VIII. Maklumat Pendapatan
+            IX. Maklumat Pendapatan
           </h3>
 
           <!-- Income Information -->
@@ -3728,7 +4207,7 @@ const currentSection = ref(1);
 
 // Section A - Main Form Steps (now 12 steps with separate tabs for different info sections)
 const currentStepA = ref(1);
-const totalStepsA = 14;
+const totalStepsA = 15;
 const stepsA = [
   { id: 1, label: "Penilaian Awal" },
   { id: 2, label: "Peribadi" },
@@ -3737,13 +4216,14 @@ const stepsA = [
   { id: 5, label: "Bank" },
   { id: 6, label: "Kesihatan" },
   { id: 7, label: "Kemahiran" },
-  { id: 8, label: "Pekerjaan" },
-  { id: 9, label: "Pendapatan" },
-  { id: 10, label: "Kediaman" },
-  { id: 11, label: "Pinjaman" },
-  { id: 12, label: "Pemilikan" },
-  { id: 13, label: "Pemilikan Barangan Rumah" },
-  { id: 14, label: "Waris" }
+  { id: 8, label: "Alamat" },
+  { id: 9, label: "Pekerjaan" },
+  { id: 10, label: "Pendapatan" },
+  { id: 11, label: "Kediaman" },
+  { id: 12, label: "Pinjaman" },
+  { id: 13, label: "Pemilikan" },
+  { id: 14, label: "Pemilikan Barangan Rumah" },
+  { id: 15, label: "Waris" }
 ];
 
 // Section B - Tanggungan Form Steps (now 11 steps with separate tabs for different info sections)
@@ -3935,14 +4415,24 @@ const formData = ref({
     alamat2: '',
     alamat3: '',
     location: '',
+    negeri: 'Selangor',
     daerah: '',
+    bandar: '',
+    poskod: '',
+    kariah: '',
+    geolokasi: '',
+    tempoh_menetap_selangor: '',
     kursus_terpilih: '',
     selectedKursus: null,
     selectedGuru: null,
     status_kediaman: '',
+    lain_lain_status_kediaman: '',
     tapak_rumah: '',
+    lain_lain_tapak_rumah: '',
     jenis_rumah: '',
+    lain_lain_jenis_rumah: '',
     binaan_rumah: '',
+    lain_lain_binaan_rumah: '',
     keadaan_kediaman: '',
     bekalan_air: '',
     bil_air: '',
@@ -3950,6 +4440,9 @@ const formData = ref({
     bil_elektrik: '',
     penyelenggaraan: '',
     bil_penyelenggaraan: '',
+    kadar_bayaran_bulanan: '',
+    kadar_sewa_bulanan: '',
+    dokumen_perjanjian_sewa: null,
   },
 
   // Section G - Maklumat Pinjaman
@@ -4145,6 +4638,53 @@ const daerahOptions = [
   { label: "Sepang", value: "sepang" }
 ];
 
+// City Options based on Districts
+const bandarOptions = [
+  { label: "Shah Alam", value: "shah-alam", daerah: "petaling" },
+  { label: "Petaling Jaya", value: "petaling-jaya", daerah: "petaling" },
+  { label: "Subang Jaya", value: "subang-jaya", daerah: "petaling" },
+  { label: "Klang", value: "klang", daerah: "klang" },
+  { label: "Port Klang", value: "port-klang", daerah: "klang" },
+  { label: "Kajang", value: "kajang", daerah: "hulu-langat" },
+  { label: "Bangi", value: "bangi", daerah: "hulu-langat" },
+  { label: "Hulu Langat", value: "hulu-langat", daerah: "hulu-langat" },
+  { label: "Kuala Selangor", value: "kuala-selangor", daerah: "kuala-selangor" },
+  { label: "Tanjung Karang", value: "tanjung-karang", daerah: "kuala-selangor" },
+  { label: "Sepang", value: "sepang", daerah: "sepang" },
+  { label: "Cyberjaya", value: "cyberjaya", daerah: "sepang" },
+  { label: "Putrajaya", value: "putrajaya", daerah: "sepang" },
+  { label: "Gombak", value: "gombak", daerah: "gombak" },
+  { label: "Rawang", value: "rawang", daerah: "gombak" },
+  { label: "Hulu Selangor", value: "hulu-selangor", daerah: "hulu-selangor" },
+  { label: "Kuala Kubu Bharu", value: "kuala-kubu-bharu", daerah: "hulu-selangor" },
+  { label: "Kuala Langat", value: "kuala-langat", daerah: "kuala-langat" },
+  { label: "Banting", value: "banting", daerah: "kuala-langat" },
+  { label: "Sabak Bernam", value: "sabak-bernam", daerah: "sabak-bernam" },
+  { label: "Sekinchan", value: "sekinchan", daerah: "sabak-bernam" }
+];
+
+// Postal Code Options based on Cities
+const poskodOptions = [
+  { label: "40000", value: "40000", bandar: "shah-alam" },
+  { label: "41000", value: "41000", bandar: "klang" },
+  { label: "42000", value: "42000", bandar: "port-klang" },
+  { label: "43000", value: "43000", bandar: "kajang" },
+  { label: "44000", value: "44000", bandar: "bangi" },
+  { label: "45000", value: "45000", bandar: "kuala-selangor" },
+  { label: "46000", value: "46000", bandar: "tanjung-karang" },
+  { label: "47000", value: "47000", bandar: "sepang" },
+  { label: "48000", value: "48000", bandar: "cyberjaya" },
+  { label: "49000", value: "49000", bandar: "putrajaya" },
+  { label: "50000", value: "50000", bandar: "gombak" },
+  { label: "51000", value: "51000", bandar: "rawang" },
+  { label: "52000", value: "52000", bandar: "hulu-selangor" },
+  { label: "53000", value: "53000", bandar: "kuala-kubu-bharu" },
+  { label: "54000", value: "54000", bandar: "kuala-langat" },
+  { label: "55000", value: "55000", bandar: "banting" },
+  { label: "56000", value: "56000", bandar: "sabak-bernam" },
+  { label: "57000", value: "57000", bandar: "sekinchan" }
+];
+
 // Mosque Parish Options
 const kariahOptions = [
   { label: "Kariah Masjid Al-Hidayah", value: "masjid-al-hidayah" },
@@ -4299,7 +4839,7 @@ const showLainInput = computed(() => {
 });
 
 const showLainLainSektor = computed(() => {
-  return formData.value.sektor_pekerjaan === 'Kerja Sendiri';
+  return formData.value.sektor_pekerjaan === 'Lain-lain';
 });
 
 const showLainLainSumberPendapatan = computed(() => {
@@ -4633,7 +5173,7 @@ const handleSave = async () => {
 const handleSaveStepA1 = async () => {
   try {
     console.log("Step A1 saved:", formData.value);
-    toast.success("Maklumat Peribadi berjaya disimpan");
+    toast.success("Penilaian Awal berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A1 error:", error);
@@ -4703,7 +5243,7 @@ const handleSaveStepA7 = async () => {
 const handleSaveStepA8 = async () => {
   try {
     console.log("Step A8 saved:", formData.value);
-    toast.success("Maklumat Pekerjaan berjaya disimpan");
+    toast.success("Maklumat Alamat berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A8 error:", error);
@@ -4713,7 +5253,7 @@ const handleSaveStepA8 = async () => {
 const handleSaveStepA9 = async () => {
   try {
     console.log("Step A9 saved:", formData.value);
-    toast.success("Maklumat Pendapatan berjaya disimpan");
+    toast.success("Maklumat Pekerjaan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A9 error:", error);
@@ -4723,7 +5263,7 @@ const handleSaveStepA9 = async () => {
 const handleSaveStepA10 = async () => {
   try {
     console.log("Step A10 saved:", formData.value);
-    toast.success("Maklumat Kediaman berjaya disimpan");
+    toast.success("Maklumat Pendapatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A10 error:", error);
@@ -4733,7 +5273,7 @@ const handleSaveStepA10 = async () => {
 const handleSaveStepA11 = async () => {
   try {
     console.log("Step A11 saved:", formData.value);
-    toast.success("Maklumat Pinjaman berjaya disimpan");
+    toast.success("Maklumat Kediaman berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A11 error:", error);
@@ -4743,7 +5283,7 @@ const handleSaveStepA11 = async () => {
 const handleSaveStepA12 = async () => {
   try {
     console.log("Step A12 saved:", formData.value);
-    toast.success("Maklumat Pemilikan berjaya disimpan");
+    toast.success("Maklumat Pinjaman berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A12 error:", error);
@@ -4753,7 +5293,7 @@ const handleSaveStepA12 = async () => {
 const handleSaveStepA13 = async () => {
   try {
     console.log("Step A13 saved:", formData.value);
-    toast.success("Maklumat Barangan Rumah berjaya disimpan");
+    toast.success("Maklumat Pemilikan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A13 error:", error);
@@ -4763,10 +5303,30 @@ const handleSaveStepA13 = async () => {
 const handleSaveStepA14 = async () => {
   try {
     console.log("Step A14 saved:", formData.value);
-    toast.success("Maklumat Waris berjaya disimpan");
+    toast.success("Maklumat Pemilikan Barangan Rumah berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A14 error:", error);
+  }
+};
+
+const handleSaveStepA15 = async () => {
+  try {
+    console.log("Step A15 saved:", formData.value);
+    toast.success("Maklumat Pemilikan Barangan Rumah berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step A15 error:", error);
+  }
+};
+
+const handleSaveStepA16 = async () => {
+  try {
+    console.log("Step A16 saved:", formData.value);
+    toast.success("Maklumat Waris berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step A16 error:", error);
   }
 };
 
