@@ -3,6 +3,14 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <div class="mb-4 flex items-center space-x-4">
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="asnaf">Asnaf</option>
+        <option value="internal">Internal Staff</option>
+      </select>
+    </div>
+
     <!-- Section 1: Penerangan Ringkas -->
     <rs-card>
       <template #header>Semak Status Permohonan</template>
@@ -33,6 +41,7 @@
 
             <!-- ID Permohonan -->
             <FormKit
+              v-if="!canChooseType"
               type="text"
               name="appId"
               label="ID Permohonan"
@@ -41,6 +50,21 @@
               placeholder="Cth: NAS-APP-2025-00123"
               v-model="form.appId"
             />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" v-if="canChooseType">
+            <!-- Status Type -->
+            <FormKit
+              type="select"
+              name="statusType"
+              label="Jenis Status"
+              placeholder="Pilih Jenis Status"
+              v-model="form.statusType"
+            >
+              <option value="aduan">Aduan</option>
+              <option value="bantuan">Bantuan</option>
+              <option value="profile">Profile</option>
+            </FormKit>
           </div>
 
           <!-- Error Message -->
@@ -88,7 +112,7 @@
     const form = ref({
     idNo: "",
     appId: "",
-    statusType: "", // add this
+    statusType: "",
     });
 
     // Loading State
@@ -109,33 +133,57 @@
     };
 
     const idMapping: Record<string, string> = {
-      "NAS-PRF-2025-002": "profile",
-      "NAS-BTN-2025-001": "bantuan",
-      "NAS-BTN-2025-003": "aduan",
+      "NAS-PRF-2025-0001": "profile",
+      "NAS-BTN-2025-0001": "bantuan",
+      "ADN-250823-000123": "aduan",
     };
 
     const submitForm = () => {
-    const type = idMapping[form.value.appId];
-
-      if (!type) {
-        errorMessage.value = "ID Permohonan tidak sah atau tiada mapping.";
-        return;
-      }
-
-      switch (type) {
-        case "aduan":
-          navigateTo(`/BF-DP/Portal/aduan/01`);
-          break;
-        case "bantuan":
-          navigateTo(`/BF-DP/Portal/bantuan/01`);
-          break;
-        case "profile":
-          navigateTo(`/BF-DP/Portal/profile/01`);
-          break;
-        default:
-          errorMessage.value = "Jenis status tidak sah.";
+      // If dropdown is selected, use it
+      if (form.value.statusType) {
+        switch (form.value.statusType) {
+          case "aduan":
+            navigateTo(`/BF-DP/Portal/aduan`);
+            break;
+          case "bantuan":
+            navigateTo(`/BF-DP/Portal/bantuan`);
+            break;
+          case "profile":
+            navigateTo(`/BF-DP/Portal/profile`);
+            break;
+          default:
+            errorMessage.value = "Jenis status tidak sah.";
+        }
+      } 
+      // If dropdown is empty, use idPermohonan mapping
+      else if (form.value.appId) {
+        const type = idMapping[form.value.appId];
+        if (!type) {
+          errorMessage.value = "ID Permohonan tidak sah.";
+          return;
+        }
+        switch (type) {
+          case "aduan":
+            navigateTo(`/BF-DP/Portal/aduan/01`);
+            break;
+          case "bantuan":
+            navigateTo(`/BF-DP/Portal/bantuan/01`);
+            break;
+          case "profile":
+            navigateTo(`/BF-DP/Portal/profile/01`);
+            break;
+          default:
+            errorMessage.value = "Jenis status tidak sah.";
+        }
+      } 
+      // Neither dropdown nor idPermohonan provided
+      else {
+        errorMessage.value = "Sila pilih jenis status atau masukkan ID Permohonan.";
       }
     };
+
+    const selectedRole = ref("asnaf"); // default role
+    const canChooseType = computed(() => selectedRole.value === "internal");
 </script>
 <style lang="scss" scoped>
 // Optional custom styles
