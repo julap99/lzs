@@ -78,9 +78,6 @@
             <Icon name="ph:gear" class="w-6 h-6 mr-3 text-primary" />
             Penamatan Jawatan
           </h1>
-          <p class="text-gray-600 mt-1">
-            {{ getRoleSpecificDescription(currentRole) }} - {{ filteredRequests.length }} rekod perkhidmatan
-          </p>
         </div>
         <div class="flex gap-2">
           <rs-button
@@ -116,160 +113,228 @@
         </div>
       </template>
       <template #body>
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  No Rujukan
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nama
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  ID Pengenalan
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kategori
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Sesi
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Daerah
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Institusi
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 
-                  Tindakan
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr 
-                v-for="request in paginatedRequests" 
-                :key="request.id"
-                class="hover:bg-gray-50 transition-colors duration-150"
-              >
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ request.noRujukan || request.rujukan }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.kategori || request.newKategori }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.sesi || request.newSesi }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.daerah || request.newDaerah }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ request.institusi || request.newInstitusi }}</div>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap">
-                  <rs-badge :variant="getStatusVariant(request.status)">
-                    {{ getStatusLabel(request.status) }}
-                  </rs-badge>
-                </td>
-                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                  <div class="flex items-center gap-3">
-                    <button
-                      @click="viewRequest(request)"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      title="Lihat"
-                    >
-                      <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                    </button>
-                    <!-- PYB Institusi specific actions -->
-                    <template v-if="currentRole === 'pyb-institusi'">
-                      <button
-                        v-if="request.status === 'aktif'"
-                        @click="terminateService(request)"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                        title="Tamatkan"
-                      >
-                        <Icon name="ic:outline-cancel" class="w-5 h-5 text-danger" />
-                      </button>
-                      <button
-                        @click="sendWarningLetter(request)"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                        title="Surat Amaran"
-                      >
-                        <Icon name="ic:baseline-mail" class="w-5 h-5 text-warning" />
-                      </button>
-                    </template>
-                    
-                    <!-- Ketua Divisyen specific actions -->
-                    <template v-if="currentRole === 'ketua-divisyen'">
-                      <button
-                        v-if="request.status === 'aktif' || request.status === 'suspended'"
-                        @click="approveService(request)"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                        title="Lulus"
-                      >
-                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
-                      </button>
-                    </template>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <!-- Status Tabs -->
+        <rs-tab v-model="activeStatusTab" class="mt-4">
+          <rs-tab-item title="Aktif">
+            <div class="p-4">
+              <div class="overflow-x-auto rounded-lg border">
+                <table class="min-w-full text-sm divide-y">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Sesi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Daerah</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Institusi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y bg-white">
+                    <tr v-for="request in getTabRequests('aktif')" :key="request.id" class="hover:bg-gray-50">
+                      <td class="px-4 py-3 text-gray-900">{{ request.noRujukan || request.rujukan }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.kategori || request.newKategori }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.sesi || request.newSesi }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.daerah || request.newDaerah }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.institusi || request.newInstitusi }}</td>
+                      <td class="px-4 py-3">
+                        <rs-badge :variant="getStatusVariant(request.status)">
+                          {{ getStatusLabel(request.status) }}
+                        </rs-badge>
+                      </td>
+                      <td class="px-4 py-3">
+                        <div class="flex space-x-3">
+                          <button
+                            @click="viewRequest(request)"
+                            title="Lihat"
+                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                          >
+                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                          </button>
+                          <!-- PYB Institusi specific actions -->
+                          <template v-if="currentRole === 'pyb-institusi'">
+                            <button
+                              v-if="request.status === 'aktif'"
+                              @click="terminateService(request)"
+                              title="Tamatkan"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:outline-cancel" class="w-5 h-5 text-danger" />
+                            </button>
+                            <button
+                              @click="sendWarningLetter(request)"
+                              title="Surat Amaran"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-mail" class="w-5 h-5 text-warning" />
+                            </button>
+                          </template>
+                          
+                          <!-- Ketua Divisyen specific actions -->
+                          <template v-if="currentRole === 'ketua-divisyen'">
+                            <button
+                              v-if="request.status === 'aktif' || request.status === 'suspended'"
+                              @click="approveService(request)"
+                              title="Lulus"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                            </button>
+                          </template>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="getTabRequests('aktif').length === 0" class="hover:bg-gray-50">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="9">
+                        Tiada rekod Aktif ditemui.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </rs-tab-item>
 
-        <!-- Simple Pagination -->
-        <div class="flex items-center justify-between mt-4">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-700">
-              {{ startIndex + 1 }}-{{ endIndex }} daripada {{ filteredRequests.length }}
-            </span>
-          </div>
-          
-          <div class="flex items-center gap-1">
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              :disabled="currentPage === 1"
-              @click="currentPage = 1"
-            >
-              <Icon name="ic:baseline-first-page" class="w-4 h-4" />
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              :disabled="currentPage === 1"
-              @click="currentPage--"
-            >
-              <Icon name="ic:baseline-chevron-left" class="w-4 h-4" />
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              :disabled="currentPage === totalPages"
-              @click="currentPage++"
-            >
-              <Icon name="ic:baseline-chevron-right" class="w-4 h-4" />
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              :disabled="currentPage === totalPages"
-              @click="currentPage = totalPages"
-            >
-              <Icon name="ic:baseline-last-page" class="w-4 h-4" />
-            </rs-button>
-          </div>
-        </div>
+          <rs-tab-item title="Dalam Pemerhatian">
+            <div class="p-4">
+              <div class="overflow-x-auto rounded-lg border">
+                <table class="min-w-full text-sm divide-y">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Sesi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Daerah</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Institusi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y bg-white">
+                    <tr v-for="request in getTabRequests('suspended')" :key="request.id" class="hover:bg-gray-50">
+                      <td class="px-4 py-3 text-gray-900">{{ request.noRujukan || request.rujukan }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.kategori || request.newKategori }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.sesi || request.newSesi }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.daerah || request.newDaerah }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.institusi || request.newInstitusi }}</td>
+                      <td class="px-4 py-3">
+                        <rs-badge :variant="getStatusVariant(request.status)">
+                          {{ getStatusLabel(request.status) }}
+                        </rs-badge>
+                      </td>
+                      <td class="px-4 py-3">
+                        <div class="flex space-x-3">
+                          <button
+                            @click="viewRequest(request)"
+                            title="Lihat"
+                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                          >
+                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                          </button>
+                          <!-- PYB Institusi specific actions -->
+                          <template v-if="currentRole === 'pyb-institusi'">
+                            <button
+                              @click="terminateService(request)"
+                              title="Tamatkan"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:outline-cancel" class="w-5 h-5 text-danger" />
+                            </button>
+                            <button
+                              @click="sendWarningLetter(request)"
+                              title="Surat Amaran"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-mail" class="w-5 h-5 text-warning" />
+                            </button>
+                          </template>
+                          
+                          <!-- Ketua Divisyen specific actions -->
+                          <template v-if="currentRole === 'ketua-divisyen'">
+                            <button
+                              @click="approveService(request)"
+                              title="Lulus"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                            </button>
+                          </template>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="getTabRequests('suspended').length === 0" class="hover:bg-gray-50">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="9">
+                        Tiada rekod Dalam Pemerhatian ditemui.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </rs-tab-item>
+
+          <rs-tab-item title="Telah Ditamatkan">
+            <div class="p-4">
+              <div class="overflow-x-auto rounded-lg border">
+                <table class="min-w-full text-sm divide-y">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Sesi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Daerah</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Institusi</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y bg-white">
+                    <tr v-for="request in getTabRequests('terminated')" :key="request.id" class="hover:bg-gray-50">
+                      <td class="px-4 py-3 text-gray-900">{{ request.noRujukan || request.rujukan }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.kategori || request.newKategori }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.sesi || request.newSesi }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.daerah || request.newDaerah }}</td>
+                      <td class="px-4 py-3 text-gray-900">{{ request.institusi || request.newInstitusi }}</td>
+                      <td class="px-4 py-3">
+                        <rs-badge :variant="getStatusVariant(request.status)">
+                          {{ getStatusLabel(request.status) }}
+                        </rs-badge>
+                      </td>
+                      <td class="px-4 py-3">
+                        <div class="flex space-x-3">
+                          <button
+                            @click="viewRequest(request)"
+                            title="Lihat"
+                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                          >
+                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="getTabRequests('terminated').length === 0" class="hover:bg-gray-50">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="9">
+                        Tiada rekod Telah Ditamatkan ditemui.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </rs-tab-item>
+        </rs-tab>
       </template>
     </rs-card>
 
@@ -1404,6 +1469,65 @@ const getWarningCountVariant = (count) => {
 // Helper method for status dashboard
 const getStatusCount = (status) => {
   return requests.value.filter(request => request.status === status).length;
+};
+
+// Helper method for tab requests
+const getTabRequests = (status) => {
+  let result = [...requests.value];
+  
+  // Filter by status tab
+  if (status) {
+    result = result.filter(request => request.status === status);
+  }
+  
+  // Apply search filter
+  if (filters.value.searchQuery) {
+    const query = filters.value.searchQuery.toLowerCase();
+    result = result.filter(request => 
+      (request.noRujukan || request.rujukan)?.toLowerCase().includes(query) ||
+      (request.nama || request.penolongAmil?.nama)?.toLowerCase().includes(query) ||
+      (request.idPengenalan || request.penolongAmil?.noKP)?.includes(query) ||
+      (request.kategori || request.newKategori)?.toLowerCase().includes(query) ||
+      (request.sesi || request.newSesi)?.toLowerCase().includes(query) ||
+      (request.daerah || request.newDaerah)?.toLowerCase().includes(query) ||
+      (request.institusi || request.newInstitusi)?.toLowerCase().includes(query)
+    );
+  }
+  
+  // Apply status filter
+  if (filters.value.status) {
+    result = result.filter(request => request.status === filters.value.status);
+  }
+  
+  // Apply kategori filter
+  if (filters.value.kategori) {
+    result = result.filter(request => 
+      (request.kategori || request.newKategori)?.toLowerCase().includes(filters.value.kategori.toLowerCase())
+    );
+  }
+  
+  // Apply institusi filter
+  if (filters.value.institusi) {
+    result = result.filter(request => 
+      (request.institusi || request.newInstitusi)?.toLowerCase().includes(filters.value.institusi.toLowerCase())
+    );
+  }
+
+  // Apply sesi filter
+  if (filters.value.sesi) {
+    result = result.filter(request => 
+      (request.sesi || request.newSesi)?.toLowerCase().includes(filters.value.sesi.toLowerCase())
+    );
+  }
+
+  // Apply daerah filter
+  if (filters.value.daerah) {
+    result = result.filter(request => 
+      (request.daerah || request.newDaerah)?.toLowerCase().includes(filters.value.daerah.toLowerCase())
+    );
+  }
+  
+  return result;
 };
 
 // Enhanced methods
