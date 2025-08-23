@@ -494,16 +494,6 @@
 
             <rs-tab-item title="Sedang Proses - Ditolak">
               <div class="p-4">
-                <div class="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                  <div class="flex items-start">
-                    <Icon name="ic:baseline-info" class="w-5 h-5 text-orange-600 mr-3 mt-0.5" />
-                    <div class="text-sm text-orange-800">
-                      <p class="font-medium mb-1">Perhatian:</p>
-                      <p>Sila semak setiap kategori yang ditolak secara individu untuk memahami sebab penolakan oleh Ketua Jabatan. Kelulusan beramai-ramai tidak disediakan untuk item yang telah ditolak.</p>
-                    </div>
-                  </div>
-                </div>
-                
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak Ketua Jabatan'])"
