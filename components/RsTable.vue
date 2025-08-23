@@ -635,7 +635,9 @@ watch(
                 v-for="(val, index) in columnTitle"
                 :key="index"
               >
-                {{ getColumnLabel(val) }}
+                <slot :name="'header-' + val" :columnKey="val">
+                  {{ getColumnLabel(val) }}
+                </slot>
                 <div v-if="optionsAdvanced.sortable && advanced" class="sortable">
                   <Icon
                     class="absolute top-3 right-2 opacity-20"
