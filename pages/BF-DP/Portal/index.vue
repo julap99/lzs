@@ -13,6 +13,7 @@
 
         <!-- Section 2: Form dgn FormKit -->
         <FormKit
+          ref="formRef"
           type="form"
           submit-label="Semak Status"
           :actions="false"
@@ -42,7 +43,12 @@
             />
           </div>
 
-          <!-- Section 3: Action Button -->
+          <!-- Error Message -->
+          <div v-if="errorMessage" class="mt-4 text-red-600 font-medium">
+            {{ errorMessage }}
+          </div>
+        </FormKit>
+        <!-- Section 3: Action Button -->
           <div class="flex space-x-2">
             <rs-button
               variant="primary"
@@ -51,16 +57,10 @@
             >
               Semak Status
             </rs-button>
-            <rs-button variant="secondary" @click="handleReset">
+            <rs-button variant="secondary" type="button" @click="handleReset">
               Reset
             </rs-button>
           </div>
-
-          <!-- Error Message -->
-          <div v-if="errorMessage" class="mt-4 text-red-600 font-medium">
-            {{ errorMessage }}
-          </div>
-        </FormKit>
       </template>
     </rs-card>
   </div>
@@ -88,6 +88,7 @@
     const form = ref({
     idNo: "",
     appId: "",
+    statusType: "", // add this
     });
 
     // Loading State
@@ -99,31 +100,41 @@
     // Counter utk simulate click behavior
     const clickCount = ref(0);
 
-    // Programmatic submit (trigger FormKit form submit)
-    const submitForm = () => {
-    clickCount.value++;
-
-    // Simulate 1st click → profile
-    if (clickCount.value === 1) {
-        router.push("/BF-DP/Portal/profile");
-    }
-    // Simulate 2nd click → bantuan
-    else if (clickCount.value === 2) {
-        router.push("/BF-DP/Portal/bantuan");
-    }
-    // Optional → kalau click 3rd time → reset balik ke 1
-    else {
-        clickCount.value = 0;
-        errorMessage.value = "Simulasi reset: sila klik Semak Status sekali lagi.";
-    }
-    };
-
     // Handle Reset
     const handleReset = () => {
     form.value.idNo = "";
     form.value.appId = "";
     errorMessage.value = "";
     clickCount.value = 0;
+    };
+
+    const idMapping: Record<string, string> = {
+      "NAS-PRF-2025-002": "profile",
+      "NAS-BTN-2025-001": "bantuan",
+      "NAS-BTN-2025-003": "aduan",
+    };
+
+    const submitForm = () => {
+    const type = idMapping[form.value.appId];
+
+      if (!type) {
+        errorMessage.value = "ID Permohonan tidak sah atau tiada mapping.";
+        return;
+      }
+
+      switch (type) {
+        case "aduan":
+          navigateTo(`/BF-DP/Portal/aduan/01`);
+          break;
+        case "bantuan":
+          navigateTo(`/BF-DP/Portal/bantuan/01`);
+          break;
+        case "profile":
+          navigateTo(`/BF-DP/Portal/profile/01`);
+          break;
+        default:
+          errorMessage.value = "Jenis status tidak sah.";
+      }
     };
 </script>
 <style lang="scss" scoped>
