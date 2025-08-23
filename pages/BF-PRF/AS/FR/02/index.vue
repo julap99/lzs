@@ -974,11 +974,13 @@
             <!-- <h4 class="text-md font-medium mb-3">Maklumat Bank</h4> -->
             
             <!-- Kaedah Pembayaran -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+              <label class="block text-sm font-medium text-black-700">Kaedah Pembayaran </label>
             <div class="mb-6">
               <FormKit
                 type="radio"
                 name="kaedah_pembayaran"
-                label="Kaedah Pembayaran *"
                 :options="paymentMethodOptions"
                 validation="required"
                 v-model="formData.kaedah_pembayaran"
@@ -986,6 +988,8 @@
                   required: 'Kaedah pembayaran adalah wajib'
                 }"
               />
+            </div>
+            </div>
             </div>
 
             <!-- A. Jika Kaedah Pembayaran = Akaun -->
@@ -1798,11 +1802,12 @@
 
           <!-- Employment Status -->
           <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Status Pekerjaan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+              <label class="block text-sm font-medium text-black-700">Status Pekerjaan </label>
             <FormKit
               type="radio"
               name="status_pekerjaan"
-              label="Pekerjaan"
               :options="[
                 { label: 'Bekerja', value: 'bekerja' },
                 { label: 'Tidak Bekerja', value: 'tidak_bekerja' }
@@ -1814,7 +1819,8 @@
               }"
             />
           </div>
-
+          </div>
+          </div>
           <!-- Employment Details (shown only when working) -->
           <div v-if="formData.status_pekerjaan === 'bekerja'" class="mb-6">
             <h4 class="text-md font-medium mb-3">Butiran Pekerjaan</h4>
@@ -2098,7 +2104,7 @@
           id="sectionA10"
         >
           <h3 class="text-lg font-semibold mb-4">
-            IX. Maklumat Pendapatan
+            X. Maklumat Pendapatan
           </h3>
 
           <!-- Income Information -->
@@ -2307,16 +2313,16 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 10: Maklumat Kediaman -->
+        <!-- Section A Form - Step 11: Maklumat Kediaman -->
         <FormKit
-          v-if="currentStepA === 10"
+          v-if="currentStepA === 11"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA10"
+          id="sectionA11"
         >
           <h3 class="text-lg font-semibold mb-4">
-            IX. Maklumat Kediaman/Tempat Tinggal
+            XI. Maklumat Kediaman/Tempat Tinggal
           </h3>
 
           <!-- Alamat Section -->
@@ -2590,15 +2596,15 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 11: Maklumat Pinjaman -->
+        <!-- Section A Form - Step 12: Maklumat Pinjaman -->
         <FormKit
-          v-if="currentStepA === 11"
+          v-if="currentStepA === 12"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA11"
+          id="sectionA12"
         >
-          <h3 class="text-lg font-semibold mb-4">X. Maklumat Pinjaman Harta</h3>
+          <h3 class="text-lg font-semibold mb-4">XII. Maklumat Pinjaman Harta</h3>
 
           <FormKit
             type="text"
@@ -2663,7 +2669,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA11"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA13"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2673,15 +2679,15 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 12: Maklumat Pemilikan -->
+        <!-- Section A Form - Step 13: Maklumat Pemilikan -->
         <FormKit
-          v-if="currentStepA === 12"
+          v-if="currentStepA === 13"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA12"
+          id="sectionA13"
         >
-          <h3 class="text-lg font-semibold mb-4">XI. Maklumat Pemilikan</h3>
+          <h3 class="text-lg font-semibold mb-4">XIII. Maklumat Pemilikan</h3>
 
           <h4 class="font-medium mb-2">Aset Cair</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2742,26 +2748,26 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA12"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA13"
                 >Simpan</rs-button
               >
-              <rs-button type="submit" variant="primary" @click="nextStepA"
+              <rs-button type="button" variant="primary" @click="nextStepA"
                 >Seterusnya ke Maklumat Barangan Rumah</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 13: Maklumat Barangan Rumah -->
+        <!-- Section A Form - Step 14: Maklumat Barangan Rumah -->
         <FormKit
-          v-if="currentStepA === 13"
+          v-if="currentStepA === 14"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA13"
+          id="sectionA14"
         >
           <h3 class="text-lg font-semibold mb-4">
-            XII. Maklumat Pemilikan Barangan Rumah
+            XIV. Maklumat Pemilikan Barangan Rumah
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2873,7 +2879,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA13"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA14"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2883,16 +2889,16 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 14: Maklumat Waris -->
+        <!-- Section A Form - Step 15: Maklumat Waris -->
         <FormKit
-          v-if="currentStepA === 14"
+          v-if="currentStepA === 15"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA14"
+          id="sectionA15"
         >
           <h3 class="text-lg font-semibold mb-4">
-            XIII. Maklumat Waris
+            XV. Maklumat Waris
           </h3>
 
           <div
@@ -2968,7 +2974,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA14"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA15"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
