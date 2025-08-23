@@ -974,11 +974,13 @@
             <!-- <h4 class="text-md font-medium mb-3">Maklumat Bank</h4> -->
             
             <!-- Kaedah Pembayaran -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+              <label class="block text-sm font-medium text-black-700">Kaedah Pembayaran </label>
             <div class="mb-6">
               <FormKit
                 type="radio"
                 name="kaedah_pembayaran"
-                label="Kaedah Pembayaran *"
                 :options="paymentMethodOptions"
                 validation="required"
                 v-model="formData.kaedah_pembayaran"
@@ -986,6 +988,8 @@
                   required: 'Kaedah pembayaran adalah wajib'
                 }"
               />
+            </div>
+            </div>
             </div>
 
             <!-- A. Jika Kaedah Pembayaran = Akaun -->
@@ -1773,13 +1777,13 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Pekerjaan</rs-button
+                >Seterusnya ke Maklumat Pinjaman Harta</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 9: Maklumat Pekerjaan -->
+        <!-- Section A Form - Step 9: Maklumat Pinjaman Harta -->
         <FormKit
           v-if="currentStepA === 9"
           type="form"
@@ -1787,7 +1791,116 @@
           :actions="false"
           id="sectionA9"
         >
-          <h3 class="text-lg font-semibold mb-4">VIII. Maklumat Pekerjaan</h3>
+          <h3 class="text-lg font-semibold mb-4">IX. Maklumat Pinjaman Harta</h3>
+
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                name="nama_institusi_pemberi_pinjaman"
+                label="Nama Institusi / Individu Pemberi Pinjaman"
+                validation="required"
+                placeholder="Sila masukkan nama institusi atau individu"
+                :validation-messages="{
+                  required: 'Nama institusi/individu pemberi pinjaman adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="jenis_pinjaman"
+                label="Jenis Pinjaman"
+                placeholder="Sila masukkan jenis pinjaman"
+              />
+
+              <FormKit
+                type="number"
+                name="amaun_bayaran_bulanan"
+                label="Amaun Bayaran Bulanan (RM)"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+              />
+
+              <FormKit
+                type="number"
+                name="jumlah_keseluruhan_perbelanjaan"
+                label="Jumlah Keseluruhan Perbelanjaan (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                placeholder="0.00"
+                :validation-messages="{
+                  required: 'Jumlah keseluruhan perbelanjaan adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="date"
+                name="tahun_mula_pinjaman"
+                label="Tahun Mula Pinjaman"
+                validation="required"
+                :validation-messages="{
+                  required: 'Tahun mula pinjaman adalah wajib'
+                }"
+              />
+
+              <FormKit
+                type="date"
+                name="tahun_akhir_pinjaman"
+                label="Tahun Akhir Pinjaman"
+                validation="required"
+                :validation-messages="{
+                  required: 'Tahun akhir pinjaman adalah wajib'
+                }"
+              />
+
+              <div class="md:col-span-2">
+                <FormKit
+                  type="file"
+                  name="dokumen_perjanjian_pinjaman"
+                  label="Dokumen Perjanjian Pinjaman"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  :validation-messages="{
+                    required: 'Dokumen perjanjian pinjaman adalah wajib',
+                    max: 'Saiz fail tidak boleh melebihi 5MB',
+                    mime: 'Format fail tidak dibenarkan'
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA9"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Pekerjaan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 10: Maklumat Pekerjaan -->
+        <FormKit
+          v-if="currentStepA === 10"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionA10"
+        >
+          <h3 class="text-lg font-semibold mb-4">X. Maklumat Pekerjaan</h3>
 
           <!-- Hidden field for ID type -->
           <FormKit
@@ -1798,11 +1911,12 @@
 
           <!-- Employment Status -->
           <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Status Pekerjaan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+              <label class="block text-sm font-medium text-black-700">Status Pekerjaan </label>
             <FormKit
               type="radio"
               name="status_pekerjaan"
-              label="Pekerjaan"
               :options="[
                 { label: 'Bekerja', value: 'bekerja' },
                 { label: 'Tidak Bekerja', value: 'tidak_bekerja' }
@@ -1814,7 +1928,8 @@
               }"
             />
           </div>
-
+          </div>
+          </div>
           <!-- Employment Details (shown only when working) -->
           <div v-if="formData.status_pekerjaan === 'bekerja'" class="mb-6">
             <h4 class="text-md font-medium mb-3">Butiran Pekerjaan</h4>
@@ -2079,7 +2194,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA9"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA10"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2089,16 +2204,16 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 10: Maklumat Pendapatan -->
+        <!-- Section A Form - Step 11: Maklumat Pendapatan -->
         <FormKit
-          v-if="currentStepA === 10"
+          v-if="currentStepA === 11"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA10"
+          id="sectionA11"
         >
           <h3 class="text-lg font-semibold mb-4">
-            IX. Maklumat Pendapatan
+            XI. Maklumat Pendapatan
           </h3>
 
           <!-- Income Information -->
@@ -2297,7 +2412,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA9"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA11"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2307,16 +2422,16 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 10: Maklumat Kediaman -->
+        <!-- Section A Form - Step 12: Maklumat Kediaman -->
         <FormKit
-          v-if="currentStepA === 10"
+          v-if="currentStepA === 12"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA10"
+          id="sectionA12"
         >
           <h3 class="text-lg font-semibold mb-4">
-            IX. Maklumat Kediaman/Tempat Tinggal
+            XII. Maklumat Kediaman/Tempat Tinggal
           </h3>
 
           <!-- Alamat Section -->
@@ -2580,7 +2695,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA10"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA12"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2590,70 +2705,79 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 11: Maklumat Pinjaman -->
+        <!-- Section A Form - Step 13: Maklumat Pinjaman -->
         <FormKit
-          v-if="currentStepA === 11"
+          v-if="currentStepA === 13"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA11"
+          id="sectionA13"
         >
-          <h3 class="text-lg font-semibold mb-4">X. Maklumat Pinjaman Harta</h3>
+          <h3 class="text-lg font-semibold mb-4">
+            XIII. Maklumat Pinjaman
+          </h3>
 
-          <FormKit
-            type="text"
-            name="pemberi_pinjaman"
-            label="Nama Institusi/Individu Pemberi Pinjaman"
-            v-model="pemberiPinjaman"
-          />
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                name="pemberi_pinjaman"
+                label="Nama Institusi/Individu Pemberi Pinjaman"
+                v-model="pemberiPinjaman"
+              />
 
-          <FormKit
-            type="text"
-            name="jenis_pinjaman"
-            label="Jenis Pinjaman"
-            v-model="jenisPinjaman"
-          />
+              <FormKit
+                type="text"
+                name="jenis_pinjaman"
+                label="Jenis Pinjaman"
+                v-model="jenisPinjaman"
+              />
 
-          <FormKit
-            type="number"
-            name="bayaran_bulanan"
-            label="Amaun Bayaran Bulanan (RM)"
-            step="0.01"
-            min="0"
-            v-model="bayaranBulanan"
-          />
+              <FormKit
+                type="number"
+                name="bayaran_bulanan"
+                label="Amaun Bayaran Bulanan (RM)"
+                step="0.01"
+                min="0"
+                v-model="bayaranBulanan"
+              />
 
-          <FormKit
-            type="number"
-            name="jumlah_perbelanjaan"
-            label="Jumlah Keseluruhan Perbelanjaan (RM)"
-            step="0.01"
-            min="0"
-            v-model="jumlahPerbelanjaan"
-          />
+              <FormKit
+                type="number"
+                name="jumlah_perbelanjaan"
+                label="Jumlah Keseluruhan Perbelanjaan (RM)"
+                step="0.01"
+                min="0"
+                v-model="jumlahPerbelanjaan"
+              />
 
-          <FormKit
-            type="date"
-            name="tahun_mula_pinjaman"
-            label="Tahun Mula Pinjaman"
-            v-model="tahunMulaPinjaman"
-          />
+              <FormKit
+                type="date"
+                name="tahun_mula_pinjaman"
+                label="Tahun Mula Pinjaman"
+                v-model="tahunMulaPinjaman"
+              />
 
-          <FormKit
-            type="date"
-            name="tahun_akhir_pinjaman"
-            label="Tahun Akhir Pinjaman"
-            v-model="tahunAkhirPinjaman"
-          />
+              <FormKit
+                type="date"
+                name="tahun_akhir_pinjaman"
+                label="Tahun Akhir Pinjaman"
+                v-model="tahunAkhirPinjaman"
+              />
 
-          <FormKit
-            type="file"
-            name="dokumen_pinjaman"
-            label="Upload Dokumen Pinjaman"
-            accept=".pdf,.jpg,.jpeg,.png"
-            help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-            validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-          />
+              <div class="md:col-span-2">
+                <FormKit
+                  type="file"
+                  name="dokumen_pinjaman"
+                  label="Upload Dokumen Pinjaman"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                />
+              </div>
+            </div>
+          </div>
 
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
@@ -2663,7 +2787,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA11"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA13"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2673,15 +2797,15 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 12: Maklumat Pemilikan -->
+        <!-- Section A Form - Step 14: Maklumat Pemilikan -->
         <FormKit
-          v-if="currentStepA === 12"
+          v-if="currentStepA === 14"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA12"
+          id="sectionA14"
         >
-          <h3 class="text-lg font-semibold mb-4">XI. Maklumat Pemilikan</h3>
+          <h3 class="text-lg font-semibold mb-4">XIV. Maklumat Pemilikan</h3>
 
           <h4 class="font-medium mb-2">Aset Cair</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2742,26 +2866,26 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA12"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA14"
                 >Simpan</rs-button
               >
-              <rs-button type="submit" variant="primary" @click="nextStepA"
+              <rs-button type="button" variant="primary" @click="nextStepA"
                 >Seterusnya ke Maklumat Barangan Rumah</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 13: Maklumat Barangan Rumah -->
+        <!-- Section A Form - Step 15: Maklumat Barangan Rumah -->
         <FormKit
-          v-if="currentStepA === 13"
+          v-if="currentStepA === 15"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA13"
+          id="sectionA15"
         >
           <h3 class="text-lg font-semibold mb-4">
-            XII. Maklumat Pemilikan Barangan Rumah
+            XV. Maklumat Pemilikan Barangan Rumah
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2873,7 +2997,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA13"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA15"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2883,16 +3007,16 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 14: Maklumat Waris -->
+        <!-- Section A Form - Step 16: Maklumat Waris -->
         <FormKit
-          v-if="currentStepA === 14"
+          v-if="currentStepA === 16"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA14"
+          id="sectionA16"
         >
           <h3 class="text-lg font-semibold mb-4">
-            XIII. Maklumat Waris
+            XVI. Maklumat Waris
           </h3>
 
           <div
@@ -2968,7 +3092,7 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA14"
+              <rs-button type="button" variant="secondary" @click="handleSaveStepA16"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -4207,7 +4331,7 @@ const currentSection = ref(1);
 
 // Section A - Main Form Steps (now 12 steps with separate tabs for different info sections)
 const currentStepA = ref(1);
-const totalStepsA = 15;
+const totalStepsA = 16;
 const stepsA = [
   { id: 1, label: "Penilaian Awal" },
   { id: 2, label: "Peribadi" },
@@ -4217,13 +4341,14 @@ const stepsA = [
   { id: 6, label: "Kesihatan" },
   { id: 7, label: "Kemahiran" },
   { id: 8, label: "Alamat" },
-  { id: 9, label: "Pekerjaan" },
-  { id: 10, label: "Pendapatan" },
-  { id: 11, label: "Kediaman" },
-  { id: 12, label: "Pinjaman" },
-  { id: 13, label: "Pemilikan" },
-  { id: 14, label: "Pemilikan Barangan Rumah" },
-  { id: 15, label: "Waris" }
+  { id: 9, label: "Pinjaman Harta" },
+  { id: 10, label: "Pekerjaan" },
+  { id: 11, label: "Pendapatan" },
+  { id: 12, label: "Kediaman" },
+  { id: 13, label: "Pinjaman" },
+  { id: 14, label: "Pemilikan" },
+  { id: 15, label: "Pemilikan Barangan Rumah" },
+  { id: 16, label: "Waris" }
 ];
 
 // Section B - Tanggungan Form Steps (now 11 steps with separate tabs for different info sections)
