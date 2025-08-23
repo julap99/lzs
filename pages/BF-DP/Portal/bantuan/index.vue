@@ -3,6 +3,13 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <div class="mb-4 flex items-center space-x-4">
+  <label class="font-medium text-gray-700">Pilih Role:</label>
+  <select v-model="selectedRole" class="border rounded p-1">
+    <option value="asnaf">Asnaf</option>
+    <option value="internal">Internal Staff</option>
+  </select>
+</div>
     <!-- Section 1: Ringkasan Maklumat Carian -->
     <rs-card class="mb-6">
       <template #header>Ringkasan Maklumat Carian</template>
@@ -31,7 +38,7 @@
       <template #body>
         <rs-table
           class="mt-4"
-          :data="bantuanData"
+          :data="displayedData"
           :pageSize="10"
           :showNoColumn="true"
           :options="{
@@ -83,7 +90,7 @@ const breadcrumb = ref([
   {
     name: "Semak Status",
     type: "link",
-    path: "/status-tracking",
+    path: "/BF-DP/Portal/",
   },
   {
     name: "Senarai Bantuan",
@@ -154,8 +161,19 @@ const viewBantuanDetail = () => {
   navigateTo(`/BF-DP/Portal/bantuan/01`);
 };
 
-// Simulate user role
-const canViewDetail = ref(false); // true → utk Pengguna Dalaman, false → Pengguna Luaran
+const selectedRole = ref("asnaf"); // default role
+
+const canViewDetail = computed(() => selectedRole.value === "internal");
+
+const displayedData = computed(() => {
+  return bantuanData.value.map(item => {
+    if (!canViewDetail.value) {
+      const { aksi, ...rest } = item; // remove aksi
+      return rest;
+    }
+    return item;
+  });
+});
 </script>
 
 <style lang="scss" scoped>
