@@ -214,7 +214,7 @@ const breadcrumb = ref([
 ]);
 
 const AduanInfo = ref({
-  idPermohonan: 'NAS-BTN-2025-0001',
+  idPermohonan: 'ADN-250823-000123',
   namaAduan: 'Aduan Pendidikan',
   tarikhMohon: '2025-06-01',
   tarikhPerubahanStatus: '2025-06-15',
