@@ -161,7 +161,7 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID','Sijil Lahir']"
+                :options="['MyKad', 'Foreign ID']"
                 validation="required"
                 v-model="jenisId"
               />
@@ -178,8 +178,9 @@
 
               <FormKit
                 type="text"
-                name="nombor_id"
-                label="Nombor ID"
+                name="id_pengenalan"
+                label="ID Pengenalan"
+                help="Mengikut Dokumen Pengenalan"
                 validation="required"
               />
 
@@ -187,21 +188,57 @@
                 type="text"
                 name="nama"
                 label="Nama"
+                help="Mengikut Dokumen Pengenalan"
                 validation="required"
               />
 
               <FormKit
+                type="select"
+                name="warganegara"
+                label="Warganegara"
+                placeholder="Pilih Warganegara"
+                :options="['Malaysia', 'Lain-lain']"
+                validation="required"
+                v-model="malaysia"
+              />
+
+              <FormKit
+               v-if="malaysia === 'Lain-lain'"
+                type="file"
+                name="lain_warganegara"
+                label="Lain-lain Warganegara"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                accept=".pdf,.jpg,.jpeg,.png"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              />
+
+              <FormKit
+                 v-if="malaysia === 'Lain-lain'"
+                type="radio"
+                name="taraf_penduduk"
+                label="Taraf Penduduk Tetap"
+                :options="[
+                  { label: 'Ya', value: 'ya' },
+                  { label: 'Tidak', value: 'tidak' },
+                ]"
+                validation="required"
+              />      
+
+              <FormKit
+                v-if="malaysia === 'Malaysia'"
                 type="text"
                 name="nopassport"
                 label="No Passport"  
               />
 
               <FormKit
+                v-if="malaysia === 'Malaysia'"
                 type="date"
                 name="passportStartDate"
                 label="Tarikh mula passport"
               />
               <FormKit
+                v-if="malaysia === 'Malaysia'"
                 type="date"
                 name="passportEndDate"
                 label="Tarikh tamat passport"
@@ -222,6 +259,29 @@
               />
 
               <FormKit
+                type="number"
+                name="umur"
+                label="Umur"
+                validation="required"
+              />
+
+              <FormKit
+                type="text"
+                name="tempat_lahir"
+                label="Tempat Lahir"
+                validation="required"
+              />
+
+              <FormKit
+                type="select"
+                name="jantina"
+                label="Jantina"
+                :options="['Lelaki', 'Perempuan']"
+                placeholder="Pilih Jantina"
+                validation="required"
+              />
+
+              <FormKit
                 type="select"
                 name="agama"
                 label="Agama"
@@ -230,12 +290,49 @@
                   'Kristian',
                   'Buddha',
                   'Hindu',
-                  'Sikh',
-                  'Taoisme',
-                  'Konfusianisme',
                   'Lain-lain'
                 ]"
+                placeholder="Pilih Agama"
                 validation="required"
+                v-model="agama"
+              />
+
+              <FormKit
+                v-if="agama === 'Lain-lain'"
+                type="text"
+                name="agama_lain"
+                label="Agama Lain"
+                validation="required"
+              />
+
+              <FormKit
+              v-model="bangsa"
+                type="select"
+                name="bangsa"
+                label="Bangsa"
+                :options="['Melayu', 'Cina', 'India', 'Lain-lain']"
+                validation="required"
+                placeholder="Pilih Bangsa"
+              />
+
+              <FormKit
+                v-if="bangsa === 'Lain-lain'"
+                type="text"
+                name="bangsa_lain"
+                label="Bangsa Lain"
+                validation="required"
+              />    
+
+              <FormKit
+                type="text"
+                name="no_telefon_bimbit"
+                label="No Telefon Bimbit"
+              />
+
+              <FormKit
+                type="text"
+                name="no_telefon_rumah"
+                label="No Telefon Rumah"
               />
 
               <FormKit
@@ -245,35 +342,7 @@
                 validation="required|email"
               />
 
-              <FormKit
-                type="text"
-                name="no_telefon"
-                label="No Telefon"
-              />
-
-              <FormKit
-                type="select"
-                name="warganegara"
-                label="Warganegara"
-                :options="['Warganegara', 'Bukan Warganegara']"
-                validation="required"
-              />
-
-              <FormKit
-                type="select"
-                name="jantina"
-                label="Jantina"
-                :options="['Lelaki', 'Perempuan']"
-                validation="required"
-              />
-
-              <FormKit
-                type="select"
-                name="bangsa"
-                label="Bangsa"
-                :options="['Melayu', 'Cina', 'India', 'Lain-lain']"
-                validation="required"
-              />
+              
             </div>
           </div>
 
@@ -368,44 +437,130 @@
           <h3 class="text-lg font-semibold mb-4">
             II. Maklumat Islam
           </h3>
-
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
+            <h4 class="text-md font-medium mb-3 text-gray-800">Maklumat Islam</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Adakah anda seorang Muallaf? -->
               <FormKit
-                type="text"
-                name="nama_selepas_islam"
-                label="Nama Selepas Islam (Muallaf)"
-              />
-
-              <FormKit
-                type="date"
-                name="tarikh_masuk_islam"
-                label="Tarikh Masuk Islam"
-                help="Format: dd-mm-yyyy"
+                type="radio"
+                name="adakah_muallaf"
+                label="Adakah anda seorang Muallaf?"
+                :options="[
+                  { label: 'Ya', value: 'Y' },
+                  { label: 'Tidak', value: 'T' }
+                ]"
                 validation="required"
-                v-model="tarikhMasukIslam"
+                validation-label="Status Muallaf"
+                :validation-messages="{
+                  required: 'Sila pilih sama ada anda seorang muallaf atau tidak'
+                }"
+                v-model="formData.adakah_muallaf"
               />
 
-              <FormKit
-                v-if="tarikhMasukIslam"
-                type="file"
-                name="dokumen_masuk_islam"
-                label="Upload surat keislaman dari MAIS"
-                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                accept=".pdf,.jpg,.jpeg,.png"
-                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-              />
+              <!-- Tarikh Masuk Islam -->
+              <div v-if="formData.adakah_muallaf === 'Y'">
+                <FormKit
+                  type="date"
+                  name="tarikh_masuk_islam"
+                  label="Tarikh Masuk Islam"
+                  placeholder="DD/MM/YYYY"     
+                  validation-label="Tarikh Masuk Islam"
+                  :validation-messages="{
+                    required: 'Sila masukkan tarikh masuk Islam',
+                    matches: 'Format tarikh tidak sah. Sila gunakan format DD/MM/YYYY'
+                  }"
+                  v-model="formData.tarikh_masuk_islam"
+                />
+              </div>
 
-              <FormKit
-                type="date"
-                name="tarikh_masuk_kfam"
-                label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
-                help="Format: dd-mm-yyyy"
-                validation="required"
-              />
+              <!-- Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) -->
+              <div v-if="formData.adakah_muallaf === 'Y'">
+                <FormKit
+                  type="date"
+                  name="tarikh_masuk_kfam"
+                  label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
+                  placeholder="DD/MM/YYYY"
+                  validation-label="Tarikh Masuk KFAM"
+                  :validation-messages="{
+                    required: 'Sila masukkan tarikh masuk Kelas Fardu Ain Muallaf (KFAM)',
+                    matches: 'Format tarikh tidak sah. Sila gunakan format DD/MM/YYYY'
+                  }"
+                  v-model="formData.tarikh_masuk_kfam"
+                />
+              </div>
+              
+              <!-- Validation error message for Islamic dates -->
+              <div v-if="formData.adakah_muallaf === 'Y' && !islamicDatesValidation.isValid" class="md:col-span-2 p-3 bg-red-50 border border-red-200 rounded">
+                <div class="text-red-600 text-sm">
+                  <strong>Ralat:</strong> {{ islamicDatesValidation.message }}
+                </div>
+              </div>
+
+              <!-- Nama Selepas Islam -->
+              <div v-if="formData.adakah_muallaf === 'Y'">
+                <FormKit
+                  type="text"
+                  name="nama_selepas_islam"
+                  label="Nama Selepas Islam"
+                  validation="required"
+                  validation-label="Nama Selepas Islam"
+                  :validation-messages="{
+                    required: 'Sila masukkan nama selepas Islam'
+                  }"
+                  v-model="formData.nama_selepas_islam"
+                />
+              </div>
+
+              <!-- Nama Sebelum Islam -->
+              <div v-if="formData.adakah_muallaf === 'Y'">
+                <FormKit
+                  type="text"
+                  name="nama_sebelum_islam"
+                  label="Nama Sebelum Islam"
+                  validation="required"
+                  validation-label="Nama Sebelum Islam"
+                  :validation-messages="{
+                    required: 'Sila masukkan nama sebelum Islam'
+                  }"
+                  v-model="formData.nama_sebelum_islam"
+                />
+              </div>
+
+              <!-- Tarikh Keluar Muallaf -->
+              <div v-if="formData.adakah_muallaf === 'Y'">
+                <FormKit
+                  type="text"
+                  name="tarikh_keluar_muallaf"
+                  label="Tarikh Keluar Muallaf"
+                  placeholder="DD/MM/YYYY"
+                  :validation-messages="{
+                    required: 'Tarikh Keluar Muallaf diperlukan',
+                    matches: 'Format tarikh tidak sah'
+                  }"
+                  :model-value="tarikhKeluarMuallaf"
+                  readonly
+                />
+              </div>
+
+              <!-- Dokumen Pengislaman -->
+              <div v-if="formData.adakah_muallaf === 'Y'">
+                <FormKit
+                  type="file"
+                  name="dokumen_pengislaman"
+                  label="Dokumen Pengislaman"
+                  help="Salinan dokumen rasmi pengislaman. Format: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  validation-label="Dokumen Pengislaman"
+                  :validation-messages="{
+                    required: 'Sila muat naik dokumen pengislaman',
+                    max: 'Saiz fail tidak boleh melebihi 5MB',
+                    mime: 'Format fail tidak sah. Sila pilih fail PDF, JPG, atau PNG'
+                  }"
+                  v-model="formData.dokumen_pengislaman"
+                />
+              </div>
             </div>
-          </div>
+          
 
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
@@ -441,14 +596,20 @@
             III. Maklumat Pendidikan
           </h3>
 
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Pendidikan</h4>
+          <!-- A. Pendidikan Individu -->
+          <div class="mb-8">
+            <h4 class="text-lg font-semibold mb-4 text-primary">A. Pendidikan Individu</h4>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Masih Bersekolah -->
               <FormKit
-                type="select"
-                name="bersekolah"
-                label="Bersekolah"
-                :options="['Ya', 'Tidak']"
+                type="radio"
+                name="masih_bersekolah"
+                label="Masih Bersekolah"
+                :options="[
+                  { label: 'Ya', value: 'Y' },
+                  { label: 'Tidak', value: 'T' }
+                ]"
                 validation="required"
               />
 
@@ -1749,7 +1910,7 @@
           id="sectionA13"
         >
           <h3 class="text-lg font-semibold mb-4">
-            XII. Maklumat Barangan Rumah
+            XII. Maklumat Pemilikan Barangan Rumah
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -3062,7 +3223,7 @@
                   <rs-button type="button" variant="secondary" @click="handleSaveStepB10"
                     >Simpan</rs-button
                   >
-                  <rs-button type="submit" variant="primary" @click="submitForm"
+                  <rs-button type="submit" variant="primary" @click="handleSubmit"
                     >Hantar Permohonan</rs-button
                   >
             </div>
@@ -3195,7 +3356,7 @@ const stepsA = [
   { id: 10, label: "Kediaman" },
   { id: 11, label: "Pinjaman" },
   { id: 12, label: "Pemilikan" },
-  { id: 13, label: "Barangan Rumah" },
+  { id: 13, label: "Pemilikan Barangan Rumah" },
   { id: 14, label: "Waris" }
 ];
 
@@ -3231,6 +3392,8 @@ const hubunganPemohon = ref("");
 // ID Type Variables
 const jenisId = ref(null);
 const jenisIdTanggungan = ref("");
+const agama = ref("");
+const bangsa = ref("");
 
 // Islamic Information Variables
 const tarikhMasukIslam = ref(null);
@@ -3278,9 +3441,16 @@ const formData = ref({
   bangsa: '',
   bersekolah: '',
   pendidikan_tertinggi: '',
+  status_perkahwinan: '',
+
+  // Section A - Maklumat Islam
+  adakah_muallaf: '',
   tarikh_masuk_islam: '',
   tarikh_masuk_kfam: '',
-  status_perkahwinan: '',
+  nama_selepas_islam: '',
+  nama_sebelum_islam: '',
+  tarikh_keluar_muallaf: '',
+  dokumen_pengislaman: null,
 
   // Bank Information
   nama_bank: '',
@@ -3770,6 +3940,91 @@ const uploadedDocuments = computed(() => {
   return documents;
 });
 
+// Computed property for calculating Tarikh Keluar Muallaf
+const tarikhKeluarMuallaf = computed(() => {
+  if (formData.value.adakah_muallaf !== 'Y') {
+    return '';
+  }
+  
+  const tarikhMasukIslam = formData.value.tarikh_masuk_islam;
+  const tarikhMasukKFAM = formData.value.tarikh_masuk_kfam;
+  
+  if (!tarikhMasukIslam && !tarikhMasukKFAM) {
+    return '';
+  }
+  
+  // Parse dates and add 5 years
+  let tarikhMasukIslamPlus5 = null;
+  let tarikhMasukKFAMPlus5 = null;
+  
+  if (tarikhMasukIslam) {
+    const [day, month, year] = tarikhMasukIslam.split('/');
+    if (day && month && year) {
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      // Validate that the date is not in the future
+      if (date > new Date()) {
+        return '';
+      }
+      date.setFullYear(date.getFullYear() + 5);
+      tarikhMasukIslamPlus5 = date;
+    }
+  }
+  
+  if (tarikhMasukKFAM) {
+    const [day, month, year] = tarikhMasukKFAM.split('/');
+    if (day && month && year) {
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      // Validate that the date is not in the future
+      if (date > new Date()) {
+        return '';
+      }
+      date.setFullYear(date.getFullYear() + 5);
+      tarikhMasukKFAMPlus5 = date;
+    }
+  }
+  
+  // Return the later date
+  if (tarikhMasukIslamPlus5 && tarikhMasukKFAMPlus5) {
+    const laterDate = tarikhMasukIslamPlus5 > tarikhMasukKFAMPlus5 ? tarikhMasukIslamPlus5 : tarikhMasukKFAMPlus5;
+    return `${String(laterDate.getDate()).padStart(2, '0')}/${String(laterDate.getMonth() + 1).padStart(2, '0')}/${laterDate.getFullYear()}`;
+  } else if (tarikhMasukIslamPlus5) {
+    return `${String(tarikhMasukIslamPlus5.getDate()).padStart(2, '0')}/${String(tarikhMasukIslamPlus5.getMonth() + 1).padStart(2, '0')}/${tarikhMasukIslamPlus5.getFullYear()}`;
+  } else if (tarikhMasukKFAMPlus5) {
+    return `${String(tarikhMasukKFAMPlus5.getDate()).padStart(2, '0')}/${String(tarikhMasukKFAMPlus5.getMonth() + 1).padStart(2, '0')}/${tarikhMasukKFAMPlus5.getFullYear()}`;
+  }
+  
+  return '';
+});
+
+// Computed property for validating Islamic dates
+const islamicDatesValidation = computed(() => {
+  if (formData.value.adakah_muallaf !== 'Y') {
+    return { isValid: true, message: '' };
+  }
+  
+  const tarikhMasukIslam = formData.value.tarikh_masuk_islam;
+  const tarikhMasukKFAM = formData.value.tarikh_masuk_kfam;
+  
+  if (tarikhMasukIslam && tarikhMasukKFAM) {
+    const [day1, month1, year1] = tarikhMasukIslam.split('/');
+    const [day2, month2, year2] = tarikhMasukKFAM.split('/');
+    
+    if (day1 && month1 && year1 && day2 && month2 && year2) {
+      const islamDate = new Date(parseInt(year1), parseInt(month1) - 1, parseInt(day1));
+      const kfamDate = new Date(parseInt(year2), parseInt(month2) - 1, parseInt(day2));
+      
+      if (kfamDate < islamDate) {
+        return { 
+          isValid: false, 
+          message: 'Tarikh Masuk KFAM tidak boleh lebih awal daripada Tarikh Masuk Islam' 
+        };
+      }
+    }
+  }
+  
+  return { isValid: true, message: '' };
+});
+
 // ============================================================================
 // WATCHERS
 // ============================================================================
@@ -3839,6 +4094,35 @@ watch(
       formData.value.pengesahan_pendapatan = [];
       formData.value.sumber_pendapatan = [];
       formData.value.lain_lain_sumber_pendapatan = '';
+    }
+  }
+);
+
+// Watch for Islamic dates changes to automatically calculate Tarikh Keluar Muallaf
+watch(
+  [
+    () => formData.value.tarikh_masuk_islam,
+    () => formData.value.tarikh_masuk_kfam
+  ],
+  () => {
+    if (formData.value.adakah_muallaf === 'Y') {
+      formData.value.tarikh_keluar_muallaf = tarikhKeluarMuallaf.value;
+    }
+  }
+);
+
+// Watch for muallaf status changes to clear Islamic fields when not muallaf
+watch(
+  () => formData.value.adakah_muallaf,
+  (newVal) => {
+    if (newVal === 'T') {
+      // Clear all Islamic fields when not muallaf
+      formData.value.tarikh_masuk_islam = '';
+      formData.value.tarikh_masuk_kfam = '';
+      formData.value.nama_selepas_islam = '';
+      formData.value.nama_sebelum_islam = '';
+      formData.value.tarikh_keluar_muallaf = '';
+      formData.value.dokumen_pengislaman = null;
     }
   }
 );
