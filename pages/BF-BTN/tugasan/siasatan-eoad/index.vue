@@ -701,10 +701,12 @@
                     <div class="space-y-8">
                       <!-- Senarai Bantuan yang mengalami Perubahan Kadar -->
                       <div class="space-y-3">
+                        <h3 class="text-md font-semibold text-gray-900">
+                          Perubahan Status: Mikin > Fakir
+                        </h3>
                         <h4 class="text-md font-semibold text-gray-900">
                           Senarai Bantuan yang mengalami Perubahan Kadar
                         </h4>
-                        
 
                         <div class="w-full overflow-x-auto">
                           <rs-table
