@@ -105,16 +105,7 @@
               }"
               class="flex-1"
             />
-            <FormKit
-              v-model="filters.status"
-              type="select"
-              :options="statusOptions"
-              placeholder="Status"
-              :classes="{
-                input: '!py-2',
-              }"
-              class="min-w-[200px]"
-            />
+
             <FormKit
               v-model="filters.namaSesi"
               type="select"
@@ -768,7 +759,6 @@ const toggleRoleInfo = () => {
 // Filters
 const filters = ref({
   searchQuery: "",
-  status: "",
   namaSesi: "",
 });
 
@@ -781,15 +771,7 @@ const showBulkApprovalModal = ref(false);
 const selectedItems = ref([]);
 const bulkApprovalNotes = ref("");
 
-// Filter options
-const statusOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Aktif", value: "Aktif" },
-  { label: "Tidak Aktif", value: "Tidak Aktif" },
-  { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
-  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
-  { label: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
-];
+
 
 const namaSesiOptions = [
   { label: "Sila pilih...", value: "" },
@@ -1038,12 +1020,7 @@ const getTableDataByStatus = (statuses) => {
       );
     }
     
-    // Apply status filter
-    if (filters.value.status) {
-      result = result.filter(session => 
-        session.status === filters.value.status
-      );
-    }
+
     
     // Apply nama sesi filter
     if (filters.value.namaSesi) {
@@ -1141,7 +1118,7 @@ onMounted(() => {
 
 // Search functionality
 const performSearch = () => {
-  if (!filters.value.searchQuery && !filters.value.status && !filters.value.namaSesi) {
+  if (!filters.value.searchQuery && !filters.value.namaSesi) {
     toast.warning('Sila masukkan kriteria carian');
     return;
   }
@@ -1153,7 +1130,6 @@ const performSearch = () => {
 
 const clearSearch = () => {
   filters.value.searchQuery = "";
-  filters.value.status = "";
   filters.value.namaSesi = "";
   isSearchPerformed.value = false;
   refreshTable();

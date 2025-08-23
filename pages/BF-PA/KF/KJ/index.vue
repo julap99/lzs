@@ -91,16 +91,7 @@
               }"
               class="flex-1"
             />
-            <FormKit
-              v-model="filters.status"
-              type="select"
-              :options="statusOptions"
-              placeholder="Status"
-              :classes="{
-                input: '!py-2',
-              }"
-              class="min-w-[200px]"
-            />
+
             <FormKit
               v-model="filters.kategori"
               type="select"
@@ -432,15 +423,14 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewPosition(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
@@ -775,19 +765,10 @@ const toggleRoleInfo = () => {
 // Filters
 const filters = ref({
   searchQuery: "",
-  status: "",
   kategori: "",
 });
 
-// Filter options
-const statusOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Aktif", value: "Aktif" },
-  { label: "Tidak Aktif", value: "Tidak Aktif" },
-  { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
-  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
-  { label: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
-];
+
 
 const kategoriOptions = [
   { label: "Sila pilih...", value: "" },
@@ -1064,12 +1045,7 @@ const getTableDataByStatus = (statuses) => {
     );
   }
   
-  // Apply status filter
-  if (filters.value.status) {
-    result = result.filter(position => 
-      position.status === filters.value.status
-    );
-  }
+
   
   // Apply kategori filter
   if (filters.value.kategori) {
@@ -1166,7 +1142,7 @@ onMounted(() => {
 
 // Search functionality
 const performSearch = () => {
-  if (!filters.value.searchQuery && !filters.value.status && !filters.value.kategori) {
+  if (!filters.value.searchQuery && !filters.value.kategori) {
     toast.warning('Sila masukkan kriteria carian');
     return;
   }
@@ -1177,7 +1153,6 @@ const performSearch = () => {
 
 const clearSearch = () => {
   filters.value.searchQuery = "";
-  filters.value.status = "";
   filters.value.kategori = "";
   refreshTable();
   toast.info('Carian telah diset semula');
