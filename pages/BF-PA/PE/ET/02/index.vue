@@ -48,20 +48,7 @@
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
-                  <th class="px-4 py-3 w-28">
-                    <div class="flex items-center gap-2">
-                      <FormKit
-                        type="checkbox"
-                        :checked="allVisibleChecked"
-                        @change="toggleSelectVisible"
-                        :classes="{
-                          input: '!w-4 !h-4',
-                        }"
-                      />
-                      <span class="text-xs text-gray-500">Pilih semua</span>
-                    </div>
-                    <div class="text-[11px] text-gray-500">(* Hanya calon baharu)</div>
-                  </th>
+
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori/Jawatan</th>
@@ -169,7 +156,11 @@
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Elaun (RM)</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">
+                    <div class="flex items-center gap-2">
+                      Elaun (RM)
+                    </div>
+                  </th>
                   <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
                 </tr>
               </thead>
@@ -213,10 +204,11 @@
                   </td>
                   <td class="px-4 py-3 w-48">
                     <FormKit
-                      v-if="r._isEditing"
+                      v-if="r._isEditing && canEditAllowance()"
                       v-model.number="r.allowance"
                       type="number"
-                      min="0"
+                      :min="editableAllowanceRange.min"
+                      :max="editableAllowanceRange.max"
                       step="0.01"
                       placeholder="0.00"
                       :classes="{
@@ -229,14 +221,14 @@
                       </div>
                     </template>
                   </td>
-                  <td class="px-4 py-3 text-right">
-                    <div class="flex items-center justify-end gap-2">
-                      <!-- Edit Button - Only visible when not editing -->
+                  <td class="px-4 py-3 text-left">
+                    <div class="flex items-center justify-start gap-2">
+                      <!-- Edit Button - Only visible when not editing and allowance is editable -->
                       <rs-button
                         variant="secondary-outline"
                         size="sm"
-                        @click="r._isEditing = true"
-                        v-if="!r._isEditing"
+                        @click="() => handleEditAttempt(r) && startEdit(r)"
+                        v-if="!r._isEditing && canEditAllowance()"
                       >
                         <Icon name="ic:outline-edit" size="16" />
                       </rs-button>
@@ -424,7 +416,9 @@ const query = reactive({
 const typeOptions = {
   'ET-KPAK': 'Elaun Tahunan KPAK',
   'ET-KPAF': 'Elaun Tahunan KPAF',
-  'ET-ANUG': 'Anugerah Penolong Amil',
+  'ET-ANUG': 'Elaun Khas - 48 aktiviti/tahun',
+  'ET-BANCIAN': 'Elaun Bancian Baru : per borang permohonan',
+  'ET-KEMASKINI': 'Elaun Kemaskini/permohonan bantuan : per borang permohonan',
   'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
   'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
   'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
@@ -436,9 +430,70 @@ const typeOptions = {
 const typeLabel = computed(() => typeOptions[query.type] || '');
 
 /* ====== Kadar elaun tetap ikut jenis elaun ====== */
-const fixedAllowanceByType = { 'ET-KPAK': 500, 'ET-KPAF': 300 };
+// Fixed allowances that cannot be edited
+const fixedAllowanceByType = { 
+  'ET-KPAK': 500, 
+  'ET-KPAF': 300, 
+  'ET-ANUG': 400,
+  'ET-BANCIAN': 30,
+  'ET-KEMASKINI': 20
+};
+
+// Editable allowances with range validation
+const editableAllowanceByType = {
+  'ANUG-KPAK': { min: 400, max: 750, default: 400 },
+  'ANUG-PAK': { min: 400, max: 750, default: 400 },
+  'ANUG-KPAF': { min: 400, max: 750, default: 400 },
+  'ANUG-PAF': { min: 400, max: 750, default: 400 },
+  'ANUG-PAP': { min: 400, max: 750, default: 400 },
+  'ANUG-PAKPLUS': { min: 400, max: 750, default: 400 }
+};
+
 const isFixedAllowance = computed(() => fixedAllowanceByType[query.type] != null);
+const isEditableAllowance = computed(() => editableAllowanceByType[query.type] != null);
 const fixedAllowanceValue = computed(() => fixedAllowanceByType[query.type] ?? 0);
+const editableAllowanceRange = computed(() => editableAllowanceByType[query.type] || { min: 0, max: 0, default: 0 });
+
+// Check if allowance can be edited for a specific recipient
+function canEditAllowance() {
+  return isEditableAllowance.value;
+}
+
+// Function to handle edit attempts on fixed allowance recipients
+function handleEditAttempt(recipient) {
+  if (!canEditAllowance()) {
+    toast.warning(`Elaun untuk jenis ${typeLabel.value} adalah tetap dan tidak boleh diubah`);
+    return false;
+  }
+  return true;
+}
+
+// Function to start editing a recipient
+function startEdit(recipient) {
+  recipient._originalAllowance = Number(recipient.allowance);
+  recipient._isEditing = true;
+}
+
+// Function to validate budget constraints for editable allowances
+function validateBudgetConstraints() {
+  if (!isEditableAllowance.value) return true;
+  
+  const { min, max } = editableAllowanceRange.value;
+  const totalMin = recipients.value.length * min;
+  const totalMax = recipients.value.length * max;
+  
+  if (totalAllowance.value < totalMin) {
+    toast.error(`Jumlah elaun (RM${totalAllowance.value.toFixed(2)}) adalah di bawah minimum (RM${totalMin.toFixed(2)})`);
+    return false;
+  }
+  
+  if (totalAllowance.value > totalMax) {
+    toast.error(`Jumlah elaun (RM${totalAllowance.value.toFixed(2)}) adalah melebihi maksimum (RM${totalMax.toFixed(2)})`);
+    return false;
+  }
+  
+  return true;
+}
 
 /* ====== State ====== */
 const candidates = ref([]);
@@ -512,6 +567,21 @@ function getMockCandidates(year, type) {
       { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}006`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
     ],
+    'ET-BANCIAN': [
+      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520149012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false }
+    ],
+    'ET-KEMASKINI': [
+      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520149012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}004`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
+      { paId: `PA${year}006`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false }
+    ],
     'ANUG-KPAK': [
       { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
@@ -550,8 +620,7 @@ function getMockCandidates(year, type) {
     ],
     'ANUG-PAP': [
       { paId: `PA${year}001`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}002`, name: 'Mohd Hafiz bin Zainal', ic: '830710150123', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}003`, name: 'Ahmad Zulkarnain bin Salleh', ic: '780215102345', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
+      { paId: `PA${year}002`, name: 'Mohd Hafiz bin Zainal', ic: '830710150123', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
     ],
     'ANUG-PAKPLUS': [
       { paId: `PA${year}001`, name: 'Fatimah binti Hassan', ic: '810723127890', category: 'PAK+', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
@@ -600,12 +669,14 @@ function getCategoryFilterText() {
     'ET-KPAK': ['KPAK'],
     'ET-KPAF': ['KPAF'],
     'ET-ANUG': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'],
-    'ANUG-KPAK': ['KPAK'],
-    'ANUG-PAK': ['PAK'],
-    'ANUG-KPAF': ['KPAF'],
-    'ANUG-PAF': ['PAF'],
-    'ANUG-PAP': ['PAP'],
-    'ANUG-PAKPLUS': ['PAK+']
+    'ET-BANCIAN': ['KPAK', 'KPAF', 'PAK', 'PAF'],
+    'ET-KEMASKINI': ['KPAK', 'KPAF', 'PAK', 'PAF'],
+    'ANUG-KPAK': ['KPAK'],         // Anugerah KPAK - only KPAK
+    'ANUG-PAK': ['PAK'],           // Anugerah PAK - only PAK
+    'ANUG-KPAF': ['KPAF'],         // Anugerah KPAF - only KPAF
+    'ANUG-PAF': ['PAF'],           // Anugerah PAF - only PAF
+    'ANUG-PAP': ['PAP'],           // Anugerah PAP - only PAP
+    'ANUG-PAKPLUS': ['PAK+']       // Anugerah PAK+ - only PAK+
   };
   
   const allowedCategories = categoryMapping[query.type] || ['KPAK'];
@@ -649,6 +720,8 @@ const baseRows = computed(() => {
     'ET-KPAK': ['KPAK'],           // Elaun Tahunan KPAK - only KPAK
     'ET-KPAF': ['KPAF'],           // Elaun Tahunan KPAF - only KPAF  
     'ET-ANUG': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'], // Anugerah - all categories
+    'ET-BANCIAN': ['KPAK', 'KPAF', 'PAK', 'PAF'],
+    'ET-KEMASKINI': ['KPAK', 'KPAF', 'PAK', 'PAF'],
     'ANUG-KPAK': ['KPAK'],         // Anugerah KPAK - only KPAK
     'ANUG-PAK': ['PAK'],           // Anugerah PAK - only PAK
     'ANUG-KPAF': ['KPAF'],         // Anugerah KPAF - only KPAF
@@ -701,7 +774,16 @@ function commitSelected() {
 
   const map = new Map(recipients.value.map(x => [x.paId, x]));
   selectedNew.forEach(s => {
-    const allowance = isFixedAllowance.value ? fixedAllowanceValue.value : 0;
+    let allowance = 0;
+    
+    if (isFixedAllowance.value) {
+      // Fixed allowance - cannot be edited
+      allowance = fixedAllowanceValue.value;
+    } else if (isEditableAllowance.value) {
+      // Editable allowance - set to default value within range
+      allowance = editableAllowanceRange.value.default;
+    }
+    
     if (!map.has(s.paId)) {
       map.set(s.paId, { ...s, allowance, _checked: false });
     }
@@ -715,7 +797,11 @@ function commitSelected() {
 /* Jenis elaun bertukar → set elaun tetap */
 watch(() => query.type, () => {
   if (isFixedAllowance.value) {
+    // Fixed allowance - set to fixed value
     recipients.value.forEach(r => (r.allowance = fixedAllowanceValue.value));
+  } else if (isEditableAllowance.value) {
+    // Editable allowance - set to default value within range
+    recipients.value.forEach(r => (r.allowance = editableAllowanceRange.value.default));
   }
 });
 
@@ -723,6 +809,17 @@ const totalAllowance = computed(() => recipients.value.reduce((sum, r) => sum + 
 const canSubmit = computed(() => recipients.value.length > 0 && recipients.value.every(r => isFinite(r.allowance) && Number(r.allowance) >= 0));
 const status = ref('DRAF');
 const statusLabel = computed(() => status.value === 'MENUNGGU KELULUSAN' ? 'menunggu kelulusan' : status.value.toLowerCase());
+
+// Computed property to show allowance type information
+const allowanceTypeInfo = computed(() => {
+  if (isFixedAllowance.value) {
+    return `Elaun Tetap: RM${fixedAllowanceValue.value.toFixed(2)} (tidak boleh diubah)`;
+  } else if (isEditableAllowance.value) {
+    const { min, max, default: defaultValue } = editableAllowanceRange.value;
+    return `Elaun Boleh Diubah: RM${min.toFixed(2)} - RM${max.toFixed(2)} (default: RM${defaultValue.toFixed(2)})`;
+  }
+  return 'Elaun: Boleh diubah';
+});
 
 /* Simpan draf → persist penerima & status, count, balik ke skrin 1 */
 async function saveDraft() {
@@ -753,6 +850,11 @@ function closeSubmitModal() {
 }
 
 async function confirmSubmit() {
+  // Validate budget constraints first
+  if (!validateBudgetConstraints()) {
+    return;
+  }
+  
   saving.value = true;
   try {
     await wait(600);
@@ -771,6 +873,12 @@ async function confirmSubmit() {
 /* Hantar → status MENUNGGU KELULUSAN, persist & balik ke skrin 1 */
 async function submitForApproval() {
   if (!canSubmit.value) return;
+  
+  // Validate budget constraints first
+  if (!validateBudgetConstraints()) {
+    return;
+  }
+  
   saving.value = true;
   try {
     await wait(600);
@@ -820,7 +928,8 @@ watch(() => [query.year, query.type], () => seedData(), { immediate: true });
 
 // Enhanced validation functions
 function validateDuplicateRecipient(newRecipient) {
-  const existingRecipient = recipients.value.find(r => r.ic === newRecipient.ic);
+  // Find existing recipient with same IC, but exclude the current one being edited
+  const existingRecipient = recipients.value.find(r => r.ic === newRecipient.ic && r.paId !== newRecipient.paId);
   if (existingRecipient) {
     return {
       valid: false,
@@ -852,6 +961,14 @@ function validateRecipientData(recipient) {
   
   if (recipient.allowance < 0) {
     errors.push('Elaun tidak boleh negatif');
+  }
+  
+  // Range validation for editable allowances
+  if (isEditableAllowance.value) {
+    const { min, max } = editableAllowanceRange.value;
+    if (recipient.allowance < min || recipient.allowance > max) {
+      errors.push(`Elaun mestilah antara RM${min.toFixed(2)} hingga RM${max.toFixed(2)}`);
+    }
   }
   
   return {
@@ -890,13 +1007,20 @@ function addNewRecipient() {
     return;
   }
   
+  let defaultAllowance = 0;
+  if (isFixedAllowance.value) {
+    defaultAllowance = fixedAllowanceValue.value;
+  } else if (isEditableAllowance.value) {
+    defaultAllowance = editableAllowanceRange.value.default;
+  }
+  
   const newRecipient = {
     paId: `PA-${Date.now()}`,
     name: '',
     ic: '',
     category: '',
     parish: '',
-    allowance: isFixedAllowance.value ? fixedAllowanceValue.value : 0,
+    allowance: defaultAllowance,
     _isNew: true,
     _isEditing: true,
     _checked: false
@@ -927,6 +1051,11 @@ function saveRecipient(recipient) {
     return;
   }
   
+  // Clean up original allowance value
+  if (recipient._originalAllowance !== undefined) {
+    delete recipient._originalAllowance;
+  }
+  
   recipient._isEditing = false;
   recipient._isNew = false;
   
@@ -952,8 +1081,12 @@ function removeRecipient(index) {
 
 // Cancel edit function
 function cancelEdit(recipient) {
+  // Revert allowance to original value
+  if (recipient._originalAllowance !== undefined) {
+    recipient.allowance = recipient._originalAllowance;
+    delete recipient._originalAllowance;
+  }
   recipient._isEditing = false;
-  // Reset to original values if needed
   toast.info('Penyuntingan dibatalkan');
 }
 </script>

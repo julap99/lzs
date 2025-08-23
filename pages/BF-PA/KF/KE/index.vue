@@ -429,15 +429,14 @@
                   </template>
 
                   <template v-slot:tindakan="data">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
-                        class="!px-2 !py-1"
+                    <div class="flex space-x-3">
+                      <button
                         @click="viewAllowance(data.text)"
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Lihat
-                      </rs-button>
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>
