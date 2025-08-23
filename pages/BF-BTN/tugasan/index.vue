@@ -31,7 +31,7 @@
                 }"
                 :options-advanced="{
                   sortable: true,
-                  filterable: true,
+                  filterable: false,
                 }"
                 advanced
               >
@@ -124,7 +124,7 @@
                       }"
                       :options-advanced="{
                         sortable: true,
-                        filterable: true,
+                        filterable: false,
                       }"
                       advanced
                     >
@@ -211,7 +211,7 @@
                       }"
                       :options-advanced="{
                         sortable: true,
-                        filterable: true,
+                        filterable: false,
                       }"
                       advanced
                     >
@@ -298,7 +298,7 @@
                       }"
                       :options-advanced="{
                         sortable: true,
-                        filterable: true,
+                        filterable: false,
                       }"
                       advanced
                     >
@@ -400,7 +400,7 @@
                       }"
                       :options-advanced="{
                         sortable: true,
-                        filterable: true,
+                        filterable: false,
                       }"
                       advanced
                     >
