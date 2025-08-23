@@ -4,12 +4,12 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <div class="mb-4 flex items-center space-x-4">
-  <label class="font-medium text-gray-700">Pilih Role:</label>
-  <select v-model="selectedRole" class="border rounded p-1">
-    <option value="asnaf">Asnaf</option>
-    <option value="internal">Internal Staff</option>
-  </select>
-</div>
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="asnaf">Asnaf</option>
+        <option value="internal">Internal Staff</option>
+      </select>
+    </div>
     <!-- Section 1: Ringkasan Maklumat Carian -->
     <rs-card class="mb-6">
       <template #header>Ringkasan Maklumat Carian</template>
@@ -161,7 +161,7 @@ const viewBantuanDetail = () => {
   navigateTo(`/BF-DP/Portal/bantuan/01`);
 };
 
-const selectedRole = ref("asnaf"); // default role
+const selectedRole = ref("internal"); // default role
 
 const canViewDetail = computed(() => selectedRole.value === "internal");
 

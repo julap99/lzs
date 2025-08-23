@@ -138,52 +138,49 @@
       "ADN-250823-000123": "aduan",
     };
 
-    const submitForm = () => {
-      // If dropdown is selected, use it
-      if (form.value.statusType) {
-        switch (form.value.statusType) {
-          case "aduan":
-            navigateTo(`/BF-DP/Portal/aduan`);
-            break;
-          case "bantuan":
-            navigateTo(`/BF-DP/Portal/bantuan`);
-            break;
-          case "profile":
-            navigateTo(`/BF-DP/Portal/profile`);
-            break;
-          default:
-            errorMessage.value = "Jenis status tidak sah.";
-        }
-      } 
-      // If dropdown is empty, use idPermohonan mapping
-      else if (form.value.appId) {
-        const type = idMapping[form.value.appId];
-        if (!type) {
-          errorMessage.value = "ID Permohonan tidak sah.";
-          return;
-        }
-        switch (type) {
-          case "aduan":
-            navigateTo(`/BF-DP/Portal/aduan/01`);
-            break;
-          case "bantuan":
-            navigateTo(`/BF-DP/Portal/bantuan/01`);
-            break;
-          case "profile":
-            navigateTo(`/BF-DP/Portal/profile/01`);
-            break;
-          default:
-            errorMessage.value = "Jenis status tidak sah.";
-        }
-      } 
-      // Neither dropdown nor idPermohonan provided
-      else {
-        errorMessage.value = "Sila pilih jenis status atau masukkan ID Permohonan.";
-      }
-    };
-
     const selectedRole = ref("asnaf"); // default role
     const canChooseType = computed(() => selectedRole.value === "internal");
+
+    const submitForm = () => {
+  if (canChooseType.value) {
+    // Use dropdown selection for roles that can choose type
+    switch (form.value.statusType) {
+      case "aduan":
+        navigateTo(`/BF-DP/Portal/aduan`);
+        break;
+      case "bantuan":
+        navigateTo(`/BF-DP/Portal/bantuan`);
+        break;
+      case "profile":
+        navigateTo(`/BF-DP/Portal/profile`);
+        break;
+      default:
+        errorMessage.value = "Jenis status tidak sah.";
+    }
+  } else {
+    // Use ID mapping for roles that cannot choose type (e.g., asnaf)
+    const refId = idMapping[form.value.appId];
+    if (!refId) {
+      errorMessage.value = "ID Permohonan tidak sah.";
+      return;
+    }
+
+    switch (refId) {
+      case "aduan":
+        navigateTo(`/BF-DP/Portal/aduan/01`);
+        break;
+      case "bantuan":
+        navigateTo(`/BF-DP/Portal/bantuan/01`);
+        break;
+      case "profile":
+        navigateTo(`/BF-DP/Portal/profile/01`);
+        break;
+      default:
+        errorMessage.value = "Jenis status tidak sah.";
+    }
+  }
+};
+
 </script>
 <style lang="scss" scoped>
 // Optional custom styles

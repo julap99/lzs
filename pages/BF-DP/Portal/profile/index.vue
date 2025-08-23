@@ -186,7 +186,7 @@ const exportExcel = () => {
 };
 
 
-const selectedRole = ref("asnaf"); // default role
+const selectedRole = ref("internal"); // default role
 const canViewDetail = computed(() => selectedRole.value === "internal");
 const canExport = canViewDetail;
 
