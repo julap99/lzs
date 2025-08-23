@@ -3,6 +3,14 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <div class="mb-4 flex items-center space-x-4">
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="asnaf">Asnaf</option>
+        <option value="internal">Internal Staff</option>
+      </select>
+    </div>
+
     <!-- Section 1: Ringkasan Maklumat Carian -->
     <rs-card class="mb-6">
       <template #header>Ringkasan Maklumat Carian</template>
@@ -37,37 +45,41 @@
       <template #header>Senarai Status Pendaftaran Profil</template>
       <template #body>
         <rs-table
-          class="mt-4"
-          :data="profileStatusData"
-          :pageSize="10"
-          :showNoColumn="true"
-          :options="{
-            variant: 'default',
-            hover: true,
-          }"
-        >
-          <template v-slot:status="data">
-            <div class="flex justify-center">
-              <rs-badge :variant="getStatusVariant(data.text)" size="sm">
-                {{ data.text }}
-              </rs-badge>
-            </div>
-          </template>
-          <template v-slot:lastUpdate="data">
-            <span class="font-medium">{{ formatDate(data.text) }}</span>
-          </template>
-          <template v-slot:aksi="data">
-            <rs-button
-              variant="primary"
-              size="sm"
-              class="!px-2 !py-1"
-              @click="viewProfileDetail()"
-            >
-              Lihat Maklumat Penuh
-              <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
-            </rs-button>
-          </template>
-        </rs-table>
+        class="mt-4"
+        :data="displayedData"
+        :pageSize="10"
+        :showNoColumn="true"
+        :options="{
+          variant: 'default',
+          hover: true,
+        }"
+      >
+  <template v-slot:status="data">
+    <div class="flex justify-center">
+      <rs-badge :variant="getStatusVariant(data.text)" size="sm">
+        {{ data.text }}
+      </rs-badge>
+    </div>
+  </template>
+
+  <template v-slot:lastUpdate="data">
+    <span class="font-medium">{{ formatDate(data.text) }}</span>
+  </template>
+
+  <!-- Only render aksi column if canViewDetail is true -->
+  <template v-if="canViewDetail" v-slot:aksi="data">
+    <rs-button
+      variant="primary"
+      size="sm"
+      class="!px-2 !py-1"
+      @click="viewProfileDetail()"
+    >
+      Lihat Maklumat Penuh
+      <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
+    </rs-button>
+  </template>
+</rs-table>
+
 
         <!-- Action Buttons -->
         <div class="flex justify-end mt-4 space-x-2" v-if="canExport">
@@ -100,7 +112,7 @@ const breadcrumb = ref([
   {
     name: "Semak Status",
     type: "link",
-    path: "/status-tracking",
+    path: "/BF-DP/Portal/",
   },
   {
     name: "Senarai Status Pendaftaran Profil",
@@ -173,8 +185,20 @@ const exportExcel = () => {
   alert("Export Excel triggered!");
 };
 
-// Permission to export (can be dynamic)
-const canExport = ref(true);
+
+const selectedRole = ref("asnaf"); // default role
+const canViewDetail = computed(() => selectedRole.value === "internal");
+const canExport = canViewDetail;
+
+const displayedData = computed(() => {
+  return profileStatusData.value.map(item => {
+    if (!canViewDetail.value) {
+      const { aksi, ...rest } = item; // remove aksi
+      return rest;
+    }
+    return item;
+  });
+});
 </script>
 
 <style lang="scss" scoped>
