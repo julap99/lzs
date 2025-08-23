@@ -764,7 +764,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Muat Naik Minit Mesyuarat *
             </label>
-                         <FormKit
+            <FormKit
                type="file"
                v-model="terminateData.supportingDocuments"
                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"

@@ -78,6 +78,7 @@ export default defineNuxtConfig({
   formkit: {
     defaultConfig: true,
     config: {
+      locale: 'ms',
       inputs: {
         signature: {
           type: "input",
