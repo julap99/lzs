@@ -80,15 +80,7 @@
           </h1>
         </div>
         <div class="flex gap-2">
-          <rs-button
-            variant="primary"
-            @click="navigateTo('/BF-PA/PP/KP/kemaskini/new')"
-            v-if="canCreateRequest(currentRole)"
-            class="flex items-center"
-          >
-            <Icon name="ph:plus" class="w-4 h-4 mr-2" />
-            Tambah Perkhidmatan
-          </rs-button>
+          <!-- Button removed as PP/KP doesn't handle adding new data/services -->
         </div>
       </div>
     </div>
@@ -1896,11 +1888,7 @@ const resetTerminateModal = () => {
   isTerminateSubmitting.value = false;
 };
 
-// Role-based access control
-const canCreateRequest = (role) => {
-  // Only PYB Institusi can create new services
-  return role === "pyb-institusi";
-};
+// Role-based access control - removed canCreateRequest as PP/KP doesn't handle adding new data
 
 const canEditRequest = (request) => {
   // Only allow editing if status is pending or need_more_info

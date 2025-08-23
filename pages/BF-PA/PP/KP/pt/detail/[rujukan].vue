@@ -225,7 +225,6 @@
     <div class="flex justify-end mt-6">
       <rs-button
         type="button"
-        variant="secondary-outline"
         @click="handleBack"
         class="flex items-center"
       >

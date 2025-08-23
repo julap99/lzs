@@ -17,7 +17,6 @@
         </div>
         <div class="flex gap-2">
           <rs-button
-            variant="secondary-outline"
             @click="handleBack"
           >
             Kembali
@@ -211,7 +210,6 @@
     <div class="flex justify-end mt-6">
       <rs-button
         type="button"
-        variant="secondary-outline"
         @click="handleBack"
         class="flex items-center"
       >
