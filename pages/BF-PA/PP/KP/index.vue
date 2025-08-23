@@ -567,6 +567,40 @@
             </div>
           </div>
 
+          <!-- Service Performance & Context -->
+          <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <h4 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+              <Icon name="ph:chart-line" class="w-4 h-4 mr-2 text-blue-600" />
+              Maklumat Prestasi & Konteks Perkhidmatan
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-blue-700 mb-1">Tarikh Mula Perkhidmatan</label>
+                <div class="text-sm text-blue-900 font-medium">{{ currentTerminateRequest?.tarikhMulaPerkhidmatan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-blue-700 mb-1">Tempoh Perkhidmatan</label>
+                <div class="text-sm text-blue-900 font-medium">{{ currentTerminateRequest?.tempohPerkhidmatan || 'N/A' }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-blue-700 mb-1">Jumlah Surat Amaran</label>
+                <div class="text-sm">
+                  <rs-badge :variant="getWarningCountVariant(currentTerminateRequest?.jumlahSuratAmaran)" size="sm">
+                    {{ currentTerminateRequest?.jumlahSuratAmaran || '0' }} surat
+                  </rs-badge>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-blue-700 mb-1">Status Terakhir</label>
+                <div class="text-sm">
+                  <rs-badge :variant="getStatusVariant(currentTerminateRequest?.statusTerakhir)" size="sm">
+                    {{ currentTerminateRequest?.statusTerakhir || 'N/A' }}
+                  </rs-badge>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Warning Letter History -->
           <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
             <h4 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
@@ -574,26 +608,32 @@
               Sejarah Surat Amaran
             </h4>
             <div class="space-y-2">
-              <div class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
+              <div v-if="currentTerminateRequest?.jumlahSuratAmaran >= 1" class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
                 <div>
                   <div class="text-sm font-medium text-gray-900">Surat Amaran #1</div>
-                  <div class="text-xs text-gray-600">Tarikh: 15-01-2024 | Sebab: Tidak hadir mesyuarat</div>
+                  <div class="text-xs text-gray-600">Tarikh: 15-01-2024 | Sebab: Tidak hadir mesyuarat bulanan tanpa sebab yang munasabah</div>
                 </div>
                 <rs-badge variant="warning" size="sm">Dihantar</rs-badge>
               </div>
-              <div class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
+              <div v-if="currentTerminateRequest?.jumlahSuratAmaran >= 2" class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
                 <div>
                   <div class="text-sm font-medium text-gray-900">Surat Amaran #2</div>
-                  <div class="text-xs text-gray-600">Tarikh: 20-02-2024 | Sebab: Gagal mematuhi arahan</div>
+                  <div class="text-xs text-gray-600">Tarikh: 20-02-2024 | Sebab: Gagal mematuhi arahan dan peraturan yang ditetapkan</div>
                 </div>
                 <rs-badge variant="warning" size="sm">Dihantar</rs-badge>
               </div>
-              <div class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
+              <div v-if="currentTerminateRequest?.jumlahSuratAmaran >= 3" class="flex items-center justify-between p-2 bg-white rounded border border-yellow-200">
                 <div>
                   <div class="text-sm font-medium text-gray-900">Surat Amaran #3</div>
-                  <div class="text-xs text-gray-600">Tarikh: 10-03-2024 | Sebab: Pelanggaran berulang</div>
+                  <div class="text-xs text-gray-600">Tarikh: 10-03-2024 | Sebab: Pelanggaran berulang terhadap kod etika perkhidmatan</div>
                 </div>
                 <rs-badge variant="danger" size="sm">Final Warning</rs-badge>
+              </div>
+              <div v-if="!currentTerminateRequest?.jumlahSuratAmaran || currentTerminateRequest?.jumlahSuratAmaran === '0'" class="p-3 bg-green-50 border border-green-200 rounded text-center">
+                <div class="text-sm text-green-800">
+                  <Icon name="ph:check-circle" class="w-4 h-4 inline mr-1" />
+                  Tiada surat amaran dihantar - Rekod bersih
+                </div>
               </div>
             </div>
           </div>
@@ -662,10 +702,10 @@
                      <!-- Supporting Documents -->
            <div>
              <div v-if="!terminateData.supportingDocuments" class="mb-2 text-sm text-red-600">
-               Sila muat naik dokumen sokongan
+               Sila muat naik minit mesyuarat
              </div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              Dokumen Sokongan *
+              Muat Naik Minit Mesyuarat *
             </label>
                          <FormKit
                type="file"
@@ -676,22 +716,12 @@
                  wrapper: 'w-full'
                }"
                validation="required"
-               validation-label="Dokumen sokongan"
+               validation-label="Minit mesyuarat"
                @change="handleTerminateFileChange"
              />
              <div v-if="terminateFileError" class="mt-1 text-sm text-red-600">
                {{ terminateFileError }}
              </div>
-            <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
-              <div class="flex items-start">
-                <Icon name="ph:info" class="w-4 h-4 text-blue-600 mr-2 mt-0.5" />
-                <div class="text-sm text-blue-800">
-                  <p class="font-medium">Format yang diterima:</p>
-                  <p>PDF, DOC, DOCX, JPG, JPEG, PNG (Maksimum 5MB)</p>
-                  <p class="mt-1 text-xs">Contoh: Minit mesyuarat, laporan insiden, surat amaran, dll.</p>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Additional Notes -->
@@ -916,9 +946,12 @@ const daerahOptions = [
 
 const terminationReasonOptions = [
   { label: "Sila pilih...", value: "" },
-  { label: "Tidak hadir mesyuarat", value: "tidak_hadir_mesyuarat" },
-  { label: "Gagal mematuhi arahan", value: "gagal_mematuhi_arahan" },
-  { label: "Pelanggaran berulang", value: "pelanggaran_berulang" },
+  { label: "Tidak hadir mesyuarat tanpa sebab yang munasabah", value: "tidak_hadir_mesyuarat" },
+  { label: "Gagal mematuhi arahan dan peraturan yang ditetapkan", value: "gagal_mematuhi_arahan" },
+  { label: "Pelanggaran berulang terhadap kod etika perkhidmatan", value: "pelanggaran_berulang" },
+  { label: "Tidak menunaikan tanggungjawab sebagai Penolong Amil", value: "tidak_menunaikan_tanggungjawab" },
+  { label: "Tingkah laku yang tidak sesuai dengan imej institusi", value: "tingkah_laku_tidak_sesuai" },
+  { label: "Kemudaratan kepada kepentingan awam dan agama", value: "kemudaratan_kepentingan_awam" },
   { label: "Lain-lain", value: "lain-lain" },
 ];
 
@@ -934,6 +967,27 @@ const requests = ref([
     daerah: "Kuala Lumpur",
     institusi: "Surau Al-Amin",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 123, Jalan Utama, Taman Seri Indah, 43000 Kajang, Selangor",
+    negeri: "Selangor",
+    daerah: "Hulu Langat",
+    bandar: "Kajang",
+    poskod: "43000",
+    noTelefon: "03-8736 1234",
+    noTelefonBimbit: "012-345 6789",
+    emel: "ahmad.abdullah@email.com",
+    pekerjaan: "Pegawai Kerajaan",
+    namaMajikan: "Jabatan Agama Islam Selangor",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Islam Antarabangsa Malaysia",
+    tarikhMulaPerkhidmatan: "15-01-2023",
+    tempohPerkhidmatan: "1 tahun 3 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP002",
@@ -945,6 +999,27 @@ const requests = ref([
     daerah: "Selangor",
     institusi: "Kompleks Islam",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 45, Jalan Masjid, Taman Islam, 40100 Shah Alam, Selangor",
+    negeri: "Selangor",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40100",
+    noTelefon: "03-5510 2345",
+    noTelefonBimbit: "013-456 7890",
+    emel: "mohd.ali@email.com",
+    pekerjaan: "Guru",
+    namaMajikan: "Sekolah Menengah Kebangsaan Shah Alam",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Malaya",
+    tarikhMulaPerkhidmatan: "01-03-2023",
+    tempohPerkhidmatan: "1 tahun 1 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP003",
@@ -956,6 +1031,27 @@ const requests = ref([
     daerah: "Perak",
     institusi: "Masjid Al-Hidayah",
     status: "suspended",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 78, Jalan Sultan, Taman Diraja, 30000 Ipoh, Perak",
+    negeri: "Perak",
+    daerah: "Kinta",
+    bandar: "Ipoh",
+    poskod: "30000",
+    noTelefon: "05-255 1234",
+    noTelefonBimbit: "014-567 8901",
+    emel: "fatimah.omar@email.com",
+    pekerjaan: "Pegawai Bank",
+    namaMajikan: "Bank Islam Malaysia Berhad",
+    tahapPendidikan: "Diploma",
+    institusiPendidikan: "Kolej Islam Sultan Alam Shah",
+    tarikhMulaPerkhidmatan: "20-06-2023",
+    tempohPerkhidmatan: "9 bulan",
+    jumlahSuratAmaran: "1",
+    statusTerakhir: "Dalam Pemerhatian"
   },
   {
     id: "KP004",
@@ -967,6 +1063,27 @@ const requests = ref([
     daerah: "Kedah",
     institusi: "Surau Al-Amin",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Bujang",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 12, Kampung Padi, Mukim Alor Setar, 05000 Alor Setar, Kedah",
+    negeri: "Kedah",
+    daerah: "Alor Setar",
+    bandar: "Alor Setar",
+    poskod: "05000",
+    noTelefon: "04-733 4567",
+    noTelefonBimbit: "015-678 9012",
+    emel: "siti.aminah@email.com",
+    pekerjaan: "Pegawai Pertanian",
+    namaMajikan: "Lembaga Pertubuhan Peladang",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Putra Malaysia",
+    tarikhMulaPerkhidmatan: "10-09-2023",
+    tempohPerkhidmatan: "7 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP005",
@@ -978,6 +1095,27 @@ const requests = ref([
     daerah: "Kelantan",
     institusi: "Kompleks Islam",
     status: "terminated",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 56, Jalan Kota Bharu, Taman Islam, 15000 Kota Bharu, Kelantan",
+    negeri: "Kelantan",
+    daerah: "Kota Bharu",
+    bandar: "Kota Bharu",
+    poskod: "15000",
+    noTelefon: "09-744 5678",
+    noTelefonBimbit: "016-789 0123",
+    emel: "zainal.ibrahim@email.com",
+    pekerjaan: "Peniaga",
+    namaMajikan: "Perusahaan Zainal Enterprise",
+    tahapPendidikan: "Pendidikan Menengah",
+    institusiPendidikan: "Sekolah Menengah Kebangsaan Kota Bharu",
+    tarikhMulaPerkhidmatan: "05-01-2023",
+    tempohPerkhidmatan: "1 tahun 3 bulan",
+    jumlahSuratAmaran: "3",
+    statusTerakhir: "Telah Ditamatkan"
   },
   {
     id: "KP006",
@@ -989,6 +1127,27 @@ const requests = ref([
     daerah: "Terengganu",
     institusi: "Masjid Al-Hidayah",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 89, Jalan Kuala Terengganu, Taman Islam, 20000 Kuala Terengganu, Terengganu",
+    negeri: "Terengganu",
+    daerah: "Kuala Terengganu",
+    bandar: "Kuala Terengganu",
+    poskod: "20000",
+    noTelefon: "09-622 6789",
+    noTelefonBimbit: "017-890 1234",
+    emel: "nurul.huda@email.com",
+    pekerjaan: "Pegawai Kesihatan",
+    namaMajikan: "Hospital Sultanah Nur Zahirah",
+    tahapPendidikan: "Ijazah Sarjana",
+    institusiPendidikan: "Universiti Sains Malaysia",
+    tarikhMulaPerkhidmatan: "15-03-2023",
+    tempohPerkhidmatan: "1 tahun 1 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP007",
@@ -1000,6 +1159,27 @@ const requests = ref([
     daerah: "Pahang",
     institusi: "Surau Al-Amin",
     status: "suspended",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Bercerai",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 34, Jalan Kuantan, Taman Islam, 25000 Kuantan, Pahang",
+    negeri: "Pahang",
+    daerah: "Kuantan",
+    bandar: "Kuantan",
+    poskod: "25000",
+    noTelefon: "09-516 7890",
+    noTelefonBimbit: "018-901 2345",
+    emel: "abdul.rahman@email.com",
+    pekerjaan: "Pegawai Perhutanan",
+    namaMajikan: "Jabatan Perhutanan Negeri Pahang",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Teknologi Mara",
+    tarikhMulaPerkhidmatan: "01-05-2023",
+    tempohPerkhidmatan: "11 bulan",
+    jumlahSuratAmaran: "2",
+    statusTerakhir: "Dalam Pemerhatian"
   },
   {
     id: "KP008",
@@ -1011,6 +1191,27 @@ const requests = ref([
     daerah: "Negeri Sembilan",
     institusi: "Kompleks Islam",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 67, Jalan Seremban, Taman Islam, 70000 Seremban, Negeri Sembilan",
+    negeri: "Negeri Sembilan",
+    daerah: "Seremban",
+    bandar: "Seremban",
+    poskod: "70000",
+    noTelefon: "06-762 8901",
+    noTelefonBimbit: "019-012 3456",
+    emel: "noraini.mohamed@email.com",
+    pekerjaan: "Guru",
+    namaMajikan: "Sekolah Rendah Kebangsaan Seremban",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Pendidikan Sultan Idris",
+    tarikhMulaPerkhidmatan: "20-07-2023",
+    tempohPerkhidmatan: "9 bulan",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
   {
     id: "KP009",
@@ -1022,6 +1223,27 @@ const requests = ref([
     daerah: "Melaka",
     institusi: "Masjid Al-Hidayah",
     status: "terminated",
+    // Enhanced profile data
+    jantina: "Lelaki",
+    statusPerkahwinan: "Janda/Duda",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 23, Jalan Melaka, Taman Islam, 75000 Melaka, Melaka",
+    negeri: "Melaka",
+    daerah: "Melaka Tengah",
+    bandar: "Bandaraya Melaka",
+    poskod: "75000",
+    noTelefon: "06-283 9012",
+    noTelefonBimbit: "011-123 4567",
+    emel: "ismail.yusof@email.com",
+    pekerjaan: "Pegawai Pelancongan",
+    namaMajikan: "Lembaga Pelancongan Melaka",
+    tahapPendidikan: "Diploma",
+    institusiPendidikan: "Kolej Komuniti Melaka",
+    tarikhMulaPerkhidmatan: "10-02-2023",
+    tempohPerkhidmatan: "1 tahun 2 bulan",
+    jumlahSuratAmaran: "3",
+    statusTerakhir: "Telah Ditamatkan"
   },
   {
     id: "KP010",
@@ -1033,6 +1255,27 @@ const requests = ref([
     daerah: "Johor",
     institusi: "Surau Al-Amin",
     status: "aktif",
+    // Enhanced profile data
+    jantina: "Perempuan",
+    statusPerkahwinan: "Bujang",
+    bangsa: "Melayu",
+    agama: "Islam",
+    alamat: "No. 90, Jalan Johor Bahru, Taman Islam, 80000 Johor Bahru, Johor",
+    negeri: "Johor",
+    daerah: "Johor Bahru",
+    bandar: "Johor Bahru",
+    poskod: "80000",
+    noTelefon: "07-224 0123",
+    noTelefonBimbit: "010-234 5678",
+    emel: "rohana.sulaiman@email.com",
+    pekerjaan: "Pegawai Undang-undang",
+    namaMajikan: "Jabatan Peguam Negara",
+    tahapPendidikan: "Ijazah Sarjana",
+    institusiPendidikan: "Universiti Teknologi Malaysia",
+    tarikhMulaPerkhidmatan: "05-04-2023",
+    tempohPerkhidmatan: "1 tahun",
+    jumlahSuratAmaran: "0",
+    statusTerakhir: "Aktif"
   },
 ]);
 
@@ -1134,6 +1377,9 @@ const getStatusVariant = (status) => {
     aktif: "success",
     terminated: "danger",
     suspended: "warning",
+    "Final Warning": "danger",
+    "Dalam Pemerhatian": "warning",
+    "Telah Ditamatkan": "danger",
   };
   return variants[status] || "disabled";
 };
@@ -1145,6 +1391,14 @@ const getStatusLabel = (status) => {
     suspended: "Dalam Pemerhatian",
   };
   return labels[status] || status;
+};
+
+const getWarningCountVariant = (count) => {
+  const countNum = parseInt(count) || 0;
+  if (countNum === 0) return "success";
+  if (countNum === 1) return "warning";
+  if (countNum === 2) return "danger";
+  return "danger"; // 3 or more
 };
 
 // Helper method for status dashboard
@@ -1192,7 +1446,47 @@ const exportData = () => {
 
 // PYB Institusi specific actions
 const terminateService = (request) => {
-  currentTerminateRequest.value = request;
+  // Populate with comprehensive mock data for presentation
+  currentTerminateRequest.value = {
+    // Basic request info
+    ...request,
+    
+    // Personal Information
+    nama: request.nama || "Ahmad bin Abdullah",
+    idPengenalan: request.idPengenalan || "901231012345",
+    jantina: "Lelaki",
+    statusPerkahwinan: "Berkahwin",
+    bangsa: "Melayu",
+    agama: "Islam",
+    
+    // Contact Information
+    alamat: "No. 123, Jalan Utama, Taman Seri Indah, 43000 Kajang, Selangor",
+    negeri: "Selangor",
+    daerah: "Hulu Langat",
+    bandar: "Kajang",
+    poskod: "43000",
+    noTelefon: "03-8736 1234",
+    noTelefonBimbit: "012-345 6789",
+    emel: "ahmad.abdullah@email.com",
+    
+    // Service Information
+    kategori: request.kategori || "Penolong Amil Kariah",
+    sesi: request.sesi || "2024/2025",
+    institusi: request.institusi || "Masjid Al-Hidayah",
+    
+    // Employment & Education
+    pekerjaan: "Pegawai Kerajaan",
+    namaMajikan: "Jabatan Agama Islam Selangor",
+    tahapPendidikan: "Ijazah Sarjana Muda",
+    institusiPendidikan: "Universiti Islam Antarabangsa Malaysia",
+    
+    // Additional context for termination
+    tarikhMulaPerkhidmatan: "15-01-2023",
+    tempohPerkhidmatan: "1 tahun 3 bulan",
+    jumlahSuratAmaran: "3",
+    statusTerakhir: "Final Warning"
+  };
+  
   terminateData.value = {
     reason: "",
     customReason: "",
@@ -1282,7 +1576,47 @@ const handleFileChange = (event) => {
 };
 
 const sendWarningLetter = (request) => {
-  currentWarningRequest.value = request;
+  // Populate with comprehensive mock data for presentation
+  currentWarningRequest.value = {
+    // Basic request info
+    ...request,
+    
+    // Personal Information
+    nama: request.nama || "Ahmad bin Abdullah",
+    idPengenalan: request.idPengenalan || "901231012345",
+    jantina: request.jantina || "Lelaki",
+    statusPerkahwinan: request.statusPerkahwinan || "Berkahwin",
+    bangsa: request.bangsa || "Melayu",
+    agama: request.agama || "Islam",
+    
+    // Contact Information
+    alamat: request.alamat || "No. 123, Jalan Utama, Taman Seri Indah, 43000 Kajang, Selangor",
+    negeri: request.negeri || "Selangor",
+    daerah: request.daerah || "Hulu Langat",
+    bandar: request.bandar || "Kajang",
+    poskod: request.poskod || "43000",
+    noTelefon: request.noTelefon || "03-8736 1234",
+    noTelefonBimbit: request.noTelefonBimbit || "012-345 6789",
+    emel: request.emel || "ahmad.abdullah@email.com",
+    
+    // Service Information
+    kategori: request.kategori || "Penolong Amil Kariah",
+    sesi: request.sesi || "2024/2025",
+    institusi: request.institusi || "Masjid Al-Hidayah",
+    
+    // Employment & Education
+    pekerjaan: request.pekerjaan || "Pegawai Kerajaan",
+    namaMajikan: request.namaMajikan || "Jabatan Agama Islam Selangor",
+    tahapPendidikan: request.tahapPendidikan || "Ijazah Sarjana Muda",
+    institusiPendidikan: request.institusiPendidikan || "Universiti Islam Antarabangsa Malaysia",
+    
+    // Additional context for warning letter
+    tarikhMulaPerkhidmatan: request.tarikhMulaPerkhidmatan || "15-01-2023",
+    tempohPerkhidmatan: request.tempohPerkhidmatan || "1 tahun 3 bulan",
+    jumlahSuratAmaran: request.jumlahSuratAmaran || "0",
+    statusTerakhir: request.statusTerakhir || "Aktif"
+  };
+  
   warningLetterData.value = {
     file: null,
     notes: "",
