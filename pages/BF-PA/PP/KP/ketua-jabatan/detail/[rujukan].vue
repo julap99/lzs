@@ -17,7 +17,6 @@
         </div>
         <div class="flex gap-2">
           <rs-button
-            variant="secondary-outline"
             @click="handleBack"
           >
             Kembali
@@ -262,7 +261,6 @@
     <div class="flex justify-end gap-4 mt-6">
       <rs-button
         type="button"
-        variant="secondary-outline"
         @click="handleBack"
         :disabled="isSubmitting"
       >
@@ -270,7 +268,6 @@
       </rs-button>
       <rs-button
         type="button"
-        variant="danger"
         @click="showRejectModal = true"
         :disabled="isSubmitting || !ketuaJabatanConfirmation.decision"
       >
@@ -279,7 +276,6 @@
       </rs-button>
       <rs-button
         type="button"
-        variant="primary"
         :disabled="isSubmitting || !ketuaJabatanConfirmation.decision"
         @click="showConfirmModal = true"
       >
@@ -316,13 +312,11 @@
         </div>
         <div class="flex justify-end gap-3">
           <rs-button
-            variant="secondary-outline"
             @click="showConfirmModal = false"
           >
             Batal
           </rs-button>
           <rs-button
-            variant="primary"
             @click="confirmApproval"
             :loading="isSubmitting"
           >
@@ -357,13 +351,11 @@
         </div>
         <div class="flex justify-end gap-3">
           <rs-button
-            variant="secondary-outline"
             @click="showRejectModal = false"
           >
             Batal
           </rs-button>
           <rs-button
-            variant="danger"
             @click="confirmReject"
             :loading="isSubmitting"
           >

@@ -95,16 +95,6 @@
               class="flex-1"
             />
             <FormKit
-              v-model="filters.status"
-              type="select"
-              :options="statusOptions"
-              placeholder="Status"
-              :classes="{
-                input: '!py-2',
-              }"
-              class="min-w-[200px]"
-            />
-            <FormKit
               v-model="filters.kategoriPenolongAmil"
               type="select"
               :options="kategoriOptions"
@@ -762,7 +752,6 @@ const toggleRoleInfo = () => {
 // Filters
 const filters = ref({
   searchQuery: "",
-  status: "",
   kategoriPenolongAmil: "",
 });
 
@@ -775,15 +764,7 @@ const showBulkApprovalModal = ref(false);
 const selectedItems = ref([]);
 const bulkApprovalNotes = ref("");
 
-// Filter options
-const statusOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Aktif", value: "Aktif" },
-  { label: "Tidak Aktif", value: "Tidak Aktif" },
-  { label: "Menunggu Pengesahan", value: "Menunggu Pengesahan" },
-  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
-  { label: "Ditolak Ketua Jabatan", value: "Ditolak Ketua Jabatan" },
-];
+
 
 const kategoriOptions = [
   { label: "Sila pilih...", value: "" },
@@ -1041,12 +1022,7 @@ const getTableDataByStatus = (statuses) => {
       );
     }
     
-    // Apply status filter
-    if (filters.value.status) {
-      result = result.filter(allowance => 
-        allowance.status === filters.value.status
-      );
-    }
+
     
     // Apply kategori filter
     if (filters.value.kategoriPenolongAmil) {
@@ -1148,7 +1124,7 @@ onMounted(() => {
 
 // Search functionality
 const performSearch = () => {
-  if (!filters.value.searchQuery && !filters.value.status && !filters.value.kategoriPenolongAmil) {
+  if (!filters.value.searchQuery && !filters.value.kategoriPenolongAmil) {
     toast.warning('Sila masukkan kriteria carian');
     return;
   }
@@ -1160,7 +1136,6 @@ const performSearch = () => {
 
 const clearSearch = () => {
   filters.value.searchQuery = "";
-  filters.value.status = "";
   filters.value.kategoriPenolongAmil = "";
   isSearchPerformed.value = false;
   refreshTable();

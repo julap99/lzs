@@ -22,7 +22,6 @@
         </div>
         <div class="flex gap-2">
           <rs-button
-            variant="secondary-outline"
             @click="navigateTo('/BF-PA/PP/KP')"
             class="flex items-center"
           >
@@ -31,7 +30,6 @@
           </rs-button>
           <rs-button
             v-if="serviceData.status === 'aktif'"
-            variant="danger"
             @click="showTerminateModal = true"
             class="flex items-center"
           >
@@ -39,7 +37,6 @@
             Tamatkan Perkhidmatan
           </rs-button>
           <rs-button
-            variant="warning"
             @click="showWarningModal = true"
             class="flex items-center"
           >
@@ -259,13 +256,11 @@
           </p>
           <div class="flex justify-center space-x-3">
             <rs-button
-              variant="secondary-outline"
               @click="showTerminateModal = false"
             >
               Batal
             </rs-button>
             <rs-button
-              variant="danger"
               @click="terminateService"
             >
               Tamatkan
@@ -286,13 +281,11 @@
           </p>
           <div class="flex justify-center space-x-3">
             <rs-button
-              variant="secondary-outline"
               @click="showWarningModal = false"
             >
               Batal
             </rs-button>
             <rs-button
-              variant="warning"
               @click="sendWarningLetter"
             >
               Hantar
