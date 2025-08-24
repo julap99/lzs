@@ -56,8 +56,6 @@
               type="text"
               name="appId2"
               label="ID Permohonan"
-              validation="required"
-              validation-label="ID Permohonan"
               placeholder="Cth: NAS-APP-2025-00123"
               v-model="form.appId2"
             />
