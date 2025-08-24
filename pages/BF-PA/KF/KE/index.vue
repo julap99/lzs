@@ -15,13 +15,13 @@
         </div>
         <div class="flex items-center space-x-3">
           <div>
-            <rs-select
+            <FormKit
+              type="select"
               v-model="currentRole"
               :options="roleOptions"
-              placeholder="Pilih Peranan"
-              class="min-w-[200px]"
-              :classes="{
-                input: '!py-2',
+              :classes="{ 
+                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
+                wrapper: '!min-w-0'
               }"
               @change="handleRoleChange"
             />
