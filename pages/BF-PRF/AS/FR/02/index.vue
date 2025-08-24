@@ -105,6 +105,12 @@
               </div>
             </div>
 
+            <FormKit
+              type="textarea"
+              name="catatan"
+              label="Catatan"
+              />
+
             <!-- File Upload Section -->
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
