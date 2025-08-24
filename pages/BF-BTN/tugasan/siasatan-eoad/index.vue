@@ -187,7 +187,7 @@
                         />
                         Maklumat Syor
                       </h4>
-                      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
                         <!-- Left Column - Syor -->
                         <div class="space-y-4">
                           <FormKit
@@ -317,7 +317,7 @@
                         />
                         Maklumat Disahkan
                       </h4>
-                      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
                         <!-- Left Column - Sah -->
                         <div class="space-y-4">
                           <FormKit
