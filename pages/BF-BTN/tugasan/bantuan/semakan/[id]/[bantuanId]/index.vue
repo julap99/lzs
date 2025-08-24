@@ -672,24 +672,24 @@ definePageMeta({
 
 const breadcrumb = ref([
   {
-    name: "Permohonan Bantuan",
+    name: "Tugasan",
     type: "link",
-    path: "/BF-BTN/permohonan/senarai-untuk-disemak",
+    path: "/BF-BTN/tugasan",
   },
   {
     name: "Senarai untuk Disemak",
     type: "link",
-    path: "/BF-BTN/permohonan/senarai-untuk-disemak",
+    path: "/BF-BTN/tugasan",
   },
   {
     name: "Semakan Permohonan",
-    type: "link",
-    path: `/BF-BTN/permohonan/senarai-untuk-disemak/${route.params.id}`,
+    type: "current",
+    path: `/BF-BTN/tugasan/bantuan/${route.params.id}`,
   },
   {
-    name: "Semakan Bantuan",
+    name: "Bantuan",
     type: "current",
-    path: `/BF-BTN/permohonan/senarai-untuk-disemak/${route.params.id}/bantuan/${route.params.bantuanId}`,
+    path: `/BF-BTN/tugasan/bantuan/${route.params.id}/${route.params.bantuanId}`,
   },
 ]);
 
@@ -905,12 +905,12 @@ const handleSimpan = () => {
 };
 
 const handleBatal = () => {
-  router.push(`/BF-BTN/permohonan/senarai-untuk-disemak/${route.params.id}`);
+  router.push(`/BF-BTN/tugasan/bantuan/semakan/${route.params.id}`);
 };
 
 const handleBackToList = () => {
   showSuccessModal.value = false;
-  router.push(`/BF-BTN/permohonan/senarai-untuk-disemak/${route.params.id}`);
+  router.push(`/BF-BTN/tugasan/bantuan/semakan/${route.params.id}`);
 };
 
 </script>

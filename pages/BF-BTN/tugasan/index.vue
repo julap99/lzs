@@ -200,8 +200,8 @@
                       Semakan
                     </h4>
                     <rs-table
-                      :data="filteredApplications"
-                      :columns="columns"
+                      :data="semakanData"
+                      :columns="semakanColumns"
                       :pageSize="pageSize"
                       :showNoColumn="true"
                       :options="{
@@ -705,6 +705,39 @@ const columns = [
   },
 ];
 
+const semakanColumns = [
+  {
+    key: "noRujukan",
+    label: "No Rujukan Permohonan",
+    sortable: true,
+  },
+  {
+    key: "namaPemohon",
+    label: "Nama Pemohon",
+    sortable: true,
+  },
+  {
+    key: "status",
+    label: "Status Permohonan",
+    sortable: true,
+  },
+  {
+    key: "tarikhTerima",
+    label: "Tarikh Terima Permohonan",
+    sortable: true,
+  },
+  {
+    key: "namaPegawai",
+    label: "Nama Pegawai",
+    sortable: true,
+  },
+  {
+    key: "tindakan",
+    label: "Aksi",
+    sortable: false,
+  },
+];
+
 // Table columns configuration for Siasatan tab
 const siasatanColumns = [
   {
@@ -791,6 +824,25 @@ const applications = ref([
   },
 ]);
 
+const semakanData = ref([
+  {
+    noRujukan: "NAS-2025-0001",
+    namaPemohon: "Ahmad bin Abdullah",
+    status: "Baru",
+    tarikhTerima: "2024-03-20",
+    namaPegawai: "Siti binti Ali",
+    tindakan: "bantuan/semakan/NAS-2025-0001",
+  },
+  {
+    noRujukan: "NAS-2025-0002",
+    namaPemohon: "Mohd bin Ismail",
+    status: "Dalam Semakan",
+    tarikhTerima: "2024-03-19",
+    namaPegawai: "Aminah binti Hassan",
+    tindakan: "bantuan/semakan/NAS-2025-0002",
+  },
+]);
+
 // Mock data for Siasatan tab - would be replaced with API call
 const siasatanData = ref([
   {
@@ -801,7 +853,7 @@ const siasatanData = ref([
     status: "Dalam Siasatan",
     statusLaluan: "Untuk Siasatan",
     noRujukan: "NAS-2025-0001",
-    tindakan: "siasatan-eoad",
+    tindakan: "bantuan/siasatan/NAS-2025-0001",
   },
   {
     pemohon: "Siti binti Hassan (850505-05-5678)",
@@ -811,7 +863,7 @@ const siasatanData = ref([
     status: "Selesai Siasatan",
     statusLaluan: "Untuk Kelulusan",
     noRujukan: "NAS-2025-0002",
-    tindakan: "siasatan-eoad",
+    tindakan: "bantuan/siasatan/NAS-2025-0002",
   },
 ]);
 
