@@ -37,7 +37,7 @@
           :pageSize="pageSize"
           :showNoColumn="true"
           :options="{ variant: 'default', hover: true, striped: true }"
-          :options-advanced="{ sortable: true, filterable: true }"
+          :options-advanced="{ sortable: true, filterable: false }"
           advanced
         >
           <template v-slot:noRujukan="{ text }">
