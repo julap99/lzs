@@ -202,5 +202,5 @@ const getStatusVariant = (status) => {
 };
 
 const viewOrganization = (id) => navigateTo(`/BF-PRF/OR/AP/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/03`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/06`);
 </script>
