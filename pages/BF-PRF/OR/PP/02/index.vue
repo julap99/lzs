@@ -4,25 +4,33 @@
 
     <rs-card class="p-6">
       <div class="mb-6">
-        <div class="flex items-center mb-4">
-          <div class="flex-1 h-2 bg-gray-200 rounded-full">
+        <!-- Progress indicator -->
+        <div class="mb-6">
+          <div class="flex justify-between mb-3">
             <div
-              class="h-2 bg-blue-600 rounded-full"
-              :style="{ width: `${(currentStep / totalSteps) * 100}%` }"
+              v-for="step in steps"
+              :key="step.id"
+              class="text-center flex-1 cursor-pointer px-2 py-1 rounded transition-all duration-200"
+              :class="{ 
+                'font-semibold text-primary': currentStep >= step.id,
+                'text-gray-600 hover:text-gray-800': currentStep < step.id
+              }"
+              @click="goToStep(step.id)"
+            >
+              <div class="text-xs sm:text-sm">{{ step.label }}</div>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              class="bg-primary h-2.5 rounded-full transition-all duration-300"
+              :style="`width: ${currentStep >= totalSteps ? 100 : (currentStep / totalSteps) * 100}%`"
             ></div>
           </div>
-          <span class="ml-4 text-sm font-medium"
-            >{{ currentStep }}/{{ totalSteps }}</span
-          >
         </div>
       </div>
 
       <!-- Step A: Maklumat Pendaftaran Organisasi -->
       <div v-if="currentStep === 1" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">
-          A) Maklumat Pendaftaran Organisasi
-        </h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -88,8 +96,6 @@
 
       <!-- Step B: Maklumat Alamat -->
       <div v-if="currentStep === 2" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">B) Maklumat Alamat</h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -99,25 +105,25 @@
           <FormKit
             type="text"
             name="addressLine1"
-            label="Alamat Baris 1"
+            label="Alamat 1"
             validation="required"
-            placeholder="Masukkan alamat baris 1"
+            placeholder="Masukkan alamat 1"
             v-model="formData.addressLine1"
           />
 
           <FormKit
             type="text"
             name="addressLine2"
-            label="Alamat Baris 2"
-            placeholder="Masukkan alamat baris 2"
+            label="Alamat 2"
+            placeholder="Masukkan alamat 2"
             v-model="formData.addressLine2"
           />
 
           <FormKit
             type="text"
             name="addressLine3"
-            label="Alamat Baris 3"
-            placeholder="Masukkan alamat baris 3"
+            label="Alamat 3"
+            placeholder="Masukkan alamat 3"
             v-model="formData.addressLine3"
           />
 
@@ -218,10 +224,6 @@
 
       <!-- Step C: Maklumat Kariah / Zon / Cawangan -->
       <div v-if="currentStep === 3" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">
-          C) Maklumat Kariah / Zon / Cawangan
-        </h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -265,10 +267,6 @@
 
       <!-- Step D: Maklumat Perhubungan -->
       <div v-if="currentStep === 4" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">
-          D) Maklumat Perhubungan
-        </h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -314,8 +312,6 @@
 
       <!-- Step E: Maklumat Bank -->
       <div v-if="currentStep === 5" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">E) Maklumat Bank</h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -463,10 +459,6 @@
 
       <!-- Step F: Maklumat Tambahan Masjid/Surau -->
       <div v-if="currentStep === 6" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">
-          F) Maklumat Tambahan Masjid/Surau
-        </h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -558,10 +550,6 @@
 
       <!-- Step G: Muat Naik Dokumen Sokongan -->
       <div v-if="currentStep === 7" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">
-          G) Muat Naik Dokumen Sokongan
-        </h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -712,7 +700,7 @@ const breadcrumb = ref([
   },
 ]);
 
-const totalSteps = 8;
+const totalSteps = 7;
 const currentStep = ref(1);
 const referenceNumber = ref(
   "NAS-ORG-" +
@@ -774,6 +762,26 @@ const formData = ref({
   bankProof: null,
   additionalDocuments: [],
 });
+
+const steps = computed(() => {
+  return [
+    { id: 1, label: "Pendaftaran" },
+    { id: 2, label: "Alamat" },
+    { id: 3, label: "Kariah/Zon" },
+    { id: 4, label: "Perhubungan" },
+    { id: 5, label: "Bank" },
+    { id: 6, label: "Tambahan" },
+    { id: 7, label: "Dokumen" },
+  ];
+});
+
+const goToStep = (stepId) => {
+  // Prevent navigation to completion screen (step 8)
+  if (stepId <= totalSteps) {
+    currentStep.value = stepId;
+    window.scrollTo(0, 0);
+  }
+};
 
 const tambahMaklumatBank = () => {
   formData.value.banks.push({

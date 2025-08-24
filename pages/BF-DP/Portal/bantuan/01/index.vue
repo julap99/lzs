@@ -192,7 +192,7 @@
 import { ref, computed } from 'vue';
 
 const breadcrumb = ref([
-  { name: 'Semak Status', type: 'link', path: '/status-tracking' },
+  { name: 'Semak Status', type: 'link', path: '/BF-DP/Portal/' },
   { name: 'Senarai Bantuan', type: 'link', path: '/BF-DP/Portal/bantuan' },
   { name: 'Status Tracking Bantuan', type: 'current', path: '/BF-DP/Portal/bantuan/detail' },
 ]);
