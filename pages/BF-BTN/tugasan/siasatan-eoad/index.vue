@@ -187,12 +187,13 @@
                         />
                         Maklumat Syor
                       </h4>
-                      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
                         <!-- Left Column - Syor -->
                         <div class="space-y-4">
                           <FormKit
                             type="number"
                             name="hadKifayahSyor"
+                            :value="50"
                             label="%Had Kifayah (Syor)"
                             placeholder="0"
                             :classes="{
@@ -317,7 +318,7 @@
                         />
                         Maklumat Disahkan
                       </h4>
-                      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
                         <!-- Left Column - Sah -->
                         <div class="space-y-4">
                           <FormKit

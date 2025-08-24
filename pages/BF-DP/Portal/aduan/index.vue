@@ -68,7 +68,7 @@
 
       <!-- Column: Status Semasa -->
       <template v-slot:statusSemasa="data">
-        <div class="flex">
+        <div class="flex justify-center">
           <rs-badge :variant="getStatusVariant(data.text)" size="sm">
             {{ data.text }}
           </rs-badge>
@@ -169,30 +169,15 @@ const aduanData = ref([
   },
 ]);
 
-const columns = computed(() => [
-  { key: 'idPermohonan', label: 'ID Permohonan' },
-  { key: 'namaPemohon', label: 'Nama Pemohon' },
-  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan' },
-  { key: 'jenisBantuan', label: 'Jenis Bantuan' },
-  { key: 'status', label: 'Status' },
-  { key: 'tarikhStatus', label: 'Tarikh Status' },
-  ...(userRole.value === 'internal' ? [{ key: 'aksi', label: 'Tindakan' }] : []),
-]);
-
 const getStatusVariant = (status: string) => {
-  switch (status) {
-    case "Menunggu Siasatan":
-    case "Disemak":
-      return "primary";
-    case "Lulus":
-    case "Diterima":
-      return "success";
-    case "Tidak Lulus":
-    case "Dibatalkan":
-      return "danger";
-    default:
-      return "default";
-  }
+  const variants = {
+    "Aduan Baru": "warning",
+    "Dalam Tindakan - Siasatan Ringkas": "primary",
+    "Dalam Tindakan - Siasatan Lapangan": "primary",
+    "Selesai": "success",
+    "Ditutup": "danger",
+  };
+  return variants[status] || "default";
 };
 
 const formatDate = (date: string | Date) => {
