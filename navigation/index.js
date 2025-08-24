@@ -934,7 +934,7 @@ export default [
         meta: {},
       },
       {
-        title: "Third Party",
+        title: "Recipient",
         icon: "iconamoon:component-fill",
         child: [
           {

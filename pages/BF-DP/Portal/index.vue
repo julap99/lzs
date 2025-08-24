@@ -3,14 +3,6 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <div class="mb-4 flex items-center space-x-4">
-      <label class="font-medium text-gray-700">Pilih Role:</label>
-      <select v-model="selectedRole" class="border rounded p-1">
-        <option value="asnaf">Asnaf</option>
-        <option value="internal">Internal Staff</option>
-      </select>
-    </div>
-
     <!-- Section 1: Penerangan Ringkas -->
     <rs-card>
       <template #header>Semak Status Permohonan</template>
@@ -41,7 +33,6 @@
 
             <!-- ID Permohonan -->
             <FormKit
-              v-if="!canChooseType"
               type="text"
               name="appId"
               label="ID Permohonan"
@@ -50,18 +41,9 @@
               placeholder="Cth: NAS-APP-2025-00123"
               v-model="form.appId"
             />
-            <!-- #FIXME ID Permohonan (temp fix) -->
-            <FormKit
-              v-if="canChooseType"
-              type="text"
-              name="appId2"
-              label="ID Permohonan"
-              placeholder="Cth: NAS-APP-2025-00123"
-              v-model="form.appId2"
-            />
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" v-if="canChooseType">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <!-- Status Type -->
             <FormKit
               type="select"
@@ -143,46 +125,14 @@
     clickCount.value = 0;
     };
 
-    const idMapping: Record<string, string> = {
-      "NAS-PRF-2025-0001": "profile",
-      "NAS-BTN-2025-0001": "bantuan",
-      "ADN-250823-000123": "aduan",
-    };
-
-    const selectedRole = ref("asnaf"); // default role
-    const canChooseType = computed(() => selectedRole.value === "internal");
-
     const submitForm = () => {
-  if (canChooseType.value) {
-    const type = form.value.statusType;
+      const type = form.value.statusType;
       if (["aduan", "bantuan", "profile"].includes(type)) {
         navigateTo(`/BF-DP/Portal/${type}`);
       } else {
-        errorMessage.value = "Jenis status tidak sah.";
+        errorMessage.value = "Sila pilih salah satu jenis status.";
       }
-  } else {
-    // Use ID mapping for roles that cannot choose type (e.g., asnaf)
-    const refId = idMapping[form.value.appId];
-    if (!refId) {
-      errorMessage.value = "ID Permohonan tidak sah.";
-      return;
-    }
-
-    switch (refId) {
-      case "aduan":
-        navigateTo(`/BF-DP/Portal/aduan/01`);
-        break;
-      case "bantuan":
-        navigateTo(`/BF-DP/Portal/bantuan/01`);
-        break;
-      case "profile":
-        navigateTo(`/BF-DP/Portal/profile/01`);
-        break;
-      default:
-        errorMessage.value = "Jenis status tidak sah.";
-    }
-  }
-};
+    };
 
 </script>
 <style lang="scss" scoped>
