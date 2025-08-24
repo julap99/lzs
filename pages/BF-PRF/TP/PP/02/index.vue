@@ -20,7 +20,7 @@
       <!-- Step A: Maklumat Pendaftaran Organisasi -->
       <div v-if="currentStep === 1" class="space-y-6">
         <h2 class="text-xl font-semibold border-b pb-2">
-          A) Maklumat Pendaftaran Third Party
+          A) Maklumat Pendaftaran Recipient
         </h2>
 
         <FormKit
@@ -575,7 +575,7 @@ const router = useRouter();
 
 const breadcrumb = ref([
   {
-    name: "Third Party",
+    name: "Recipient",
     type: "link",
     path: "/BF-PRF/TP/PP/01",
   },

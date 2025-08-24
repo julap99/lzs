@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Pengesahan Third Party</h2>
+          <h2 class="text-xl font-semibold">Senarai Pengesahan Recipient</h2>
         </div>
       </template>
 
@@ -16,7 +16,7 @@
               <FormKit
                 v-model="searchQuery"
                 type="text"
-                placeholder="Cari No Rujukan, Nama Third Party, atau Emel..."
+                placeholder="Cari No Rujukan, Nama Recipient, atau Emel..."
                 :classes="{ input: '!py-2' }"
               />
             </div>
@@ -106,16 +106,16 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-definePageMeta({ title: 'Senarai Pengesahan Third Party' });
+definePageMeta({ title: 'Senarai Pengesahan Recipient' });
 
 const breadcrumb = ref([
   { name: 'Pengesahan', type: 'link', path: '/BF-PRF/TP/AP/01' },
-  { name: 'Senarai Third Party', type: 'current', path: '/BF-PRF/TP/AP/01' },
+  { name: 'Senarai Recipient', type: 'current', path: '/BF-PRF/TP/AP/01' },
 ]);
 
 const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
-  { key: 'namaOrganisasi', label: 'Nama Third Party', sortable: true },
+  { key: 'namaOrganisasi', label: 'Nama Recipient', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'jenisOrganisasi', label: 'Kategori', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
