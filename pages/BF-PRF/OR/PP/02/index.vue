@@ -292,6 +292,15 @@
             />
 
             <FormKit
+              type="text"
+              :name="`representativeIc${index}`"
+              label="ID Pengenalan"
+              validation="required|length:12"
+              placeholder="Contoh: 880101012222"
+              v-model="representative.ic"
+            />
+
+            <FormKit
               type="tel"
               :name="`phoneNumber${index}`"
               label="No Telefon (Pejabat / HP)"
@@ -347,73 +356,53 @@
           @submit="nextStep"
           #default="{ value }"
         >
-           <div
-              v-for="(bank, index) in formData.banks"
-              :key="index"
-              class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50"
-            >
-              <h3 class="font-semibold text-sm text-gray-700">
-                Maklumat Bank {{ index + 1 }}
-              </h3>
+          <div class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50">
+            <h3 class="font-semibold text-sm text-gray-700">
+              Maklumat Bank
+            </h3>
 
-              <FormKit
-                type="select"
-                label="Nama Bank"
-                placeholder="Pilih bank"
-                validation="required"
-                :options="[
-                  'Maybank',
-                  'CIMB Bank',
-                  'Public Bank',
-                  'RHB Bank',
-                  'Hong Leong Bank',
-                  'AmBank',
-                  'Bank Islam',
-                  'Bank Rakyat',
-                  'Bank Muamalat',
-                  'OCBC Bank',
-                  'HSBC Bank',
-                  'Standard Chartered Bank',
-                  'Citibank',
-                  'UOB Bank'
-                ]"
-                v-model="bank.bankName"
-              />
+            <FormKit
+              type="select"
+              name="bankName"
+              label="Nama Bank"
+              placeholder="Pilih bank"
+              validation="required"
+              :options="[
+                'Maybank',
+                'CIMB Bank',
+                'Public Bank',
+                'RHB Bank',
+                'Hong Leong Bank',
+                'AmBank',
+                'Bank Islam',
+                'Bank Rakyat',
+                'Bank Muamalat',
+                'OCBC Bank',
+                'HSBC Bank',
+                'Standard Chartered Bank',
+                'Citibank',
+                'UOB Bank'
+              ]"
+              v-model="formData.bankName"
+            />
 
-              <FormKit
-                type="text"
-                label="Nombor Akaun Bank"
-                validation="required"
-                placeholder="Masukkan nombor akaun bank"
-                v-model="bank.bankAccountNumber"
-              />
+            <FormKit
+              type="text"
+              name="bankAccountNumber"
+              label="Nombor Akaun Bank"
+              validation="required"
+              placeholder="Masukkan nombor akaun bank"
+              v-model="formData.bankAccountNumber"
+            />
 
-              <FormKit
-                type="text"
-                label="Penama Akaun Bank"
-                placeholder=""
-                v-model="bank.penamaBank"
-              />
-
-              <div class="flex justify-end">
-                <rs-button
-                  v-if="formData.banks.length > 1"
-                  variant="danger-outline"
-                  size="sm"
-                  @click.prevent="removeBank(index)"
-                >
-                  Buang Maklumat Ini
-                </rs-button>
-              </div>
-            </div>
-
-            <rs-button
-              variant="primary-outline"
-              size="sm"
-              @click.prevent="tambahMaklumatBank"
-            >
-              + Tambah Maklumat Bank
-            </rs-button>
+            <FormKit
+              type="text"
+              name="penamaBank"
+              label="Penama Akaun Bank"
+              placeholder="Masukkan penama akaun bank"
+              v-model="formData.penamaBank"
+            />
+          </div>
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -610,23 +599,14 @@ const formData = ref({
 
   // Step 4: Maklumat Perhubungan
   representatives: [
-    { name: "", phoneNumber: "", email: "" },
+    { name: "", ic: "", phoneNumber: "", email: "" },
   ],
 
   // Step 5: Maklumat Bank
-  banks: [
-    {
-      bankName: '',
-      bankAccountNumber: '',
-      penamaBank: '',
-      paymentMethod: '',
-    },
-  ],
-
-  /* bankName: "",
+  bankName: "",
   bankAccountNumber: "",
-  swiftCode: "",
-  paymentMethod: "", */
+  penamaBank: "",
+  paymentMethod: "",
 
   // Step 6: Muat Naik Dokumen Sokongan
   registrationCertificate: null,
@@ -655,24 +635,11 @@ const goToStep = (stepId) => {
 };
 
 const tambahMaklumatWakil = () => {
-  formData.value.representatives.push({ name: "", phoneNumber: "", email: "" });
+  formData.value.representatives.push({ name: "", ic: "", phoneNumber: "", email: "" });
 };
 
 const removeRepresentative = (index) => {
   formData.value.representatives.splice(index, 1);
-};
-
-const tambahMaklumatBank = () => {
-  formData.value.banks.push({
-    bankName: '',
-    bankAccountNumber: '',
-    swiftCode: '',
-    paymentMethod: '',
-  });
-};
-
-const removeBank = (index) => {
-  formData.value.banks.splice(index, 1);
 };
 
 const nextStep = () => {
