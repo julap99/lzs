@@ -13,6 +13,7 @@
 
         <!-- Section 2: Form dgn FormKit -->
         <FormKit
+          ref="formRef"
           type="form"
           submit-label="Semak Status"
           :actions="false"
@@ -42,7 +43,27 @@
             />
           </div>
 
-          <!-- Section 3: Action Button -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <!-- Status Type -->
+            <FormKit
+              type="select"
+              name="statusType"
+              label="Jenis Status"
+              placeholder="Pilih Jenis Status"
+              v-model="form.statusType"
+            >
+              <option value="aduan">Aduan</option>
+              <option value="bantuan">Bantuan</option>
+              <option value="profile">Profile</option>
+            </FormKit>
+          </div>
+
+          <!-- Error Message -->
+          <div v-if="errorMessage" class="mt-4 text-red-600 font-medium">
+            {{ errorMessage }}
+          </div>
+        </FormKit>
+        <!-- Section 3: Action Button -->
           <div class="flex space-x-2">
             <rs-button
               variant="primary"
@@ -51,16 +72,10 @@
             >
               Semak Status
             </rs-button>
-            <rs-button variant="secondary" @click="handleReset">
+            <rs-button variant="secondary" type="button" @click="handleReset">
               Reset
             </rs-button>
           </div>
-
-          <!-- Error Message -->
-          <div v-if="errorMessage" class="mt-4 text-red-600 font-medium">
-            {{ errorMessage }}
-          </div>
-        </FormKit>
       </template>
     </rs-card>
   </div>
@@ -80,7 +95,7 @@
     {
         name: "Semak Status",
         type: "current",
-        path: "/status-tracking",
+        path: "/BF-DP/Portal/",
     },
     ]);
 
@@ -88,6 +103,8 @@
     const form = ref({
     idNo: "",
     appId: "",
+    appId2: "",
+    statusType: "",
     });
 
     // Loading State
@@ -99,32 +116,24 @@
     // Counter utk simulate click behavior
     const clickCount = ref(0);
 
-    // Programmatic submit (trigger FormKit form submit)
-    const submitForm = () => {
-    clickCount.value++;
-
-    // Simulate 1st click → profile
-    if (clickCount.value === 1) {
-        router.push("/BF-DP/Portal/profile");
-    }
-    // Simulate 2nd click → bantuan
-    else if (clickCount.value === 2) {
-        router.push("/BF-DP/Portal/bantuan");
-    }
-    // Optional → kalau click 3rd time → reset balik ke 1
-    else {
-        clickCount.value = 0;
-        errorMessage.value = "Simulasi reset: sila klik Semak Status sekali lagi.";
-    }
-    };
-
     // Handle Reset
     const handleReset = () => {
     form.value.idNo = "";
     form.value.appId = "";
+    form.value.appId2 = "";
     errorMessage.value = "";
     clickCount.value = 0;
     };
+
+    const submitForm = () => {
+      const type = form.value.statusType;
+      if (["aduan", "bantuan", "profile"].includes(type)) {
+        navigateTo(`/BF-DP/Portal/${type}`);
+      } else {
+        errorMessage.value = "Sila pilih salah satu jenis status.";
+      }
+    };
+
 </script>
 <style lang="scss" scoped>
 // Optional custom styles

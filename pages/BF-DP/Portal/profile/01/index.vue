@@ -169,7 +169,7 @@ const breadcrumb = ref([
   {
     name: "Semak Status",
     type: "link",
-    path: "/status-tracking",
+    path: "/BF-DP/Portal/",
   },
   {
     name: "Senarai Status Pendaftaran Profil",

@@ -2,306 +2,806 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <div class="flex items-center justify-between mt-6 mb-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-800">Pengesahan Pendaftaran Organisasi</h1>
-        <p class="text-sm text-gray-500">No. Rujukan: ORG{{ applicationData.refNumber }}</p>
+    <rs-card class="p-6">
+      <div class="mb-6">
+        <!-- Progress indicator -->
+        <div class="mb-6">
+          <div class="flex justify-between mb-3">
+            <div
+              v-for="step in steps"
+              :key="step.id"
+              class="text-center flex-1 cursor-pointer px-2 py-1 rounded transition-all duration-200"
+              :class="{ 
+                'font-semibold text-primary': currentStep >= step.id,
+                'text-gray-600 hover:text-gray-800': currentStep < step.id
+              }"
+              @click="goToStep(step.id)"
+            >
+              <div class="text-xs sm:text-sm">{{ step.label }}</div>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              class="bg-primary h-2.5 rounded-full transition-all duration-300"
+              :style="`width: ${currentStep >= totalSteps ? 100 : (currentStep / totalSteps) * 100}%`"
+            ></div>
+          </div>
+        </div>
       </div>
-      <rs-badge :variant="getStatusBadgeVariant()">{{ applicationData.status }}</rs-badge>
-    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left Content -->
-      <div class="lg:col-span-2 space-y-6">
-        <!-- Maklumat Permohonan -->
-        <rs-card>
-          <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:note" class="w-6 h-6 text-yellow-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Permohonan</h2>
-                <p class="text-sm text-gray-500">Tarikh & jenis organisasi</p>
-              </div>
-            </div>
-          </template>
-          <template #body>
-            <div class="space-y-4">
-              <FormKit type="text" label="Tarikh Permohonan" :value="applicationData.applicationDate" disabled />
-              <FormKit type="text" label="Jenis Organisasi" :value="applicationData.organizationType" disabled />
-            </div>
-          </template>
-        </rs-card>
+      <!-- Step A: Maklumat Pendaftaran Organisasi -->
+      <div v-if="currentStep === 1" class="space-y-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="nextStep"
+          #default="{ value }"
+        >
+          <FormKit
+            type="text"
+            name="organizationName"
+            label="Nama Organisasi"
+            validation="required"
+            placeholder="Masukkan nama organisasi"
+            v-model="formData.organizationName"
+          />
 
-        <!-- Maklumat Organisasi -->
-        <rs-card>
-          <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:buildings" class="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Organisasi</h2>
-              </div>
-            </div>
-          </template>
-          <template #body>
-            <div class="space-y-4">
-              <FormKit type="text" label="Nama Organisasi" :value="applicationData.organizationName" disabled />
-              <FormKit type="text" label="No. Pendaftaran" :value="applicationData.registrationNumber" disabled />
-              <FormKit type="text" label="Email" :value="applicationData.email" disabled />
-            </div>
-          </template>
-        </rs-card>
+          <FormKit
+            type="text"
+            name="registrationNumber"
+            label="Nombor Pendaftaran Organisasi (SSM/ROS)"
+            validation="required"
+            placeholder="Contoh: 123456-A"
+            v-model="formData.registrationNumber"
+          />
 
-        <!-- Alamat -->
-        <rs-card>
-          <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:map-pin" class="w-6 h-6 text-pink-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Alamat</h2>
-              </div>
-            </div>
-          </template>
-          <template #body>
-            <div class="space-y-4">
-              <FormKit type="text" label="Alamat" :value="applicationData.address" disabled />
-              <FormKit type="text" label="Bandar / Poskod" :value="`${applicationData.city} - ${applicationData.postcode}`" disabled />
-              <FormKit type="text" label="Negeri" :value="applicationData.state" disabled />
-            </div>
-          </template>
-        </rs-card>
+          <FormKit
+            type="select"
+            name="organizationType"
+            label="Jenis Organisasi"
+            validation="required"
+            placeholder="Pilih jenis organisasi"
+            :options="[
+              { label: 'NGO', value: 'ngo' },
+              { label: 'Masjid', value: 'masjid' },
+              { label: 'Syarikat', value: 'syarikat' },
+              { label: 'IPT', value: 'ipt' },
+              { label: 'Lain-lain', value: 'others' },
+            ]"
+            v-model="formData.organizationType"
+          />
 
-        <!-- Maklumat Pegawai Dihubungi -->
-        <rs-card>
-          <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:phone" class="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Pegawai Dihubungi</h2>
-              </div>
-            </div>
-          </template>
-          <template #body>
-            <div class="space-y-4">
-              <FormKit type="text" label="Nama Pegawai" :value="applicationData.contactPerson" disabled />
-              <FormKit type="text" label="Telefon" :value="applicationData.contactPhone" disabled />
-              <FormKit type="text" label="Email" :value="applicationData.contactEmail" disabled />
-            </div>
-          </template>
-        </rs-card>
+          <FormKit
+            v-if="formData.organizationType === 'others'"
+            type="text"
+            name="otherOrganizationType"
+            label="Sila Nyatakan"
+            validation="required"
+            placeholder="Nyatakan jenis organisasi"
+            v-model="formData.otherOrganizationType"
+          />
 
-        <!-- Dokumen Sokongan -->
-        <rs-card>
-          <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:file-text" class="w-6 h-6 text-indigo-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Dokumen Sokongan</h2>
-              </div>
-            </div>
-          </template>
-          <template #body>
-            <ul class="divide-y divide-gray-200">
-              <li v-for="(doc, index) in applicationData.documents" :key="index" class="py-4 flex items-center justify-between">
-                <div class="flex items-center">
-                  <Icon name="mdi:file-document-outline" class="text-blue-600 mr-3" size="1.25rem" />
-                  <div>
-                    <p class="font-medium text-gray-900">{{ doc.name }}</p>
-                    <p class="text-sm text-gray-500">{{ doc.size }}</p>
-                  </div>
-                </div>
-                <rs-button variant="secondary-outline" size="sm">
-                  <Icon name="mdi:download" size="1rem" class="mr-1" /> Muat Turun
+          <div class="flex justify-end mt-6">
+            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+          </div>
+        </FormKit>
+      </div>
+
+      <!-- Step B: Maklumat Alamat -->
+      <div v-if="currentStep === 2" class="space-y-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="nextStep"
+          #default="{ value }"
+        >
+          <FormKit
+            type="text"
+            name="addressLine1"
+            label="Alamat 1"
+            validation="required"
+            placeholder="Masukkan alamat 1"
+            v-model="formData.addressLine1"
+          />
+
+          <FormKit
+            type="text"
+            name="addressLine2"
+            label="Alamat 2"
+            placeholder="Masukkan alamat 2"
+            v-model="formData.addressLine2"
+          />
+
+          <FormKit
+            type="text"
+            name="addressLine3"
+            label="Alamat 3"
+            placeholder="Masukkan alamat 3"
+            v-model="formData.addressLine3"
+          />
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="postcode"
+              label="Poskod"
+              validation="required|number|length:5"
+              placeholder="Contoh: 43650"
+              v-model="formData.postcode"
+            />
+
+            <FormKit
+              type="text"
+              name="city"
+              label="Bandar"
+              validation="required"
+              placeholder="Contoh: Bangi"
+              v-model="formData.city"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="district"
+              label="Daerah"
+              validation="required"
+              placeholder="Contoh: Hulu Langat"
+              v-model="formData.district"
+            />
+
+            <FormKit
+              type="select"
+              name="state"
+              label="Negeri"
+              validation="required"
+              placeholder="Pilih negeri"
+              :options="[
+                'Johor',
+                'Kedah',
+                'Kelantan',
+                'Melaka',
+                'Negeri Sembilan',
+                'Pahang',
+                'Perak',
+                'Perlis',
+                'Pulau Pinang',
+                'Sabah',
+                'Sarawak',
+                'Selangor',
+                'Terengganu',
+                'Wilayah Persekutuan Kuala Lumpur',
+                'Wilayah Persekutuan Labuan',
+                'Wilayah Persekutuan Putrajaya',
+              ]"
+              v-model="formData.state"
+            />
+          </div>
+
+          <FormKit
+            type="select"
+            name="country"
+            label="Negara"
+            validation="required"
+            placeholder="Pilih negara"
+            :options="[
+              'Malaysia',
+              'Singapura',
+              'Brunei',
+              'Indonesia',
+              'Thailand',
+            ]"
+            v-model="formData.country"
+          />
+
+          <div class="flex justify-between mt-6">
+            <rs-button variant="primary-outline" @click="prevStep">
+              Kembali
+            </rs-button>
+
+            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+          </div>
+        </FormKit>
+      </div>
+
+      <!-- Step C: Maklumat Kariah / Zon / Cawangan -->
+      <div v-if="currentStep === 3" class="space-y-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="nextStep"
+          #default="{ value }"
+        >
+          <FormKit
+            type="text"
+            name="kariah"
+            label="Kariah"
+            validation="required"
+            placeholder="Contoh: MASJID PEKAN BANGI"
+            v-model="formData.kariah"
+          />
+
+          <FormKit
+            type="text"
+            name="branch"
+            label="Branch / Cawangan"
+            placeholder="Masukkan cawangan"
+            v-model="formData.branch"
+          />
+
+          <FormKit
+            type="text"
+            name="zone"
+            label="Kawasan / Zon (jika berkaitan)"
+            placeholder="Masukkan kawasan/zon"
+            v-model="formData.zone"
+          />
+
+          <div class="flex justify-between mt-6">
+            <rs-button variant="primary-outline" @click="prevStep">
+              Kembali
+            </rs-button>
+
+            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+          </div>
+        </FormKit>
+      </div>
+
+      <!-- Step D: Maklumat Perhubungan -->
+      <div v-if="currentStep === 4" class="space-y-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="nextStep"
+          #default="{ value }"
+        >
+          <FormKit
+            type="text"
+            name="representativeName"
+            label="Nama Wakil / Pegawai Utama"
+            validation="required"
+            placeholder="Masukkan nama wakil"
+            v-model="formData.representativeName"
+          />
+
+          <FormKit
+            type="tel"
+            name="phoneNumber"
+            label="No Telefon (Pejabat / HP)"
+            validation="required"
+            placeholder="Contoh: 012-3456789"
+            v-model="formData.phoneNumber"
+          />
+
+          <FormKit
+            type="email"
+            name="email"
+            label="Emel (jika ada)"
+            validation="email"
+            placeholder="Contoh: nama@domain.com"
+            v-model="formData.email"
+          />
+
+          <div class="flex justify-between mt-6">
+            <rs-button variant="primary-outline" @click="prevStep">
+              Kembali
+            </rs-button>
+
+            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+          </div>
+        </FormKit>
+      </div>
+
+      <!-- Step E: Maklumat Bank -->
+      <div v-if="currentStep === 5" class="space-y-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="nextStep"
+          #default="{ value }"
+        >
+           <div
+              v-for="(bank, index) in formData.banks"
+              :key="index"
+              class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50"
+            >
+              <h3 class="font-semibold text-sm text-gray-700">
+                Maklumat Bank {{ index + 1 }}
+              </h3>
+
+              <FormKit
+                type="select"
+                label="Nama Bank"
+                placeholder="Pilih bank"
+                validation="required"
+                :options="[
+                  'Maybank',
+                  'CIMB Bank',
+                  'Public Bank',
+                  'RHB Bank',
+                  'Hong Leong Bank',
+                  'AmBank',
+                  'Bank Islam',
+                  'Bank Rakyat',
+                  'Bank Muamalat',
+                  'OCBC Bank',
+                  'HSBC Bank',
+                  'Standard Chartered Bank',
+                  'Citibank',
+                  'UOB Bank'
+                ]"
+                v-model="bank.bankName"
+              />
+
+              <FormKit
+                type="text"
+                label="Nombor Akaun Bank"
+                validation="required"
+                placeholder="Masukkan nombor akaun bank"
+                v-model="bank.bankAccountNumber"
+              />
+
+              <FormKit
+                type="text"
+                label="Penama Akaun Bank"
+                placeholder=""
+                v-model="bank.penamaBank"
+              />
+
+              <div class="flex justify-end">
+                <rs-button
+                  v-if="formData.banks.length > 1"
+                  variant="danger-outline"
+                  size="sm"
+                  @click.prevent="removeBank(index)"
+                >
+                  Buang Maklumat Ini
                 </rs-button>
-              </li>
+              </div>
+            </div>
+
+            <rs-button
+              variant="primary-outline"
+              size="sm"
+              @click.prevent="tambahMaklumatBank"
+            >
+              + Tambah Maklumat Bank
+            </rs-button>
+
+          <div class="flex justify-between mt-6">
+            <rs-button variant="primary-outline" @click="prevStep">
+              Kembali
+            </rs-button>
+
+            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+          </div>
+        </FormKit>
+      </div>
+
+      <!-- Step F: Maklumat Tambahan Masjid/Surau -->
+      <div v-if="currentStep === 6" class="space-y-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="nextStep"
+          #default="{ value }"
+        >
+          <h3 class="font-medium mb-2">Senarai Penolong Amil (PAK)</h3>
+
+          <div
+            v-for="(pak, index) in formData.pakList"
+            :key="index"
+            class="bg-gray-50 p-4 rounded-md mb-4"
+          >
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-medium">Penolong Amil #{{ index + 1 }}</h4>
+              <FormKit
+                v-if="index > 0"
+                type="button"
+                label="Buang"
+                @click="removePak(index)"
+                input-class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-sm"
+              />
+            </div>
+
+            <div class="space-y-4">
+              <FormKit
+                type="text"
+                :name="`pakName${index}`"
+                label="Nama Penuh"
+                validation="required"
+                placeholder="Masukkan nama penuh"
+                v-model="pak.name"
+              />
+
+              <FormKit
+                type="text"
+                :name="`pakIc${index}`"
+                label="No. Kad Pengenalan"
+                validation="required|length:12"
+                placeholder="Contoh: 880101012222"
+                v-model="pak.ic"
+              />
+
+              <FormKit
+                type="select"
+                :name="`pakType${index}`"
+                label="Jenis PAK"
+                validation="required"
+                placeholder="Pilih jenis PAK"
+                :options="['Kariah', 'Komuniti', 'IPTA']"
+                v-model="pak.type"
+              />
+            </div>
+          </div>
+
+          <FormKit
+            type="button"
+            label="Tambah Penolong Amil"
+            @click="addNewPak"
+            input-class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md mb-6"
+          />
+
+          <FormKit
+            type="text"
+            name="mosqueCode"
+            label="Kod Masjid/Kariah"
+            placeholder="Contoh: C15"
+            v-model="formData.mosqueCode"
+          />
+
+          <FormKit
+            type="select"
+            name="responsibleOfficer"
+            label="Pegawai Bertanggungjawab"
+            placeholder="Pilih pegawai"
+            :options="['EO', 'ESH', 'EZAD', 'EZKP']"
+            v-model="formData.responsibleOfficer"
+          />
+
+          <div class="flex justify-between mt-6">
+            <rs-button variant="primary-outline" @click="prevStep">
+              Kembali
+            </rs-button>
+
+            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+          </div>
+        </FormKit>
+      </div>
+
+      <!-- Step G: Muat Naik Dokumen Sokongan -->
+      <div v-if="currentStep === 7" class="space-y-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="submitForm"
+          #default="{ value }"
+        >
+          <div class="bg-yellow-50 text-yellow-800 p-4 rounded-md mb-4">
+            <p class="font-medium">Sila muat naik dokumen berikut:</p>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Sijil Pendaftaran SSM / ROS</li>
+              <li>Surat Lantikan / Sokongan</li>
+              <li>Bukti pemilikan akaun bank</li>
             </ul>
-          </template>
-        </rs-card>
+            <p class="mt-2">Format yang dibenarkan: PDF / JPG / PNG</p>
+          </div>
+
+          <FormKit
+            type="file"
+            name="registrationCertificate"
+            label="Sijil Pendaftaran SSM / ROS"
+            validation="required"
+            accept=".pdf,.jpg,.jpeg,.png"
+            help="Muat naik sijil pendaftaran organisasi anda"
+            v-model="formData.registrationCertificate"
+          />
+
+          <FormKit
+            type="file"
+            name="appointmentLetter"
+            label="Surat Lantikan / Sokongan"
+            validation="required"
+            accept=".pdf,.jpg,.jpeg,.png"
+            help="Muat naik surat lantikan rasmi"
+            v-model="formData.appointmentLetter"
+          />
+
+          <FormKit
+            type="file"
+            name="bankProof"
+            label="Bukti Pemilikan Akaun Bank"
+            validation="required"
+            accept=".pdf,.jpg,.jpeg,.png"
+            help="Muat naik bukti pemilikan akaun bank seperti penyata bank"
+            v-model="formData.bankProof"
+          />
+
+          <FormKit
+            type="file"
+            name="additionalDocuments"
+            label="Dokumen Tambahan (jika ada)"
+            accept=".pdf,.jpg,.jpeg,.png"
+            multiple="true"
+            help="Muat naik dokumen tambahan yang berkaitan"
+            v-model="formData.additionalDocuments"
+          />
+
+          <div class="flex justify-between mt-6">
+            <rs-button variant="primary-outline" @click="prevStep">
+              Kembali
+            </rs-button>
+
+            <rs-button type="submit" @click="submitForm">
+              Hantar Kemaskini
+            </rs-button>
+          </div>
+        </FormKit>
       </div>
 
-      <!-- Sidebar Pengesahan -->
-      <div class="lg:col-span-1 space-y-6">
-        <rs-card class="sticky top-6">
-          <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:check-circle" class="w-6 h-6 text-purple-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Keputusan Pengesahan</h2>
-              </div>
-            </div>
-          </template>
-          <template #body>
-            <FormKit type="form" :actions="false" @submit="handleApprovalSubmit">
-              <div class="grid grid-cols-1 gap-6">
-                <FormKit
-                  type="radio"
-                  name="approvalStatus"
-                  label="Status Pengesahan"
-                  validation="required"
-                  :options="[
-                    { label: 'Lulus', value: 'approved' },
-                    { label: 'Tidak Lulus', value: 'rejected' }
-                  ]"
-                  v-model="approvalData.status"
-                  :validation-messages="{ required: 'Status pengesahan adalah wajib' }"
-                />
-
-                <FormKit
-                  v-if="approvalData.status === 'rejected'"
-                  type="textarea"
-                  name="justification"
-                  label="Justifikasi Penolakan"
-                  validation="required"
-                  placeholder="Sila nyatakan sebab penolakan permohonan ini"
-                  help="Sila berikan alasan terperinci tentang sebab permohonan ini ditolak"
-                  v-model="approvalData.justification"
-                  :validation-messages="{ required: 'Justifikasi diperlukan untuk penolakan' }"
-                />
-              </div>
-
-              <div class="mt-6 flex justify-end gap-4">
-                <rs-button variant="secondary-outline" @click="goBack">Kembali</rs-button>
-                <rs-button variant="primary" type="submit" :disabled="processing">
-                  <template v-if="processing">
-                    <Icon name="eos-icons:loading" class="animate-spin mr-1" size="1rem" /> Memproses...
-                  </template>
-                  <template v-else>
-                    <Icon name="material-symbols:check-circle" class="mr-1" size="1rem" /> Hantar Keputusan
-                  </template>
-                </rs-button>
-              </div>
-            </FormKit>
-          </template>
-        </rs-card>
+      <!-- Submission Success -->
+      <div v-if="currentStep === 8" class="text-center py-8">
+        <div class="mb-6">
+          <div
+            class="mx-auto h-16 w-16 rounded-full bg-green-100 flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8 text-green-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+        </div>
+        <h2 class="text-2xl font-bold text-green-600 mb-2">
+          Kemaskini Berjaya Dihantar!
+        </h2>
+        <p class="text-gray-600 mb-4">
+          Kemaskini profil organisasi anda telah berjaya dihantar. Sila ambil perhatian terhadap
+          nombor rujukan anda:
+        </p>
+        <div class="bg-gray-100 p-4 rounded-md inline-block mx-auto mb-6">
+          <span class="font-mono text-lg font-bold">{{ referenceNumber }}</span>
+        </div>
+        <p class="text-gray-600 mb-6">
+          Kami akan memproses kemaskini anda dalam masa 3-5 hari bekerja. Anda
+          akan menerima notifikasi melalui emel yang didaftarkan.
+        </p>
+        <div class="flex justify-center space-x-4">
+          <rs-button
+            @click="navigateTo('/BF-PRF/OR/PP/01')"
+            variant="primary-outline"
+          >
+            Kembali ke Carian
+          </rs-button>
+          <rs-button
+            @click="navigateTo('/BF-PRF/OR/PP/04')"
+            variant="primary"
+          >
+            Ke Semakan
+          </rs-button>
+        </div>
       </div>
-    </div>
+    </rs-card>
   </div>
 </template>
 
-
-
 <script setup>
-import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
+import { ref, computed, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
-definePageMeta({
-  title: "Pengesahan Pendaftaran Organisasi",
-});
-
-const toast = useToast();
 const router = useRouter();
-const processing = ref(false);
+const route = useRoute();
 
 const breadcrumb = ref([
   {
-    name: "Pengesahan",
+    name: "Organisasi",
     type: "link",
-    path: "/BF-PRF/OR/AP/01",
+    path: "/BF-PRF/OR/PP/01",
   },
   {
-    name: "Pengesahan Pendaftaran Organisasi",
+    name: "Kemaskini Profil",
     type: "current",
+    path: "/BF-PRF/OR/PP/03",
   },
 ]);
 
-// Mock application data - in real implementation this would be fetched from API
-const applicationData = ref({
-  refNumber: "2405001",
-  applicationDate: "15 Mei 2025",
-  status: "Menunggu Pengesahan",
-  organizationType: "Swasta",
-  organizationName: "Syarikat Teknologi Maju Sdn Bhd",
-  registrationNumber: "200301012345",
-  email: "admin@tekmas.com.my",
-  address: "No. 123, Jalan Teknologi 3/5",
-  city: "Cyberjaya",
-  postcode: "63000",
-  state: "Selangor",
-  contactPerson: "Ahmad Bin Abdullah",
-  contactPhone: "012-3456789",
-  contactEmail: "ahmad@tekmas.com.my",
-  documents: [
-    { name: "Sijil Pendaftaran Syarikat", size: "2.4 MB" },
-    { name: "Surat Perwakilan Kuasa", size: "1.8 MB" },
-    { name: "Laporan Tahunan", size: "5.2 MB" },
-    { name: "Penyata Bank", size: "1.1 MB" },
+const totalSteps = 7;
+const currentStep = ref(1);
+const referenceNumber = ref(
+  "NAS-ORG-UPDATE-" +
+    Math.floor(Math.random() * 1000000)
+      .toString()
+      .padStart(6, "0")
+);
+
+const formData = ref({
+  // Step 1: Maklumat Pendaftaran Organisasi
+  organizationName: "",
+  registrationNumber: "",
+  organizationType: "",
+  otherOrganizationType: "",
+
+  // Step 2: Maklumat Alamat
+  addressLine1: "",
+  addressLine2: "",
+  addressLine3: "",
+  postcode: "",
+  city: "",
+  district: "",
+  state: "",
+  country: "Malaysia",
+
+  // Step 3: Maklumat Kariah / Zon / Cawangan
+  kariah: "",
+  branch: "",
+  zone: "",
+
+  // Step 4: Maklumat Perhubungan
+  representativeName: "",
+  phoneNumber: "",
+  email: "",
+
+  // Step 5: Maklumat Bank
+  banks: [
+    {
+      bankName: '',
+      bankAccountNumber: '',
+      penamaBank: '',
+      paymentMethod: '',
+    },
   ],
+
+  // Step 6: Maklumat Tambahan Masjid/Surau
+  pakList: [{ name: "", ic: "", type: "" }],
+  mosqueCode: "",
+  responsibleOfficer: "",
+
+  // Step 7: Muat Naik Dokumen Sokongan
+  registrationCertificate: null,
+  appointmentLetter: null,
+  bankProof: null,
+  additionalDocuments: [],
 });
 
-const approvalData = ref({
-  status: "",
-  justification: "",
+const steps = computed(() => {
+  return [
+    { id: 1, label: "Pendaftaran" },
+    { id: 2, label: "Alamat" },
+    { id: 3, label: "Kariah/Zon" },
+    { id: 4, label: "Perhubungan" },
+    { id: 5, label: "Bank" },
+    { id: 6, label: "Tambahan" },
+    { id: 7, label: "Dokumen" },
+  ];
 });
 
-const getStatusBadgeVariant = () => {
-  switch (applicationData.value.status) {
-    case "Diluluskan":
-      return "success";
-    case "Ditolak":
-      return "danger";
-    case "Menunggu Pengesahan":
-      return "warning";
-    default:
-      return "info";
+const goToStep = (stepId) => {
+  // Prevent navigation to completion screen (step 8)
+  if (stepId <= totalSteps) {
+    currentStep.value = stepId;
+    window.scrollTo(0, 0);
   }
 };
 
-const handleApprovalSubmit = async () => {
-  // Validate justification if rejection
-  if (
-    approvalData.value.status === "rejected" &&
-    !approvalData.value.justification
-  ) {
-    return;
-  }
+const tambahMaklumatBank = () => {
+  formData.value.banks.push({
+    bankName: '',
+    bankAccountNumber: '',
+    penamaBank: '',
+    paymentMethod: '',
+  });
+};
 
-  processing.value = true;
+const removeBank = (index) => {
+  formData.value.banks.splice(index, 1);
+};
 
-  // Simulate API call to submit approval decision
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Update application status based on approval decision
-    if (approvalData.value.status === "approved") {
-      applicationData.value.status = "Diluluskan";
-
-      toast.success("Permohonann telah berjaya diluluskan");
-    } else {
-      applicationData.value.status = "Ditolak";
-
-      toast.success("Keputusan penolakan telah direkodkan");
-    }
-
-    // In real implementation, we would redirect to a list page after a short delay
-    setTimeout(() => {
-      processing.value = false;
-      goBack();
-    }, 1000);
-  } catch (error) {
-    processing.value = false;
-    showErrorNotification("Ralat semasa memproses keputusan");
+const nextStep = () => {
+  if (currentStep.value < totalSteps) {
+    currentStep.value++;
+    window.scrollTo(0, 0);
   }
 };
 
-const showErrorNotification = (message) => {
-  // In real implementation, this would show a toast notification
-  console.error("Error:", message);
+const prevStep = () => {
+  if (currentStep.value > 1) {
+    currentStep.value--;
+    window.scrollTo(0, 0);
+  }
 };
 
-const goBack = () => {
-  // Navigate back to applications list
-  router.push("/BF-PRF/OR/PP/01");
+const addNewPak = () => {
+  formData.value.pakList.push({ name: "", ic: "", type: "" });
+};
+
+const removePak = (index) => {
+  formData.value.pakList.splice(index, 1);
+};
+
+const submitForm = () => {
+  // Here you would normally handle the API submission for updates
+  console.log("Updated form data to be submitted:", formData.value);
+
+  // For demo purposes, just go to success screen
+  currentStep.value = 8;
+  window.scrollTo(0, 0);
+};
+
+// Load existing organization data when component mounts
+onMounted(async () => {
+  // Simulate loading existing organization data
+  // In real implementation, this would fetch data from API based on organization ID
+  await loadExistingData();
+});
+
+const loadExistingData = async () => {
+  // Simulate API call to load existing organization data
+  // This would typically come from route params or API call
+  setTimeout(() => {
+    // Mock existing data - replace with actual API call
+    formData.value = {
+      organizationName: "Masjid Al-Hidayah",
+      registrationNumber: "123456-A",
+      organizationType: "masjid",
+      otherOrganizationType: "",
+      addressLine1: "No. 123, Jalan Utama",
+      addressLine2: "Taman Bangi",
+      addressLine3: "",
+      postcode: "43650",
+      city: "Bangi",
+      district: "Hulu Langat",
+      state: "Selangor",
+      country: "Malaysia",
+      kariah: "MASJID PEKAN BANGI",
+      branch: "Cawangan Utama",
+      zone: "Zon A",
+      representativeName: "Ahmad bin Abdullah",
+      phoneNumber: "012-3456789",
+      email: "ahmad@masjid.com",
+      banks: [
+        {
+          bankName: 'Bank Islam',
+          bankAccountNumber: '1234567890',
+          penamaBank: 'Masjid Al-Hidayah',
+          paymentMethod: '',
+        },
+      ],
+      pakList: [
+        { 
+          name: "Ahmad bin Abdullah", 
+          ic: "880101012222", 
+          type: "Kariah" 
+        }
+      ],
+      mosqueCode: "C15",
+      responsibleOfficer: "EO",
+      registrationCertificate: null,
+      appointmentLetter: null,
+      bankProof: null,
+      additionalDocuments: [],
+    };
+  }, 500);
 };
 </script>
+
+<style lang="scss" scoped>
+.organization-update {
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
+
+@media print {
+  .organization-update {
+    background-color: white;
+  }
+}
+</style>
