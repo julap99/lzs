@@ -3,6 +3,14 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <div class="mb-4 flex items-center space-x-4">
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="asnaf">Asnaf</option>
+        <option value="internal">Internal Staff</option>
+      </select>
+    </div>
+
     <!-- Section 1: Penerangan Ringkas -->
     <rs-card>
       <template #header>Semak Status Permohonan</template>
@@ -13,6 +21,7 @@
 
         <!-- Section 2: Form dgn FormKit -->
         <FormKit
+          ref="formRef"
           type="form"
           submit-label="Semak Status"
           :actions="false"
@@ -32,6 +41,7 @@
 
             <!-- ID Permohonan -->
             <FormKit
+              v-if="!canChooseType"
               type="text"
               name="appId"
               label="ID Permohonan"
@@ -40,9 +50,38 @@
               placeholder="Cth: NAS-APP-2025-00123"
               v-model="form.appId"
             />
+            <!-- #FIXME ID Permohonan (temp fix) -->
+            <FormKit
+              v-if="canChooseType"
+              type="text"
+              name="appId2"
+              label="ID Permohonan"
+              placeholder="Cth: NAS-APP-2025-00123"
+              v-model="form.appId2"
+            />
           </div>
 
-          <!-- Section 3: Action Button -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" v-if="canChooseType">
+            <!-- Status Type -->
+            <FormKit
+              type="select"
+              name="statusType"
+              label="Jenis Status"
+              placeholder="Pilih Jenis Status"
+              v-model="form.statusType"
+            >
+              <option value="aduan">Aduan</option>
+              <option value="bantuan">Bantuan</option>
+              <option value="profile">Profile</option>
+            </FormKit>
+          </div>
+
+          <!-- Error Message -->
+          <div v-if="errorMessage" class="mt-4 text-red-600 font-medium">
+            {{ errorMessage }}
+          </div>
+        </FormKit>
+        <!-- Section 3: Action Button -->
           <div class="flex space-x-2">
             <rs-button
               variant="primary"
@@ -51,16 +90,10 @@
             >
               Semak Status
             </rs-button>
-            <rs-button variant="secondary" @click="handleReset">
+            <rs-button variant="secondary" type="button" @click="handleReset">
               Reset
             </rs-button>
           </div>
-
-          <!-- Error Message -->
-          <div v-if="errorMessage" class="mt-4 text-red-600 font-medium">
-            {{ errorMessage }}
-          </div>
-        </FormKit>
       </template>
     </rs-card>
   </div>
@@ -80,7 +113,7 @@
     {
         name: "Semak Status",
         type: "current",
-        path: "/status-tracking",
+        path: "/BF-DP/Portal/",
     },
     ]);
 
@@ -88,6 +121,8 @@
     const form = ref({
     idNo: "",
     appId: "",
+    appId2: "",
+    statusType: "",
     });
 
     // Loading State
@@ -99,32 +134,56 @@
     // Counter utk simulate click behavior
     const clickCount = ref(0);
 
-    // Programmatic submit (trigger FormKit form submit)
-    const submitForm = () => {
-    clickCount.value++;
-
-    // Simulate 1st click → profile
-    if (clickCount.value === 1) {
-        router.push("/BF-DP/Portal/profile");
-    }
-    // Simulate 2nd click → bantuan
-    else if (clickCount.value === 2) {
-        router.push("/BF-DP/Portal/bantuan");
-    }
-    // Optional → kalau click 3rd time → reset balik ke 1
-    else {
-        clickCount.value = 0;
-        errorMessage.value = "Simulasi reset: sila klik Semak Status sekali lagi.";
-    }
-    };
-
     // Handle Reset
     const handleReset = () => {
     form.value.idNo = "";
     form.value.appId = "";
+    form.value.appId2 = "";
     errorMessage.value = "";
     clickCount.value = 0;
     };
+
+    const idMapping: Record<string, string> = {
+      "NAS-PRF-2025-0001": "profile",
+      "NAS-BTN-2025-0001": "bantuan",
+      "ADN-250823-000123": "aduan",
+    };
+
+    const selectedRole = ref("asnaf"); // default role
+    const canChooseType = computed(() => selectedRole.value === "internal");
+
+    const submitForm = () => {
+  if (canChooseType.value) {
+    const type = form.value.statusType;
+      if (["aduan", "bantuan", "profile"].includes(type)) {
+        navigateTo(`/BF-DP/Portal/${type}`);
+      } else {
+        errorMessage.value = "Jenis status tidak sah.";
+      }
+  } else {
+    // Use ID mapping for roles that cannot choose type (e.g., asnaf)
+    const refId = idMapping[form.value.appId];
+    if (!refId) {
+      errorMessage.value = "ID Permohonan tidak sah.";
+      return;
+    }
+
+    switch (refId) {
+      case "aduan":
+        navigateTo(`/BF-DP/Portal/aduan/01`);
+        break;
+      case "bantuan":
+        navigateTo(`/BF-DP/Portal/bantuan/01`);
+        break;
+      case "profile":
+        navigateTo(`/BF-DP/Portal/profile/01`);
+        break;
+      default:
+        errorMessage.value = "Jenis status tidak sah.";
+    }
+  }
+};
+
 </script>
 <style lang="scss" scoped>
 // Optional custom styles
