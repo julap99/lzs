@@ -193,6 +193,7 @@
                           <FormKit
                             type="number"
                             name="hadKifayahSyor"
+                            :value="50"
                             label="%Had Kifayah (Syor)"
                             placeholder="0"
                             :classes="{
