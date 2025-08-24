@@ -50,6 +50,17 @@
               placeholder="Cth: NAS-APP-2025-00123"
               v-model="form.appId"
             />
+            <!-- #FIXME ID Permohonan (temp fix) -->
+            <FormKit
+              v-if="canChooseType"
+              type="text"
+              name="appId2"
+              label="ID Permohonan"
+              validation="required"
+              validation-label="ID Permohonan"
+              placeholder="Cth: NAS-APP-2025-00123"
+              v-model="form.appId2"
+            />
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" v-if="canChooseType">
@@ -112,6 +123,7 @@
     const form = ref({
     idNo: "",
     appId: "",
+    appId2: "",
     statusType: "",
     });
 
@@ -128,6 +140,7 @@
     const handleReset = () => {
     form.value.idNo = "";
     form.value.appId = "";
+    form.value.appId2 = "";
     errorMessage.value = "";
     clickCount.value = 0;
     };
