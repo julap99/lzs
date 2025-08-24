@@ -4003,7 +4003,7 @@
                   ]"
                   validation="required"
                   v-model="getCurrentTanggungan().masih_bersekolah"
-                  :disabled="true"
+                  :disabled="false"
                 />
 
                 <!-- Pendidikan Tertinggi -->
@@ -4024,7 +4024,7 @@
                   ]"
                   validation="required"
                   v-model="getCurrentTanggungan().pendidikan_tertinggi_tanggungan"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
 
@@ -4036,7 +4036,7 @@
                   label="Lain-lain Pendidikan Tertinggi"
                   placeholder="Sila nyatakan pendidikan lain"
                   v-model="getCurrentTanggungan().lain_pendidikan_tertinggi_tanggungan"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
 
@@ -4063,7 +4063,7 @@
                     min: 'Sila pilih sekurang-kurangnya satu tahap pendidikan'
                   }"
                   v-model="getCurrentTanggungan().tahap_pendidikan_dicapai"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
 
@@ -4075,7 +4075,7 @@
                   label="Lain-lain Tahap Pendidikan yang Dicapai"
                   placeholder="Sila nyatakan tahap pendidikan lain"
                   v-model="getCurrentTanggungan().lain_tahap_pendidikan_dicapai"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
 
@@ -4089,7 +4089,7 @@
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
                   v-model="getCurrentTanggungan().sijil_pendidikan_tanggungan"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
             </div>
@@ -4115,7 +4115,7 @@
                     'Maahad Tahfiz'
                   ]"
                   v-model="getCurrentTanggungan().jenis_sekolah_institusi"
-                  :disabled="true"
+                  :disabled="false"
                 />
 
                 <!-- Kategori Sekolah/Institusi -->
@@ -4133,7 +4133,7 @@
                     'KAFA'
                   ]"
                   v-model="getCurrentTanggungan().kategori_sekolah_institusi"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
 
@@ -4147,7 +4147,7 @@
                     label="Tahun Bersekolah (YYYY)"
                     placeholder="Contoh: 2024"
                     v-model="getCurrentTanggungan().tahun_bersekolah"
-                    :disabled="true"
+                    :disabled="false"
                   />
 
                   <!-- Tahun/Tingkatan/Tahun Pengajian/Semester -->
@@ -4157,7 +4157,7 @@
                     label="Tahun/Tingkatan/Tahun Pengajian/Semester"
                     placeholder="Contoh: Tingkatan 3 / Tahun 2 / Semester 1"
                     v-model="getCurrentTanggungan().tahun_tingkatan_pengajian"
-                    :disabled="true"
+                    :disabled="false"
                   />
 
                   <!-- Nama Sekolah/Institusi -->
@@ -4167,7 +4167,7 @@
                     label="Nama Sekolah/Institusi"
                     placeholder="Masukkan nama sekolah/institusi"
                     v-model="getCurrentTanggungan().nama_sekolah_institusi"
-                    :disabled="true"
+                    :disabled="false"
                   />
 
                   <!-- Alamat 1 -->
@@ -4177,7 +4177,7 @@
                     label="Alamat 1"
                     placeholder="Masukkan alamat sekolah/institusi"
                     v-model="getCurrentTanggungan().alamat1_sekolah"
-                    :disabled="true"
+                    :disabled="false"
                   />
 
                   <!-- Alamat 2 -->
@@ -4188,7 +4188,7 @@
                     label="Alamat 2"
                     placeholder="Masukkan alamat tambahan (jika ada)"
                     v-model="getCurrentTanggungan().alamat2_sekolah"
-                    :disabled="true"
+                        :disabled="false"
                   />
 
                   <!-- Alamat 3 -->
@@ -4199,7 +4199,7 @@
                     label="Alamat 3"
                     placeholder="Masukkan alamat tambahan (jika ada)"
                     v-model="getCurrentTanggungan().alamat3_sekolah"
-                    :disabled="true"
+                    :disabled="false"
                   />
 
                   <!-- Daerah -->
@@ -4209,7 +4209,7 @@
                     label="Daerah"
                     placeholder="Masukkan daerah"
                     v-model="getCurrentTanggungan().daerah_sekolah"
-                    :disabled="true"
+                    :disabled="false"
                   />
 
                   <!-- Bandar -->
@@ -4219,7 +4219,7 @@
                     label="Bandar"
                     placeholder="Masukkan bandar"
                     v-model="getCurrentTanggungan().bandar_sekolah"
-                    :disabled="true"
+                    :disabled="false"
                   />
 
                   <!-- Poskod -->
@@ -4229,7 +4229,7 @@
                     label="Poskod"
                     placeholder="Masukkan poskod"
                     v-model="getCurrentTanggungan().poskod_sekolah"
-                    :disabled="true"
+                    :disabled="false"
                   />
                 </div>
               </div>
@@ -4249,7 +4249,7 @@
                     { label: 'Tidak', value: 'T' }
                   ]"
                   v-model="getCurrentTanggungan().tinggal_bersama_keluarga"
-                  :disabled="true"
+                  :disabled="false"
                 />
 
                 <!-- Asrama/Rumah Sewa -->
@@ -4260,10 +4260,10 @@
                   label="Asrama/Rumah Sewa"
                   placeholder="Masukkan maklumat asrama/rumah sewa"
                   v-model="getCurrentTanggungan().asrama_rumah_sewa"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
-            </div>
+            </div>  
 
             <!-- Bahagian D: Pengajian Tinggi -->
             <div class="mb-6">
@@ -4282,7 +4282,7 @@
                     'Ijazah Sarjana Muda'
                   ]"
                   v-model="getCurrentTanggungan().bidang_kursus_pengajian"
-                  :disabled="true"
+                  :disabled="false"
                 />
 
                 <!-- Jurusan/Bidang -->
@@ -4293,7 +4293,7 @@
                   label="Jurusan/Bidang"
                   placeholder="Masukkan jurusan/bidang pengajian"
                   v-model="getCurrentTanggungan().jurusan_bidang"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
 
@@ -4311,7 +4311,7 @@
                     'Lain-lain'
                   ]"
                   v-model="getCurrentTanggungan().pembiayaan_pengajian"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
 
@@ -4323,7 +4323,7 @@
                   label="Lain-lain Pembiayaan Pengajian"
                   placeholder="Sila nyatakan pembiayaan lain"
                   v-model="getCurrentTanggungan().lain_pembiayaan_pengajian"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
 
@@ -4336,7 +4336,7 @@
                   placeholder="Masukkan catatan tambahan (jika ada)"
                   rows="3"
                   v-model="getCurrentTanggungan().catatan_pendidikan_tanggungan"
-                  :disabled="true"
+                  :disabled="false"
                 />
               </div>
             </div>
