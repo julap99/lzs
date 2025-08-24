@@ -113,7 +113,7 @@
     {
         name: "Semak Status",
         type: "current",
-        path: "/status-tracking",
+        path: "/BF-DP/Portal/",
     },
     ]);
 
@@ -154,20 +154,12 @@
 
     const submitForm = () => {
   if (canChooseType.value) {
-    // Use dropdown selection for roles that can choose type
-    switch (form.value.statusType) {
-      case "aduan":
-        navigateTo(`/BF-DP/Portal/aduan`);
-        break;
-      case "bantuan":
-        navigateTo(`/BF-DP/Portal/bantuan`);
-        break;
-      case "profile":
-        navigateTo(`/BF-DP/Portal/profile`);
-        break;
-      default:
+    const type = form.value.statusType;
+      if (["aduan", "bantuan", "profile"].includes(type)) {
+        navigateTo(`/BF-DP/Portal/${type}`);
+      } else {
         errorMessage.value = "Jenis status tidak sah.";
-    }
+      }
   } else {
     // Use ID mapping for roles that cannot choose type (e.g., asnaf)
     const refId = idMapping[form.value.appId];
