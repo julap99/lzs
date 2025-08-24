@@ -924,7 +924,7 @@ export default [
             meta: {},
           }, 
           {
-            title: " Pendaftaran Baharu Cawangan",
+            title: " Pendaftaran Cawangan Baharu",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PB/01",
             child: [],
