@@ -9,59 +9,21 @@
         </div>
         <div class="flex items-center space-x-3">
           <div class="min-w-[200px]">
-            <FormKit
-              type="select"
+            <rs-select
               v-model="currentRole"
               :options="roleOptions"
-              :classes="{ 
-                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
-                wrapper: '!min-w-0'
+              placeholder="Pilih Peranan"
+              class="min-w-[200px]"
+              :classes="{
+                input: '!py-2',
               }"
               @change="handleRoleChange"
             />
           </div>
-          <rs-button
-            variant="secondary-outline"
-            size="sm"
-            @click="toggleRoleInfo"
-            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
-            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
-          >
-            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
-            {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
-          </rs-button>
-        </div>
-      </div>
-      
-      <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
-            <div class="flex items-center space-x-3">
-              <rs-badge :variant="getRoleVariant(currentRole)" class="!text-xs">
-                {{ getRoleLabel(currentRole) }}
-              </rs-badge>
-              <span class="text-xs text-gray-600">{{ getRoleDescription(currentRole) }}</span>
-            </div>
-          </div>
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
-            <div class="flex flex-wrap gap-2">
-              <rs-badge
-                v-for="capability in getRoleCapabilities(currentRole)"
-                :key="capability"
-                variant="secondary"
-                size="sm"
-                class="!text-xs"
-              >
-                {{ capability }}
-              </rs-badge>
-            </div>
-          </div>
         </div>
       </div>
     </div>
-
+    
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
@@ -304,7 +266,6 @@ const breadcrumb = ref([
 
 // Simulasi peranan
 const currentRole = ref('eksekutif');
-const showRoleInfo = ref(false);
 
 // Pengurusan tab
 const activeTab = ref("Sedang Proses");
@@ -402,13 +363,7 @@ const getRoleLabel = (role) => {
   return roleData[role]?.name || role;
 };
 
-const getRoleDescription = (role) => {
-  return roleData[role]?.description || '';
-};
 
-const getRoleCapabilities = (role) => {
-  return roleData[role]?.capabilities || [];
-};
 
 const getRoleVariant = (role) => {
   return roleData[role]?.variant || 'secondary';
@@ -417,13 +372,10 @@ const getRoleVariant = (role) => {
 const handleRoleChange = () => {
   // Set semula penapis apabila peranan berubah
   selectedStatus.value = '';
-  showRoleInfo.value = false;
   refreshTable();
 };
 
-const toggleRoleInfo = () => {
-  showRoleInfo.value = !showRoleInfo.value;
-};
+
 
 // Role-based filtering
 const getFilteredStatusOptions = () => {

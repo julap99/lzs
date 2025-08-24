@@ -919,7 +919,7 @@ export default [
           {
             title: "Kemaskini Profil",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/OR/KP/01",
+            path: "/BF-PRF/OR/PP/03",
             child: [],
             meta: {},
           }, 
