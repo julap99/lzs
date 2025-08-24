@@ -255,32 +255,61 @@
           @submit="nextStep"
           #default="{ value }"
         >
-          <FormKit
-            type="text"
-            name="representativeName"
-            label="Nama Wakil / Pegawai Utama"
-            validation="required"
-            placeholder="Masukkan nama wakil"
-            v-model="formData.representativeName"
-          />
+          <div
+            v-for="(representative, index) in formData.representatives"
+            :key="index"
+            class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50"
+          >
+            <h3 class="font-semibold text-sm text-gray-700">
+              Maklumat Wakil {{ index + 1 }}
+            </h3>
 
-          <FormKit
-            type="tel"
-            name="phoneNumber"
-            label="No Telefon (Pejabat / HP)"
-            validation="required"
-            placeholder="Contoh: 012-3456789"
-            v-model="formData.phoneNumber"
-          />
+            <FormKit
+              type="text"
+              :name="`representativeName${index}`"
+              label="Nama Wakil / Pegawai Utama"
+              validation="required"
+              placeholder="Masukkan nama wakil"
+              v-model="representative.name"
+            />
 
-          <FormKit
-            type="email"
-            name="email"
-            label="Emel (jika ada)"
-            validation="email"
-            placeholder="Contoh: nama@domain.com"
-            v-model="formData.email"
-          />
+            <FormKit
+              type="tel"
+              :name="`phoneNumber${index}`"
+              label="No Telefon (Pejabat / HP)"
+              validation="required"
+              placeholder="Contoh: 012-3456789"
+              v-model="representative.phoneNumber"
+            />
+
+            <FormKit
+              type="email"
+              :name="`email${index}`"
+              label="Emel (jika ada)"
+              validation="email"
+              placeholder="Contoh: nama@domain.com"
+              v-model="representative.email"
+            />
+
+            <div class="flex justify-end">
+              <rs-button
+                v-if="formData.representatives.length > 1"
+                variant="danger-outline"
+                size="sm"
+                @click.prevent="removeRepresentative(index)"
+              >
+                Buang Maklumat Ini
+              </rs-button>
+            </div>
+          </div>
+
+          <rs-button
+            variant="primary-outline"
+            size="sm"
+            @click.prevent="tambahMaklumatWakil"
+          >
+            + Tambah Wakil
+          </rs-button>
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -555,9 +584,9 @@ const formData = ref({
   zone: "",
 
   // Step 4: Maklumat Perhubungan
-  representativeName: "",
-  phoneNumber: "",
-  email: "",
+  representatives: [
+    { name: "", phoneNumber: "", email: "" },
+  ],
 
   // Step 5: Maklumat Bank
   banks: [
@@ -593,6 +622,14 @@ const goToStep = (stepId) => {
     currentStep.value = stepId;
     window.scrollTo(0, 0);
   }
+};
+
+const tambahMaklumatWakil = () => {
+  formData.value.representatives.push({ name: "", phoneNumber: "", email: "" });
+};
+
+const removeRepresentative = (index) => {
+  formData.value.representatives.splice(index, 1);
 };
 
 const tambahMaklumatBank = () => {
@@ -659,9 +696,9 @@ const loadExistingData = async () => {
       kariah: "MASJID PEKAN BANGI",
       branch: "Cawangan Utama",
       zone: "Zon A",
-      representativeName: "Ahmad bin Abdullah",
-      phoneNumber: "012-3456789",
-      email: "ahmad@masjid.com",
+      representatives: [
+        { name: "Ahmad bin Abdullah", phoneNumber: "012-3456789", email: "ahmad@masjid.com" },
+      ],
       banks: [
         {
           bankName: 'Bank Islam',
