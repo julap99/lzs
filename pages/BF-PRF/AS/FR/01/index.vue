@@ -956,7 +956,7 @@ const validateField = (fieldName) => {
         validationErrors.value.idNumber = '';
       } else if (value.length > 20) {
         validationErrors.value.idNumber = 'Pengenalan ID terlalu panjang (maksimum 20 aksara)';
-      } else if (formData.value.idType === 'myKad' && !/^\d{12}$/.test(value.replace(/\s/g, ''))) {
+      } else if (formData.value.idType === 'myKad' && !/^\d{11}$/.test(value.replace(/\s/g, ''))) {
         validationErrors.value.idNumber = 'Format MyKad tidak sah (12 digit)';
       } else if (formData.value.idType === 'foreignID' && value.trim().length < 3) {
         validationErrors.value.idNumber = 'Foreign ID mesti sekurang-kurangnya 3 aksara';

@@ -101,9 +101,11 @@
                   v-else
                   variant="primary"
                   class="ml-auto"
-                  @click="navigateTo(`/BF-BTN/PB/syorkan-bantuan`)"
+                  @click="navigateTo(`/BF-PRF/AS/FR/05`)"
                   :disabled="processing"
                 >
+
+                <!-- BF-BTN/PB/syorkan-bantuan -->
                   <span v-if="processing">
                     <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
                   </span>
