@@ -13,10 +13,10 @@
               class="text-3xl font-bold text-gray-900 tracking-tight"
               id="page-title"
             >
-              {{ editingBQ ? "Edit" : "Tambah" }} Draf BQ
+              Semakan Draf BQ
             </h1>
             <p class="mt-2 text-sm text-gray-600 max-w-2xl" role="doc-subtitle">
-              Bill of Quantity untuk kerja-kerja cadangan
+              Semakan Bill of Quantity untuk kerja-kerja cadangan
             </p>
           </div>
           <rs-button
@@ -102,11 +102,11 @@
                   <label class="block text-sm font-medium text-gray-700"
                     >Tarikh Siasatan</label
                   >
-                  <FormKit
-                    type="date"
-                    v-model="formData.tarikhSiasatan"
-                    :classes="{ input: 'text-sm' }"
-                  />
+                  <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <span class="text-sm text-gray-900">{{
+                      formData.tarikhSiasatan
+                    }}</span>
+                  </div>
                 </div>
 
                 <div class="space-y-2 lg:col-span-2">
@@ -150,18 +150,10 @@
                     </p>
                   </div>
                 </div>
-                <rs-button
-                  variant="primary"
-                  @click="addItem"
-                  aria-label="Tambah item kerja baru"
-                >
-                  <Icon
-                    name="ph:plus"
-                    class="w-4 h-4 mr-2"
-                    aria-hidden="true"
-                  />
-                  Tambah Item
-                </rs-button>
+                <rs-badge variant="info" class="text-sm px-3 py-1">
+                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                  Mode Semakan
+                </rs-badge>
               </div>
             </template>
 
@@ -177,14 +169,9 @@
                     <span class="text-sm font-medium text-gray-600"
                       >Item {{ index + 1 }}</span
                     >
-                    <rs-button
-                      variant="danger"
-                      size="sm"
-                      @click="removeItem(index)"
-                      class="!p-2"
-                    >
-                      <Icon name="ph:trash" class="w-4 h-4" />
-                    </rs-button>
+                    <rs-badge variant="secondary" size="sm" class="px-2 py-1">
+                      Item {{ index + 1 }}
+                    </rs-badge>
                   </div>
 
                   <div class="grid grid-cols-2 gap-3">
@@ -192,49 +179,41 @@
                       <label class="text-xs font-medium text-gray-700"
                         >REF</label
                       >
-                      <FormKit
-                        type="text"
-                        v-model="item.ref"
-                        :classes="{ input: 'text-sm !p-2' }"
-                        placeholder="REF"
-                      />
+                      <div class="p-2 bg-white rounded border border-gray-200">
+                        <span class="text-sm text-gray-900">{{
+                          item.ref || "-"
+                        }}</span>
+                      </div>
                     </div>
                     <div class="space-y-1">
                       <label class="text-xs font-medium text-gray-700"
                         >Unit</label
                       >
-                      <FormKit
-                        type="text"
-                        v-model="item.unit"
-                        :classes="{ input: 'text-sm !p-2' }"
-                        placeholder="Unit"
-                      />
+                      <div class="p-2 bg-white rounded border border-gray-200">
+                        <span class="text-sm text-gray-900">{{
+                          item.unit || "-"
+                        }}</span>
+                      </div>
                     </div>
                     <div class="space-y-1">
                       <label class="text-xs font-medium text-gray-700"
                         >Kuantiti</label
                       >
-                      <FormKit
-                        type="number"
-                        v-model="item.kuantiti"
-                        :classes="{ input: 'text-sm !p-2' }"
-                        @input="updateTotals()"
-                        min="0"
-                        step="0.01"
-                      />
+                      <div class="p-2 bg-white rounded border border-gray-200">
+                        <span class="text-sm text-gray-900">{{
+                          item.kuantiti || 0
+                        }}</span>
+                      </div>
                     </div>
                     <div class="space-y-1">
                       <label class="text-xs font-medium text-gray-700"
                         >Kadar (RM)</label
                       >
-                      <FormKit
-                        type="number"
-                        v-model="item.kadar"
-                        :classes="{ input: 'text-sm !p-2' }"
-                        @input="updateTotals()"
-                        min="0"
-                        step="0.01"
-                      />
+                      <div class="p-2 bg-white rounded border border-gray-200">
+                        <span class="text-sm text-gray-900"
+                          >RM {{ (item.kadar || 0).toFixed(2) }}</span
+                        >
+                      </div>
                     </div>
                   </div>
 
@@ -242,13 +221,13 @@
                     <label class="text-xs font-medium text-gray-700"
                       >Keterangan Kerja</label
                     >
-                    <FormKit
-                      type="textarea"
-                      v-model="item.keteranganKerja"
-                      rows="2"
-                      :classes="{ input: 'text-sm !p-2' }"
-                      placeholder="Masukkan jenis kerja..."
-                    />
+                    <div
+                      class="p-2 bg-white rounded border border-gray-200 min-h-[50px]"
+                    >
+                      <span class="text-sm text-gray-900">{{
+                        item.keteranganKerja || "Tiada keterangan"
+                      }}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -312,13 +291,6 @@
                       >
                         Kadar (RM)
                       </th>
-                      <th
-                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20"
-                        scope="col"
-                        role="columnheader"
-                      >
-                        Aksi
-                      </th>
                     </tr>
                   </thead>
                   <tbody
@@ -338,101 +310,52 @@
                         {{ index + 1 }}
                       </td>
                       <td class="px-3 py-4" role="gridcell">
-                        <FormKit
-                          type="text"
-                          v-model="item.ref"
-                          :classes="{
-                            input:
-                              'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
-                          }"
-                          placeholder="REF"
-                          :aria-label="`Rujukan untuk item ${index + 1}`"
-                        />
-                      </td>
-                      <td class="px-3 py-4" role="gridcell">
-                        <FormKit
-                          type="textarea"
-                          v-model="item.keteranganKerja"
-                          rows="2"
-                          :classes="{
-                            input:
-                              'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
-                          }"
-                          placeholder="Masukkan jenis kerja..."
-                          :aria-label="`Keterangan kerja untuk item ${
-                            index + 1
-                          }`"
-                        />
-                      </td>
-                      <td class="px-3 py-4" role="gridcell">
-                        <FormKit
-                          type="text"
-                          v-model="item.unit"
-                          :classes="{
-                            input:
-                              'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
-                          }"
-                          placeholder="Unit"
-                          :aria-label="`Unit untuk item ${index + 1}`"
-                        />
-                      </td>
-                      <td class="px-3 py-4" role="gridcell">
-                        <FormKit
-                          type="number"
-                          v-model="item.kuantiti"
-                          :classes="{
-                            input:
-                              'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
-                          }"
-                          @input="updateTotals()"
-                          min="0"
-                          step="0.01"
-                          placeholder="0.00"
-                          :aria-label="`Kuantiti untuk item ${index + 1}`"
-                        />
-                      </td>
-                      <td class="px-3 py-4" role="gridcell">
-                        <FormKit
-                          type="number"
-                          v-model="item.kadar"
-                          :classes="{
-                            input:
-                              'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
-                          }"
-                          @input="updateTotals()"
-                          min="0"
-                          step="0.01"
-                          placeholder="0.00"
-                          :aria-label="`Kadar dalam ringgit untuk item ${
-                            index + 1
-                          }`"
-                        />
-                      </td>
-                      <td class="px-3 py-4" role="gridcell">
-                        <rs-button
-                          variant="danger"
-                          size="sm"
-                          @click="removeItem(index)"
-                          class="!p-2"
-                          :aria-label="`Padam item ${index + 1}: ${
-                            item.keteranganKerja || 'Item kosong'
-                          }`"
+                        <div
+                          class="p-2 bg-gray-50 rounded border border-gray-200"
                         >
-                          <Icon
-                            name="ph:trash"
-                            class="w-4 h-4"
-                            aria-hidden="true"
-                          />
-                        </rs-button>
+                          <span class="text-sm text-gray-900">{{
+                            item.ref || "-"
+                          }}</span>
+                        </div>
                       </td>
-                    </tr>
-                    <tr v-if="formData.itemKerja.length === 0">
-                      <td
-                        colspan="7"
-                        class="px-3 py-8 text-center text-sm text-gray-500"
-                      >
-                        Tiada item kerja. Klik butang "Tambah Item" untuk
-                        menambah item kerja.
+                      <td class="px-3 py-4" role="gridcell">
+                        <div
+                          class="p-2 bg-gray-50 rounded border border-gray-200 min-h-[50px]"
+                        >
+                          <span
+                            class="text-sm text-gray-900 whitespace-pre-wrap"
+                            >{{
+                              item.keteranganKerja || "Tiada keterangan"
+                            }}</span
+                          >
+                        </div>
+                      </td>
+                      <td class="px-3 py-4" role="gridcell">
+                        <div
+                          class="p-2 bg-gray-50 rounded border border-gray-200"
+                        >
+                          <span class="text-sm text-gray-900">{{
+                            item.unit || "-"
+                          }}</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-4" role="gridcell">
+                        <div
+                          class="p-2 bg-gray-50 rounded border border-gray-200"
+                        >
+                          <span class="text-sm text-gray-900 font-mono">{{
+                            (item.kuantiti || 0).toFixed(2)
+                          }}</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-4" role="gridcell">
+                        <div
+                          class="p-2 bg-gray-50 rounded border border-gray-200"
+                        >
+                          <span class="text-sm text-gray-900 font-mono"
+                            >RM {{ (item.kadar || 0).toFixed(2) }}</span
+                          >
+                        </div>
                       </td>
                     </tr>
                   </tbody>
@@ -506,24 +429,20 @@
 
             <template #body>
               <div class="space-y-6">
-                                 <!-- Editable Catatan Pengesyoran -->
-                 <div class="space-y-2">
-                   <label class="block text-sm font-medium text-gray-700">
-                     Catatan Pengesyoran
-                     <span class="text-xs text-gray-500 font-normal ml-1">*</span>
-                   </label>
-                   <FormKit
-                     type="textarea"
-                     v-model="formData.catatanPengesyoran"
-                     rows="4"
-                     :classes="{ 
-                       input: 'text-sm !p-3 !border-blue-300 focus:!border-blue-500 focus:!ring-blue-500 bg-blue-50/30',
-                       wrapper: 'mb-0'
-                     }"
-                     placeholder="Masukkan catatan pengesyoran untuk dokumen BQ ini..."
-                     help="Catatan ini akan dipaparkan dalam dokumen BQ sebagai pengesyoran rasmi."
-                   />
-                 </div>
+                <!-- Read-only Catatan Pengesyoran -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    Catatan Pengesyoran
+                  </label>
+                  <div
+                    class="p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px]"
+                  >
+                    <span class="text-sm text-gray-900 whitespace-pre-wrap">{{
+                      formData.catatanPengesyoran ||
+                      "Tiada catatan pengesyoran."
+                    }}</span>
+                  </div>
+                </div>
 
                 <!-- Recommendation line mirroring the document -->
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -757,37 +676,49 @@
         </section>
 
         <rs-card class="p-4">
-          <div class="flex flex-col lg:flex-row gap-3 lg:justify-end">
-            <!-- Mobile: Full width buttons -->
-            <rs-button
-              variant="primary-outline"
-              @click="handleSaveDraft"
-              :disabled="processing"
-              class="w-full lg:w-auto !py-3 text-sm font-medium order-3 lg:order-1"
-            >
-              <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
-              Simpan Draf
-            </rs-button>
+          <div class="flex flex-col lg:flex-row gap-3 lg:justify-between">
+            <div class="flex gap-3">
+              <rs-button
+                variant="success"
+                @click="handleLuluskan"
+                :disabled="processing"
+                :loading="processing && actionType === 'approve'"
+                class="!py-3 text-sm font-medium"
+              >
+                <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
+                Luluskan BQ
+              </rs-button>
+
+              <rs-button
+                variant="warning"
+                @click="handleMintaKemaskini"
+                :disabled="processing"
+                :loading="processing && actionType === 'request_update'"
+                class="!py-3 text-sm font-medium"
+              >
+                <Icon name="ph:arrow-counter-clockwise" class="w-5 h-5 mr-2" />
+                Minta Kemaskini
+              </rs-button>
+
+              <rs-button
+                variant="danger"
+                @click="handleTolak"
+                :disabled="processing"
+                :loading="processing && actionType === 'reject'"
+                class="!py-3 text-sm font-medium"
+              >
+                <Icon name="ph:x-circle" class="w-5 h-5 mr-2" />
+                Tolak BQ
+              </rs-button>
+            </div>
 
             <rs-button
-              variant="success-outline"
-              @click="handleGeneratePDF"
-              :disabled="processing"
-              class="w-full lg:w-auto !py-3 text-sm font-medium order-2 lg:order-2"
+              variant="secondary"
+              @click="handleBack"
+              class="!py-3 text-sm font-medium"
             >
-              <Icon name="ph:file-pdf" class="w-5 h-5 mr-2" />
-              Jana PDF
-            </rs-button>
-
-            <rs-button
-              variant="primary"
-              @click="handleSaveAndReturn"
-              :disabled="processing"
-              :loading="processing"
-              class="w-full lg:w-auto !py-3 text-sm font-medium order-1 lg:order-3"
-            >
-              <Icon name="ph:check" class="w-5 h-5 mr-2" />
-              Simpan & Kembali
+              <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
+              Kembali
             </rs-button>
           </div>
         </rs-card>
@@ -805,9 +736,10 @@ const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 const processing = ref(false);
+const actionType = ref("");
 
 definePageMeta({
-  title: "Draf BQ - Siasatan Lapangan",
+  title: "Semakan Draf BQ",
 });
 
 const breadcrumb = ref([
@@ -817,19 +749,14 @@ const breadcrumb = ref([
     path: "/BF-BTN/tugasan",
   },
   {
-    name: "Siasatan ke Lapangan",
+    name: "Kelulusan Siasatan",
     type: "link",
-    path: "/BF-BTN/tugasan",
+    path: `/BF-BTN/tugasan/bantuan/kelulusan/${route.params.id}`,
   },
   {
-    name: "Kemaskini Siasatan",
+    name: "Kelulusan - BQ",
     type: "current",
-    path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
-  },
-  {
-    name: "BQ",
-    type: "current",
-    path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/draf-bq`,
+    path: `/BF-BTN/tugasan/bantuan/kelulusan/${route.params.id}/draf-bq`,
   },
 ]);
 
@@ -864,7 +791,7 @@ const formData = ref({
 });
 
 // Current workflow stage - in a real app this would come from the document status
-const currentStage = ref("disediakan"); // 'disediakan', 'disemak1', 'disemak2', 'diluluskan'
+const currentStage = ref("diluluskan"); // 'disediakan', 'disemak1', 'disemak2', 'diluluskan'
 
 // Utility functions (moved before computed properties to avoid hoisting issues)
 const numberToWords = (amount) => {
@@ -934,7 +861,10 @@ watch(
     formData.value.jumlahKeseluruhan = newValue;
     formData.value.ringgiMalaysiaPerkataan = numberToWords(newValue);
     // Only auto-generate catatan if it's empty (don't overwrite user input)
-    if (!formData.value.catatanPengesyoran || formData.value.catatanPengesyoran.trim() === '') {
+    if (
+      !formData.value.catatanPengesyoran ||
+      formData.value.catatanPengesyoran.trim() === ""
+    ) {
       formData.value.catatanPengesyoran = generateCatatanPengesyoran(newValue);
     }
   },
@@ -966,83 +896,83 @@ const removeItem = (index) => {
 };
 
 // Action handlers
-const handleSaveDraft = async () => {
+const handleLuluskan = async () => {
   if (processing.value) return;
 
   try {
     processing.value = true;
+    actionType.value = "approve";
 
-    // Validate required fields
-    if (!formData.value.tarikhSiasatan) {
-      toast.error("Sila pilih tarikh siasatan");
-      return;
-    }
+    // Implement approval functionality
+    console.log("Approving BQ:", formData.value);
 
-    if (!formData.value.catatanPengesyoran || formData.value.catatanPengesyoran.trim() === '') {
-      toast.error("Sila masukkan catatan pengesyoran");
-      return;
-    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.success("BQ telah diluluskan");
 
-    // Implement save draft functionality
-    console.log("Saving BQ draft:", formData.value);
-
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-    toast.success("Draf BQ telah disimpan berjaya");
-  } catch (error) {
-    toast.error("Ralat semasa menyimpan draf BQ");
-    console.error("Save draft error:", error);
-  } finally {
-    processing.value = false;
-  }
-};
-
-const handleGeneratePDF = async () => {
-  if (processing.value) return;
-
-  try {
-    processing.value = true;
-
-    // Validate that we have items
-    if (formData.value.itemKerja.length === 0) {
-      toast.error("Sila tambah sekurang-kurangnya satu item kerja");
-      return;
-    }
-
-    // Validate catatan pengesyoran
-    if (!formData.value.catatanPengesyoran || formData.value.catatanPengesyoran.trim() === '') {
-      toast.error("Sila masukkan catatan pengesyoran sebelum menjana PDF");
-      return;
-    }
-
-    // Implement PDF generation functionality
-    console.log("Generating PDF for BQ:", formData.value);
-
-    await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate PDF generation
-    toast.success("PDF BQ telah dijana berjaya");
-  } catch (error) {
-    toast.error("Ralat semasa menjana PDF");
-    console.error("PDF generation error:", error);
-  } finally {
-    processing.value = false;
-  }
-};
-
-const handleSaveAndReturn = async () => {
-  if (processing.value) return;
-
-  try {
-    await handleSaveDraft();
-    if (!processing.value) {
-      // Only navigate if save was successful
+    setTimeout(() => {
       handleBack();
-    }
+    }, 1500);
   } catch (error) {
-    console.error("Save and return error:", error);
+    toast.error("Ralat semasa meluluskan BQ");
+    console.error("Approve error:", error);
+  } finally {
+    processing.value = false;
+    actionType.value = "";
+  }
+};
+
+const handleMintaKemaskini = async () => {
+  if (processing.value) return;
+
+  try {
+    processing.value = true;
+    actionType.value = "request_update";
+
+    // Implement request update functionality
+    console.log("Requesting BQ updates:", formData.value);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.success("Permintaan kemaskini BQ telah dihantar");
+
+    setTimeout(() => {
+      handleBack();
+    }, 1500);
+  } catch (error) {
+    toast.error("Ralat semasa menghantar permintaan kemaskini");
+    console.error("Request update error:", error);
+  } finally {
+    processing.value = false;
+    actionType.value = "";
+  }
+};
+
+const handleTolak = async () => {
+  if (processing.value) return;
+
+  try {
+    processing.value = true;
+    actionType.value = "reject";
+
+    // Implement rejection functionality
+    console.log("Rejecting BQ:", formData.value);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.success("BQ telah ditolak");
+
+    setTimeout(() => {
+      handleBack();
+    }, 1500);
+  } catch (error) {
+    toast.error("Ralat semasa menolak BQ");
+    console.error("Reject error:", error);
+  } finally {
+    processing.value = false;
+    actionType.value = "";
   }
 };
 
 const handleBack = () => {
-  router.push(`/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`);
+  router.push(`/BF-BTN/tugasan/bantuan/kelulusan/${route.params.id}`);
 };
 
 // Generate unique IDs
@@ -1085,25 +1015,52 @@ const initializeFormData = () => {
     tarikhDisahkan: "",
   };
 
-  // Add sample data if editing
-  if (editingBQ.value) {
-    baseData.itemKerja = [
-      {
-        ref: "CMP",
-        keteranganKerja: "Membaiki kebocoran bumbung",
-        unit: "Pukal",
-        kuantiti: 1,
-        kadar: 3000,
-      },
-      {
-        ref: "CMP",
-        keteranganKerja: "Rekabentuk semula ruang dapur dan kemasan",
-        unit: "Pai",
-        kuantiti: 1,
-        kadar: 40000,
-      },
-    ];
-  }
+  // Add sample data for checking mode
+  baseData.itemKerja = [
+    {
+      ref: "CMP",
+      keteranganKerja:
+        "Membaiki kebocoran bumbung - termasuk penggantian gentian yang rosak dan rekaulk sambungan",
+      unit: "Pukal",
+      kuantiti: 1,
+      kadar: 8500,
+    },
+    {
+      ref: "CMP",
+      keteranganKerja:
+        "Mengecat semula dinding luar rumah - termasuk kerja-kerja scrapping dan primer",
+      unit: "Pukal",
+      kuantiti: 1,
+      kadar: 4200,
+    },
+    {
+      ref: "CMP",
+      keteranganKerja:
+        "Penggantian papan siling yang rosak di ruang tamu dan bilik",
+      unit: "Meter persegi",
+      kuantiti: 25.5,
+      kadar: 45,
+    },
+    {
+      ref: "CMP",
+      keteranganKerja:
+        "Baik pulih dan pembersihan longkang di sekeliling rumah",
+      unit: "Meter panjang",
+      kuantiti: 35,
+      kadar: 85,
+    },
+    {
+      ref: "CMP",
+      keteranganKerja: "Kerja-kerja kecil dan pembersihan tapak",
+      unit: "Pukal",
+      kuantiti: 1,
+      kadar: 1500,
+    },
+  ];
+
+  // Set catatan pengesyoran for checking mode
+  baseData.catatanPengesyoran =
+    "Berdasarkan siasatan lapangan yang telah dijalankan, kerja-kerja baik pulih yang dicadangkan adalah perlu dan mendesak untuk memastikan keselamatan dan keselesaan penghuni. Anggaran kos yang dikemukakan adalah munasabah dan berpatutan mengikut kadar semasa pasaran.";
 
   return baseData;
 };

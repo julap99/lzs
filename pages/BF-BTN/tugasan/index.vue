@@ -318,16 +318,12 @@
                         <div class="flex justify-center items-center gap-2">
                           <rs-button
                             variant="primary"
-                            size="sm"
-                            class="p-1 flex gap-2"
                             @click="handleReview(text)"
                           >
                             Semak
                           </rs-button>
                           <rs-button
                             variant="secondary"
-                            size="sm"
-                            class="p-1 flex gap-2"
                             @click="handleAssignTask(text)"
                           >
                             Tugas Kepada
@@ -389,7 +385,7 @@
                       Sokongan
                     </h4>
                     <rs-table
-                      :data="filteredApplications"
+                      :data="sokonganData"
                       :columns="columns"
                       :pageSize="pageSize"
                       :showNoColumn="true"
@@ -476,7 +472,7 @@
                       Kelulusan
                     </h4>
                     <rs-table
-                      :data="filteredApplications"
+                      :data="kelulusanData"
                       :columns="columns"
                       :pageSize="pageSize"
                       :showNoColumn="true"
@@ -487,7 +483,7 @@
                       }"
                       :options-advanced="{
                         sortable: true,
-                        filterable: true,
+                        filterable: false,
                       }"
                       advanced
                     >
@@ -864,6 +860,44 @@ const siasatanData = ref([
     statusLaluan: "Untuk Kelulusan",
     noRujukan: "NAS-2025-0002",
     tindakan: "bantuan/siasatan/NAS-2025-0002",
+  },
+]);
+
+const sokonganData = ref([
+  {
+    noRujukan: "NAS-2025-0001",
+    namaPemohon: "Ahmad bin Abdullah",
+    status: "Baru",
+    tarikhTerima: "2024-03-20",
+    namaPegawai: "Siti binti Ali",
+    tindakan: "bantuan/sokongan/NAS-2025-0001",
+  },
+  {
+    noRujukan: "NAS-2025-0002",
+    namaPemohon: "Mohd bin Ismail",
+    status: "Dalam Semakan",
+    tarikhTerima: "2024-03-19",
+    namaPegawai: "Aminah binti Hassan",
+    tindakan: "bantuan/sokongan/NAS-2025-0002",
+  },
+]);
+
+const kelulusanData = ref([
+  {
+    noRujukan: "NAS-2025-0001",
+    namaPemohon: "Ahmad bin Abdullah",
+    status: "Baru",
+    tarikhTerima: "2024-03-20",
+    namaPegawai: "Siti binti Ali",
+    tindakan: "bantuan/kelulusan/NAS-2025-0001",
+  },
+  {
+    noRujukan: "NAS-2025-0002",
+    namaPemohon: "Mohd bin Ismail",
+    status: "Dalam Semakan",
+    tarikhTerima: "2024-03-19",
+    namaPegawai: "Aminah binti Hassan",
+    tindakan: "bantuan/kelulusan/NAS-2025-0002",
   },
 ]);
 
