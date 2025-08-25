@@ -69,8 +69,8 @@
     <span class="font-medium">{{ formatDate(data.text) }}</span>
   </template>
 
-  <!-- Only render aksi column if canViewDetail is true -->
-  <template v-if="canViewDetail" v-slot:aksi>
+  <!-- Only render tindakan column if canViewDetail is true -->
+  <template v-if="canViewDetail" v-slot:tindakan>
     <rs-button
       variant="primary"
       size="sm"
@@ -139,7 +139,7 @@ const profileStatusData = ref([
     idPermohonan: "NAS-PRF-2025-0001",
     status: "Menunggu Siasatan",
     lastUpdate: "2025-06-05 10:00",
-    aksi: "NAS-PRF-2025-0001",
+    tindakan: "NAS-PRF-2025-0001",
   },
   {
     tarikhPendaftaran: "2025-05-25",
@@ -147,7 +147,7 @@ const profileStatusData = ref([
     idPermohonan: "NAS-PRF-2025-0002",
     status: "Lulus",
     lastUpdate: "2025-06-03 14:30",
-    aksi: "NAS-PRF-2025-0002",
+    tindakan: "NAS-PRF-2025-0002",
   },
 ]);
 
@@ -197,7 +197,7 @@ const canExport = canViewDetail;
 const displayedData = computed(() => {
   return profileStatusData.value.map(item => {
     if (!canViewDetail.value) {
-      const { aksi, ...rest } = item; // remove aksi
+      const { tindakan, ...rest } = item; // remove tindakan
       return rest;
     }
     return item;

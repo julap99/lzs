@@ -59,7 +59,7 @@
           <template v-slot:tarikhStatus="data">
             <span class="font-medium">{{ formatDate(data.text) }}</span>
           </template>
-          <template v-slot:aksi>
+          <template v-slot:tindakan>
             <rs-button
               variant="primary" 
               size="sm"
@@ -117,7 +117,7 @@ const bantuanData = ref([
     jenisBantuan: "Bantuan Sara Hidup",
     status: "Dalam Proses",
     tarikhStatus: "2025-06-10 09:00",
-    aksi: "NAS-BTN-2025-0001",
+    tindakan: "NAS-BTN-2025-0001",
   },
   {
     idPermohonan: "NAS-BTN-2025-0002",
@@ -126,7 +126,7 @@ const bantuanData = ref([
     jenisBantuan: "Bantuan Pendidikan",
     status: "Diluluskan",
     tarikhStatus: "2025-06-08 14:30",
-    aksi: "NAS-BTN-2025-0002",
+    tindakan: "NAS-BTN-2025-0002",
   },
 ]);
 
@@ -169,13 +169,13 @@ const selectedRole = ref("pengguna-dalam"); // default role
 const canViewDetail = computed(() => selectedRole.value === "pengguna-dalam");
 
 const displayedData = computed(() => {
-  return bantuanData.value.map(item => {
-    if (!canViewDetail.value) {
-      const { aksi, ...rest } = item; // remove aksi
-      return rest;
-    }
-    return item;
-  });
+      return bantuanData.value.map(item => {
+      if (!canViewDetail.value) {
+        const { tindakan, ...rest } = item; // remove tindakan
+        return rest;
+      }
+      return item;
+    });
 });
 </script>
 

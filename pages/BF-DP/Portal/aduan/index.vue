@@ -84,7 +84,7 @@
       </template>
 
       <!-- Column: Lihat Butiran -->
-      <template v-slot:aksi>
+      <template v-slot:tindakan>
             <rs-button
               variant="primary" 
               size="sm"
@@ -152,7 +152,7 @@ const aduanData = ref([
     tarikhAduan: "2025-08-20",
     statusSemasa: "Aduan Baru",
     tarikhKemaskini: "2025-08-21",
-    aksi: "NAS-BTN-2025-0001",
+    tindakan: "NAS-BTN-2025-0001",
   },
   {
     idPermohonan: "ADN-250823-000124",
@@ -160,7 +160,7 @@ const aduanData = ref([
     tarikhAduan: "2025-08-19",
     statusSemasa: "Dalam Tindakan - Siasatan Ringkas",
     tarikhKemaskini: "2025-08-22",
-    aksi: "NAS-BTN-2025-0001",
+    tindakan: "NAS-BTN-2025-0001",
   },
   {
     idPermohonan: "ADN-250823-000125",
@@ -168,7 +168,7 @@ const aduanData = ref([
     tarikhAduan: "2025-08-18",
     statusSemasa: "Selesai",
     tarikhKemaskini: "2025-08-23",
-    aksi: "NAS-BTN-2025-0001",
+    tindakan: "NAS-BTN-2025-0001",
   },
 ]);
 
@@ -205,7 +205,7 @@ const canViewDetail = computed(() => selectedRole.value === "pengguna-dalam");
 const displayedData = computed(() => {
   return aduanData.value.map(item => {
     if (!canViewDetail.value) {
-      const { aksi, ...rest } = item; // remove aksi
+      const { tindakan, ...rest } = item; // remove tindakan
       return rest;
     }
     return item;
