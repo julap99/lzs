@@ -208,11 +208,11 @@
                 placeholder="Pilih Warganegara"
                 :options="['Malaysia', 'Lain-lain']"
                 validation="required"
-                v-model="malaysia"
+                v-model="formData.warganegara"
               />
 
               <FormKit
-                v-if="malaysia === 'Lain-lain'"
+                v-if="formData.warganegara === 'Lain-lain'"
                 type="file"
                 name="lain_warganegara"
                 label="Lain-lain Warganegara"
@@ -221,33 +221,40 @@
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
               />
 
+              <div
+                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                v-if="formData.warganegara === 'Lain-lain'"
+              >
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Taraf Penduduk Tetap</label
+                  >
+                  <FormKit
+                    type="radio"
+                    name="taraf_penduduk"
+                    :options="[
+                      { label: 'Ya', value: 'ya' },
+                      { label: 'Tidak', value: 'tidak' },
+                    ]"
+                    validation="required"
+                  />
+                </div>
+              </div>
               <FormKit
-                v-if="malaysia === 'Lain-lain'"
-                type="radio"
-                name="taraf_penduduk"
-                label="Taraf Penduduk Tetap"
-                :options="[
-                  { label: 'Ya', value: 'ya' },
-                  { label: 'Tidak', value: 'tidak' },
-                ]"
-                validation="required"
-              />
-
-              <FormKit
-                v-if="malaysia === 'Malaysia'"
+                v-if="formData.warganegara === 'Malaysia'"
                 type="text"
                 name="nopassport"
                 label="No Passport"
               />
 
               <FormKit
-                v-if="malaysia === 'Malaysia'"
+                v-if="formData.warganegara === 'Malaysia'"
                 type="date"
                 name="passportStartDate"
                 label="Tarikh mula passport"
               />
               <FormKit
-                v-if="malaysia === 'Malaysia'"
+                v-if="formData.warganegara === 'Malaysia'"
                 type="date"
                 name="passportEndDate"
                 label="Tarikh tamat passport"
@@ -1033,9 +1040,7 @@
 
             <!-- A. Jika Kaedah Pembayaran = Akaun -->
             <div v-if="formData.kaedah_pembayaran === 'akaun'" class="mb-6">
-              <h5 class="text-md font-medium mb-4 ">
-                Maklumat Akaun Bank
-              </h5>
+              <h5 class="text-md font-medium mb-4">Maklumat Akaun Bank</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Nama Bank -->
                 <FormKit
@@ -1082,9 +1087,7 @@
 
             <!-- B. Jika Kaedah Pembayaran = Tiada -->
             <div v-if="formData.kaedah_pembayaran === 'tiada'" class="mb-6">
-              <h5 class="text-md font-medium mb-4 ">
-                Sebab Tiada Akaun Bank
-              </h5>
+              <h5 class="text-md font-medium mb-4">Sebab Tiada Akaun Bank</h5>
               <div class="md:col-span-2">
                 <FormKit
                   type="select"
@@ -1148,9 +1151,7 @@
 
           <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
           <div v-if="formData.tahap_kesihatan === 'Sakit Kronik'" class="mb-8">
-            <h5 class="text-lg font-semibold mb-4 ">
-              Maklumat Sakit Kronik
-            </h5>
+            <h5 class="text-lg font-semibold mb-4">Maklumat Sakit Kronik</h5>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Keadaan Kesihatan -->
@@ -1192,9 +1193,7 @@
 
           <!-- B. Jika Tahap Kesihatan = "OKU" -->
           <div v-if="formData.tahap_kesihatan === 'OKU'" class="mb-8">
-            <h5 class="text-lg font-semibold mb-4 ">
-              Maklumat OKU
-            </h5>
+            <h5 class="text-lg font-semibold mb-4">Maklumat OKU</h5>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Kesempurnaan Fizikal -->
@@ -1247,9 +1246,7 @@
 
           <!-- C. Jika Tahap Kesihatan = "Uzur" -->
           <div v-if="formData.tahap_kesihatan === 'Uzur'" class="mb-8">
-            <h5 class="text-lg font-semibold mb-4">
-              Maklumat Uzur
-            </h5>
+            <h5 class="text-lg font-semibold mb-4">Maklumat Uzur</h5>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Keadaan Kesihatan -->
@@ -1296,9 +1293,7 @@
             "
             class="mb-6"
           >
-            <h5 class="text-lg font-semibold mb-4">
-              Dokumen Sokongan
-            </h5>
+            <h5 class="text-lg font-semibold mb-4">Dokumen Sokongan</h5>
 
             <FormKit
               type="file"
@@ -1343,10 +1338,15 @@
         >
           <h3 class="text-lg font-semibold mb-4">VI. Kemahiran</h3>
 
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-black-700"
+                >Kemahiran</label
+              >
           <FormKit
-            type="select"
+            type="checkbox"
             name="kemahiran"
-            label="Kemahiran"
+
             :options="[
               'Nelayan',
               'Penternakan',
@@ -1363,15 +1363,21 @@
             validation="required"
             v-model="formData.kemahiran"
             placeholder="Pilih kemahiran"
+            :validation-messages="{
+              required: 'Sila pilih kemahiran',
+            }"
           />
+        </div>
+      </div>
 
           <FormKit
             type="text"
             name="lain_lain_kemahiran"
             label="Lain-lain Kemahiran"
             validation="required"
-            v-if="formData.kemahiran === 'Lain-lain'"
+            v-if="formData.kemahiran && formData.kemahiran.includes('Lain-lain')"
             placeholder="Nyatakan kemahiran lain"
+            v-model="formData.lain_lain_kemahiran"
           />
 
           <div class="flex justify-between gap-3 mt-6">
@@ -3008,15 +3014,15 @@
               @click="selectTanggungan(index)"
             >
               <!-- Card Header -->
-              <div class="flex justify-between items-start mb-3">
-                <div>
-                  <h5 class="font-semibold text-gray-900">
-                    Tanggungan {{ index + 1 }}
-                  </h5>
-                  <p class="text-sm text-gray-600">
-                    {{ tanggungan.nama_tanggungan || "Nama belum diisi" }}
-                  </p>
-                </div>
+                              <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1 text-center">
+                    <!-- <h5 class="font-semibold text-gray-900">
+                      Tanggungan {{ index + 1 }}
+                    </h5> -->
+                    <p class="text-sm text-gray-600">
+                      {{ tanggungan.nama_tanggungan || "Nama belum diisi" }}
+                    </p>
+                  </div>
 
                 <!-- Status Badge -->
                 <span
@@ -3037,7 +3043,7 @@
               </div>
 
               <!-- Key Information -->
-              <div class="space-y-2 text-sm text-gray-600">
+              <!-- <div class="space-y-2 text-sm text-gray-600">
                 <div v-if="tanggungan.hubungan_pemohon">
                   <span class="font-medium">Hubungan:</span>
                   {{ tanggungan.hubungan_pemohon }}
@@ -3050,7 +3056,7 @@
                   <span class="font-medium">Jantina:</span>
                   {{ tanggungan.jantina_tanggungan }}
                 </div>
-              </div>
+              </div> -->
 
               <!-- Action Buttons -->
               <div class="flex gap-2 mt-4">
@@ -3232,10 +3238,14 @@
               />
 
               <!-- Taraf Penduduk Tetap -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4"  >
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Taraf Penduduk Tetap</label
+                >
               <FormKit
                 type="radio"
                 name="taraf_penduduk_tetap"
-                label="Taraf Penduduk Tetap *"
                 :options="[
                   { label: 'Ya', value: 'Y' },
                   { label: 'Tidak', value: 'N' },
@@ -3243,7 +3253,8 @@
                 validation="required"
                 v-model="getCurrentTanggungan().taraf_penduduk_tetap"
               />
-
+              </div>
+              </div>
               <!-- No Pasport -->
               <FormKit
                 v-if="showPassportFields"
@@ -3335,6 +3346,7 @@
                     <FormKit
                       type="select"
                       name="situasi_kelulusan_khas"
+                      placeholder="Pilih situasi"
                       label="Situasi *"
                       :options="[
                         { label: 'Profiling', value: 'Profiling' },
@@ -3344,17 +3356,23 @@
                       validation="required"
                       v-model="getCurrentTanggungan().situasi_kelulusan_khas"
                     />
-                    <FormKit
-                      type="radio"
-                      name="kelulusan_khas"
-                      label="Kelulusan Khas *"
-                      :options="[
-                        { label: 'Ya', value: 'Y' },
-                        { label: 'Tidak', value: 'N' },
-                      ]"
-                      validation="required"
-                      v-model="getCurrentTanggungan().kelulusan_khas"
-                    />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div class="space-y-2">
+                        <label
+                          class="block text-sm font-medium text-black-700"
+                        >Kelulusan Khas</label>
+                        <FormKit
+                          type="radio"
+                          name="kelulusan_khas"
+                          :options="[
+                            { label: 'Ya', value: 'Y' },
+                            { label: 'Tidak', value: 'N' },
+                          ]"
+                          validation="required"
+                          v-model="getCurrentTanggungan().kelulusan_khas"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3579,11 +3597,15 @@
             <h4 class="font-medium mb-3">Maklumat Islam</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Adakah tanggungan anda seorang Muallaf? -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Adakah tanggungan anda seorang Muallaf?</label
+                >
               <div class="md:col-span-2">
                 <FormKit
                   type="radio"
                   name="adakah_muallaf_tanggungan"
-                  label="Adakah tanggungan anda seorang Muallaf? *"
                   :options="[
                     { label: 'Ya', value: 'Y' },
                     { label: 'Tidak', value: 'N' },
@@ -3592,13 +3614,14 @@
                   v-model="getCurrentTanggungan().adakah_muallaf_tanggungan"
                 />
               </div>
-
+              </div>
+              </div>
               <!-- Muallaf Fields (Conditional) -->
               <div
                 v-if="getCurrentTanggungan().adakah_muallaf_tanggungan === 'Y'"
                 class="md:col-span-2"
               >
-                <h5 class="font-medium text-blue-800 mb-3">Maklumat Muallaf</h5>
+                <h5 class="font-medium mb-3">Maklumat Muallaf</h5>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <!-- Nama Sebelum Islam (Muallaf) -->
                   <FormKit
@@ -3685,22 +3708,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- Non-Muallaf Message -->
-            <div
-              v-if="getCurrentTanggungan().adakah_muallaf_tanggungan === 'N'"
-              class="md:col-span-2"
-            >
-              <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <div class="flex items-center gap-2">
-                  <i class="fas fa-info-circle text-gray-500"></i>
-                  <span class="text-sm text-gray-600">
-                    Tanggungan ini bukan Muallaf. Tiada maklumat tambahan
-                    diperlukan.
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div class="flex justify-between gap-3 mt-6">
@@ -3741,10 +3748,14 @@
 
             <!-- Kaedah Pembayaran -->
             <div class="mb-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Kaedah Pembayaran</label
+                >
               <FormKit
                 type="radio"
                 name="kaedah_pembayaran_tanggungan"
-                label="Kaedah Pembayaran *"
                 :options="paymentMethodOptions"
                 validation="required"
                 v-model="getCurrentTanggungan().kaedah_pembayaran_tanggungan"
@@ -3752,6 +3763,8 @@
                   required: 'Kaedah pembayaran adalah wajib',
                 }"
               />
+              </div>
+              </div>
             </div>
 
             <!-- A. Jika Kaedah Pembayaran = Akaun -->
@@ -3761,9 +3774,7 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-4 ">
-                A. Maklumat Akaun Bank
-              </h5>
+              <h5 class="text-md font-medium mb-4">Maklumat Akaun Bank</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Nama Bank -->
                 <FormKit
@@ -3817,9 +3828,7 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-4 ">
-                 Sebab Tiada Akaun Bank
-              </h5>
+              <h5 class="text-md font-medium mb-4">Sebab Tiada Akaun Bank</h5>
               <div class="md:col-span-2">
                 <FormKit
                   type="select"
@@ -3872,15 +3881,18 @@
 
             <!-- Bahagian A: Maklumat Pendidikan Asas -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 ">
-                A. Maklumat Pendidikan Asas
+              <h5 class="text-md font-medium mb-3">
+                Maklumat Pendidikan Asas
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Adakah Tanggungan Masih Bersekolah? -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Adakah Tanggungan Masih Bersekolah?</label
+                >
                 <FormKit
                   type="radio"
                   name="masih_bersekolah"
-                  label="Adakah Tanggungan Masih Bersekolah?"
                   :options="[
                     { label: 'Ya', value: 'Y' },
                     { label: 'Tidak', value: 'T' },
@@ -3889,7 +3901,7 @@
                   v-model="getCurrentTanggungan().masih_bersekolah"
                   :disabled="false"
                 />
-
+              </div>
                 <!-- Pendidikan Tertinggi -->
                 <FormKit
                   type="select"
@@ -3936,10 +3948,14 @@
 
               <!-- Tahap Pendidikan yang Dicapai -->
               <div class="mt-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Tahap Pendidikan yang Dicapai</label
+                >
                 <FormKit
                   type="checkbox"
                   name="tahap_pendidikan_dicapai"
-                  label="Tahap Pendidikan yang Dicapai"
                   :options="[
                     'Peringkat Rendah',
                     'SRP-PMR',
@@ -3960,7 +3976,8 @@
                   :disabled="false"
                 />
               </div>
-
+              </div>
+              </div>
               <!-- Lain-lain Tahap Pendidikan yang Dicapai -->
               <div
                 v-if="
@@ -3997,9 +4014,9 @@
             </div>
 
             <!-- Bahagian B: Maklumat Sekolah/Institusi -->
-            <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 ">
-                B. Maklumat Sekolah/Institusi
+            <div v-if="getCurrentTanggungan().masih_bersekolah === 'Y'" class="mb-6">
+              <h5 class="text-md font-medium mb-3">
+                 Maklumat Sekolah/Institusi
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Jenis Sekolah/Institusi -->
@@ -4136,8 +4153,8 @@
             </div>
 
             <!-- Bahagian C: Tempat Tinggal Semasa Belajar -->
-            <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 ">
+            <div v-if="getCurrentTanggungan().masih_bersekolah === 'Y'" class="mb-6">
+              <h5 class="text-md font-medium mb-3">
                 C. Tempat Tinggal Semasa Belajar
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4168,10 +4185,8 @@
             </div>
 
             <!-- Bahagian D: Pengajian Tinggi -->
-            <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 ">
-                D. Pengajian Tinggi
-              </h5>
+            <div v-if="getCurrentTanggungan().masih_bersekolah === 'Y'" class="mb-6">
+              <h5 class="text-md font-medium mb-3">D. Pengajian Tinggi</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Bidang/Kursus Pengajian -->
                 <FormKit
@@ -4278,9 +4293,7 @@
 
             <!-- 1. Tahap Kesihatan -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 ">
-                Tahap Kesihatan
-              </h5>
+              <h5 class="text-md font-medium mb-3">Tahap Kesihatan</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="select"
@@ -4303,9 +4316,7 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3 ">
-                Sakit Kronik
-              </h5>
+              <h5 class="text-md font-medium mb-3">Sakit Kronik</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Keadaan Kesihatan -->
                 <FormKit
@@ -4357,7 +4368,7 @@
               v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'"
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3 ">OKU</h5>
+              <h5 class="text-md font-medium mb-3">OKU</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Kesempurnaan Fizikal -->
                 <FormKit
@@ -4431,7 +4442,7 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3 ">Uzur</h5>
+              <h5 class="text-md font-medium mb-3">Uzur</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Keadaan Kesihatan -->
                 <FormKit
@@ -4484,7 +4495,7 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3 ">
+              <h5 class="text-md font-medium mb-3">
                 Dokumen Sokongan Kesihatan
               </h5>
               <div class="grid grid-cols-1 gap-4">
@@ -4585,11 +4596,13 @@
           <div class="mb-6">
             <h4 class="font-medium mb-3">VI. Maklumat Kemahiran Tanggungan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Kemahiran</label
+                >
               <FormKit
-                type="select"
+                type="checkbox"
                 name="kemahiran_tanggungan"
-                label="Kemahiran"
-                placeholder="Pilih kemahiran"
                 :options="[
                   'Nelayan',
                   'Penternakan',
@@ -4606,6 +4619,7 @@
                 validation="required"
                 v-model="getCurrentTanggungan().kemahiran_tanggungan"
               />
+              </div>
             </div>
           </div>
 
@@ -4613,7 +4627,9 @@
             type="text"
             name="lain_kemahiran_tanggungan"
             label="Lain-lain Kemahiran"
-            v-if="getCurrentTanggungan().kemahiran_tanggungan === 'Lain-lain'"
+            placeholder="Sila nyatakan kemahiran lain"
+            v-if="getCurrentTanggungan().kemahiran_tanggungan && getCurrentTanggungan().kemahiran_tanggungan.includes('Lain-lain')"
+            v-model="getCurrentTanggungan().lain_kemahiran_tanggungan"
           />
 
           <div class="flex justify-between gap-3 mt-6">
@@ -4651,14 +4667,14 @@
 
             <!-- 1. Pekerjaan (Wajib) -->
             <div class="mb-6">
-              <h5 class="font-medium mb-3 text-gray-700">
-                1. Pekerjaan (Wajib)
-              </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Pekerjaan</label
+                  >
                 <FormKit
                   type="radio"
                   name="pekerjaan_status_tanggungan"
-                  label="Pekerjaan *"
                   :options="[
                     { label: 'Bekerja', value: 'Bekerja' },
                     { label: 'Tidak Bekerja', value: 'Tidak Bekerja' },
@@ -4667,6 +4683,7 @@
                   validation-label="Status pekerjaan"
                   v-model="getCurrentTanggungan().pekerjaan_status"
                 />
+                </div>
               </div>
             </div>
 
@@ -4675,14 +4692,14 @@
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
-              <h5 class="font-medium mb-3 text-gray-700">
-                2. Sumber Pendapatan
-              </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Sumber Pendapatan</label
+                  >
                 <FormKit
                   type="checkbox"
                   name="sumber_pendapatan_tanggungan"
-                  label="Sumber Pendapatan *"
                   :options="[
                     { label: 'Pengajian', value: 'Pengajian' },
                     {
@@ -4704,6 +4721,7 @@
                   }"
                   v-model="getCurrentTanggungan().sumber_pendapatan"
                 />
+                </div>
               </div>
 
               <!-- 2.1 Lain-lain Sumber Pendapatan -->
@@ -4731,8 +4749,8 @@
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
-              <h5 class="font-medium mb-3 text-gray-700">
-                3. Butiran Pekerjaan
+              <h5 class="font-medium mb-3 ">
+                Butiran Pekerjaan
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- 3.1 Jenis Pekerjaan -->
@@ -4788,8 +4806,8 @@
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
-              <h5 class="font-medium mb-3 text-gray-700">
-                4. Maklumat Majikan
+              <h5 class="font-medium mb-3 ">
+               Maklumat Majikan
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
@@ -4905,8 +4923,8 @@
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
-              <h5 class="font-medium mb-3 text-gray-700">
-                5. Jawatan & Status
+              <h5 class="font-medium mb-3 ">
+ Jawatan & Status
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
@@ -4941,7 +4959,7 @@
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
-              <h5 class="font-medium mb-3 text-gray-700">6. Pendapatan</h5>
+              <h5 class="font-medium mb-3 "> Pendapatan</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="text"
@@ -7793,14 +7811,14 @@ const removeHeir = (index) => {
 // ============================================================================
 // LOCATION & UTILITY FUNCTIONS
 // ============================================================================
-  const getLocation = (field) => {
-    if (field === 'addressInfo') {
-      formData.value.addressInfo.geolokasi = "Lokasi semasa";
-    } else {
-      formData.value[field].geolokasi = "Lokasi semasa";
-    }
-    toast.success("Lokasi berjaya diperoleh!");
-  };
+const getLocation = (field) => {
+  if (field === "addressInfo") {
+    formData.value.addressInfo.geolokasi = "Lokasi semasa";
+  } else {
+    formData.value[field].geolokasi = "Lokasi semasa";
+  }
+  toast.success("Lokasi berjaya diperoleh!");
+};
 
 // ============================================================================
 // KURSUS MODAL FUNCTIONS
