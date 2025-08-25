@@ -3,11 +3,14 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Role Simulator - For Demo/Presentation Only -->
+    <!-- This allows switching between different user roles to demonstrate role-based views -->
+    <!-- In production, this would be replaced with actual user authentication and role management -->
     <div class="mb-4 flex items-center space-x-4">
       <label class="font-medium text-gray-700">Pilih Role:</label>
       <select v-model="selectedRole" class="border rounded p-1">
-        <option value="asnaf">Asnaf</option>
-        <option value="internal">Internal Staff</option>
+        <option value="pengguna-luar">Pengguna Luar</option>
+        <option value="pengguna-dalam">Pengguna Dalam</option>
       </select>
     </div>
     <!-- Section 1: Ringkasan Maklumat Carian -->
@@ -161,9 +164,9 @@ const viewBantuanDetail = (): void => {
   navigateTo(`/BF-DP/Portal/bantuan/01`);
 };
 
-const selectedRole = ref("internal"); // default role
+const selectedRole = ref("pengguna-dalam"); // default role
 
-const canViewDetail = computed(() => selectedRole.value === "internal");
+const canViewDetail = computed(() => selectedRole.value === "pengguna-dalam");
 
 const displayedData = computed(() => {
   return bantuanData.value.map(item => {

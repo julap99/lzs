@@ -3,11 +3,14 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Role Simulator - For Demo/Presentation Only -->
+    <!-- This allows switching between different user roles to demonstrate role-based views -->
+    <!-- In production, this would be replaced with actual user authentication and role management -->
     <div class="mb-4 flex items-center space-x-4">
       <label class="font-medium text-gray-700">Pilih Role:</label>
       <select v-model="selectedRole" class="border rounded p-1">
-        <option value="asnaf">Asnaf</option>
-        <option value="internal">Internal Staff</option>
+        <option value="pengguna-luar">Pengguna Luar</option>
+        <option value="pengguna-dalam">Pengguna Dalam</option>
       </select>
     </div>
 
@@ -187,8 +190,8 @@ const exportExcel = (): void => {
 };
 
 
-const selectedRole = ref("internal"); // default role
-const canViewDetail = computed(() => selectedRole.value === "internal");
+const selectedRole = ref("pengguna-dalam"); // default role
+const canViewDetail = computed(() => selectedRole.value === "pengguna-dalam");
 const canExport = canViewDetail;
 
 const displayedData = computed(() => {
