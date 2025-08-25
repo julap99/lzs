@@ -32,9 +32,9 @@
           <FormKit
             type="text"
             name="organizationName"
-            label="Nama Vendor/Individu"
+            label="Nama Syarikat/Individu"
             validation="required"
-            placeholder="Masukkan nama vendor/Iindividu"
+            placeholder="Masukkan nama syarikat/individu"
             v-model="formData.organizationName"
           />
 
@@ -47,7 +47,7 @@
             :options="[
               { label: 'Individu', value: 'ngo' },
               /* { label: 'Syarikat', value: 'syarikat' }, */
-              { label: 'Vendor', value: 'vendor' },
+              { label: 'Syarikat', value: 'vendor' },
               /* { label: 'Rumah Sewa', value: 'rumahsewa' }, */
             ]"
             v-model="formData.organizationType"

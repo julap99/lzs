@@ -182,7 +182,7 @@ const applicationData = ref({
   refNumber: "2406002",
   applicationDate: "18 Jun 2025",
   status: "Menunggu Pengesahan",
-  organizationType: "Third-party (Vendor)",
+  organizationType: "Third-party (Syarikat)",
   organizationCategory: "Registered", // Atau "Non-Registered"
   organizationStructure: "Induk", // atau "Cawangan"
   organizationName: "Pusat Dialisis Sejahtera",
