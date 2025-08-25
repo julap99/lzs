@@ -1025,7 +1025,7 @@ const handleSelesaiDanHantar = async () => {
     toast.success("Siasatan telah selesai dan dihantar untuk kelulusan");
 
     // Navigate back to list
-    router.push("/BF-BTN/tugasan");
+    router.push("/BF-BTN/tugasan/bantuan/siasatan-eoad");
   } catch (error) {
     toast.error("Ralat semasa menyelesaikan dan menghantar");
     console.error(error);
@@ -1036,7 +1036,7 @@ const handleSelesaiDanHantar = async () => {
 };
 
 const handleBatal = () => {
-  router.push("/BF-BTN/tugasan");
+  router.push("/BF-BTN/tugasan/bantuan/siasatan-eoad");
 };
 
 // Fetch application data on mount

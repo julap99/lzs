@@ -591,7 +591,7 @@ const siasatanData = ref([
     status: "Dalam Siasatan",
     statusLaluan: "Untuk Siasatan",
     noRujukan: "NAS-2025-0001",
-    tindakan: "bantuan/siasatan/NAS-2025-0001",
+    tindakan: "bantuan/siasatan-eoad",
   },
   {
     pemohon: "Siti binti Hassan (850505-05-5678)",
@@ -601,7 +601,7 @@ const siasatanData = ref([
     status: "Selesai Siasatan",
     statusLaluan: "Untuk Kelulusan",
     noRujukan: "NAS-2025-0002",
-    tindakan: "bantuan/siasatan/NAS-2025-0002",
+    tindakan: "bantuan/siasatan-eoad",
   },
 ]);
 

@@ -89,8 +89,8 @@
       </template>
     </rs-card>
 
-    <div class="flex flex-col lg:flex-row gap-4 mt-4">
-      <rs-card class="flex-1">
+    <div class="mt-8">
+      <rs-card class="">
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
@@ -102,11 +102,7 @@
           <rs-tab variant="primary" type="card">
             <rs-tab-item title="Profiling" active>
               <!-- Profiling Tab Content -->
-              <div class="space-y-6">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                  Pengesahan Status
-                </h3>
-
+              <div class="bg-white rounded-lg border border-gray-100 p-6">
                 <!-- Profiling Form -->
                 <div
                   class="bg-white border border-gray-200 rounded-lg overflow-hidden"
@@ -129,7 +125,7 @@
                         />
                         Carian Maklumat
                       </h4>
-                      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                         <!-- Pengenalan ID with Search -->
                         <div class="lg:col-span-2">
                           <div class="flex gap-3">
@@ -518,7 +514,7 @@
 
                     <!-- Action Buttons -->
                     <div class="p-6 bg-white border-t border-gray-200">
-                      <div class="flex flex-col sm:flex-row gap-3 justify-end">
+                      <div class="flex flex-col sm:flex-row gap-4 justify-end">
                         <rs-button
                           variant="secondary"
                           @click="resetProfilingForm"
@@ -558,161 +554,34 @@
 
             <rs-tab-item title="Bantuan">
               <!-- Bantuan Tab Content with Sub-tabs -->
-              <div>
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                  Maklumat Bantuan
-                </h3>
+              <div class="bg-white rounded-lg border border-gray-100 p-6">
+                <div class="flex items-center gap-3 mb-8">
+                  <div class="w-1 h-8 bg-green-500 rounded-full"></div>
+                  <h3 class="text-xl font-semibold text-gray-800">
+                    Maklumat Bantuan
+                  </h3>
+                </div>
 
                 <!-- Sub-tabs for Bantuan -->
-                <rs-tab variant="secondary" type="border" class="mb-6">
-                  <rs-tab-item title="Syor" active>
-                    <!-- Syor Sub-tab Content -->
-                    <div class="space-y-4">
-                      <div class="w-full overflow-x-auto">
-                        <rs-table
-                          :data="recommendedAid"
-                          :columns="recommendedAidColumns"
-                          :showNoColumn="true"
-                          :options="{
-                            variant: 'default',
-                            striped: true,
-                            hover: true,
-                          }"
-                          :options-advanced="{
-                            sortable: true,
-                            filterable: false,
-                          }"
-                          advanced
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                  <rs-tab variant="secondary" type="border">
+                    <rs-tab-item title="Syor" active>
+                      <!-- Syor Sub-tab Content -->
+                      <div
+                        class="bg-white rounded-lg p-4 mt-4 border border-gray-200"
+                      >
+                        <div class="flex items-center gap-2 mb-4">
+                          <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                          <h4 class="text-lg font-medium text-gray-800">
+                            Cadangan Bantuan
+                          </h4>
+                        </div>
+                        <div
+                          class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
                         >
-                          <template #header-terimaCadangan>
-                            <div class="flex items-center gap-2" @click.stop>
-                              <FormKit
-                                type="checkbox"
-                                v-model="selectAllSyor"
-                                @change="toggleSelectAllSyor"
-                                outer-class="mb-0"
-                              />
-                              <span class="text-sm">Pilih Semua</span>
-                            </div>
-                          </template>
-                          <template v-slot:kadarDicadangkan="{ text }"
-                            >RM {{ text }}</template
-                          >
-                          <template v-slot:skorAI="{ text }">
-                            <rs-badge :variant="getScoreVariant(text)"
-                              >{{ text }}%</rs-badge
-                            >
-                          </template>
-                          <template v-slot:terimaCadangan="{ value }">
-                            <FormKit
-                              type="checkbox"
-                              v-model="value.terimaCadangan"
-                              outer-class="mb-0"
-                            />
-                          </template>
-                        </rs-table>
-                      </div>
-
-                      <div class="flex justify-end">
-                        <rs-button variant="primary">Sahkan</rs-button>
-                      </div>
-                    </div>
-                  </rs-tab-item>
-
-                  <rs-tab-item title="Bantuan daripada Agensi">
-                    <!-- Bantuan daripada Agensi Sub-tab Content -->
-                    <div class="space-y-3">
-                      <div class="flex justify-end">
-                        <span
-                          class="text-sm text-gray-600 bg-gray-100 rounded-full px-3 py-1"
-                          >{{ otherAgencyAssistance.length }} records / 50
-                          max</span
-                        >
-                      </div>
-
-                      <div class="w-full overflow-x-auto">
-                        <rs-table
-                          :data="otherAgencyAssistance"
-                          :columns="otherAgencyColumns"
-                          :showNoColumn="true"
-                          :options="{
-                            variant: 'default',
-                            striped: true,
-                            hover: true,
-                          }"
-                          :options-advanced="{
-                            sortable: true,
-                            filterable: false,
-                          }"
-                          advanced
-                        >
-                          <template v-slot:jumlah="{ text }"
-                            >RM {{ text }}</template
-                          >
-                        </rs-table>
-                      </div>
-                    </div>
-                  </rs-tab-item>
-
-                  <rs-tab-item title="Bantuan Sedia Ada">
-                    <!-- Bantuan Sedia Ada Sub-tab Content -->
-                    <div class="space-y-3">
-                      <div class="flex justify-end">
-                        <span
-                          class="text-sm text-gray-600 bg-gray-100 rounded-full px-3 py-1"
-                          >{{ existingAssistance.length }} records</span
-                        >
-                      </div>
-
-                      <div class="w-full overflow-x-auto">
-                        <rs-table
-                          :data="existingAssistance"
-                          :columns="existingAssistanceColumns"
-                          :showNoColumn="true"
-                          :options="{
-                            variant: 'default',
-                            striped: true,
-                            hover: true,
-                          }"
-                          :options-advanced="{
-                            sortable: true,
-                            filterable: false,
-                          }"
-                          advanced
-                        >
-                          <template v-slot:kadar="{ text }"
-                            >RM {{ text }}</template
-                          >
-                          <template v-slot:jumlah="{ text }"
-                            >RM {{ text }}</template
-                          >
-                          <template v-slot:status="{ text }">
-                            <rs-badge
-                              :variant="getAssistanceStatusVariant(text)"
-                              >{{ text }}</rs-badge
-                            >
-                          </template>
-                        </rs-table>
-                      </div>
-                    </div>
-                  </rs-tab-item>
-
-                  <rs-tab-item title="Perubahan Bantuan">
-                    <!-- Perubahan Bantuan Sub-tab Content -->
-                    <div class="space-y-8">
-                      <!-- Senarai Bantuan yang mengalami Perubahan Kadar -->
-                      <div class="space-y-3">
-                        <h3 class="text-md font-semibold text-gray-900">
-                          Perubahan Status: Mikin > Fakir
-                        </h3>
-                        <h4 class="text-md font-semibold text-gray-900">
-                          Senarai Bantuan yang mengalami Perubahan Kadar
-                        </h4>
-
-                        <div class="w-full overflow-x-auto">
                           <rs-table
-                            :data="bantuanPerubahanKadar"
-                            :columns="perubahanColumns"
+                            :data="recommendedAid"
+                            :columns="recommendedAidColumns"
                             :showNoColumn="true"
                             :options="{
                               variant: 'default',
@@ -729,12 +598,20 @@
                               <div class="flex items-center gap-2" @click.stop>
                                 <FormKit
                                   type="checkbox"
-                                  v-model="selectAllPerubahan"
-                                  @change="toggleSelectAllPerubahan"
+                                  v-model="selectAllSyor"
+                                  @change="toggleSelectAllSyor"
                                   outer-class="mb-0"
                                 />
                                 <span class="text-sm">Pilih Semua</span>
                               </div>
+                            </template>
+                            <template v-slot:kadarDicadangkan="{ text }"
+                              >RM {{ text }}</template
+                            >
+                            <template v-slot:skorAI="{ text }">
+                              <rs-badge :variant="getScoreVariant(text)"
+                                >{{ text }}%</rs-badge
+                              >
                             </template>
                             <template v-slot:terimaCadangan="{ value }">
                               <FormKit
@@ -750,26 +627,33 @@
                           <rs-button variant="primary">Sahkan</rs-button>
                         </div>
                       </div>
+                    </rs-tab-item>
 
-                      <!-- Senarai Bantuan Sedia Ada yang akan dibatalkan -->
-                      <div class="space-y-3">
-                        <h4 class="text-md font-semibold text-gray-900">
-                          Senarai Bantuan Sedia Ada yang akan dibatalkan
-                        </h4>
-                        <div class="flex items-center gap-2">
-                          <FormKit
-                            type="checkbox"
-                            v-model="selectAllPembatalan"
-                            @change="toggleSelectAllPembatalan"
-                            outer-class="mb-0"
-                          />
-                          <span class="text-sm">Pilih Semua</span>
+                    <rs-tab-item title="Bantuan daripada Agensi">
+                      <!-- Bantuan daripada Agensi Sub-tab Content -->
+                      <div
+                        class="bg-white rounded-lg p-4 mt-4 border border-gray-200"
+                      >
+                        <div class="flex items-center gap-2 mb-4">
+                          <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
+                          <h4 class="text-lg font-medium text-gray-800">
+                            Bantuan Agensi Lain
+                          </h4>
+                        </div>
+                        <div class="flex justify-end">
+                          <span
+                            class="text-sm text-gray-600 bg-gray-100 rounded-full px-3 py-1"
+                            >{{ otherAgencyAssistance.length }} records / 50
+                            max</span
+                          >
                         </div>
 
-                        <div class="w-full overflow-x-auto">
+                        <div
+                          class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
+                        >
                           <rs-table
-                            :data="bantuanPembatalan"
-                            :columns="pembatalanColumns"
+                            :data="otherAgencyAssistance"
+                            :columns="otherAgencyColumns"
                             :showNoColumn="true"
                             :options="{
                               variant: 'default',
@@ -782,75 +666,246 @@
                             }"
                             advanced
                           >
-                            <template v-slot:batalBantuan="{ value }">
-                              <FormKit
-                                type="checkbox"
-                                v-model="value.batalBantuan"
-                                outer-class="mb-0"
-                              />
+                            <template v-slot:jumlah="{ text }"
+                              >RM {{ text }}</template
+                            >
+                          </rs-table>
+                        </div>
+                      </div>
+                    </rs-tab-item>
+
+                    <rs-tab-item title="Bantuan Sedia Ada">
+                      <!-- Bantuan Sedia Ada Sub-tab Content -->
+                      <div
+                        class="bg-white rounded-lg p-4 mt-4 border border-gray-200"
+                      >
+                        <div class="flex items-center gap-2 mb-4">
+                          <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                          <h4 class="text-lg font-medium text-gray-800">
+                            Bantuan Semasa
+                          </h4>
+                        </div>
+                        <div class="flex justify-end">
+                          <span
+                            class="text-sm text-gray-600 bg-gray-100 rounded-full px-3 py-1"
+                            >{{ existingAssistance.length }} records</span
+                          >
+                        </div>
+
+                        <div
+                          class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
+                        >
+                          <rs-table
+                            :data="existingAssistance"
+                            :columns="existingAssistanceColumns"
+                            :showNoColumn="true"
+                            :options="{
+                              variant: 'default',
+                              striped: true,
+                              hover: true,
+                            }"
+                            :options-advanced="{
+                              sortable: true,
+                              filterable: false,
+                            }"
+                            advanced
+                          >
+                            <template v-slot:kadar="{ text }"
+                              >RM {{ text }}</template
+                            >
+                            <template v-slot:jumlah="{ text }"
+                              >RM {{ text }}</template
+                            >
+                            <template v-slot:status="{ text }">
+                              <rs-badge
+                                :variant="getAssistanceStatusVariant(text)"
+                                >{{ text }}</rs-badge
+                              >
                             </template>
                           </rs-table>
                         </div>
+                      </div>
+                    </rs-tab-item>
 
-                        <div class="flex justify-end">
-                          <rs-button variant="primary">Sahkan</rs-button>
+                    <rs-tab-item title="Perubahan Bantuan">
+                      <!-- Perubahan Bantuan Sub-tab Content -->
+                      <div
+                        class="bg-white rounded-lg p-4 mt-4 border border-gray-200"
+                      >
+                        <div class="flex items-center gap-2 mb-6">
+                          <div class="w-2 h-2 bg-orange-400 rounded-full"></div>
+                          <h4 class="text-lg font-medium text-gray-800">
+                            Perubahan & Pembatalan
+                          </h4>
+                        </div>
+                        <div class="space-y-8">
+                          <!-- Senarai Bantuan yang mengalami Perubahan Kadar -->
+                          <div class="space-y-3">
+                            <h3 class="text-md font-semibold text-gray-900">
+                              Perubahan Status: Mikin > Fakir
+                            </h3>
+                            <h4 class="text-md font-semibold text-gray-900">
+                              Senarai Bantuan yang mengalami Perubahan Kadar
+                            </h4>
+
+                            <div
+                              class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
+                            >
+                              <rs-table
+                                :data="bantuanPerubahanKadar"
+                                :columns="perubahanColumns"
+                                :showNoColumn="true"
+                                :options="{
+                                  variant: 'default',
+                                  striped: true,
+                                  hover: true,
+                                }"
+                                :options-advanced="{
+                                  sortable: true,
+                                  filterable: false,
+                                }"
+                                advanced
+                              >
+                                <template #header-terimaCadangan>
+                                  <div
+                                    class="flex items-center gap-2"
+                                    @click.stop
+                                  >
+                                    <FormKit
+                                      type="checkbox"
+                                      v-model="selectAllPerubahan"
+                                      @change="toggleSelectAllPerubahan"
+                                      outer-class="mb-0"
+                                    />
+                                    <span class="text-sm">Pilih Semua</span>
+                                  </div>
+                                </template>
+                                <template v-slot:terimaCadangan="{ value }">
+                                  <FormKit
+                                    type="checkbox"
+                                    v-model="value.terimaCadangan"
+                                    outer-class="mb-0"
+                                  />
+                                </template>
+                              </rs-table>
+                            </div>
+
+                            <div class="flex justify-end">
+                              <rs-button variant="primary">Sahkan</rs-button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Senarai Bantuan Sedia Ada yang akan dibatalkan -->
+                        <div class="space-y-3">
+                          <h4 class="text-md font-semibold text-gray-900">
+                            Senarai Bantuan Sedia Ada yang akan dibatalkan
+                          </h4>
+                          <div class="flex items-center gap-2">
+                            <FormKit
+                              type="checkbox"
+                              v-model="selectAllPembatalan"
+                              @change="toggleSelectAllPembatalan"
+                              outer-class="mb-0"
+                            />
+                            <span class="text-sm">Pilih Semua</span>
+                          </div>
+
+                          <div
+                            class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
+                          >
+                            <rs-table
+                              :data="bantuanPembatalan"
+                              :columns="pembatalanColumns"
+                              :showNoColumn="true"
+                              :options="{
+                                variant: 'default',
+                                striped: true,
+                                hover: true,
+                              }"
+                              :options-advanced="{
+                                sortable: true,
+                                filterable: false,
+                              }"
+                              advanced
+                            >
+                              <template v-slot:batalBantuan="{ value }">
+                                <FormKit
+                                  type="checkbox"
+                                  v-model="value.batalBantuan"
+                                  outer-class="mb-0"
+                                />
+                              </template>
+                            </rs-table>
+                          </div>
+
+                          <div class="flex justify-end">
+                            <rs-button variant="primary">Sahkan</rs-button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </rs-tab-item>
+                    </rs-tab-item>
 
-                  <rs-tab-item title="Bantuan Baru">
-                    <!-- Bantuan Baru Sub-tab Content -->
-                    <div class="space-y-4">
-                      <h4 class="text-md font-semibold text-gray-900">
-                        Senarai Bantuan Yang Akan Diterima
-                      </h4>
+                    <rs-tab-item title="Bantuan Baru">
+                      <!-- Bantuan Baru Sub-tab Content -->
+                      <div
+                        class="bg-white rounded-lg p-4 mt-4 border border-gray-200"
+                      >
+                        <div class="flex items-center gap-2 mb-4">
+                          <div
+                            class="w-2 h-2 bg-emerald-400 rounded-full"
+                          ></div>
+                          <h4 class="text-lg font-medium text-gray-800">
+                            Senarai Bantuan Yang Akan Diterima
+                          </h4>
+                        </div>
 
-                      <div class="w-full overflow-x-auto">
-                        <rs-table
-                          :data="assistanceApplications"
-                          :columns="assistanceColumns"
-                          :showNoColumn="true"
-                          :options="{
-                            variant: 'default',
-                            striped: true,
-                            hover: true,
-                          }"
-                          :options-advanced="{
-                            sortable: true,
-                            filterable: false,
-                          }"
-                          advanced
+                        <div
+                          class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
                         >
-                          <template v-slot:status="{ text }">
-                            <rs-badge
-                              :variant="getAssistanceStatusVariant(text)"
-                              >{{ text }}</rs-badge
-                            >
-                          </template>
+                          <rs-table
+                            :data="assistanceApplications"
+                            :columns="assistanceColumns"
+                            :showNoColumn="true"
+                            :options="{
+                              variant: 'default',
+                              striped: true,
+                              hover: true,
+                            }"
+                            :options-advanced="{
+                              sortable: true,
+                              filterable: false,
+                            }"
+                            advanced
+                          >
+                            <template v-slot:status="{ text }">
+                              <rs-badge
+                                :variant="getAssistanceStatusVariant(text)"
+                                >{{ text }}</rs-badge
+                              >
+                            </template>
 
-                          <template v-slot:actions="{ value }">
-                            <rs-button
-                              variant="primary-outline"
-                              size="sm"
-                              class="!px-2"
-                              @click="editAssistance(value)"
-                            >
-                              <Icon name="mdi:pencil" class="w-4 h-4" />
-                            </rs-button>
-                          </template>
-                        </rs-table>
+                            <template v-slot:actions="{ value }">
+                              <rs-button
+                                variant="primary"
+                                @click="editAssistance(value)"
+                              >
+                                Edit
+                              </rs-button>
+                            </template>
+                          </rs-table>
+                        </div>
                       </div>
-                    </div>
-                  </rs-tab-item>
-                </rs-tab>
+                    </rs-tab-item>
+                  </rs-tab>
+                </div>
               </div>
             </rs-tab-item>
           </rs-tab>
         </template>
       </rs-card>
 
-      <rs-card class="flex-1">
+      <rs-card class="">
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Lawatan & Siasatan</h2>
@@ -864,7 +919,7 @@
             @submit="handleSubmitLawatan"
             v-model="investigationData"
           >
-            <div class="space-y-6">
+            <div class="space-y-8">
               <!-- Ringkasan Profil -->
               <div class="bg-gray-50 p-4 rounded-lg">
                 <h3 class="text-sm font-medium text-gray-700 mb-3">
@@ -914,7 +969,7 @@
                   placeholder="--Sila Pilih--"
                   validation="required"
                   :validation-messages="{
-                    required: 'Sila pilih keadaan siasatan',
+                    required: 'Sila pilih keadaan siasatan untuk meneruskan',
                   }"
                 />
               </div>
@@ -975,12 +1030,12 @@
                     @dragover.prevent
                     @dragenter.prevent
                     @drop.prevent="handleFileDrop"
-                    class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer bg-gray-50 hover:bg-gray-100"
+                    class="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 group"
                   >
                     <div class="space-y-2">
                       <Icon
                         name="ph:upload"
-                        class="w-8 h-8 text-gray-400 mx-auto"
+                        class="w-12 h-12 text-blue-400 group-hover:text-blue-500 transition-colors duration-300 group-hover:scale-110 transform mx-auto"
                       />
                       <div>
                         <p class="text-sm text-gray-600">
@@ -1034,12 +1089,12 @@
                   <!-- Image Preview Gallery -->
                   <div
                     v-if="uploadedImages.length > 0"
-                    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
                   >
                     <div
                       v-for="(image, index) in uploadedImages"
                       :key="index"
-                      class="group relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                      class="group relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm scroll-indicator hover:shadow-md transition-shadow"
                     >
                       <!-- Image Preview -->
                       <div class="aspect-square bg-gray-100 relative">
@@ -1121,7 +1176,7 @@
                   <!-- Sample Image Placeholder -->
                   <div
                     v-if="uploadedImages.length === 0"
-                    class="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-gray-50"
+                    class="mt-6 border border-gray-300 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-slate-100 shadow-sm scroll-indicator"
                   >
                     <div
                       class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
@@ -1173,7 +1228,9 @@
               </div>
 
               <!-- Action Buttons -->
-              <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t">
+              <div
+                class="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-200"
+              >
                 <rs-button
                   variant="success"
                   @click="handleSimpan"
@@ -1244,7 +1301,9 @@
           </div>
 
           <!-- Image Details -->
-          <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+          <div
+            class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-6 space-y-4"
+          >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
@@ -1298,6 +1357,9 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 definePageMeta({
   title: "Maklumat Pemohon - Siasatan EOAD",
@@ -1396,6 +1458,10 @@ const searchingId = ref(false);
 const savingDraft = ref(false);
 const submittingProfile = ref(false);
 
+// Pagination state
+const currentPage = ref(1);
+const pageSize = ref(10);
+
 // Dropdown options
 const keadaanSiasatanOptions = [
   { label: "Boleh ditemui", value: "boleh_ditemui" },
@@ -1482,7 +1548,7 @@ const assistanceApplications = ref([
     jenisBantuan: "B152 - Bantuan Binaan Rumah (Fakir)",
     status: "Dalam Semakan",
     sla: "3 hari lagi",
-    actions: "edit",
+    actions: "/",
   },
 ]);
 
@@ -1656,8 +1722,7 @@ const addNewAssistance = () => {
 };
 
 const editAssistance = (row) => {
-  console.log("Edit assistance:", row);
-  // Handle editing assistance
+  router.push(`/BF-BTN/tugasan/bantuan/siasatan/B106`);
 };
 
 const saveData = () => {
@@ -2006,6 +2071,71 @@ const submitProfiling = async () => {
 </script>
 
 <style lang="scss" scoped>
+/* Table responsive enhancements */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background-color: #f3f4f6;
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+/* Enhanced table container */
+.table-container {
+  position: relative;
+}
+
+.table-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.table-container:hover::after {
+  opacity: 1;
+}
+
+/* Table minimum width for horizontal scrolling */
+.table-responsive {
+  min-width: 800px;
+}
+
+/* Mobile touch scrolling */
+@media (max-width: 768px) {
+  .scrollbar-thin {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Custom animations for image upload */
 .image-upload-enter-active,
 .image-upload-leave-active {
