@@ -17,15 +17,6 @@
             <div class="p-2">
               <div class="text-sm text-gray-500">Nama Bantuan</div>
               <div class="font-bold">{{ bantuanInfo.namaBantuan }}</div>
-              <div class="mt-2 flex space-x-2">
-                <rs-button variant="destructive" size="sm">
-                  <Icon name="mdi:cancel" class="mr-1" /> Batal Bantuan
-                </rs-button>
-                <rs-button variant="warning" size="sm">
-                  <Icon name="mdi:star-check" class="mr-1" /> Kelulusan Khas
-                </rs-button>
-              </div>
-
             </div>
           </rs-card>
           <rs-card variant="secondary">
@@ -40,6 +31,39 @@
               <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
                 {{ currentStatus }}
               </rs-badge>
+            </div>
+          </rs-card>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section 2: Maklumat Tindakan & Status -->
+    <rs-card class="mb-6">
+      <template #header>Maklumat Tindakan & Status</template>
+      <template #body>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <rs-card variant="secondary">
+            <div class="p-2">
+              <div class="text-sm text-gray-500">Status Semasa</div>
+              <div class="font-bold">{{ tindakanStatus.statusSemasa }}</div>
+            </div>
+          </rs-card>
+          <rs-card variant="secondary">
+            <div class="p-2">
+              <div class="text-sm text-gray-500">Tarikh Kemaskini</div>
+              <div class="font-bold">{{ formatDate(tindakanStatus.tarikhKemaskini) }}</div>
+            </div>
+          </rs-card>
+          <rs-card variant="secondary">
+            <div class="p-2">
+              <div class="text-sm text-gray-500">Nama Pegawai Bertugas</div>
+              <div class="font-bold">{{ tindakanStatus.namaPegawaiBertugas }}</div>
+            </div>
+          </rs-card>
+          <rs-card variant="secondary">
+            <div class="p-2">
+              <div class="text-sm text-gray-500">Catatan Pegawai Bertugas</div>
+              <div class="font-bold italic">{{ tindakanStatus.catatanPegawaiBertugas }}</div>
             </div>
           </rs-card>
         </div>
@@ -249,7 +273,7 @@ const getStatusVariant = (status: string) => {
   return variants[status] || 'default';
 };
 
-const currentStatus = ref('Kelulusan');
+const currentStatus = ref('Siasatan');
 
 // Dummy SLA & statusTimeline example
 const slaRules: Record<string, number> = {
@@ -333,6 +357,13 @@ const statusTimeline = [
     rejected: false,
   },
 ];
+
+const tindakanStatus = ref({
+  statusSemasa: 'Siasatan',
+  tarikhKemaskini: '2025-06-13T14:30:00',
+  namaPegawaiBertugas: 'Ustaz Hafiz',
+  catatanPegawaiBertugas: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
+});
 
 const formatDate = (dateStr: string | Date): string => {
   if (!dateStr) return 'Belum Bermula';
