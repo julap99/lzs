@@ -56,7 +56,7 @@
                     v-model="formData.searchName"
                     placeholder="Masukkan nama (sebarang bahagian nama)"
                     input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @input="validateField('searchName')"
+                    @input="debouncedValidateField('searchName')"
                   />
                   <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Semua perkataan mesti ada dalam nama. Contoh: "nur . ahmad" untuk carian tepat atau "ahmad" untuk carian umum</p>
                 </div>
@@ -101,7 +101,7 @@
                     v-model="formData.searchBankAccount"
                     placeholder="Masukkan nombor akaun bank"
                     input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @input="validateField('searchBankAccount')"
+                    @input="debouncedValidateField('searchBankAccount')"
                   />
                   <p class="mt-1 text-xs text-gray-500">Cari dengan nombor akaun bank yang tepat (8-20 digit)</p>
                 </div>
@@ -146,7 +146,7 @@
                     v-model="formData.idNumber"
                     :placeholder="getPlaceholder()"
                     input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @input="validateField('idNumber')"
+                    @input="debouncedValidateField('idNumber')"
                   />
                 </div>
               </div>
@@ -831,10 +831,10 @@ const isFormValid = computed(() => {
   // At least one field must be filled
   const hasAtLeastOneField = hasSearchName || hasSearchKariah || hasSearchBankAccount || hasIdType || hasIdNumber;
   
-  // Only check for critical validation errors (not empty field errors for flexible search)
-  const hasCriticalErrors = validationErrors.value.searchName || 
-                           validationErrors.value.searchBankAccount || 
-                           validationErrors.value.idNumber;
+  // Check for critical validation errors (only if they are non-empty strings)
+  const hasCriticalErrors = (validationErrors.value.searchName && validationErrors.value.searchName.trim() !== '') || 
+                           (validationErrors.value.searchBankAccount && validationErrors.value.searchBankAccount.trim() !== '') || 
+                           (validationErrors.value.idNumber && validationErrors.value.idNumber.trim() !== '');
   
   return hasAtLeastOneField && !hasCriticalErrors;
 });
@@ -956,8 +956,13 @@ const validateField = (fieldName) => {
         validationErrors.value.idNumber = '';
       } else if (value.length > 20) {
         validationErrors.value.idNumber = 'Pengenalan ID terlalu panjang (maksimum 20 aksara)';
-      } else if (formData.value.idType === 'myKad' && !/^\d{11}$/.test(value.replace(/\s/g, ''))) {
-        validationErrors.value.idNumber = 'Format MyKad tidak sah (12 digit)';
+      } else if (formData.value.idType === 'myKad') {
+        const cleanValue = value.replace(/\s/g, '');
+        if (!/^\d{12}$/.test(cleanValue)) {
+          validationErrors.value.idNumber = 'Format MyKad tidak sah (12 digit)';
+        } else {
+          validationErrors.value.idNumber = '';
+        }
       } else if (formData.value.idType === 'foreignID' && value.trim().length < 3) {
         validationErrors.value.idNumber = 'Foreign ID mesti sekurang-kurangnya 3 aksara';
       } else {
@@ -965,6 +970,20 @@ const validateField = (fieldName) => {
       }
       break;
   }
+};
+
+// Debounced validation to prevent validation on every keystroke
+let validationTimeout = null;
+const debouncedValidateField = (fieldName) => {
+  // Clear previous timeout
+  if (validationTimeout) {
+    clearTimeout(validationTimeout);
+  }
+  
+  // Set new timeout for validation
+  validationTimeout = setTimeout(() => {
+    validateField(fieldName);
+  }, 500); // Wait 500ms after user stops typing
 };
 
 const resetForm = () => {
