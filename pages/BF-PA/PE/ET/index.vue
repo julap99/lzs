@@ -33,9 +33,19 @@
 
     <rs-card class="mt-4">
       <template #header>
-        <div>
-          <h2 class="text-xl font-semibold">Dashboard Elaun Tahunan</h2>
-          <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-semibold">Dashboard Elaun Tahunan</h2>
+            <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
+          </div>
+          <rs-button
+            v-if="currentRole === 'eksekutif'"
+            variant="primary"
+            @click="addNewAllowance"
+          >
+            <Icon name="ic:baseline-add-circle" class="mr-2" />
+            Tambah Baru
+          </rs-button>
         </div>
       </template>
 
@@ -104,16 +114,6 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Draf">
               <div class="p-4">
-                <div class="flex justify-between items-center mb-4">
-                  <rs-button
-                    variant="success"
-                    @click="addNewAllowance"
-                    class="flex items-center whitespace-nowrap"
-                  >
-                    <Icon name="ic:baseline-add" class="w-4 h-4 mr-2" />
-                    Tambah Maklumat Elaun Tahunan
-                  </rs-button>
-                </div>
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
                     <thead class="bg-gray-50 text-left">

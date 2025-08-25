@@ -31,7 +31,13 @@
           <h2 class="text-xl font-semibold">
             Elaun Tugasan
           </h2>
-          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/AB2/01')">Tambah Baru</rs-button>
+          <rs-button 
+            variant="primary" 
+            @click="navigateTo('/BF-PA/PE/AB2/01')"
+          >
+            <Icon name="ic:baseline-add-circle" class="mr-2" />
+            Tambah Baru
+          </rs-button>
         </div>
       </template>
 

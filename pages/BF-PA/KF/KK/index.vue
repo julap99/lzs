@@ -43,7 +43,8 @@
             @click="navigateTo('/BF-PA/KF/KK/create')"
             v-if="canCreateCategory"
           >
-            <Icon name="material-symbols:add" class="mr-1" /> Tambah Kategori Baru
+            <Icon name="ic:baseline-add-circle" class="mr-2" />
+            Tambah Baru
           </rs-button>
         </div>
       </template>
