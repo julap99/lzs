@@ -3,11 +3,14 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Role Simulator - For Demo/Presentation Only -->
+    <!-- This allows switching between different user roles to demonstrate role-based views -->
+    <!-- In production, this would be replaced with actual user authentication and role management -->
     <div class="mb-4 flex items-center space-x-4">
       <label class="font-medium text-gray-700">Pilih Role:</label>
       <select v-model="selectedRole" class="border rounded p-1">
-      <option value="asnaf">Asnaf</option>
-      <option value="internal">Internal Staff</option>
+        <option value="pengguna-luar">Pengguna Luar</option>
+        <option value="pengguna-dalam">Pengguna Dalam</option>
       </select>
     </div>
 
@@ -23,12 +26,14 @@
             </div>
           </rs-card>
 
+          <!-- Temporarily hidden
           <rs-card variant="secondary">
             <div class="p-2">
               <div class="text-sm text-gray-500">ID Permohonan</div>
               <div class="font-bold">{{ searchSummary.idPermohonan }}</div>
             </div>
           </rs-card>
+          -->
 
           <rs-card variant="secondary">
             <div class="p-2">
@@ -81,7 +86,7 @@
       </template>
 
       <!-- Column: Lihat Butiran -->
-      <template v-slot:aksi="data">
+      <template v-slot:tindakan>
             <rs-button
               variant="primary" 
               size="sm"
@@ -114,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 definePageMeta({
   title: "Senarai Aduan, Status Pendaftaran Profil",
@@ -149,7 +154,7 @@ const aduanData = ref([
     tarikhAduan: "2025-08-20",
     statusSemasa: "Aduan Baru",
     tarikhKemaskini: "2025-08-21",
-    aksi: "NAS-BTN-2025-0001",
+    tindakan: "NAS-BTN-2025-0001",
   },
   {
     idPermohonan: "ADN-250823-000124",
@@ -157,7 +162,7 @@ const aduanData = ref([
     tarikhAduan: "2025-08-19",
     statusSemasa: "Dalam Tindakan - Siasatan Ringkas",
     tarikhKemaskini: "2025-08-22",
-    aksi: "NAS-BTN-2025-0001",
+    tindakan: "NAS-BTN-2025-0001",
   },
   {
     idPermohonan: "ADN-250823-000125",
@@ -165,12 +170,12 @@ const aduanData = ref([
     tarikhAduan: "2025-08-18",
     statusSemasa: "Selesai",
     tarikhKemaskini: "2025-08-23",
-    aksi: "NAS-BTN-2025-0001",
+    tindakan: "NAS-BTN-2025-0001",
   },
 ]);
 
 const getStatusVariant = (status: string) => {
-  const variants = {
+  const variants: Record<string, string> = {
     "Aduan Baru": "warning",
     "Dalam Tindakan - Siasatan Ringkas": "primary",
     "Dalam Tindakan - Siasatan Lapangan": "primary",
@@ -180,7 +185,7 @@ const getStatusVariant = (status: string) => {
   return variants[status] || "default";
 };
 
-const formatDate = (date: string | Date) => {
+const formatDate = (date: string | Date): string => {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   return dateObj.toLocaleDateString("ms-MY", {
     day: "2-digit",
@@ -193,16 +198,16 @@ const formatDate = (date: string | Date) => {
 };
 
 // Tindakan "Lihat Butiran"
-const viewAduanDetail = () => {
+const viewAduanDetail = (): void => {
   navigateTo(`/BF-DP/Portal/aduan/01`);
 };
 
-const selectedRole = ref("internal"); // default role
-const canViewDetail = computed(() => selectedRole.value === "internal");
+const selectedRole = ref("pengguna-dalam"); // default role
+const canViewDetail = computed(() => selectedRole.value === "pengguna-dalam");
 const displayedData = computed(() => {
   return aduanData.value.map(item => {
     if (!canViewDetail.value) {
-      const { aksi, ...rest } = item; // remove aksi
+      const { tindakan, ...rest } = item; // remove tindakan
       return rest;
     }
     return item;
@@ -210,12 +215,12 @@ const displayedData = computed(() => {
 });
 
 // Eksport actions
-const exportPDF = () => {
+const exportPDF = (): void => {
   // Implement PDF export
   alert("Export PDF triggered!");
 };
 
-const exportExcel = () => {
+const exportExcel = (): void => {
   // Implement Excel export
   alert("Export Excel triggered!");
 };

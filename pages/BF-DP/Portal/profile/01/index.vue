@@ -197,7 +197,7 @@ const kelayakanInfo = ref({
   namaPegawai: 'Ahmad bin Salleh',
 });
 
-const slaRules = {
+const slaRules: Record<string, number> = {
   'Permohonan Dihantar': 0,
   'Semakan Dokumen': 1,
   'Penilaian Kelayakan': 3,
@@ -247,18 +247,18 @@ const statusTimeline = [
 
 const totalSla = Object.values(slaRules).reduce((a, b) => a + b, 0);
 
-const getRemainingSla = (label: string) => {
+const getRemainingSla = (label: string): number => {
   const currentIndex = Object.keys(slaRules).indexOf(label);
   const consumed = Object.values(slaRules).slice(0, currentIndex + 1).reduce((a, b) => a + b, 0);
   return totalSla - consumed;
 };
 
-const calculateSlaStatus = (label: string, tarikh: string) => {
+const calculateSlaStatus = (label: string, tarikh: string): string => {
   if (!tarikh) return 'Belum Bermula';
   return label === 'Penilaian Kelayakan' ? 'Masih Dalam Tempoh' : 'Selesai';
 };
 
-const formatDate = (date: string) => {
+const formatDate = (date: string): string => {
   if (!date) return 'Belum Bermula';
   return new Date(date).toLocaleDateString('ms-MY', {
     day: '2-digit',
@@ -269,7 +269,7 @@ const formatDate = (date: string) => {
   });
 };
 
-const getKategoriVariant = (kategori: string) => {
+const getKategoriVariant = (kategori: string): string => {
   switch (kategori) {
     case 'Fakir': return 'danger';
     case 'Miskin': return 'warning';
@@ -282,7 +282,7 @@ const getKategoriVariant = (kategori: string) => {
 const canExport = ref(false); // true → utk Pengguna Dalaman
 
 // Export Function
-const exportPDF = () => {
+const exportPDF = (): void => {
   alert("Export PDF triggered!");
 };
 </script>

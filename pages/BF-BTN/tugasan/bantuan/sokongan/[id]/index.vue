@@ -9,9 +9,11 @@
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         >
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">Siasatan Lapangan</h1>
+            <h1 class="text-2xl font-bold text-gray-900">
+              Sokongan Siasatan Lapangan
+            </h1>
             <p class="mt-1 text-sm text-gray-600">
-              Kemaskini maklumat siasatan dan dapatan lapangan
+              Semak dan nilai maklumat siasatan dan dapatan lapangan
             </p>
           </div>
           <rs-badge
@@ -155,12 +157,14 @@
                 <label class="text-sm font-medium text-gray-700"
                   >Status Lawatan</label
                 >
-                <FormKit
-                  type="select"
-                  :options="statusLawatanOptions"
-                  v-model="formData.statusLawatan"
-                  :classes="{ input: 'text-sm' }"
-                />
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <rs-badge
+                    :variant="getStatusVariant(formData.statusLawatan)"
+                    class="text-sm"
+                  >
+                    {{ getStatusText(formData.statusLawatan) }}
+                  </rs-badge>
+                </div>
               </div>
             </div>
           </template>
@@ -222,17 +226,18 @@
                       {{ dokumen.jenis }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <FormKit
-                        type="select"
-                        :options="statusDokumenOptions"
-                        v-model="dokumen.status"
-                        :classes="{
-                          input: 'text-sm border-gray-300 rounded-md',
-                        }"
-                        outer-class="mb-0"
-                        wrapper-class="mb-0"
-                        inner-class="mb-0"
-                      />
+                      <rs-badge
+                        :variant="
+                          dokumen.status === 'lengkap' ? 'success' : 'danger'
+                        "
+                        class="text-sm"
+                      >
+                        {{
+                          dokumen.status === "lengkap"
+                            ? "Lengkap"
+                            : "Tidak Lengkap"
+                        }}
+                      </rs-badge>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div class="flex items-center space-x-2">
@@ -345,8 +350,13 @@
                         <td
                           class="px-6 py-4 whitespace-nowrap text-sm font-medium"
                         >
-                          <rs-button variant="primary" @click="editBQ(bq)">
-                            Edit
+                          <rs-button
+                            variant="primary-outline"
+                            @click="viewBQ(bq)"
+                            size="sm"
+                          >
+                            <Icon name="ph:eye" class="w-4 h-4 mr-1" />
+                            Lihat
                           </rs-button>
                         </td>
                       </tr>
@@ -388,9 +398,13 @@
                       </p>
                     </div>
                   </div>
-                  <rs-button variant="primary" @click="openLaporanGambar">
-                    <Icon name="ph:camera" class="w-4 h-4 mr-2" />
-                    Laporan Gambar
+                  <rs-button
+                    variant="primary-outline"
+                    @click="viewLaporanGambar"
+                    size="sm"
+                  >
+                    <Icon name="ph:eye" class="w-4 h-4 mr-2" />
+                    Lihat Laporan
                   </rs-button>
                 </div>
               </template>
@@ -426,10 +440,7 @@
                     name="ph:image"
                     class="w-12 h-12 mx-auto mb-2 text-gray-400"
                   />
-                  <p>
-                    Tiada gambar dimuat naik. Klik butang "Laporan Gambar" untuk
-                    menambah gambar.
-                  </p>
+                  <p>Tiada gambar telah dimuat naik untuk siasatan ini.</p>
                 </div>
               </template>
             </rs-card>
@@ -460,9 +471,13 @@
                       </p>
                     </div>
                   </div>
-                  <rs-button variant="primary" @click="openLaporanTeknikal">
-                    <Icon name="ph:file-doc" class="w-4 h-4 mr-2" />
-                    Laporan Teknikal
+                  <rs-button
+                    variant="primary-outline"
+                    @click="viewLaporanTeknikal"
+                    size="sm"
+                  >
+                    <Icon name="ph:eye" class="w-4 h-4 mr-2" />
+                    Lihat Laporan
                   </rs-button>
                 </div>
               </template>
@@ -551,14 +566,18 @@
 
           <template #body>
             <div class="space-y-4">
-              <FormKit
-                type="textarea"
-                label="Catatan Lapangan"
-                v-model="catatanLapangan.catatan"
-                rows="6"
-                placeholder="Masukkan catatan, dapatan dan pemerhatian semasa lawatan lapangan..."
-                :classes="{ input: 'text-sm' }"
-              />
+              <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700"
+                  >Catatan Lapangan</label
+                >
+                <div
+                  class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[120px]"
+                >
+                  <span class="text-sm text-gray-900">{{
+                    catatanLapangan.catatan || "Tiada catatan lapangan."
+                  }}</span>
+                </div>
+              </div>
 
               <div class="text-xs text-gray-500">
                 <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
@@ -596,13 +615,19 @@
             </template>
 
             <template #body>
-              <FormKit
-                type="select"
-                label="Status Lawatan"
-                :options="statusLawatanOptions"
-                v-model="formData.statusLawatan"
-                :classes="{ input: 'text-sm' }"
-              />
+              <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700"
+                  >Status Lawatan</label
+                >
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <rs-badge
+                    :variant="getStatusVariant(formData.statusLawatan)"
+                    class="text-sm"
+                  >
+                    {{ getStatusText(formData.statusLawatan) }}
+                  </rs-badge>
+                </div>
+              </div>
             </template>
           </rs-card>
 
@@ -687,23 +712,39 @@
 
         <!-- Section 9: Action Buttons -->
         <rs-card class="p-4">
-          <div class="flex flex-col sm:flex-row gap-3 justify-end">
-            <rs-button
-              variant="danger"
-              @click="handleBatal"
-              :disabled="processing"
-              :loading="processing"
-            >
+          <div class="flex flex-col sm:flex-row gap-3 justify-between">
+            <div class="flex gap-3">
+              <rs-button
+                variant="success"
+                @click="handleLuluskan"
+                :disabled="processing"
+                :loading="processing && actionType === 'approve'"
+              >
+                <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
+                Luluskan
+              </rs-button>
+              <rs-button
+                variant="warning"
+                @click="handleMintaKemaskini"
+                :disabled="processing"
+                :loading="processing && actionType === 'request_update'"
+              >
+                <Icon name="ph:arrow-counter-clockwise" class="w-4 h-4 mr-2" />
+                Minta Kemaskini
+              </rs-button>
+              <rs-button
+                variant="danger"
+                @click="handleTolak"
+                :disabled="processing"
+                :loading="processing && actionType === 'reject'"
+              >
+                <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
+                Tolak
+              </rs-button>
+            </div>
+            <rs-button variant="secondary" @click="handleKembali">
+              <Icon name="ph:arrow-left" class="w-4 h-4 mr-2" />
               Kembali
-            </rs-button>
-
-            <rs-button
-              variant="primary"
-              @click="handleSelesaiDanHantar"
-              :disabled="processing"
-              :loading="processing && actionType === 'complete_submit'"
-            >
-              Hantar
             </rs-button>
           </div>
         </rs-card>
@@ -750,7 +791,7 @@ const processing = ref(false);
 const actionType = ref("");
 
 definePageMeta({
-  title: "Siasatan Lapangan",
+  title: "Sokongan Siasatan Lapangan",
 });
 
 const breadcrumb = ref([
@@ -760,14 +801,9 @@ const breadcrumb = ref([
     path: "/BF-BTN/tugasan",
   },
   {
-    name: "Siasatan ke Lapangan",
-    type: "link",
-    path: "/BF-BTN/tugasan",
-  },
-  {
-    name: "Kemaskini Siasatan",
+    name: "Sokongan Siasatan",
     type: "current",
-    path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
+    path: `/BF-BTN/tugasan/bantuan/sokongan/${route.params.id}`,
   },
 ]);
 
@@ -921,10 +957,10 @@ const openBQForm = () => {
   showBQModal.value = true;
 };
 
-const editBQ = (bq) => {
-  // Navigate to dedicated BQ drafting/editing page with current id and edit flag
+const viewBQ = (bq) => {
+  // Navigate to view BQ page for checking
   router.push(
-    `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/draf-bq?edit=true`
+    `/BF-BTN/tugasan/bantuan/sokongan/${route.params.id}/draf-bq?view=true`
   );
 };
 
@@ -940,16 +976,15 @@ const saveBQ = () => {
 };
 
 // Navigation Functions
-const openLaporanGambar = () => {
+const viewLaporanGambar = () => {
   router.push(
-    `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/laporan-gambar`
+    `/BF-BTN/tugasan/bantuan/sokongan/${route.params.id}/laporan-gambar?view=true`
   );
 };
 
-const openLaporanTeknikal = () => {
+const viewLaporanTeknikal = () => {
   router.push(
-    `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/laporan-teknikal`
-
+    `/BF-BTN/tugasan/bantuan/sokongan/${route.params.id}/laporan-teknikal?view=true`
   );
 };
 
@@ -966,68 +1001,22 @@ const urusPemantauan = () => {
 };
 
 // Action Button Functions
-const handleSimpanDraf = async () => {
+const handleLuluskan = async () => {
   try {
     processing.value = true;
+    actionType.value = "approve";
 
-    // Implement save draft functionality
-    console.log("Saving draft...");
+    // Implement approval functionality
+    console.log("Approving application...");
 
-    toast.success("Draf telah disimpan");
-  } catch (error) {
-    toast.error("Ralat semasa menyimpan draf");
-    console.error(error);
-  } finally {
-    processing.value = false;
-  }
-};
-
-const handleSimpanDrafDanSahkan = async () => {
-  try {
-    processing.value = true;
-    actionType.value = "draft_confirm";
-
-    // Implement save draft and confirm completion functionality
-    console.log("Saving draft and confirming completion...");
-
-    // Update status lawatan
-    formData.value.statusLawatan = "selesai_lawatan";
-
-    toast.success("Draf telah disimpan dan status lawatan telah dikemaskini");
-  } catch (error) {
-    toast.error("Ralat semasa menyimpan dan mengesahkan");
-    console.error(error);
-  } finally {
-    processing.value = false;
-    actionType.value = "";
-  }
-};
-
-const handleSelesaiDanHantar = async () => {
-  try {
-    processing.value = true;
-    actionType.value = "complete_submit";
-
-    // Validate required fields before submission
-    if (
-      !formData.value.statusLawatan ||
-      formData.value.statusLawatan === "belum_selesai"
-    ) {
-      toast.error(
-        "Sila kemaskini status lawatan kepada 'Selesai Lawatan Lapangan'"
-      );
-      return;
-    }
-
-    // Implement complete and submit functionality
-    console.log("Completing and submitting to approval...");
-
-    toast.success("Siasatan telah selesai dan dihantar untuk kelulusan");
+    toast.success("Permohonan telah diluluskan");
 
     // Navigate back to list
-    router.push("/BF-BTN/tugasan");
+    setTimeout(() => {
+      router.push("/BF-BTN/tugasan");
+    }, 1500);
   } catch (error) {
-    toast.error("Ralat semasa menyelesaikan dan menghantar");
+    toast.error("Ralat semasa meluluskan permohonan");
     console.error(error);
   } finally {
     processing.value = false;
@@ -1035,7 +1024,53 @@ const handleSelesaiDanHantar = async () => {
   }
 };
 
-const handleBatal = () => {
+const handleMintaKemaskini = async () => {
+  try {
+    processing.value = true;
+    actionType.value = "request_update";
+
+    // Implement request update functionality
+    console.log("Requesting updates...");
+
+    toast.success("Permintaan kemaskini telah dihantar");
+
+    // Navigate back to list
+    setTimeout(() => {
+      router.push("/BF-BTN/tugasan");
+    }, 1500);
+  } catch (error) {
+    toast.error("Ralat semasa menghantar permintaan kemaskini");
+    console.error(error);
+  } finally {
+    processing.value = false;
+    actionType.value = "";
+  }
+};
+
+const handleTolak = async () => {
+  try {
+    processing.value = true;
+    actionType.value = "reject";
+
+    // Implement rejection functionality
+    console.log("Rejecting application...");
+
+    toast.success("Permohonan telah ditolak");
+
+    // Navigate back to list
+    setTimeout(() => {
+      router.push("/BF-BTN/tugasan");
+    }, 1500);
+  } catch (error) {
+    toast.error("Ralat semasa menolak permohonan");
+    console.error(error);
+  } finally {
+    processing.value = false;
+    actionType.value = "";
+  }
+};
+
+const handleKembali = () => {
   router.push("/BF-BTN/tugasan");
 };
 
@@ -1057,14 +1092,25 @@ onMounted(async () => {
       statusLawatan: "belum_selesai",
     };
 
-    // Auto-populate laporan teknikal latar belakang from profiling
-    laporanTeknikal.value.latarBelakang =
-      "Berdasarkan profiling, pemohon tinggal di rumah yang memerlukan kerja-kerja baik pulih bumbung dan dinding yang rosak akibat cuaca.";
+    // Auto-populate laporan teknikal data
+    laporanTeknikal.value = {
+      latarBelakang:
+        "Berdasarkan profiling, pemohon tinggal di rumah yang memerlukan kerja-kerja baik pulih bumbung dan dinding yang rosak akibat cuaca. Rumah tersebut telah berusia lebih 20 tahun dan memerlukan penyelenggaraan yang mendesak.",
+      keperluan:
+        "1. Baik pulih bumbung yang bocor\n2. Cat semula dinding luar\n3. Penggantian papan siling yang rosak\n4. Baik pulih longkang di sekeliling rumah",
+      cadangan:
+        "Dicadangkan agar kerja-kerja baik pulih dilakukan secara berperingkat dengan keutamaan kepada pembaikan bumbung bocor untuk mengelakkan kerosakan yang lebih teruk semasa musim hujan.",
+      nilaiKerja: 25000,
+    };
 
     // Auto-calculate jumlah bantuan from BQ (mock calculation)
     jumlahBantuan.value = 25000;
     catatanPengesyoran.value =
       "Cadangan kerja baik pulih bumbung bocor dan cat dinding luar untuk memastikan keselamatan dan keselesaan pemohon.";
+
+    // Sample catatan lapangan data
+    catatanLapangan.value.catatan =
+      "Telah melakukan siasatan ke atas keadaan rumah pemohon. Didapati bumbung rumah bocor di beberapa bahagian dan perlu dibaik pulih segera. Dinding luar rumah juga menunjukkan tanda-tanda kerosakan akibat cuaca. Pemohon tinggal bersama keluarga yang terdiri daripada 4 orang ahli keluarga. Kerja-kerja baik pulih yang dicadangkan adalah sesuai dan diperlukan untuk memastikan keselamatan dan keselesaan keluarga pemohon.";
   } catch (error) {
     toast.error("Ralat semasa memuatkan data permohonan");
     console.error(error);
