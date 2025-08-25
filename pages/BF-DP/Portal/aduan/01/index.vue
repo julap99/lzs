@@ -190,7 +190,7 @@
                 <rs-button
                   variant="primary-outline"
                   size="sm"
-                  @click="downloadDocument()"
+                  @click="downloadDocument(doc)"
                 >
                   <Icon name="mdi:download" class="mr-1" />
                   Lihat
@@ -231,7 +231,13 @@ const applicationDetails = ref({
     "Permohonan sedang dalam proses siasatan oleh pegawai yang berkenaan.",
 });
 
-const documents = ref([
+interface Document {
+  name: string;
+  type: string;
+  url: string;
+}
+
+const documents = ref<Document[]>([
   {
     name: "Borang Permohonan",
     type: "PDF",
@@ -250,7 +256,7 @@ const documents = ref([
 ]);
 
 const getStatusVariant = (status: string) => {
-  const variants = {
+  const variants: Record<string, string> = {
     'Dalam Penyaluran': 'primary',
     Selesai: 'success',
     Dibatalkan: 'danger',
@@ -264,7 +270,7 @@ const getStatusVariant = (status: string) => {
 const currentStatus = ref('Kelulusan');
 
 // Dummy SLA & statusTimeline example
-const slaRules = {
+const slaRules: Record<string, number> = {
   'Aduan Baru': 0,
   'Dalam Tindakan - Siasatan Ringkas': 1,
   'Dalam Tindakan - Siasatan Lapangan': 2,
@@ -300,7 +306,7 @@ const slaTimeline = [
 
 const totalSla = Object.values(slaRules).reduce((a, b) => a + b, 0);
 
-const getRemainingSla = (currentLabel: string) => {
+const getRemainingSla = (currentLabel: string): number => {
   const currentIndex = Object.keys(slaRules).indexOf(currentLabel);
   const consumed = Object.values(slaRules)
     .slice(0, currentIndex + 1)
@@ -344,7 +350,7 @@ const statusTimeline = [
 ];
 
 
-const formatDate = (dateStr: string | undefined) => {
+const formatDate = (dateStr: string | undefined): string => {
 
   if (!dateStr) return 'Belum Bermula';
   const date = new Date(dateStr);
@@ -357,16 +363,16 @@ const formatDate = (dateStr: string | undefined) => {
   });
 };
 
-const getTextClass = (label: string) => 'text-blue-800';
+const getTextClass = (label: string): string => 'text-blue-800';
 
 const calculateSlaStatus = (label: string, tarikh: string): string => {
   if (!tarikh) return 'Belum Bermula';
   return label === 'Siasatan' ? 'Masih Dalam Tempoh' : 'Selesai';
 };
 
-const downloadDocument = () => {
+const downloadDocument = (doc: Document): void => {
   // This would be replaced with actual download functionality
-  alert("Fungsi muat turun akan dilaksanakan dalam sistem sebenar.");
+  alert(`Fungsi muat turun untuk ${doc.name} akan dilaksanakan dalam sistem sebenar.`);
 };
 </script>
 

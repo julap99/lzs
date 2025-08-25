@@ -17,7 +17,7 @@
           type="form"
           submit-label="Semak Status"
           :actions="false"
-          @submit="handleSubmit"
+          @submit="submitForm"
         >
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <!-- Nombor Pengenalan -->
@@ -83,8 +83,6 @@
 
 <script setup lang="ts">
     import { ref } from "vue";
-    const router = useRouter();
-    const route = useRoute();
 
     definePageMeta({
     title: "Semak Status Permohonan",
@@ -103,7 +101,6 @@
     const form = ref({
     idNo: "",
     appId: "",
-    appId2: "",
     statusType: "",
     });
 
@@ -113,22 +110,25 @@
     // Error Message
     const errorMessage = ref("");
 
-    // Counter utk simulate click behavior
-    const clickCount = ref(0);
-
     // Handle Reset
-    const handleReset = () => {
+    const handleReset = (): void => {
     form.value.idNo = "";
     form.value.appId = "";
-    form.value.appId2 = "";
+    form.value.statusType = "";
     errorMessage.value = "";
-    clickCount.value = 0;
     };
 
-    const submitForm = () => {
+    const submitForm = (): void => {
       const type = form.value.statusType;
       if (["aduan", "bantuan", "profile"].includes(type)) {
-        navigateTo(`/BF-DP/Portal/${type}`);
+        // Fix TypeScript navigation issue by using explicit route paths
+        if (type === "aduan") {
+          navigateTo("/BF-DP/Portal/aduan");
+        } else if (type === "bantuan") {
+          navigateTo("/BF-DP/Portal/bantuan");
+        } else if (type === "profile") {
+          navigateTo("/BF-DP/Portal/profile");
+        }
       } else {
         errorMessage.value = "Sila pilih salah satu jenis status.";
       }

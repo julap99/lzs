@@ -56,7 +56,7 @@
           <template v-slot:tarikhStatus="data">
             <span class="font-medium">{{ formatDate(data.text) }}</span>
           </template>
-          <template v-slot:aksi="data">
+          <template v-slot:aksi>
             <rs-button
               variant="primary" 
               size="sm"
@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 definePageMeta({
   title: "Senarai Bantuan, Status Terkini",
@@ -157,7 +157,7 @@ const formatDate = (date: string | Date) => {
 };
 
 // Tindakan "Lihat Butiran"
-const viewBantuanDetail = () => {
+const viewBantuanDetail = (): void => {
   navigateTo(`/BF-DP/Portal/bantuan/01`);
 };
 

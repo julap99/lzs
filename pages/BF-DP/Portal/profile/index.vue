@@ -67,7 +67,7 @@
   </template>
 
   <!-- Only render aksi column if canViewDetail is true -->
-  <template v-if="canViewDetail" v-slot:aksi="data">
+  <template v-if="canViewDetail" v-slot:aksi>
     <rs-button
       variant="primary"
       size="sm"
@@ -101,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 definePageMeta({
   title: "Senarai Status Pendaftaran Profil",
@@ -148,8 +148,8 @@ const profileStatusData = ref([
   },
 ]);
 
-const getStatusVariant = (status) => {
-  const variants = {
+const getStatusVariant = (status: string) => {
+  const variants: Record<string, string> = {
     "Menunggu Siasatan": "warning",
     "Disemak": "primary",
     "Lulus": "success",
@@ -160,8 +160,9 @@ const getStatusVariant = (status) => {
   return variants[status] || "default";
 };
 
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString("ms-MY", {
+const formatDate = (date: string | Date): string => {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  return dateObj.toLocaleDateString("ms-MY", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -171,16 +172,16 @@ const formatDate = (date) => {
   });
 };
 
-const viewProfileDetail = () => {
+const viewProfileDetail = (): void => {
   navigateTo(`/BF-DP/Portal/profile/01`);
 };
 
-const exportPDF = () => {
+const exportPDF = (): void => {
   // Implement PDF export
   alert("Export PDF triggered!");
 };
 
-const exportExcel = () => {
+const exportExcel = (): void => {
   // Implement Excel export
   alert("Export Excel triggered!");
 };

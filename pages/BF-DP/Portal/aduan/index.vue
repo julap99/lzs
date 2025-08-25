@@ -81,7 +81,7 @@
       </template>
 
       <!-- Column: Lihat Butiran -->
-      <template v-slot:aksi="data">
+      <template v-slot:aksi>
             <rs-button
               variant="primary" 
               size="sm"
@@ -114,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 definePageMeta({
   title: "Senarai Aduan, Status Pendaftaran Profil",
@@ -170,7 +170,7 @@ const aduanData = ref([
 ]);
 
 const getStatusVariant = (status: string) => {
-  const variants = {
+  const variants: Record<string, string> = {
     "Aduan Baru": "warning",
     "Dalam Tindakan - Siasatan Ringkas": "primary",
     "Dalam Tindakan - Siasatan Lapangan": "primary",
@@ -180,7 +180,7 @@ const getStatusVariant = (status: string) => {
   return variants[status] || "default";
 };
 
-const formatDate = (date: string | Date) => {
+const formatDate = (date: string | Date): string => {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   return dateObj.toLocaleDateString("ms-MY", {
     day: "2-digit",
@@ -193,7 +193,7 @@ const formatDate = (date: string | Date) => {
 };
 
 // Tindakan "Lihat Butiran"
-const viewAduanDetail = () => {
+const viewAduanDetail = (): void => {
   navigateTo(`/BF-DP/Portal/aduan/01`);
 };
 
@@ -210,12 +210,12 @@ const displayedData = computed(() => {
 });
 
 // Eksport actions
-const exportPDF = () => {
+const exportPDF = (): void => {
   // Implement PDF export
   alert("Export PDF triggered!");
 };
 
-const exportExcel = () => {
+const exportExcel = (): void => {
   // Implement Excel export
   alert("Export Excel triggered!");
 };

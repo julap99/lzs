@@ -213,7 +213,7 @@ const applicationDetails = ref({
     "Permohonan sedang dalam proses siasatan oleh pegawai yang berkenaan.",
 });
 
-const documents = ref([
+const documents = ref<Document[]>([
   {
     name: "Borang Permohonan",
     type: "PDF",
@@ -231,8 +231,14 @@ const documents = ref([
   },
 ]);
 
+interface Document {
+  name: string;
+  type: string;
+  url: string;
+}
+
 const getStatusVariant = (status: string) => {
-  const variants = {
+  const variants: Record<string, string> = {
     'Dalam Penyaluran': 'primary',
     Selesai: 'success',
     Dibatalkan: 'danger',
@@ -246,7 +252,7 @@ const getStatusVariant = (status: string) => {
 const currentStatus = ref('Kelulusan');
 
 // Dummy SLA & statusTimeline example
-const slaRules = {
+const slaRules: Record<string, number> = {
   'Permohonan Dihantar': 0,
   'Semakan Awal': 1,
   'Siasatan': 3,
@@ -264,7 +270,7 @@ const slaTimeline = [
 
 const totalSla = Object.values(slaRules).reduce((a, b) => a + b, 0);
 
-const getRemainingSla = (currentLabel) => {
+const getRemainingSla = (currentLabel: string): number => {
   const currentIndex = Object.keys(slaRules).indexOf(currentLabel);
   const consumed = Object.values(slaRules).slice(0, currentIndex + 1).reduce((a, b) => a + b, 0);
   return totalSla - consumed;
@@ -278,6 +284,9 @@ const statusTimeline = [
     catatan: 'Permohonan diterima untuk semakan.',
     namaPegawai: 'Encik Ali',
     masaBerbaki: '1 hari',
+    inProgress: false,
+    notStarted: false,
+    rejected: false,
   },
   {
     label: 'Semakan Awal',
@@ -286,6 +295,9 @@ const statusTimeline = [
     catatan: 'Semakan dokumen lengkap dan disahkan.',
     namaPegawai: 'Pn. Zahrah',
     masaBerbaki: '2 hari',
+    inProgress: false,
+    notStarted: false,
+    rejected: false,
   },
   {
     label: 'Siasatan',
@@ -294,6 +306,9 @@ const statusTimeline = [
     catatan: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
     namaPegawai: 'Ustaz Hafiz',
     masaBerbaki: '1 hari',
+    completed: false,
+    notStarted: false,
+    rejected: false,
   },
   {
     label: 'Kelulusan',
@@ -301,6 +316,10 @@ const statusTimeline = [
     tarikh: '',
     catatan: 'Tiada tindakan direkodkan setakat ini.',
     namaPegawai: 'Belum Ditugaskan',
+    masaBerbaki: '',
+    completed: false,
+    inProgress: false,
+    rejected: false,
   },
   {
     label: 'Pembayaran',
@@ -308,12 +327,16 @@ const statusTimeline = [
     tarikh: '',
     catatan: 'Tiada tindakan direkodkan setakat ini.',
     namaPegawai: 'Belum Ditugaskan',
+    masaBerbaki: '',
+    completed: false,
+    inProgress: false,
+    rejected: false,
   },
 ];
 
-const formatDate = (dateStr) => {
+const formatDate = (dateStr: string | Date): string => {
   if (!dateStr) return 'Belum Bermula';
-  const date = new Date(dateStr);
+  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
   return date.toLocaleString('ms-MY', {
     day: '2-digit',
     month: 'short',
@@ -323,11 +346,16 @@ const formatDate = (dateStr) => {
   });
 };
 
-const getTextClass = (label) => 'text-blue-800';
+const getTextClass = (label: string): string => 'text-blue-800';
 
-const calculateSlaStatus = (label, tarikh) => {
+const calculateSlaStatus = (label: string, tarikh: string): string => {
   if (!tarikh) return 'Belum Bermula';
   return label === 'Siasatan' ? 'Masih Dalam Tempoh' : 'Selesai';
+};
+
+const downloadDocument = (doc: Document): void => {
+  // This would be replaced with actual download functionality
+  alert(`Downloading ${doc.name}`);
 };
 </script>
 
