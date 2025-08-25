@@ -17,15 +17,6 @@
             <div class="p-2">
               <div class="text-sm text-gray-500">Nama Aduan</div>
               <div class="font-bold">{{ AduanInfo.namaAduan }}</div>
-              <div class="mt-2 flex space-x-2">
-                <rs-button variant="destructive" size="sm">
-                  <Icon name="mdi:cancel" class="mr-1" /> Batal Aduan
-                </rs-button>
-                <rs-button variant="warning" size="sm">
-                  <Icon name="mdi:star-check" class="mr-1" /> Kelulusan Khas
-                </rs-button>
-              </div>
-
             </div>
           </rs-card>
           <rs-card variant="secondary">
@@ -45,8 +36,8 @@
           <rs-card variant="secondary">
             <div class="p-2 flex flex-col">
               <div class="text-sm text-gray-500">Status Semasa</div>
-              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
-                {{ currentStatus }}
+              <rs-badge variant="info" size="sm">
+                Dalam Proses - Siasatan Ringkas
               </rs-badge>
             </div>
           </rs-card>
@@ -215,7 +206,7 @@ const breadcrumb = ref([
 
 const AduanInfo = ref({
   idPermohonan: 'ADN-250823-000123',
-  namaAduan: 'Aduan Pendidikan',
+  namaAduan: 'Terputus Bekalan Makanan / Tiada Tempat Tinggal',
   tarikhMohon: '2025-06-01',
   tarikhPerubahanStatus: '2025-06-15',
   namaPegawai: 'Pn. Zahrah',
@@ -258,6 +249,8 @@ const documents = ref<Document[]>([
 const getStatusVariant = (status: string) => {
   const variants: Record<string, string> = {
     'Dalam Penyaluran': 'primary',
+    'Dalam Proses - Siasatan Ringkas': 'info',
+    'Dalam Proses - Siasatan Lapangan': 'warning',
     Selesai: 'success',
     Dibatalkan: 'danger',
     Kelulusan: 'info',
@@ -266,8 +259,6 @@ const getStatusVariant = (status: string) => {
   };
   return variants[status] || 'default';
 };
-
-const currentStatus = ref('Kelulusan');
 
 // Dummy SLA & statusTimeline example
 const slaRules: Record<string, number> = {
@@ -288,13 +279,13 @@ const slaTimeline = [
     label: 'Dalam Tindakan - Siasatan Ringkas', 
     icon: 'mdi:progress-clock', // Ongoing / in progress
     sla: 1, 
-    completed: true,
+    active: true,
   },
   { 
     label: 'Dalam Tindakan - Siasatan Lapangan', 
     icon: 'mdi:account-search-outline', // Field investigation / active work
     sla: 2,  
-    active: true, 
+    notStarted: true, 
   },
   { 
     label: 'Selesai', 
