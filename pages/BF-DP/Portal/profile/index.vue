@@ -18,7 +18,7 @@
     <rs-card class="mb-6">
       <template #header>Ringkasan Maklumat Carian</template>
       <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <rs-card variant="secondary">
             <div class="p-2">
               <div class="text-sm text-gray-500">Nombor Pengenalan</div>
@@ -26,12 +26,14 @@
             </div>
           </rs-card>
 
+          <!-- Temporarily hidden
           <rs-card variant="secondary">
             <div class="p-2">
               <div class="text-sm text-gray-500">ID Permohonan</div>
               <div class="font-bold">{{ searchSummary.appId }}</div>
             </div>
           </rs-card>
+          -->
 
           <rs-card variant="secondary">
             <div class="p-2">
