@@ -47,7 +47,7 @@
           :actions="false"
           @submit="nextStepA"
         >
-          <h3 class="text-lg font-semibold mb-4">A. Penilaian Awal</h3>
+          <h3 class="text-lg font-semibold mb-4">Penilaian Awal</h3>
 
           <div class="space-y-6">
             <!-- Question 1 -->
@@ -156,7 +156,7 @@
           @submit="nextStepA"
         >
           <h3 class="text-lg font-semibold mb-4">
-            A. Maklumat Peribadi Asnaf (*untuk muallaf)
+            Maklumat Peribadi Asnaf (*untuk muallaf)
           </h3>
 
           <h3 class="text-lg font-semibold mb-4">I. Maklumat Peribadi</h3>
@@ -1033,8 +1033,8 @@
 
             <!-- A. Jika Kaedah Pembayaran = Akaun -->
             <div v-if="formData.kaedah_pembayaran === 'akaun'" class="mb-6">
-              <h5 class="text-md font-medium mb-4 text-primary">
-                A. Maklumat Akaun Bank
+              <h5 class="text-md font-medium mb-4 ">
+                Maklumat Akaun Bank
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Nama Bank -->
@@ -1082,8 +1082,8 @@
 
             <!-- B. Jika Kaedah Pembayaran = Tiada -->
             <div v-if="formData.kaedah_pembayaran === 'tiada'" class="mb-6">
-              <h5 class="text-md font-medium mb-4 text-primary">
-                B. Sebab Tiada Akaun Bank
+              <h5 class="text-md font-medium mb-4 ">
+                Sebab Tiada Akaun Bank
               </h5>
               <div class="md:col-span-2">
                 <FormKit
@@ -1148,7 +1148,7 @@
 
           <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
           <div v-if="formData.tahap_kesihatan === 'Sakit Kronik'" class="mb-8">
-            <h5 class="text-lg font-semibold mb-4 text-primary">
+            <h5 class="text-lg font-semibold mb-4 ">
               Maklumat Sakit Kronik
             </h5>
 
@@ -1192,7 +1192,7 @@
 
           <!-- B. Jika Tahap Kesihatan = "OKU" -->
           <div v-if="formData.tahap_kesihatan === 'OKU'" class="mb-8">
-            <h5 class="text-lg font-semibold mb-4 text-primary">
+            <h5 class="text-lg font-semibold mb-4 ">
               Maklumat OKU
             </h5>
 
@@ -1247,7 +1247,7 @@
 
           <!-- C. Jika Tahap Kesihatan = "Uzur" -->
           <div v-if="formData.tahap_kesihatan === 'Uzur'" class="mb-8">
-            <h5 class="text-lg font-semibold mb-4 text-primary">
+            <h5 class="text-lg font-semibold mb-4">
               Maklumat Uzur
             </h5>
 
@@ -1296,7 +1296,7 @@
             "
             class="mb-6"
           >
-            <h5 class="text-lg font-semibold mb-4 text-primary">
+            <h5 class="text-lg font-semibold mb-4">
               Dokumen Sokongan
             </h5>
 
@@ -1446,7 +1446,7 @@
                 name="negeri"
                 label="Negeri"
                 value="Selangor"
-                disabled
+                :options="negeriOptions"
                 v-model="formData.addressInfo.negeri"
               />
 
@@ -1507,7 +1507,6 @@
                   v-model="formData.addressInfo.geolokasi"
                   label="Geolokasi"
                   type="text"
-                  placeholder="Auto isi lokasi berdasarkan alamat"
                   class="flex-1"
                 />
                 <rs-button
@@ -1535,7 +1534,7 @@
               />
             </div>
 
-            <div class="flex gap-2">
+            <div v-if="formData.adakah_muallaf === 'Y'" class="flex gap-2">
               <FormKit
                 type="text"
                 name="kursus_terpilih"
@@ -3762,7 +3761,7 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-4 text-primary">
+              <h5 class="text-md font-medium mb-4 ">
                 A. Maklumat Akaun Bank
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -3818,8 +3817,8 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-4 text-primary">
-                B. Sebab Tiada Akaun Bank
+              <h5 class="text-md font-medium mb-4 ">
+                 Sebab Tiada Akaun Bank
               </h5>
               <div class="md:col-span-2">
                 <FormKit
@@ -3873,7 +3872,7 @@
 
             <!-- Bahagian A: Maklumat Pendidikan Asas -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 text-primary">
+              <h5 class="text-md font-medium mb-3 ">
                 A. Maklumat Pendidikan Asas
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -3999,7 +3998,7 @@
 
             <!-- Bahagian B: Maklumat Sekolah/Institusi -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 text-primary">
+              <h5 class="text-md font-medium mb-3 ">
                 B. Maklumat Sekolah/Institusi
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4138,7 +4137,7 @@
 
             <!-- Bahagian C: Tempat Tinggal Semasa Belajar -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 text-primary">
+              <h5 class="text-md font-medium mb-3 ">
                 C. Tempat Tinggal Semasa Belajar
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4170,7 +4169,7 @@
 
             <!-- Bahagian D: Pengajian Tinggi -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 text-primary">
+              <h5 class="text-md font-medium mb-3 ">
                 D. Pengajian Tinggi
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4279,7 +4278,7 @@
 
             <!-- 1. Tahap Kesihatan -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3 text-primary">
+              <h5 class="text-md font-medium mb-3 ">
                 Tahap Kesihatan
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4304,7 +4303,7 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3 text-primary">
+              <h5 class="text-md font-medium mb-3 ">
                 Sakit Kronik
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4358,7 +4357,7 @@
               v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'"
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3 text-primary">OKU</h5>
+              <h5 class="text-md font-medium mb-3 ">OKU</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Kesempurnaan Fizikal -->
                 <FormKit
@@ -4432,7 +4431,7 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3 text-primary">Uzur</h5>
+              <h5 class="text-md font-medium mb-3 ">Uzur</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Keadaan Kesihatan -->
                 <FormKit
@@ -4485,7 +4484,7 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3 text-primary">
+              <h5 class="text-md font-medium mb-3 ">
                 Dokumen Sokongan Kesihatan
               </h5>
               <div class="grid grid-cols-1 gap-4">
@@ -6028,6 +6027,22 @@ const pakOfficersByKariah = {
     { label: "Ustaz Ismail bin Hassan", value: "ustaz-ismail-hassan" },
   ],
 };
+
+// Negeri Options
+const negeriOptions = [
+  { label: "Selangor", value: "selangor" },
+  { label: "Johor", value: "johor" },
+  { label: "Kedah", value: "kedah" },
+  { label: "Kelantan", value: "kelantan" },
+  { label: "Melaka", value: "melaka" },
+  { label: "Negeri Sembilan", value: "negeri-sembilan" },
+  { label: "Pahang", value: "pahang" },
+  { label: "Perak", value: "perak" },
+  { label: "Perlis", value: "perlis" },
+  { label: "Sabah", value: "sabah" },
+  { label: "Sarawak", value: "sarawak" },
+  { label: "Terengganu", value: "terengganu" },
+];
 
 // Course List Data
 const kursusList = ref([
@@ -7778,10 +7793,14 @@ const removeHeir = (index) => {
 // ============================================================================
 // LOCATION & UTILITY FUNCTIONS
 // ============================================================================
-const getLocation = (field) => {
-  formData.value[field].location = "Lokasi semasa";
-  toast.success("Lokasi berjaya diperoleh!");
-};
+  const getLocation = (field) => {
+    if (field === 'addressInfo') {
+      formData.value.addressInfo.geolokasi = "Lokasi semasa";
+    } else {
+      formData.value[field].geolokasi = "Lokasi semasa";
+    }
+    toast.success("Lokasi berjaya diperoleh!");
+  };
 
 // ============================================================================
 // KURSUS MODAL FUNCTIONS

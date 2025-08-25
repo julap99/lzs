@@ -17,16 +17,16 @@
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class=" py-8">
       <!-- Main Search Card -->
       <rs-card class="shadow-lg border-0">
         <template #header>
-          <div class="flex justify-between items-center">
+          <div class="flex items-center">
             <div class="flex items-center space-x-3">
               <Icon name="mdi:card-search" size="1.5rem" class="text-blue-600" />
               <h2 class="text-xl font-semibold text-gray-900">Carian Profil</h2>
             </div>
-            <div class="text-sm text-gray-500">
+            <div class="ml-8 text-sm text-gray-500">
               <Icon name="mdi:information" size="1rem" class="inline mr-1" />
               Isi mana-mana maklumat untuk carian yang fleksibel. Semakin banyak maklumat, semakin tepat hasil carian.
             </div>
