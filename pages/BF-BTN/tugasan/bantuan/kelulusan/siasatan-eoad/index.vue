@@ -546,59 +546,6 @@
 
               <rs-tab-item title="Bantuan">
                 <rs-tab variant="secondary" type="border">
-                  <rs-tab-item title="Syor" active>
-                    <!-- Syor Sub-tab Content -->
-                    <!-- <div
-                    class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
-                  > -->
-                    <rs-table
-                      :data="recommendedAid"
-                      :columns="recommendedAidColumns"
-                      :showNoColumn="true"
-                      :options="{
-                        variant: 'default',
-                        striped: true,
-                        hover: true,
-                      }"
-                      :options-advanced="{
-                        sortable: true,
-                        filterable: false,
-                      }"
-                      advanced
-                    >
-                      <template #header-terimaCadangan>
-                        <div class="flex items-center gap-2" @click.stop>
-                          <FormKit
-                            type="checkbox"
-                            v-model="selectAllSyor"
-                            @change="toggleSelectAllSyor"
-                            outer-class="mb-0"
-                          />
-                          <span class="text-sm">Pilih Semua</span>
-                        </div>
-                      </template>
-                      <template v-slot:kadarDicadangkan="{ text }"
-                        >RM {{ text }}</template
-                      >
-                      <template v-slot:skorAI="{ text }">
-                        <rs-badge :variant="getScoreVariant(text)"
-                          >{{ text }}%</rs-badge
-                        >
-                      </template>
-                      <template v-slot:terimaCadangan="{ value }">
-                        <FormKit
-                          type="checkbox"
-                          v-model="value.terimaCadangan"
-                          outer-class="mb-0"
-                        />
-                      </template>
-                    </rs-table>
-                    <!-- </div> -->
-
-                    <div class="flex justify-end">
-                      <rs-button variant="primary">Sahkan</rs-button>
-                    </div>
-                  </rs-tab-item>
 
                   <rs-tab-item title="Bantuan daripada Agensi">
                     <!-- Bantuan daripada Agensi Sub-tab Content -->
@@ -654,107 +601,6 @@
                         }}</rs-badge>
                       </template>
                     </rs-table>
-                  </rs-tab-item>
-
-                  <rs-tab-item title="Perubahan Bantuan">
-                    <div class="space-y-8">
-                      <!-- Senarai Bantuan yang mengalami Perubahan Kadar -->
-                      <div class="space-y-3">
-                        <h3 class="text-md font-semibold text-gray-900">
-                          Perubahan Status: Miskin > Fakir
-                        </h3>
-                        <h4 class="text-md font-semibold text-gray-900">
-                          Senarai Bantuan yang mengalami Perubahan Kadar
-                        </h4>
-
-                        <rs-table
-                          :data="bantuanPerubahanKadar"
-                          :columns="perubahanColumns"
-                          :showNoColumn="true"
-                          :options="{
-                            variant: 'default',
-                            striped: true,
-                            hover: true,
-                          }"
-                          :options-advanced="{
-                            sortable: true,
-                            filterable: false,
-                          }"
-                          advanced
-                        >
-                          <template #header-terimaCadangan>
-                            <div class="flex items-center gap-2" @click.stop>
-                              <FormKit
-                                type="checkbox"
-                                v-model="selectAllPerubahan"
-                                @change="toggleSelectAllPerubahan"
-                                outer-class="mb-0"
-                              />
-                              <span class="text-sm">Pilih Semua</span>
-                            </div>
-                          </template>
-                          <template v-slot:terimaCadangan="{ value }">
-                            <FormKit
-                              type="checkbox"
-                              v-model="value.terimaCadangan"
-                              outer-class="mb-0"
-                            />
-                          </template>
-                        </rs-table>
-
-                        <div class="flex justify-end">
-                          <rs-button variant="primary">Sahkan</rs-button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <hr class="my-4" />
-
-                    <!-- Senarai Bantuan Sedia Ada yang akan dibatalkan -->
-                    <div class="space-y-3">
-                      <h4 class="text-md font-semibold text-gray-900">
-                        Senarai Bantuan Sedia Ada yang akan dibatalkan
-                      </h4>
-
-                      <rs-table
-                        :data="bantuanPembatalan"
-                        :columns="pembatalanColumns"
-                        :showNoColumn="true"
-                        :options="{
-                          variant: 'default',
-                          striped: true,
-                          hover: true,
-                        }"
-                        :options-advanced="{
-                          sortable: true,
-                          filterable: false,
-                        }"
-                        advanced
-                      >
-                        <template #header-batalBantuan>
-                          <div class="flex items-center gap-2" @click.stop>
-                            <FormKit
-                              type="checkbox"
-                              v-model="selectAllPembatalan"
-                              @change="toggleSelectAllPembatalan"
-                              outer-class="mb-0"
-                            />
-                            <span class="text-sm">Pilih Semua</span>
-                          </div>
-                        </template>
-                        <template v-slot:batalBantuan="{ value }">
-                          <FormKit
-                            type="checkbox"
-                            v-model="value.batalBantuan"
-                            outer-class="mb-0"
-                          />
-                        </template>
-                      </rs-table>
-
-                      <div class="flex justify-end">
-                        <rs-button variant="primary">Sahkan</rs-button>
-                      </div>
-                    </div>
                   </rs-tab-item>
 
                   <rs-tab-item title="Bantuan Baru">
@@ -1270,9 +1116,9 @@ const breadcrumb = ref([
     path: "/BF-BTN/tugasan",
   },
   {
-    name: "Maklumat Pemohon",
+    name: "Siasatan EOAD",
     type: "current",
-    path: "/BF-BTN/tugasan/siasatan-eoad",
+    path: "/BF-BTN/tugasan/bantuan/kelulusan/siasatan-eoad",
   },
 ]);
 
@@ -1615,7 +1461,7 @@ const addNewAssistance = () => {
 };
 
 const editAssistance = (row) => {
-  router.push(`/BF-BTN/tugasan/bantuan/siasatan/B106`);
+  router.push(`/BF-BTN/tugasan/bantuan/kelulusan/B106`);
 };
 
 const saveData = () => {
