@@ -169,14 +169,14 @@
       </div>
     </div>
 
-    <!-- Jejak Audit (Read-Only Reference Section) -->
+    <!-- Jejak Audit (Disabled)
     <rs-card class="mt-8 bg-gray-50 border-gray-300">
       <template #header>
         <div class="bg-gray-100 border-b border-gray-300 px-6 py-4">
           <h3 class="text-lg font-medium text-gray-600 flex items-center">
             <Icon name="ph:clock-clockwise" class="w-5 h-5 mr-2 text-gray-500" />
-          Jejak Audit
-        </h3>
+            Jejak Audit
+          </h3>
           <p class="text-sm text-gray-500 mt-1">Maklumat rujukan sahaja</p>
         </div>
       </template>
@@ -220,7 +220,7 @@
               </div>
             </div>
             <div v-if="categoryData.maklumatPegawai?.diluluskanOleh">
-              <label class="block text-sm font-medium text-gray-500 mb-2">Diluluskan Oleh</label>
+              <label class="block textsm font-medium text-gray-500 mb-2">Diluluskan Oleh</label>
               <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ categoryData.maklumatPegawai.diluluskanOleh }}
               </div>
@@ -235,6 +235,7 @@
         </div>
       </template>
     </rs-card>
+    -->
   </div>
 </template>
 

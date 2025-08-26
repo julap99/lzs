@@ -428,27 +428,27 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label class="block text-xs font-medium text-gray-600 mb-1">Nama</label>
-              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.nama || 'N/A' }}</div>
+              <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.nama || 'N/A' }}</div>
             </div>
             <div>
               <label class="block text-xs font-medium text-gray-600 mb-1">ID Pengenalan</label>
-              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.idPengenalan || 'N/A' }}</div>
+              <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.idPengenalan || 'N/A' }}</div>
             </div>
             <div>
               <label class="block text-xs font-medium text-gray-600 mb-1">Kategori</label>
-              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.kategori || 'N/A' }}</div>
+              <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.kategori || 'N/A' }}</div>
             </div>
             <div>
               <label class="block text-xs font-medium text-gray-600 mb-1">Sesi</label>
-              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.sesi || 'N/A' }}</div>
+              <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.sesi || 'N/A' }}</div>
             </div>
             <div>
               <label class="block text-xs font-medium text-gray-600 mb-1">Daerah</label>
-              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.daerah || 'N/A' }}</div>
+              <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.daerah || 'N/A' }}</div>
             </div>
             <div>
               <label class="block text-xs font-medium text-gray-600 mb-1">Institusi</label>
-              <div class="text-sm text-gray-900 font-medium">{{ currentWarningRequest?.institusi || 'N/A' }}</div>
+              <div class="text-sm text-gray-900 font-medium">{{ currentTerminateRequest?.institusi || 'N/A' }}</div>
             </div>
           </div>
         </div>

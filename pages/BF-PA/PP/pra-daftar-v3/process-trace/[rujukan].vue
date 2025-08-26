@@ -1,7 +1,7 @@
 <!-- 
   RTMF SCREEN: PA-PP-PD-01_04
   PURPOSE: Process Trace - Paparan Maklumat Pendaftaran
-  DESCRIPTION: Complete process trace display for all approval stages with audit trail
+  DESCRIPTION: Complete process trace display for all approval stages
   ROUTE: /BF-PA/PP/pra-daftar-v3/process-trace/[rujukan]
 -->
 <template>
@@ -237,7 +237,7 @@
             </div>
           </div>
 
-          <!-- Audit Trail -->
+          <!-- Audit Trail (Disabled)
           <div class="p-6 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4 text-gray-900">
               Audit Trail
@@ -261,6 +261,7 @@
               <p class="text-gray-500">Tiada audit trail tersedia</p>
             </div>
           </div>
+          -->
         </div>
       </template>
     </rs-card>
