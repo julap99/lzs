@@ -21,97 +21,250 @@
             <div
               v-for="step in stepsA"
               :key="step.id"
-              class="text-center flex-1 cursor-pointer"
-              :class="{ 'font-semibold': currentStepA >= step.id }"
-              @click="navigateToStepA(step.id)"
+              class="text-center flex-1"
+              :class="[
+                { 'font-semibold': currentStepA >= step.id },
+                canClickStepper && allowStepA(step.id) ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+              ]"
+              @click="canClickStepper && allowStepA(step.id) && goToStepA(step.id)"
             >
               {{ step.label }}
             </div>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-2.5 relative">
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
             <div
-              class="bg-primary h-2.5 rounded-full"
-              :style="`width: ${(currentStepA / totalStepsA) * 100}%`"
-            ></div>
-            <!-- Clickable progress bar -->
-            <div 
-              class="absolute inset-0 cursor-pointer"
-              @click="handleProgressBarClickA"
+              class="bg-primary h-2.5 rounded-full transition-all duration-300"
+              :style="`width: ${
+                currentStepA >= totalStepsA
+                  ? 100
+                  : (currentStepA / totalStepsA) * 100
+              }%`"
             ></div>
           </div>
         </div>
 
-        <!-- Section A Form -->
+        <!-- Section A Form - Step 1: Penilaian Awal -->
         <FormKit
           v-if="currentStepA == 1"
           type="form"
           :actions="false"
           @submit="nextStepA"
         >
+          <h3 class="text-lg font-semibold mb-4">Penilaian Awal</h3>
+
+          <div class="space-y-6">
+            <!-- Question 1 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan
+                kos yang tinggi?
+              </label>
+              <FormKit
+                type="radio"
+                name="komitmen_tinggi"
+                :options="[
+                  { label: 'Ya', value: 'Y' },
+                  { label: 'Tidak', value: 'T' },
+                ]"
+                validation="required"
+                validation-label="Jawapan"
+                v-model="formData.komitmen_tinggi"
+              />
+            </div>
+
+            <!-- Question 2 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                Apakah keperluan tuan/puan mendesak sekarang ini?
+              </label>
+              <FormKit
+                type="checkbox"
+                name="keperluan_mendesak"
+                :options="[
+                  { label: 'Perubatan Kritikal', value: 'perubatan' },
+                  { label: 'Bencana', value: 'bencana' },
+                  { label: 'Kematian', value: 'kematian' },
+                  {
+                    label: 'Konflik Keluarga (tiada tempat bergantung)',
+                    value: 'konflik',
+                  },
+                  { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah' },
+                  { label: 'Selain dari di atas', value: 'lain' },
+                  { label: 'Tidak mendesak', value: 'tidakMendesak' },
+                ]"
+                validation="required|min:1"
+                validation-label="Jawapan"
+                validation-messages="{
+                  required: 'Sila pilih sekurang-kurangnya satu jawapan',
+                  min: 'Sila pilih sekurang-kurangnya satu jawapan'
+                }"
+                v-model="formData.keperluan_mendesak"
+              />
+
+              <!-- Additional input for "Selain dari di atas" -->
+              <div v-if="showLainInput" class="mt-4">
+                <FormKit
+                  type="text"
+                  name="lain_keperluan"
+                  label="Sila nyatakan keperluan lain:"
+                  validation="required"
+                  validation-label="Keperluan lain"
+                  validation-messages="{
+                    required: 'Sila nyatakan keperluan lain'
+                  }"
+                />
+              </div>
+            </div>
+
+            <FormKit type="textarea" name="catatan" label="Catatan" />
+
+            <!-- File Upload Section -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                Muat naik dokumen sokongan (PDF, JPG, PNG)
+              </label>
+              <FormKit
+                type="file"
+                name="dokumen_sokongan"
+                multiple
+                accept=".pdf,.jpg,.jpeg,.png"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                validation-label="Dokumen"
+                validation-messages="{
+                  required: 'Sila muat naik sekurang-kurangnya satu dokumen',
+                  max: 'Saiz fail tidak boleh melebihi 5MB',
+                  mime: 'Format fail tidak dibenarkan'
+                }"
+              />
+            </div>
+
+            <div class="flex justify-between gap-3 mt-6">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA1"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA" :disabled="!isPenilaianAwalComplete"
+                >Seterusnya ke Maklumat Peribadi</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 2: Maklumat Peribadi -->
+        <FormKit
+          v-if="currentStepA == 2"
+          type="form"
+          :actions="false"
+          @submit="nextStepA"
+        >
           <h3 class="text-lg font-semibold mb-4">
-            A. Maklumat Peribadi Asnaf (*untuk muallaf)
+            Maklumat Peribadi Asnaf (*untuk muallaf)
           </h3>
+
+          <h3 class="text-lg font-semibold mb-4">I. Maklumat Peribadi</h3>
 
           <!-- Personal Information Section -->
           <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">I. Maklumat Peribadi</h4>
+            <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-
               <FormKit
                 type="select"
                 name="jenis_id"
                 label="Jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID','Sijil Lahir']"
+                placeholder="Pilih jenis ID"
+                :options="['MyKad', 'Foreign ID']"
                 validation="required"
                 v-model="jenisId"
-                value="Kad Pengenalan"
               />
 
-                <FormKit
-                  v-if="jenisId"
-                  type="file"
-                  name="dokumen_id"
-                  :label="`Upload ${jenisId}`"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                />
+              <FormKit
+                v-if="jenisId"
+                type="file"
+                name="dokumen_id"
+                :label="`Upload ${jenisId}`"
+                accept=".pdf,.jpg,.jpeg,.png"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              />
 
               <FormKit
                 type="text"
-                name="nombor_id"
-                label="Nombor ID"
+                name="id_pengenalan"
+                label="ID Pengenalan"
+                help="Mengikut Dokumen Pengenalan"
                 validation="required"
-                value="123456789"
+                v-model="formData.id_pengenalan"
               />
 
               <FormKit
                 type="text"
                 name="nama"
                 label="Nama"
+                help="Mengikut Dokumen Pengenalan"
                 validation="required"
-                value="Ahmad bin Ali"
+                v-model="formData.nama"
               />
 
               <FormKit
+                type="select"
+                name="warganegara"
+                label="Warganegara"
+                placeholder="Pilih Warganegara"
+                :options="['Malaysia', 'Lain-lain']"
+                validation="required"
+                v-model="formData.warganegara"
+              />
+
+              <FormKit
+                v-if="formData.warganegara === 'Lain-lain'"
+                type="file"
+                name="lain_warganegara"
+                label="Lain-lain Warganegara"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                accept=".pdf,.jpg,.jpeg,.png"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              />
+
+              <div
+                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                v-if="formData.warganegara === 'Lain-lain'"
+              >
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Taraf Penduduk Tetap</label
+                  >
+                  <FormKit
+                    type="radio"
+                    name="taraf_penduduk"
+                    :options="[
+                      { label: 'Ya', value: 'ya' },
+                      { label: 'Tidak', value: 'tidak' },
+                    ]"
+                    validation="required"
+                  />
+                </div>
+              </div>
+              <FormKit
+                v-if="formData.warganegara === 'Malaysia'"
                 type="text"
                 name="nopassport"
-                label="No Passport"  
-                value="A12345678"
+                label="No Passport"
               />
 
               <FormKit
+                v-if="formData.warganegara === 'Malaysia'"
                 type="date"
                 name="passportStartDate"
                 label="Tarikh mula passport"
-                value="2025-01-01"
               />
               <FormKit
+                v-if="formData.warganegara === 'Malaysia'"
                 type="date"
                 name="passportEndDate"
                 label="Tarikh tamat passport"
-                value="2026-01-01"
               />
             </div>
           </div>
@@ -126,49 +279,23 @@
                 label="Tarikh Lahir"
                 help="Format: dd-mm-yyyy"
                 validation="required"
-                value="2000-01-01"
+                v-model="formData.tarikh_lahir"
               />
 
               <FormKit
-                type="select"
-                name="agama"
-                label="Agama"
-                :options="[
-                  'Islam',
-                  'Kristian',
-                  'Buddha',
-                  'Hindu',
-                  'Sikh',
-                  'Taoisme',
-                  'Konfusianisme',
-                  'Lain-lain'
-                ]"
+                type="number"
+                name="umur"
+                label="Umur"
                 validation="required"
-                value="Islam"
-              />
-
-              <FormKit
-                type="email"
-                name="emel"
-                label="Emel"
-                validation="required|email"
-                value="ahmad@gmail.com"
+                v-model="formData.umur"
               />
 
               <FormKit
                 type="text"
-                name="no_telefon"
-                label="No Telefon"
-                value="0123456789"
-              />
-
-              <FormKit
-                type="select"
-                name="warganegara"
-                label="Warganegara"
-                :options="['Warganegara', 'Bukan Warganegara']"
+                name="tempat_lahir"
+                label="Tempat Lahir"
                 validation="required"
-                value="Warganegara"
+                v-model="formData.tempat_lahir"
               />
 
               <FormKit
@@ -176,93 +303,67 @@
                 name="jantina"
                 label="Jantina"
                 :options="['Lelaki', 'Perempuan']"
+                placeholder="Pilih Jantina"
                 validation="required"
-                value="Lelaki"
+                v-model="formData.jantina"
               />
 
               <FormKit
+                type="select"
+                name="agama"
+                label="Agama"
+                :options="['Islam', 'Kristian', 'Buddha', 'Hindu', 'Lain-lain']"
+                placeholder="Pilih Agama"
+                validation="required"
+                v-model="agama"
+              />
+
+              <FormKit
+                v-if="agama === 'Lain-lain'"
+                type="text"
+                name="agama_lain"
+                label="Agama Lain"
+                validation="required"
+              />
+
+              <FormKit
+                v-model="bangsa"
                 type="select"
                 name="bangsa"
                 label="Bangsa"
                 :options="['Melayu', 'Cina', 'India', 'Lain-lain']"
                 validation="required"
-                value="Melayu"
-              />
-            </div>
-          </div>
-
-          <!-- Education Section -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Pendidikan</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="bersekolah"
-                label="Bersekolah"
-                :options="['Ya', 'Tidak']"
-                validation="required"
-                value="Ya"
+                placeholder="Pilih Bangsa"
               />
 
               <FormKit
-                type="select"
-                name="pendidikan_tertinggi"
-                label="Pendidikan Tertinggi"
-                :options="[
-                  'Peringkat Rendah',
-                  'SRP/PMR',
-                  'SPM',
-                  'Sijil',
-                  'Diploma',
-                  'STPM',
-                  'Ijazah',
-                  'Lain-lain Nyatakan',
-                ]"
+                v-if="bangsa === 'Lain-lain'"
+                type="text"
+                name="bangsa_lain"
+                label="Bangsa Lain"
                 validation="required"
-                value="SPM"
               />
-            </div>
-          </div>
-
-          <!-- Islamic Information Section -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               <FormKit
                 type="text"
-                name="nama_selepas_islam"
-                label="Nama Selepas Islam (Muallaf)"
+                name="no_telefon_bimbit"
+                label="No Telefon Bimbit"
+                v-model="formData.no_telefon_bimbit"
               />
 
               <FormKit
-                type="date"
-                name="tarikh_masuk_islam"
-                label="Tarikh Masuk Islam"
-                help="Format: dd-mm-yyyy"
-                validation="required"
-                v-model="tarikhMasukIslam"
-                value="2025-01-01"
-              />
-
-              <!-- Conversion Document (Conditional) -->
-              <FormKit
-                v-if="tarikhMasukIslam"
-                type="file"
-                name="dokumen_masuk_islam"
-                label="Upload surat keislaman dari MAIS"
-                accept=".pdf,.jpg,.jpeg,.png"
-                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                type="text"
+                name="no_telefon_rumah"
+                label="No Telefon Rumah"
+                v-model="formData.no_telefon_rumah"
               />
 
               <FormKit
-                type="date"
-                name="tarikh_masuk_kfam"
-                label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
-                help="Format: dd-mm-yyyy"
-                validation="required"
-                value="2025-01-01"
+                type="email"
+                name="emel"
+                label="Emel"
+                validation="required|email"
+                v-model="formData.emel"
               />
             </div>
           </div>
@@ -274,6 +375,7 @@
               <FormKit
                 type="select"
                 name="status_perkahwinan"
+                placeholder="Pilih Status Perkahwinan"
                 label="Status Perkahwinan"
                 :options="[
                   'Berkahwin',
@@ -285,20 +387,19 @@
                   'Balu',
                 ]"
                 validation="required"
-                value="Berkahwin"
               />
 
               <FormKit
                 type="select"
                 name="status_poligami"
+                placeholder="Pilih Status Poligami"
                 label="Status Poligami"
                 :options="[
                   { label: 'Tidak', value: 'tidak' },
-                  { label: 'Ya', value: 'ya' }
+                  { label: 'Ya', value: 'ya' },
                 ]"
                 validation="required"
                 v-model="statusPoligami"
-                value="Tidak"
               />
 
               <!-- Polygamy Information (Conditional) -->
@@ -307,26 +408,30 @@
                   type="select"
                   name="bilangan_isteri"
                   label="Bilangan Isteri"
-                  placeholder="Pilih bilangan isteri" 
+                  placeholder="Pilih bilangan isteri"
                   validation="required"
                   :options="[
                     { label: '2', value: 2 },
                     { label: '3', value: 3 },
-                    { label: '4', value: 4 }
+                    { label: '4', value: 4 },
                   ]"
                   v-model="bilanganIsteri"
                 />
-                <div v-for="(isteri, idx) in isteriList" :key="idx" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div
+                  v-for="(isteri, idx) in isteriList"
+                  :key="idx"
+                  class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
+                >
                   <FormKit
                     type="text"
                     :name="`no_kp_isteri_${idx}`"
-                    :label="`No Kp Pasangan #${idx+1}`"
+                    :label="`No Kp Pasangan #${idx + 1}`"
                     validation="required"
                   />
                   <FormKit
                     type="text"
                     :name="`nama_isteri_${idx}`"
-                    :label="`Nama Pasangan #${idx+1}`"
+                    :label="`Nama Pasangan #${idx + 1}`"
                     validation="required"
                   />
                 </div>
@@ -334,280 +439,885 @@
             </div>
           </div>
 
-
-
-          <!-- Bank Information Section -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Bank</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="nama_bank"
-                label="Nama Bank"
-                placeholder="Pilih nama bank"
-                :options="bankOptions"
-                validation="required"
-                v-model="formData.nama_bank"
-                value="Bank Islam"
-              />
-
-                <FormKit
-                  v-if="formData.nama_bank"
-                  type="text"
-                  name="swift_code"
-                  label="SWIFT Code"
-                  v-model="formData.swift_code"
-                  :value="selectedBankSwiftCode"
-                  readonly
-                  help="SWIFT Code untuk bank yang dipilih"
-                />
-              
-
-              <FormKit
-                type="text"
-                name="nama_pemegang_akaun"
-                label="Nama Pemegang Akaun Bank"
-                validation="required"
-                v-model="formData.nama_pemegang_akaun"
-                value="Ahmad bin Ali"
-              />
-
-              <FormKit
-                type="select"
-                name="kaedah_pembayaran"
-                label="Kaedah Pembayaran"
-                validation="required"
-                :options="paymentMethodOptions"
-                v-model="formData.kaedah_pembayaran"
-                :validation-messages="{
-                  required: 'Kaedah pembayaran adalah wajib'
-                }"
-                value="akaun"
-              />
-
-              <!-- Conditional checkboxes when Tiada is selected -->
-              <div v-if="formData.kaedah_pembayaran === 'tiada'" class="md:col-span-2">
-                <FormKit
-                  type="checkbox"
-                  name="noPaymentReason"
-                  label="Nyatakan sebab"
-                  :options="noPaymentReasonOptions"
-                  v-model="formData.noPaymentReason"
-                  validation="required|min:1"
-                  :validation-messages="{
-                    required: 'Sila pilih sekurang-kurangnya satu sebab',
-                    min: 'Sila pilih sekurang-kurangnya satu sebab'
-                  }"
-                />
-              </div>
-            </div>
-
-            <!-- Multiple Bank Account Numbers -->
-            <div class="mt-4">
-              <h5 class="font-medium mb-3">No Akaun Bank</h5>
-              
-              <div v-for="(accountNumber, index) in formData.bankAccountNumbers" :key="index" class="mb-3">
-                <div class="flex gap-2 items-end">
-                  <div class="flex-1">
-                    <FormKit
-                      type="text"
-                      :name="`no_akaun_bank_${index}`"
-                      :label="`No Akaun Bank ${index + 1}`"
-                      validation="required"
-                      v-model="accountNumber.number"
-                      :validation-messages="{
-                        required: 'No akaun bank adalah wajib'
-                      }"
-                    />
-                  </div>
-                  <button
-                    v-if="formData.bankAccountNumbers.length > 1"
-                    type="button"
-                    @click="removeBankAccountNumber(index)"
-                    class="text-red-500 hover:text-red-700 mb-2"
-                  >
-                    <Icon name="mdi:delete" size="1.25rem" />
-                  </button>
-                </div>
-              </div>
-
-              <!-- Add Bank Account Number Button -->
-              <div class="flex justify-center mt-4">
-                <rs-button
-                  variant="secondary"
-                  @click="addBankAccountNumber"
-                  type="button"
-                >
-                  <Icon name="mdi:plus" class="mr-1" size="1rem" />
-                  Tambah No Akaun Bank
-                </rs-button>
-              </div>
-            </div>
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="secondary"
+              @click="handleSaveStepA2"
+              >Simpan</rs-button
+            >
+            <rs-button type="submit" variant="primary" @click="nextStepA"
+              >Seterusnya ke Maklumat Islam</rs-button
+            >
           </div>
+        </FormKit>
 
-          <!-- Death Information Section -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Kematian</h4>
+        <!-- Section A Form - Step 3: Maklumat Islam -->
+        <FormKit
+          v-if="currentStepA === 3"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionA3"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            A. Maklumat Peribadi Asnaf (*untuk muallaf)
+          </h3>
+
+          <h3 class="text-lg font-semibold mb-4">II. Maklumat Islam</h3>
+          <!-- <h4 class="text-md font-medium mb-3 text-gray-800">Maklumat Islam</h4> -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Adakah anda seorang Muallaf? -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="jenis_id_kematian"
-                label="Jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID', 'Sijil Lahir']"
-                v-model="formData.jenis_id_kematian"
-                value="Kad Pengenalan"
-              />
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Adakah anda seorang Muallaf?</label
+                >
+                <FormKit
+                  type="radio"
+                  name="adakah_muallaf"
+                  :options="[
+                    { label: 'Ya', value: 'Y' },
+                    { label: 'Tidak', value: 'T' },
+                  ]"
+                  validation="required"
+                  validation-label="Status Muallaf"
+                  :validation-messages="{
+                    required:
+                      'Sila pilih sama ada anda seorang muallaf atau tidak',
+                  }"
+                  v-model="formData.adakah_muallaf"
+                />
+              </div>
+            </div>
 
+            <!-- Tarikh Masuk Islam -->
+            <div v-if="formData.adakah_muallaf === 'Y'">
+              <FormKit
+                type="date"
+                name="tarikh_masuk_islam"
+                label="Tarikh Masuk Islam"
+                placeholder="DD/MM/YYYY"
+                validation-label="Tarikh Masuk Islam"
+                :validation-messages="{
+                  required: 'Sila masukkan tarikh masuk Islam',
+                  matches:
+                    'Format tarikh tidak sah. Sila gunakan format DD/MM/YYYY',
+                }"
+                v-model="formData.tarikh_masuk_islam"
+              />
+            </div>
+
+            <!-- Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) -->
+            <div v-if="formData.adakah_muallaf === 'Y'">
+              <FormKit
+                type="date"
+                name="tarikh_masuk_kfam"
+                label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
+                placeholder="DD/MM/YYYY"
+                validation-label="Tarikh Masuk KFAM"
+                :validation-messages="{
+                  required:
+                    'Sila masukkan tarikh masuk Kelas Fardu Ain Muallaf (KFAM)',
+                  matches:
+                    'Format tarikh tidak sah. Sila gunakan format DD/MM/YYYY',
+                }"
+                v-model="formData.tarikh_masuk_kfam"
+              />
+            </div>
+
+            <!-- Validation error message for Islamic dates -->
+            <div
+              v-if="
+                formData.adakah_muallaf === 'Y' &&
+                !islamicDatesValidation.isValid
+              "
+              class="md:col-span-2 p-3 bg-red-50 border border-red-200 rounded"
+            >
+              <div class="text-red-600 text-sm">
+                <strong>Ralat:</strong> {{ islamicDatesValidation.message }}
+              </div>
+            </div>
+
+            <!-- Nama Selepas Islam -->
+            <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="text"
-                name="no_id_kematian"
-                label="No ID"
-                v-model="formData.no_id_kematian"
-                value=""
+                name="nama_selepas_islam"
+                label="Nama Selepas Islam"
+                validation="required"
+                validation-label="Nama Selepas Islam"
+                :validation-messages="{
+                  required: 'Sila masukkan nama selepas Islam',
+                }"
+                v-model="formData.nama_selepas_islam"
               />
+            </div>
 
+            <!-- Nama Sebelum Islam -->
+            <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="text"
-                name="nama_kematian"
-                label="Nama"
-                v-model="formData.nama_kematian"
-                value=""
+                name="nama_sebelum_islam"
+                label="Nama Sebelum Islam"
+                validation="required"
+                validation-label="Nama Sebelum Islam"
+                :validation-messages="{
+                  required: 'Sila masukkan nama sebelum Islam',
+                }"
+                v-model="formData.nama_sebelum_islam"
+              />
+            </div>
+
+            <!-- Tarikh Keluar Muallaf -->
+            <div v-if="formData.adakah_muallaf === 'Y'">
+              <FormKit
+                type="text"
+                name="tarikh_keluar_muallaf"
+                label="Tarikh Keluar Muallaf"
+                placeholder="DD/MM/YYYY"
+                :validation-messages="{
+                  required: 'Tarikh Keluar Muallaf diperlukan',
+                  matches: 'Format tarikh tidak sah',
+                }"
+                :model-value="tarikhKeluarMuallaf"
+                readonly
+              />
+            </div>
+
+            <!-- Dokumen Pengislaman -->
+            <div v-if="formData.adakah_muallaf === 'Y'">
+              <FormKit
+                type="file"
+                name="dokumen_pengislaman"
+                label="Dokumen Pengislaman"
+                help="Salinan dokumen rasmi pengislaman. Format: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                accept=".pdf,.jpg,.jpeg,.png"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                validation-label="Dokumen Pengislaman"
+                :validation-messages="{
+                  required: 'Sila muat naik dokumen pengislaman',
+                  max: 'Saiz fail tidak boleh melebihi 5MB',
+                  mime: 'Format fail tidak sah. Sila pilih fail PDF, JPG, atau PNG',
+                }"
+                v-model="formData.dokumen_pengislaman"
               />
             </div>
           </div>
 
           <div class="flex justify-between gap-3 mt-6">
-            <rs-button type="button" variant="secondary" @click="handleSaveStepA1"
-              >Simpan</rs-button
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
             >
-            <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Seterusnya ke Maklumat Kesihatan</rs-button
-            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA3"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Pendidikan</rs-button
+              >
+            </div>
           </div>
         </FormKit>
 
-        <!-- Section B Form -->
+        <!-- Section A Form - Step 4: Maklumat Pendidikan -->
         <FormKit
-          v-if="currentStepA === 2"
+          v-if="currentStepA === 4"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionB"
+          id="sectionA4"
         >
-          <h3 class="text-lg font-semibold mb-4">II. Maklumat Kesihatan</h3>
+          <h3 class="text-lg font-semibold mb-4">
+            A. Maklumat Peribadi Asnaf (*untuk muallaf)
+          </h3>
 
-          <FormKit
-            type="select"
-            name="tahap_kesihatan"
-            label="Tahap Kesihatan"
-            :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
-            validation="required"
-            v-model="healthStatus"
-          />
+          <h3 class="text-lg font-semibold mb-4">III. Maklumat Pendidikan</h3>
 
-          <div v-if="healthStatus === 'Sakit Kronik'" class="ml-6 mt-2">
+          <!-- A. Pendidikan Individu -->
+          <div class="mb-8">
+            <h4 class="text-lg font-semibold mb-4">Pendidikan Individu</h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Masih Bersekolah -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Masih Bersekolah?</label
+                  >
+                  <FormKit
+                    type="radio"
+                    name="masih_bersekolah"
+                    :options="[
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'T' },
+                    ]"
+                    validation="required"
+                    v-model="formData.masih_bersekolah"
+                  />
+                </div>
+              </div>
+
+              <!-- Pendidikan Tertinggi -->
+              <FormKit
+                type="select"
+                name="pendidikan_tertinggi"
+                label="Pendidikan Tertinggi *"
+                placeholder="Pilih Pendidikan Tertinggi"
+                :options="[
+                  'Peringkat Rendah',
+                  'SRP/PMR',
+                  'SPM',
+                  'Sijil',
+                  'Diploma',
+                  'STPM',
+                  'Ijazah',
+                  'Lain-lain',
+                ]"
+                validation="required"
+                v-model="formData.pendidikan_tertinggi"
+              />
+            </div>
+
+            <!-- Lain-lain Pendidikan Tertinggi -->
+            <div
+              v-if="formData.pendidikan_tertinggi === 'Lain-lain'"
+              class="mt-4"
+            >
+              <FormKit
+                type="text"
+                name="lain_pendidikan_tertinggi"
+                label="Lain-lain Pendidikan Tertinggi *"
+                validation="required"
+                v-model="formData.lain_pendidikan_tertinggi"
+              />
+            </div>
+
+            <!-- Tahap Pendidikan yang Dicapai -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Tahap Pendidikan yang Dicapai *</label
+                >
+                <FormKit
+                  type="checkbox"
+                  name="tahap_pendidikan"
+                  label=""
+                  placeholder="Pilih Tahap Pendidikan yang Dicapai"
+                  :options="[
+                    'Peringkat Rendah',
+                    'SRP/PMR',
+                    'SPM',
+                    'Sijil',
+                    'Diploma',
+                    'STPM',
+                    'Ijazah',
+                    'Lain-lain',
+                  ]"
+                  validation="required|min:1"
+                  v-model="formData.tahap_pendidikan"
+                  :validation-messages="{
+                    required:
+                      'Sila pilih sekurang-kurangnya satu tahap pendidikan',
+                    min: 'Sila pilih sekurang-kurangnya satu tahap pendidikan',
+                  }"
+                />
+              </div>
+            </div>
+
+            <!-- Lain-lain Tahap Pendidikan yang Dicapai -->
+            <div
+              v-if="
+                formData.tahap_pendidikan &&
+                formData.tahap_pendidikan.includes('Lain-lain')
+              "
+              class="mt-4"
+            >
+              <FormKit
+                type="text"
+                name="lain_tahap_pendidikan"
+                label="Lain-lain Tahap Pendidikan yang Dicapai *"
+                validation="required"
+                v-model="formData.lain_tahap_pendidikan"
+              />
+            </div>
+
+            <!-- Upload Sijil Pendidikan -->
+            <div class="mt-6">
+              <FormKit
+                type="file"
+                name="sijil_pendidikan"
+                label="Upload Sijil Pendidikan yang Diperolehi"
+                multiple="true"
+                accept=".pdf,.jpg,.jpeg,.png"
+                help="Format yang diterima: PDF, JPG, JPEG, PNG"
+                v-model="formData.sijil_pendidikan"
+              />
+            </div>
+          </div>
+
+          <!-- B. Maklumat Sekolah / Institusi -->
+          <div v-if="formData.masih_bersekolah === 'Y'" class="mb-8">
+            <h4 class="text-lg font-semibold mb-4">
+              Maklumat Sekolah / Institusi
+            </h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Jenis Sekolah / Institusi -->
+              <FormKit
+                type="select"
+                name="jenis_sekolah"
+                label="Jenis Sekolah / Institusi"
+                placeholder="Pilih Jenis Sekolah / Institusi"
+                :options="[
+                  'Pra Sekolah',
+                  'Sekolah Rendah Kebangsaan',
+                  'Sekolah Menengah Kebangsaan',
+                  'Sekolah Menengah Agama',
+                  'Sekolah Rendah Kebangsaan dan Agama',
+                  'IPTA',
+                  'IPTS',
+                  'Maahad Tahfiz',
+                ]"
+                v-model="formData.jenis_sekolah"
+              />
+
+              <!-- Kategori Sekolah / Institusi -->
+              <FormKit
+                type="select"
+                name="kategori_sekolah"
+                label="Kategori Sekolah / Institusi"
+                placeholder="Pilih Kategori Sekolah / Institusi"
+                :options="['SEK.MEN', 'SRK', 'IPTA', 'IPTS', 'SRA', 'KAFA']"
+                v-model="formData.kategori_sekolah"
+              />
+            </div>
+
+            <!-- Conditional fields when Kategori Sekolah is selected -->
+            <div v-if="formData.kategori_sekolah" class="mt-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Tahun Bersekolah -->
+                <FormKit
+                  type="text"
+                  name="tahun_bersekolah"
+                  label="Tahun Bersekolah (YYYY) *"
+                  validation="required"
+                  placeholder="Contoh: 2024"
+                  v-model="formData.tahun_bersekolah"
+                />
+
+                <!-- Tahun / Tingkatan / Tahun Pengajian / Semester -->
+                <FormKit
+                  type="text"
+                  name="tahun_tingkatan"
+                  label="Tahun / Tingkatan / Tahun Pengajian / Semester *"
+                  validation="required"
+                  placeholder="Contoh: Tingkatan 3, Tahun 2, Semester 1"
+                  v-model="formData.tahun_tingkatan"
+                />
+              </div>
+
+              <!-- Nama Sekolah / Institusi -->
+              <div class="mt-4">
+                <FormKit
+                  type="text"
+                  name="nama_sekolah"
+                  label="Nama Sekolah / Institusi *"
+                  validation="required"
+                  v-model="formData.nama_sekolah"
+                />
+              </div>
+
+              <!-- Address fields -->
+              <div class="mt-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="text"
+                    name="alamat_sekolah_1"
+                    label="Alamat 1 *"
+                    validation="required"
+                    v-model="formData.alamat_sekolah_1"
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="alamat_sekolah_2"
+                    label="Alamat 2"
+                    v-model="formData.alamat_sekolah_2"
+                  />
+                </div>
+
+                <div class="mt-4">
+                  <FormKit
+                    type="text"
+                    name="alamat_sekolah_3"
+                    label="Alamat 3"
+                    v-model="formData.alamat_sekolah_3"
+                  />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <FormKit
+                    type="text"
+                    name="daerah_sekolah"
+                    label="Daerah *"
+                    validation="required"
+                    v-model="formData.daerah_sekolah"
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="bandar_sekolah"
+                    label="Bandar *"
+                    validation="required"
+                    v-model="formData.bandar_sekolah"
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="poskod_sekolah"
+                    label="Poskod *"
+                    validation="required"
+                    v-model="formData.poskod_sekolah"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Tinggal Bersama Keluarga?</label
+                  >
+                  <FormKit
+                    type="radio"
+                    name="tinggal_bersama_keluarga"
+                    :options="[
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'T' },
+                    ]"
+                    validation="required"
+                    v-model="formData.tinggal_bersama_keluarga"
+                  />
+                </div>
+              </div>
+
+              <!-- Asrama / Rumah Sewa -->
+              <div
+                v-if="formData.tinggal_bersama_keluarga === 'T'"
+                class="mt-4"
+              >
+                <FormKit
+                  type="text"
+                  name="asrama_rumah_sewa"
+                  label="Asrama / Rumah Sewa *"
+                  validation="required"
+                  v-model="formData.asrama_rumah_sewa"
+                />
+              </div>
+
+              <!-- Bidang / Kursus Pengajian -->
+              <div class="mt-6">
+                <FormKit
+                  type="select"
+                  name="bidang_kursus"
+                  label="Bidang / Kursus Pengajian"
+                  :options="['Sijil', 'SKM', 'Diploma', 'Ijazah Sarjana Muda']"
+                  v-model="formData.bidang_kursus"
+                />
+              </div>
+
+              <!-- Jurusan / Bidang -->
+              <div v-if="formData.bidang_kursus" class="mt-4">
+                <FormKit
+                  type="text"
+                  name="jurusan_bidang"
+                  label="Jurusan / Bidang *"
+                  validation="required"
+                  v-model="formData.jurusan_bidang"
+                />
+              </div>
+
+              <!-- Pembiayaan Pengajian -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Pembiayaan Pengajian</label
+                  >
+                  <FormKit
+                    type="checkbox"
+                    name="pembiayaan_pengajian"
+                    :options="['JPA', 'PTPTN', 'LZS', 'Tiada', 'Lain-lain']"
+                    validation="required|min:1"
+                    v-model="formData.pembiayaan_pengajian"
+                    :validation-messages="{
+                      required: 'Sila pilih sekurang-kurangnya satu pembiayaan',
+                      min: 'Sila pilih sekurang-kurangnya satu pembiayaan',
+                    }"
+                  />
+                </div>
+              </div>
+
+              <!-- Lain-lain Pembiayaan Pengajian -->
+              <div
+                v-if="
+                  formData.pembiayaan_pengajian &&
+                  formData.pembiayaan_pengajian.includes('Lain-lain')
+                "
+                class="mt-4"
+              >
+                <FormKit
+                  type="text"
+                  name="lain_pembiayaan"
+                  label="Lain-lain Pembiayaan Pengajian *"
+                  validation="required"
+                  v-model="formData.lain_pembiayaan"
+                />
+              </div>
+
+              <!-- Catatan -->
+              <div class="mt-6">
+                <FormKit
+                  type="textarea"
+                  name="catatan_pendidikan"
+                  label="Catatan"
+                  v-model="formData.catatan_pendidikan"
+                  rows="3"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA4"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Bank</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 5: Maklumat Bank -->
+        <FormKit
+          v-if="currentStepA === 5"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionA5"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            A. Maklumat Peribadi Asnaf (*untuk muallaf)
+          </h3>
+
+          <h3 class="text-lg font-semibold mb-4">IV. Maklumat Bank</h3>
+
+          <div class="mb-6">
+            <!-- <h4 class="text-md font-medium mb-3">Maklumat Bank</h4> -->
+
+            <!-- Kaedah Pembayaran -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Kaedah Pembayaran
+                </label>
+                <div class="mb-6">
+                  <FormKit
+                    type="radio"
+                    name="kaedah_pembayaran"
+                    :options="paymentMethodOptions"
+                    validation="required"
+                    v-model="formData.kaedah_pembayaran"
+                    :validation-messages="{
+                      required: 'Kaedah pembayaran adalah wajib',
+                    }"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- A. Jika Kaedah Pembayaran = Akaun -->
+            <div v-if="formData.kaedah_pembayaran === 'akaun'" class="mb-6">
+              <h5 class="text-md font-medium mb-4">Maklumat Akaun Bank</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Nama Bank -->
+                <FormKit
+                  type="select"
+                  name="nama_bank"
+                  label="Nama Bank *"
+                  placeholder="Pilih nama bank"
+                  :options="bankOptions"
+                  validation="required"
+                  v-model="formData.nama_bank"
+                />
+
+                <!-- Swift Code (Read Only) -->
+                <FormKit
+                  v-if="formData.nama_bank"
+                  type="text"
+                  name="swift_code"
+                  label="Swift Code"
+                  v-model="formData.swift_code"
+                  :value="selectedBankSwiftCode"
+                  readonly
+                  help="Swift Code dipaparkan secara automatik"
+                />
+
+                <!-- No. Akaun Bank -->
+                <FormKit
+                  type="text"
+                  name="no_akaun_bank"
+                  label="No. Akaun Bank *"
+                  validation="required"
+                  v-model="formData.no_akaun_bank"
+                />
+
+                <!-- Nama Pemegang Akaun -->
+                <FormKit
+                  type="text"
+                  name="nama_pemegang_akaun"
+                  label="Nama Pemegang Akaun *"
+                  validation="required"
+                  v-model="formData.nama_pemegang_akaun"
+                />
+              </div>
+            </div>
+
+            <!-- B. Jika Kaedah Pembayaran = Tiada -->
+            <div v-if="formData.kaedah_pembayaran === 'tiada'" class="mb-6">
+              <h5 class="text-md font-medium mb-4">Sebab Tiada Akaun Bank</h5>
+              <div class="md:col-span-2">
+                <FormKit
+                  type="select"
+                  name="sebab_tiada_akaun"
+                  label="Sebab *"
+                  :options="noPaymentReasonOptions"
+                  validation="required"
+                  placeholder="Pilih sebab tiada akaun bank"
+                  v-model="formData.sebab_tiada_akaun"
+                  :validation-messages="{
+                    required: 'Sila pilih sebab tiada akaun bank',
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA5"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Kesihatan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 6: Maklumat Kesihatan -->
+        <FormKit
+          v-if="currentStepA === 6"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionA6"
+        >
+          <h3 class="text-lg font-semibold mb-4">V. Maklumat Kesihatan</h3>
+
+          <!-- Tahap Kesihatan -->
+          <div class="mb-6">
             <FormKit
               type="select"
-              name="keadaan_kesihatan_sakit"
-              label="a. Keadaan Kesihatan"
-              :options="['Terlantar', 'Tidak Terlantar']"
-            />
-
-            <FormKit
-              type="select"
-              name="kos_penjagaan_sakit"
-              label="b. Kos Penjagaan"
-              :options="['Berbayar', 'Tidak berbayar']"
-            />
-
-            <FormKit
-              type="number"
-              name="perbelanjaan_bulanan_sakit"
-              label="c. Jumlah Perbelanjaan Bulanan (RM)"
-              step="0.01"
-              min="0"
-            />
-
-            <FormKit
-              type="file"
-              name="dokumen_sakit_kronik"
-              label="d. Upload Dokumen Sakit Kronik"
-              accept=".pdf,.jpg,.jpeg,.png"
-              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              name="tahap_kesihatan"
+              label="Tahap Kesihatan *"
+              :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
+              validation="required"
+              v-model="formData.tahap_kesihatan"
+              placeholder="Pilih tahap kesihatan"
             />
           </div>
 
-          <div v-if="healthStatus === 'OKU'" class="ml-6 mt-2">
-            <FormKit
-              type="select"
-              name="kesempurnaan_fizikal"
-              label="a. Kesempurnaan Fizikal"
-              :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
-            />
+          <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
+          <div v-if="formData.tahap_kesihatan === 'Sakit Kronik'" class="mb-8">
+            <h5 class="text-lg font-semibold mb-4">Maklumat Sakit Kronik</h5>
 
-            <FormKit
-              type="select"
-              name="sebab_kecacatan"
-              label="b. Sebab Kecacatan (Jika Cacat)"
-              :options="['Sejak Lahir', 'Musibah']"
-            />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Keadaan Kesihatan -->
+              <FormKit
+                type="select"
+                name="keadaan_kesihatan_sakit"
+                label="Keadaan Kesihatan *"
+                :options="['Terlantar', 'Tidak Terlantar']"
+                validation="required"
+                v-model="formData.keadaan_kesihatan_sakit"
+                placeholder="Pilih keadaan kesihatan"
+              />
 
-            <FormKit
-              type="select"
-              name="tahap_kecacatan"
-              label="c. Tahap Kecacatan"
-              :options="['Terlantar', 'Tidak Terlantar']"
-            />
+              <!-- Kos Penjagaan -->
+              <FormKit
+                type="select"
+                name="kos_penjagaan_sakit"
+                label="Kos Penjagaan *"
+                :options="['Berbayar', 'Tidak Berbayar']"
+                validation="required"
+                v-model="formData.kos_penjagaan_sakit"
+                placeholder="Pilih kos penjagaan"
+              />
+            </div>
 
-            <FormKit
-              type="number"
-              name="perbelanjaan_bulanan_oku"
-              label="d. Jumlah Perbelanjaan Bulanan (RM)"
-              step="0.01"
-              min="0"
-            />
-
-            <FormKit
-              type="file"
-              name="dokumen_oku"
-              label="e. Upload Dokumen OKU"
-              accept=".pdf,.jpg,.jpeg,.png"
-              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-            />
+            <!-- Jumlah Perbelanjaan Bulanan -->
+            <div class="mt-4">
+              <FormKit
+                type="text"
+                name="perbelanjaan_bulanan_sakit"
+                label="Jumlah Perbelanjaan Bulanan (RM) *"
+                validation="required"
+                placeholder="9999.99"
+                v-model="formData.perbelanjaan_bulanan_sakit"
+                help="Format: 9999.99"
+              />
+            </div>
           </div>
 
-          <div v-if="healthStatus === 'Uzur'" class="ml-6 mt-2">
-            <FormKit
-              type="select"
-              name="keadaan_kesihatan_uzur"
-              label="a. Keadaan Kesihatan"
-              :options="['Terlantar', 'Tidak Terlantar']"
-            />
+          <!-- B. Jika Tahap Kesihatan = "OKU" -->
+          <div v-if="formData.tahap_kesihatan === 'OKU'" class="mb-8">
+            <h5 class="text-lg font-semibold mb-4">Maklumat OKU</h5>
 
-            <FormKit
-              type="select"
-              name="kos_penjagaan_uzur"
-              label="b. Kos Penjagaan"
-              :options="['Berbayar', 'Tidak berbayar']"
-            />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Kesempurnaan Fizikal -->
+              <FormKit
+                type="select"
+                name="kesempurnaan_fizikal"
+                label="Kesempurnaan Fizikal *"
+                :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
+                validation="required"
+                v-model="formData.kesempurnaan_fizikal"
+                placeholder="Pilih kesempurnaan fizikal"
+              />
 
-            <FormKit
-              type="number"
-              name="perbelanjaan_bulanan_uzur"
-              label="c. Jumlah Perbelanjaan Bulanan (RM)"
-              step="0.01"
-              min="0"
-            />
+              <!-- Sebab Kecacatan -->
+              <FormKit
+                type="select"
+                name="sebab_kecacatan"
+                label="Sebab Kecacatan (Jika Cacat) *"
+                :options="['Sejak Lahir', 'Musibah']"
+                validation="required"
+                v-model="formData.sebab_kecacatan"
+                placeholder="Pilih sebab kecacatan"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <!-- Tahap Kecacatan -->
+              <FormKit
+                type="select"
+                name="tahap_kecacatan"
+                label="Tahap Kecacatan *"
+                :options="['Terlantar', 'Tidak Terlantar']"
+                validation="required"
+                v-model="formData.tahap_kecacatan"
+                placeholder="Pilih tahap kecacatan"
+              />
+
+              <!-- Jumlah Perbelanjaan Bulanan -->
+              <FormKit
+                type="text"
+                name="perbelanjaan_bulanan_oku"
+                label="Jumlah Perbelanjaan Bulanan (RM) *"
+                validation="required"
+                placeholder="9999.99"
+                v-model="formData.perbelanjaan_bulanan_oku"
+                help="Format: 9999.99"
+              />
+            </div>
+          </div>
+
+          <!-- C. Jika Tahap Kesihatan = "Uzur" -->
+          <div v-if="formData.tahap_kesihatan === 'Uzur'" class="mb-8">
+            <h5 class="text-lg font-semibold mb-4">Maklumat Uzur</h5>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Keadaan Kesihatan -->
+              <FormKit
+                type="select"
+                name="keadaan_kesihatan_uzur"
+                label="Keadaan Kesihatan *"
+                :options="['Terlantar', 'Tidak Terlantar']"
+                validation="required"
+                v-model="formData.keadaan_kesihatan_uzur"
+                placeholder="Pilih keadaan kesihatan"
+              />
+
+              <!-- Kos Penjagaan -->
+              <FormKit
+                type="select"
+                name="kos_penjagaan_uzur"
+                label="Kos Penjagaan *"
+                :options="['Berbayar', 'Tidak Berbayar']"
+                validation="required"
+                v-model="formData.kos_penjagaan_uzur"
+                placeholder="Pilih kos penjagaan"
+              />
+            </div>
+
+            <!-- Jumlah Perbelanjaan Bulanan -->
+            <div class="mt-4">
+              <FormKit
+                type="text"
+                name="perbelanjaan_bulanan_uzur"
+                label="Jumlah Perbelanjaan Bulanan (RM) *"
+                validation="required"
+                placeholder="9999.99"
+                v-model="formData.perbelanjaan_bulanan_uzur"
+                help="Format: 9999.99"
+              />
+            </div>
+          </div>
+
+          <!-- D. Upload Dokumen Sokongan (Jika Tahap Kesihatan ≠ "Sihat") -->
+          <div
+            v-if="
+              formData.tahap_kesihatan && formData.tahap_kesihatan !== 'Sihat'
+            "
+            class="mb-6"
+          >
+            <h5 class="text-lg font-semibold mb-4">Dokumen Sokongan</h5>
 
             <FormKit
               type="file"
-              name="dokumen_uzur"
-              label="d. Upload Dokumen Uzur"
+              name="dokumen_sokongan_kesihatan"
+              label="Upload Dokumen Sokongan Berkaitan Kesihatan *"
               accept=".pdf,.jpg,.jpeg,.png"
-              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              multiple="true"
+              help="Format yang dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
+              validation="required"
+              v-model="formData.dokumen_sokongan_kesihatan"
             />
           </div>
 
@@ -619,7 +1329,10 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA2"
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA2"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -629,20 +1342,25 @@
           </div>
         </FormKit>
 
-        <!-- Section C Form -->
+        <!-- Section A Form - Step 7: Kemahiran -->
         <FormKit
-          v-if="currentStepA === 3"
+          v-if="currentStepA === 7"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionC"
+          id="sectionA7"
         >
-          <h3 class="text-lg font-semibold mb-4">III. Kemahiran</h3>
+          <h3 class="text-lg font-semibold mb-4">VI. Kemahiran</h3>
 
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-black-700"
+                >Kemahiran</label
+              >
           <FormKit
-            type="select"
+            type="checkbox"
             name="kemahiran"
-            label="Kemahiran"
+
             :options="[
               'Nelayan',
               'Penternakan',
@@ -657,6 +1375,23 @@
               'Lain-lain',
             ]"
             validation="required"
+            v-model="formData.kemahiran"
+            placeholder="Pilih kemahiran"
+            :validation-messages="{
+              required: 'Sila pilih kemahiran',
+            }"
+          />
+        </div>
+      </div>
+
+          <FormKit
+            type="text"
+            name="lain_lain_kemahiran"
+            label="Lain-lain Kemahiran"
+            validation="required"
+            v-if="formData.kemahiran && formData.kemahiran.includes('Lain-lain')"
+            placeholder="Nyatakan kemahiran lain"
+            v-model="formData.lain_lain_kemahiran"
           />
 
           <div class="flex justify-between gap-3 mt-6">
@@ -667,31 +1402,32 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA3"
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA7"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Kediaman</rs-button
+                >Seterusnya ke Maklumat Alamat</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section D Form -->
+        <!-- Section A Form - Step 8: Maklumat Alamat -->
         <FormKit
-          v-if="currentStepA === 4"
+          v-if="currentStepA === 8"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionD"
+          id="sectionA8"
         >
-          <h3 class="text-lg font-semibold mb-4">
-            IV. Maklumat Kediaman/Tempat Tinggal
-          </h3>
+          <h3 class="text-lg font-semibold mb-4">VII. Maklumat Alamat</h3>
 
           <!-- Alamat Section -->
           <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Alamat Terkini</h4>
+            <h4 class="text-md font-medium mb-3">Alamat</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="md:col-span-2">
                 <FormKit
@@ -699,19 +1435,20 @@
                   name="alamat1"
                   label="Alamat 1"
                   validation="required"
+                  placeholder="Sila masukkan alamat 1"
                   v-model="formData.addressInfo.alamat1"
                   :validation-messages="{
                     required: 'Alamat 1 adalah wajib',
                   }"
-                  value="Jalan Bukit Bintang 1, Taman Bukit Bintang, 57000 Kuala Lumpur"
                 />
 
                 <FormKit
                   type="textarea"
                   name="alamat2"
                   label="Alamat 2"
+                  placeholder="Sila masukkan alamat 2 (tidak wajib)"
                   v-model="formData.addressInfo.alamat2"
-                  value="Jalan Bukit Bintang 2, Taman Bukit Bintang, 57000 Kuala Lumpur"
+                  v-if="formData.addressInfo.alamat1"
                 />
 
                 <FormKit
@@ -720,16 +1457,76 @@
                   label="Alamat 3"
                   placeholder="Sila masukkan alamat 3 (tidak wajib)"
                   v-model="formData.addressInfo.alamat3"
+                  v-if="formData.addressInfo.alamat1"
                 />
               </div>
 
+              <FormKit
+                type="select"
+                name="negeri"
+                label="Negeri"
+                value="Selangor"
+                :options="negeriOptions"
+                v-model="formData.addressInfo.negeri"
+              />
+
+              <FormKit
+                type="select"
+                name="daerah"
+                label="Daerah"
+                placeholder="Pilih daerah"
+                :options="daerahOptions"
+                validation="required"
+                v-model="formData.addressInfo.daerah"
+                :validation-messages="{
+                  required: 'Daerah adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="bandar"
+                label="Bandar"
+                placeholder="Pilih bandar"
+                :options="bandarOptions"
+                validation="required"
+                v-model="formData.addressInfo.bandar"
+                :validation-messages="{
+                  required: 'Bandar adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="poskod"
+                label="Poskod"
+                placeholder="Pilih poskod"
+                :options="poskodOptions"
+                validation="required"
+                v-model="formData.addressInfo.poskod"
+                :validation-messages="{
+                  required: 'Poskod adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="kariah"
+                label="Kariah"
+                placeholder="Pilih kariah"
+                :options="kariahOptions"
+                validation="required"
+                v-model="formData.addressInfo.kariah"
+                :validation-messages="{
+                  required: 'Kariah adalah wajib',
+                }"
+              />
+
               <div class="flex gap-2">
                 <FormKit
-                  v-model="formData.addressInfo.location"
-                  label="Lokasi"
+                  v-model="formData.addressInfo.geolokasi"
+                  label="Geolokasi"
                   type="text"
-                  validation="required"
-                  validation-visibility="dirty"
                   class="flex-1"
                 />
                 <rs-button
@@ -744,190 +1541,759 @@
               </div>
 
               <FormKit
+                type="number"
+                name="tempoh_menetap_selangor"
+                label="Tempoh Menetap di Selangor (Tahun)"
+                min="0"
+                validation="required|min:0"
+                v-model="formData.addressInfo.tempoh_menetap_selangor"
+                :validation-messages="{
+                  required: 'Tempoh menetap adalah wajib',
+                  min: 'Tempoh menetap mesti 0 atau lebih',
+                }"
+              />
+            </div>
+
+            <div v-if="formData.adakah_muallaf === 'Y'" class="flex gap-2">
+              <FormKit
+                type="text"
+                name="kursus_terpilih"
+                label="Kursus Terpilih"
+                placeholder="Pilih kursus dari senarai"
+                readonly
+                class="flex-1"
+                v-model="formData.addressInfo.kursus_terpilih"
+              />
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="openKursusModal"
+                class="whitespace-nowrap mt-7"
+              >
+                <i class="fas fa-list mr-2"></i>
+                Pilih Kursus
+              </rs-button>
+            </div>
+          </div>
+
+          <!-- Maklumat Tempat Tinggal Section -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Tempat Tinggal</h4>
+
+            <!-- Hidden field for ID type -->
+            <FormKit type="hidden" name="jenis_id_alamat" :value="jenisId" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
                 type="select"
-                name="daerah"
-                label="Daerah"
-                placeholder="Pilih daerah"
-                :options="daerahOptions"
+                name="status_kediaman"
+                label="Status Kediaman Tempat Tinggal"
+                :options="[
+                  'Milik Sendiri Tidak Berbayar',
+                  'Milik Sendiri Berbayar',
+                  'Sewa',
+                  'Kuarters Majikan',
+                  'Tumpang Rumah Ibu/Bapa/Mertua',
+                  'Pusaka',
+                  'Sumbangan LZS / PPRT / RISDA',
+                  'Lain-lain',
+                ]"
                 validation="required"
-                v-model="formData.addressInfo.daerah"
+                v-model="formData.addressInfo.status_kediaman"
+                :validation-messages="{
+                  required: 'Status kediaman adalah wajib',
+                }"
               />
 
               <FormKit
                 type="text"
-                name="poskod"
-                label="Poskod"
-                validation="required|number|length:5"
-                validation-messages="{
-                  required: 'Poskod diperlukan',
-                  number: 'Poskod mesti dalam bentuk nombor',
-                  length: 'Poskod mesti 5 digit'
+                name="lain_lain_status_kediaman"
+                label="Lain-lain Status Kediaman Tempat Tinggal"
+                validation="required"
+                v-if="formData.addressInfo.status_kediaman === 'Lain-lain'"
+                placeholder="Nyatakan status kediaman lain"
+                :validation-messages="{
+                  required: 'Sila nyatakan status kediaman lain',
                 }"
-                value="12345"
               />
 
               <FormKit
                 type="select"
-                name="kariah"
-                label="Kariah"
-                placeholder="Pilih kariah"
-                :options="kariahOptions"
+                name="tapak_rumah"
+                label="Tapak Rumah"
+                :options="[
+                  'Milik Sendiri',
+                  'Tanah Wakaf',
+                  'Tanah Kerajaan / Persendirian / Setinggan (Izin)',
+                  'Kebenaran Menduduki Sementara (TOL)',
+                  'Menumpang / Sewa / Pajak daripada Orang Lain',
+                  'Tanah Keluarga',
+                  'Lain-lain',
+                ]"
                 validation="required"
+                v-model="formData.addressInfo.tapak_rumah"
+                :validation-messages="{
+                  required: 'Tapak rumah adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="lain_lain_tapak_rumah"
+                label="Lain-lain Tapak Rumah"
+                validation="required"
+                v-if="formData.addressInfo.tapak_rumah === 'Lain-lain'"
+                placeholder="Nyatakan tapak rumah lain"
+                :validation-messages="{
+                  required: 'Sila nyatakan tapak rumah lain',
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="jenis_rumah"
+                label="Jenis Rumah"
+                :options="[
+                  'Kos Rendah',
+                  'Kos Sederhana',
+                  'Pangsapuri/Flat',
+                  'Teres',
+                  'Lain-lain',
+                ]"
+                validation="required"
+                v-model="formData.addressInfo.jenis_rumah"
+                :validation-messages="{
+                  required: 'Jenis rumah adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="lain_lain_jenis_rumah"
+                label="Lain-lain Jenis Rumah"
+                validation="required"
+                v-if="formData.addressInfo.jenis_rumah === 'Lain-lain'"
+                placeholder="Nyatakan jenis rumah lain"
+                :validation-messages="{
+                  required: 'Sila nyatakan jenis rumah lain',
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="binaan_rumah"
+                label="Binaan Rumah"
+                :options="['Batu', 'Kayu', 'Separa Batu', 'Lain-lain']"
+                validation="required"
+                v-model="formData.addressInfo.binaan_rumah"
+                :validation-messages="{
+                  required: 'Binaan rumah adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="lain_lain_binaan_rumah"
+                label="Lain-lain Binaan Rumah"
+                validation="required"
+                v-if="formData.addressInfo.binaan_rumah === 'Lain-lain'"
+                placeholder="Nyatakan binaan rumah lain"
+                :validation-messages="{
+                  required: 'Sila nyatakan binaan rumah lain',
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="keadaan_kediaman"
+                label="Keadaan Kediaman"
+                :options="['Baik', 'Sempurna', 'Uzur', 'Separa Uzur']"
+                validation="required"
+                v-model="formData.addressInfo.keadaan_kediaman"
+                :validation-messages="{
+                  required: 'Keadaan kediaman adalah wajib',
+                }"
+              />
+            </div>
+
+            <!-- Kemudahan Asas Section -->
+            <div class="mt-6">
+              <h5 class="text-md font-medium mb-3">Kemudahan Asas</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700"
+                    >Bekalan Air</label
+                  >
+                  <FormKit
+                    type="radio"
+                    name="bekalan_air"
+                    :options="[
+                      { label: 'Ada', value: 'ada' },
+                      { label: 'Tiada', value: 'tiada' },
+                    ]"
+                    validation="required"
+                    v-model="formData.addressInfo.bekalan_air"
+                    :validation-messages="{
+                      required: 'Sila pilih status bekalan air',
+                    }"
+                  />
+                </div>
+
+                <FormKit
+                  type="number"
+                  name="bil_air"
+                  label="Anggaran Bil Air Sebulan (RM)"
+                  step="0.01"
+                  min="0"
+                  validation="required"
+                  v-model="formData.addressInfo.bil_air"
+                  :validation-messages="{
+                    required: 'Anggaran bil air adalah wajib',
+                  }"
+                />
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700"
+                    >Bekalan Elektrik</label
+                  >
+                  <FormKit
+                    type="radio"
+                    name="bekalan_elektrik"
+                    :options="[
+                      { label: 'Ada', value: 'ada' },
+                      { label: 'Tiada', value: 'tiada' },
+                    ]"
+                    validation="required"
+                    v-model="formData.addressInfo.bekalan_elektrik"
+                    :validation-messages="{
+                      required: 'Sila pilih status bekalan elektrik',
+                    }"
+                  />
+                </div>
+
+                <FormKit
+                  type="number"
+                  name="bil_elektrik"
+                  label="Anggaran Bil Elektrik Sebulan (RM)"
+                  step="0.01"
+                  min="0"
+                  validation="required"
+                  v-model="formData.addressInfo.bil_elektrik"
+                  :validation-messages="{
+                    required: 'Anggaran bil elektrik adalah wajib',
+                  }"
+                />
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700"
+                    >Bil Penyelenggaraan</label
+                  >
+                  <FormKit
+                    type="radio"
+                    name="penyelenggaraan"
+                    :options="[
+                      { label: 'Ada', value: 'ada' },
+                      { label: 'Tiada', value: 'tiada' },
+                    ]"
+                    validation="required"
+                    v-model="formData.addressInfo.penyelenggaraan"
+                    :validation-messages="{
+                      required: 'Sila pilih status bil penyelenggaraan',
+                    }"
+                  />
+                </div>
+
+                <FormKit
+                  type="number"
+                  name="bil_penyelenggaraan"
+                  label="Anggaran Bil Penyelenggaraan Sebulan (RM)"
+                  step="0.01"
+                  min="0"
+                  validation="required"
+                  v-model="formData.addressInfo.bil_penyelenggaraan"
+                  :validation-messages="{
+                    required: 'Anggaran bil penyelenggaraan adalah wajib',
+                  }"
+                />
+              </div>
+            </div>
+
+            <!-- Kos Tempat Tinggal Section -->
+            <div class="mt-6">
+              <!-- <h5 class="text-md font-medium mb-3">Kos Tempat Tinggal</h5> -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="number"
+                  name="kadar_bayaran_bulanan"
+                  label="Status Kediaman jika Milik Sendiri Berbayar"
+                  step="0.01"
+                  min="0"
+                  placeholder="Isi kadar bayaran bulanan (RM)"
+                  v-if="
+                    formData.addressInfo.status_kediaman ===
+                    'Milik Sendiri Berbayar'
+                  "
+                  v-model="formData.addressInfo.kadar_bayaran_bulanan"
+                />
+
+                <FormKit
+                  type="number"
+                  name="kadar_sewa_bulanan"
+                  label="Status Kediaman jika Sewa"
+                  step="0.01"
+                  min="0"
+                  placeholder="Isi kadar sewa bulanan (RM)"
+                  v-if="formData.addressInfo.status_kediaman === 'Sewa'"
+                  v-model="formData.addressInfo.kadar_sewa_bulanan"
+                />
+
+                <FormKit
+                  type="file"
+                  name="dokumen_perjanjian_sewa"
+                  label="Dokumen Perjanjian Sewa"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  v-if="formData.addressInfo.status_kediaman === 'Sewa'"
+                  v-model="formData.addressInfo.dokumen_perjanjian_sewa"
+                  :validation-messages="{
+                    required:
+                      'Dokumen perjanjian sewa adalah wajib untuk status sewa',
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA8"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Pinjaman Harta</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 9: Maklumat Pinjaman Harta -->
+        <FormKit
+          v-if="currentStepA === 9"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionA9"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            IX. Maklumat Pinjaman Harta
+          </h3>
+
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                name="nama_institusi_pemberi_pinjaman"
+                label="Nama Institusi / Individu Pemberi Pinjaman"
+                validation="required"
+                placeholder="Sila masukkan nama institusi atau individu"
+                :validation-messages="{
+                  required:
+                    'Nama institusi/individu pemberi pinjaman adalah wajib',
+                }"
+                v-model="formData.nama_institusi_pemberi_pinjaman"
+              />
+
+              <FormKit
+                type="text"
+                name="jenis_pinjaman"
+                label="Jenis Pinjaman"
+                placeholder="Sila masukkan jenis pinjaman"
+                v-model="formData.jenis_pinjaman"
               />
 
               <FormKit
                 type="number"
-                name="tempoh_bermastautin"
-                label="Tempoh Bermastautin (Tahun)"
+                name="amaun_bayaran_bulanan"
+                label="Amaun Bayaran Bulanan (RM)"
+                step="0.01"
                 min="0"
-                validation="required|min:0"
-                value="1"
+                placeholder="0.00"
+                v-model="formData.amaun_bayaran_bulanan"
               />
 
-              <div class="flex gap-2">
+              <FormKit
+                type="number"
+                name="jumlah_keseluruhan_perbelanjaan"
+                label="Jumlah Keseluruhan Perbelanjaan (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                placeholder="0.00"
+                :validation-messages="{
+                  required: 'Jumlah keseluruhan perbelanjaan adalah wajib',
+                }"
+                v-model="formData.jumlah_keseluruhan_perbelanjaan"
+              />
+
+              <FormKit
+                type="date"
+                name="tahun_mula_pinjaman"
+                label="Tahun Mula Pinjaman"
+                validation="required"
+                :validation-messages="{
+                  required: 'Tahun mula pinjaman adalah wajib',
+                }"
+                v-model="formData.tahun_mula_pinjaman"
+              />
+
+              <FormKit
+                type="date"
+                name="tahun_akhir_pinjaman"
+                label="Tahun Akhir Pinjaman"
+                validation="required"
+                :validation-messages="{
+                  required: 'Tahun akhir pinjaman adalah wajib',
+                }"
+                v-model="formData.tahun_akhir_pinjaman"
+              />
+
+              <div class="md:col-span-2">
                 <FormKit
-                  type="text"
-                  name="kursus_terpilih"
-                  label="Kursus Terpilih"
-                  placeholder="Pilih kursus dari senarai"
-                  readonly
-                  class="flex-1"
-                  v-model="formData.addressInfo.kursus_terpilih"
+                  type="file"
+                  name="dokumen_perjanjian_pinjaman"
+                  label="Dokumen Perjanjian Pinjaman"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  :validation-messages="{
+                    required: 'Dokumen perjanjian pinjaman adalah wajib',
+                    max: 'Saiz fail tidak boleh melebihi 5MB',
+                    mime: 'Format fail tidak dibenarkan',
+                  }"
                 />
-                <rs-button
-                  type="button"
-                  variant="secondary"
-                  @click="openKursusModal"
-                  class="whitespace-nowrap mt-7"
-                >
-                  <i class="fas fa-list mr-2"></i>
-                  Pilih Kursus
-                </rs-button>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA9"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Pekerjaan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 10: Maklumat Pekerjaan -->
+        <FormKit
+          v-if="currentStepA === 10"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionA10"
+        >
+          <h3 class="text-lg font-semibold mb-4">X. Maklumat Pekerjaan</h3>
+
+          <!-- Hidden field for ID type -->
+          <FormKit type="hidden" name="jenis_id_pekerjaan" :value="jenisId" />
+
+          <!-- Employment Status -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Status Pekerjaan
+                </label>
+                <FormKit
+                  type="radio"
+                  name="status_pekerjaan"
+                  :options="[
+                    { label: 'Bekerja', value: 'bekerja' },
+                    { label: 'Tidak Bekerja', value: 'tidak_bekerja' },
+                  ]"
+                  validation="required"
+                  v-model="formData.status_pekerjaan"
+                  :validation-messages="{
+                    required: 'Sila pilih status pekerjaan',
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+          <!-- Employment Details (shown only when working) -->
+          <div v-if="formData.status_pekerjaan === 'bekerja'" class="mb-6">
+            <h4 class="text-md font-medium mb-3">Butiran Pekerjaan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                name="jenis_pekerjaan"
+                label="Jenis Pekerjaan"
+                validation="required"
+                v-model="formData.jenis_pekerjaan"
+                :validation-messages="{
+                  required: 'Jenis pekerjaan adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="select"
+                name="sektor_pekerjaan"
+                label="Sektor Pekerjaan"
+                placeholder="Pilih sektor pekerjaan"
+                :options="[
+                  'Kerajaan',
+                  'Swasta',
+                  'Badan Berkanun',
+                  'Kerja Sendiri',
+                  'Lain-lain',
+                ]"
+                validation="required"
+                v-model="formData.sektor_pekerjaan"
+                :validation-messages="{
+                  required: 'Sektor pekerjaan adalah wajib',
+                }"
+              />
+
+              <FormKit
+                v-if="showLainLainSektor"
+                type="text"
+                name="lain_lain_sektor"
+                label="Lain-lain Sektor Pekerjaan"
+                validation="required"
+                v-model="formData.lain_lain_sektor"
+                :validation-messages="{
+                  required: 'Sila nyatakan sektor pekerjaan lain',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="no_telefon_pejabat"
+                label="No. Telefon Pejabat"
+                validation="required"
+                v-model="formData.no_telefon_pejabat"
+                :validation-messages="{
+                  required: 'No. telefon pejabat adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="nama_majikan"
+                label="Nama Majikan"
+                validation="required"
+                v-model="formData.nama_majikan"
+                :validation-messages="{
+                  required: 'Nama majikan adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="no_telefon_majikan"
+                label="No. Telefon Majikan"
+                validation="required"
+                v-model="formData.no_telefon_majikan"
+                :validation-messages="{
+                  required: 'No. telefon majikan adalah wajib',
+                }"
+              />
+
+              <div class="md:col-span-2">
+                <FormKit
+                  type="textarea"
+                  name="alamat_majikan_1"
+                  label="Alamat Majikan 1"
+                  validation="required"
+                  v-model="formData.alamat_majikan_1"
+                  :validation-messages="{
+                    required: 'Alamat majikan adalah wajib',
+                  }"
+                />
+
+                <FormKit
+                  type="textarea"
+                  name="alamat_majikan_2"
+                  label="Alamat Majikan 2"
+                  placeholder="(Tidak wajib)"
+                  v-model="formData.alamat_majikan_2"
+                />
+
+                <FormKit
+                  type="textarea"
+                  name="alamat_majikan_3"
+                  label="Alamat Majikan 3"
+                  placeholder="(Tidak wajib)"
+                  v-model="formData.alamat_majikan_3"
+                />
               </div>
 
               <FormKit
                 type="text"
-                name="negeri"
+                name="bandar_majikan"
+                label="Bandar"
+                validation="required"
+                v-model="formData.bandar_majikan"
+                :validation-messages="{
+                  required: 'Bandar adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="poskod_majikan"
+                label="Poskod"
+                validation="required"
+                v-model="formData.poskod_majikan"
+                :validation-messages="{
+                  required: 'Poskod adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="daerah_majikan"
+                label="Daerah"
+                validation="required"
+                v-model="formData.daerah_majikan"
+                :validation-messages="{
+                  required: 'Daerah adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="negeri_majikan"
                 label="Negeri"
-                value="Selangor"
-                disabled
-              />
-            </div>
-          </div>
-
-          <FormKit
-            type="select"
-            name="status_kediaman"
-            label="Status Kediaman/Tempat Tinggal"
-            :options="[
-              'Milik Sendiri Tidak Berbayar',
-              'Milik Sendiri Berbayar',
-              'Sewa',
-              'Kuarters Majikan',
-              'Tumpang Rumah Ibu/Bapa/Mertua',
-              'Pusaka',
-              'Sumbangan LZS/PPRT/RUSDA',
-              'Lain-lain',
-            ]"
-            validation="required"
-            v-model="statusKediaman"
-          />
-
-          <div v-if="statusKediaman === 'Sewa'" class="mt-4">
-            <FormKit
-              type="file"
-              name="dokumen_sewa"
-              label="Upload Dokumen Sewa"
-              accept=".pdf,.jpg,.jpeg,.png"
-              help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-              validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-            />
-          </div>
-
-          <FormKit
-            type="select"
-            name="tapak_rumah"
-            label="Tapak Rumah"
-            :options="[
-              'Milik Sendiri',
-              'Tanah Wakaf',
-              'Tanah Kerajaan/Persendirian',
-              'Setinggan (Izin)',
-              'Kebenaran Menduduki Sementara (TOL)',
-              'Menumpang/Sewa/Pajak Daripada Orang Lain',
-              'Tanah Keluarga',
-              'Lain-lain',
-            ]"
-            validation="required"
-          />
-
-          <FormKit
-            type="select"
-            name="jenis_rumah"
-            label="Jenis Rumah"
-            :options="[
-              'Kos Rendah',
-              'Kos Sederhana',
-              'Pangsapuri/Flat',
-              'Teres',
-              'Lain-lain',
-            ]"
-            validation="required"
-          />
-
-          <FormKit
-            type="select"
-            name="binaan_rumah"
-            label="Binaan Rumah"
-            :options="['Batu', 'Kayu', 'Separa Batu', 'Lain-lain']"
-            validation="required"
-          />
-
-          <FormKit
-            type="select"
-            name="keadaan_kediaman"
-            label="Keadaan Kediaman"
-            :options="['Baik/Sempurna', 'Uzur', 'Separa Uzur']"
-            validation="required"
-          />
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div>
-              <FormKit
-                type="select"
-                name="bekalan_air"
-                label="Kemudahan Asas Bekalan Air"
-                :options="['Ada', 'Tiada']"
                 validation="required"
-                value="Ada"
+                v-model="formData.negeri_majikan"
+                :validation-messages="{
+                  required: 'Negeri adalah wajib',
+                }"
               />
-            </div>
+
+              <FormKit
+                type="text"
+                name="negara_majikan"
+                label="Negara"
+                validation="required"
+                v-model="formData.negara_majikan"
+                :validation-messages="{
+                  required: 'Negara adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="jawatan"
+                label="Jawatan"
+                validation="required"
+                v-model="formData.jawatan"
+                :validation-messages="{
+                  required: 'Jawatan adalah wajib',
+                }"
+              />
 
               <FormKit
                 type="select"
-                name="bekalan_elektrik"
-                label="Bekalan Elektrik"
-                :options="['Ada', 'Tiada']"
+                name="status_jawatan"
+                label="Status Jawatan"
+                placeholder="Pilih status jawatan"
+                :options="['Tetap', 'Kontrak', 'Sementara']"
                 validation="required"
-                value="Ada"
+                v-model="formData.status_jawatan"
+                :validation-messages="{
+                  required: 'Status jawatan adalah wajib',
+                }"
               />
 
-            <div>
-              <FormKit
-                type="select"
-                name="penyelenggaraan"
-                label="Bil Penyelenggaraan"
-                :options="['Ada', 'Tiada']"
-                validation="required"
-                value="Ada"
-              />
               <FormKit
                 type="number"
-                name="bil_penyelenggaraan"
-                label="Anggaran Bil Sebulan (RM)"
+                name="pendapatan_kasar"
+                label="Pendapatan Kasar (RM)"
                 step="0.01"
                 min="0"
-                value="20"
+                validation="required"
+                v-model="formData.pendapatan_kasar"
+                :validation-messages="{
+                  required: 'Pendapatan kasar adalah wajib',
+                }"
+              />
+
+              <div class="md:col-span-2">
+                <FormKit
+                  type="file"
+                  name="pengesahan_pendapatan"
+                  label="Muat naik pengesahan pendapatan / penyata gaji ketua keluarga"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  :validation-messages="{
+                    required: 'Dokumen pengesahan pendapatan adalah wajib',
+                    max: 'Saiz fail tidak boleh melebihi 5MB',
+                    mime: 'Format fail tidak dibenarkan',
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Income Source (shown only when working) -->
+          <div v-if="formData.status_pekerjaan === 'bekerja'" class="mb-6">
+            <h4 class="text-md font-medium mb-3">Sumber Pendapatan</h4>
+            <FormKit
+              type="checkbox"
+              name="sumber_pendapatan"
+              :options="[
+                'Pengajian',
+                'Sumbangan keluarga',
+                'Individu',
+                'Institusi',
+                'Sumbangan Agensi',
+                'Lain-lain',
+              ]"
+              validation="required|min:1"
+              :validation-messages="{
+                required:
+                  'Sila pilih sekurang-kurangnya satu sumber pendapatan',
+                min: 'Sila pilih sekurang-kurangnya satu sumber pendapatan',
+              }"
+              v-model="formData.sumber_pendapatan"
+            />
+
+            <div v-if="showLainLainSumberPendapatan" class="mt-4">
+              <FormKit
+                type="text"
+                name="lain_lain_sumber_pendapatan"
+                label="Lain-lain Sumber Pendapatan"
+                validation="required"
+                v-model="formData.lain_lain_sumber_pendapatan"
+                :validation-messages="{
+                  required: 'Sila nyatakan sumber pendapatan lain',
+                }"
               />
             </div>
           </div>
@@ -940,7 +2306,233 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA4"
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA10"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Pendapatan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 11: Maklumat Pendapatan -->
+        <FormKit
+          v-if="currentStepA === 11"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionA11"
+        >
+          <h3 class="text-lg font-semibold mb-4">XI. Maklumat Pendapatan</h3>
+
+          <!-- Income Information -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">
+              Maklumat Pendapatan dan Perbelanjaan
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="number"
+                name="gaji_elaun_pendapatan"
+                label="Gaji / Elaun / Pendapatan Diperoleh (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Gaji / Elaun / Pendapatan Diperoleh adalah wajib',
+                }"
+                v-model="formData.gaji_elaun_pendapatan"
+              />
+
+              <FormKit
+                type="number"
+                name="pendapatan_isteri_suami_ibubapa_penjaga"
+                label="Pendapatan Isteri/Suami/Ibubapa/Penjaga (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required:
+                    'Pendapatan Isteri/Suami/Ibubapa/Penjaga adalah wajib',
+                }"
+                v-model="formData.pendapatan_isteri_suami_ibubapa_penjaga"
+              />
+
+              <FormKit
+                type="number"
+                name="pencen_perkeso"
+                label="Pencen / PERKESO (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Pencen / PERKESO adalah wajib',
+                }"
+                v-model="formData.pencen_perkeso"
+              />
+
+              <FormKit
+                type="number"
+                name="sumbangan_anak_anak"
+                label="Sumbangan Anak-anak (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sumbangan Anak-anak adalah wajib',
+                }"
+                v-model="formData.sumbangan_anak_anak"
+              />
+
+              <FormKit
+                type="number"
+                name="bantuan_jkm"
+                label="Bantuan Jabatan Kebajikan Masyarakat (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Bantuan Jabatan Kebajikan Masyarakat adalah wajib',
+                }"
+                v-model="formData.bantuan_jkm"
+              />
+
+              <FormKit
+                type="number"
+                name="takaful"
+                label="Takaful (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Takaful adalah wajib',
+                }"
+                v-model="formData.takaful"
+              />
+
+              <FormKit
+                type="number"
+                name="sewa_rumah_tanah_kedai"
+                label="Sewa Rumah / Tanah / Kedai (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sewa Rumah / Tanah / Kedai adalah wajib',
+                }"
+                v-model="formData.sewa_rumah_tanah_kedai"
+              />
+
+              <FormKit
+                type="number"
+                name="pendapatan_tanggungan_serumah"
+                label="Pendapatan Tanggungan yang Tinggal Serumah (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required:
+                    'Pendapatan Tanggungan yang Tinggal Serumah adalah wajib',
+                }"
+                v-model="formData.pendapatan_tanggungan_serumah"
+              />
+
+              <FormKit
+                type="number"
+                name="pendapatan_lain_lain"
+                label="Pendapatan Lain-lain (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Pendapatan Lain-lain adalah wajib',
+                }"
+                v-model="formData.pendapatan_lain_lain"
+              />
+
+              <FormKit
+                type="number"
+                name="perbelanjaan_makanan_minuman"
+                label="Perbelanjaan Makanan dan Minuman (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Perbelanjaan Makanan dan Minuman adalah wajib',
+                }"
+                v-model="formData.perbelanjaan_makanan_minuman"
+              />
+
+              <FormKit
+                type="number"
+                name="sewa_bayaran_pinjaman_perumahan"
+                label="Sewa / Bayaran Pinjaman Perumahan (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sewa / Bayaran Pinjaman Perumahan adalah wajib',
+                }"
+                v-model="formData.sewa_bayaran_pinjaman_perumahan"
+              />
+
+              <FormKit
+                type="number"
+                name="perbelanjaan_persekolahan_anak"
+                label="Perbelanjaan Persekolahan Anak (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Perbelanjaan Persekolahan Anak adalah wajib',
+                }"
+                v-model="formData.perbelanjaan_persekolahan_anak"
+              />
+
+              <FormKit
+                type="number"
+                name="pengangkutan_tambang_bas_sekolah"
+                label="Pengangkutan / Tambang Bas Sekolah (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Pengangkutan / Tambang Bas Sekolah adalah wajib',
+                }"
+                v-model="formData.pengangkutan_tambang_bas_sekolah"
+              />
+
+              <FormKit
+                type="number"
+                name="bil_utiliti"
+                label="Bil Utiliti (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Bil Utiliti adalah wajib',
+                }"
+                v-model="formData.bil_utiliti"
+              />
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA11"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -950,76 +2542,77 @@
           </div>
         </FormKit>
 
-        <!-- Section E Form -->
+        <!-- Section A Form - Step 12: Maklumat Pinjaman -->
         <FormKit
-          v-if="currentStepA === 5"
+          v-if="currentStepA === 12"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionE"
+          id="sectionA12"
         >
-          <h3 class="text-lg font-semibold mb-4">V. Maklumat Pinjaman Harta</h3>
+          <h3 class="text-lg font-semibold mb-4">XII. Maklumat Pinjaman</h3>
 
-          <FormKit
-            type="text"
-            name="pemberi_pinjaman"
-            label="Nama Institusi/Individu Pemberi Pinjaman"
-            v-model="pemberiPinjaman"
-            value="Bank Rakyat"
-          />
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                name="pemberi_pinjaman"
+                label="Nama Institusi/Individu Pemberi Pinjaman"
+                v-model="pemberiPinjaman"
+              />
 
-          <FormKit
-            type="text"
-            name="jenis_pinjaman"
-            label="Jenis Pinjaman"
-            v-model="jenisPinjaman"
-            value="Perumahan"
-          />
+              <FormKit
+                type="text"
+                name="jenis_pinjaman"
+                label="Jenis Pinjaman"
+                v-model="jenisPinjaman"
+              />
 
-          <FormKit
-            type="number"
-            name="bayaran_bulanan"
-            label="Amaun Bayaran Bulanan (RM)"
-            step="0.01"
-            min="0"
-            v-model="bayaranBulanan"
-            value="500"
-          />
+              <FormKit
+                type="number"
+                name="bayaran_bulanan"
+                label="Amaun Bayaran Bulanan (RM)"
+                step="0.01"
+                min="0"
+                v-model="bayaranBulanan"
+              />
 
-          <FormKit
-            type="number"
-            name="jumlah_perbelanjaan"
-            label="Jumlah Keseluruhan Perbelanjaan (RM)"
-            step="0.01"
-            min="0"
-            v-model="jumlahPerbelanjaan"
-            value="6000"
-          />
+              <FormKit
+                type="number"
+                name="jumlah_perbelanjaan"
+                label="Jumlah Keseluruhan Perbelanjaan (RM)"
+                step="0.01"
+                min="0"
+                v-model="jumlahPerbelanjaan"
+              />
 
-          <FormKit
-            type="date"
-            name="tahun_mula_pinjaman"
-            label="Tahun Mula Pinjaman"
-            v-model="tahunMulaPinjaman"
-            value="2018-01-01"
-          />
+              <FormKit
+                type="date"
+                name="tahun_mula_pinjaman"
+                label="Tahun Mula Pinjaman"
+                v-model="tahunMulaPinjaman"
+              />
 
-          <FormKit
-            type="date"
-            name="tahun_akhir_pinjaman"
-            label="Tahun Akhir Pinjaman"
-            v-model="tahunAkhirPinjaman"
-            value="2028-01-01"
-          />
+              <FormKit
+                type="date"
+                name="tahun_akhir_pinjaman"
+                label="Tahun Akhir Pinjaman"
+                v-model="tahunAkhirPinjaman"
+              />
 
-          <FormKit
-            type="file"
-            name="dokumen_pinjaman"
-            label="Upload Dokumen Pinjaman"
-            accept=".pdf,.jpg,.jpeg,.png"
-            help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-            validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-          />
+              <div class="md:col-span-2">
+                <FormKit
+                  type="file"
+                  name="dokumen_pinjaman"
+                  label="Upload Dokumen Pinjaman"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                />
+              </div>
+            </div>
+          </div>
 
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
@@ -1029,7 +2622,10 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA5"
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA13"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1039,15 +2635,15 @@
           </div>
         </FormKit>
 
-        <!-- Section F Form -->
+        <!-- Section A Form - Step 13: Maklumat Pemilikan -->
         <FormKit
-          v-if="currentStepA === 6"
+          v-if="currentStepA === 13"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionF"
+          id="sectionA13"
         >
-          <h3 class="text-lg font-semibold mb-4">VI. Maklumat Pemilikan</h3>
+          <h3 class="text-lg font-semibold mb-4">XIII. Maklumat Pemilikan</h3>
 
           <h4 class="font-medium mb-2">Aset Cair</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1058,7 +2654,7 @@
               help="*sertakan penyata bank"
               step="0.01"
               min="0"
-              value="2000"
+              v-model="formData.wang_simpanan"
             />
 
             <FormKit
@@ -1067,7 +2663,7 @@
               label="Emas (gram)"
               step="0.01"
               min="0"
-              value="10"
+              v-model="formData.emas"
             />
 
             <FormKit
@@ -1076,7 +2672,7 @@
               label="Saham (RM)"
               step="0.01"
               min="0"
-              value="5000"
+              v-model="formData.saham"
             />
           </div>
 
@@ -1086,7 +2682,7 @@
             name="kenderaan"
             label="Kenderaan (Nyatakan Unit)"
             help="Contoh: Basikal 1, Kereta 1"
-            value="Kereta 1"
+            v-model="formData.kenderaan"
           />
 
           <FormKit
@@ -1094,7 +2690,7 @@
             name="rumah_kedai"
             label="Rumah Kedai (unit)"
             min="0"
-            value="0"
+            v-model="formData.rumah_kedai"
           />
 
           <FormKit
@@ -1103,7 +2699,7 @@
             label="Tanah/Sawah (ekar)"
             step="0.01"
             min="0"
-            value="1"
+            v-model="formData.tanah_sawah"
           />
 
           <div class="flex justify-between gap-3 mt-6">
@@ -1114,7 +2710,153 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA6"
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA14"
+                >Simpan</rs-button
+              >
+              <rs-button type="button" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Barangan Rumah</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 14: Maklumat Barangan Rumah -->
+        <FormKit
+          v-if="currentStepA === 14"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
+          id="sectionA14"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            XIV. Maklumat Pemilikan Barangan Rumah
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="select"
+              name="television"
+              label="Television"
+              placeholder="Pilih status television"
+              :options="[
+                { label: 'Ya', value: 'ya' },
+                { label: 'Tidak', value: 'tidak' },
+              ]"
+              v-model="formData.television"
+            />
+
+            <FormKit
+              type="select"
+              name="radio"
+              label="Radio"
+              placeholder="Pilih status radio"
+              :options="[
+                { label: 'Ya', value: 'ya' },
+                { label: 'Tidak', value: 'tidak' },
+              ]"
+              v-model="formData.radio"
+            />
+
+            <FormKit
+              type="select"
+              name="perabot"
+              label="Perabot"
+              placeholder="Pilih status perabot"
+              :options="[
+                { label: 'Ya', value: 'ya' },
+                { label: 'Tidak', value: 'tidak' },
+              ]"
+              v-model="formData.perabot"
+            />
+
+            <FormKit
+              type="select"
+              name="telefon_bimbit"
+              label="Telefon Bimbit"
+              placeholder="Pilih status telefon bimbit"
+              :options="[
+                { label: 'Ya', value: 'ya' },
+                { label: 'Tidak', value: 'tidak' },
+              ]"
+              v-model="formData.telefon_bimbit"
+            />
+
+            <FormKit
+              type="select"
+              name="mesin_basuh"
+              label="Mesin Basuh"
+              placeholder="Pilih status mesin basuh"
+              :options="[
+                { label: 'Ya', value: 'ya' },
+                { label: 'Tidak', value: 'tidak' },
+              ]"
+              v-model="formData.mesin_basuh"
+            />
+
+            <FormKit
+              type="select"
+              name="astro"
+              label="Astro"
+              placeholder="Pilih status astro"
+              :options="[
+                { label: 'Ya', value: 'ya' },
+                { label: 'Tidak', value: 'tidak' },
+              ]"
+              v-model="formData.astro"
+            />
+
+            <FormKit
+              type="select"
+              name="video_player_cd_dvd"
+              label="Video / Player / CD / DVD"
+              placeholder="Pilih status video player"
+              :options="[
+                { label: 'Ya', value: 'ya' },
+                { label: 'Tidak', value: 'tidak' },
+              ]"
+              v-model="formData.video_player_cd_dvd"
+            />
+
+            <FormKit
+              type="select"
+              name="peti_ais"
+              label="Peti Ais"
+              placeholder="Pilih status peti ais"
+              :options="[
+                { label: 'Ya', value: 'ya' },
+                { label: 'Tidak', value: 'tidak' },
+              ]"
+              v-model="formData.peti_ais"
+            />
+
+            <FormKit
+              type="select"
+              name="dapur_gas"
+              label="Dapur Gas"
+              placeholder="Pilih status dapur gas"
+              :options="[
+                { label: 'Ya', value: 'ya' },
+                { label: 'Tidak', value: 'tidak' },
+              ]"
+              v-model="formData.dapur_gas"
+            />
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA15"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1124,17 +2866,15 @@
           </div>
         </FormKit>
 
-        <!-- Section G Form - Maklumat Waris -->
+        <!-- Section A Form - Step 15: Maklumat Waris -->
         <FormKit
-          v-if="currentStepA === 7"
+          v-if="currentStepA === 15"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionG"
+          id="sectionA15"
         >
-          <h3 class="text-lg font-semibold mb-4">
-            VII. Maklumat Waris
-          </h3>
+          <h3 class="text-lg font-semibold mb-4">XV. Maklumat Waris</h3>
 
           <div
             v-for="(heir, index) in formData.heirs"
@@ -1142,9 +2882,7 @@
             class="mb-8 p-4 border border-gray-200 rounded-lg"
           >
             <div class="flex justify-between items-center mb-4">
-              <h4 class="text-md font-medium">
-                Waris #{{ index + 1 }}
-              </h4>
+              <h4 class="text-md font-medium">Waris #{{ index + 1 }}</h4>
               <button
                 type="button"
                 @click="removeHeir(index)"
@@ -1173,7 +2911,7 @@
                 validation="required"
                 v-model="heir.relationship"
                 :validation-messages="{
-                  required: 'Hubungan adalah wajib'
+                  required: 'Hubungan adalah wajib',
                 }"
               />
 
@@ -1189,13 +2927,9 @@
               />
             </div>
           </div>
-          
+
           <div class="flex justify-center mt-4">
-            <rs-button
-              variant="secondary"
-              @click="addHeir"
-              type="button"
-            >
+            <rs-button variant="secondary" @click="addHeir" type="button">
               <Icon name="mdi:plus" class="mr-1" size="1rem" />
               Tambah Waris
             </rs-button>
@@ -1209,43 +2943,1717 @@
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA7"
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA15"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Seterusnya ke Maklumat Tanggungan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+      </template>
+    </rs-card>
+
+    <rs-card v-if="currentSection == 2" class="mt-4">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Borang Tanggungan Asnaf</h2>
+          <div class="text-sm text-gray-600">
+            Langkah {{ currentStepB }} dari {{ totalStepsB }}
+          </div>
+        </div>
+      </template>
+
+      <template #body>
+        <!-- Progress indicator -->
+        <div class="mb-6">
+          <div class="flex justify-between mb-2">
+            <div
+              v-for="step in stepsB"
+              :key="step.id"
+              class="text-center flex-1 cursor-pointer"
+              :class="{ 'font-semibold': currentStepB >= step.id }"
+              @click="goToStepB(step.id)"
+            >
+              {{ step.label }}
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              class="bg-primary h-2.5 rounded-full transition-all duration-300"
+              :style="`width: ${
+                currentStepB >= totalStepsB
+                  ? 100
+                  : (currentStepB / totalStepsB) * 100
+              }%`"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Section B Form Steps -->
+
+        <!-- Tanggungan Selector and Management (Visible only during Steps 1-7) -->
+        <div
+          v-if="currentStepB >= 1 && currentStepB <= 7"
+          class="mb-6 p-4 bg-gray-50 rounded-lg"
+        >
+          <div class="flex justify-between items-center mb-4">
+            <h4 class="text-lg font-semibold">Senarai Tanggungan</h4>
+            <rs-button
+              type="button"
+              variant="primary"
+              @click="addTanggungan"
+              class="text-sm"
+              :disabled="tanggunganList.length >= 3"
+            >
+              + Tambah Tanggungan
+              {{ tanggunganList.length >= 3 ? "(Maksimum 3)" : "" }}
+            </rs-button>
+          </div>
+
+          <!-- Tanggungan Cards Display -->
+          <div
+            v-if="tanggunganList.length > 0"
+            class="grid grid-cols-1 md:grid-cols-3 gap-4"
+          >
+            <div
+              v-for="(tanggungan, index) in tanggunganList"
+              :key="tanggungan.id"
+              class="p-4 bg-white rounded-lg border cursor-pointer hover:shadow-md transition-all"
+              :class="{
+                'ring-2 ring-blue-500 border-blue-300':
+                  currentTanggunganIndex === index,
+                'border-green-300 bg-green-50':
+                  isTanggunganComplete(tanggungan) &&
+                  currentTanggunganIndex !== index,
+                'border-yellow-300 bg-yellow-50':
+                  !isTanggunganComplete(tanggungan) &&
+                  currentTanggunganIndex !== index,
+                'border-gray-200':
+                  currentTanggunganIndex !== index &&
+                  !isTanggunganComplete(tanggungan),
+              }"
+              @click="selectTanggungan(index)"
+            >
+              <!-- Card Header -->
+                              <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1 text-center">
+                    <!-- <h5 class="font-semibold text-gray-900">
+                      Tanggungan {{ index + 1 }}
+                    </h5> -->
+                    <p class="text-sm text-gray-600">
+                      {{ tanggungan.nama_tanggungan || "Nama belum diisi" }}
+                    </p>
+                  </div>
+
+                <!-- Status Badge -->
+                <span
+                  class="px-2 py-1 text-xs rounded-full"
+                  :class="{
+                    'bg-green-100 text-green-800':
+                      isTanggunganComplete(tanggungan),
+                    'bg-yellow-100 text-yellow-800':
+                      !isTanggunganComplete(tanggungan),
+                  }"
+                >
+                  {{
+                    isTanggunganComplete(tanggungan)
+                      ? "Lengkap"
+                      : "Tidak Lengkap"
+                  }}
+                </span>
+              </div>
+
+              <!-- Key Information -->
+              <!-- <div class="space-y-2 text-sm text-gray-600">
+                <div v-if="tanggungan.hubungan_pemohon">
+                  <span class="font-medium">Hubungan:</span>
+                  {{ tanggungan.hubungan_pemohon }}
+                </div>
+                <div v-if="tanggungan.jenis_id_tanggungan">
+                  <span class="font-medium">ID:</span>
+                  {{ tanggungan.jenis_id_tanggungan }}
+                </div>
+                <div v-if="tanggungan.jantina_tanggungan">
+                  <span class="font-medium">Jantina:</span>
+                  {{ tanggungan.jantina_tanggungan }}
+                </div>
+              </div> -->
+
+              <!-- Action Buttons -->
+              <div class="flex gap-2 mt-4">
+                <button
+                  @click.stop="selectTanggungan(index)"
+                  class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                >
+                  {{
+                    currentTanggunganIndex === index ? "Sedang Edit" : "Edit"
+                  }}
+                </button>
+                <button
+                  v-if="tanggunganList.length > 1"
+                  @click.stop="removeTanggungan(index)"
+                  class="px-3 py-2 text-red-600 hover:text-red-800 text-sm rounded border border-red-300 hover:bg-red-50 transition-colors"
+                  title="Buang tanggungan ini"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <FormKit
+          v-if="currentStepB === 1"
+          type="form"
+          @submit="nextStepB"
+          :actions="false"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            B. Maklumat Peribadi Tanggungan {{ currentTanggunganIndex + 1 }}
+          </h3>
+
+          <!-- I. Maklumat Peribadi Tanggungan -->
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">I. Maklumat Peribadi Tanggungan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Hubungan dengan Pemohon/Asnaf -->
+              <FormKit
+                type="select"
+                name="hubungan_pemohon"
+                label="Hubungan dengan Pemohon/Asnaf *"
+                placeholder="Pilih hubungan"
+                :options="[
+                  'Pasangan Pemohon',
+                  'Isteri Kedua',
+                  'Isteri Ketiga',
+                  'Isteri Keempat',
+                  'Ipar',
+                  'Abang',
+                  'Bapa',
+                  'Ibu',
+                  'Kakak',
+                  'Adik',
+                  'Anak',
+                  'Cucu',
+                  'Bapa Mertua',
+                  'Ibu Mertua',
+                  'Lain-lain',
+                ]"
+                validation="required"
+                v-model="getCurrentTanggungan().hubungan_pemohon"
+              />
+
+              <!-- Lain-lain Hubungan -->
+              <FormKit
+                v-if="showLainLainHubungan"
+                type="text"
+                name="lain_lain_hubungan"
+                label="Lain-lain Hubungan *"
+                placeholder="Nyatakan hubungan lain"
+                validation="required"
+                v-model="getCurrentTanggungan().lain_lain_hubungan"
+              />
+
+              <!-- Dokumen Surat Nikah -->
+              <div v-if="showDokumenSuratNikah" class="md:col-span-2">
+                <FormKit
+                  type="file"
+                  name="dokumen_surat_nikah"
+                  label="Dokumen Surat Nikah *"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                />
+              </div>
+
+              <!-- Nama Mengikut Dokumen Pengenalan -->
+              <FormKit
+                type="text"
+                name="nama_tanggungan"
+                label="Nama Mengikut Dokumen Pengenalan *"
+                placeholder="Masukkan nama penuh"
+                validation="required"
+                v-model="getCurrentTanggungan().nama_tanggungan"
+              />
+
+              <!-- Jenis Pengenalan -->
+              <FormKit
+                type="select"
+                name="jenis_pengenalan_tanggungan"
+                label="Jenis Pengenalan *"
+                placeholder="Pilih jenis pengenalan"
+                :options="[
+                  { label: 'MyKad', value: 'MyKad' },
+                  { label: 'ForeignId', value: 'ForeignId' },
+                ]"
+                validation="required"
+                v-model="getCurrentTanggungan().jenis_pengenalan_tanggungan"
+              />
+
+              <!-- Pengenalan ID Tanggungan -->
+              <FormKit
+                type="text"
+                name="pengenalan_id_tanggungan"
+                label="Pengenalan ID Tanggungan *"
+                placeholder="Masukkan nombor ID"
+                :validation="
+                  getCurrentTanggungan().jenis_pengenalan_tanggungan === 'MyKad'
+                    ? 'required|length:12|matches:/^[0-9]{12}$/'
+                    : 'required'
+                "
+                :validation-messages="{
+                  required: 'Pengenalan ID Tanggungan adalah wajib',
+                  length: 'MyKad mesti 12 digit tanpa tanda sempang',
+                  matches: 'MyKad mesti mengandungi nombor sahaja (12 digit)',
+                }"
+                v-model="getCurrentTanggungan().pengenalan_id_tanggungan"
+              />
+
+              <!-- Upload Dokumen Nombor ID -->
+              <div class="md:col-span-2">
+                <FormKit
+                  type="file"
+                  name="dokumen_nombor_id"
+                  label="Upload Dokumen Nombor ID *"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                />
+              </div>
+
+              <!-- Warganegara -->
+              <FormKit
+                type="select"
+                name="warganegara_tanggungan"
+                label="Warganegara *"
+                placeholder="Pilih warganegara"
+                :options="[
+                  { label: 'Malaysia', value: 'Malaysia' },
+                  { label: 'Lain-lain', value: 'Lain-lain' },
+                ]"
+                validation="required"
+                v-model="getCurrentTanggungan().warganegara_tanggungan"
+              />
+
+              <!-- Lain-lain Warganegara -->
+              <FormKit
+                v-if="showLainLainWarganegara"
+                type="text"
+                name="lain_lain_warganegara"
+                label="Lain-lain Warganegara *"
+                placeholder="Nyatakan warganegara"
+                validation="required"
+                v-model="getCurrentTanggungan().lain_lain_warganegara"
+              />
+
+              <!-- Taraf Penduduk Tetap -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4"  >
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Taraf Penduduk Tetap</label
+                >
+              <FormKit
+                type="radio"
+                name="taraf_penduduk_tetap"
+                :options="[
+                  { label: 'Ya', value: 'Y' },
+                  { label: 'Tidak', value: 'N' },
+                ]"
+                validation="required"
+                v-model="getCurrentTanggungan().taraf_penduduk_tetap"
+              />
+              </div>
+              </div>
+              <!-- No Pasport -->
+              <FormKit
+                v-if="showPassportFields"
+                type="text"
+                name="no_pasport"
+                label="No Pasport *"
+                placeholder="Masukkan nombor pasport"
+                validation="required"
+                v-model="getCurrentTanggungan().no_pasport"
+              />
+
+              <!-- Tarikh Mula Pasport -->
+              <FormKit
+                v-if="showPassportFields"
+                type="date"
+                name="tarikh_mula_pasport"
+                label="Tarikh Mula Pasport (DD/MM/YYYY) *"
+                validation="required"
+                v-model="getCurrentTanggungan().tarikh_mula_pasport"
+              />
+
+              <!-- Tarikh Tamat Pasport -->
+              <FormKit
+                v-if="showPassportFields"
+                type="date"
+                name="tarikh_tamat_pasport"
+                label="Tarikh Tamat Pasport (DD/MM/YYYY) *"
+                validation="required"
+                v-model="getCurrentTanggungan().tarikh_tamat_pasport"
+              />
+
+              <!-- Passport Expiry Warning -->
+              <div v-if="showPassportExpiryWarning" class="md:col-span-2">
+                <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle text-red-500"></i>
+                    <span class="text-sm text-red-700 font-medium">
+                      Amaran: Pasport telah tamat tempoh. Tanggungan ini akan
+                      ditandakan sebagai tidak aktif.
+                    </span>
+                  </div>
+                  <p class="text-xs text-red-600 mt-1">
+                    Sila kemaskini maklumat pasport baru untuk mengaktifkan
+                    semula tanggungan ini.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Tarikh Lahir -->
+              <FormKit
+                type="date"
+                name="tarikh_lahir_tanggungan"
+                label="Tarikh Lahir (DD/MM/YYYY) *"
+                validation="required"
+                v-model="getCurrentTanggungan().tarikh_lahir_tanggungan"
+              />
+
+              <!-- Umur (Auto-calculated) -->
+              <FormKit
+                type="text"
+                name="umur_tanggungan"
+                label="Umur"
+                :value="
+                  calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
+                "
+                readonly
+                help="Dikira secara automatik dari tarikh lahir"
+              />
+
+              <!-- Special Approval for Minors -->
+              <div
+                v-if="
+                  parseInt(
+                    calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
+                  ) < 18
+                "
+                class="md:col-span-2"
+              >
+                <div
+                  class="bg-yellow-50 border border-yellow-200 rounded-lg p-3"
+                >
+                  <div class="flex items-center gap-2 mb-2">
+                    <i class="fas fa-info-circle text-yellow-500"></i>
+                    <span class="text-sm text-yellow-700 font-medium">
+                      Maklumat Kelulusan Khas Diperlukan
+                    </span>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormKit
+                      type="select"
+                      name="situasi_kelulusan_khas"
+                      placeholder="Pilih situasi"
+                      label="Situasi *"
+                      :options="[
+                        { label: 'Profiling', value: 'Profiling' },
+                        { label: 'Permohonan Khas', value: 'Permohonan Khas' },
+                        { label: 'Lain-lain', value: 'Lain-lain' },
+                      ]"
+                      validation="required"
+                      v-model="getCurrentTanggungan().situasi_kelulusan_khas"
+                    />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div class="space-y-2">
+                        <label
+                          class="block text-sm font-medium text-black-700"
+                        >Kelulusan Khas</label>
+                        <FormKit
+                          type="radio"
+                          name="kelulusan_khas"
+                          :options="[
+                            { label: 'Ya', value: 'Y' },
+                            { label: 'Tidak', value: 'N' },
+                          ]"
+                          validation="required"
+                          v-model="getCurrentTanggungan().kelulusan_khas"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tempat Lahir -->
+              <FormKit
+                type="text"
+                name="tempat_lahir_tanggungan"
+                label="Tempat Lahir"
+                placeholder="Masukkan tempat lahir"
+                v-model="getCurrentTanggungan().tempat_lahir_tanggungan"
+              />
+
+              <!-- Jantina -->
+              <FormKit
+                type="select"
+                name="jantina_tanggungan"
+                label="Jantina"
+                placeholder="Pilih jantina"
+                :options="[
+                  { label: 'Lelaki', value: 'Lelaki' },
+                  { label: 'Perempuan', value: 'Perempuan' },
+                ]"
+                v-model="getCurrentTanggungan().jantina_tanggungan"
+              />
+
+              <!-- Agama -->
+              <FormKit
+                type="select"
+                name="agama_tanggungan"
+                label="Agama"
+                placeholder="Pilih agama"
+                :options="[
+                  { label: 'Islam', value: 'Islam' },
+                  { label: 'Kristian', value: 'Kristian' },
+                  { label: 'Buddha', value: 'Buddha' },
+                  { label: 'Hindu', value: 'Hindu' },
+                  { label: 'Lain-lain', value: 'Lain-lain' },
+                ]"
+                v-model="getCurrentTanggungan().agama_tanggungan"
+              />
+
+              <!-- Lain-lain Agama -->
+              <FormKit
+                v-if="showLainLainAgama"
+                type="text"
+                name="lain_lain_agama"
+                label="Lain-lain Agama *"
+                placeholder="Nyatakan agama lain"
+                validation="required"
+                v-model="getCurrentTanggungan().lain_lain_agama"
+              />
+
+              <!-- Bangsa -->
+              <FormKit
+                type="select"
+                name="bangsa_tanggungan"
+                label="Bangsa *"
+                placeholder="Pilih bangsa"
+                :options="[
+                  { label: 'Orang Asli', value: 'Orang Asli' },
+                  { label: 'Melayu', value: 'Melayu' },
+                  { label: 'Cina', value: 'Cina' },
+                  { label: 'India', value: 'India' },
+                  { label: 'Kadazan', value: 'Kadazan' },
+                  { label: 'Iban', value: 'Iban' },
+                  { label: 'Murut', value: 'Murut' },
+                  { label: 'Bajau', value: 'Bajau' },
+                  { label: 'Lain-lain', value: 'Lain-lain' },
+                ]"
+                validation="required"
+                v-model="getCurrentTanggungan().bangsa_tanggungan"
+              />
+
+              <!-- Lain-lain Bangsa -->
+              <FormKit
+                v-if="showLainLainBangsa"
+                type="text"
+                name="lain_lain_bangsa"
+                label="Lain-lain Bangsa *"
+                placeholder="Nyatakan bangsa lain"
+                validation="required"
+                v-model="getCurrentTanggungan().lain_lain_bangsa"
+              />
+
+              <!-- No Telefon Bimbit -->
+              <FormKit
+                type="text"
+                name="no_telefon_bimbit_tanggungan"
+                label="No Telefon Bimbit *"
+                placeholder="Contoh: 0123456789"
+                validation="required|matches:/^(\+?6?01)[0-46-9]-*[0-9]{7,8}$/"
+                :validation-messages="{
+                  required: 'No Telefon Bimbit adalah wajib',
+                  matches:
+                    'Format nombor telefon tidak sah. Contoh: 0123456789',
+                }"
+                v-model="getCurrentTanggungan().no_telefon_bimbit_tanggungan"
+              />
+
+              <!-- No Telefon Rumah -->
+              <FormKit
+                type="text"
+                name="no_telefon_rumah_tanggungan"
+                label="No Telefon Rumah"
+                placeholder="Contoh: 038881234"
+                validation="matches:/^(\+?6?0)[0-9]{1,2}-*[0-9]{6,8}$/"
+                :validation-messages="{
+                  matches: 'Format nombor telefon tidak sah. Contoh: 038881234',
+                }"
+                v-model="getCurrentTanggungan().no_telefon_rumah_tanggungan"
+              />
+
+              <!-- Emel -->
+              <FormKit
+                type="email"
+                name="emel_tanggungan"
+                label="Emel"
+                placeholder="Contoh: nama@email.com"
+                validation="email"
+                :validation-messages="{
+                  email: 'Format emel tidak sah. Contoh: nama@email.com',
+                }"
+                v-model="getCurrentTanggungan().emel_tanggungan"
+              />
+
+              <!-- Tempoh Menetap di Selangor -->
+              <FormKit
+                type="number"
+                name="tempoh_menetap_selangor_tanggungan"
+                label="Tempoh Menetap di Selangor (Tahun) *"
+                placeholder="0"
+                min="0"
+                max="120"
+                validation="required|min:0|max:120"
+                :validation-messages="{
+                  required: 'Tempoh Menetap di Selangor adalah wajib',
+                  min: 'Tempoh tidak boleh kurang daripada 0 tahun',
+                  max: 'Tempoh tidak boleh melebihi 120 tahun',
+                }"
+                v-model="
+                  getCurrentTanggungan().tempoh_menetap_selangor_tanggungan
+                "
+              />
+
+              <!-- Status Perkahwinan -->
+              <FormKit
+                type="select"
+                name="status_perkahwinan_tanggungan"
+                label="Status Perkahwinan *"
+                placeholder="Pilih status perkahwinan"
+                :options="[
+                  { label: 'Bujang', value: 'Bujang' },
+                  { label: 'Berkahwin', value: 'Berkahwin' },
+                  { label: 'Lain-lain', value: 'Lain-lain' },
+                ]"
+                validation="required"
+                v-model="getCurrentTanggungan().status_perkahwinan_tanggungan"
+              />
+
+              <!-- Lain-lain Status Perkahwinan -->
+              <FormKit
+                v-if="showLainLainStatusPerkahwinan"
+                type="text"
+                name="lain_lain_status_perkahwinan"
+                label="Lain-lain Status Perkahwinan *"
+                placeholder="Nyatakan status perkahwinan lain"
+                validation="required"
+                v-model="getCurrentTanggungan().lain_lain_status_perkahwinan"
+              />
+
+              <!-- Jumlah Tanggungan (Auto-calculated) -->
+              <div class="md:col-span-2">
+                <FormKit
+                  type="text"
+                  name="jumlah_tanggungan"
+                  label="Jumlah Tanggungan"
+                  :value="calculateTotalTanggungan()"
+                  readonly
+                  help="Dikira secara automatik berdasarkan maklumat pasangan & tanggungan"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevSection"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB1"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepB"
+                >Seterusnya ke Maklumat Islam</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section B Form - Step 2: Maklumat Islam Tanggungan -->
+        <FormKit
+          v-if="currentStepB === 2"
+          type="form"
+          @submit="nextStepB"
+          :actions="false"
+          id="sectionB2"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            B. Maklumat Peribadi Tanggungan
+          </h3>
+
+          <h3 class="text-lg font-semibold mb-4">II. Maklumat Islam</h3>
+
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">Maklumat Islam</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Adakah tanggungan anda seorang Muallaf? -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Adakah tanggungan anda seorang Muallaf?</label
+                >
+              <div class="md:col-span-2">
+                <FormKit
+                  type="radio"
+                  name="adakah_muallaf_tanggungan"
+                  :options="[
+                    { label: 'Ya', value: 'Y' },
+                    { label: 'Tidak', value: 'N' },
+                  ]"
+                  validation="required"
+                  v-model="getCurrentTanggungan().adakah_muallaf_tanggungan"
+                />
+              </div>
+              </div>
+              </div>
+              <!-- Muallaf Fields (Conditional) -->
+              <div
+                v-if="getCurrentTanggungan().adakah_muallaf_tanggungan === 'Y'"
+                class="md:col-span-2"
+              >
+                <h5 class="font-medium mb-3">Maklumat Muallaf</h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Nama Sebelum Islam (Muallaf) -->
+                  <FormKit
+                    type="text"
+                    name="nama_sebelum_islam_tanggungan"
+                    label="Nama Sebelum Islam (Muallaf) *"
+                    placeholder="Masukkan nama sebelum Islam"
+                    validation="required"
+                    v-model="
+                      getCurrentTanggungan().nama_sebelum_islam_tanggungan
+                    "
+                  />
+
+                  <!-- Nama Selepas Islam (Muallaf) -->
+                  <FormKit
+                    type="text"
+                    name="nama_selepas_islam_tanggungan"
+                    label="Nama Selepas Islam (Muallaf) *"
+                    placeholder="Masukkan nama selepas Islam"
+                    validation="required"
+                    v-model="
+                      getCurrentTanggungan().nama_selepas_islam_tanggungan
+                    "
+                  />
+
+                  <!-- Tarikh Masuk Islam -->
+                  <FormKit
+                    type="date"
+                    name="tarikh_masuk_islam_tanggungan"
+                    label="Tarikh Masuk Islam (DD/MM/YYYY) *"
+                    validation="required"
+                    v-model="
+                      getCurrentTanggungan().tarikh_masuk_islam_tanggungan
+                    "
+                  />
+
+                  <!-- Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) -->
+                  <FormKit
+                    type="date"
+                    name="tarikh_masuk_kfam_tanggungan"
+                    label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) (DD/MM/YYYY) *"
+                    validation="required"
+                    v-model="
+                      getCurrentTanggungan().tarikh_masuk_kfam_tanggungan
+                    "
+                  />
+
+                  <!-- Islamic Dates Validation Warning -->
+                  <div
+                    v-if="!islamicDatesValidationTanggungan.isValid"
+                    class="md:col-span-2"
+                  >
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <div class="flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle text-red-500"></i>
+                        <span class="text-sm text-red-700 font-medium">
+                          {{ islamicDatesValidationTanggungan.message }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tarikh Keluar Muallaf (Auto-calculated) -->
+                  <FormKit
+                    type="text"
+                    name="tarikh_keluar_muallaf_tanggungan"
+                    label="Tarikh Keluar Muallaf"
+                    :value="calculateTarikhKeluarMuallafTanggungan()"
+                    readonly
+                    help="Dikira secara automatik: Tarikh Masuk Islam + 5 tahun ATAU Tarikh Masuk KFAM + 5 tahun (pilih yang lebih lewat)"
+                  />
+
+                  <!-- Dokumen Pengislaman -->
+                  <div class="md:col-span-2">
+                    <FormKit
+                      type="file"
+                      name="dokumen_pengislaman_tanggungan"
+                      label="Dokumen Pengislaman *"
+                      help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepB"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB2"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepB"
+                >Seterusnya ke Maklumat Bank</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section B Form - Step 3: Maklumat Bank Tanggungan -->
+        <FormKit
+          v-if="currentStepB === 3"
+          type="form"
+          @submit="nextStepB"
+          :actions="false"
+          id="sectionB3"
+        >
+          <h3 class="text-lg font-semibold mb-4">
+            III. Maklumat Perbankan Tanggungan
+          </h3>
+
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Perbankan</h4>
+
+            <!-- Kaedah Pembayaran -->
+            <div class="mb-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Kaedah Pembayaran</label
+                >
+              <FormKit
+                type="radio"
+                name="kaedah_pembayaran_tanggungan"
+                :options="paymentMethodOptions"
+                validation="required"
+                v-model="getCurrentTanggungan().kaedah_pembayaran_tanggungan"
+                :validation-messages="{
+                  required: 'Kaedah pembayaran adalah wajib',
+                }"
+              />
+              </div>
+              </div>
+            </div>
+
+            <!-- A. Jika Kaedah Pembayaran = Akaun -->
+            <div
+              v-if="
+                getCurrentTanggungan().kaedah_pembayaran_tanggungan === 'akaun'
+              "
+              class="mb-6"
+            >
+              <h5 class="text-md font-medium mb-4">Maklumat Akaun Bank</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Nama Bank -->
+                <FormKit
+                  type="select"
+                  name="nama_bank_tanggungan"
+                  label="Nama Bank *"
+                  placeholder="Pilih nama bank"
+                  :options="bankOptions"
+                  validation="required"
+                  v-model="getCurrentTanggungan().nama_bank_tanggungan"
+                />
+
+                <!-- Swift Code (Read Only) -->
+                <FormKit
+                  v-if="getCurrentTanggungan().nama_bank_tanggungan"
+                  type="text"
+                  name="swift_code_tanggungan"
+                  label="Swift Code"
+                  v-model="getCurrentTanggungan().swift_code_tanggungan"
+                  :value="getSelectedBankSwiftCodeTanggungan()"
+                  readonly
+                  help="Swift Code dipaparkan secara automatik"
+                />
+
+                <!-- No. Akaun Bank -->
+                <FormKit
+                  type="text"
+                  name="no_akaun_bank_tanggungan"
+                  label="No. Akaun Bank *"
+                  validation="required"
+                  v-model="getCurrentTanggungan().no_akaun_bank_tanggungan"
+                />
+
+                <!-- Nama Pemegang Akaun -->
+                <FormKit
+                  type="text"
+                  name="nama_pemegang_akaun_tanggungan"
+                  label="Nama Pemegang Akaun *"
+                  validation="required"
+                  v-model="
+                    getCurrentTanggungan().nama_pemegang_akaun_tanggungan
+                  "
+                />
+              </div>
+            </div>
+
+            <!-- B. Jika Kaedah Pembayaran = Tiada -->
+            <div
+              v-if="
+                getCurrentTanggungan().kaedah_pembayaran_tanggungan === 'tiada'
+              "
+              class="mb-6"
+            >
+              <h5 class="text-md font-medium mb-4">Sebab Tiada Akaun Bank</h5>
+              <div class="md:col-span-2">
+                <FormKit
+                  type="select"
+                  name="sebab_tiada_akaun_tanggungan"
+                  label="Sebab *"
+                  :options="noPaymentReasonOptions"
+                  validation="required"
+                  placeholder="Pilih sebab tiada akaun bank"
+                  v-model="getCurrentTanggungan().sebab_tiada_akaun_tanggungan"
+                  :validation-messages="{
+                    required: 'Sila pilih sebab tiada akaun bank',
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepB"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB3"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepB"
+                >Seterusnya ke Maklumat Pendidikan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section B Form - Step 4: Maklumat Pendidikan Tanggungan -->
+        <FormKit
+          v-if="currentStepB === 4"
+          type="form"
+          @submit="nextStepB"
+          :actions="false"
+          id="sectionB4"
+        >
+          <!-- IV. Maklumat Pendidikan Tanggungan -->
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">IV. Maklumat Pendidikan Tanggungan</h4>
+
+            <!-- Bahagian A: Maklumat Pendidikan Asas -->
+            <div class="mb-6">
+              <h5 class="text-md font-medium mb-3">
+                Maklumat Pendidikan Asas
+              </h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Adakah Tanggungan Masih Bersekolah? -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Adakah Tanggungan Masih Bersekolah?</label
+                >
+                <FormKit
+                  type="radio"
+                  name="masih_bersekolah"
+                  :options="[
+                    { label: 'Ya', value: 'Y' },
+                    { label: 'Tidak', value: 'T' },
+                  ]"
+                  validation="required"
+                  v-model="getCurrentTanggungan().masih_bersekolah"
+                  :disabled="false"
+                />
+              </div>
+                <!-- Pendidikan Tertinggi -->
+                <FormKit
+                  type="select"
+                  name="pendidikan_tertinggi_tanggungan"
+                  label="Pendidikan Tertinggi"
+                  placeholder="Pilih pendidikan tertinggi"
+                  :options="[
+                    'Peringkat Rendah',
+                    'SRP-PMR',
+                    'SPM',
+                    'Sijil',
+                    'Diploma',
+                    'STPM',
+                    'Ijazah',
+                    'Lain-lain',
+                  ]"
+                  validation="required"
+                  v-model="
+                    getCurrentTanggungan().pendidikan_tertinggi_tanggungan
+                  "
+                  :disabled="false"
+                />
+              </div>
+
+              <!-- Lain-lain Pendidikan Tertinggi -->
+              <div
+                v-if="
+                  getCurrentTanggungan().pendidikan_tertinggi_tanggungan ===
+                  'Lain-lain'
+                "
+                class="mt-4"
+              >
+                <FormKit
+                  type="text"
+                  name="lain_pendidikan_tertinggi_tanggungan"
+                  label="Lain-lain Pendidikan Tertinggi"
+                  placeholder="Sila nyatakan pendidikan lain"
+                  v-model="
+                    getCurrentTanggungan().lain_pendidikan_tertinggi_tanggungan
+                  "
+                  :disabled="false"
+                />
+              </div>
+
+              <!-- Tahap Pendidikan yang Dicapai -->
+              <div class="mt-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Tahap Pendidikan yang Dicapai</label
+                >
+                <FormKit
+                  type="checkbox"
+                  name="tahap_pendidikan_dicapai"
+                  :options="[
+                    'Peringkat Rendah',
+                    'SRP-PMR',
+                    'SPM',
+                    'Sijil',
+                    'Diploma',
+                    'STPM',
+                    'Ijazah',
+                    'Lain-lain',
+                  ]"
+                  validation="required|min:1"
+                  validation-label="Tahap Pendidikan"
+                  validation-messages="{
+                    required: 'Sila pilih sekurang-kurangnya satu tahap pendidikan',
+                    min: 'Sila pilih sekurang-kurangnya satu tahap pendidikan'
+                  }"
+                  v-model="getCurrentTanggungan().tahap_pendidikan_dicapai"
+                  :disabled="false"
+                />
+              </div>
+              </div>
+              </div>
+              <!-- Lain-lain Tahap Pendidikan yang Dicapai -->
+              <div
+                v-if="
+                  getCurrentTanggungan().tahap_pendidikan_dicapai &&
+                  getCurrentTanggungan().tahap_pendidikan_dicapai.includes(
+                    'Lain-lain'
+                  )
+                "
+                class="mt-4"
+              >
+                <FormKit
+                  type="text"
+                  name="lain_tahap_pendidikan_dicapai"
+                  label="Lain-lain Tahap Pendidikan yang Dicapai"
+                  placeholder="Sila nyatakan tahap pendidikan lain"
+                  v-model="getCurrentTanggungan().lain_tahap_pendidikan_dicapai"
+                  :disabled="false"
+                />
+              </div>
+
+              <!-- Sijil Pendidikan yang Diperolehi -->
+              <div class="mt-4">
+                <FormKit
+                  type="file"
+                  name="sijil_pendidikan_tanggungan"
+                  label="Sijil Pendidikan yang Diperolehi"
+                  multiple
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
+                  v-model="getCurrentTanggungan().sijil_pendidikan_tanggungan"
+                  :disabled="false"
+                />
+              </div>
+            </div>
+
+            <!-- Bahagian B: Maklumat Sekolah/Institusi -->
+            <div v-if="getCurrentTanggungan().masih_bersekolah === 'Y'" class="mb-6">
+              <h5 class="text-md font-medium mb-3">
+                 Maklumat Sekolah/Institusi
+              </h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Jenis Sekolah/Institusi -->
+                <FormKit
+                  type="select"
+                  name="jenis_sekolah_institusi"
+                  label="Jenis Sekolah/Institusi"
+                  placeholder="Pilih jenis sekolah/institusi"
+                  :options="[
+                    'Pra Sekolah',
+                    'SRK',
+                    'SMK',
+                    'Sekolah Agama',
+                    'Gabungan SRK & Agama',
+                    'IPTA',
+                    'IPTS',
+                    'Maahad Tahfiz',
+                  ]"
+                  v-model="getCurrentTanggungan().jenis_sekolah_institusi"
+                  :disabled="false"
+                />
+
+                <!-- Kategori Sekolah/Institusi -->
+                <FormKit
+                  type="select"
+                  name="kategori_sekolah_institusi"
+                  label="Kategori Sekolah/Institusi"
+                  placeholder="Pilih kategori sekolah/institusi"
+                  :options="['SEK.MEN', 'SRK', 'IPTA', 'IPTS', 'SRA', 'KAFA']"
+                  v-model="getCurrentTanggungan().kategori_sekolah_institusi"
+                  :disabled="false"
+                />
+              </div>
+
+              <!-- Conditional fields based on Kategori Sekolah -->
+              <div
+                v-if="getCurrentTanggungan().kategori_sekolah_institusi"
+                class="mt-4"
+              >
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Tahun Bersekolah -->
+                  <FormKit
+                    type="text"
+                    name="tahun_bersekolah"
+                    label="Tahun Bersekolah (YYYY)"
+                    placeholder="Contoh: 2024"
+                    v-model="getCurrentTanggungan().tahun_bersekolah"
+                    :disabled="false"
+                  />
+
+                  <!-- Tahun/Tingkatan/Tahun Pengajian/Semester -->
+                  <FormKit
+                    type="text"
+                    name="tahun_tingkatan_pengajian"
+                    label="Tahun/Tingkatan/Tahun Pengajian/Semester"
+                    placeholder="Contoh: Tingkatan 3 / Tahun 2 / Semester 1"
+                    v-model="getCurrentTanggungan().tahun_tingkatan_pengajian"
+                    :disabled="false"
+                  />
+
+                  <!-- Nama Sekolah/Institusi -->
+                  <FormKit
+                    type="text"
+                    name="nama_sekolah_institusi"
+                    label="Nama Sekolah/Institusi"
+                    placeholder="Masukkan nama sekolah/institusi"
+                    v-model="getCurrentTanggungan().nama_sekolah_institusi"
+                    :disabled="false"
+                  />
+
+                  <!-- Alamat 1 -->
+                  <FormKit
+                    type="text"
+                    name="alamat1_sekolah"
+                    label="Alamat 1"
+                    placeholder="Masukkan alamat sekolah/institusi"
+                    v-model="getCurrentTanggungan().alamat1_sekolah"
+                    :disabled="false"
+                  />
+
+                  <!-- Alamat 2 -->
+                  <FormKit
+                    v-if="getCurrentTanggungan().alamat1_sekolah"
+                    type="text"
+                    name="alamat2_sekolah"
+                    label="Alamat 2"
+                    placeholder="Masukkan alamat tambahan (jika ada)"
+                    v-model="getCurrentTanggungan().alamat2_sekolah"
+                    :disabled="false"
+                  />
+
+                  <!-- Alamat 3 -->
+                  <FormKit
+                    v-if="getCurrentTanggungan().alamat1_sekolah"
+                    type="text"
+                    name="alamat3_sekolah"
+                    label="Alamat 3"
+                    placeholder="Masukkan alamat tambahan (jika ada)"
+                    v-model="getCurrentTanggungan().alamat3_sekolah"
+                    :disabled="false"
+                  />
+
+                  <!-- Daerah -->
+                  <FormKit
+                    type="text"
+                    name="daerah_sekolah"
+                    label="Daerah"
+                    placeholder="Masukkan daerah"
+                    v-model="getCurrentTanggungan().daerah_sekolah"
+                    :disabled="false"
+                  />
+
+                  <!-- Bandar -->
+                  <FormKit
+                    type="text"
+                    name="bandar_sekolah"
+                    label="Bandar"
+                    placeholder="Masukkan bandar"
+                    v-model="getCurrentTanggungan().bandar_sekolah"
+                    :disabled="false"
+                  />
+
+                  <!-- Poskod -->
+                  <FormKit
+                    type="text"
+                    name="poskod_sekolah"
+                    label="Poskod"
+                    placeholder="Masukkan poskod"
+                    v-model="getCurrentTanggungan().poskod_sekolah"
+                    :disabled="false"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Bahagian C: Tempat Tinggal Semasa Belajar -->
+            <div v-if="getCurrentTanggungan().masih_bersekolah === 'Y'" class="mb-6">
+              <h5 class="text-md font-medium mb-3">
+                C. Tempat Tinggal Semasa Belajar
+              </h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Tinggal Bersama Keluarga? -->
+                <FormKit
+                  type="radio"
+                  name="tinggal_bersama_keluarga"
+                  label="Tinggal Bersama Keluarga?"
+                  :options="[
+                    { label: 'Ya', value: 'Y' },
+                    { label: 'Tidak', value: 'T' },
+                  ]"
+                  v-model="getCurrentTanggungan().tinggal_bersama_keluarga"
+                  :disabled="false"
+                />
+
+                <!-- Asrama/Rumah Sewa -->
+                <FormKit
+                  v-if="getCurrentTanggungan().tinggal_bersama_keluarga === 'T'"
+                  type="text"
+                  name="asrama_rumah_sewa"
+                  label="Asrama/Rumah Sewa"
+                  placeholder="Masukkan maklumat asrama/rumah sewa"
+                  v-model="getCurrentTanggungan().asrama_rumah_sewa"
+                  :disabled="false"
+                />
+              </div>
+            </div>
+
+            <!-- Bahagian D: Pengajian Tinggi -->
+            <div v-if="getCurrentTanggungan().masih_bersekolah === 'Y'" class="mb-6">
+              <h5 class="text-md font-medium mb-3">D. Pengajian Tinggi</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Bidang/Kursus Pengajian -->
+                <FormKit
+                  type="select"
+                  name="bidang_kursus_pengajian"
+                  label="Bidang/Kursus Pengajian"
+                  placeholder="Pilih bidang/kursus pengajian"
+                  :options="['Sijil', 'SKM', 'Diploma', 'Ijazah Sarjana Muda']"
+                  v-model="getCurrentTanggungan().bidang_kursus_pengajian"
+                  :disabled="false"
+                />
+
+                <!-- Jurusan/Bidang -->
+                <FormKit
+                  v-if="getCurrentTanggungan().bidang_kursus_pengajian"
+                  type="text"
+                  name="jurusan_bidang"
+                  label="Jurusan/Bidang"
+                  placeholder="Masukkan jurusan/bidang pengajian"
+                  v-model="getCurrentTanggungan().jurusan_bidang"
+                  :disabled="false"
+                />
+              </div>
+
+              <!-- Pembiayaan Pengajian -->
+              <div class="mt-4">
+                <FormKit
+                  type="checkbox"
+                  name="pembiayaan_pengajian"
+                  label="Pembiayaan Pengajian"
+                  :options="['JPA', 'PTPTN', 'LZS', 'Tiada', 'Lain-lain']"
+                  v-model="getCurrentTanggungan().pembiayaan_pengajian"
+                  :disabled="false"
+                />
+              </div>
+
+              <!-- Lain-lain Pembiayaan Pengajian -->
+              <div
+                v-if="
+                  getCurrentTanggungan().pembiayaan_pengajian &&
+                  getCurrentTanggungan().pembiayaan_pengajian.includes(
+                    'Lain-lain'
+                  )
+                "
+                class="mt-4"
+              >
+                <FormKit
+                  type="text"
+                  name="lain_pembiayaan_pengajian"
+                  label="Lain-lain Pembiayaan Pengajian"
+                  placeholder="Sila nyatakan pembiayaan lain"
+                  v-model="getCurrentTanggungan().lain_pembiayaan_pengajian"
+                  :disabled="false"
+                />
+              </div>
+
+              <!-- Catatan -->
+              <div class="mt-4">
+                <FormKit
+                  type="textarea"
+                  name="catatan_pendidikan_tanggungan"
+                  label="Catatan"
+                  placeholder="Masukkan catatan tambahan (jika ada)"
+                  rows="3"
+                  v-model="getCurrentTanggungan().catatan_pendidikan_tanggungan"
+                  :disabled="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepB"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB4"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepB"
+                >Seterusnya ke Maklumat Kesihatan Tanggungan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section B Form - Step 5: Maklumat Kesihatan Tanggungan -->
+        <FormKit
+          v-if="currentStepB === 5"
+          type="form"
+          @submit="nextStepB"
+          :actions="false"
+          id="sectionB5"
+        >
+          <!-- VI. Maklumat Kemahiran Tanggungan -->
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">VI. Maklumat Kemahiran Tanggungan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Kemahiran</label
+                >
+              <FormKit
+                type="checkbox"
+                name="kemahiran_tanggungan"
+                :options="[
+                  'Nelayan',
+                  'Penternakan',
+                  'Pertanian',
+                  'Menjahit',
+                  'Kraftangan',
+                  'Memasak',
+                  'Mengasuh',
+                  'Perkhidmatan',
+                  'Pertukangan',
+                  'Perniagaan',
+                  'Lain-lain',
+                ]"
+                validation="required"
+                v-model="getCurrentTanggungan().kemahiran_tanggungan"
+              />
+              </div>
+            </div>
+          </div>
+
+          <FormKit
+            type="text"
+            name="lain_kemahiran_tanggungan"
+            label="Lain-lain Kemahiran"
+            placeholder="Sila nyatakan kemahiran lain"
+            v-if="getCurrentTanggungan().kemahiran_tanggungan && getCurrentTanggungan().kemahiran_tanggungan.includes('Lain-lain')"
+            v-model="getCurrentTanggungan().lain_kemahiran_tanggungan"
+          />
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepB"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB6"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepB"
+                >Seterusnya ke Maklumat Pekerjaan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section B Form - Step 7: Maklumat Pekerjaan Tanggungan -->
+        <FormKit
+          v-if="currentStepB === 7"
+          type="form"
+          @submit="nextStepB"
+          :actions="false"
+          id="sectionB7"
+        >
+          <!-- VII. Maklumat Pekerjaan Tanggungan -->
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">VII. Maklumat Pekerjaan Tanggungan</h4>
+
+            <!-- 1. Pekerjaan (Wajib) -->
+            <div class="mb-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Pekerjaan</label
+                  >
+                <FormKit
+                  type="radio"
+                  name="pekerjaan_status_tanggungan"
+                  :options="[
+                    { label: 'Bekerja', value: 'Bekerja' },
+                    { label: 'Tidak Bekerja', value: 'Tidak Bekerja' },
+                  ]"
+                  validation="required"
+                  validation-label="Status pekerjaan"
+                  v-model="getCurrentTanggungan().pekerjaan_status"
+                />
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Sumber Pendapatan -->
+            <div
+              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
+              class="mb-6"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Sumber Pendapatan</label
+                  >
+                <FormKit
+                  type="checkbox"
+                  name="sumber_pendapatan_tanggungan"
+                  :options="[
+                    { label: 'Pengajian', value: 'Pengajian' },
+                    {
+                      label: 'Sumbangan Keluarga',
+                      value: 'Sumbangan Keluarga',
+                    },
+                    {
+                      label: 'Individu / Institusi',
+                      value: 'Individu / Institusi',
+                    },
+                    { label: 'Sumbangan Agensi', value: 'Sumbangan Agensi' },
+                    { label: 'Lain-lain', value: 'Lain-lain' },
+                  ]"
+                  validation="required|min:1"
+                  validation-label="Sumber pendapatan"
+                  validation-messages="{
+                    required: 'Sila pilih sekurang-kurangnya satu sumber pendapatan',
+                    min: 'Sila pilih sekurang-kurangnya satu sumber pendapatan'
+                  }"
+                  v-model="getCurrentTanggungan().sumber_pendapatan"
+                />
+                </div>
+              </div>
+
+              <!-- 2.1 Lain-lain Sumber Pendapatan -->
+              <div
+                v-if="
+                  getCurrentTanggungan().sumber_pendapatan &&
+                  getCurrentTanggungan().sumber_pendapatan.includes('Lain-lain')
+                "
+                class="mt-4"
+              >
+                <FormKit
+                  type="text"
+                  name="lain_lain_sumber_pendapatan_tanggungan"
+                  label="Lain-lain Sumber Pendapatan *"
+                  placeholder="Sila nyatakan sumber pendapatan lain"
+                  validation="required"
+                  validation-label="Lain-lain sumber pendapatan"
+                  v-model="getCurrentTanggungan().lain_lain_sumber_pendapatan"
+                />
+              </div>
+            </div>
+
+            <!-- 3. Butiran Pekerjaan -->
+            <div
+              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
+              class="mb-6"
+            >
+              <h5 class="font-medium mb-3 ">
+                Butiran Pekerjaan
+              </h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 3.1 Jenis Pekerjaan -->
+                <FormKit
+                  type="text"
+                  name="jenis_pekerjaan_tanggungan"
+                  label="Jenis Pekerjaan *"
+                  placeholder="Contoh: Kerani, Jurutera, Guru"
+                  validation="required"
+                  validation-label="Jenis pekerjaan"
+                  v-model="getCurrentTanggungan().jenis_pekerjaan"
+                />
+
+                <!-- 3.2 Sektor Pekerjaan -->
+                <FormKit
+                  type="select"
+                  name="sektor_pekerjaan_tanggungan"
+                  label="Sektor Pekerjaan *"
+                  placeholder="Pilih sektor pekerjaan"
+                  :options="[
+                    { label: 'Kerajaan', value: 'Kerajaan' },
+                    { label: 'Swasta', value: 'Swasta' },
+                    { label: 'Badan Berkanun', value: 'Badan Berkanun' },
+                    { label: 'Kerja Sendiri', value: 'Kerja Sendiri' },
+                  ]"
+                  validation="required"
+                  validation-label="Sektor pekerjaan"
+                  v-model="getCurrentTanggungan().sektor_pekerjaan"
+                />
+
+                <!-- 3.2.1 Lain-lain Sektor Pekerjaan -->
+                <div
+                  v-if="
+                    getCurrentTanggungan().sektor_pekerjaan === 'Kerja Sendiri'
+                  "
+                  class="md:col-span-2"
+                >
+                  <FormKit
+                    type="text"
+                    name="lain_lain_sektor_pekerjaan_tanggungan"
+                    label="Lain-lain Sektor Pekerjaan *"
+                    placeholder="Sila nyatakan sektor pekerjaan lain"
+                    validation="required"
+                    validation-label="Lain-lain sektor pekerjaan"
+                    v-model="getCurrentTanggungan().lain_lain_sektor_pekerjaan"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Maklumat Majikan -->
+            <div
+              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
+              class="mb-6"
+            >
+              <h5 class="font-medium mb-3 ">
+ Jawatan & Status
+              </h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="text"
+                  name="jawatan_tanggungan"
+                  label="Jawatan *"
+                  placeholder="Contoh: Kerani, Jurutera, Guru"
+                  validation="required"
+                  validation-label="Jawatan"
+                  v-model="getCurrentTanggungan().jawatan"
+                />
+
+                <FormKit
+                  type="select"
+                  name="status_jawatan_tanggungan"
+                  label="Status Jawatan *"
+                  placeholder="Pilih status jawatan"
+                  :options="[
+                    { label: 'Tetap', value: 'Tetap' },
+                    { label: 'Kontrak', value: 'Kontrak' },
+                    { label: 'Sementara', value: 'Sementara' },
+                  ]"
+                  validation="required"
+                  validation-label="Status jawatan"
+                  v-model="getCurrentTanggungan().status_jawatan"
+                />
+              </div>
+            </div>
+
+            <!-- 6. Pendapatan -->
+            <div
+              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
+              class="mb-6"
+            >
+              <h5 class="font-medium mb-3 "> Pendapatan</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="text"
+                  name="pendapatan_kasar_tanggungan"
+                  label="Pendapatan Kasar (RM) *"
+                  placeholder="Contoh: 2500.00"
+                  validation="required|number"
+                  validation-label="Pendapatan kasar"
+                  validation-messages="{
+                    required: 'Pendapatan kasar adalah wajib',
+                    number: 'Pendapatan kasar mestilah nombor'
+                  }"
+                  v-model="getCurrentTanggungan().pendapatan_kasar"
+                />
+
+                <FormKit
+                  type="file"
+                  name="dokumen_pendapatan_tanggungan"
+                  label="Upload Dokumen *"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  validation="required"
+                  validation-label="Dokumen pendapatan"
+                  validation-messages="{
+                    required: 'Dokumen pendapatan adalah wajib'
+                  }"
+                  v-model="getCurrentTanggungan().dokumen_pendapatan"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="addTanggungan"
+              >
+                Tambah Tanggungan
+              </rs-button>
+              <rs-button
+                type="button"
+                variant="primary-outline"
+                @click="prevStepB"
+                >Kembali</rs-button
+              >
+            </div>
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB7"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepB"
                 >Seterusnya ke Pengesahan</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section H Form - Pengesahan -->
+        <!-- Section B Form - Step 8: Pengesahan -->
         <FormKit
-          v-if="currentStepA === 8"
+          v-if="currentStepB === 8"
           type="form"
-          @submit="nextStepA"
+          @submit="nextStepB"
           :actions="false"
-          id="sectionH"
+          id="sectionB8"
         >
-          <h3 class="text-lg font-semibold mb-4">
-            VIII. Pengesahan
-          </h3>
+          <h3 class="text-lg font-semibold mb-4">VII. Pengesahan</h3>
 
           <div class="mb-6">
             <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
             <div class="flex flex-col gap-2">
-              <label class="font-medium">Adakah anda dibantu oleh penolong Amil</label>
+              <label class="font-medium"
+                >Adakah anda dibantu oleh penolong Amil</label
+              >
               <FormKit
                 type="radio"
                 name="dibantu_penolong_amil"
                 :options="['Ya', 'Tidak']"
                 validation="required"
                 v-model="dibantuPenolongAmil"
-                value="Ya"
               />
             </div>
 
-            <div v-if="dibantuPenolongAmil === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div
+              v-if="dibantuPenolongAmil === 'Ya'"
+              class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
+            >
               <FormKit
                 type="select"
                 name="kariah_bantuan"
@@ -1276,62 +4684,11 @@
           </div>
 
           <div class="mb-6">
-            <h4 class="font-medium mb-3">Hubungan dengan PAK</h4>
+            <h4 class="font-medium mb-3">Maklumat Perakuan Pemohon</h4>
             <div class="flex flex-col gap-2">
-              <label class="font-medium">Adakah anda mempunyai hubungan dengan Penolong Amil Kariah (PAK)?</label>
-              <FormKit
-                type="radio"
-                name="hubungan_pak"
-                :options="['Ya', 'Tidak']"
-                validation="required"
-                v-model="hubunganPAK"
-                value="Tidak"
-              />
-            </div>
-
-            <div v-if="hubunganPAK === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <FormKit
-                type="select"
-                name="kariah_hubungan_pak"
-                label="Kariah"
-                :options="kariahOptions"
-                placeholder="Pilih kariah"
-                validation="required"
-                v-model="formData.pengesahan.kariah_hubungan_pak"
-              />
-              <FormKit
-                type="select"
-                name="nama_pak_hubungan"
-                label="Nama PAK"
-                :options="pakOfficersOptionsHubungan"
-                placeholder="Pilih nama PAK"
-                validation="required"
-                v-model="formData.pengesahan.nama_pak_hubungan"
-              />
-
-              <FormKit
-                type="text"
-                name="jenis_hubungan_pak"
-                label="Jenis Hubungan"
-                placeholder="Contoh: Keluarga, Jiran, dll"
-                validation="required"
-                v-model="formData.pengesahan.jenis_hubungan_pak"
-              />
-
-              <FormKit
-                type="date"
-                name="tarikh_hubungan_pak"
-                label="Tarikh Pengesahan"
-                validation="required"
-                v-model="formData.pengesahan.tarikh_hubungan_pak"
-              />
-            </div>
-          </div>
-
-          <div class="mb-6">
-            <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
-            <div class="flex flex-col gap-2">
-              <label class="font-medium">Hubungan kekeluargaan dengan kakitangan LZS?</label>
+              <label class="font-medium"
+                >Hubungan kekeluargaan dengan kakitangan LZS?</label
+              >
               <FormKit
                 type="radio"
                 name="hubungan_kakitangan_lzs"
@@ -1341,7 +4698,10 @@
               />
             </div>
 
-            <div v-if="hubunganKakitanganLZS === 'Ya'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div
+              v-if="hubunganKakitanganLZS === 'Ya'"
+              class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
+            >
               <FormKit
                 type="text"
                 name="nama_kakitangan"
@@ -1380,7 +4740,9 @@
           </div>
 
           <div class="mb-6">
-            <h4 class="font-medium mb-3"> Pengesahan PDPA (Akta Perlindungan Data Peribadi)</h4>
+            <h4 class="font-medium mb-3">
+              Pengesahan PDPA (Akta Perlindungan Data Peribadi)
+            </h4>
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div class="flex items-start gap-3">
                 <FormKit
@@ -1389,7 +4751,7 @@
                   label=""
                   :options="[
                     { label: 'Setuju', value: true },
-                    { label: 'Tidak Setuju', value: false }
+                    { label: 'Tidak Setuju', value: false },
                   ]"
                   validation="required"
                   v-model="formData.pengesahan.pdpa_consent"
@@ -1397,11 +4759,24 @@
                 <div class="text-sm text-gray-700">
                   <p class="font-medium mb-2">Saya mengesahkan bahawa:</p>
                   <ul class="list-disc list-inside space-y-1 text-xs">
-                    <li>Semua maklumat yang diberikan adalah benar dan tepat</li>
-                    <li>Saya memberikan kebenaran kepada Lembaga Zakat Selangor (LZS) untuk memproses dan menyimpan data peribadi saya</li>
-                    <li>Saya memahami bahawa data saya akan digunakan untuk tujuan pemprosesan permohonan bantuan</li>
-                    <li>Saya bersetuju untuk menerima komunikasi berkaitan permohonan saya</li>
-                    <li>Saya boleh menarik balik kebenaran ini pada bila-bila masa</li>
+                    <li>
+                      Semua maklumat yang diberikan adalah benar dan tepat
+                    </li>
+                    <li>
+                      Saya memberikan kebenaran kepada Lembaga Zakat Selangor
+                      (LZS) untuk memproses dan menyimpan data peribadi saya
+                    </li>
+                    <li>
+                      Saya memahami bahawa data saya akan digunakan untuk tujuan
+                      pemprosesan permohonan bantuan
+                    </li>
+                    <li>
+                      Saya bersetuju untuk menerima komunikasi berkaitan
+                      permohonan saya
+                    </li>
+                    <li>
+                      Saya boleh menarik balik kebenaran ini pada bila-bila masa
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -1412,48 +4787,68 @@
             <rs-button
               type="button"
               variant="primary-outline"
-              @click="prevStepA"
+              @click="prevStepB"
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA8"
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB8"
                 >Simpan</rs-button
               >
-              <rs-button type="submit" variant="primary" @click="nextStepA"
+              <rs-button type="submit" variant="primary" @click="nextStepB"
                 >Seterusnya ke Pengesahan Bermastautin</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section I Form - Pengesahan Bermastautin -->
+        <!-- Section B Form - Step 9: Pengesahan Bermastautin -->
         <FormKit
-          v-if="currentStepA === 9"
+          v-if="currentStepB === 9"
           type="form"
-          @submit="nextStepA"
+          @submit="nextStepB"
           :actions="false"
-          id="sectionI"
+          id="sectionB9"
         >
           <h3 class="text-lg font-semibold mb-4">
-            IX. Pengesahan Bermastautin
+            VII. Pengesahan Bermastautin
           </h3>
 
           <!-- PAK Officer Information (Readonly) -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">Maklumat Pegawai PAK yang Mengesahkan</h4>
+            <h4 class="font-medium mb-3">
+              Maklumat Pegawai PAK yang Mengesahkan
+            </h4>
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Kariah</label>
-                  <div class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded">
-                    {{ getKariahLabel(formData.pengesahan.kariah_bermastautin) || 'Belum dipilih' }}
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Kariah</label
+                  >
+                  <div
+                    class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded"
+                  >
+                    {{
+                      getKariahLabel(formData.pengesahan.kariah_bermastautin) ||
+                      "Belum dipilih"
+                    }}
                   </div>
                 </div>
-                
+
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Nama Pegawai PAK</label>
-                  <div class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded">
-                    {{ getPakOfficerLabel(formData.pengesahan.nama_pak_bermastautin) || 'Belum dipilih' }}
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Nama Pegawai PAK</label
+                  >
+                  <div
+                    class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded"
+                  >
+                    {{
+                      getPakOfficerLabel(
+                        formData.pengesahan.nama_pak_bermastautin
+                      ) || "Belum dipilih"
+                    }}
                   </div>
                 </div>
               </div>
@@ -1486,88 +4881,37 @@
             </div>
           </div>
 
-          <!-- Original Form Fields (Hidden/Readonly) -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit
-              type="text"
-              name="nama_pengesah"
-              label="Nama"
-              validation="required"
-              v-model="formData.pengesahan.nama_pengesah"
-              disabled
-            />
-
-            <FormKit
-              type="text"
-              name="jawatan_pengesah"
-              label="Jawatan"
-              validation="required"
-              v-model="formData.pengesahan.jawatan_pengesah"
-              disabled
-            />
-
-            <FormKit
-              type="text"
-              name="no_telefon_pengesah"
-              label="No Telefon"
-              validation="required"
-              v-model="formData.pengesahan.no_telefon_pengesah"
-              disabled
-            />
-
-            <FormKit
-              type="date"
-              name="tarikh_pengesahan_permastautin"
-              label="Tarikh Pengesahan"
-              validation="required"
-              v-model="formData.pengesahan.tarikh_pengesahan_permastautin"
-              disabled
-            />
-
-            <div class="md:col-span-2">
-              <FormKit
-                type="file"
-                name="surat_pengesahan_bermastautin"
-                label="Muat naik dokumen pengesahan bermastautin"
-                accept=".pdf,.jpg,.jpeg,.png"
-                v-model="formData.pengesahan.surat_pengesahan_bermastautin"
-                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                validation="required"
-                validation-messages="{
-                  required: 'Dokumen pengesahan bermastautin adalah wajib'
-                }"
-              />
-            </div>
-          </div>
-
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
               variant="primary-outline"
-              @click="prevStepA"
+              @click="prevStepB"
               >Kembali</rs-button
             >
             <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA9"
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB9"
                 >Simpan</rs-button
               >
-              <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Pegawai Pendaftar</rs-button
+              <rs-button type="submit" variant="primary" @click="nextStepB"
+                >Seterusnya ke Pegawai Pendaftar</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section J Form - Pegawai Pendaftar -->
+        <!-- Section B Form - Step 10: Pegawai Pendaftar -->
         <FormKit
-          v-if="currentStepA === 10"
+          v-if="currentStepB === 10"
           type="form"
-          @submit="nextStepA"
+          @submit="submitForm"
           :actions="false"
-          id="sectionJ"
+          id="sectionB10"
         >
           <h3 class="text-lg font-semibold mb-4">
-            X. Maklumat Pegawai Pendaftar
+            VIII. Maklumat Pegawai Pendaftar
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1584,7 +4928,7 @@
               type="text"
               name="jenis_permohonan"
               label="Jenis Permohonan"
-              value="Review"
+              value="Baru"
               validation="required"
               disabled
             />
@@ -1610,992 +4954,19 @@
             <rs-button
               type="button"
               variant="primary-outline"
-              @click="prevStepA"
-              >Kembali</rs-button
-            >
-            <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepA10"
-                >Simpan</rs-button
-              >
-              <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Peribadi Tanggungan</rs-button
-              >
-            </div>
-          </div>
-        </FormKit>
-      </template>
-    </rs-card>
-
-    <rs-card v-if="currentSection == 2" class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Borang Permohonan Lengkap Online
-          </h2>
-          <div class="text-sm text-gray-600">
-            Langkah {{ currentStepB }} dari {{ totalStepsB }}
-          </div>
-        </div>
-      </template>
-
-      <template #body>
-        <!-- Progress indicator -->
-        <div class="mb-6">
-          <div class="flex justify-between mb-2">
-            <div
-              v-for="step in stepsB"
-              :key="step.id"
-              class="text-center flex-1 cursor-pointer"
-              :class="{ 'font-semibold': currentStepB >= step.id }"
-              @click="navigateToStepB(step.id)"
-            >
-              {{ step.label }}
-            </div>
-          </div>
-          <div class="w-full bg-gray-200 rounded-full h-2.5 relative">
-            <div
-              class="bg-primary h-2.5 rounded-full transition-all duration-300"
-              :style="`width: ${(currentStepB / totalStepsB) * 100}%`"
-            ></div>
-            <!-- Clickable progress bar -->
-            <div 
-              class="absolute inset-0 cursor-pointer"
-              @click="handleProgressBarClickB"
-            ></div>
-          </div>
-        </div>
-
-        <!-- NEW Section B Form - Maklumat Peibadi Tanggungan -->
-        <FormKit
-          v-if="currentStepB === 1"
-          type="form"
-          @submit="nextStepB"
-          :actions="false"
-        >
-
-          <h3 class="text-lg font-semibold mb-4">B. Maklumat Peribadi Tanggungan</h3>
-
-          <!-- I. Maklumat Peibadi Tanggungan -->
-          <div class="mb-6">
-            <h4 class="font-medium mb-3">I. Maklumat Peribadi Tanggungan</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="hubungan_pemohon"
-                label="Hubungan dengan Pemohon/Asnaf"
-                placeholder="Pilih hubungan"
-                :options="[
-                  'Pasangan Pemohon',
-                  'Isteri Kedua',
-                  'Isteri Ketiga',
-                  'Isteri Keempat',
-                  'Ipar',
-                  'Abang',
-                  'Bapa',
-                  'Ibu',
-                  'Kakak',
-                  'Adik',
-                  'Anak',
-                  'Cucu',
-                  'Bapa Mertua',
-                  'Ibu Mertua',
-                  'Lain-lain Nyatakan',
-                ]"
-                validation="required"
-                v-model="hubunganPemohon"
-              />
-
-              <div v-if="hubunganPemohon === 'Pasangan Pemohon'" class="md:col-span-2">
-                <FormKit
-                  type="file"
-                  name="dokumen_pasangan"
-                  label="Upload Dokumen Pasangan"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                />
-              </div>
-
-              <FormKit
-                type="text"
-                name="nama_tanggungan"
-                label="Nama"
-                validation="required"
-                value="Ali bin Ahmad"
-              />
-
-              <FormKit
-                type="select"
-                name="jenis_id"
-                label="Jenis ID"
-                placeholder="Pilih jenis ID"
-                :options="['Kad Pengenalan', 'Foreign ID','Sijil Lahir']"
-                validation="required"
-                v-model="jenisIdTanggungan"
-              />
-
-              
-                <FormKit
-                  v-if="jenisIdTanggungan"
-                  type="file"
-                  name="dokumen_id"
-                  :label="`Upload ${jenisIdTanggungan}`"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                />
-
-              <FormKit
-                type="text"
-                name="no_id_tanggungan"
-                label="No ID"
-                value="010101011111"
-              />
-
-              <FormKit
-                type="text"
-                name="nopassport"
-                label="No Passport"
-                value="B12345678"
-              />
-
-              <FormKit
-                type="date"
-                name="passportStartDate"
-                label="Tarikh mula passport"
-                value="2023-01-01"
-              />
-
-              <FormKit
-                type="date"
-                name="passportEndDate"
-                label="Tarikh tamat passport"
-                value="2028-01-01"
-              />
-
-              <FormKit
-                type="select"
-                name="jantina_tanggungan"
-                label="Jantina"
-                :options="['Lelaki', 'Perempuan']"
-                validation="required"
-                value="Lelaki"
-              />
-
-              <FormKit
-                type="date"
-                name="tarikh_lahir_tanggungan"
-                label="Tarikh Lahir"
-                validation="required"
-                value="2010-01-01"
-              />
-
-              <FormKit
-                type="text"
-                name="tempat_lahir_tanggungan"
-                label="Tempat Lahir"
-                validation="required"
-                value="Kuala Lumpur"
-              />
-
-              <FormKit
-                type="select"
-                name="bangsa_tanggungan"
-                label="Bangsa"
-                :options="['Melayu', 'Cina', 'India', 'Lain-lain Nyatakan']"
-                validation="required"
-                value="Melayu"
-              />
-
-              <FormKit
-                type="select"
-                name="status_perkahwinan_tanggungan"
-                label="Status Perkahwinan"
-                :options="[
-                  'Berkahwin',
-                  'Bujang',
-                  'Janda',
-                  'Ibu Tinggal',
-                  'Bapa Tinggal',
-                  'Duda',
-                  'Balu',
-                ]"
-                validation="required"
-                value="Bujang"
-              />
-
-
-
-              <FormKit
-                type="select"
-                name="warganegara_tanggungan"
-                label="Warganegara"
-                :options="['Warganegara', 'Bukan Warganegara']"
-                validation="required"
-                value="Warganegara"
-              />
-
-              <FormKit
-                type="number"
-                name="tempoh_menetap_selangor"
-                label="Tempoh Menetap Di Selangor (Tahun)"
-                min="0"
-                value="10"
-              />
-
-              <FormKit
-                type="text"
-                name="no_telefon_tanggungan"
-                label="No Telefon"
-                value="0191234567"
-              />
-            </div>
-          </div>
-
-          <!-- B. Maklumat Islam -->
-          <div class="mb-6">
-            <h4 class="font-medium mb-3">Maklumat Islam</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="text"
-                name="nama_selepas_islam"
-                label="Nama Selepas Islam (Muallaf)"
-              />
-
-              <FormKit
-                type="date"
-                name="tarikh_masuk_islam"
-                label="Tarikh Masuk Islam"
-                help="Format: dd-mm-yyyy"
-                validation="required"
-                v-model="tarikhMasukIslamTanggungan"
-              />
-
-              <FormKit
-                v-if="tarikhMasukIslamTanggungan"
-                type="file"
-                name="dokumen_masuk_islam"
-                label="Upload surat keislaman dari MAIS"
-                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                accept=".pdf,.jpg,.jpeg,.png"
-                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-              />
-
-              <FormKit
-                type="date"
-                name="tarikh_masuk_kfam_tanggungan"
-                label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
-                help="Format: dd-mm-yyyy"
-                value="2020-02-01"
-              />
-            </div>
-          </div>
-
-          <!-- Maklumat Bank -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Bank</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="nama_bank_tanggungan"
-                label="Nama Bank"
-                placeholder="Pilih nama bank"
-                :options="bankOptions"
-                validation="required"
-                v-model="formData.nama_bank_tanggungan"
-              />
-
-              <FormKit
-                v-if="formData.nama_bank_tanggungan"
-                type="text"
-                name="swift_code_tanggungan"
-                label="SWIFT Code"
-                v-model="formData.swift_code_tanggungan"
-                :value="selectedBankSwiftCodeTanggungan"
-                readonly
-                help="SWIFT Code untuk bank yang dipilih"
-              />
-
-              <FormKit
-                type="text"
-                name="nama_pemegang_akaun_tanggungan"
-                label="Nama Pemegang Akaun Bank"
-                validation="required"
-                v-model="formData.nama_pemegang_akaun_tanggungan"
-              />
-
-              <FormKit
-                type="select"
-                name="kaedah_pembayaran_tanggungan"
-                label="Kaedah Pembayaran"
-                validation="required"
-                :options="paymentMethodOptions"
-                placeholder="Pilih kaedah pembayaran"
-                v-model="formData.kaedah_pembayaran_tanggungan"
-                :validation-messages="{
-                  required: 'Kaedah pembayaran adalah wajib'
-                }"
-              />
-
-              <!-- Conditional checkboxes when Tiada is selected -->
-              <div v-if="formData.kaedah_pembayaran_tanggungan === 'tiada'" class="md:col-span-2">
-                <FormKit
-                  type="checkbox"
-                  name="noPaymentReasonTanggungan"
-                  label="Nyatakan sebab"
-                  :options="noPaymentReasonOptions"
-                  v-model="formData.noPaymentReasonTanggungan"
-                  validation="required|min:1"
-                  :validation-messages="{
-                    required: 'Sila pilih sekurang-kurangnya satu sebab',
-                    min: 'Sila pilih sekurang-kurangnya satu sebab'
-                  }"
-                />
-              </div>
-            </div>
-
-            <!-- Multiple Bank Account Numbers for Tanggungan -->
-            <div class="mt-4">
-              <h5 class="font-medium mb-3">No Akaun Bank</h5>
-              
-              <div v-for="(accountNumber, index) in formData.bankAccountNumbersTanggungan" :key="index" class="mb-3">
-                <div class="flex gap-2 items-end">
-                  <div class="flex-1">
-                    <FormKit
-                      type="text"
-                      :name="`no_akaun_bank_tanggungan_${index}`"
-                      :label="`No Akaun Bank ${index + 1}`"
-                      validation="required"
-                      v-model="accountNumber.number"
-                      :validation-messages="{
-                        required: 'No akaun bank adalah wajib'
-                      }"
-                    />
-                  </div>
-                  <button
-                    v-if="formData.bankAccountNumbersTanggungan.length > 1"
-                    type="button"
-                    @click="removeBankAccountNumberTanggungan(index)"
-                    class="text-red-500 hover:text-red-700 mb-2"
-                  >
-                    <Icon name="mdi:delete" size="1.25rem" />
-                  </button>
-                </div>
-              </div>
-
-              <!-- Add Bank Account Number Button for Tanggungan -->
-              <div class="flex justify-center mt-4">
-                <rs-button
-                  variant="secondary"
-                  @click="addBankAccountNumberTanggungan"
-                  type="button"
-                >
-                  <Icon name="mdi:plus" class="mr-1" size="1rem" />
-                  Tambah No Akaun Bank
-                </rs-button>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-3 mt-6">
-            <rs-button
-              type="button"
-              variant="primary-outline"
-              @click="prevSection"
-              >Kembali</rs-button
-            >
-            <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepB1"
-                >Simpan</rs-button
-              >
-              <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Pendidikan Tanggungan</rs-button
-              >
-            </div>
-          </div>
-        </FormKit>
-
-        <FormKit
-          v-if="currentStepB === 2"
-          type="form"
-          @submit="nextStepB"
-          :actions="false"
-        >
-          <!-- II. Maklumat Pendidikan Tanggungan -->
-          <div class="mb-6">
-            <h4 class="font-medium mb-3">II. Maklumat Pendidikan Tanggungan</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="bersekolah_tanggungan"
-                label="Bersekolah"
-                :options="['Ya', 'Tidak']"
-                value="Ya"
-              />
-
-              <FormKit
-                type="select"
-                name="pendidikan_tertinggi_tanggungan"
-                label="Pendidikan Tertinggi"
-                :options="[
-                  'Peringkat Rendah',
-                  'SRP/PMR',
-                  'SPM',
-                  'Sijil',
-                  'Diploma',
-                  'STPM',
-                  'Ijazah',
-                  'Lain-lain Nyatakan',
-                ]"
-                value="SPM"
-              />
-
-              <FormKit
-                type="select"
-                name="jenis_sekolah"
-                label="Jenis Sekolah"
-                :options="[
-                  'Pra Sekolah',
-                  'Sekolah Rendah Kebangsaan',
-                  'Sekolah Menengah Kebangsaan',
-                  'Sekolah Menengah Agama',
-                  'Sekolah Rendah Kebangsaan dan Agama',
-                  'IPTA/IPTS',
-                  'Maahd Tahfiz',
-                ]"
-                value="Sekolah Menengah Kebangsaan"
-              />
-
-              <div class="col-span-full">
-                <h5 class="font-medium mb-2">
-                  Nama dan Alamat Sekolah/Institusi (SEK.MEN/SRK/IPTA/IPTS)
-                </h5>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormKit
-                    type="text"
-                    name="nama_sekolah"
-                    label="Nama Sekolah"
-                    value="SMK Bukit Bintang"
-                  />
-
-                  <FormKit type="text" name="alamat_sekolah" label="Alamat" value="Jalan BB 1" />
-
-                  <FormKit type="text" name="daerah_sekolah" :options="daerahOptions" label="Daerah" value="gombak" />
-
-                  <FormKit type="text" name="negeri_sekolah" :options="negeriOptions" label="Negeri" value="Selangor" />
-
-                  <FormKit type="text" name="poskod_sekolah" label="Poskod" value="57000" />
-                </div>
-              </div>
-
-              <div class="col-span-full">
-                <h5 class="font-medium mb-2">
-                  Nama dan Alamat Sekolah/Institusi (SRA/KAFA)
-                </h5>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormKit
-                    type="text"
-                    name="nama_sekolah_agama"
-                    label="Nama Sekolah"
-                    value="SRA Bukit Bintang"
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="alamat_sekolah_agama"
-                    label="Alamat"
-                    value="Jalan BB 2"
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="daerah_sekolah_agama"
-                    label="Daerah"
-                    value="gombak"
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="negeri_sekolah_agama"
-                    label="Negeri"
-                    value="Selangor"
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="poskod_sekolah_agama"
-                    label="Poskod"
-                    value="57000"
-                  />
-                </div>
-              </div>
-
-              <FormKit
-                type="select"
-                name="tinggal_bersama_keluarga"
-                label="Tinggal Bersama Keluarga"
-                :options="['Ya', 'Tidak', 'Asrama']"
-                value="Ya"
-              />
-
-              <FormKit
-                type="file"
-                name="dokumen_tinggal_bersama_keluarga"
-                label="Upload Dokumen"
-                accept=".pdf,.jpg,.jpeg,.png"
-                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-              />
-
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-3 mt-6">
-            <rs-button
-              type="button"
-              variant="primary-outline"
               @click="prevStepB"
               >Kembali</rs-button
             >
-            <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepB2"
-                >Simpan</rs-button
-              >
-              <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Kesihatan Tanggungan</rs-button
-              >
-            </div>
-          </div>
-        </FormKit>
-
-        <FormKit
-          v-if="currentStepB === 3"
-          type="form"
-          @submit="nextStepB"
-          :actions="false"
-        >
-          <!-- III. Maklumat Kesihatan Tanggungan -->
-          <div class="mb-6">
-            <h4 class="font-medium mb-3">III. Maklumat Kesihatan Tanggungan</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="tahap_kesihatan_tanggungan"
-                label="Tahap Kesihatan"
-                :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
-                v-model="healthStatusTanggungan"
-              />
-
-              <div
-                v-if="healthStatusTanggungan === 'Sakit Kronik'"
-                class="col-span-full ml-6"
-              >
-                <h5 class="font-medium mb-2">Sakit Kronik</h5>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormKit
-                    type="select"
-                    name="keadaan_kesihatan_sakit_tanggungan"
-                    label="Keadaan Kesihatan"
-                    :options="['Terlantar', 'Tidak Terlantar']"
-                  />
-
-                  <FormKit
-                    type="select"
-                    name="kos_penjagaan_sakit_tanggungan"
-                    label="Kos Penjagaan"
-                    :options="['Berbayar', 'Tidak berbayar']"
-                  />
-
-                  <FormKit
-                    type="number"
-                    name="perbelanjaan_bulanan_sakit_tanggungan"
-                    label="Jumlah Perbelanjaan Bulanan (RM)"
-                    step="0.01"
-                    min="0"
-                  />
-
-                  <FormKit
-                    type="file"
-                    name="dokumen_sakit_kronik_tanggungan"
-                    label="Upload Dokumen Sakit Kronik"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  />
-                </div>
-              </div>
-
-              <div
-                v-if="healthStatusTanggungan === 'OKU'"
-                class="col-span-full ml-6"
-              >
-                <h5 class="font-medium mb-2">OKU</h5>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormKit
-                    type="select"
-                    name="kesempurnaan_fizikal_tanggungan"
-                    label="Kesempurnaan Fizikal"
-                    :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
-                  />
-
-                  <FormKit
-                    type="select"
-                    name="sebab_kecacatan_tanggungan"
-                    label="Sebab Kecacatan (Jika Cacat)"
-                    :options="['Sejak Lahir', 'Musibah']"
-                  />
-
-                  <FormKit
-                    type="select"
-                    name="tahap_kecacatan_tanggungan"
-                    label="Tahap Kecacatan"
-                    :options="['Terlantar', 'Tidak Terlantar']"
-                  />
-
-                  <FormKit
-                    type="number"
-                    name="perbelanjaan_bulanan_oku_tanggungan"
-                    label="Jumlah Perbelanjaan Bulanan (RM)"
-                    step="0.01"
-                    min="0"
-                  />
-
-                  <FormKit
-                    type="file"
-                    name="dokumen_oku_tanggungan"
-                    label="Upload Dokumen OKU"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  />
-                </div>
-              </div>
-
-              <div
-                v-if="healthStatusTanggungan === 'Uzur'"
-                class="col-span-full ml-6"
-              >
-                <h5 class="font-medium mb-2">Uzur</h5>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormKit
-                    type="select"
-                    name="keadaan_kesihatan_uzur_tanggungan"
-                    label="Keadaan Kesihatan"
-                    :options="['Terlantar', 'Tidak Terlantar']"
-                  />
-
-                  <FormKit
-                    type="select"
-                    name="kos_penjagaan_uzur_tanggungan"
-                    label="b. Kos Penjagaan"
-                    :options="['Berbayar', 'Tidak berbayar']"
-                  />
-
-                  <FormKit
-                    type="number"
-                    name="perbelanjaan_bulanan_uzur_tanggungan"
-                    label="c. Jumlah Perbelanjaan Bulanan (RM)"
-                    step="0.01"
-                    min="0"
-                  />
-
-                  <FormKit
-                    type="file"
-                    name="dokumen_uzur_tanggungan"
-                    label="d. Upload Dokumen Uzur"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-3 mt-6">
-            <rs-button
-              type="button"
-              variant="primary-outline"
-              @click="prevStepB"
-              >Kembali</rs-button
-            >
-            <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepB3"
-                >Simpan</rs-button
-              >
-              <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Kemahiran Tanggungan</rs-button
-              >
-            </div>
-          </div>
-        </FormKit>
-
-        <FormKit
-          v-if="currentStepB === 4"
-          type="form"
-          @submit="nextStepB"
-          :actions="false"
-        >
-          <!-- IV. Maklumat Kemahiran Tanggungan -->
-          <div class="mb-6">
-            <h4 class="font-medium mb-3">IV. Maklumat Kemahiran Tanggungan</h4>
-            <FormKit
-              type="select"
-              name="kemahiran_tanggungan"
-              label="Kemahiran"
-              :options="[
-                'Nelayan',
-                'Penternakan',
-                'Pertanian',
-                'Menjahit',
-                'Kraftangan',
-                'Memasak',
-                'Mengasuh',
-                'Perkhidmatan',
-                'Pertukangan',
-                'Perniagaan',
-                'Lain-lain Nyatakan',
-              ]"
-              value="Pertanian"
-            />
-          </div>
-
-          <div class="flex justify-between gap-3 mt-6">
-            <rs-button
-              type="button"
-              variant="primary-outline"
-              @click="prevStepB"
-              >Kembali</rs-button
-            >
-            <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepB4"
-                >Simpan</rs-button
-              >
-              <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Pekerjaan Tanggungan</rs-button
-              >
-            </div>
-          </div>
-        </FormKit>
-
-        <FormKit
-          v-if="currentStepB === 5"
-          type="form"
-          @submit="nextStepB"
-          :actions="false"
-        >
-          <!-- V. Maklumat Pekerjaan Tanggungan -->
-          <div class="mb-6">
-            <h4 class="font-medium mb-3">V. Maklumat Pekerjaan Tanggungan</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="pekerjaan_status"
-                label="Pekerjaan"
-                :options="[
-                  'Bekerja Nyatakan Jawatan',
-                  'Tidak Bekerja Nyatakan',
-                ]"
-                value="Bekerja Nyatakan Jawatan"
-              />
-
-              <FormKit
-                type="select"
-                name="sektor_pekerjaan"
-                label="Sektor"
-                :options="[
-                  'Kerajaan',
-                  'Swasta',
-                  'Badan Berkanun',
-                  'Kerja Sendiri Nyatakan',
-                ]"
-                value="Swasta"
-              />
-
-              <FormKit
-                type="text"
-                name="nama_majikan"
-                label="Nama Majikan"
-                value="ABC Sdn Bhd"
-              />
-
-              <FormKit
-                type="text"
-                name="no_tel_majikan"
-                label="No Tel Majikan"
-                value="034567890"
-              />
-
-              <FormKit
-                type="text"
-                name="alamat_majikan"
-                label="Alamat Majikan"
-                value="Jalan Raja"
-              />
-
-              <FormKit type="text" name="bandar_majikan" label="Bandar" value="Kuala Lumpur" />
-
-              <FormKit type="text" name="poskod_majikan" label="Poskod" value="50000" />
-
-              <FormKit type="text" name="daerah_majikan" label="Daerah" value="gombak" />
-
-              <FormKit type="text" name="negeri_majikan" label="Negeri" value="Selangor" />
-
-              <FormKit type="text" name="jawatan" label="Jawatan" value="Eksekutif" />
-
-              <FormKit type="text" name="negara_pekerjaan" label="Negara" value="Malaysia" />
-
-              <FormKit
-                type="select"
-                name="status_jawatan"
-                label="Status Jawatan"
-                :options="['Tetap', 'Kontrak', 'Sementara']"
-                value="Tetap"
-              />
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-3 mt-6">
             <div class="flex gap-3">
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="goToPeribadi"
-              >
-                Tambah Tanggungan
-              </rs-button>
-              <rs-button
-                type="button"
-                variant="primary-outline"
-                @click="prevStepB"
-                >Kembali</rs-button
-              >
-            </div>
-            <div class="flex gap-3">
-              <rs-button type="button" variant="secondary" @click="handleSaveStepB5"
+                @click="handleSaveStepB10"
                 >Simpan</rs-button
               >
-              <rs-button
-                type="submit"
-                variant="primary"
-                @click="nextStepB"
-                :disabled="processing"
+              <rs-button type="submit" variant="primary" @click="handleSubmit"
+                >Hantar Permohonan</rs-button
               >
-                <span v-if="processing">
-                  <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
-                </span>
-                <span v-else>Seterusnya ke Penilaian Awal</span>
-              </rs-button>
-            </div>
-          </div>
-        </FormKit>
-
-        <FormKit
-          v-if="currentStepB === 6"
-          type="form"
-          @submit="submitForm"
-          :actions="false"
-          id="sectionJ"
-        >
-          <h3 class="text-lg font-semibold mb-4">
-            C. Penilaian Awal
-          </h3>
-
-          <div class="space-y-6">
-            <!-- Question 1 -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">
-                Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?
-              </label>
-              <FormKit
-                type="radio"
-                name="komitmen_tinggi"
-                :options="[
-                  { label: 'Ya', value: 'Y' },
-                  { label: 'Tidak', value: 'T' }
-                ]"
-                validation="required"
-                validation-label="Jawapan"
-                value="Y"
-              />
-            </div>
-
-            <!-- Question 2 -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">
-                Apakah keperluan tuan/puan mendesak sekarang ini?
-              </label>
-              <FormKit
-                type="checkbox"
-                name="keperluan_mendesak"
-                :options="[
-                  { label: 'Perubatan Kritikal', value: 'perubatan' },
-                  { label: 'Bencana', value: 'bencana' },
-                  { label: 'Kematian', value: 'kematian' },
-                  { label: 'Konflik Keluarga (tiada tempat bergantung)', value: 'konflik' },
-                  { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah' },
-                  { label: 'Selain dari di atas', value: 'lain' },
-                  { label: 'Tidak mendesak', value: 'tidakMendesak' }
-                ]"
-                validation="required|min:1"
-                validation-label="Jawapan"
-                validation-messages="{
-                  required: 'Sila pilih sekurang-kurangnya satu jawapan',
-                  min: 'Sila pilih sekurang-kurangnya satu jawapan'
-                }"
-                value="['perubatan']"
-              />
-
-              <!-- Additional input for "Selain dari di atas" -->
-              <div v-if="showLainInput" class="mt-4">
-                <FormKit
-                  type="text"
-                  name="lain_keperluan"
-                  label="Sila nyatakan keperluan lain:"
-                  validation="required"
-                  validation-label="Keperluan lain"
-                  validation-messages="{
-                    required: 'Sila nyatakan keperluan lain'
-                  }"
-                />
-              </div>
-            </div>
-
-            <!-- File Upload Section -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">
-                Muat naik dokumen sokongan (PDF, JPG, PNG)
-              </label>
-              <FormKit
-                type="file"
-                name="dokumen_sokongan"
-                multiple
-                accept=".pdf,.jpg,.jpeg,.png"
-                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                validation-label="Dokumen"
-                validation-messages="{
-                  required: 'Sila muat naik sekurang-kurangnya satu dokumen',
-                  max: 'Saiz fail tidak boleh melebihi 5MB',
-                  mime: 'Format fail tidak dibenarkan'
-                }"
-              />
-            </div>
-
-            <div class="flex justify-between gap-3 mt-6">
-              <rs-button
-                type="button"
-                variant="primary-outline"
-                @click="prevStepB"
-                >Kembali</rs-button
-              >
-              <div class="flex gap-3">
-                    <rs-button type="button" variant="secondary" @click="handleSave"
-                      >Simpan</rs-button
-                    >
-                    <rs-button type="submit" variant="primary" @click="handleSubmit"
-                      >Hantar Permohonan</rs-button
-                    >
-                  </div>
             </div>
           </div>
         </FormKit>
@@ -2603,19 +4974,35 @@
     </rs-card>
 
     <!-- Kursus Modal -->
-    <div v-if="showKursusModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+    <div
+      v-if="showKursusModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+      >
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">Senarai Kursus dan Guru Terlibat</h3>
-          <button @click="closeKursusModal" class="text-gray-500 hover:text-gray-700">
+          <h3 class="text-lg font-semibold">
+            Senarai Kursus dan Guru Terlibat
+          </h3>
+          <button
+            @click="closeKursusModal"
+            class="text-gray-500 hover:text-gray-700"
+          >
             <i class="fas fa-times text-xl"></i>
           </button>
         </div>
-        
+
         <div class="mb-4">
           <p class="text-sm text-gray-600">
-            Lokasi: <span class="font-medium">{{ formData.addressInfo.location || 'Belum dipilih' }}</span> | 
-            Daerah: <span class="font-medium">{{ selectedDaerah || 'Belum dipilih' }}</span>
+            Lokasi:
+            <span class="font-medium">{{
+              formData.addressInfo.location || "Belum dipilih"
+            }}</span>
+            | Daerah:
+            <span class="font-medium">{{
+              selectedDaerah || "Belum dipilih"
+            }}</span>
           </p>
         </div>
 
@@ -2627,13 +5014,16 @@
                 v-for="kursus in kursusList"
                 :key="kursus.id"
                 class="p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
-                :class="{ 'bg-blue-50 border-blue-300': selectedKursus?.id === kursus.id }"
+                :class="{
+                  'bg-blue-50 border-blue-300':
+                    selectedKursus?.id === kursus.id,
+                }"
                 @click="selectKursus(kursus)"
               >
                 <div class="font-medium">{{ kursus.nama }}</div>
                 <div class="text-sm text-gray-600">{{ kursus.deskripsi }}</div>
                 <div class="text-xs text-gray-500 mt-1">
-                  <i class="fas fa-clock mr-1"></i>{{ kursus.durasi }} | 
+                  <i class="fas fa-clock mr-1"></i>{{ kursus.durasi }} |
                   <i class="fas fa-users mr-1"></i>{{ kursus.kapasiti }} peserta
                 </div>
               </div>
@@ -2647,14 +5037,19 @@
                 v-for="guru in guruList"
                 :key="guru.id"
                 class="p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
-                :class="{ 'bg-green-50 border-green-300': selectedGuru?.id === guru.id }"
+                :class="{
+                  'bg-green-50 border-green-300': selectedGuru?.id === guru.id,
+                }"
                 @click="selectGuru(guru)"
               >
                 <div class="font-medium">{{ guru.nama }}</div>
-                <div class="text-sm text-gray-600">{{ guru.specialization }}</div>
+                <div class="text-sm text-gray-600">
+                  {{ guru.specialization }}
+                </div>
                 <div class="text-xs text-gray-500 mt-1">
-                  <i class="fas fa-star mr-1"></i>{{ guru.rating }} | 
-                  <i class="fas fa-graduation-cap mr-1"></i>{{ guru.pengalaman }} tahun
+                  <i class="fas fa-star mr-1"></i>{{ guru.rating }} |
+                  <i class="fas fa-graduation-cap mr-1"></i
+                  >{{ guru.pengalaman }} tahun
                 </div>
               </div>
             </div>
@@ -2665,8 +5060,8 @@
           <rs-button variant="secondary" @click="closeKursusModal">
             Batal
           </rs-button>
-          <rs-button 
-            variant="primary" 
+          <rs-button
+            variant="primary"
             @click="confirmKursusSelection"
             :disabled="!selectedKursus || !selectedGuru"
           >
@@ -2679,7 +5074,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 
@@ -2698,9 +5093,9 @@ definePageMeta({
 // ============================================================================
 const breadcrumb = ref([
   {
-    name: "Self Service Kemaskini",
+    name: " Pendaftaran Lengkap",
     type: "current",
-    path: "/BF-PRF/AS/UP-S/02",
+    path: "/BF-PRF/AS/FR/02",
   },
 ]);
 
@@ -2710,57 +5105,76 @@ const breadcrumb = ref([
 const processing = ref(false);
 const currentSection = ref(1);
 
-// Section A - Main Form Steps
+// Section A - Main Form Steps (now 15 steps with separate tabs for different info sections)
 const currentStepA = ref(1);
-const totalStepsA = 10;
+const totalStepsA = 15;
 const stepsA = [
-  { id: 1, label: "Maklumat Peribadi" },
-  { id: 2, label: "Kesihatan" },
-  { id: 3, label: "Kemahiran" },
-  { id: 4, label: "Kediaman" },
-  { id: 5, label: "Pinjaman" },
-  { id: 6, label: "Pemilikan" },
-  { id: 7, label: "Waris" },
-  { id: 8, label: "Pengesahan" },
-  { id: 9, label: "Pengesahan Bermastautin" },
-  { id: 10, label: "Pegawai Pendaftar" }
+  { id: 1, label: "Penilaian Awal" },
+  { id: 2, label: "Peribadi" },
+  { id: 3, label: "Pengislaman" },
+  { id: 4, label: "Pendidikan" },
+  { id: 5, label: "Perbankan" },
+  { id: 6, label: "Kesihatan" },
+  { id: 7, label: "Kemahiran" },
+  { id: 8, label: "Alamat" },
+  { id: 9, label: "Pinjaman Harta" },
+  { id: 10, label: "Pekerjaan" },
+  { id: 11, label: "Pendapatan" },
+  { id: 12, label: "Pinjaman" },
+  { id: 13, label: "Pemilikan" },
+  { id: 14, label: "Pemilikan Barangan Rumah" },
+  { id: 15, label: "Waris" },
 ];
 
-// Section B - Tanggungan Form Steps
+// Stepper is always enabled; allow navigation to any step
+const allowStepA = (targetStep) => {
+  return true;
+};
+
+// Stepper click is always enabled
+const canClickStepper = ref(true);
+
+// Section B - Tanggungan Form Steps (10 steps with separate tabs for different info sections)
 const currentStepB = ref(1);
-const totalStepsB = 6;
+const totalStepsB = 10;
 const stepsB = [
   { id: 1, label: "Peribadi" },
-  { id: 2, label: "Pendidikan Tanggungan" },
-  { id: 3, label: "Kesihatan Tanggungan" },
-  { id: 4, label: "Kemahiran Tanggungan" },
-  { id: 5, label: "Pekerjaan Tanggungan" },
-  { id: 6, label: "Penilaian" }
+  { id: 2, label: "Pengislaman" },
+  { id: 3, label: "Perbankan" },
+  { id: 4, label: "Pendidikan" },
+  { id: 5, label: "Kesihatan" },
+  { id: 6, label: "Kemahiran" },
+  { id: 7, label: "Pekerjaan" },
+  { id: 8, label: "Pengesahan" },
+  { id: 9, label: "Pengesahan Bermastautin" },
+  { id: 10, label: "Pegawai Pendaftar" },
 ];
 
 // ============================================================================
 // FORM STATE VARIABLES
 // ============================================================================
 // Health Status Variables
-const healthStatus = ref("Sihat");
-const healthStatusTanggungan = ref("Sihat");
+const healthStatus = ref("");
+const healthStatusTanggungan = ref("");
 
 // Relationship Variables
-const dibantuPenolongAmil = ref("Ya");
-const hubunganKakitanganLZS = ref("Tidak");
-const hubunganPAK = ref("Tidak");
-const hubunganPemohon = ref("Anak");
+const dibantuPenolongAmil = ref("");
+const hubunganKakitanganLZS = ref("");
+const hubunganPAK = ref("");
+const hubunganPemohon = ref("");
 
 // ID Type Variables
-const jenisId = ref("Kad Pengenalan");
-const jenisIdTanggungan = ref("Kad Pengenalan");
+const jenisId = ref(null);
+const jenisIdTanggungan = ref("");
+const agama = ref("");
+const bangsa = ref("");
 
 // Islamic Information Variables
-const tarikhMasukIslam = ref("2020-01-01");
-const tarikhMasukIslamTanggungan = ref("2020-01-01");
+const tarikhMasukIslam = ref(null);
+const tarikhMasukIslamTanggungan = ref(null);
 
 // Polygamy Variables
-const statusPoligami = ref("tidak");
+const statusPoligami = ref(null);
 const bilanganIsteri = ref(null);
 const isteriList = ref([]);
 
@@ -2768,202 +5182,240 @@ const isteriList = ref([]);
 const caraPembayaran = ref(null);
 const paymentMethod = ref("");
 
-// Residence Variables
-const statusKediaman = ref("Milik Sendiri Tidak Berbayar");
-
 // Loan Variables
-const pemberiPinjaman = ref('Bank Rakyat');
-const jenisPinjaman = ref('Perumahan');
-const bayaranBulanan = ref(500);
-const jumlahPerbelanjaan = ref(6000);
-const tahunMulaPinjaman = ref('2018-01-01');
-const tahunAkhirPinjaman = ref('2028-01-01');
+const pemberiPinjaman = ref("");
+const jenisPinjaman = ref("");
+const bayaranBulanan = ref(null);
+const jumlahPerbelanjaan = ref(null);
+const tahunMulaPinjaman = ref(null);
+const tahunAkhirPinjaman = ref(null);
 
 // Modal Variables
 const showKursusModal = ref(false);
 const selectedKursus = ref(null);
 const selectedGuru = ref(null);
 
+// Employment form reactive variables
+const employmentStatus = ref("");
+const employmentSector = ref("");
+const employmentIncomeSource = ref([]);
+
+// Tanggungan Management Variables
+const currentTanggunganIndex = ref(0);
+const tanggunganList = ref([]);
+const showTanggunganSummary = ref(false);
+
 // ============================================================================
 // FORM DATA STRUCTURE
 // ============================================================================
 const formData = ref({
   // Section A - Maklumat Peribadi Asnaf
-  jenis_id: 'Kad Pengenalan',
-  no_pengenalan: '900101011234',
-  warganegara: 'Warganegara',
-  jantina: 'Lelaki',
-  bangsa: 'Melayu',
-  bersekolah: 'Ya',
-  pendidikan_tertinggi: 'SPM',
-  tarikh_masuk_islam: '2020-01-01',
-  tarikh_masuk_kfam: '2020-02-01',
-  status_perkahwinan: 'Berkahwin',
-  status_poligami: 'tidak',
-  bilangan_isteri: null,
+  jenis_id: "",
+  no_pengenalan: "",
+  warganegara: "",
+  jantina: "",
+  bangsa: "",
+  bersekolah: "",
+  pendidikan_tertinggi: "",
+  status_perkahwinan: "",
+
+  // Section A - Maklumat Pendidikan
+  masih_bersekolah: "",
+  lain_pendidikan_tertinggi: "",
+  tahap_pendidikan: [],
+  lain_tahap_pendidikan: "",
+  sijil_pendidikan: null,
+  jenis_sekolah: "",
+  kategori_sekolah: "",
+  tahun_bersekolah: "",
+  tahun_tingkatan: "",
+  nama_sekolah: "",
+  alamat_sekolah_1: "",
+  alamat_sekolah_2: "",
+  alamat_sekolah_3: "",
+  daerah_sekolah: "",
+  bandar_sekolah: "",
+  poskod_sekolah: "",
+  tinggal_bersama_keluarga: "",
+  asrama_rumah_sewa: "",
+  bidang_kursus: "",
+  jurusan_bidang: "",
+  pembiayaan_pengajian: [],
+  lain_pembiayaan: "",
+  catatan_pendidikan: "",
+
+  // Section A - Maklumat Islam
+  adakah_muallaf: "",
+  tarikh_masuk_islam: "",
+  tarikh_masuk_kfam: "",
+  nama_selepas_islam: "",
+  nama_sebelum_islam: "",
+  tarikh_keluar_muallaf: "",
+  dokumen_pengislaman: null,
+
   // Bank Information
-  nama_bank: 'bank-islam',
-  nama_pemegang_akaun: 'Ahmad bin Ali',
-  swift_code: 'BIMBMYKL',
-  bankAccountNumbers: [
-    { number: '1234567890' }
-  ],
-  kaedah_pembayaran: 'akaun',
-  noPaymentReason: ['muflis'],
-  sebab_tunai: '',
-  // Death Information
-  jenis_id_kematian: 'Kad Pengenalan',
-  no_id_kematian: '',
-  nama_kematian: '',
+  nama_bank: "",
+  no_akaun_bank: "",
+  nama_pemegang_akaun: "",
+  swift_code: "",
+  kaedah_pembayaran: "",
+  sebab_tiada_akaun: "",
+  sebab_tunai: "",
+
   // Section B - Maklumat Kesihatan
-  tahap_kesihatan: 'Sihat',
-  keadaan_kesihatan_sakit: '',
-  kos_penjagaan_sakit: '',
-  perbelanjaan_bulanan_sakit: '',
-  kesempurnaan_fizikal: '',
-  sebab_kecacatan: '',
-  tahap_kecacatan: '',
-  perbelanjaan_bulanan_oku: '',
-  keadaan_kesihatan_uzur: '',
-  kos_penjagaan_uzur: '',
-  perbelanjaan_bulanan_uzur: '',
+  tahap_kesihatan: "",
+  keadaan_kesihatan_sakit: "",
+  kos_penjagaan_sakit: "",
+  perbelanjaan_bulanan_sakit: "",
+  kesempurnaan_fizikal: "",
+  sebab_kecacatan: "",
+  tahap_kecacatan: "",
+  perbelanjaan_bulanan_oku: "",
+  keadaan_kesihatan_uzur: "",
+  kos_penjagaan_uzur: "",
+  perbelanjaan_bulanan_uzur: "",
+  dokumen_sokongan_kesihatan: null,
+
   // Section C - Kemahiran
-  kemahiran: 'Pertanian',
-  // Section D - Maklumat Kediaman
+  kemahiran: "",
+  lain_lain_kemahiran: "",
+
+  // Section D - Maklumat Pekerjaan
+  status_pekerjaan: "",
+  jenis_pekerjaan: "",
+  sektor_pekerjaan: "",
+  lain_lain_sektor: "",
+  no_telefon_pejabat: "",
+  nama_majikan: "",
+  no_telefon_majikan: "",
+  alamat_majikan_1: "",
+  alamat_majikan_2: "",
+  alamat_majikan_3: "",
+  bandar_majikan: "",
+  poskod_majikan: "",
+  daerah_majikan: "",
+  negeri_majikan: "",
+  negara_majikan: "",
+  jawatan: "",
+  status_jawatan: "",
+  pendapatan_kasar: "",
+  pengesahan_pendapatan: [],
+  sumber_pendapatan: [],
+  lain_lain_sumber_pendapatan: "",
+
+  // Section E - Maklumat Pendapatan
+  gaji_elaun_pendapatan: "",
+  pendapatan_isteri_suami_ibubapa_penjaga: "",
+  pencen_perkeso: "",
+  sumbangan_anak_anak: "",
+  bantuan_jkm: "",
+  takaful: "",
+  sewa_rumah_tanah_kedai: "",
+  pendapatan_tanggungan_serumah: "",
+  pendapatan_lain_lain: "",
+  perbelanjaan_makanan_minuman: "",
+  sewa_bayaran_pinjaman_perumahan: "",
+  perbelanjaan_persekolahan_anak: "",
+  pengangkutan_tambang_bas_sekolah: "",
+  bil_utiliti: "",
+
+  // Section F - Maklumat Alamat
   addressInfo: {
-    alamat1: 'Jalan Bukit Bintang 1, Taman Bukit Bintang, 57000 Kuala Lumpur',
-    alamat2: 'Jalan Bukit Bintang 2, Taman Bukit Bintang, 57000 Kuala Lumpur',
-    alamat3: 'Apartment 3A',
-    location: 'Kuala Lumpur',
-    daerah: 'gombak',
-    kursus_terpilih: 'Kursus Fardu Ain Asas - Ustaz Ahmad bin Abdullah',
-    selectedKursus: { id: 1, nama: 'Kursus Fardu Ain Asas' },
-    selectedGuru: { id: 1, nama: 'Ustaz Ahmad bin Abdullah' },
-    status_kediaman: 'Milik Sendiri Tidak Berbayar',
-    tapak_rumah: 'Milik Sendiri',
-    jenis_rumah: 'Kos Rendah',
-    binaan_rumah: 'Batu',
-    keadaan_kediaman: 'Baik/Sempurna',
-    bekalan_air: 'Ada',
-    bil_air: 30,
-    bekalan_elektrik: 'Ada',
-    bil_elektrik: 50,
-    penyelenggaraan: 'Ada',
-    bil_penyelenggaraan: 20,
+    alamat1: "",
+    alamat2: "",
+    alamat3: "",
+    location: "",
+    negeri: "Selangor",
+    daerah: "",
+    bandar: "",
+    poskod: "",
+    kariah: "",
+    geolokasi: "",
+    tempoh_menetap_selangor: "",
+    kursus_terpilih: "",
+    selectedKursus: null,
+    selectedGuru: null,
   },
-  // Section E - Maklumat Pinjaman
-  pemberi_pinjaman: 'Bank Rakyat',
-  jenis_pinjaman: 'Perumahan',
-  bayaran_bulanan: 500,
-  jumlah_perbelanjaan: 6000,
-  tahun_mula_pinjaman: '2018-01-01',
-  tahun_akhir_pinjaman: '2028-01-01',
-  // Section F - Maklumat Pemilikan
-  wang_simpanan: 2000,
-  emas: 10,
-  saham: 5000,
-  kenderaan: 'Kereta 1',
-  rumah_kedai: 0,
-  tanah_sawah: 1,
-  // Section G - Pengesahan
+
+  // Section G - Maklumat Pinjaman
+  pemberi_pinjaman: "",
+  jenis_pinjaman: "",
+  bayaran_bulanan: "",
+  jumlah_perbelanjaan: "",
+  tahun_mula_pinjaman: "",
+  tahun_akhir_pinjaman: "",
+
+  // Section H - Maklumat Pemilikan
+  wang_simpanan: "",
+  emas: "",
+  saham: "",
+  kenderaan: "",
+  rumah_kedai: "",
+  tanah_sawah: "",
+
+  // Section I - Maklumat Barangan Rumah
+  television: "",
+  radio: "",
+  perabot: "",
+  telefon_bimbit: "",
+  mesin_basuh: "",
+  astro: "",
+  video_player_cd_dvd: "",
+  peti_ais: "",
+  dapur_gas: "",
+
+  // Section J - Pengesahan
   pengesahan: {
-    dibantu_penolong_amil: 'Ya',
-    kariah_bantuan: 'masjid-al-hidayah',
-    nama_penolong_amil_bantuan: 'ustaz-ahmad-abdullah',
-    tarikh_bantuan: '2024-01-01',
-    hubungan_pak: 'Tidak',
-    kariah_hubungan_pak: '',
-    nama_pak_hubungan: '',
-    jenis_hubungan_pak: '',
-    tarikh_hubungan_pak: '',
-    pdpa_consent: true,
-    hubungan_kakitangan_lzs: 'Tidak',
-    nama_kakitangan: '',
-    jawatan_kakitangan: '',
-    pejabat_kakitangan: '',
-    hubungan_kakitangan: '',
-    tarikh_perakuan: '',
-    kariah_bermastautin: 'masjid-al-hidayah',
-    nama_pak_bermastautin: 'ustaz-ahmad-abdullah',
-    nama_pengesah: 'Ustaz Ahmad bin Abdullah',
-    jawatan_pengesah: 'Pegawai PAK',
-    no_telefon_pengesah: '012-3456789',
-    tarikh_pengesahan_permastautin: '2024-01-15',
-    surat_pengesahan_bermastautin: 'mockfile.pdf',
+    dibantu_penolong_amil: "",
+    kariah_bantuan: "",
+    nama_penolong_amil_bantuan: "",
+    tarikh_bantuan: "",
+    hubungan_pak: "",
+    kariah_hubungan_pak: "",
+    nama_pak_hubungan: "",
+    jenis_hubungan_pak: "",
+    tarikh_hubungan_pak: "",
+    pdpa_consent: false,
+    hubungan_kakitangan_lzs: "",
+    nama_kakitangan: "",
+    jawatan_kakitangan: "",
+    pejabat_kakitangan: "",
+    hubungan_kakitangan: "",
+    tarikh_perakuan: "",
+    // Fake data for PAK officer information display in bermastautin
+    kariah_bermastautin: "masjid-al-hidayah",
+    nama_pak_bermastautin: "ustaz-ahmad-abdullah",
+    // Fake data for form fields in bermastautin
+    nama_pengesah: "Ustaz Ahmad bin Abdullah",
+    jawatan_pengesah: "Pegawai PAK",
+    no_telefon_pengesah: "012-3456789",
+    tarikh_pengesahan_permastautin: "2024-01-15",
   },
-  ulasan_pengesahan: 'Semua maklumat telah disahkan.',
-  surat_pengesahan_bermastautin: 'mockfile.pdf',
-  nama_penolong_amil: 'Ahmad bin Abi',
-  jenis_permohonan: 'Review',
-  tarikh_proses: '2024-05-01',
-  komitmen_tinggi: 'Y',
-  keperluan_mendesak: ['perubatan'],
-  lain_keperluan: '',
-  dokumen_sokongan: ['mockdoc.pdf'],
-  // Section B (Tanggungan)
-  hubungan_pemohon: 'Anak',
-  nama_tanggungan: 'Ali bin Ahmad',
-  jenis_id_tanggungan: 'Kad Pengenalan',
-  no_pengenalan_tanggungan: '010101011111',
-  jantina_tanggungan: 'Lelaki',
-  tarikh_lahir_tanggungan: '2010-01-01',
-  tempat_lahir_tanggungan: 'Kuala Lumpur',
-  bangsa_tanggungan: 'Melayu',
-  status_perkahwinan_tanggungan: 'Bujang',
-  tarikh_masuk_islam_tanggungan: '2020-01-01',
-  tarikh_masuk_kfam_tanggungan: '2020-02-01',
-  warganegara_tanggungan: 'Warganegara',
-  tempoh_menetap_selangor: 10,
-  no_telefon_tanggungan: '0191234567',
-  nama_bank_tanggungan: 'maybank',
-  swift_code_tanggungan: 'MBBEMYKL',
-  bankAccountNumbersTanggungan: [
-    { number: '9876543210' }
-  ],
-  nama_pemegang_akaun_tanggungan: 'Ali bin Ahmad',
-  kaedah_pembayaran_tanggungan: 'akaun',
-  noPaymentReasonTanggungan: [],
-  bersekolah_tanggungan: 'Ya',
-  pendidikan_tertinggi_tanggungan: 'SPM',
-  jenis_sekolah: 'Sekolah Menengah Kebangsaan',
-  nama_sekolah: 'SMK Bukit Bintang',
-  alamat_sekolah: 'Jalan BB 1',
-  daerah_sekolah: 'gombak',
-  negeri_sekolah: 'Selangor',
-  poskod_sekolah: '57000',
-  nama_sekolah_agama: 'SRA Bukit Bintang',
-  alamat_sekolah_agama: 'Jalan BB 2',
-  daerah_sekolah_agama: 'gombak',
-  negeri_sekolah_agama: 'Selangor',
-  poskod_sekolah_agama: '57000',
-  tinggal_bersama_keluarga: 'Ya',
-  tahap_kesihatan_tanggungan: 'Sihat',
-  keadaan_kesihatan_sakit_tanggungan: '',
-  kos_penjagaan_sakit_tanggungan: '',
-  perbelanjaan_bulanan_sakit_tanggungan: '',
-  kesempurnaan_fizikal_tanggungan: '',
-  sebab_kecacatan_tanggungan: '',
-  tahap_kecacatan_tanggungan: '',
-  perbelanjaan_bulanan_oku_tanggungan: '',
-  keadaan_kesihatan_uzur_tanggungan: '',
-  kos_penjagaan_uzur_tanggungan: '',
-  perbelanjaan_bulanan_uzur_tanggungan: '',
-  kemahiran_tanggungan: 'Pertanian',
-  pekerjaan_status: 'Bekerja Nyatakan Jawatan',
-  sektor_pekerjaan: 'Swasta',
-  nama_majikan: 'ABC Sdn Bhd',
-  no_tel_majikan: '034567890',
-  alamat_majikan: 'Jalan Raja',
-  bandar_majikan: 'Kuala Lumpur',
-  poskod_majikan: '50000',
-  daerah_majikan: 'gombak',
-  negeri_majikan: 'Selangor',
-  jawatan: 'Eksekutif',
-  negara_pekerjaan: 'Malaysia',
-  status_jawatan: 'Tetap',
-  heirs: [
-    { name: 'Fatimah binti Ahmad', relationship: 'Ibu', phone: '0123456789' }
-  ]
+
+  // Section K - Pengesahan Bermastautin
+  ulasan_pengesahan: "",
+  surat_pengesahan_bermastautin: null,
+
+  // Section L - Maklumat Penolong Amil
+  nama_penolong_amil: "",
+  jenis_permohonan: "",
+  tarikh_proses: "",
+
+  // Section M - Penilaian Awal
+  komitmen_tinggi: "",
+  keperluan_mendesak: [],
+  lain_keperluan: "",
+  dokumen_sokongan: [],
+
+  // Section B (Tanggungan) - Maklumat Peribadi Tanggungan
+  // Note: Individual tanggungan fields are now handled in tanggunganList array
+  // These fields are kept for backward compatibility but will be replaced
+
+  // Heirs array
+  heirs: [],
+
+  // Tanggungan array for multiple dependents
+  tanggungan: [],
 });
 
 // ============================================================================
@@ -2971,14 +5423,16 @@ const formData = ref({
 // ============================================================================
 // Payment Method Options
 const paymentMethodOptions = [
-  { label: 'Akaun', value: 'akaun' },
-  { label: 'Tiada', value: 'tiada' }
+  { label: "Akaun", value: "akaun" },
+  { label: "Tiada", value: "tiada" },
 ];
 
 // No Payment Reason Options
 const noPaymentReasonOptions = [
-  { label: 'Muflis', value: 'muflis' },
-  { label: 'Bukan Warganegara', value: 'bukan-warganegara' }
+  { label: "Muflis", value: "muflis" },
+  { label: "Senarai Hitam Bank", value: "senarai-hitam-bank" },
+  { label: "Bukan Warganegara", value: "bukan-warganegara" },
+  { label: "Sakit", value: "sakit" },
 ];
 
 // Bank Options with SWIFT Codes
@@ -2995,9 +5449,13 @@ const bankOptions = [
   { label: "Affin Bank", value: "affin", swiftCode: "PHBMMYKL" },
   { label: "UOB", value: "uob", swiftCode: "UOVBMYKL" },
   { label: "OCBC", value: "ocbc", swiftCode: "OCBCMYKL" },
-  { label: "Standard Chartered", value: "standard-chartered", swiftCode: "SCBLMYKL" },
+  {
+    label: "Standard Chartered",
+    value: "standard-chartered",
+    swiftCode: "SCBLMYKL",
+  },
   { label: "Alliance Bank", value: "alliance", swiftCode: "MFBBMYKL" },
-  { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" }
+  { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" },
 ];
 
 // District Options
@@ -3010,26 +5468,66 @@ const daerahOptions = [
   { label: "Kuala Selangor", value: "kuala-selangor" },
   { label: "Petaling", value: "petaling" },
   { label: "Sabak Bernam", value: "sabak-bernam" },
-  { label: "Sepang", value: "sepang" }
+  { label: "Sepang", value: "sepang" },
 ];
 
-// State Options
-const negeriOptions = [
-  { label: "Selangor", value: "Selangor" },
-  { label: "Kuala Lumpur", value: "Kuala Lumpur" },
-  { label: "Putrajaya", value: "Putrajaya" },
-  { label: "Negeri Sembilan", value: "Negeri Sembilan" },
-  { label: "Perak", value: "Perak" },
-  { label: "Pahang", value: "Pahang" },
-  { label: "Melaka", value: "Melaka" },
-  { label: "Johor", value: "Johor" },
-  { label: "Kedah", value: "Kedah" },
-  { label: "Kelantan", value: "Kelantan" },
-  { label: "Perlis", value: "Perlis" },
-  { label: "Pulau Pinang", value: "Pulau Pinang" },
-  { label: "Terengganu", value: "Terengganu" },
-  { label: "Sabah", value: "Sabah" },
-  { label: "Sarawak", value: "Sarawak" }
+// City Options based on Districts
+const bandarOptions = [
+  { label: "Shah Alam", value: "shah-alam", daerah: "petaling" },
+  { label: "Petaling Jaya", value: "petaling-jaya", daerah: "petaling" },
+  { label: "Subang Jaya", value: "subang-jaya", daerah: "petaling" },
+  { label: "Klang", value: "klang", daerah: "klang" },
+  { label: "Port Klang", value: "port-klang", daerah: "klang" },
+  { label: "Kajang", value: "kajang", daerah: "hulu-langat" },
+  { label: "Bangi", value: "bangi", daerah: "hulu-langat" },
+  { label: "Hulu Langat", value: "hulu-langat", daerah: "hulu-langat" },
+  {
+    label: "Kuala Selangor",
+    value: "kuala-selangor",
+    daerah: "kuala-selangor",
+  },
+  {
+    label: "Tanjung Karang",
+    value: "tanjung-karang",
+    daerah: "kuala-selangor",
+  },
+  { label: "Sepang", value: "sepang", daerah: "sepang" },
+  { label: "Cyberjaya", value: "cyberjaya", daerah: "sepang" },
+  { label: "Putrajaya", value: "putrajaya", daerah: "sepang" },
+  { label: "Gombak", value: "gombak", daerah: "gombak" },
+  { label: "Rawang", value: "rawang", daerah: "gombak" },
+  { label: "Hulu Selangor", value: "hulu-selangor", daerah: "hulu-selangor" },
+  {
+    label: "Kuala Kubu Bharu",
+    value: "kuala-kubu-bharu",
+    daerah: "hulu-selangor",
+  },
+  { label: "Kuala Langat", value: "kuala-langat", daerah: "kuala-langat" },
+  { label: "Banting", value: "banting", daerah: "kuala-langat" },
+  { label: "Sabak Bernam", value: "sabak-bernam", daerah: "sabak-bernam" },
+  { label: "Sekinchan", value: "sekinchan", daerah: "sabak-bernam" },
+];
+
+// Postal Code Options based on Cities
+const poskodOptions = [
+  { label: "40000", value: "40000", bandar: "shah-alam" },
+  { label: "41000", value: "41000", bandar: "klang" },
+  { label: "42000", value: "42000", bandar: "port-klang" },
+  { label: "43000", value: "43000", bandar: "kajang" },
+  { label: "44000", value: "44000", bandar: "bangi" },
+  { label: "45000", value: "45000", bandar: "kuala-selangor" },
+  { label: "46000", value: "46000", bandar: "tanjung-karang" },
+  { label: "47000", value: "47000", bandar: "sepang" },
+  { label: "48000", value: "48000", bandar: "cyberjaya" },
+  { label: "49000", value: "49000", bandar: "putrajaya" },
+  { label: "50000", value: "50000", bandar: "gombak" },
+  { label: "51000", value: "51000", bandar: "rawang" },
+  { label: "52000", value: "52000", bandar: "hulu-selangor" },
+  { label: "53000", value: "53000", bandar: "kuala-kubu-bharu" },
+  { label: "54000", value: "54000", bandar: "kuala-langat" },
+  { label: "55000", value: "55000", bandar: "banting" },
+  { label: "56000", value: "56000", bandar: "sabak-bernam" },
+  { label: "57000", value: "57000", bandar: "sekinchan" },
 ];
 
 // Mosque Parish Options
@@ -3043,62 +5541,84 @@ const kariahOptions = [
   { label: "Kariah Masjid An-Nur", value: "masjid-an-nur" },
   { label: "Kariah Masjid Ar-Rahman", value: "masjid-ar-rahman" },
   { label: "Kariah Masjid As-Salam", value: "masjid-as-salam" },
-  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" }
+  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" },
 ];
 
 // PAK Officers by Mosque Parish
 const pakOfficersByKariah = {
-  'masjid-al-hidayah': [
-    { label: 'Ustaz Ahmad bin Abdullah', value: 'ustaz-ahmad-abdullah' },
-    { label: 'Ustazah Siti binti Mohamed', value: 'ustazah-siti-mohamed' },
-    { label: 'Ustaz Mohd bin Hassan', value: 'ustaz-mohd-hassan' }
+  "masjid-al-hidayah": [
+    { label: "Ustaz Ahmad bin Abdullah", value: "ustaz-ahmad-abdullah" },
+    { label: "Ustazah Siti binti Mohamed", value: "ustazah-siti-mohamed" },
+    { label: "Ustaz Mohd bin Hassan", value: "ustaz-mohd-hassan" },
   ],
-  'masjid-al-ikhlas': [
-    { label: 'Ustaz Ismail bin Omar', value: 'ustaz-ismail-omar' },
-    { label: 'Ustazah Fatimah binti Ali', value: 'ustazah-fatimah-ali' },
-    { label: 'Ustaz Kamal bin Ibrahim', value: 'ustaz-kamal-ibrahim' }
+  "masjid-al-ikhlas": [
+    { label: "Ustaz Ismail bin Omar", value: "ustaz-ismail-omar" },
+    { label: "Ustazah Fatimah binti Ali", value: "ustazah-fatimah-ali" },
+    { label: "Ustaz Kamal bin Ibrahim", value: "ustaz-kamal-ibrahim" },
   ],
-  'masjid-al-muttaqin': [
-    { label: 'Ustaz Rahman bin Sulaiman', value: 'ustaz-rahman-sulaiman' },
-    { label: 'Ustazah Aminah binti Yusof', value: 'ustazah-aminah-yusof' },
-    { label: 'Ustaz Zulkifli bin Ahmad', value: 'ustaz-zulkifli-ahmad' }
+  "masjid-al-muttaqin": [
+    { label: "Ustaz Rahman bin Sulaiman", value: "ustaz-rahman-sulaiman" },
+    { label: "Ustazah Aminah binti Yusof", value: "ustazah-aminah-yusof" },
+    { label: "Ustaz Zulkifli bin Ahmad", value: "ustaz-zulkifli-ahmad" },
   ],
-  'masjid-al-rahman': [
-    { label: 'Ustaz Aziz bin Mohamed', value: 'ustaz-aziz-mohamed' },
-    { label: 'Ustazah Nor binti Hassan', value: 'ustazah-nor-hassan' },
-    { label: 'Ustaz Hamid bin Abdullah', value: 'ustaz-hamid-abdullah' }
+  "masjid-al-rahman": [
+    { label: "Ustaz Aziz bin Mohamed", value: "ustaz-aziz-mohamed" },
+    { label: "Ustazah Nor binti Hassan", value: "ustazah-nor-hassan" },
+    { label: "Ustaz Hamid bin Abdullah", value: "ustaz-hamid-abdullah" },
   ],
-  'masjid-al-salam': [
-    { label: 'Ustaz Yusof bin Ahmad', value: 'ustaz-yusof-ahmad' },
-    { label: 'Ustazah Mariam binti Omar', value: 'ustazah-mariam-omar' },
-    { label: 'Ustaz Khalid bin Ismail', value: 'ustaz-khalid-ismail' }
+  "masjid-al-salam": [
+    { label: "Ustaz Yusof bin Ahmad", value: "ustaz-yusof-ahmad" },
+    { label: "Ustazah Mariam binti Omar", value: "ustazah-mariam-omar" },
+    { label: "Ustaz Khalid bin Ismail", value: "ustaz-khalid-ismail" },
   ],
-  'masjid-al-taqwa': [
-    { label: 'Ustaz Omar bin Hassan', value: 'ustaz-omar-hassan' },
-    { label: 'Ustazah Zainab binti Ali', value: 'ustazah-zainab-ali' },
-    { label: 'Ustaz Ibrahim bin Mohamed', value: 'ustaz-ibrahim-mohamed' }
+  "masjid-al-taqwa": [
+    { label: "Ustaz Omar bin Hassan", value: "ustaz-omar-hassan" },
+    { label: "Ustazah Zainab binti Ali", value: "ustazah-zainab-ali" },
+    { label: "Ustaz Ibrahim bin Mohamed", value: "ustaz-ibrahim-mohamed" },
   ],
-  'masjid-an-nur': [
-    { label: 'Ustaz Hassan bin Abdullah', value: 'ustaz-hassan-abdullah' },
-    { label: 'Ustazah Aishah binti Yusof', value: 'ustazah-aishah-yusof' },
-    { label: 'Ustaz Mohamed bin Khalid', value: 'ustaz-mohamed-khalid' }
+  "masjid-an-nur": [
+    { label: "Ustaz Hassan bin Abdullah", value: "ustaz-hassan-abdullah" },
+    { label: "Ustazah Aishah binti Yusof", value: "ustazah-aishah-yusof" },
+    { label: "Ustaz Mohamed bin Khalid", value: "ustaz-mohamed-khalid" },
   ],
-  'masjid-ar-rahman': [
-    { label: 'Ustaz Abdullah bin Omar', value: 'ustaz-abdullah-omar' },
-    { label: 'Ustazah Khadijah binti Hassan', value: 'ustazah-khadijah-hassan' },
-    { label: 'Ustaz Ali bin Ismail', value: 'ustaz-ali-ismail' }
+  "masjid-ar-rahman": [
+    { label: "Ustaz Abdullah bin Omar", value: "ustaz-abdullah-omar" },
+    {
+      label: "Ustazah Khadijah binti Hassan",
+      value: "ustazah-khadijah-hassan",
+    },
+    { label: "Ustaz Ali bin Ismail", value: "ustaz-ali-ismail" },
   ],
-  'masjid-as-salam': [
-    { label: 'Ustaz Sulaiman bin Ahmad', value: 'ustaz-sulaiman-ahmad' },
-    { label: 'Ustazah Safiyah binti Mohamed', value: 'ustazah-safiyah-mohamed' },
-    { label: 'Ustaz Yusof bin Khalid', value: 'ustaz-yusof-khalid' }
+  "masjid-as-salam": [
+    { label: "Ustaz Sulaiman bin Ahmad", value: "ustaz-sulaiman-ahmad" },
+    {
+      label: "Ustazah Safiyah binti Mohamed",
+      value: "ustazah-safiyah-mohamed",
+    },
+    { label: "Ustaz Yusof bin Khalid", value: "ustaz-yusof-khalid" },
   ],
-  'masjid-at-taqwa': [
-    { label: 'Ustaz Khalid bin Abdullah', value: 'ustaz-khalid-abdullah' },
-    { label: 'Ustazah Aminah binti Omar', value: 'ustazah-aminah-omar' },
-    { label: 'Ustaz Ismail bin Hassan', value: 'ustaz-ismail-hassan' }
-  ]
+  "masjid-at-taqwa": [
+    { label: "Ustaz Khalid bin Abdullah", value: "ustaz-khalid-abdullah" },
+    { label: "Ustazah Aminah binti Omar", value: "ustazah-aminah-omar" },
+    { label: "Ustaz Ismail bin Hassan", value: "ustaz-ismail-hassan" },
+  ],
 };
+
+// Negeri Options
+const negeriOptions = [
+  { label: "Selangor", value: "selangor" },
+  { label: "Johor", value: "johor" },
+  { label: "Kedah", value: "kedah" },
+  { label: "Kelantan", value: "kelantan" },
+  { label: "Melaka", value: "melaka" },
+  { label: "Negeri Sembilan", value: "negeri-sembilan" },
+  { label: "Pahang", value: "pahang" },
+  { label: "Perak", value: "perak" },
+  { label: "Perlis", value: "perlis" },
+  { label: "Sabah", value: "sabah" },
+  { label: "Sarawak", value: "sarawak" },
+  { label: "Terengganu", value: "terengganu" },
+];
 
 // Course List Data
 const kursusList = ref([
@@ -3107,36 +5627,36 @@ const kursusList = ref([
     nama: "Kursus Fardu Ain Asas",
     deskripsi: "Kursus asas untuk mempelajari fardu ain",
     durasi: "3 bulan",
-    kapasiti: 20
+    kapasiti: 20,
   },
   {
     id: 2,
     nama: "Kursus Tahfiz Al-Quran",
     deskripsi: "Kursus menghafal Al-Quran",
     durasi: "6 bulan",
-    kapasiti: 15
+    kapasiti: 15,
   },
   {
     id: 3,
     nama: "Kursus Bahasa Arab",
     deskripsi: "Kursus bahasa Arab untuk pemula",
     durasi: "4 bulan",
-    kapasiti: 25
+    kapasiti: 25,
   },
   {
     id: 4,
     nama: "Kursus Fiqh Muamalat",
     deskripsi: "Kursus hukum muamalat Islam",
     durasi: "2 bulan",
-    kapasiti: 30
+    kapasiti: 30,
   },
   {
     id: 5,
     nama: "Kursus Tafsir Al-Quran",
     deskripsi: "Kursus memahami tafsir Al-Quran",
     durasi: "5 bulan",
-    kapasiti: 18
-  }
+    kapasiti: 18,
+  },
 ]);
 
 // Teacher List Data
@@ -3146,67 +5666,385 @@ const guruList = ref([
     nama: "Ustaz Ahmad bin Abdullah",
     specialization: "Fardu Ain & Fiqh",
     rating: 4.8,
-    pengalaman: 10
+    pengalaman: 10,
   },
   {
     id: 2,
     nama: "Ustazah Siti binti Mohamed",
     specialization: "Tahfiz Al-Quran",
     rating: 4.9,
-    pengalaman: 15
+    pengalaman: 15,
   },
   {
     id: 3,
     nama: "Ustaz Mohd Ali bin Hassan",
     specialization: "Bahasa Arab",
     rating: 4.7,
-    pengalaman: 8
+    pengalaman: 8,
   },
   {
     id: 4,
     nama: "Ustazah Nurul Huda binti Ismail",
     specialization: "Tafsir Al-Quran",
     rating: 4.6,
-    pengalaman: 12
+    pengalaman: 12,
   },
   {
     id: 5,
     nama: "Ustaz Abdul Rahman bin Omar",
     specialization: "Fiqh Muamalat",
     rating: 4.5,
-    pengalaman: 9
-  }
+    pengalaman: 9,
+  },
 ]);
+
+// ============================================================================
+// MOCK DATA GENERATOR
+// ============================================================================
+const generateMockData = () => {
+  // Mock data for Section A - Main Applicant
+  formData.value = {
+    // Step 1: Penilaian Awal
+    komitmen_tinggi: "Y",
+    keperluan_mendesak: ["perubatan", "bencana"],
+    lain_keperluan: "Keperluan perubatan untuk rawatan jantung",
+    catatan: "Pemohon memerlukan bantuan untuk kos perubatan yang tinggi",
+    dokumen_sokongan: null,
+
+    // Step 2: Maklumat Peribadi
+    jenis_id: "MyKad",
+    dokumen_id: null,
+    id_pengenalan: "750101015432",
+    nama: "ADNAN BIN AHMAD",
+    warganegara: "Malaysia",
+    lain_warganegara: null,
+    taraf_penduduk: "ya",
+    nopassport: "A12345678",
+    passportStartDate: "2020-01-01",
+    passportEndDate: "2030-01-01",
+    tarikh_lahir: "1975-01-01",
+    umur: "48",
+    tempat_lahir: "Kuala Lumpur",
+    jantina: "Lelaki",
+    agama: "Islam",
+    agama_lain: "",
+    bangsa: "Melayu",
+    bangsa_lain: "",
+    no_telefon_bimbit: "0123456789",
+    no_telefon_rumah: "038881234",
+    emel: "adnan.ahmad@email.com",
+    status_perkahwinan: "Berkahwin",
+    status_poligami: "tidak",
+    bilangan_isteri: null,
+    isteriList: [],
+
+    // Step 3: Maklumat Islam
+    adakah_muallaf: "Y",
+    tarikh_masuk_islam: "1990-01-01",
+    tarikh_masuk_kfam: "1990-02-01",
+    nama_selepas_islam: "ADNAN BIN AHMAD",
+    nama_sebelum_islam: "ADNAN BIN WONG",
+    tarikh_keluar_muallaf: "1995-02-01",
+    dokumen_pengislaman: null,
+
+    // Step 4: Maklumat Pendidikan
+    masih_bersekolah: "T",
+    pendidikan_tertinggi: "SPM",
+    lain_pendidikan_tertinggi: "",
+    tahap_pendidikan: ["SRP/PMR", "SPM"],
+    lain_tahap_pendidikan: "",
+    sijil_pendidikan: null,
+    jenis_sekolah: "Sekolah Menengah Kebangsaan",
+    kategori_sekolah: "SEK.MEN",
+    tahun_bersekolah: "1993",
+    tahun_tingkatan: "Tingkatan 5",
+    nama_sekolah: "SMK Kuala Lumpur",
+    alamat_sekolah_1: "Jalan Sultan, Kuala Lumpur",
+    alamat_sekolah_2: "",
+    alamat_sekolah_3: "",
+    daerah_sekolah: "Kuala Lumpur",
+    bandar_sekolah: "Kuala Lumpur",
+    poskod_sekolah: "50000",
+    tinggal_bersama_keluarga: "Y",
+    asrama_rumah_sewa: "",
+    bidang_kursus: "SPM",
+    jurusan_bidang: "Sains",
+    pembiayaan_pengajian: ["Tiada"],
+    lain_pembiayaan: "",
+    catatan_pendidikan: "Tamat SPM pada tahun 1993",
+
+    // Step 5: Maklumat Bank
+    kaedah_pembayaran: "akaun",
+    nama_bank: "maybank",
+    swift_code: "MBBEMYKL",
+    no_akaun_bank: "1234567890",
+    nama_pemegang_akaun: "ADNAN BIN AHMAD",
+    sebab_tiada_akaun: "",
+
+    // Step 6: Maklumat Kesihatan
+    tahap_kesihatan: "Sakit Kronik",
+    keadaan_kesihatan_sakit: "Tidak Terlantar",
+    kos_penjagaan_sakit: "Berbayar",
+    perbelanjaan_bulanan_sakit: "1500.00",
+    kesempurnaan_fizikal: "",
+    sebab_kecacatan: "",
+    tahap_kecacatan: "",
+    perbelanjaan_bulanan_oku: "",
+    keadaan_kesihatan_uzur: "",
+    kos_penjagaan_uzur: "",
+    perbelanjaan_bulanan_uzur: "",
+    dokumen_sokongan_kesihatan: null,
+
+    // Step 7: Kemahiran
+    kemahiran: ["Pertukangan", "Perniagaan"],
+    lain_lain_kemahiran: "",
+
+    // Step 8: Maklumat Alamat
+    addressInfo: {
+      alamat1: "No. 123, Jalan Utama",
+      alamat2: "Taman Seri Indah",
+      alamat3: "",
+      negeri: "selangor",
+      daerah: "petaling",
+      bandar: "shah-alam",
+      poskod: "40000",
+      kariah: "masjid-al-muttaqin",
+      geolokasi: "3.0738,101.5183",
+      tempoh_menetap_selangor: "25",
+      kursus_terpilih: "Kursus Fardu Ain Asas - Ustaz Ahmad bin Abdullah",
+      status_kediaman: "Milik Sendiri Tidak Berbayar",
+      lain_lain_status_kediaman: "",
+      tapak_rumah: "Milik Sendiri",
+      lain_lain_tapak_rumah: "",
+      jenis_rumah: "Teres",
+      lain_lain_jenis_rumah: "",
+      binaan_rumah: "Batu",
+      lain_lain_binaan_rumah: "",
+      keadaan_kediaman: "Baik",
+      bekalan_air: "ada",
+      bil_air: "45.00",
+      bekalan_elektrik: "ada",
+      bil_elektrik: "120.00",
+      penyelenggaraan: "ada",
+      bil_penyelenggaraan: "80.00",
+      kadar_bayaran_bulanan: "",
+      kadar_sewa_bulanan: "",
+      dokumen_perjanjian_sewa: null,
+    },
+
+    // Step 9: Maklumat Pinjaman Harta
+    nama_institusi_pemberi_pinjaman: "Bank Rakyat",
+    jenis_pinjaman: "Pinjaman Perumahan",
+    amaun_bayaran_bulanan: "800.00",
+    jumlah_keseluruhan_perbelanjaan: "150000.00",
+    tahun_mula_pinjaman: "2015-01-01",
+    tahun_akhir_pinjaman: "2035-01-01",
+    dokumen_perjanjian_pinjaman: null,
+
+    // Step 10: Maklumat Pekerjaan
+    status_pekerjaan: "bekerja",
+    jenis_pekerjaan: "Pemandu Lori",
+    sektor_pekerjaan: "Swasta",
+    lain_lain_sektor: "",
+    no_telefon_pejabat: "038881234",
+    nama_majikan: "Syarikat Pengangkutan ABC Sdn Bhd",
+    no_telefon_majikan: "038881235",
+    alamat_majikan_1: "No. 456, Jalan Industri",
+    alamat_majikan_2: "Kawasan Perindustrian",
+    alamat_majikan_3: "",
+    bandar_majikan: "Shah Alam",
+    poskod_majikan: "40000",
+    daerah_majikan: "Petaling",
+    negeri_majikan: "Selangor",
+    negara_majikan: "Malaysia",
+    jawatan: "Pemandu Lori",
+    status_jawatan: "Tetap",
+    pendapatan_kasar: "2800.00",
+    pengesahan_pendapatan: null,
+    sumber_pendapatan: ["Pengajian", "Sumbangan keluarga"],
+    lain_lain_sumber_pendapatan: "",
+
+    // Step 11: Maklumat Pendapatan
+    gaji_elaun_pendapatan: "2800.00",
+    pendapatan_isteri_suami_ibubapa_penjaga: "2500.00",
+    pencen_perkeso: "0.00",
+    sumbangan_anak_anak: "0.00",
+    bantuan_jkm: "0.00",
+    takaful: "150.00",
+    sewa_rumah_tanah_kedai: "0.00",
+    pendapatan_tanggungan_serumah: "0.00",
+    pendapatan_lain_lain: "200.00",
+    perbelanjaan_makanan_minuman: "1200.00",
+    sewa_bayaran_pinjaman_perumahan: "800.00",
+    perbelanjaan_persekolahan_anak: "300.00",
+    pengangkutan_tambang_bas_sekolah: "150.00",
+    bil_utiliti: "245.00",
+
+    // Step 12: Maklumat Pinjaman
+    pemberi_pinjaman: "Bank Rakyat",
+    jenis_pinjaman: "Pinjaman Perumahan",
+    bayaran_bulanan: "800.00",
+    jumlah_perbelanjaan: "150000.00",
+    tahun_mula_pinjaman: "2015-01-01",
+    tahun_akhir_pinjaman: "2035-01-01",
+    dokumen_pinjaman: null,
+
+    // Additional fields that might be missing
+    lain_lain_kemahiran: "",
+    lain_lain_sumber_pendapatan: "",
+    lain_lain_sektor: "",
+
+    // Step 13: Maklumat Pemilikan
+    wang_simpanan: "5000.00",
+    emas: "50.00",
+    saham: "2000.00",
+    kenderaan: "Kereta 1, Motosikal 1",
+    rumah_kedai: "1",
+    tanah_sawah: "0.00",
+
+    // Step 14: Maklumat Barangan Rumah
+    television: "ya",
+    radio: "ya",
+    perabot: "ya",
+    telefon_bimbit: "ya",
+    mesin_basuh: "ya",
+    astro: "tidak",
+    video_player_cd_dvd: "tidak",
+    peti_ais: "ya",
+    dapur_gas: "ya",
+
+    // Step 15: Maklumat Waris
+    heirs: [
+      {
+        name: "AHMAD BIN ADNAN",
+        relationship: "Anak Lelaki",
+        phone: "0123456789",
+      },
+      {
+        name: "SITI BINTI ADNAN",
+        relationship: "Anak Perempuan",
+        phone: "0123456790",
+      },
+    ],
+
+    // Pengesahan
+    pengesahan: {
+      kariah_bantuan: "masjid-al-muttaqin",
+      nama_penolong_amil_bantuan: "ustaz-ahmad-abdullah",
+      tarikh_bantuan: "2024-01-15",
+      kariah_hubungan_pak: "masjid-al-muttaqin",
+      nama_penolong_amil_hubungan: "ustaz-ahmad-abdullah",
+      tarikh_hubungan: "2024-01-15",
+      nama_kakitangan: "",
+      jawatan_kakitangan: "",
+      pejabat_kakitangan: "",
+      hubungan_kakitangan: "",
+      tarikh_perakuan: "",
+      pdpa_consent: true,
+      kariah_bermastautin: "masjid-al-muttaqin",
+      nama_pak_bermastautin: "ustaz-ahmad-abdullah",
+      nama_pengesah: "USTAZ AHMAD BIN ABDULLAH",
+      jawatan_pengesah: "Penolong Amil",
+      no_telefon_pengesah: "0123456789",
+      tarikh_pengesahan_permastautin: "2024-01-15",
+      surat_pengesahan_bermastautin: null,
+    },
+
+    // Tanggungan array will be populated separately
+    tanggungan: [],
+  };
+
+  // Sync select refs used in Maklumat Peribadi so selects show preselected values
+  try {
+    jenisId.value = formData.value.jenis_id || jenisId.value;
+    agama.value = formData.value.agama || agama.value;
+    bangsa.value = formData.value.bangsa || bangsa.value;
+    statusPoligami.value = formData.value.status_poligami || statusPoligami.value;
+  } catch (e) {
+    // no-op if refs not initialized yet
+  }
+
+  // Mock data for Tanggungan (already populated in onMounted)
+  console.log("Mock data generated successfully");
+};
+
+// Function to populate mock data for all fields
+const populateAllMockData = () => {
+  generateMockData();
+  
+  // Ensure tanggungan data is populated with comprehensive mock data
+  if (tanggunganList.value.length === 0) {
+    // Add 3 tanggungan by default with mock data
+    addTanggungan(false); // First tanggungan
+    addTanggungan(false); // Second tanggungan
+    addTanggungan(false); // Third tanggungan
+  }
+  
+  // Update formData.tanggungan array
+  formData.value.tanggungan = tanggunganList.value;
+  
+  toast.success("Mock data berjaya dimuatkan untuk semua medan");
+};
 
 // ============================================================================
 // COMPUTED PROPERTIES
 // ============================================================================
 const showLainInput = computed(() => {
-  return formData.value.keperluanMendesak?.includes('lain');
+  return (
+    Array.isArray(formData.value.keperluan_mendesak) &&
+    formData.value.keperluan_mendesak.includes("lain")
+  );
+});
+
+const isPenilaianAwalComplete = computed(() => {
+  const hasKomitmen = Boolean(formData.value.komitmen_tinggi);
+  const hasKeperluan = Array.isArray(formData.value.keperluan_mendesak)
+    ? formData.value.keperluan_mendesak.length > 0
+    : false;
+  return hasKomitmen && hasKeperluan;
+});
+
+const showLainLainSektor = computed(() => {
+  return formData.value.sektor_pekerjaan === "Lain-lain";
+});
+
+const showLainLainSumberPendapatan = computed(() => {
+  return (
+    formData.value.sumber_pendapatan &&
+    formData.value.sumber_pendapatan.includes("Lain-lain")
+  );
 });
 
 const hasLoanInfo = computed(() => {
-  return pemberiPinjaman.value || 
-         jenisPinjaman.value || 
-         bayaranBulanan.value || 
-         jumlahPerbelanjaan.value || 
-         tahunMulaPinjaman.value || 
-         tahunAkhirPinjaman.value;
+  return (
+    pemberiPinjaman.value ||
+    jenisPinjaman.value ||
+    bayaranBulanan.value ||
+    jumlahPerbelanjaan.value ||
+    tahunMulaPinjaman.value ||
+    tahunAkhirPinjaman.value
+  );
 });
 
 const selectedBankSwiftCode = computed(() => {
-  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank);
-  return selectedBank ? selectedBank.swiftCode : '';
+  const selectedBank = bankOptions.find(
+    (bank) => bank.value === formData.value.nama_bank
+  );
+  return selectedBank ? selectedBank.swiftCode : "";
 });
 
 const selectedBankSwiftCodeTanggungan = computed(() => {
-  const selectedBank = bankOptions.find(bank => bank.value === formData.value.nama_bank_tanggungan);
-  return selectedBank ? selectedBank.swiftCode : '';
+  const selectedBank = bankOptions.find(
+    (bank) => bank.value === formData.value.nama_bank_tanggungan
+  );
+  return selectedBank ? selectedBank.swiftCode : "";
 });
 
 const selectedDaerah = computed(() => {
-  const daerah = daerahOptions.find(d => d.value === formData.value.addressInfo.daerah);
-  return daerah ? daerah.label : '';
+  const daerah = daerahOptions.find(
+    (d) => d.value === formData.value.addressInfo.daerah
+  );
+  return daerah ? daerah.label : "";
 });
 
 const pakOfficersOptionsBantuan = computed(() => {
@@ -3221,17 +6059,233 @@ const pakOfficersOptionsHubungan = computed(() => {
 
 const uploadedDocuments = computed(() => {
   const documents = [];
-  
+
   // Add sample document for demonstration
   if (formData.value.pengesahan.surat_pengesahan_bermastautin) {
     documents.push({
       name: "pengesahan_bermastautin.pdf",
       type: "application/pdf",
-      size: "2.0 MB"
+      size: "2.0 MB",
     });
   }
-  
+
   return documents;
+});
+
+// Computed properties for tanggungan conditional fields
+const showLainLainHubungan = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.hubungan_pemohon === "Lain-lain";
+});
+
+const showDokumenSuratNikah = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.hubungan_pemohon === "Pasangan Pemohon";
+});
+
+const showLainLainWarganegara = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.warganegara_tanggungan === "Lain-lain";
+});
+
+const showPassportFields = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.warganegara_tanggungan !== "Malaysia";
+});
+
+const showLainLainAgama = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.agama_tanggungan === "Lain-lain";
+});
+
+const showLainLainBangsa = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.bangsa_tanggungan === "Lain-lain";
+});
+
+const showLainLainStatusPerkahwinan = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.status_perkahwinan_tanggungan === "Lain-lain";
+});
+
+// Computed property to check if tanggungan is Muallaf
+const isTanggunganMuallaf = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.adakah_muallaf_tanggungan === "Y";
+});
+
+// Computed property to check if passport is expired
+const isPassportExpired = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  if (
+    !currentTanggungan?.tarikh_tamat_pasport ||
+    currentTanggungan?.warganegara_tanggungan === "Malaysia"
+  ) {
+    return false;
+  }
+
+  try {
+    const expiryDate = new Date(currentTanggungan.tarikh_tamat_pasport);
+    const today = new Date();
+    return expiryDate < today;
+  } catch (error) {
+    return false;
+  }
+});
+
+// Computed property to show passport expiry warning
+const showPassportExpiryWarning = computed(() => {
+  return isPassportExpired.value;
+});
+
+// Helper function to get Swift Code for current tanggungan
+const getSelectedBankSwiftCodeTanggungan = () => {
+  const currentTanggungan = getCurrentTanggungan();
+  if (!currentTanggungan?.nama_bank_tanggungan) return "";
+  const selectedBank = bankOptions.find(
+    (bank) => bank.value === currentTanggungan.nama_bank_tanggungan
+  );
+  return selectedBank ? selectedBank.swiftCode : "";
+};
+
+// Computed property to validate Islamic dates for tanggungan
+const islamicDatesValidationTanggungan = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  if (
+    !currentTanggungan?.adakah_muallaf_tanggungan ||
+    currentTanggungan.adakah_muallaf_tanggungan !== "Y"
+  ) {
+    return { isValid: true, message: "" };
+  }
+
+  const tarikhMasukIslam = currentTanggungan.tarikh_masuk_islam_tanggungan;
+  const tarikhMasukKFAM = currentTanggungan.tarikh_masuk_kfam_tanggungan;
+
+  if (tarikhMasukIslam && tarikhMasukKFAM) {
+    try {
+      const islamDate = new Date(tarikhMasukIslam);
+      const kfamDate = new Date(tarikhMasukKFAM);
+
+      if (kfamDate < islamDate) {
+        return {
+          isValid: false,
+          message:
+            "Tarikh Masuk KFAM tidak boleh lebih awal daripada Tarikh Masuk Islam",
+        };
+      }
+    } catch (error) {
+      console.error("Error validating Islamic dates:", error);
+    }
+  }
+
+  return { isValid: true, message: "" };
+});
+
+// Computed property for calculating Tarikh Keluar Muallaf
+const tarikhKeluarMuallaf = computed(() => {
+  if (formData.value.adakah_muallaf !== "Y") {
+    return "";
+  }
+
+  const tarikhMasukIslam = formData.value.tarikh_masuk_islam;
+  const tarikhMasukKFAM = formData.value.tarikh_masuk_kfam;
+
+  if (!tarikhMasukIslam && !tarikhMasukKFAM) {
+    return "";
+  }
+
+  // Parse dates and add 5 years
+  let tarikhMasukIslamPlus5 = null;
+  let tarikhMasukKFAMPlus5 = null;
+
+  if (tarikhMasukIslam) {
+    const [day, month, year] = tarikhMasukIslam.split("/");
+    if (day && month && year) {
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      // Validate that the date is not in the future
+      if (date > new Date()) {
+        return "";
+      }
+      date.setFullYear(date.getFullYear() + 5);
+      tarikhMasukIslamPlus5 = date;
+    }
+  }
+
+  if (tarikhMasukKFAM) {
+    const [day, month, year] = tarikhMasukKFAM.split("/");
+    if (day && month && year) {
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      // Validate that the date is not in the future
+      if (date > new Date()) {
+        return "";
+      }
+      date.setFullYear(date.getFullYear() + 5);
+      tarikhMasukKFAMPlus5 = date;
+    }
+  }
+
+  // Return the later date
+  if (tarikhMasukIslamPlus5 && tarikhMasukKFAMPlus5) {
+    const laterDate =
+      tarikhMasukIslamPlus5 > tarikhMasukKFAMPlus5
+        ? tarikhMasukIslamPlus5
+        : tarikhMasukKFAMPlus5;
+    return `${String(laterDate.getDate()).padStart(2, "0")}/${String(
+      laterDate.getMonth() + 1
+    ).padStart(2, "0")}/${laterDate.getFullYear()}`;
+  } else if (tarikhMasukIslamPlus5) {
+    return `${String(tarikhMasukIslamPlus5.getDate()).padStart(
+      2,
+      "0"
+    )}/${String(tarikhMasukIslamPlus5.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}/${tarikhMasukIslamPlus5.getFullYear()}`;
+  } else if (tarikhMasukKFAMPlus5) {
+    return `${String(tarikhMasukKFAMPlus5.getDate()).padStart(2, "0")}/${String(
+      tarikhMasukKFAMPlus5.getMonth() + 1
+    ).padStart(2, "0")}/${tarikhMasukKFAMPlus5.getFullYear()}`;
+  }
+
+  return "";
+});
+
+// Computed property for validating Islamic dates
+const islamicDatesValidation = computed(() => {
+  if (formData.value.adakah_muallaf !== "Y") {
+    return { isValid: true, message: "" };
+  }
+
+  const tarikhMasukIslam = formData.value.tarikh_masuk_islam;
+  const tarikhMasukKFAM = formData.value.tarikh_masuk_kfam;
+
+  if (tarikhMasukIslam && tarikhMasukKFAM) {
+    const [day1, month1, year1] = tarikhMasukIslam.split("/");
+    const [day2, month2, year2] = tarikhMasukKFAM.split("/");
+
+    if (day1 && month1 && year1 && day2 && month2 && year2) {
+      const islamDate = new Date(
+        parseInt(year1),
+        parseInt(month1) - 1,
+        parseInt(day1)
+      );
+      const kfamDate = new Date(
+        parseInt(year2),
+        parseInt(month2) - 1,
+        parseInt(day2)
+      );
+
+      if (kfamDate < islamDate) {
+        return {
+          isValid: false,
+          message:
+            "Tarikh Masuk KFAM tidak boleh lebih awal daripada Tarikh Masuk Islam",
+        };
+      }
+    }
+  }
+
+  return { isValid: true, message: "" };
 });
 
 // ============================================================================
@@ -3243,7 +6297,7 @@ watch(bilanganIsteri, (newVal) => {
 });
 
 watch(statusPoligami, (newVal) => {
-  if (newVal !== 'ya') {
+  if (newVal !== "ya") {
     bilanganIsteri.value = null;
     isteriList.value = [];
   }
@@ -3253,12 +6307,12 @@ watch(
   () => formData.value.nama_bank,
   (newVal) => {
     if (newVal) {
-      const selectedBank = bankOptions.find(bank => bank.value === newVal);
+      const selectedBank = bankOptions.find((bank) => bank.value === newVal);
       if (selectedBank) {
         formData.value.swift_code = selectedBank.swiftCode;
       }
     } else {
-      formData.value.swift_code = '';
+      formData.value.swift_code = "";
     }
   }
 );
@@ -3267,12 +6321,147 @@ watch(
   () => formData.value.nama_bank_tanggungan,
   (newVal) => {
     if (newVal) {
-      const selectedBank = bankOptions.find(bank => bank.value === newVal);
+      const selectedBank = bankOptions.find((bank) => bank.value === newVal);
       if (selectedBank) {
         formData.value.swift_code_tanggungan = selectedBank.swiftCode;
       }
     } else {
-      formData.value.swift_code_tanggungan = '';
+      formData.value.swift_code_tanggungan = "";
+    }
+  }
+);
+
+// Watch for employment status changes to handle conditional validation
+watch(
+  () => formData.value.status_pekerjaan,
+  (newVal) => {
+    if (newVal === "tidak_bekerja") {
+      // Clear employment-related fields when not working
+      formData.value.jenis_pekerjaan = "";
+      formData.value.sektor_pekerjaan = "";
+      formData.value.lain_lain_sektor = "";
+      formData.value.no_telefon_pejabat = "";
+      formData.value.nama_majikan = "";
+      formData.value.no_telefon_majikan = "";
+      formData.value.alamat_majikan_1 = "";
+      formData.value.alamat_majikan_2 = "";
+      formData.value.alamat_majikan_3 = "";
+      formData.value.bandar_majikan = "";
+      formData.value.poskod_majikan = "";
+      formData.value.daerah_majikan = "";
+      formData.value.negeri_majikan = "";
+      formData.value.negara_majikan = "";
+      formData.value.jawatan = "";
+      formData.value.status_jawatan = "";
+      formData.value.pendapatan_kasar = "";
+      formData.value.pengesahan_pendapatan = [];
+      formData.value.sumber_pendapatan = [];
+
+      // Watch for tanggungan birth date changes to auto-populate age
+      watch(
+        () => getCurrentTanggungan()?.tarikh_lahir_tanggungan,
+        (newVal) => {
+          if (newVal) {
+            const currentTanggungan = getCurrentTanggungan();
+            if (currentTanggungan) {
+              currentTanggungan.umur_tanggungan = calculateAge(newVal);
+            }
+          }
+        }
+      );
+
+      // Watch for tanggungan MyKad changes to auto-populate birth date for Malaysians
+      watch(
+        () => getCurrentTanggungan()?.pengenalan_id_tanggungan,
+        (newVal) => {
+          if (
+            newVal &&
+            getCurrentTanggungan()?.jenis_pengenalan_tanggungan === "MyKad" &&
+            getCurrentTanggungan()?.warganegara_tanggungan === "Malaysia"
+          ) {
+            const currentTanggungan = getCurrentTanggungan();
+            if (newVal.length === 12 && /^\d{12}$/.test(newVal)) {
+              // Extract birth date from MyKad (format: YYMMDD)
+              const year = newVal.substring(0, 2);
+              const month = newVal.substring(2, 4);
+              const day = newVal.substring(4, 6);
+
+              // Determine century (00-29 = 2000s, 30-99 = 1900s)
+              const century = parseInt(year) <= 29 ? "20" : "19";
+              const fullYear = century + year;
+
+              // Format as YYYY-MM-DD for date input
+              const birthDate = `${fullYear}-${month}-${day}`;
+              currentTanggungan.tarikh_lahir_tanggungan = birthDate;
+              currentTanggungan.umur_tanggungan = calculateAge(birthDate);
+            }
+          }
+        }
+      );
+
+      // Watch for tanggungan Islamic dates changes to auto-calculate Tarikh Keluar Muallaf
+      watch(
+        () => [
+          getCurrentTanggungan()?.adakah_muallaf_tanggungan,
+          getCurrentTanggungan()?.tarikh_masuk_islam_tanggungan,
+          getCurrentTanggungan()?.tarikh_masuk_kfam_tanggungan,
+        ],
+        () => {
+          const currentTanggungan = getCurrentTanggungan();
+          if (currentTanggungan?.adakah_muallaf_tanggungan === "Y") {
+            currentTanggungan.tarikh_keluar_muallaf_tanggungan =
+              calculateTarikhKeluarMuallafTanggungan();
+          }
+        },
+        { deep: true }
+      );
+
+      // Watch for bank selection to auto-populate Swift Code
+      watch(
+        () => getCurrentTanggungan()?.nama_bank_tanggungan,
+        (newBankName) => {
+          const currentTanggungan = getCurrentTanggungan();
+          if (currentTanggungan && newBankName) {
+            const selectedBank = bankOptions.find(
+              (bank) => bank.value === newBankName
+            );
+            if (selectedBank) {
+              currentTanggungan.swift_code_tanggungan = selectedBank.swiftCode;
+            }
+          }
+        },
+        { deep: true }
+      );
+      formData.value.lain_lain_sumber_pendapatan = "";
+    }
+  }
+);
+
+// Watch for Islamic dates changes to automatically calculate Tarikh Keluar Muallaf
+watch(
+  [
+    () => formData.value.tarikh_masuk_islam,
+    () => formData.value.tarikh_masuk_kfam,
+  ],
+  () => {
+    if (formData.value.adakah_muallaf === "Y") {
+      formData.value.tarikh_keluar_muallaf = tarikhKeluarMuallaf.value;
+    }
+  }
+);
+
+// Watch for muallaf status changes to clear Islamic fields when not muallaf
+watch(
+  () => formData.value.adakah_muallaf,
+  (newVal) => {
+    if (newVal === "T") {
+      // Clear all Islamic fields when not muallaf
+      formData.value.tarikh_masuk_islam = "";
+      formData.value.tarikh_masuk_kfam = "";
+      formData.value.nama_selepas_islam = "";
+      formData.value.nama_sebelum_islam = "";
+      formData.value.tarikh_keluar_muallaf = "";
+      formData.value.dokumen_pengislaman = null;
     }
   }
 );
@@ -3281,9 +6470,13 @@ watch(
 // STEP NAVIGATION FUNCTIONS
 // ============================================================================
 const nextStepA = () => {
+  if (currentStepA.value === 1) {
+    canClickStepper.value = true;
+  }
   if (currentStepA.value < totalStepsA) {
     currentStepA.value++;
   } else if (currentStepA.value === totalStepsA) {
+    // When Section A is complete, move to Section B
     nextSection();
   }
 };
@@ -3295,8 +6488,21 @@ const prevStepA = () => {
 };
 
 const nextStepB = () => {
+  // Save current tanggungan data before moving to next step
+  if (getCurrentTanggungan()) {
+    const currentTanggungan = getCurrentTanggungan();
+    // Update the tanggunganList with current form data
+    tanggunganList.value[currentTanggunganIndex.value] = {
+      ...currentTanggungan,
+    };
+    formData.value.tanggungan = tanggunganList.value;
+  }
+
   if (currentStepB.value < totalStepsB) {
     currentStepB.value++;
+  } else {
+    // All steps completed, submit form
+    submitForm();
   }
 };
 
@@ -3319,9 +6525,853 @@ const goToPeribadi = () => {
 };
 
 // ============================================================================
+// TANGGUNGAN MANAGEMENT FUNCTIONS
+// ============================================================================
+const addTanggungan = (showNotification = true) => {
+  // Prevent adding more than 3 tanggungan
+  if (tanggunganList.value.length >= 3) {
+    toast.error("Maksimum 3 tanggungan sahaja dibenarkan");
+    return;
+  }
+
+  const newTanggungan = {
+    id: Date.now(), // Unique ID for each tanggungan
+
+    // Step 1: Maklumat Peribadi Tanggungan
+    hubungan_pemohon: "",
+    lain_lain_hubungan: "",
+    nama_tanggungan: "",
+    jenis_pengenalan_tanggungan: "",
+    pengenalan_id_tanggungan: "",
+    warganegara_tanggungan: "",
+    lain_lain_warganegara: "",
+    taraf_penduduk_tetap: "",
+    no_pasport: "",
+    tarikh_mula_pasport: "",
+    tarikh_tamat_pasport: "",
+    tarikh_lahir_tanggungan: "",
+    umur_tanggungan: "",
+    tempat_lahir_tanggungan: "",
+    jantina_tanggungan: "",
+    agama_tanggungan: "",
+    lain_lain_agama: "",
+    bangsa_tanggungan: "",
+    lain_lain_bangsa: "",
+    no_telefon_bimbit_tanggungan: "",
+    no_telefon_rumah_tanggungan: "",
+    emel_tanggungan: "",
+    tempoh_menetap_selangor_tanggungan: "",
+    status_perkahwinan_tanggungan: "",
+    lain_lain_status_perkahwinan: "",
+    jumlah_tanggungan: "",
+
+    // Special Approval for Minors
+    situasi_kelulusan_khas: "",
+    kelulusan_khas: "",
+
+    // Legacy fields for backward compatibility
+    jenis_id_tanggungan: "",
+    no_pengenalan_tanggungan: "",
+    tempoh_menetap_selangor: "",
+    no_telefon_tanggungan: "",
+
+    // Islamic Information (for Step 2)
+    adakah_muallaf_tanggungan: "",
+    nama_sebelum_islam_tanggungan: "",
+    tarikh_masuk_islam_tanggungan: "",
+    tarikh_masuk_kfam_tanggungan: "",
+    nama_selepas_islam_tanggungan: "",
+    tarikh_keluar_muallaf_tanggungan: "",
+    dokumen_pengislaman_tanggungan: null,
+
+    // Step 2: Maklumat Perbankan Tanggungan
+    nama_bank_tanggungan: "",
+    swift_code_tanggungan: "",
+    no_akaun_bank_tanggungan: "",
+    nama_pemegang_akaun_tanggungan: "",
+    kaedah_pembayaran_tanggungan: "",
+    sebab_tiada_akaun_tanggungan: "",
+
+    // Step 3: Maklumat Pendidikan Tanggungan
+    masih_bersekolah: "",
+    bersekolah_tanggungan: "",
+    pendidikan_tertinggi_tanggungan: "",
+    lain_pendidikan_tertinggi_tanggungan: "",
+    tahap_pendidikan_dicapai: [],
+    lain_tahap_pendidikan_dicapai: "",
+    sijil_pendidikan_tanggungan: null,
+    jenis_sekolah_institusi: "",
+    kategori_sekolah_institusi: "",
+    tahun_bersekolah: "",
+    tahun_tingkatan_pengajian: "",
+    nama_sekolah_institusi: "",
+    alamat1_sekolah: "",
+    alamat2_sekolah: "",
+    alamat3_sekolah: "",
+    daerah_sekolah: "",
+    bandar_sekolah: "",
+    poskod_sekolah: "",
+    tinggal_bersama_keluarga: "",
+    asrama_rumah_sewa: "",
+    bidang_kursus_pengajian: "",
+    jurusan_bidang: "",
+    pembiayaan_pengajian: [],
+    lain_pembiayaan_pengajian: "",
+    catatan_pendidikan_tanggungan: "",
+    // Legacy fields for backward compatibility
+    jenis_sekolah: "",
+    nama_sekolah: "",
+    alamat_sekolah: "",
+    negeri_sekolah: "",
+    nama_sekolah_agama: "",
+    alamat_sekolah_agama: "",
+    daerah_sekolah_agama: "",
+    negeri_sekolah_agama: "",
+    poskod_sekolah_agama: "",
+
+    // Step 4: Maklumat Kesihatan Tanggungan
+    tahap_kesihatan_tanggungan: "",
+    keadaan_kesihatan_sakit_tanggungan: "",
+    kos_penjagaan_sakit_tanggungan: "",
+    perbelanjaan_bulanan_sakit_tanggungan: "",
+    kesempurnaan_fizikal_tanggungan: "",
+    sebab_kecacatan_tanggungan: "",
+    tahap_kecacatan_tanggungan: "",
+    perbelanjaan_bulanan_oku_tanggungan: "",
+    keadaan_kesihatan_uzur_tanggungan: "",
+    kos_penjagaan_uzur_tanggungan: "",
+    perbelanjaan_bulanan_uzur_tanggungan: "",
+    // Dokumen Sokongan Kesihatan
+    dokumen_sakit_kronik_tanggungan: null,
+    dokumen_oku_tanggungan: null,
+    dokumen_uzur_tanggungan: null,
+
+    // Step 5: Kemahiran Tanggungan
+    kemahiran_tanggungan: "",
+
+    // Step 6: Maklumat Pekerjaan Tanggungan
+    pekerjaan_status: "",
+
+    // Sumber Pendapatan
+    sumber_pendapatan: [],
+    lain_lain_sumber_pendapatan: "",
+
+    // Butiran Pekerjaan
+    jenis_pekerjaan: "",
+    sektor_pekerjaan: "",
+    lain_lain_sektor_pekerjaan: "",
+
+    // Maklumat Majikan
+    no_telefon_pejabat: "",
+    nama_majikan: "",
+    no_tel_majikan: "",
+    alamat_majikan_1: "",
+    alamat_majikan_2: "",
+    alamat_majikan_3: "",
+    bandar_majikan: "",
+    poskod_majikan: "",
+    daerah_majikan: "",
+    negeri_majikan: "",
+    negara_majikan: "",
+
+    // Jawatan & Status
+    jawatan: "",
+    status_jawatan: "",
+
+    // Pendapatan
+    pendapatan_kasar: "",
+    dokumen_pendapatan: null,
+  };
+
+  tanggunganList.value.push(newTanggungan);
+  currentTanggunganIndex.value = tanggunganList.value.length - 1;
+  currentStepB.value = 1;
+
+  // Update formData.tanggungan array
+  formData.value.tanggungan = tanggunganList.value;
+
+  // Log to console for debugging
+  console.log(
+    `Tanggungan ${tanggunganList.value.length} ditambah:`,
+    newTanggungan
+  );
+  console.log("Total tanggungan sekarang:", tanggunganList.value.length);
+
+  // Only show notification if requested
+  if (showNotification) {
+    toast.success(`Tanggungan ${tanggunganList.value.length} berjaya ditambah`);
+  }
+};
+
+const removeTanggungan = (index) => {
+  if (tanggunganList.value.length > 1) {
+    tanggunganList.value.splice(index, 1);
+    formData.value.tanggungan = tanggunganList.value;
+
+    if (currentTanggunganIndex.value >= tanggunganList.value.length) {
+      currentTanggunganIndex.value = tanggunganList.value.length - 1;
+    }
+
+    toast.success("Tanggungan berjaya dibuang");
+  } else {
+    toast.error("Sekurang-kurangnya satu tanggungan diperlukan");
+  }
+};
+
+const selectTanggungan = (index) => {
+  // Save current tanggungan data before switching
+  if (getCurrentTanggungan()) {
+    const currentTanggungan = getCurrentTanggungan();
+    tanggunganList.value[currentTanggunganIndex.value] = {
+      ...currentTanggungan,
+    };
+    formData.value.tanggungan = tanggunganList.value;
+    console.log(
+      "Saved data for Tanggungan",
+      currentTanggunganIndex.value + 1,
+      "before switching"
+    );
+  }
+
+  currentTanggunganIndex.value = index;
+  currentStepB.value = 1;
+};
+
+const toggleTanggunganSummary = () => {
+  showTanggunganSummary.value = !showTanggunganSummary.value;
+};
+
+// Helper functions for simplified interface
+const isTanggunganComplete = (tanggungan) => {
+  return (
+    tanggungan.nama_tanggungan &&
+    tanggungan.hubungan_pemohon &&
+    tanggungan.jenis_id_tanggungan &&
+    tanggungan.jantina_tanggungan &&
+    tanggungan.tarikh_lahir_tanggungan
+  );
+};
+
+const getCompletedCount = () => {
+  return tanggunganList.value.filter((t) => isTanggunganComplete(t)).length;
+};
+
+const getIncompleteCount = () => {
+  return tanggunganList.value.filter((t) => !isTanggunganComplete(t)).length;
+};
+
+const getCompletionPercentage = () => {
+  if (tanggunganList.value.length === 0) return 0;
+  return Math.round((getCompletedCount() / tanggunganList.value.length) * 100);
+};
+
+const getTanggunganSummary = () => {
+  if (tanggunganList.value.length === 3) {
+    return {
+      total: 3,
+      completed: getCompletedCount(),
+      incomplete: getIncompleteCount(),
+      list: tanggunganList.value.map((t, index) => ({
+        number: index + 1,
+        name: t.nama_tanggungan || "Nama belum diisi",
+        relationship: t.hubungan_pemohon || "Hubungan belum diisi",
+        status: isTanggunganComplete(t) ? "Lengkap" : "Tidak Lengkap",
+      })),
+    };
+  }
+  return null;
+};
+
+const getCurrentTanggungan = () => {
+  if (tanggunganList.value.length === 0) {
+    // Initialize with first tanggungan if none exists
+    addTanggungan(false); // Don't show notification during initialization
+  }
+  return tanggunganList.value[currentTanggunganIndex.value];
+};
+
+// Helper function to calculate age from birth date
+const calculateAge = (birthDate) => {
+  if (!birthDate) return "";
+
+  try {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+
+    return age.toString();
+  } catch (error) {
+    return "";
+  }
+};
+
+// Helper function to calculate total tanggungan
+const calculateTotalTanggungan = () => {
+  if (tanggunganList.value.length === 0) return "0";
+
+  // Count active tanggungan (excluding those with expired passports)
+  let activeCount = 0;
+
+  tanggunganList.value.forEach((tanggungan) => {
+    if (tanggungan.warganegara_tanggungan === "Malaysia") {
+      activeCount++;
+    } else {
+      // Check if passport is expired for non-Malaysians
+      if (tanggungan.tarikh_tamat_pasport) {
+        try {
+          const expiryDate = new Date(tanggungan.tarikh_tamat_pasport);
+          const today = new Date();
+          if (expiryDate > today) {
+            activeCount++;
+          }
+        } catch (error) {
+          // If date parsing fails, count as active
+          activeCount++;
+        }
+      } else {
+        activeCount++;
+      }
+    }
+  });
+
+  return activeCount.toString();
+};
+
+// Helper function to calculate Tarikh Keluar Muallaf for tanggungan
+const calculateTarikhKeluarMuallafTanggungan = () => {
+  const currentTanggungan = getCurrentTanggungan();
+  if (
+    !currentTanggungan?.adakah_muallaf_tanggungan ||
+    currentTanggungan.adakah_muallaf_tanggungan !== "Y"
+  ) {
+    return "";
+  }
+
+  const tarikhMasukIslam = currentTanggungan.tarikh_masuk_islam_tanggungan;
+  const tarikhMasukKFAM = currentTanggungan.tarikh_masuk_kfam_tanggungan;
+
+  if (!tarikhMasukIslam && !tarikhMasukKFAM) {
+    return "";
+  }
+
+  // Parse dates and add 5 years
+  let tarikhMasukIslamPlus5 = null;
+  let tarikhMasukKFAMPlus5 = null;
+
+  if (tarikhMasukIslam) {
+    try {
+      const date = new Date(tarikhMasukIslam);
+      // Validate that the date is not in the future
+      if (date > new Date()) {
+        return "";
+      }
+      date.setFullYear(date.getFullYear() + 5);
+      tarikhMasukIslamPlus5 = date;
+    } catch (error) {
+      console.error("Error parsing tarikh masuk Islam:", error);
+    }
+  }
+
+  if (tarikhMasukKFAM) {
+    try {
+      const date = new Date(tarikhMasukKFAM);
+      // Validate that the date is not in the future
+      if (date > new Date()) {
+        return "";
+      }
+      date.setFullYear(date.getFullYear() + 5);
+      tarikhMasukKFAMPlus5 = date;
+    } catch (error) {
+      console.error("Error parsing tarikh masuk KFAM:", error);
+    }
+  }
+
+  // Return the later date (more recent)
+  if (tarikhMasukIslamPlus5 && tarikhMasukKFAMPlus5) {
+    const laterDate =
+      tarikhMasukIslamPlus5 > tarikhMasukKFAMPlus5
+        ? tarikhMasukIslamPlus5
+        : tarikhMasukKFAMPlus5;
+    return laterDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+  } else if (tarikhMasukIslamPlus5) {
+    return tarikhMasukIslamPlus5.toISOString().split("T")[0];
+  } else if (tarikhMasukKFAMPlus5) {
+    return tarikhMasukKFAMPlus5.toISOString().split("T")[0];
+  }
+
+  return "";
+};
+
+// Initialize with 3 tanggungan by default on component mount
+onMounted(() => {
+  if (tanggunganList.value.length === 0) {
+    // Add 3 tanggungan by default with mock data
+    addTanggungan(false); // First tanggungan
+    addTanggungan(false); // Second tanggungan
+    addTanggungan(false); // Third tanggungan
+
+    // Set mock data for the 3 tanggungan
+    if (tanggunganList.value.length === 3) {
+      // First Tanggungan - Pasangan Pemohon
+      tanggunganList.value[0] = {
+        ...tanggunganList.value[0],
+        hubungan_pemohon: "Pasangan Pemohon",
+        nama_tanggungan: "ROHANA BINTI AHMAD",
+        jenis_pengenalan_tanggungan: "MyKad",
+        pengenalan_id_tanggungan: "801004035672",
+        warganegara_tanggungan: "Malaysia",
+        taraf_penduduk_tetap: "Y",
+        tarikh_lahir_tanggungan: "1980-10-04",
+        umur_tanggungan: "43",
+        tempat_lahir_tanggungan: "Kuala Lumpur",
+        jantina_tanggungan: "Perempuan",
+        agama_tanggungan: "Islam",
+        bangsa_tanggungan: "Melayu",
+        no_telefon_bimbit_tanggungan: "0138202398",
+        no_telefon_rumah_tanggungan: "038881234",
+        emel_tanggungan: "rohana@email.com",
+        tempoh_menetap_selangor_tanggungan: "20",
+        status_perkahwinan_tanggungan: "Berkahwin",
+
+        // Special Approval for Minors
+        situasi_kelulusan_khas: "Profiling",
+        kelulusan_khas: "Y",
+
+        // Legacy fields for backward compatibility
+        jenis_id_tanggungan: "MyKad",
+        no_pengenalan_tanggungan: "801004035672",
+        tempoh_menetap_selangor: "20",
+        no_telefon_tanggungan: "0138202398",
+
+        // Islamic Information
+        adakah_muallaf_tanggungan: "Y",
+        nama_sebelum_islam_tanggungan: "ROHANA BINTI WONG",
+        tarikh_masuk_islam_tanggungan: "1995-01-01",
+        tarikh_masuk_kfam_tanggungan: "1995-01-01",
+        nama_selepas_islam_tanggungan: "ROHANA BINTI AHMAD",
+        tarikh_keluar_muallaf_tanggungan: "2000-01-01",
+        dokumen_pengislaman_tanggungan: null,
+
+        // Maklumat Perbankan Tanggungan
+        nama_bank_tanggungan: "maybank",
+        swift_code_tanggungan: "MBBEMYKL",
+        no_akaun_bank_tanggungan: "1234567890",
+        nama_pemegang_akaun_tanggungan: "ROHANA BINTI AHMAD",
+        kaedah_pembayaran_tanggungan: "akaun",
+        sebab_tiada_akaun_tanggungan: "",
+
+        // Pendidikan Tanggungan
+        masih_bersekolah: "T",
+        bersekolah_tanggungan: "Tidak",
+        pendidikan_tertinggi_tanggungan: "Diploma",
+        lain_pendidikan_tertinggi_tanggungan: "",
+        tahap_pendidikan_dicapai: ["SPM", "Sijil", "Diploma"],
+        lain_tahap_pendidikan_dicapai: "",
+        sijil_pendidikan_tanggungan: null,
+        jenis_sekolah_institusi: "SMK",
+        kategori_sekolah_institusi: "SEK.MEN",
+        tahun_bersekolah: "2020",
+        tahun_tingkatan_pengajian: "Tingkatan 5",
+        nama_sekolah_institusi: "SMK Kuala Lumpur",
+        alamat1_sekolah: "Jalan Sultan, Kuala Lumpur",
+        alamat2_sekolah: "",
+        alamat3_sekolah: "",
+        daerah_sekolah: "Kuala Lumpur",
+        bandar_sekolah: "Kuala Lumpur",
+        poskod_sekolah: "50000",
+        tinggal_bersama_keluarga: "Y",
+        asrama_rumah_sewa: "",
+        bidang_kursus_pengajian: "Diploma",
+        jurusan_bidang: "Pengurusan Perniagaan",
+        pembiayaan_pengajian: ["PTPTN"],
+        lain_pembiayaan_pengajian: "",
+        catatan_pendidikan_tanggungan: "Tamat pengajian pada tahun 2020",
+        // Legacy fields for backward compatibility
+        jenis_sekolah: "Sekolah Menengah",
+        nama_sekolah: "SMK Kuala Lumpur",
+        alamat_sekolah: "Jalan Sultan, Kuala Lumpur",
+        negeri_sekolah: "Kuala Lumpur",
+        nama_sekolah_agama: "Sekolah Agama Kuala Lumpur",
+        alamat_sekolah_agama: "Jalan Agama, Kuala Lumpur",
+        daerah_sekolah_agama: "Kuala Lumpur",
+        negeri_sekolah_agama: "Kuala Lumpur",
+        poskod_sekolah_agama: "50000",
+
+        // Maklumat Kesihatan Tanggungan
+        tahap_kesihatan_tanggungan: "Sihat",
+        keadaan_kesihatan_sakit_tanggungan: "Tidak",
+        kos_penjagaan_sakit_tanggungan: "0",
+        perbelanjaan_bulanan_sakit_tanggungan: "0",
+        kesempurnaan_fizikal_tanggungan: "Sempurna",
+        sebab_kecacatan_tanggungan: "",
+        tahap_kecacatan_tanggungan: "",
+        perbelanjaan_bulanan_oku_tanggungan: "0",
+        keadaan_kesihatan_uzur_tanggungan: "Tidak",
+        kos_penjagaan_uzur_tanggungan: "0",
+        perbelanjaan_bulanan_uzur_tanggungan: "0",
+
+        // Kemahiran Tanggungan
+        kemahiran_tanggungan: "Komputer, Bahasa Inggeris",
+
+        // Maklumat Pekerjaan Tanggungan
+        pekerjaan_status: "Bekerja",
+
+        // Sumber Pendapatan
+        sumber_pendapatan: ["Pengajian", "Sumbangan Keluarga"],
+        lain_lain_sumber_pendapatan: "",
+
+        // Butiran Pekerjaan
+        jenis_pekerjaan: "Kerani",
+        sektor_pekerjaan: "Swasta",
+        lain_lain_sektor_pekerjaan: "",
+
+        // Maklumat Majikan
+        no_telefon_pejabat: "038881234",
+        nama_majikan: "Syarikat ABC Sdn Bhd",
+        no_tel_majikan: "038881234",
+        alamat_majikan_1: "Jalan Majikan, Kuala Lumpur",
+        alamat_majikan_2: "",
+        alamat_majikan_3: "",
+        bandar_majikan: "Kuala Lumpur",
+        poskod_majikan: "50000",
+        daerah_majikan: "Kuala Lumpur",
+        negeri_majikan: "Kuala Lumpur",
+        negara_majikan: "Malaysia",
+
+        // Jawatan & Status
+        jawatan: "Kerani",
+        status_jawatan: "Tetap",
+
+        // Pendapatan
+        pendapatan_kasar: "2500.00",
+        dokumen_pendapatan: null,
+      };
+
+      // Second Tanggungan - Anak Perempuan
+      tanggunganList.value[1] = {
+        ...tanggunganList.value[1],
+        hubungan_pemohon: "Anak Perempuan",
+        nama_tanggungan: "NUR NAJWA BINTI ADNAN",
+        jenis_pengenalan_tanggungan: "MyKad",
+        pengenalan_id_tanggungan: "060802030272",
+        warganegara_tanggungan: "Malaysia",
+        taraf_penduduk_tetap: "Y",
+        tarikh_lahir_tanggungan: "2006-08-02",
+        umur_tanggungan: "17",
+        tempat_lahir_tanggungan: "Shah Alam",
+        jantina_tanggungan: "Perempuan",
+        agama_tanggungan: "Islam",
+        bangsa_tanggungan: "Melayu",
+        no_telefon_bimbit_tanggungan: "0197883456",
+        no_telefon_rumah_tanggungan: "038881234",
+        emel_tanggungan: "najwa@email.com",
+        tempoh_menetap_selangor_tanggungan: "19",
+        status_perkahwinan_tanggungan: "Bujang",
+
+        // Special Approval for Minors
+        situasi_kelulusan_khas: "Profiling",
+        kelulusan_khas: "Y",
+
+        // Legacy fields for backward compatibility
+        jenis_id_tanggungan: "MyKad",
+        no_pengenalan_tanggungan: "060802030272",
+        tempoh_menetap_selangor: "19",
+        no_telefon_tanggungan: "0197883456",
+
+        // Islamic Information
+        adakah_muallaf_tanggungan: "N",
+        nama_sebelum_islam_tanggungan: "",
+        tarikh_masuk_islam_tanggungan: "",
+        tarikh_masuk_kfam_tanggungan: "",
+        nama_selepas_islam_tanggungan: "",
+        tarikh_keluar_muallaf_tanggungan: "",
+        dokumen_pengislaman_tanggungan: null,
+
+        // Maklumat Perbankan Tanggungan
+        nama_bank_tanggungan: "cimb",
+        swift_code_tanggungan: "CIBBMYKL",
+        no_akaun_bank_tanggungan: "0987654321",
+        nama_pemegang_akaun_tanggungan: "NUR NAJWA BINTI ADNAN",
+        kaedah_pembayaran_tanggungan: "akaun",
+        sebab_tiada_akaun_tanggungan: "",
+
+        // Pendidikan Tanggungan
+        masih_bersekolah: "Y",
+        bersekolah_tanggungan: "Ya",
+        pendidikan_tertinggi_tanggungan: "Sijil Pelajaran Malaysia",
+        lain_pendidikan_tertinggi_tanggungan: "",
+        tahap_pendidikan_dicapai: ["SRP-PMR", "SPM"],
+        lain_tahap_pendidikan_dicapai: "",
+        sijil_pendidikan_tanggungan: null,
+        jenis_sekolah_institusi: "SMK",
+        kategori_sekolah_institusi: "SEK.MEN",
+        tahun_bersekolah: "2024",
+        tahun_tingkatan_pengajian: "Tingkatan 4",
+        nama_sekolah_institusi: "SMK Shah Alam",
+        alamat1_sekolah: "Jalan Sekolah, Shah Alam",
+        alamat2_sekolah: "",
+        alamat3_sekolah: "",
+        daerah_sekolah: "Petaling",
+        bandar_sekolah: "Shah Alam",
+        poskod_sekolah: "40000",
+        tinggal_bersama_keluarga: "Y",
+        asrama_rumah_sewa: "",
+        bidang_kursus_pengajian: "",
+        jurusan_bidang: "",
+        pembiayaan_pengajian: ["Tiada"],
+        lain_pembiayaan_pengajian: "",
+        catatan_pendidikan_tanggungan: "Masih bersekolah di Tingkatan 4",
+        // Legacy fields for backward compatibility
+        jenis_sekolah: "Sekolah Menengah",
+        nama_sekolah: "SMK Shah Alam",
+        alamat_sekolah: "Jalan Sekolah, Shah Alam",
+        negeri_sekolah: "Selangor",
+        nama_sekolah_agama: "Sekolah Agama Shah Alam",
+        alamat_sekolah_agama: "Jalan Agama, Shah Alam",
+        daerah_sekolah_agama: "Petaling",
+        negeri_sekolah_agama: "Selangor",
+        poskod_sekolah_agama: "40000",
+
+        // Maklumat Kesihatan Tanggungan
+        tahap_kesihatan_tanggungan: "Sihat",
+        keadaan_kesihatan_sakit_tanggungan: "Tidak",
+        kos_penjagaan_sakit_tanggungan: "0",
+        perbelanjaan_bulanan_sakit_tanggungan: "0",
+        kesempurnaan_fizikal_tanggungan: "Sempurna",
+        sebab_kecacatan_tanggungan: "",
+        tahap_kecacatan_tanggungan: "",
+        perbelanjaan_bulanan_oku_tanggungan: "0",
+        keadaan_kesihatan_uzur_tanggungan: "Tidak",
+        kos_penjagaan_uzur_tanggungan: "0",
+        perbelanjaan_bulanan_uzur_tanggungan: "0",
+
+        // Kemahiran Tanggungan
+        kemahiran_tanggungan: "Bahasa Melayu, Matematik, Sains",
+
+        // Maklumat Pekerjaan Tanggungan
+        pekerjaan_status: "Tidak Bekerja",
+
+        // Sumber Pendapatan
+        sumber_pendapatan: [],
+        lain_lain_sumber_pendapatan: "",
+
+        // Butiran Pekerjaan
+        jenis_pekerjaan: "",
+        sektor_pekerjaan: "",
+        lain_lain_sektor_pekerjaan: "",
+
+        // Maklumat Majikan
+        no_telefon_pejabat: "",
+        nama_majikan: "",
+        no_tel_majikan: "",
+        alamat_majikan_1: "",
+        alamat_majikan_2: "",
+        alamat_majikan_3: "",
+        bandar_majikan: "",
+        poskod_majikan: "",
+        daerah_majikan: "",
+        negeri_majikan: "",
+        negara_majikan: "",
+
+        // Jawatan & Status
+        jawatan: "",
+        status_jawatan: "",
+
+        // Pendapatan
+        pendapatan_kasar: "",
+        dokumen_pendapatan: null,
+      };
+
+      // Third Tanggungan - Anak Perempuan
+      tanggunganList.value[2] = {
+        ...tanggunganList.value[2],
+        hubungan_pemohon: "Anak Perempuan",
+        nama_tanggungan: "NUR QISTINA BINTI ADNAN",
+        jenis_pengenalan_tanggungan: "MyKad",
+        pengenalan_id_tanggungan: "091108030442",
+        warganegara_tanggungan: "Malaysia",
+        taraf_penduduk_tetap: "Y",
+        tarikh_lahir_tanggungan: "2009-11-08",
+        umur_tanggungan: "14",
+        tempat_lahir_tanggungan: "Petaling Jaya",
+        jantina_tanggungan: "Perempuan",
+        agama_tanggungan: "Islam",
+        bangsa_tanggungan: "Melayu",
+        no_telefon_bimbit_tanggungan: "01299982378",
+        no_telefon_rumah_tanggungan: "038881234",
+        emel_tanggungan: "qistina@email.com",
+        tempoh_menetap_selangor_tanggungan: "16",
+        status_perkahwinan_tanggungan: "Bujang",
+
+        // Special Approval for Minors
+        situasi_kelulusan_khas: "Profiling",
+        kelulusan_khas: "Y",
+
+        // Legacy fields for backward compatibility
+        jenis_id_tanggungan: "MyKad",
+        no_pengenalan_tanggungan: "091108030442",
+        tempoh_menetap_selangor: "16",
+        no_telefon_tanggungan: "01299982378",
+
+        // Islamic Information
+        adakah_muallaf_tanggungan: "N",
+        nama_sebelum_islam_tanggungan: "",
+        tarikh_masuk_islam_tanggungan: "",
+        tarikh_masuk_kfam_tanggungan: "",
+        nama_selepas_islam_tanggungan: "",
+        tarikh_keluar_muallaf_tanggungan: "",
+        dokumen_pengislaman_tanggungan: null,
+
+        // Maklumat Perbankan Tanggungan
+        nama_bank_tanggungan: "",
+        swift_code_tanggungan: "",
+        no_akaun_bank_tanggungan: "",
+        nama_pemegang_akaun_tanggungan: "",
+        kaedah_pembayaran_tanggungan: "tiada",
+        sebab_tiada_akaun_tanggungan: "bukan-warganegara",
+
+        // Pendidikan Tanggungan
+        masih_bersekolah: "Y",
+        bersekolah_tanggungan: "Ya",
+        pendidikan_tertinggi_tanggungan: "UPSR",
+        lain_pendidikan_tertinggi_tanggungan: "",
+        tahap_pendidikan_dicapai: ["Peringkat Rendah"],
+        lain_tahap_pendidikan_dicapai: "",
+        sijil_pendidikan_tanggungan: null,
+        jenis_sekolah_institusi: "SRK",
+        kategori_sekolah_institusi: "SRK",
+        tahun_bersekolah: "2024",
+        tahun_tingkatan_pengajian: "Tahun 6",
+        nama_sekolah_institusi: "SK Petaling Jaya",
+        alamat1_sekolah: "Jalan Sekolah, Petaling Jaya",
+        alamat2_sekolah: "",
+        alamat3_sekolah: "",
+        daerah_sekolah: "Petaling",
+        bandar_sekolah: "Petaling Jaya",
+        poskod_sekolah: "46000",
+        tinggal_bersama_keluarga: "Y",
+        asrama_rumah_sewa: "",
+        bidang_kursus_pengajian: "",
+        jurusan_bidang: "",
+        pembiayaan_pengajian: ["Tiada"],
+        lain_pembiayaan_pengajian: "",
+        catatan_pendidikan_tanggungan: "Masih bersekolah di Tahun 6",
+        // Legacy fields for backward compatibility
+        jenis_sekolah: "Sekolah Rendah",
+        nama_sekolah: "SK Petaling Jaya",
+        alamat_sekolah: "Jalan Sekolah, Petaling Jaya",
+        negeri_sekolah: "Selangor",
+        nama_sekolah_agama: "Sekolah Agama Petaling Jaya",
+        alamat_sekolah_agama: "Jalan Agama, Petaling Jaya",
+        daerah_sekolah_agama: "Petaling",
+        negeri_sekolah_agama: "Selangor",
+        poskod_sekolah_agama: "46000",
+
+        // Maklumat Kesihatan Tanggungan
+        tahap_kesihatan_tanggungan: "Sihat",
+        keadaan_kesihatan_sakit_tanggungan: "Tidak",
+        kos_penjagaan_sakit_tanggungan: "0",
+        perbelanjaan_bulanan_sakit_tanggungan: "0",
+        kesempurnaan_fizikal_tanggungan: "Sempurna",
+        sebab_kecacatan_tanggungan: "",
+        tahap_kecacatan_tanggungan: "",
+        perbelanjaan_bulanan_oku_tanggungan: "0",
+        keadaan_kesihatan_uzur_tanggungan: "Tidak",
+        kos_penjagaan_uzur_tanggungan: "0",
+        perbelanjaan_bulanan_uzur_tanggungan: "0",
+
+        // Kemahiran Tanggungan
+        kemahiran_tanggungan: "Membaca, Menulis, Mengira",
+
+        // Maklumat Pekerjaan Tanggungan
+        pekerjaan_status: "Tidak Bekerja",
+
+        // Sumber Pendapatan
+        sumber_pendapatan: [],
+        lain_lain_sumber_pendapatan: "",
+
+        // Butiran Pekerjaan
+        jenis_pekerjaan: "",
+        sektor_pekerjaan: "",
+        lain_lain_sektor_pekerjaan: "",
+
+        // Maklumat Majikan
+        no_telefon_pejabat: "",
+        nama_majikan: "",
+        no_tel_majikan: "",
+        alamat_majikan_1: "",
+        alamat_majikan_2: "",
+        alamat_majikan_3: "",
+        bandar_majikan: "",
+        poskod_majikan: "",
+        daerah_majikan: "",
+        negeri_majikan: "",
+        negara_majikan: "",
+
+        // Jawatan & Status
+        jawatan: "",
+        status_jawatan: "",
+
+        // Pendapatan
+        pendapatan_kasar: "",
+        dokumen_pendapatan: null,
+      };
+
+      // Update formData.tanggungan array
+      formData.value.tanggungan = tanggunganList.value;
+
+      console.log("Mock data loaded for 3 tanggungan:", tanggunganList.value);
+    }
+  }
+
+  // Prefill all fields immediately for the main applicant
+  try {
+    generateMockData();
+  } catch (e) {
+    console.error('Failed to generate mock data on mount', e);
+  }
+});
+
+// ============================================================================
+// STEP JUMP FUNCTIONS
+// ============================================================================
+const goToStepA = (stepNumber) => {
+  // Allow direct navigation to any step
+  currentStepA.value = stepNumber;
+};
+
+const goToStepB = (stepNumber) => {
+  // Allow direct navigation to any step
+  currentStepB.value = stepNumber;
+};
+
+// ============================================================================
 // FORM SUBMISSION FUNCTIONS
 // ============================================================================
 const submitForm = () => {
+  // Save current tanggungan data before submission
+  if (getCurrentTanggungan()) {
+    const currentTanggungan = getCurrentTanggungan();
+    tanggunganList.value[currentTanggunganIndex.value] = {
+      ...currentTanggungan,
+    };
+    formData.value.tanggungan = tanggunganList.value;
+  }
+
+  // Log summary of all tanggungan
+  console.log(
+    `Form submitted with ${tanggunganList.value.length} tanggungan:`,
+    tanggunganList.value
+  );
+
   processing.value = true;
   navigateTo(`/BF-PRF/AS/FR/03`);
 };
@@ -3353,7 +7403,7 @@ const handleSave = async () => {
 const handleSaveStepA1 = async () => {
   try {
     console.log("Step A1 saved:", formData.value);
-    toast.success("Maklumat Peribadi berjaya disimpan");
+    toast.success("Penilaian Awal berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A1 error:", error);
@@ -3363,7 +7413,7 @@ const handleSaveStepA1 = async () => {
 const handleSaveStepA2 = async () => {
   try {
     console.log("Step A2 saved:", formData.value);
-    toast.success("Maklumat Kesihatan berjaya disimpan");
+    toast.success("Maklumat Peribadi berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A2 error:", error);
@@ -3373,7 +7423,7 @@ const handleSaveStepA2 = async () => {
 const handleSaveStepA3 = async () => {
   try {
     console.log("Step A3 saved:", formData.value);
-    toast.success("Maklumat Kemahiran berjaya disimpan");
+    toast.success("Maklumat Islam berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A3 error:", error);
@@ -3383,7 +7433,7 @@ const handleSaveStepA3 = async () => {
 const handleSaveStepA4 = async () => {
   try {
     console.log("Step A4 saved:", formData.value);
-    toast.success("Maklumat Kediaman berjaya disimpan");
+    toast.success("Maklumat Pendidikan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A4 error:", error);
@@ -3393,7 +7443,7 @@ const handleSaveStepA4 = async () => {
 const handleSaveStepA5 = async () => {
   try {
     console.log("Step A5 saved:", formData.value);
-    toast.success("Maklumat Pinjaman berjaya disimpan");
+    toast.success("Maklumat Bank berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A5 error:", error);
@@ -3403,7 +7453,7 @@ const handleSaveStepA5 = async () => {
 const handleSaveStepA6 = async () => {
   try {
     console.log("Step A6 saved:", formData.value);
-    toast.success("Maklumat Pemilikan berjaya disimpan");
+    toast.success("Maklumat Kesihatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A6 error:", error);
@@ -3413,7 +7463,7 @@ const handleSaveStepA6 = async () => {
 const handleSaveStepA7 = async () => {
   try {
     console.log("Step A7 saved:", formData.value);
-    toast.success("Maklumat Waris berjaya disimpan");
+    toast.success("Maklumat Kemahiran berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A7 error:", error);
@@ -3423,7 +7473,7 @@ const handleSaveStepA7 = async () => {
 const handleSaveStepA8 = async () => {
   try {
     console.log("Step A8 saved:", formData.value);
-    toast.success("Maklumat Pengesahan berjaya disimpan");
+    toast.success("Maklumat Alamat berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A8 error:", error);
@@ -3433,7 +7483,7 @@ const handleSaveStepA8 = async () => {
 const handleSaveStepA9 = async () => {
   try {
     console.log("Step A9 saved:", formData.value);
-    toast.success("Maklumat Pengesahan Bermastautin berjaya disimpan");
+    toast.success("Maklumat Pekerjaan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A9 error:", error);
@@ -3443,10 +7493,50 @@ const handleSaveStepA9 = async () => {
 const handleSaveStepA10 = async () => {
   try {
     console.log("Step A10 saved:", formData.value);
-    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+    toast.success("Maklumat Pendapatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A10 error:", error);
+  }
+};
+
+const handleSaveStepA11 = async () => {
+  try {
+    console.log("Step A11 saved:", formData.value);
+    toast.success("Maklumat Pinjaman berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step A11 error:", error);
+  }
+};
+
+const handleSaveStepA13 = async () => {
+  try {
+    console.log("Step A13 saved:", formData.value);
+    toast.success("Maklumat Pemilikan Barangan Rumah berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step A13 error:", error);
+  }
+};
+
+const handleSaveStepA14 = async () => {
+  try {
+    console.log("Step A14 saved:", formData.value);
+    toast.success("Maklumat Pemilikan Barangan Rumah berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step A14 error:", error);
+  }
+};
+
+const handleSaveStepA15 = async () => {
+  try {
+    console.log("Step A15 saved:", formData.value);
+    toast.success("Maklumat Waris berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step A15 error:", error);
   }
 };
 
@@ -3455,7 +7545,24 @@ const handleSaveStepA10 = async () => {
 // ============================================================================
 const handleSaveStepB1 = async () => {
   try {
-    console.log("Step B1 saved:", formData.value);
+    // Save current tanggungan data before saving
+    if (getCurrentTanggungan()) {
+      const currentTanggungan = getCurrentTanggungan();
+      // Update the tanggunganList with current form data
+      tanggunganList.value[currentTanggunganIndex.value] = {
+        ...currentTanggungan,
+      };
+      formData.value.tanggungan = tanggunganList.value;
+
+      console.log(
+        "Step B1 saved for Tanggungan",
+        currentTanggunganIndex.value + 1,
+        ":",
+        currentTanggungan
+      );
+      console.log("Updated tanggunganList:", tanggunganList.value);
+    }
+
     toast.success("Maklumat Peribadi Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
@@ -3466,7 +7573,7 @@ const handleSaveStepB1 = async () => {
 const handleSaveStepB2 = async () => {
   try {
     console.log("Step B2 saved:", formData.value);
-    toast.success("Maklumat Pendidikan Tanggungan berjaya disimpan");
+    toast.success("Maklumat Islam Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B2 error:", error);
@@ -3476,7 +7583,7 @@ const handleSaveStepB2 = async () => {
 const handleSaveStepB3 = async () => {
   try {
     console.log("Step B3 saved:", formData.value);
-    toast.success("Maklumat Kesihatan Tanggungan berjaya disimpan");
+    toast.success("Maklumat Bank Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B3 error:", error);
@@ -3486,7 +7593,7 @@ const handleSaveStepB3 = async () => {
 const handleSaveStepB4 = async () => {
   try {
     console.log("Step B4 saved:", formData.value);
-    toast.success("Maklumat Kemahiran Tanggungan berjaya disimpan");
+    toast.success("Maklumat Pendidikan Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B4 error:", error);
@@ -3496,10 +7603,60 @@ const handleSaveStepB4 = async () => {
 const handleSaveStepB5 = async () => {
   try {
     console.log("Step B5 saved:", formData.value);
-    toast.success("Maklumat Pekerjaan Tanggungan berjaya disimpan");
+    toast.success("Maklumat Kesihatan Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B5 error:", error);
+  }
+};
+
+const handleSaveStepB6 = async () => {
+  try {
+    console.log("Step B6 saved:", formData.value);
+    toast.success("Maklumat Kemahiran Tanggungan berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step B6 error:", error);
+  }
+};
+
+const handleSaveStepB7 = async () => {
+  try {
+    console.log("Step B7 saved:", formData.value);
+    toast.success("Maklumat Pekerjaan Tanggungan berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step B7 error:", error);
+  }
+};
+
+const handleSaveStepB8 = async () => {
+  try {
+    console.log("Step B8 saved:", formData.value);
+    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step B8 error:", error);
+  }
+};
+
+const handleSaveStepB9 = async () => {
+  try {
+    console.log("Step B9 saved:", formData.value);
+    toast.success("Maklumat Pengesahan Bermastautin berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step B9 error:", error);
+  }
+};
+
+const handleSaveStepB10 = async () => {
+  try {
+    console.log("Step B10 saved:", formData.value);
+    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step B10 error:", error);
   }
 };
 
@@ -3508,9 +7665,9 @@ const handleSaveStepB5 = async () => {
 // ============================================================================
 const addHeir = () => {
   formData.value.heirs.push({
-    name: '',
-    relationship: '',
-    phone: ''
+    name: "",
+    relationship: "",
+    phone: "",
   });
 };
 
@@ -3519,34 +7676,15 @@ const removeHeir = (index) => {
 };
 
 // ============================================================================
-// BANK ACCOUNT NUMBER MANAGEMENT FUNCTIONS
-// ============================================================================
-const addBankAccountNumber = () => {
-  formData.value.bankAccountNumbers.push({
-    number: ''
-  });
-};
-
-const removeBankAccountNumber = (index) => {
-  formData.value.bankAccountNumbers.splice(index, 1);
-};
-
-const addBankAccountNumberTanggungan = () => {
-  formData.value.bankAccountNumbersTanggungan.push({
-    number: ''
-  });
-};
-
-const removeBankAccountNumberTanggungan = (index) => {
-  formData.value.bankAccountNumbersTanggungan.splice(index, 1);
-};
-
-// ============================================================================
 // LOCATION & UTILITY FUNCTIONS
 // ============================================================================
 const getLocation = (field) => {
-  formData.value[field].location = 'Lokasi semasa';
-  toast.success('Lokasi berjaya diperoleh!');
+  if (field === "addressInfo") {
+    formData.value.addressInfo.geolokasi = "Lokasi semasa";
+  } else {
+    formData.value[field].geolokasi = "Lokasi semasa";
+  }
+  toast.success("Lokasi berjaya diperoleh!");
 };
 
 // ============================================================================
@@ -3554,7 +7692,7 @@ const getLocation = (field) => {
 // ============================================================================
 const openKursusModal = () => {
   if (!formData.value.addressInfo.location && !selectedDaerah.value) {
-    toast.error('Sila pilih lokasi atau daerah terlebih dahulu');
+    toast.error("Sila pilih lokasi atau daerah terlebih dahulu");
     return;
   }
   showKursusModal.value = true;
@@ -3581,7 +7719,7 @@ const confirmKursusSelection = () => {
     formData.value.addressInfo.kursus_terpilih = `${selectedKursus.value.nama} - ${selectedGuru.value.nama}`;
     formData.value.addressInfo.selectedKursus = selectedKursus.value;
     formData.value.addressInfo.selectedGuru = selectedGuru.value;
-    toast.success('Kursus dan guru berjaya dipilih!');
+    toast.success("Kursus dan guru berjaya dipilih!");
     closeKursusModal();
   }
 };
@@ -3590,61 +7728,23 @@ const confirmKursusSelection = () => {
 // HELPER FUNCTIONS
 // ============================================================================
 const getKariahLabel = (value) => {
-  const kariah = kariahOptions.find(k => k.value === value);
-  return kariah ? kariah.label : '';
+  const kariah = kariahOptions.find((k) => k.value === value);
+  return kariah ? kariah.label : "";
 };
 
 const getPakOfficerLabel = (value) => {
   // Search through all PAK officers to find the matching one
   for (const kariah in pakOfficersByKariah) {
-    const officer = pakOfficersByKariah[kariah].find(o => o.value === value);
+    const officer = pakOfficersByKariah[kariah].find((o) => o.value === value);
     if (officer) return officer.label;
   }
-  return '';
+  return "";
 };
 
 const downloadDocument = (doc) => {
   // This would typically trigger a download
-  console.log('Downloading document:', doc.name);
+  console.log("Downloading document:", doc.name);
   toast.success(`Muat turun ${doc.name} bermula`);
-};
-
-const navigateToStepA = (stepId) => {
-  // Optional: Add validation to prevent jumping to steps that haven't been completed
-  // For now, allow free navigation
-  currentStepA.value = stepId;
-};
-
-const navigateToStepB = (stepId) => {
-  // Optional: Add validation to prevent jumping to steps that haven't been completed
-  // For now, allow free navigation
-  currentStepB.value = stepId;
-};
-
-const handleProgressBarClickA = (event) => {
-  const progressBar = event.currentTarget;
-  const rect = progressBar.getBoundingClientRect();
-  const clickX = event.clientX - rect.left;
-  const progressBarWidth = rect.width;
-  const clickPercentage = clickX / progressBarWidth;
-  const targetStep = Math.ceil(clickPercentage * totalStepsA);
-  
-  // Ensure the step is within valid range
-  const validStep = Math.max(1, Math.min(targetStep, totalStepsA));
-  currentStepA.value = validStep;
-};
-
-const handleProgressBarClickB = (event) => {
-  const progressBar = event.currentTarget;
-  const rect = progressBar.getBoundingClientRect();
-  const clickX = event.clientX - rect.left;
-  const progressBarWidth = rect.width;
-  const clickPercentage = clickX / progressBarWidth;
-  const targetStep = Math.ceil(clickPercentage * totalStepsB);
-  
-  // Ensure the step is within valid range
-  const validStep = Math.max(1, Math.min(targetStep, totalStepsB));
-  currentStepB.value = validStep;
 };
 </script>
 
