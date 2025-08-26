@@ -90,11 +90,11 @@
 
           <!-- Tabbed Table Section -->
           <rs-tab v-model="activeTab" class="mt-4">
-            <rs-tab-item title="Belum Disemak">
+            <rs-tab-item title="Sedang Proses">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-pending`"
-                  :data="getTableDataByStatus(['Belum Disemak'])"
+                  :data="getTableDataByStatus(['Sedang Proses'])"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -272,7 +272,7 @@
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-pending`"
-                  :data="getTableDataByStatus(['Belum Disemak'])"
+                  :data="getTableDataByStatus(['Sedang Proses'])"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -450,7 +450,7 @@
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-pending`"
-                  :data="getTableDataByStatus(['Belum Disemak'])"
+                  :data="getTableDataByStatus(['Sedang Proses'])"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -754,14 +754,14 @@ const activities = ref([
     NamaAktiviti: 'Mesyuarat Perancangan Bulanan',
     Tarikh: '18-04-2024',
     Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
-    status: 'Belum Disemak'
+    status: 'Sedang Proses'
   },
   {
     id: 'MP2024-003',
     NamaAktiviti: 'Latihan Pengurusan Zakat',
     Tarikh: '20-04-2024',
     Lokasi: 'Dewan Latihan LZS, Daerah Shah Alam',
-    status: 'Belum Disemak'
+    status: 'Sedang Proses'
   },
     // Activities with various statuses for Eksekutif role
   {
@@ -769,7 +769,7 @@ const activities = ref([
     NamaAktiviti: 'Mesyuarat Eksekutif Bulanan',
     Tarikh: '15-03-2024',
     Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
-    status: 'Belum Disemak'
+    status: 'Sedang Proses'
   },
   {
     id: 'MP2024-005',
@@ -806,7 +806,7 @@ const activities = ref([
      NamaAktiviti: 'Latihan Pengurusan Zakat',
     Tarikh: '25-03-2024',
     Lokasi: 'Dewan Latihan, Daerah Shah Alam',
-    status: 'Belum Disemak'
+    status: 'Sedang Proses'
   },
   {
     id: 'MP2024-010',
@@ -819,21 +819,21 @@ const activities = ref([
 
 const eksekutifStatusOptions = [
   { label: 'Sila pilih...', value: '' },
-  { label: 'Belum Disemak', value: 'Belum Disemak' },
+  { label: 'Sedang Proses', value: 'Sedang Proses' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 const ketuaDivisyenStatusOptions = [
   { label: 'Sila pilih...', value: '' },
-  { label: 'Belum Disemak', value: 'Belum Disemak' },
+  { label: 'Sedang Proses', value: 'Sedang Proses' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 const ketuaJabatanStatusOptions = [
   { label: 'Sila pilih...', value: '' },
-  { label: 'Belum Disemak', value: 'Belum Disemak' },
+  { label: 'Sedang Proses', value: 'Sedang Proses' },
   { label: 'Diluluskan', value: 'Diluluskan' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
@@ -851,7 +851,7 @@ const isSearchPerformed = ref(false);
 const searchResults = ref([]);
 
 // Tab management
-const activeTab = ref("Belum Disemak");
+const activeTab = ref("Sedang Proses");
 const tableKey = ref(0);
 
 // Computed filtered activities based on role
@@ -1013,7 +1013,7 @@ const filteredKetuaDivisyenActivities = computed(() => {
 
 const pendingKetuaDivisyenActivities = computed(() => {
   return filteredKetuaDivisyenActivities.value.filter(activity => 
-    activity.status === 'Belum Disemak'
+    activity.status === 'Sedang Proses'
   ).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1113,7 +1113,7 @@ const refreshTable = () => {
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'Belum Disemak':
+    case 'Sedang Proses':
       return 'bg-gray-100 text-gray-800'
     case 'Diluluskan':
       return 'bg-green-100 text-green-800'
@@ -1126,8 +1126,8 @@ const getStatusColor = (status) => {
 
 const getStatusLabel = (status) => {
   switch (status) {
-    case 'Belum Disemak':
-      return 'Belum Disemak'
+    case 'Sedang Proses':
+      return 'Sedang Proses'
     case 'Diluluskan':
       return 'Diluluskan'
     case 'Ditolak':
@@ -1139,7 +1139,7 @@ const getStatusLabel = (status) => {
 
 const getStatusVariant = (status) => {
   switch (status) {
-    case 'Belum Disemak':
+    case 'Sedang Proses':
       return 'warning'
     case 'Diluluskan':
       return 'success'
@@ -1152,7 +1152,7 @@ const getStatusVariant = (status) => {
 
 const getActionRoute = (status, activityId) => {
   switch (status) {
-    case 'Belum Disemak':
+    case 'Sedang Proses':
       return '/BF-PA/PE/MP/01'
     case 'Diluluskan':
       return `/BF-PA/PE/MP/view-lulus`
@@ -1165,7 +1165,7 @@ const getActionRoute = (status, activityId) => {
 
 const getActionButtonText = (status) => {
   switch (status) {
-    case 'Belum Disemak':
+    case 'Sedang Proses':
       return 'Semak'
     case 'Diluluskan':
       return 'Lihat'
@@ -1550,12 +1550,12 @@ const pageSize = ref(10);
 // Initialize with best available tab
 onMounted(() => {
   // Set default tab based on available data
-  const hasPending = activities.value.some(a => a.status === 'Belum Disemak');
+  const hasPending = activities.value.some(a => a.status === 'Sedang Proses');
   const hasApproved = activities.value.some(a => a.status === 'Diluluskan');
   const hasRejected = activities.value.some(a => a.status === 'Ditolak');
   
   if (hasPending) {
-    activeTab.value = "Belum Disemak";
+    activeTab.value = "Sedang Proses";
   } else if (hasApproved) {
     activeTab.value = "Diluluskan";
   } else if (hasRejected) {
