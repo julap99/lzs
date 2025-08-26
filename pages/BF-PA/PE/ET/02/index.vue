@@ -48,11 +48,11 @@
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
-
+                  <th class="px-4 py-3 font-medium text-gray-900">Pilih</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Kategori/Jawatan</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Kariah/Daerah</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kariah</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Senarai Aktiviti Dihadiri</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Hadir Aktiviti (kali)</th>
                 </tr>
