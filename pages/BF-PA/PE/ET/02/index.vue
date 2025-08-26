@@ -167,40 +167,13 @@
               <tbody class="divide-y bg-white">
                 <tr v-for="(r, index) in recipients" :key="r.paId" class="hover:bg-gray-50">
                   <td class="px-4 py-3 font-medium text-gray-900">
-                    <FormKit
-                      v-if="r._isEditing"
-                      v-model="r.name"
-                      type="text"
-                      placeholder="Nama penerima"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
-                    />
-                    <span v-else>{{ r.name }}</span>
+                    <span>{{ r.name }}</span>
                   </td>
                   <td class="px-4 py-3 text-gray-900">
-                    <FormKit
-                      v-if="r._isEditing"
-                      v-model="r.ic"
-                      type="text"
-                      placeholder="Nombor IC"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
-                    />
-                    <span v-else>{{ r.ic }}</span>
+                    <span>{{ r.ic }}</span>
                   </td>
                   <td class="px-4 py-3 text-gray-900">
-                    <FormKit
-                      v-if="r._isEditing"
-                      v-model="r.category"
-                      type="select"
-                      :options="categoryOptions"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
-                    />
-                    <span v-else>{{ r.category }}</span>
+                    <span>{{ r.category }}</span>
                   </td>
                   <td class="px-4 py-3 w-48">
                     <FormKit
@@ -470,6 +443,7 @@ function handleEditAttempt(recipient) {
 
 // Function to start editing a recipient
 function startEdit(recipient) {
+  // Only store original allowance since that's the only editable field
   recipient._originalAllowance = Number(recipient.allowance);
   recipient._isEditing = true;
 }
@@ -928,37 +902,15 @@ watch(() => [query.year, query.type], () => seedData(), { immediate: true });
 
 // Enhanced validation functions
 function validateDuplicateRecipient(newRecipient) {
-  // Find existing recipient with same IC, but exclude the current one being edited
-  const existingRecipient = recipients.value.find(r => r.ic === newRecipient.ic && r.paId !== newRecipient.paId);
-  if (existingRecipient) {
-    return {
-      valid: false,
-      message: `Penerima dengan IC ${newRecipient.ic} sudah wujud dalam senarai`,
-      severity: 'error'
-    };
-  }
+  // No duplicate checking needed since only allowance can be edited
+  // Name, IC, and category are read-only
   return { valid: true };
 }
 
 function validateRecipientData(recipient) {
   const errors = [];
   
-  if (!recipient.name || recipient.name.trim().length < 2) {
-    errors.push('Nama penerima mestilah sekurang-kurangnya 2 aksara');
-  }
-  
-  if (!recipient.ic || !/^\d{12}$/.test(recipient.ic)) {
-    errors.push('Nombor IC mestilah 12 digit');
-  }
-  
-  if (!recipient.category) {
-    errors.push('Kategori penerima diperlukan');
-  }
-  
-  if (!recipient.parish) {
-    errors.push('Kariah/daerah diperlukan');
-  }
-  
+  // Only validate allowance since other fields are read-only
   if (recipient.allowance < 0) {
     errors.push('Elaun tidak boleh negatif');
   }
@@ -1045,12 +997,6 @@ function saveRecipient(recipient) {
     return;
   }
   
-  const duplicateCheck = validateDuplicateRecipient(recipient);
-  if (!duplicateCheck.valid) {
-    toast.error(duplicateCheck.message);
-    return;
-  }
-  
   // Clean up original allowance value
   if (recipient._originalAllowance !== undefined) {
     delete recipient._originalAllowance;
@@ -1081,7 +1027,7 @@ function removeRecipient(index) {
 
 // Cancel edit function
 function cancelEdit(recipient) {
-  // Revert allowance to original value
+  // Revert allowance to original value (only field that can be edited)
   if (recipient._originalAllowance !== undefined) {
     recipient.allowance = recipient._originalAllowance;
     delete recipient._originalAllowance;
