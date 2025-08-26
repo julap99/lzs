@@ -19,34 +19,35 @@
       </template>
     </rs-card>
 
-    <!-- User Profile Card -->
-    <rs-card class="mb-6">
-      <template #body>
-        <div class="flex items-center justify-between p-4">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-lg">
-              A
+         <!-- User Profile Card -->
+     <rs-card class="mb-6">
+       <template #body>
+         <div class="flex items-center justify-between p-4">
+           <div class="flex items-center gap-4">
+             <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-lg">
+               {{ userProfile.nama.charAt(0) }}
+             </div>
+                           <div>
+                <h2 class="text-lg font-semibold text-gray-900">{{ userProfile.nama }}</h2>
+                <p class="text-sm text-gray-600">{{ userProfile.kategori }}</p>
+                <p class="text-xs text-success font-medium">Status: {{ userProfile.status }}</p>
+                <p class="text-xs text-primary font-medium">Kariah: {{ userProfile.kariah }}</p>
+                <p class="text-xs text-info font-medium">Kategori: {{ getKategoriDisplayNames.join(', ') }}</p>
+              </div>
+           </div>
+                       <div class="flex gap-2">
+              <rs-button size="sm" variant="primary-outline" @click="showKadTauliah = true" title="Kad Tauliah">
+                <Icon name="heroicons:identification" size="16" class="mr-2" />
+                Kad Tauliah
+              </rs-button>
+              <rs-button size="sm" variant="primary-outline" @click="showSuratTawaran = true" title="Surat Tawaran">
+                <Icon name="heroicons:document-text" size="16" class="mr-2" />
+                Surat Tawaran
+              </rs-button>
             </div>
-            <div>
-              <h2 class="text-lg font-semibold text-gray-900">{{ userProfile.nama }}</h2>
-              <p class="text-sm text-gray-600">Penolong Amil Kariah (PAK)</p>
-              <p class="text-xs text-success font-medium">Status: {{ userProfile.status }}</p>
-              <p class="text-xs text-primary font-medium">Kariah: {{ userProfile.kariah }}</p>
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <rs-button size="sm" variant="primary-outline" @click="showKadTauliah = true" title="Kad Tauliah">
-              <Icon name="heroicons:identification" size="16" class="mr-2" />
-              Kad Tauliah
-            </rs-button>
-            <rs-button size="sm" variant="primary-outline" @click="showSuratTawaran = true" title="Surat Tawaran">
-              <Icon name="heroicons:document-text" size="16" class="mr-2" />
-              Surat Tawaran
-            </rs-button>
-          </div>
-        </div>
-      </template>
-    </rs-card>
+         </div>
+       </template>
+     </rs-card>
 
     <!-- PAK Quick Stats - Focus on Agihan -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -201,65 +202,104 @@
     </rs-modal>
 
     <!-- Kad Tauliah Modal -->
-    <rs-modal v-model="showKadTauliah" title="Kad Tauliah Penolong Amil" size="lg" position="center">
+    <rs-modal v-model="showKadTauliah" :title="`Kad Tauliah Penolong Amil - ${getKategoriDisplayNames.join(', ')}`" size="xl" position="center">
       <template #body>
         <div class="space-y-6">
-          <!-- Kad Tauliah Design -->
-          <div class="bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/20 rounded-lg p-6">
-            <div class="text-center mb-6">
-              <img src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" alt="LZS" class="h-16 mx-auto mb-4" />
-              <h2 class="text-xl font-bold text-primary mb-2">KAD TAULIAH</h2>
-              <h3 class="text-lg font-semibold text-gray-900">PENOLONG AMIL KARIAH (PAK)</h3>
+          <!-- Kad Tauliah Image Display -->
+          <div class="text-center">
+            <div class="mb-4">
+              <!-- <rs-badge variant="primary" size="lg">
+                Kategori: {{ getKategoriDisplayNames.join(', ') }}
+              </rs-badge> -->
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
-                  <p class="text-gray-900 font-semibold">{{ userProfile.nama }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan</label>
-                  <p class="text-gray-900">{{ userProfile.noKP }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                  <p class="text-gray-900">{{ userProfile.kategori }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Kariah</label>
-                  <p class="text-gray-900">{{ userProfile.kariah }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Institusi</label>
-                  <p class="text-gray-900">{{ userProfile.institusi }}</p>
-                </div>
-              </div>
-              
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Lantikan</label>
-                  <p class="text-gray-900">{{ userProfile.tarikhLantikan }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                  <rs-badge variant="success">{{ userProfile.status }}</rs-badge>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Kod Kad</label>
-                  <p class="text-gray-900 font-mono">PAK-{{ userProfile.noKP.slice(-6) }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Tempoh Sah</label>
-                  <p class="text-gray-900">2024 - 2027</p>
+            <!-- Select All option for multiple images -->
+            <div v-if="kadTauliahImages.length > 1" class="mb-4 p-3 bg-gray-50 rounded-lg border">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-700">Pilih Semua Kad Tauliah:</span>
+                <div class="flex items-center gap-2">
+                  <input 
+                    type="checkbox" 
+                    id="select-all"
+                    v-model="selectAllKadTauliah"
+                    @change="toggleSelectAll"
+                    class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
+                  />
+                  <label for="select-all" class="text-sm font-medium text-gray-700">
+                    {{ selectAllKadTauliah ? 'Hapus Semua' : 'Pilih Semua' }}
+                  </label>
                 </div>
               </div>
             </div>
             
-            <div class="mt-6 pt-4 border-t border-gray-200">
-              <div class="text-center text-sm text-gray-600">
-                <p>Kad ini sah sehingga 31 Disember 2027</p>
-                <p class="mt-1">Lembaga Zakat Selangor</p>
+            <!-- Display multiple images if multiple kategori selected -->
+            <div v-if="kadTauliahImages.length > 1" class="space-y-6">
+              <div 
+                v-for="(image, index) in kadTauliahImages" 
+                :key="index"
+                class="border-b border-gray-200 pb-6 last:border-b-0"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <rs-badge variant="primary" size="lg">
+                    Kad Tauliah {{ getKategoriDisplayNames[index] }}
+                  </rs-badge>
+                  <div class="flex items-center gap-2">
+                    <input 
+                      type="checkbox" 
+                      :id="`kad-${index}`"
+                      v-model="selectedKadTauliah[index]"
+                      class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
+                    />
+                    <label :for="`kad-${index}`" class="text-sm font-medium text-gray-700">
+                      Pilih untuk muat turun
+                    </label>
+                  </div>
+                </div>
+                <img 
+                  :src="image" 
+                  :alt="`Kad Tauliah ${getKategoriDisplayNames[index]}`" 
+                  class="max-w-full h-auto mx-auto rounded-lg shadow-lg border-2 border-primary/20"
+                  style="max-height: 400px;"
+                />
+              </div>
+            </div>
+            
+            <!-- Display single image if only one kategori selected -->
+            <div v-else>
+              <div class="flex items-center justify-between mb-3">
+                <rs-badge variant="primary" size="lg">
+                  Kad Tauliah {{ getKategoriDisplayName }}
+                </rs-badge>
+                <div class="flex items-center gap-2">
+                  <input 
+                    type="checkbox" 
+                    id="kad-single"
+                    v-model="selectedKadTauliah[0]"
+                    class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
+                  />
+                  <label for="kad-single" class="text-sm font-medium text-gray-700">
+                    Pilih untuk muat turun
+                  </label>
+                </div>
+              </div>
+              <img 
+                :src="kadTauliahImage" 
+                :alt="`Kad Tauliah ${getKategoriDisplayName}`" 
+                class="max-w-full h-auto mx-auto rounded-lg shadow-lg border-2 border-primary/20"
+                style="max-height: 500px;"
+              />
+            </div>
+          </div>
+          
+          <!-- Selection Summary -->
+          <div v-if="kadTauliahImages.length > 1" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div class="flex items-center justify-between">
+              <div class="text-sm text-blue-800">
+                <span class="font-medium">Kad Tauliah yang dipilih:</span>
+                <span class="ml-2">{{ getSelectedKadTauliahCount }} daripada {{ kadTauliahImages.length }}</span>
+              </div>
+              <div class="text-xs text-blue-600">
+                Setiap kad tauliah akan dimuat turun sebagai fail berasingan
               </div>
             </div>
           </div>
@@ -270,101 +310,139 @@
           <rs-button variant="secondary-outline" @click="showKadTauliah = false">
             Tutup
           </rs-button>
-          <rs-button variant="primary" @click="downloadKadTauliah">
+          <rs-button 
+            variant="primary" 
+            @click="downloadKadTauliah"
+            :disabled="getSelectedKadTauliahCount === 0"
+          >
             <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
-            Muat Turun
+            Muat Turun {{ getSelectedKadTauliahCount > 0 ? `(${getSelectedKadTauliahCount})` : '' }}
           </rs-button>
         </div>
       </template>
     </rs-modal>
 
-    <!-- Surat Tawaran Modal -->
-    <rs-modal v-model="showSuratTawaran" title="Surat Tawaran Pelantikan" size="lg" position="center">
-      <template #body>
-        <div class="space-y-6">
-          <!-- Letter Header -->
-          <div class="flex justify-between items-start pb-4 border-b">
-            <div class="flex-1">
-              <img src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" alt="LZS" class="h-12 mb-4" />
-              <div class="text-sm text-gray-600">
-                <div class="font-semibold text-gray-900">Lembaga Zakat Selangor</div>
-                <div>Majlis Agama Islam Selangor</div>
-                <div>Menara Selatan, Bangunan Sultan Idris Shah</div>
-                <div>Persiaran Masjid, Seksyen 5</div>
-                <div>40000 Shah Alam, Selangor</div>
-              </div>
-            </div>
-            <div class="text-right text-sm text-gray-600">
-              <div>Rujukan: LZS/PA/2024/001</div>
-              <div>Tarikh: {{ new Date().toLocaleDateString('ms-MY') }}</div>
-            </div>
-          </div>
+         <!-- Surat Tawaran Modal -->
+     <rs-modal v-model="showSuratTawaran" title="Surat Tawaran Pelantikan" size="xl" position="center">
+       <template #body> 
+         <div class="space-y-6 font-serif text-sm leading-relaxed">
+           <!-- Letter Header -->
+           <div class="mb-6">
+             <!-- LZS Logo and Lembaga Zakat Information -->
+             <div class="flex justify-between items-start mb-4">
+               <!-- LZS Logo on the left -->
+               <div class="flex-shrink-0">
+                 <img src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" alt="LZS" class="h-16" />
+               </div>
+               
+               <!-- Lembaga Zakat Information on the right -->
+               <div class="text-right space-y-2">
+                 <!-- Organization Name and Address -->
+                 <div class="space-y-1">
+                   <div class="font-bold text-base">Lembaga Zakat Selangor (MAIS)</div>
+                   <div class="text-sm">Menara Zakat Sultan Idris Shah,</div>
+                   <div class="text-sm">No. 1, Persiaran Bandar Raya, Seksyen 14,</div>
+                   <div class="text-sm">40000 Shah Alam, Selangor Darul Ehsan.</div>
+                 </div>
+                 
+                 <!-- Contact Details -->
+                 <div class="text-sm space-y-1">
+                   <div>Tel: +603 8314 2222</div>
+                   <div>Faks: +603 8314 2233/2244</div>
+                 </div>
+               </div>
+             </div>
+             
+             <!-- Reference and Date - Separate left side section -->
+             <div class="text-left space-y-1">
+               <div class="text-sm">
+                 <span class="font-semibold">Rujukan kami: </span>
+                 <span class="font-semibold">LZS/DOAA/JPPA/T/600/PELANTIKAN PA Bil (413/2025)</span>
+               </div>
+               <div class="text-sm">
+                 <span class="font-semibold">Tarikh: </span>
+                 <span class="font-semibold">06 Jun 2025</span>
+               </div>
+               <div class="text-sm">
+                 <span class="font-semibold">09 Zulhijjah 1446H</span>
+               </div>
+             </div>
+           </div>
 
-          <!-- Letter Content -->
-          <div class="space-y-4 text-sm">
-            <div>
-              <p class="font-semibold text-gray-900 mb-2">Kepada:</p>
-              <p class="text-gray-700">{{ userProfile.nama }}</p>
-              <p class="text-gray-700">{{ userProfile.noKP }}</p>
-            </div>
-            
-            <div>
-              <p class="font-semibold text-gray-900 mb-2">Subjek: Tawaran Pelantikan Sebagai Penolong Amil Kariah (PAK)</p>
-            </div>
-            
-            <div class="space-y-3 text-gray-700">
-              <p>Assalamualaikum W.B.T.</p>
-              
-              <p>
-                Dengan hormatnya dimaklumkan bahawa Lembaga Zakat Selangor (LZS) dengan sukacitanya ingin menawarkan 
-                jawatan Penolong Amil Kariah (PAK) kepada Tuan/Puan.
-              </p>
-              
-              <p>
-                <strong>Butiran Tawaran:</strong>
-              </p>
-              <ul class="list-disc list-inside space-y-1 ml-4">
-                <li>Jawatan: {{ userProfile.kategori }}</li>
-                <li>Kariah: {{ userProfile.kariah }}</li>
-                <li>Institusi: {{ userProfile.institusi }}</li>
-                <li>Tempoh: 2024 - 2027</li>
-                <li>Elaun: RM 500.00 sebulan</li>
-                <li>Skop Tugas: Agihan bantuan kepada asnaf dalam kariah</li>
-              </ul>
-              
-              <p>
-                Tuan/Puan dikehendaki untuk:
-              </p>
-              <ol class="list-decimal list-inside space-y-1 ml-4">
-                <li>Menerima tawaran ini dalam tempoh 14 hari</li>
-                <li>Lengkapkan maklumat profil dalam sistem</li>
-                <li>Menghadiri sesi orientasi yang akan diatur</li>
-                <li>Memulakan tugas agihan pada tarikh yang ditetapkan</li>
-                <li>Bertanggungjawab terhadap agihan bantuan kepada asnaf dalam kariah</li>
-              </ol>
-              
-              <p>
-                Sekiranya Tuan/Puan bersetuju dengan tawaran ini, sila log masuk ke sistem dan lengkapkan 
-                maklumat profil yang diperlukan.
-              </p>
-              
-              <p>
-                Sekian, terima kasih.
-              </p>
-            </div>
-          </div>
+           <!-- Title -->
+           <div class="text-center my-8">
+             <h2 class="text-xl font-bold uppercase tracking-wider">SURAT TAWARAN PELANTIKAN</h2>
+           </div>
 
-          <!-- Signature -->
-          <div class="mt-8 pt-4 border-t border-gray-200">
-            <div class="text-center">
-              <p class="font-semibold text-gray-900">Yang benar,</p>
-              <p class="text-gray-700 mt-4">_________________________</p>
-              <p class="text-sm text-gray-600">Ketua Eksekutif</p>
-              <p class="text-sm text-gray-600">Lembaga Zakat Selangor</p>
-            </div>
-          </div>
-        </div>
-      </template>
+           <!-- Recipient Address -->
+           <div class="space-y-1">
+             <p class="font-bold text-lg">{{ userProfile.nama }}</p>
+             <p>No.8, Jalan Gp 3/4</p>
+             <p>Taman Gombak Permai</p>
+             <p>68100 Batu Caves</p>
+             <p>SELANGOR DARUL EHSAN.</p>
+           </div>
+
+           <!-- Greeting -->
+           <div class="my-6">
+             <p class="font-semibold">Tuan,</p>
+           </div>
+
+           <!-- Subject -->
+           <div class="my-6">
+             <p class="font-bold text-lg">PELANTIKAN SEBAGAI KETUA PENOLONG AMIL KARIAH LEMBAGA ZAKAT SELANGOR (MAIS) SESI 2025</p>
+             <div class="border-b-2 border-gray-400 mt-2"></div>
+           </div>
+
+           <!-- Islamic Greeting -->
+           <div class="text-center my-6">
+             <p class="text-lg font-semibold ">السلام عليكم ورحمة الله وبركاته</p>
+           </div>
+
+           <!-- Opening -->
+           <div class="my-4">
+             <p>Semoga surat ini menemui tuan dalam kemanisan iman serta mendapat keberkatan dan kerahmatan daripada Allah S.W.T., In Shaa Allah.</p>
+           </div>
+
+           <!-- Paragraph 2 -->
+           <div class="my-4">
+             <p class="mb-2">2. Sukacita dimaklumkan bahawa Pemegang Amanah Lembaga Zakat Selangor (MAIS), Berdaftar (selepas ini dirujuk sebagai "LZS") bersetuju melantik pihak tuan sebagai Ketua Penolong Amil Kariah sebagaimana maklumat yang dinyatakan di dalam Butiran Pelantikan. Terma dan syarat pelantikan adalah sebagaimana Terma dan Syarat Umum Pelantikan dan Panduan Pengurusan Penolong Amil Kariah dan Komuniti yang dilampirkan. Surat Tawaran Pelantikan ini hendaklah menjadi kontrak mengikat sah di antara LZS dan pihak tuan.</p>
+           </div>
+
+           <!-- Paragraph 3 -->
+           <div class="my-4">
+             <p class="mb-2">3. Sekiranya pihak tuan bersetuju dengan semua terma dan syarat yang dinyatakan di dalam Surat Tawaran Pelantikan ini, pihak tuan dikehendaki mengisi dan mengembalikan Borang Setuju Terima dalam tempoh empat belas (14) hari bekerja dari tarikh penerimaan Surat Tawaran Pelantikan ini. LZS menganggap pihak tuan tidak berminat untuk menerima tawaran di atas sekiranya tiada sebarang jawapan diberikan dalam tempoh tiga puluh (30) bekerja daripada tarikh Surat Tawaran Pelantikan ini.</p>
+           </div>
+
+           <!-- Paragraph 4 -->
+           <div class="my-4">
+             <p class="mb-2">4. Segala kerjasama daripada pihak tuan amat dihargai dan didahului dengan ucapan ribuan terima kasih. Diharapkan agar pihak tuan dapat menjalankan tugas dan tanggungjawab dengan baik dan amanah serta mematuhi terma-terma dan syarat-syarat yang ditetapkan oleh LZS.</p>
+           </div>
+
+           <!-- Paragraph 5 -->
+           <div class="my-4">
+             <p class="mb-2">5. Sebarang pertanyaan mengenai perkara di atas pihak tuan boleh menghubungi Talian Zakat Selangor 1-300-88-4343.</p>
+           </div>
+
+           <!-- Closing -->
+           <div class="my-6">
+             <p>Sekian.</p>
+           </div>
+
+           <!-- Signature Section -->
+           <div class="mt-12">
+             <div class="text-left">
+               <p class=" mb-8">Yang benar,</p>
+               <p class="font-bold text-lg mb-2">PEMEGANG AMANAH</p>
+               <p class="font-bold text-lg mb-2">LEMBAGA ZAKAT SELANGOR (MAIS), BERDAFTAR</p>
+               <p class="font-bold text-lg mb-8">MD YUSMIZAN BIN YUSUF</p>
+               <p class="font-semibold">Timbalan Ketua Divisyen Operasi Agihan Asnaf</p>
+             </div>
+           </div>
+
+           
+         </div>
+       </template>
       <template #footer>
         <div class="flex justify-end gap-2">
           <rs-button variant="secondary-outline" @click="showSuratTawaran = false">
@@ -381,7 +459,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed, watch, nextTick } from "vue";
 
 definePageMeta({
   title: "Dashboard Penolong Amil",
@@ -414,10 +492,52 @@ const userProfile = ref({
   telefon: "0123456789",
   kategori: "Penolong Amil Kariah (PAK)",
   institusi: "Masjid Wilayah Persekutuan",
-      tarikhLantikan: "15-01-2024",
+  tarikhLantikan: "15-01-2024",
   status: "Aktif",
   kariah: "Kariah A"
 });
+
+// Function to get kategori from localStorage and update userProfile
+const updateKategoriFromStorage = () => {
+  const storedKategori = localStorage.getItem('penolongAmilKategori')
+  if (storedKategori) {
+    try {
+      // Parse the stored kategori (now stored as JSON array)
+      const selectedKategori = JSON.parse(storedKategori)
+      
+      if (Array.isArray(selectedKategori) && selectedKategori.length > 0) {
+        // Map the stored kategori to the full kategori names
+        const kategoriMapping = {
+          'Fitrah': 'Penolong Amil Fitrah (PAF)',
+          'Padi': 'Penolong Amil Padi (PAP)',
+          'Kariah': 'Penolong Amil Kariah (PAK)',
+          'Komuniti': 'Penolong Amil Komuniti (PAK+)'
+        }
+        
+        // Create combined kategori text
+        const fullKategoriNames = selectedKategori.map(kat => kategoriMapping[kat]).filter(Boolean)
+        if (fullKategoriNames.length > 0) {
+          userProfile.value.kategori = fullKategoriNames.join(', ')
+          console.log('Kategori loaded from storage:', userProfile.value.kategori)
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing stored kategori:', error)
+      // Fallback for old format (single kategori)
+      const kategoriMapping = {
+        'Fitrah': 'Penolong Amil Fitrah (PAF)',
+        'Padi': 'Penolong Amil Padi (PAP)',
+        'Kariah': 'Penolong Amil Kariah (PAK)',
+        'Komuniti': 'Penolong Amil Komuniti (PAK+)'
+      }
+      
+      if (kategoriMapping[storedKategori]) {
+        userProfile.value.kategori = kategoriMapping[storedKategori]
+        console.log('Kategori loaded from storage (fallback):', userProfile.value.kategori)
+      }
+    }
+  }
+};
 
 // Stats data - PAK focused on Agihan
 const stats = ref({
@@ -528,11 +648,64 @@ const showProfile = ref(false);
 const showKadTauliah = ref(false);
 const showSuratTawaran = ref(false);
 
+// Reactive array to track which kad tauliah are selected for download
+const selectedKadTauliah = ref([]);
+const selectAllKadTauliah = ref(false);
+
 
 const downloadKadTauliah = () => {
-  // In real implementation, this would generate and download PDF
-  alert('Muat turun Kad Tauliah...');
+  const selectedKadTauliahList = getSelectedKadTauliahList();
+  
+  if (selectedKadTauliahList.length === 0) {
+    alert('Sila pilih sekurang-kurangnya satu Kad Tauliah untuk dimuat turun.');
+    return;
+  }
+  
+  // In real implementation, this would generate and download PDFs for each selected kad tauliah
+  alert(`Muat turun ${selectedKadTauliahList.length} Kad Tauliah...\n\nKad Tauliah yang dipilih:\n${selectedKadTauliahList.map(item => `- ${item.kategori}`).join('\n')}`);
+  
+  // Reset selections after download
+  resetKadTauliahSelection();
   showKadTauliah.value = false;
+};
+
+// Function to get list of selected kad tauliah
+const getSelectedKadTauliahList = () => {
+  const selectedList = [];
+  selectedKadTauliah.value.forEach((isSelected, index) => {
+    if (isSelected && kadTauliahImages.value[index]) {
+      selectedList.push({
+        image: kadTauliahImages.value[index],
+        kategori: getKategoriDisplayNames.value[index],
+        index: index
+      });
+    }
+  });
+  return selectedList;
+};
+
+// Function to toggle select all
+const toggleSelectAll = () => {
+  if (selectAllKadTauliah.value) {
+    // Select all
+    selectedKadTauliah.value = selectedKadTauliah.value.map(() => true);
+  } else {
+    // Deselect all
+    selectedKadTauliah.value = selectedKadTauliah.value.map(() => false);
+  }
+};
+
+// Function to reset kad tauliah selection
+const resetKadTauliahSelection = () => {
+  selectedKadTauliah.value = selectedKadTauliah.value.map(() => false);
+  selectAllKadTauliah.value = false;
+};
+
+// Function to initialize kad tauliah selection when modal opens
+const initializeKadTauliahSelection = () => {
+  const imageCount = kadTauliahImages.value.length;
+  selectedKadTauliah.value = new Array(imageCount).fill(false);
+  selectAllKadTauliah.value = false;
 };
 
 const downloadSuratTawaran = () => {
@@ -575,9 +748,104 @@ const handleAduan = (aduanId) => {
   navigateTo(`/BF-PA/PP/penolong-amil/aduan/${aduanId}/urus`);
 };
 
+// Computed property to get all kad tauliah images based on selected kategori
+const kadTauliahImages = computed(() => {
+  const storedKategori = localStorage.getItem('penolongAmilKategori')
+  if (!storedKategori) return ['/penolongamil/Kad-tauliah-Kariah.JPG'] // Default
+  
+  try {
+    const selectedKategori = JSON.parse(storedKategori)
+    if (Array.isArray(selectedKategori)) {
+      return selectedKategori.map(kat => {
+        switch (kat) {
+          case 'Fitrah':
+            return '/penolongamil/Kad-tauliah-Fitrah.JPG'
+          case 'Padi':
+            return '/penolongamil/Kad-tauliah-Padi.JPG'
+          case 'Kariah':
+            return '/penolongamil/Kad-tauliah-Kariah.JPG'
+          case 'Komuniti':
+            return '/penolongamil/Kad-tauliah-Kariah.JPG' // Use Kariah image for Komuniti
+          default:
+            return '/penolongamil/Kad-tauliah-Kariah.JPG'
+        }
+      })
+    }
+  } catch (error) {
+    console.error('Error parsing stored kategori:', error)
+  }
+  
+  // Fallback for single kategori (old format)
+  const kategori = userProfile.value.kategori.toLowerCase()
+  if (kategori.includes('fitrah') || kategori.includes('paf')) {
+    return ['/penolongamil/Kad-tauliah-Fitrah.JPG']
+  } else if (kategori.includes('padi') || kategori.includes('pap')) {
+    return ['/penolongamil/Kad-tauliah-Padi.JPG']
+  } else if (kategori.includes('kariah') || kategori.includes('pak')) {
+    return ['/penolongamil/Kad-tauliah-Kariah.JPG']
+  } else {
+    return ['/penolongamil/Kad-tauliah-Kariah.JPG'] // Default
+  }
+});
+
+// Helper function to get kategori display names
+const getKategoriDisplayNames = computed(() => {
+  const storedKategori = localStorage.getItem('penolongAmilKategori')
+  if (!storedKategori) return ['Kariah'] // Default
+  
+  try {
+    const selectedKategori = JSON.parse(storedKategori)
+    if (Array.isArray(selectedKategori)) {
+      return selectedKategori
+    }
+  } catch (error) {
+    console.error('Error parsing stored kategori:', error)
+  }
+  
+  // Fallback for single kategori (old format)
+  const kategori = userProfile.value.kategori.toLowerCase()
+  if (kategori.includes('fitrah') || kategori.includes('paf')) {
+    return ['Fitrah']
+  } else if (kategori.includes('padi') || kategori.includes('pap')) {
+    return ['Padi']
+  } else if (kategori.includes('kariah') || kategori.includes('pak')) {
+    return ['Kariah']
+  } else {
+    return ['Kariah'] // Default
+  }
+});
+
+// Computed property to get the correct kad tauliah image based on kategori (for backward compatibility)
+const kadTauliahImage = computed(() => {
+  return kadTauliahImages.value[0] || '/penolongamil/Kad-tauliah-Kariah.JPG'
+});
+
+// Helper function to get kategori display name (for backward compatibility)
+const getKategoriDisplayName = computed(() => {
+  return getKategoriDisplayNames.value[0] || 'Kariah'
+});
+
+// Computed property to count selected kad tauliah
+const getSelectedKadTauliahCount = computed(() => {
+  return selectedKadTauliah.value.filter(Boolean).length;
+});
+
+// Watch for modal open to initialize selection
+watch(showKadTauliah, (newValue) => {
+  if (newValue) {
+    // Modal is opening, initialize selection
+    nextTick(() => {
+      initializeKadTauliahSelection();
+    });
+  }
+});
+
 onMounted(() => {
   // In real implementation, fetch user profile and stats
   console.log("Loading Penolong Amil dashboard");
+  
+  // Load kategori from localStorage
+  updateKategoriFromStorage();
   
   // Ensure sidebar is visible by removing menu-hide class
   const vLayout = document.querySelector('.v-layout')

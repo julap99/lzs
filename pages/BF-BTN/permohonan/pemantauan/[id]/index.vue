@@ -177,6 +177,7 @@
                             validation="required"
                             help="Pilih tarikh dan masa pemantauan dilakukan"
                             :value="kad.tarikhMasaPemantauan"
+                            v-model="kad.tarikhMasaPemantauan"
                           />
 
                           <!-- Status Kemajuan Kerja -->
@@ -187,6 +188,7 @@
                             validation="required"
                             :options="statusKemajuanOptions"
                             :value="kad.statusKemajuanKerja"
+                            v-model="kad.statusKemajuanKerja"
                           />
 
                           <!-- Peratusan Kemajuan Kerja -->
@@ -197,6 +199,7 @@
                             validation="required"
                             :options="peratusanKemajuanOptions"
                             :value="kad.peratusanKemajuanKerja"
+                            v-model="kad.peratusanKemajuanKerja"
                           />
 
                           <!-- Memo Pemantauan -->
@@ -211,6 +214,7 @@
                                 placeholder="Nama dokumen memo"
                                 validation="required"
                                 :value="kad.memoPemantauan"
+                                v-model="kad.memoPemantauan"
                                 :classes="{
                                   outer: 'flex-1 mb-0',
                                 }"
@@ -236,6 +240,7 @@
                             rows="4"
                             help="Catatan mengenai isu, komen atau penemuan semasa pemantauan"
                             :value="kad.catatanIsu"
+                            v-model="kad.catatanIsu"
                           />
                         </div>
 
@@ -246,56 +251,166 @@
                             Lampiran Dokumen
                           </h3>
 
-                          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div class="space-y-6">
                             <!-- Dropdown Pilihan Dokumen -->
-                            <div class="md:col-span-2">
+                            <div>
                               <FormKit
-                                type="checkbox"
-                                name="dokumenLampiran"
+                                type="select"
+                                name="pilihanDokumen"
                                 label="Pilihan Dokumen Lampiran"
+                                placeholder="Pilih dokumen yang berkaitan"
                                 :options="dokumenLampiranOptions"
                                 help="Pilih dokumen yang berkaitan dengan pemantauan ini"
-                                :value="kad.dokumenLampiran"
+                                v-model="selectedDocumentForKad[kad.id]"
                               />
                             </div>
 
+                            <!-- Tambah Button -->
+                            <div>
+                              <rs-button
+                                variant="primary"
+                                @click="addSelectedDocument(kad.id)"
+                                :disabled="!selectedDocumentForKad[kad.id]"
+                                class="!py-2 !px-4"
+                              >
+                                <Icon name="ph:plus" class="w-4 h-4 mr-2" />
+                                Tambah
+                              </rs-button>
+                            </div>
+
+                            <!-- List of Selected Documents -->
+                            <div v-if="kad.dokumenLampiran && kad.dokumenLampiran.length > 0">
+                              <h4 class="font-medium text-gray-900 mb-3">Senarai Dokumen</h4>
+                              <div class="bg-gray-50 rounded-lg border">
+                                <div class="overflow-x-auto">
+                                  <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-100">
+                                      <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                          <FormKit
+                                            type="checkbox"
+                                            name="selectAll"
+                                            @change="toggleSelectAll(kad.id, $event)"
+                                            :value="isAllSelected(kad.id)"
+                                          />
+                                        </th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Dokumen</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarikh Kemaskini</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dikemaskini oleh</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                      <tr v-for="(dok, index) in kad.dokumenLampiran" :key="dok.id">
+                                        <td class="px-4 py-3 whitespace-nowrap">
+                                          <FormKit
+                                            type="checkbox"
+                                            :name="`selectDoc_${dok.id}`"
+                                            @change="toggleDocumentSelection(kad.id, dok.id, $event)"
+                                            :value="isDocumentSelected(kad.id, dok.id)"
+                                          />
+                                        </td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ index + 1 }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ getDokumenLabel(dok.type) }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ formatDateTime(dok.tarikhKemaskini) }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ dok.dikemaskiniOleh }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                          <rs-button
+                                            variant="primary-outline"
+                                            size="sm"
+                                            @click="editDocument(dok.type)"
+                                            class="!py-1 !px-2"
+                                          >
+                                            <Icon name="ph:pencil" class="w-3 h-3 mr-1" />
+                                            Kemaskini
+                                          </rs-button>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+
                             <!-- Checkbox Serah kepada Kontraktor -->
-                            <div class="md:col-span-2">
+                            <div>
                               <FormKit
                                 type="checkbox"
                                 name="serahKepadaKontraktor"
-                                label="Serah kepada Kontraktor"
                                 :options="[
                                   {
-                                    label: 'Serah dokumen terpilih kepada Kontraktor',
+                                    label: 'Serah kepada Kontraktor',
                                     value: true,
                                   },
                                 ]"
                                 help="Tandakan jika dokumen perlu diserahkan kepada kontraktor"
                                 :value="kad.serahKepadaKontraktor"
+                                v-model="kad.serahKepadaKontraktor"
+                              />
+                              <p class="text-xs text-gray-500 mt-1">
+                                Bila berlaku integrasi dengan NPS, dokumen yang bertanda check sahaja akan diserahkan
+                              </p>
+                            </div>
+
+                            <!-- Catatan Text Area -->
+                            <div>
+                              <FormKit
+                                type="textarea"
+                                name="catatan"
+                                label="Catatan"
+                                rows="3"
+                                placeholder="Contoh: Sila muat naik dokumen invois"
+                                help="Catatan ini akan diemelkan kepada kontraktor berkaitan arahan/informasi yang ingin disampaikan dan dokumen yang perlu diupload"
+                                :value="kad.catatan"
+                                v-model="kad.catatan"
                               />
                             </div>
 
-                            <!-- Edit Buttons for Selected Documents -->
-                            <div
-                              v-if="kad.dokumenLampiran && kad.dokumenLampiran.length > 0"
-                              class="md:col-span-2"
-                            >
-                              <div class="bg-blue-50 p-4 rounded-lg">
-                                <h4 class="font-medium text-blue-900 mb-3">
-                                  Dokumen Terpilih
-                                </h4>
-                                <div class="flex flex-wrap gap-2">
-                                  <rs-button
-                                    v-for="dok in kad.dokumenLampiran"
-                                    :key="dok"
-                                    variant="primary-outline"
-                                    size="sm"
-                                    @click="editDocument(dok)"
-                                  >
-                                    <Icon name="ph:pencil" class="w-3 h-3 mr-1" />
-                                    Edit {{ getDokumenLabel(dok) }}
-                                  </rs-button>
+                            <!-- List of Documents from Contractor -->
+                            <div v-if="kad.dokumenDariKontraktor && kad.dokumenDariKontraktor.length > 0">
+                              <h4 class="font-medium text-gray-900 mb-3">Senarai Dokumen daripada Kontraktor</h4>
+                              <div class="bg-blue-50 rounded-lg border">
+                                <div class="overflow-x-auto">
+                                  <table class="min-w-full divide-y divide-blue-200">
+                                    <thead class="bg-blue-100">
+                                      <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">No</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Nama Dokumen</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Tarikh Dicipta</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Tindakan</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="bg-blue-50 divide-y divide-blue-200">
+                                      <tr v-for="(dok, index) in kad.dokumenDariKontraktor" :key="dok.id">
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-blue-900">{{ index + 1 }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-blue-900">{{ dok.namaDokumen }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-blue-700">{{ formatDateTime(dok.tarikhDicipta) }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-blue-700">
+                                          <div class="flex space-x-2">
+                                            <rs-button
+                                              variant="primary-outline"
+                                              size="sm"
+                                              @click="uploadDocument(dok.id)"
+                                              class="!py-1 !px-2"
+                                            >
+                                              <Icon name="ph:upload" class="w-3 h-3 mr-1" />
+                                              Upload
+                                            </rs-button>
+                                            <rs-button
+                                              variant="info-outline"
+                                              size="sm"
+                                              @click="viewDocument(dok.id)"
+                                              class="!py-1 !px-2"
+                                            >
+                                              <Icon name="ph:eye" class="w-3 h-3 mr-1" />
+                                              Lihat
+                                            </rs-button>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
                                 </div>
                               </div>
                             </div>
@@ -309,35 +424,57 @@
                             Tuntutan Boleh Dibuat
                           </h3>
 
-                          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div class="space-y-6">
                             <!-- Checkbox Tuntutan Boleh Dibuat -->
-                            <div class="md:col-span-2">
+                            <div>
                               <FormKit
                                 type="checkbox"
                                 name="tuntutanBolehDibuat"
                                 :options="[
                                   {
-                                    label:
-                                      'Tuntutan Boleh Dibuat (Kontraktor boleh akses Modul Tuntutan di NPS)',
+                                    label: 'Tuntutan Boleh Dibuat',
                                     value: true,
                                   },
                                 ]"
                                 help="Tandakan jika kontraktor dibenarkan membuat tuntutan"
                                 :value="kad.tuntutanBolehDibuat"
+                                v-model="kad.tuntutanBolehDibuat"
+                                @change="toggleTuntutanBolehDibuat(kad.id, $event)"
                               />
                             </div>
 
-                            <!-- Dropdown % Boleh Dituntut -->
-                            <FormKit
-                              v-if="kad.tuntutanBolehDibuat"
-                              type="select"
-                              name="peratusanBolehDituntut"
-                              label="Peratusan Boleh Dituntut"
-                              validation="required"
-                              :options="peratusanTuntutanOptions"
-                              help="Pilih peratusan yang dibenarkan untuk dituntut"
-                              :value="kad.peratusanBolehDituntut"
-                            />
+                            <!-- Kelulusan Tuntutan (Conditional) -->
+                            <div v-if="kad.tuntutanBolehDibuat">
+                              <h4 class="font-medium text-gray-900 mb-3">Kelulusan Tuntutan</h4>
+                              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Dropdown % Boleh Dituntut -->
+                                <FormKit
+                                  type="select"
+                                  name="peratusanBolehDituntut"
+                                  label="Peratusan Boleh Dituntut"
+                                  validation="required"
+                                  :options="peratusanTuntutanOptions"
+                                  help="Pilih peratusan yang dibenarkan untuk dituntut"
+                                  :value="kad.peratusanBolehDituntut"
+                                  v-model="kad.peratusanBolehDituntut"
+                                />
+
+                                <!-- Status Kelulusan -->
+                                <FormKit
+                                  type="select"
+                                  name="statusKelulusanTuntutan"
+                                  label="Status Kelulusan"
+                                  :options="[
+                                    { label: 'Dalam Semakan', value: 'dalam-semakan' },
+                                    { label: 'Diluluskan', value: 'diluluskan' },
+                                    { label: 'Ditolak', value: 'ditolak' },
+                                  ]"
+                                  help="Status kelulusan tuntutan"
+                                  :value="kad.statusKelulusanTuntutan"
+                                  v-model="kad.statusKelulusanTuntutan"
+                                />
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -485,7 +622,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useToast } from "vue-toastification";
 import { useRoute } from "vue-router";
 
@@ -501,6 +638,10 @@ const toast = useToast();
 const isSaving = ref(false);
 const showDocumentModal = ref(false);
 const selectedDocumentType = ref("");
+
+// Document management states
+const selectedDocumentForKad = ref({});
+const selectedDocumentsForKad = ref({});
 
 // Breadcrumb
 const breadcrumb = ref([
@@ -538,10 +679,19 @@ const kadPemantauanList = ref([
     statusKemajuanKerja: "Sedang Berjalan",
     peratusanKemajuanKerja: "50%",
     catatanIsu: "Kerja-kerja asas telah siap. Menunggu bahan binaan tambahan.",
-    dokumenLampiran: ["borang-laporan-harian", "borang-lawatan-tapak"],
-    serahKepadaKontraktor: [true],
-    tuntutanBolehDibuat: [true],
+    dokumenLampiran: [
+      { id: 1, type: "borang-laporan-harian", tarikhKemaskini: "2024-01-15T10:00", dikemaskiniOleh: "Pengurus Projek" },
+      { id: 2, type: "borang-lawatan-tapak", tarikhKemaskini: "2024-01-15T10:00", dikemaskiniOleh: "Pengurus Projek" },
+    ],
+    serahKepadaKontraktor: true,
+    tuntutanBolehDibuat: true,
     peratusanBolehDituntut: "50%",
+    statusKelulusanTuntutan: "dalam-semakan",
+    catatan: "Sila muat naik dokumen invois",
+    dokumenDariKontraktor: [
+      { id: 1, namaDokumen: "Invoice", tarikhDicipta: "2024-01-10T10:00" },
+      { id: 2, namaDokumen: "Laporan Kemajuan", tarikhDicipta: "2024-01-05T10:00" },
+    ],
   },
   {
     id: 2,
@@ -550,10 +700,13 @@ const kadPemantauanList = ref([
     statusKemajuanKerja: "Belum Mula",
     peratusanKemajuanKerja: "0%",
     catatanIsu: "Projek belum bermula. Menunggu kelulusan permit.",
-    dokumenLampiran: ["borang-pemeriksaan-kerja"],
-    serahKepadaKontraktor: [],
-    tuntutanBolehDibuat: [],
+    dokumenLampiran: [],
+    serahKepadaKontraktor: false,
+    tuntutanBolehDibuat: false,
     peratusanBolehDituntut: "0%",
+    statusKelulusanTuntutan: "ditolak",
+    catatan: "Projek belum bermula.",
+    dokumenDariKontraktor: [],
   },
 ]);
 
@@ -628,7 +781,7 @@ const latestProgress = computed(() => {
 
 const canMakeClaim = computed(() => {
   return sortedKadPemantauan.value.some(
-    (kad) => kad.tuntutanBolehDibuat && kad.tuntutanBolehDibuat.length > 0
+    (kad) => kad.tuntutanBolehDibuat === true
   );
 });
 
@@ -662,12 +815,19 @@ const addNewKadPemantauan = () => {
     peratusanKemajuanKerja: "0%",
     catatanIsu: "",
     dokumenLampiran: [],
-    serahKepadaKontraktor: [],
-    tuntutanBolehDibuat: [],
+    serahKepadaKontraktor: false,
+    tuntutanBolehDibuat: false,
     peratusanBolehDituntut: "0%",
+    statusKelulusanTuntutan: "ditolak",
+    catatan: "",
+    dokumenDariKontraktor: [],
   };
 
   kadPemantauanList.value.unshift(newKad);
+
+  // Initialize document selection tracking for new kad
+  selectedDocumentForKad.value[newKad.id] = null;
+  selectedDocumentsForKad.value[newKad.id] = [];
 
   // Add to recent activities
   recentActivities.value.unshift({
@@ -706,7 +866,7 @@ const handleSaveKadPemantauan = async (kadId, formData) => {
     });
 
     // If tuntutan boleh dibuat is checked, trigger integration
-    if (kad.tuntutanBolehDibuat && kad.tuntutanBolehDibuat.length > 0) {
+    if (kad.tuntutanBolehDibuat === true) {
       // Simulate NPS integration
       console.log("Triggering NPS integration for claims...");
 
@@ -757,6 +917,104 @@ const getDokumenLabel = (value) => {
   return option ? option.label : value;
 };
 
+// Document management methods
+const addSelectedDocument = (kadId) => {
+  const selectedDoc = selectedDocumentForKad.value[kadId];
+  if (!selectedDoc) return;
+
+  const kad = kadPemantauanList.value.find(k => k.id === kadId);
+  if (!kad) return;
+
+  const newDoc = {
+    id: Date.now(),
+    type: selectedDoc,
+    tarikhKemaskini: new Date().toISOString(),
+    dikemaskiniOleh: "Pengurus Projek", // This should come from user context
+  };
+
+  if (!kad.dokumenLampiran) {
+    kad.dokumenLampiran = [];
+  }
+  kad.dokumenLampiran.push(newDoc);
+
+  // Clear selection
+  selectedDocumentForKad.value[kadId] = null;
+
+  toast.success("Dokumen berjaya ditambah");
+};
+
+const toggleSelectAll = (kadId, event) => {
+  const kad = kadPemantauanList.value.find(k => k.id === kadId);
+  if (!kad || !kad.dokumenLampiran) return;
+
+  if (!selectedDocumentsForKad.value[kadId]) {
+    selectedDocumentsForKad.value[kadId] = [];
+  }
+
+  if (event) {
+    // Select all
+    selectedDocumentsForKad.value[kadId] = kad.dokumenLampiran.map(doc => doc.id);
+  } else {
+    // Deselect all
+    selectedDocumentsForKad.value[kadId] = [];
+  }
+};
+
+const toggleDocumentSelection = (kadId, docId, event) => {
+  if (!selectedDocumentsForKad.value[kadId]) {
+    selectedDocumentsForKad.value[kadId] = [];
+  }
+
+  if (event) {
+    // Add to selection
+    if (!selectedDocumentsForKad.value[kadId].includes(docId)) {
+      selectedDocumentsForKad.value[kadId].push(docId);
+    }
+  } else {
+    // Remove from selection
+    selectedDocumentsForKad.value[kadId] = selectedDocumentsForKad.value[kadId].filter(id => id !== docId);
+  }
+};
+
+const isAllSelected = (kadId) => {
+  const kad = kadPemantauanList.value.find(k => k.id === kadId);
+  if (!kad || !kad.dokumenLampiran) return false;
+  
+  return selectedDocumentsForKad.value[kadId] && 
+         selectedDocumentsForKad.value[kadId].length === kad.dokumenLampiran.length;
+};
+
+const isDocumentSelected = (kadId, docId) => {
+  return selectedDocumentsForKad.value[kadId] && 
+         selectedDocumentsForKad.value[kadId].includes(docId);
+};
+
+const toggleTuntutanBolehDibuat = (kadId, event) => {
+  const kad = kadPemantauanList.value.find(k => k.id === kadId);
+  if (!kad) return;
+
+  if (event) {
+    kad.tuntutanBolehDibuat = true;
+    // Initialize default values when enabling claims
+    if (!kad.statusKelulusanTuntutan) {
+      kad.statusKelulusanTuntutan = 'dalam-semakan';
+    }
+  } else {
+    kad.tuntutanBolehDibuat = false;
+    kad.statusKelulusanTuntutan = 'ditolak';
+  }
+};
+
+const uploadDocument = (docId) => {
+  // Handle document upload
+  toast.info("Fungsi upload dokumen akan dibuka");
+};
+
+const viewDocument = (docId) => {
+  // Handle document view
+  toast.info("Fungsi lihat dokumen akan dibuka");
+};
+
 const formatDateTime = (dateTime) => {
   return new Date(dateTime).toLocaleDateString("ms-MY", {
     year: "numeric",
@@ -788,7 +1046,25 @@ const formatRelativeTime = (timestamp) => {
 onMounted(() => {
   // Initialize component or fetch data
   console.log("Modul Pemantauan Kerja initialized");
+  
+  // Initialize document selection tracking for each kad
+  kadPemantauanList.value.forEach(kad => {
+    selectedDocumentForKad.value[kad.id] = null;
+    selectedDocumentsForKad.value[kad.id] = [];
+  });
 });
+
+// Watch for changes in kad pemantauan list to initialize new ones
+watch(kadPemantauanList, (newList) => {
+  newList.forEach(kad => {
+    if (!selectedDocumentForKad.value.hasOwnProperty(kad.id)) {
+      selectedDocumentForKad.value[kad.id] = null;
+    }
+    if (!selectedDocumentsForKad.value.hasOwnProperty(kad.id)) {
+      selectedDocumentsForKad.value[kad.id] = [];
+    }
+  });
+}, { deep: true });
 </script>
 
 <style lang="scss" scoped>

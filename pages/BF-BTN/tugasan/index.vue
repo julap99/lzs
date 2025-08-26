@@ -36,9 +36,18 @@
                 advanced
               >
                 <template v-slot:status="{ text }">
-                  <rs-badge :variant="getStatusVariant(text)">
-                    {{ text }}
-                  </rs-badge>
+                  <div class="flex flex-col gap-1">
+                    <template v-if="text.includes('\n')">
+                      <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                        {{ line }}
+                      </div>
+                    </template>
+                    <template v-else>
+                      <rs-badge :variant="getStatusVariant(text)">
+                        {{ text }}
+                      </rs-badge>
+                    </template>
+                  </div>
                 </template>
 
                 <template v-slot:tindakan="{ text }">
@@ -100,9 +109,9 @@
           <rs-tab-item title="Bantuan">
             <!-- Bantuan Tab Content with Sub-tabs -->
             <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">
+              <!-- <h3 class="text-lg font-semibold mb-4 text-gray-800">
                 Bantuan Data
-              </h3>
+              </h3> -->
 
               <!-- Sub-tabs for Bantuan -->
               <rs-tab variant="secondary" type="border" class="mb-6">
@@ -129,9 +138,18 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
@@ -216,9 +234,18 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
@@ -303,16 +330,21 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
-                      <template v-slot:statusLaluan="{ text }">
-                        <rs-badge :variant="getLaluanStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
-                      </template>
+
 
                       <template v-slot:tindakan="{ text, row }">
                         <div class="flex justify-center items-center gap-2">
@@ -405,9 +437,18 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
@@ -492,9 +533,18 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
@@ -579,9 +629,18 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
@@ -737,11 +796,7 @@ const siasatanColumns = [
     label: "Status",
     sortable: true,
   },
-  {
-    key: "statusLaluan",
-    label: "Status Laluan Proses",
-    sortable: true,
-  },
+
   {
     key: "noRujukan",
     label: "No Rujukan",
@@ -798,8 +853,7 @@ const siasatanData = ref([
     kariah: "Masjid Al-Hidayah",
     daerah: "Kuala Lumpur",
     bilanganBantuan: 2,
-    status: "Dalam Siasatan",
-    statusLaluan: "Untuk Siasatan",
+    status: "Segera - 1\nMelebihi SLA - 0\nPerlu Diproses - 2",
     noRujukan: "NAS-2025-0001",
     tindakan: "siasatan-eoad",
   },
@@ -809,7 +863,6 @@ const siasatanData = ref([
     daerah: "Selangor",
     bilanganBantuan: 1,
     status: "Selesai Siasatan",
-    statusLaluan: "Untuk Kelulusan",
     noRujukan: "NAS-2025-0002",
     tindakan: "siasatan-eoad",
   },
@@ -916,15 +969,7 @@ const getStatusVariant = (status) => {
   return variants[status.toLowerCase()] || "default";
 };
 
-const getLaluanStatusVariant = (status) => {
-  const variants = {
-    "untuk semakan": "info",
-    "untuk pengesahan lawatan": "warning",
-    "untuk siasatan": "secondary",
-    "untuk kelulusan": "success",
-  };
-  return variants[status.toLowerCase()] || "default";
-};
+
 </script>
 
 <style lang="scss" scoped></style>

@@ -4,7 +4,7 @@
 
     <div class="flex justify-between items-start mt-6 mb-4">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Pengesahan Pendaftaran Third Party</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Pengesahan Pendaftaran Recipient</h1>
         <p class="mt-1 text-sm text-gray-600">Semak permohonan organisasi dan berikan keputusan pengesahan.</p>
       </div>
       <rs-badge :variant="getStatusBadgeVariant()">{{ applicationData.status }}</rs-badge>
@@ -172,7 +172,7 @@ const breadcrumb = ref([
     path: "/BF-PRF/TP/PP/01",
   },
   {
-    name: "Pengesahan Pendaftaran Third Party",
+    name: "Pengesahan Pendaftaran Recipient",
     type: "current",
   },
 ]);
@@ -182,7 +182,7 @@ const applicationData = ref({
   refNumber: "2406002",
   applicationDate: "18 Jun 2025",
   status: "Menunggu Pengesahan",
-  organizationType: "Third-party (Vendor)",
+  organizationType: "Third-party (Syarikat)",
   organizationCategory: "Registered", // Atau "Non-Registered"
   organizationStructure: "Induk", // atau "Cawangan"
   organizationName: "Pusat Dialisis Sejahtera",

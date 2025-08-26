@@ -71,6 +71,21 @@
                   <div class="space-y-1">
                     <FormKit
                       type="text"
+                      name="aid"
+                      label="Aid"
+                      placeholder="Contoh: B125 - Bantuan Baikpulih Rumah (Miskin)"
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Aid diperlukan'
+                      }"
+                      :classes="{ outer: 'mb-0' }"
+                      v-model="formData.aid"
+                    />
+                  </div>
+
+                  <div class="space-y-1">
+                    <FormKit
+                      type="text"
                       name="aidProduct"
                       label="Aid Product"
                       placeholder="Contoh: Bantuan Sewaan/Ansuran Rumah (Miskin)"
@@ -120,6 +135,36 @@
                       label="SEGERA"
                       :classes="{ outer: 'mb-0' }"
                     />
+                  </div>
+
+                  <div class="space-y-1 md:col-span-2">
+                    <FormKit
+                      type="checkbox"
+                      name="kelulusanKhas"
+                      label="Kelulusan Khas"
+                      :classes="{ outer: 'mb-0' }"
+                    />
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">
+                      Tarikh Permohonan
+                    </label>
+                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                      <span class="text-sm text-gray-900">{{
+                        formatDate(formData.tarikhPermohonan)
+                      }}</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Format: DD-MM-YYYY</p>
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">
+                      SLA
+                    </label>
+                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                      <span class="text-sm text-gray-900">{{ formData.sla }}</span>
+                    </div>
                   </div>
                 </div>
               </FormKit>
@@ -616,6 +661,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { formatDate } from "~/utils/dateFormatter.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -651,10 +697,14 @@ const breadcrumb = ref([
 const formData = ref({
   // Section 1: Maklumat Bantuan
   jenisBantuan: "B125 - BANTUAN BAIKPULIH RUMAH (MISKIN)",
+  aid: "B125 - BANTUAN BAIKPULIH RUMAH (MISKIN)",
   aidProduct: "BANTUAN BAIKPULIH RUMAH (MISKIN)",
   productPackage: "BAIKPULIH RUMAH (MISKIN)",
   entitlementProduct: "BAIKPULIH RUMAH (MISKIN)",
   segera: false,
+  kelulusanKhas: false,
+  tarikhPermohonan: new Date().toISOString(),
+  sla: "3h",
 
   // Section 2: Dokumen Sokongan
   dokumenSokongan: [

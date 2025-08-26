@@ -6,69 +6,30 @@
 -->
 <template>
   <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+
     <!-- Page-specific Role Switcher -->
-    <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
-      <div class="flex items-center justify-between">
+    <div class="px-4 py-2 mt-0">
+      <div class="flex items-center space-x-3">
         <div class="flex items-center space-x-2">
           <Icon name="ic:baseline-account-circle" class="text-gray-600" size="20" />
           <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
         </div>
-        <div class="flex items-center space-x-3">
-          <div class="min-w-[200px]">
-            <FormKit
-              type="select"
-              v-model="currentRole"
-              :options="roleOptions"
-              :classes="{ 
-                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
-                wrapper: '!min-w-0'
-              }"
-              @change="handleRoleChange"
-            />
-          </div>
-          <rs-button
-            variant="secondary-outline"
-            size="sm"
-            @click="toggleRoleInfo"
-            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
-            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
+        <select
+          v-model="currentRole"
+          @change="handleRoleChange"
+          class="py-1.5 px-3 text-sm rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        >
+          <option 
+            v-for="option in roleOptions" 
+            :key="option.value" 
+            :value="option.value"
           >
-            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
-            {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
-          </rs-button>
-        </div>
-      </div>
-      
-      <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
-            <div class="flex items-center space-x-3">
-              <rs-badge :variant="getRoleVariant(currentRole)" class="!text-xs">
-                {{ getRoleLabel(currentRole) }}
-              </rs-badge>
-              <span class="text-xs text-gray-600">{{ getRoleDescription(currentRole) }}</span>
-            </div>
-          </div>
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
-            <div class="flex flex-wrap gap-2">
-              <rs-badge
-                v-for="capability in getRoleCapabilities(currentRole)"
-                :key="capability"
-                variant="secondary"
-                size="sm"
-                class="!text-xs"
-              >
-                {{ capability }}
-              </rs-badge>
-            </div>
-          </div>
-        </div>
+            {{ option.label }}
+          </option>
+        </select>
       </div>
     </div>
-
-    <LayoutsBreadcrumb :items="breadcrumb" />
 
     <!-- Dynamic Content Based on Role -->
     <div v-if="currentRole === 'eksekutif'">
@@ -76,8 +37,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <div class="flex items-center">
-            <Icon name="ic:baseline-assignment" class="mr-2" />
+          <div>
             <h2 class="text-xl font-semibold">
               Senarai Elaun Penolong Amil (Eksekutif) - Mesyuarat/Program
             </h2>
@@ -88,7 +48,7 @@
       <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -96,44 +56,26 @@
                 :classes="{
                   input: '!py-2',
                 }"
-                class="flex-1"
-              />
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="eksekutifStatusOptions"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-                class="min-w-[200px]"
               />
               <rs-button
                 variant="primary"
                 @click="performSearch"
-                class="flex items-center whitespace-nowrap"
+                class="!py-2 !px-4"
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
               </rs-button>
             </div>
           </div>
 
           <!-- Tabbed Table Section -->
           <rs-tab v-model="activeTab" class="mt-4">
-            <rs-tab-item title="Belum Disemak">
+            <rs-tab-item title="Sedang Proses">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-pending`"
-                  :data="getTableDataByStatus(['Belum Disemak'])"
+                  :data="getTableDataByStatus(['Sedang Proses'])"
+                  :columns="eksekutifColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -167,11 +109,12 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Diluluskan">
+            <rs-tab-item title="Lulus">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-approved`"
-                  :data="getTableDataByStatus(['Diluluskan'])"
+                  :data="getTableDataByStatus(['Lulus'])"
+                  :columns="eksekutifApprovedColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -210,6 +153,7 @@
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak'])"
+                  :columns="eksekutifColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -254,8 +198,7 @@
       <rs-card class="mt-4">
         <template #header>
           <div class="flex justify-between items-center">
-            <div class="flex items-center">
-              <Icon name="ic:baseline-admin-panel-settings" class="mr-2" />
+            <div>
               <h2 class="text-xl font-semibold">
                 Senarai Elaun Penolong Amil (Ketua Jabatan) - Mesyuarat/Program
               </h2>
@@ -266,7 +209,7 @@
         <template #body>
           <!-- Smart Filter Section -->
             <div class="mb-6">
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                   type="text"
@@ -274,33 +217,14 @@
                 :classes="{
                   input: '!py-2',
                 }"
-                class="flex-1"
-              />
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="ketuaJabatanStatusOptions"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-                class="min-w-[200px]"
               />
               <rs-button
                 variant="primary"
                 @click="performSearch"
-                class="flex items-center whitespace-nowrap"
+                class="!py-2 !px-4"
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
               </rs-button>
             </div>
             </div>
@@ -311,7 +235,8 @@
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-pending`"
-                  :data="getTableDataByStatus(['Belum Disemak'])"
+                  :data="getTableDataByStatus(['Sedang Proses'])"
+                  :columns="ketuaJabatanColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -345,11 +270,12 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Diluluskan">
+            <rs-tab-item title="Lulus">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-approved`"
-                  :data="getTableDataByStatus(['Diluluskan'])"
+                  :data="getTableDataByStatus(['Lulus'])"
+                  :columns="ketuaJabatanApprovedColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -388,6 +314,7 @@
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak'])"
+                  :columns="ketuaJabatanColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -432,8 +359,7 @@
       <rs-card class="mt-4">
         <template #header>
           <div class="flex justify-between items-center">
-            <div class="flex items-center">
-              <Icon name="ic:baseline-verified-user" class="mr-2" />
+            <div>
               <h2 class="text-xl font-semibold">
                 Senarai Elaun Penolong Amil (Ketua Divisyen) - Mesyuarat/Program
               </h2>
@@ -444,7 +370,7 @@
         <template #body>
           <!-- Smart Filter Section -->
             <div class="mb-6">
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                   type="text"
@@ -452,44 +378,26 @@
                 :classes="{
                   input: '!py-2',
                 }"
-                class="flex-1"
-              />
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="ketuaDivisyenStatusOptions"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-                class="min-w-[200px]"
               />
               <rs-button
                 variant="primary"
                 @click="performSearch"
-                class="flex items-center whitespace-nowrap"
+                class="!py-2 !px-4"
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
               </rs-button>
             </div>
             </div>
 
           <!-- Tabbed Table Section -->
           <rs-tab v-model="activeTab" class="mt-4">
-            <rs-tab-item title="Belum Disemak">
+            <rs-tab-item title="Sedang Proses">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-pending`"
-                  :data="getTableDataByStatus(['Belum Disemak'])"
+                  :data="getTableDataByStatus(['Sedang Proses'])"
+                  :columns="ketuaDivisyenColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -523,11 +431,12 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Diluluskan">
+            <rs-tab-item title="Lulus">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-approved`"
-                  :data="getTableDataByStatus(['Diluluskan'])"
+                  :data="getTableDataByStatus(['Lulus'])"
+                  :columns="ketuaDivisyenApprovedColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -566,6 +475,7 @@
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak'])"
+                  :columns="ketuaDivisyenColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -742,7 +652,6 @@ const breadcrumb = ref([
 
 // Role Management
 const currentRole = ref('eksekutif');
-const showRoleInfo = ref(false);
 
 const roleOptions = [
 { label: 'Eksekutif', value: 'eksekutif' },
@@ -768,58 +677,39 @@ const getRoleLabel = (role) => {
   return labels[role] || 'Unknown';
 };
 
-const getRoleDescription = (role) => {
-  const descriptions = {
-    'ketua-divisyen': 'Menyemak dan memilih aktiviti untuk pembayaran elaun',
-    'eksekutif': 'Menyokong aktiviti elaun untuk kelulusan seterusnya',
-    'ketua-jabatan': 'Meluluskan aktiviti elaun dan menjana Payment Advice',
-  };
-  return descriptions[role] || '';
-};
 
-const getRoleCapabilities = (role) => {
-  const capabilities = {
-    'ketua-divisyen': ['Lihat Semua Aktiviti', 'Semak Aktiviti', 'Pilih Aktiviti', 'Bulk Semak'],
-    'eksekutif': ['Lihat Aktiviti', 'Sokong Aktiviti', 'Tolak Aktiviti', 'Bulk Support'],
-    'ketua-jabatan': ['Lihat Aktiviti', 'Lulus Aktiviti', 'Tolak Aktiviti', 'Bulk Approval', 'Jana Payment Advice'],
-  };
-  return capabilities[role] || [];
-};
 
 const handleRoleChange = () => {
   // Reset filters when role changes
   filters.value.searchQuery = '';
-  filters.value.status = '';
   selectedRows.value = [];
 };
 
-const toggleRoleInfo = () => {
-  showRoleInfo.value = !showRoleInfo.value;
-};
+
 
 // Mock data for activities
 const activities = ref([
-    // PT specific activities - Belum Disemak
+    // PT specific activities - Sedang Proses
   {
     id: 'MP2024-001',
     NamaAktiviti: 'Program Khidmat Masyarakat',
     Tarikh: '15-04-2024',
     Lokasi: 'Dewan Serbaguna Masjid Kg Delek, Daerah Klang',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
   {
     id: 'MP2024-002',
     NamaAktiviti: 'Mesyuarat Perancangan Bulanan',
     Tarikh: '18-04-2024',
     Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
-    status: 'Belum Disemak'
+    status: 'Sedang Proses'
   },
   {
     id: 'MP2024-003',
     NamaAktiviti: 'Latihan Pengurusan Zakat',
     Tarikh: '20-04-2024',
     Lokasi: 'Dewan Latihan LZS, Daerah Shah Alam',
-    status: 'Belum Disemak'
+    status: 'Sedang Proses'
   },
     // Activities with various statuses for Eksekutif role
   {
@@ -827,14 +717,14 @@ const activities = ref([
     NamaAktiviti: 'Mesyuarat Eksekutif Bulanan',
     Tarikh: '15-03-2024',
     Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
-    status: 'Belum Disemak'
+    status: 'Sedang Proses'
   },
   {
     id: 'MP2024-005',
     NamaAktiviti: 'Latihan Pengurusan Zakat dan Fitrah',
     Tarikh: '20-03-2024',
     Lokasi: 'Dewan Latihan LZS, Kompleks Zakat Selangor, Daerah Shah Alam',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
   {
     id: 'MP2024-006',
@@ -849,14 +739,14 @@ const activities = ref([
      NamaAktiviti: 'Program Khidmat Masyarakat',
     Tarikh: '20-03-2024',
     Lokasi: 'Masjid Al-Hidayah, Daerah Gombak',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
   {
     id: 'MP2024-008',
      NamaAktiviti: 'Latihan Pengurusan Aduan',
     Tarikh: '12-04-2024',
     Lokasi: 'Bilik Latihan, Pejabat Zakat Gombak, Daerah Gombak',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
   // Additional activities with various statuses for all roles
   {
@@ -864,35 +754,92 @@ const activities = ref([
      NamaAktiviti: 'Latihan Pengurusan Zakat',
     Tarikh: '25-03-2024',
     Lokasi: 'Dewan Latihan, Daerah Shah Alam',
-    status: 'Belum Disemak'
+    status: 'Sedang Proses'
   },
   {
     id: 'MP2024-010',
      NamaAktiviti: 'Mesyuarat Koordinasi',
     Tarikh: '30-03-2024',
     Lokasi: 'Pejabat Zakat, Daerah Petaling Jaya',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
+  // NEW: Additional activities for better status distribution
+  {
+    id: 'MP2024-011',
+    NamaAktiviti: 'Program Kesedaran Zakat',
+    Tarikh: '05-05-2024',
+    Lokasi: 'Dewan Komuniti, Daerah Klang',
+    status: 'Sedang Proses'
+  },
+  {
+    id: 'MP2024-012',
+    NamaAktiviti: 'Latihan Pengurusan Risiko',
+    Tarikh: '10-05-2024',
+    Lokasi: 'Bilik Latihan, Pejabat Zakat Shah Alam',
+    status: 'Sedang Proses'
+  },
+  {
+    id: 'MP2024-013',
+    NamaAktiviti: 'Mesyuarat Jawatankuasa Zakat',
+    Tarikh: '15-05-2024',
+    Lokasi: 'Dewan Mesyuarat Utama, Kompleks Zakat Selangor',
+    status: 'Lulus'
+  },
+  {
+    id: 'MP2024-014',
+    NamaAktiviti: 'Program Pembangunan Komuniti',
+    Tarikh: '20-05-2024',
+    Lokasi: 'Dewan Serbaguna, Daerah Petaling Jaya',
+    status: 'Lulus'
+  },
+  {
+    id: 'MP2024-015',
+    NamaAktiviti: 'Latihan Sistem Pengurusan',
+    Tarikh: '25-05-2024',
+    Lokasi: 'Bilik Latihan IT, Pejabat Zakat Gombak',
+    status: 'Ditolak'
+  },
+  {
+    id: 'MP2024-016',
+    NamaAktiviti: 'Program Khidmat Sosial',
+    Tarikh: '30-05-2024',
+    Lokasi: 'Dewan Komuniti, Daerah Shah Alam',
+    status: 'Ditolak'
+  },
+  {
+    id: 'MP2024-017',
+    NamaAktiviti: 'Mesyuarat Perancangan Strategik',
+    Tarikh: '05-06-2024',
+    Lokasi: 'Dewan Mesyuarat Eksekutif, Kompleks Zakat Selangor',
+    status: 'Sedang Proses'
+  },
+  {
+    id: 'MP2024-018',
+    NamaAktiviti: 'Latihan Pengurusan Kualiti',
+    Tarikh: '10-06-2024',
+    Lokasi: 'Bilik Latihan, Pejabat Zakat Klang',
+    status: 'Lulus'
+  }
 ]);
 
 const eksekutifStatusOptions = [
   { label: 'Sila pilih...', value: '' },
-  { label: 'Belum Disemak', value: 'Belum Disemak' },
-  { label: 'Diluluskan', value: 'Diluluskan' },
+  { label: 'Sedang Proses', value: 'Sedang Proses' },
+  { label: 'Lulus', value: 'Lulus' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 const ketuaDivisyenStatusOptions = [
   { label: 'Sila pilih...', value: '' },
-  { label: 'Belum Disemak', value: 'Belum Disemak' },
-  { label: 'Diluluskan', value: 'Diluluskan' },
+  { label: 'Sedang Proses', value: 'Sedang Proses' },
+  { label: 'Lulus', value: 'Lulus' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 const ketuaJabatanStatusOptions = [
   { label: 'Sila pilih...', value: '' },
-  { label: 'Belum Disemak', value: 'Belum Disemak' },
-  { label: 'Diluluskan', value: 'Diluluskan' },
+  { label: 'Sedang Proses', value: 'Sedang Proses' },
+  { label: 'Lulus', value: 'Lulus' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
@@ -909,7 +856,7 @@ const isSearchPerformed = ref(false);
 const searchResults = ref([]);
 
 // Tab management
-const activeTab = ref("Belum Disemak");
+const activeTab = ref("Sedang Proses");
 const tableKey = ref(0);
 
 // Computed filtered activities based on role
@@ -933,7 +880,7 @@ const handleSupport = (activityId) => {
   // Update activity status to supported
   const activity = activities.value.find(a => a.id === activityId);
   if (activity) {
-    activity.status = 'Diluluskan';
+    activity.status = 'Lulus';
     toast.success('Aktiviti berjaya disokong');
   }
 };
@@ -942,7 +889,7 @@ const handleApprove = (activityId) => {
   // Update activity status to approved
   const activity = activities.value.find(a => a.id === activityId);
   if (activity) {
-    activity.status = 'Diluluskan';
+    activity.status = 'Lulus';
     toast.success('Aktiviti berjaya diluluskan');
   }
 };
@@ -967,9 +914,8 @@ const filteredEksekutifActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
     // Eksekutif can see activities with all three statuses
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   }).map(activity => ({
     ...activity,
     tindakan: activity.id // Pass activity ID for action buttons
@@ -981,8 +927,7 @@ const eksekutifApprovedActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    return matchesSearch && matchesStatus && activity.status === 'Diluluskan';
+    return matchesSearch && activity.status === 'Lulus';
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -994,8 +939,7 @@ const eksekutifRejectedActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    return matchesSearch && matchesStatus && activity.status === 'Ditolak';
+    return matchesSearch && activity.status === 'Ditolak';
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1004,7 +948,7 @@ const eksekutifRejectedActivities = computed(() => {
 
 // Computed properties for separated tables
 const approvedActivities = computed(() => {
-  return filteredActivities.value.filter(activity => activity.status === 'Diluluskan');
+  return filteredActivities.value.filter(activity => activity.status === 'Lulus');
 });
 
 const rejectedActivities = computed(() => {
@@ -1017,9 +961,8 @@ const filteredKetuaJabatanActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
     // Ketua Jabatan can see activities with all three statuses
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1033,7 +976,7 @@ const ketuaJabatanApprovedActivities = computed(() => {
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
     const matchesStatus = !filters.value.status || activity.status === filters.value.status;
     const matchesJenis = !filters.value.jenisAktiviti || activity.type === filters.value.jenisAktiviti;
-    return matchesSearch && matchesStatus && matchesJenis && activity.status === 'Diluluskan';
+    return matchesSearch && matchesStatus && matchesJenis && activity.status === 'Lulus';
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1060,9 +1003,8 @@ const filteredKetuaDivisyenActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
     // Ketua Divisyen can see activities with all three statuses
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1071,7 +1013,7 @@ const filteredKetuaDivisyenActivities = computed(() => {
 
 const pendingKetuaDivisyenActivities = computed(() => {
   return filteredKetuaDivisyenActivities.value.filter(activity => 
-    activity.status === 'Belum Disemak'
+    activity.status === 'Sedang Proses'
   ).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1079,7 +1021,7 @@ const pendingKetuaDivisyenActivities = computed(() => {
 });
 
 const ketuaDivisyenApprovedActivities = computed(() => {
-  return filteredKetuaDivisyenActivities.value.filter(activity => activity.status === 'Diluluskan')
+  return filteredKetuaDivisyenActivities.value.filter(activity => activity.status === 'Lulus')
     .map(activity => ({
       ...activity,
       tindakan: activity.id
@@ -1114,7 +1056,7 @@ const getActivityStatus = (activityId) => {
 
 // Search functionality
 const performSearch = () => {
-  if (!filters.value.searchQuery && !filters.value.status) {
+  if (!filters.value.searchQuery) {
     toast.warning('Sila masukkan kriteria carian');
     return;
   }
@@ -1124,13 +1066,7 @@ const performSearch = () => {
   refreshTable();
 };
 
-const clearSearch = () => {
-  filters.value.searchQuery = "";
-  filters.value.status = "";
-  isSearchPerformed.value = false;
-  refreshTable();
-  toast.info('Carian telah diset semula');
-};
+
 
 // Filter table data based on status and search criteria
 const getTableDataByStatus = (statuses) => {
@@ -1146,13 +1082,6 @@ const getTableDataByStatus = (statuses) => {
       result = result.filter(activity => 
         activity.id.toLowerCase().includes(query) ||
         activity.NamaAktiviti.toLowerCase().includes(query)
-      );
-    }
-    
-    // Apply status filter
-    if (filters.value.status) {
-      result = result.filter(activity => 
-        activity.status === filters.value.status
       );
     }
   }
@@ -1171,9 +1100,9 @@ const refreshTable = () => {
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'Belum Disemak':
+    case 'Sedang Proses':
       return 'bg-gray-100 text-gray-800'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'bg-green-100 text-green-800'
     case 'Ditolak':
       return 'bg-red-100 text-red-800'
@@ -1184,10 +1113,10 @@ const getStatusColor = (status) => {
 
 const getStatusLabel = (status) => {
   switch (status) {
-    case 'Belum Disemak':
-      return 'Belum Disemak'
-    case 'Diluluskan':
-      return 'Diluluskan'
+    case 'Sedang Proses':
+      return 'Sedang Proses'
+    case 'Lulus':
+      return 'Lulus'
     case 'Ditolak':
       return 'Ditolak'
     default:
@@ -1197,9 +1126,9 @@ const getStatusLabel = (status) => {
 
 const getStatusVariant = (status) => {
   switch (status) {
-    case 'Belum Disemak':
+    case 'Sedang Proses':
       return 'warning'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'success'
     case 'Ditolak':
       return 'danger'
@@ -1210,9 +1139,9 @@ const getStatusVariant = (status) => {
 
 const getActionRoute = (status, activityId) => {
   switch (status) {
-    case 'Belum Disemak':
+    case 'Sedang Proses':
       return '/BF-PA/PE/MP/01'
-    case 'Diluluskan':
+    case 'Lulus':
       return `/BF-PA/PE/MP/view-lulus`
     case 'Ditolak':
       return `/BF-PA/PE/MP/07`
@@ -1223,9 +1152,9 @@ const getActionRoute = (status, activityId) => {
 
 const getActionButtonText = (status) => {
   switch (status) {
-    case 'Belum Disemak':
+    case 'Sedang Proses':
       return 'Semak'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'Lihat'
     case 'Ditolak':
       return 'Semak Semula'
@@ -1351,7 +1280,7 @@ const confirmSupport = async () => {
   try {
     const activity = activities.value.find(a => a.id === selectedActivity.value);
     if (activity) {
-      activity.status = 'Diluluskan';
+      activity.status = 'Lulus';
     }
     showSupportModal.value = false;
     selectedActivity.value = null;
@@ -1396,7 +1325,7 @@ const confirmApprove = async () => {
 const eksekutifColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1430,7 +1359,7 @@ const eksekutifColumns = [
 const eksekutifApprovedColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1464,7 +1393,7 @@ const eksekutifApprovedColumns = [
 const ketuaJabatanColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1498,7 +1427,7 @@ const ketuaJabatanColumns = [
 const ketuaJabatanApprovedColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1532,7 +1461,7 @@ const ketuaJabatanApprovedColumns = [
 const ketuaDivisyenColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1566,7 +1495,7 @@ const ketuaDivisyenColumns = [
 const ketuaDivisyenApprovedColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1600,7 +1529,6 @@ const ketuaDivisyenApprovedColumns = [
 // Filters state
 const filters = ref({
   searchQuery: "",
-  status: "",
 });
 
 const pageSize = ref(10);
@@ -1608,14 +1536,14 @@ const pageSize = ref(10);
 // Initialize with best available tab
 onMounted(() => {
   // Set default tab based on available data
-  const hasPending = activities.value.some(a => a.status === 'Belum Disemak');
-  const hasApproved = activities.value.some(a => a.status === 'Diluluskan');
+  const hasPending = activities.value.some(a => a.status === 'Sedang Proses');
+  const hasApproved = activities.value.some(a => a.status === 'Lulus');
   const hasRejected = activities.value.some(a => a.status === 'Ditolak');
   
   if (hasPending) {
-    activeTab.value = "Belum Disemak";
+    activeTab.value = "Sedang Proses";
   } else if (hasApproved) {
-    activeTab.value = "Diluluskan";
+    activeTab.value = "Lulus";
   } else if (hasRejected) {
     activeTab.value = "Ditolak";
   }

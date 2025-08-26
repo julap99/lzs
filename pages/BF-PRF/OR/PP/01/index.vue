@@ -304,7 +304,7 @@ const performSearch = async () => {
 const navigateNext = () => {
   if (profileExists.value) {
     // Navigate to update profile page with mode=edit (ID FR 2.3)
-    navigateTo("/BF-PRF/OR/PP/KP");
+    navigateTo("/BF-PRF/OR/PP/03");
   } else {
     // Navigate to new registration page with mode=new (ID FR 2.4)
     navigateTo("/BF-PRF/OR/PP/02");

@@ -61,7 +61,7 @@
 import { ref } from 'vue';
 
 const breadcrumb = ref([
-  { name: 'Profil Third Party', type: 'link', path: '/profil' },
+  { name: 'Profil Recipient', type: 'link', path: '/profil' },
   { name: 'Kemaskini Profil', type: 'current', path: '/profil/kemaskini' },
 ]);
 

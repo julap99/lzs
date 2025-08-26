@@ -6,69 +6,30 @@
 -->
 <template>
   <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+
     <!-- Page-specific Role Switcher -->
-    <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
-      <div class="flex items-center justify-between">
+    <div class="px-4 py-2 mt-0">
+      <div class="flex items-center space-x-3">
         <div class="flex items-center space-x-2">
           <Icon name="ic:baseline-account-circle" class="text-gray-600" size="20" />
           <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
         </div>
-        <div class="flex items-center space-x-3">
-          <div class="min-w-[200px]">
-            <FormKit
-              type="select"
-              v-model="currentRole"
-              :options="roleOptions"
-              :classes="{ 
-                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
-                wrapper: '!min-w-0'
-              }"
-              @change="handleRoleChange"
-            />
-          </div>
-          <rs-button
-            variant="secondary-outline"
-            size="sm"
-            @click="toggleRoleInfo"
-            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
-            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
+        <select
+          v-model="currentRole"
+          @change="handleRoleChange"
+          class="py-1.5 px-3 text-sm rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        >
+          <option 
+            v-for="option in roleOptions" 
+            :key="option.value" 
+            :value="option.value"
           >
-            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
-            {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
-          </rs-button>
-        </div>
-      </div>
-      
-      <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
-            <div class="flex items-center space-x-3">
-              <rs-badge :variant="getRoleVariant(currentRole)" class="!text-xs">
-                {{ getRoleLabel(currentRole) }}
-              </rs-badge>
-              <span class="text-xs text-gray-600">{{ getRoleDescription(currentRole) }}</span>
-            </div>
-          </div>
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
-            <div class="flex flex-wrap gap-2">
-              <rs-badge
-                v-for="capability in getRoleCapabilities(currentRole)"
-                :key="capability"
-                variant="secondary"
-                size="sm"
-                class="!text-xs"
-              >
-                {{ capability }}
-              </rs-badge>
-            </div>
-          </div>
-        </div>
+            {{ option.label }}
+          </option>
+        </select>
       </div>
     </div>
-
-    <LayoutsBreadcrumb :items="breadcrumb" />
 
     <!-- Dynamic Content Based on Role -->
     <rs-card class="mt-4">
@@ -78,7 +39,6 @@
             <h2 class="text-xl font-semibold">
               Senarai Permohonan Penolong Amil
             </h2>
-            <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
           </div>
           <!-- PA-PP-PD-01_03: Registration Form - Borang Pendaftaran Calon Penolong Amil -->
           <rs-button
@@ -95,20 +55,11 @@
       <template #body>
         <!-- Smart Filter Section -->
         <div class="mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
               v-model="filters.searchQuery"
               type="text"
               placeholder="Cari nombor rujukan, nama calon..."
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-            <FormKit
-              v-model="filters.statusPendaftaran"
-              type="select"
-              :options="statusPendaftaranOptions"
-              placeholder="Status Pendaftaran"
               :classes="{
                 input: '!py-2',
               }"
@@ -365,7 +316,7 @@
                         title="Saringan"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-security" class="w-5 h-5 text-info" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                       </button>
                     </div>
                   </template>
@@ -459,7 +410,7 @@
                         title="Semak"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-security" class="w-5 h-5 text-info" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                       </button>
                     </div>
                   </template>
@@ -553,7 +504,7 @@
                         title="Sokong"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-thumb-up" class="w-5 h-5 text-success" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-success" />
                       </button>
                     </div>
                   </template>
@@ -647,7 +598,7 @@
                         title="Sahkan"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-success" />
                       </button>
                     </div>
                   </template>
@@ -741,7 +692,7 @@
                         title="Lulus"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-primary" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                       </button>
                     </div>
                   </template>
@@ -959,20 +910,7 @@ const eksekutifColumnsWithoutStatusLantikan = [
   },
 ];
 
-// RTMF Required Filter Options
-const statusPendaftaranOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Draf", value: "Draft" },
-  { label: "Dihantar", value: "Submitted" },
-  { label: "Dalam Semakan", value: "Under Review" },
-  { label: "Telah Disaring", value: "Screened" },
-  { label: "Telah Disemak", value: "PT Reviewed" },
-  { label: "Telah Disokong", value: "Executive Supported" },
-  { label: "Telah Disahkan", value: "Department Confirmed" },
-  { label: "Telah Diluluskan", value: "Division Approved" },
-  { label: "Diluluskan", value: "Approved" },
-  { label: "Ditolak", value: "Rejected" },
-];
+
 
 const sesiPerkhidmatanOptions = [
   { label: "Sila pilih...", value: "" },
@@ -1010,7 +948,6 @@ const completedStatusLantikanOptions = [
 // State
 const filters = ref({
   searchQuery: "",
-  statusPendaftaran: "",
   sesiPerkhidmatan: "",
 });
 
@@ -1032,8 +969,7 @@ const currentRole = ref("pyb");
 const activeTab = ref("Draf");
 const tableKey = ref(0);
 
-// Role Simulator State
-const showRoleInfo = ref(false);
+
 
 // Page-specific role options for Pra Daftar V3
 const roleOptions = [
@@ -1096,13 +1032,7 @@ const getRoleLabel = (role) => {
   return roleData[role]?.label || role;
 };
 
-const getRoleDescription = (role) => {
-  return roleData[role]?.description || "";
-};
 
-const getRoleCapabilities = (role) => {
-  return roleData[role]?.capabilities || [];
-};
 
 const handleRoleChange = () => {
   // Role change logic can be added here if needed
@@ -1126,7 +1056,7 @@ const getValidTabsForRole = (role) => {
     pt: ["Menunggu Semakan", "Telah Disemak"],
     eksekutif: ["Menunggu Sokongan", "Telah Disokong"],
     "ketua-jabatan": ["Menunggu Pengesahan", "Telah Disahkan"],
-    "ketua-divisyen": ["Menunggu Kelulusan", "Telah Diluluskan"],
+    "ketua-divisyen": ["Menunggu Kelulusan", "Lulus"],
   };
   return roleTabs[role] || ["Draf"];
 };
@@ -1180,7 +1110,7 @@ const getCurrentTabDataCount = () => {
     },
     "ketua-divisyen": {
       "Menunggu Kelulusan": ["Telah Disahkan"],
-      "Telah Diluluskan": ["Diluluskan", "Approved"],
+      "Lulus": ["Diluluskan", "Approved"],
     },
   };
   
@@ -1197,14 +1127,11 @@ const handleSearch = () => {
 
 const handleReset = () => {
   filters.value.searchQuery = "";
-  filters.value.statusPendaftaran = "";
   isSearchTriggered.value = false;
   currentPage.value = 1;
 };
 
-const toggleRoleInfo = () => {
-  showRoleInfo.value = !showRoleInfo.value;
-};
+
 
 // RTMF Compliant Mock Data - Role-specific with Institution Filtering
 const applications = ref([
@@ -1517,6 +1444,33 @@ const roleSpecificData = {
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Dalam Semakan" },
     },
+    // NEW: PYB "Lulus" data
+    {
+      no: 11,
+      rujukan: "PA-2024-011",
+      nama: "Mohd Hafiz bin Ismail",
+      noKP: "890715045678",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Lulus",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-011", statusPendaftaran: "Lulus" },
+    },
+    {
+      no: 12,
+      rujukan: "PA-2024-012",
+      nama: "Nurul Ain binti Ahmad",
+      noKP: "910320056789",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Lulus",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-012", statusPendaftaran: "Lulus" },
+    }
   ],
   "eksekutif-pengurusan-risiko": [
     {
@@ -1558,6 +1512,33 @@ const roleSpecificData = {
         statusLantikan: "Menunggu",
         tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Dihantar" },
     },
+    // NEW: Eksekutif Pengurusan Risiko "Telah Disaring" data
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disaring",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Abdul Rahman bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Telah Disaring",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disaring" },
+    }
   ],
   pt: [
     {
@@ -1586,6 +1567,46 @@ const roleSpecificData = {
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disaring" },
     },
+    // NEW: Additional PT data
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Kg Delek",
+      statusPendaftaran: "Disaring",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Disaring",
+      sesiPerkhidmatan: "Sesi 4",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Abdul Rahman bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Disaring",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disaring" },
+    }
   ],
   eksekutif: [
     {
@@ -1612,6 +1633,31 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 2",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disemak" },
     },
+    // NEW: Eksekutif "Telah Disokong" data
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Kg Delek",
+      statusPendaftaran: "Telah Disokong",
+      sesiPerkhidmatan: "Sesi 3",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disokong" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disokong",
+      sesiPerkhidmatan: "Sesi 4",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disokong" },
+    }
   ],
   "ketua-jabatan": [
     {
@@ -1640,6 +1686,33 @@ const roleSpecificData = {
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disokong" },
     },
+    // NEW: Ketua Jabatan "Telah Disahkan" data
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Kg Delek",
+      statusPendaftaran: "Telah Disahkan",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disahkan" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disahkan",
+      sesiPerkhidmatan: "Sesi 4",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disahkan" },
+    }
   ],
   "ketua-divisyen": [
     {
@@ -1668,6 +1741,33 @@ const roleSpecificData = {
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disahkan" },
     },
+    // NEW: Ketua Divisyen "Telah Diluluskan" data
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Kg Delek",
+      statusPendaftaran: "Telah Diluluskan",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Diluluskan" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Diluluskan",
+      sesiPerkhidmatan: "Sesi 4",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Diluluskan" },
+    }
   ],
 };
 
@@ -1695,11 +1795,6 @@ const filteredApplications = computed(() => {
           app.noKP.toLowerCase().includes(query)
       );
     }
-
-    // Apply status filters
-    if (filters.value.statusPendaftaran) {
-      result = result.filter((app) => app.statusPendaftaran === filters.value.statusPendaftaran);
-    }
   }
 
   // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
@@ -1707,6 +1802,9 @@ const filteredApplications = computed(() => {
   
   // Remove statusLantikan field for all roles to hide the column
   result = result.map(({ statusLantikan, ...rest }) => rest);
+
+  // Remove no field to hide the No column and prevent rs-table display issues
+  result = result.map(({ no, ...rest }) => rest);
 
   return result;
 });
@@ -1764,6 +1862,9 @@ const filteredCompletedApplications = computed(() => {
   // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
   result = result.map(({ sesiPerkhidmatan, institusiId, ...rest }) => rest);
 
+  // Remove no field to hide the No column and prevent rs-table display issues
+  result = result.map(({ no, ...rest }) => rest);
+
   return result;
 });
 
@@ -1796,11 +1897,6 @@ const getTableDataByStatus = (statuses) => {
           app.noKP.toLowerCase().includes(query)
       );
     }
-
-    // Apply status filters
-    if (filters.value.statusPendaftaran) {
-      result = result.filter((app) => app.statusPendaftaran === filters.value.statusPendaftaran);
-    }
   }
 
   // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
@@ -1808,6 +1904,9 @@ const getTableDataByStatus = (statuses) => {
   
   // Remove statusLantikan field for all roles to hide the column
   result = result.map(({ statusLantikan, ...rest }) => rest);
+
+  // Remove no field to hide the No column and prevent rs-table display issues
+  result = result.map(({ no, ...rest }) => rest);
 
   return result;
 };

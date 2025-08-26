@@ -12,8 +12,7 @@
     <div class="mb-6">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <Icon name="ph:file-text" class="w-6 h-6 mr-3 text-primary" />
+          <h1 class="text-2xl font-bold text-gray-900">
             Paparan Terperinci Kategori Penolong Amil
           </h1>
           <p class="text-gray-600 mt-1">Maklumat lengkap kategori penolong amil dan status workflow</p>
@@ -24,8 +23,7 @@
     <!-- Main Category Information -->
     <rs-card class="mb-6">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:tag" class="w-5 h-5 mr-2" />
+        <h3 class="text-lg font-semibold text-gray-900">
           Maklumat Kategori Penolong Amil
         </h3>
       </template>
@@ -87,8 +85,7 @@
     <!-- Review History -->
     <rs-card class="mb-6">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
+        <h3 class="text-lg font-semibold text-gray-900">
           Sejarah Semakan
         </h3>
       </template>
@@ -172,14 +169,14 @@
       </div>
     </div>
 
-    <!-- Jejak Audit (Read-Only Reference Section) -->
+    <!-- Jejak Audit (Disabled)
     <rs-card class="mt-8 bg-gray-50 border-gray-300">
       <template #header>
         <div class="bg-gray-100 border-b border-gray-300 px-6 py-4">
           <h3 class="text-lg font-medium text-gray-600 flex items-center">
             <Icon name="ph:clock-clockwise" class="w-5 h-5 mr-2 text-gray-500" />
-          Jejak Audit
-        </h3>
+            Jejak Audit
+          </h3>
           <p class="text-sm text-gray-500 mt-1">Maklumat rujukan sahaja</p>
         </div>
       </template>
@@ -223,7 +220,7 @@
               </div>
             </div>
             <div v-if="categoryData.maklumatPegawai?.diluluskanOleh">
-              <label class="block text-sm font-medium text-gray-500 mb-2">Diluluskan Oleh</label>
+              <label class="block textsm font-medium text-gray-500 mb-2">Diluluskan Oleh</label>
               <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-600">
                 {{ categoryData.maklumatPegawai.diluluskanOleh }}
               </div>
@@ -238,6 +235,7 @@
         </div>
       </template>
     </rs-card>
+    -->
   </div>
 </template>
 
@@ -248,7 +246,7 @@ import { useToast } from 'vue-toastification'
 import { formatDate } from '~/utils/dateFormatter'
 
 definePageMeta({
-  middleware: ['auth']
+  title: "Paparan Terperinci Kategori Penolong Amil"
 })
 
 const route = useRoute()

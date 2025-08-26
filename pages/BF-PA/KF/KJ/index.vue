@@ -6,82 +6,42 @@
 -->
 <template>
   <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+
     <!-- Page-specific Role Switcher -->
-    <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
-      <div class="flex items-center justify-between">
+    <div class="px-4 py-2 mt-0">
+      <div class="flex items-center space-x-3">
         <div class="flex items-center space-x-2">
           <Icon name="ic:baseline-account-circle" class="text-gray-600" size="20" />
           <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
         </div>
-        <div class="flex items-center space-x-3">
-          <div class="min-w-[200px]">
-            <FormKit
-              type="select"
-              v-model="currentRole"
-              :options="roleOptions"
-              :classes="{ 
-                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
-                wrapper: '!min-w-0'
-              }"
-              @change="handleRoleChange"
-            />
-          </div>
-          <rs-button
-            variant="secondary-outline"
-            size="sm"
-            @click="toggleRoleInfo"
-            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
-            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
+        <select
+          v-model="currentRole"
+          @change="handleRoleChange"
+          class="py-1.5 px-3 text-sm rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        >
+          <option 
+            v-for="option in roleOptions" 
+            :key="option.value" 
+            :value="option.value"
           >
-            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
-            {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
-          </rs-button>
-        </div>
-      </div>
-      
-      <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
-            <div class="flex items-center space-x-3">
-              <rs-badge :variant="getRoleVariant(currentRole)" class="!text-xs">
-                {{ getRoleLabel(currentRole) }}
-              </rs-badge>
-              <span class="text-xs text-gray-600">{{ getRoleDescription(currentRole) }}</span>
-            </div>
-          </div>
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
-            <div class="flex flex-wrap gap-2">
-              <rs-badge
-                v-for="capability in getRoleCapabilities(currentRole)"
-                :key="capability"
-                variant="secondary"
-                size="sm"
-                class="!text-xs"
-              >
-                {{ capability }}
-              </rs-badge>
-            </div>
-          </div>
-        </div>
+            {{ option.label }}
+          </option>
+        </select>
       </div>
     </div>
-
-    <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
       <template #header>
         <div>
           <h2 class="text-xl font-semibold">Senarai Jawatan Penolong Amil</h2>
-          <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
         </div>
       </template>
 
       <template #body>
         <!-- Smart Filter Section -->
         <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4 mb-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
               v-model="filters.searchQuery"
               type="text"
@@ -89,34 +49,14 @@
               :classes="{
                 input: '!py-2',
               }"
-              class="flex-1"
-            />
-
-            <FormKit
-              v-model="filters.kategori"
-              type="select"
-              :options="kategoriOptions"
-              placeholder="Kategori"
-              :classes="{
-                input: '!py-2',
-              }"
-              class="min-w-[200px]"
             />
             <rs-button
               variant="primary"
               @click="performSearch"
-              class="flex items-center whitespace-nowrap"
+              class="!py-2 !px-4"
             >
               <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
               Cari
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              @click="clearSearch"
-              class="flex items-center whitespace-nowrap"
-            >
-              <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-              Set Semula
             </rs-button>
           </div>
         </div>
@@ -345,7 +285,7 @@
                         title="Sahkan"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-warning" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                       </button>
                     </div>
                   </template>
@@ -489,7 +429,7 @@
                         title="Luluskan"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                       </button>
                     </div>
                   </template>
@@ -535,7 +475,7 @@
                         title="Semak"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-warning" class="w-5 h-5 text-warning" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                       </button>
                     </div>
                   </template>
@@ -687,7 +627,6 @@ const breadcrumb = [
 
 // Role Simulator State
 const currentRole = ref("eksekutif"); // Default role
-const showRoleInfo = ref(false);
 
 // Page-specific role options for KF/KJ module
 const roleOptions = [
@@ -729,13 +668,7 @@ const getRoleLabel = (role) => {
   return roleData[role]?.name || role;
 };
 
-const getRoleDescription = (role) => {
-  return roleData[role]?.description || "";
-};
 
-const getRoleCapabilities = (role) => {
-  return roleData[role]?.capabilities || [];
-};
 
 const handleRoleChange = () => {
   // Role changed
@@ -748,25 +681,16 @@ const handleRoleChange = () => {
   refreshTable();
 };
 
-const toggleRoleInfo = () => {
-  showRoleInfo.value = !showRoleInfo.value;
-};
+
 
 // Filters
 const filters = ref({
   searchQuery: "",
-  kategori: "",
 });
 
 
 
-const kategoriOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
-  { label: "Penolong Amil Padi", value: "Penolong Amil Padi" },
-  { label: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },
-  { label: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
-];
+
 
 // Table data and reactivity control
 const tableKey = ref(0);
@@ -1038,11 +962,7 @@ const getTableDataByStatus = (statuses) => {
 
   
   // Apply kategori filter
-  if (filters.value.kategori) {
-    result = result.filter(position => 
-      position.kategoriPenolongAmil === filters.value.kategori
-    );
-  }
+  
   
   return result;
 };
@@ -1132,7 +1052,7 @@ onMounted(() => {
 
 // Search functionality
 const performSearch = () => {
-  if (!filters.value.searchQuery && !filters.value.kategori) {
+  if (!filters.value.searchQuery) {
     toast.warning('Sila masukkan kriteria carian');
     return;
   }
@@ -1141,12 +1061,7 @@ const performSearch = () => {
   refreshTable();
 };
 
-const clearSearch = () => {
-  filters.value.searchQuery = "";
-  filters.value.kategori = "";
-  refreshTable();
-  toast.info('Carian telah diset semula');
-};
+
 
 // Bulk approval functionality
 const showBulkApprovalModal = ref(false);

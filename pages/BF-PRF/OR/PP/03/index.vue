@@ -255,32 +255,70 @@
           @submit="nextStep"
           #default="{ value }"
         >
-          <FormKit
-            type="text"
-            name="representativeName"
-            label="Nama Wakil / Pegawai Utama"
-            validation="required"
-            placeholder="Masukkan nama wakil"
-            v-model="formData.representativeName"
-          />
+          <div
+            v-for="(representative, index) in formData.representatives"
+            :key="index"
+            class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50"
+          >
+            <h3 class="font-semibold text-sm text-gray-700">
+              Maklumat Wakil {{ index + 1 }}
+            </h3>
 
-          <FormKit
-            type="tel"
-            name="phoneNumber"
-            label="No Telefon (Pejabat / HP)"
-            validation="required"
-            placeholder="Contoh: 012-3456789"
-            v-model="formData.phoneNumber"
-          />
+            <FormKit
+              type="text"
+              :name="`representativeName${index}`"
+              label="Nama Wakil / Pegawai Utama"
+              validation="required"
+              placeholder="Masukkan nama wakil"
+              v-model="representative.name"
+            />
 
-          <FormKit
-            type="email"
-            name="email"
-            label="Emel (jika ada)"
-            validation="email"
-            placeholder="Contoh: nama@domain.com"
-            v-model="formData.email"
-          />
+            <FormKit
+              type="text"
+              :name="`representativeIc${index}`"
+              label="ID Pengenalan"
+              validation="required|length:12"
+              placeholder="Contoh: 880101012222"
+              v-model="representative.ic"
+            />
+
+            <FormKit
+              type="tel"
+              :name="`phoneNumber${index}`"
+              label="No Telefon (Pejabat / HP)"
+              validation="required"
+              placeholder="Contoh: 012-3456789"
+              v-model="representative.phoneNumber"
+            />
+
+            <FormKit
+              type="email"
+              :name="`email${index}`"
+              label="Emel (jika ada)"
+              validation="email"
+              placeholder="Contoh: nama@domain.com"
+              v-model="representative.email"
+            />
+
+            <div class="flex justify-end">
+              <rs-button
+                v-if="formData.representatives.length > 1"
+                variant="danger-outline"
+                size="sm"
+                @click.prevent="removeRepresentative(index)"
+              >
+                Buang Maklumat Ini
+              </rs-button>
+            </div>
+          </div>
+
+          <rs-button
+            variant="primary-outline"
+            size="sm"
+            @click.prevent="tambahMaklumatWakil"
+          >
+            + Tambah Wakil
+          </rs-button>
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -300,73 +338,53 @@
           @submit="nextStep"
           #default="{ value }"
         >
-           <div
-              v-for="(bank, index) in formData.banks"
-              :key="index"
-              class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50"
-            >
-              <h3 class="font-semibold text-sm text-gray-700">
-                Maklumat Bank {{ index + 1 }}
-              </h3>
+          <div class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50">
+            <h3 class="font-semibold text-sm text-gray-700">
+              Maklumat Bank
+            </h3>
 
-              <FormKit
-                type="select"
-                label="Nama Bank"
-                placeholder="Pilih bank"
-                validation="required"
-                :options="[
-                  'Maybank',
-                  'CIMB Bank',
-                  'Public Bank',
-                  'RHB Bank',
-                  'Hong Leong Bank',
-                  'AmBank',
-                  'Bank Islam',
-                  'Bank Rakyat',
-                  'Bank Muamalat',
-                  'OCBC Bank',
-                  'HSBC Bank',
-                  'Standard Chartered Bank',
-                  'Citibank',
-                  'UOB Bank'
-                ]"
-                v-model="bank.bankName"
-              />
+            <FormKit
+              type="select"
+              name="bankName"
+              label="Nama Bank"
+              placeholder="Pilih bank"
+              validation="required"
+              :options="[
+                'Maybank',
+                'CIMB Bank',
+                'Public Bank',
+                'RHB Bank',
+                'Hong Leong Bank',
+                'AmBank',
+                'Bank Islam',
+                'Bank Rakyat',
+                'Bank Muamalat',
+                'OCBC Bank',
+                'HSBC Bank',
+                'Standard Chartered Bank',
+                'Citibank',
+                'UOB Bank'
+              ]"
+              v-model="formData.bankName"
+            />
 
-              <FormKit
-                type="text"
-                label="Nombor Akaun Bank"
-                validation="required"
-                placeholder="Masukkan nombor akaun bank"
-                v-model="bank.bankAccountNumber"
-              />
+            <FormKit
+              type="text"
+              name="bankAccountNumber"
+              label="Nombor Akaun Bank"
+              validation="required"
+              placeholder="Masukkan nombor akaun bank"
+              v-model="formData.bankAccountNumber"
+            />
 
-              <FormKit
-                type="text"
-                label="Penama Akaun Bank"
-                placeholder=""
-                v-model="bank.penamaBank"
-              />
-
-              <div class="flex justify-end">
-                <rs-button
-                  v-if="formData.banks.length > 1"
-                  variant="danger-outline"
-                  size="sm"
-                  @click.prevent="removeBank(index)"
-                >
-                  Buang Maklumat Ini
-                </rs-button>
-              </div>
-            </div>
-
-            <rs-button
-              variant="primary-outline"
-              size="sm"
-              @click.prevent="tambahMaklumatBank"
-            >
-              + Tambah Maklumat Bank
-            </rs-button>
+            <FormKit
+              type="text"
+              name="penamaBank"
+              label="Penama Akaun Bank"
+              placeholder="Masukkan penama akaun bank"
+              v-model="formData.penamaBank"
+            />
+          </div>
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -378,99 +396,8 @@
         </FormKit>
       </div>
 
-      <!-- Step F: Maklumat Tambahan Masjid/Surau -->
+      <!-- Step F: Muat Naik Dokumen Sokongan -->
       <div v-if="currentStep === 6" class="space-y-6">
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="nextStep"
-          #default="{ value }"
-        >
-          <h3 class="font-medium mb-2">Senarai Penolong Amil (PAK)</h3>
-
-          <div
-            v-for="(pak, index) in formData.pakList"
-            :key="index"
-            class="bg-gray-50 p-4 rounded-md mb-4"
-          >
-            <div class="flex justify-between items-center mb-2">
-              <h4 class="font-medium">Penolong Amil #{{ index + 1 }}</h4>
-              <FormKit
-                v-if="index > 0"
-                type="button"
-                label="Buang"
-                @click="removePak(index)"
-                input-class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-sm"
-              />
-            </div>
-
-            <div class="space-y-4">
-              <FormKit
-                type="text"
-                :name="`pakName${index}`"
-                label="Nama Penuh"
-                validation="required"
-                placeholder="Masukkan nama penuh"
-                v-model="pak.name"
-              />
-
-              <FormKit
-                type="text"
-                :name="`pakIc${index}`"
-                label="No. Kad Pengenalan"
-                validation="required|length:12"
-                placeholder="Contoh: 880101012222"
-                v-model="pak.ic"
-              />
-
-              <FormKit
-                type="select"
-                :name="`pakType${index}`"
-                label="Jenis PAK"
-                validation="required"
-                placeholder="Pilih jenis PAK"
-                :options="['Kariah', 'Komuniti', 'IPTA']"
-                v-model="pak.type"
-              />
-            </div>
-          </div>
-
-          <FormKit
-            type="button"
-            label="Tambah Penolong Amil"
-            @click="addNewPak"
-            input-class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md mb-6"
-          />
-
-          <FormKit
-            type="text"
-            name="mosqueCode"
-            label="Kod Masjid/Kariah"
-            placeholder="Contoh: C15"
-            v-model="formData.mosqueCode"
-          />
-
-          <FormKit
-            type="select"
-            name="responsibleOfficer"
-            label="Pegawai Bertanggungjawab"
-            placeholder="Pilih pegawai"
-            :options="['EO', 'ESH', 'EZAD', 'EZKP']"
-            v-model="formData.responsibleOfficer"
-          />
-
-          <div class="flex justify-between mt-6">
-            <rs-button variant="primary-outline" @click="prevStep">
-              Kembali
-            </rs-button>
-
-            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
-          </div>
-        </FormKit>
-      </div>
-
-      <!-- Step G: Muat Naik Dokumen Sokongan -->
-      <div v-if="currentStep === 7" class="space-y-6">
         <FormKit
           type="form"
           :actions="false"
@@ -540,7 +467,7 @@
       </div>
 
       <!-- Submission Success -->
-      <div v-if="currentStep === 8" class="text-center py-8">
+      <div v-if="currentStep === 7" class="text-center py-8">
         <div class="mb-6">
           <div
             class="mx-auto h-16 w-16 rounded-full bg-green-100 flex items-center justify-center"
@@ -614,7 +541,7 @@ const breadcrumb = ref([
   },
 ]);
 
-const totalSteps = 7;
+const totalSteps = 6;
 const currentStep = ref(1);
 const referenceNumber = ref(
   "NAS-ORG-UPDATE-" +
@@ -646,26 +573,16 @@ const formData = ref({
   zone: "",
 
   // Step 4: Maklumat Perhubungan
-  representativeName: "",
-  phoneNumber: "",
-  email: "",
-
-  // Step 5: Maklumat Bank
-  banks: [
-    {
-      bankName: '',
-      bankAccountNumber: '',
-      penamaBank: '',
-      paymentMethod: '',
-    },
+  representatives: [
+    { name: "", ic: "", phoneNumber: "", email: "" },
   ],
 
-  // Step 6: Maklumat Tambahan Masjid/Surau
-  pakList: [{ name: "", ic: "", type: "" }],
-  mosqueCode: "",
-  responsibleOfficer: "",
+  // Step 5: Maklumat Bank
+  bankName: "",
+  bankAccountNumber: "",
+  penamaBank: "",
 
-  // Step 7: Muat Naik Dokumen Sokongan
+  // Step 6: Muat Naik Dokumen Sokongan
   registrationCertificate: null,
   appointmentLetter: null,
   bankProof: null,
@@ -679,8 +596,7 @@ const steps = computed(() => {
     { id: 3, label: "Kariah/Zon" },
     { id: 4, label: "Perhubungan" },
     { id: 5, label: "Bank" },
-    { id: 6, label: "Tambahan" },
-    { id: 7, label: "Dokumen" },
+    { id: 6, label: "Dokumen" },
   ];
 });
 
@@ -692,17 +608,12 @@ const goToStep = (stepId) => {
   }
 };
 
-const tambahMaklumatBank = () => {
-  formData.value.banks.push({
-    bankName: '',
-    bankAccountNumber: '',
-    penamaBank: '',
-    paymentMethod: '',
-  });
+const tambahMaklumatWakil = () => {
+  formData.value.representatives.push({ name: "", ic: "", phoneNumber: "", email: "" });
 };
 
-const removeBank = (index) => {
-  formData.value.banks.splice(index, 1);
+const removeRepresentative = (index) => {
+  formData.value.representatives.splice(index, 1);
 };
 
 const nextStep = () => {
@@ -719,20 +630,12 @@ const prevStep = () => {
   }
 };
 
-const addNewPak = () => {
-  formData.value.pakList.push({ name: "", ic: "", type: "" });
-};
-
-const removePak = (index) => {
-  formData.value.pakList.splice(index, 1);
-};
-
 const submitForm = () => {
   // Here you would normally handle the API submission for updates
   console.log("Updated form data to be submitted:", formData.value);
 
   // For demo purposes, just go to success screen
-  currentStep.value = 8;
+  currentStep.value = 7;
   window.scrollTo(0, 0);
 };
 
@@ -764,26 +667,12 @@ const loadExistingData = async () => {
       kariah: "MASJID PEKAN BANGI",
       branch: "Cawangan Utama",
       zone: "Zon A",
-      representativeName: "Ahmad bin Abdullah",
-      phoneNumber: "012-3456789",
-      email: "ahmad@masjid.com",
-      banks: [
-        {
-          bankName: 'Bank Islam',
-          bankAccountNumber: '1234567890',
-          penamaBank: 'Masjid Al-Hidayah',
-          paymentMethod: '',
-        },
+      representatives: [
+        { name: "Ahmad bin Abdullah", ic: "880101012222", phoneNumber: "012-3456789", email: "ahmad@masjid.com" },
       ],
-      pakList: [
-        { 
-          name: "Ahmad bin Abdullah", 
-          ic: "880101012222", 
-          type: "Kariah" 
-        }
-      ],
-      mosqueCode: "C15",
-      responsibleOfficer: "EO",
+      bankName: "Maybank",
+      bankAccountNumber: "1234567890",
+      penamaBank: "Masjid Al-Hidayah",
       registrationCertificate: null,
       appointmentLetter: null,
       bankProof: null,

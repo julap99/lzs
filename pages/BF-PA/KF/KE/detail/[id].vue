@@ -234,7 +234,7 @@
       <!-- Action buttons removed - this is a view-only screen -->
     </div>
 
-    <!-- Jejak Audit (Read-Only Reference Section) -->
+    <!-- Jejak Audit (Disabled)
     <rs-card class="mt-8 bg-gray-50 border-gray-300">
       <template #header>
         <div class="bg-gray-100 border-b border-gray-300 px-6 py-4">
@@ -300,6 +300,7 @@
         </div>
       </template>
     </rs-card>
+    -->
   </div>
 </template>
 

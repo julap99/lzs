@@ -1,68 +1,29 @@
 <template>
   <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+
     <!-- Penukar Peranan Halaman Khusus -->
-    <div class="bg-gray-100 border-b border-gray-200 px-4 py-2">
-      <div class="flex items-center justify-between">
+    <div class="px-4 py-2 mt-0">
+      <div class="flex items-center space-x-3">
         <div class="flex items-center space-x-2">
           <Icon name="ic:baseline-account-circle" class="text-gray-600" size="20" />
           <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
         </div>
-        <div class="flex items-center space-x-3">
-          <div class="min-w-[200px]">
-            <FormKit
-              type="select"
-              v-model="currentRole"
-              :options="roleOptions"
-              :classes="{ 
-                input: '!py-1.5 !px-3 text-sm !rounded-md !border-gray-300',
-                wrapper: '!min-w-0'
-              }"
-              @change="handleRoleChange"
-            />
-          </div>
-          <rs-button
-            variant="secondary-outline"
-            size="sm"
-            @click="toggleRoleInfo"
-            :class="{ 'bg-blue-100 text-blue-700 border-blue-300': showRoleInfo }"
-            class="!px-3 !py-1.5 !text-sm !whitespace-nowrap"
+        <select
+          v-model="currentRole"
+          @change="handleRoleChange"
+          class="py-1.5 px-3 text-sm rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        >
+          <option 
+            v-for="option in roleOptions" 
+            :key="option.value" 
+            :value="option.value"
           >
-            <Icon name="ic:baseline-visibility" class="w-3 h-3 mr-1" />
-            {{ showRoleInfo ? 'Sembunyi' : 'Tunjuk' }}
-          </rs-button>
-        </div>
-      </div>
-      
-      <div v-if="showRoleInfo" class="mt-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Peranan Semasa:</h4>
-            <div class="flex items-center space-x-3">
-              <rs-badge :variant="getRoleVariant(currentRole)" class="!text-xs">
-                {{ getRoleLabel(currentRole) }}
-              </rs-badge>
-              <span class="text-xs text-gray-600">{{ getRoleDescription(currentRole) }}</span>
-            </div>
-          </div>
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Kebolehan:</h4>
-            <div class="flex flex-wrap gap-2">
-              <rs-badge
-                v-for="capability in getRoleCapabilities(currentRole)"
-                :key="capability"
-                variant="secondary"
-                size="sm"
-                class="!text-xs"
-              >
-                {{ capability }}
-              </rs-badge>
-            </div>
-          </div>
-        </div>
+            {{ option.label }}
+          </option>
+        </select>
       </div>
     </div>
-
-    <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
       <template #header>
@@ -70,7 +31,13 @@
           <h2 class="text-xl font-semibold">
             Elaun Tugasan
           </h2>
-          <rs-button variant="primary-outline" @click="navigateTo('/BF-PA/PE/AB2/01')">Tambah Baru</rs-button>
+          <rs-button 
+            variant="primary" 
+            @click="navigateTo('/BF-PA/PE/AB2/01')"
+          >
+            <Icon name="ic:baseline-add-circle" class="mr-2" />
+            Tambah Baru
+          </rs-button>
         </div>
       </template>
 
@@ -78,7 +45,7 @@
         <div class="p-4">
           <!-- Bahagian Carian dan Penapis -->
           <div class="mb-6">
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="searchQuery"
                 type="text"
@@ -86,33 +53,14 @@
                 :classes="{
                   input: '!py-2',
                 }"
-                class="flex-1"
-              />
-              <FormKit
-                v-model="selectedStatus"
-                type="select"
-                :options="getFilteredStatusOptions()"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-                class="min-w-[200px]"
               />
               <rs-button
                 variant="primary"
                 @click="performSearch"
-                class="flex items-center whitespace-nowrap"
+                class="!py-2 !px-4"
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
               </rs-button>
             </div>
           </div>
@@ -125,8 +73,7 @@
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                       <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Batch</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -135,7 +82,6 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                       <tr v-for="batch in getTableDataByStatus(['Menunggu Pengesahan', 'Menunggu Kelulusan'])" :key="batch.id">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                           <a 
                             href="#" 
@@ -171,14 +117,13 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Diluluskan">
+            <rs-tab-item title="Lulus">
               <div class="p-4">
                 <div class="overflow-x-auto">
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                       <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Batch</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -186,8 +131,7 @@
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="batch in getTableDataByStatus(['Diluluskan'])" :key="batch.id">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.id }}</td>
+                      <tr v-for="batch in getTableDataByStatus(['Lulus'])" :key="batch.id">
                         <td class="px-6 py-4 whitespace-nowrap">
                           <a 
                             href="#" 
@@ -229,8 +173,7 @@
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                       <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Batch</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -239,7 +182,6 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                       <tr v-for="batch in getTableDataByStatus(['Ditolak'])" :key="batch.id">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                           <a 
                             href="#" 
@@ -304,7 +246,6 @@ const breadcrumb = ref([
 
 // Simulasi peranan
 const currentRole = ref('eksekutif');
-const showRoleInfo = ref(false);
 
 // Pengurusan tab
 const activeTab = ref("Sedang Proses");
@@ -312,7 +253,6 @@ const tableKey = ref(0);
 
 // Keadaan carian dan penapis
 const searchQuery = ref('');
-const selectedStatus = ref('');
 const isSearchPerformed = ref(false);
 
 const roleOptions = [
@@ -373,7 +313,7 @@ const batches = ref([
     noBatch: 'BATCH/2024/004',
     institusi: 'Masjid Al-Falah',
     kategori: 'Kariah',
-    status: 'Diluluskan',
+    status: 'Lulus',
     tarikhCipta: '2024-03-12'
   },
   {
@@ -383,17 +323,91 @@ const batches = ref([
     kategori: 'Kariah',
     status: 'Ditolak',
     tarikhCipta: '2024-03-18'
+  },
+  // NEW: Additional batches for better status distribution and variety
+  {
+    id: 6,
+    noBatch: 'BATCH/2024/006',
+    institusi: 'Masjid Negeri Selangor',
+    kategori: 'Fitrah',
+    status: 'Menunggu Pengesahan',
+    tarikhCipta: '2024-03-20'
+  },
+  {
+    id: 7,
+    noBatch: 'BATCH/2024/007',
+    institusi: 'Masjid Kg Delek',
+    kategori: 'Komuniti',
+    status: 'Menunggu Kelulusan',
+    tarikhCipta: '2024-03-22'
+  },
+  {
+    id: 8,
+    noBatch: 'BATCH/2024/008',
+    institusi: 'Masjid Al-Khairiyah',
+    kategori: 'Padi',
+    status: 'Lulus',
+    tarikhCipta: '2024-03-25'
+  },
+  {
+    id: 9,
+    noBatch: 'BATCH/2024/009',
+    institusi: 'Masjid Al-Rahman',
+    kategori: 'Fitrah',
+    status: 'Ditolak',
+    tarikhCipta: '2024-03-28'
+  },
+  {
+    id: 10,
+    noBatch: 'BATCH/2024/010',
+    institusi: 'Masjid Al-Mustaqim',
+    kategori: 'Kariah',
+    status: 'Menunggu Pengesahan',
+    tarikhCipta: '2024-04-01'
+  },
+  {
+    id: 11,
+    noBatch: 'BATCH/2024/011',
+    institusi: 'Masjid Al-Huda',
+    kategori: 'Komuniti',
+    status: 'Menunggu Kelulusan',
+    tarikhCipta: '2024-04-03'
+  },
+  {
+    id: 12,
+    noBatch: 'BATCH/2024/012',
+    institusi: 'Masjid Al-Iman',
+    kategori: 'Padi',
+    status: 'Lulus',
+    tarikhCipta: '2024-04-05'
+  },
+  {
+    id: 13,
+    noBatch: 'BATCH/2024/013',
+    institusi: 'Masjid Al-Taqwa',
+    kategori: 'Fitrah',
+    status: 'Ditolak',
+    tarikhCipta: '2024-04-08'
+  },
+  {
+    id: 14,
+    noBatch: 'BATCH/2024/014',
+    institusi: 'Masjid Al-Salam',
+    kategori: 'Kariah',
+    status: 'Menunggu Pengesahan',
+    tarikhCipta: '2024-04-10'
+  },
+  {
+    id: 15,
+    noBatch: 'BATCH/2024/015',
+    institusi: 'Masjid Al-Nur',
+    kategori: 'Komuniti',
+    status: 'Menunggu Kelulusan',
+    tarikhCipta: '2024-04-12'
   }
 ]);
 
-// Pilihan status lengkap untuk aliran kerja pengesahan
-const statusOptions = [
-  { label: 'Semua', value: '' },
-  { label: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' },
-  { label: 'Menunggu Kelulusan', value: 'Menunggu Kelulusan' },
-  { label: 'Diluluskan', value: 'Diluluskan' },
-  { label: 'Ditolak', value: 'Ditolak' },
-];
+
 
 
 
@@ -402,54 +416,24 @@ const getRoleLabel = (role) => {
   return roleData[role]?.name || role;
 };
 
-const getRoleDescription = (role) => {
-  return roleData[role]?.description || '';
-};
 
-const getRoleCapabilities = (role) => {
-  return roleData[role]?.capabilities || [];
-};
 
 const getRoleVariant = (role) => {
   return roleData[role]?.variant || 'secondary';
 };
 
-const handleRoleChange = () => {
-  // Set semula penapis apabila peranan berubah
-  selectedStatus.value = '';
-  showRoleInfo.value = false;
-  refreshTable();
-};
 
-const toggleRoleInfo = () => {
-  showRoleInfo.value = !showRoleInfo.value;
-};
 
-// Role-based filtering
-const getFilteredStatusOptions = () => {
-  if (currentRole.value === 'eksekutif') {
-    return statusOptions.filter(option => 
-      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(option.value)
-    );
-  } else if (currentRole.value === 'ketua-jabatan') {
-    return statusOptions.filter(option => 
-      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(option.value)
-    );
-  } else if (currentRole.value === 'ketua-divisyen') {
-    return statusOptions.filter(option => 
-      ['Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(option.value)
-    );
-  }
-  return statusOptions;
-};
+
+
+
 
 const getFilteredBatches = () => {
   let filtered = batches.value.filter(batch => {
     const matchesSearch = !searchQuery.value || 
       batch.noBatch.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       batch.institusi.toLowerCase().includes(searchQuery.value.toLowerCase());
-    const matchesStatus = !selectedStatus.value || batch.status === selectedStatus.value;
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   });
 
   // Penapisan berasaskan peranan
@@ -459,12 +443,12 @@ const getFilteredBatches = () => {
   } else if (currentRole.value === 'ketua-jabatan') {
     // Ketua Jabatan boleh melihat batch yang memerlukan perhatian mereka atau telah melalui tahap mereka
     return filtered.filter(batch => 
-      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(batch.status)
+      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Lulus', 'Ditolak'].includes(batch.status)
     );
   } else if (currentRole.value === 'ketua-divisyen') {
     // Ketua Divisyen hanya boleh melihat batch yang memerlukan kelulusan akhir atau telah diproses
     return filtered.filter(batch => 
-      ['Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(batch.status)
+      ['Menunggu Kelulusan', 'Lulus', 'Ditolak'].includes(batch.status)
     );
   }
 
@@ -487,13 +471,6 @@ const getTableDataByStatus = (statuses) => {
         batch.institusi.toLowerCase().includes(query)
       );
     }
-    
-    // Gunakan penapis status
-    if (selectedStatus.value) {
-      result = result.filter(batch => 
-        batch.status === selectedStatus.value
-      );
-    }
   }
   
   return result;
@@ -511,7 +488,7 @@ const getStatusVariant = (status) => {
       return 'warning'
     case 'Menunggu Kelulusan':
       return 'info'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'success'
     case 'Ditolak':
       return 'danger'
@@ -526,7 +503,7 @@ const getStatusColor = (status) => {
       return 'bg-blue-100 text-blue-800'
     case 'Menunggu Kelulusan':
       return 'bg-purple-100 text-purple-800'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'bg-green-100 text-green-800'
     case 'Ditolak':
       return 'bg-red-100 text-red-800'
@@ -541,8 +518,8 @@ const getStatusLabel = (status) => {
       return 'Menunggu Pengesahan'
     case 'Menunggu Kelulusan':
       return 'Menunggu Kelulusan'
-    case 'Diluluskan':
-      return 'Diluluskan'
+    case 'Lulus':
+      return 'Lulus'
     case 'Ditolak':
       return 'Ditolak'
     default:
@@ -556,7 +533,7 @@ const getActionRoute = (status) => {
       return '/BF-PA/PE/AB2/03'
     case 'Menunggu Kelulusan':
       return '/BF-PA/PE/AB2/06'
-    case 'Diluluskan':
+    case 'Lulus':
       return '/BF-PA/PE/AB2/04'
     case 'Ditolak':
       return '/BF-PA/PE/AB2/07'
@@ -570,7 +547,7 @@ const getActionButtonText = (status) => {
     case 'Menunggu Pengesahan':
     case 'Menunggu Kelulusan':
       return 'Semak'
-    case 'Diluluskan':
+    case 'Lulus':
     case 'Ditolak':
       return 'Lihat'
     default:
@@ -580,7 +557,7 @@ const getActionButtonText = (status) => {
 
 // Fungsi carian
 const performSearch = () => {
-  if (!searchQuery.value && !selectedStatus.value) {
+  if (!searchQuery.value) {
     // Anda boleh menambah notifikasi toast di sini jika diperlukan
     return;
   }
@@ -589,12 +566,7 @@ const performSearch = () => {
   refreshTable();
 };
 
-const clearSearch = () => {
-  searchQuery.value = '';
-  selectedStatus.value = '';
-  isSearchPerformed.value = false;
-  refreshTable();
-};
+
 
 const refreshTable = () => {
   nextTick(() => {
@@ -605,10 +577,6 @@ const refreshTable = () => {
 // Pengendali acara
 const handleSearch = (event) => {
   searchQuery.value = event.target.value;
-};
-
-const handleStatusChange = (event) => {
-  selectedStatus.value = event.target.value;
 };
 </script>
 

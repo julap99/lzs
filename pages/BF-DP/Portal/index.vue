@@ -3,6 +3,17 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Role Simulator - For Demo/Presentation Only -->
+    <!-- This allows switching between different user roles to demonstrate role-based views -->
+    <!-- In production, this would be replaced with actual user authentication and role management -->
+    <div class="mb-4 flex items-center space-x-4">
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="pengguna-luar">Pengguna Luar</option>
+        <option value="pengguna-dalam">Pengguna Dalam</option>
+      </select>
+    </div>
+
     <!-- Section 1: Penerangan Ringkas -->
     <rs-card>
       <template #header>Semak Status Permohonan</template>
@@ -17,7 +28,7 @@
           type="form"
           submit-label="Semak Status"
           :actions="false"
-          @submit="handleSubmit"
+          @submit="submitForm"
         >
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <!-- Nombor Pengenalan -->
@@ -43,18 +54,18 @@
             />
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <!-- Status Type -->
+          <!-- Kategori Semakan - Only visible to Pengguna Dalam -->
+          <div v-if="selectedRole === 'pengguna-dalam'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <FormKit
               type="select"
               name="statusType"
-              label="Jenis Status"
-              placeholder="Pilih Jenis Status"
+              label="Kategori Semakan"
+              placeholder="Pilih Kategori Semakan"
               v-model="form.statusType"
             >
-              <option value="aduan">Aduan</option>
-              <option value="bantuan">Bantuan</option>
-              <option value="profile">Profile</option>
+              <option value="aduan">Status Aduan</option>
+              <option value="bantuan">Status Bantuan</option>
+              <option value="profile">Status Pendaftaran Profil</option>
             </FormKit>
           </div>
 
@@ -83,8 +94,6 @@
 
 <script setup lang="ts">
     import { ref } from "vue";
-    const router = useRouter();
-    const route = useRoute();
 
     definePageMeta({
     title: "Semak Status Permohonan",
@@ -99,11 +108,13 @@
     },
     ]);
 
+    // Role Simulator - For Demo/Presentation Only
+    const selectedRole = ref("pengguna-luar"); // default role
+
     // Form Data
     const form = ref({
     idNo: "",
     appId: "",
-    appId2: "",
     statusType: "",
     });
 
@@ -113,24 +124,50 @@
     // Error Message
     const errorMessage = ref("");
 
-    // Counter utk simulate click behavior
-    const clickCount = ref(0);
-
     // Handle Reset
-    const handleReset = () => {
+    const handleReset = (): void => {
     form.value.idNo = "";
     form.value.appId = "";
-    form.value.appId2 = "";
+    form.value.statusType = "";
     errorMessage.value = "";
-    clickCount.value = 0;
     };
 
-    const submitForm = () => {
-      const type = form.value.statusType;
+    const submitForm = (): void => {
+      // For Pengguna Luar, automatically determine status type based on search
+      // For Pengguna Dalam, use the selected status type
+      let type = form.value.statusType;
+      
+      if (selectedRole.value === 'pengguna-luar') {
+        // External users get basic search - automatically determine category based on search
+        // In production, this would query the database and determine the appropriate category
+        // For demo purposes, we'll implement basic logic to determine the category
+        
+        // Simple logic: if ID starts with 'ADN', show aduan; if 'NAS-BTN', show bantuan; else show profile
+        if (form.value.appId.startsWith('ADN')) {
+          navigateTo("/BF-DP/Portal/aduan");
+        } else if (form.value.appId.startsWith('NAS-BTN')) {
+          navigateTo("/BF-DP/Portal/bantuan");
+        } else if (form.value.appId.startsWith('NAS-PRF')) {
+          navigateTo("/BF-DP/Portal/profile");
+        } else {
+          // Default fallback - you can customize this logic
+          navigateTo("/BF-DP/Portal/aduan");
+        }
+        return;
+      }
+      
+      // Internal users must select a category
       if (["aduan", "bantuan", "profile"].includes(type)) {
-        navigateTo(`/BF-DP/Portal/${type}`);
+        // Fix TypeScript navigation issue by using explicit route paths
+        if (type === "aduan") {
+          navigateTo("/BF-DP/Portal/aduan");
+        } else if (type === "bantuan") {
+          navigateTo("/BF-DP/Portal/bantuan");
+        } else if (type === "profile") {
+          navigateTo("/BF-DP/Portal/profile");
+        }
       } else {
-        errorMessage.value = "Sila pilih salah satu jenis status.";
+        errorMessage.value = "Sila pilih salah satu kategori semakan.";
       }
     };
 

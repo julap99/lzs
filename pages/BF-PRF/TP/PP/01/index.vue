@@ -28,7 +28,7 @@
               <FormKit
                 type="text"
                 name="noId"
-                label="Nombor Pengenalan / Kod Vendor"
+                label="Nombor Pengenalan / Kod Syarikat"
                 validation="required"
                 v-model="formData.noId"
                 :placeholder="getPlaceholder()"
@@ -106,7 +106,7 @@ const breadcrumb = ref([
 
 const kategoriOptions = [
   { label: "Recipient (Individu)", value: "recipient" },
-  { label: "Vendor (Syarikat/Entiti)", value: "vendor" },
+  { label: "Syarikat (Syarikat/Entiti)", value: "vendor" },
 ];
 
 const formData = ref({ kategori: "", noId: "" });
@@ -114,7 +114,7 @@ const formData = ref({ kategori: "", noId: "" });
 const getPlaceholder = () => {
   switch (formData.value.kategori) {
     case "recipient": return "Contoh: 880101121234";
-    case "vendor": return "Contoh: VD123456";
+    case "vendor": return "Contoh: SY123456";
     default: return "Sila pilih kategori dahulu";
   }
 };

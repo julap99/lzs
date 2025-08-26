@@ -25,7 +25,7 @@ All required RTMF screens have been implemented with proper functionality, form 
 | `PA-PP-PD-01_01` | `index.vue`                              | Main list with all required columns   |
 | `PA-PP-PD-01_02` | `detail/[rujukan].vue`                   | Detailed information view             |
 | `PA-PP-PD-01_03` | `daftar-baharu/index.vue`                | Registration form                     |
-| `PA-PP-PD-01_04` | `process-trace/[rujukan].vue`            | Process trace with audit trail        |
+| `PA-PP-PD-01_04` | `process-trace/[rujukan].vue`            | Process trace                         |
 | `PA-PP-PD-01_05` | `service-history/[rujukan].vue`          | Service history and performance       |
 | `PA-PP-PD-02_01` | `saringan/index.vue`                     | Screening list                        |
 | `PA-PP-PD-02_02` | `saringan/detail/[rujukan].vue`          | Screening detail view                 |
@@ -180,7 +180,7 @@ The system follows the complete workflow as specified in the RTMF documentation:
 
 - **Comprehensive status tracking** throughout the workflow
 - **Status badges** with appropriate colors
-- **Status history** and audit trail
+- **Status history**
 - **Role-based status visibility**
 
 ## Technical Implementation

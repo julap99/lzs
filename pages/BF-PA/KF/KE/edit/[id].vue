@@ -253,7 +253,7 @@
       </div>
     </FormKit>
 
-    <!-- Jejak Audit (Read-Only Reference Section) -->
+    <!-- Jejak Audit (Disabled)
     <rs-card class="mt-8 bg-gray-50 border-gray-300">
       <template #header>
         <div class="bg-gray-100 border-b border-gray-300 px-6 py-4">
@@ -319,7 +319,8 @@
         </div>
       </template>
     </rs-card>
-
+    -->
+    
     <!-- Confirmation Modal for Eksekutif -->
     <div v-if="showConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto">
       <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

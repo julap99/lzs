@@ -30,8 +30,7 @@
       <div class="mb-6">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-              <Icon name="ph:plus-circle" class="w-6 h-6 mr-3 text-primary" />
+            <h1 class="text-2xl font-bold text-gray-900">
               Tambah Kategori Penolong Amil Baharu
             </h1>
             <p class="text-gray-600 mt-1">Cipta kategori baharu untuk sistem penolong amil</p>
@@ -69,8 +68,7 @@
         <!-- Maklumat Kategori Section -->
         <rs-card class="mb-6">
           <template #header>
-            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-              <Icon name="ph:tag" class="w-5 h-5 mr-2" />
+            <h3 class="text-lg font-semibold text-gray-900">
               Maklumat Kategori Baharu
             </h3>
           </template>

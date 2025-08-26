@@ -48,33 +48,26 @@
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
-
+                  <th class="px-4 py-3 font-medium text-gray-900">Pilih</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Kategori/Jawatan</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Kariah/Daerah</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kariah</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Senarai Aktiviti Dihadiri</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Hadir Aktiviti (kali)</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Total Hadir Kali</th>
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
                 <tr v-for="row in pagedRows" :key="row.paId" class="hover:bg-gray-50">
                   <td class="px-4 py-3">
-                    <!-- Jika sudah dalam draf (recipients), jangan papar checkbox -->
-                    <template v-if="isInRecipients(row.paId)">
-                      <rs-badge variant="success" class="text-xs">
-                        Dalam Senarai
-                      </rs-badge>
-                    </template>
-                    <template v-else>
-                      <FormKit
-                        v-model="row._checked"
-                        type="checkbox"
-                        :classes="{
-                          input: '!w-4 !h-4',
-                        }"
-                      />
-                    </template>
+                    <FormKit
+                      v-model="row._checked"
+                      type="checkbox"
+                      :classes="{
+                        input: '!w-4 !h-4',
+                      }"
+                    />
                   </td>
                   <td class="px-4 py-3 font-medium text-gray-900">{{ row.name }}</td>
                   <td class="px-4 py-3 text-gray-900">{{ row.ic }}</td>
@@ -90,12 +83,22 @@
                       </li>
                     </ul>
                   </td>
+                  <td class="px-4 py-3">
+                    <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
+                      <li v-for="a in aggregateActivities(row.activities)" :key="a.name">
+                        <span class="font-medium">{{ a.count }}</span>
+                      </li>
+                      <li v-if="!row.activities || !row.activities.length" class="list-none text-gray-500">
+                        —
+                      </li>
+                    </ul>
+                  </td>
                   <td class="px-4 py-3 text-gray-900">
                     {{ totalActivityCount(row.activities) }}
                   </td>
                 </tr>
                 <tr v-if="!filteredRows.length" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="7">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="8">
                     Tiada data {{ getCategoryFilterText() }} untuk kombinasi Tahun & Jenis Elaun ini.
                   </td>
                 </tr>
@@ -138,7 +141,7 @@
             @click="commitSelected"
           >
             <Icon name="ic:baseline-check" class="mr-2" />
-            Pilih ({{ newCheckedCount }})
+            Kemas Kini Senarai ({{ newCheckedCount }})
           </rs-button>
         </div>
 
@@ -167,40 +170,13 @@
               <tbody class="divide-y bg-white">
                 <tr v-for="(r, index) in recipients" :key="r.paId" class="hover:bg-gray-50">
                   <td class="px-4 py-3 font-medium text-gray-900">
-                    <FormKit
-                      v-if="r._isEditing"
-                      v-model="r.name"
-                      type="text"
-                      placeholder="Nama penerima"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
-                    />
-                    <span v-else>{{ r.name }}</span>
+                    <span>{{ r.name }}</span>
                   </td>
                   <td class="px-4 py-3 text-gray-900">
-                    <FormKit
-                      v-if="r._isEditing"
-                      v-model="r.ic"
-                      type="text"
-                      placeholder="Nombor IC"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
-                    />
-                    <span v-else>{{ r.ic }}</span>
+                    <span>{{ r.ic }}</span>
                   </td>
                   <td class="px-4 py-3 text-gray-900">
-                    <FormKit
-                      v-if="r._isEditing"
-                      v-model="r.category"
-                      type="select"
-                      :options="categoryOptions"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
-                    />
-                    <span v-else>{{ r.category }}</span>
+                    <span>{{ r.category }}</span>
                   </td>
                   <td class="px-4 py-3 w-48">
                     <FormKit
@@ -470,6 +446,7 @@ function handleEditAttempt(recipient) {
 
 // Function to start editing a recipient
 function startEdit(recipient) {
+  // Only store original allowance since that's the only editable field
   recipient._originalAllowance = Number(recipient.allowance);
   recipient._isEditing = true;
 }
@@ -539,6 +516,13 @@ function seedData() {
   
   // Load draft recipients from localStorage
   loadDraftRecipients();
+  
+  // Initialize checkbox states based on recipients list
+  nextTick(() => {
+    candidates.value.forEach(candidate => {
+      candidate._checked = isInRecipients(candidate.paId);
+    });
+  });
 }
 
 // Static mock data for candidates - simple and realistic
@@ -757,23 +741,25 @@ const allVisibleChecked = computed(() => {
 
 /* bilangan calon baharu yang ditick */
 const newCheckedCount = computed(() =>
-  filteredRows.value.filter(r => !isInRecipients(r.paId) && r._checked).length
+  filteredRows.value.filter(r => r._checked).length
 );
 
 function toggleSelectVisible(checked) {
   const v = checked;
   pagedRows.value.forEach(r => {
-    if (!isInRecipients(r.paId)) r._checked = v;
+    r._checked = v;
   });
 }
 
 function commitSelected() {
-  // ambil yang baru ditick sahaja
-  const selectedNew = filteredRows.value.filter(r => !isInRecipients(r.paId) && r._checked);
-  if (!selectedNew.length) return;
-
+  // Get all checked items
+  const selectedItems = filteredRows.value.filter(r => r._checked);
+  
+  // Create a map of current recipients
   const map = new Map(recipients.value.map(x => [x.paId, x]));
-  selectedNew.forEach(s => {
+  
+  // Add new recipients
+  selectedItems.forEach(s => {
     let allowance = 0;
     
     if (isFixedAllowance.value) {
@@ -788,10 +774,29 @@ function commitSelected() {
       map.set(s.paId, { ...s, allowance, _checked: false });
     }
   });
+  
+  // Remove unchecked recipients from the list
+  const uncheckedItems = filteredRows.value.filter(r => !r._checked);
+  uncheckedItems.forEach(s => {
+    map.delete(s.paId);
+  });
+  
   recipients.value = Array.from(map.values());
 
-  // bersihkan tick
+  // Clear all checkboxes
   filteredRows.value.forEach(r => (r._checked = false));
+  
+  // Show success message
+  const addedCount = selectedItems.filter(s => !isInRecipients(s.paId)).length;
+  const removedCount = uncheckedItems.filter(s => isInRecipients(s.paId)).length;
+  
+  if (addedCount > 0 && removedCount > 0) {
+    toast.success(`${addedCount} penerima ditambah, ${removedCount} penerima dibuang`);
+  } else if (addedCount > 0) {
+    toast.success(`${addedCount} penerima ditambah ke senarai`);
+  } else if (removedCount > 0) {
+    toast.success(`${removedCount} penerima dibuang dari senarai`);
+  }
 }
 
 /* Jenis elaun bertukar → set elaun tetap */
@@ -926,39 +931,25 @@ function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
 /* Load data + draft on first mount or when query changes */
 watch(() => [query.year, query.type], () => seedData(), { immediate: true });
 
+// Sync checkbox states with recipients list
+watch(() => recipients.value, () => {
+  // Update checkbox states based on recipients list
+  filteredRows.value.forEach(row => {
+    row._checked = isInRecipients(row.paId);
+  });
+}, { deep: true });
+
 // Enhanced validation functions
 function validateDuplicateRecipient(newRecipient) {
-  // Find existing recipient with same IC, but exclude the current one being edited
-  const existingRecipient = recipients.value.find(r => r.ic === newRecipient.ic && r.paId !== newRecipient.paId);
-  if (existingRecipient) {
-    return {
-      valid: false,
-      message: `Penerima dengan IC ${newRecipient.ic} sudah wujud dalam senarai`,
-      severity: 'error'
-    };
-  }
+  // No duplicate checking needed since only allowance can be edited
+  // Name, IC, and category are read-only
   return { valid: true };
 }
 
 function validateRecipientData(recipient) {
   const errors = [];
   
-  if (!recipient.name || recipient.name.trim().length < 2) {
-    errors.push('Nama penerima mestilah sekurang-kurangnya 2 aksara');
-  }
-  
-  if (!recipient.ic || !/^\d{12}$/.test(recipient.ic)) {
-    errors.push('Nombor IC mestilah 12 digit');
-  }
-  
-  if (!recipient.category) {
-    errors.push('Kategori penerima diperlukan');
-  }
-  
-  if (!recipient.parish) {
-    errors.push('Kariah/daerah diperlukan');
-  }
-  
+  // Only validate allowance since other fields are read-only
   if (recipient.allowance < 0) {
     errors.push('Elaun tidak boleh negatif');
   }
@@ -1045,12 +1036,6 @@ function saveRecipient(recipient) {
     return;
   }
   
-  const duplicateCheck = validateDuplicateRecipient(recipient);
-  if (!duplicateCheck.valid) {
-    toast.error(duplicateCheck.message);
-    return;
-  }
-  
   // Clean up original allowance value
   if (recipient._originalAllowance !== undefined) {
     delete recipient._originalAllowance;
@@ -1081,7 +1066,7 @@ function removeRecipient(index) {
 
 // Cancel edit function
 function cancelEdit(recipient) {
-  // Revert allowance to original value
+  // Revert allowance to original value (only field that can be edited)
   if (recipient._originalAllowance !== undefined) {
     recipient.allowance = recipient._originalAllowance;
     delete recipient._originalAllowance;
