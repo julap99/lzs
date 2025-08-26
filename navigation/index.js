@@ -839,14 +839,21 @@ export default [
             child: [],
             meta: {},
           },
+          
           {
-            title: "Penilaian Awal",
+            title: "Pengesahan Kategori Asnaf",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/PA/01",
+            path: "/BF-PRF/AS/FR/07_1",
             child: [],
             meta: {},
           },
-
+          {
+            title: "Siasatan Di Lapangan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/FR/09_senaraiTugasan",
+            child: [],
+            meta: {},
+          },
           // {
           //   title: "AS-QB",
           //   icon: "iconamoon:arrow-right-2-duotone",
@@ -864,6 +871,13 @@ export default [
             title: "Family Tree",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/FR/07",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Penilaian Awal",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/PA/01",
             child: [],
             meta: {},
           },

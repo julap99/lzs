@@ -193,6 +193,7 @@
                           <FormKit
                             type="number"
                             name="hadKifayahSyor"
+                             v-model="formData.hadKifayahSyor"
                             label="%Had Kifayah (Syor)"
                             placeholder="0"
                             :classes="{
@@ -849,6 +850,7 @@
         </template>
       </rs-card>
 
+      <!-- Maklumat Lawatan & Siasatan section -->
       <rs-card class="flex-1">
         <template #header>
           <div class="flex justify-between items-center">
@@ -865,344 +867,90 @@
           >
             <div class="space-y-6">
               <!-- Ringkasan Profil -->
-              <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-gray-700 mb-3">
-                  Ringkasan Profil
-                </h3>
-                <ul class="text-sm space-y-1 text-gray-600">
-                  <li>• Status: {{ formData.statusKeluarga }}</li>
-                  <li>
-                    • Jenis Pekerjaan:
-                    {{
-                      investigationData.jenisPekerjaan ||
-                      "Bekerja sebagai tukang sapu di sekolah"
-                    }}
-                  </li>
-                  <li>
-                    • Status Kediaman:
-                    {{ investigationData.statusKediaman || "Rumah Sewa" }}
-                  </li>
-                  <li>
-                    • Jumlah bayaran rumah:
-                    {{ investigationData.jumlahBayaranRumah || "RM500" }}
-                  </li>
-                  <li>
-                    • Bil Tanggungan:
-                    {{ investigationData.bilTanggungan || "2 Orang (Anak)" }}
-                  </li>
-                  <li>
-                    • Status Tanggungan:
-                    {{
-                      investigationData.statusTanggungan ||
-                      "Masih Bersekolah, Tidak Bekerja"
-                    }}
-                  </li>
-                </ul>
-                <p class="text-sm text-gray-600 mt-3">
-                  Registrasi dibuut berdasarkan profil asnaf
-                </p>
-              </div>
-
-              <!-- Keadaan Siasatan -->
-              <div>
-                <FormKit
-                  type="select"
-                  name="keadaanSiasatan"
-                  label="Keadaan Siasatan"
-                  :options="keadaanSiasatanOptions"
-                  placeholder="--Sila Pilih--"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila pilih keadaan siasatan',
-                  }"
-                />
-              </div>
-
-              <!-- Tarikh Lawatan -->
-              <div>
-                <FormKit
-                  type="date"
-                  name="tarikhLawatan"
-                  label="Tarikh Lawatan"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila pilih tarikh lawatan',
-                  }"
-                  placeholder="dd/mm/yyyy"
-                />
-              </div>
-
-              <!-- Masa Lawatan -->
-              <div>
-                <FormKit
-                  type="time"
-                  name="masaLawatan"
-                  label="Masa Lawatan"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila pilih masa lawatan',
-                  }"
-                  placeholder="--:--:--"
-                />
-              </div>
-
-              <!-- Catatan Penilaian Awal -->
-              <div>
-                <FormKit
-                  type="textarea"
-                  name="catatanPenilianAwal"
-                  label="Catatan Penilaian Awal"
-                  rows="4"
-                  placeholder="Enter text..."
-                  :classes="{
-                    input: '!py-2',
-                  }"
-                />
-              </div>
-
-              <!-- Gambar Lokasi/Bukti Visual -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Gambar Lokasi/Bukti Visual
-                </label>
-
-                <!-- Custom File Upload Area -->
-                <div class="space-y-4">
-                  <!-- Upload Dropzone -->
-                  <div
-                    @click="triggerFileInput"
-                    @dragover.prevent
-                    @dragenter.prevent
-                    @drop.prevent="handleFileDrop"
-                    class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer bg-gray-50 hover:bg-gray-100"
-                  >
-                    <div class="space-y-2">
-                      <Icon
-                        name="ph:upload"
-                        class="w-8 h-8 text-gray-400 mx-auto"
-                      />
-                      <div>
-                        <p class="text-sm text-gray-600">
-                          <span
-                            class="font-medium text-blue-600 hover:text-blue-500"
-                            >Klik untuk pilih fail</span
-                          >
-                          atau seret dan lepas di sini
-                        </p>
-                        <p class="text-xs text-gray-500 mt-1">
-                          PNG, JPG, GIF sehingga 5MB setiap fail
-                        </p>
-                      </div>
-                    </div>
+              <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h4 class="text-sm font-semibold text-blue-900 mb-3">Ringkasan Profil</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span class="font-medium text-blue-800">Jenis Pekerjaan:</span>
+                    <p class="mt-1 text-gray-900">{{ investigationData.jenisPekerjaan }}</p>
                   </div>
-
-                  <!-- Hidden File Input -->
-                  <input
-                    ref="fileInputRef"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    @change="handleFileInputChange"
-                    class="hidden"
-                  />
-
-                  <!-- Upload Progress -->
-                  <div v-if="uploadProgress.length > 0" class="space-y-2">
-                    <div
-                      v-for="(progress, index) in uploadProgress"
-                      :key="index"
-                      class="bg-white rounded-lg border border-gray-200 p-3"
-                    >
-                      <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-medium text-gray-700">{{
-                          progress.filename
-                        }}</span>
-                        <span class="text-xs text-gray-500">{{
-                          formatFileSize(progress.size)
-                        }}</span>
-                      </div>
-                      <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                          :style="{ width: `${progress.progress}%` }"
-                        ></div>
-                      </div>
-                    </div>
+                  <div>
+                    <span class="font-medium text-blue-800">Status Kediaman:</span>
+                    <p class="mt-1 text-gray-900">{{ investigationData.statusKediaman }}</p>
                   </div>
-
-                  <!-- Image Preview Gallery -->
-                  <div
-                    v-if="uploadedImages.length > 0"
-                    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
-                  >
-                    <div
-                      v-for="(image, index) in uploadedImages"
-                      :key="index"
-                      class="group relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <!-- Image Preview -->
-                      <div class="aspect-square bg-gray-100 relative">
-                        <img
-                          :src="image.url"
-                          :alt="`Gambar ${index + 1}`"
-                          class="w-full h-full object-cover cursor-pointer"
-                          @click="previewImage(image)"
-                        />
-
-                        <!-- Overlay Actions -->
-                        <div
-                          class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center"
-                        >
-                          <div
-                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2"
-                          >
-                            <button
-                              @click.stop="previewImage(image)"
-                              class="bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-700 p-2 rounded-full shadow-md transition-all"
-                              type="button"
-                              title="Preview"
-                            >
-                              <Icon name="ph:eye" class="w-4 h-4" />
-                            </button>
-                            <button
-                              @click.stop="removeImage(index)"
-                              class="bg-red-500 bg-opacity-90 hover:bg-opacity-100 text-white p-2 rounded-full shadow-md transition-all"
-                              type="button"
-                              title="Padam"
-                            >
-                              <Icon name="ph:trash" class="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-
-                        <!-- Loading Indicator -->
-                        <div
-                          v-if="image.loading"
-                          class="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center"
-                        >
-                          <Icon
-                            name="ph:spinner"
-                            class="w-6 h-6 text-blue-600 animate-spin"
-                          />
-                        </div>
-                      </div>
-
-                      <!-- Image Info -->
-                      <div class="p-3 space-y-2">
-                        <!-- File Name -->
-                        <div class="flex items-center justify-between">
-                          <span
-                            class="text-xs text-gray-500 truncate flex-1"
-                            :title="image.filename"
-                          >
-                            {{ image.filename }}
-                          </span>
-                          <span class="text-xs text-gray-400 ml-2">
-                            {{ formatFileSize(image.size) }}
-                          </span>
-                        </div>
-
-                        <!-- Image Caption -->
-                        <FormKit
-                          type="text"
-                          :name="`imageCaption_${index}`"
-                          v-model="image.caption"
-                          placeholder="Tambah keterangan..."
-                          :classes="{
-                            outer: 'mb-0',
-                            input: 'text-xs !py-1.5 !text-gray-700',
-                          }"
-                        />
-                      </div>
-                    </div>
+                  <div>
+                    <span class="font-medium text-blue-800">Jumlah Bayaran Rumah:</span>
+                    <p class="mt-1 text-gray-900">{{ investigationData.jumlahBayaranRumah }}</p>
                   </div>
-
-                  <!-- Sample Image Placeholder -->
-                  <div
-                    v-if="uploadedImages.length === 0"
-                    class="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-gray-50"
-                  >
-                    <div
-                      class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
-                    >
-                      <div class="text-center">
-                        <Icon
-                          name="ph:image"
-                          class="w-12 h-12 text-gray-400 mx-auto mb-2"
-                        />
-                        <p class="text-sm text-gray-500">
-                          Tiada gambar dimuat naik lagi
-                        </p>
-                        <p class="text-xs text-gray-400 mt-1">
-                          Gambar anda akan dipaparkan di sini
-                        </p>
-                      </div>
-                    </div>
+                  <div>
+                    <span class="font-medium text-blue-800">Bilangan Tanggungan:</span>
+                    <p class="mt-1 text-gray-900">{{ investigationData.bilTanggungan }}</p>
+                  </div>
+                  <div class="md:col-span-2">
+                    <span class="font-medium text-blue-800">Status Tanggungan:</span>
+                    <p class="mt-1 text-gray-900">{{ investigationData.statusTanggungan }}</p>
                   </div>
                 </div>
               </div>
 
+              <!-- Keadaan Siasatan -->
+              <div>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3">Keadaan Siasatan</h4>
+                <FormKit
+                  type="select"
+                  name="keadaanSiasatan"
+                  placeholder="Pilih keadaan siasatan"
+                  :options="keadaanSiasatanOptions"
+                  :classes="{ input: '!py-2.5' }"
+                />
+              </div>
+
+              <!-- Tarikh & Masa Lawatan -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-900 mb-3">Tarikh Lawatan</h4>
+                  <FormKit type="date" name="tarikhLawatan" :classes="{ input: '!py-2.5' }" />
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-900 mb-3">Masa Lawatan</h4>
+                  <FormKit type="time" name="masaLawatan" :classes="{ input: '!py-2.5' }" />
+                </div>
+              </div>
+
+              <!-- Catatan Penilaian Awal -->
+              <div>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3">Catatan Penilaian Awal</h4>
+                <FormKit
+                  type="textarea"
+                  name="catatanPenilianAwal"
+                  placeholder="Catatan penilaian awal..."
+                  rows="4"
+                  :classes="{ input: '!py-2.5' }"
+                />
+              </div>
+
               <!-- Catatan Lawatan ETD -->
               <div>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3">Catatan Lawatan ETD</h4>
                 <FormKit
                   type="textarea"
                   name="catatanLawatanETD"
-                  label="Catatan Lawatan ETD"
-                  rows="4"
-                  placeholder="Enter text..."
-                  :classes="{
-                    input: '!py-2',
-                  }"
+                  placeholder="Catatan lawatan ETD..."
+                  rows="3"
+                  :classes="{ input: '!py-2.5' }"
                 />
               </div>
 
               <!-- Status Lawatan -->
               <div>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3">Status Lawatan</h4>
                 <FormKit
                   type="select"
                   name="statusLawatan"
-                  label="Status Lawatan"
+                  placeholder="Pilih status lawatan"
                   :options="statusLawatanOptions"
-                  placeholder="--Sila Pilih--"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila pilih status lawatan',
-                  }"
+                  :classes="{ input: '!py-2.5' }"
                 />
-              </div>
-
-              <!-- Action Buttons -->
-              <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t">
-                <rs-button
-                  variant="success"
-                  @click="handleSimpan"
-                  :disabled="processing"
-                  :loading="processing && actionType === 'save'"
-                  class="flex-1 !py-3 text-sm font-medium"
-                >
-                  <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
-                  Simpan
-                </rs-button>
-
-                <rs-button
-                  variant="primary"
-                  @click="handleHantarKelulusan"
-                  :disabled="processing || !canSubmitForApproval"
-                  :loading="processing && actionType === 'submit'"
-                  class="flex-1 !py-3 text-sm font-medium"
-                >
-                  <Icon name="ph:paper-plane-tilt" class="w-5 h-5 mr-2" />
-                  Hantar Kelulusan
-                </rs-button>
-
-                <rs-button
-                  variant="secondary"
-                  @click="handleKembali"
-                  class="flex-1 !py-3 text-sm font-medium"
-                >
-                  <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
-                  Kembali
-                </rs-button>
               </div>
             </div>
           </FormKit>
@@ -1296,7 +1044,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useInvestigationStore } from "~/stores/investigation";
 
 definePageMeta({
   title: "Maklumat Pemohon - Siasatan EOAD",
@@ -1323,12 +1072,12 @@ const breadcrumb = ref([
 // Form data
 const formData = ref({
   // Personal Information
-  nama: "Mohd Rosli bin Saad",
+  nama: "Adnan bin Abu",
   alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
   jenisPengenalan: "MyKad",
-  noPengenalan: "810101121234",
+  noPengenalan: "770319035991",
   noTelefon: "0123456789",
-  email: "rosli@gmail.com",
+  email: "adnan@gmail.com",
   statusKeluarga: "Fakir",
   statusIndividu: "Fakir",
   statusMultidimensi: "Asnaf Tidak Produktif",
@@ -1349,36 +1098,46 @@ const investigationData = ref({
   jumlahBayaranRumah: "RM500",
   bilTanggungan: "2 Orang (Anak)",
   statusTanggungan: "Masih Bersekolah, Tidak Bekerja",
-  keadaanSiasatan: "boleh_ditemui",
-  tarikhLawatan: "2025-08-25",
-  masaLawatan: "14:30",
-  catatanPenilianAwal: "Pemohon ditemui di rumah. Keadaan rumah sederhana, ada tanda-tanda kemiskinan.",
+  keadaanSiasatan: "",
+  tarikhLawatan: "",
+  masaLawatan: "",
+  catatanPenilianAwal: "",
   gambarLokasi: [],
-  catatanLawatanETD: "Lawatan ETD telah dijalankan dengan jayanya.",
-  statusLawatan: "lengkap",
+  catatanLawatanETD: "",
+  statusLawatan: "",
+});
+
+// Load submitted investigation data from 09 if available
+onMounted(() => {
+  const invStore = useInvestigationStore();
+  if (invStore.latestSubmission) {
+    Object.assign(investigationData.value, invStore.latestSubmission);
+    // Optionally clear after consume
+    // invStore.clearSubmission();
+  }
 });
 
 // Profiling form data
 const profilingData = ref({
-  pengenalanId: "810101121234",
-  nama: "Mohd Rosli bin Saad",
-  hadKifayahSyor: "75.5",
-  kategoriKeluargaAsnafSyor: "Fakir",
-  kategoriAsnafSyor: "Asnaf Produktif",
-  tarikhPengesyoran: "2025-08-23",
-  pengenalanIdTanggungan1: "990101015555",
-  pengenalanIdTanggungan2: "030303030333",
-  kategoriTanggunganSyor: "Anak sekolah rendah",
-  assignSiasatan: "Ustaz Karim",
-  hadKifayahSah: "70.0",
-  kategoriKeluargaAsnafSah: "Fakir",
-  kategoriAsnafSah: "Miskin Tegar",
-  pengenalanIdTanggunganSah1: "990101015555",
-  pengenalanIdTanggunganSah2: "030303030333",
-  kategoriTanggunganSah1: "Pelajar Sekolah Rendah",
-  kategoriTanggunganSah2: "Pelajar Universiti",
-  komenPengesahan: "Layak menerima bantuan kewangan bulanan.",
-  tarikhPengesyoranBottom: "2025-08-30",
+  pengenalanId: "",
+  nama: "",
+  hadKifayahSyor: "50",
+  kategoriKeluargaAsnafSyor: "",
+  kategoriAsnafSyor: "",
+  tarikhPengesyoran: "",
+  pengenalanIdTanggungan1: "",
+  pengenalanIdTanggungan2: "",
+  kategoriTanggunganSyor: "",
+  assignSiasatan: "",
+  hadKifayahSah: "",
+  kategoriKeluargaAsnafSah: "",
+  kategoriAsnafSah: "",
+  pengenalanIdTanggunganSah1: "",
+  pengenalanIdTanggunganSah2: "",
+  kategoriTanggunganSah1: "",
+  kategoriTanggunganSah2: "",
+  komenPengesahan: "",
+  tarikhPengesyoranBottom: "",
 });
 
 // State for image handling
@@ -2050,4 +1809,16 @@ const submitProfiling = async () => {
   outline: none;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
 }
+
 </style>
+<script>
+export default {
+  data() {
+    return {
+      formData: {
+        hadKifayahSyor: 50, // 👈 default value here
+      }
+    }
+  }
+}
+</script>
