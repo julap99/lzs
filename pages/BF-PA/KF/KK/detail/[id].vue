@@ -12,8 +12,7 @@
     <div class="mb-6">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <Icon name="ph:file-text" class="w-6 h-6 mr-3 text-primary" />
+          <h1 class="text-2xl font-bold text-gray-900">
             Paparan Terperinci Kategori Penolong Amil
           </h1>
           <p class="text-gray-600 mt-1">Maklumat lengkap kategori penolong amil dan status workflow</p>
@@ -24,8 +23,7 @@
     <!-- Main Category Information -->
     <rs-card class="mb-6">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:tag" class="w-5 h-5 mr-2" />
+        <h3 class="text-lg font-semibold text-gray-900">
           Maklumat Kategori Penolong Amil
         </h3>
       </template>
@@ -87,8 +85,7 @@
     <!-- Review History -->
     <rs-card class="mb-6">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-          <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
+        <h3 class="text-lg font-semibold text-gray-900">
           Sejarah Semakan
         </h3>
       </template>
