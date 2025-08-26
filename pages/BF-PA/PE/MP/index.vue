@@ -75,6 +75,7 @@
                 <rs-table
                   :key="`table-${tableKey}-pending`"
                   :data="getTableDataByStatus(['Sedang Proses'])"
+                  :columns="eksekutifColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -113,6 +114,7 @@
                 <rs-table
                   :key="`table-${tableKey}-approved`"
                   :data="getTableDataByStatus(['Diluluskan'])"
+                  :columns="eksekutifApprovedColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -151,6 +153,7 @@
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak'])"
+                  :columns="eksekutifColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -233,6 +236,7 @@
                 <rs-table
                   :key="`table-${tableKey}-pending`"
                   :data="getTableDataByStatus(['Sedang Proses'])"
+                  :columns="ketuaJabatanColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -271,6 +275,7 @@
                 <rs-table
                   :key="`table-${tableKey}-approved`"
                   :data="getTableDataByStatus(['Diluluskan'])"
+                  :columns="ketuaJabatanApprovedColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -309,6 +314,7 @@
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak'])"
+                  :columns="ketuaJabatanColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -391,6 +397,7 @@
                 <rs-table
                   :key="`table-${tableKey}-pending`"
                   :data="getTableDataByStatus(['Sedang Proses'])"
+                  :columns="ketuaDivisyenColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -429,6 +436,7 @@
                 <rs-table
                   :key="`table-${tableKey}-approved`"
                   :data="getTableDataByStatus(['Diluluskan'])"
+                  :columns="ketuaDivisyenApprovedColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -467,6 +475,7 @@
                 <rs-table
                   :key="`table-${tableKey}-rejected`"
                   :data="getTableDataByStatus(['Ditolak'])"
+                  :columns="ketuaDivisyenColumns"
                   :pageSize="pageSize"
                   :options="{
                     variant: 'default',
@@ -1259,7 +1268,7 @@ const confirmApprove = async () => {
 const eksekutifColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1293,7 +1302,7 @@ const eksekutifColumns = [
 const eksekutifApprovedColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1327,7 +1336,7 @@ const eksekutifApprovedColumns = [
 const ketuaJabatanColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1361,7 +1370,7 @@ const ketuaJabatanColumns = [
 const ketuaJabatanApprovedColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1395,7 +1404,7 @@ const ketuaJabatanApprovedColumns = [
 const ketuaDivisyenColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {
@@ -1429,7 +1438,7 @@ const ketuaDivisyenColumns = [
 const ketuaDivisyenApprovedColumns = [
   {
     key: "id",
-    label: "Kod Aktiviti",
+    label: "Rujukan",
     sortable: true,
   },
   {

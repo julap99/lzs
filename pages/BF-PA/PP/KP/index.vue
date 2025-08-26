@@ -74,7 +74,7 @@
                 <table class="min-w-full text-sm divide-y">
                   <thead class="bg-gray-50 text-left">
                     <tr>
-                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                       <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
@@ -158,7 +158,7 @@
                 <table class="min-w-full text-sm divide-y">
                   <thead class="bg-gray-50 text-left">
                     <tr>
-                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                       <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
@@ -240,7 +240,7 @@
                 <table class="min-w-full text-sm divide-y">
                   <thead class="bg-gray-50 text-left">
                     <tr>
-                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                       <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>

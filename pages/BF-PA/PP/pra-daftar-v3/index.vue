@@ -1630,6 +1630,9 @@ const filteredApplications = computed(() => {
   // Remove statusLantikan field for all roles to hide the column
   result = result.map(({ statusLantikan, ...rest }) => rest);
 
+  // Remove no field to hide the No column and prevent rs-table display issues
+  result = result.map(({ no, ...rest }) => rest);
+
   return result;
 });
 
@@ -1686,6 +1689,9 @@ const filteredCompletedApplications = computed(() => {
   // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
   result = result.map(({ sesiPerkhidmatan, institusiId, ...rest }) => rest);
 
+  // Remove no field to hide the No column and prevent rs-table display issues
+  result = result.map(({ no, ...rest }) => rest);
+
   return result;
 });
 
@@ -1725,6 +1731,9 @@ const getTableDataByStatus = (statuses) => {
   
   // Remove statusLantikan field for all roles to hide the column
   result = result.map(({ statusLantikan, ...rest }) => rest);
+
+  // Remove no field to hide the No column and prevent rs-table display issues
+  result = result.map(({ no, ...rest }) => rest);
 
   return result;
 };
