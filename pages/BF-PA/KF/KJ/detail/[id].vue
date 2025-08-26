@@ -184,78 +184,72 @@
           <!-- Action buttons removed - this is a view-only screen -->
         </div>
 
-    <!-- Audit Trail Section -->
-        <rs-card class="mt-8 bg-gray-50 border-gray-300">
-          <template #header>
-            <div class="bg-gray-100 border-b border-gray-300 flex items-center">
-              <Icon name="ph:clock-clockwise" class="mr-2 text-gray-600" size="18" />
-              <h3 class="text-lg font-semibold text-gray-600">Jejak Audit</h3>
-              <p class="text-sm text-gray-500 mt-1">Maklumat rujukan sahaja</p>
+    <!-- Jejak Audit (Disabled)
+    <rs-card class="mt-8 bg-gray-50 border-gray-300">
+      <template #header>
+        <div class="bg-gray-100 border-b border-gray-300 flex items-center">
+          <Icon name="ph:clock-clockwise" class="mr-2 text-gray-600" size="18" />
+          <h3 class="text-lg font-semibold text-gray-600">Jejak Audit</h3>
+          <p class="text-sm text-gray-500 mt-1">Maklumat rujukan sahaja</p>
+        </div>
+      </template>
+      <template #body>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">Dicipta Oleh</label>
+            <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+              {{ positionData.maklumatPegawai.diciptaOleh }}
             </div>
-          </template>
-          
-          <template #body>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Dicipta Oleh</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ positionData.maklumatPegawai.diciptaOleh }}
-                </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Cipta</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ formatDate(positionData.maklumatPegawai.tarikhCipta) }}
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Dikemaskini Oleh</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ positionData.maklumatPegawai.dikemaskiniBoleh || 'Belum dikemaskini' }}
-                </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Kemaskini</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ positionData.maklumatPegawai.tarikhKemaskini ? formatDate(positionData.maklumatPegawai.tarikhKemaskini) : 'Belum dikemaskini' }}
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Disahkan Oleh</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ positionData.maklumatPegawai.disahkanOleh || 'Belum disahkan' }}
-                </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Pengesahan</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ positionData.maklumatPegawai.tarikhPengesahan ? formatDate(positionData.maklumatPegawai.tarikhPengesahan) : 'Belum disahkan' }}
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Diluluskan Oleh</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ positionData.maklumatPegawai.diluluskanOleh || 'Belum diluluskan' }}
-                </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Kelulusan</label>
-                <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
-                  {{ positionData.maklumatPegawai.tarikhKelulusan ? formatDate(positionData.maklumatPegawai.tarikhKelulusan) : 'Belum diluluskan' }}
-                </div>
-              </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Cipta</label>
+            <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+              {{ formatDate(positionData.maklumatPegawai.tarikhCipta) }}
             </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">Dikemaskini Oleh</label>
+            <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+              {{ positionData.maklumatPegawai.dikemaskiniBoleh || 'Belum dikemaskini' }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Kemaskini</label>
+            <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+              {{ positionData.maklumatPegawai.tarikhKemaskini ? formatDate(positionData.maklumatPegawai.tarikhKemaskini) : 'Belum dikemaskini' }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">Disahkan Oleh</label>
+            <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+              {{ positionData.maklumatPegawai.disahkanOleh || 'Belum disahkan' }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Pengesahan</label>
+            <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+              {{ positionData.maklumatPegawai.tarikhPengesahan ? formatDate(positionData.maklumatPegawai.tarikhPengesahan) : 'Belum disahkan' }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">Diluluskan Oleh</label>
+            <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+              {{ positionData.maklumatPegawai.diluluskanOleh || 'Belum diluluskan' }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">Tarikh Kelulusan</label>
+            <div class="bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700">
+              {{ positionData.maklumatPegawai.tarikhKelulusan ? formatDate(positionData.maklumatPegawai.tarikhKelulusan) : 'Belum diluluskan' }}
+            </div>
+          </div>
+        </div>
       </template>
     </rs-card>
-  </div>
-</template>
+    -->
+    
+       </div>
+     </template>
 
 <script setup>
 import { ref } from "vue";
