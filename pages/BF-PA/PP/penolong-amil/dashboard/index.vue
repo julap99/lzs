@@ -322,93 +322,127 @@
       </template>
     </rs-modal>
 
-    <!-- Surat Tawaran Modal -->
-    <rs-modal v-model="showSuratTawaran" title="Surat Tawaran Pelantikan" size="lg" position="center">
-      <template #body> 
-        <div class="space-y-6 ">
-          <!-- Letter Header -->
-          <div class="flex justify-between items-start pb-4 border-b">
-            <div class="flex-1">
-              <img src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" alt="LZS" class="h-12 mb-4" />
-              <div class="text-sm text-gray-600">
-                <div class="font-semibold text-gray-900">Lembaga Zakat Selangor</div>
-                <div>Majlis Agama Islam Selangor</div>
-                <div>Menara Selatan, Bangunan Sultan Idris Shah</div>
-                <div>Persiaran Masjid, Seksyen 5</div>
-                <div>40000 Shah Alam, Selangor</div>
-              </div>
-            </div>
-            <div class="text-right text-sm text-gray-600">
-              <div>Rujukan: LZS/PA/2024/001</div>
-              <div>Tarikh: {{ new Date().toLocaleDateString('ms-MY') }}</div>
-            </div>
-          </div>
+         <!-- Surat Tawaran Modal -->
+     <rs-modal v-model="showSuratTawaran" title="Surat Tawaran Pelantikan" size="xl" position="center">
+       <template #body> 
+         <div class="space-y-6 font-serif text-sm leading-relaxed">
+           <!-- Letter Header -->
+           <div class="mb-6">
+             <!-- LZS Logo and Lembaga Zakat Information -->
+             <div class="flex justify-between items-start mb-4">
+               <!-- LZS Logo on the left -->
+               <div class="flex-shrink-0">
+                 <img src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" alt="LZS" class="h-16" />
+               </div>
+               
+               <!-- Lembaga Zakat Information on the right -->
+               <div class="text-right space-y-2">
+                 <!-- Organization Name and Address -->
+                 <div class="space-y-1">
+                   <div class="font-bold text-base">Lembaga Zakat Selangor (MAIS)</div>
+                   <div class="text-sm">Menara Zakat Sultan Idris Shah,</div>
+                   <div class="text-sm">No. 1, Persiaran Bandar Raya, Seksyen 14,</div>
+                   <div class="text-sm">40000 Shah Alam, Selangor Darul Ehsan.</div>
+                 </div>
+                 
+                 <!-- Contact Details -->
+                 <div class="text-sm space-y-1">
+                   <div>Tel: +603 8314 2222</div>
+                   <div>Faks: +603 8314 2233/2244</div>
+                 </div>
+               </div>
+             </div>
+             
+             <!-- Reference and Date - Separate left side section -->
+             <div class="text-left space-y-1">
+               <div class="text-sm">
+                 <span class="font-semibold">Rujukan kami: </span>
+                 <span class="font-semibold">LZS/DOAA/JPPA/T/600/PELANTIKAN PA Bil (413/2025)</span>
+               </div>
+               <div class="text-sm">
+                 <span class="font-semibold">Tarikh: </span>
+                 <span class="font-semibold">06 Jun 2025</span>
+               </div>
+               <div class="text-sm">
+                 <span class="font-semibold">09 Zulhijjah 1446H</span>
+               </div>
+             </div>
+           </div>
 
-          <!-- Letter Content -->
-          <div class="space-y-4 text-sm">
-            <div>
-              <p class="font-semibold text-gray-900 mb-2">Kepada:</p>
-              <p class="text-gray-700">{{ userProfile.nama }}</p>
-              <p class="text-gray-700">{{ userProfile.noKP }}</p>
-            </div>
-            
-            <div>
-              <p class="font-semibold text-gray-900 mb-2">Subjek: Tawaran Pelantikan Sebagai Penolong Amil Kariah (PAK)</p>
-            </div>
-            
-            <div class="space-y-3 text-gray-700">
-              <p>Assalamualaikum W.B.T.</p>
-              
-              <p>
-                Dengan hormatnya dimaklumkan bahawa Lembaga Zakat Selangor (LZS) dengan sukacitanya ingin menawarkan 
-                jawatan Penolong Amil Kariah (PAK) kepada Tuan/Puan.
-              </p>
-              
-              <p>
-                <strong>Butiran Tawaran:</strong>
-              </p>
-              <ul class="list-disc list-inside space-y-1 ml-4">
-                <li>Jawatan: {{ userProfile.kategori }}</li>
-                <li>Kariah: {{ userProfile.kariah }}</li>
-                <li>Institusi: {{ userProfile.institusi }}</li>
-                <li>Tempoh: 2024 - 2027</li>
-                <li>Elaun: RM 500.00 sebulan</li>
-                <li>Skop Tugas: Agihan bantuan kepada asnaf dalam kariah</li>
-              </ul>
-              
-              <p>
-                Tuan/Puan dikehendaki untuk:
-              </p>
-              <ol class="list-decimal list-inside space-y-1 ml-4">
-                <li>Menerima tawaran ini dalam tempoh 14 hari</li>
-                <li>Lengkapkan maklumat profil dalam sistem</li>
-                <li>Menghadiri sesi orientasi yang akan diatur</li>
-                <li>Memulakan tugas agihan pada tarikh yang ditetapkan</li>
-                <li>Bertanggungjawab terhadap agihan bantuan kepada asnaf dalam kariah</li>
-              </ol>
-              
-              <p>
-                Sekiranya Tuan/Puan bersetuju dengan tawaran ini, sila log masuk ke sistem dan lengkapkan 
-                maklumat profil yang diperlukan.
-              </p>
-              
-              <p>
-                Sekian, terima kasih.
-              </p>
-            </div>
-          </div>
+           <!-- Title -->
+           <div class="text-center my-8">
+             <h2 class="text-xl font-bold uppercase tracking-wider">SURAT TAWARAN PELANTIKAN</h2>
+           </div>
 
-          <!-- Signature -->
-          <div class="mt-8 pt-4 border-t border-gray-200">
-            <div class="text-center">
-              <p class="font-semibold text-gray-900">Yang benar,</p>
-              <p class="text-gray-700 mt-4">_________________________</p>
-              <p class="text-sm text-gray-600">Ketua Eksekutif</p>
-              <p class="text-sm text-gray-600">Lembaga Zakat Selangor</p>
-            </div>
-          </div>
-        </div>
-      </template>
+           <!-- Recipient Address -->
+           <div class="space-y-1">
+             <p class="font-bold text-lg">{{ userProfile.nama }}</p>
+             <p>No.8, Jalan Gp 3/4</p>
+             <p>Taman Gombak Permai</p>
+             <p>68100 Batu Caves</p>
+             <p>SELANGOR DARUL EHSAN.</p>
+           </div>
+
+           <!-- Greeting -->
+           <div class="my-6">
+             <p class="font-semibold">Tuan,</p>
+           </div>
+
+           <!-- Subject -->
+           <div class="my-6">
+             <p class="font-bold text-lg">PELANTIKAN SEBAGAI KETUA PENOLONG AMIL KARIAH LEMBAGA ZAKAT SELANGOR (MAIS) SESI 2025</p>
+             <div class="border-b-2 border-gray-400 mt-2"></div>
+           </div>
+
+           <!-- Islamic Greeting -->
+           <div class="text-center my-6">
+             <p class="text-lg font-semibold ">السلام عليكم ورحمة الله وبركاته</p>
+           </div>
+
+           <!-- Opening -->
+           <div class="my-4">
+             <p>Semoga surat ini menemui tuan dalam kemanisan iman serta mendapat keberkatan dan kerahmatan daripada Allah S.W.T., In Shaa Allah.</p>
+           </div>
+
+           <!-- Paragraph 2 -->
+           <div class="my-4">
+             <p class="mb-2">2. Sukacita dimaklumkan bahawa Pemegang Amanah Lembaga Zakat Selangor (MAIS), Berdaftar (selepas ini dirujuk sebagai "LZS") bersetuju melantik pihak tuan sebagai Ketua Penolong Amil Kariah sebagaimana maklumat yang dinyatakan di dalam Butiran Pelantikan. Terma dan syarat pelantikan adalah sebagaimana Terma dan Syarat Umum Pelantikan dan Panduan Pengurusan Penolong Amil Kariah dan Komuniti yang dilampirkan. Surat Tawaran Pelantikan ini hendaklah menjadi kontrak mengikat sah di antara LZS dan pihak tuan.</p>
+           </div>
+
+           <!-- Paragraph 3 -->
+           <div class="my-4">
+             <p class="mb-2">3. Sekiranya pihak tuan bersetuju dengan semua terma dan syarat yang dinyatakan di dalam Surat Tawaran Pelantikan ini, pihak tuan dikehendaki mengisi dan mengembalikan Borang Setuju Terima dalam tempoh empat belas (14) hari bekerja dari tarikh penerimaan Surat Tawaran Pelantikan ini. LZS menganggap pihak tuan tidak berminat untuk menerima tawaran di atas sekiranya tiada sebarang jawapan diberikan dalam tempoh tiga puluh (30) bekerja daripada tarikh Surat Tawaran Pelantikan ini.</p>
+           </div>
+
+           <!-- Paragraph 4 -->
+           <div class="my-4">
+             <p class="mb-2">4. Segala kerjasama daripada pihak tuan amat dihargai dan didahului dengan ucapan ribuan terima kasih. Diharapkan agar pihak tuan dapat menjalankan tugas dan tanggungjawab dengan baik dan amanah serta mematuhi terma-terma dan syarat-syarat yang ditetapkan oleh LZS.</p>
+           </div>
+
+           <!-- Paragraph 5 -->
+           <div class="my-4">
+             <p class="mb-2">5. Sebarang pertanyaan mengenai perkara di atas pihak tuan boleh menghubungi Talian Zakat Selangor 1-300-88-4343.</p>
+           </div>
+
+           <!-- Closing -->
+           <div class="my-6">
+             <p>Sekian.</p>
+           </div>
+
+           <!-- Signature Section -->
+           <div class="mt-12">
+             <div class="text-left">
+               <p class=" mb-8">Yang benar,</p>
+               <p class="font-bold text-lg mb-2">PEMEGANG AMANAH</p>
+               <p class="font-bold text-lg mb-2">LEMBAGA ZAKAT SELANGOR (MAIS), BERDAFTAR</p>
+               <p class="font-bold text-lg mb-8">MD YUSMIZAN BIN YUSUF</p>
+               <p class="font-semibold">Timbalan Ketua Divisyen Operasi Agihan Asnaf</p>
+             </div>
+           </div>
+
+           
+         </div>
+       </template>
       <template #footer>
         <div class="flex justify-end gap-2">
           <rs-button variant="secondary-outline" @click="showSuratTawaran = false">
