@@ -316,7 +316,7 @@
                         title="Saringan"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-security" class="w-5 h-5 text-info" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                       </button>
                     </div>
                   </template>
@@ -410,7 +410,7 @@
                         title="Semak"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-security" class="w-5 h-5 text-info" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                       </button>
                     </div>
                   </template>
@@ -504,7 +504,7 @@
                         title="Sokong"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-thumb-up" class="w-5 h-5 text-success" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-success" />
                       </button>
                     </div>
                   </template>
@@ -598,7 +598,7 @@
                         title="Sahkan"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-success" />
                       </button>
                     </div>
                   </template>
@@ -692,7 +692,7 @@
                         title="Lulus"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-primary" />
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                       </button>
                     </div>
                   </template>
@@ -1630,6 +1630,9 @@ const filteredApplications = computed(() => {
   // Remove statusLantikan field for all roles to hide the column
   result = result.map(({ statusLantikan, ...rest }) => rest);
 
+  // Remove no field to hide the No column and prevent rs-table display issues
+  result = result.map(({ no, ...rest }) => rest);
+
   return result;
 });
 
@@ -1686,6 +1689,9 @@ const filteredCompletedApplications = computed(() => {
   // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
   result = result.map(({ sesiPerkhidmatan, institusiId, ...rest }) => rest);
 
+  // Remove no field to hide the No column and prevent rs-table display issues
+  result = result.map(({ no, ...rest }) => rest);
+
   return result;
 });
 
@@ -1725,6 +1731,9 @@ const getTableDataByStatus = (statuses) => {
   
   // Remove statusLantikan field for all roles to hide the column
   result = result.map(({ statusLantikan, ...rest }) => rest);
+
+  // Remove no field to hide the No column and prevent rs-table display issues
+  result = result.map(({ no, ...rest }) => rest);
 
   return result;
 };

@@ -74,7 +74,7 @@
                 <table class="min-w-full text-sm divide-y">
                   <thead class="bg-gray-50 text-left">
                     <tr>
-                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                       <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
@@ -123,21 +123,11 @@
                               title="Surat Amaran"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-mail" class="w-5 h-5 text-warning" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                             </button>
                           </template>
                           
-                          <!-- Ketua Divisyen specific actions -->
-                          <template v-if="currentRole === 'ketua-divisyen'">
-                            <button
-                              v-if="request.status === 'aktif' || request.status === 'suspended'"
-                              @click="approveService(request)"
-                              title="Lulus"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
-                            </button>
-                          </template>
+
                         </div>
                       </td>
                     </tr>
@@ -158,7 +148,7 @@
                 <table class="min-w-full text-sm divide-y">
                   <thead class="bg-gray-50 text-left">
                     <tr>
-                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                       <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
@@ -206,20 +196,11 @@
                               title="Surat Amaran"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-mail" class="w-5 h-5 text-warning" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                             </button>
                           </template>
                           
-                          <!-- Ketua Divisyen specific actions -->
-                          <template v-if="currentRole === 'ketua-divisyen'">
-                            <button
-                              @click="approveService(request)"
-                              title="Lulus"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
-                            </button>
-                          </template>
+
                         </div>
                       </td>
                     </tr>
@@ -240,7 +221,7 @@
                 <table class="min-w-full text-sm divide-y">
                   <thead class="bg-gray-50 text-left">
                     <tr>
-                      <th class="px-4 py-3 font-medium text-gray-900">No Rujukan</th>
+                      <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                       <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
