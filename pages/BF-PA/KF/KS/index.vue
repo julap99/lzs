@@ -56,7 +56,7 @@
       <template #body>
         <!-- Smart Filter Section -->
         <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4 mb-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
               v-model="filters.searchQuery"
               type="text"
@@ -64,34 +64,14 @@
               :classes="{
                 input: '!py-2',
               }"
-              class="flex-1"
-            />
-
-            <FormKit
-              v-model="filters.namaSesi"
-              type="select"
-              :options="namaSesiOptions"
-              placeholder="Nama Sesi"
-              :classes="{
-                input: '!py-2',
-              }"
-              class="min-w-[200px]"
             />
             <rs-button
               variant="primary"
               @click="performSearch"
-              class="flex items-center whitespace-nowrap"
+              class="!py-2 !px-4"
             >
               <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
               Cari
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              @click="clearSearch"
-              class="flex items-center whitespace-nowrap"
-            >
-              <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-              Set Semula
             </rs-button>
           </div>
         </div>
@@ -701,7 +681,6 @@ const handleRoleChange = () => {
 // Filters
 const filters = ref({
   searchQuery: "",
-  namaSesi: "",
 });
 
 // Search state
@@ -715,17 +694,7 @@ const bulkApprovalNotes = ref("");
 
 
 
-const namaSesiOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Sesi 2028", value: "Sesi 2028" },
-  { label: "Sesi 2027", value: "Sesi 2027" },
-  { label: "Sesi 2026", value: "Sesi 2026" },
-  { label: "Sesi 2025", value: "Sesi 2025" },
-  { label: "Sesi 2024", value: "Sesi 2024" },
-  { label: "Sesi 2023", value: "Sesi 2023" },
-  { label: "Sesi 2022", value: "Sesi 2022" },
-  { label: "Sesi 2021", value: "Sesi 2021" },
-];
+
 
 // Table data and reactivity control
 const tableKey = ref(0);
@@ -965,11 +934,7 @@ const getTableDataByStatus = (statuses) => {
 
     
     // Apply nama sesi filter
-    if (filters.value.namaSesi) {
-      result = result.filter(session => 
-        session.namaSesi === filters.value.namaSesi
-      );
-    }
+
   }
   
   return result;
@@ -1060,7 +1025,7 @@ onMounted(() => {
 
 // Search functionality
 const performSearch = () => {
-  if (!filters.value.searchQuery && !filters.value.namaSesi) {
+  if (!filters.value.searchQuery) {
     toast.warning('Sila masukkan kriteria carian');
     return;
   }
@@ -1070,13 +1035,7 @@ const performSearch = () => {
   refreshTable();
 };
 
-const clearSearch = () => {
-  filters.value.searchQuery = "";
-  filters.value.namaSesi = "";
-  isSearchPerformed.value = false;
-  refreshTable();
-  toast.info('Carian telah direset');
-};
+
 
 // Bulk approval functionality
 const hasPendingApprovals = computed(() => {

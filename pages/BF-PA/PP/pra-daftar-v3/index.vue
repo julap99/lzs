@@ -56,20 +56,11 @@
       <template #body>
         <!-- Smart Filter Section -->
         <div class="mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
               v-model="filters.searchQuery"
               type="text"
               placeholder="Cari nombor rujukan, nama calon..."
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-            <FormKit
-              v-model="filters.statusPendaftaran"
-              type="select"
-              :options="statusPendaftaranOptions"
-              placeholder="Status Pendaftaran"
               :classes="{
                 input: '!py-2',
               }"
@@ -920,20 +911,7 @@ const eksekutifColumnsWithoutStatusLantikan = [
   },
 ];
 
-// RTMF Required Filter Options
-const statusPendaftaranOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Draf", value: "Draft" },
-  { label: "Dihantar", value: "Submitted" },
-  { label: "Dalam Semakan", value: "Under Review" },
-  { label: "Telah Disaring", value: "Screened" },
-  { label: "Telah Disemak", value: "PT Reviewed" },
-  { label: "Telah Disokong", value: "Executive Supported" },
-  { label: "Telah Disahkan", value: "Department Confirmed" },
-  { label: "Telah Diluluskan", value: "Division Approved" },
-  { label: "Diluluskan", value: "Approved" },
-  { label: "Ditolak", value: "Rejected" },
-];
+
 
 const sesiPerkhidmatanOptions = [
   { label: "Sila pilih...", value: "" },
@@ -971,7 +949,6 @@ const completedStatusLantikanOptions = [
 // State
 const filters = ref({
   searchQuery: "",
-  statusPendaftaran: "",
   sesiPerkhidmatan: "",
 });
 
@@ -1080,7 +1057,7 @@ const getValidTabsForRole = (role) => {
     pt: ["Menunggu Semakan", "Telah Disemak"],
     eksekutif: ["Menunggu Sokongan", "Telah Disokong"],
     "ketua-jabatan": ["Menunggu Pengesahan", "Telah Disahkan"],
-    "ketua-divisyen": ["Menunggu Kelulusan", "Telah Diluluskan"],
+    "ketua-divisyen": ["Menunggu Kelulusan", "Lulus"],
   };
   return roleTabs[role] || ["Draf"];
 };
@@ -1134,7 +1111,7 @@ const getCurrentTabDataCount = () => {
     },
     "ketua-divisyen": {
       "Menunggu Kelulusan": ["Telah Disahkan"],
-      "Telah Diluluskan": ["Diluluskan", "Approved"],
+      "Lulus": ["Diluluskan", "Approved"],
     },
   };
   
@@ -1151,7 +1128,6 @@ const handleSearch = () => {
 
 const handleReset = () => {
   filters.value.searchQuery = "";
-  filters.value.statusPendaftaran = "";
   isSearchTriggered.value = false;
   currentPage.value = 1;
 };
@@ -1647,11 +1623,6 @@ const filteredApplications = computed(() => {
           app.noKP.toLowerCase().includes(query)
       );
     }
-
-    // Apply status filters
-    if (filters.value.statusPendaftaran) {
-      result = result.filter((app) => app.statusPendaftaran === filters.value.statusPendaftaran);
-    }
   }
 
   // Remove sesiPerkhidmatan field from all objects to prevent it from showing in the table
@@ -1747,11 +1718,6 @@ const getTableDataByStatus = (statuses) => {
           app.nama.toLowerCase().includes(query) ||
           app.noKP.toLowerCase().includes(query)
       );
-    }
-
-    // Apply status filters
-    if (filters.value.statusPendaftaran) {
-      result = result.filter((app) => app.statusPendaftaran === filters.value.statusPendaftaran);
     }
   }
 

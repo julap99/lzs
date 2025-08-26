@@ -42,7 +42,7 @@
       <template #body>
         <!-- Smart Filter Section -->
         <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4 mb-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
               v-model="filters.searchQuery"
               type="text"
@@ -50,34 +50,14 @@
               :classes="{
                 input: '!py-2',
               }"
-              class="flex-1"
-            />
-
-            <FormKit
-              v-model="filters.kategori"
-              type="select"
-              :options="kategoriOptions"
-              placeholder="Kategori"
-              :classes="{
-                input: '!py-2',
-              }"
-              class="min-w-[200px]"
             />
             <rs-button
               variant="primary"
               @click="performSearch"
-              class="flex items-center whitespace-nowrap"
+              class="!py-2 !px-4"
             >
               <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
               Cari
-            </rs-button>
-            <rs-button
-              variant="secondary-outline"
-              @click="clearSearch"
-              class="flex items-center whitespace-nowrap"
-            >
-              <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-              Set Semula
             </rs-button>
           </div>
         </div>
@@ -707,18 +687,11 @@ const handleRoleChange = () => {
 // Filters
 const filters = ref({
   searchQuery: "",
-  kategori: "",
 });
 
 
 
-const kategoriOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
-  { label: "Penolong Amil Padi", value: "Penolong Amil Padi" },
-  { label: "Penolong Amil Kariah", value: "Penolong Amil Kariah" },
-  { label: "Penolong Amil Komuniti", value: "Penolong Amil Komuniti" },
-];
+
 
 // Table data and reactivity control
 const tableKey = ref(0);
@@ -990,11 +963,7 @@ const getTableDataByStatus = (statuses) => {
 
   
   // Apply kategori filter
-  if (filters.value.kategori) {
-    result = result.filter(position => 
-      position.kategoriPenolongAmil === filters.value.kategori
-    );
-  }
+  
   
   return result;
 };
@@ -1084,7 +1053,7 @@ onMounted(() => {
 
 // Search functionality
 const performSearch = () => {
-  if (!filters.value.searchQuery && !filters.value.kategori) {
+  if (!filters.value.searchQuery) {
     toast.warning('Sila masukkan kriteria carian');
     return;
   }
@@ -1093,12 +1062,7 @@ const performSearch = () => {
   refreshTable();
 };
 
-const clearSearch = () => {
-  filters.value.searchQuery = "";
-  filters.value.kategori = "";
-  refreshTable();
-  toast.info('Carian telah diset semula');
-};
+
 
 // Bulk approval functionality
 const showBulkApprovalModal = ref(false);

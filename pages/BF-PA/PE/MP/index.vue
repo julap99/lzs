@@ -37,8 +37,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <div class="flex items-center">
-            <Icon name="ic:baseline-assignment" class="mr-2" />
+          <div>
             <h2 class="text-xl font-semibold">
               Senarai Elaun Penolong Amil (Eksekutif) - Mesyuarat/Program
             </h2>
@@ -49,7 +48,7 @@
       <template #body>
           <!-- Smart Filter Section -->
           <div class="mb-6">
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                 type="text"
@@ -57,12 +56,11 @@
                 :classes="{
                   input: '!py-2',
                 }"
-                class="flex-1"
               />
               <rs-button
                 variant="primary"
                 @click="performSearch"
-                class="flex items-center whitespace-nowrap"
+                class="!py-2 !px-4"
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
@@ -197,8 +195,7 @@
       <rs-card class="mt-4">
         <template #header>
           <div class="flex justify-between items-center">
-            <div class="flex items-center">
-              <Icon name="ic:baseline-admin-panel-settings" class="mr-2" />
+            <div>
               <h2 class="text-xl font-semibold">
                 Senarai Elaun Penolong Amil (Ketua Jabatan) - Mesyuarat/Program
               </h2>
@@ -209,7 +206,7 @@
         <template #body>
           <!-- Smart Filter Section -->
             <div class="mb-6">
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                   type="text"
@@ -217,12 +214,11 @@
                 :classes="{
                   input: '!py-2',
                 }"
-                class="flex-1"
               />
               <rs-button
                 variant="primary"
                 @click="performSearch"
-                class="flex items-center whitespace-nowrap"
+                class="!py-2 !px-4"
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
@@ -357,8 +353,7 @@
       <rs-card class="mt-4">
         <template #header>
           <div class="flex justify-between items-center">
-            <div class="flex items-center">
-              <Icon name="ic:baseline-verified-user" class="mr-2" />
+            <div>
               <h2 class="text-xl font-semibold">
                 Senarai Elaun Penolong Amil (Ketua Divisyen) - Mesyuarat/Program
               </h2>
@@ -369,7 +364,7 @@
         <template #body>
           <!-- Smart Filter Section -->
             <div class="mb-6">
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 v-model="filters.searchQuery"
                   type="text"
@@ -377,12 +372,11 @@
                 :classes="{
                   input: '!py-2',
                 }"
-                class="flex-1"
               />
               <rs-button
                 variant="primary"
                 @click="performSearch"
-                class="flex items-center whitespace-nowrap"
+                class="!py-2 !px-4"
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
