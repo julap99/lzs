@@ -1444,6 +1444,33 @@ const roleSpecificData = {
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Dalam Semakan" },
     },
+    // NEW: PYB "Lulus" data
+    {
+      no: 11,
+      rujukan: "PA-2024-011",
+      nama: "Mohd Hafiz bin Ismail",
+      noKP: "890715045678",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Lulus",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-011", statusPendaftaran: "Lulus" },
+    },
+    {
+      no: 12,
+      rujukan: "PA-2024-012",
+      nama: "Nurul Ain binti Ahmad",
+      noKP: "910320056789",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Lulus",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-012", statusPendaftaran: "Lulus" },
+    }
   ],
   "eksekutif-pengurusan-risiko": [
     {
@@ -1485,6 +1512,33 @@ const roleSpecificData = {
         statusLantikan: "Menunggu",
         tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Dihantar" },
     },
+    // NEW: Eksekutif Pengurusan Risiko "Telah Disaring" data
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disaring",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Abdul Rahman bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Telah Disaring",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disaring" },
+    }
   ],
   pt: [
     {
@@ -1513,6 +1567,46 @@ const roleSpecificData = {
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disaring" },
     },
+    // NEW: Additional PT data
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Kg Delek",
+      statusPendaftaran: "Disaring",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Disaring",
+      sesiPerkhidmatan: "Sesi 4",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Abdul Rahman bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Khairiyah",
+      statusPendaftaran: "Disaring",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disaring" },
+    }
   ],
   eksekutif: [
     {
@@ -1539,6 +1633,31 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 2",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disemak" },
     },
+    // NEW: Eksekutif "Telah Disokong" data
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Kg Delek",
+      statusPendaftaran: "Telah Disokong",
+      sesiPerkhidmatan: "Sesi 3",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disokong" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disokong",
+      sesiPerkhidmatan: "Sesi 4",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disokong" },
+    }
   ],
   "ketua-jabatan": [
     {
@@ -1567,6 +1686,33 @@ const roleSpecificData = {
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disokong" },
     },
+    // NEW: Ketua Jabatan "Telah Disahkan" data
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Kg Delek",
+      statusPendaftaran: "Telah Disahkan",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disahkan" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Disahkan",
+      sesiPerkhidmatan: "Sesi 4",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disahkan" },
+    }
   ],
   "ketua-divisyen": [
     {
@@ -1595,6 +1741,33 @@ const roleSpecificData = {
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disahkan" },
     },
+    // NEW: Ketua Divisyen "Telah Diluluskan" data
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Mohd Razak bin Ibrahim",
+      noKP: "880320056789",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Kg Delek",
+      statusPendaftaran: "Telah Diluluskan",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Diluluskan" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Nurul Huda binti Ali",
+      noKP: "920810034567",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Negeri Selangor",
+      statusPendaftaran: "Telah Diluluskan",
+      sesiPerkhidmatan: "Sesi 4",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Diluluskan" },
+    }
   ],
 };
 

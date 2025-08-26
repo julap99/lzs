@@ -30,8 +30,7 @@
       <div class="mb-6">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-              <Icon name="ph:pencil" class="w-6 h-6 mr-3 text-primary" />
+            <h1 class="text-2xl font-bold text-gray-900">
               Kemaskini Kategori Penolong Amil
             </h1>
             <p class="text-gray-600 mt-1">
@@ -54,8 +53,7 @@
         <rs-card class="mb-6">
           <template #header>
             <div class="flex items-center justify-between">
-              <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                <Icon name="ph:tag" class="w-5 h-5 mr-2" />
+              <h3 class="text-lg font-semibold text-gray-900">
                 Kemaskini Maklumat Kategori
               </h3>
               <div v-if="formData.isDefault" class="text-sm text-blue-600 flex items-center">

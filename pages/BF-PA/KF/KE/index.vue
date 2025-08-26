@@ -800,6 +800,37 @@ const allowancesList = ref([
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 10
+  },
+  // NEW: Ketua Jabatan "Menunggu Pengesahan" data
+  {
+    rujukan: "KE-2024-011",
+    kategoriPenolongAmil: "Penolong Amil Zakat Perkhidmatan Digital",
+    jenisElaun: "Elaun Bancian Digital : per borang permohonan",
+    amaun: 70,
+    kodBajet: "B34120",
+    status: "Menunggu Pengesahan",
+    tarikhKuatkuasa: "", // Empty - not yet verified
+    tindakan: 11
+  },
+  {
+    rujukan: "KE-2024-012",
+    kategoriPenolongAmil: "Penolong Amil Zakat Pendidikan",
+    jenisElaun: "Elaun Bancian Pendidikan : per borang permohonan",
+    amaun: 75,
+    kodBajet: "B34121",
+    status: "Menunggu Pengesahan",
+    tarikhKuatkuasa: "", // Empty - not yet verified
+    tindakan: 12
+  },
+  {
+    rujukan: "KE-2024-013",
+    kategoriPenolongAmil: "Penolong Amil Zakat Kesihatan",
+    jenisElaun: "Elaun Bancian Kesihatan : per borang permohonan",
+    amaun: 80,
+    kodBajet: "B34122",
+    status: "Menunggu Pengesahan",
+    tarikhKuatkuasa: "", // Empty - not yet verified
+    tindakan: 13
   }
 ]);
 

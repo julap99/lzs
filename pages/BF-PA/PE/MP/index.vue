@@ -109,11 +109,11 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Diluluskan">
+            <rs-tab-item title="Lulus">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-approved`"
-                  :data="getTableDataByStatus(['Diluluskan'])"
+                  :data="getTableDataByStatus(['Lulus'])"
                   :columns="eksekutifApprovedColumns"
                   :pageSize="pageSize"
                   :options="{
@@ -270,11 +270,11 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Diluluskan">
+            <rs-tab-item title="Lulus">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-approved`"
-                  :data="getTableDataByStatus(['Diluluskan'])"
+                  :data="getTableDataByStatus(['Lulus'])"
                   :columns="ketuaJabatanApprovedColumns"
                   :pageSize="pageSize"
                   :options="{
@@ -392,7 +392,7 @@
 
           <!-- Tabbed Table Section -->
           <rs-tab v-model="activeTab" class="mt-4">
-            <rs-tab-item title="Belum Disemak">
+            <rs-tab-item title="Sedang Proses">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-pending`"
@@ -431,11 +431,11 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Diluluskan">
+            <rs-tab-item title="Lulus">
               <div class="p-4">
                 <rs-table
                   :key="`table-${tableKey}-approved`"
-                  :data="getTableDataByStatus(['Diluluskan'])"
+                  :data="getTableDataByStatus(['Lulus'])"
                   :columns="ketuaDivisyenApprovedColumns"
                   :pageSize="pageSize"
                   :options="{
@@ -689,7 +689,7 @@ const handleRoleChange = () => {
 
 // Mock data for activities
 const activities = ref([
-    // PT specific activities - Belum Disemak
+    // PT specific activities - Sedang Proses
   {
     id: 'MP2024-001',
     NamaAktiviti: 'Program Khidmat Masyarakat',
@@ -763,6 +763,63 @@ const activities = ref([
     Lokasi: 'Pejabat Zakat, Daerah Petaling Jaya',
     status: 'Lulus'
   },
+  // NEW: Additional activities for better status distribution
+  {
+    id: 'MP2024-011',
+    NamaAktiviti: 'Program Kesedaran Zakat',
+    Tarikh: '05-05-2024',
+    Lokasi: 'Dewan Komuniti, Daerah Klang',
+    status: 'Sedang Proses'
+  },
+  {
+    id: 'MP2024-012',
+    NamaAktiviti: 'Latihan Pengurusan Risiko',
+    Tarikh: '10-05-2024',
+    Lokasi: 'Bilik Latihan, Pejabat Zakat Shah Alam',
+    status: 'Sedang Proses'
+  },
+  {
+    id: 'MP2024-013',
+    NamaAktiviti: 'Mesyuarat Jawatankuasa Zakat',
+    Tarikh: '15-05-2024',
+    Lokasi: 'Dewan Mesyuarat Utama, Kompleks Zakat Selangor',
+    status: 'Lulus'
+  },
+  {
+    id: 'MP2024-014',
+    NamaAktiviti: 'Program Pembangunan Komuniti',
+    Tarikh: '20-05-2024',
+    Lokasi: 'Dewan Serbaguna, Daerah Petaling Jaya',
+    status: 'Lulus'
+  },
+  {
+    id: 'MP2024-015',
+    NamaAktiviti: 'Latihan Sistem Pengurusan',
+    Tarikh: '25-05-2024',
+    Lokasi: 'Bilik Latihan IT, Pejabat Zakat Gombak',
+    status: 'Ditolak'
+  },
+  {
+    id: 'MP2024-016',
+    NamaAktiviti: 'Program Khidmat Sosial',
+    Tarikh: '30-05-2024',
+    Lokasi: 'Dewan Komuniti, Daerah Shah Alam',
+    status: 'Ditolak'
+  },
+  {
+    id: 'MP2024-017',
+    NamaAktiviti: 'Mesyuarat Perancangan Strategik',
+    Tarikh: '05-06-2024',
+    Lokasi: 'Dewan Mesyuarat Eksekutif, Kompleks Zakat Selangor',
+    status: 'Sedang Proses'
+  },
+  {
+    id: 'MP2024-018',
+    NamaAktiviti: 'Latihan Pengurusan Kualiti',
+    Tarikh: '10-06-2024',
+    Lokasi: 'Bilik Latihan, Pejabat Zakat Klang',
+    status: 'Lulus'
+  }
 ]);
 
 const eksekutifStatusOptions = [
@@ -823,7 +880,7 @@ const handleSupport = (activityId) => {
   // Update activity status to supported
   const activity = activities.value.find(a => a.id === activityId);
   if (activity) {
-    activity.status = 'Diluluskan';
+    activity.status = 'Lulus';
     toast.success('Aktiviti berjaya disokong');
   }
 };
@@ -832,7 +889,7 @@ const handleApprove = (activityId) => {
   // Update activity status to approved
   const activity = activities.value.find(a => a.id === activityId);
   if (activity) {
-    activity.status = 'Diluluskan';
+    activity.status = 'Lulus';
     toast.success('Aktiviti berjaya diluluskan');
   }
 };
@@ -1223,7 +1280,7 @@ const confirmSupport = async () => {
   try {
     const activity = activities.value.find(a => a.id === selectedActivity.value);
     if (activity) {
-      activity.status = 'Diluluskan';
+      activity.status = 'Lulus';
     }
     showSupportModal.value = false;
     selectedActivity.value = null;
@@ -1480,13 +1537,13 @@ const pageSize = ref(10);
 onMounted(() => {
   // Set default tab based on available data
   const hasPending = activities.value.some(a => a.status === 'Sedang Proses');
-  const hasApproved = activities.value.some(a => a.status === 'Diluluskan');
+  const hasApproved = activities.value.some(a => a.status === 'Lulus');
   const hasRejected = activities.value.some(a => a.status === 'Ditolak');
   
   if (hasPending) {
     activeTab.value = "Sedang Proses";
   } else if (hasApproved) {
-    activeTab.value = "Diluluskan";
+    activeTab.value = "Lulus";
   } else if (hasRejected) {
     activeTab.value = "Ditolak";
   }

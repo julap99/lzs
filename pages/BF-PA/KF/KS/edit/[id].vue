@@ -12,8 +12,7 @@
     <div class="mb-6">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <Icon name="ph:pencil" class="w-6 h-6 mr-3 text-primary" />
+          <h1 class="text-2xl font-bold text-gray-900">
             Kemaskini Sesi Penolong Amil
           </h1>
           <p class="text-gray-600 mt-1">Kemaskini maklumat sesi untuk kategori: <span class="font-medium text-gray-800">{{ formData.kategoriPenolongAmil || 'Loading...' }}</span></p>

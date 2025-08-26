@@ -117,7 +117,7 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Diluluskan">
+            <rs-tab-item title="Lulus">
               <div class="p-4">
                 <div class="overflow-x-auto">
                   <table class="min-w-full divide-y divide-gray-200">
@@ -131,7 +131,7 @@
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="batch in getTableDataByStatus(['Diluluskan'])" :key="batch.id">
+                      <tr v-for="batch in getTableDataByStatus(['Lulus'])" :key="batch.id">
                         <td class="px-6 py-4 whitespace-nowrap">
                           <a 
                             href="#" 
@@ -323,6 +323,87 @@ const batches = ref([
     kategori: 'Kariah',
     status: 'Ditolak',
     tarikhCipta: '2024-03-18'
+  },
+  // NEW: Additional batches for better status distribution and variety
+  {
+    id: 6,
+    noBatch: 'BATCH/2024/006',
+    institusi: 'Masjid Negeri Selangor',
+    kategori: 'Fitrah',
+    status: 'Menunggu Pengesahan',
+    tarikhCipta: '2024-03-20'
+  },
+  {
+    id: 7,
+    noBatch: 'BATCH/2024/007',
+    institusi: 'Masjid Kg Delek',
+    kategori: 'Komuniti',
+    status: 'Menunggu Kelulusan',
+    tarikhCipta: '2024-03-22'
+  },
+  {
+    id: 8,
+    noBatch: 'BATCH/2024/008',
+    institusi: 'Masjid Al-Khairiyah',
+    kategori: 'Padi',
+    status: 'Lulus',
+    tarikhCipta: '2024-03-25'
+  },
+  {
+    id: 9,
+    noBatch: 'BATCH/2024/009',
+    institusi: 'Masjid Al-Rahman',
+    kategori: 'Fitrah',
+    status: 'Ditolak',
+    tarikhCipta: '2024-03-28'
+  },
+  {
+    id: 10,
+    noBatch: 'BATCH/2024/010',
+    institusi: 'Masjid Al-Mustaqim',
+    kategori: 'Kariah',
+    status: 'Menunggu Pengesahan',
+    tarikhCipta: '2024-04-01'
+  },
+  {
+    id: 11,
+    noBatch: 'BATCH/2024/011',
+    institusi: 'Masjid Al-Huda',
+    kategori: 'Komuniti',
+    status: 'Menunggu Kelulusan',
+    tarikhCipta: '2024-04-03'
+  },
+  {
+    id: 12,
+    noBatch: 'BATCH/2024/012',
+    institusi: 'Masjid Al-Iman',
+    kategori: 'Padi',
+    status: 'Lulus',
+    tarikhCipta: '2024-04-05'
+  },
+  {
+    id: 13,
+    noBatch: 'BATCH/2024/013',
+    institusi: 'Masjid Al-Taqwa',
+    kategori: 'Fitrah',
+    status: 'Ditolak',
+    tarikhCipta: '2024-04-08'
+  },
+  {
+    id: 14,
+    noBatch: 'BATCH/2024/014',
+    institusi: 'Masjid Al-Salam',
+    kategori: 'Kariah',
+    status: 'Menunggu Pengesahan',
+    tarikhCipta: '2024-04-10'
+  },
+  {
+    id: 15,
+    noBatch: 'BATCH/2024/015',
+    institusi: 'Masjid Al-Nur',
+    kategori: 'Komuniti',
+    status: 'Menunggu Kelulusan',
+    tarikhCipta: '2024-04-12'
   }
 ]);
 

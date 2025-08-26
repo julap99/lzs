@@ -35,8 +35,7 @@
     <div class="mb-6">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <Icon name="ph:gear" class="w-6 h-6 mr-3 text-primary" />
+          <h1 class="text-2xl font-bold text-gray-900">
             Penamatan Jawatan
           </h1>
         </div>
