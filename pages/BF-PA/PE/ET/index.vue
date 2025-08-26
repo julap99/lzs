@@ -36,7 +36,6 @@
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-xl font-semibold">Dashboard Elaun Tahunan</h2>
-            <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
           </div>
           <rs-button
             v-if="currentRole === 'eksekutif'"

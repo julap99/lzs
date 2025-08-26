@@ -35,7 +35,6 @@
       <template #header>
         <div>
           <h2 class="text-xl font-semibold">Senarai Jawatan Penolong Amil</h2>
-          <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
         </div>
       </template>
 

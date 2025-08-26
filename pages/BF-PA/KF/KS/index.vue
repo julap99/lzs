@@ -39,7 +39,6 @@
             <Icon name="ic:baseline-table-chart" class="w-6 h-6 mr-3 text-primary" />
             Senarai Sesi Penolong Amil
           </h1>
-          <p class="text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
         </div>
       </div>
     </div>

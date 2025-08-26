@@ -39,7 +39,6 @@
             <h2 class="text-xl font-semibold">
               Senarai Permohonan Penolong Amil
             </h2>
-            <p class="text-sm text-gray-600 mt-1">{{ getRoleSpecificDescription() }}</p>
           </div>
           <!-- PA-PP-PD-01_03: Registration Form - Borang Pendaftaran Calon Penolong Amil -->
           <rs-button
