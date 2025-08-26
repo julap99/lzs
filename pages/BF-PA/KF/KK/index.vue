@@ -778,6 +778,48 @@ const categoriesList = ref([
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 11
+  },
+  // NEW: Ketua Jabatan "Menunggu Pengesahan" data
+  {
+    rujukan: "KK-2024-012",
+    kategoriPenolongAmil: "Penolong Amil Zakat Perkhidmatan Digital",
+    kodSingkatan: "PAZPD",
+    status: "Menunggu Pengesahan",
+    tarikhKuatkuasa: "", // Empty - not yet verified
+    tindakan: 12
+  },
+  {
+    rujukan: "KK-2024-013",
+    kategoriPenolongAmil: "Penolong Amil Zakat Pendidikan",
+    kodSingkatan: "PAZPE",
+    status: "Menunggu Pengesahan",
+    tarikhKuatkuasa: "", // Empty - not yet verified
+    tindakan: 13
+  },
+  {
+    rujukan: "KK-2024-014",
+    kategoriPenolongAmil: "Penolong Amil Zakat Kesihatan",
+    kodSingkatan: "PAZK",
+    status: "Menunggu Pengesahan",
+    tarikhKuatkuasa: "", // Empty - not yet verified
+    tindakan: 14
+  },
+  // NEW: Ketua Divisyen "Sedang Proses - Ditolak" data
+  {
+    rujukan: "KK-2024-015",
+    kategoriPenolongAmil: "Penolong Amil Zakat Teknologi",
+    kodSingkatan: "PAZTK",
+    status: "Ditolak Ketua Jabatan",
+    tarikhKuatkuasa: "", // Empty - rejected
+    tindakan: 15
+  },
+  {
+    rujukan: "KK-2024-016",
+    kategoriPenolongAmil: "Penolong Amil Zakat Pelancongan",
+    kodSingkatan: "PAZPLN",
+    status: "Ditolak Ketua Jabatan",
+    tarikhKuatkuasa: "", // Empty - rejected
+    tindakan: 16
   }
 ]);
 
