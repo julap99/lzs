@@ -75,7 +75,7 @@
       <rs-card class="flex-1">
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
+            <h2 class="text-xl font-semibold">Siasatan di Lapangan</h2>
           </div>
         </template>
 
@@ -85,7 +85,7 @@
             <rs-tab-item title="Profiling" active>
               <!-- Profiling Tab Content -->
               <div class="space-y-6">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Pengesahan Status</h3>
+                <!-- <h3 class="text-lg font-semibold mb-4 text-gray-800">Pengesahan Status</h3> -->
 
                 <!-- Profiling Form -->
                 <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -249,10 +249,10 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Bantuan">
+            <rs-tab-item title="Bantuan" v-if="false">
               <!-- Bantuan Tab Content -->
               <div>
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Maklumat Bantuan</h3>
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">Siasatan di Lapangan</h3>
                 <p>Bantuan content will go here</p>
               </div>
             </rs-tab-item>
@@ -355,13 +355,13 @@
                 />
               </div>
 
-              <!-- Catatan Lawatan ETD -->
+              <!-- Catatan Lawatan -->
               <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Catatan Lawatan ETD</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3">Catatan Lawatan</h4>
                 <FormKit
                   type="textarea"
                   name="catatanLawatanETD"
-                  placeholder="Catatan lawatan ETD..."
+                  placeholder="Catatan lawatan..."
                   rows="3"
                   :classes="{
                     input: '!py-2.5',
@@ -588,6 +588,9 @@ const submitLawatan = async () => {
     if (typeof window !== "undefined") {
       window.alert("Hantar berjaya. Data siasatan telah disimpan.");
     }
+
+    // Redirect to page 07_01 after successful submission
+    await navigateTo("/BF-PRF/AS/FR/07_01");
   } catch (error) {
     console.error("Error submitting investigation data:", error);
   } finally {

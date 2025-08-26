@@ -93,7 +93,7 @@
       <rs-card class="flex-1">
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
+            <h2 class="text-xl font-semibold">Maklumat di lapangan</h2>
           </div>
         </template>
 
@@ -103,9 +103,9 @@
             <rs-tab-item title="Profiling" active>
               <!-- Profiling Tab Content -->
               <div class="space-y-6">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                  Pengesahan Status
-                </h3>
+                                 <!-- <h3 class="text-lg font-semibold mb-4 text-gray-800">
+                   Pengesahan Status
+                 </h3> -->
 
                 <!-- Profiling Form -->
                 <div
@@ -118,63 +118,55 @@
                     v-model="profilingData"
                     class="divide-y divide-gray-200"
                   >
-                    <!-- Section 1: Search & Basic Info -->
-                    <div class="p-6 bg-gray-50">
-                      <h4
-                        class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                      >
-                        <Icon
-                          name="ph:magnifying-glass"
-                          class="w-5 h-5 mr-2 text-blue-600"
-                        />
-                        Carian Maklumat
-                      </h4>
-                      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Pengenalan ID with Search -->
-                        <div class="lg:col-span-2">
-                          <div class="flex gap-3">
-                            <FormKit
-                              type="text"
-                              name="pengenalanId"
-                              label="Pengenalan ID"
-                              placeholder="Masukkan nombor pengenalan"
-                              :classes="{
-                                outer: 'flex-1',
-                                input: '!py-2.5',
-                                label: 'text-sm font-medium text-gray-700',
-                              }"
-                            />
-                            <rs-button
-                              variant="primary"
-                              class="mt-7 px-6 h-fit"
-                              @click="searchPengenalanId"
-                              :loading="searchingId"
-                            >
-                              <Icon
-                                name="ph:magnifying-glass"
-                                class="w-4 h-4 mr-1"
-                              />
-                              Cari
-                            </rs-button>
-                          </div>
-                        </div>
+                                         <!-- Section 1: Search & Basic Info -->
+                     <div class="p-6 bg-gray-50">
+                       
+                       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                         <!-- Pengenalan ID with Search - Hidden -->
+                         <!-- <div class="lg:col-span-2">
+                           <div class="flex gap-3">
+                             <FormKit
+                               type="text"
+                               name="pengenalanId"
+                               label="Pengenalan ID"
+                               placeholder="Masukkan nombor pengenalan"
+                               :classes="{
+                                 outer: 'flex-1',
+                                 input: '!py-2.5',
+                                 label: 'text-sm font-medium text-gray-700',
+                               }"
+                             />
+                             <rs-button
+                               variant="primary"
+                               class="mt-7 px-6 h-fit"
+                               @click="searchPengenalanId"
+                               :loading="searchingId"
+                             >
+                               <Icon
+                                 name="ph:magnifying-glass"
+                                 class="w-4 h-4 mr-1"
+                               />
+                               Cari
+                             </rs-button>
+                           </div>
+                         </div> -->
 
-                        <!-- Nama -->
-                        <div class="lg:col-span-2">
-                          <FormKit
-                            type="text"
-                            name="nama"
-                            label="Nama Penuh"
-                            placeholder="Nama akan dipaparkan setelah carian"
-                            :classes="{
-                              input: '!py-2.5',
-                              label: 'text-sm font-medium text-gray-700',
-                            }"
-                            :disabled="!profilingData.pengenalanId"
-                          />
-                        </div>
-                      </div>
-                    </div>
+                         <!-- Nama - Hidden -->
+                         <!-- <div class="lg:col-span-2">
+                           <FormKit
+                             type="text"
+                             name="nama"
+                             label="Nama Penuh"
+                             placeholder="Nama akan dipaparkan setelah carian"
+                             :classes="{
+                               input: '!py-2.5',
+                               label: 'text-sm font-medium text-gray-700',
+                             }"
+                             :disabled="!profilingData.pengenalanId"
+                           />
+                         </div> -->
+                       </div>
+                     </div>
 
                     <!-- Section 2: Maklumat Syor -->
                     <div class="p-6">
@@ -283,29 +275,39 @@
                       </div>
                     </div>
 
-                    <!-- Section 3: Assignment -->
-                    <div class="p-6 bg-amber-50">
-                      <h4
-                        class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                      >
-                        <Icon
-                          name="ph:user-gear"
-                          class="w-5 h-5 mr-2 text-amber-600"
-                        />
-                        Tugasan Siasatan
-                      </h4>
-                      <FormKit
-                        type="select"
-                        name="assignSiasatan"
-                        label="Assign Siasatan"
-                        :options="assignSiasatanOptions"
-                        placeholder="Pilih petugas siasatan"
-                        :classes="{
-                          input: '!py-2.5',
-                          label: 'text-sm font-medium text-gray-700',
-                        }"
-                      />
-                    </div>
+                                         <!-- Section 3: Assignment -->
+                     <div class="p-6 bg-amber-50">
+                       <h4
+                         class="text-md font-semibold text-gray-900 mb-4 flex items-center"
+                       >
+                         <Icon
+                           name="ph:user-gear"
+                           class="w-5 h-5 mr-2 text-amber-600"
+                         />
+                         Tugasan Siasatan
+                       </h4>
+                       <FormKit
+                         type="select"
+                         name="assignSiasatan"
+                         label="Assign Siasatan"
+                         :options="assignSiasatanOptions"
+                         placeholder="Pilih petugas siasatan"
+                         :classes="{
+                           input: '!py-2.5',
+                           label: 'text-sm font-medium text-gray-700',
+                         }"
+                       />
+                       <div class="mt-4 flex justify-end">
+                         <rs-button
+                           variant="primary"
+                           @click="handleTugasanHantar"
+                           class="px-6 py-2.5"
+                         >
+                           <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" />
+                           Hantar
+                         </rs-button>
+                       </div>
+                     </div>
 
                     <!-- Section 4: Maklumat Disahkan -->
                     <div class="p-6">
@@ -556,7 +558,7 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Bantuan">
+            <rs-tab-item title="Bantuan" v-if="false">
               <!-- Bantuan Tab Content with Sub-tabs -->
               <div>
                 <h3 class="text-lg font-semibold mb-4 text-gray-800">
@@ -850,112 +852,131 @@
         </template>
       </rs-card>
 
-      <!-- Maklumat Lawatan & Siasatan section -->
-      <rs-card class="flex-1">
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Lawatan & Siasatan</h2>
-          </div>
-        </template>
+             <!-- Maklumat Lawatan & Siasatan section - Only show when data is submitted from 09 -->
+       <rs-card v-if="hasSubmittedData" class="flex-1">
+         <template #header>
+           <div class="flex justify-between items-center">
+             <h2 class="text-xl font-semibold">Maklumat Lawatan & Siasatan</h2>
+           </div>
+         </template>
 
-        <template #body>
-          <FormKit
-            type="form"
-            :actions="false"
-            @submit="handleSubmitLawatan"
-            v-model="investigationData"
-          >
-            <div class="space-y-6">
-              <!-- Ringkasan Profil -->
-              <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h4 class="text-sm font-semibold text-blue-900 mb-3">Ringkasan Profil</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span class="font-medium text-blue-800">Jenis Pekerjaan:</span>
-                    <p class="mt-1 text-gray-900">{{ investigationData.jenisPekerjaan }}</p>
-                  </div>
-                  <div>
-                    <span class="font-medium text-blue-800">Status Kediaman:</span>
-                    <p class="mt-1 text-gray-900">{{ investigationData.statusKediaman }}</p>
-                  </div>
-                  <div>
-                    <span class="font-medium text-blue-800">Jumlah Bayaran Rumah:</span>
-                    <p class="mt-1 text-gray-900">{{ investigationData.jumlahBayaranRumah }}</p>
-                  </div>
-                  <div>
-                    <span class="font-medium text-blue-800">Bilangan Tanggungan:</span>
-                    <p class="mt-1 text-gray-900">{{ investigationData.bilTanggungan }}</p>
-                  </div>
-                  <div class="md:col-span-2">
-                    <span class="font-medium text-blue-800">Status Tanggungan:</span>
-                    <p class="mt-1 text-gray-900">{{ investigationData.statusTanggungan }}</p>
-                  </div>
-                </div>
-              </div>
+         <template #body>
+           <FormKit
+             type="form"
+             :actions="false"
+             @submit="handleSubmitLawatan"
+             v-model="investigationData"
+           >
+             <div class="space-y-6">
+               <!-- Ringkasan Profil -->
+               <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                 <h4 class="text-sm font-semibold text-blue-900 mb-3">Ringkasan Profil</h4>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                   <div>
+                     <span class="font-medium text-blue-800">Jenis Pekerjaan:</span>
+                     <p class="mt-1 text-gray-900">{{ investigationData.jenisPekerjaan }}</p>
+                   </div>
+                   <div>
+                     <span class="font-medium text-blue-800">Status Kediaman:</span>
+                     <p class="mt-1 text-gray-900">{{ investigationData.statusKediaman }}</p>
+                   </div>
+                   <div>
+                     <span class="font-medium text-blue-800">Jumlah Bayaran Rumah:</span>
+                     <p class="mt-1 text-gray-900">{{ investigationData.jumlahBayaranRumah }}</p>
+                   </div>
+                   <div>
+                     <span class="font-medium text-blue-800">Bilangan Tanggungan:</span>
+                     <p class="mt-1 text-gray-900">{{ investigationData.bilTanggungan }}</p>
+                   </div>
+                   <div class="md:col-span-2">
+                     <span class="font-medium text-blue-800">Status Tanggungan:</span>
+                     <p class="mt-1 text-gray-900">{{ investigationData.statusTanggungan }}</p>
+                   </div>
+                 </div>
+               </div>
 
-              <!-- Keadaan Siasatan -->
-              <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Keadaan Siasatan</h4>
-                <FormKit
-                  type="select"
-                  name="keadaanSiasatan"
-                  placeholder="Pilih keadaan siasatan"
-                  :options="keadaanSiasatanOptions"
-                  :classes="{ input: '!py-2.5' }"
-                />
-              </div>
+               <!-- Keadaan Siasatan -->
+               <div>
+                 <h4 class="text-sm font-semibold text-gray-900 mb-3">Keadaan Siasatan</h4>
+                 <FormKit
+                   type="select"
+                   name="keadaanSiasatan"
+                   placeholder="Pilih keadaan siasatan"
+                   :options="keadaanSiasatanOptions"
+                   :classes="{ input: '!py-2.5' }"
+                 />
+               </div>
 
-              <!-- Tarikh & Masa Lawatan -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 class="text-sm font-semibold text-gray-900 mb-3">Tarikh Lawatan</h4>
-                  <FormKit type="date" name="tarikhLawatan" :classes="{ input: '!py-2.5' }" />
-                </div>
-                <div>
-                  <h4 class="text-sm font-semibold text-gray-900 mb-3">Masa Lawatan</h4>
-                  <FormKit type="time" name="masaLawatan" :classes="{ input: '!py-2.5' }" />
-                </div>
-              </div>
+               <!-- Tarikh & Masa Lawatan -->
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div>
+                   <h4 class="text-sm font-semibold text-gray-900 mb-3">Tarikh Lawatan</h4>
+                   <FormKit type="date" name="tarikhLawatan" :classes="{ input: '!py-2.5' }" />
+                 </div>
+                 <div>
+                   <h4 class="text-sm font-semibold text-gray-900 mb-3">Masa Lawatan</h4>
+                   <FormKit type="time" name="masaLawatan" :classes="{ input: '!py-2.5' }" />
+                 </div>
+               </div>
 
-              <!-- Catatan Penilaian Awal -->
-              <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Catatan Penilaian Awal</h4>
-                <FormKit
-                  type="textarea"
-                  name="catatanPenilianAwal"
-                  placeholder="Catatan penilaian awal..."
-                  rows="4"
-                  :classes="{ input: '!py-2.5' }"
-                />
-              </div>
+               <!-- Catatan Penilaian Awal -->
+               <div>
+                 <h4 class="text-sm font-semibold text-gray-900 mb-3">Catatan Penilaian Awal</h4>
+                 <FormKit
+                   type="textarea"
+                   name="catatanPenilianAwal"
+                   placeholder="Catatan penilaian awal..."
+                   rows="4"
+                   :classes="{ input: '!py-2.5' }"
+                 />
+               </div>
 
-              <!-- Catatan Lawatan ETD -->
-              <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Catatan Lawatan ETD</h4>
-                <FormKit
-                  type="textarea"
-                  name="catatanLawatanETD"
-                  placeholder="Catatan lawatan ETD..."
-                  rows="3"
-                  :classes="{ input: '!py-2.5' }"
-                />
-              </div>
+               <!-- Catatan Lawatan -->
+               <div>
+                 <h4 class="text-sm font-semibold text-gray-900 mb-3">Catatan Lawatan</h4>
+                 <FormKit
+                   type="textarea"
+                   name="catatanLawatanETD"
+                   placeholder="Catatan lawatan..."
+                   rows="3"
+                   :classes="{ input: '!py-2.5' }"
+                 />
+               </div>
 
-              <!-- Status Lawatan -->
-              <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Status Lawatan</h4>
-                <FormKit
-                  type="select"
-                  name="statusLawatan"
-                  placeholder="Pilih status lawatan"
-                  :options="statusLawatanOptions"
-                  :classes="{ input: '!py-2.5' }"
-                />
-              </div>
-            </div>
-          </FormKit>
-        </template>
-      </rs-card>
+               <!-- Status Lawatan -->
+               <div>
+                 <h4 class="text-sm font-semibold text-gray-900 mb-3">Status Lawatan</h4>
+                 <FormKit
+                   type="select"
+                   name="statusLawatan"
+                   placeholder="Pilih status lawatan"
+                   :options="statusLawatanOptions"
+                   :classes="{ input: '!py-2.5' }"
+                 />
+               </div>
+             </div>
+           </FormKit>
+         </template>
+       </rs-card>
+
+       <!-- Message when no data is submitted yet -->
+       <rs-card v-else class="flex-1">
+         <template #header>
+           <div class="flex justify-between items-center">
+             <h2 class="text-xl font-semibold">Maklumat Lawatan & Siasatan</h2>
+           </div>
+         </template>
+
+         <template #body>
+           <div class="text-center py-12">
+             <Icon name="ph:info" class="w-16 h-16 text-gray-300 mx-auto mb-4" />
+             <h3 class="text-lg font-medium text-gray-900 mb-2">Tiada Data Siasatan</h3>
+                           <p class="text-gray-500">
+                Data siasatan akan dipaparkan di sini selepas ia dihantar dari halaman Siasatan di Lapangan.
+              </p>
+           </div>
+         </template>
+       </rs-card>
     </div>
 
     <!-- Image Preview Modal -->
@@ -1494,6 +1515,12 @@ const isProfilingFormValid = computed(() => {
   );
 });
 
+// Computed property to check if investigation data has been submitted from 09
+const hasSubmittedData = computed(() => {
+  const invStore = useInvestigationStore();
+  return invStore.latestSubmission && Object.keys(invStore.latestSubmission).length > 0;
+});
+
 // Image handling methods
 const triggerFileInput = () => {
   if (fileInputRef.value) {
@@ -1760,6 +1787,12 @@ const submitProfiling = async () => {
   } finally {
     submittingProfile.value = false;
   }
+};
+
+// Handle Tugasan Siasatan submission and redirect to 07_1
+const handleTugasanHantar = () => {
+  console.log("Tugasan Siasatan submitted, redirecting to 07_1...");
+  navigateTo("/BF-PRF/AS/FR/07_1");
 };
 </script>
 

@@ -1043,7 +1043,7 @@
           </div>
         </div>
 
-        <!-- Section L: Penilaian Awal -->
+        <!--<!-- Section L: Penilaian Awal -->
         <div class="mb-8">
           <h3 class="text-lg font-medium mb-4 border-b pb-2">
             L. Penilaian Awal
@@ -1083,7 +1083,7 @@
             </div>
           </div>
         </div>
-
+-->
         <!-- Action Buttons -->
         <div class="flex justify-end gap-3 mt-6">
           <rs-button
