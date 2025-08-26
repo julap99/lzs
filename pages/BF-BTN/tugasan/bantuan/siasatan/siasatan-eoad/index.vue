@@ -1270,9 +1270,9 @@ const breadcrumb = ref([
     path: "/BF-BTN/tugasan",
   },
   {
-    name: "Maklumat Pemohon",
+    name: "Siasatan EOAD",
     type: "current",
-    path: "/BF-BTN/tugasan/siasatan-eoad",
+    path: "/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad",
   },
 ]);
 

@@ -64,10 +64,7 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex justify-center items-center gap-2">
-                    <rs-button
-                      variant="primary"
-                      @click="handleReview(text)"
-                    >
+                    <rs-button variant="primary" @click="handleReview(text)">
                       Semak
                     </rs-button>
                   </div>
@@ -403,19 +400,14 @@
 import { ref, computed } from "vue";
 
 definePageMeta({
-  title: "Senarai Permohonan untuk Disemak",
+  title: "Senarai Tugasan",
 });
 
 const breadcrumb = ref([
   {
-    name: "Permohonan Bantuan",
+    name: "Tugasan",
     type: "link",
-    path: "/BF-BTN/senarai",
-  },
-  {
-    name: "Senarai",
-    type: "current",
-    path: "/BF-BTN/senarai",
+    path: "/BF-BTN/tugasan",
   },
 ]);
 
@@ -591,7 +583,7 @@ const siasatanData = ref([
     status: "Dalam Siasatan",
     statusLaluan: "Untuk Siasatan",
     noRujukan: "NAS-2025-0001",
-    tindakan: "bantuan/siasatan-eoad",
+    tindakan: "bantuan/siasatan/siasatan-eoad",
   },
   {
     pemohon: "Siti binti Hassan (850505-05-5678)",
@@ -601,7 +593,7 @@ const siasatanData = ref([
     status: "Selesai Siasatan",
     statusLaluan: "Untuk Kelulusan",
     noRujukan: "NAS-2025-0002",
-    tindakan: "bantuan/siasatan-eoad",
+    tindakan: "bantuan/siasatan/siasatan-eoad",
   },
 ]);
 
@@ -631,7 +623,7 @@ const kelulusanData = ref([
     status: "Baru",
     tarikhTerima: "2024-03-20",
     namaPegawai: "Siti binti Ali",
-    tindakan: "bantuan/kelulusan/NAS-2025-0001",
+    tindakan: "bantuan/kelulusan/siasatan-eoad",
   },
   {
     noRujukan: "NAS-2025-0002",
@@ -639,7 +631,7 @@ const kelulusanData = ref([
     status: "Dalam Semakan",
     tarikhTerima: "2024-03-19",
     namaPegawai: "Aminah binti Hassan",
-    tindakan: "bantuan/kelulusan/NAS-2025-0002",
+    tindakan: "bantuan/kelulusan/siasatan-eoad",
   },
 ]);
 
@@ -665,7 +657,8 @@ const createFilteredData = (data) => {
       result = result.filter(
         (item) =>
           (item.noRujukan && item.noRujukan.toLowerCase().includes(query)) ||
-          (item.namaPemohon && item.namaPemohon.toLowerCase().includes(query)) ||
+          (item.namaPemohon &&
+            item.namaPemohon.toLowerCase().includes(query)) ||
           (item.pemohon && item.pemohon.toLowerCase().includes(query)) ||
           (item.kariah && item.kariah.toLowerCase().includes(query)) ||
           (item.daerah && item.daerah.toLowerCase().includes(query))
@@ -695,7 +688,8 @@ const createTotalCount = (data) => {
       result = result.filter(
         (item) =>
           (item.noRujukan && item.noRujukan.toLowerCase().includes(query)) ||
-          (item.namaPemohon && item.namaPemohon.toLowerCase().includes(query)) ||
+          (item.namaPemohon &&
+            item.namaPemohon.toLowerCase().includes(query)) ||
           (item.pemohon && item.pemohon.toLowerCase().includes(query)) ||
           (item.kariah && item.kariah.toLowerCase().includes(query)) ||
           (item.daerah && item.daerah.toLowerCase().includes(query))

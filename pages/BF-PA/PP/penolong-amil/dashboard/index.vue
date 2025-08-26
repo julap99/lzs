@@ -19,34 +19,35 @@
       </template>
     </rs-card>
 
-    <!-- User Profile Card -->
-    <rs-card class="mb-6">
-      <template #body>
-        <div class="flex items-center justify-between p-4">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-lg">
-              A
+         <!-- User Profile Card -->
+     <rs-card class="mb-6">
+       <template #body>
+         <div class="flex items-center justify-between p-4">
+           <div class="flex items-center gap-4">
+             <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-lg">
+               {{ userProfile.nama.charAt(0) }}
+             </div>
+                           <div>
+                <h2 class="text-lg font-semibold text-gray-900">{{ userProfile.nama }}</h2>
+                <p class="text-sm text-gray-600">{{ userProfile.kategori }}</p>
+                <p class="text-xs text-success font-medium">Status: {{ userProfile.status }}</p>
+                <p class="text-xs text-primary font-medium">Kariah: {{ userProfile.kariah }}</p>
+                <p class="text-xs text-info font-medium">Kategori: {{ getKategoriDisplayNames.join(', ') }}</p>
+              </div>
+           </div>
+                       <div class="flex gap-2">
+              <rs-button size="sm" variant="primary-outline" @click="showKadTauliah = true" title="Kad Tauliah">
+                <Icon name="heroicons:identification" size="16" class="mr-2" />
+                Kad Tauliah
+              </rs-button>
+              <rs-button size="sm" variant="primary-outline" @click="showSuratTawaran = true" title="Surat Tawaran">
+                <Icon name="heroicons:document-text" size="16" class="mr-2" />
+                Surat Tawaran
+              </rs-button>
             </div>
-            <div>
-              <h2 class="text-lg font-semibold text-gray-900">{{ userProfile.nama }}</h2>
-              <p class="text-sm text-gray-600">Penolong Amil Kariah (PAK)</p>
-              <p class="text-xs text-success font-medium">Status: {{ userProfile.status }}</p>
-              <p class="text-xs text-primary font-medium">Kariah: {{ userProfile.kariah }}</p>
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <rs-button size="sm" variant="primary-outline" @click="showKadTauliah = true" title="Kad Tauliah">
-              <Icon name="heroicons:identification" size="16" class="mr-2" />
-              Kad Tauliah
-            </rs-button>
-            <rs-button size="sm" variant="primary-outline" @click="showSuratTawaran = true" title="Surat Tawaran">
-              <Icon name="heroicons:document-text" size="16" class="mr-2" />
-              Surat Tawaran
-            </rs-button>
-          </div>
-        </div>
-      </template>
-    </rs-card>
+         </div>
+       </template>
+     </rs-card>
 
     <!-- PAK Quick Stats - Focus on Agihan -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -201,65 +202,104 @@
     </rs-modal>
 
     <!-- Kad Tauliah Modal -->
-    <rs-modal v-model="showKadTauliah" title="Kad Tauliah Penolong Amil" size="lg" position="center">
+    <rs-modal v-model="showKadTauliah" :title="`Kad Tauliah Penolong Amil - ${getKategoriDisplayNames.join(', ')}`" size="xl" position="center">
       <template #body>
         <div class="space-y-6">
-          <!-- Kad Tauliah Design -->
-          <div class="bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/20 rounded-lg p-6">
-            <div class="text-center mb-6">
-              <img src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png" alt="LZS" class="h-16 mx-auto mb-4" />
-              <h2 class="text-xl font-bold text-primary mb-2">KAD TAULIAH</h2>
-              <h3 class="text-lg font-semibold text-gray-900">PENOLONG AMIL KARIAH (PAK)</h3>
+          <!-- Kad Tauliah Image Display -->
+          <div class="text-center">
+            <div class="mb-4">
+              <!-- <rs-badge variant="primary" size="lg">
+                Kategori: {{ getKategoriDisplayNames.join(', ') }}
+              </rs-badge> -->
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
-                  <p class="text-gray-900 font-semibold">{{ userProfile.nama }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan</label>
-                  <p class="text-gray-900">{{ userProfile.noKP }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                  <p class="text-gray-900">{{ userProfile.kategori }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Kariah</label>
-                  <p class="text-gray-900">{{ userProfile.kariah }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Institusi</label>
-                  <p class="text-gray-900">{{ userProfile.institusi }}</p>
-                </div>
-              </div>
-              
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Lantikan</label>
-                  <p class="text-gray-900">{{ userProfile.tarikhLantikan }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                  <rs-badge variant="success">{{ userProfile.status }}</rs-badge>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Kod Kad</label>
-                  <p class="text-gray-900 font-mono">PAK-{{ userProfile.noKP.slice(-6) }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Tempoh Sah</label>
-                  <p class="text-gray-900">2024 - 2027</p>
+            <!-- Select All option for multiple images -->
+            <div v-if="kadTauliahImages.length > 1" class="mb-4 p-3 bg-gray-50 rounded-lg border">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-700">Pilih Semua Kad Tauliah:</span>
+                <div class="flex items-center gap-2">
+                  <input 
+                    type="checkbox" 
+                    id="select-all"
+                    v-model="selectAllKadTauliah"
+                    @change="toggleSelectAll"
+                    class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
+                  />
+                  <label for="select-all" class="text-sm font-medium text-gray-700">
+                    {{ selectAllKadTauliah ? 'Hapus Semua' : 'Pilih Semua' }}
+                  </label>
                 </div>
               </div>
             </div>
             
-            <div class="mt-6 pt-4 border-t border-gray-200">
-              <div class="text-center text-sm text-gray-600">
-                <p>Kad ini sah sehingga 31 Disember 2027</p>
-                <p class="mt-1">Lembaga Zakat Selangor</p>
+            <!-- Display multiple images if multiple kategori selected -->
+            <div v-if="kadTauliahImages.length > 1" class="space-y-6">
+              <div 
+                v-for="(image, index) in kadTauliahImages" 
+                :key="index"
+                class="border-b border-gray-200 pb-6 last:border-b-0"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <rs-badge variant="primary" size="lg">
+                    Kad Tauliah {{ getKategoriDisplayNames[index] }}
+                  </rs-badge>
+                  <div class="flex items-center gap-2">
+                    <input 
+                      type="checkbox" 
+                      :id="`kad-${index}`"
+                      v-model="selectedKadTauliah[index]"
+                      class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
+                    />
+                    <label :for="`kad-${index}`" class="text-sm font-medium text-gray-700">
+                      Pilih untuk muat turun
+                    </label>
+                  </div>
+                </div>
+                <img 
+                  :src="image" 
+                  :alt="`Kad Tauliah ${getKategoriDisplayNames[index]}`" 
+                  class="max-w-full h-auto mx-auto rounded-lg shadow-lg border-2 border-primary/20"
+                  style="max-height: 400px;"
+                />
+              </div>
+            </div>
+            
+            <!-- Display single image if only one kategori selected -->
+            <div v-else>
+              <div class="flex items-center justify-between mb-3">
+                <rs-badge variant="primary" size="lg">
+                  Kad Tauliah {{ getKategoriDisplayName }}
+                </rs-badge>
+                <div class="flex items-center gap-2">
+                  <input 
+                    type="checkbox" 
+                    id="kad-single"
+                    v-model="selectedKadTauliah[0]"
+                    class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
+                  />
+                  <label for="kad-single" class="text-sm font-medium text-gray-700">
+                    Pilih untuk muat turun
+                  </label>
+                </div>
+              </div>
+              <img 
+                :src="kadTauliahImage" 
+                :alt="`Kad Tauliah ${getKategoriDisplayName}`" 
+                class="max-w-full h-auto mx-auto rounded-lg shadow-lg border-2 border-primary/20"
+                style="max-height: 500px;"
+              />
+            </div>
+          </div>
+          
+          <!-- Selection Summary -->
+          <div v-if="kadTauliahImages.length > 1" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div class="flex items-center justify-between">
+              <div class="text-sm text-blue-800">
+                <span class="font-medium">Kad Tauliah yang dipilih:</span>
+                <span class="ml-2">{{ getSelectedKadTauliahCount }} daripada {{ kadTauliahImages.length }}</span>
+              </div>
+              <div class="text-xs text-blue-600">
+                Setiap kad tauliah akan dimuat turun sebagai fail berasingan
               </div>
             </div>
           </div>
@@ -270,9 +310,13 @@
           <rs-button variant="secondary-outline" @click="showKadTauliah = false">
             Tutup
           </rs-button>
-          <rs-button variant="primary" @click="downloadKadTauliah">
+          <rs-button 
+            variant="primary" 
+            @click="downloadKadTauliah"
+            :disabled="getSelectedKadTauliahCount === 0"
+          >
             <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
-            Muat Turun
+            Muat Turun {{ getSelectedKadTauliahCount > 0 ? `(${getSelectedKadTauliahCount})` : '' }}
           </rs-button>
         </div>
       </template>
@@ -280,8 +324,8 @@
 
     <!-- Surat Tawaran Modal -->
     <rs-modal v-model="showSuratTawaran" title="Surat Tawaran Pelantikan" size="lg" position="center">
-      <template #body>
-        <div class="space-y-6">
+      <template #body> 
+        <div class="space-y-6 ">
           <!-- Letter Header -->
           <div class="flex justify-between items-start pb-4 border-b">
             <div class="flex-1">
@@ -381,7 +425,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed, watch, nextTick } from "vue";
 
 definePageMeta({
   title: "Dashboard Penolong Amil",
@@ -414,10 +458,52 @@ const userProfile = ref({
   telefon: "0123456789",
   kategori: "Penolong Amil Kariah (PAK)",
   institusi: "Masjid Wilayah Persekutuan",
-      tarikhLantikan: "15-01-2024",
+  tarikhLantikan: "15-01-2024",
   status: "Aktif",
   kariah: "Kariah A"
 });
+
+// Function to get kategori from localStorage and update userProfile
+const updateKategoriFromStorage = () => {
+  const storedKategori = localStorage.getItem('penolongAmilKategori')
+  if (storedKategori) {
+    try {
+      // Parse the stored kategori (now stored as JSON array)
+      const selectedKategori = JSON.parse(storedKategori)
+      
+      if (Array.isArray(selectedKategori) && selectedKategori.length > 0) {
+        // Map the stored kategori to the full kategori names
+        const kategoriMapping = {
+          'Fitrah': 'Penolong Amil Fitrah (PAF)',
+          'Padi': 'Penolong Amil Padi (PAP)',
+          'Kariah': 'Penolong Amil Kariah (PAK)',
+          'Komuniti': 'Penolong Amil Komuniti (PAK+)'
+        }
+        
+        // Create combined kategori text
+        const fullKategoriNames = selectedKategori.map(kat => kategoriMapping[kat]).filter(Boolean)
+        if (fullKategoriNames.length > 0) {
+          userProfile.value.kategori = fullKategoriNames.join(', ')
+          console.log('Kategori loaded from storage:', userProfile.value.kategori)
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing stored kategori:', error)
+      // Fallback for old format (single kategori)
+      const kategoriMapping = {
+        'Fitrah': 'Penolong Amil Fitrah (PAF)',
+        'Padi': 'Penolong Amil Padi (PAP)',
+        'Kariah': 'Penolong Amil Kariah (PAK)',
+        'Komuniti': 'Penolong Amil Komuniti (PAK+)'
+      }
+      
+      if (kategoriMapping[storedKategori]) {
+        userProfile.value.kategori = kategoriMapping[storedKategori]
+        console.log('Kategori loaded from storage (fallback):', userProfile.value.kategori)
+      }
+    }
+  }
+};
 
 // Stats data - PAK focused on Agihan
 const stats = ref({
@@ -528,11 +614,64 @@ const showProfile = ref(false);
 const showKadTauliah = ref(false);
 const showSuratTawaran = ref(false);
 
+// Reactive array to track which kad tauliah are selected for download
+const selectedKadTauliah = ref([]);
+const selectAllKadTauliah = ref(false);
+
 
 const downloadKadTauliah = () => {
-  // In real implementation, this would generate and download PDF
-  alert('Muat turun Kad Tauliah...');
+  const selectedKadTauliahList = getSelectedKadTauliahList();
+  
+  if (selectedKadTauliahList.length === 0) {
+    alert('Sila pilih sekurang-kurangnya satu Kad Tauliah untuk dimuat turun.');
+    return;
+  }
+  
+  // In real implementation, this would generate and download PDFs for each selected kad tauliah
+  alert(`Muat turun ${selectedKadTauliahList.length} Kad Tauliah...\n\nKad Tauliah yang dipilih:\n${selectedKadTauliahList.map(item => `- ${item.kategori}`).join('\n')}`);
+  
+  // Reset selections after download
+  resetKadTauliahSelection();
   showKadTauliah.value = false;
+};
+
+// Function to get list of selected kad tauliah
+const getSelectedKadTauliahList = () => {
+  const selectedList = [];
+  selectedKadTauliah.value.forEach((isSelected, index) => {
+    if (isSelected && kadTauliahImages.value[index]) {
+      selectedList.push({
+        image: kadTauliahImages.value[index],
+        kategori: getKategoriDisplayNames.value[index],
+        index: index
+      });
+    }
+  });
+  return selectedList;
+};
+
+// Function to toggle select all
+const toggleSelectAll = () => {
+  if (selectAllKadTauliah.value) {
+    // Select all
+    selectedKadTauliah.value = selectedKadTauliah.value.map(() => true);
+  } else {
+    // Deselect all
+    selectedKadTauliah.value = selectedKadTauliah.value.map(() => false);
+  }
+};
+
+// Function to reset kad tauliah selection
+const resetKadTauliahSelection = () => {
+  selectedKadTauliah.value = selectedKadTauliah.value.map(() => false);
+  selectAllKadTauliah.value = false;
+};
+
+// Function to initialize kad tauliah selection when modal opens
+const initializeKadTauliahSelection = () => {
+  const imageCount = kadTauliahImages.value.length;
+  selectedKadTauliah.value = new Array(imageCount).fill(false);
+  selectAllKadTauliah.value = false;
 };
 
 const downloadSuratTawaran = () => {
@@ -575,9 +714,104 @@ const handleAduan = (aduanId) => {
   navigateTo(`/BF-PA/PP/penolong-amil/aduan/${aduanId}/urus`);
 };
 
+// Computed property to get all kad tauliah images based on selected kategori
+const kadTauliahImages = computed(() => {
+  const storedKategori = localStorage.getItem('penolongAmilKategori')
+  if (!storedKategori) return ['/penolongamil/Kad-tauliah-Kariah.JPG'] // Default
+  
+  try {
+    const selectedKategori = JSON.parse(storedKategori)
+    if (Array.isArray(selectedKategori)) {
+      return selectedKategori.map(kat => {
+        switch (kat) {
+          case 'Fitrah':
+            return '/penolongamil/Kad-tauliah-Fitrah.JPG'
+          case 'Padi':
+            return '/penolongamil/Kad-tauliah-Padi.JPG'
+          case 'Kariah':
+            return '/penolongamil/Kad-tauliah-Kariah.JPG'
+          case 'Komuniti':
+            return '/penolongamil/Kad-tauliah-Kariah.JPG' // Use Kariah image for Komuniti
+          default:
+            return '/penolongamil/Kad-tauliah-Kariah.JPG'
+        }
+      })
+    }
+  } catch (error) {
+    console.error('Error parsing stored kategori:', error)
+  }
+  
+  // Fallback for single kategori (old format)
+  const kategori = userProfile.value.kategori.toLowerCase()
+  if (kategori.includes('fitrah') || kategori.includes('paf')) {
+    return ['/penolongamil/Kad-tauliah-Fitrah.JPG']
+  } else if (kategori.includes('padi') || kategori.includes('pap')) {
+    return ['/penolongamil/Kad-tauliah-Padi.JPG']
+  } else if (kategori.includes('kariah') || kategori.includes('pak')) {
+    return ['/penolongamil/Kad-tauliah-Kariah.JPG']
+  } else {
+    return ['/penolongamil/Kad-tauliah-Kariah.JPG'] // Default
+  }
+});
+
+// Helper function to get kategori display names
+const getKategoriDisplayNames = computed(() => {
+  const storedKategori = localStorage.getItem('penolongAmilKategori')
+  if (!storedKategori) return ['Kariah'] // Default
+  
+  try {
+    const selectedKategori = JSON.parse(storedKategori)
+    if (Array.isArray(selectedKategori)) {
+      return selectedKategori
+    }
+  } catch (error) {
+    console.error('Error parsing stored kategori:', error)
+  }
+  
+  // Fallback for single kategori (old format)
+  const kategori = userProfile.value.kategori.toLowerCase()
+  if (kategori.includes('fitrah') || kategori.includes('paf')) {
+    return ['Fitrah']
+  } else if (kategori.includes('padi') || kategori.includes('pap')) {
+    return ['Padi']
+  } else if (kategori.includes('kariah') || kategori.includes('pak')) {
+    return ['Kariah']
+  } else {
+    return ['Kariah'] // Default
+  }
+});
+
+// Computed property to get the correct kad tauliah image based on kategori (for backward compatibility)
+const kadTauliahImage = computed(() => {
+  return kadTauliahImages.value[0] || '/penolongamil/Kad-tauliah-Kariah.JPG'
+});
+
+// Helper function to get kategori display name (for backward compatibility)
+const getKategoriDisplayName = computed(() => {
+  return getKategoriDisplayNames.value[0] || 'Kariah'
+});
+
+// Computed property to count selected kad tauliah
+const getSelectedKadTauliahCount = computed(() => {
+  return selectedKadTauliah.value.filter(Boolean).length;
+});
+
+// Watch for modal open to initialize selection
+watch(showKadTauliah, (newValue) => {
+  if (newValue) {
+    // Modal is opening, initialize selection
+    nextTick(() => {
+      initializeKadTauliahSelection();
+    });
+  }
+});
+
 onMounted(() => {
   // In real implementation, fetch user profile and stats
   console.log("Loading Penolong Amil dashboard");
+  
+  // Load kategori from localStorage
+  updateKategoriFromStorage();
   
   // Ensure sidebar is visible by removing menu-hide class
   const vLayout = document.querySelector('.v-layout')

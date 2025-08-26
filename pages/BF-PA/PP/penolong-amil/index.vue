@@ -619,6 +619,14 @@ const acceptOffer = () => {
     return
   }
   
+  // Save selected kategori to localStorage as JSON array
+  const selectedCategories = Object.keys(selectedKategori).filter(key => selectedKategori[key])
+  if (selectedCategories.length > 0) {
+    // Store all selected kategori as an array
+    localStorage.setItem('penolongAmilKategori', JSON.stringify(selectedCategories))
+    console.log('Kategori saved:', selectedCategories)
+  }
+  
   // Show success message and redirect to profile completion
   alert('Terima kasih! Pengesahan penerimaan tawaran telah dihantar. Sila lengkapkan maklumat profil anda.')
   window.location.href = '/BF-PA/PP/penolong-amil/profile-complete'
