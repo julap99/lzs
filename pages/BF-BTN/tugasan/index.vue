@@ -6,27 +6,6 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Senarai</h2>
-          <div class="flex gap-3 items-center">
-            <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-700">Cari:</span>
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="Cari mengikut no rujukan atau nama..."
-                class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64"
-              />
-            </div>
-            <select
-              v-model="filters.status"
-              class="border border-gray-300 rounded-lg px-3 py-2 text-sm"
-            >
-              <option value="">Semua Status</option>
-              <option value="Baru">Baru</option>
-              <option value="Dalam Semakan">Dalam Semakan</option>
-              <option value="Tidak Lengkap">Tidak Lengkap</option>
-              <option value="Untuk Siasatan">Untuk Siasatan</option>
-            </select>
-          </div>
         </div>
       </template>
 
@@ -57,34 +36,82 @@
                 advanced
               >
                 <template v-slot:status="{ text }">
-                  <rs-badge :variant="getStatusVariant(text)">
-                    {{ text }}
-                  </rs-badge>
+                  <div class="flex flex-col gap-1">
+                    <template v-if="text.includes('\n')">
+                      <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                        {{ line }}
+                      </div>
+                    </template>
+                    <template v-else>
+                      <rs-badge :variant="getStatusVariant(text)">
+                        {{ text }}
+                      </rs-badge>
+                    </template>
+                  </div>
                 </template>
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex justify-center items-center gap-2">
-                    <rs-button variant="primary" @click="handleReview(text)">
+                    <rs-button
+                      variant="primary"
+                      class="p-1 flex gap-2"
+                      @click="handleReview(text)"
+                    >
                       Semak
                     </rs-button>
                   </div>
                 </template>
               </rs-table>
 
-              <TablePagination
-                v-model:currentPage="currentPage"
-                v-model:pageSize="pageSize"
-                :total="totalFilteredApplications"
-              />
+              <!-- Pagination -->
+              <div class="flex items-center justify-between px-5 mt-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-gray-700">Baris per halaman:</span>
+                  <FormKit
+                    v-model="pageSize"
+                    type="select"
+                    :options="[10, 25, 50]"
+                    :classes="{
+                      wrapper: 'w-20',
+                      outer: 'mb-0',
+                      input: '!rounded-lg',
+                    }"
+                  />
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-gray-700">
+                    Menunjukkan {{ paginationStart }} hingga
+                    {{ paginationEnd }} daripada {{ totalApplications }} entri
+                  </span>
+                  <div class="flex gap-1">
+                    <rs-button
+                      variant="primary-outline"
+                      class="!p-1 !w-8 !h-8"
+                      :disabled="currentPage === 1"
+                      @click="currentPage--"
+                    >
+                      <Icon name="ic:round-keyboard-arrow-left" />
+                    </rs-button>
+                    <rs-button
+                      variant="primary-outline"
+                      class="!p-1 !w-8 !h-8"
+                      :disabled="currentPage === totalPages"
+                      @click="currentPage++"
+                    >
+                      <Icon name="ic:round-keyboard-arrow-right" />
+                    </rs-button>
+                  </div>
+                </div>
+              </div>
             </div>
           </rs-tab-item>
 
           <rs-tab-item title="Bantuan">
             <!-- Bantuan Tab Content with Sub-tabs -->
             <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">
+              <!-- <h3 class="text-lg font-semibold mb-4 text-gray-800">
                 Bantuan Data
-              </h3>
+              </h3> -->
 
               <!-- Sub-tabs for Bantuan -->
               <rs-tab variant="secondary" type="border" class="mb-6">
@@ -95,7 +122,7 @@
                       Permohonan
                     </h4>
                     <rs-table
-                      :data="filteredPermohonanData"
+                      :data="filteredApplications"
                       :columns="columns"
                       :pageSize="pageSize"
                       :showNoColumn="true"
@@ -111,15 +138,25 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
                         <div class="flex justify-center items-center gap-2">
                           <rs-button
                             variant="primary"
+                            class="p-1 flex gap-2"
                             @click="handleReview(text)"
                           >
                             Semak
@@ -128,11 +165,49 @@
                       </template>
                     </rs-table>
 
-                    <TablePagination
-                      v-model:currentPage="currentPage"
-                      v-model:pageSize="pageSize"
-                      :total="totalFilteredPermohonanData"
-                    />
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between px-5 mt-4">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700"
+                          >Baris per halaman:</span
+                        >
+                        <FormKit
+                          v-model="pageSize"
+                          type="select"
+                          :options="[10, 25, 50]"
+                          :classes="{
+                            wrapper: 'w-20',
+                            outer: 'mb-0',
+                            input: '!rounded-lg',
+                          }"
+                        />
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700">
+                          Menunjukkan {{ paginationStart }} hingga
+                          {{ paginationEnd }} daripada
+                          {{ totalApplications }} entri
+                        </span>
+                        <div class="flex gap-1">
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === 1"
+                            @click="currentPage--"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-left" />
+                          </rs-button>
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === totalPages"
+                            @click="currentPage++"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-right" />
+                          </rs-button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </rs-tab-item>
 
@@ -143,8 +218,8 @@
                       Semakan
                     </h4>
                     <rs-table
-                      :data="filteredSemakanData"
-                      :columns="semakanColumns"
+                      :data="filteredApplications"
+                      :columns="columns"
                       :pageSize="pageSize"
                       :showNoColumn="true"
                       :options="{
@@ -159,15 +234,25 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
                         <div class="flex justify-center items-center gap-2">
                           <rs-button
                             variant="primary"
+                            class="p-1 flex gap-2"
                             @click="handleReview(text)"
                           >
                             Semak
@@ -176,11 +261,49 @@
                       </template>
                     </rs-table>
 
-                    <TablePagination
-                      v-model:currentPage="currentPage"
-                      v-model:pageSize="pageSize"
-                      :total="totalFilteredSemakanData"
-                    />
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between px-5 mt-4">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700"
+                          >Baris per halaman:</span
+                        >
+                        <FormKit
+                          v-model="pageSize"
+                          type="select"
+                          :options="[10, 25, 50]"
+                          :classes="{
+                            wrapper: 'w-20',
+                            outer: 'mb-0',
+                            input: '!rounded-lg',
+                          }"
+                        />
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700">
+                          Menunjukkan {{ paginationStart }} hingga
+                          {{ paginationEnd }} daripada
+                          {{ totalApplications }} entri
+                        </span>
+                        <div class="flex gap-1">
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === 1"
+                            @click="currentPage--"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-left" />
+                          </rs-button>
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === totalPages"
+                            @click="currentPage++"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-right" />
+                          </rs-button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </rs-tab-item>
 
@@ -207,27 +330,36 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
-                      <template v-slot:statusLaluan="{ text }">
-                        <rs-badge :variant="getLaluanStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
-                      </template>
 
-                      <template v-slot:tindakan="{ text }">
+
+                      <template v-slot:tindakan="{ text, row }">
                         <div class="flex justify-center items-center gap-2">
                           <rs-button
                             variant="primary"
+                            size="sm"
+                            class="p-1 flex gap-2"
                             @click="handleReview(text)"
                           >
                             Semak
                           </rs-button>
                           <rs-button
                             variant="secondary"
+                            size="sm"
+                            class="p-1 flex gap-2"
                             @click="handleAssignTask(text)"
                           >
                             Tugas Kepada
@@ -236,11 +368,49 @@
                       </template>
                     </rs-table>
 
-                    <TablePagination
-                      v-model:currentPage="currentPage"
-                      v-model:pageSize="pageSize"
-                      :total="totalFilteredSiasatanData"
-                    />
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between px-5 mt-4">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700"
+                          >Baris per halaman:</span
+                        >
+                        <FormKit
+                          v-model="pageSize"
+                          type="select"
+                          :options="[10, 25, 50]"
+                          :classes="{
+                            wrapper: 'w-20',
+                            outer: 'mb-0',
+                            input: '!rounded-lg',
+                          }"
+                        />
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700">
+                          Menunjukkan {{ paginationStart }} hingga
+                          {{ paginationEnd }} daripada
+                          {{ totalSiasatanData }} entri
+                        </span>
+                        <div class="flex gap-1">
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === 1"
+                            @click="currentPage--"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-left" />
+                          </rs-button>
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === totalPages"
+                            @click="currentPage++"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-right" />
+                          </rs-button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </rs-tab-item>
 
@@ -251,7 +421,7 @@
                       Sokongan
                     </h4>
                     <rs-table
-                      :data="filteredSokonganData"
+                      :data="filteredApplications"
                       :columns="columns"
                       :pageSize="pageSize"
                       :showNoColumn="true"
@@ -267,15 +437,25 @@
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
                         <div class="flex justify-center items-center gap-2">
                           <rs-button
                             variant="primary"
+                            class="p-1 flex gap-2"
                             @click="handleReview(text)"
                           >
                             Semak
@@ -284,11 +464,49 @@
                       </template>
                     </rs-table>
 
-                    <TablePagination
-                      v-model:currentPage="currentPage"
-                      v-model:pageSize="pageSize"
-                      :total="totalFilteredSokonganData"
-                    />
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between px-5 mt-4">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700"
+                          >Baris per halaman:</span
+                        >
+                        <FormKit
+                          v-model="pageSize"
+                          type="select"
+                          :options="[10, 25, 50]"
+                          :classes="{
+                            wrapper: 'w-20',
+                            outer: 'mb-0',
+                            input: '!rounded-lg',
+                          }"
+                        />
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700">
+                          Menunjukkan {{ paginationStart }} hingga
+                          {{ paginationEnd }} daripada
+                          {{ totalApplications }} entri
+                        </span>
+                        <div class="flex gap-1">
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === 1"
+                            @click="currentPage--"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-left" />
+                          </rs-button>
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === totalPages"
+                            @click="currentPage++"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-right" />
+                          </rs-button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </rs-tab-item>
 
@@ -299,7 +517,7 @@
                       Kelulusan
                     </h4>
                     <rs-table
-                      :data="filteredKelulusanData"
+                      :data="filteredApplications"
                       :columns="columns"
                       :pageSize="pageSize"
                       :showNoColumn="true"
@@ -310,20 +528,30 @@
                       }"
                       :options-advanced="{
                         sortable: true,
-                        filterable: false,
+                        filterable: true,
                       }"
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
                         <div class="flex justify-center items-center gap-2">
                           <rs-button
                             variant="primary"
+                            class="p-1 flex gap-2"
                             @click="handleReview(text)"
                           >
                             Semak
@@ -332,11 +560,49 @@
                       </template>
                     </rs-table>
 
-                    <TablePagination
-                      v-model:currentPage="currentPage"
-                      v-model:pageSize="pageSize"
-                      :total="totalFilteredKelulusanData"
-                    />
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between px-5 mt-4">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700"
+                          >Baris per halaman:</span
+                        >
+                        <FormKit
+                          v-model="pageSize"
+                          type="select"
+                          :options="[10, 25, 50]"
+                          :classes="{
+                            wrapper: 'w-20',
+                            outer: 'mb-0',
+                            input: '!rounded-lg',
+                          }"
+                        />
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700">
+                          Menunjukkan {{ paginationStart }} hingga
+                          {{ paginationEnd }} daripada
+                          {{ totalApplications }} entri
+                        </span>
+                        <div class="flex gap-1">
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === 1"
+                            @click="currentPage--"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-left" />
+                          </rs-button>
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === totalPages"
+                            @click="currentPage++"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-right" />
+                          </rs-button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </rs-tab-item>
 
@@ -347,7 +613,7 @@
                       Selesai
                     </h4>
                     <rs-table
-                      :data="filteredSelesaiData"
+                      :data="filteredApplications"
                       :columns="columns"
                       :pageSize="pageSize"
                       :showNoColumn="true"
@@ -358,20 +624,30 @@
                       }"
                       :options-advanced="{
                         sortable: true,
-                        filterable: false,
+                        filterable: true,
                       }"
                       advanced
                     >
                       <template v-slot:status="{ text }">
-                        <rs-badge :variant="getStatusVariant(text)">
-                          {{ text }}
-                        </rs-badge>
+                        <div class="flex flex-col gap-1">
+                          <template v-if="text.includes('\n')">
+                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                              {{ line }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <rs-badge :variant="getStatusVariant(text)">
+                              {{ text }}
+                            </rs-badge>
+                          </template>
+                        </div>
                       </template>
 
                       <template v-slot:tindakan="{ text }">
                         <div class="flex justify-center items-center gap-2">
                           <rs-button
                             variant="primary"
+                            class="p-1 flex gap-2"
                             @click="handleReview(text)"
                           >
                             Semak
@@ -380,11 +656,49 @@
                       </template>
                     </rs-table>
 
-                    <TablePagination
-                      v-model:currentPage="currentPage"
-                      v-model:pageSize="pageSize"
-                      :total="totalFilteredSelesaiData"
-                    />
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between px-5 mt-4">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700"
+                          >Baris per halaman:</span
+                        >
+                        <FormKit
+                          v-model="pageSize"
+                          type="select"
+                          :options="[10, 25, 50]"
+                          :classes="{
+                            wrapper: 'w-20',
+                            outer: 'mb-0',
+                            input: '!rounded-lg',
+                          }"
+                        />
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-700">
+                          Menunjukkan {{ paginationStart }} hingga
+                          {{ paginationEnd }} daripada
+                          {{ totalApplications }} entri
+                        </span>
+                        <div class="flex gap-1">
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === 1"
+                            @click="currentPage--"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-left" />
+                          </rs-button>
+                          <rs-button
+                            variant="primary-outline"
+                            class="!p-1 !w-8 !h-8"
+                            :disabled="currentPage === totalPages"
+                            @click="currentPage++"
+                          >
+                            <Icon name="ic:round-keyboard-arrow-right" />
+                          </rs-button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </rs-tab-item>
               </rs-tab>
@@ -400,52 +714,24 @@
 import { ref, computed } from "vue";
 
 definePageMeta({
-  title: "Senarai Tugasan",
+  title: "Senarai Permohonan untuk Disemak",
 });
 
 const breadcrumb = ref([
   {
-    name: "Tugasan",
+    name: "Permohonan Bantuan",
     type: "link",
-    path: "/BF-BTN/tugasan",
+    path: "/BF-BTN/senarai",
+  },
+  {
+    name: "Senarai",
+    type: "current",
+    path: "/BF-BTN/senarai",
   },
 ]);
 
-// Table columns configuration
+// Table columns configuration for Profiling tab
 const columns = [
-  {
-    key: "noRujukan",
-    label: "No Rujukan Permohonan",
-    sortable: true,
-  },
-  {
-    key: "namaPemohon",
-    label: "Nama Pemohon",
-    sortable: true,
-  },
-  {
-    key: "status",
-    label: "Status Permohonan",
-    sortable: true,
-  },
-  {
-    key: "tarikhTerima",
-    label: "Tarikh Terima Permohonan",
-    sortable: true,
-  },
-  {
-    key: "namaPegawai",
-    label: "Nama Pegawai",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Aksi",
-    sortable: false,
-  },
-];
-
-const semakanColumns = [
   {
     key: "noRujukan",
     label: "No Rujukan Permohonan",
@@ -510,11 +796,7 @@ const siasatanColumns = [
     label: "Status",
     sortable: true,
   },
-  {
-    key: "statusLaluan",
-    label: "Status Laluan Proses",
-    sortable: true,
-  },
+
   {
     key: "noRujukan",
     label: "No Rujukan",
@@ -527,6 +809,15 @@ const siasatanColumns = [
   },
 ];
 
+// Options for filters
+const statusOptions = [
+  { label: "Semua Status", value: "" },
+  { label: "Baru", value: "baru" },
+  { label: "Dalam Semakan", value: "dalam_semakan" },
+  { label: "Tidak Lengkap", value: "tidak_lengkap" },
+  { label: "Untuk Siasatan", value: "untuk_siasatan" },
+];
+
 // State
 const searchQuery = ref("");
 const filters = ref({
@@ -535,7 +826,7 @@ const filters = ref({
 const currentPage = ref(1);
 const pageSize = ref(10);
 
-// Mock data - would be replaced with API calls
+// Mock data for Profiling tab - would be replaced with API call
 const applications = ref([
   {
     noRujukan: "NAS-2025-0001",
@@ -555,35 +846,16 @@ const applications = ref([
   },
 ]);
 
-const semakanData = ref([
-  {
-    noRujukan: "NAS-2025-0001",
-    namaPemohon: "Ahmad bin Abdullah",
-    status: "Baru",
-    tarikhTerima: "2024-03-20",
-    namaPegawai: "Siti binti Ali",
-    tindakan: "bantuan/semakan/NAS-2025-0001",
-  },
-  {
-    noRujukan: "NAS-2025-0002",
-    namaPemohon: "Mohd bin Ismail",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
-    namaPegawai: "Aminah binti Hassan",
-    tindakan: "bantuan/semakan/NAS-2025-0002",
-  },
-]);
-
+// Mock data for Siasatan tab - would be replaced with API call
 const siasatanData = ref([
   {
     pemohon: "Ahmad bin Abdullah (800101-01-1234)",
     kariah: "Masjid Al-Hidayah",
     daerah: "Kuala Lumpur",
     bilanganBantuan: 2,
-    status: "Dalam Siasatan",
-    statusLaluan: "Untuk Siasatan",
+    status: "Segera - 1\nMelebihi SLA - 0\nPerlu Diproses - 2",
     noRujukan: "NAS-2025-0001",
-    tindakan: "bantuan/siasatan/siasatan-eoad",
+    tindakan: "siasatan-eoad",
   },
   {
     pemohon: "Siti binti Hassan (850505-05-5678)",
@@ -591,150 +863,97 @@ const siasatanData = ref([
     daerah: "Selangor",
     bilanganBantuan: 1,
     status: "Selesai Siasatan",
-    statusLaluan: "Untuk Kelulusan",
     noRujukan: "NAS-2025-0002",
-    tindakan: "bantuan/siasatan/siasatan-eoad",
+    tindakan: "siasatan-eoad",
   },
 ]);
 
-const sokonganData = ref([
-  {
-    noRujukan: "NAS-2025-0001",
-    namaPemohon: "Ahmad bin Abdullah",
-    status: "Baru",
-    tarikhTerima: "2024-03-20",
-    namaPegawai: "Siti binti Ali",
-    tindakan: "bantuan/sokongan/NAS-2025-0001",
-  },
-  {
-    noRujukan: "NAS-2025-0002",
-    namaPemohon: "Mohd bin Ismail",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
-    namaPegawai: "Aminah binti Hassan",
-    tindakan: "bantuan/sokongan/NAS-2025-0002",
-  },
-]);
+// Computed properties for Profiling tab
+const filteredApplications = computed(() => {
+  let result = [...applications.value];
 
-const kelulusanData = ref([
-  {
-    noRujukan: "NAS-2025-0001",
-    namaPemohon: "Ahmad bin Abdullah",
-    status: "Baru",
-    tarikhTerima: "2024-03-20",
-    namaPegawai: "Siti binti Ali",
-    tindakan: "bantuan/kelulusan/siasatan-eoad",
-  },
-  {
-    noRujukan: "NAS-2025-0002",
-    namaPemohon: "Mohd bin Ismail",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
-    namaPegawai: "Aminah binti Hassan",
-    tindakan: "bantuan/kelulusan/siasatan-eoad",
-  },
-]);
+  // Apply search
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    result = result.filter(
+      (app) =>
+        app.noRujukan.toLowerCase().includes(query) ||
+        app.namaPemohon.toLowerCase().includes(query)
+    );
+  }
 
-const selesaiData = ref([
-  {
-    noRujukan: "NAS-2025-0003",
-    namaPemohon: "Fatimah binti Ahmad",
-    status: "Selesai",
-    tarikhTerima: "2024-03-15",
-    namaPegawai: "Zulkifli bin Omar",
-    tindakan: "bantuan/selesai/NAS-2025-0003",
-  },
-]);
+  // Apply filters
+  if (filters.value.status) {
+    result = result.filter((app) => app.status === filters.value.status);
+  }
 
-// Helper function to filter data
-const createFilteredData = (data) => {
-  return computed(() => {
-    let result = [...data.value];
+  // Apply pagination
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return result.slice(start, end);
+});
 
-    // Apply search
-    if (searchQuery.value) {
-      const query = searchQuery.value.toLowerCase();
-      result = result.filter(
-        (item) =>
-          (item.noRujukan && item.noRujukan.toLowerCase().includes(query)) ||
-          (item.namaPemohon &&
-            item.namaPemohon.toLowerCase().includes(query)) ||
-          (item.pemohon && item.pemohon.toLowerCase().includes(query)) ||
-          (item.kariah && item.kariah.toLowerCase().includes(query)) ||
-          (item.daerah && item.daerah.toLowerCase().includes(query))
-      );
-    }
+const totalApplications = computed(() => {
+  return applications.value.length;
+});
 
-    // Apply status filter
-    if (filters.value.status) {
-      result = result.filter((item) => item.status === filters.value.status);
-    }
+// Computed properties for Siasatan tab
+const filteredSiasatanData = computed(() => {
+  let result = [...siasatanData.value];
 
-    // Apply pagination
-    const start = (currentPage.value - 1) * pageSize.value;
-    const end = start + pageSize.value;
-    return result.slice(start, end);
-  });
-};
+  // Apply search
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    result = result.filter(
+      (app) =>
+        app.noRujukan.toLowerCase().includes(query) ||
+        app.pemohon.toLowerCase().includes(query) ||
+        app.kariah.toLowerCase().includes(query) ||
+        app.daerah.toLowerCase().includes(query)
+    );
+  }
 
-// Helper function to get total count
-const createTotalCount = (data) => {
-  return computed(() => {
-    let result = [...data.value];
+  // Apply filters
+  if (filters.value.status) {
+    result = result.filter((app) => app.status === filters.value.status);
+  }
 
-    // Apply search
-    if (searchQuery.value) {
-      const query = searchQuery.value.toLowerCase();
-      result = result.filter(
-        (item) =>
-          (item.noRujukan && item.noRujukan.toLowerCase().includes(query)) ||
-          (item.namaPemohon &&
-            item.namaPemohon.toLowerCase().includes(query)) ||
-          (item.pemohon && item.pemohon.toLowerCase().includes(query)) ||
-          (item.kariah && item.kariah.toLowerCase().includes(query)) ||
-          (item.daerah && item.daerah.toLowerCase().includes(query))
-      );
-    }
+  // Apply pagination
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return result.slice(start, end);
+});
 
-    // Apply status filter
-    if (filters.value.status) {
-      result = result.filter((item) => item.status === filters.value.status);
-    }
+const totalSiasatanData = computed(() => {
+  return siasatanData.value.length;
+});
 
-    return result.length;
-  });
-};
+const totalPages = computed(() => {
+  return Math.ceil(totalSiasatanData.value / pageSize.value);
+});
 
-// Computed properties for each tab
-const filteredApplications = createFilteredData(applications);
-const totalFilteredApplications = createTotalCount(applications);
+const paginationStart = computed(() => {
+  return (currentPage.value - 1) * pageSize.value + 1;
+});
 
-const filteredPermohonanData = createFilteredData(applications);
-const totalFilteredPermohonanData = createTotalCount(applications);
-
-const filteredSemakanData = createFilteredData(semakanData);
-const totalFilteredSemakanData = createTotalCount(semakanData);
-
-const filteredSiasatanData = createFilteredData(siasatanData);
-const totalFilteredSiasatanData = createTotalCount(siasatanData);
-
-const filteredSokonganData = createFilteredData(sokonganData);
-const totalFilteredSokonganData = createTotalCount(sokonganData);
-
-const filteredKelulusanData = createFilteredData(kelulusanData);
-const totalFilteredKelulusanData = createTotalCount(kelulusanData);
-
-const filteredSelesaiData = createFilteredData(selesaiData);
-const totalFilteredSelesaiData = createTotalCount(selesaiData);
+const paginationEnd = computed(() => {
+  return Math.min(currentPage.value * pageSize.value, totalSiasatanData.value);
+});
 
 // Methods
+const handleViewDetails = (noRujukan) => {
+  navigateTo(`/BF-BTN/PB/senarai/${noRujukan}`);
+};
+
 const handleReview = (noRujukan) => {
   console.log(noRujukan);
   navigateTo(`/BF-BTN/tugasan/${noRujukan}`);
 };
 
 const handleAssignTask = (noRujukan) => {
+  // Handle task assignment - would be replaced with actual implementation
   console.log(`Assigning task for: ${noRujukan}`);
+  // You can add navigation or modal logic here
 };
 
 const getStatusVariant = (status) => {
@@ -746,20 +965,11 @@ const getStatusVariant = (status) => {
     "dalam siasatan": "warning",
     "selesai siasatan": "success",
     "menunggu siasatan": "info",
-    selesai: "success",
   };
   return variants[status.toLowerCase()] || "default";
 };
 
-const getLaluanStatusVariant = (status) => {
-  const variants = {
-    "untuk semakan": "info",
-    "untuk pengesahan lawatan": "warning",
-    "untuk siasatan": "secondary",
-    "untuk kelulusan": "success",
-  };
-  return variants[status.toLowerCase()] || "default";
-};
+
 </script>
 
 <style lang="scss" scoped></style>
