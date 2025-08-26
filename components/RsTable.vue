@@ -804,10 +804,6 @@ watch(
     </div>
     <div v-if="advanced" class="table-footer">
       <div class="flex justify-center items-center gap-x-2">
-        <span class="text-sm text-[rgb(var(--text-color))] hidden md:block"
-          >Showing {{ pageSize * currentPage - pageSize + 1 }} to
-          {{ pageSize * currentPage }} of {{ totalEntries }} entries</span
-        >
       </div>
       <div class="table-footer-page">
         <rs-button
