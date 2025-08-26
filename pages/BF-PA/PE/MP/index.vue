@@ -59,16 +59,6 @@
                 }"
                 class="flex-1"
               />
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="eksekutifStatusOptions"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-                class="min-w-[200px]"
-              />
               <rs-button
                 variant="primary"
                 @click="performSearch"
@@ -76,14 +66,6 @@
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
               </rs-button>
             </div>
           </div>
@@ -237,16 +219,6 @@
                 }"
                 class="flex-1"
               />
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="ketuaJabatanStatusOptions"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-                class="min-w-[200px]"
-              />
               <rs-button
                 variant="primary"
                 @click="performSearch"
@@ -254,14 +226,6 @@
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
               </rs-button>
             </div>
             </div>
@@ -415,16 +379,6 @@
                 }"
                 class="flex-1"
               />
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="ketuaDivisyenStatusOptions"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-                class="min-w-[200px]"
-              />
               <rs-button
                 variant="primary"
                 @click="performSearch"
@@ -432,14 +386,6 @@
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
               </rs-button>
             </div>
             </div>
@@ -733,7 +679,6 @@ const getRoleLabel = (role) => {
 const handleRoleChange = () => {
   // Reset filters when role changes
   filters.value.searchQuery = '';
-  filters.value.status = '';
   selectedRows.value = [];
 };
 
@@ -747,7 +692,7 @@ const activities = ref([
     NamaAktiviti: 'Program Khidmat Masyarakat',
     Tarikh: '15-04-2024',
     Lokasi: 'Dewan Serbaguna Masjid Kg Delek, Daerah Klang',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
   {
     id: 'MP2024-002',
@@ -776,7 +721,7 @@ const activities = ref([
     NamaAktiviti: 'Latihan Pengurusan Zakat dan Fitrah',
     Tarikh: '20-03-2024',
     Lokasi: 'Dewan Latihan LZS, Kompleks Zakat Selangor, Daerah Shah Alam',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
   {
     id: 'MP2024-006',
@@ -791,14 +736,14 @@ const activities = ref([
      NamaAktiviti: 'Program Khidmat Masyarakat',
     Tarikh: '20-03-2024',
     Lokasi: 'Masjid Al-Hidayah, Daerah Gombak',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
   {
     id: 'MP2024-008',
      NamaAktiviti: 'Latihan Pengurusan Aduan',
     Tarikh: '12-04-2024',
     Lokasi: 'Bilik Latihan, Pejabat Zakat Gombak, Daerah Gombak',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
   // Additional activities with various statuses for all roles
   {
@@ -813,28 +758,28 @@ const activities = ref([
      NamaAktiviti: 'Mesyuarat Koordinasi',
     Tarikh: '30-03-2024',
     Lokasi: 'Pejabat Zakat, Daerah Petaling Jaya',
-    status: 'Diluluskan'
+    status: 'Lulus'
   },
 ]);
 
 const eksekutifStatusOptions = [
   { label: 'Sila pilih...', value: '' },
   { label: 'Sedang Proses', value: 'Sedang Proses' },
-  { label: 'Diluluskan', value: 'Diluluskan' },
+  { label: 'Lulus', value: 'Lulus' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 const ketuaDivisyenStatusOptions = [
   { label: 'Sila pilih...', value: '' },
   { label: 'Sedang Proses', value: 'Sedang Proses' },
-  { label: 'Diluluskan', value: 'Diluluskan' },
+  { label: 'Lulus', value: 'Lulus' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
 const ketuaJabatanStatusOptions = [
   { label: 'Sila pilih...', value: '' },
   { label: 'Sedang Proses', value: 'Sedang Proses' },
-  { label: 'Diluluskan', value: 'Diluluskan' },
+  { label: 'Lulus', value: 'Lulus' },
   { label: 'Ditolak', value: 'Ditolak' },
 ];
 
@@ -909,9 +854,8 @@ const filteredEksekutifActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
     // Eksekutif can see activities with all three statuses
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   }).map(activity => ({
     ...activity,
     tindakan: activity.id // Pass activity ID for action buttons
@@ -923,8 +867,7 @@ const eksekutifApprovedActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    return matchesSearch && matchesStatus && activity.status === 'Diluluskan';
+    return matchesSearch && activity.status === 'Lulus';
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -936,8 +879,7 @@ const eksekutifRejectedActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    return matchesSearch && matchesStatus && activity.status === 'Ditolak';
+    return matchesSearch && activity.status === 'Ditolak';
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -946,7 +888,7 @@ const eksekutifRejectedActivities = computed(() => {
 
 // Computed properties for separated tables
 const approvedActivities = computed(() => {
-  return filteredActivities.value.filter(activity => activity.status === 'Diluluskan');
+  return filteredActivities.value.filter(activity => activity.status === 'Lulus');
 });
 
 const rejectedActivities = computed(() => {
@@ -959,9 +901,8 @@ const filteredKetuaJabatanActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
     // Ketua Jabatan can see activities with all three statuses
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -975,7 +916,7 @@ const ketuaJabatanApprovedActivities = computed(() => {
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
     const matchesStatus = !filters.value.status || activity.status === filters.value.status;
     const matchesJenis = !filters.value.jenisAktiviti || activity.type === filters.value.jenisAktiviti;
-    return matchesSearch && matchesStatus && matchesJenis && activity.status === 'Diluluskan';
+    return matchesSearch && matchesStatus && matchesJenis && activity.status === 'Lulus';
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1002,9 +943,8 @@ const filteredKetuaDivisyenActivities = computed(() => {
     const matchesSearch = !filters.value.searchQuery || 
       activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
       activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
     // Ketua Divisyen can see activities with all three statuses
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   }).map(activity => ({
     ...activity,
     tindakan: activity.id
@@ -1021,7 +961,7 @@ const pendingKetuaDivisyenActivities = computed(() => {
 });
 
 const ketuaDivisyenApprovedActivities = computed(() => {
-  return filteredKetuaDivisyenActivities.value.filter(activity => activity.status === 'Diluluskan')
+  return filteredKetuaDivisyenActivities.value.filter(activity => activity.status === 'Lulus')
     .map(activity => ({
       ...activity,
       tindakan: activity.id
@@ -1056,7 +996,7 @@ const getActivityStatus = (activityId) => {
 
 // Search functionality
 const performSearch = () => {
-  if (!filters.value.searchQuery && !filters.value.status) {
+  if (!filters.value.searchQuery) {
     toast.warning('Sila masukkan kriteria carian');
     return;
   }
@@ -1066,13 +1006,7 @@ const performSearch = () => {
   refreshTable();
 };
 
-const clearSearch = () => {
-  filters.value.searchQuery = "";
-  filters.value.status = "";
-  isSearchPerformed.value = false;
-  refreshTable();
-  toast.info('Carian telah diset semula');
-};
+
 
 // Filter table data based on status and search criteria
 const getTableDataByStatus = (statuses) => {
@@ -1088,13 +1022,6 @@ const getTableDataByStatus = (statuses) => {
       result = result.filter(activity => 
         activity.id.toLowerCase().includes(query) ||
         activity.NamaAktiviti.toLowerCase().includes(query)
-      );
-    }
-    
-    // Apply status filter
-    if (filters.value.status) {
-      result = result.filter(activity => 
-        activity.status === filters.value.status
       );
     }
   }
@@ -1115,7 +1042,7 @@ const getStatusColor = (status) => {
   switch (status) {
     case 'Sedang Proses':
       return 'bg-gray-100 text-gray-800'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'bg-green-100 text-green-800'
     case 'Ditolak':
       return 'bg-red-100 text-red-800'
@@ -1128,8 +1055,8 @@ const getStatusLabel = (status) => {
   switch (status) {
     case 'Sedang Proses':
       return 'Sedang Proses'
-    case 'Diluluskan':
-      return 'Diluluskan'
+    case 'Lulus':
+      return 'Lulus'
     case 'Ditolak':
       return 'Ditolak'
     default:
@@ -1141,7 +1068,7 @@ const getStatusVariant = (status) => {
   switch (status) {
     case 'Sedang Proses':
       return 'warning'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'success'
     case 'Ditolak':
       return 'danger'
@@ -1154,7 +1081,7 @@ const getActionRoute = (status, activityId) => {
   switch (status) {
     case 'Sedang Proses':
       return '/BF-PA/PE/MP/01'
-    case 'Diluluskan':
+    case 'Lulus':
       return `/BF-PA/PE/MP/view-lulus`
     case 'Ditolak':
       return `/BF-PA/PE/MP/07`
@@ -1167,7 +1094,7 @@ const getActionButtonText = (status) => {
   switch (status) {
     case 'Sedang Proses':
       return 'Semak'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'Lihat'
     case 'Ditolak':
       return 'Semak Semula'
@@ -1542,7 +1469,6 @@ const ketuaDivisyenApprovedColumns = [
 // Filters state
 const filters = ref({
   searchQuery: "",
-  status: "",
 });
 
 const pageSize = ref(10);

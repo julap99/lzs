@@ -55,16 +55,6 @@
                 }"
                 class="flex-1"
               />
-              <FormKit
-                v-model="selectedStatus"
-                type="select"
-                :options="getFilteredStatusOptions()"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-                class="min-w-[200px]"
-              />
               <rs-button
                 variant="primary"
                 @click="performSearch"
@@ -72,14 +62,6 @@
               >
                 <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
                 Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
               </rs-button>
             </div>
           </div>
@@ -278,7 +260,6 @@ const tableKey = ref(0);
 
 // Keadaan carian dan penapis
 const searchQuery = ref('');
-const selectedStatus = ref('');
 const isSearchPerformed = ref(false);
 
 const roleOptions = [
@@ -339,7 +320,7 @@ const batches = ref([
     noBatch: 'BATCH/2024/004',
     institusi: 'Masjid Al-Falah',
     kategori: 'Kariah',
-    status: 'Diluluskan',
+    status: 'Lulus',
     tarikhCipta: '2024-03-12'
   },
   {
@@ -352,14 +333,7 @@ const batches = ref([
   }
 ]);
 
-// Pilihan status lengkap untuk aliran kerja pengesahan
-const statusOptions = [
-  { label: 'Semua', value: '' },
-  { label: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' },
-  { label: 'Menunggu Kelulusan', value: 'Menunggu Kelulusan' },
-  { label: 'Diluluskan', value: 'Diluluskan' },
-  { label: 'Ditolak', value: 'Ditolak' },
-];
+
 
 
 
@@ -374,39 +348,18 @@ const getRoleVariant = (role) => {
   return roleData[role]?.variant || 'secondary';
 };
 
-const handleRoleChange = () => {
-  // Set semula penapis apabila peranan berubah
-  selectedStatus.value = '';
-  refreshTable();
-};
 
 
 
-// Role-based filtering
-const getFilteredStatusOptions = () => {
-  if (currentRole.value === 'eksekutif') {
-    return statusOptions.filter(option => 
-      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(option.value)
-    );
-  } else if (currentRole.value === 'ketua-jabatan') {
-    return statusOptions.filter(option => 
-      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(option.value)
-    );
-  } else if (currentRole.value === 'ketua-divisyen') {
-    return statusOptions.filter(option => 
-      ['Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(option.value)
-    );
-  }
-  return statusOptions;
-};
+
+
 
 const getFilteredBatches = () => {
   let filtered = batches.value.filter(batch => {
     const matchesSearch = !searchQuery.value || 
       batch.noBatch.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       batch.institusi.toLowerCase().includes(searchQuery.value.toLowerCase());
-    const matchesStatus = !selectedStatus.value || batch.status === selectedStatus.value;
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   });
 
   // Penapisan berasaskan peranan
@@ -416,12 +369,12 @@ const getFilteredBatches = () => {
   } else if (currentRole.value === 'ketua-jabatan') {
     // Ketua Jabatan boleh melihat batch yang memerlukan perhatian mereka atau telah melalui tahap mereka
     return filtered.filter(batch => 
-      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(batch.status)
+      ['Menunggu Pengesahan', 'Menunggu Kelulusan', 'Lulus', 'Ditolak'].includes(batch.status)
     );
   } else if (currentRole.value === 'ketua-divisyen') {
     // Ketua Divisyen hanya boleh melihat batch yang memerlukan kelulusan akhir atau telah diproses
     return filtered.filter(batch => 
-      ['Menunggu Kelulusan', 'Diluluskan', 'Ditolak'].includes(batch.status)
+      ['Menunggu Kelulusan', 'Lulus', 'Ditolak'].includes(batch.status)
     );
   }
 
@@ -444,13 +397,6 @@ const getTableDataByStatus = (statuses) => {
         batch.institusi.toLowerCase().includes(query)
       );
     }
-    
-    // Gunakan penapis status
-    if (selectedStatus.value) {
-      result = result.filter(batch => 
-        batch.status === selectedStatus.value
-      );
-    }
   }
   
   return result;
@@ -468,7 +414,7 @@ const getStatusVariant = (status) => {
       return 'warning'
     case 'Menunggu Kelulusan':
       return 'info'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'success'
     case 'Ditolak':
       return 'danger'
@@ -483,7 +429,7 @@ const getStatusColor = (status) => {
       return 'bg-blue-100 text-blue-800'
     case 'Menunggu Kelulusan':
       return 'bg-purple-100 text-purple-800'
-    case 'Diluluskan':
+    case 'Lulus':
       return 'bg-green-100 text-green-800'
     case 'Ditolak':
       return 'bg-red-100 text-red-800'
@@ -498,8 +444,8 @@ const getStatusLabel = (status) => {
       return 'Menunggu Pengesahan'
     case 'Menunggu Kelulusan':
       return 'Menunggu Kelulusan'
-    case 'Diluluskan':
-      return 'Diluluskan'
+    case 'Lulus':
+      return 'Lulus'
     case 'Ditolak':
       return 'Ditolak'
     default:
@@ -513,7 +459,7 @@ const getActionRoute = (status) => {
       return '/BF-PA/PE/AB2/03'
     case 'Menunggu Kelulusan':
       return '/BF-PA/PE/AB2/06'
-    case 'Diluluskan':
+    case 'Lulus':
       return '/BF-PA/PE/AB2/04'
     case 'Ditolak':
       return '/BF-PA/PE/AB2/07'
@@ -527,7 +473,7 @@ const getActionButtonText = (status) => {
     case 'Menunggu Pengesahan':
     case 'Menunggu Kelulusan':
       return 'Semak'
-    case 'Diluluskan':
+    case 'Lulus':
     case 'Ditolak':
       return 'Lihat'
     default:
@@ -537,7 +483,7 @@ const getActionButtonText = (status) => {
 
 // Fungsi carian
 const performSearch = () => {
-  if (!searchQuery.value && !selectedStatus.value) {
+  if (!searchQuery.value) {
     // Anda boleh menambah notifikasi toast di sini jika diperlukan
     return;
   }
@@ -546,12 +492,7 @@ const performSearch = () => {
   refreshTable();
 };
 
-const clearSearch = () => {
-  searchQuery.value = '';
-  selectedStatus.value = '';
-  isSearchPerformed.value = false;
-  refreshTable();
-};
+
 
 const refreshTable = () => {
   nextTick(() => {
@@ -562,10 +503,6 @@ const refreshTable = () => {
 // Pengendali acara
 const handleSearch = (event) => {
   searchQuery.value = event.target.value;
-};
-
-const handleStatusChange = (event) => {
-  selectedStatus.value = event.target.value;
 };
 </script>
 

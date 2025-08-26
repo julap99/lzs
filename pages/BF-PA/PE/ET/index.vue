@@ -80,25 +80,16 @@
                 input: '!py-2',
               }"
             />
-            <div class="flex gap-2">
-              <rs-button
-                variant="primary"
-                @click="performSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
-              </rs-button>
-            </div>
+            <rs-button
+              variant="primary"
+              @click="performSearch"
+              class="flex items-center whitespace-nowrap"
+            >
+              <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
+              Cari
+            </rs-button>
           </div>
+        </div>
           
 
 
@@ -331,7 +322,7 @@
               </div>
             </rs-tab-item>
 
-            <rs-tab-item title="Perlu Pengesahan">
+            <rs-tab-item title="Sedang Proses">
               <div class="p-4">
                 <div class="overflow-x-auto rounded-lg border">
                   <table class="min-w-full text-sm divide-y">
@@ -862,13 +853,7 @@ function performSearch() {
   toast.success('Carian berjaya dilakukan');
 }
 
-function clearSearch() {
-  filters.value.searchQuery = "";
-  filters.value.year = "";
-  filters.value.type = "";
-  tableKey.value++;
-  toast.success('Filter telah diset semula');
-}
+
 
 function refreshTable() {
   tableKey.value++;
