@@ -318,7 +318,7 @@
                             {{ profile.kategoriAsnaf }}
                           </span>
                         </td>
-                        <td class="px-3 py-4 text-sm text-gray-500 text-center">
+                        <td class="flex justify-center gap-2 px-3 py-4 text-sm text-gray-500 text-center">
                           <rs-button 
                             variant="primary" 
                             size="sm"
@@ -327,6 +327,15 @@
                           >
                             <Icon name="mdi:pencil" size="1rem" class="mr-1" />
                             Kemaskini Profil
+                          </rs-button>
+                          <rs-button 
+                            variant="primary" 
+                            size="sm"
+                            @click="viewProfile(profile)"
+                            class="text-xs"
+                          >
+                            <Icon name="mdi:pencil" size="1rem" class="mr-1" />
+                            Lihat Profil
                           </rs-button>
                         </td>
                       </tr>
@@ -1174,6 +1183,11 @@ const printResults = () => {
 const updateProfile = (profile) => {
   // Navigate to update profile page with profile data
   navigateTo("/BF-PRF/AS/UP/02");
+};
+
+const viewProfile = (profile) => {
+  // Navigate to view profile page with profile data in read-only mode
+  navigateTo("/BF-PRF/AS/FR/02");
 };
 
 const redirectToApplication = () => {
