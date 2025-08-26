@@ -248,7 +248,7 @@ import { useToast } from 'vue-toastification'
 import { formatDate } from '~/utils/dateFormatter'
 
 definePageMeta({
-  middleware: ['auth']
+  title: "Paparan Terperinci Kategori Penolong Amil"
 })
 
 const route = useRoute()
