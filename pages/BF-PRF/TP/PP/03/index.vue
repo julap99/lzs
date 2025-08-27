@@ -5,7 +5,7 @@
     <div class="flex justify-between items-start mt-6 mb-4">
       <div>
         <h1 class="text-2xl font-bold text-gray-900">Pengesahan Pendaftaran Recipient</h1>
-        <p class="mt-1 text-sm text-gray-600">Semak permohonan organisasi dan berikan keputusan pengesahan.</p>
+        <p class="mt-1 text-sm text-gray-600">Semak permohonan recipient dan berikan keputusan pengesahan.</p>
       </div>
       <rs-badge :variant="getStatusBadgeVariant()">{{ applicationData.status }}</rs-badge>
     </div>
@@ -13,54 +13,80 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Kiri: Maklumat Permohonan -->
       <div class="lg:col-span-2 space-y-6">
+        <!-- Maklumat Recipient -->
         <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
               <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:buildings" class="w-6 h-6 text-blue-600" />
+                <Icon name="ph:user" class="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Permohonan</h2>
-                <p class="text-sm text-gray-500">Butiran permohonan dan organisasi</p>
+                <h2 class="text-md font-semibold text-gray-900">Maklumat Recipient</h2>
+                <p class="text-sm text-gray-500">Butiran recipient dan pengenalan</p>
               </div>
             </div>
           </template>
           <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit type="text" label="No. Rujukan" :value="'ORG' + applicationData.refNumber" disabled />
+              <FormKit type="text" label="No. Rujukan" :value="'TP-' + applicationData.refNumber" disabled />
               <FormKit type="text" label="Tarikh Permohonan" :value="applicationData.applicationDate" disabled />
-              <FormKit type="text" label="Jenis Organisasi" :value="applicationData.organizationType" disabled />
-              <FormKit type="text" label="Nama Organisasi" :value="applicationData.organizationName" disabled />
-              <FormKit type="text" label="No. Pendaftaran" :value="applicationData.registrationNumber" disabled />
-              <FormKit type="text" label="Email Organisasi" :value="applicationData.email" disabled />
+              <FormKit type="text" label="Jenis Recipient" :value="applicationData.jenisRecipient" disabled />
+              <FormKit 
+                v-if="applicationData.jenisRecipient === 'Individu'"
+                type="text" 
+                label="Nama Penuh" 
+                :value="applicationData.namaPenuh" 
+                disabled 
+              />
+              <FormKit 
+                v-if="applicationData.jenisRecipient === 'Syarikat'"
+                type="text" 
+                label="Nama Syarikat" 
+                :value="applicationData.namaSyarikat" 
+                disabled 
+              />
+              <FormKit type="text" label="Jenis Pengenalan" :value="applicationData.jenisPengenalan" disabled />
+              <FormKit 
+                v-if="applicationData.jenisPengenalan !== 'ID Syarikat'"
+                type="text" 
+                label="ID Pengenalan" 
+                :value="applicationData.idPengenalan" 
+                disabled 
+              />
+              <FormKit 
+                v-if="applicationData.jenisPengenalan === 'ID Syarikat'"
+                type="text" 
+                label="ID Syarikat" 
+                :value="applicationData.idSyarikat" 
+                disabled 
+              />
             </div>
           </template>
         </rs-card>
 
+        <!-- Maklumat Akaun Bank -->
         <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:map-pin" class="w-6 h-6 text-gray-600" />
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="ph:bank" class="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <h2 class="text-md font-semibold text-gray-900">Alamat dan Hubungan</h2>
+                <h2 class="text-md font-semibold text-gray-900">Maklumat Akaun Bank</h2>
+                <p class="text-sm text-gray-500">Butiran akaun bank recipient</p>
               </div>
             </div>
           </template>
           <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit type="text" label="Alamat" :value="applicationData.address" disabled />
-              <FormKit type="text" label="Bandar" :value="applicationData.city" disabled />
-              <FormKit type="text" label="Poskod" :value="applicationData.postcode" disabled />
-              <FormKit type="text" label="Negeri" :value="applicationData.state" disabled />
-              <FormKit type="text" label="Nama Pegawai" :value="applicationData.contactPerson" disabled />
-              <FormKit type="text" label="No. Telefon" :value="applicationData.contactPhone" disabled />
-              <FormKit type="text" label="Email Pegawai" :value="applicationData.contactEmail" disabled />
+              <FormKit type="text" label="Nama Bank" :value="applicationData.namaBank" disabled />
+              <FormKit type="text" label="No Akaun Bank" :value="applicationData.noAkaunBank" disabled />
+              <FormKit type="text" label="Penama Akaun Bank" :value="applicationData.penamaAkaunBank" disabled />
             </div>
           </template>
         </rs-card>
 
+        <!-- Dokumen Sokongan -->
         <rs-card>
           <template #header>
             <div class="flex items-center space-x-3">
@@ -68,7 +94,7 @@
                 <Icon name="ph:paperclip" class="w-6 h-6 text-yellow-600" />
               </div>
               <div>
-                <h2 class="text-md font-semibold text-gray-900">Dokumen Sokongan</h2>
+                <h2 class="text-md font-semibold text-gray-900">Dokumen Sokongan (Maklumat Bank)</h2>
               </div>
             </div>
           </template>
@@ -158,7 +184,7 @@ import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
 definePageMeta({
-  title: "Pengesahan Pendaftaran Organisasi",
+  title: "Pengesahan Pendaftaran Recipient",
 });
 
 const toast = useToast();
@@ -177,31 +203,31 @@ const breadcrumb = ref([
   },
 ]);
 
-// Mock application data - in real implementation this would be fetched from API
+// Mock application data - updated to match new structure
 const applicationData = ref({
   refNumber: "2406002",
   applicationDate: "18 Jun 2025",
   status: "Menunggu Pengesahan",
-  organizationType: "Third-party (Syarikat)",
-  organizationCategory: "Registered", // Atau "Non-Registered"
-  organizationStructure: "Induk", // atau "Cawangan"
-  organizationName: "Pusat Dialisis Sejahtera",
-  registrationNumber: "12345678-X",
-  email: "admin@dialisis-sejahtera.my",
-  address: "Lot 5, Jalan Rawatan, Taman Sejahtera",
-  city: "Shah Alam",
-  postcode: "40100",
-  state: "Selangor",
-  contactPerson: "Dr. Fazira Binti Mohamad",
-  contactPhone: "013-9876543",
-  contactEmail: "fazira@dialisis-sejahtera.my",
+  
+  // Maklumat Recipient
+  jenisRecipient: "Individu", // atau "Syarikat"
+  namaPenuh: "Ahmad Bin Abdullah", // for Individu
+  namaSyarikat: "", // for Syarikat
+  jenisPengenalan: "MyKad", // MyKad, Foreign ID, ID Syarikat
+  idPengenalan: "880101-12-3456", // for MyKad/Foreign ID
+  idSyarikat: "", // for ID Syarikat
+  
+  // Maklumat Akaun Bank
+  namaBank: "Maybank",
+  noAkaunBank: "1234567890123456",
+  penamaAkaunBank: "Ahmad Bin Abdullah",
+  
+  // Dokumen Sokongan
   documents: [
-    { name: "Sijil Pendaftaran Syarikat", size: "2.2 MB" },
-    { name: "Surat Perakuan LZS", size: "1.5 MB" },
-    { name: "Senarai Penerima Manfaat", size: "3.1 MB" },
+    { name: "Penyata Bank - Bulan Jun 2025", size: "2.2 MB" },
+    { name: "Slip Deposit Akaun Bank", size: "1.1 MB" },
   ],
 });
-
 
 const approvalData = ref({
   status: "",
@@ -239,11 +265,9 @@ const handleApprovalSubmit = async () => {
     // Update application status based on approval decision
     if (approvalData.value.status === "approved") {
       applicationData.value.status = "Diluluskan";
-
-      toast.success("Permohonann telah berjaya diluluskan");
+      toast.success("Permohonan telah berjaya diluluskan");
     } else {
       applicationData.value.status = "Ditolak";
-
       toast.success("Keputusan penolakan telah direkodkan");
     }
 
@@ -265,6 +289,6 @@ const showErrorNotification = (message) => {
 
 const goBack = () => {
   // Navigate back to applications list
-  router.push("/BF-PRF/OR/PP/01");
+  router.push("/BF-PRF/TP/PP");
 };
 </script>
