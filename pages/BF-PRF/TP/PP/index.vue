@@ -16,7 +16,7 @@
               <FormKit
                 v-model="searchQuery"
                 type="text"
-                placeholder="Cari No Rujukan, Nama Recipient, atau Emel..."
+                placeholder="Cari No Rujukan, Nama Recipient, atau ID Pengenalan..."
                 :classes="{ input: '!py-2' }"
               />
             </div>
@@ -32,16 +32,16 @@
         </div>
 
         <rs-table
-          :data="filteredOrganizations"
+          :data="filteredRecipients"
           :columns="columns"
           :pageSize="pageSize"
           :showNoColumn="true"
           :options="{ variant: 'default', hover: true, striped: true }"
-          :options-advanced="{ sortable: true, filterable: true }"
+          :options-advanced="{ sortable: true, filterable: false }"
           advanced
         >
           <template v-slot:noRujukan="{ text }">
-            <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewOrganization(text)">
+            <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewRecipient(text)">
               {{ text }}
             </a>
           </template>
@@ -86,7 +86,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-700">
-              Menunjukkan {{ paginationStart }} hingga {{ paginationEnd }} daripada {{ totalOrganizations }} entri
+              Menunjukkan {{ paginationStart }} hingga {{ paginationEnd }} daripada {{ totalRecipients }} entri
             </span>
             <div class="flex gap-1">
               <rs-button variant="primary-outline" class="!p-1 !w-8 !h-8" :disabled="currentPage === 1" @click="currentPage--">
@@ -109,15 +109,16 @@ import { ref, computed } from 'vue';
 definePageMeta({ title: 'Senarai Pengesahan Recipient' });
 
 const breadcrumb = ref([
-  { name: 'Pengesahan', type: 'link', path: '/BF-PRF/TP/AP/01' },
-  { name: 'Senarai Recipient', type: 'current', path: '/BF-PRF/TP/AP/01' },
+  { name: 'Pengesahan', type: 'link', path: '/BF-PRF/TP/PP' },
+  { name: 'Senarai Recipient', type: 'current', path: '/BF-PRF/TP/PP' },
 ]);
 
 const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
-  { key: 'namaOrganisasi', label: 'Nama Recipient', sortable: true },
+  { key: 'namaRecipient', label: 'Nama Recipient', sortable: true },
+  { key: 'jenisRecipient', label: 'Jenis Recipient', sortable: true },
+  { key: 'jenisPengenalan', label: 'Jenis Pengenalan', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
-  { key: 'jenisOrganisasi', label: 'Kategori', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
   { key: 'pegawai', label: 'Pegawai Bertugas', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
@@ -134,44 +135,47 @@ const statusOptions = [
   { label: 'Ditolak', value: 'ditolak' },
 ];
 
-const organizationList = ref([
+const recipientList = ref([
   {
     noRujukan: 'TP-240511',
-    namaOrganisasi: 'Pusat Dialisis Al-Falah',
+    namaRecipient: 'Ahmad Bin Abdullah',
+    jenisRecipient: 'Individu',
+    jenisPengenalan: 'MyKad',
     tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'Syarikat',
     status: 'Menunggu Pengesahan',
     pegawai: 'Noraini Binti Azman',
     tindakan: { id: 'TP-240511', status: 'Menunggu Pengesahan' },
   },
   {
     noRujukan: 'TP-240512',
-    namaOrganisasi: 'Tuan Rumah Penyewa - Lot 1278',
+    namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
+    jenisRecipient: 'Syarikat',
+    jenisPengenalan: 'ID Syarikat',
     tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'Recipient',
     status: 'Diluluskan',
     pegawai: 'Abdul Razak Bin Yusof',
     tindakan: { id: 'TP-240512', status: 'Diluluskan' },
   },
   {
     noRujukan: 'TP-240513',
-    namaOrganisasi: 'Pembekal Buku Azam',
+    namaRecipient: 'Siti Fatimah Binti Ali',
+    jenisRecipient: 'Individu',
+    jenisPengenalan: 'Foreign ID',
     tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'Syarikat',
     status: 'Ditolak',
     pegawai: 'Zarina Binti Kamal',
     tindakan: { id: 'TP-240513', status: 'Ditolak' },
   },
 ]);
 
-const filteredOrganizations = computed(() => {
-  let filtered = [...organizationList.value];
+const filteredRecipients = computed(() => {
+  let filtered = [...recipientList.value];
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
     filtered = filtered.filter(item =>
       item.noRujukan.toLowerCase().includes(query) ||
-      item.namaOrganisasi.toLowerCase().includes(query) ||
+      item.namaRecipient.toLowerCase().includes(query) ||
       item.pegawai.toLowerCase().includes(query)
     );
   }
@@ -185,10 +189,10 @@ const filteredOrganizations = computed(() => {
   return filtered;
 });
 
-const totalOrganizations = computed(() => filteredOrganizations.value.length);
-const totalPages = computed(() => Math.ceil(totalOrganizations.value / pageSize.value));
+const totalRecipients = computed(() => filteredRecipients.value.length);
+const totalPages = computed(() => Math.ceil(totalRecipients.value / pageSize.value));
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
-const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalOrganizations.value));
+const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalRecipients.value));
 
 const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
 const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
@@ -201,6 +205,6 @@ const getStatusVariant = (status) => {
   return variants[status] || 'default';
 };
 
-const viewOrganization = (id) => navigateTo(`/BF-PRF/TP/AP/${id}`);
+const viewRecipient = (id) => navigateTo(`/BF-PRF/TP/PP/${id}`);
 const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/TP/PP/03`);
 </script>
