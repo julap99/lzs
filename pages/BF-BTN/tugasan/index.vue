@@ -375,7 +375,7 @@
                             variant="secondary"
                             size="sm"
                             class="p-1 flex gap-2"
-                            @click="handleAssignTask(text)"
+                            @click="openAssignModal(row)"
                           >
                             Tugas Kepada
                           </rs-button>
@@ -818,6 +818,43 @@
         </rs-tab>
       </template>
     </rs-card>
+  </div>
+
+  <!-- Modal: Tugas Kepada -->
+  <div v-if="isAssignModalOpen" class="fixed inset-0 z-50 z-[9999] flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/50" @click="closeAssignModal"></div>
+    <div class="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+      <div class="mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Tugas Kepada</h3>
+      </div>
+      <div class="space-y-4">
+        <FormKit
+          v-model="assignForm.jawatan"
+          type="select"
+          label="Jawatan"
+          :options="jawatanOptions"
+          :classes="{ outer: 'mb-0' }"
+        />
+        <FormKit
+          v-model="assignForm.kariah"
+          type="select"
+          label="Kariah"
+          :options="kariahOptions"
+          :classes="{ outer: 'mb-0' }"
+        />
+        <FormKit
+          v-model="assignForm.namaPegawai"
+          type="select"
+          label="Nama Pegawai"
+          :options="namaPegawaiOptions"
+          :classes="{ outer: 'mb-0' }"
+        />
+      </div>
+      <div class="mt-6 flex justify-end gap-2">
+        <rs-button variant="secondary-outline" @click="closeAssignModal">Batal</rs-button>
+        <rs-button variant="primary" @click="submitAssign">Hantar</rs-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1392,6 +1429,41 @@ const getStatusVariant = (status) => {
   return variants[status.toLowerCase()] || "default";
 };
 
+// Assign Modal State & Handlers
+const isAssignModalOpen = ref(false);
+const assignForm = ref({ jawatan: '', kariah: '', namaPegawai: '' });
+const jawatanOptions = [
+  { label: 'EOAD', value: 'EOAD' },
+  { label: 'ETD', value: 'ETD' },
+];
+const namaPegawaiOptions = [
+  { label: 'Ali bin Ahmad', value: 'Ali bin Ahmad' },
+  { label: 'Siti binti Zainal', value: 'Siti binti Zainal' },
+  { label: 'Rahman bin Karim', value: 'Rahman bin Karim' },
+  { label: 'Ainun binti Musa', value: 'Ainun binti Musa' },
+];
+const kariahOptions = computed(() => {
+  const set = new Set(siasatanData.value.map((r) => r.kariah));
+  return Array.from(set).map((k) => ({ label: k, value: k }));
+});
+
+const openAssignModal = (row) => {
+  isAssignModalOpen.value = true;
+  assignForm.value = {
+    jawatan: assignForm.value.jawatan || 'EOAD',
+    kariah: row && row.kariah ? row.kariah : '',
+    namaPegawai: assignForm.value.namaPegawai || 'Ali bin Ahmad',
+  };
+};
+
+const closeAssignModal = () => {
+  isAssignModalOpen.value = false;
+};
+
+const submitAssign = () => {
+  console.log('Assign Task:', assignForm.value);
+  isAssignModalOpen.value = false;
+};
 
 </script>
 
