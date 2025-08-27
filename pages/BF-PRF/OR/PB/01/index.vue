@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Carian Organisasi Induk</h2>
+          <h2 class="text-xl font-semibold">Carian Organisasi HQ</h2>
         </div>
       </template>
 
@@ -17,13 +17,13 @@
               <FormKit
                 type="text"
                 name="namaOrganisasi"
-                label="Nama Organisasi Induk"
+                label="Nama Organisasi HQ"
                 v-model="formData.namaOrganisasi"
               />
               <FormKit
                 type="text"
                 name="kodOrganisasi"
-                label="Kod / ROC / ROS"
+                label="No SSM / ROS / ID Organisasi NAS"
                 v-model="formData.kodOrganisasi"
               />
             </div>
@@ -55,21 +55,46 @@
                   size="2rem"
                   :class="indukFound ? 'text-green-600' : 'text-red-600'"
                 />
-                <div>
+                <div class="flex-1">
                   <h3 class="text-lg font-medium">
                     {{
                       indukFound
-                        ? 'Organisasi Induk Ditemui'
-                        : 'Organisasi Induk Tidak Ditemui'
+                        ? 'Organisasi HQ Ditemui'
+                        : 'Organisasi HQ Tidak Ditemui'
                     }}
                   </h3>
                   <p class="text-sm mt-1">
                     {{
                       indukFound
                         ? 'Sila teruskan pendaftaran cawangan.'
-                        : 'Sila daftar dahulu sebagai Organisasi Induk.'
+                        : 'Sila daftar dahulu sebagai Organisasi HQ.'
                     }}
                   </p>
+                  
+                  <!-- HQ Information Display -->
+                  <div v-if="indukFound && hqInfo" class="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900 mb-3">Maklumat Organisasi HQ</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <label class="block text-gray-600 font-medium">Nama Organisasi HQ</label>
+                        <p class="text-gray-900">{{ hqInfo.namaOrganisasi }}</p>
+                      </div>
+                      <div>
+                        <label class="block text-gray-600 font-medium">SSM / ROS / ID Organisasi NAS</label>
+                        <p class="text-gray-900">{{ hqInfo.kodOrganisasi }}</p>
+                      </div>
+                      <div>
+                        <label class="block text-gray-600 font-medium">Zon / Negeri / Status</label>
+                        <p class="text-gray-900">{{ hqInfo.zonNegeriStatus }}</p>
+                      </div>
+                      <div>
+                        <label class="block text-gray-600 font-medium">Status Profil</label>
+                        <rs-badge :variant="getStatusVariant(hqInfo.statusProfil)" size="sm">
+                          {{ hqInfo.statusProfil }}
+                        </rs-badge>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </template>
@@ -82,7 +107,7 @@
                   {{
                     indukFound
                       ? 'Teruskan Pendaftaran Cawangan'
-                      : 'Daftar Organisasi Induk'
+                      : 'Daftar Organisasi HQ'
                   }}
                 </rs-button>
               </div>
@@ -107,6 +132,7 @@ const processing = ref(false);
 const searchCompleted = ref(false);
 const indukFound = ref(false);
 const selectedIndukId = ref(null);
+const hqInfo = ref(null);
 
 const breadcrumb = ref([
   {
@@ -115,7 +141,7 @@ const breadcrumb = ref([
     path: '/BF-PRF/OR/PB/01',
   },
   {
-    name: 'Carian Induk',
+    name: 'Carian HQ',
     type: 'current',
     path: '/BF-PRF/OR/PB/01',
   },
@@ -131,6 +157,17 @@ const resetForm = () => {
   formData.value.kodOrganisasi = '';
   searchCompleted.value = false;
   selectedIndukId.value = null;
+  hqInfo.value = null;
+};
+
+const getStatusVariant = (status) => {
+  const variants = {
+    'Diluluskan': 'success',
+    'Menunggu Pengesahan': 'warning',
+    'Ditolak': 'danger',
+    'Dalam Semakan': 'info'
+  };
+  return variants[status] || 'default';
 };
 
 const validateAndSearch = () => {
@@ -153,6 +190,15 @@ const performSearch = async () => {
     indukFound.value = Math.random() > 0.3;
     if (indukFound.value) {
       selectedIndukId.value = 'HQ-20250613-001'; // contoh ID HQ
+      // Mock HQ information data
+      hqInfo.value = {
+        namaOrganisasi: formData.value.namaOrganisasi || 'Yayasan Pendidikan Islami Malaysia',
+        kodOrganisasi: formData.value.kodOrganisasi || 'SSM-123456-A',
+        zonNegeriStatus: 'Zon Tengah / Selangor / Aktif',
+        statusProfil: 'Diluluskan'
+      };
+    } else {
+      hqInfo.value = null;
     }
     processing.value = false;
     searchCompleted.value = true;
@@ -163,10 +209,13 @@ const navigateNext = () => {
   if (indukFound.value) {
     router.push({
       path: '/BF-PRF/OR/PB/02', // Halaman Pendaftaran Cawangan Baharu
-      query: { indukId: selectedIndukId.value },
+      query: { 
+        indukId: selectedIndukId.value,
+        hqData: JSON.stringify(hqInfo.value)
+      },
     });
   } else {
-    router.push('/BF-PRF/OR/PB/03'); // Halaman Daftar Organisasi Induk
+    router.push('/BF-PRF/OR/PP/02'); // Halaman Daftar Organisasi HQ
   }
 };
 
