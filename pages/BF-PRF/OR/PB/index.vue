@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-xl font-semibold">Pengesahan Organisasi</h2>
+            <h2 class="text-xl font-semibold">Pengesahan Cawangan</h2>
           </div>
         </div>
       </template>
@@ -18,7 +18,7 @@
             <FormKit
               v-model="searchQuery"
               type="text"
-              placeholder="Cari No Rujukan, Nama Organisasi, atau Emel..."
+              placeholder="Cari No Rujukan, Nama Cawangan, atau Nama HQ..."
               :classes="{ input: '!py-2' }"
             />
             <rs-button
@@ -46,7 +46,7 @@
                 advanced
               >
                 <template v-slot:noRujukan="{ text }">
-                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewOrganization(text)">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewCawangan(text)">
                     {{ text }}
                   </a>
                 </template>
@@ -94,7 +94,7 @@
                 advanced
               >
                 <template v-slot:noRujukan="{ text }">
-                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewOrganization(text)">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewCawangan(text)">
                     {{ text }}
                   </a>
                 </template>
@@ -142,7 +142,7 @@
                 advanced
               >
                 <template v-slot:noRujukan="{ text }">
-                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewOrganization(text)">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewCawangan(text)">
                     {{ text }}
                   </a>
                 </template>
@@ -190,7 +190,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-700">
-              Menunjukkan {{ paginationStart }} hingga {{ paginationEnd }} daripada {{ totalOrganizations }} entri
+              Menunjukkan {{ paginationStart }} hingga {{ paginationEnd }} daripada {{ totalCawangan }} entri
             </span>
             <div class="flex gap-1">
               <rs-button variant="primary-outline" class="!p-1 !w-8 !h-8" :disabled="currentPage === 1" @click="currentPage--">
@@ -210,19 +210,20 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-definePageMeta({ title: 'Senarai Pengesahan Organisasi' });
+definePageMeta({ title: 'Senarai Pengesahan Cawangan' });
 
 const breadcrumb = ref([
-  { name: 'Pengesahan', type: 'link', path: '/BF-PRF/OR/AP/01' },
-  { name: 'Senarai Organisasi', type: 'current', path: '/BF-PRF/OR/AP/01' },
+  { name: 'Pengesahan', type: 'link', path: '/BF-PRF/OR/PB' },
+  { name: 'Senarai Cawangan', type: 'current', path: '/BF-PRF/OR/PB' },
 ]);
 
 // Columns definition
 const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
-  { key: 'namaOrganisasi', label: 'Nama Organisasi', sortable: true },
+  { key: 'namaCawangan', label: 'Nama Cawangan', sortable: true },
+  { key: 'namaHQ', label: 'Nama HQ', sortable: true },
+  { key: 'daerah', label: 'Daerah', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
-  { key: 'jenisOrganisasi', label: 'Jenis Organisasi', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
@@ -231,106 +232,105 @@ const columns = [
 const activeTab = ref(0);
 const tableKey = ref(0);
 
-// Mock data for Eksekutif role
-const organizationList = ref([
-  {
-    noRujukan: 'ORG-240501',
-    namaOrganisasi: 'Syarikat Teknologi Maju Sdn Bhd',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'Swasta',
-    status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240501', status: 'Menunggu Pengesahan' },
-  },
-  {
-    noRujukan: 'ORG-240502',
-    namaOrganisasi: 'Pertubuhan Amal Iman Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'NGO',
-    status: 'Diluluskan',
-    tindakan: { id: 'ORG-240502', status: 'Diluluskan' },
-  },
-  {
-    noRujukan: 'ORG-240503',
-    namaOrganisasi: 'Sekolah Menengah Tahfiz Al-Amin',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'IPT',
-    status: 'Diluluskan',
-    tindakan: { id: 'ORG-240503', status: 'Diluluskan' },
-  },
-  {
-    noRujukan: 'ORG-240504',
-    namaOrganisasi: 'Institut Latihan Kemahiran Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'Institut',
-    status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240504', status: 'Menunggu Pengesahan' },
-  },
-  {
-    noRujukan: 'ORG-240505',
-    namaOrganisasi: 'Syarikat Pembangunan Hartanah Sdn Bhd',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'Swasta',
-    status: 'Ditolak',
-    tindakan: { id: 'ORG-240505', status: 'Ditolak' },
-  },
-  {
-    noRujukan: 'ORG-240506',
-    namaOrganisasi: 'Persatuan Belia Islam Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'NGO',
-    status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240506', status: 'Menunggu Pengesahan' },
-  },
-  {
-    noRujukan: 'ORG-240507',
-    namaOrganisasi: 'Universiti Teknologi Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'IPT',
-    status: 'Ditolak',
-    tindakan: { id: 'ORG-240507', status: 'Ditolak' },
-  },
-]);
-
 const searchQuery = ref('');
 const pageSize = ref(10);
 const currentPage = ref(1);
 
+const cawanganList = ref([
+  {
+    noRujukan: 'PB-240511',
+    namaCawangan: 'Cawangan Seri Damai',
+    namaHQ: 'Yayasan Insan Malaysia',
+    daerah: 'Kuala Lumpur',
+    tarikhPermohonan: new Date().toISOString(),
+    status: 'Menunggu Pengesahan',
+    tindakan: { id: 'PB-240511', status: 'Menunggu Pengesahan' },
+  },
+  {
+    noRujukan: 'PB-240512',
+    namaCawangan: 'Cawangan Taman Ilmu',
+    namaHQ: 'Pertubuhan Amal Jariah',
+    daerah: 'Selangor',
+    tarikhPermohonan: new Date().toISOString(),
+    status: 'Diluluskan',
+    tindakan: { id: 'PB-240512', status: 'Diluluskan' },
+  },
+  {
+    noRujukan: 'PB-240513',
+    namaCawangan: 'Cawangan Bandar Baru',
+    namaHQ: 'Yayasan Pendidikan Islami Malaysia',
+    daerah: 'Johor',
+    tarikhPermohonan: new Date().toISOString(),
+    status: 'Ditolak',
+    tindakan: { id: 'PB-240513', status: 'Ditolak' },
+  },
+  {
+    noRujukan: 'PB-240514',
+    namaCawangan: 'Cawangan Wangsa Maju',
+    namaHQ: 'Institut Dakwah Malaysia',
+    daerah: 'Kuala Lumpur',
+    tarikhPermohonan: new Date().toISOString(),
+    status: 'Menunggu Pengesahan',
+    tindakan: { id: 'PB-240514', status: 'Menunggu Pengesahan' },
+  },
+  {
+    noRujukan: 'PB-240515',
+    namaCawangan: 'Cawangan Subang Jaya',
+    namaHQ: 'Pertubuhan Kebajikan Islam',
+    daerah: 'Selangor',
+    tarikhPermohonan: new Date().toISOString(),
+    status: 'Diluluskan',
+    tindakan: { id: 'PB-240515', status: 'Diluluskan' },
+  },
+  {
+    noRujukan: 'PB-240516',
+    namaCawangan: 'Cawangan Batu Pahat',
+    namaHQ: 'Yayasan Tahfiz Al-Quran',
+    daerah: 'Johor',
+    tarikhPermohonan: new Date().toISOString(),
+    status: 'Ditolak',
+    tindakan: { id: 'PB-240516', status: 'Ditolak' },
+  },
+]);
+
 // Filter table data based on status
 const getTableDataByStatus = (statuses) => {
-  let result = organizationList.value.filter(organization => 
-    statuses.includes(organization.status)
+  let result = cawanganList.value.filter(cawangan => 
+    statuses.includes(cawangan.status)
   );
   
   // Apply search filter
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
-    result = result.filter(organization => 
-      organization.noRujukan.toLowerCase().includes(query) ||
-      organization.namaOrganisasi.toLowerCase().includes(query)
+    result = result.filter(cawangan => 
+      cawangan.noRujukan.toLowerCase().includes(query) ||
+      cawangan.namaCawangan.toLowerCase().includes(query) ||
+      cawangan.namaHQ.toLowerCase().includes(query)
     );
   }
   
   return result;
 };
 
-const filteredOrganizations = computed(() => {
-  let filtered = [...organizationList.value];
+const filteredCawangan = computed(() => {
+  let filtered = [...cawanganList.value];
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
     filtered = filtered.filter(item =>
       item.noRujukan.toLowerCase().includes(query) ||
-      item.namaOrganisasi.toLowerCase().includes(query)
+      item.namaCawangan.toLowerCase().includes(query) ||
+      item.namaHQ.toLowerCase().includes(query)
     );
   }
 
   return filtered;
 });
 
-const totalOrganizations = computed(() => filteredOrganizations.value.length);
-const totalPages = computed(() => Math.ceil(totalOrganizations.value / pageSize.value));
+const totalCawangan = computed(() => filteredCawangan.value.length);
+const totalPages = computed(() => Math.ceil(totalCawangan.value / pageSize.value));
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
-const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalOrganizations.value));
+const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalCawangan.value));
 
 const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
 const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
@@ -344,7 +344,7 @@ const getStatusVariant = (status) => {
   return variants[status] || 'default';
 };
 
-// Action capabilities for Eksekutif role
+// Action capabilities - only allow action for pending status
 const canPerformAction = (status) => {
   return ['Menunggu Pengesahan'].includes(status);
 };
@@ -356,6 +356,6 @@ const performSearch = () => {
   currentPage.value = 1;
 };
 
-const viewOrganization = (id) => navigateTo(`/BF-PRF/OR/AP/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04`);
-</script>
+const viewCawangan = (id) => navigateTo(`/BF-PRF/OR/PB/${id}`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PB/03`);
+</script> 

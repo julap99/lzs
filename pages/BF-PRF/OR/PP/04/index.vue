@@ -16,15 +16,7 @@
         <!-- Maklumat Permohonan -->
         <rs-card>
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:note" class="w-6 h-6 text-yellow-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Permohonan</h2>
-                <p class="text-sm text-gray-500">Tarikh & jenis organisasi</p>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Maklumat Permohonan</h2>
           </template>
           <template #body>
             <div class="space-y-4">
@@ -37,14 +29,7 @@
         <!-- Maklumat Organisasi -->
         <rs-card>
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:buildings" class="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Organisasi</h2>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Maklumat Organisasi</h2>
           </template>
           <template #body>
             <div class="space-y-4">
@@ -58,14 +43,7 @@
         <!-- Alamat -->
         <rs-card>
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:map-pin" class="w-6 h-6 text-pink-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Alamat</h2>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Alamat</h2>
           </template>
           <template #body>
             <div class="space-y-4">
@@ -79,14 +57,7 @@
         <!-- Maklumat Pegawai Dihubungi -->
         <rs-card>
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:phone" class="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Pegawai Dihubungi</h2>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Maklumat Pegawai Dihubungi</h2>
           </template>
           <template #body>
             <div class="space-y-4">
@@ -100,14 +71,7 @@
         <!-- Dokumen Sokongan -->
         <rs-card>
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:file-text" class="w-6 h-6 text-indigo-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Dokumen Sokongan</h2>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Dokumen Sokongan</h2>
           </template>
           <template #body>
             <ul class="divide-y divide-gray-200">
@@ -132,14 +96,7 @@
       <div class="lg:col-span-1 space-y-6">
         <rs-card class="sticky top-6">
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:check-circle" class="w-6 h-6 text-purple-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Keputusan Pengesahan</h2>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Keputusan Pengesahan</h2>
           </template>
           <template #body>
             <FormKit type="form" :actions="false" @submit="handleApprovalSubmit">
@@ -164,7 +121,6 @@
                   label="Justifikasi Penolakan"
                   validation="required"
                   placeholder="Sila nyatakan sebab penolakan permohonan ini"
-                  help="Sila berikan alasan terperinci tentang sebab permohonan ini ditolak"
                   v-model="approvalData.justification"
                   :validation-messages="{ required: 'Justifikasi diperlukan untuk penolakan' }"
                 />

@@ -4,25 +4,33 @@
 
     <rs-card class="p-6">
       <div class="mb-6">
-        <div class="flex items-center mb-4">
-          <div class="flex-1 h-2 bg-gray-200 rounded-full">
+        <!-- Progress indicator -->
+        <div class="mb-6">
+          <div class="flex justify-between mb-3">
             <div
-              class="h-2 bg-blue-600 rounded-full"
-              :style="{ width: `${(currentStep / totalSteps) * 100}%` }"
+              v-for="step in steps"
+              :key="step.id"
+              class="text-center flex-1 cursor-pointer px-2 py-1 rounded transition-all duration-200"
+              :class="{ 
+                'font-semibold text-primary': currentStep >= step.id,
+                'text-gray-600 hover:text-gray-800': currentStep < step.id
+              }"
+              @click="goToStep(step.id)"
+            >
+              <div class="text-xs sm:text-sm">{{ step.label }}</div>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              class="bg-primary h-2.5 rounded-full transition-all duration-300"
+              :style="`width: ${currentStep >= totalSteps ? 100 : (currentStep / totalSteps) * 100}%`"
             ></div>
           </div>
-          <span class="ml-4 text-sm font-medium"
-            >{{ currentStep }}/{{ totalSteps }}</span
-          >
         </div>
       </div>
 
       <!-- Step 1: Maklumat Recipient -->
       <div v-if="currentStep === 1" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">
-          Maklumat Recipient
-        </h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -94,15 +102,13 @@
           />
 
           <div class="flex justify-end mt-6">
-            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+            <rs-button type="submit" @click="nextStep">Seterusnya</rs-button>
           </div>
         </FormKit>
       </div>
 
       <!-- Step 2: Maklumat Akaun Bank -->
       <div v-if="currentStep === 2" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">Maklumat Akaun Bank</h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -115,7 +121,6 @@
             label="Nama Bank"
             validation="required"
             placeholder="Pilih bank"
-            help="Sila masukkan akaun bank yang aktif"
             :options="bankOptions"
             v-model="formData.namaBank"
           />
@@ -126,7 +131,6 @@
             label="No Akaun Bank"
             validation="required|length:10,16|number"
             placeholder="Masukkan nombor akaun bank (10-16 digit)"
-            help="Format semakan 10-16 digit"
             v-model="formData.noAkaunBank"
           />
 
@@ -143,17 +147,13 @@
             <rs-button variant="primary-outline" @click="prevStep">
               Kembali
             </rs-button>
-            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+            <rs-button type="submit" @click="nextStep">Seterusnya</rs-button>
           </div>
         </FormKit>
       </div>
 
-      <!-- Step 3: Dokumen Sokongan (Maklumat Bank) -->
+      <!-- Step 3: Dokumen Sokongan -->
       <div v-if="currentStep === 3" class="space-y-6">
-        <h2 class="text-xl font-semibold border-b pb-2">
-          Dokumen Sokongan (Maklumat Bank)
-        </h2>
-
         <FormKit
           type="form"
           :actions="false"
@@ -171,7 +171,6 @@
             label="Dokumen Sokongan Bank"
             validation="required"
             accept=".pdf,.jpg,.jpeg,.png"
-            help="Muat naik dokumen sokongan untuk maklumat bank (contoh: penyata bank, slip deposit)"
             v-model="formData.dokumenSokongan"
           />
 
@@ -256,8 +255,15 @@ const breadcrumb = ref([
 
 const totalSteps = 4; // 3 form steps + 1 success step
 const currentStep = ref(1);
+
+const steps = [
+  { id: 1, label: 'Maklumat Recipient' },
+  { id: 2, label: 'Maklumat Bank' },
+  { id: 3, label: 'Dokumen Sokongan' },
+];
+
 const referenceNumber = ref(
-  "NAS-TP-" +
+  "NAS-RE-" +
     Math.floor(Math.random() * 1000000)
       .toString()
       .padStart(6, "0")
@@ -318,6 +324,13 @@ const getIdPlaceholder = () => {
     case "mykad": return "Contoh: 880101123456";
     case "foreign_id": return "Contoh: A12345678";
     default: return "Sila pilih jenis pengenalan dahulu";
+  }
+};
+
+const goToStep = (stepNumber) => {
+  if (stepNumber <= currentStep.value) {
+    currentStep.value = stepNumber;
+    window.scrollTo(0, 0);
   }
 };
 

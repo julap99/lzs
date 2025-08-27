@@ -16,19 +16,11 @@
         <!-- Maklumat Recipient -->
         <rs-card>
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:user" class="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Recipient</h2>
-                <p class="text-sm text-gray-500">Butiran recipient dan pengenalan</p>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Maklumat Recipient</h2>
           </template>
           <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit type="text" label="No. Rujukan" :value="'TP-' + applicationData.refNumber" disabled />
+              <FormKit type="text" label="No. Rujukan" :value="'RE-' + applicationData.refNumber" disabled />
               <FormKit type="text" label="Tarikh Permohonan" :value="applicationData.applicationDate" disabled />
               <FormKit type="text" label="Jenis Recipient" :value="applicationData.jenisRecipient" disabled />
               <FormKit 
@@ -67,15 +59,7 @@
         <!-- Maklumat Akaun Bank -->
         <rs-card>
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:bank" class="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Akaun Bank</h2>
-                <p class="text-sm text-gray-500">Butiran akaun bank recipient</p>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Maklumat Akaun Bank</h2>
           </template>
           <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -89,14 +73,7 @@
         <!-- Dokumen Sokongan -->
         <rs-card>
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:paperclip" class="w-6 h-6 text-yellow-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Dokumen Sokongan (Maklumat Bank)</h2>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Dokumen Sokongan</h2>
           </template>
           <template #body>
             <ul class="divide-y divide-gray-200">
@@ -125,14 +102,7 @@
       <div class="lg:col-span-1 space-y-6">
         <rs-card class="sticky top-6">
           <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Icon name="ph:check-circle" class="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <h2 class="text-md font-semibold text-gray-900">Maklumat Pengesahan</h2>
-              </div>
-            </div>
+            <h2 class="text-md font-semibold text-gray-900">Maklumat Pengesahan</h2>
           </template>
           <template #body>
             <FormKit type="form" :actions="false" @submit="handleApprovalSubmit">
