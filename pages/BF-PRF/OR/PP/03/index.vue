@@ -62,23 +62,41 @@
             validation="required"
             placeholder="Pilih jenis organisasi"
             :options="[
-              { label: 'NGO', value: 'ngo' },
+              { label: 'Agensi', value: 'agensi' },
               { label: 'Masjid', value: 'masjid' },
-              { label: 'Syarikat', value: 'syarikat' },
-              { label: 'IPT', value: 'ipt' },
-              { label: 'Lain-lain', value: 'others' },
+              { label: 'Surau', value: 'surau' },
+              { label: 'Institusi', value: 'institusi' },
+              { label: 'Badan Berkanun', value: 'badan_berkanun' },
+              { label: 'NGO', value: 'ngo' },
+              { label: 'Dalaman LZS – Baitul', value: 'dalaman_lzs_baitul' },
             ]"
             v-model="formData.organizationType"
           />
 
           <FormKit
-            v-if="formData.organizationType === 'others'"
-            type="text"
-            name="otherOrganizationType"
-            label="Sila Nyatakan"
+            type="select"
+            name="registrationStatus"
+            label="Status Pendaftaran"
             validation="required"
-            placeholder="Nyatakan jenis organisasi"
-            v-model="formData.otherOrganizationType"
+            placeholder="Pilih status pendaftaran"
+            :options="[
+              { label: 'Berdaftar', value: 'berdaftar' },
+              { label: 'Tidak berdaftar', value: 'tidak_berdaftar' },
+            ]"
+            v-model="formData.registrationStatus"
+          />
+
+          <FormKit
+            type="select"
+            name="structure"
+            label="Struktur"
+            validation="required"
+            placeholder="Pilih struktur"
+            :options="[
+              { label: 'HQ', value: 'hq' },
+              { label: 'Cawangan', value: 'cawangan' },
+            ]"
+            v-model="formData.structure"
           />
 
           <div class="flex justify-end mt-6">
@@ -131,22 +149,71 @@
             />
 
             <FormKit
-              type="text"
+              type="select"
               name="city"
               label="Bandar"
               validation="required"
-              placeholder="Contoh: Bangi"
+              placeholder="Pilih bandar"
+              :options="[
+                'Kuala Lumpur',
+                'Shah Alam',
+                'Petaling Jaya',
+                'Subang Jaya',
+                'Klang',
+                'Ampang',
+                'Cheras',
+                'Kajang',
+                'Bangi',
+                'Putrajaya',
+                'Cyberjaya',
+                'Puchong',
+                'Selayang',
+                'Gombak',
+                'Rawang',
+                'Johor Bahru',
+                'Skudai',
+                'Iskandar Puteri',
+                'Kulai',
+                'Batu Pahat',
+                'Muar',
+                'Kluang',
+                'Pontian',
+                'Segamat',
+                'Yong Peng',
+              ]"
               v-model="formData.city"
             />
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
-              type="text"
+              type="select"
               name="district"
               label="Daerah"
               validation="required"
-              placeholder="Contoh: Hulu Langat"
+              placeholder="Pilih daerah"
+              :options="[
+                'Kuala Lumpur',
+                'Petaling',
+                'Klang',
+                'Hulu Langat',
+                'Sepang',
+                'Hulu Selangor',
+                'Kuala Selangor',
+                'Sabak Bernam',
+                'Gombak',
+                'Kuala Langat',
+                'Johor Bahru',
+                'Kulai',
+                'Pontian',
+                'Kluang',
+                'Batu Pahat',
+                'Muar',
+                'Segamat',
+                'Mersing',
+                'Kota Tinggi',
+                'Tangkak',
+              ]"
               v-model="formData.district"
             />
 
@@ -177,22 +244,6 @@
               v-model="formData.state"
             />
           </div>
-
-          <FormKit
-            type="select"
-            name="country"
-            label="Negara"
-            validation="required"
-            placeholder="Pilih negara"
-            :options="[
-              'Malaysia',
-              'Singapura',
-              'Brunei',
-              'Indonesia',
-              'Thailand',
-            ]"
-            v-model="formData.country"
-          />
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -555,7 +606,8 @@ const formData = ref({
   organizationName: "",
   registrationNumber: "",
   organizationType: "",
-  otherOrganizationType: "",
+  registrationStatus: "",
+  structure: "",
 
   // Step 2: Maklumat Alamat
   addressLine1: "",
@@ -565,7 +617,6 @@ const formData = ref({
   city: "",
   district: "",
   state: "",
-  country: "Malaysia",
 
   // Step 3: Maklumat Kariah / Zon / Cawangan
   kariah: "",
@@ -591,7 +642,7 @@ const formData = ref({
 
 const steps = computed(() => {
   return [
-    { id: 1, label: "Pendaftaran" },
+    { id: 1, label: "Maklumat Organisasi" },
     { id: 2, label: "Alamat" },
     { id: 3, label: "Kariah/Zon" },
     { id: 4, label: "Perhubungan" },
