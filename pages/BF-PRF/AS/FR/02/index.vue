@@ -657,8 +657,202 @@
               Maklumat Sekolah / Institusi
             </h4>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Jenis Sekolah / Institusi -->
+            <div
+              v-if="formData.education_entries && formData.education_entries.length > 0"
+            >
+              <div
+                v-for="(edu, index) in formData.education_entries"
+                :key="index"
+                class="mb-8 p-4 border border-gray-200 rounded-lg"
+              >
+                <div class="flex justify-between items-center mb-4">
+                  <h5 class="text-md font-medium">Sekolah / Institusi #{{ index + 1 }}</h5>
+                  <button
+                    type="button"
+                    @click="removeEducationEntry(index)"
+                    class="text-red-500 hover:text-red-700"
+                  >
+                    <Icon name="mdi:delete" size="1.1rem" />
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="select"
+                    :name="`edu${index}JenisSekolah`"
+                    label="Jenis Sekolah / Institusi"
+                    placeholder="Pilih Jenis Sekolah / Institusi"
+                    :options="[
+                      'Pra Sekolah',
+                      'Sekolah Rendah Kebangsaan',
+                      'Sekolah Menengah Kebangsaan',
+                      'Sekolah Menengah Agama',
+                      'Sekolah Rendah Kebangsaan dan Agama',
+                      'IPTA',
+                      'IPTS',
+                      'Maahad Tahfiz',
+                    ]"
+                    v-model="edu.jenis_sekolah"
+                  />
+
+                  <FormKit
+                    type="select"
+                    :name="`edu${index}KategoriSekolah`"
+                    label="Kategori Sekolah / Institusi"
+                    placeholder="Pilih Kategori Sekolah / Institusi"
+                    :options="['SEK.MEN', 'SRK', 'IPTA', 'IPTS', 'SRA', 'KAFA']"
+                    v-model="edu.kategori_sekolah"
+                  />
+                </div>
+
+                <div v-if="edu.kategori_sekolah" class="mt-6">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormKit
+                      type="text"
+                      :name="`edu${index}TahunBersekolah`"
+                      label="Tahun Bersekolah (YYYY) *"
+                      validation="required"
+                      placeholder="Contoh: 2024"
+                      v-model="edu.tahun_bersekolah"
+                    />
+
+                    <FormKit
+                      type="text"
+                      :name="`edu${index}Tingkatan`"
+                      label="Tahun / Tingkatan / Tahun Pengajian / Semester *"
+                      validation="required"
+                      placeholder="Contoh: Tingkatan 3, Tahun 2, Semester 1"
+                      v-model="edu.tahun_tingkatan"
+                    />
+                  </div>
+
+                  <div class="mt-4">
+                    <FormKit
+                      type="text"
+                      :name="`edu${index}NamaSekolah`"
+                      label="Nama Sekolah / Institusi *"
+                      validation="required"
+                      v-model="edu.nama_sekolah"
+                    />
+                  </div>
+
+                  <div class="mt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormKit
+                        type="text"
+                        :name="`edu${index}Alamat1`"
+                        label="Alamat 1 *"
+                        validation="required"
+                        v-model="edu.alamat_sekolah_1"
+                      />
+
+                      <FormKit
+                        type="text"
+                        :name="`edu${index}Alamat2`"
+                        label="Alamat 2"
+                        v-model="edu.alamat_sekolah_2"
+                      />
+                    </div>
+
+                    <div class="mt-4">
+                      <FormKit
+                        type="text"
+                        :name="`edu${index}Alamat3`"
+                        label="Alamat 3"
+                        v-model="edu.alamat_sekolah_3"
+                      />
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                      <FormKit
+                        type="text"
+                        :name="`edu${index}Daerah`"
+                        label="Daerah *"
+                        validation="required"
+                        v-model="edu.daerah_sekolah"
+                      />
+
+                      <FormKit
+                        type="text"
+                        :name="`edu${index}Bandar`"
+                        label="Bandar *"
+                        validation="required"
+                        v-model="edu.bandar_sekolah"
+                      />
+
+                      <FormKit
+                        type="text"
+                        :name="`edu${index}Poskod`"
+                        label="Poskod *"
+                        validation="required"
+                        v-model="edu.poskod_sekolah"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    <div class="space-y-2">
+                      <label class="block text-sm font-medium text-black-700"
+                        >Tinggal Bersama Keluarga?</label
+                      >
+                      <FormKit
+                        type="radio"
+                        :name="`edu${index}TinggalBersamaKeluarga`"
+                        :options="[
+                          { label: 'Ya', value: 'Y' },
+                          { label: 'Tidak', value: 'T' },
+                        ]"
+                        validation="required"
+                        v-model="edu.tinggal_bersama_keluarga"
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    v-if="edu.tinggal_bersama_keluarga === 'T'"
+                    class="mt-4"
+                  >
+                    <FormKit
+                      type="text"
+                      :name="`edu${index}AsramaRumahSewa`"
+                      label="Asrama / Rumah Sewa *"
+                      validation="required"
+                      v-model="edu.asrama_rumah_sewa"
+                    />
+                  </div>
+
+                  <div class="mt-6">
+                    <FormKit
+                      type="select"
+                      :name="`edu${index}BidangKursus`"
+                      label="Bidang / Kursus Pengajian"
+                      :options="['Sijil', 'SKM', 'Diploma', 'Ijazah Sarjana Muda']"
+                      v-model="edu.bidang_kursus"
+                    />
+                  </div>
+
+                  <div v-if="edu.bidang_kursus" class="mt-4">
+                    <FormKit
+                      type="text"
+                      :name="`edu${index}JurusanBidang`"
+                      label="Jurusan / Bidang *"
+                      validation="required"
+                      v-model="edu.jurusan_bidang"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex justify-center mt-4">
+                <rs-button variant="secondary" @click="addEducationEntry" type="button">
+                  <Icon name="mdi:plus" class="mr-1" size="1rem" />
+                  Tambah Sekolah / Institusi
+                </rs-button>
+              </div>
+            </div>
+
+            <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+             
               <FormKit
                 type="select"
                 name="jenis_sekolah"
@@ -677,7 +871,7 @@
                 v-model="formData.jenis_sekolah"
               />
 
-              <!-- Kategori Sekolah / Institusi -->
+
               <FormKit
                 type="select"
                 name="kategori_sekolah"
@@ -686,7 +880,7 @@
                 :options="['SEK.MEN', 'SRK', 'IPTA', 'IPTS', 'SRA', 'KAFA']"
                 v-model="formData.kategori_sekolah"
               />
-            </div>
+            </div> -->
 
             <!-- Conditional fields when Kategori Sekolah is selected -->
             <div v-if="formData.kategori_sekolah" class="mt-6">
@@ -1131,47 +1325,71 @@
             <!-- A. Jika Kaedah Pembayaran = Akaun -->
             <div v-if="formData.kaedah_pembayaran === 'akaun'" class="mb-6">
               <h5 class="text-md font-medium mb-4">Maklumat Akaun Bank</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Nama Bank -->
-                <FormKit
-                  type="select"
-                  name="nama_bank"
-                  label="Nama Bank *"
-                  placeholder="Pilih nama bank"
-                  :options="bankOptions"
-                  validation="required"
-                  v-model="formData.nama_bank"
-                />
 
-                <!-- Swift Code (Read Only) -->
-                <FormKit
-                  v-if="formData.nama_bank"
-                  type="text"
-                  name="swift_code"
-                  label="Swift Code"
-                  v-model="formData.swift_code"
-                  :value="selectedBankSwiftCode"
-                  readonly
-                  help="Swift Code dipaparkan secara automatik"
-                />
+              <div
+                v-for="(account, index) in formData.bank_accounts"
+                :key="index"
+                class="mb-6 p-4 border border-gray-200 rounded-lg"
+              >
+                <div class="flex justify-between items-center mb-4">
+                  <h6 class="text-sm font-medium">Akaun Bank #{{ index + 1 }}</h6>
+                  <button
+                    type="button"
+                    @click="removeBankAccount(index)"
+                    class="text-red-500 hover:text-red-700"
+                  >
+                    <Icon name="mdi:delete" size="1.1rem" />
+                  </button>
+                </div>
 
-                <!-- No. Akaun Bank -->
-                <FormKit
-                  type="text"
-                  name="no_akaun_bank"
-                  label="No. Akaun Bank *"
-                  validation="required"
-                  v-model="formData.no_akaun_bank"
-                />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Nama Bank -->
+                  <FormKit
+                    type="select"
+                    :name="`bank${index}NamaBank`"
+                    label="Nama Bank *"
+                    placeholder="Pilih nama bank"
+                    :options="bankOptions"
+                    validation="required"
+                    v-model="account.nama_bank"
+                  />
 
-                <!-- Nama Pemegang Akaun -->
-                <FormKit
-                  type="text"
-                  name="nama_pemegang_akaun"
-                  label="Nama Pemegang Akaun *"
-                  validation="required"
-                  v-model="formData.nama_pemegang_akaun"
-                />
+                  <!-- Swift Code (Read Only) -->
+                  <FormKit
+                    v-if="account.nama_bank"
+                    type="text"
+                    :name="`bank${index}SwiftCode`"
+                    label="Swift Code"
+                    :value="getSwiftCodeForBank(account.nama_bank)"
+                    readonly
+                    help="Swift Code dipaparkan secara automatik"
+                  />
+
+                  <!-- No. Akaun Bank -->
+                  <FormKit
+                    type="text"
+                    :name="`bank${index}NoAkaun`"
+                    label="No. Akaun Bank *"
+                    validation="required"
+                    v-model="account.no_akaun_bank"
+                  />
+
+                  <!-- Nama Pemegang Akaun -->
+                  <FormKit
+                    type="text"
+                    :name="`bank${index}NamaPemegang`"
+                    label="Nama Pemegang Akaun *"
+                    validation="required"
+                    v-model="account.nama_pemegang_akaun"
+                  />
+                </div>
+              </div>
+
+              <div class="flex justify-center mt-4">
+                <rs-button variant="secondary" @click="addBankAccount" type="button">
+                  <Icon name="mdi:plus" class="mr-1" size="1rem" />
+                  Tambah Akaun Bank
+                </rs-button>
               </div>
             </div>
 
@@ -5719,6 +5937,8 @@ const formData = ref({
   tahap_pendidikan: [],
   lain_tahap_pendidikan: "",
   sijil_pendidikan: null,
+  // Multiple education entries (new)
+  education_entries: [],
   jenis_sekolah: "",
   kategori_sekolah: "",
   tahun_bersekolah: "",
@@ -5755,6 +5975,8 @@ const formData = ref({
   kaedah_pembayaran: "",
   sebab_tiada_akaun: "",
   sebab_tunai: "",
+  // Multiple bank accounts (new)
+  bank_accounts: [],
 
   // Section B - Maklumat Kesihatan
   tahap_kesihatan: "",
@@ -6231,6 +6453,25 @@ const selectedBankSwiftCode = computed(() => {
   return selectedBank ? selectedBank.swiftCode : "";
 });
 
+// Add/remove multiple bank accounts and helper
+const addBankAccount = () => {
+  formData.value.bank_accounts.push({
+    nama_bank: "",
+    no_akaun_bank: "",
+    nama_pemegang_akaun: "",
+  });
+};
+
+const removeBankAccount = (index) => {
+  formData.value.bank_accounts.splice(index, 1);
+};
+
+// Helper to get swift code for a given bank value
+const getSwiftCodeForBank = (bankValue) => {
+  const selectedBank = bankOptions.find((bank) => bank.value === bankValue);
+  return selectedBank ? selectedBank.swiftCode : "";
+};
+
 const selectedBankSwiftCodeTanggungan = computed(() => {
   const selectedBank = bankOptions.find(
     (bank) => bank.value === formData.value.nama_bank_tanggungan
@@ -6617,6 +6858,28 @@ watch(
       formData.value.swift_code = "";
     }
   }
+);
+
+// Ensure at least one bank account entry when method is 'akaun'
+watch(
+  () => formData.value.kaedah_pembayaran,
+  (method) => {
+    if (method === "akaun" && formData.value.bank_accounts.length === 0) {
+      addBankAccount();
+    }
+  },
+  { immediate: true }
+);
+
+// Seed one education entry when masih_bersekolah === 'Y'
+watch(
+  () => formData.value.masih_bersekolah,
+  (val) => {
+    if (val === "Y" && formData.value.education_entries.length === 0) {
+      addEducationEntry();
+    }
+  },
+  { immediate: true }
 );
 
 watch(
@@ -7989,6 +8252,33 @@ const addHeir = () => {
 
 const removeHeir = (index) => {
   formData.value.heirs.splice(index, 1);
+};
+
+// ============================================================================
+// EDUCATION ENTRIES MANAGEMENT FUNCTIONS
+// ============================================================================
+const addEducationEntry = () => {
+  formData.value.education_entries.push({
+    jenis_sekolah: "",
+    kategori_sekolah: "",
+    tahun_bersekolah: "",
+    tahun_tingkatan: "",
+    nama_sekolah: "",
+    alamat_sekolah_1: "",
+    alamat_sekolah_2: "",
+    alamat_sekolah_3: "",
+    daerah_sekolah: "",
+    bandar_sekolah: "",
+    poskod_sekolah: "",
+    tinggal_bersama_keluarga: "",
+    asrama_rumah_sewa: "",
+    bidang_kursus: "",
+    jurusan_bidang: "",
+  });
+};
+
+const removeEducationEntry = (index) => {
+  formData.value.education_entries.splice(index, 1);
 };
 
 // ============================================================================
