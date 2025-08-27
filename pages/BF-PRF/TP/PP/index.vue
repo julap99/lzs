@@ -5,74 +5,178 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Pengesahan Recipient</h2>
+          <div>
+            <h2 class="text-xl font-semibold">Pengesahan Recipient</h2>
+          </div>
         </div>
       </template>
 
       <template #body>
+        <!-- Search Section -->
         <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-              <FormKit
-                v-model="searchQuery"
-                type="text"
-                placeholder="Cari No Rujukan, Nama Recipient, atau ID Pengenalan..."
-                :classes="{ input: '!py-2' }"
-              />
-            </div>
-            <div class="flex gap-2">
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="statusOptions"
-                :classes="{ input: '!py-2' }"
-              />
-            </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              v-model="searchQuery"
+              type="text"
+              placeholder="Cari No Rujukan, Nama Recipient, atau ID Pengenalan..."
+              :classes="{ input: '!py-2' }"
+            />
+            <rs-button
+              variant="primary"
+              @click="performSearch"
+              class="!py-2 !px-4"
+            >
+              Cari
+            </rs-button>
           </div>
         </div>
 
-        <rs-table
-          :data="filteredRecipients"
-          :columns="columns"
-          :pageSize="pageSize"
-          :showNoColumn="true"
-          :options="{ variant: 'default', hover: true, striped: true }"
-          :options-advanced="{ sortable: true, filterable: false }"
-          advanced
-        >
-          <template v-slot:noRujukan="{ text }">
-            <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewRecipient(text)">
-              {{ text }}
-            </a>
-          </template>
-
-          <template v-slot:tarikhPermohonan="{ text }">
-            <div>
-              <div class="font-medium">{{ formatDate(text) }}</div>
-              <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-            </div>
-          </template>
-
-          <template v-slot:status="{ text }">
-            <rs-badge :variant="getStatusVariant(text)">
-              {{ text }}
-            </rs-badge>
-          </template>
-
-          <template v-slot:tindakan="{ text }">
-            <div class="flex space-x-2">
-              <rs-button
-                v-if="text.status === 'Menunggu Pengesahan'"
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="handleSemakPengesahan(text.id)"
+        <!-- Tabbed Table Section -->
+        <rs-tab v-model="activeTab" class="mt-4">
+          <rs-tab-item title="Menunggu Pengesahan">
+            <div class="p-4">
+              <rs-table
+                :key="`table-${tableKey}-pending`"
+                :data="getTableDataByStatus(['Menunggu Pengesahan'])"
+                :columns="columns"
+                :pageSize="pageSize"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: true, striped: true }"
+                :options-advanced="{ sortable: true, filterable: false }"
+                advanced
               >
-                <Icon name="ph:check" class="w-4 h-4 mr-1" /> Semak & Buat Pengesahan
-              </rs-button>
+                <template v-slot:noRujukan="{ text }">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewRecipient(text)">
+                    {{ text }}
+                  </a>
+                </template>
+
+                <template v-slot:tarikhPermohonan="{ text }">
+                  <div>
+                    <div class="font-medium">{{ formatDate(text) }}</div>
+                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:status="{ text }">
+                  <rs-badge :variant="getStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
+                <template v-slot:tindakan="{ text }">
+                  <div class="flex space-x-2">
+                    <rs-button
+                      v-if="canPerformAction(text.status)"
+                      variant="primary"
+                      size="sm"
+                      class="!px-2 !py-1"
+                      @click="handleSemakPengesahan(text.id)"
+                    >
+                      Semak
+                    </rs-button>
+                  </div>
+                </template>
+              </rs-table>
             </div>
-          </template>
-        </rs-table>
+          </rs-tab-item>
+
+          <rs-tab-item title="Diluluskan">
+            <div class="p-4">
+              <rs-table
+                :key="`table-${tableKey}-approved`"
+                :data="getTableDataByStatus(['Diluluskan'])"
+                :columns="columns"
+                :pageSize="pageSize"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: true, striped: true }"
+                :options-advanced="{ sortable: true, filterable: false }"
+                advanced
+              >
+                <template v-slot:noRujukan="{ text }">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewRecipient(text)">
+                    {{ text }}
+                  </a>
+                </template>
+
+                <template v-slot:tarikhPermohonan="{ text }">
+                  <div>
+                    <div class="font-medium">{{ formatDate(text) }}</div>
+                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:status="{ text }">
+                  <rs-badge :variant="getStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
+                <template v-slot:tindakan="{ text }">
+                  <div class="flex space-x-2">
+                    <rs-button
+                      v-if="canPerformAction(text.status)"
+                      variant="primary"
+                      size="sm"
+                      class="!px-2 !py-1"
+                      @click="handleSemakPengesahan(text.id)"
+                    >
+                      Semak
+                    </rs-button>
+                  </div>
+                </template>
+              </rs-table>
+            </div>
+          </rs-tab-item>
+
+          <rs-tab-item title="Ditolak">
+            <div class="p-4">
+              <rs-table
+                :key="`table-${tableKey}-rejected`"
+                :data="getTableDataByStatus(['Ditolak'])"
+                :columns="columns"
+                :pageSize="pageSize"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: true, striped: true }"
+                :options-advanced="{ sortable: true, filterable: false }"
+                advanced
+              >
+                <template v-slot:noRujukan="{ text }">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewRecipient(text)">
+                    {{ text }}
+                  </a>
+                </template>
+
+                <template v-slot:tarikhPermohonan="{ text }">
+                  <div>
+                    <div class="font-medium">{{ formatDate(text) }}</div>
+                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:status="{ text }">
+                  <rs-badge :variant="getStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
+                <template v-slot:tindakan="{ text }">
+                  <div class="flex space-x-2">
+                    <rs-button
+                      v-if="canPerformAction(text.status)"
+                      variant="primary"
+                      size="sm"
+                      class="!px-2 !py-1"
+                      @click="handleSemakPengesahan(text.id)"
+                    >
+                      Semak
+                    </rs-button>
+                  </div>
+                </template>
+              </rs-table>
+            </div>
+          </rs-tab-item>
+        </rs-tab>
 
         <div class="flex items-center justify-between px-5 mt-4">
           <div class="flex items-center gap-2">
@@ -113,6 +217,7 @@ const breadcrumb = ref([
   { name: 'Senarai Recipient', type: 'current', path: '/BF-PRF/TP/PP' },
 ]);
 
+// Columns definition
 const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
   { key: 'namaRecipient', label: 'Nama Recipient', sortable: true },
@@ -120,53 +225,91 @@ const columns = [
   { key: 'jenisPengenalan', label: 'Jenis Pengenalan', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
-  { key: 'pegawai', label: 'Pegawai Bertugas', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
 
+// Tab and table state
+const activeTab = ref(0);
+const tableKey = ref(0);
+
 const searchQuery = ref('');
-const filters = ref({ status: '' });
 const pageSize = ref(10);
 const currentPage = ref(1);
 
-const statusOptions = [
-  { label: 'Menunggu Pengesahan', value: 'menunggu_pengesahan' },
-  { label: 'Diluluskan', value: 'diluluskan' },
-  { label: 'Ditolak', value: 'ditolak' },
-];
-
 const recipientList = ref([
   {
-    noRujukan: 'TP-240511',
+    noRujukan: 'RE-240511',
     namaRecipient: 'Ahmad Bin Abdullah',
     jenisRecipient: 'Individu',
     jenisPengenalan: 'MyKad',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Menunggu Pengesahan',
-    pegawai: 'Noraini Binti Azman',
-    tindakan: { id: 'TP-240511', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'RE-240511', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'TP-240512',
+    noRujukan: 'RE-240512',
     namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
     jenisRecipient: 'Syarikat',
     jenisPengenalan: 'ID Syarikat',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Diluluskan',
-    pegawai: 'Abdul Razak Bin Yusof',
-    tindakan: { id: 'TP-240512', status: 'Diluluskan' },
+    tindakan: { id: 'RE-240512', status: 'Diluluskan' },
   },
   {
-    noRujukan: 'TP-240513',
+    noRujukan: 'RE-240513',
     namaRecipient: 'Siti Fatimah Binti Ali',
     jenisRecipient: 'Individu',
     jenisPengenalan: 'Foreign ID',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Ditolak',
-    pegawai: 'Zarina Binti Kamal',
-    tindakan: { id: 'TP-240513', status: 'Ditolak' },
+    tindakan: { id: 'RE-240513', status: 'Ditolak' },
+  },
+  {
+    noRujukan: 'RE-240514',
+    namaRecipient: 'Klinik Kesihatan Sejahtera',
+    jenisRecipient: 'Syarikat',
+    jenisPengenalan: 'ID Syarikat',
+    tarikhPermohonan: new Date().toISOString(),
+    status: 'Menunggu Pengesahan',
+    tindakan: { id: 'RE-240514', status: 'Menunggu Pengesahan' },
+  },
+  {
+    noRujukan: 'RE-240515',
+    namaRecipient: 'Zainab Binti Hassan',
+    jenisRecipient: 'Individu',
+    jenisPengenalan: 'MyKad',
+    tarikhPermohonan: new Date().toISOString(),
+    status: 'Diluluskan',
+    tindakan: { id: 'RE-240515', status: 'Diluluskan' },
+  },
+  {
+    noRujukan: 'RE-240516',
+    namaRecipient: 'Pembekal Makanan Halal Sdn Bhd',
+    jenisRecipient: 'Syarikat',
+    jenisPengenalan: 'ID Syarikat',
+    tarikhPermohonan: new Date().toISOString(),
+    status: 'Ditolak',
+    tindakan: { id: 'RE-240516', status: 'Ditolak' },
   },
 ]);
+
+// Filter table data based on status
+const getTableDataByStatus = (statuses) => {
+  let result = recipientList.value.filter(recipient => 
+    statuses.includes(recipient.status)
+  );
+  
+  // Apply search filter
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    result = result.filter(recipient => 
+      recipient.noRujukan.toLowerCase().includes(query) ||
+      recipient.namaRecipient.toLowerCase().includes(query)
+    );
+  }
+  
+  return result;
+};
 
 const filteredRecipients = computed(() => {
   let filtered = [...recipientList.value];
@@ -175,14 +318,7 @@ const filteredRecipients = computed(() => {
     const query = searchQuery.value.toLowerCase();
     filtered = filtered.filter(item =>
       item.noRujukan.toLowerCase().includes(query) ||
-      item.namaRecipient.toLowerCase().includes(query) ||
-      item.pegawai.toLowerCase().includes(query)
-    );
-  }
-
-  if (filters.value.status) {
-    filtered = filtered.filter(item =>
-      item.status.toLowerCase().replace(/\s+/g, '_') === filters.value.status
+      item.namaRecipient.toLowerCase().includes(query)
     );
   }
 
@@ -196,6 +332,7 @@ const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value
 
 const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
 const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
+
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
@@ -203,6 +340,18 @@ const getStatusVariant = (status) => {
     'Ditolak': 'danger'
   };
   return variants[status] || 'default';
+};
+
+// Action capabilities - only allow action for pending status
+const canPerformAction = (status) => {
+  return ['Menunggu Pengesahan'].includes(status);
+};
+
+// Search function
+const performSearch = () => {
+  // Force table re-render when search is performed
+  tableKey.value++;
+  currentPage.value = 1;
 };
 
 const viewRecipient = (id) => navigateTo(`/BF-PRF/TP/PP/${id}`);

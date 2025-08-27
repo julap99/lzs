@@ -449,7 +449,7 @@
             Kembali ke Carian
           </rs-button>
           <rs-button
-            @click="navigateTo('/BF-PRF/OR/PB/03')"
+            @click="navigateTo('/BF-PRF/OR/PB/')"
             variant="primary"
           >
             Ke Senarai Permohonan
