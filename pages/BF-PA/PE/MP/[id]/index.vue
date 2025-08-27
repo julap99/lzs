@@ -196,6 +196,104 @@
              </div>
            </div>
 
+           <!-- Review History -->
+           <div class="mb-6 p-6 border border-gray-200 rounded-lg">
+             <h3 class="text-lg font-semibold mb-4 text-gray-900">
+               Sejarah Semakan
+             </h3>
+             
+             <div class="space-y-4">
+               <!-- Eksekutif Review -->
+               <div class="flex items-start justify-between p-4">
+                 <div class="flex items-start">
+                   <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                   <div class="flex-1">
+                     <div class="flex items-center justify-between mb-2">
+                       <h4 class="font-semibold text-gray-900">Eksekutif</h4>
+                       <rs-badge variant="success">Selesai</rs-badge>
+                     </div>
+                     <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
+                     <div class="text-xs text-gray-600 space-y-1">
+                       <p><strong>Disemak oleh:</strong> Ahmad bin Abdullah (Eksekutif)</p>
+                       <p><strong>Tarikh:</strong> 15/04/2024, 09:00</p>
+                       <p><strong>Catatan:</strong> Aktiviti telah disemak dan disokong untuk diteruskan</p>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+               <!-- Ketua Jabatan Review -->
+               <div class="flex items-start justify-between p-4" 
+                    :class="currentRole === 'ketua-jabatan' ? 'bg-orange-50 rounded-lg border border-orange-200' : ''">
+                 <div class="flex items-start">
+                   <Icon :name="currentRole === 'ketua-jabatan' ? 'ph:check-circle' : 
+                               activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? 'ph:check-circle' : 'ph:circle'" 
+                         :class="currentRole === 'ketua-jabatan' ? 'w-5 h-5 mr-3 text-orange-500 mt-1' : 
+                                 'w-5 h-5 mr-3 text-gray-500 mt-1'" />
+                   <div class="flex-1">
+                     <div class="flex items-center justify-between mb-2">
+                       <h4 class="font-semibold" :class="currentRole === 'ketua-jabatan' ? 'text-orange-900' : 'text-gray-900'">Ketua Jabatan</h4>
+                       <rs-badge :variant="currentRole === 'ketua-jabatan' ? 'warning' : 
+                                       activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? 'success' : 'secondary'">
+                         {{ currentRole === 'ketua-jabatan' ? 'Dalam Proses' : 
+                            activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? 'Selesai' : 'Belum Dimulakan' }}
+                       </rs-badge>
+                     </div>
+                     <p class="text-sm mb-2" :class="currentRole === 'ketua-jabatan' ? 'text-orange-700' : 'text-gray-700'">Pengesahan ketua jabatan</p>
+                     <div class="text-xs space-y-1" :class="currentRole === 'ketua-jabatan' ? 'text-orange-600' : 'text-gray-600'">
+                       <p><strong>Disemak oleh:</strong> 
+                         {{ activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? 'Siti Aminah binti Hassan' : '-' }}
+                       </p>
+                       <p><strong>Tarikh:</strong> 
+                         {{ activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? '18/04/2024, 14:30' : '-' }}
+                       </p>
+                       <p><strong>Catatan:</strong> 
+                         {{ currentRole === 'ketua-jabatan' ? 'Menunggu keputusan pengesahan' : 
+                            activityInfo.status === 'Diluluskan' ? 'Aktiviti telah disemak dan diluluskan' : 
+                            activityInfo.status === 'Ditolak' ? 'Aktiviti ditolak kerana tidak memenuhi kriteria' : '-' }}
+                       </p>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+               <!-- Ketua Divisyen Review -->
+               <div class="flex items-start justify-between p-4" 
+                    :class="currentRole === 'ketua-divisyen' ? 'bg-orange-50 rounded-lg border border-orange-200' : ''">
+                 <div class="flex items-start">
+                   <Icon :name="currentRole === 'ketua-divisyen' ? 'ph:check-circle' : 
+                               activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? 'ph:check-circle' : 'ph:circle'" 
+                         :class="currentRole === 'ketua-divisyen' ? 'w-5 h-5 mr-3 text-orange-500 mt-1' : 
+                                 'w-5 h-5 mr-3 text-gray-500 mt-1'" />
+                   <div class="flex-1">
+                     <div class="flex items-center justify-between mb-2">
+                       <h4 class="font-semibold" :class="currentRole === 'ketua-divisyen' ? 'text-orange-900' : 'text-gray-900'">Ketua Divisyen</h4>
+                       <rs-badge :variant="currentRole === 'ketua-divisyen' ? 'warning' : 
+                                       activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? 'success' : 'secondary'">
+                         {{ currentRole === 'ketua-divisyen' ? 'Dalam Proses' : 
+                            activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? 'Selesai' : 'Belum Dimulakan' }}
+                       </rs-badge>
+                     </div>
+                     <p class="text-sm mb-2" :class="currentRole === 'ketua-divisyen' ? 'text-orange-700' : 'text-gray-700'">Pengesahan ketua divisyen</p>
+                     <div class="text-xs space-y-1" :class="currentRole === 'ketua-divisyen' ? 'text-orange-600' : 'text-gray-600'">
+                       <p><strong>Disemak oleh:</strong> 
+                         {{ activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? 'Mohd Razak bin Ibrahim' : '-' }}
+                       </p>
+                       <p><strong>Tarikh:</strong> 
+                         {{ activityInfo.status === 'Diluluskan' || activityInfo.status === 'Ditolak' ? '20/04/2024, 16:00' : '-' }}
+                       </p>
+                       <p><strong>Catatan:</strong> 
+                         {{ currentRole === 'ketua-divisyen' ? 'Menunggu keputusan pengesahan' : 
+                            activityInfo.status === 'Diluluskan' ? 'Aktiviti telah disemak dan diluluskan pada peringkat akhir' : 
+                            activityInfo.status === 'Ditolak' ? 'Aktiviti ditolak pada peringkat akhir' : '-' }}
+                       </p>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+
                      <!-- Action Buttons -->
            <div class="flex justify-end gap-4 mt-6">
              <!-- Eksekutif Role Buttons -->

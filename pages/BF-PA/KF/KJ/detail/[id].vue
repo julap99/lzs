@@ -141,26 +141,45 @@
                       <div class="text-xs text-gray-600 space-y-1">
                         <p><strong>Disemak oleh:</strong> Dr. Aminah binti Abdullah (Eksekutif)</p>
                         <p><strong>Tarikh:</strong> 15-01-2024 10:30</p>
-                        <p><strong>Catatan:</strong> Sokongan diberikan untuk penambahan jawatan Ketua Penolong Amil</p>
+                        <p><strong>Catatan:</strong> Sokongan diberikan untuk jawatan penolong amil kategori {{ categoryData.kategoriPenolongAmil }}</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <!-- Ketua Jabatan Review (Current) -->
-                <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <!-- Ketua Jabatan Review -->
+                <div class="flex items-start justify-between p-4">
                   <div class="flex items-start">
-                    <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+                    <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
                     <div class="flex-1">
                       <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-semibold text-orange-900">Ketua Jabatan</h4>
+                        <h4 class="font-semibold text-gray-900">Ketua Jabatan</h4>
+                        <rs-badge variant="success">Selesai</rs-badge>
+                      </div>
+                      <p class="text-sm text-gray-700 mb-2">Pengesahan ketua jabatan</p>
+                      <div class="text-xs text-gray-600 space-y-1">
+                        <p><strong>Disemak oleh:</strong> Prof. Dr. Ismail bin Ahmad (Ketua Jabatan)</p>
+                        <p><strong>Tarikh:</strong> 20-01-2024 14:15</p>
+                        <p><strong>Catatan:</strong> Jawatan disahkan dan layak untuk kelulusan ketua divisyen</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ketua Divisyen Review (Current) -->
+                <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+                  <div class="flex items-start">
+                    <Icon name="ph:star" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+                    <div class="flex-1">
+                      <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-orange-900">Ketua Divisyen</h4>
                         <rs-badge variant="warning">Dalam Proses</rs-badge>
                       </div>
-                      <p class="text-sm text-orange-700 mb-2">Pengesahan ketua jabatan</p>
+                      <p class="text-sm text-orange-700 mb-2">Kelulusan akhir ketua divisyen</p>
                       <div class="text-xs text-orange-600 space-y-1">
                         <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
                         <p><strong>Tarikh:</strong> {{ currentDate }}</p>
-                        <p><strong>Status:</strong> Menunggu keputusan pengesahan</p>
+                        <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
                       </div>
                     </div>
                   </div>
@@ -247,13 +266,18 @@
       </template>
     </rs-card>
     -->
-    
-       </div>
-     </template>
+  </div>
+</template>
 
 <script setup>
-import { ref } from "vue";
+
+import { ref, computed } from "vue";
 import { formatDate } from "~/utils/dateFormatter";
+
+// Mock current user/date and review history items for display
+const currentUser = ref({ name: 'Ketua Jabatan Demo', role: 'Ketua Jabatan' })
+const currentDate = ref(new Date().toLocaleDateString('ms-MY'))
+// Review history inlined in template for this mockup
 
 definePageMeta({
   title: "Paparan Terperinci Jawatan Penolong Amil",
@@ -267,16 +291,16 @@ const breadcrumb = [
   { name: 'Modul BF-PA', path: '/BF-PA' },
   { name: 'Konfigurasi', path: '/BF-PA/KF' },
   { name: 'Maklumat Jawatan', path: '/BF-PA/KF/KJ' },
-  { name: 'Paparan Terperinci', path: null }
+  { name: 'Paparan Terperinci', path: `/BF-PA/KF/KJ/detail/${positionId}` },
 ];
 
 // Mock position data
 const positionData = ref({
   rujukan: "KJ-2024-001",
   namaJawatan: "Ketua Penolong Amil",
-  kodSingkatan: "KPA",
+    kodSingkatan: "KPA",
   status: "Aktif",
-      tarikhKuatkuasa: "01-01-2024",
+  tarikhKuatkuasa: "01-01-2024",
   maklumatPegawai: {
     diciptaOleh: "Ahmad bin Ali",
     tarikhCipta: "2024-01-15",
@@ -294,7 +318,7 @@ const categoryData = ref({
   kategoriPenolongAmil: "Penolong Amil Fitrah",
   kodSingkatan: "PAF",
   status: "Aktif",
-      tarikhKuatkuasa: "01-01-2024"
+  tarikhKuatkuasa: "01-01-2024"
 });
 
 // Current user role removed - not needed for view-only screen

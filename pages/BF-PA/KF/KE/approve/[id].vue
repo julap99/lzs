@@ -199,7 +199,77 @@
       </template>
     </rs-card>
 
+          <!-- Review History -->
+      <rs-card class="mb-6">
+        <template #header>
+          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
+            Sejarah Semakan
+          </h3>
+        </template>
+        <template #body>
+          <div class="p-6">
+            <div class="space-y-4">
+              <!-- Eksekutif Review -->
+              <div class="flex items-start justify-between p-4">
+                <div class="flex items-start">
+                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-gray-900">Eksekutif</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
+                    <div class="text-xs text-gray-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Dr. Aminah binti Abdullah (Eksekutif)</p>
+                      <p><strong>Tarikh:</strong> 15-01-2024 10:30</p>
+                      <p><strong>Catatan:</strong> Sokongan diberikan untuk kadar elaun penolong amil</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
+              <!-- Ketua Jabatan Review -->
+              <div class="flex items-start justify-between p-4">
+                <div class="flex items-start">
+                  <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-gray-900">Ketua Jabatan</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">Pengesahan ketua jabatan</p>
+                    <div class="text-xs text-gray-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> Prof. Dr. Ismail bin Ahmad (Ketua Jabatan)</p>
+                      <p><strong>Tarikh:</strong> 20-01-2024 14:15</p>
+                      <p><strong>Catatan:</strong> Kadar elaun disahkan dan layak untuk kelulusan ketua divisyen</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ketua Divisyen Review (Current) -->
+              <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div class="flex items-start">
+                  <Icon name="ph:star" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-orange-900">Ketua Divisyen</h4>
+                      <rs-badge variant="warning">Dalam Proses</rs-badge>
+                    </div>
+                    <p class="text-sm text-orange-700 mb-2">Kelulusan akhir ketua divisyen</p>
+                    <div class="text-xs text-orange-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> {{ formData.approverName }} (Ketua Divisyen)</p>
+                      <p><strong>Tarikh:</strong> {{ formatDate(formData.approvalDate) }}</p>
+                      <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
 
     <!-- Approval Form -->
     <FormKit

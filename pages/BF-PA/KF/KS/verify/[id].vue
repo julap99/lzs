@@ -128,6 +128,8 @@
       <template #body>
         <div class="p-6">
           <div class="space-y-4">
+
+
             <!-- Eksekutif Review -->
             <div class="flex items-start justify-between p-4">
               <div class="flex items-start">
@@ -147,20 +149,37 @@
               </div>
             </div>
 
-            <!-- Ketua Divisyen Review (Current) -->
+            <!-- Ketua Jabatan Review (Current) -->
             <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
               <div class="flex items-start">
-                <Icon name="ph:star" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+                <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
                 <div class="flex-1">
                   <div class="flex items-center justify-between mb-2">
-                    <h4 class="font-semibold text-orange-900">Ketua Divisyen</h4>
+                    <h4 class="font-semibold text-orange-900">Ketua Jabatan</h4>
                     <rs-badge variant="warning">Dalam Proses</rs-badge>
                   </div>
-                  <p class="text-sm text-orange-700 mb-2">Kelulusan akhir ketua divisyen</p>
+                  <p class="text-sm text-orange-700 mb-2">Pengesahan ketua jabatan</p>
                   <div class="text-xs text-orange-600 space-y-1">
-                    <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
-                    <p><strong>Tarikh:</strong> {{ currentDate }}</p>
-                    <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
+                    <p><strong>Disemak oleh:</strong> {{ formData.verifierName }} (Ketua Jabatan)</p>
+                    <p><strong>Tarikh:</strong> {{ formatDate(formData.verificationDate) }}</p>
+                    <p><strong>Status:</strong> Menunggu keputusan pengesahan</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ketua Divisyen Review (Pending) -->
+            <div class="flex items-start justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div class="flex items-start">
+                <Icon name="ph:star" class="w-5 h-5 mr-3 text-gray-400 mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-semibold text-gray-600">Ketua Divisyen</h4>
+                    <rs-badge variant="secondary">Belum Mula</rs-badge>
+                  </div>
+                  <p class="text-sm text-gray-500 mb-2">Kelulusan akhir ketua divisyen</p>
+                  <div class="text-xs text-gray-500 space-y-1">
+                    <p><strong>Status:</strong> Menunggu pengesahan dari ketua jabatan</p>
                   </div>
                 </div>
               </div>
