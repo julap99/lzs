@@ -969,8 +969,32 @@ const openMemoDocument = (memoName) => {
 };
 
 const editDocument = (documentType) => {
-  selectedDocumentType.value = getDokumenLabel(documentType);
-  showDocumentModal.value = true;
+  // Map document types to their corresponding routes
+  const documentRoutes = {
+    'borang-penggunaan-pemeriksaan': `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/penggunaan-pemeriksaan-bahan`,
+    'borang-laporan-harian': `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/laporan-harian`,
+    'permohonan-pemeriksaan-kerja': `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/permohonan-pemeriksaan-kerja`,
+    'borang-kepuasan-pelanggan': `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/kepuasan-pelanggan`,
+    'borang-penilaian-prestasi': `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/penilaian-prestasi-kontraktor`,
+    'borang-pemeriksaan-kecacatan': `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/pemeriksaan-kecacatan-bangunan`,
+    'borang-lawatan-tapak': `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/lawatan-tapak`,
+    'surat-serah-kunci': `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/serah-kunci`,
+  };
+  
+  const targetRoute = documentRoutes[documentType];
+  
+  if (targetRoute) {
+    // Show loading message
+    toast.info(`Membuka ${getDokumenLabel(documentType)}...`);
+    
+    // Navigate to the specific form page
+    navigateTo(targetRoute);
+  } else {
+    // Fallback: show modal for unknown document types
+    selectedDocumentType.value = getDokumenLabel(documentType);
+    showDocumentModal.value = true;
+    toast.warning(`Borang untuk ${getDokumenLabel(documentType)} belum tersedia`);
+  }
 };
 
 const proceedToEditDocument = () => {
