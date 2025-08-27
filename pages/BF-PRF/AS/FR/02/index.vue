@@ -21,8 +21,12 @@
             <div
               v-for="step in stepsA"
               :key="step.id"
-              class="text-center flex-1 cursor-pointer"
-              :class="{ 'font-semibold': currentStepA >= step.id }"
+              class="text-center flex-1"
+              :class="{
+                'font-semibold': currentStepA >= step.id,
+                'cursor-not-allowed opacity-50': step.id > 1 && !isPenilaianAwalConfirmed,
+                'cursor-pointer': !(step.id > 1 && !isPenilaianAwalConfirmed)
+              }"
               @click="goToStepA(step.id)"
             >
               {{ step.label }}
@@ -59,6 +63,7 @@
               <FormKit
                 type="radio"
                 name="komitmen_tinggi"
+                v-model="formData.komitmen_tinggi"
                 :options="[
                   { label: 'Ya', value: 'Y' },
                   { label: 'Tidak', value: 'T' },
@@ -76,6 +81,7 @@
               <FormKit
                 type="checkbox"
                 name="keperluan_mendesak"
+                v-model="formData.keperluan_mendesak"
                 :options="[
                   { label: 'Perubatan Kritikal', value: 'perubatan' },
                   { label: 'Bencana', value: 'bencana' },
@@ -142,6 +148,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
+                :disabled="!isPenilaianAwalComplete"
                 >Seterusnya ke Maklumat Peribadi</rs-button
               >
             </div>
@@ -5557,6 +5564,8 @@ const currentSection = ref(1);
 
 // Section A - Main Form Steps (now 15 steps with separate tabs for different info sections)
 const currentStepA = ref(1);
+// Flag to unlock stepper after user explicitly proceeds from Penilaian Awal
+const isPenilaianAwalConfirmed = ref(false);
 const totalStepsA = 15;
 const stepsA = [
   { id: 1, label: "Penilaian Awal" },
@@ -6147,6 +6156,21 @@ const showLainInput = computed(() => {
   return formData.value.keperluanMendesak?.includes("lain");
 });
 
+// Determine if both "Penilaian Awal" questions are completed
+const isPenilaianAwalComplete = computed(() => {
+  const answeredKomitmen = !!formData.value.komitmen_tinggi;
+  const answeredKeperluan = Array.isArray(formData.value.keperluan_mendesak)
+    ? formData.value.keperluan_mendesak.length > 0
+    : false;
+  // If "lain" is selected, ensure the extra input is provided
+  const needsLainDetail = Array.isArray(formData.value.keperluan_mendesak)
+    ? formData.value.keperluan_mendesak.includes("lain")
+    : false;
+  const lainDetailOk = needsLainDetail ? !!formData.value.lain_keperluan : true;
+
+  return answeredKomitmen && answeredKeperluan && lainDetailOk;
+});
+
 const showLainLainSektor = computed(() => {
   return formData.value.sektor_pekerjaan === "Lain-lain";
 });
@@ -6613,6 +6637,15 @@ watch(
 // STEP NAVIGATION FUNCTIONS
 // ============================================================================
 const nextStepA = () => {
+  // If moving from Penilaian Awal (step 1) to step 2, require completion
+  if (currentStepA.value === 1) {
+    if (!isPenilaianAwalComplete.value) {
+      toast && toast.error && toast.error("Sila lengkapkan Penilaian Awal terlebih dahulu");
+      return;
+    }
+    isPenilaianAwalConfirmed.value = true;
+  }
+
   if (currentStepA.value < totalStepsA) {
     currentStepA.value++;
   } else if (currentStepA.value === totalStepsA) {
@@ -7477,7 +7510,11 @@ onMounted(() => {
 // STEP JUMP FUNCTIONS
 // ============================================================================
 const goToStepA = (stepNumber) => {
-  // Allow direct navigation to any step
+  // Block navigating to steps beyond 1 until user confirms via Next button
+  if (stepNumber > 1 && !isPenilaianAwalConfirmed.value) {
+    toast && toast.error && toast.error("Sila klik Seterusnya selepas lengkapkan Penilaian Awal");
+    return;
+  }
   currentStepA.value = stepNumber;
 };
 
