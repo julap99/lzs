@@ -83,16 +83,18 @@
                 name="keperluan_mendesak"
                 v-model="formData.keperluan_mendesak"
                 :options="[
-                  { label: 'Perubatan Kritikal', value: 'perubatan' },
+                  { label: 'Perubatan kritikal', value: 'perubatan_kritikal' },
                   { label: 'Bencana', value: 'bencana' },
                   { label: 'Kematian', value: 'kematian' },
-                  {
-                    label: 'Konflik Keluarga (tiada tempat bergantung)',
-                    value: 'konflik',
-                  },
-                  { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah' },
-                  { label: 'Selain dari di atas', value: 'lain' },
-                  { label: 'Tidak mendesak', value: 'tidakMendesak' },
+                  { label: 'Konflik keluarga (tiada tempat bergantung)', value: 'konflik_keluarga' },
+                  { label: 'Tiada tempat tinggal', value: 'tiada_tempat_tinggal' },
+                  { label: 'Terputus bekalan makanan', value: 'terputus_bekalan_makanan' },
+                  { label: 'Masih ada bekalan makanan', value: 'masih_ada_bekalan_makanan' },
+                  { label: 'Tiada sumber pendapatan', value: 'tiada_sumber_pendapatan' },
+                  { label: 'Mempunyai tempat tinggal', value: 'mempunyai_tempat_tinggal' },
+                  { label: 'Pendapatan berkurangan', value: 'pendapatan_berkurangan' },
+                  { label: 'Keperluan Lain', value: 'keperluan_lain' },
+                  { label: 'Selain dari di atas', value: 'selain_dari_di_atas' },
                 ]"
                 validation="required|min:1"
                 validation-label="Jawapan"
@@ -102,12 +104,12 @@
                 }"
               />
 
-              <!-- Additional input for "Selain dari di atas" -->
+              <!-- Additional input for "Keperluan Lain / Selain dari di atas" -->
               <div v-if="showLainInput" class="mt-4">
                 <FormKit
                   type="text"
                   name="lain_keperluan"
-                  label="Sila nyatakan keperluan lain:"
+                  label="Sila nyatakan keperluan:"
                   validation="required"
                   validation-label="Keperluan lain"
                   validation-messages="{
@@ -2523,13 +2525,13 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Pendapatan</rs-button
+                >Seterusnya ke Maklumat Pendapatan & Perbelanjaan</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 13: Maklumat Pendapatan -->
+        <!-- Section A Form - Step 13: Maklumat Pendapatan & Perbelanjaan -->
         <FormKit
           v-if="currentStepA === 13"
           type="form"
@@ -2537,7 +2539,7 @@
           :actions="false"
           id="sectionA13"
         >
-          <h3 class="text-lg font-semibold mb-4">13. Maklumat Pendapatan</h3>
+          <h3 class="text-lg font-semibold mb-4">13. Maklumat Pendapatan & Perbelanjaan</h3>
 
           <!-- Income Information -->
           <div class="mb-6">
@@ -2779,11 +2781,39 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <FormKit
+                type="select"
+                :name="`heir${index}JenisId`"
+                label="Jenis Id"
+                placeholder="Pilih Jenis Id"
+                validation="required"
+                :options="[
+                  { label: 'MyKad', value: 'MyKad' },
+                  { label: 'ForeignId', value: 'ForeignId' },
+                ]"
+                v-model="heir.jenis_pengenalan"
+                :validation-messages="{
+                  required: 'Jenis Id adalah wajib',
+                }"
+              />
+
+              <FormKit
+              type="text"
+              :name="'heir${index}IdPengenalan'"
+              label="Id Pengenalan"
+              :validation="heir.jenis_pengenalan ? 'required' : ''"
+              v-model="heir.id_pengenalan"
+              :validation-messages="{
+                required: 'Id Pengenalan adalah wajib',
+              }"
+              />
+
               <FormKit
                 type="text"
                 :name="`heir${index}Name`"
                 label="Nama Waris"
-                validation="required"
+                :validation="heir.jenis_pengenalan ? 'required' : ''"
                 v-model="heir.name"
                 :validation-messages="{
                   required: 'Nama waris adalah wajib',
@@ -2791,10 +2821,28 @@
               />
 
               <FormKit
-                type="text"
+                type="select"
                 :name="`heir${index}Relationship`"
                 label="Hubungan"
-                validation="required"
+                :validation="heir.jenis_pengenalan ? 'required' : ''"
+                placeholder="Pilih Hubungan"
+                :options="[
+                  'Pasangan Pemohon',
+                  'Isteri Kedua',
+                  'Isteri Ketiga',
+                  'Isteri Keempat',
+                  'Ipar',
+                  'Abang',
+                  'Bapa',
+                  'Ibu',
+                  'Kakak',
+                  'Adik',
+                  'Anak',
+                  'Cucu',
+                  'Bapa Mertua',
+                  'Ibu Mertua',
+                  'Lain-lain',
+                ]"
                 v-model="heir.relationship"
                 :validation-messages="{
                   required: 'Hubungan adalah wajib',
@@ -2802,10 +2850,22 @@
               />
 
               <FormKit
+                v-if="heir.relationship === 'Lain-lain'"
+                type="text"
+                :name="`heir${index}RelationshipOther`"
+                label="Lain-lain Hubungan"
+                :validation="heir.relationship === 'Lain-lain' && heir.jenis_pengenalan ? 'required' : ''"
+                v-model="heir.relationship_other"
+                :validation-messages="{
+                  required: 'Sila nyatakan hubungan lain-lain',
+                }"
+              />
+
+              <FormKit
                 type="tel"
                 :name="`heir${index}Phone`"
                 label="No. Telefon Waris"
-                validation="required"
+                :validation="heir.jenis_pengenalan ? 'required' : ''"
                 v-model="heir.phone"
                 :validation-messages="{
                   required: 'No. telefon waris adalah wajib',
@@ -5485,7 +5545,7 @@ const stepsA = [
   { id: 10, label: "Pemilikan" },
   { id: 11, label: "Pemilikan Barangan Rumah" },
   { id: 12, label: "Pekerjaan" },
-  { id: 13, label: "Pendapatan" },
+  { id: 13, label: "Pendapatan & Perbelanjaan" },
   { id: 14, label: "Waris" },
 ];
 
@@ -6045,7 +6105,9 @@ const guruList = ref([
 // COMPUTED PROPERTIES
 // ============================================================================
 const showLainInput = computed(() => {
-  return formData.value.keperluanMendesak?.includes("lain");
+  const list = formData.value.keperluan_mendesak;
+  if (!Array.isArray(list)) return false;
+  return list.includes("keperluan_lain") || list.includes("selain_dari_di_atas");
 });
 
 // Determine if both "Penilaian Awal" questions are completed
@@ -6054,9 +6116,10 @@ const isPenilaianAwalComplete = computed(() => {
   const answeredKeperluan = Array.isArray(formData.value.keperluan_mendesak)
     ? formData.value.keperluan_mendesak.length > 0
     : false;
-  // If "lain" is selected, ensure the extra input is provided
+  // If extra detail required, ensure the extra input is provided
   const needsLainDetail = Array.isArray(formData.value.keperluan_mendesak)
-    ? formData.value.keperluan_mendesak.includes("lain")
+    ? (formData.value.keperluan_mendesak.includes("keperluan_lain") ||
+       formData.value.keperluan_mendesak.includes("selain_dari_di_atas"))
     : false;
   const lainDetailOk = needsLainDetail ? !!formData.value.lain_keperluan : true;
 
@@ -7730,6 +7793,7 @@ const addHeir = () => {
   formData.value.heirs.push({
     name: "",
     relationship: "",
+    relationship_other: "",
     phone: "",
   });
 };
