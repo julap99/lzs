@@ -85,7 +85,8 @@
     <!-- Review History -->
     <rs-card class="mb-6">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900">
+        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+          <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2" />
           Sejarah Semakan
         </h3>
       </template>
@@ -240,10 +241,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'nuxt/app'
 import { useToast } from 'vue-toastification'
 import { formatDate } from '~/utils/dateFormatter'
+
+// Mock current user/date for display
+const currentUser = ref({ name: 'Ketua Divisyen Demo', role: 'Ketua Divisyen' })
+const currentDate = ref(new Date().toLocaleDateString('ms-MY'))
 
 definePageMeta({
   title: "Paparan Terperinci Kategori Penolong Amil"

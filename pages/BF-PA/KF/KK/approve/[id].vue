@@ -193,8 +193,8 @@
                     </div>
                     <p class="text-sm text-orange-700 mb-2">Kelulusan akhir ketua divisyen</p>
                     <div class="text-xs text-orange-600 space-y-1">
-                      <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
-                      <p><strong>Tarikh:</strong> {{ currentDate }}</p>
+                      <p><strong>Disemak oleh:</strong> {{ formData.namaPelulus }} (Ketua Divisyen)</p>
+                      <p><strong>Tarikh:</strong> {{ formatDate(formData.approvalDate) }}</p>
                       <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
                     </div>
                   </div>

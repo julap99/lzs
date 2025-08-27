@@ -124,6 +124,8 @@
       <template #body>
         <div class="p-6">
           <div class="space-y-4">
+
+
             <!-- Eksekutif Review -->
             <div class="flex items-start justify-between p-4">
               <div class="flex items-start">
@@ -136,8 +138,8 @@
                   <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
                   <div class="text-xs text-gray-600 space-y-1">
                     <p><strong>Disemak oleh:</strong> Dr. Aminah binti Abdullah (Eksekutif)</p>
-                    <p><strong>Tarikh:</strong> 15-01-2024 10:30</p>
-                    <p><strong>Catatan:</strong> Sokongan diberikan untuk perubahan tempoh sesi perkhidmatan</p>
+                    <p><strong>Tarikh:</strong> 30-01-2024 11:20</p>
+                    <p><strong>Catatan:</strong> Calon layak dan disokong untuk pengesahan ketua jabatan</p>
                   </div>
                 </div>
               </div>
@@ -155,8 +157,8 @@
                   <p class="text-sm text-gray-700 mb-2">Pengesahan ketua jabatan</p>
                   <div class="text-xs text-gray-600 space-y-1">
                     <p><strong>Disemak oleh:</strong> Prof. Dr. Ismail bin Ahmad (Ketua Jabatan)</p>
-                    <p><strong>Tarikh:</strong> 20-01-2024 14:15</p>
-                    <p><strong>Catatan:</strong> Perubahan tempoh sesi disahkan dan layak untuk kelulusan ketua divisyen</p>
+                    <p><strong>Tarikh:</strong> 05-04-2024 14:30</p>
+                    <p><strong>Catatan:</strong> Calon disahkan oleh ketua jabatan. Sedia untuk kelulusan akhir ketua divisyen</p>
                   </div>
                 </div>
               </div>
@@ -273,7 +275,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+
+import { ref, onMounted, computed } from "vue";
 import { formatDate } from "~/utils/dateFormatter";
 
 const route = useRoute();
@@ -298,7 +301,7 @@ const categoryData = ref({
   kategoriPenolongAmil: "Penolong Amil Fitrah",
   kodSingkatan: "PAF", 
   status: "Aktif",
-      tarikhKuatkuasa: "01-01-2024"
+  tarikhKuatkuasa: "01-01-2024"
 });
 
 // Enhanced session data matching our new structure

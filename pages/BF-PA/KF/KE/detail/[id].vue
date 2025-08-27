@@ -305,7 +305,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+
+import { ref, onMounted, computed } from "vue";
 import { formatDate } from "~/utils/dateFormatter";
 
 const route = useRoute();
@@ -543,6 +544,11 @@ const getCurrentStatusDescription = () => {
 };
 
 // Action methods removed - not needed for view-only screen
+
+// Mock current user and date for history
+const currentUser = ref({ name: 'Ketua Divisyen Demo', role: 'Ketua Divisyen' })
+const currentDate = ref(new Date().toLocaleDateString('ms-MY'))
+
 
 onMounted(() => {
   // Fetch allowance data from API in real app

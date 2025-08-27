@@ -128,6 +128,8 @@
       <template #body>
         <div class="p-6">
           <div class="space-y-4">
+
+
             <!-- Eksekutif Review -->
             <div class="flex items-start justify-between p-4">
               <div class="flex items-start">
@@ -177,8 +179,8 @@
                   </div>
                   <p class="text-sm text-orange-700 mb-2">Kelulusan akhir ketua divisyen</p>
                   <div class="text-xs text-orange-600 space-y-1">
-                    <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
-                    <p><strong>Tarikh:</strong> {{ currentDate }}</p>
+                    <p><strong>Disemak oleh:</strong> {{ formData.approverName }} (Ketua Divisyen)</p>
+                    <p><strong>Tarikh:</strong> {{ formatDate(formData.approvalDate) }}</p>
                     <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
                   </div>
                 </div>

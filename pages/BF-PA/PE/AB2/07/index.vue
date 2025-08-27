@@ -231,6 +231,72 @@
             </div>
           </div>
 
+          <!-- Review History -->
+          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">
+              Sejarah Semakan
+            </h3>
+            
+            <div class="space-y-4">
+              <!-- JPPA Review -->
+              <div class="flex items-start justify-between p-4">
+                <div class="flex items-start">
+                  <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-gray-900">JPPA</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
+                    <div class="text-xs text-gray-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> {{ application.jppaApprover }} (Eksekutif)</p>
+                      <p><strong>Tarikh:</strong> {{ application.jppaApprovalDate }}</p>
+                      <p><strong>Catatan:</strong> Permohonan telah disemak dan disokong untuk diteruskan</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ketua Jabatan Review -->
+              <div class="flex items-start justify-between p-4">
+                <div class="flex items-start">
+                  <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-gray-900">Ketua Jabatan</h4>
+                      <rs-badge variant="success">Selesai</rs-badge>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">Pengesahan ketua jabatan</p>
+                    <div class="text-xs text-gray-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> {{ application.ketuaJabatanApprover }} (Ketua Jabatan)</p>
+                      <p><strong>Tarikh:</strong> {{ application.ketuaJabatanApprovalDate }}</p>
+                      <p><strong>Catatan:</strong> Permohonan telah disemak dan diluluskan untuk diteruskan ke peringkat seterusnya</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ketua Divisyen Review (Rejected) -->
+              <div class="flex items-start justify-between p-4 bg-red-50 rounded-lg border border-red-200">
+                <div class="flex items-start">
+                  <Icon name="ph:x-circle" class="w-5 h-5 mr-3 text-red-500 mt-1" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="font-semibold text-red-700">Ketua Divisyen</h4>
+                      <rs-badge variant="danger">Ditolak</rs-badge>
+                    </div>
+                    <p class="text-sm text-red-700 mb-2">Pengesahan ketua divisyen</p>
+                    <div class="text-xs text-red-600 space-y-1">
+                      <p><strong>Disemak oleh:</strong> {{ application.rejectedBy }} (Ketua Divisyen)</p>
+                      <p><strong>Tarikh:</strong> {{ application.rejectionDate }}</p>
+                      <p><strong>Catatan:</strong> {{ application.rejectionReason || 'Permohonan ditolak kerana tidak memenuhi kriteria yang ditetapkan' }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Action Buttons -->
           <div class="flex justify-end gap-4 mt-6">
             <rs-button
