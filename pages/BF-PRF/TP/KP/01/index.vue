@@ -3,13 +3,22 @@
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
-      <template #header>Kemaskini Profil Organisasi</template>
+      <template #header>Kemaskini Profil Recipient</template>
       <template #body>
         <!-- Maklumat Read-only -->
-        <rs-section title="Maklumat Organisasi">
+        <rs-section title="Maklumat Recipient">
           <rs-row>
-            <rs-col label="Nama Organisasi">
-              <p>{{ profileData.namaOrganisasi }}</p>
+            <rs-col label="Nama Recipient">
+              <p>{{ profileData.namaRecipient }}</p>
+            </rs-col>
+            <rs-col label="Jenis Recipient">
+              <p>{{ profileData.jenisRecipient }}</p>
+            </rs-col>
+            <rs-col label="Jenis Pengenalan">
+              <p>{{ profileData.jenisPengenalan }}</p>
+            </rs-col>
+            <rs-col label="ID Pengenalan">
+              <p>{{ profileData.idPengenalan }}</p>
             </rs-col>
             <rs-col label="Status Terkini">
               <rs-badge :variant="getStatusVariant(profileData.status)">
@@ -23,22 +32,20 @@
         </rs-section>
 
         <!-- Borang Kemaskini -->
-        <rs-section title="Kemaskini Maklumat">
+        <rs-section title="Kemaskini Maklumat Akaun Bank">
           <rs-form>
-            <rs-input v-model="form.alamat" label="Alamat" />
-            <rs-input v-model="form.noTelefon" label="No Telefon" />
-            <rs-input v-model="form.emel" label="E-mel" />
-
-            <rs-input v-model="form.pic" label="Nama PIC" />
-            <rs-input v-model="form.jawatanPic" label="Jawatan PIC" />
-
-            <rs-divider label="Maklumat Bank" />
             <rs-input v-model="form.namaBank" label="Nama Bank" />
-            <rs-input v-model="form.noAkaun" label="No Akaun Bank" />
-            <rs-input v-model="form.namaPemilik" label="Nama Pemilik Akaun" />
-            <rs-input v-model="form.swiftCode" label="SWIFT Code" />
-            <rs-select v-model="form.kaedahPembayaran" :options="kaedahOptions" label="Kaedah Pembayaran" />
-            <rs-file-upload v-model="form.dokumen" label="Dokumen Sokongan" />
+            <rs-input 
+              v-model="form.noAkaunBank" 
+              label="No Akaun Bank" 
+              help="Format: 10-16 digit"
+            />
+            <rs-input v-model="form.penamaAkaunBank" label="Penama Akaun Bank" />
+            <rs-file-upload 
+              v-model="form.dokumenSokongan" 
+              label="Dokumen Sokongan Bank" 
+              help="Format: PDF, JPG, PNG. Maksimum: 10MB"
+            />
           </rs-form>
         </rs-section>
 
@@ -61,52 +68,45 @@
 import { ref } from 'vue';
 
 const breadcrumb = ref([
-  { name: 'Profil Recipient', type: 'link', path: '/profil' },
-  { name: 'Kemaskini Profil', type: 'current', path: '/profil/kemaskini' },
+  { name: 'Profil Recipient', type: 'link', path: '/BF-PRF/TP/KP' },
+  { name: 'Kemaskini Profil', type: 'current', path: '/BF-PRF/TP/KP/01' },
 ]);
 
 const profileData = ref({
-  namaOrganisasi: 'Pertubuhan Rahmah Al-Falah',
+  namaRecipient: 'Ahmad Bin Abdullah',
+  jenisRecipient: 'Individu',
+  jenisPengenalan: 'MyKad',
+  idPengenalan: '880101-12-3456',
   status: 'Disahkan',
   tarikhKemaskini: '2025-06-13T10:30:00',
 });
 
 const form = ref({
-  alamat: '',
-  noTelefon: '',
-  emel: '',
-  pic: '',
-  jawatanPic: '',
   namaBank: '',
-  noAkaun: '',
-  namaPemilik: '',
-  swiftCode: '',
-  kaedahPembayaran: '',
-  dokumen: null,
+  noAkaunBank: '',
+  penamaAkaunBank: '',
+  dokumenSokongan: null,
 });
-
-const kaedahOptions = [
-  { label: 'IBG', value: 'IBG' },
-  { label: 'RENTAS', value: 'RENTAS' },
-  { label: 'Manual', value: 'Manual' },
-];
 
 const showAlert = ref(false);
 const alertVariant = ref('success');
 const alertMessage = ref('');
 
 const resetForm = () => {
-  for (const key in form.value) form.value[key] = '';
-  form.value.dokumen = null;
+  for (const key in form.value) {
+    if (key === 'dokumenSokongan') {
+      form.value[key] = null;
+    } else {
+      form.value[key] = '';
+    }
+  }
 };
 
 const isBankChanged = () => {
   return (
     form.value.namaBank ||
-    form.value.noAkaun ||
-    form.value.namaPemilik ||
-    form.value.swiftCode ||
-    form.value.kaedahPembayaran
+    form.value.noAkaunBank ||
+    form.value.penamaAkaunBank
   );
 };
 
