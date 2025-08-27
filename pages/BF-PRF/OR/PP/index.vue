@@ -4,15 +4,15 @@
 
     <rs-card class="mt-4">
       <template #header>
-                  <div class="flex justify-between items-center">
-            <div>
-              <h2 class="text-xl font-semibold">Senarai Pengesahan Organisasi</h2>
-            </div>
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-semibold">Pengesahan Organisasi</h2>
           </div>
+        </div>
       </template>
 
       <template #body>
-        <!-- Smart Filter Section -->
+        <!-- Search Section -->
         <div class="mb-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
@@ -26,7 +26,6 @@
               @click="performSearch"
               class="!py-2 !px-4"
             >
-              <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
               Cari
             </rs-button>
           </div>
@@ -74,7 +73,7 @@
                       class="!px-2 !py-1"
                       @click="handleSemakPengesahan(text.id)"
                     >
-                      <Icon name="ph:check" class="w-4 h-4 mr-1" /> Semak
+                      Semak
                     </rs-button>
                   </div>
                 </template>
@@ -122,7 +121,7 @@
                       class="!px-2 !py-1"
                       @click="handleSemakPengesahan(text.id)"
                     >
-                      <Icon name="ph:check" class="w-4 h-4 mr-1" /> Semak
+                      Semak
                     </rs-button>
                   </div>
                 </template>
@@ -170,7 +169,7 @@
                       class="!px-2 !py-1"
                       @click="handleSemakPengesahan(text.id)"
                     >
-                      <Icon name="ph:check" class="w-4 h-4 mr-1" /> Semak
+                      Semak
                     </rs-button>
                   </div>
                 </template>
