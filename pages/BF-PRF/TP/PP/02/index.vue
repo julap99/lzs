@@ -257,7 +257,7 @@ const breadcrumb = ref([
 const totalSteps = 4; // 3 form steps + 1 success step
 const currentStep = ref(1);
 const referenceNumber = ref(
-  "NAS-TP-" +
+  "NAS-RE-" +
     Math.floor(Math.random() * 1000000)
       .toString()
       .padStart(6, "0")

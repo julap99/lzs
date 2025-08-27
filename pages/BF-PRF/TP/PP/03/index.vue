@@ -28,7 +28,7 @@
           </template>
           <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit type="text" label="No. Rujukan" :value="'TP-' + applicationData.refNumber" disabled />
+              <FormKit type="text" label="No. Rujukan" :value="'RE-' + applicationData.refNumber" disabled />
               <FormKit type="text" label="Tarikh Permohonan" :value="applicationData.applicationDate" disabled />
               <FormKit type="text" label="Jenis Recipient" :value="applicationData.jenisRecipient" disabled />
               <FormKit 
