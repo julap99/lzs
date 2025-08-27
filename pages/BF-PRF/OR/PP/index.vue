@@ -82,54 +82,6 @@
             </div>
           </rs-tab-item>
 
-          <rs-tab-item title="Dalam Semakan">
-            <div class="p-4">
-              <rs-table
-                :key="`table-${tableKey}-review`"
-                :data="getTableDataByStatus(['Dalam Semakan'])"
-                :columns="columns"
-                :pageSize="pageSize"
-                :showNoColumn="true"
-                :options="{ variant: 'default', hover: true, striped: true }"
-                :options-advanced="{ sortable: true, filterable: false }"
-                advanced
-              >
-                <template v-slot:noRujukan="{ text }">
-                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewOrganization(text)">
-                    {{ text }}
-                  </a>
-                </template>
-
-                <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
-                </template>
-
-                <template v-slot:status="{ text }">
-                  <rs-badge :variant="getStatusVariant(text)">
-                    {{ text }}
-                  </rs-badge>
-                </template>
-
-                <template v-slot:tindakan="{ text }">
-                  <div class="flex space-x-2">
-                    <rs-button
-                      v-if="canPerformAction(text.status)"
-                      variant="primary"
-                      size="sm"
-                      class="!px-2 !py-1"
-                      @click="handleSemakPengesahan(text.id)"
-                    >
-                      <Icon name="ph:check" class="w-4 h-4 mr-1" /> Semak
-                    </rs-button>
-                  </div>
-                </template>
-              </rs-table>
-            </div>
-          </rs-tab-item>
-
           <rs-tab-item title="Diluluskan">
             <div class="p-4">
               <rs-table
@@ -295,8 +247,8 @@ const organizationList = ref([
     namaOrganisasi: 'Pertubuhan Amal Iman Malaysia',
     tarikhPermohonan: new Date().toISOString(),
     jenisOrganisasi: 'NGO',
-    status: 'Dalam Semakan',
-    tindakan: { id: 'ORG-240502', status: 'Dalam Semakan' },
+    status: 'Diluluskan',
+    tindakan: { id: 'ORG-240502', status: 'Diluluskan' },
   },
   {
     noRujukan: 'ORG-240503',
@@ -327,16 +279,16 @@ const organizationList = ref([
     namaOrganisasi: 'Persatuan Belia Islam Malaysia',
     tarikhPermohonan: new Date().toISOString(),
     jenisOrganisasi: 'NGO',
-    status: 'Dalam Semakan',
-    tindakan: { id: 'ORG-240506', status: 'Dalam Semakan' },
+    status: 'Menunggu Pengesahan',
+    tindakan: { id: 'ORG-240506', status: 'Menunggu Pengesahan' },
   },
   {
     noRujukan: 'ORG-240507',
     namaOrganisasi: 'Universiti Teknologi Malaysia',
     tarikhPermohonan: new Date().toISOString(),
     jenisOrganisasi: 'IPT',
-    status: 'Diluluskan',
-    tindakan: { id: 'ORG-240507', status: 'Diluluskan' },
+    status: 'Ditolak',
+    tindakan: { id: 'ORG-240507', status: 'Ditolak' },
   },
 ]);
 
@@ -387,7 +339,6 @@ const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-M
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Dalam Semakan': 'info',
     'Diluluskan': 'success',
     'Ditolak': 'danger'
   };
@@ -396,7 +347,7 @@ const getStatusVariant = (status) => {
 
 // Action capabilities for Eksekutif role
 const canPerformAction = (status) => {
-  return ['Menunggu Pengesahan', 'Dalam Semakan'].includes(status);
+  return ['Menunggu Pengesahan'].includes(status);
 };
 
 // Search function
@@ -407,5 +358,5 @@ const performSearch = () => {
 };
 
 const viewOrganization = (id) => navigateTo(`/BF-PRF/OR/AP/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/06`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04`);
 </script>
