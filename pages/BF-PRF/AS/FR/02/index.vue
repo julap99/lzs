@@ -264,7 +264,8 @@
                 name="jenis_id"
                 label="Jenis ID"
                 placeholder="Pilih jenis ID"
-                :options="['MyKad', 'Foreign ID']"
+                :options="[{label: 'MyKad', value: 'mykad'}, 
+                {label: 'Foreign ID', value: 'foreign_id'}]"
                 validation="required"
                 v-model="jenisId"
               />
@@ -342,16 +343,18 @@
               />
 
               <FormKit
-                v-if="formData.warganegara === 'Malaysia'"
+                v-if="formData.warganegara === 'Lain-lain' && jenisId === 'foreign_id'"
                 type="date"
                 name="passportStartDate"
                 label="Tarikh mula passport"
+                v-model="formData.passportStartDate"
               />
               <FormKit
-                v-if="formData.warganegara === 'Malaysia'"
+                v-if="formData.warganegara === 'Lain-lain' && jenisId === 'foreign_id'"
                 type="date"
                 name="passportEndDate"
                 label="Tarikh tamat passport"
+                v-model="formData.passportEndDate"
               />
             </div>
           </div>
@@ -3862,9 +3865,6 @@
           :actions="false"
           id="sectionB2"
         >
-          <h3 class="text-lg font-semibold mb-4">
-            B. Maklumat Peribadi Tanggungan
-          </h3>
 
           <h3 class="text-lg font-semibold mb-4">2. Maklumat Islam</h3>
 
@@ -4430,7 +4430,7 @@
             <!-- Bahagian C: Tempat Tinggal Semasa Belajar -->
             <div v-if="getCurrentTanggungan().masih_bersekolah === 'Y'" class="mb-6">
               <h5 class="text-md font-medium mb-3">
-                C. Tempat Tinggal Semasa Belajar
+                 Tempat Tinggal Semasa Belajar
               </h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Tinggal Bersama Keluarga? -->
@@ -4461,7 +4461,7 @@
 
             <!-- Bahagian D: Pengajian Tinggi -->
             <div v-if="getCurrentTanggungan().masih_bersekolah === 'Y'" class="mb-6">
-              <h5 class="text-md font-medium mb-3">D. Pengajian Tinggi</h5>
+              <h5 class="text-md font-medium mb-3"> Pengajian Tinggi</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Bidang/Kursus Pengajian -->
                 <FormKit
@@ -5304,7 +5304,7 @@
           :actions="false"
           id="sectionB8"
         >
-          <h3 class="text-lg font-semibold mb-4">8. Pengesahan</h3>
+          <h3 class="text-lg font-semibold mb-4">Maklumat Perakuan Pemohon</h3>
 
           <div class="mb-6">
             <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
@@ -5484,7 +5484,7 @@
           id="sectionB9"
         >
           <h3 class="text-lg font-semibold mb-4">
-            9. Pengesahan Bermastautin
+            Maklumat Pengesahan Permastautin
           </h3>
 
           <!-- PAK Officer Information (Readonly) -->
@@ -5636,7 +5636,7 @@
           id="sectionB10"
         >
           <h3 class="text-lg font-semibold mb-4">
-            VIII. Maklumat Pegawai Pendaftar
+            Maklumat Pegawai Pendaftar
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -5939,6 +5939,9 @@ const formData = ref({
   sijil_pendidikan: null,
   // Multiple education entries (new)
   education_entries: [],
+  // Passport dates for foreign IDs (Peribadi)
+  passportStartDate: "",
+  passportEndDate: "",
   jenis_sekolah: "",
   kategori_sekolah: "",
   tahun_bersekolah: "",
