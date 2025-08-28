@@ -918,35 +918,28 @@ export default [
         child: [
           {
             title: "Carian Organisasi",
-            icon: "heroicons:magnifying-glass",
+            icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PP/01",
             child: [],
             meta: {},
           },
           {
             title: "Dashboard Organisasi",
-            icon: "heroicons:table-cells",
+            icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PP",
             child: [],
             meta: {},
           },
-        ],
-        meta: {},
-      },
-      {
-        title: "Cawangan",
-        icon: "iconamoon:component-fill",
-        child: [
           {
-            title: "Carian Organisasi",
-            icon: "heroicons:magnifying-glass",
+            title: "Carian Cawangan",
+            icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PB/01",
             child: [],
             meta: {},
           },
           {
             title: "Dashboard Cawangan",
-            icon: "heroicons:table-cells",
+            icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PB",
             child: [],
             meta: {},

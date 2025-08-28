@@ -91,7 +91,7 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
@@ -537,7 +537,9 @@ const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/TP/PP/03`);
 // Delete operations
 const confirmDelete = (id, item) => {
   // Find the full item data from the table data by ID
-  const fullItem = filteredTableData.value.find(rec => rec.tindakan.id === id);
+  // We need to look in the recipientList since that's the source data
+  const fullItem = recipientList.value.find(rec => rec.tindakan.id === id);
+  
   itemToDelete.value = fullItem;
   showDeleteModal.value = true;
 };
