@@ -944,6 +944,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Login Pengguna Luar",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/pengguna-luar/login",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
