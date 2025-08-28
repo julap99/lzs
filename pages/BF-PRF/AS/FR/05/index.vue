@@ -1,218 +1,48 @@
 <template>
   <div class="container mx-auto px-4 py-6">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Pengiraan Multidimensi</h1>
-    
-    <!-- All Fields in Grid Layout -->
+
+    <!-- Multi-dimensional Merit Breakdown -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-      <!-- Section Heading -->
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Pengiraan Multidimensi Individu</h3>
-      
-      <!-- Wrapper -->
-<div class="flex flex-col items-center space-y-6">
-
-  <!-- First Row -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center w-full">
-    <!-- IC Number Field -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Id Pengenalan</label>
-      <input
-        type="text"
-        value="770319035991"
-        readonly
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900"
-        placeholder="IC Number dari halaman 04"
-      />
-      <p class="text-sm text-gray-500 mt-1">
-            Masukkan no id pengenalan
-          </p>
-    </div>
-
-    <!-- Nama Pemohon Field -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Nama Pemohon</label>
-      <input
-        type="text"
-        value="ADNAN BIN ABU"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Masukkan nama pemohon"
-      />
-      <p class="text-sm text-gray-500 mt-1">Masukkan nama lengkap pemohon</p>
-    </div>
-
-    <!-- Skor Dimensi Field -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Skor Dimensi</label>
-      <input
-        type="number"
-        :value="formData.skorDimensi"
-        @input="validateSkorDimensi($event, 'skorDimensi')"
-        max="1"
-        min="0"
-        step="0.01"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Masukkan skor dimensi"
-      />
-      <p class="text-sm text-gray-500 mt-1">Masukkan skor dimensi dari 0-1</p>
-    </div>
-  </div>
-
-  <!-- Second Row -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center w-full">
-    <!-- IC Number -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Id Pengenalan</label>
-      <input
-        type="text"
-        value="801004035672"
-        readonly
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900"
-      />
-      <p class="text-sm text-gray-500 mt-1">
-            Masukkan no id pengenalan
-          </p>
-    </div>
-
-    <!-- Pasangan -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Nama Tanggungan Pertama</label>
-      <input
-        type="text"
-        value="ROHANA BINTI AHMAD"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Masukkan nama tanggungan 1"
-      />
-      <p class="text-sm text-gray-500 mt-1">Masukkan nama tanggungan pertama</p>
-    </div>
-
-    <!-- Skor Dimensi Field 2 -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Skor Dimensi</label>
-      <input
-        type="number"
-        :value="formData.skorDimensi2"
-        @input="validateSkorDimensi($event, 'skorDimensi2')"
-        max="1"
-        min="0"
-        step="0.01"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Masukkan skor dimensi"
-      />
-      <p class="text-sm text-gray-500 mt-1">Masukkan skor dimensi dari 0-1</p>
-    </div>
-  </div>
-
-  <!-- Third Row -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center w-full">
-    <!-- IC Number -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Id Pengenalan</label>
-      <input
-        type="text"
-        value="060802030272"
-        readonly
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900"
-      />
-      <p class="text-sm text-gray-500 mt-1">
-            Masukkan no id pengenalan
-          </p>
-    </div>
-
-    <!-- Nama Tanggungan 1 -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Nama Tanggungan Kedua</label>
-      <input
-        type="text"
-        value="NUR NAJWA BINTI ADNAN"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Masukkan nama tanggungan 2"
-      />
-      <p class="text-sm text-gray-500 mt-1">Masukkan nama tanggungan kedua</p>
-    </div>
-
-    <!-- Skor Dimensi Field 3 -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Skor Dimensi</label>
-      <input
-        type="number"
-        :value="formData.skorDimensi3"
-        @input="validateSkorDimensi($event, 'skorDimensi3')"
-        max="1"
-        min="0"
-        step="0.01"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Masukkan skor dimensi"
-      />
-      <p class="text-sm text-gray-500 mt-1">Masukkan skor dimensi dari 0-1</p>
-    </div>
-  </div>
-
-  <!-- Fourth Row -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center w-full">
-    <!-- IC Number -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Id Pengenalan</label>
-      <input
-        type="text"
-        value="091108030442"
-        readonly
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900"
-      />
-      <p class="text-sm text-gray-500 mt-1">
-            Masukkan no id pengenalan
-          </p>
-    </div>
-
-    <!-- Nama Tanggungan 2 -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Nama Tanggungan Ketiga</label>
-      <input
-        type="text"
-        value="NUR QISTINA BINTI ADNAN"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Masukkan nama tanggungan 3"
-      />
-      <p class="text-sm text-gray-500 mt-1">Masukkan nama tanggungan ketiga</p>
-    </div>
-
-    <!-- Skor Dimensi Field 4 -->
-    <div class="flex flex-col w-full">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Skor Dimensi</label>
-      <input
-        type="number"
-        :value="formData.skorDimensi4"
-        @input="validateSkorDimensi($event, 'skorDimensi4')"
-        max="1"
-        min="0"
-        step="0.01"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Masukkan skor dimensi"
-      />
-      <p class="text-sm text-gray-500 mt-1">Masukkan skor dimensi dari 0-1</p>
-    </div>
-  </div>
-
-</div>
-</div>
-
-    <!-- Merit Calculation Result -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Hasil Pengiraan Multidimensi Keluarga</h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Merit Value -->
-        <div class="bg-blue-50 p-4 rounded-lg">
-          <label class="block text-sm font-medium text-blue-900 mb-2">Merit</label>
-          <div class="text-2xl font-bold text-blue-700">{{ meritValue }}</div>
-          <p class="text-sm text-blue-600 mt-1">Purata skor dimensi ({{ totalSkor }}/4)</p>
-        </div>
-
-        <!-- Status Multidimensi -->
-        <div class="bg-green-50 p-4 rounded-lg">
-          <label class="block text-sm font-medium text-green-900 mb-2">Status Multidimensi</label>
-          <div class="text-2xl font-bold text-green-700">{{ statusMultidimensi }}</div>
-          <p class="text-sm text-green-600 mt-1">{{ statusDescription }}</p>
-        </div>
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Perincian Pengiraan Merit Multidimensi Keluarga</h3>
+      <div v-for="(member, idx) in family" :key="member.ic" class="mb-8">
+        <h4 class="text-md font-bold text-blue-700 mb-2">{{ member.nama }} ({{ member.ic }})</h4>
+        <table class="min-w-full bg-white rounded-lg shadow-md mb-2">
+          <thead>
+            <tr>
+              <th class="px-2 py-1">Kriteria</th>
+              <th class="px-2 py-1">Nilai</th>
+              <th class="px-2 py-1">Skor LOV</th>
+              <th class="px-2 py-1">Skor Tertinggi</th>
+              <th class="px-2 py-1">Pemberat</th>
+              <th class="px-2 py-1">Formula</th>
+              <th class="px-2 py-1">Merit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="dim in meritBreakdown[idx]" :key="dim.kriteria">
+              <td class="px-2 py-1">{{ dim.kriteria }}</td>
+              <td class="px-2 py-1">{{ dim.nilai }}</td>
+              <td class="px-2 py-1">{{ dim.skor }}</td>
+              <td class="px-2 py-1">{{ dim.maxSkor }}</td>
+              <td class="px-2 py-1">{{ dim.pemberat }}</td>
+              <td class="px-2 py-1">{{ dim.formula }}</td>
+              <td class="px-2 py-1 font-bold">{{ dim.merit }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-sm text-gray-700 mb-2">Merit Individu: <span class="font-bold text-blue-700">{{ merits[idx].toFixed(2) }}</span></div>
+        <div class="text-sm text-gray-700 mb-2">Status Multidimensi: <span class="font-bold text-green-700">{{ getStatus(merits[idx]) }}</span></div>
+        <div class="text-sm text-gray-700 mb-2">Quadrant: <span class="font-bold text-purple-700">{{ getQuadrant(merits[idx]) }}</span></div>
       </div>
+    </div>
+
+
+    <!-- Household Merit & Status Summary -->
+    <div class="bg-blue-50 rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-xl font-semibold text-blue-900 mb-2">Ringkasan Merit Keluarga</h2>
+      <div class="mb-2">Merit Keluarga: <span class="font-bold text-blue-700">{{ householdMerit }}</span></div>
+      <div class="mb-2">Status Multidimensi: <span class="font-bold text-green-700">{{ getStatus(householdMerit) }}</span></div>
+      <div class="mb-2">Quadrant: <span class="font-bold text-purple-700">{{ getQuadrant(householdMerit) }}</span></div>
     </div>
   </div>
               
@@ -226,7 +56,7 @@
 
   <rs-button
     variant="primary"
-    @click="navigateTo(`/BF-BTN/tugasan/siasatan-eoad`)"
+    @click="navigateTo('/BF-PRF/AS/FR/05_01')"
     :disabled="processing"
   >
     <span v-if="processing">
@@ -238,94 +68,212 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref } from 'vue'
 
-const formData = ref({
-  icNumber: '000000000000', // Default value from 04 page
-  namaPemohon: '', // Applicant name
-  skorDimensi: '', // Dimensional score
-  isteriPemohon: '', // Applicant's wife name
-  skorDimensi2: '', // Second dimensional score
-  namaTanggungan1: '', // First dependent name
-  skorDimensi3: '', // Third dimensional score
-  namaTanggungan2: '', // Second dependent name
-  skorDimensi4: '' // Fourth dimensional score
+const family = [
+  { ic: '770319035991', nama: 'ADNAN BIN ABU', umur: 48, pendidikan: 'SRP/PMR', kesihatan: 'Sihat', pekerjaan: 'Tidak Bekerja', kecacatan: 'Tiada', pengalaman: 'Ya', kemahiran: 'Ya', aset: 'Ada' },
+  { ic: '801004035672', nama: 'ROHANA BINTI AHMAD', umur: 45, pendidikan: 'Peringkat Rendah', kesihatan: 'Sihat', pekerjaan: 'Tidak Bekerja', kecacatan: 'Tiada', pengalaman: 'No', kemahiran: 'Ya', aset: 'Ada' },
+  { ic: '060802030272', nama: 'NUR NAJWA BINTI ADNAN', umur: 19, pendidikan: 'SPM', kesihatan: 'Sihat', pekerjaan: 'Tidak Bekerja', kecacatan: 'Tiada', pengalaman: 'No', kemahiran: 'Tiada', aset: 'Ada' },
+  { ic: '091108030442', nama: 'NUR QISTINA BINTI ADNAN', umur: 16, pendidikan: 'Peringkat Rendah', kesihatan: 'Sihat', pekerjaan: 'Tidak Bekerja', kecacatan: 'Tiada', pengalaman: 'No', kemahiran: 'Tiada', aset: 'Ada' }
+]
+
+const LOV_UMUR = [
+  { range: [1, 20.99], skor: 0 },
+  { range: [21, 40.99], skor: 4 },
+  { range: [41, 50.99], skor: 3 },
+  { range: [51, 60.99], skor: 2 },
+  { range: [61, 70.99], skor: 1 },
+  { range: [71, 100.99], skor: -4 }
+]
+const LOV_Pendidikan = [
+  { kategori: 'Tidak Bersekolah', skor: 0 },
+  { kategori: 'Tadika', skor: 0 },
+  { kategori: 'Peringkat Rendah', skor: 1 },
+  { kategori: 'SRP/PMR', skor: 1 },
+  { kategori: 'SPM', skor: 2 },
+  { kategori: 'STPM', skor: 2 },
+  { kategori: 'Certificate', skor: 3 },
+  { kategori: 'Diploma', skor: 4 },
+  { kategori: 'Ijazah', skor: 4 },
+  { kategori: 'Ijazah Sarjana', skor: 5 },
+  { kategori: 'Lain-lain', skor: 0 }
+]
+const LOV_Kesihatan = [
+  { kategori: 'Sihat', skor: 2 },
+  { kategori: 'Sakit Kronik', skor: 1 },
+  { kategori: 'Uzur', skor: 0 }
+]
+const LOV_Pekerjaan = [
+  { kategori: 'Bekerja', skor: 1 },
+  { kategori: 'Tidak Bekerja', skor: 0 }
+]
+const LOV_Kecacatan = [
+  { kategori: 'OKU', skor: 0 },
+  { kategori: 'Tiada', skor: 1 }
+]
+const LOV_Pengalaman = [
+  { kategori: 'Ya', skor: 1 },
+  { kategori: 'No', skor: 0 }
+]
+const LOV_Kemahiran = [
+  { kategori: 'Ya', skor: 1 },
+  { kategori: 'Tiada', skor: 0 }
+]
+const LOV_Aset = [
+  { kategori: 'Ada', skor: 1 },
+  { kategori: 'No', skor: 0 }
+]
+
+const weights = {
+  umur: 6,
+  pendidikan: 3,
+  kesihatan: 4,
+  pekerjaan: 2,
+  kecacatan: 1,
+  pengalaman: 1,
+  kemahiran: 1,
+  aset: 1
+}
+
+function getSkorUmur(umur) {
+  for (const item of LOV_UMUR) {
+    if (umur >= item.range[0] && umur <= item.range[1]) return item.skor
+  }
+  return 0
+}
+function getSkorLOV(lov, value) {
+  const found = lov.find(item => item.kategori === value)
+  return found ? found.skor : 0
+}
+
+function getMeritBreakdown(member) {
+  // For <18: (Umur+Pendidikan+Kesihatan+Kecacatan)/14
+  // For >=18: (Umur+Pendidikan+Kesihatan+Pekerjaan+Kecacatan+Pengalaman+Kemahiran+Aset)/19
+  const breakdown = []
+  // Umur
+  const skorUmur = getSkorUmur(member.umur)
+  breakdown.push({
+    kriteria: 'Umur',
+    nilai: member.umur,
+    skor: skorUmur,
+    maxSkor: 4,
+    pemberat: weights.umur,
+    formula: `${skorUmur}/4*${weights.umur}`,
+    merit: (skorUmur/4*weights.umur).toFixed(2)
+  })
+  // Pendidikan
+  const skorPendidikan = getSkorLOV(LOV_Pendidikan, member.pendidikan)
+  breakdown.push({
+    kriteria: 'Pendidikan',
+    nilai: member.pendidikan,
+    skor: skorPendidikan,
+    maxSkor: 5,
+    pemberat: weights.pendidikan,
+    formula: `${skorPendidikan}/5*${weights.pendidikan}`,
+    merit: (skorPendidikan/5*weights.pendidikan).toFixed(2)
+  })
+  // Kesihatan
+  const skorKesihatan = getSkorLOV(LOV_Kesihatan, member.kesihatan)
+  breakdown.push({
+    kriteria: 'Kesihatan',
+    nilai: member.kesihatan,
+    skor: skorKesihatan,
+    maxSkor: 2,
+    pemberat: weights.kesihatan,
+    formula: `${skorKesihatan}/2*${weights.kesihatan}`,
+    merit: (skorKesihatan/2*weights.kesihatan).toFixed(2)
+  })
+  // Pekerjaan
+  const skorPekerjaan = getSkorLOV(LOV_Pekerjaan, member.pekerjaan)
+  breakdown.push({
+    kriteria: 'Pekerjaan',
+    nilai: member.pekerjaan,
+    skor: skorPekerjaan,
+    maxSkor: 1,
+    pemberat: weights.pekerjaan,
+    formula: `${skorPekerjaan}/1*${weights.pekerjaan}`,
+    merit: (skorPekerjaan/1*weights.pekerjaan).toFixed(2)
+  })
+  // Kecacatan
+  const skorKecacatan = getSkorLOV(LOV_Kecacatan, member.kecacatan)
+  breakdown.push({
+    kriteria: 'Kecacatan',
+    nilai: member.kecacatan,
+    skor: skorKecacatan,
+    maxSkor: 1,
+    pemberat: weights.kecacatan,
+    formula: `${skorKecacatan}/1*${weights.kecacatan}`,
+    merit: (skorKecacatan/1*weights.kecacatan).toFixed(2)
+  })
+  // Pengalaman
+  const skorPengalaman = getSkorLOV(LOV_Pengalaman, member.pengalaman)
+  breakdown.push({
+    kriteria: 'Pengalaman',
+    nilai: member.pengalaman,
+    skor: skorPengalaman,
+    maxSkor: 1,
+    pemberat: weights.pengalaman,
+    formula: `${skorPengalaman}/1*${weights.pengalaman}`,
+    merit: (skorPengalaman/1*weights.pengalaman).toFixed(2)
+  })
+  // Kemahiran
+  const skorKemahiran = getSkorLOV(LOV_Kemahiran, member.kemahiran)
+  breakdown.push({
+    kriteria: 'Kemahiran',
+    nilai: member.kemahiran,
+    skor: skorKemahiran,
+    maxSkor: 1,
+    pemberat: weights.kemahiran,
+    formula: `${skorKemahiran}/1*${weights.kemahiran}`,
+    merit: (skorKemahiran/1*weights.kemahiran).toFixed(2)
+  })
+  // Aset
+  const skorAset = getSkorLOV(LOV_Aset, member.aset)
+  breakdown.push({
+    kriteria: 'Aset',
+    nilai: member.aset,
+    skor: skorAset,
+    maxSkor: 1,
+    pemberat: weights.aset,
+    formula: `${skorAset}/1*${weights.aset}`,
+    merit: (skorAset/1*weights.aset).toFixed(2)
+  })
+  return breakdown
+}
+
+const meritBreakdown = family.map(getMeritBreakdown)
+
+const merits = family.map((member, idx) => {
+  // For <18: (Umur+Pendidikan+Kesihatan+Kecacatan)/14
+  // For >=18: (Umur+Pendidikan+Kesihatan+Pekerjaan+Kecacatan+Pengalaman+Kemahiran+Aset)/19
+  const b = meritBreakdown[idx]
+  if (member.umur < 18) {
+    return (
+      Number(b[0].merit) + Number(b[1].merit) + Number(b[2].merit) + Number(b[4].merit)
+    ) / 14
+  } else {
+    return (
+      Number(b[0].merit) + Number(b[1].merit) + Number(b[2].merit) + Number(b[3].merit) + Number(b[4].merit) + Number(b[5].merit) + Number(b[6].merit) + Number(b[7].merit)
+    ) / 19
+  }
 })
 
-// Computed property to calculate total skor
-const totalSkor = computed(() => {
-  const skor1 = Number(formData.value.skorDimensi) || 0
-  const skor2 = Number(formData.value.skorDimensi2) || 0
-  const skor3 = Number(formData.value.skorDimensi3) || 0
-  const skor4 = Number(formData.value.skorDimensi4) || 0
-  
-  return skor1 + skor2 + skor3 + skor4
-})
-
-// Computed property to calculate merit (total skor / 4)
-const meritValue = computed(() => {
-  if (totalSkor.value === 0) return '0.00'
-  return (totalSkor.value / 4).toFixed(2)
-})
-
-// Computed property to determine status based on merit
-const statusMultidimensi = computed(() => {
-  const merit = Number(meritValue.value)
-  
+function getStatus(merit) {
   if (merit >= 0 && merit <= 0.24) return 'Tegar'
   if (merit >= 0.25 && merit <= 0.49) return 'Tidak Produktif'
   if (merit >= 0.5 && merit <= 0.74) return 'Produktif C'
   if (merit >= 0.75 && merit <= 0.99) return 'Produktif B'
   if (merit >= 1) return 'Produktif A'
-  
   return 'Tidak Diketahui'
-})
-
-// Computed property for status description
-const statusDescription = computed(() => {
-  const merit = Number(meritValue.value)
-  
-  if (merit >= 0 && merit <= 0.24) return 'Merit 0 - 0.24'
-  if (merit >= 0.25 && merit <= 0.49) return 'Merit 0.25 - 0.49'
-  if (merit >= 0.5 && merit <= 0.74) return 'Merit 0.5 - 0.74'
-  if (merit >= 0.75 && merit <= 0.99) return 'Merit 0.75 - 0.99'
-  if (merit >= 1) return 'Merit 1'
-  
-  return 'Merit tidak valid'
-})
-
-const fetchIcNumber = () => {
-  // In a real application, this would fetch data from the 04 page
-  // For now, we'll simulate getting the IC number from the previous page
-  formData.value.icNumber = '000000000000' // Default value from 04 page
+}
+function getQuadrant(merit) {
+  if (merit >= 0 && merit <= 0.24) return 'Asnaf Tegar'
+  if (merit >= 0.25 && merit <= 0.49) return 'Asnaf Tidak Produktif'
+  if (merit >= 0.5 && merit <= 0.99) return 'Asnaf Produktif Sementara'
+  if (merit >= 1) return 'Asnaf Produktif'
+  return '-'
 }
 
-// Add validation function
-const validateSkorDimensi = (event, fieldName) => {
-  let value = parseFloat(event.target.value)
-  
-  // If value is NaN or empty, set to empty string
-  if (isNaN(value) || event.target.value === '') {
-    formData.value[fieldName] = ''
-    return
-  }
-  
-  // Ensure value is between 0 and 1
-  if (value < 0) {
-    value = 0
-  } else if (value > 1) {
-    value = 1
-  }
-  
-  // Update the form data with validated value
-  formData.value[fieldName] = value.toString()
-  
-  // Update the input field to show the validated value
-  event.target.value = value.toString()
-}
 
-onMounted(() => {
-  // Automatically fetch the IC number when the page loads
-  fetchIcNumber()
-})
+const householdMerit = ((merits[0] + merits[1] + merits[2] + merits[3]) / 4).toFixed(2)
 </script>
