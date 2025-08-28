@@ -331,7 +331,7 @@ const breadcrumb = ref([
   {
     name: "Kemaskini Siasatan",
     type: "link",
-    path: `/BF-BTN/permohonan/senarai-siasatan-lapangan/${route.params.id}`,
+    path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
   },
   {
     name: "Laporan Teknikal",
@@ -471,7 +471,7 @@ Untuk rekod, rumah masih dalam keadaan baik untuk diduduki dan sesuai untuk diba
 1. Meroboh bahagian rumah yang rosak dan retak.
 2. Membina semula struktur bangunan rumah yang baru.
 3. Membaikpulih dan menaiktaraf pendawalan elektrik bahagian rumah yang terlibat.`,
-      nilaiKerja: 25000, // This would be calculated from BQ
+      nilaiKerja: 43000, // This would be calculated from BQ
       tarikhSiasatan: new Date().toISOString().split('T')[0], // Today's date
       masaSiasatan: "",
       cuacaSiasatan: "",

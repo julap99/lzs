@@ -551,20 +551,20 @@
                       <div
                         class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[100px]"
                       >
-                        <span class="text-sm text-gray-900">{{
+                        <span class="text-sm text-gray-900 whitespace-pre-wrap">{{
                           laporanTeknikal.latarBelakang || "Belum diisi"
                         }}</span>
                       </div>
                     </div>
 
                     <div class="space-y-1">
-                      <label class="text-sm font-medium text-gray-700"
+                      <label class="text-sm font-medium text-gray-700 "
                         >Keperluan</label
                       >
                       <div
                         class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[100px]"
                       >
-                        <span class="text-sm text-gray-900">{{
+                        <span class="text-sm text-gray-900 whitespace-pre-wrap">{{
                           laporanTeknikal.keperluan || "Belum diisi"
                         }}</span>
                       </div>
@@ -577,7 +577,7 @@
                       <div
                         class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[100px]"
                       >
-                        <span class="text-sm text-gray-900">{{
+                        <span class="text-sm text-gray-900 whitespace-pre-wrap">{{
                           laporanTeknikal.cadangan || "Belum diisi"
                         }}</span>
                       </div>
@@ -588,7 +588,7 @@
                         >Nilai Kerja Dicadangkan</label
                       >
                       <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                        <span class="text-sm font-medium text-gray-900">
+                        <span class="text-sm font-medium text-gray-900 whitespace-pre-wrap">
                           RM
                           {{
                             laporanTeknikal.nilaiKerja?.toLocaleString() || "0"
@@ -1305,8 +1305,36 @@ onMounted(() => {
 
   // Auto-populate laporan teknikal latar belakang from profiling
   laporanTeknikal.value.latarBelakang =
-    "Berdasarkan profiling, pemohon tinggal di rumah yang memerlukan kerja-kerja baik pulih bumbung dan dinding yang rosak akibat cuaca.";
+    `1. Keterangan Harta Benda:
+Binaan rumah daripada separa batu dan kayu.
 
+2. Status hakmilik tanah seperti berikut :
+No Lot : 3439
+Mukim : JERAM
+Daerah : KUALA SELANGOR
+Nama Pemilik : MOHD ROSLI BIN SAAD
+ANG Bahagian : 1/14
+Luas : 1.1635 HEKTAR
+Lain-lain : - NIL-
+
+3. Maklumat Isirumah :
+Ketua Keluarga : Pemohon (MISKIN)
+Pasangan : 1 orang isteri tinggal bersama
+Tanggungan : - NIL-
+Lain-lain : - NIL-`;
+laporanTeknikal.value.keperluan = `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
+Keadaan rumah tidak sempuma.
+
+Pemohon tidak mepunyai pendapatan yang mencukupi untuk membaiki kerosakan yang berlaku dirumahnya.
+Untuk rekod, rumah masih dalam keadaan baik untuk diduduki dan sesuai untuk dibaikpulih.`;
+
+laporanTeknikal.value.cadangan = `Dicadangkan kerja-kerja baikpulih berikut :
+
+1. Meroboh bahagian rumah yang rosak dan retak.
+2. Membina semula struktur bangunan rumah yang baru.
+3. Membaikpulih dan menaiktaraf pendawalan elektrik bahagian rumah yang terlibat.`;
+
+laporanTeknikal.value.nilaiKerja = "43000"
   // Auto-calculate jumlah bantuan from BQ (mock calculation)
   jumlahBantuan.value = 25000;
   catatanPengesyoran.value =
