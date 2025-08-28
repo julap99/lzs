@@ -52,10 +52,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -130,10 +127,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -206,10 +200,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -392,7 +383,7 @@ const cawanganList = ref([
     namaCawangan: 'Cawangan Seri Damai',
     namaHQ: 'Yayasan Insan Malaysia',
     daerah: 'Kuala Lumpur',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'PB-240511', status: 'Menunggu Pengesahan' },
   },
@@ -401,7 +392,7 @@ const cawanganList = ref([
     namaCawangan: 'Cawangan Taman Ilmu',
     namaHQ: 'Pertubuhan Amal Jariah',
     daerah: 'Selangor',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
     status: 'Diluluskan',
     tindakan: { id: 'PB-240512', status: 'Diluluskan' },
   },
@@ -410,7 +401,7 @@ const cawanganList = ref([
     namaCawangan: 'Cawangan Bandar Baru',
     namaHQ: 'Yayasan Pendidikan Islami Malaysia',
     daerah: 'Johor',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
     status: 'Ditolak',
     tindakan: { id: 'PB-240513', status: 'Ditolak' },
   },
@@ -419,7 +410,7 @@ const cawanganList = ref([
     namaCawangan: 'Cawangan Wangsa Maju',
     namaHQ: 'Institut Dakwah Malaysia',
     daerah: 'Kuala Lumpur',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'PB-240514', status: 'Menunggu Pengesahan' },
   },
@@ -428,7 +419,7 @@ const cawanganList = ref([
     namaCawangan: 'Cawangan Subang Jaya',
     namaHQ: 'Pertubuhan Kebajikan Islam',
     daerah: 'Selangor',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
     status: 'Diluluskan',
     tindakan: { id: 'PB-240515', status: 'Diluluskan' },
   },
@@ -437,7 +428,7 @@ const cawanganList = ref([
     namaCawangan: 'Cawangan Batu Pahat',
     namaHQ: 'Yayasan Tahfiz Al-Quran',
     daerah: 'Johor',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
     status: 'Ditolak',
     tindakan: { id: 'PB-240516', status: 'Ditolak' },
   },
@@ -482,8 +473,14 @@ const totalPages = computed(() => Math.ceil(totalCawangan.value / pageSize.value
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
 const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalCawangan.value));
 
-const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
-const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
+const formatDate = (dateString) => {
+  // If it's already a formatted date string, return it as is
+  if (typeof dateString === 'string' && !dateString.includes('T')) {
+    return dateString;
+  }
+  // Otherwise, format it as a date
+  return new Date(dateString).toLocaleDateString('ms-MY');
+};
 
 const getStatusVariant = (status) => {
   const variants = {
