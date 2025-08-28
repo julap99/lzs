@@ -398,7 +398,7 @@
                   @click="clearSubmittedLawatan"
                 >
                   <Icon name="ph:trash" class="w-4 h-4 mr-1" />
-                  Clear Submission
+                  Reset
                 </rs-button>
                 <rs-button
                   variant="primary"

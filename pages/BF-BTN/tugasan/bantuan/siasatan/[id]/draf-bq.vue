@@ -9,15 +9,15 @@
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         >
           <div class="flex-1">
-            <h1
+            <!-- <h1
               class="text-3xl font-bold text-gray-900 tracking-tight"
               id="page-title"
-            >
-              {{ editingBQ ? "Edit" : "Tambah" }} Draf BQ
-            </h1>
+            > Maklumat BQ
+             {{ editingBQ ? "Edit" : "Tambah" }} Draf B
+            </h1> 
             <p class="mt-2 text-sm text-gray-600 max-w-2xl" role="doc-subtitle">
               Bill of Quantity untuk kerja-kerja cadangan
-            </p>
+            </p> -->
           </div>
           <rs-button
             variant="primary-outline"
@@ -67,7 +67,7 @@
                 <!-- Auto-generated fields (Read-only) -->
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-gray-700"
-                    >No Borang BQ / Rujukan</label
+                    >No BQ</label
                   >
                   <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <span class="text-sm font-mono text-gray-900 break-all">{{
@@ -78,7 +78,7 @@
 
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-gray-700"
-                    >No BR</label
+                    >No Bantuan</label
                   >
                   <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <span class="text-sm font-mono text-gray-900 break-all">{{
@@ -89,7 +89,7 @@
 
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-gray-700"
-                    >Nama Pemohon & Institusi</label
+                    >Nama Pemohon</label
                   >
                   <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <span class="text-sm text-gray-900 break-words">{{
@@ -445,7 +445,7 @@
                   <div
                     class="w-full max-w-sm space-y-3 bg-gray-50 p-4 rounded-lg"
                   >
-                    <div
+                    <!-- <div
                       class="flex justify-between items-center text-sm text-gray-600"
                     >
                       <span class="font-medium">Subtotal:</span>
@@ -457,7 +457,7 @@
                           })
                         }}</span
                       >
-                    </div>
+                    </div> -->
                     <div
                       class="flex justify-between items-center text-lg font-bold text-gray-900 border-t border-gray-300 pt-3"
                     >
