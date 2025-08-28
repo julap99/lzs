@@ -380,7 +380,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240501',
     namaOrganisasi: 'Syarikat Teknologi Maju Sdn Bhd',
-    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
+    tarikhPermohonan: '23/7/2025',
     jenisOrganisasi: 'Swasta',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-240501', status: 'Menunggu Pengesahan' },
@@ -388,7 +388,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240502',
     namaOrganisasi: 'Pertubuhan Amal Iman Malaysia',
-    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
+    tarikhPermohonan: '15/6/2025',
     jenisOrganisasi: 'NGO',
     status: 'Diluluskan',
     tindakan: { id: 'ORG-240502', status: 'Diluluskan' },
@@ -396,7 +396,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240503',
     namaOrganisasi: 'Sekolah Menengah Tahfiz Al-Amin',
-    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
+    tarikhPermohonan: '8/5/2025',
     jenisOrganisasi: 'IPT',
     status: 'Diluluskan',
     tindakan: { id: 'ORG-240503', status: 'Diluluskan' },
@@ -404,7 +404,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240504',
     namaOrganisasi: 'Institut Latihan Kemahiran Malaysia',
-    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
+    tarikhPermohonan: '30/7/2025',
     jenisOrganisasi: 'Institut',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-240504', status: 'Menunggu Pengesahan' },
@@ -412,7 +412,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240505',
     namaOrganisasi: 'Syarikat Pembangunan Hartanah Sdn Bhd',
-    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
+    tarikhPermohonan: '12/6/2025',
     jenisOrganisasi: 'Swasta',
     status: 'Ditolak',
     tindakan: { id: 'ORG-240505', status: 'Ditolak' },
@@ -420,7 +420,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240506',
     namaOrganisasi: 'Persatuan Belia Islam Malaysia',
-    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
+    tarikhPermohonan: '25/5/2025',
     jenisOrganisasi: 'NGO',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-240506', status: 'Menunggu Pengesahan' },
@@ -428,7 +428,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240507',
     namaOrganisasi: 'Universiti Teknologi Malaysia',
-    tarikhPermohonan: new Date().toLocaleDateString('ms-MY'),
+    tarikhPermohonan: '18/4/2025',
     jenisOrganisasi: 'IPT',
     status: 'Ditolak',
     tindakan: { id: 'ORG-240507', status: 'Ditolak' },
