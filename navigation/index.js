@@ -917,14 +917,14 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Carian Organisasi",
+            title: "Carian HQ",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PP/01",
             child: [],
             meta: {},
           },
           {
-            title: "Senarai Organisasi",
+            title: "Senarai HQ",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PP",
             child: [],
