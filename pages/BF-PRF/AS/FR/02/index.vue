@@ -40,8 +40,6 @@
           </div>
         </div>
 
-        
-
         <!-- Section A Form - Step 1: Maklumat Peribadi -->
         <FormKit
           v-if="currentStepA == 1"
@@ -49,9 +47,7 @@
           :actions="false"
           @submit="nextStepA"
         >
-          <h3 class="text-lg font-semibold mb-4">
-           A. Maklumat Peribadi Asnaf 
-          </h3>
+          <h3 class="text-lg font-semibold mb-4">A. Maklumat Peribadi Asnaf</h3>
 
           <h3 class="text-lg font-semibold mb-4">1. Maklumat Peribadi</h3>
 
@@ -310,7 +306,10 @@
               />
 
               <!-- Polygamy Information (Conditional) -->
-              <div v-if="formData.status_poligami === 'ya'" class="md:col-span-2">
+              <div
+                v-if="formData.status_poligami === 'ya'"
+                class="md:col-span-2"
+              >
                 <FormKit
                   type="select"
                   name="bilangan_isteri"
@@ -2063,7 +2062,10 @@
               />
 
               <!-- Conditional fields - only show when nama institusi is filled -->
-              <div v-if="formData.nama_institusi_pemberi_pinjaman" class="md:col-span-2">
+              <div
+                v-if="formData.nama_institusi_pemberi_pinjaman"
+                class="md:col-span-2"
+              >
                 <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
@@ -2469,7 +2471,7 @@
           <!-- Employment Details (shown only when working) -->
           <div v-if="formData.status_pekerjaan === 'bekerja'" class="mb-6">
             <h4 class="text-md font-medium mb-3">Butiran Pekerjaan</h4>
-            
+
             <!-- Income Source (shown only when working) -->
             <div class="mb-6">
               <h5 class="text-md font-medium mb-3">Sumber Pendapatan</h5>
@@ -2494,7 +2496,13 @@
               />
 
               <!-- Lain-lain Sumber Pendapatan (shown only when "Lain-lain" is selected) -->
-              <div v-if="formData.sumber_pendapatan && formData.sumber_pendapatan.includes('Lain-lain')" class="mt-4">
+              <div
+                v-if="
+                  formData.sumber_pendapatan &&
+                  formData.sumber_pendapatan.includes('Lain-lain')
+                "
+                class="mt-4"
+              >
                 <FormKit
                   type="text"
                   name="lain_lain_sumber_pendapatan"
@@ -2724,8 +2732,6 @@
             </div>
           </div>
 
-
-
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
@@ -2755,7 +2761,9 @@
           :actions="false"
           id="sectionA13"
         >
-          <h3 class="text-lg font-semibold mb-4">12. Maklumat Pendapatan & Perbelanjaan</h3>
+          <h3 class="text-lg font-semibold mb-4">
+            12. Maklumat Pendapatan & Perbelanjaan
+          </h3>
 
           <!-- Income Information -->
           <div class="mb-6">
@@ -3140,11 +3148,22 @@
             <div
               v-for="step in stepsB"
               :key="step.id"
-              class="text-center flex-1 cursor-pointer"
+              class="text-center flex-1 cursor-pointer relative group"
               :class="{ 'font-semibold': currentStepB >= step.id }"
               @click="goToStepB(step.id)"
             >
               {{ step.label }}
+              <!-- Tooltip for Pengesahan Pendapatan -->
+              <div
+                v-if="step.tooltip"
+                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 max-w-xs"
+              >
+                {{ step.tooltip }}
+                <!-- Arrow -->
+                <div
+                  class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"
+                ></div>
+              </div>
             </div>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -3296,7 +3315,7 @@
 
           <!-- I. Maklumat Peribadi Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">1. Maklumat Peribadi Tanggungan</h4>
+            <h4 class="font-medium mb-3">1. Maklumat Peribadi</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Hubungan dengan Pemohon/Asnaf -->
               <FormKit
@@ -3776,10 +3795,9 @@
           :actions="false"
           id="sectionB2"
         >
-          <h3 class="text-lg font-semibold mb-4">2. Maklumat Islam</h3>
+            <h3 class="text-lg font-semibold mb-4">2. Maklumat Pengislaman</h3>
 
           <div class="mb-6">
-            <h4 class="font-medium mb-3">Maklumat Islam</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Adakah tanggungan anda seorang Muallaf? -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -3925,12 +3943,10 @@
           id="sectionB3"
         >
           <h3 class="text-lg font-semibold mb-4">
-            3. Maklumat Perbankan Tanggungan
+            3. Maklumat Perbankan 
           </h3>
 
           <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Perbankan</h4>
-
             <!-- Kaedah Pembayaran -->
             <div class="mb-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4064,7 +4080,7 @@
         >
           <!-- IV. Maklumat Pendidikan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">4. Maklumat Pendidikan Tanggungan</h4>
+            <h4 class="font-medium mb-3">4. Maklumat Pendidikan </h4>
 
             <!-- Bahagian A: Maklumat Pendidikan Asas -->
             <div class="mb-6">
@@ -4483,7 +4499,7 @@
         >
           <!-- V. Maklumat Kesihatan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">5. Maklumat Kesihatan Tanggungan</h4>
+            <h4 class="font-medium mb-3">5. Maklumat Kesihatan  </h4>
 
             <!-- 1. Tahap Kesihatan -->
             <div class="mb-6">
@@ -4788,7 +4804,7 @@
         >
           <!-- VI. Maklumat Kemahiran Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">6. Maklumat Kemahiran Tanggungan</h4>
+            <h4 class="font-medium mb-3">6. Maklumat Kemahiran </h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-black-700"
@@ -4860,7 +4876,7 @@
         >
           <!-- VII. Maklumat Pekerjaan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">7. Maklumat Pekerjaan Tanggungan</h4>
+            <h4 class="font-medium mb-3">7. Maklumat Pekerjaan</h4>
 
             <!-- 1. Pekerjaan (Wajib) -->
             <div class="mb-6">
@@ -5221,7 +5237,7 @@
         >
           <h3 class="text-lg font-semibold mb-4">Maklumat Perakuan Pemohon</h3>
 
-          <div class="mb-6">
+          <div class="mb-6" v-if="screenType === 'selfservice'">
             <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium"
@@ -5231,7 +5247,7 @@
                 type="radio"
                 name="dibantu_penolong_amil"
                 :options="['Ya', 'Tidak']"
-                validation="required"
+                :validation="screenType === 'selfservice' ? 'required' : ''"
                 v-model="dibantuPenolongAmil"
               />
             </div>
@@ -5243,10 +5259,10 @@
               <FormKit
                 type="select"
                 name="kariah_bantuan"
-                label="Kariah"
+                label="Nama Kariah/Institusi"
                 :options="kariahOptions"
                 placeholder="Pilih kariah"
-                validation="required"
+                :validation="screenType === 'selfservice' ? 'required' : ''"
                 v-model="formData.pengesahan.kariah_bantuan"
               />
               <FormKit
@@ -5255,7 +5271,7 @@
                 label="Nama Penolong Amil"
                 :options="pakOfficersOptionsBantuan"
                 placeholder="Pilih nama penolong amil"
-                validation="required"
+                :validation="screenType === 'selfservice' ? 'required' : ''"
                 v-model="formData.pengesahan.nama_penolong_amil_bantuan"
               />
 
@@ -5263,14 +5279,13 @@
                 type="date"
                 name="tarikh_bantuan"
                 label="Tarikh Bantuan"
-                validation="required"
+                :validation="screenType === 'selfservice' ? 'required' : ''"
                 v-model="formData.pengesahan.tarikh_bantuan"
               />
             </div>
           </div>
 
           <div class="mb-6">
-            <h4 class="font-medium mb-3">Maklumat Perakuan Pemohon</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium"
                 >Hubungan kekeluargaan dengan kakitangan LZS?</label
@@ -5293,6 +5308,7 @@
                 name="nama_kakitangan"
                 label="Nama Kakitangan"
                 validation="required"
+                v-model="formData.pengesahan.nama_kakitangan"
               />
 
               <FormKit
@@ -5300,6 +5316,7 @@
                 name="jawatan_kakitangan"
                 label="Jawatan"
                 validation="required"
+                v-model="formData.pengesahan.jawatan_kakitangan"
               />
 
               <FormKit
@@ -5307,6 +5324,7 @@
                 name="pejabat_kakitangan"
                 label="Pejabat"
                 validation="required"
+                v-model="formData.pengesahan.pejabat_kakitangan"
               />
 
               <FormKit
@@ -5314,61 +5332,117 @@
                 name="hubungan_kakitangan"
                 label="Hubungan"
                 validation="required"
+                v-model="formData.pengesahan.hubungan_kakitangan"
+              />
+            </div>
+
+            <div class="flex flex-col gap-2 mt-6">
+              <label class="font-medium"
+                >Hubungan kekeluargaan dengan Penolong Amil?</label
+              >
+              <FormKit
+                type="radio"
+                name="hubungan_penolong_amil"
+                :options="['Ya', 'Tidak']"
+                validation="required"
+                v-model="hubunganPAK"
+                @input="formData.pengesahan.hubungan_pak = hubunganPAK"
+              />
+            </div>
+
+            <div
+              v-if="hubunganPAK === 'Ya'"
+              class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
+            >
+              <FormKit
+                type="select"
+                name="kariah_hubungan_pak"
+                label="Nama Kariah/Institusi"
+                :options="kariahOptions"
+                placeholder="Pilih kariah"
+                validation="required"
+                v-model="formData.pengesahan.kariah_hubungan_pak"
               />
 
               <FormKit
-                type="date"
-                name="tarikh_perakuan"
-                label="Tarikh Perakuan"
+                type="select"
+                name="nama_pak_hubungan"
+                label="Nama Penolong Amil"
+                :options="pakOfficersOptionsHubungan"
+                placeholder="Pilih nama penolong amil"
                 validation="required"
+                v-model="formData.pengesahan.nama_pak_hubungan"
               />
             </div>
           </div>
 
           <div class="mb-6">
-            <h4 class="font-medium mb-3">
-              Pengesahan PDPA (Akta Perlindungan Data Peribadi)
-            </h4>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div class="flex items-start gap-3">
-                <FormKit
-                  type="radio"
-                  name="pdpa_consent"
-                  label=""
-                  :options="[
-                    { label: 'Setuju', value: true },
-                    { label: 'Tidak Setuju', value: false },
-                  ]"
-                  validation="required"
-                  v-model="formData.pengesahan.pdpa_consent"
-                />
-                <div class="text-sm text-gray-700">
-                  <p class="font-medium mb-2">Saya mengesahkan bahawa:</p>
-                  <ul class="list-disc list-inside space-y-1 text-xs">
-                    <li>
-                      Semua maklumat yang diberikan adalah benar dan tepat
-                    </li>
-                    <li>
-                      Saya memberikan kebenaran kepada Lembaga Zakat Selangor
-                      (LZS) untuk memproses dan menyimpan data peribadi saya
-                    </li>
-                    <li>
-                      Saya memahami bahawa data saya akan digunakan untuk tujuan
-                      pemprosesan permohonan bantuan
-                    </li>
-                    <li>
-                      Saya bersetuju untuk menerima komunikasi berkaitan
-                      permohonan saya
-                    </li>
-                    <li>
-                      Saya boleh menarik balik kebenaran ini pada bila-bila masa
-                    </li>
-                  </ul>
+            <h4 class="font-medium mb-3">Perakuan & Persetujuan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Card: PDPA Consent -->
+              <div
+                class="bg-blue-50 border border-blue-200 rounded-lg p-4 h-full flex flex-col justify-between"
+              >
+                <p class="text-sm leading-relaxed text-gray-800">
+                  Dengan nama Allah S.W.T, saya mengesahkan bahawa segala
+                  maklumat dan data yang diberikan di dalam Borang Permohonan
+                  Agihan dan lampiran adalah BENAR, TEPAT, LENGKAP dan TERKINI.
+                  Saya dengan ini bersetuju memberi persetujuan secara nyata
+                  (explicit consent) kepada Zakat Selangor untuk mengumpul,
+                  memproses, menggunakan data peribadi saya dan tanggungan saya
+                  (jika ada) bagi tujuan pentadbiran, kajian, dakwah, promosi
+                  dan aktiviti-aktiviti lain berkaitan fungsi Zakat Selangor
+                  seperti yang dinyatakan di dalam Notis Privasi Zakat Selangor
+                  di https://www.zakatselangor.com.my. Saya juga telah
+                  mendapatkan persetujuan daripada pihak ketiga berhubung dengan
+                  data dan maklumat pihak ketiga yang akan diserahkan kepada
+                  pihak Zakat Selangor.
+                </p>
+                <div class="mt-4">
+                  <label class="font-medium">Saya setuju</label>
+                  <FormKit
+                    type="checkbox"
+                    name="pdpa_consent"
+                    :value="true"
+                    validation="required"
+                    v-model="formData.pengesahan.pdpa_consent"
+                  />
+                </div>
+              </div>
+
+              <!-- Card: Income Confirmation Consent -->
+              <div
+                class="bg-blue-50 border border-blue-200 rounded-lg p-4 h-full flex flex-col justify-between"
+              >
+                <p class="text-sm leading-relaxed text-gray-800">
+                  Dengan nama Allah S.W.T, saya mengesahkan bahawa segala
+                  maklumat dan data yang diberikan di dalam Borang Permohonan
+                  dan lampiran adalah BENAR, TEPAT, LENGKAP dan TERKINI.
+                </p>
+                <div class="mt-4">
+                  <label class="font-medium">Saya setuju</label>
+                  <FormKit
+                    type="checkbox"
+                    name="pendapatan_consent"
+                    :value="true"
+                    validation="required"
+                    v-model="formData.pengesahan.pendapatan_consent"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
+          <div class="mb-6">
+            <FormKit
+              type="date"
+              name="tarikh_perakuan"
+              label="Tarikh Perakuan"
+              validation="required"
+              :readonly="true"
+              v-model="formData.pengesahan.tarikh_perakuan"
+            />
+          </div>
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
               type="button"
@@ -5384,13 +5458,13 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Pengesahan Bermastautin</rs-button
+                >Seterusnya ke Pengesahan Pendapatan</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section B Form - Step 9: Pengesahan Bermastautin -->
+        <!-- Section B Form - Step 9: Pengesahan Pendapatan -->
         <FormKit
           v-if="currentStepB === 9"
           type="form"
@@ -5398,77 +5472,169 @@
           :actions="false"
           id="sectionB9"
         >
+          <h3 class="text-lg font-semibold mb-4">Pengesahan Pendapatan</h3>
+
+          <!--Maklumat Penolong Amil yang membuat pengesahan pendapatan -->
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">
+              Maklumat Penolong Amil yang membuat pengesahan pendapatan(pemohon)
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                name="nama_penolong_amil_pendapatan"
+                label="Nama "
+                validation="required"
+                v-model="formData.pengesahan_pendapatan.nama_penolong_amil"
+              />
+
+              <FormKit
+                type="text"
+                name="jawatan_penolong_amil_pendapatan"
+                label="Jawatan"
+                validation="required"
+                v-model="formData.pengesahan_pendapatan.jawatan_penolong_amil"
+              />
+
+              <FormKit
+                type="text"
+                name="no_telefon_penolong_amil_pendapatan"
+                label="No Telefon"
+                validation="required"
+                v-model="
+                  formData.pengesahan_pendapatan.no_telefon_penolong_amil
+                "
+              />
+
+              <FormKit
+                type="date"
+                name="tarikh_pengesahan_pendapatan"
+                label="Tarikh Pengesahan"
+                validation="required"
+                v-model="
+                  formData.pengesahan_pendapatan.tarikh_pengesahan_pendapatan
+                "
+              />
+
+              <FormKit
+                type="file"
+                name="dokumen_pengesahan_pendapatan"
+                label="Dokumen pengesahan yang diupload"
+                accept=".pdf,.jpg,.jpeg,.png"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                v-model="
+                  formData.pengesahan_pendapatan.dokumen_pengesahan_pendapatan
+                "
+              />
+            </div>
+          </div>
+
+          <!-- Pegawai LZS yang membuat pengesahan pendapatan -->
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">
+              Pegawai LZS perlu memasukkan nama pegawai yang membuat pengesahan
+              pendapatan(pendaftar)
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                name="nama_pegawai_lzs_pendapatan"
+                label="Nama"
+                validation="required"
+                v-model="formData.pengesahan_pendapatan.nama_pegawai_lzs"
+              />
+
+              <FormKit
+                type="text"
+                name="jawatan_pegawai_lzs_pendapatan"
+                label="Jawatan"
+                validation="required"
+                v-model="formData.pengesahan_pendapatan.jawatan_pegawai_lzs"
+              />
+
+              <FormKit
+                type="text"
+                name="no_telefon_pegawai_lzs_pendapatan"
+                label="No Telefon"
+                validation="required"
+                v-model="formData.pengesahan_pendapatan.no_telefon_pegawai_lzs"
+              />
+
+              <FormKit
+                type="date"
+                name="tarikh_pengesahan_pegawai_lzs_pendapatan"
+                label="Tarikh Pengesahan"
+                validation="required"
+                v-model="
+                  formData.pengesahan_pendapatan.tarikh_pengesahan_pegawai_lzs
+                "
+              />
+
+              <FormKit
+                type="file"
+                name="dokumen_pengesahan_pegawai_lzs_pendapatan"
+                label="Upload Dokumen pengesahan"
+                accept=".pdf,.jpg,.jpeg,.png"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                v-model="
+                  formData.pengesahan_pendapatan.dokumen_pengesahan_pegawai_lzs
+                "
+              />
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepB"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB9"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepB"
+                >Seterusnya ke Pengesahan Bermastautin</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section B Form - Step 10: Pengesahan Bermastautin -->
+        <FormKit
+          v-if="currentStepB === 10"
+          type="form"
+          @submit="nextStepB"
+          :actions="false"
+          id="sectionB10"
+        >
           <h3 class="text-lg font-semibold mb-4">
             Maklumat Pengesahan Permastautin
           </h3>
 
           <!-- PAK Officer Information (Readonly) -->
-          <div class="mb-6">
-            <h4 class="font-medium mb-3">
-              Maklumat Pegawai PAK yang Mengesahkan
-            </h4>
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Kariah</label
-                  >
-                  <div
-                    class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded"
-                  >
-                    {{
-                      getKariahLabel(formData.pengesahan.kariah_bermastautin) ||
-                      "Belum dipilih"
-                    }}
-                  </div>
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Nama Pegawai PAK</label
-                  >
-                  <div
-                    class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded"
-                  >
-                    {{
-                      getPakOfficerLabel(
-                        formData.pengesahan.nama_pak_bermastautin
-                      ) || "Belum dipilih"
-                    }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Document Information (Readonly) -->
-          <div class="mb-6">
-            <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div
-                v-for="(doc, index) in uploadedDocuments"
-                :key="index"
-                class="p-4 border rounded-lg flex items-center justify-between bg-white"
-              >
-                <div>
-                  <p class="font-medium">{{ doc.name }}</p>
-                  <p class="text-sm text-gray-500">{{ doc.type }}</p>
-                  <p class="text-xs text-gray-400">{{ doc.size }}</p>
-                </div>
-                <rs-button
-                  variant="primary-outline"
-                  size="sm"
-                  @click="downloadDocument(doc)"
-                >
-                  <Icon name="mdi:download" class="mr-1" />
-                  Muat Turun
-                </rs-button>
-              </div>
-            </div>
-          </div>
+          <h4 class="font-medium mb-3">
+            Maklumat Pegawai PAK yang Mengesahkan
+          </h4>
 
           <!-- Original Form Fields (Hidden/Readonly) -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="select"
+              name="kariah_bermastautin"
+              label="Kariah"
+              :options="kariahOptions"
+              placeholder="Pilih kariah"
+              v-model="formData.pengesahan.kariah_bermastautin"
+              disabled
+            />
+
             <FormKit
               type="text"
               name="nama_pengesah"
@@ -5504,6 +5670,32 @@
               v-model="formData.pengesahan.tarikh_pengesahan_permastautin"
               disabled
             />
+
+            <!-- Document Information (Readonly) -->
+            <div class="mb-6">
+              <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div
+                  v-for="(doc, index) in uploadedDocuments"
+                  :key="index"
+                  class="p-4 border rounded-lg flex items-center justify-between bg-white"
+                >
+                  <div>
+                    <p class="font-medium">{{ doc.name }}</p>
+                    <p class="text-sm text-gray-500">{{ doc.type }}</p>
+                    <p class="text-xs text-gray-400">{{ doc.size }}</p>
+                  </div>
+                  <rs-button
+                    variant="primary-outline"
+                    size="sm"
+                    @click="downloadDocument(doc)"
+                  >
+                    <Icon name="mdi:download" class="mr-1" />
+                    Muat Turun
+                  </rs-button>
+                </div>
+              </div>
+            </div>
 
             <div class="md:col-span-2">
               <FormKit
@@ -5542,9 +5734,9 @@
           </div>
         </FormKit>
 
-        <!-- Section B Form - Step 10: Pegawai Pendaftar -->
+        <!-- Section B Form - Step 11: Pegawai Pendaftar -->
         <FormKit
-          v-if="currentStepB === 10"
+          v-if="currentStepB === 11"
           type="form"
           @submit="submitForm"
           :actions="false"
@@ -5599,7 +5791,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepB10"
+                @click="handleSaveStepB11"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="handleSubmit"
@@ -5646,22 +5838,34 @@
 
         <!-- KFAM Classes Table -->
         <div class="overflow-x-auto">
-          <table class="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden">
+          <table
+            class="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden"
+          >
             <thead>
               <tr class="bg-gray-50">
-                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                <th
+                  class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700"
+                >
                   Nama Pengajar
                 </th>
-                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                <th
+                  class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700"
+                >
                   No Telefon
                 </th>
-                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                <th
+                  class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700"
+                >
                   Tempat Mengajar
                 </th>
-                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                <th
+                  class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700"
+                >
                   Daerah
                 </th>
-                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                <th
+                  class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700"
+                >
                   Bahasa Penghantar
                 </th>
               </tr>
@@ -5672,7 +5876,8 @@
                 :key="kelas.id"
                 class="hover:bg-gray-100 cursor-pointer transition-all duration-200 border-l-4 border-l-transparent"
                 :class="{
-                  'bg-blue-200 border-l-blue-500 shadow-md': selectedKelas?.id === kelas.id,
+                  'bg-blue-200 border-l-blue-500 shadow-md':
+                    selectedKelas?.id === kelas.id,
                 }"
                 @click="selectKelas(kelas)"
               >
@@ -5688,15 +5893,21 @@
                 </td>
                 <td class="border border-gray-300 px-4 py-3">
                   <div class="font-medium">{{ kelas.tempat_mengajar }}</div>
-                  <div class="text-sm text-gray-600">{{ kelas.alamat_tempat }}</div>
+                  <div class="text-sm text-gray-600">
+                    {{ kelas.alamat_tempat }}
+                  </div>
                 </td>
                 <td class="border border-gray-300 px-4 py-3">
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                  <span
+                    class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                  >
                     {{ kelas.daerah }}
                   </span>
                 </td>
                 <td class="border border-gray-300 px-4 py-3">
-                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                  <span
+                    class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm"
+                  >
                     {{ kelas.bahasa_penghantar }}
                   </span>
                 </td>
@@ -5776,9 +5987,9 @@ const stepsA = [
   { id: 13, label: "Waris" },
 ];
 
-// Section B - Tanggungan Form Steps (10 steps with separate tabs for different info sections)
+// Section B - Tanggungan Form Steps (11 steps with separate tabs for different info sections)
 const currentStepB = ref(1);
-const totalStepsB = 10;
+const totalStepsB = 11;
 const stepsB = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Pengislaman" },
@@ -5788,8 +5999,14 @@ const stepsB = [
   { id: 6, label: "Kemahiran" },
   { id: 7, label: "Pekerjaan" },
   { id: 8, label: "Pengesahan" },
-  { id: 9, label: "Pengesahan Bermastautin" },
-  { id: 10, label: "Pegawai Pendaftar" },
+  {
+    id: 9,
+    label: "Pengesahan Pendapatan",
+    tooltip:
+      "Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS",
+  },
+  { id: 10, label: "Pengesahan Bermastautin" },
+  { id: 11, label: "Pegawai Pendaftar" },
 ];
 
 // ============================================================================
@@ -5837,6 +6054,9 @@ const employmentIncomeSource = ref([]);
 const currentTanggunganIndex = ref(0);
 const tanggunganList = ref([]);
 const showTanggunganSummary = ref(false);
+
+// Screen context: 'selfservice' or 'pendaftar'
+const screenType = ref("pendaftar");
 
 // ============================================================================
 // FORM DATA STRUCTURE
@@ -6054,12 +6274,13 @@ const formData = ref({
     jenis_hubungan_pak: "",
     tarikh_hubungan_pak: "",
     pdpa_consent: false,
+    pendapatan_consent: false,
     hubungan_kakitangan_lzs: "",
     nama_kakitangan: "",
     jawatan_kakitangan: "",
     pejabat_kakitangan: "",
     hubungan_kakitangan: "",
-    tarikh_perakuan: "",
+    tarikh_perakuan: new Date().toISOString().slice(0, 10),
     // Fake data for PAK officer information display in bermastautin
     kariah_bermastautin: "masjid-al-hidayah",
     nama_pak_bermastautin: "ustaz-ahmad-abdullah",
@@ -6068,6 +6289,20 @@ const formData = ref({
     jawatan_pengesah: "Pegawai PAK",
     no_telefon_pengesah: "012-3456789",
     tarikh_pengesahan_permastautin: "2024-01-15",
+  },
+
+  // Section J1 - Pengesahan Pendapatan
+  pengesahan_pendapatan: {
+    nama_penolong_amil: "",
+    jawatan_penolong_amil: "",
+    no_telefon_penolong_amil: "",
+    tarikh_pengesahan_pendapatan: "",
+    dokumen_pengesahan_pendapatan: null,
+    nama_pegawai_lzs: "",
+    jawatan_pegawai_lzs: "",
+    no_telefon_pegawai_lzs: "",
+    tarikh_pengesahan_pegawai_lzs: "",
+    dokumen_pengesahan_pegawai_lzs: null,
   },
 
   // Section K - Pengesahan Bermastautin
@@ -6540,6 +6775,11 @@ const pakOfficersOptionsBantuan = computed(() => {
 
 const pakOfficersOptionsHubungan = computed(() => {
   const selectedKariah = formData.value.pengesahan.kariah_hubungan_pak;
+  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
+});
+
+const pakOfficersOptionsBermastautin = computed(() => {
+  const selectedKariah = formData.value.pengesahan.kariah_bermastautin;
   return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
 });
 
@@ -7245,14 +7485,20 @@ const selectTanggungan = (index) => {
 
   currentTanggunganIndex.value = index;
   currentStepB.value = 1;
-  
+
   // Debug: Log the selected tanggungan data
   const selectedTanggungan = getCurrentTanggungan();
   console.log("Selected Tanggungan:", selectedTanggungan);
   console.log("Selected Tanggungan Name:", selectedTanggungan?.nama_tanggungan);
-  console.log("Selected Tanggungan Relationship:", selectedTanggungan?.hubungan_pemohon);
+  console.log(
+    "Selected Tanggungan Relationship:",
+    selectedTanggungan?.hubungan_pemohon
+  );
   console.log("Selected Tanggungan Age:", selectedTanggungan?.umur_tanggungan);
-  console.log("Selected Tanggungan Birth Date:", selectedTanggungan?.tarikh_lahir_tanggungan);
+  console.log(
+    "Selected Tanggungan Birth Date:",
+    selectedTanggungan?.tarikh_lahir_tanggungan
+  );
 };
 
 const toggleTanggunganSummary = () => {
@@ -7451,29 +7697,31 @@ onMounted(() => {
     emel: "adan.abu@gmail.com",
     status_perkahwinan: "Berkahwin",
     status_poligami: "tidak",
-    
+
     // Mock data for Maklumat Pendidikan
     masih_bersekolah: "T",
     pendidikan_tertinggi: "Peringkat Rendah",
     tahap_pendidikan: ["Peringkat Rendah"],
-    
+
     // Mock data for Maklumat Islam
     adakah_muallaf: "T",
-    
+
     // Mock data for Maklumat Perbankan
     kaedah_pembayaran: "akaun",
-    bank_accounts: [{
-      nama_bank: "bank-islam",
-      no_akaun_bank: "3063020371170",
-      nama_pemegang_akaun: "adnan bin abu"
-    }],
-    
+    bank_accounts: [
+      {
+        nama_bank: "bank-islam",
+        no_akaun_bank: "3063020371170",
+        nama_pemegang_akaun: "adnan bin abu",
+      },
+    ],
+
     // Mock data for Maklumat Kesihatan
     tahap_kesihatan: "Sihat",
-    
+
     // Mock data for Maklumat Kemahiran
     kemahiran: ["Perniagaan"],
-    
+
     // Mock data for Maklumat Pinjaman Harta
     // nama_institusi_pemberi_pinjaman: "Bank Islam Malaysia Berhad",
     // jenis_pinjaman: "Pinjaman Peribadi",
@@ -7482,7 +7730,7 @@ onMounted(() => {
     // tahun_mula_pinjaman: "2023-01-01",
     // tahun_akhir_pinjaman: "2025-12-31",
     // dokumen_perjanjian_pinjaman: null,
-    
+
     // Mock data for Maklumat Tempat Tinggal
     addressInfo: {
       ...formData.value.addressInfo,
@@ -7504,8 +7752,8 @@ onMounted(() => {
       bekalan_elektrik: "ada",
       penyelenggaraan: "tiada",
       bil_air: "50",
-      bil_elektrik: "50"
-    }
+      bil_elektrik: "50",
+    },
   };
 
   if (tanggunganList.value.length === 0) {
@@ -7928,9 +8176,18 @@ onMounted(() => {
       isInitializingMockData.value = false;
 
       console.log("Mock data loaded for 3 tanggungan:", tanggunganList.value);
-      console.log("Rohana relationship:", tanggunganList.value[0]?.hubungan_pemohon);
-      console.log("Najwa relationship:", tanggunganList.value[1]?.hubungan_pemohon);
-      console.log("Qistina relationship:", tanggunganList.value[2]?.hubungan_pemohon);
+      console.log(
+        "Rohana relationship:",
+        tanggunganList.value[0]?.hubungan_pemohon
+      );
+      console.log(
+        "Najwa relationship:",
+        tanggunganList.value[1]?.hubungan_pemohon
+      );
+      console.log(
+        "Qistina relationship:",
+        tanggunganList.value[2]?.hubungan_pemohon
+      );
     }
   }
 });
@@ -8247,7 +8504,7 @@ const handleSaveStepB8 = async () => {
 const handleSaveStepB9 = async () => {
   try {
     console.log("Step B9 saved:", formData.value);
-    toast.success("Maklumat Pengesahan Bermastautin berjaya disimpan");
+    toast.success("Maklumat Pengesahan Pendapatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B9 error:", error);
@@ -8257,10 +8514,20 @@ const handleSaveStepB9 = async () => {
 const handleSaveStepB10 = async () => {
   try {
     console.log("Step B10 saved:", formData.value);
-    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+    toast.success("Maklumat Pengesahan Bermastautin berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B10 error:", error);
+  }
+};
+
+const handleSaveStepB11 = async () => {
+  try {
+    console.log("Step B11 saved:", formData.value);
+    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step B11 error:", error);
   }
 };
 
