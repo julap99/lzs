@@ -215,13 +215,6 @@ const mockIndividuData = [
     jenisPengenalan: 'MyKad',
     idPengenalan: '880101-12-3456',
     tindakan: { id: 'IND001' }
-  },
-  {
-    id: 'IND002',
-    namaPenuh: 'Siti Fatimah Binti Ali',
-    jenisPengenalan: 'MyKad',
-    idPengenalan: '920505-14-7890',
-    tindakan: { id: 'IND002' }
   }
 ];
 
@@ -232,13 +225,6 @@ const mockSyarikatData = [
     jenisPengenalan: 'ID Syarikat',
     idSyarikat: 'SY123456-X',
     tindakan: { id: 'SYR001' }
-  },
-  {
-    id: 'SYR002',
-    namaSyarikat: 'Klinik Kesihatan Sejahtera',
-    jenisPengenalan: 'ID Syarikat',
-    idSyarikat: 'SY789012-H',
-    tindakan: { id: 'SYR002' }
   }
 ];
 
@@ -303,7 +289,7 @@ const performSearch = () => {
 };
 
 const navigateToUpdate = (id) => {
-  router.push(`/BF-PRF/TP/KP/01?id=${id}`);
+  router.push(`/BF-PRF/TP/PP/kemaskini/${id}`);
 };
 
 const navigateToRegistration = () => {
