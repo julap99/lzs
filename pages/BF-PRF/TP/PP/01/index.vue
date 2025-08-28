@@ -303,7 +303,7 @@ const performSearch = () => {
 };
 
 const navigateToUpdate = (id) => {
-  router.push(`/BF-PRF/TP/KP/01?id=${id}`);
+  router.push(`/BF-PRF/TP/PP/kemaskini/${id}`);
 };
 
 const navigateToRegistration = () => {
