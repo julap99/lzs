@@ -76,7 +76,7 @@
                 </div>
               </div>
 
-              <div class="space-y-1">
+              <!-- <div class="space-y-1">
                 <label class="text-sm font-medium text-gray-700"
                   >Product Package</label
                 >
@@ -85,16 +85,76 @@
                     formData.productpackage
                   }}</span>
                 </div>
-              </div>
+              </div> -->
 
               <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700">Product Package</label>
+                <FormKit
+                  type="select"
+                  name="productpackage"
+                  v-model="formData.productpackage"
+                  placeholder="Sila pilih product package"
+                  :options="[
+                    // '(PEROLEHAN) BINA RUMAH (FAKIR)',
+                    // '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
+                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
+                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
+                    { label: '-- Sila Pilih --', value: '' }, // 👈 default option
+                    { label: '(PEROLEHAN) BINA RUMAH (FAKIR)', value: 'PEROLEHAN' },
+                    { label: '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG', value: 'WO' },
+                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN1' },
+                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN2' }
+                  ]"
+                  searchable="true"
+                  class="mt-1"
+                />
+              </div>
+
+
+              <!-- <div class="space-y-1">
                 <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm font-mono text-gray-900">{{
                     formData.entitlementproduct
                   }}</span>
                 </div>
+              </div> -->
+
+              <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
+                <FormKit
+                  type="select"
+                  name="entitlementproduct"
+                  v-model="formData.entitlementproduct"
+                  placeholder="Sila pilih entitlement product"
+                  :options="[
+                    '-- Sila Pilih --', // 👈 default option
+                    '(PEROLEHAN) BINA RUMAH (FAKIR)',
+                    '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
+                    '(PEROLEHAN) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
+                    '(WO) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
+                  ]"
+                  searchable="true"
+                  class="mt-1"
+                />
               </div>
+
+              <!-- Tarikh Permohonan (Read Only) -->
+              <div class="space-y-1 mt-4">
+                <label class="text-sm font-medium text-gray-700">Tarikh Permohonan</label>
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <span class="text-sm text-gray-900">28/8/2025</span>
+                </div>
+              </div>
+
+              <!-- SLA (Read Only) -->
+              <div class="space-y-1 mt-4">
+                <label class="text-sm font-medium text-gray-700">SLA</label>
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <span class="text-sm text-gray-900">3 hari lagi</span>
+                </div>
+              </div>
+
 
               <!-- Toggle Button SEGERA -->
               <div class="mt-6 flex items-center">
@@ -270,7 +330,7 @@
           </rs-card>
 
           <!-- BQ, Laporan Gambar, Laporan Teknikal in Tabs -->
-          <rs-tab variant="primary" type="card">
+          <rs-tab variant="primary" type="card"  default-active="BQ">
             <!-- Tab: BQ -->
             <rs-tab-item title="BQ" active>
               <rs-card class="shadow-sm border-0 bg-white">
@@ -315,6 +375,11 @@
                           <th
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
+                            Jumlah Keseluruhan
+                          </th>
+                          <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Status
                           </th>
                           <th
@@ -335,6 +400,11 @@
                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                           >
                             {{ bq.namaBQ }}
+                          </td>
+                          <td
+                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                          >
+                            {{ bq.jumlahBQ }}
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap">
                             <rs-badge
@@ -531,10 +601,170 @@
               </rs-card>
             </rs-tab-item>
           </rs-tab>
+          
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="ph:currency-circle-dollar"
+                      class="w-6 h-6 text-emerald-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Maklumat Kadar Bantuan
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Nilai kadar bantuan berdasarkan BQ
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                  <div class="space-y-1">
+                    <!-- <label class="text-sm font-medium text-gray-700"
+                      >Kadar Bantuan</label
+                    > -->
+                    <div class="space-y-1">
+                      <label class="text-sm font-medium text-gray-700">Kadar Bantuan</label>
+                      <input
+                        type="number"
+                        v-model="formData.jumlahBantuan"
+                        class="mt-1 w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                        placeholder="Masukkan jumlah bantuan"
+                      />
+                      <span class="text-sm text-gray-500">(Diambil dari BQ)</span>
+                    </div>
+                    <!-- <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                       <span class="text-lg font-semibold text-gray-900">
+                        RM {{ jumlahBantuan.toLocaleString() }}
+                      </span> 
+                      <input
+                        type="number"
+                        v-model="formData.jumlahBantuan"
+                        class="mt-1 w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                        placeholder="Masukkan jumlah bantuan"
+                      />
+                      <span class="text-sm text-gray-500 ml-2"
+                        >(Diambil dari BQ)</span
+                      >
+                    </div> -->
+                  </div>
+
+                  <!-- <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700"
+                      >Tempoh/Kekerapan</label
+                    >
+                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                      <span class="text-lg font-semibold text-gray-900">
+                        RM {{ jumlahBantuan.toLocaleString() }}
+                      </span>
+                      <span class="text-sm text-gray-500 ml-2"
+                        >(Diambil dari BQ)</span>
+                    </div>
+                  </div> -->
+
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Tempoh/Kekerapan</label>
+                    <input
+                    type="number"
+                    v-model="formData.tempohKekerapan"
+                    class="mt-1 w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    placeholder="Masukkan bilangan tempoh/kekerapan"
+                    />
+                  </div>
+
+                </div>
+
+                <!-- Tarikh Mula & Tarikh Tamat side by side -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
+                    <input
+                      type="date"
+                      v-model="formData.tarikhMula"
+                      class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Tarikh Tamat</label>
+                    <input
+                      type="date"
+                      v-model="formData.tarikhTamat"
+                      class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Jumlah Keseluruhan Bantuan akan Diterima</label
+                  >
+                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <!-- <span class="text-lg font-semibold text-gray-900">
+                      RM {{ jumlahBantuan.toLocaleString() }}
+                    </span> -->
+                    <span class="text-lg font-semibold text-gray-900">
+                      RM {{ jumlahKeseluruhan.toLocaleString() }}
+                    </span>
+                  </div>
+                  
+
+                </div>
+                
+
+                <!-- <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Catatan Pengesyoran</label
+                  >
+                  <div
+                    class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[80px]"
+                  >
+                    <span class="text-sm text-gray-900">{{
+                      catatanPengesyoran || "Diambil dari BQ"
+                    }}</span>
+                  </div>
+                </div> -->
+
+                <!-- Post-approval buttons (only shown after approval) -->
+                <div v-if="isApproved" class="space-y-2 pt-4 border-t">
+                  <rs-button
+                    variant="success-outline"
+                    @click="viewArahanKerja"
+                    class="w-full !py-2 text-sm"
+                  >
+                    <Icon name="ph:file-text" class="w-4 h-4 mr-2" />
+                    Lihat Arahan Kerja
+                  </rs-button>
+
+                  <rs-button
+                    variant="info-outline"
+                    @click="urusPemantauan"
+                    class="w-full !py-2 text-sm"
+                  >
+                    <Icon name="ph:monitor" class="w-4 h-4 mr-2" />
+                    Urus Pemantauan
+                  </rs-button>
+                </div>
+              </div>
+
+              
+            </template>
+          </rs-card>
+
         </div>
         <div class="col-span-1">
           <!-- Section 6: Catatan Lapangan (C/U/V) -->
-          <rs-card class="shadow-sm border-0 bg-white">
+          <!-- <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -572,7 +802,7 @@
                 </div>
               </div>
             </template>
-          </rs-card>
+          </rs-card> -->
 
           <!-- Section 7: Status Lawatan -->
           <rs-card class="shadow-sm border-0 bg-white">
@@ -590,10 +820,10 @@
                 </div>
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">
-                    Status Lawatan
+                    Keputusan Siasatan
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Update status siasatan lapangan
+                    Kemaskini status siasatan lapangan
                   </p>
                 </div>
               </div>
@@ -602,102 +832,50 @@
             <template #body>
               <FormKit
                 type="select"
-                label="Status Lawatan"
+                label="Status Sokongan"
                 :options="statusLawatanOptions"
                 v-model="formData.statusLawatan"
                 :classes="{ input: 'text-sm' }"
               />
-            </template>
-          </rs-card>
-
-          <!-- Section 8: Jumlah Bantuan & Catatan Pengesyoran -->
-          <rs-card class="shadow-sm border-0 bg-white">
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon
-                      name="ph:currency-circle-dollar"
-                      class="w-6 h-6 text-emerald-600"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Jumlah Bantuan & Pengesyoran
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Nilai bantuan berdasarkan BQ dan pengesyoran
-                  </p>
-                </div>
-              </div>
-            </template>
-
-            <template #body>
               <div class="space-y-4">
-                <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Jumlah Bantuan</label
-                  >
-                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                    <span class="text-lg font-semibold text-gray-900">
-                      RM {{ jumlahBantuan.toLocaleString() }}
-                    </span>
-                    <span class="text-sm text-gray-500 ml-2"
-                      >(Diambil dari BQ)</span
-                    >
-                  </div>
-                </div>
+                <FormKit
+                  type="textarea"
+                  label="Catatan Lapangan"
+                  v-model="catatanLapangan.catatan"
+                  rows="6"
+                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa lawatan lapangan..."
+                  :classes="{ input: 'text-sm' }"
+                />
 
-                <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Catatan Pengesyoran</label
-                  >
-                  <div
-                    class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[80px]"
-                  >
-                    <span class="text-sm text-gray-900">{{
-                      catatanPengesyoran || "Diambil dari BQ"
-                    }}</span>
-                  </div>
-                </div>
+                <FormKit
+                type="select"
+                label="Status Proses"
+                :options="statusprosesOptions"
+                v-model="formData.statusproses"
+                :classes="{ input: 'text-sm' }"
+                />
 
-                <!-- Post-approval buttons (only shown after approval) -->
-                <div v-if="isApproved" class="space-y-2 pt-4 border-t">
-                  <rs-button
-                    variant="success-outline"
-                    @click="viewArahanKerja"
-                    class="w-full !py-2 text-sm"
-                  >
-                    <Icon name="ph:file-text" class="w-4 h-4 mr-2" />
-                    Lihat Arahan Kerja
-                  </rs-button>
-
-                  <rs-button
-                    variant="info-outline"
-                    @click="urusPemantauan"
-                    class="w-full !py-2 text-sm"
-                  >
-                    <Icon name="ph:monitor" class="w-4 h-4 mr-2" />
-                    Urus Pemantauan
-                  </rs-button>
+                <div class="text-xs text-gray-500">
+                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
+                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
                 </div>
               </div>
             </template>
+            
           </rs-card>
+
+          
 
           <!-- Section 9: Action Buttons -->
           <rs-card class="p-4">
             <div class="flex flex-col sm:flex-row gap-3 justify-end">
               <rs-button
-                variant="danger"
-                @click="handleBatal"
+                variant="success"
+                @click="handleSimpan"
                 :disabled="processing"
-                :loading="processing"
+                :loading="processing && actionType === 'simpan'"
               >
-                Kembali
+                Simpan
               </rs-button>
 
               <rs-button
@@ -706,7 +884,16 @@
                 :disabled="processing"
                 :loading="processing && actionType === 'complete_submit'"
               >
-                Hantar
+                Hantar Kelulusan
+              </rs-button>
+
+              <rs-button
+                variant="danger"
+                @click="handleBatal"
+                :disabled="processing"
+                :loading="processing"
+              >
+                Kembali
               </rs-button>
             </div>
           </rs-card>
@@ -741,6 +928,7 @@
     </rs-modal>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
@@ -781,6 +969,7 @@ const formData = ref({
   aidproduct: "Bantuan Binaan Rumah (Fakir)",
   productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
   entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+  jumlahBantuan: 43000,
   // noTelefon: "0123456789",
   // emel: "rosli@gmail.com",
   // statusKeluarga: "Fakir",
@@ -816,11 +1005,7 @@ const bqList = ref([
   {
     noBQ: "BQ01",
     namaBQ: "BQ MOHD ROSLI BIN SAAD",
-    status: "Dalam Kelulusan",
-  },
-  {
-    noBQ: "BQ02",
-    namaBQ: "BQ MOHD ROSLI BIN SAAD 2",
+    jumlahBQ: "RM43,000",
     status: "Dalam Proses",
   },
 ]);
@@ -863,14 +1048,32 @@ const isApproved = ref(false); // This will be true after approval
 
 // Dropdown options
 const statusLawatanOptions = ref([
-  { label: "Perlu Diproses", value: "belum_selesai" },
-  { label: "Selesai Diproses", value: "selesai_lawatan" },
+  { label: "--Sila Pilih--", value: "sila_pilih" },
+  { label: "Sokong", value: "sokong" },
+  { label: "Tidak Sokong", value: "tidak_sokong" },
+]);
+
+// Dropdown options
+const statusprosesOptions = ref([
+  { label: "--Sila Pilih--", value: "belum_selesai" },
+  { label: "Selesai Diproses", value: "selesai" },
+  { label: "KIV", value: "kiv" },
 ]);
 
 const statusDokumenOptions = ref([
   { label: "Lengkap", value: "lengkap" },
   { label: "Tidak Lengkap", value: "tidak_lengkap" },
+  { label: "Tiada Keperluan", value: "tiada_keperluan" },
 ]);
+
+
+
+const jumlahKeseluruhan = computed(() => {
+  const kadar = parseFloat(formData.value.jumlahBantuan) || 0
+  const tempoh = parseInt(formData.value.tempohKekerapan) || 0
+  return kadar * tempoh
+})
+
 
 // Methods
 const getStatusVariant = (status) => {
@@ -1013,11 +1216,11 @@ const handleSelesaiDanHantar = async () => {
 
     // Validate required fields before submission
     if (
-      !formData.value.statusLawatan ||
-      formData.value.statusLawatan === "belum_selesai"
+      !formData.value.statusproses ||
+      formData.value.statusproses === "belum_selesai"
     ) {
       toast.error(
-        "Sila kemaskini status lawatan kepada 'Selesai Lawatan Lapangan'"
+        "Sila kemaskini Status Proses"
       );
       return;
     }
@@ -1029,6 +1232,38 @@ const handleSelesaiDanHantar = async () => {
 
     // Navigate back to list
     router.push("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad");
+  } catch (error) {
+    toast.error("Ralat semasa menyelesaikan dan menghantar");
+    console.error(error);
+  } finally {
+    processing.value = false;
+    actionType.value = "";
+  }
+};
+
+const handleSimpan = async () => {
+  try {
+    processing.value = true;
+    actionType.value = "simpan";
+
+    // Validate required fields before submission
+    if (
+      !formData.value.statusproses ||
+      formData.value.statusproses === "belum_selesai"
+    ) {
+      toast.error(
+        "Sila kemaskini Status Proses"
+      );
+      return;
+    }
+
+    // Implement complete and submit functionality
+    console.log("Completing and submitting to approval...");
+
+    toast.success("Maklumat telah berjaya disimpan");
+
+    // Navigate back to list
+    //router.push("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad");
   } catch (error) {
     toast.error("Ralat semasa menyelesaikan dan menghantar");
     console.error(error);
@@ -1053,6 +1288,7 @@ onMounted(() => {
     aidproduct: "Bantuan Binaan Rumah (Fakir)",
     productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
     entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    jumlahBantuan: 43000,
     // nama: "Mohd Rosli bin Saad",
     // alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
     // jenisPengenalan: "No Pengenalan",
