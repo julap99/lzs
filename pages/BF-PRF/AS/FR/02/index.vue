@@ -69,17 +69,18 @@
                   { label: 'Foreign ID', value: 'foreign_id' },
                 ]"
                 validation="required"
-                v-model="jenisId"
+                v-model="formData.jenis_id"
               />
 
               <FormKit
-                v-if="jenisId"
+                v-if="formData.jenis_id"
                 type="file"
                 name="dokumen_id"
-                :label="`Upload ${jenisId}`"
+                :label="`Upload ${formData.jenis_id}`"
                 accept=".pdf,.jpg,.jpeg,.png"
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                v-model="formData.dokumen_id"
               />
 
               <FormKit
@@ -88,6 +89,7 @@
                 label="ID Pengenalan"
                 help="Mengikut Dokumen Pengenalan"
                 validation="required"
+                v-model="formData.no_pengenalan"
               />
 
               <FormKit
@@ -96,6 +98,7 @@
                 label="Nama"
                 help="Mengikut Dokumen Pengenalan"
                 validation="required"
+                v-model="formData.nama"
               />
 
               <FormKit
@@ -116,6 +119,7 @@
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 accept=".pdf,.jpg,.jpeg,.png"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                v-model="formData.lain_warganegara"
               />
 
               <div
@@ -134,6 +138,7 @@
                       { label: 'Tidak', value: 'tidak' },
                     ]"
                     validation="required"
+                    v-model="formData.taraf_penduduk"
                   />
                 </div>
               </div>
@@ -142,12 +147,13 @@
                 type="text"
                 name="nopassportlama"
                 label="No Passport Lama"
+                v-model="formData.nopassportlama"
               />
 
               <FormKit
                 v-if="
                   formData.warganegara === 'Lain-lain' &&
-                  jenisId === 'foreign_id'
+                  formData.jenis_id === 'foreign_id'
                 "
                 type="date"
                 name="passportStartDate"
@@ -157,7 +163,7 @@
               <FormKit
                 v-if="
                   formData.warganegara === 'Lain-lain' &&
-                  jenisId === 'foreign_id'
+                  formData.jenis_id === 'foreign_id'
                 "
                 type="date"
                 name="passportEndDate"
@@ -177,6 +183,7 @@
                 label="Tarikh Lahir"
                 help="Format: dd-mm-yyyy"
                 validation="required"
+                v-model="formData.tarikh_lahir"
               />
 
               <FormKit
@@ -184,6 +191,7 @@
                 name="umur"
                 label="Umur"
                 validation="required"
+                v-model="formData.umur"
               />
 
               <FormKit
@@ -191,6 +199,7 @@
                 name="tempat_lahir"
                 label="Tempat Lahir"
                 validation="required"
+                v-model="formData.tempat_lahir"
               />
 
               <FormKit
@@ -200,6 +209,7 @@
                 :options="['Lelaki', 'Perempuan']"
                 placeholder="Pilih Jantina"
                 validation="required"
+                v-model="formData.jantina"
               />
 
               <FormKit
@@ -209,45 +219,49 @@
                 :options="['Islam', 'Kristian', 'Buddha', 'Hindu', 'Lain-lain']"
                 placeholder="Pilih Agama"
                 validation="required"
-                v-model="agama"
+                v-model="formData.agama"
               />
 
               <FormKit
-                v-if="agama === 'Lain-lain'"
+                v-if="formData.agama === 'Lain-lain'"
                 type="text"
                 name="agama_lain"
                 label="Agama Lain"
                 validation="required"
+                v-model="formData.agama_lain"
               />
 
               <FormKit
-                v-model="bangsa"
                 type="select"
                 name="bangsa"
                 label="Bangsa"
                 :options="['Melayu', 'Cina', 'India', 'Lain-lain']"
                 validation="required"
                 placeholder="Pilih Bangsa"
+                v-model="formData.bangsa"
               />
 
               <FormKit
-                v-if="bangsa === 'Lain-lain'"
+                v-if="formData.bangsa === 'Lain-lain'"
                 type="text"
                 name="bangsa_lain"
                 label="Bangsa Lain"
                 validation="required"
+                v-model="formData.bangsa_lain"
               />
 
               <FormKit
                 type="text"
                 name="no_telefon_bimbit"
                 label="No Telefon Bimbit"
+                v-model="formData.no_telefon_bimbit"
               />
 
               <FormKit
                 type="text"
                 name="no_telefon_rumah"
                 label="No Telefon Rumah"
+                v-model="formData.no_telefon_rumah"
               />
 
               <FormKit
@@ -255,6 +269,7 @@
                 name="emel"
                 label="Emel"
                 validation="required|email"
+                v-model="formData.emel"
               />
             </div>
           </div>
@@ -278,6 +293,7 @@
                   'Balu',
                 ]"
                 validation="required"
+                v-model="formData.status_perkahwinan"
               />
 
               <FormKit
@@ -290,11 +306,11 @@
                   { label: 'Ya', value: 'ya' },
                 ]"
                 validation="required"
-                v-model="statusPoligami"
+                v-model="formData.status_poligami"
               />
 
               <!-- Polygamy Information (Conditional) -->
-              <div v-if="statusPoligami === 'ya'" class="md:col-span-2">
+              <div v-if="formData.status_poligami === 'ya'" class="md:col-span-2">
                 <FormKit
                   type="select"
                   name="bilangan_isteri"
@@ -306,7 +322,7 @@
                     { label: '3', value: 3 },
                     { label: '4', value: 4 },
                   ]"
-                  v-model="bilanganIsteri"
+                  v-model="formData.bilangan_isteri"
                 />
                 <div
                   v-for="(isteri, idx) in isteriList"
@@ -318,12 +334,14 @@
                     :name="`no_kp_isteri_${idx}`"
                     :label="`No Kp Pasangan #${idx + 1}`"
                     validation="required"
+                    v-model="formData.isteri_list[idx].no_kp"
                   />
                   <FormKit
                     type="text"
                     :name="`nama_isteri_${idx}`"
                     :label="`Nama Pasangan #${idx + 1}`"
                     validation="required"
+                    v-model="formData.isteri_list[idx].nama"
                   />
                 </div>
               </div>
@@ -1728,6 +1746,7 @@
                 validation="required"
                 v-if="formData.addressInfo.status_kediaman === 'Lain-lain'"
                 placeholder="Nyatakan status kediaman lain"
+                v-model="formData.addressInfo.lain_lain_status_kediaman"
                 :validation-messages="{
                   required: 'Sila nyatakan status kediaman lain',
                 }"
@@ -1760,6 +1779,7 @@
                 validation="required"
                 v-if="formData.addressInfo.tapak_rumah === 'Lain-lain'"
                 placeholder="Nyatakan tapak rumah lain"
+                v-model="formData.addressInfo.lain_lain_tapak_rumah"
                 :validation-messages="{
                   required: 'Sila nyatakan tapak rumah lain',
                 }"
@@ -1790,6 +1810,7 @@
                 validation="required"
                 v-if="formData.addressInfo.jenis_rumah === 'Lain-lain'"
                 placeholder="Nyatakan jenis rumah lain"
+                v-model="formData.addressInfo.lain_lain_jenis_rumah"
                 :validation-messages="{
                   required: 'Sila nyatakan jenis rumah lain',
                 }"
@@ -1814,6 +1835,7 @@
                 validation="required"
                 v-if="formData.addressInfo.binaan_rumah === 'Lain-lain'"
                 placeholder="Nyatakan binaan rumah lain"
+                v-model="formData.addressInfo.lain_lain_binaan_rumah"
                 :validation-messages="{
                   required: 'Sila nyatakan binaan rumah lain',
                 }"
@@ -2019,77 +2041,85 @@
                 type="text"
                 name="nama_institusi_pemberi_pinjaman"
                 label="Nama Institusi / Individu Pemberi Pinjaman"
-                validation="required"
                 placeholder="Sila masukkan nama institusi atau individu"
-                :validation-messages="{
-                  required:
-                    'Nama institusi/individu pemberi pinjaman adalah wajib',
-                }"
+                v-model="formData.nama_institusi_pemberi_pinjaman"
               />
 
-              <FormKit
-                type="text"
-                name="jenis_pinjaman"
-                label="Jenis Pinjaman"
-                placeholder="Sila masukkan jenis pinjaman"
-              />
+              <!-- Conditional fields - only show when nama institusi is filled -->
+              <div v-if="formData.nama_institusi_pemberi_pinjaman" class="md:col-span-2">
+                <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="text"
+                    name="jenis_pinjaman"
+                    label="Jenis Pinjaman"
+                    placeholder="Sila masukkan jenis pinjaman"
+                    v-model="formData.jenis_pinjaman"
+                  />
 
-              <FormKit
-                type="number"
-                name="amaun_bayaran_bulanan"
-                label="Amaun Bayaran Bulanan (RM)"
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-              />
+                  <FormKit
+                    type="number"
+                    name="amaun_bayaran_bulanan"
+                    label="Amaun Bayaran Bulanan (RM)"
+                    step="0.01"
+                    min="0"
+                    placeholder="0.00"
+                    v-model="formData.amaun_bayaran_bulanan"
+                  />
 
-              <FormKit
-                type="number"
-                name="jumlah_keseluruhan_perbelanjaan"
-                label="Jumlah Keseluruhan Perbelanjaan (RM)"
-                step="0.01"
-                min="0"
-                validation="required"
-                placeholder="0.00"
-                :validation-messages="{
-                  required: 'Jumlah keseluruhan perbelanjaan adalah wajib',
-                }"
-              />
+                  <FormKit
+                    type="number"
+                    name="jumlah_keseluruhan_perbelanjaan"
+                    label="Jumlah Keseluruhan Perbelanjaan (RM)"
+                    step="0.01"
+                    min="0"
+                    validation="required"
+                    placeholder="0.00"
+                    v-model="formData.jumlah_keseluruhan_perbelanjaan"
+                    :validation-messages="{
+                      required: 'Jumlah keseluruhan perbelanjaan adalah wajib',
+                    }"
+                  />
 
-              <FormKit
-                type="date"
-                name="tahun_mula_pinjaman"
-                label="Tahun Mula Pinjaman"
-                validation="required"
-                :validation-messages="{
-                  required: 'Tahun mula pinjaman adalah wajib',
-                }"
-              />
+                  <FormKit
+                    type="date"
+                    name="tahun_mula_pinjaman"
+                    label="Tahun Mula Pinjaman"
+                    validation="required"
+                    v-model="formData.tahun_mula_pinjaman"
+                    :validation-messages="{
+                      required: 'Tahun mula pinjaman adalah wajib',
+                    }"
+                  />
 
-              <FormKit
-                type="date"
-                name="tahun_akhir_pinjaman"
-                label="Tahun Akhir Pinjaman"
-                validation="required"
-                :validation-messages="{
-                  required: 'Tahun akhir pinjaman adalah wajib',
-                }"
-              />
+                  <FormKit
+                    type="date"
+                    name="tahun_akhir_pinjaman"
+                    label="Tahun Akhir Pinjaman"
+                    validation="required"
+                    v-model="formData.tahun_akhir_pinjaman"
+                    :validation-messages="{
+                      required: 'Tahun akhir pinjaman adalah wajib',
+                    }"
+                  />
 
-              <div class="md:col-span-2">
-                <FormKit
-                  type="file"
-                  name="dokumen_perjanjian_pinjaman"
-                  label="Dokumen Perjanjian Pinjaman"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  :validation-messages="{
-                    required: 'Dokumen perjanjian pinjaman adalah wajib',
-                    max: 'Saiz fail tidak boleh melebihi 5MB',
-                    mime: 'Format fail tidak dibenarkan',
-                  }"
-                />
+                  <div class="md:col-span-2">
+                    <FormKit
+                      type="file"
+                      name="dokumen_perjanjian_pinjaman"
+                      label="Dokumen Perjanjian Pinjaman"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                      validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                      v-model="formData.dokumen_perjanjian_pinjaman"
+                      :validation-messages="{
+                        required: 'Dokumen perjanjian pinjaman adalah wajib',
+                        max: 'Saiz fail tidak boleh melebihi 5MB',
+                        mime: 'Format fail tidak dibenarkan',
+                      }"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -5176,7 +5206,7 @@
             <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
             <div class="flex flex-col gap-2">
               <label class="font-medium"
-                >Adakah anda dibantu oleh penolong Amil</label
+                >Adakah Penolong Amil membantu semasa pengisian maklumat?</label
               >
               <FormKit
                 type="radio"
@@ -5783,12 +5813,29 @@ const formData = ref({
   // Section A - Maklumat Peribadi Asnaf
   jenis_id: "",
   no_pengenalan: "",
+  nama: "",
   warganegara: "",
+  tarikh_lahir: "",
+  umur: "",
+  tempat_lahir: "",
   jantina: "",
+  agama: "",
   bangsa: "",
+  no_telefon_bimbit: "",
+  no_telefon_rumah: "",
+  emel: "",
   bersekolah: "",
   pendidikan_tertinggi: "",
   status_perkahwinan: "",
+  status_poligami: "",
+  bilangan_isteri: "",
+  isteri_list: [],
+  taraf_penduduk: "",
+  nopassportlama: "",
+  lain_warganegara: "",
+  dokumen_id: null,
+  agama_lain: "",
+  bangsa_lain: "",
 
   // Section A - Maklumat Pendidikan
   masih_bersekolah: "",
@@ -5913,6 +5960,24 @@ const formData = ref({
     kursus_terpilih: "",
     selectedKursus: null,
     selectedGuru: null,
+    // Maklumat Tempat Tinggal
+    status_kediaman: "",
+    tapak_rumah: "",
+    jenis_rumah: "",
+    binaan_rumah: "",
+    keadaan_kediaman: "",
+    bekalan_air: "",
+    bekalan_elektrik: "",
+    penyelenggaraan: "",
+    bil_air: "",
+    bil_elektrik: "",
+    kadar_bayaran_bulanan: "",
+    kadar_sewa_bulanan: "",
+    dokumen_perjanjian_sewa: null,
+    lain_lain_status_kediaman: "",
+    lain_lain_tapak_rumah: "",
+    lain_lain_jenis_rumah: "",
+    lain_lain_binaan_rumah: "",
   },
 
   // Section H - Maklumat Pemilikan
@@ -5924,6 +5989,15 @@ const formData = ref({
   rumah_kedai: "",
   tanah_sawah: "",
   dokumen_pemilikan: null,
+
+  // Section H1 - Maklumat Pinjaman Harta
+  nama_institusi_pemberi_pinjaman: "",
+  jenis_pinjaman: "",
+  amaun_bayaran_bulanan: "",
+  jumlah_keseluruhan_perbelanjaan: "",
+  tahun_mula_pinjaman: "",
+  tahun_akhir_pinjaman: "",
+  dokumen_perjanjian_pinjaman: null,
 
   // Section I - Maklumat Barangan Rumah
   television: "",
@@ -6001,6 +6075,7 @@ const paymentMethodOptions = [
 
 // No Payment Reason Options
 const noPaymentReasonOptions = [
+  { label: "Bawah Umur", value: "bawah-umur" },
   { label: "Muflis", value: "muflis" },
   { label: "Senarai Hitam Bank", value: "senarai-hitam-bank" },
   { label: "Bukan Warganegara", value: "bukan-warganegara" },
@@ -7334,6 +7409,81 @@ const calculateTarikhKeluarMuallafTanggungan = () => {
 
 // Initialize with 3 tanggungan by default on component mount
 onMounted(() => {
+  // Initialize mock data for Section A - Maklumat Peribadi
+  formData.value = {
+    ...formData.value,
+    // Mock data for Maklumat Peribadi
+    jenis_id: "mykad",
+    no_pengenalan: "770319035991",
+    nama: "adnan bin abu",
+    warganegara: "Malaysia",
+    tarikh_lahir: "1977-03-19",
+    umur: "48",
+    tempat_lahir: "hospital kajang",
+    jantina: "Lelaki",
+    agama: "Islam",
+    bangsa: "Melayu",
+    no_telefon_bimbit: "0191105544",
+    emel: "adan.abu@gmail.com",
+    status_perkahwinan: "Berkahwin",
+    status_poligami: "tidak",
+    
+    // Mock data for Maklumat Pendidikan
+    masih_bersekolah: "T",
+    pendidikan_tertinggi: "Peringkat Rendah",
+    tahap_pendidikan: ["Peringkat Rendah"],
+    
+    // Mock data for Maklumat Islam
+    adakah_muallaf: "T",
+    
+    // Mock data for Maklumat Perbankan
+    kaedah_pembayaran: "akaun",
+    bank_accounts: [{
+      nama_bank: "bank-islam",
+      no_akaun_bank: "3063020371170",
+      nama_pemegang_akaun: "adnan bin abu"
+    }],
+    
+    // Mock data for Maklumat Kesihatan
+    tahap_kesihatan: "Sihat",
+    
+    // Mock data for Maklumat Kemahiran
+    kemahiran: ["Perniagaan"],
+    
+    // Mock data for Maklumat Pinjaman Harta
+    // nama_institusi_pemberi_pinjaman: "Bank Islam Malaysia Berhad",
+    // jenis_pinjaman: "Pinjaman Peribadi",
+    // amaun_bayaran_bulanan: "500.00",
+    // jumlah_keseluruhan_perbelanjaan: "15000.00",
+    // tahun_mula_pinjaman: "2023-01-01",
+    // tahun_akhir_pinjaman: "2025-12-31",
+    // dokumen_perjanjian_pinjaman: null,
+    
+    // Mock data for Maklumat Tempat Tinggal
+    addressInfo: {
+      ...formData.value.addressInfo,
+      alamat1: "32,jalan4/7a",
+      alamat2: "bandar baru bangi",
+      negeri: "selangor",
+      daerah: "hulu langat",
+      bandar: "kajang",
+      poskod: "43000",
+      kariah: "kariah masjid al hidayah",
+      geolokasi: "lokasi semasa",
+      tempoh_menetap_selangor: "48",
+      status_kediaman: "Milik Sendiri Tidak Berbayar",
+      tapak_rumah: "Milik Sendiri",
+      jenis_rumah: "Teres",
+      binaan_rumah: "Batu",
+      keadaan_kediaman: "Baik",
+      bekalan_air: "ada",
+      bekalan_elektrik: "ada",
+      penyelenggaraan: "tiada",
+      bil_air: "50",
+      bil_elektrik: "50"
+    }
+  };
+
   if (tanggunganList.value.length === 0) {
     // Add 3 tanggungan by default with mock data
     addTanggungan(false); // First tanggungan
