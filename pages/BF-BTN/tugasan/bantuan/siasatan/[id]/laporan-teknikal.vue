@@ -7,12 +7,12 @@
       <div class="mt-6 mb-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">
+            <!-- <h1 class="text-2xl font-bold text-gray-900">
               Laporan Teknikal
             </h1>
             <p class="mt-1 text-sm text-gray-600">
               Analisis teknikal dan cadangan kerja berdasarkan siasatan lapangan
-            </p>
+            </p> -->
           </div>
           <rs-button
             variant="primary-outline"
@@ -37,7 +37,7 @@
               </div>
               <div>
                 <h2 class="text-lg font-semibold text-gray-900">
-                  Laporan Teknikal Siasatan
+                  Laporan Teknikal
                 </h2>
                 <p class="text-sm text-gray-500">
                   Lengkapkan analisis teknikal berdasarkan dapatan lapangan
@@ -62,12 +62,12 @@
                     label="Latar Belakang"
                     v-model="formData.latarBelakang"
                     rows="6"
-                    help="Maklumat dari profiling, boleh diedit jika perlu"
+                    help="" 
                     placeholder="Masukkan latar belakang kes..."
                   />
                   <div class="text-xs text-gray-500">
                     <Icon name="ph:info" class="w-4 h-4 inline mr-1" />
-                    Maklumat ini diambil dari profiling dan boleh dikemaskini mengikut keperluan.
+                    Maklumat ini diringkaskan daripada profiling dan boleh dikemaskini mengikut keperluan.
                   </div>
                 </div>
 
@@ -165,10 +165,10 @@
                     <FormKit
                       type="textarea"
                       name="catatanTambahan"
-                      label="Catatan Tambahan"
+                      label="Lokasi Tapak"
                       v-model="formData.catatanTambahan"
                       rows="4"
-                      placeholder="Catatan tambahan yang relevan..."
+                      placeholder="Lokasi Tapak"
                     />
                   </div>
                 </div>
@@ -200,7 +200,7 @@
           <template #body>
             <div class="space-y-6 border rounded-lg p-6 bg-gray-50">
               <div class="text-center border-b pb-4">
-                <h3 class="text-xl font-bold text-gray-900">LAPORAN TEKNIKAL SIASATAN LAPANGAN</h3>
+                <h3 class="text-xl font-bold text-gray-900">LAPORAN TEKNIKAL</h3>
                 <p class="text-sm text-gray-600 mt-2">
                   ID Permohonan: {{ route.params.id }}
                 </p>
@@ -224,34 +224,34 @@
               <div class="space-y-4">
                 <div>
                   <h4 class="font-semibold text-gray-900">1. LATAR BELAKANG</h4>
-                  <p class="text-sm text-gray-700 mt-2">
+                  <p class="text-sm text-gray-700 mt-2 whitespace-pre-wrap">
                     {{ formData.latarBelakang || 'Belum diisi' }}
                   </p>
                 </div>
 
                 <div>
                   <h4 class="font-semibold text-gray-900">2. KEPERLUAN</h4>
-                  <p class="text-sm text-gray-700 mt-2">
+                  <p class="text-sm text-gray-700 mt-2 whitespace-pre-wrap">
                     {{ formData.keperluan || 'Belum diisi' }}
                   </p>
                 </div>
 
                 <div>
                   <h4 class="font-semibold text-gray-900">3. CADANGAN</h4>
-                  <p class="text-sm text-gray-700 mt-2">
+                  <p class="text-sm text-gray-700 mt-2 whitespace-pre-wrap">
                     {{ formData.cadangan || 'Belum diisi' }}
                   </p>
                 </div>
 
                 <div>
                   <h4 class="font-semibold text-gray-900">4. NILAI KERJA DICADANGKAN</h4>
-                  <p class="text-lg font-bold text-gray-900 mt-2">
+                  <p class="text-lg font-bold text-gray-900 mt-2 whitespace-pre-wrap">
                     RM {{ formData.nilaiKerja.toLocaleString() }}
                   </p>
                 </div>
 
                 <div v-if="formData.catatanTambahan">
-                  <h4 class="font-semibold text-gray-900">5. CATATAN TAMBAHAN</h4>
+                  <h4 class="font-semibold text-gray-900 whitespace-pre-wrap">5. LOKASI TAPAK</h4>
                   <p class="text-sm text-gray-700 mt-2">
                     {{ formData.catatanTambahan }}
                   </p>
@@ -435,7 +435,7 @@ const handleSaveAndReturn = async () => {
 };
 
 const handleBack = () => {
-  router.push(`/BF-BTN/permohonan/senarai-siasatan-lapangan/${route.params.id}`);
+  router.push(`/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`);
 };
 
 // Load existing data on mount
@@ -444,15 +444,39 @@ onMounted(async () => {
     // Load existing data from API
     // This is mock data for now
     formData.value = {
-      latarBelakang: "Berdasarkan profiling, pemohon tinggal di rumah yang memerlukan kerja-kerja baik pulih bumbung dan dinding yang rosak akibat cuaca. Pemohon merupakan seorang balu dengan 2 orang anak yang masih bersekolah.",
-      keperluan: "",
-      cadangan: "",
+      latarBelakang: `1. Keterangan Harta Benda:
+Binaan rumah daripada separa batu dan kayu.
+
+2. Status hakmilik tanah seperti berikut :
+No Lot : 3439
+Mukim : JERAM
+Daerah : KUALA SELANGOR
+Nama Pemilik : MOHD ROSLI BIN SAAD
+ANG Bahagian : 1/14
+Luas : 1.1635 HEKTAR
+Lain-lain : - NIL-
+
+3. Maklumat Isirumah :
+Ketua Keluarga : Pemohon (MISKIN)
+Pasangan : 1 orang isteri tinggal bersama
+Tanggungan : - NIL-
+Lain-lain : - NIL-`,
+      keperluan: `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
+Keadaan rumah tidak sempuma.
+
+Pemohon tidak mepunyai pendapatan yang mencukupi untuk membaiki kerosakan yang berlaku dirumahnya.
+Untuk rekod, rumah masih dalam keadaan baik untuk diduduki dan sesuai untuk dibaikpulih.`,
+      cadangan: `Dicadangkan kerja-kerja baikpulih berikut :
+
+1. Meroboh bahagian rumah yang rosak dan retak.
+2. Membina semula struktur bangunan rumah yang baru.
+3. Membaikpulih dan menaiktaraf pendawalan elektrik bahagian rumah yang terlibat.`,
       nilaiKerja: 25000, // This would be calculated from BQ
       tarikhSiasatan: new Date().toISOString().split('T')[0], // Today's date
       masaSiasatan: "",
       cuacaSiasatan: "",
       keadaanLokasi: "",
-      catatanTambahan: "",
+      catatanTambahan: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
     };
   } catch (error) {
     toast.error("Ralat semasa memuatkan data laporan teknikal");
