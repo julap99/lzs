@@ -13,10 +13,10 @@
               class="text-3xl font-bold text-gray-900 tracking-tight"
               id="page-title"
             >
-              Semakan Draf BQ
+              Sokongan BQ
             </h1>
             <p class="mt-2 text-sm text-gray-600 max-w-2xl" role="doc-subtitle">
-              Semakan Bill of Quantity untuk kerja-kerja cadangan
+              Sokongan Bill of Quantity untuk kerja-kerja cadangan
             </p>
           </div>
           <rs-button
@@ -38,6 +38,10 @@
       <main class="space-y-6" role="main" aria-labelledby="page-title">
         <!-- BQ Header Information -->
         <section aria-labelledby="bq-header-title">
+          
+
+        
+
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
@@ -447,7 +451,7 @@
                 <!-- Recommendation line mirroring the document -->
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
                   <p class="text-sm text-green-800 font-medium">
-                    💡 Disyorkan kerja-kerja baik pulih dengan nilai RM
+                    💡 Disyorkan kerja-kerja baik pulih dengan nilai RM 
                     {{
                       formData.jumlahKeseluruhan.toLocaleString("ms-MY", {
                         minimumFractionDigits: 2,
@@ -455,6 +459,32 @@
                     }}.
                   </p>
                 </div>
+
+                <!-- Catatan Sokongan Hartanah -->
+                <!-- <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Catatan Sokongan Hartanah</label
+                  >
+                  <FormKit
+                    type="textarea"
+                    v-model="catatanLapangan.catatanSokonganHartanah"
+                    placeholder="Boleh mengisi catatan sokongan atau ulasan pembetulan sekiranya BQ memerlukan rework"
+                    rows="4"
+                  />
+                </div> -->
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    Catatan Hartanah
+                  </label>
+                  <textarea
+                    v-model="formData.catatansokonganhartanah"
+                    class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 outline-none min-h-[100px]"
+                    placeholder="Masukkan catatan hartanah jika perlu kemaskini BQ"
+                  ></textarea>
+                </div>
+
+
 
                 <!-- Digital Signature Section -->
                 <div class="border-t border-gray-200 pt-6">
@@ -788,10 +818,21 @@ const formData = ref({
   tarikhDisemak1: "",
   tarikhDisemak2: "",
   tarikhDisahkan: "",
+  // Personal Information
+  nama: "Mohd Rosli bin Saad",
+  alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
+  jenisPengenalan: "MyKad",
+  noPengenalan: "810101121234",
+  noTelefon: "0123456789",
+  email: "rosli@gmail.com",
+  statusKeluarga: "Fakir",
+  statusIndividu: "Fakir",
+  statusMultidimensi: "Asnaf Tidak Produktif",
 });
 
 // Current workflow stage - in a real app this would come from the document status
 const currentStage = ref("disemak1"); // 'disediakan', 'disemak1', 'disemak2', 'diluluskan'
+
 
 // Utility functions (moved before computed properties to avoid hoisting issues)
 const numberToWords = (amount) => {
@@ -999,8 +1040,20 @@ const initializeFormData = () => {
   const baseData = {
     noBQ: generateBQNumber(),
     noBR: generateBRNumber(),
+    aid: "B102	Bantuan Binaan Rumah (Fakir)",
+    aidproduct: "Bantuan Binaan Rumah (Fakir)",
+    productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
     namaPemohon: "MOHD ROSLI BIN SAAD",
+    nama: "Mohd Rosli bin Saad",
     alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
+    jenisPengenalan: "MyKad",
+    mykad: "810101121234",
+    noTelefon: "0123456789",
+    emel: "rosli@gmail.com",
+    statusKeluarga: "Fakir",
+    statusIndividu: "Fakir",
+    statusMultidimensi: "Asnaf Tidak Produktif",
     tarikhSiasatan: today.toISOString().split("T")[0],
     itemKerja: [],
     jumlahKeseluruhan: 0,

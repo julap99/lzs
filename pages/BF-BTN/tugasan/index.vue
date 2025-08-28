@@ -1060,7 +1060,8 @@ const sokonganData = ref([
     bilanganBantuan: 2,
     status: "Segera - 0\nMelebihi SLA - 1\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0301",
-    tindakan: "siasatan-eoad",
+    tindakan: "bantuan/sokongan/B106",
+    //tindakan: "bantuan/sokongan/B106/draf-bq?view=true",
   },
 ]);
 
@@ -1073,7 +1074,7 @@ const kelulusanData = ref([
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0401",
-    tindakan: "siasatan-eoad",
+    tindakan: "bantuan/kelulusan/B106",
   },
 ]);
 
