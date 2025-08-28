@@ -53,10 +53,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -131,10 +128,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -209,10 +203,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -389,7 +380,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240501',
     namaOrganisasi: 'Syarikat Teknologi Maju Sdn Bhd',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '23/7/2025',
     jenisOrganisasi: 'Swasta',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-240501', status: 'Menunggu Pengesahan' },
@@ -397,7 +388,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240502',
     namaOrganisasi: 'Pertubuhan Amal Iman Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '15/6/2025',
     jenisOrganisasi: 'NGO',
     status: 'Diluluskan',
     tindakan: { id: 'ORG-240502', status: 'Diluluskan' },
@@ -405,7 +396,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240503',
     namaOrganisasi: 'Sekolah Menengah Tahfiz Al-Amin',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '8/5/2025',
     jenisOrganisasi: 'IPT',
     status: 'Diluluskan',
     tindakan: { id: 'ORG-240503', status: 'Diluluskan' },
@@ -413,7 +404,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240504',
     namaOrganisasi: 'Institut Latihan Kemahiran Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '30/7/2025',
     jenisOrganisasi: 'Institut',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-240504', status: 'Menunggu Pengesahan' },
@@ -421,7 +412,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240505',
     namaOrganisasi: 'Syarikat Pembangunan Hartanah Sdn Bhd',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '12/6/2025',
     jenisOrganisasi: 'Swasta',
     status: 'Ditolak',
     tindakan: { id: 'ORG-240505', status: 'Ditolak' },
@@ -429,7 +420,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240506',
     namaOrganisasi: 'Persatuan Belia Islam Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '25/5/2025',
     jenisOrganisasi: 'NGO',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-240506', status: 'Menunggu Pengesahan' },
@@ -437,7 +428,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240507',
     namaOrganisasi: 'Universiti Teknologi Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '18/4/2025',
     jenisOrganisasi: 'IPT',
     status: 'Ditolak',
     tindakan: { id: 'ORG-240507', status: 'Ditolak' },
@@ -485,8 +476,14 @@ const totalPages = computed(() => Math.ceil(totalOrganizations.value / pageSize.
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
 const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalOrganizations.value));
 
-const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
-const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
+const formatDate = (dateString) => {
+  // If it's already a formatted date string, return it as is
+  if (typeof dateString === 'string' && !dateString.includes('T')) {
+    return dateString;
+  }
+  // Otherwise, format it as a date
+  return new Date(dateString).toLocaleDateString('ms-MY');
+};
 
 const getStatusVariant = (status) => {
   const variants = {

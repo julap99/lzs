@@ -52,10 +52,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -130,10 +127,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -208,10 +202,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -394,7 +385,7 @@ const recipientList = ref([
     noRujukan: 'RE-240511',
     namaRecipient: 'Ahmad Bin Abdullah',
     jenisRecipient: 'Individu',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '23/7/2025',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'RE-240511', status: 'Menunggu Pengesahan' },
   },
@@ -402,7 +393,7 @@ const recipientList = ref([
     noRujukan: 'RE-240512',
     namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
     jenisRecipient: 'Syarikat',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '15/6/2025',
     status: 'Diluluskan',
     tindakan: { id: 'RE-240512', status: 'Diluluskan' },
   },
@@ -410,7 +401,7 @@ const recipientList = ref([
     noRujukan: 'RE-240513',
     namaRecipient: 'Siti Fatimah Binti Ali',
     jenisRecipient: 'Individu',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '8/5/2025',
     status: 'Ditolak',
     tindakan: { id: 'RE-240513', status: 'Ditolak' },
   },
@@ -418,7 +409,7 @@ const recipientList = ref([
     noRujukan: 'RE-240514',
     namaRecipient: 'Klinik Kesihatan Sejahtera',
     jenisRecipient: 'Syarikat',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '30/7/2025',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'RE-240514', status: 'Menunggu Pengesahan' },
   },
@@ -426,7 +417,7 @@ const recipientList = ref([
     noRujukan: 'RE-240515',
     namaRecipient: 'Zainab Binti Hassan',
     jenisRecipient: 'Individu',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '12/6/2025',
     status: 'Diluluskan',
     tindakan: { id: 'RE-240515', status: 'Diluluskan' },
   },
@@ -434,7 +425,7 @@ const recipientList = ref([
     noRujukan: 'RE-240516',
     namaRecipient: 'Pembekal Makanan Halal Sdn Bhd',
     jenisRecipient: 'Syarikat',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '25/5/2025',
     status: 'Ditolak',
     tindakan: { id: 'RE-240516', status: 'Ditolak' },
   },
@@ -477,8 +468,14 @@ const totalPages = computed(() => Math.ceil(totalRecipients.value / pageSize.val
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
 const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalRecipients.value));
 
-const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
-const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
+const formatDate = (dateString) => {
+  // If it's already a formatted date string, return it as is
+  if (typeof dateString === 'string' && !dateString.includes('T')) {
+    return dateString;
+  }
+  // Otherwise, format it as a date
+  return new Date(dateString).toLocaleDateString('ms-MY');
+};
 
 const getStatusVariant = (status) => {
   const variants = {
