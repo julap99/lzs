@@ -3508,11 +3508,9 @@
                 type="text"
                 name="umur_tanggungan"
                 label="Umur"
-                :value="
-                  calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
-                "
+                v-model="getCurrentTanggungan().umur_tanggungan"
                 readonly
-                help="Dikira secara automatik dari tarikh lahir"
+                help="Umur dari data yang telah ditetapkan"
               />
 
               <!-- Special Approval for Minors -->
@@ -6871,9 +6869,10 @@ watch(
       watch(
         () => getCurrentTanggungan()?.tarikh_lahir_tanggungan,
         (newVal) => {
-          if (newVal) {
+          if (newVal && !isInitializingMockData.value) {
             const currentTanggungan = getCurrentTanggungan();
-            if (currentTanggungan) {
+            if (currentTanggungan && !currentTanggungan.umur_tanggungan) {
+              // Only calculate age if it's not already set (for mock data)
               currentTanggungan.umur_tanggungan = calculateAge(newVal);
             }
           }
@@ -6886,6 +6885,7 @@ watch(
         (newVal) => {
           if (
             newVal &&
+            !isInitializingMockData.value &&
             getCurrentTanggungan()?.jenis_pengenalan_tanggungan === "MyKad" &&
             getCurrentTanggungan()?.warganegara_tanggungan === "Malaysia"
           ) {
@@ -6903,7 +6903,10 @@ watch(
               // Format as YYYY-MM-DD for date input
               const birthDate = `${fullYear}-${month}-${day}`;
               currentTanggungan.tarikh_lahir_tanggungan = birthDate;
-              currentTanggungan.umur_tanggungan = calculateAge(birthDate);
+              // Only calculate age if it's not already set (for mock data)
+              if (!currentTanggungan.umur_tanggungan) {
+                currentTanggungan.umur_tanggungan = calculateAge(birthDate);
+              }
             }
           }
         }
@@ -7242,6 +7245,14 @@ const selectTanggungan = (index) => {
 
   currentTanggunganIndex.value = index;
   currentStepB.value = 1;
+  
+  // Debug: Log the selected tanggungan data
+  const selectedTanggungan = getCurrentTanggungan();
+  console.log("Selected Tanggungan:", selectedTanggungan);
+  console.log("Selected Tanggungan Name:", selectedTanggungan?.nama_tanggungan);
+  console.log("Selected Tanggungan Relationship:", selectedTanggungan?.hubungan_pemohon);
+  console.log("Selected Tanggungan Age:", selectedTanggungan?.umur_tanggungan);
+  console.log("Selected Tanggungan Birth Date:", selectedTanggungan?.tarikh_lahir_tanggungan);
 };
 
 const toggleTanggunganSummary = () => {
@@ -7417,6 +7428,9 @@ const calculateTarikhKeluarMuallafTanggungan = () => {
   return "";
 };
 
+// Flag to prevent watchers from running during mock data initialization
+const isInitializingMockData = ref(true);
+
 // Initialize with 3 tanggungan by default on component mount
 onMounted(() => {
   // Initialize mock data for Section A - Maklumat Peribadi
@@ -7513,7 +7527,7 @@ onMounted(() => {
         taraf_penduduk_tetap: "Y",
         tarikh_lahir_tanggungan: "1980-10-04",
         umur_tanggungan: "43",
-        tempat_lahir_tanggungan: "Kuala Lumpur",
+        tempat_lahir_tanggungan: "Kelantan",
         jantina_tanggungan: "Perempuan",
         agama_tanggungan: "Islam",
         bangsa_tanggungan: "Melayu",
@@ -7640,7 +7654,7 @@ onMounted(() => {
       // Second Tanggungan - Anak Perempuan
       tanggunganList.value[1] = {
         ...tanggunganList.value[1],
-        hubungan_pemohon: "Anak Perempuan",
+        hubungan_pemohon: "Anak",
         nama_tanggungan: "NUR NAJWA BINTI ADNAN",
         jenis_pengenalan_tanggungan: "MyKad",
         pengenalan_id_tanggungan: "060802030272",
@@ -7655,7 +7669,7 @@ onMounted(() => {
         no_telefon_bimbit_tanggungan: "0197883456",
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "najwa@email.com",
-        tempoh_menetap_selangor_tanggungan: "19",
+        tempoh_menetap_selangor_tanggungan: "17",
         status_perkahwinan_tanggungan: "Bujang",
 
         // Special Approval for Minors
@@ -7775,7 +7789,7 @@ onMounted(() => {
       // Third Tanggungan - Anak Perempuan
       tanggunganList.value[2] = {
         ...tanggunganList.value[2],
-        hubungan_pemohon: "Anak Perempuan",
+        hubungan_pemohon: "Anak",
         nama_tanggungan: "NUR QISTINA BINTI ADNAN",
         jenis_pengenalan_tanggungan: "MyKad",
         pengenalan_id_tanggungan: "091108030442",
@@ -7790,7 +7804,7 @@ onMounted(() => {
         no_telefon_bimbit_tanggungan: "01299982378",
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "qistina@email.com",
-        tempoh_menetap_selangor_tanggungan: "16",
+        tempoh_menetap_selangor_tanggungan: "14",
         status_perkahwinan_tanggungan: "Bujang",
 
         // Special Approval for Minors
@@ -7910,7 +7924,13 @@ onMounted(() => {
       // Update formData.tanggungan array
       formData.value.tanggungan = tanggunganList.value;
 
+      // Set flag to false after mock data initialization is complete
+      isInitializingMockData.value = false;
+
       console.log("Mock data loaded for 3 tanggungan:", tanggunganList.value);
+      console.log("Rohana relationship:", tanggunganList.value[0]?.hubungan_pemohon);
+      console.log("Najwa relationship:", tanggunganList.value[1]?.hubungan_pemohon);
+      console.log("Qistina relationship:", tanggunganList.value[2]?.hubungan_pemohon);
     }
   }
 });
