@@ -358,9 +358,7 @@
               </div>
             </div>
 
-            <!-- Advanced Filtering -->
             <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-              <h4 class="text-sm font-medium text-gray-700 mb-3">Penapis Lanjutan</h4>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormKit
                   v-model="candidateFilters.searchQuery"
@@ -372,10 +370,10 @@
                   v-model="candidateFilters.kategori"
                   type="select"
                   :options="[
-                    { label: 'Sila pilih...', value: '' },
+                    { label: '.....', value: '' },
                     { label: 'PAK', value: 'PAK' },
                     { label: 'PAF', value: 'PAF' },
-                    { label: 'PA Padi', value: 'PA Padi' },
+                    { label: 'PAP', value: 'PAP' },
                     { label: 'PAK+', value: 'PAK+' }
                   ]"
                   placeholder="Kategori"
@@ -385,7 +383,7 @@
                   v-model="candidateFilters.status"
                   type="select"
                   :options="[
-                    { label: 'Sila pilih...', value: '' },
+                    { label: '.....', value: '' },
                     { label: 'Layak', value: 'layak' },
                     { label: 'Penolong Amil Aktif', value: 'active' }
                   ]"
@@ -410,7 +408,7 @@
                   :disabled="selectedCandidates.length === 0"
                 >
                   <Icon name="ph:trash" class="w-4 h-4 mr-1" />
-                  Hapus Dipilih
+                  Keluarkan
                 </rs-button>
                 <rs-button
                   variant="secondary-outline"
@@ -497,7 +495,7 @@
                       {{ candidate.kategoriPenolongAmil.join(', ') }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ Object.values(candidate.jawatanPerKategori || {}).join(', ') }}
+                      {{ formatCandidateJawatan(candidate) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {{ Object.values(candidate.sesiPerKategori || {}).join(', ') }}
@@ -750,8 +748,8 @@ const sesiPerkhidmatanOptions = {
     { label: "2024-2026", value: "2024-2026" },
     { label: "2025-2027", value: "2025-2027" },
   ],
-  "PA Padi": [
-    { label: "Sila pilih sesi perkhidmatan PA Padi", value: "" },
+  PAP: [
+    { label: "Sila pilih sesi perkhidmatan PAP", value: "" },
     { label: "2024-2026", value: "2024-2026" },
     { label: "2025-2027", value: "2025-2027" },
   ],
@@ -766,7 +764,7 @@ const sesiPerkhidmatanOptions = {
 const kategoriPenolongAmilOptions = ref([
   { label: "PAK (Penolong Amil Kariah)", value: "PAK" },
   { label: "PAF (Penolong Amil Fitrah)", value: "PAF" },
-  { label: "PA Padi", value: "PA Padi" },
+  { label: "PAP (Penolong Amil Padi)", value: "PAP" },
   { label: "PAK+ (Penolong Amil Komuniti)", value: "PAK+" },
 ]);
 
@@ -777,7 +775,7 @@ const jawatanOptions = ref([
     code: "PENOLONG_AMIL", 
     name: "Penolong Amil", 
     enabled: true,
-    applicable_categories: ["PAK", "PAF", "PA Padi", "PAK+"]
+    applicable_categories: ["PAK", "PAF", "PAP", "PAK+"]
   },
   { 
     id: 2, 
@@ -824,7 +822,7 @@ const fetchKategoriPenolongAmil = async () => {
     const mockCategories = [
       { code: "PAK", name: "Penolong Amil Kariah", enabled: true },
       { code: "PAF", name: "Penolong Amil Fitrah", enabled: true },
-      { code: "PA Padi", name: "Penolong Amil Padi", enabled: true },
+      { code: "PAP", name: "Penolong Amil Padi", enabled: true },
       { code: "PAK+", name: "Penolong Amil Komuniti", enabled: false },
     ];
     
@@ -1033,12 +1031,12 @@ const mockCandidatesData = [
     namaCalon: "Muhammad Syafiq Bin Omar",
     emel: "syafiq.omar@email.com",
     telefon: "0145678901",
-    kategoriPenolongAmil: ["PA Padi"],
+    kategoriPenolongAmil: ["PAP"],
     jawatanPerKategori: {
-      "PA Padi": "PA Padi-PENOLONG_AMIL",
+      "PAP": "PAP-PENOLONG_AMIL",
     },
     sesiPerKategori: {
-      "PA Padi": "2024-2026",
+      "PAP": "2024-2026",
     },
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
@@ -1049,7 +1047,7 @@ const mockCandidatesData = [
 // Category selection logic based on institution type
 const canSelectCategory = (category) => {
   if (currentInstitution.value.type === "masjid") {
-    return ["PAK", "PAF", "PA Padi"].includes(category);
+    return ["PAK", "PAF", "PAP"].includes(category);
   } else {
     return category === "PAK+";
   }
@@ -1078,6 +1076,35 @@ const getJawatanOptionsForKategori = (kategori) => {
 // Get sesi options for a specific category
 const getSesiOptionsForKategori = (kategori) => {
   return sesiPerkhidmatanOptions[kategori] || [];
+};
+
+// Map jawatan code to readable name
+const jawatanCodeToName = computed(() => {
+  const map = {};
+  for (const option of jawatanOptions.value) {
+    map[option.code] = option.name;
+  }
+  return map;
+});
+
+const toTitleCase = (str) => {
+  if (!str) return '';
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
+const formatJawatanEntry = (entry) => {
+  if (!entry || typeof entry !== 'string') return '';
+  const [kategori, code] = entry.split('-', 2);
+  const readableName = jawatanCodeToName.value[code] || toTitleCase(code.replace(/_/g, ' '));
+  return `${readableName} (${kategori})`;
+};
+
+const formatCandidateJawatan = (candidate) => {
+  const entries = Object.values(candidate.jawatanPerKategori || {});
+  return entries.map(formatJawatanEntry).filter(Boolean).join(', ');
 };
 
 // Get validation error for jawatan
@@ -1200,7 +1227,7 @@ const exportCandidates = () => {
     'Emel': candidate.emel,
     'Telefon': candidate.telefon,
     'Kategori': candidate.kategoriPenolongAmil.join(', '),
-    'Jawatan': Object.values(candidate.jawatanPerKategori || {}).join(', '),
+    'Jawatan': formatCandidateJawatan(candidate),
     'Sesi Perkhidmatan': Object.values(candidate.sesiPerKategori || {}).join(', '),
     'Status': candidate.isActive ? 'Penolong Amil Aktif' : 'Layak',
     'Tarikh Pendaftaran': candidate.tarikhPendaftaran,
