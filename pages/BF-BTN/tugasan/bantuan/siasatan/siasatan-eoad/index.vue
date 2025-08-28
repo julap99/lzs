@@ -1175,7 +1175,7 @@
                   </rs-button>
 
                   <rs-button
-                    variant="secondary"
+                    variant="danger"
                     @click="handleKembali"
                     class="flex-1 !py-3 text-sm font-medium"
                   >
