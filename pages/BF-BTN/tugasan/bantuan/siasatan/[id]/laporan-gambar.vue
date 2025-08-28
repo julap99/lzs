@@ -401,7 +401,7 @@ const handleSaveAndReturn = async () => {
 };
 
 const handleBack = () => {
-  router.push(`/BF-BTN/permohonan/senarai-siasatan-lapangan/${route.params.id}`);
+  router.push(`/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`);
 };
 
 // Load existing data on mount
