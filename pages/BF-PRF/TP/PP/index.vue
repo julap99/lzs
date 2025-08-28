@@ -91,10 +91,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="arrow-right-2-duotone" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -103,6 +104,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -167,10 +169,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -179,6 +182,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -243,10 +247,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -255,6 +260,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -370,7 +376,6 @@ const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
   { key: 'namaRecipient', label: 'Nama Recipient', sortable: true },
   { key: 'jenisRecipient', label: 'Jenis Recipient', sortable: true },
-  { key: 'jenisPengenalan', label: 'Jenis Pengenalan', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
@@ -389,7 +394,6 @@ const recipientList = ref([
     noRujukan: 'RE-240511',
     namaRecipient: 'Ahmad Bin Abdullah',
     jenisRecipient: 'Individu',
-    jenisPengenalan: 'MyKad',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'RE-240511', status: 'Menunggu Pengesahan' },
@@ -398,7 +402,6 @@ const recipientList = ref([
     noRujukan: 'RE-240512',
     namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
     jenisRecipient: 'Syarikat',
-    jenisPengenalan: 'ID Syarikat',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Diluluskan',
     tindakan: { id: 'RE-240512', status: 'Diluluskan' },
@@ -407,7 +410,6 @@ const recipientList = ref([
     noRujukan: 'RE-240513',
     namaRecipient: 'Siti Fatimah Binti Ali',
     jenisRecipient: 'Individu',
-    jenisPengenalan: 'Foreign ID',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Ditolak',
     tindakan: { id: 'RE-240513', status: 'Ditolak' },
@@ -416,7 +418,6 @@ const recipientList = ref([
     noRujukan: 'RE-240514',
     namaRecipient: 'Klinik Kesihatan Sejahtera',
     jenisRecipient: 'Syarikat',
-    jenisPengenalan: 'ID Syarikat',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'RE-240514', status: 'Menunggu Pengesahan' },
@@ -425,7 +426,6 @@ const recipientList = ref([
     noRujukan: 'RE-240515',
     namaRecipient: 'Zainab Binti Hassan',
     jenisRecipient: 'Individu',
-    jenisPengenalan: 'MyKad',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Diluluskan',
     tindakan: { id: 'RE-240515', status: 'Diluluskan' },
@@ -434,7 +434,6 @@ const recipientList = ref([
     noRujukan: 'RE-240516',
     namaRecipient: 'Pembekal Makanan Halal Sdn Bhd',
     jenisRecipient: 'Syarikat',
-    jenisPengenalan: 'ID Syarikat',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Ditolak',
     tindakan: { id: 'RE-240516', status: 'Ditolak' },

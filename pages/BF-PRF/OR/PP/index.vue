@@ -92,10 +92,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="arrow-right-2-duotone" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -104,6 +105,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -168,10 +170,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -180,6 +183,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -244,18 +248,18 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
-                      @click="confirmDelete(text.id, text)"
-                      title="Padam"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>

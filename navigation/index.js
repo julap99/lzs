@@ -953,14 +953,14 @@ export default [
         child: [
           {
             title: "Carian Recipient",
-            icon: "heroicons:magnifying-glass",
+            icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/TP/PP/01",
             child: [],
             meta: {},
           },
           {
             title: "Dashboard Recipient",
-            icon: "heroicons:table-cells",
+            icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/TP/PP",
             child: [],
             meta: {},
