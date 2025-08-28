@@ -55,14 +55,14 @@
           </template>
 
           <template #body>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-1">
                 <label class="text-sm font-medium text-gray-700"
                   >Aid</label
                 >
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm text-gray-900">{{
-                    formData.nama
+                    formData.aid
                   }}</span>
                 </div>
               </div>
@@ -71,7 +71,7 @@
                 <label class="text-sm font-medium text-gray-700">Aid Product</label>
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm text-gray-900">{{
-                    formData.alamat
+                    formData.aidproduct
                   }}</span>
                 </div>
               </div>
@@ -82,7 +82,7 @@
                 >
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm text-gray-900">{{
-                    formData.jenisPengenalan
+                    formData.productpackage
                   }}</span>
                 </div>
               </div>
@@ -91,12 +91,72 @@
                 <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm font-mono text-gray-900">{{
-                    formData.myKad
+                    formData.entitlementproduct
                   }}</span>
                 </div>
               </div>
 
+              <!-- Toggle Button SEGERA -->
+              <div class="mt-6 flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="formData.segera" class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                          peer-checked:bg-green-500 peer-checked:after:translate-x-full 
+                          after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                          after:bg-white after:border-gray-300 after:border after:rounded-full 
+                          after:h-5 after:w-5 after:transition-all"
+                  ></div>
+                  <span class="ml-3 text-sm font-medium text-gray-700">SEGERA</span>
+                </label>
+              </div>
+
+              <!-- Toggle Button Kelulusan Khas -->
+              <div class="mt-6 flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="formData.kelulusankhas" class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                          peer-checked:bg-green-500 peer-checked:after:translate-x-full 
+                          after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                          after:bg-white after:border-gray-300 after:border after:rounded-full 
+                          after:h-5 after:w-5 after:transition-all"
+                  ></div>
+                  <span class="ml-3 text-sm font-medium text-gray-700">Kelulusan Khas</span>
+                </label>
+              </div>
+
             </div>
+
+            <!-- Nyatakan Sebab (only shown if segera checked) -->
+            <div v-if="formData.segera" class="mt-4 space-y-1">
+              <label class="text-sm font-medium text-gray-700">Nyatakan Sebab</label>
+              <textarea
+                v-model="formData.sebabSegera"
+                rows="3"
+                class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                placeholder="Nyatakan sebab di sini..."
+              ></textarea>
+            </div>
+
+            <!-- Situasi Kelulusan Khas -->
+        <div v-if="formData.kelulusankhas" class="mt-4 space-y-1">
+          <label class="text-sm font-medium text-gray-700">Situasi</label>
+          <select
+            v-model="formData.situasikelulusankhas"
+            class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+          >
+            <option disabled value="">-- Sila pilih situasi --</option>
+            <option>Umur, sama ada melebihi atau di bawah umur</option>
+            <option>Tempoh masa terikatnya pemohon dengan sesuatu kelayakan bantuan</option>
+            <option>Tidak memenuhi syarat minimum permohonan bantuan</option>
+            <option>Pendapatan isi rumah yang melebihi jadual kelayakan pendapatan isi rumah yang ditetapkan</option>
+            <option>Melebihi kadar Had Kifayah</option>
+            <option>Lain-lain permohonan yang tidak memenuhi syarat dan kelayakan dalam GPSKAZ</option>
+            <option>Permohonan berulang bagi bantuan yang bersifat sekali kelulusan dalam tempoh masa tertentu</option>
+            <option>Jenis bantuan tidak tersenarai di dalam GPSKAZ/ Perkara yang melibatkan kepentingan akidah Islam dan nyawa</option>
+          </select>
+        </div>
           </template>
         </rs-card>
       </div>
@@ -717,28 +777,28 @@ const breadcrumb = ref([
 
 // Section 1: Maklumat Pemohon data
 const formData = ref({
-  nama: "Mohd Rosli bin Saad",
-  alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
-  jenisPengenalan: "No Pengenalan",
-  myKad: "880701121234",
-  noTelefon: "0123456789",
-  emel: "rosli@gmail.com",
-  statusKeluarga: "Fakir",
-  statusIndividu: "Fakir",
-  statusMultidimensi: "Asnaf Tidak Produktif",
-  statusLawatan: "belum_selesai",
+  aid: "B102	Bantuan Binaan Rumah (Fakir)",
+  aidproduct: "Bantuan Binaan Rumah (Fakir)",
+  productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+  entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+  // noTelefon: "0123456789",
+  // emel: "rosli@gmail.com",
+  // statusKeluarga: "Fakir",
+  // statusIndividu: "Fakir",
+  // statusMultidimensi: "Asnaf Tidak Produktif",
+  // statusLawatan: "belum_selesai",
 });
 
 // Section 2: Dokumen Sokongan
 const dokumenSokongan = ref([
+  // {
+  //   jenis: "Quotation (baik pulih)",
+  //   filename: "quotation.pdf",
+  //   url: "#",
+  //   status: "lengkap",
+  // },
   {
-    jenis: "Quotation (baik pulih)",
-    filename: "quotation.pdf",
-    url: "#",
-    status: "lengkap",
-  },
-  {
-    jenis: "Geran Tanah (bina rumah)",
+    jenis: "Geran Tanah",
     filename: "geran_tanah.pdf",
     url: "#",
     status: "lengkap",
@@ -747,7 +807,7 @@ const dokumenSokongan = ref([
     jenis: "Carian Rasmi Pejabat Tanah",
     filename: "carian_rasmi.pdf",
     url: "#",
-    status: "tidak_lengkap",
+    status: "lengkap",
   },
 ]);
 
@@ -989,15 +1049,19 @@ onMounted(() => {
   // Implement API call to fetch application data
   // This is mock data for now
   formData.value = {
-    nama: "Mohd Rosli bin Saad",
-    alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
-    jenisPengenalan: "No Pengenalan",
-    myKad: "880701121234",
-    noTelefon: "0123456789",
-    emel: "rosli@gmail.com",
-    statusKeluarga: "Fakir",
-    statusIndividu: "Fakir",
-    statusMultidimensi: "Asnaf Tidak Produktif",
+    aid: "B102	Bantuan Binaan Rumah (Fakir)",
+    aidproduct: "Bantuan Binaan Rumah (Fakir)",
+    productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    // nama: "Mohd Rosli bin Saad",
+    // alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
+    // jenisPengenalan: "No Pengenalan",
+    // myKad: "880701121234",
+    // noTelefon: "0123456789",
+    // emel: "rosli@gmail.com",
+    // statusKeluarga: "Fakir",
+    // statusIndividu: "Fakir",
+    // statusMultidimensi: "Asnaf Tidak Produktif",
     statusLawatan: "Perlu Diproses",
   };
 
