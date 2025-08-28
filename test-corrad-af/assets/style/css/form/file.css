@@ -1,0 +1,32 @@
+.formkit-label-file {
+  @apply block mb-1 font-bold text-sm;
+}
+
+.formkit-inner-file {
+  @apply w-full cursor-pointer;
+}
+
+.formkit-input-file {
+  @apply w-full cursor-pointer border rounded-lg text-gray-600 text-sm mb-1 file:cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:bg-primary file:text-white hover:file:bg-primary/90;
+  border-color: rgb(var(--fk-border-color));
+}
+
+.formkit-file-list {
+  @apply flex flex-col;
+}
+
+.formkit-file-item {
+  @apply flex items-center py-2 px-4 rounded-lg border border-gray-200 mb-1 mt-1;
+}
+
+.formkit-file-name {
+  @apply text-[rgb(var(--text-color))] text-sm;
+}
+
+.formkit-file-remove {
+  @apply ml-auto text-primary text-sm;
+}
+
+.formkit-no-files {
+  @apply text-[rgb(var(--text-color))] text-sm;
+}

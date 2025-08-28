@@ -1,0 +1,63 @@
+.formkit-inner-box {
+  @apply relative;
+}
+
+.formkit-label {
+  @apply block mb-2 font-semibold text-sm formkit-invalid:text-red-500 dark:formkit-invalid:text-danger;
+}
+
+.formkit-fieldset-box {
+  @apply max-w-md border border-[rgb(var(--fk-border-color))]  rounded-lg px-4 py-2;
+}
+
+.formkit-legend-box {
+  @apply font-bold text-sm;
+}
+
+.formkit-wrapper-box {
+  @apply flex items-center mb-3 cursor-pointer;
+}
+
+.formkit-help-box {
+  @apply mb-3;
+}
+
+.formkit-input-box {
+  @apply flex 
+          items-center 
+          hover:cursor-pointer
+          appearance-none
+          h-5 w-5 mr-2
+          border-2
+          border-[rgb(var(--fk-border-color))]
+          checked:bg-primary
+          checked:border-transparent 
+          bg-[rgb(var(--bg-2))]
+          rounded-md
+          checked:shadow-sm checked:shadow-primary/40 
+          focus:outline-none focus:ring-0 transition duration-200;
+}
+
+.formkit-input-radio {
+  @apply flex 
+         items-center 
+         hover:cursor-pointer
+         appearance-none
+         h-5 w-5 mr-2
+         border-2
+         border-[rgb(var(--fk-border-color))]
+         checked:bg-primary
+         checked:border-transparent 
+         bg-[rgb(var(--bg-2))]
+         rounded-full
+         checked:shadow-sm checked:shadow-primary/40 
+         focus:outline-none focus:ring-0 transition duration-200;
+}
+
+.formkit-label-box {
+  @apply text-sm formkit-disabled:text-gray-300;
+}
+
+.formkit-message-box {
+  @apply formkit-invalid:text-red-500;
+}

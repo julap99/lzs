@@ -1,0 +1,80 @@
+/* RS Progress Component */
+.progress-wrapper {
+  @apply w-full mb-4;
+}
+
+.progress-wrapper .progress-label {
+  @apply text-sm mb-1;
+}
+
+.progress-wrapper .progress {
+  @apply flex rounded-full;
+}
+
+.progress-wrapper .progress.progress-sm {
+  @apply h-3;
+}
+
+.progress-wrapper .progress.progress-md {
+  @apply h-4;
+}
+
+.progress-wrapper .progress.progress-lg {
+  @apply h-5;
+}
+
+.progress-wrapper .progress.progress-sm {
+  @apply h-3;
+}
+
+.progress-wrapper .progress.progress-primary {
+  @apply bg-primary/20;
+}
+
+.progress-wrapper .progress.progress-secondary {
+  @apply bg-secondary/20;
+}
+
+.progress-wrapper .progress.progress-success {
+  @apply bg-success/20;
+}
+
+.progress-wrapper .progress.progress-info {
+  @apply bg-info/20;
+}
+
+.progress-wrapper .progress.progress-warning {
+  @apply bg-warning/20;
+}
+
+.progress-wrapper .progress.progress-danger {
+  @apply bg-danger/20;
+}
+
+.progress-wrapper .progress .progress-bar {
+  @apply flex items-center justify-center rounded-full text-white;
+}
+
+.progress-wrapper .progress .progress-bar.primary {
+  @apply bg-primary;
+}
+
+.progress-wrapper .progress .progress-bar.secondary {
+  @apply bg-secondary;
+}
+
+.progress-wrapper .progress .progress-bar.success {
+  @apply bg-success;
+}
+
+.progress-wrapper .progress .progress-bar.info {
+  @apply bg-info;
+}
+
+.progress-wrapper .progress .progress-bar.warning {
+  @apply bg-warning;
+}
+
+.progress-wrapper .progress .progress-bar.danger {
+  @apply bg-danger;
+}

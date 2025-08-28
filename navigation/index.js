@@ -1312,6 +1312,7 @@ export default [
       },
       
     ],
+    
   },
 
   // BF-PA
@@ -1394,9 +1395,9 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Bancian/Asnaf Review/Bantuan",
+            title: "Mesyuarat/Program",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PE/AB",
+            path: "/BF-PA/PE/MP",
             child: [],
             meta: {},
           },
@@ -1411,13 +1412,6 @@ export default [
             title: "Elaun Tugasan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PE/AB",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Elaun Tahunan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PE/ET",
             child: [],
             meta: {},
           },

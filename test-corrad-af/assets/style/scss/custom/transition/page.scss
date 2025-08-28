@@ -1,0 +1,11 @@
+// Animation for transition fade
+.page-enter-active,
+.page-leave-active {
+  transition: transform 0.3s ease, opacity 0.4s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  transform: scale(1.02);
+  opacity: 0;
+}

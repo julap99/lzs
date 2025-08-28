@@ -135,6 +135,19 @@ const filterStatus = (status) => {
   selectedFilter.value = status
 }
 
+const filteredPeserta = computed(() => {
+  if (selectedFilter.value === 'Semua') return formData.value.senaraiPeserta
+  return formData.value.senaraiPeserta.filter(p => p.status === selectedFilter.value)
+})
+
+const jumlahKeseluruhan = computed(() => {
+  return filteredPeserta.value.reduce((sum, p) => sum + (parseFloat(p.elaun) || 0), 0)
+})
+
+const filterStatus = (status) => {
+  selectedFilter.value = status
+}
+
 // Modal states
 const showRejectModal = ref(false);
 const showApproveModal = ref(false);

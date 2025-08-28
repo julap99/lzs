@@ -1,0 +1,114 @@
+$small: 640px;
+$medium: 768px;
+$large: 1024px;
+$xlarge: 1280px;
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border-color: rgb(var(--bg-1)) !important;
+}
+
+// Overwrite fullcalendar styles light
+.fc {
+  .fc-scrollgrid {
+    border: 1px solid rgb(var(--bg-1)) !important;
+  }
+
+  .fc-toolbar {
+    @media screen and (max-width: $medium) {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 10px;
+    }
+
+    .fc-toolbar-chunk {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .fc-button {
+    padding: 0.75rem 1rem !important;
+
+    &.fc-button-primary {
+      background-color: transparent !important;
+      color: rgb(var(--color-primary));
+      border-color: rgb(var(--color-primary)) !important;
+    }
+
+    &.fc-button-active {
+      background-color: rgb(var(--color-primary)) !important;
+    }
+
+    &:hover {
+      background-color: rgb(var(--color-primary)) !important;
+      color: white !important;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.05rem rgba(255, 113, 133, 0.5) !important;
+      background-color: rgb(var(--color-primary)) !important;
+      color: white !important;
+    }
+  }
+
+  .fc-view-harness {
+    table {
+      &.fc-col-header {
+        td,
+        th {
+          border-color: rgb(var(--bg-1)) !important;
+        }
+
+        .fc-col-header-cell {
+          padding: 0.5rem;
+        }
+      }
+    }
+
+    .fc-daygrid-day {
+      &.fc-day-today {
+        background-color: rgb(var(--bg-1));
+        background: rgb(var(--bg-1));
+      }
+    }
+
+    .fc-daygrid-day-top {
+      color: #6b727f !important;
+    }
+
+    .fc-more-link {
+      color: rgb(var(--color-primary));
+    }
+  }
+
+  .fc-daygrid-event-harness {
+    .fc-daygrid-event {
+      padding: 0.5rem 1rem;
+    }
+
+    .fc-h-event {
+      &.fc-event-start {
+        border-color: rgb(var(--color-primary));
+        background-color: rgb(var(--color-primary));
+      }
+    }
+  }
+  .fc-list {
+    .fc-list-event-dot {
+      background-color: rgb(var(--color-primary));
+      border: 5px solid #f3f4f6;
+      border-color: rgb(var(--color-primary)) !important;
+    }
+
+    .fc-list-day-cushion {
+      background-color: #f3f4f6;
+      padding: 0.5rem 1rem;
+    }
+  }
+
+  .fc-popover-header {
+    padding: 0.5rem !important;
+    background: #f3f4f6;
+  }
+}

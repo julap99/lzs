@@ -1,0 +1,18 @@
+.h-layout {
+  .content-page {
+    padding: 10.5rem 2rem 0 2rem;
+    height: 100vh;
+  }
+
+  .w-header,
+  .w-header-search {
+    width: 100%;
+  }
+
+  .w-header-search {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    height: 64px;
+  }
+}

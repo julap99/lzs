@@ -1,0 +1,33 @@
+/*  Base Import Tailwind CSS */
+@import "tailwindcss/base";
+@import "./base/theme";
+
+/*  Components Import Tailwind CSS */
+@import "tailwindcss/components";
+@import "./component/common";
+@import "./component/alert";
+@import "./component/badge";
+@import "./component/button";
+@import "./component/card";
+@import "./component/collapse";
+@import "./component/dropdown";
+@import "./component/modal";
+@import "./component/progress";
+@import "./component/tab";
+@import "./component/table";
+
+/* Form Import Tailwind CSS */
+@import "./form/global";
+@import "./form/text";
+@import "./form/textarea";
+@import "./form/box";
+@import "./form/button";
+@import "./form/otp";
+@import "./form/color";
+@import "./form/file";
+@import "./form/range";
+@import "./form/dropzone";
+
+/*  Utilities Import Tailwind CSS */
+@import "tailwindcss/utilities";
+@import "./utility/typography";

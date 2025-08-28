@@ -1,0 +1,119 @@
+/* Multi-level menu styling */
+.multi-level-menu {
+  border-left: 2px solid rgba(var(--color-primary), 0.3);
+}
+
+/* Common styles for all menu levels */
+.navigation-item-wrapper a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+}
+
+/* Long menu text handling */
+.navigation-item-wrapper span {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* Show full text on hover */
+.navigation-item-wrapper a:hover span {
+  white-space: normal;
+  overflow: visible;
+  position: relative;
+  z-index: 10;
+}
+
+/* Enhanced tooltip effect for very long menu items */
+.deepest-menu-item a:hover span {
+  background-color: rgba(var(--sidebar-menu), 0.95);
+  border-radius: 4px;
+  padding: 4px 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+}
+
+/* Level-specific styles */
+.second-level-menu {
+  font-weight: 500;
+  padding-left: 0.25rem;
+}
+
+.second-level-menu .mx-3,
+.second-level-menu .mx-4 {
+  color: rgba(255, 255, 255, 0.95);
+  max-width: 200px;
+}
+
+.third-level-menu {
+  font-style: italic;
+  padding-left: 0.5rem;
+}
+
+.third-level-menu .mx-3,
+.third-level-menu .mx-4 {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  max-width: 180px;
+}
+
+.deepest-menu-item {
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(var(--color-primary), 0.6);
+}
+
+.deepest-menu-item .mx-3,
+.deepest-menu-item .mx-4 {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  max-width: 160px;
+}
+
+/* Add visual indicators for each level */
+.second-level-menu a::before,
+.third-level-menu a::before,
+.deepest-menu-item a::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.second-level-menu a::before {
+  background-color: rgba(var(--color-primary), 0.8);
+}
+
+.third-level-menu a::before {
+  background-color: rgba(var(--color-accent), 0.8);
+  width: 5px;
+  height: 5px;
+}
+
+.deepest-menu-item a::before {
+  background-color: rgba(var(--color-secondary), 0.8);
+  width: 4px;
+  height: 4px;
+}
+
+/* Resonsive adjustments for different screen sizes */
+@media (max-width: 1200px) {
+  .second-level-menu .mx-3, 
+  .second-level-menu .mx-4,
+  .third-level-menu .mx-3,
+  .third-level-menu .mx-4,
+  .deepest-menu-item .mx-3,
+  .deepest-menu-item .mx-4 {
+    max-width: 140px;
+  }
+}
+
+@media (max-width: 992px) {
+  .navigation-item-wrapper span {
+    max-width: 120px;
+  }
+} 
