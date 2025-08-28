@@ -742,23 +742,23 @@ const breadcrumb = ref([
 const sesiPerkhidmatanOptions = {
   PAK: [
     { label: "Sila pilih sesi perkhidmatan PAK", value: "" },
-    { label: "Pelantikan Penolong Amil Kariah 2025-2027", value: "Pelantikan Penolong Amil Kariah 2025-2027" },
-    { label: "Pelantikan Penolong Amil Kariah 2026-2028", value: "Pelantikan Penolong Amil Kariah 2026-2028" },
+    { label: "2025-2027", value: "2025-2027" },
+    { label: "2026-2028", value: "2026-2028" },
   ],
   PAF: [
     { label: "Sila pilih sesi perkhidmatan PAF", value: "" },
-    { label: "Pelantikan Penolong Amil Fitrah 2024-2026", value: "Pelantikan Penolong Amil Fitrah 2024-2026" },
-    { label: "Pelantikan Penolong Amil Fitrah 2025-2027", value: "Pelantikan Penolong Amil Fitrah 2025-2027" },
+    { label: "2024-2026", value: "2024-2026" },
+    { label: "2025-2027", value: "2025-2027" },
   ],
   "PA Padi": [
     { label: "Sila pilih sesi perkhidmatan PA Padi", value: "" },
-    { label: "Pelantikan Penolong Amil Padi 2024-2026", value: "Pelantikan Penolong Amil Padi 2024-2026" },
-    { label: "Pelantikan Penolong Amil Padi 2025-2027", value: "Pelantikan Penolong Amil Padi 2025-2027" },
+    { label: "2024-2026", value: "2024-2026" },
+    { label: "2025-2027", value: "2025-2027" },
   ],
   "PAK+": [
     { label: "Sila pilih sesi perkhidmatan PAK+", value: "" },
-    { label: "Pelantikan Penolong Amil Komuniti 2024-2026", value: "Pelantikan Penolong Amil Komuniti 2024-2026" },
-    { label: "Pelantikan Penolong Amil Komuniti 2025-2027", value: "Pelantikan Penolong Amil Komuniti 2025-2027" },
+    { label: "2024-2026", value: "2024-2026" },
+    { label: "2025-2027", value: "2025-2027" },
   ],
 };
 
@@ -776,7 +776,6 @@ const jawatanOptions = ref([
     id: 1, 
     code: "PENOLONG_AMIL", 
     name: "Penolong Amil", 
-    description: "Jawatan utama untuk kategori ini.",
     enabled: true,
     applicable_categories: ["PAK", "PAF", "PA Padi", "PAK+"]
   },
@@ -784,7 +783,6 @@ const jawatanOptions = ref([
     id: 2, 
     code: "KETUA_PENOLONG_AMIL", 
     name: "Ketua Penolong Amil", 
-    description: "Jawatan pengurusan untuk kategori ini.",
     enabled: true,
     applicable_categories: ["PAK", "PAF", "PAK+"]
   },
@@ -1005,8 +1003,8 @@ const mockCandidatesData = [
       "PAF": "PAF-PENOLONG_AMIL",
     },
     sesiPerKategori: {
-      "PAK": "Pelantikan Penolong Amil Kariah 2025-2027",
-      "PAF": "Pelantikan Penolong Amil Fitrah 2024-2026",
+      "PAK": "2025-2027",
+      "PAF": "2024-2026",
     },
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
@@ -1023,7 +1021,7 @@ const mockCandidatesData = [
       "PAK+": "PAK+-KETUA_PENOLONG_AMIL",
     },
     sesiPerKategori: {
-      "PAK+": "Pelantikan Penolong Amil Komuniti 2024-2026",
+      "PAK+": "2024-2026",
     },
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
@@ -1040,7 +1038,7 @@ const mockCandidatesData = [
       "PA Padi": "PA Padi-PENOLONG_AMIL",
     },
     sesiPerKategori: {
-      "PA Padi": "Pelantikan Penolong Amil Padi 2024-2026",
+      "PA Padi": "2024-2026",
     },
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
@@ -1072,7 +1070,7 @@ const getJawatanOptionsForKategori = (kategori) => {
       jawatan.applicable_categories.includes(kategori)
     )
     .map(jawatan => ({
-      label: `${jawatan.name} - ${jawatan.description}`,
+      label: `${jawatan.name}`,
       value: `${kategori}-${jawatan.code}`
     }));
 };
