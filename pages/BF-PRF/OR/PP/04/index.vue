@@ -257,7 +257,7 @@ const showErrorNotification = (message) => {
 };
 
 const goBack = () => {
-  // Navigate back to applications list
-  router.push("/BF-PRF/OR/PP/01");
+  // Navigate back to dashboard
+  router.push("/BF-PRF/OR/PP");
 };
 </script>

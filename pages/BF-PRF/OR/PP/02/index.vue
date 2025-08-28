@@ -586,7 +586,7 @@
 
           <div class="flex justify-center">
             <rs-button
-              @click="navigateTo('/BF-PRF/OR/PP/03')"
+              @click="navigateTo('/BF-PRF/OR/PP/kemaskini/ORG-NEW')"
               variant="primary-outline"
               >Ke skrin EOAD</rs-button
             >

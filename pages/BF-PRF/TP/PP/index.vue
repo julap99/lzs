@@ -65,16 +65,46 @@
                 </template>
 
                 <template v-slot:tindakan="{ text }">
-                  <div class="flex space-x-2">
-                    <rs-button
-                      v-if="canPerformAction(text.status)"
-                      variant="primary"
-                      size="sm"
-                      class="!px-2 !py-1"
-                      @click="handleSemakPengesahan(text.id)"
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
+                    <button
+                      @click="viewItem(text.id)"
+                      title="Lihat"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      Semak
-                    </rs-button>
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                    </button>
+                    
+                    <!-- Edit Button - Available for all statuses -->
+                    <button
+                      @click="editItem(text.id)"
+                      title="Kemaskini"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                    </button>
+                    
+                    <!-- Semak Button - Only for pending items -->
+                    <button
+                      v-if="canPerformAction(text.status)"
+                      @click="handleSemakPengesahan(text.id)"
+                      title="Semak"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
+                    </button>
+                    
+                    <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
+                    <button
+                      v-if="canDelete(text.status)"
+                      @click="confirmDelete(text.id, text)"
+                      title="Padam"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-delete" size="20" class="text-danger" />
+                    </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -113,16 +143,46 @@
                 </template>
 
                 <template v-slot:tindakan="{ text }">
-                  <div class="flex space-x-2">
-                    <rs-button
-                      v-if="canPerformAction(text.status)"
-                      variant="primary"
-                      size="sm"
-                      class="!px-2 !py-1"
-                      @click="handleSemakPengesahan(text.id)"
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
+                    <button
+                      @click="viewItem(text.id)"
+                      title="Lihat"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      Semak
-                    </rs-button>
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                    </button>
+                    
+                    <!-- Edit Button - Available for all statuses -->
+                    <button
+                      @click="editItem(text.id)"
+                      title="Kemaskini"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                    </button>
+                    
+                    <!-- Semak Button - Only for pending items -->
+                    <button
+                      v-if="canPerformAction(text.status)"
+                      @click="handleSemakPengesahan(text.id)"
+                      title="Semak"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
+                    </button>
+                    
+                    <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
+                    <button
+                      v-if="canDelete(text.status)"
+                      @click="confirmDelete(text.id, text)"
+                      title="Padam"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-delete" size="20" class="text-danger" />
+                    </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -161,16 +221,46 @@
                 </template>
 
                 <template v-slot:tindakan="{ text }">
-                  <div class="flex space-x-2">
-                    <rs-button
-                      v-if="canPerformAction(text.status)"
-                      variant="primary"
-                      size="sm"
-                      class="!px-2 !py-1"
-                      @click="handleSemakPengesahan(text.id)"
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
+                    <button
+                      @click="viewItem(text.id)"
+                      title="Lihat"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      Semak
-                    </rs-button>
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                    </button>
+                    
+                    <!-- Edit Button - Available for all statuses -->
+                    <button
+                      @click="editItem(text.id)"
+                      title="Kemaskini"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                    </button>
+                    
+                    <!-- Semak Button - Only for pending items -->
+                    <button
+                      v-if="canPerformAction(text.status)"
+                      @click="handleSemakPengesahan(text.id)"
+                      title="Semak"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
+                    </button>
+                    
+                    <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
+                    <button
+                      v-if="canDelete(text.status)"
+                      @click="confirmDelete(text.id, text)"
+                      title="Padam"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-delete" size="20" class="text-danger" />
+                    </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -204,6 +294,70 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Enhanced Delete Confirmation Modal -->
+    <rs-modal
+      v-model="showDeleteModal"
+      title="Sahkan Padam"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="space-y-4">
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div class="flex items-center space-x-2">
+              <Icon name="ic:baseline-warning" class="w-5 h-5 text-red-600" />
+              <span class="font-medium text-red-800">Amaran Padam</span>
+            </div>
+            <p class="text-sm text-red-700 mt-2">
+              Anda akan memadam maklumat recipient berikut:
+            </p>
+            <div class="mt-2 p-2 bg-white border rounded text-sm">
+              <strong>{{ itemToDelete?.noRujukan }}</strong> - {{ itemToDelete?.namaRecipient }}
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <label class="flex items-start space-x-3">
+              <input
+                type="checkbox"
+                v-model="deleteConfirmation.checkbox"
+                class="mt-1 w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+              />
+              <span class="text-sm text-gray-700">
+                Saya mengesahkan tindakan padam ini dan memahami bahawa tindakan ini tidak boleh dibuat asal
+              </span>
+            </label>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Taip "PADAM" untuk mengesahkan:
+              </label>
+              <FormKit
+                v-model="deleteConfirmation.text"
+                type="text"
+                placeholder="Taip PADAM"
+                :classes="{ input: '!py-2 text-center font-mono' }"
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end space-x-2">
+          <rs-button variant="primary-outline" @click="cancelDelete">
+            Batal
+          </rs-button>
+          <rs-button 
+            variant="danger" 
+            :disabled="!canConfirmDelete"
+            @click="confirmDeleteAction"
+          >
+            Padam
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -222,7 +376,6 @@ const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
   { key: 'namaRecipient', label: 'Nama Recipient', sortable: true },
   { key: 'jenisRecipient', label: 'Jenis Recipient', sortable: true },
-  { key: 'jenisPengenalan', label: 'Jenis Pengenalan', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
@@ -241,7 +394,6 @@ const recipientList = ref([
     noRujukan: 'RE-240511',
     namaRecipient: 'Ahmad Bin Abdullah',
     jenisRecipient: 'Individu',
-    jenisPengenalan: 'MyKad',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'RE-240511', status: 'Menunggu Pengesahan' },
@@ -250,7 +402,6 @@ const recipientList = ref([
     noRujukan: 'RE-240512',
     namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
     jenisRecipient: 'Syarikat',
-    jenisPengenalan: 'ID Syarikat',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Diluluskan',
     tindakan: { id: 'RE-240512', status: 'Diluluskan' },
@@ -259,7 +410,6 @@ const recipientList = ref([
     noRujukan: 'RE-240513',
     namaRecipient: 'Siti Fatimah Binti Ali',
     jenisRecipient: 'Individu',
-    jenisPengenalan: 'Foreign ID',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Ditolak',
     tindakan: { id: 'RE-240513', status: 'Ditolak' },
@@ -268,7 +418,6 @@ const recipientList = ref([
     noRujukan: 'RE-240514',
     namaRecipient: 'Klinik Kesihatan Sejahtera',
     jenisRecipient: 'Syarikat',
-    jenisPengenalan: 'ID Syarikat',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'RE-240514', status: 'Menunggu Pengesahan' },
@@ -277,7 +426,6 @@ const recipientList = ref([
     noRujukan: 'RE-240515',
     namaRecipient: 'Zainab Binti Hassan',
     jenisRecipient: 'Individu',
-    jenisPengenalan: 'MyKad',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Diluluskan',
     tindakan: { id: 'RE-240515', status: 'Diluluskan' },
@@ -286,7 +434,6 @@ const recipientList = ref([
     noRujukan: 'RE-240516',
     namaRecipient: 'Pembekal Makanan Halal Sdn Bhd',
     jenisRecipient: 'Syarikat',
-    jenisPengenalan: 'ID Syarikat',
     tarikhPermohonan: new Date().toISOString(),
     status: 'Ditolak',
     tindakan: { id: 'RE-240516', status: 'Ditolak' },
@@ -342,10 +489,37 @@ const getStatusVariant = (status) => {
   return variants[status] || 'default';
 };
 
+// Delete confirmation state
+const showDeleteModal = ref(false);
+const itemToDelete = ref(null);
+const deleteConfirmation = ref({
+  checkbox: false,
+  text: ''
+});
+
+// User role simulation - for demo purposes
+const currentUserRole = ref('Eksekutif'); // Eksekutif, Pengurus, etc.
+
 // Action capabilities - only allow action for pending status
 const canPerformAction = (status) => {
   return ['Menunggu Pengesahan'].includes(status);
 };
+
+// Edit permissions - all statuses can be edited (will go back to approval)
+const canEdit = (status) => {
+  return true; // All items can be edited
+};
+
+// Delete permissions - only Eksekutif role can delete
+const canDelete = (status) => {
+  return currentUserRole.value === 'Eksekutif';
+};
+
+// Computed property for delete confirmation validation
+const canConfirmDelete = computed(() => {
+  return deleteConfirmation.value.checkbox && 
+         deleteConfirmation.value.text === 'PADAM';
+});
 
 // Search function
 const performSearch = () => {
@@ -354,6 +528,56 @@ const performSearch = () => {
   currentPage.value = 1;
 };
 
-const viewRecipient = (id) => navigateTo(`/BF-PRF/TP/PP/${id}`);
+// CRUD Operations
+const viewItem = (id) => navigateTo(`/BF-PRF/TP/PP/view/${id}`);
+const editItem = (id) => navigateTo(`/BF-PRF/TP/PP/kemaskini/${id}`);
 const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/TP/PP/03`);
+
+// Delete operations
+const confirmDelete = (id, item) => {
+  // Find the full item data from the table data by ID
+  // We need to look in the recipientList since that's the source data
+  const fullItem = recipientList.value.find(rec => rec.tindakan.id === id);
+  
+  itemToDelete.value = fullItem;
+  showDeleteModal.value = true;
+};
+
+const cancelDelete = () => {
+  showDeleteModal.value = false;
+  itemToDelete.value = null;
+  deleteConfirmation.value = {
+    checkbox: false,
+    text: ''
+  };
+};
+
+const confirmDeleteAction = () => {
+  if (!canConfirmDelete.value) return;
+  
+  // Remove item from the list
+  const index = recipientList.value.findIndex(
+    item => item.noRujukan === itemToDelete.value.noRujukan
+  );
+  
+  if (index !== -1) {
+    recipientList.value.splice(index, 1);
+    
+    // Log audit action (in real implementation, this would be an API call)
+    console.log('Audit Log:', {
+      action: 'DELETE',
+      user: currentUserRole.value,
+      item: itemToDelete.value,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Force table re-render
+    tableKey.value++;
+  }
+  
+  cancelDelete();
+};
+
+// Legacy function for backward compatibility
+const viewRecipient = (id) => viewItem(id);
 </script>
