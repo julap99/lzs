@@ -1140,7 +1140,7 @@ const formData = ref({
   keputusanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
-  catatanPenilianAwal: "",
+  catatanPenilianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
   gambarLokasi: null,
 });
 
@@ -1154,7 +1154,7 @@ const investigationData = ref({
   keadaanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
-  catatanPenilianAwal: "",
+  catatanPenilianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
   gambarLokasi: [],
   catatanLawatanETD: "",
   statusLawatan: "",

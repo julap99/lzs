@@ -818,7 +818,6 @@
                     Ringkasan Profil
                   </h3>
                   <ul class="text-sm space-y-1 text-gray-600">
-                    <li>• Status: {{ formData.statusKeluarga }}</li>
                     <li>
                       • Jenis Pekerjaan:
                       {{
@@ -846,9 +845,7 @@
                       }}
                     </li>
                   </ul>
-                  <p class="text-sm text-gray-600 mt-3">
-                    Registrasi dibuut berdasarkan profil asnaf
-                  </p>
+                  
                 </div>
 
                 <!-- Keadaan Siasatan -->
@@ -856,7 +853,7 @@
                   <FormKit
                     type="select"
                     name="keadaanSiasatan"
-                    label="Keadaan Siasatan"
+                    label="Kaedah Siasatan"
                     :options="keadaanSiasatanOptions"
                     placeholder="--Sila Pilih--"
                     validation="required"
@@ -866,39 +863,57 @@
                   />
                 </div>
 
-                <!-- Tarikh Lawatan -->
-                <div>
+                <div v-if="showLawatanFields" class="flex gap-4">
+                  <!-- Tarikh Lawatan -->
+                  <div class="flex-1">
+                    <FormKit
+                      type="date"
+                      name="tarikhLawatan"
+                      label="Tarikh Lawatan"
+                      :validation="showLawatanFields ? 'required' : ''"
+                      :validation-messages="{
+                        required: 'Sila pilih tarikh lawatan',
+                      }"
+                      placeholder="dd/mm/yyyy"
+                    />
+                  </div>
+
+                  <!-- Masa Lawatan -->
+                  <div class="flex-1">
+                    <FormKit
+                      type="time"
+                      name="masaLawatan"
+                      label="Masa Lawatan"
+                      :validation="showLawatanFields ? 'required' : ''"
+                      :validation-messages="{
+                        required: 'Sila pilih masa lawatan',
+                      }"
+                      placeholder="--:--:--"
+                    />
+                  </div>
+
+                  
+                </div>
+
+                <div v-if="showLawatanFields">
                   <FormKit
-                    type="date"
-                    name="tarikhLawatan"
-                    label="Tarikh Lawatan"
-                    validation="required"
+                    type="select"
+                    name="StatusPengesahanLawatan"
+                    label="Status Pengesahan Lawatan"
+                    :options="statuspengesahanlawatanOptions"
+                    :validation="showLawatanFields ? 'required' : ''"
                     :validation-messages="{
-                      required: 'Sila pilih tarikh lawatan',
+                      required: 'Sila pilih status pengesahan lawatan',
                     }"
-                    placeholder="dd/mm/yyyy"
                   />
                 </div>
 
-                <!-- Masa Lawatan -->
-                <div>
-                  <FormKit
-                    type="time"
-                    name="masaLawatan"
-                    label="Masa Lawatan"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Sila pilih masa lawatan',
-                    }"
-                    placeholder="--:--:--"
-                  />
-                </div>
 
                 <!-- Catatan Penilaian Awal -->
                 <div>
                   <FormKit
                     type="textarea"
-                    name="catatanPenilianAwal"
+                    name="catatanPenilaianAwal"
                     label="Catatan Penilaian Awal"
                     rows="4"
                     placeholder="Enter text..."
@@ -1095,7 +1110,7 @@
                   <FormKit
                     type="textarea"
                     name="catatanLawatanETD"
-                    label="Catatan Lawatan ETD"
+                    label="Catatan Lawatan Pegawai"
                     rows="4"
                     placeholder="Enter text..."
                     :classes="{
@@ -1104,8 +1119,22 @@
                   />
                 </div>
 
-                <!-- Status Lawatan -->
                 <div>
+                  <FormKit
+                    type="select"
+                    name="statusSiasatan"
+                    label="Status Siasatan"
+                    :options="statusSiasatanOptions"
+                    placeholder="--Sila Pilih--"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Sila pilih status siasatan untuk meneruskan',
+                    }"
+                  />
+                </div>
+
+                <!-- Status Lawatan -->
+                <!-- <div>
                   <FormKit
                     type="select"
                     name="statusLawatan"
@@ -1117,7 +1146,7 @@
                       required: 'Sila pilih status lawatan',
                     }"
                   />
-                </div>
+                </div> -->
 
                 <!-- Action Buttons -->
                 <div
@@ -1294,7 +1323,7 @@ const formData = ref({
   keputusanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
-  catatanPenilianAwal: "",
+  catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
   gambarLokasi: null,
 });
 
@@ -1308,7 +1337,8 @@ const investigationData = ref({
   keadaanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
-  catatanPenilianAwal: "",
+  StatusPengesahanLawatan: "belum_sah",
+  catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
   gambarLokasi: [],
   catatanLawatanETD: "",
   statusLawatan: "",
@@ -1357,10 +1387,20 @@ const pageSize = ref(10);
 
 // Dropdown options
 const keadaanSiasatanOptions = [
-  { label: "Boleh ditemui", value: "boleh_ditemui" },
-  { label: "Tidak dapat ditemui", value: "tidak_dapat_ditemui" },
-  { label: "Alamat tidak tepat", value: "alamat_tidak_tepat" },
-  { label: "Berpindah alamat", value: "berpindah_alamat" },
+  { label: "Semak Dokumen Sahaja", value: "semak" },
+  { label: "Telefon", value: "telefon" },
+  { label: "Lapangan", value: "lapangan" },
+];
+
+const statusSiasatanOptions = [
+  { label: "Selesai Siasatan", value: "selesai" },
+  { label: "KIV", value: "kiv" },
+];
+
+// Dropdown options
+const statuspengesahanlawatanOptions = [
+  { label: "Belum Sah", value: "belum_sah" },
+  { label: "Sah", value: "sah" },
 ];
 
 const statusLawatanOptions = [
@@ -1374,6 +1414,11 @@ const assignSiasatanOptions = [
   { label: "PAK+", value: "pak_plus" },
   { label: "Pegawai LZS", value: "pegawai_lzs" },
 ];
+
+// Computed property to show/hide lawatan fields based on kaedah siasatan
+const showLawatanFields = computed(() => {
+  return investigationData.value.keadaanSiasatan === "lapangan";
+});
 
 // Table columns for assistance applications
 const assistanceColumns = [
@@ -1438,8 +1483,8 @@ const pembatalanColumns = [
 // Mock data for tables
 const assistanceApplications = ref([
   {
-    jenisBantuan: "B152 - Bantuan Binaan Rumah (Fakir)",
-    status: "Dalam Semakan",
+    jenisBantuan: "B102 - Bantuan Binaan Rumah (Fakir)",
+    status: "Perlu Diproses",
     sla: "3 hari lagi",
     actions: "/",
   },
@@ -1667,7 +1712,7 @@ const toggleSelectAllPembatalan = () => {
 
 const getAssistanceStatusVariant = (status) => {
   const variants = {
-    "dalam semakan": "warning",
+    "perlu diproses": "warning",
     lulus: "success",
     "tidak lulus": "danger",
   };
@@ -1676,12 +1721,18 @@ const getAssistanceStatusVariant = (status) => {
 
 // Computed property for form validation
 const canSubmitForApproval = computed(() => {
-  return (
-    investigationData.value.keadaanSiasatan &&
-    investigationData.value.tarikhLawatan &&
-    investigationData.value.masaLawatan &&
-    investigationData.value.statusLawatan
-  );
+  const baseValidation = investigationData.value.keadaanSiasatan;
+  
+  if (investigationData.value.keadaanSiasatan === "lapangan") {
+    return (
+      baseValidation &&
+      investigationData.value.tarikhLawatan &&
+      investigationData.value.masaLawatan &&
+      investigationData.value.StatusPengesahanLawatan
+    );
+  }
+  
+  return baseValidation;
 });
 
 // Computed property for profiling form validation

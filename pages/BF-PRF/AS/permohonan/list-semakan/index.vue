@@ -128,7 +128,7 @@ const currentPage = ref(1);
 // Mock data - would be replaced with API call
 const applications = ref([
   {
-    nama: "Ahmad bin Abdullah",
+    nama: "Adnan bin Abu",
     tarikhMohon: "2024-03-20",
     jenisPendaftaran: "Pendaftaran Lengkap  ",
     status: "Menunggu Kelulusan",

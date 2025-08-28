@@ -1043,63 +1043,80 @@
           </div>
         </div>
 
-        <!-- Section L: Penilaian Awal -->
+
+
+        <!-- Section L: SEMAKAN RADIO BUTTONS (Screenshot Style) -->
         <div class="mb-8">
-          <h3 class="text-lg font-medium mb-4 border-b pb-2">
-            L. Penilaian Awal
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Komitmen dan Pembiayaan Kos Tinggi
-              </label>
-              <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                {{ formData.penilaian_awal.komitmen_tinggi }}
-              </div>
+          <h3 class="text-lg font-medium mb-4 border-b pb-2">SEMAKAN</h3>
+          <table class="w-full border border-gray-400 text-sm mb-6" style="background:#fff;">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="border px-2 py-1 text-left">Maklumat Lengkap?</th>
+                <th class="border px-2 py-1 text-center">Ya</th>
+                <th class="border px-2 py-1 text-center">Tidak</th>
+                <th class="border px-2 py-1 text-center">Tidak Berkenaan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="border px-2 py-1">Peribadi</td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi" /></td></tr>
+              <tr><td class="border px-2 py-1">Pendidikan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pengislaman</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman" /></td></tr>
+              <tr><td class="border px-2 py-1">Perbankan</td><td class="border px-2 py-1 text-center"><input type="radio" name="perbankan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perbankan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perbankan" /></td></tr>
+              <tr><td class="border px-2 py-1">Kesihatan</td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan" /></td></tr>
+              <tr><td class="border px-2 py-1">Kemahiran</td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran" /></td></tr>
+              <tr><td class="border px-2 py-1">Alamat dan Tempat Tinggal</td><td class="border px-2 py-1 text-center"><input type="radio" name="alamat" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="alamat" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="alamat" /></td></tr>
+              <tr><td class="border px-2 py-1">Pinjaman</td><td class="border px-2 py-1 text-center"><input type="radio" name="pinjaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pinjaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pinjaman" /></td></tr>
+              <tr><td class="border px-2 py-1">Pemilikan Aset</td><td class="border px-2 py-1 text-center"><input type="radio" name="aset" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="aset" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="aset" /></td></tr>
+              <tr><td class="border px-2 py-1">Pemilikan Barangan Rumah</td><td class="border px-2 py-1 text-center"><input type="radio" name="barang" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="barang" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="barang" /></td></tr>
+              <tr><td class="border px-2 py-1">Pekerjaan Ketua Keluarga</td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pendapatan dan Perbelanjaan Seisi Rumah</td><td class="border px-2 py-1 text-center"><input type="radio" name="pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendapatan" /></td></tr>
+              <tr><td class="border px-2 py-1">Waris</td><td class="border px-2 py-1 text-center"><input type="radio" name="waris" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="waris" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="waris" /></td></tr>
+              <tr><td class="border px-2 py-1">Peribadi Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pengislaman Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pendidikan Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Kesihatan Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Kemahiran Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pekerjaan Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Perakuan Ketua Keluarga</td><td class="border px-2 py-1 text-center"><input type="radio" name="perakuan_ketua_keluarga" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perakuan_ketua_keluarga" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perakuan_ketua_keluarga" /></td></tr>
+              <tr><td class="border px-2 py-1">Pengesahan Permastautin</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_permastautin" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_permastautin" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_permastautin" /></td></tr>
+              <tr><td class="border px-2 py-1">Pengesahan Pendapatan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_pendapatan" /></td></tr>
+            </tbody>
+          </table>
+          <!-- Komen Penyemak and Dokumen Lengkap outside table -->
+          <div class="mb-4 flex flex-col gap-4">
+            <div>
+              <label class="font-bold block mb-1">Komen Penyemak</label>
+              <textarea class="w-full border rounded p-2" rows="2"></textarea>
             </div>
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Keperluan Mendesak
-              </label>
-              <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                {{ formData.penilaian_awal.keperluan_mendesak.join(', ') }}
-              </div>
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Lain-lain Keperluan
-              </label>
-              <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                {{ formData.penilaian_awal.lain_keperluan }}
-              </div>
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Dokumen Sokongan
-              </label>
-              <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                {{ formData.penilaian_awal.dokumen_sokongan.join(', ') }}
+            <div>
+              <label class="font-bold block mb-2">Dokumen Lengkap?</label>
+              <div class="flex gap-6">
+                <label class="flex items-center gap-2">
+                  <input type="radio" name="dokumen_lengkap" />
+                  <span>Ya</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="radio" name="dokumen_lengkap" />
+                  <span>Tidak</span>
+                </label>
               </div>
             </div>
           </div>
         </div>
--->
+
         <!-- Action Buttons -->
         <div class="flex justify-end gap-3 mt-6">
-          <rs-button
-            type="button"
-            variant="danger"
-            @click="handleTidakLengkap"
-          >
-            Tidak Lengkap
+          <rs-button type="button" variant="outline" @click="handleKembali">
+            Kembali
           </rs-button>
-          <rs-button
-            type="button"
-            variant="primary"
-            @click="handleLengkap"
-          >
-            Lengkap
+          <rs-button type="button" variant="secondary" @click="handleSimpanDraf">
+            Simpan Draf
           </rs-button>
+          <rs-button type="button" variant="primary" @click="handleHantar">
+            Hantar
+          </rs-button>
+      
+
         </div>
       </template>
     </rs-card>
@@ -1132,11 +1149,11 @@ const breadcrumb = ref([
 // Sample form data - in real application, this would come from your API/backend
 const formData = ref({
   // Section A - Maklumat Peribadi Asnaf
-  nama_ketua_keluarga: 'AHMAD BIN ALI',
+  nama_ketua_keluarga: 'Adnan bin Abu',
   jenis_id: 'Kad Pengenalan',
   nombor_id: '880101121234',
-  nama: 'AHMAD BIN ALI',
-  nama_selepas_islam: 'AHMAD BIN ALI',
+  nama: 'Adnan bin Abu',
+  nama_selepas_islam: 'Adnan bin Abu',
   no_pengenalan: '880101121234',
   tarikh_lahir: '01/01/1988',
   jantina: 'Lelaki',
@@ -1343,12 +1360,19 @@ function downloadDocument(doc) {
   console.log('Download document:', doc);
 }
 
-const handleLengkap = () => {
+const handleHantar = () => {
+  // TODO: Implement send/hantar logic
   router.push('/BF-PRF/AS/FR/04');
 };
 
-const handleTidakLengkap = () => {
-  router.push('/BF-PRF/AS/permohonan/list-semakan');
+const handleSimpanDraf = () => {
+  // TODO: Implement save draft logic
+  alert('Permohonan disimpan sebagai draf.');
+};
+
+const handleKembali = () => {
+  // TODO: Implement back/kembali logic
+  router.back();
 };
 </script>
 
