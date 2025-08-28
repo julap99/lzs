@@ -924,7 +924,7 @@ export default [
             meta: {},
           },
           {
-            title: "Dashboard Organisasi",
+            title: "Senarai Organisasi",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PP",
             child: [],
@@ -938,7 +938,7 @@ export default [
             meta: {},
           },
           {
-            title: "Dashboard Cawangan",
+            title: "Senarai Cawangan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PB",
             child: [],
@@ -959,7 +959,7 @@ export default [
             meta: {},
           },
           {
-            title: "Dashboard Recipient",
+            title: "Senarai Recipient",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/TP/PP",
             child: [],
