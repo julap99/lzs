@@ -8,55 +8,7 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Compact Workflow Widget -->
-    <div class="mb-4">
-      <rs-card>
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900">
-              Proses Verifikasi Calon Penolong Amil
-            </h3>
-            <rs-badge variant="info">Jabatan Pengurusan Risiko</rs-badge>
-          </div>
-        </template>
-        <template #body>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <div 
-                v-for="(step, index) in workflowSteps" 
-                :key="step.key"
-                class="flex items-center"
-              >
-                <div class="flex flex-col items-center">
-                  <div 
-                    :class="[
-                      'w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium',
-                      getStepVariant(step.key)
-                    ]"
-                  >
-                    <Icon 
-                      v-if="step.icon" 
-                      :name="step.icon" 
-                      class="w-4 h-4"
-                    />
-                    <span v-else>{{ index + 1 }}</span>
-                  </div>
-                  <span class="text-xs mt-1 text-center max-w-16">{{ step.label }}</span>
-                </div>
-                <div 
-                  v-if="index < workflowSteps.length - 1"
-                  :class="[
-                    'h-1 w-8 mx-1',
-                    getStepLineVariant(step.key)
-                  ]"
-                ></div>
-              </div>
-            </div>
-          </div>
-        </template>
-      </rs-card>
-    </div>
-
+    
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
