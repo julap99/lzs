@@ -29,6 +29,7 @@
               Cari
             </rs-button>
           </div>
+          
         </div>
 
         <!-- Tabbed Table Section -->
@@ -52,10 +53,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -91,10 +89,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -103,6 +102,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -128,10 +128,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -167,10 +164,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -179,6 +177,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -204,10 +203,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -243,18 +239,18 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
-                      @click="confirmDelete(text.id, text)"
-                      title="Padam"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -384,7 +380,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240501',
     namaOrganisasi: 'Syarikat Teknologi Maju Sdn Bhd',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '23/7/2025',
     jenisOrganisasi: 'Swasta',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-240501', status: 'Menunggu Pengesahan' },
@@ -392,7 +388,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240502',
     namaOrganisasi: 'Pertubuhan Amal Iman Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '15/6/2025',
     jenisOrganisasi: 'NGO',
     status: 'Diluluskan',
     tindakan: { id: 'ORG-240502', status: 'Diluluskan' },
@@ -400,7 +396,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240503',
     namaOrganisasi: 'Sekolah Menengah Tahfiz Al-Amin',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '8/5/2025',
     jenisOrganisasi: 'IPT',
     status: 'Diluluskan',
     tindakan: { id: 'ORG-240503', status: 'Diluluskan' },
@@ -408,7 +404,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240504',
     namaOrganisasi: 'Institut Latihan Kemahiran Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '30/7/2025',
     jenisOrganisasi: 'Institut',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-240504', status: 'Menunggu Pengesahan' },
@@ -416,7 +412,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240505',
     namaOrganisasi: 'Syarikat Pembangunan Hartanah Sdn Bhd',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '12/6/2025',
     jenisOrganisasi: 'Swasta',
     status: 'Ditolak',
     tindakan: { id: 'ORG-240505', status: 'Ditolak' },
@@ -424,7 +420,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240506',
     namaOrganisasi: 'Persatuan Belia Islam Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '25/5/2025',
     jenisOrganisasi: 'NGO',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-240506', status: 'Menunggu Pengesahan' },
@@ -432,7 +428,7 @@ const organizationList = ref([
   {
     noRujukan: 'ORG-240507',
     namaOrganisasi: 'Universiti Teknologi Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '18/4/2025',
     jenisOrganisasi: 'IPT',
     status: 'Ditolak',
     tindakan: { id: 'ORG-240507', status: 'Ditolak' },
@@ -480,8 +476,14 @@ const totalPages = computed(() => Math.ceil(totalOrganizations.value / pageSize.
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
 const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalOrganizations.value));
 
-const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
-const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
+const formatDate = (dateString) => {
+  // If it's already a formatted date string, return it as is
+  if (typeof dateString === 'string' && !dateString.includes('T')) {
+    return dateString;
+  }
+  // Otherwise, format it as a date
+  return new Date(dateString).toLocaleDateString('ms-MY');
+};
 
 const getStatusVariant = (status) => {
   const variants = {
@@ -515,7 +517,8 @@ const canEdit = (status) => {
 
 // Delete permissions - only Eksekutif role can delete
 const canDelete = (status) => {
-  return currentUserRole.value === 'Eksekutif';
+  const result = currentUserRole.value === 'Eksekutif';
+  return result;
 };
 
 // Computed property for delete confirmation validation
@@ -539,7 +542,9 @@ const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04`);
 // Delete operations
 const confirmDelete = (id, item) => {
   // Find the full item data from the table data by ID
-  const fullItem = filteredTableData.value.find(org => org.tindakan.id === id);
+  // We need to look in the organizationList since that's the source data
+  const fullItem = organizationList.value.find(org => org.tindakan.id === id);
+  
   itemToDelete.value = fullItem;
   showDeleteModal.value = true;
 };

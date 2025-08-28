@@ -52,10 +52,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -91,10 +88,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -103,6 +101,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -128,10 +127,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -167,10 +163,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -179,6 +176,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -204,10 +202,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -243,10 +238,11 @@
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-assignment" size="20" class="text-info" />
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
                     <button
                       v-if="canDelete(text.status)"
                       @click="confirmDelete(text.id, text)"
@@ -255,6 +251,7 @@
                     >
                       <Icon name="ic:outline-delete" size="20" class="text-danger" />
                     </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -370,7 +367,6 @@ const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
   { key: 'namaRecipient', label: 'Nama Recipient', sortable: true },
   { key: 'jenisRecipient', label: 'Jenis Recipient', sortable: true },
-  { key: 'jenisPengenalan', label: 'Jenis Pengenalan', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
@@ -389,8 +385,7 @@ const recipientList = ref([
     noRujukan: 'RE-240511',
     namaRecipient: 'Ahmad Bin Abdullah',
     jenisRecipient: 'Individu',
-    jenisPengenalan: 'MyKad',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '23/7/2025',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'RE-240511', status: 'Menunggu Pengesahan' },
   },
@@ -398,8 +393,7 @@ const recipientList = ref([
     noRujukan: 'RE-240512',
     namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
     jenisRecipient: 'Syarikat',
-    jenisPengenalan: 'ID Syarikat',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '15/6/2025',
     status: 'Diluluskan',
     tindakan: { id: 'RE-240512', status: 'Diluluskan' },
   },
@@ -407,8 +401,7 @@ const recipientList = ref([
     noRujukan: 'RE-240513',
     namaRecipient: 'Siti Fatimah Binti Ali',
     jenisRecipient: 'Individu',
-    jenisPengenalan: 'Foreign ID',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '8/5/2025',
     status: 'Ditolak',
     tindakan: { id: 'RE-240513', status: 'Ditolak' },
   },
@@ -416,8 +409,7 @@ const recipientList = ref([
     noRujukan: 'RE-240514',
     namaRecipient: 'Klinik Kesihatan Sejahtera',
     jenisRecipient: 'Syarikat',
-    jenisPengenalan: 'ID Syarikat',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '30/7/2025',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'RE-240514', status: 'Menunggu Pengesahan' },
   },
@@ -425,8 +417,7 @@ const recipientList = ref([
     noRujukan: 'RE-240515',
     namaRecipient: 'Zainab Binti Hassan',
     jenisRecipient: 'Individu',
-    jenisPengenalan: 'MyKad',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '12/6/2025',
     status: 'Diluluskan',
     tindakan: { id: 'RE-240515', status: 'Diluluskan' },
   },
@@ -434,8 +425,7 @@ const recipientList = ref([
     noRujukan: 'RE-240516',
     namaRecipient: 'Pembekal Makanan Halal Sdn Bhd',
     jenisRecipient: 'Syarikat',
-    jenisPengenalan: 'ID Syarikat',
-    tarikhPermohonan: new Date().toISOString(),
+    tarikhPermohonan: '25/5/2025',
     status: 'Ditolak',
     tindakan: { id: 'RE-240516', status: 'Ditolak' },
   },
@@ -478,8 +468,14 @@ const totalPages = computed(() => Math.ceil(totalRecipients.value / pageSize.val
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
 const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalRecipients.value));
 
-const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
-const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
+const formatDate = (dateString) => {
+  // If it's already a formatted date string, return it as is
+  if (typeof dateString === 'string' && !dateString.includes('T')) {
+    return dateString;
+  }
+  // Otherwise, format it as a date
+  return new Date(dateString).toLocaleDateString('ms-MY');
+};
 
 const getStatusVariant = (status) => {
   const variants = {
@@ -537,7 +533,9 @@ const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/TP/PP/03`);
 // Delete operations
 const confirmDelete = (id, item) => {
   // Find the full item data from the table data by ID
-  const fullItem = filteredTableData.value.find(rec => rec.tindakan.id === id);
+  // We need to look in the recipientList since that's the source data
+  const fullItem = recipientList.value.find(rec => rec.tindakan.id === id);
+  
   itemToDelete.value = fullItem;
   showDeleteModal.value = true;
 };

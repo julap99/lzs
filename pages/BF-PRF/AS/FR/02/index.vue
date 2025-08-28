@@ -50,7 +50,7 @@
           @submit="nextStepA"
         >
           <h3 class="text-lg font-semibold mb-4">
-            Maklumat Peribadi Asnaf (*untuk muallaf)
+           A. Maklumat Peribadi Asnaf 
           </h3>
 
           <h3 class="text-lg font-semibold mb-4">1. Maklumat Peribadi</h3>
@@ -143,7 +143,7 @@
                 </div>
               </div>
               <FormKit
-                v-if="formData.warganegara === 'Malaysia'"
+                v-if="formData.warganegara === 'Lain-lain'"
                 type="text"
                 name="nopassportlama"
                 label="No Passport Lama"
@@ -945,7 +945,7 @@
           :actions="false"
           id="sectionA4"
         >
-          <h3 class="text-lg font-semibold mb-4">3. Maklumat Islam</h3>
+          <h3 class="text-lg font-semibold mb-4">3. Maklumat Pengislaman</h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Adakah anda seorang Muallaf? -->
@@ -1066,6 +1066,21 @@
               />
             </div>
 
+            <!-- Tarikh Keluar KFAM -->
+            <div v-if="formData.adakah_muallaf === 'Y'">
+              <FormKit
+                type="date"
+                name="tarikh_had_taklif_muallaf"
+                label="Tarikh Had Taklif"
+                :validation-messages="{
+                  required: 'Tarikh Had Taklif diperlukan',
+                  matches: 'Format tarikh tidak sah',
+                }"
+                :model-value="tarikhHadTaklifMuallaf"
+                readonly
+              />
+            </div>
+
             <!-- Dokumen Pengislaman -->
             <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
@@ -1105,18 +1120,20 @@
               type="button"
               variant="primary-outline"
               @click="prevStepA"
-              >Kembali</rs-button
             >
+              Kembali
+            </rs-button>
             <div class="flex gap-3">
               <rs-button
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA4"
-                >Simpan</rs-button
               >
-              <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Bank</rs-button
-              >
+                Simpan
+              </rs-button>
+              <rs-button type="submit" variant="primary" @click="nextStepA">
+                Seterusnya ke Maklumat Bank
+              </rs-button>
             </div>
           </div>
         </FormKit>
@@ -1129,7 +1146,7 @@
           :actions="false"
           id="sectionA5"
         >
-          <h3 class="text-lg font-semibold mb-4">4. Maklumat Bank</h3>
+          <h3 class="text-lg font-semibold mb-4">4. Maklumat Perbankan</h3>
 
           <div class="mb-6">
             <!-- <h4 class="text-md font-medium mb-3">Maklumat Bank</h4> -->
@@ -2452,6 +2469,46 @@
           <!-- Employment Details (shown only when working) -->
           <div v-if="formData.status_pekerjaan === 'bekerja'" class="mb-6">
             <h4 class="text-md font-medium mb-3">Butiran Pekerjaan</h4>
+            
+            <!-- Income Source (shown only when working) -->
+            <div class="mb-6">
+              <h5 class="text-md font-medium mb-3">Sumber Pendapatan</h5>
+              <FormKit
+                type="checkbox"
+                name="sumber_pendapatan"
+                :options="[
+                  'Pengajian',
+                  'Sumbangan keluarga',
+                  'Individu',
+                  'Institusi',
+                  'Sumbangan Agensi',
+                  'Lain-lain',
+                ]"
+                validation="required|min:1"
+                :validation-messages="{
+                  required:
+                    'Sila pilih sekurang-kurangnya satu sumber pendapatan',
+                  min: 'Sila pilih sekurang-kurangnya satu sumber pendapatan',
+                }"
+                v-model="formData.sumber_pendapatan"
+              />
+
+              <!-- Lain-lain Sumber Pendapatan (shown only when "Lain-lain" is selected) -->
+              <div v-if="formData.sumber_pendapatan && formData.sumber_pendapatan.includes('Lain-lain')" class="mt-4">
+                <FormKit
+                  type="text"
+                  name="lain_lain_sumber_pendapatan"
+                  label="Lain-lain Sumber Pendapatan"
+                  validation="required"
+                  placeholder="Nyatakan sumber pendapatan lain"
+                  v-model="formData.lain_lain_sumber_pendapatan"
+                  :validation-messages="{
+                    required: 'Sila nyatakan sumber pendapatan lain',
+                  }"
+                />
+              </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="text"
@@ -2667,42 +2724,7 @@
             </div>
           </div>
 
-          <!-- Income Source (shown only when working) -->
-          <div v-if="formData.status_pekerjaan === 'bekerja'" class="mb-6">
-            <h4 class="text-md font-medium mb-3">Sumber Pendapatan</h4>
-            <FormKit
-              type="checkbox"
-              name="sumber_pendapatan"
-              :options="[
-                'Pengajian',
-                'Sumbangan keluarga',
-                'Individu',
-                'Institusi',
-                'Sumbangan Agensi',
-                'Lain-lain',
-              ]"
-              validation="required|min:1"
-              :validation-messages="{
-                required:
-                  'Sila pilih sekurang-kurangnya satu sumber pendapatan',
-                min: 'Sila pilih sekurang-kurangnya satu sumber pendapatan',
-              }"
-              v-model="formData.sumber_pendapatan"
-            />
 
-            <div v-if="showLainLainSumberPendapatan" class="mt-4">
-              <FormKit
-                type="text"
-                name="lain_lain_sumber_pendapatan"
-                label="Lain-lain Sumber Pendapatan"
-                validation="required"
-                v-model="formData.lain_lain_sumber_pendapatan"
-                :validation-messages="{
-                  required: 'Sila nyatakan sumber pendapatan lain',
-                }"
-              />
-            </div>
-          </div>
 
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
@@ -3486,11 +3508,9 @@
                 type="text"
                 name="umur_tanggungan"
                 label="Umur"
-                :value="
-                  calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
-                "
+                v-model="getCurrentTanggungan().umur_tanggungan"
                 readonly
-                help="Dikira secara automatik dari tarikh lahir"
+                help="Umur dari data yang telah ditetapkan"
               />
 
               <!-- Special Approval for Minors -->
@@ -4926,7 +4946,6 @@
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
-              <h5 class="font-medium mb-3">Butiran Pekerjaan</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- 3.1 Jenis Pekerjaan -->
                 <FormKit
@@ -5598,11 +5617,11 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
       <div
-        class="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+        class="bg-white rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto"
       >
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-semibold">
-            Senarai Kursus dan Guru Terlibat
+            Senarai Kelas Fardu Ain Muallaf (KFAM) Terdekat
           </h3>
           <button
             @click="closeKursusModal"
@@ -5625,66 +5644,80 @@
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="font-medium mb-3">Senarai Kursus</h4>
-            <div class="space-y-2 max-h-60 overflow-y-auto">
-              <div
-                v-for="kursus in kursusList"
-                :key="kursus.id"
-                class="p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+        <!-- KFAM Classes Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                  Nama Pengajar
+                </th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                  No Telefon
+                </th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                  Tempat Mengajar
+                </th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                  Daerah
+                </th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">
+                  Bahasa Penghantar
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="kelas in kfamClassesList"
+                :key="kelas.id"
+                class="hover:bg-gray-100 cursor-pointer transition-all duration-200 border-l-4 border-l-transparent"
                 :class="{
-                  'bg-blue-50 border-blue-300':
-                    selectedKursus?.id === kursus.id,
+                  'bg-blue-200 border-l-blue-500 shadow-md': selectedKelas?.id === kelas.id,
                 }"
-                @click="selectKursus(kursus)"
+                @click="selectKelas(kelas)"
               >
-                <div class="font-medium">{{ kursus.nama }}</div>
-                <div class="text-sm text-gray-600">{{ kursus.deskripsi }}</div>
-                <div class="text-xs text-gray-500 mt-1">
-                  <i class="fas fa-clock mr-1"></i>{{ kursus.durasi }} |
-                  <i class="fas fa-users mr-1"></i>{{ kursus.kapasiti }} peserta
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h4 class="font-medium mb-3">Senarai Guru</h4>
-            <div class="space-y-2 max-h-60 overflow-y-auto">
-              <div
-                v-for="guru in guruList"
-                :key="guru.id"
-                class="p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
-                :class="{
-                  'bg-green-50 border-green-300': selectedGuru?.id === guru.id,
-                }"
-                @click="selectGuru(guru)"
-              >
-                <div class="font-medium">{{ guru.nama }}</div>
-                <div class="text-sm text-gray-600">
-                  {{ guru.specialization }}
-                </div>
-                <div class="text-xs text-gray-500 mt-1">
-                  <i class="fas fa-star mr-1"></i>{{ guru.rating }} |
-                  <i class="fas fa-graduation-cap mr-1"></i
-                  >{{ guru.pengalaman }} tahun
-                </div>
-              </div>
-            </div>
-          </div>
+                <td class="border border-gray-300 px-4 py-3">
+                  <div class="font-medium">{{ kelas.nama_pengajar }}</div>
+                  <div class="text-sm text-gray-600">{{ kelas.kelulusan }}</div>
+                </td>
+                <td class="border border-gray-300 px-4 py-3">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-phone text-blue-600"></i>
+                    <span>{{ kelas.no_telefon }}</span>
+                  </div>
+                </td>
+                <td class="border border-gray-300 px-4 py-3">
+                  <div class="font-medium">{{ kelas.tempat_mengajar }}</div>
+                  <div class="text-sm text-gray-600">{{ kelas.alamat_tempat }}</div>
+                </td>
+                <td class="border border-gray-300 px-4 py-3">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                    {{ kelas.daerah }}
+                  </span>
+                </td>
+                <td class="border border-gray-300 px-4 py-3">
+                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                    {{ kelas.bahasa_penghantar }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
+        <!-- Action Buttons -->
         <div class="mt-6 flex justify-end gap-3">
           <rs-button variant="secondary" @click="closeKursusModal">
-            Batal
+            Kembali
           </rs-button>
           <rs-button
             variant="primary"
-            @click="confirmKursusSelection"
-            :disabled="!selectedKursus || !selectedGuru"
+            @click="confirmKelasSelection"
+            :disabled="!selectedKelas"
+            class="bg-teal-600 hover:bg-teal-700"
           >
-            Pilih Kursus & Guru
+            <i class="fas fa-print mr-2"></i>
+            Cetak
           </rs-button>
         </div>
       </div>
@@ -5793,8 +5826,7 @@ const paymentMethod = ref("");
 
 // Modal Variables
 const showKursusModal = ref(false);
-const selectedKursus = ref(null);
-const selectedGuru = ref(null);
+const selectedKelas = ref(null);
 
 // Employment form reactive variables
 const employmentStatus = ref("");
@@ -6267,81 +6299,57 @@ const negeriOptions = [
   { label: "Terengganu", value: "terengganu" },
 ];
 
-// Course List Data
-const kursusList = ref([
+// KFAM Classes List Data
+const kfamClassesList = ref([
   {
     id: 1,
-    nama: "Kursus Fardu Ain Asas",
-    deskripsi: "Kursus asas untuk mempelajari fardu ain",
-    durasi: "3 bulan",
-    kapasiti: 20,
+    nama_pengajar: "Ustaz Ahmad bin Abdullah",
+    kelulusan: "Sarjana Syariah, UIAM",
+    no_telefon: "012-345 6789",
+    tempat_mengajar: "Masjid Al-Hidayah",
+    alamat_tempat: "No. 123, Jalan Utama, Taman Seri",
+    daerah: "Petaling Jaya",
+    bahasa_penghantar: "Bahasa Melayu",
   },
   {
     id: 2,
-    nama: "Kursus Tahfiz Al-Quran",
-    deskripsi: "Kursus menghafal Al-Quran",
-    durasi: "6 bulan",
-    kapasiti: 15,
+    nama_pengajar: "Ustazah Siti binti Mohamed",
+    kelulusan: "Sarjana Usuluddin, UM",
+    no_telefon: "012-987 6543",
+    tempat_mengajar: "Surau Al-Iman",
+    alamat_tempat: "No. 456, Jalan Kedua, Taman Damai",
+    daerah: "Shah Alam",
+    bahasa_penghantar: "Bahasa Melayu",
   },
   {
     id: 3,
-    nama: "Kursus Bahasa Arab",
-    deskripsi: "Kursus bahasa Arab untuk pemula",
-    durasi: "4 bulan",
-    kapasiti: 25,
+    nama_pengajar: "Ustaz Mohd Ali bin Hassan",
+    kelulusan: "Sarjana Fiqh, UKM",
+    no_telefon: "012-555 1234",
+    tempat_mengajar: "Masjid Al-Rahman",
+    alamat_tempat: "No. 789, Jalan Ketiga, Taman Harmoni",
+    daerah: "Klang",
+    bahasa_penghantar: "Bahasa Arab",
   },
   {
     id: 4,
-    nama: "Kursus Fiqh Muamalat",
-    deskripsi: "Kursus hukum muamalat Islam",
-    durasi: "2 bulan",
-    kapasiti: 30,
+    nama_pengajar: "Ustazah Nurul Huda binti Ismail",
+    kelulusan: "Sarjana Tafsir, UIA",
+    no_telefon: "012-777 8888",
+    tempat_mengajar: "Surau Al-Nur",
+    alamat_tempat: "No. 321, Jalan Keempat, Taman Ceria",
+    daerah: "Subang Jaya",
+    bahasa_penghantar: "Bahasa Melayu",
   },
   {
     id: 5,
-    nama: "Kursus Tafsir Al-Quran",
-    deskripsi: "Kursus memahami tafsir Al-Quran",
-    durasi: "5 bulan",
-    kapasiti: 18,
-  },
-]);
-
-// Teacher List Data
-const guruList = ref([
-  {
-    id: 1,
-    nama: "Ustaz Ahmad bin Abdullah",
-    specialization: "Fardu Ain & Fiqh",
-    rating: 4.8,
-    pengalaman: 10,
-  },
-  {
-    id: 2,
-    nama: "Ustazah Siti binti Mohamed",
-    specialization: "Tahfiz Al-Quran",
-    rating: 4.9,
-    pengalaman: 15,
-  },
-  {
-    id: 3,
-    nama: "Ustaz Mohd Ali bin Hassan",
-    specialization: "Bahasa Arab",
-    rating: 4.7,
-    pengalaman: 8,
-  },
-  {
-    id: 4,
-    nama: "Ustazah Nurul Huda binti Ismail",
-    specialization: "Tafsir Al-Quran",
-    rating: 4.6,
-    pengalaman: 12,
-  },
-  {
-    id: 5,
-    nama: "Ustaz Abdul Rahman bin Omar",
-    specialization: "Fiqh Muamalat",
-    rating: 4.5,
-    pengalaman: 9,
+    nama_pengajar: "Ustaz Abdul Rahman bin Omar",
+    kelulusan: "Sarjana Hadith, USM",
+    no_telefon: "012-999 0000",
+    tempat_mengajar: "Masjid Al-Amin",
+    alamat_tempat: "No. 654, Jalan Kelima, Taman Indah",
+    daerah: "Kajang",
+    bahasa_penghantar: "Bahasa Arab",
   },
 ]);
 
@@ -6861,9 +6869,10 @@ watch(
       watch(
         () => getCurrentTanggungan()?.tarikh_lahir_tanggungan,
         (newVal) => {
-          if (newVal) {
+          if (newVal && !isInitializingMockData.value) {
             const currentTanggungan = getCurrentTanggungan();
-            if (currentTanggungan) {
+            if (currentTanggungan && !currentTanggungan.umur_tanggungan) {
+              // Only calculate age if it's not already set (for mock data)
               currentTanggungan.umur_tanggungan = calculateAge(newVal);
             }
           }
@@ -6876,6 +6885,7 @@ watch(
         (newVal) => {
           if (
             newVal &&
+            !isInitializingMockData.value &&
             getCurrentTanggungan()?.jenis_pengenalan_tanggungan === "MyKad" &&
             getCurrentTanggungan()?.warganegara_tanggungan === "Malaysia"
           ) {
@@ -6893,7 +6903,10 @@ watch(
               // Format as YYYY-MM-DD for date input
               const birthDate = `${fullYear}-${month}-${day}`;
               currentTanggungan.tarikh_lahir_tanggungan = birthDate;
-              currentTanggungan.umur_tanggungan = calculateAge(birthDate);
+              // Only calculate age if it's not already set (for mock data)
+              if (!currentTanggungan.umur_tanggungan) {
+                currentTanggungan.umur_tanggungan = calculateAge(birthDate);
+              }
             }
           }
         }
@@ -7232,6 +7245,14 @@ const selectTanggungan = (index) => {
 
   currentTanggunganIndex.value = index;
   currentStepB.value = 1;
+  
+  // Debug: Log the selected tanggungan data
+  const selectedTanggungan = getCurrentTanggungan();
+  console.log("Selected Tanggungan:", selectedTanggungan);
+  console.log("Selected Tanggungan Name:", selectedTanggungan?.nama_tanggungan);
+  console.log("Selected Tanggungan Relationship:", selectedTanggungan?.hubungan_pemohon);
+  console.log("Selected Tanggungan Age:", selectedTanggungan?.umur_tanggungan);
+  console.log("Selected Tanggungan Birth Date:", selectedTanggungan?.tarikh_lahir_tanggungan);
 };
 
 const toggleTanggunganSummary = () => {
@@ -7407,6 +7428,9 @@ const calculateTarikhKeluarMuallafTanggungan = () => {
   return "";
 };
 
+// Flag to prevent watchers from running during mock data initialization
+const isInitializingMockData = ref(true);
+
 // Initialize with 3 tanggungan by default on component mount
 onMounted(() => {
   // Initialize mock data for Section A - Maklumat Peribadi
@@ -7503,7 +7527,7 @@ onMounted(() => {
         taraf_penduduk_tetap: "Y",
         tarikh_lahir_tanggungan: "1980-10-04",
         umur_tanggungan: "43",
-        tempat_lahir_tanggungan: "Kuala Lumpur",
+        tempat_lahir_tanggungan: "Kelantan",
         jantina_tanggungan: "Perempuan",
         agama_tanggungan: "Islam",
         bangsa_tanggungan: "Melayu",
@@ -7630,7 +7654,7 @@ onMounted(() => {
       // Second Tanggungan - Anak Perempuan
       tanggunganList.value[1] = {
         ...tanggunganList.value[1],
-        hubungan_pemohon: "Anak Perempuan",
+        hubungan_pemohon: "Anak",
         nama_tanggungan: "NUR NAJWA BINTI ADNAN",
         jenis_pengenalan_tanggungan: "MyKad",
         pengenalan_id_tanggungan: "060802030272",
@@ -7645,7 +7669,7 @@ onMounted(() => {
         no_telefon_bimbit_tanggungan: "0197883456",
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "najwa@email.com",
-        tempoh_menetap_selangor_tanggungan: "19",
+        tempoh_menetap_selangor_tanggungan: "17",
         status_perkahwinan_tanggungan: "Bujang",
 
         // Special Approval for Minors
@@ -7765,7 +7789,7 @@ onMounted(() => {
       // Third Tanggungan - Anak Perempuan
       tanggunganList.value[2] = {
         ...tanggunganList.value[2],
-        hubungan_pemohon: "Anak Perempuan",
+        hubungan_pemohon: "Anak",
         nama_tanggungan: "NUR QISTINA BINTI ADNAN",
         jenis_pengenalan_tanggungan: "MyKad",
         pengenalan_id_tanggungan: "091108030442",
@@ -7780,7 +7804,7 @@ onMounted(() => {
         no_telefon_bimbit_tanggungan: "01299982378",
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "qistina@email.com",
-        tempoh_menetap_selangor_tanggungan: "16",
+        tempoh_menetap_selangor_tanggungan: "14",
         status_perkahwinan_tanggungan: "Bujang",
 
         // Special Approval for Minors
@@ -7900,7 +7924,13 @@ onMounted(() => {
       // Update formData.tanggungan array
       formData.value.tanggungan = tanggunganList.value;
 
+      // Set flag to false after mock data initialization is complete
+      isInitializingMockData.value = false;
+
       console.log("Mock data loaded for 3 tanggungan:", tanggunganList.value);
+      console.log("Rohana relationship:", tanggunganList.value[0]?.hubungan_pemohon);
+      console.log("Najwa relationship:", tanggunganList.value[1]?.hubungan_pemohon);
+      console.log("Qistina relationship:", tanggunganList.value[2]?.hubungan_pemohon);
     }
   }
 });
@@ -8077,7 +8107,7 @@ const handleSaveStepA11 = async () => {
 const handleSaveStepA12 = async () => {
   try {
     console.log("Step A12 saved:", formData.value);
-    toast.success("Maklumat Pemilikan berjaya disimpan");
+    toast.success("Maklumat Pekerjaan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A12 error:", error);
@@ -8290,7 +8320,7 @@ const getLocation = (field) => {
 };
 
 // ============================================================================
-// KURSUS MODAL FUNCTIONS
+// KFAM MODAL FUNCTIONS
 // ============================================================================
 const openKursusModal = () => {
   if (!formData.value.addressInfo.location && !selectedDaerah.value) {
@@ -8298,30 +8328,23 @@ const openKursusModal = () => {
     return;
   }
   showKursusModal.value = true;
-  selectedKursus.value = null;
-  selectedGuru.value = null;
+  selectedKelas.value = null;
 };
 
 const closeKursusModal = () => {
   showKursusModal.value = false;
-  selectedKursus.value = null;
-  selectedGuru.value = null;
+  selectedKelas.value = null;
 };
 
-const selectKursus = (kursus) => {
-  selectedKursus.value = kursus;
+const selectKelas = (kelas) => {
+  selectedKelas.value = kelas;
 };
 
-const selectGuru = (guru) => {
-  selectedGuru.value = guru;
-};
-
-const confirmKursusSelection = () => {
-  if (selectedKursus.value && selectedGuru.value) {
-    formData.value.addressInfo.kursus_terpilih = `${selectedKursus.value.nama} - ${selectedGuru.value.nama}`;
-    formData.value.addressInfo.selectedKursus = selectedKursus.value;
-    formData.value.addressInfo.selectedGuru = selectedGuru.value;
-    toast.success("Kursus dan guru berjaya dipilih!");
+const confirmKelasSelection = () => {
+  if (selectedKelas.value) {
+    formData.value.addressInfo.kursus_terpilih = `${selectedKelas.value.nama_pengajar} - ${selectedKelas.value.tempat_mengajar}`;
+    formData.value.addressInfo.selectedKelas = selectedKelas.value;
+    toast.success("Kelas KFAM berjaya dipilih!");
     closeKursusModal();
   }
 };
