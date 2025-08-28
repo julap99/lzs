@@ -1563,6 +1563,59 @@ export default [
       },
     },
   },
+
+  // Pengguna Luar Menu
+  {
+    header: "Pengguna Luar",
+    description: "Menu Carian untuk Pengguna Luar",
+    child: [
+      {
+        title: "Dashboard",
+        icon: "heroicons:home",
+        path: "/BF-PRF/pengguna-luar/dashboard",
+        meta: {
+          auth: {
+            role: ["PenggunaLuar"]
+          }
+        },
+      },
+      {
+        title: "Carian Organisasi",
+        icon: "heroicons:building-office",
+        path: "/BF-PRF/OR/PP/01",
+        meta: {
+          auth: {
+            role: ["PenggunaLuar"]
+          }
+        },
+      },
+      {
+        title: "Carian Cawangan",
+        icon: "heroicons:building-office-2",
+        path: "/BF-PRF/OR/PB/01",
+        meta: {
+          auth: {
+            role: ["PenggunaLuar"]
+          }
+        },
+      },
+      {
+        title: "Carian Recipient",
+        icon: "heroicons:user-group",
+        path: "/BF-PRF/TP/PP/01",
+        meta: {
+          auth: {
+            role: ["PenggunaLuar"]
+          }
+        },
+      }
+    ],
+    meta: {
+      auth: {
+        role: ["PenggunaLuar"],
+      },
+    },
+  },
   // Kitchen Sink
   {
     header: "Kitchen Sink",

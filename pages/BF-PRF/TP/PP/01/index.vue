@@ -289,6 +289,7 @@ const performSearch = () => {
 };
 
 const navigateToUpdate = (id) => {
+  // Consistent behavior for all users: proceed to edit page
   router.push(`/BF-PRF/TP/PP/kemaskini/${id}`);
 };
 
