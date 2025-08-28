@@ -510,7 +510,7 @@
               Kembali
             </rs-button>
 
-            <rs-button type="submit" @click="submitForm">
+            <rs-button type="button" @click="showSubmissionModal">
               Hantar Kemaskini
             </rs-button>
           </div>
@@ -543,32 +543,68 @@
           Kemaskini Berjaya Dihantar!
         </h2>
         <p class="text-gray-600 mb-4">
-          Kemaskini profil organisasi anda telah berjaya dihantar. Sila ambil perhatian terhadap
-          nombor rujukan anda:
+          Kemaskini profil organisasi anda telah berjaya dihantar untuk semakan semula.
         </p>
         <div class="bg-gray-100 p-4 rounded-md inline-block mx-auto mb-6">
           <span class="font-mono text-lg font-bold">{{ referenceNumber }}</span>
         </div>
         <p class="text-gray-600 mb-6">
-          Kami akan memproses kemaskini anda dalam masa 3-5 hari bekerja. Anda
-          akan menerima notifikasi melalui emel yang didaftarkan.
+          Maklumat akan melalui proses pengesahan semula dan anda akan menerima notifikasi melalui emel.
         </p>
         <div class="flex justify-center space-x-4">
           <rs-button
-            @click="navigateTo('/BF-PRF/OR/PP/01')"
+            @click="navigateTo('/BF-PRF/OR/PP')"
             variant="primary-outline"
           >
-            Kembali ke Carian
+            Kembali ke Senarai
           </rs-button>
           <rs-button
-            @click="navigateTo('/BF-PRF/OR/PP/04')"
+            @click="navigateTo(`/BF-PRF/OR/PP/view/${$route.params.id}`)"
             variant="primary"
           >
-            Ke Semakan
+            Lihat Maklumat
           </rs-button>
         </div>
       </div>
     </rs-card>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmationModal"
+      title="Sahkan Kemaskini"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="space-y-4">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-center space-x-2">
+              <Icon name="ic:baseline-info" class="w-5 h-5 text-blue-600" />
+              <span class="font-medium text-blue-800">Pengesahan Kemaskini</span>
+            </div>
+            <p class="text-sm text-blue-700 mt-2">
+              Adakah anda pasti semua maklumat adalah benar dan tepat untuk dihantar semakan kemaskini?
+            </p>
+            <div class="mt-3 text-sm text-blue-600">
+              <p><strong>Nota:</strong> Maklumat yang dihantar akan melalui proses pengesahan semula dan tidak boleh diubah semasa dalam proses semakan.</p>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end space-x-2">
+          <rs-button variant="primary-outline" @click="cancelSubmission">
+            Batal
+          </rs-button>
+          <rs-button 
+            variant="primary" 
+            @click="confirmSubmission"
+          >
+            Ya, Hantar Kemaskini
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -581,14 +617,19 @@ const route = useRoute();
 
 const breadcrumb = ref([
   {
-    name: "Organisasi",
+    name: "Pengesahan",
     type: "link",
-    path: "/BF-PRF/OR/PP/01",
+    path: "/BF-PRF/OR/PP",
   },
   {
-    name: "Kemaskini Profil",
+    name: "Senarai Organisasi",
+    type: "link",
+    path: "/BF-PRF/OR/PP",
+  },
+  {
+    name: "Kemaskini Organisasi",
     type: "current",
-    path: "/BF-PRF/OR/PP/03",
+    path: `/BF-PRF/OR/PP/kemaskini/${route.params.id}`,
   },
 ]);
 
@@ -600,6 +641,9 @@ const referenceNumber = ref(
       .toString()
       .padStart(6, "0")
 );
+
+// Confirmation modal state
+const showConfirmationModal = ref(false);
 
 const formData = ref({
   // Step 1: Maklumat Pendaftaran Organisasi
@@ -652,7 +696,7 @@ const steps = computed(() => {
 });
 
 const goToStep = (stepId) => {
-  // Prevent navigation to completion screen (step 8)
+  // Prevent navigation to completion screen (step 7)
   if (stepId <= totalSteps) {
     currentStep.value = stepId;
     window.scrollTo(0, 0);
@@ -681,54 +725,234 @@ const prevStep = () => {
   }
 };
 
+// Confirmation modal functions
+const showSubmissionModal = () => {
+  showConfirmationModal.value = true;
+};
+
+const cancelSubmission = () => {
+  showConfirmationModal.value = false;
+};
+
+const confirmSubmission = () => {
+  showConfirmationModal.value = false;
+  submitForm();
+};
+
 const submitForm = () => {
   // Here you would normally handle the API submission for updates
-  console.log("Updated form data to be submitted:", formData.value);
+  console.log("Updated organisation data to be submitted:", formData.value);
 
   // For demo purposes, just go to success screen
   currentStep.value = 7;
   window.scrollTo(0, 0);
 };
 
-// Load existing organization data when component mounts
+// Load existing organisation data when component mounts
 onMounted(async () => {
-  // Simulate loading existing organization data
-  // In real implementation, this would fetch data from API based on organization ID
+  // Simulate loading existing organisation data
+  // In real implementation, this would fetch data from API based on route.params.id
   await loadExistingData();
 });
 
 const loadExistingData = async () => {
-  // Simulate API call to load existing organization data
-  // This would typically come from route params or API call
+  // Simulate API call to load existing organisation data
   setTimeout(() => {
-    // Mock existing data - replace with actual API call
-    formData.value = {
-      organizationName: "Masjid Al-Hidayah",
-      registrationNumber: "123456-A",
-      organizationType: "masjid",
-      otherOrganizationType: "",
-      addressLine1: "No. 123, Jalan Utama",
-      addressLine2: "Taman Bangi",
-      addressLine3: "",
-      postcode: "43650",
-      city: "Bangi",
-      district: "Hulu Langat",
-      state: "Selangor",
-      country: "Malaysia",
-      kariah: "MASJID PEKAN BANGI",
-      branch: "Cawangan Utama",
-      zone: "Zon A",
-      representatives: [
-        { name: "Ahmad bin Abdullah", ic: "880101012222", phoneNumber: "012-3456789", email: "ahmad@masjid.com" },
-      ],
-      bankName: "Maybank",
-      bankAccountNumber: "1234567890",
-      penamaBank: "Masjid Al-Hidayah",
-      registrationCertificate: null,
-      appointmentLetter: null,
-      bankProof: null,
-      additionalDocuments: [],
+    // Mock existing data based on ID - replace with actual API call
+    const mockData = {
+      'ORG-240501': {
+        organizationName: "Syarikat Teknologi Maju Sdn Bhd",
+        registrationNumber: "201801012345",
+        organizationType: "ngo",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "No. 45, Jalan Teknologi 2/1",
+        addressLine2: "Taman Perindustrian Teknologi",
+        addressLine3: "Seksyen 2",
+        postcode: "40000",
+        city: "Shah Alam",
+        district: "Petaling",
+        state: "Selangor",
+        kariah: "MASJID PEKAN SHAH ALAM",
+        branch: "Cawangan Utama",
+        zone: "Zon A",
+        representatives: [
+          { name: "Dato' Ahmad bin Hassan", ic: "750101014567", phoneNumber: "03-55123456", email: "ahmad.hassan@teknologimaju.com" },
+          { name: "Siti Zainab binti Omar", ic: "820515023456", phoneNumber: "019-2345678", email: "zainab.omar@teknologimaju.com" }
+        ],
+        bankName: "CIMB Bank",
+        bankAccountNumber: "8001234567890",
+        penamaBank: "Syarikat Teknologi Maju Sdn Bhd",
+      },
+      'ORG-240502': {
+        organizationName: "Pertubuhan Amal Iman Malaysia",
+        registrationNumber: "PPM-123/2020",
+        organizationType: "ngo",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "No. 88, Jalan Amal 1/3",
+        addressLine2: "Taman Iman Jaya",
+        addressLine3: "",
+        postcode: "53100",
+        city: "Kuala Lumpur",
+        district: "Kuala Lumpur",
+        state: "Wilayah Persekutuan Kuala Lumpur",
+        kariah: "MASJID WILAYAH KL",
+        branch: "Cawangan Utama",
+        zone: "Zon B",
+        representatives: [
+          { name: "Ustaz Ibrahim bin Yusof", ic: "730505045678", phoneNumber: "03-22345678", email: "ibrahim@amaliman.org" }
+        ],
+        bankName: "Maybank",
+        bankAccountNumber: "5123456789012",
+        penamaBank: "Pertubuhan Amal Iman Malaysia",
+      },
+      'ORG-240503': {
+        organizationName: "Sekolah Menengah Tahfiz Al-Amin",
+        registrationNumber: "IPT-456/2019",
+        organizationType: "institusi",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "No. 15, Jalan Pendidikan 5/1",
+        addressLine2: "Taman Ilmu",
+        addressLine3: "Seksyen 5",
+        postcode: "28400",
+        city: "Mentakab",
+        district: "Temerloh",
+        state: "Pahang",
+        kariah: "MASJID TEMERLOH",
+        branch: "Sekolah Utama",
+        zone: "Zon Pahang",
+        representatives: [
+          { name: "Dr. Ahmad Fauzi bin Abdul Rahman", ic: "650815056789", phoneNumber: "09-33456789", email: "fauzi@tahfizalamin.edu.my" }
+        ],
+        bankName: "Bank Islam",
+        bankAccountNumber: "2098765432109",
+        penamaBank: "Sekolah Menengah Tahfiz Al-Amin",
+      },
+      'ORG-240504': {
+        organizationName: "Institut Latihan Kemahiran Malaysia",
+        registrationNumber: "INST-789/2018",
+        organizationType: "institusi",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "No. 200, Jalan Kemahiran 3/7",
+        addressLine2: "Kawasan Perindustrian",
+        addressLine3: "Seksyen 3",
+        postcode: "40150",
+        city: "Shah Alam",
+        district: "Petaling",
+        state: "Selangor",
+        kariah: "MASJID SHAH ALAM",
+        branch: "Institut Utama",
+        zone: "Zon Selangor",
+        representatives: [
+          { name: "Encik Mohd Rashid bin Hassan", ic: "700301067890", phoneNumber: "03-55567890", email: "rashid@ilkm.gov.my" }
+        ],
+        bankName: "RHB Bank",
+        bankAccountNumber: "3456789012345",
+        penamaBank: "Institut Latihan Kemahiran Malaysia",
+      },
+      'ORG-240505': {
+        organizationName: "Syarikat Pembangunan Hartanah Sdn Bhd",
+        registrationNumber: "201901098765",
+        organizationType: "agensi",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "No. 77, Jalan Pembangunan 2/4",
+        addressLine2: "Pusat Komersial",
+        addressLine3: "Tingkat 15",
+        postcode: "50450",
+        city: "Kuala Lumpur",
+        district: "Kuala Lumpur",
+        state: "Wilayah Persekutuan Kuala Lumpur",
+        kariah: "MASJID BUKIT BINTANG",
+        branch: "Ibu Pejabat",
+        zone: "Zon KL",
+        representatives: [
+          { name: "Dato Sri Azman bin Abdullah", ic: "680220078901", phoneNumber: "03-21234567", email: "azman@sph.com.my" }
+        ],
+        bankName: "Public Bank",
+        bankAccountNumber: "4567890123456",
+        penamaBank: "Syarikat Pembangunan Hartanah Sdn Bhd",
+      },
+      'ORG-240506': {
+        organizationName: "Persatuan Belia Islam Malaysia",
+        registrationNumber: "ROS-456/2017",
+        organizationType: "ngo",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "No. 33, Jalan Belia 4/2",
+        addressLine2: "Taman Belia Cemerlang",
+        addressLine3: "",
+        postcode: "47100",
+        city: "Puchong",
+        district: "Petaling",
+        state: "Selangor",
+        kariah: "MASJID PUCHONG",
+        branch: "Ibu Pejabat",
+        zone: "Zon Puchong",
+        representatives: [
+          { name: "Saudara Fikri bin Omar", ic: "850610089012", phoneNumber: "03-80123456", email: "fikri@pbim.org" },
+          { name: "Saudari Nurul Ain binti Zaki", ic: "870315091234", phoneNumber: "019-7654321", email: "nurul@pbim.org" }
+        ],
+        bankName: "AmBank",
+        bankAccountNumber: "6789012345678",
+        penamaBank: "Persatuan Belia Islam Malaysia",
+      },
+      'ORG-240507': {
+        organizationName: "Universiti Teknologi Malaysia",
+        registrationNumber: "UTM-001/1975",
+        organizationType: "institusi",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "81310 UTM Skudai",
+        addressLine2: "Johor Bahru",
+        addressLine3: "",
+        postcode: "81310",
+        city: "Johor Bahru",
+        district: "Johor Bahru",
+        state: "Johor",
+        kariah: "MASJID UTM",
+        branch: "Kampus Utama",
+        zone: "Zon Johor",
+        representatives: [
+          { name: "Prof. Dr. Ahmad Fauzi bin Ismail", ic: "601205012345", phoneNumber: "07-55345678", email: "fauzi@utm.my" }
+        ],
+        bankName: "HSBC Bank",
+        bankAccountNumber: "7890123456789",
+        penamaBank: "Universiti Teknologi Malaysia",
+      },
+      'ORG-NEW': {
+        organizationName: "",
+        registrationNumber: "",
+        organizationType: "",
+        registrationStatus: "",
+        structure: "",
+        addressLine1: "",
+        addressLine2: "",
+        addressLine3: "",
+        postcode: "",
+        city: "",
+        district: "",
+        state: "",
+        kariah: "",
+        branch: "",
+        zone: "",
+        representatives: [
+          { name: "", ic: "", phoneNumber: "", email: "" }
+        ],
+        bankName: "",
+        bankAccountNumber: "",
+        penamaBank: "",
+      }
     };
+
+    // Load data based on route ID
+    const id = route.params.id;
+    if (mockData[id]) {
+      formData.value = { ...formData.value, ...mockData[id] };
+    }
   }, 500);
 };
 </script>
@@ -744,4 +968,4 @@ const loadExistingData = async () => {
     background-color: white;
   }
 }
-</style>
+</style> 
