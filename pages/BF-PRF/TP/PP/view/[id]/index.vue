@@ -17,11 +17,11 @@
 
       <template #body>
         <div class="space-y-8">
-          <!-- Maklumat Asas -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="space-y-4">
-              <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Asas</h3>
-              
+          <!-- Maklumat Recipient -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Recipient</h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div class="space-y-3">
                 <div class="flex justify-between py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">No. Rujukan:</span>
@@ -29,180 +29,73 @@
                 </div>
                 
                 <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama Recipient:</span>
-                  <span class="text-gray-900">{{ recipientData.namaRecipient }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Jenis Recipient:</span>
-                  <span class="text-gray-900">{{ recipientData.jenisRecipient }}</span>
+                  <span class="text-gray-900">{{ recipientData.jenisRecipient === 'individu' ? 'Individu' : 'Syarikat' }}</span>
                 </div>
                 
                 <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Jenis Pengenalan:</span>
-                  <span class="text-gray-900">{{ recipientData.jenisPengenalan }}</span>
+                  <span class="font-medium text-gray-600">Nama:</span>
+                  <span class="text-gray-900">{{ recipientData.jenisRecipient === 'individu' ? recipientData.namaPenuh : recipientData.namaSyarikat }}</span>
                 </div>
               </div>
-            </div>
-
-            <div class="space-y-4">
-              <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Status & Tarikh</h3>
               
               <div class="space-y-3">
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                  <span class="font-medium text-gray-600">Jenis Pengenalan:</span>
+                  <span class="text-gray-900">{{ getJenisPengenalanLabel(recipientData.jenisPengenalan) }}</span>
+                </div>
+                
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                  <span class="font-medium text-gray-600">ID Pengenalan:</span>
+                  <span class="text-gray-900">{{ recipientData.jenisPengenalan === 'id_syarikat' ? recipientData.idSyarikat : recipientData.idPengenalan }}</span>
+                </div>
+                
                 <div class="flex justify-between py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Status:</span>
                   <rs-badge :variant="getStatusVariant(recipientData.status)">
                     {{ recipientData.status }}
                   </rs-badge>
                 </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Tarikh Permohonan:</span>
-                  <span class="text-gray-900">{{ formatDate(recipientData.tarikhPermohonan) }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Masa Permohonan:</span>
-                  <span class="text-gray-900">{{ formatTime(recipientData.tarikhPermohonan) }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Pengenalan:</span>
-                  <span class="text-gray-900">{{ recipientData.noPengenalan }}</span>
-                </div>
               </div>
             </div>
           </div>
 
-          <!-- Maklumat Alamat -->
+          <!-- Maklumat Akaun Bank -->
           <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Alamat</h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Alamat 1:</span>
-                  <span class="text-gray-900">{{ recipientData.alamat.alamat1 }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Alamat 2:</span>
-                  <span class="text-gray-900">{{ recipientData.alamat.alamat2 }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Alamat 3:</span>
-                  <span class="text-gray-900">{{ recipientData.alamat.alamat3 || '-' }}</span>
-                </div>
-              </div>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Poskod:</span>
-                  <span class="text-gray-900">{{ recipientData.alamat.poskod }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Bandar:</span>
-                  <span class="text-gray-900">{{ recipientData.alamat.bandar }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Negeri:</span>
-                  <span class="text-gray-900">{{ recipientData.alamat.negeri }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Maklumat Perhubungan -->
-          <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Perhubungan</h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Telefon:</span>
-                  <span class="text-gray-900">{{ recipientData.perhubungan.telefon }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Emel:</span>
-                  <span class="text-gray-900">{{ recipientData.perhubungan.emel || '-' }}</span>
-                </div>
-              </div>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Telefon Alternatif:</span>
-                  <span class="text-gray-900">{{ recipientData.perhubungan.telefonAlternatif || '-' }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama Waris:</span>
-                  <span class="text-gray-900">{{ recipientData.perhubungan.namaWaris || '-' }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Maklumat Bank (jika Syarikat) -->
-          <div v-if="recipientData.jenisRecipient === 'Syarikat'" class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Bank</h3>
+            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Akaun Bank</h3>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div class="space-y-3">
                 <div class="flex justify-between py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Nama Bank:</span>
-                  <span class="text-gray-900">{{ recipientData.bank?.namaBank || '-' }}</span>
+                  <span class="text-gray-900">{{ recipientData.namaBank }}</span>
                 </div>
                 
                 <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Akaun:</span>
-                  <span class="text-gray-900">{{ recipientData.bank?.noAkaun || '-' }}</span>
+                  <span class="font-medium text-gray-600">No. Akaun Bank:</span>
+                  <span class="text-gray-900">{{ recipientData.noAkaunBank }}</span>
                 </div>
               </div>
               
               <div class="space-y-3">
                 <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama Pemilik:</span>
-                  <span class="text-gray-900">{{ recipientData.bank?.namaPemilik || '-' }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Syarikat:</span>
-                  <span class="text-gray-900">{{ recipientData.noSyarikat || '-' }}</span>
+                  <span class="font-medium text-gray-600">Penama Akaun Bank:</span>
+                  <span class="text-gray-900">{{ recipientData.penamaAkaunBank }}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Maklumat Kesihatan (jika berkaitan) -->
-          <div v-if="recipientData.jenisRecipient === 'Individu'" class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Kesihatan</h3>
+          <!-- Dokumen Sokongan -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Dokumen Sokongan</h3>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Kategori Kesihatan:</span>
-                  <span class="text-gray-900">{{ recipientData.kesihatan?.kategori || '-' }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Kondisi Khusus:</span>
-                  <span class="text-gray-900">{{ recipientData.kesihatan?.kondisiKhusus || '-' }}</span>
-                </div>
-              </div>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Hospital Rujukan:</span>
-                  <span class="text-gray-900">{{ recipientData.kesihatan?.hospitalRujukan || '-' }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Kad OKU:</span>
-                  <span class="text-gray-900">{{ recipientData.kesihatan?.noKadOKU || '-' }}</span>
+            <div class="space-y-3">
+              <div class="flex justify-between py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Dokumen Sokongan Bank:</span>
+                <div class="flex items-center space-x-2">
+                  <Icon name="mdi:file-document-outline" class="text-blue-600" size="1.25rem" />
+                  <span class="text-gray-900">{{ recipientData.dokumenSokongan || 'Dokumen telah dimuat naik' }}</span>
                 </div>
               </div>
             </div>
@@ -210,8 +103,11 @@
         </div>
 
         <div class="flex justify-start mt-8 pt-6 border-t">
-          <rs-button variant="primary-outline" @click="goBack">
+          <rs-button variant="primary-outline" @click="goBack" class="mr-4">
             Kembali
+          </rs-button>
+          <rs-button variant="primary" @click="editRecipient">
+            Kemaskini
           </rs-button>
         </div>
       </template>
@@ -236,38 +132,27 @@ const breadcrumb = ref([
 // Mock data for the recipient
 const recipientData = ref({
   noRujukan: 'RE-240511',
-  namaRecipient: 'Ahmad Bin Abdullah',
-  jenisRecipient: 'Individu',
-  jenisPengenalan: 'MyKad',
-  noPengenalan: '880101011234',
-  tarikhPermohonan: new Date().toISOString(),
-  status: 'Menunggu Pengesahan',
-  alamat: {
-    alamat1: 'No. 789, Jalan Harmoni 3/5',
-    alamat2: 'Taman Harmoni',
-    alamat3: '',
-    poskod: '43650',
-    bandar: 'Bangi',
-    negeri: 'Selangor'
-  },
-  perhubungan: {
-    telefon: '012-3456789',
-    emel: 'ahmad.abdullah@email.com',
-    telefonAlternatif: '019-8765432',
-    namaWaris: 'Siti Aminah binti Ahmad'
-  },
-  kesihatan: {
-    kategori: 'Dialisis',
-    kondisiKhusus: 'Buah Pinggang Kronik',
-    hospitalRujukan: 'Hospital Putrajaya',
-    noKadOKU: 'OKU123456789'
-  },
-  bank: null,
-  noSyarikat: null
+  jenisRecipient: 'individu',
+  namaPenuh: 'Ahmad Bin Abdullah',
+  namaSyarikat: '',
+  jenisPengenalan: 'mykad',
+  idPengenalan: '880101011234',
+  idSyarikat: '',
+  namaBank: 'Maybank',
+  noAkaunBank: '1234567890',
+  penamaAkaunBank: 'Ahmad Bin Abdullah',
+  dokumenSokongan: 'dokumen_sokongan.pdf',
+  status: 'Menunggu Pengesahan'
 });
 
-const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
-const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
+const getJenisPengenalanLabel = (jenis) => {
+  const labels = {
+    'mykad': 'MyKad',
+    'foreign_id': 'Foreign ID',
+    'id_syarikat': 'ID Syarikat'
+  };
+  return labels[jenis] || jenis;
+};
 
 const getStatusVariant = (status) => {
   const variants = {
@@ -279,11 +164,11 @@ const getStatusVariant = (status) => {
 };
 
 const goBack = () => navigateTo('/BF-PRF/TP/PP');
+const editRecipient = () => navigateTo(`/BF-PRF/TP/PP/kemaskini/${route.params.id}`);
 
 // Load data based on ID when component mounts
 onMounted(() => {
   // In a real implementation, this would fetch data from API based on route.params.id
-  // For now, we use mock data with different values based on ID
   loadRecipientData(route.params.id);
 });
 
@@ -292,30 +177,44 @@ const loadRecipientData = (id) => {
   const mockData = {
     'RE-240511': {
       noRujukan: 'RE-240511',
-      namaRecipient: 'Ahmad Bin Abdullah',
-      jenisRecipient: 'Individu',
-      jenisPengenalan: 'MyKad',
+      jenisRecipient: 'individu',
+      namaPenuh: 'Ahmad Bin Abdullah',
+      namaSyarikat: '',
+      jenisPengenalan: 'mykad',
+      idPengenalan: '880101011234',
+      idSyarikat: '',
+      namaBank: 'Maybank',
+      noAkaunBank: '1234567890',
+      penamaAkaunBank: 'Ahmad Bin Abdullah',
+      dokumenSokongan: 'dokumen_sokongan.pdf',
       status: 'Menunggu Pengesahan'
     },
     'RE-240512': {
       noRujukan: 'RE-240512',
-      namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
-      jenisRecipient: 'Syarikat',
-      jenisPengenalan: 'ID Syarikat',
-      status: 'Diluluskan',
-      bank: {
-        namaBank: 'Public Bank',
-        noAkaun: '9876543210',
-        namaPemilik: 'Pusat Dialisis Al-Falah Sdn Bhd'
-      },
-      noSyarikat: 'SSM-201801023456',
-      kesihatan: null
+      jenisRecipient: 'syarikat',
+      namaPenuh: '',
+      namaSyarikat: 'Pusat Dialisis Al-Falah Sdn Bhd',
+      jenisPengenalan: 'id_syarikat',
+      idPengenalan: '',
+      idSyarikat: '201801023456',
+      namaBank: 'Public Bank',
+      noAkaunBank: '9876543210',
+      penamaAkaunBank: 'Pusat Dialisis Al-Falah Sdn Bhd',
+      dokumenSokongan: 'dokumen_syarikat.pdf',
+      status: 'Diluluskan'
     },
     'RE-240513': {
       noRujukan: 'RE-240513',
-      namaRecipient: 'Siti Fatimah Binti Ali',
-      jenisRecipient: 'Individu',
-      jenisPengenalan: 'Foreign ID',
+      jenisRecipient: 'individu',
+      namaPenuh: 'Siti Fatimah Binti Ali',
+      namaSyarikat: '',
+      jenisPengenalan: 'foreign_id',
+      idPengenalan: 'FID123456789',
+      idSyarikat: '',
+      namaBank: 'CIMB Bank',
+      noAkaunBank: '8765432109',
+      penamaAkaunBank: 'Siti Fatimah Binti Ali',
+      dokumenSokongan: 'dokumen_foreign.pdf',
       status: 'Ditolak'
     }
   };

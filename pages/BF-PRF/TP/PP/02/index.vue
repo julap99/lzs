@@ -253,7 +253,7 @@ const breadcrumb = ref([
   },
 ]);
 
-const totalSteps = 4; // 3 form steps + 1 success step
+const totalSteps = 3; // 3 form steps (success step is separate)
 const currentStep = ref(1);
 
 const steps = [
@@ -328,7 +328,8 @@ const getIdPlaceholder = () => {
 };
 
 const goToStep = (stepNumber) => {
-  if (stepNumber <= currentStep.value) {
+  // Allow navigation to any step within total steps (same as reference pages)
+  if (stepNumber <= totalSteps) {
     currentStep.value = stepNumber;
     window.scrollTo(0, 0);
   }

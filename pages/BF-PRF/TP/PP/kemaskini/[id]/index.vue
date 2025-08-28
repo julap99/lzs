@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <!-- Step A: Maklumat Asas Recipient -->
+      <!-- Step 1: Maklumat Recipient -->
       <div v-if="currentStep === 1" class="space-y-6">
         <FormKit
           type="form"
@@ -37,15 +37,6 @@
           @submit="nextStep"
           #default="{ value }"
         >
-          <FormKit
-            type="text"
-            name="namaRecipient"
-            label="Nama Recipient"
-            validation="required"
-            placeholder="Masukkan nama recipient"
-            v-model="formData.namaRecipient"
-          />
-
           <FormKit
             type="select"
             name="jenisRecipient"
@@ -60,48 +51,63 @@
           />
 
           <FormKit
+            v-if="formData.jenisRecipient === 'individu'"
+            type="text"
+            name="namaPenuh"
+            label="Nama Penuh"
+            validation="required"
+            placeholder="Masukkan nama penuh"
+            v-model="formData.namaPenuh"
+          />
+
+          <FormKit
+            v-if="formData.jenisRecipient === 'syarikat'"
+            type="text"
+            name="namaSyarikat"
+            label="Nama Syarikat"
+            validation="required"
+            placeholder="Masukkan nama syarikat"
+            v-model="formData.namaSyarikat"
+          />
+
+          <FormKit
             type="select"
             name="jenisPengenalan"
             label="Jenis Pengenalan"
             validation="required"
             placeholder="Pilih jenis pengenalan"
-            :options="[
-              { label: 'MyKad', value: 'mykad' },
-              { label: 'Foreign ID', value: 'foreign_id' },
-              { label: 'ID Syarikat', value: 'id_syarikat' },
-              { label: 'Passport', value: 'passport' },
-            ]"
+            :options="jenisPengenalanOptions"
             v-model="formData.jenisPengenalan"
+            :disabled="!formData.jenisRecipient"
           />
 
           <FormKit
+            v-if="['mykad', 'foreign_id'].includes(formData.jenisPengenalan)"
             type="text"
-            name="noPengenalan"
-            label="No. Pengenalan"
+            name="idPengenalan"
+            label="ID Pengenalan"
             validation="required"
-            placeholder="Masukkan no. pengenalan"
-            v-model="formData.noPengenalan"
+            :placeholder="getIdPlaceholder()"
+            v-model="formData.idPengenalan"
           />
 
-          <!-- Company specific fields -->
-          <div v-if="formData.jenisRecipient === 'syarikat'">
-            <FormKit
-              type="text"
-              name="noSyarikat"
-              label="No. Syarikat (SSM)"
-              validation="required"
-              placeholder="Contoh: 201801012345"
-              v-model="formData.noSyarikat"
-            />
-          </div>
+          <FormKit
+            v-if="formData.jenisPengenalan === 'id_syarikat'"
+            type="text"
+            name="idSyarikat"
+            label="ID Syarikat"
+            validation="required"
+            placeholder="Contoh: SY123456-X"
+            v-model="formData.idSyarikat"
+          />
 
           <div class="flex justify-end mt-6">
-            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+            <rs-button type="submit" @click="nextStep">Seterusnya</rs-button>
           </div>
         </FormKit>
       </div>
 
-      <!-- Step B: Maklumat Alamat -->
+      <!-- Step 2: Maklumat Akaun Bank -->
       <div v-if="currentStep === 2" class="space-y-6">
         <FormKit
           type="form"
@@ -110,271 +116,68 @@
           #default="{ value }"
         >
           <FormKit
-            type="text"
-            name="alamat1"
-            label="Alamat 1"
-            validation="required"
-            placeholder="Masukkan alamat 1"
-            v-model="formData.alamat.alamat1"
-          />
-
-          <FormKit
-            type="text"
-            name="alamat2"
-            label="Alamat 2"
-            placeholder="Masukkan alamat 2"
-            v-model="formData.alamat.alamat2"
-          />
-
-          <FormKit
-            type="text"
-            name="alamat3"
-            label="Alamat 3"
-            placeholder="Masukkan alamat 3"
-            v-model="formData.alamat.alamat3"
-          />
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit
-              type="text"
-              name="poskod"
-              label="Poskod"
-              validation="required|number|length:5"
-              placeholder="Contoh: 43650"
-              v-model="formData.alamat.poskod"
-            />
-
-            <FormKit
-              type="select"
-              name="bandar"
-              label="Bandar"
-              validation="required"
-              placeholder="Pilih bandar"
-              :options="[
-                'Kuala Lumpur',
-                'Shah Alam',
-                'Petaling Jaya',
-                'Subang Jaya',
-                'Klang',
-                'Ampang',
-                'Cheras',
-                'Kajang',
-                'Bangi',
-                'Putrajaya',
-                'Cyberjaya',
-                'Puchong',
-                'Selayang',
-                'Gombak',
-                'Rawang',
-                'Johor Bahru',
-                'Skudai',
-                'Iskandar Puteri',
-              ]"
-              v-model="formData.alamat.bandar"
-            />
-          </div>
-
-          <FormKit
             type="select"
-            name="negeri"
-            label="Negeri"
+            name="namaBank"
+            label="Nama Bank"
             validation="required"
-            placeholder="Pilih negeri"
-            :options="[
-              'Johor',
-              'Kedah',
-              'Kelantan',
-              'Melaka',
-              'Negeri Sembilan',
-              'Pahang',
-              'Perak',
-              'Perlis',
-              'Pulau Pinang',
-              'Sabah',
-              'Sarawak',
-              'Selangor',
-              'Terengganu',
-              'Wilayah Persekutuan Kuala Lumpur',
-              'Wilayah Persekutuan Labuan',
-              'Wilayah Persekutuan Putrajaya',
-            ]"
-            v-model="formData.alamat.negeri"
+            placeholder="Pilih bank"
+            :options="bankOptions"
+            v-model="formData.namaBank"
+          />
+
+          <FormKit
+            type="text"
+            name="noAkaunBank"
+            label="No Akaun Bank"
+            validation="required|length:10,16|number"
+            placeholder="Masukkan nombor akaun bank (10-16 digit)"
+            v-model="formData.noAkaunBank"
+          />
+
+          <FormKit
+            type="text"
+            name="penamaAkaunBank"
+            label="Penama Akaun Bank"
+            validation="required"
+            placeholder="Masukkan nama pemilik akaun"
+            v-model="formData.penamaAkaunBank"
           />
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
               Kembali
             </rs-button>
-
-            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
+            <rs-button type="submit" @click="nextStep">Seterusnya</rs-button>
           </div>
         </FormKit>
       </div>
 
-      <!-- Step C: Maklumat Perhubungan -->
+      <!-- Step 3: Dokumen Sokongan -->
       <div v-if="currentStep === 3" class="space-y-6">
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="nextStep"
-          #default="{ value }"
-        >
-          <FormKit
-            type="tel"
-            name="telefon"
-            label="No. Telefon"
-            validation="required"
-            placeholder="Contoh: 012-3456789"
-            v-model="formData.perhubungan.telefon"
-          />
-
-          <FormKit
-            type="email"
-            name="emel"
-            label="Emel"
-            validation="email"
-            placeholder="Contoh: nama@domain.com"
-            v-model="formData.perhubungan.emel"
-          />
-
-          <FormKit
-            type="tel"
-            name="telefonAlternatif"
-            label="No. Telefon Alternatif"
-            placeholder="Contoh: 019-8765432"
-            v-model="formData.perhubungan.telefonAlternatif"
-          />
-
-          <!-- Individual specific fields -->
-          <div v-if="formData.jenisRecipient === 'individu'">
-            <FormKit
-              type="text"
-              name="namaWaris"
-              label="Nama Waris/Penjaga"
-              placeholder="Masukkan nama waris atau penjaga"
-              v-model="formData.perhubungan.namaWaris"
-            />
-          </div>
-
-          <div class="flex justify-between mt-6">
-            <rs-button variant="primary-outline" @click="prevStep">
-              Kembali
-            </rs-button>
-
-            <rs-button type="submit" @click="nextStep"> Seterusnya </rs-button>
-          </div>
-        </FormKit>
-      </div>
-
-      <!-- Step D: Maklumat Kesihatan (untuk Individu) / Bank (untuk Syarikat) -->
-      <div v-if="currentStep === 4" class="space-y-6">
         <FormKit
           type="form"
           :actions="false"
           @submit="submitForm"
           #default="{ value }"
         >
-          <!-- Individual health information -->
-          <div v-if="formData.jenisRecipient === 'individu'" class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50">
-            <h3 class="font-semibold text-sm text-gray-700">
-              Maklumat Kesihatan
-            </h3>
-
-            <FormKit
-              type="select"
-              name="kategoriKesihatan"
-              label="Kategori Kesihatan"
-              placeholder="Pilih kategori kesihatan"
-              :options="[
-                'Dialisis',
-                'Kanser',
-                'Jantung',
-                'OKU',
-                'Lain-lain'
-              ]"
-              v-model="formData.kesihatan.kategori"
-            />
-
-            <FormKit
-              type="text"
-              name="kondisiKhusus"
-              label="Kondisi Khusus"
-              placeholder="Terangkan kondisi kesihatan khusus"
-              v-model="formData.kesihatan.kondisiKhusus"
-            />
-
-            <FormKit
-              type="text"
-              name="hospitalRujukan"
-              label="Hospital Rujukan"
-              placeholder="Nama hospital yang dirujuk"
-              v-model="formData.kesihatan.hospitalRujukan"
-            />
-
-            <FormKit
-              type="text"
-              name="noKadOKU"
-              label="No. Kad OKU (jika berkaitan)"
-              placeholder="Masukkan no. kad OKU"
-              v-model="formData.kesihatan.noKadOKU"
-            />
+          <div class="bg-blue-50 text-blue-800 p-4 rounded-md mb-4">
+            <p class="font-medium">Muat naik Dokumen Sokongan</p>
+            <p class="mt-2 text-sm">Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 10MB</p>
           </div>
 
-          <!-- Company bank information -->
-          <div v-if="formData.jenisRecipient === 'syarikat'" class="border p-4 rounded-md space-y-4 mb-6 bg-gray-50">
-            <h3 class="font-semibold text-sm text-gray-700">
-              Maklumat Bank
-            </h3>
-
-            <FormKit
-              type="select"
-              name="namaBank"
-              label="Nama Bank"
-              placeholder="Pilih bank"
-              validation="required"
-              :options="[
-                'Maybank',
-                'CIMB Bank',
-                'Public Bank',
-                'RHB Bank',
-                'Hong Leong Bank',
-                'AmBank',
-                'Bank Islam',
-                'Bank Rakyat',
-                'Bank Muamalat',
-                'OCBC Bank',
-                'HSBC Bank',
-                'Standard Chartered Bank',
-                'Citibank',
-                'UOB Bank'
-              ]"
-              v-model="formData.bank.namaBank"
-            />
-
-            <FormKit
-              type="text"
-              name="noAkaun"
-              label="Nombor Akaun Bank"
-              validation="required"
-              placeholder="Masukkan nombor akaun bank"
-              v-model="formData.bank.noAkaun"
-            />
-
-            <FormKit
-              type="text"
-              name="namaPemilik"
-              label="Nama Pemilik Akaun Bank"
-              validation="required"
-              placeholder="Masukkan nama pemilik akaun bank"
-              v-model="formData.bank.namaPemilik"
-            />
-          </div>
+          <FormKit
+            type="file"
+            name="dokumenSokongan"
+            label="Dokumen Sokongan Bank"
+            validation="required"
+            accept=".pdf,.jpg,.jpeg,.png"
+            v-model="formData.dokumenSokongan"
+          />
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
               Kembali
             </rs-button>
-
             <rs-button type="button" @click="showSubmissionModal">
               Hantar Kemaskini
             </rs-button>
@@ -383,7 +186,7 @@
       </div>
 
       <!-- Submission Success -->
-      <div v-if="currentStep === 5" class="text-center py-8">
+      <div v-if="currentStep === 4" class="text-center py-8">
         <div class="mb-6">
           <div
             class="mx-auto h-16 w-16 rounded-full bg-green-100 flex items-center justify-center"
@@ -474,7 +277,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
@@ -498,7 +301,7 @@ const breadcrumb = ref([
   },
 ]);
 
-const totalSteps = 4;
+const totalSteps = 3; // 3 form steps (success step is separate)
 const currentStep = ref(1);
 const referenceNumber = ref(
   "NAS-REC-UPDATE-" +
@@ -511,58 +314,73 @@ const referenceNumber = ref(
 const showConfirmationModal = ref(false);
 
 const formData = ref({
-  // Step 1: Maklumat Asas
-  namaRecipient: "",
+  // Step 1: Maklumat Recipient
   jenisRecipient: "",
+  namaPenuh: "",
+  namaSyarikat: "",
   jenisPengenalan: "",
-  noPengenalan: "",
-  noSyarikat: "",
+  idPengenalan: "",
+  idSyarikat: "",
 
-  // Step 2: Maklumat Alamat
-  alamat: {
-    alamat1: "",
-    alamat2: "",
-    alamat3: "",
-    poskod: "",
-    bandar: "",
-    negeri: "",
-  },
+  // Step 2: Maklumat Akaun Bank
+  namaBank: "",
+  noAkaunBank: "",
+  penamaAkaunBank: "",
 
-  // Step 3: Maklumat Perhubungan
-  perhubungan: {
-    telefon: "",
-    emel: "",
-    telefonAlternatif: "",
-    namaWaris: "",
-  },
-
-  // Step 4: Maklumat Kesihatan (Individu) / Bank (Syarikat)
-  kesihatan: {
-    kategori: "",
-    kondisiKhusus: "",
-    hospitalRujukan: "",
-    noKadOKU: "",
-  },
-  bank: {
-    namaBank: "",
-    noAkaun: "",
-    namaPemilik: "",
-  },
+  // Step 3: Dokumen Sokongan
+  dokumenSokongan: null,
 });
 
-const steps = computed(() => {
-  return [
-    { id: 1, label: "Maklumat Asas" },
-    { id: 2, label: "Alamat" },
-    { id: 3, label: "Perhubungan" },
-    { id: 4, label: formData.value.jenisRecipient === 'syarikat' ? "Bank" : "Kesihatan" },
-  ];
+const steps = [
+  { id: 1, label: 'Maklumat Recipient' },
+  { id: 2, label: 'Maklumat Bank' },
+  { id: 3, label: 'Dokumen Sokongan' },
+];
+
+// Computed options for Jenis Pengenalan based on Jenis Recipient
+const jenisPengenalanOptions = computed(() => {
+  if (formData.value.jenisRecipient === "individu") {
+    return [
+      { label: "MyKad", value: "mykad" },
+      { label: "Foreign ID", value: "foreign_id" },
+    ];
+  } else if (formData.value.jenisRecipient === "syarikat") {
+    return [
+      { label: "ID Syarikat", value: "id_syarikat" },
+    ];
+  }
+  return [];
 });
 
-const goToStep = (stepId) => {
-  // Prevent navigation to completion screen (step 5)
-  if (stepId <= totalSteps) {
-    currentStep.value = stepId;
+const bankOptions = [
+  'Maybank',
+  'CIMB Bank',
+  'Public Bank',
+  'RHB Bank',
+  'Hong Leong Bank',
+  'AmBank',
+  'Bank Islam',
+  'Bank Rakyat',
+  'Bank Muamalat',
+  'OCBC Bank',
+  'HSBC Bank',
+  'Standard Chartered Bank',
+  'Citibank',
+  'UOB Bank'
+];
+
+const getIdPlaceholder = () => {
+  switch (formData.value.jenisPengenalan) {
+    case "mykad": return "Contoh: 880101123456";
+    case "foreign_id": return "Contoh: A12345678";
+    default: return "Sila pilih jenis pengenalan dahulu";
+  }
+};
+
+const goToStep = (stepNumber) => {
+  // Allow navigation to any step within total steps (same as OR/PP/02 reference page)
+  if (stepNumber <= totalSteps) {
+    currentStep.value = stepNumber;
     window.scrollTo(0, 0);
   }
 };
@@ -600,7 +418,7 @@ const submitForm = () => {
   console.log("Updated recipient data to be submitted:", formData.value);
 
   // For demo purposes, just go to success screen
-  currentStep.value = 5;
+  currentStep.value = 4;
   window.scrollTo(0, 0);
 };
 
@@ -617,160 +435,58 @@ const loadExistingData = async () => {
     // Mock existing data based on ID - replace with actual API call
     const mockData = {
       'RE-240511': {
-        namaRecipient: "Ahmad Bin Abdullah",
         jenisRecipient: "individu",
+        namaPenuh: "Ahmad Bin Abdullah",
         jenisPengenalan: "mykad",
-        noPengenalan: "880101011234",
-        alamat: {
-          alamat1: "No. 789, Jalan Harmoni 3/5",
-          alamat2: "Taman Harmoni",
-          alamat3: "",
-          poskod: "43650",
-          bandar: "Bangi",
-          negeri: "Selangor",
-        },
-        perhubungan: {
-          telefon: "012-3456789",
-          emel: "ahmad.abdullah@email.com",
-          telefonAlternatif: "019-8765432",
-          namaWaris: "Siti Aminah binti Ahmad",
-        },
-        kesihatan: {
-          kategori: "Dialisis",
-          kondisiKhusus: "Buah Pinggang Kronik",
-          hospitalRujukan: "Hospital Putrajaya",
-          noKadOKU: "OKU123456789",
-        },
+        idPengenalan: "880101011234",
+        namaBank: "Maybank",
+        noAkaunBank: "1234567890",
+        penamaAkaunBank: "Ahmad Bin Abdullah",
       },
       'RE-240512': {
-        namaRecipient: "Pusat Dialisis Al-Falah Sdn Bhd",
         jenisRecipient: "syarikat",
+        namaSyarikat: "Pusat Dialisis Al-Falah Sdn Bhd",
         jenisPengenalan: "id_syarikat",
-        noPengenalan: "SSM-201801023456",
-        noSyarikat: "201801023456",
-        alamat: {
-          alamat1: "No. 55, Jalan Kesihatan 4/2",
-          alamat2: "Taman Medik Al-Falah",
-          alamat3: "",
-          poskod: "47810",
-          bandar: "Petaling Jaya",
-          negeri: "Selangor",
-        },
-        perhubungan: {
-          telefon: "03-78901234",
-          emel: "admin@dialisisalfalah.com",
-          telefonAlternatif: "03-78901235",
-          namaWaris: "",
-        },
-        bank: {
-          namaBank: "Public Bank",
-          noAkaun: "9876543210",
-          namaPemilik: "Pusat Dialisis Al-Falah Sdn Bhd",
-        },
+        idSyarikat: "201801023456",
+        namaBank: "Public Bank",
+        noAkaunBank: "9876543210",
+        penamaAkaunBank: "Pusat Dialisis Al-Falah Sdn Bhd",
       },
       'RE-240513': {
-        namaRecipient: "Siti Fatimah Binti Ali",
         jenisRecipient: "individu",
+        namaPenuh: "Siti Fatimah Binti Ali",
         jenisPengenalan: "foreign_id",
-        noPengenalan: "FID123456789",
-        alamat: {
-          alamat1: "No. 22, Jalan Harmoni 1/5",
-          alamat2: "Taman Sejahtera",
-          alamat3: "",
-          poskod: "43000",
-          bandar: "Kajang",
-          negeri: "Selangor",
-        },
-        perhubungan: {
-          telefon: "011-22334455",
-          emel: "fatimah.ali@email.com",
-          telefonAlternatif: "017-87654321",
-          namaWaris: "Hassan bin Ali",
-        },
-        kesihatan: {
-          kategori: "Kanser",
-          kondisiKhusus: "Kanser Payudara",
-          hospitalRujukan: "Hospital Serdang",
-          noKadOKU: "",
-        },
+        idPengenalan: "FID123456789",
+        namaBank: "CIMB Bank",
+        noAkaunBank: "8765432109",
+        penamaAkaunBank: "Siti Fatimah Binti Ali",
       },
       'RE-240514': {
-        namaRecipient: "Klinik Kesihatan Sejahtera",
         jenisRecipient: "syarikat",
+        namaSyarikat: "Klinik Kesihatan Sejahtera",
         jenisPengenalan: "id_syarikat",
-        noPengenalan: "SSM-201902076543",
-        noSyarikat: "201902076543",
-        alamat: {
-          alamat1: "No. 99, Jalan Sejahtera 2/8",
-          alamat2: "Pusat Komersial Sejahtera",
-          alamat3: "Tingkat 3",
-          poskod: "52100",
-          bandar: "Kuala Lumpur",
-          negeri: "Wilayah Persekutuan Kuala Lumpur",
-        },
-        perhubungan: {
-          telefon: "03-20123456",
-          emel: "info@klineksejahtera.com",
-          telefonAlternatif: "03-20123457",
-          namaWaris: "",
-        },
-        bank: {
-          namaBank: "CIMB Bank",
-          noAkaun: "8765432109876",
-          namaPemilik: "Klinik Kesihatan Sejahtera",
-        },
+        idSyarikat: "201902076543",
+        namaBank: "CIMB Bank",
+        noAkaunBank: "8765432109876",
+        penamaAkaunBank: "Klinik Kesihatan Sejahtera",
       },
       'RE-240515': {
-        namaRecipient: "Zainab Binti Hassan",
         jenisRecipient: "individu",
+        namaPenuh: "Zainab Binti Hassan",
         jenisPengenalan: "mykad",
-        noPengenalan: "850720025678",
-        alamat: {
-          alamat1: "No. 111, Jalan Mawar 3/4",
-          alamat2: "Taman Mawar Indah",
-          alamat3: "",
-          poskod: "81300",
-          bandar: "Skudai",
-          negeri: "Johor",
-        },
-        perhubungan: {
-          telefon: "013-4567890",
-          emel: "zainab.hassan@gmail.com",
-          telefonAlternatif: "07-55123456",
-          namaWaris: "Aminah binti Abdullah",
-        },
-        kesihatan: {
-          kategori: "Jantung",
-          kondisiKhusus: "Penyakit Jantung Kronik",
-          hospitalRujukan: "Hospital Sultan Ismail",
-          noKadOKU: "OKU987654321",
-        },
+        idPengenalan: "850720025678",
+        namaBank: "Bank Islam",
+        noAkaunBank: "7654321098",
+        penamaAkaunBank: "Zainab Binti Hassan",
       },
       'RE-240516': {
-        namaRecipient: "Pembekal Makanan Halal Sdn Bhd",
         jenisRecipient: "syarikat",
+        namaSyarikat: "Pembekal Makanan Halal Sdn Bhd",
         jenisPengenalan: "id_syarikat",
-        noPengenalan: "SSM-201804154321",
-        noSyarikat: "201804154321",
-        alamat: {
-          alamat1: "No. 88, Jalan Halal 5/6",
-          alamat2: "Kawasan Perindustrian Halal",
-          alamat3: "Fasa 2",
-          poskod: "42700",
-          bandar: "Banting",
-          negeri: "Selangor",
-        },
-        perhubungan: {
-          telefon: "03-31234567",
-          emel: "sales@makananhalal.com.my",
-          telefonAlternatif: "03-31234568",
-          namaWaris: "",
-        },
-        bank: {
-          namaBank: "Bank Islam",
-          noAkaun: "7654321098765",
-          namaPemilik: "Pembekal Makanan Halal Sdn Bhd",
-        },
+        idSyarikat: "201804154321",
+        namaBank: "Bank Islam",
+        noAkaunBank: "7654321098765",
+        penamaAkaunBank: "Pembekal Makanan Halal Sdn Bhd",
       }
     };
 
@@ -781,6 +497,27 @@ const loadExistingData = async () => {
     }
   }, 500);
 };
+
+// Watch for changes in jenisRecipient to reset dependent fields
+watch(
+  () => formData.value.jenisRecipient,
+  () => { 
+    formData.value.jenisPengenalan = "";
+    formData.value.idPengenalan = "";
+    formData.value.idSyarikat = "";
+    formData.value.namaPenuh = "";
+    formData.value.namaSyarikat = "";
+  }
+);
+
+// Watch for changes in jenisPengenalan to reset ID fields
+watch(
+  () => formData.value.jenisPengenalan,
+  () => { 
+    formData.value.idPengenalan = "";
+    formData.value.idSyarikat = "";
+  }
+);
 </script>
 
 <style lang="scss" scoped>

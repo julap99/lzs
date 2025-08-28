@@ -10,10 +10,10 @@
         >
           <div>
             <h1 class="text-2xl font-bold text-gray-900">
-              Sokongan Siasatan Lapangan
+              Sokongan BQ
             </h1>
             <p class="mt-1 text-sm text-gray-600">
-              Semak dan nilai maklumat siasatan dan dapatan lapangan
+              Semak dan nilai maklumat BQ
             </p>
           </div>
           <rs-badge
@@ -27,8 +27,95 @@
       </div>
 
       <div>
+        <rs-card class="mt-4">
+          <template #header>
+            <div class="flex justify-between items-center">
+              <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
+              <rs-badge
+                v-if="formData.status"
+                :variant="getStatusVariant(formData.status)"
+              >
+                {{ formData.status }}
+              </rs-badge>
+            </div>
+          </template>
+
+          <template #body>
+            <FormKit
+              type="form"
+              :actions="false"
+              @submit="handleSubmit"
+              v-model="formData"
+            >
+              <!-- Section 1: Maklumat Pemohon -->
+              <rs-fieldset class="mb-6">
+                <template #legend>
+                  <h3 class="text-lg font-medium">Information</h3>
+                </template>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Nama</label
+                    >
+                    <p class="text-gray-900">{{ formData.nama }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Alamat</label
+                    >
+                    <p class="text-gray-900">{{ formData.alamat }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Jenis Pengenalan</label
+                    >
+                    <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >No Pengenalan</label
+                    >
+                    <p class="text-gray-900">{{ formData.mykad }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >No Telefon</label
+                    >
+                    <p class="text-gray-900">{{ formData.noTelefon }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >E-mel</label
+                    >
+                    <p class="text-gray-900">{{ formData.emel }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Status Keluarga</label
+                    >
+                    <p class="text-gray-900">{{ formData.statusKeluarga }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Status Individu</label
+                    >
+                    <p class="text-gray-900">{{ formData.statusIndividu }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Status Multidimensi</label
+                    >
+                    <p class="text-gray-900">{{ formData.statusMultidimensi }}</p>
+                  </div>
+                </div>
+              </rs-fieldset>
+            </FormKit>
+          </template>
+        </rs-card>
+
         <!-- Section 1: Maklumat Pemohon (Read-only) -->
-        <rs-card class="shadow-sm border-0 bg-white">
+        <!-- <rs-card class="shadow-sm border-0 bg-white">
           <template #header>
             <div class="flex items-center space-x-3">
               <div class="flex-shrink-0">
@@ -139,12 +226,200 @@
               </div>
             </div>
           </template>
-        </rs-card>
+        </rs-card> -->
       </div>
 
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <!-- Section 2: Dokumen Sokongan (Read-only) -->
         <div class="col-span-1 space-y-6">
+
+          <rs-card class="shadow-sm border-0 bg-white">
+          <template #header>
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div
+                  class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+                >
+                  <Icon name="ph:user-circle" class="w-6 h-6 text-blue-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">
+                  Maklumat Bantuan
+                </h2>
+                <p class="text-sm text-gray-500">
+                  Butiran bantuan dan status 
+                </p>
+              </div>
+            </div>
+          </template>
+
+          <template #body>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700"
+                  >Aid</label
+                >
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <span class="text-sm text-gray-900">{{
+                    formData.aid
+                  }}</span>
+                </div>
+              </div>
+
+              <div class="space-y-1 ">
+                <label class="text-sm font-medium text-gray-700">Aid Product</label>
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <span class="text-sm text-gray-900">{{
+                    formData.aidproduct
+                  }}</span>
+                </div>
+              </div>
+
+              <!-- <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700"
+                  >Product Package</label
+                >
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <span class="text-sm text-gray-900">{{
+                    formData.productpackage
+                  }}</span>
+                </div>
+              </div> -->
+
+              <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700">Product Package</label>
+                <FormKit
+                  type="select"
+                  name="productpackage"
+                  v-model="formData.productpackage"
+                  placeholder="Sila pilih product package"
+                  :options="[
+                    // '(PEROLEHAN) BINA RUMAH (FAKIR)',
+                    // '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
+                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
+                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
+                    { label: '-- Sila Pilih --', value: '' }, // 👈 default option
+                    { label: '(PEROLEHAN) BINA RUMAH (FAKIR)', value: 'PEROLEHAN' },
+                    { label: '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG', value: 'WO' },
+                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN1' },
+                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN2' }
+                  ]"
+                  searchable="true"
+                  class="mt-1"
+                />
+              </div>
+
+
+              <!-- <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <span class="text-sm font-mono text-gray-900">{{
+                    formData.entitlementproduct
+                  }}</span>
+                </div>
+              </div> -->
+
+              <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
+                <FormKit
+                  type="select"
+                  name="entitlementproduct"
+                  v-model="formData.entitlementproduct"
+                  placeholder="Sila pilih entitlement product"
+                  :options="[
+                    '-- Sila Pilih --', // 👈 default option
+                    '(PEROLEHAN) BINA RUMAH (FAKIR)',
+                    '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
+                    '(PEROLEHAN) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
+                    '(WO) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
+                  ]"
+                  searchable="true"
+                  class="mt-1"
+                />
+              </div>
+
+              <!-- Tarikh Permohonan (Read Only) -->
+              <div class="space-y-1 mt-4">
+                <label class="text-sm font-medium text-gray-700">Tarikh Permohonan</label>
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <span class="text-sm text-gray-900">28/8/2025</span>
+                </div>
+              </div>
+
+              <!-- SLA (Read Only) -->
+              <div class="space-y-1 mt-4">
+                <label class="text-sm font-medium text-gray-700">SLA</label>
+                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                  <span class="text-sm text-gray-900">3 hari lagi</span>
+                </div>
+              </div>
+
+
+              <!-- Toggle Button SEGERA -->
+              <div class="mt-6 flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="formData.segera" class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                          peer-checked:bg-green-500 peer-checked:after:translate-x-full 
+                          after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                          after:bg-white after:border-gray-300 after:border after:rounded-full 
+                          after:h-5 after:w-5 after:transition-all"
+                  ></div>
+                  <span class="ml-3 text-sm font-medium text-gray-700">SEGERA</span>
+                </label>
+              </div>
+
+              <!-- Toggle Button Kelulusan Khas -->
+              <div class="mt-6 flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="formData.kelulusankhas" class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                          peer-checked:bg-green-500 peer-checked:after:translate-x-full 
+                          after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                          after:bg-white after:border-gray-300 after:border after:rounded-full 
+                          after:h-5 after:w-5 after:transition-all"
+                  ></div>
+                  <span class="ml-3 text-sm font-medium text-gray-700">Kelulusan Khas</span>
+                </label>
+              </div>
+
+            </div>
+
+            <!-- Nyatakan Sebab (only shown if segera checked) -->
+            <div v-if="formData.segera" class="mt-4 space-y-1">
+              <label class="text-sm font-medium text-gray-700">Nyatakan Sebab</label>
+              <textarea
+                v-model="formData.sebabSegera"
+                rows="3"
+                class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                placeholder="Nyatakan sebab di sini..."
+              ></textarea>
+            </div>
+
+            <!-- Situasi Kelulusan Khas -->
+        <div v-if="formData.kelulusankhas" class="mt-4 space-y-1">
+          <label class="text-sm font-medium text-gray-700">Situasi</label>
+          <select
+            v-model="formData.situasikelulusankhas"
+            class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+          >
+            <option disabled value="">-- Sila pilih situasi --</option>
+            <option>Umur, sama ada melebihi atau di bawah umur</option>
+            <option>Tempoh masa terikatnya pemohon dengan sesuatu kelayakan bantuan</option>
+            <option>Tidak memenuhi syarat minimum permohonan bantuan</option>
+            <option>Pendapatan isi rumah yang melebihi jadual kelayakan pendapatan isi rumah yang ditetapkan</option>
+            <option>Melebihi kadar Had Kifayah</option>
+            <option>Lain-lain permohonan yang tidak memenuhi syarat dan kelayakan dalam GPSKAZ</option>
+            <option>Permohonan berulang bagi bantuan yang bersifat sekali kelulusan dalam tempoh masa tertentu</option>
+            <option>Jenis bantuan tidak tersenarai di dalam GPSKAZ/ Perkara yang melibatkan kepentingan akidah Islam dan nyawa</option>
+          </select>
+        </div>
+          </template>
+        </rs-card>
+
           <!-- Dokumen Sokongan (Read-only) -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -553,7 +828,7 @@
             <template #body>
               <div class="space-y-4">
                 <!-- Keputusan Siasatan -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Keputusan Siasatan</label
                   >
@@ -564,12 +839,12 @@
                     placeholder="Pilih keputusan siasatan"
                     required
                   />
-                </div>
+                </div> -->
 
                 <!-- Status Sokongan -->
                 <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
-                    >Status Sokongan</label
+                    >Keputusan Siasatan</label
                   >
                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                     <rs-badge
@@ -584,7 +859,7 @@
                 <!-- Catatan Sokongan -->
                 <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
-                    >Catatan Sokongan</label
+                    >Catatan Siasatan</label
                   >
                   <div
                     class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[80px]"
@@ -596,7 +871,7 @@
                 </div>
 
                 <!-- Item Bantuan -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Item Bantuan (jika berkaitan)</label
                   >
@@ -610,12 +885,12 @@
                       <strong>Cth:</strong> Cermin Mata
                     </div>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Tarikh Sokongan -->
                 <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
-                    >Tarikh Sokongan</label
+                    >Tarikh Siasatan</label
                   >
                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                     <div class="text-sm text-gray-500">
@@ -684,7 +959,7 @@
           </rs-card>
 
           <!-- Status Lawatan -->
-          <rs-card class="shadow-sm border-0 bg-white">
+          <!-- <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -723,10 +998,10 @@
                 </div>
               </div>
             </template>
-          </rs-card>
+          </rs-card> -->
 
           <!-- Jumlah Bantuan & Catatan Pengesyoran -->
-          <rs-card class="shadow-sm border-0 bg-white">
+          <!-- <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -777,10 +1052,10 @@
                       catatanPengesyoran || "Diambil dari BQ"
                     }}</span>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Post-approval buttons (only shown after approval) -->
-                <div v-if="isApproved" class="space-y-2 pt-4 border-t">
+                <!-- <div v-if="isApproved" class="space-y-2 pt-4 border-t">
                   <rs-button
                     variant="success-outline"
                     @click="viewArahanKerja"
@@ -801,14 +1076,14 @@
                 </div>
               </div>
             </template>
-          </rs-card>
+          </rs-card> -->
 
           <!-- Action Buttons -->
           <rs-card class="p-4">
             <div class="flex flex-row gap-3">
               <rs-button
                 class="w-full"
-                variant="primary"
+                variant="secondary"
                 @click="handleSimpan"
                 :disabled="processing"
                 :loading="processing && actionType === 'simpan'"
@@ -826,7 +1101,7 @@
               </rs-button>
               <rs-button
                 class="w-full"
-                variant="secondary"
+                variant="danger"
                 @click="handleKembali"
               >
                 Kembali
@@ -901,7 +1176,7 @@ const breadcrumb = ref([
 const formData = ref({
   nama: "Mohd Rosli bin Saad",
   alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
-  jenisPengenalan: "No Pengenalan",
+  jenisPengenalan: "myKad",
   myKad: "880701121234",
   noTelefon: "0123456789",
   emel: "rosli@gmail.com",
@@ -940,11 +1215,6 @@ const bqList = ref([
     namaBQ: "BQ MOHD ROSLI BIN SAAD",
     status: "Dalam Kelulusan",
   },
-  {
-    noBQ: "BQ02",
-    namaBQ: "BQ MOHD ROSLI BIN SAAD 2",
-    status: "Dalam Proses",
-  },
 ]);
 
 const showBQModal = ref(false);
@@ -974,7 +1244,7 @@ const laporanTeknikal = ref({
 
 // Section 6: Catatan Lapangan
 const catatanLapangan = ref({
-  keputusanSiasatan: "",
+  keputusanSiasatan: "Sokong",
   catatanSokongan: "",
   itemBantuan: "",
   tarikhSokongan: new Date().toLocaleString("ms-MY"),
@@ -1179,14 +1449,18 @@ onMounted(() => {
   formData.value = {
     nama: "Mohd Rosli bin Saad",
     alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
-    jenisPengenalan: "No Pengenalan",
-    myKad: "880701121234",
+    jenisPengenalan: "myKad",
+    mykad: "880701121234",
     noTelefon: "0123456789",
     emel: "rosli@gmail.com",
     statusKeluarga: "Fakir",
     statusIndividu: "Fakir",
     statusMultidimensi: "Asnaf Tidak Produktif",
     statusLawatan: "belum_selesai",
+    aid: "B102	Bantuan Binaan Rumah (Fakir)",
+    aidproduct: "Bantuan Binaan Rumah (Fakir)",
+    productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
   };
 
   // Auto-populate laporan teknikal data
@@ -1207,7 +1481,7 @@ onMounted(() => {
 
   // Sample catatan lapangan data
   catatanLapangan.value = {
-    keputusanSiasatan: "",
+    keputusanSiasatan: "sokong",
     catatanSokongan: "Berdasarkan siasatan yang telah dijalankan, pemohon layak menerima bantuan untuk kerja-kerja baik pulih rumah.",
     itemBantuan: "Baik pulih bumbung dan dinding rumah",
     tarikhSokongan: new Date().toLocaleString("ms-MY"),
