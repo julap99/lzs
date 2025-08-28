@@ -11,7 +11,7 @@
           <div>
             <h1 class="text-2xl font-bold text-gray-900">Siasatan Lapangan</h1>
             <p class="mt-1 text-sm text-gray-600">
-              Kemaskini maklumat siasatan dan dapatan lapangan
+              Kemaskini maklumat bantuan
             </p>
           </div>
           <rs-badge
@@ -25,11 +25,11 @@
       </div>
 
       <!-- Debug Section (remove this later) -->
-      <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <!-- <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
         <h3 class="text-sm font-medium text-yellow-800">Debug Info:</h3>
         <p class="text-xs text-yellow-700">Nama: {{ formData.nama }}</p>
         <p class="text-xs text-yellow-700">formData reactive: {{ JSON.stringify(formData) }}</p>
-      </div>
+      </div> -->
 
       <div>
         <!-- Section 1: Maklumat Pemohon (Read-only) -->
@@ -45,10 +45,10 @@
               </div>
               <div>
                 <h2 class="text-lg font-semibold text-gray-900">
-                  Maklumat Pemohon
+                  Maklumat Bantuan
                 </h2>
                 <p class="text-sm text-gray-500">
-                  Butiran peribadi dan status pemohon
+                  Butiran bantuan dan status 
                 </p>
               </div>
             </div>
@@ -58,7 +58,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div class="space-y-1">
                 <label class="text-sm font-medium text-gray-700"
-                  >Nama</label
+                  >Aid</label
                 >
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm text-gray-900">{{
@@ -67,8 +67,8 @@
                 </div>
               </div>
 
-              <div class="space-y-1 md:col-span-2">
-                <label class="text-sm font-medium text-gray-700">Alamat</label>
+              <div class="space-y-1 ">
+                <label class="text-sm font-medium text-gray-700">Aid Product</label>
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm text-gray-900">{{
                     formData.alamat
@@ -78,7 +78,7 @@
 
               <div class="space-y-1">
                 <label class="text-sm font-medium text-gray-700"
-                  >Jenis Pengenalan</label
+                  >Product Package</label
                 >
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm text-gray-900">{{
@@ -88,7 +88,7 @@
               </div>
 
               <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">MyKad</label>
+                <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm font-mono text-gray-900">{{
                     formData.myKad
@@ -96,56 +96,6 @@
                 </div>
               </div>
 
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">No Telefon</label>
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.noTelefon
-                  }}</span>
-                </div>
-              </div>
-
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">E-mel</label>
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.emel
-                  }}</span>
-                </div>
-              </div>
-
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700"
-                  >Status Keluarga</label
-                >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.statusKeluarga
-                  }}</span>
-                </div>
-              </div>
-
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700"
-                  >Status Individu</label
-                >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.statusIndividu
-                  }}</span>
-                </div>
-              </div>
-
-              <div class="space-y-1 md:col-span-3">
-                <label class="text-sm font-medium text-gray-700"
-                  >Status Multidimensi</label
-                >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.statusMultidimensi
-                  }}</span>
-                </div>
-              </div>
             </div>
           </template>
         </rs-card>
@@ -853,8 +803,8 @@ const isApproved = ref(false); // This will be true after approval
 
 // Dropdown options
 const statusLawatanOptions = ref([
-  { label: "Belum Selesai", value: "belum_selesai" },
-  { label: "Selesai Lawatan Lapangan", value: "selesai_lawatan" },
+  { label: "Perlu Diproses", value: "belum_selesai" },
+  { label: "Selesai Diproses", value: "selesai_lawatan" },
 ]);
 
 const statusDokumenOptions = ref([
@@ -1048,7 +998,7 @@ onMounted(() => {
     statusKeluarga: "Fakir",
     statusIndividu: "Fakir",
     statusMultidimensi: "Asnaf Tidak Produktif",
-    statusLawatan: "belum_selesai",
+    statusLawatan: "Perlu Diproses",
   };
 
   console.log("formData set:", formData.value); // Debug log
