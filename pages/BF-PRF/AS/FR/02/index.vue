@@ -1019,23 +1019,23 @@
               </div>
             </div>
 
-            <!-- Nama Selepas Islam -->
+            <!-- Nama Lain -->
             <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="text"
-                name="nama_selepas_islam"
-                label="Nama Selepas Islam"
+                name="nama_lain"
+                label="Nama Lain"
                 validation="required"
-                validation-label="Nama Selepas Islam"
+                validation-label="Nama Lain"
                 :validation-messages="{
-                  required: 'Sila masukkan nama selepas Islam',
+                  required: 'Sila masukkan nama lain',
                 }"
-                v-model="formData.nama_selepas_islam"
+                v-model="formData.nama_lain"
               />
             </div>
 
             <!-- Nama Sebelum Islam -->
-            <div v-if="formData.adakah_muallaf === 'Y'">
+            <!-- <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="text"
                 name="nama_sebelum_islam"
@@ -1047,10 +1047,10 @@
                 }"
                 v-model="formData.nama_sebelum_islam"
               />
-            </div>
+            </div> -->
 
             <!-- Tarikh Keluar Muallaf -->
-            <div v-if="formData.adakah_muallaf === 'Y'">
+            <!-- <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="text"
                 name="tarikh_keluar_muallaf"
@@ -1063,10 +1063,10 @@
                 :model-value="tarikhKeluarMuallaf"
                 readonly
               />
-            </div>
+            </div> -->
 
             <!-- Tarikh Keluar KFAM -->
-            <div v-if="formData.adakah_muallaf === 'Y'">
+            <!-- <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="date"
                 name="tarikh_had_taklif_muallaf"
@@ -1078,7 +1078,7 @@
                 :model-value="tarikhHadTaklifMuallaf"
                 readonly
               />
-            </div>
+            </div> -->
 
             <!-- Dokumen Pengislaman -->
             <div v-if="formData.adakah_muallaf === 'Y'">
@@ -1150,29 +1150,29 @@
           <div class="mb-6">
             <!-- <h4 class="text-md font-medium mb-3">Maklumat Bank</h4> -->
 
-            <!-- Kaedah Pembayaran -->
+            <!-- Adakah anda mempunyai akaun bank? -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-black-700"
-                  >Kaedah Pembayaran
+                  >Adakah anda mempunyai akaun bank?
                 </label>
                 <div class="mb-6">
                   <FormKit
                     type="radio"
                     name="kaedah_pembayaran"
-                    :options="paymentMethodOptions"
+                    :options="paymentMethodOptionsMain"
                     validation="required"
                     v-model="formData.kaedah_pembayaran"
                     :validation-messages="{
-                      required: 'Kaedah pembayaran adalah wajib',
+                      required: 'Sila pilih sama ada anda mempunyai akaun bank',
                     }"
                   />
                 </div>
               </div>
             </div>
 
-            <!-- A. Jika Kaedah Pembayaran = Akaun -->
-            <div v-if="formData.kaedah_pembayaran === 'akaun'" class="mb-6">
+            <!-- A. Jika mempunyai akaun bank -->
+            <div v-if="formData.kaedah_pembayaran === 'ya'" class="mb-6">
               <h5 class="text-md font-medium mb-4">Maklumat Akaun Bank</h5>
 
               <div
@@ -1233,6 +1233,39 @@
                     validation="required"
                     v-model="account.nama_pemegang_akaun"
                   />
+
+                  <!-- Jenis Akaun -->
+                  <FormKit
+                    type="select"
+                    :name="`bank${index}JenisAkaun`"
+                    label="Jenis Akaun *"
+                    placeholder="Pilih jenis akaun"
+                    :options="[
+                      { label: 'Individu', value: 'individu' },
+                      { label: 'Bersama', value: 'bersama' }
+                    ]"
+                    validation="required"
+                    v-model="account.jenis_akaun"
+                  />
+
+                  <!-- ID Pengenalan -->
+                  <FormKit
+                    type="text"
+                    :name="`bank${index}IdPengenalan`"
+                    label="ID Pengenalan *"
+                    validation="required"
+                    v-model="account.id_pengenalan"
+                  />
+
+                  <!-- Nama (if Bersama is selected) -->
+                  <FormKit
+                    v-if="account.jenis_akaun === 'bersama'"
+                    type="text"
+                    :name="`bank${index}NamaBersama`"
+                    label="Nama *"
+                    validation="required"
+                    v-model="account.nama_bersama"
+                  />
                 </div>
               </div>
 
@@ -1248,8 +1281,8 @@
               </div>
             </div>
 
-            <!-- B. Jika Kaedah Pembayaran = Tiada -->
-            <div v-if="formData.kaedah_pembayaran === 'tiada'" class="mb-6">
+            <!-- B. Jika tidak mempunyai akaun bank -->
+            <div v-if="formData.kaedah_pembayaran === 'tidak'" class="mb-6">
               <h5 class="text-md font-medium mb-4">Sebab Tiada Akaun Bank</h5>
               <div class="md:col-span-2">
                 <FormKit
@@ -5012,7 +5045,7 @@
             </div>
 
             <!-- 4. Maklumat Majikan -->
-            <div
+            <!-- <div
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
@@ -5124,10 +5157,10 @@
                   v-model="getCurrentTanggungan().negara_majikan"
                 />
               </div>
-            </div>
+            </div> -->
 
             <!-- 5. Jawatan & Status -->
-            <div
+            <!-- <div
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
@@ -5158,10 +5191,10 @@
                   v-model="getCurrentTanggungan().status_jawatan"
                 />
               </div>
-            </div>
+            </div> -->
 
             <!-- 6. Pendapatan -->
-            <div
+            <!-- <div
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
@@ -5194,7 +5227,7 @@
                   v-model="getCurrentTanggungan().dokumen_pendapatan"
                 />
               </div>
-            </div>
+            </div> -->
           </div>
 
           <div class="flex justify-between gap-3 mt-6">
@@ -5620,7 +5653,7 @@
 
           <!-- PAK Officer Information (Readonly) -->
           <h4 class="font-medium mb-3">
-            Maklumat Pegawai PAK yang Mengesahkan
+            Maklumat Pegawai/Penolong Amil yang Mengesahkan
           </h4>
 
           <!-- Original Form Fields (Hidden/Readonly) -->
@@ -6334,7 +6367,13 @@ const formData = ref({
 // ============================================================================
 // OPTIONS DATA
 // ============================================================================
-// Payment Method Options
+// Payment Method Options for Main Applicant
+const paymentMethodOptionsMain = [
+  { label: "Ya", value: "ya" },
+  { label: "Tidak", value: "tidak" },
+];
+
+// Payment Method Options for Tanggungan (keeping original)
 const paymentMethodOptions = [
   { label: "Akaun", value: "akaun" },
   { label: "Tiada", value: "tiada" },
@@ -6617,6 +6656,9 @@ const addBankAccount = () => {
     nama_bank: "",
     no_akaun_bank: "",
     nama_pemegang_akaun: "",
+    jenis_akaun: "",
+    id_pengenalan: "",
+    nama_bersama: "",
   });
 };
 
@@ -7707,12 +7749,15 @@ onMounted(() => {
     adakah_muallaf: "T",
 
     // Mock data for Maklumat Perbankan
-    kaedah_pembayaran: "akaun",
+    kaedah_pembayaran: "ya",
     bank_accounts: [
       {
         nama_bank: "bank-islam",
         no_akaun_bank: "3063020371170",
         nama_pemegang_akaun: "adnan bin abu",
+        jenis_akaun: "individu",
+        id_pengenalan: "801004035672",
+        nama_bersama: "",
       },
     ],
 
