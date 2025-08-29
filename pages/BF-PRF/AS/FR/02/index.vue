@@ -3427,12 +3427,25 @@
                 help="Umur dari data yang telah ditetapkan"
               />
 
+              <!-- Mohon Ketua Keluarga (for minors) -->
+              <FormKit
+                v-if="
+                  parseInt(
+                    calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
+                  ) < 18
+                "
+                type="checkbox"
+                name="mohon_ketua_keluarga"
+                label="Mohon Ketua Keluarga?"
+                v-model="getCurrentTanggungan().mohon_ketua_keluarga"
+              />
+
               <!-- Special Approval for Minors -->
               <div
                 v-if="
                   parseInt(
                     calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
-                  ) < 18
+                  ) < 18 && getCurrentTanggungan().mohon_ketua_keluarga
                 "
                 class="md:col-span-2"
               >
@@ -3456,7 +3469,8 @@
                         { label: 'Permohonan Khas', value: 'Permohonan Khas' },
                         { label: 'Lain-lain', value: 'Lain-lain' },
                       ]"
-                      validation="required"
+                      :validation="getCurrentTanggungan().mohon_ketua_keluarga ? 'required' : ''"
+                      :disabled="true"
                       v-model="getCurrentTanggungan().situasi_kelulusan_khas"
                     />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -3471,7 +3485,8 @@
                             { label: 'Ya', value: 'Y' },
                             { label: 'Tidak', value: 'N' },
                           ]"
-                          validation="required"
+                          :validation="getCurrentTanggungan().mohon_ketua_keluarga ? 'required' : ''"
+                          :disabled="true"
                           v-model="getCurrentTanggungan().kelulusan_khas"
                         />
                       </div>
@@ -7108,6 +7123,32 @@ watch(
         { deep: true }
       );
 
+      // Watch mohon_ketua_keluarga for minors to auto-set situasi & kelulusan
+      watch(
+        () => [
+          getCurrentTanggungan()?.mohon_ketua_keluarga,
+          getCurrentTanggungan()?.tarikh_lahir_tanggungan,
+        ],
+        () => {
+          const currentTanggungan = getCurrentTanggungan();
+          if (!currentTanggungan) return;
+
+          const age = parseInt(
+            calculateAge(currentTanggungan.tarikh_lahir_tanggungan)
+          );
+          if (Number.isFinite(age) && age < 18) {
+            if (currentTanggungan.mohon_ketua_keluarga) {
+              currentTanggungan.situasi_kelulusan_khas = "Profiling";
+              currentTanggungan.kelulusan_khas = "Y";
+            } else {
+              currentTanggungan.kelulusan_khas = "N";
+              currentTanggungan.situasi_kelulusan_khas = "";
+            }
+          }
+        },
+        { deep: true }
+      );
+
       // Watch for bank selection to auto-populate Swift Code
       watch(
         () => getCurrentTanggungan()?.nama_bank_tanggungan,
@@ -7240,6 +7281,7 @@ const addTanggungan = (showNotification = true) => {
     tarikh_tamat_pasport: "",
     tarikh_lahir_tanggungan: "",
     umur_tanggungan: "",
+    mohon_ketua_keluarga: false,
     tempat_lahir_tanggungan: "",
     jantina_tanggungan: "",
     agama_tanggungan: "",
