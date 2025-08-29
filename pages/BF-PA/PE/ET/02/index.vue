@@ -76,7 +76,12 @@
                   <td class="px-4 py-3">
                     <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
                       <li v-for="a in aggregateActivities(row.activities)" :key="a.name">
-                        <span class="font-medium">{{ a.name }}</span>
+                        <button 
+                          @click="openAllowanceModal(a.name)"
+                          class="font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                        >
+                          {{ a.name }}
+                        </button>
                       </li>
                       <li v-if="!row.activities || !row.activities.length" class="list-none text-gray-500">
                         Tiada rekod aktiviti.
@@ -164,6 +169,7 @@
                       Elaun (RM)
                     </div>
                   </th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
                 </tr>
               </thead>
@@ -194,8 +200,21 @@
                     <template v-else>
                       <div class="flex items-center gap-2">
                         <span class="font-semibold">{{ r.allowance.toFixed(2) }}</span>
+                        <Icon 
+                          v-if="r._allowanceNotes" 
+                          name="ic:baseline-info" 
+                          class="text-blue-500 cursor-help" 
+                          size="16"
+                          :title="r._allowanceNotes"
+                        />
                       </div>
                     </template>
+                  </td>
+                  <td class="px-4 py-3">
+                    <div v-if="r._allowanceNotes" class="text-xs text-gray-600 max-w-xs truncate" :title="r._allowanceNotes">
+                      {{ r._allowanceNotes }}
+                    </div>
+                    <span v-else class="text-xs text-gray-400">—</span>
                   </td>
                   <td class="px-4 py-3 text-left">
                     <div class="flex items-center justify-start gap-2">
@@ -239,14 +258,14 @@
                   </td>
                 </tr>
                 <tr v-if="recipients.length === 0" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="5">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="6">
                     Tiada penerima dipilih lagi. Tandakan dan klik 'Pilih'.
                   </td>
                 </tr>
               </tbody>
               <tfoot class="bg-gray-50">
                 <tr>
-                  <td class="px-4 py-3 text-right font-medium" colspan="3">Jumlah (RM)</td>
+                  <td class="px-4 py-3 text-right font-medium" colspan="4">Jumlah (RM)</td>
                   <td class="px-4 py-3 font-semibold">{{ totalAllowance.toFixed(2) }}</td>
                 </tr>
               </tfoot>
@@ -330,6 +349,103 @@
             >
               <Icon name="ic:baseline-send" class="mr-2" />
               {{ saving ? 'Menghantar...' : 'Hantar' }}
+            </rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Allowance Change Modal -->
+    <div v-if="showAllowanceModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-hidden">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold">Perubahan Pembayaran Elaun - {{ selectedActivity }}</h3>
+            <button 
+              @click="closeAllowanceModal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <Icon name="ic:baseline-close" size="24" />
+            </button>
+          </div>
+          
+          <div class="overflow-x-auto rounded-lg border">
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900 w-16">No.</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Elaun (RM)</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="(recipient, index) in modalRecipients" :key="recipient.paId" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-model="recipient._modalChecked"
+                      type="checkbox"
+                      :classes="{
+                        input: '!w-4 !h-4',
+                      }"
+                    />
+                  </td>
+                  <td class="px-4 py-3 text-gray-900">{{ recipient.ic }}</td>
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ recipient.name }}</td>
+                  <td class="px-4 py-3 w-48">
+                    <FormKit
+                      v-if="recipient._modalChecked"
+                      v-model.number="recipient._modalAllowance"
+                      type="number"
+                      :min="editableAllowanceRange.min"
+                      :max="editableAllowanceRange.max"
+                      step="0.01"
+                      placeholder="0.00"
+                      :classes="{
+                        input: '!py-1 !px-2',
+                      }"
+                    />
+                    <span v-else class="font-semibold">{{ recipient.allowance.toFixed(2) }}</span>
+                  </td>
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-if="recipient._modalChecked"
+                      v-model="recipient._modalNotes"
+                      type="textarea"
+                      rows="2"
+                      placeholder="Masukkan catatan perubahan..."
+                      :classes="{ input: '!py-2 !px-2 text-xs' }"
+                    />
+                    <input
+                      v-else
+                      type="text"
+                      disabled
+                      placeholder="Tiada"
+                      class="w-full py-2 px-2 text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="flex items-center justify-end gap-3 mt-6">
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              @click="closeAllowanceModal"
+            >
+              Batal
+            </rs-button>
+            <rs-button
+              variant="primary"
+              size="sm"
+              @click="applyAllowanceChanges"
+              :disabled="!hasModalChanges"
+            >
+              <Icon name="ic:baseline-check" class="mr-2" />
+              Terapkan
             </rs-button>
           </div>
         </div>
@@ -483,6 +599,11 @@ const saving = ref(false);
 const showSubmitModal = ref(false);
 const submitNotes = ref('');
 
+// Allowance change modal states
+const showAllowanceModal = ref(false);
+const selectedActivity = ref('');
+const modalRecipients = ref([]);
+
 // Missing category options for editing
 const categoryOptions = [
   { label: 'KPAK', value: 'KPAK' },
@@ -626,14 +747,12 @@ function getMockCandidates(year, type) {
 // Simple activity generation - much simpler than before
 function generateSimpleActivities() {
   const activityPool = [
-    { name: 'Taklimat', count: 3 },
-    { name: 'Kutipan Fitrah', count: 2 },
-    { name: 'Agihan Tunai', count: 1 },
-    { name: 'Mesyuarat Kariah', count: 4 },
-    { name: 'Audit Tunai', count: 2 },
-    { name: 'Program Komuniti', count: 3 },
-    { name: 'Edaran Bantuan', count: 1 },
-    { name: 'Bimbingan Asnaf', count: 2 }
+    { name: 'Elaun Bancian Baru : per borang permohonan', count: 3 },
+    { name: 'Elaun Kemaskini/permohonan bantuan : per borang permohonan', count: 4 },
+    { name: 'Elaun Khas - 48 aktiviti/tahun', count: 1 },
+    { name: 'Elaun Tahunan KPAK', count: 1 },
+    { name: 'Elaun Tahunan KPAF', count: 1 },
+    { name: 'Anugerah Penolong Amil', count: 1 }
   ];
   
   // Randomly select 3-5 activities
@@ -687,8 +806,12 @@ function loadDraftRecipients() {
       
       if (savedRecipients) {
         const parsed = JSON.parse(savedRecipients);
-        // Ensure all loaded recipients have _checked: false
-        recipients.value = parsed.map(r => ({ ...r, _checked: false }));
+        // Ensure all loaded recipients have _checked: false and load notes
+        recipients.value = parsed.map(r => ({ 
+          ...r, 
+          _checked: false,
+          _allowanceNotes: r._allowanceNotes || ''
+        }));
       }
     }
   } catch (error) {
@@ -815,6 +938,11 @@ const canSubmit = computed(() => recipients.value.length > 0 && recipients.value
 const status = ref('DRAF');
 const statusLabel = computed(() => status.value === 'MENUNGGU KELULUSAN' ? 'menunggu kelulusan' : status.value.toLowerCase());
 
+// Check if there are any changes in the modal
+const hasModalChanges = computed(() => {
+  return modalRecipients.value.some(r => r._modalChecked);
+});
+
 // Computed property to show allowance type information
 const allowanceTypeInfo = computed(() => {
   if (isFixedAllowance.value) {
@@ -909,7 +1037,8 @@ function persistRecipients() {
     ic: r.ic,
     category: r.category,
     parish: r.parish,
-    allowance: Number(r.allowance) || 0
+    allowance: Number(r.allowance) || 0,
+    _allowanceNotes: r._allowanceNotes || ''
   }));
   
   localStorage.setItem(key, JSON.stringify(compact));
@@ -1074,8 +1203,56 @@ function cancelEdit(recipient) {
   recipient._isEditing = false;
   toast.info('Penyuntingan dibatalkan');
 }
+
+// Allowance change modal functions
+function openAllowanceModal(activityName) {
+  selectedActivity.value = activityName;
+  
+  // Create a copy of current recipients for modal editing
+  modalRecipients.value = recipients.value.map(recipient => ({
+    ...recipient,
+    _modalChecked: false,
+    _modalAllowance: Number(recipient.allowance) || 0,
+    _modalNotes: ''
+  }));
+  
+  showAllowanceModal.value = true;
+}
+
+function closeAllowanceModal() {
+  showAllowanceModal.value = false;
+  selectedActivity.value = '';
+  modalRecipients.value = [];
+}
+
+function applyAllowanceChanges() {
+  // Apply changes from modal to main recipients list
+  modalRecipients.value.forEach(modalRecipient => {
+    if (modalRecipient._modalChecked) {
+      const mainRecipient = recipients.value.find(r => r.paId === modalRecipient.paId);
+      if (mainRecipient) {
+        // Update allowance if it's different
+        if (modalRecipient._modalAllowance !== mainRecipient.allowance) {
+          mainRecipient.allowance = Number(modalRecipient._modalAllowance);
+        }
+        
+        // Store notes in a custom property (for display purposes)
+        if (modalRecipient._modalNotes && modalRecipient._modalNotes.trim()) {
+          mainRecipient._allowanceNotes = modalRecipient._modalNotes.trim();
+        }
+      }
+    }
+  });
+  
+  // Show success message
+  const changedCount = modalRecipients.value.filter(r => r._modalChecked).length;
+  if (changedCount > 0) {
+    toast.success(`${changedCount} penerima telah dikemas kini`);
+  }
+  
+  closeAllowanceModal();
+}
 </script>
 
 <style scoped>
-/* gaya ringkas, ikut Tailwind */
 </style>  
