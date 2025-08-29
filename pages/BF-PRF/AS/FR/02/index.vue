@@ -183,11 +183,13 @@
               />
 
               <FormKit
-                type="number"
+                type="text"
                 name="umur"
                 label="Umur"
                 validation="required"
                 v-model="formData.umur"
+                readonly
+                help="Auto dikira daripada Tarikh Lahir"
               />
 
               <FormKit
@@ -6920,6 +6922,40 @@ const islamicDatesValidation = computed(() => {
 // ============================================================================
 // WATCHERS
 // ============================================================================
+// Auto-populate applicant birth date from MyKad
+watch(
+  () => formData.value.no_pengenalan,
+  (newVal) => {
+    if (
+      newVal &&
+      !isInitializingMockData.value &&
+      formData.value.jenis_id === "mykad"
+    ) {
+      if (newVal.length === 12 && /^\d{12}$/.test(newVal)) {
+        const year = newVal.substring(0, 2);
+        const month = newVal.substring(2, 4);
+        const day = newVal.substring(4, 6);
+
+        const century = parseInt(year) <= 29 ? "20" : "19";
+        const fullYear = century + year;
+
+        const birthDate = `${fullYear}-${month}-${day}`;
+        formData.value.tarikh_lahir = birthDate;
+      }
+    }
+  }
+);
+watch(
+  () => formData.value.tarikh_lahir,
+  (newVal) => {
+    if (newVal) {
+      formData.value.umur = calculateAge(newVal);
+    } else {
+      formData.value.umur = "";
+    }
+  },
+  { immediate: true }
+);
 watch(bilanganIsteri, (newVal) => {
   const count = parseInt(newVal) || 0;
   isteriList.value = Array(count).fill({});
