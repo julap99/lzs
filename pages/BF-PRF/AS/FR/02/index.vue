@@ -370,51 +370,61 @@
         >
           <h3 class="text-lg font-semibold mb-4">2. Maklumat Pendidikan</h3>
 
-          <!-- A. Pendidikan Individu -->
+          <!-- A. Maklumat Pendidikan Asas -->
           <div class="mb-8">
-            <h4 class="text-lg font-semibold mb-4">Pendidikan Individu</h4>
+            <h4 class="text-lg font-semibold mb-4">Maklumat Pendidikan Asas</h4>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Masih Bersekolah -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-black-700"
-                    >Masih Bersekolah?</label
-                  >
-                  <FormKit
-                    type="radio"
-                    name="masih_bersekolah"
-                    :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'T' },
-                    ]"
-                    validation="required"
-                    v-model="formData.masih_bersekolah"
-                  />
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Pendidikan Tertinggi -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Masih Bersekolah *</label
+                >
                 <FormKit
-                  type="select"
-                  name="pendidikan_tertinggi"
-                  label="Pendidikan Tertinggi *"
-                  placeholder="Pilih Pendidikan Tertinggi"
+                  type="radio"
+                  name="masih_bersekolah"
                   :options="[
-                    'Peringkat Rendah',
-                    'SRP/PMR',
-                    'SPM',
-                    'Sijil',
-                    'Diploma',
-                    'STPM',
-                    'Ijazah',
-                    'Lain-lain',
+                    { label: 'Ya', value: 'Y' },
+                    { label: 'Tidak', value: 'T' },
                   ]"
                   validation="required"
-                  v-model="formData.pendidikan_tertinggi"
+                  v-model="formData.masih_bersekolah"
                 />
               </div>
+
+              <!-- Pendidikan Tertinggi -->
+              <FormKit
+                type="select"
+                name="pendidikan_tertinggi"
+                label="Pendidikan Tertinggi *"
+                placeholder="Pilih Pendidikan Tertinggi"
+                :options="[
+                  'Peringkat Rendah',
+                  'SRP/PMR',
+                  'SPM',
+                  'Sijil',
+                  'Diploma',
+                  'STPM',
+                  'Ijazah',
+                  'Lain-lain',
+                ]"
+                validation="required"
+                v-model="formData.pendidikan_tertinggi"
+              />
+            </div>
+
+            <!-- Lain-lain Pendidikan Tertinggi -->
+            <div
+              v-if="formData.pendidikan_tertinggi === 'Lain-lain'"
+              class="mt-4"
+            >
+              <FormKit
+                type="text"
+                name="lain_pendidikan_tertinggi"
+                label="Lain-lain Pendidikan Tertinggi *"
+                validation="required"
+                v-model="formData.lain_pendidikan_tertinggi"
+              />
             </div>
           </div>
 
@@ -517,10 +527,10 @@
                     placeholder="Pilih Jenis Sekolah / Institusi"
                     :options="[
                       'Pra Sekolah',
-                      'Sekolah Rendah Kebangsaan',
-                      'Sekolah Menengah Kebangsaan',
-                      'Sekolah Menengah Agama',
-                      'Sekolah Rendah Kebangsaan dan Agama',
+                      'SRK',
+                      'SMK',
+                      'SMA',
+                      'SRK+Agama',
                       'IPTA',
                       'IPTS',
                       'Maahad Tahfiz',
@@ -675,6 +685,54 @@
                       v-model="edu.jurusan_bidang"
                     />
                   </div>
+
+                  <!-- Pembiayaan Pengajian -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    <div class="space-y-2">
+                      <label class="block text-sm font-medium text-black-700"
+                        >Pembiayaan Pengajian *</label
+                      >
+                      <FormKit
+                        type="checkbox"
+                        :name="`edu${index}PembiayaanPengajian`"
+                        :options="['JPA', 'PTPTN', 'LZS', 'Tiada', 'Lain-lain']"
+                        validation="required|min:1"
+                        v-model="edu.pembiayaan_pengajian"
+                        :validation-messages="{
+                          required: 'Sila pilih sekurang-kurangnya satu pembiayaan',
+                          min: 'Sila pilih sekurang-kurangnya satu pembiayaan',
+                        }"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Lain-lain Pembiayaan Pengajian -->
+                  <div
+                    v-if="
+                      edu.pembiayaan_pengajian &&
+                      edu.pembiayaan_pengajian.includes('Lain-lain')
+                    "
+                    class="mt-4"
+                  >
+                    <FormKit
+                      type="text"
+                      :name="`edu${index}LainPembiayaan`"
+                      label="Lain-lain Pembiayaan Pengajian *"
+                      validation="required"
+                      v-model="edu.lain_pembiayaan"
+                    />
+                  </div>
+
+                  <!-- Catatan -->
+                  <div class="mt-6">
+                    <FormKit
+                      type="textarea"
+                      :name="`edu${index}Catatan`"
+                      label="Catatan"
+                      v-model="edu.catatan"
+                      rows="3"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -690,131 +748,15 @@
               </div>
             </div>
 
-            <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-             
-              <FormKit
-                type="select"
-                name="jenis_sekolah"
-                label="Jenis Sekolah / Institusi"
-                placeholder="Pilih Jenis Sekolah / Institusi"
-                :options="[
-                  'Pra Sekolah',
-                  'Sekolah Rendah Kebangsaan',
-                  'Sekolah Menengah Kebangsaan',
-                  'Sekolah Menengah Agama',
-                  'Sekolah Rendah Kebangsaan dan Agama',
-                  'IPTA',
-                  'IPTS',
-                  'Maahad Tahfiz',
-                ]"
-                v-model="formData.jenis_sekolah"
-              />
+            <!-- Lain-lain Maklumat -->
+            <div class="mb-8">
+              <h4 class="text-lg font-semibold mb-4">Lain-lain Maklumat</h4>
 
-
-              <FormKit
-                type="select"
-                name="kategori_sekolah"
-                label="Kategori Sekolah / Institusi"
-                placeholder="Pilih Kategori Sekolah / Institusi"
-                :options="['SEK.MEN', 'SRK', 'IPTA', 'IPTS', 'SRA', 'KAFA']"
-                v-model="formData.kategori_sekolah"
-              />
-            </div> -->
-
-            <!-- Conditional fields when Kategori Sekolah is selected -->
-            <div v-if="formData.kategori_sekolah" class="mt-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Tahun Bersekolah -->
-                <FormKit
-                  type="text"
-                  name="tahun_bersekolah"
-                  label="Tahun Bersekolah (YYYY) *"
-                  validation="required"
-                  placeholder="Contoh: 2024"
-                  v-model="formData.tahun_bersekolah"
-                />
-
-                <!-- Tahun / Tingkatan / Tahun Pengajian / Semester -->
-                <FormKit
-                  type="text"
-                  name="tahun_tingkatan"
-                  label="Tahun / Tingkatan / Tahun Pengajian / Semester *"
-                  validation="required"
-                  placeholder="Contoh: Tingkatan 3, Tahun 2, Semester 1"
-                  v-model="formData.tahun_tingkatan"
-                />
-              </div>
-
-              <!-- Nama Sekolah / Institusi -->
-              <div class="mt-4">
-                <FormKit
-                  type="text"
-                  name="nama_sekolah"
-                  label="Nama Sekolah / Institusi *"
-                  validation="required"
-                  v-model="formData.nama_sekolah"
-                />
-              </div>
-
-              <!-- Address fields -->
-              <div class="mt-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormKit
-                    type="text"
-                    name="alamat_sekolah_1"
-                    label="Alamat 1 *"
-                    validation="required"
-                    v-model="formData.alamat_sekolah_1"
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="alamat_sekolah_2"
-                    label="Alamat 2"
-                    v-model="formData.alamat_sekolah_2"
-                  />
-                </div>
-
-                <div class="mt-4">
-                  <FormKit
-                    type="text"
-                    name="alamat_sekolah_3"
-                    label="Alamat 3"
-                    v-model="formData.alamat_sekolah_3"
-                  />
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                  <FormKit
-                    type="text"
-                    name="daerah_sekolah"
-                    label="Daerah *"
-                    validation="required"
-                    v-model="formData.daerah_sekolah"
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="bandar_sekolah"
-                    label="Bandar *"
-                    validation="required"
-                    v-model="formData.bandar_sekolah"
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="poskod_sekolah"
-                    label="Poskod *"
-                    validation="required"
-                    v-model="formData.poskod_sekolah"
-                  />
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <!-- Tinggal Bersama Keluarga -->
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-black-700"
-                    >Tinggal Bersama Keluarga?</label
+                    >Tinggal Bersama Keluarga *</label
                   >
                   <FormKit
                     type="radio"
@@ -827,92 +769,22 @@
                     v-model="formData.tinggal_bersama_keluarga"
                   />
                 </div>
-              </div>
 
-              <!-- Asrama / Rumah Sewa -->
-              <div
-                v-if="formData.tinggal_bersama_keluarga === 'T'"
-                class="mt-4"
-              >
-                <FormKit
-                  type="text"
-                  name="asrama_rumah_sewa"
-                  label="Asrama / Rumah Sewa *"
-                  validation="required"
-                  v-model="formData.asrama_rumah_sewa"
-                />
-              </div>
-
-              <!-- Bidang / Kursus Pengajian -->
-              <div class="mt-6">
-                <FormKit
-                  type="select"
-                  name="bidang_kursus"
-                  label="Bidang / Kursus Pengajian"
-                  :options="['Sijil', 'SKM', 'Diploma', 'Ijazah Sarjana Muda']"
-                  v-model="formData.bidang_kursus"
-                />
-              </div>
-
-              <!-- Jurusan / Bidang -->
-              <div v-if="formData.bidang_kursus" class="mt-4">
-                <FormKit
-                  type="text"
-                  name="jurusan_bidang"
-                  label="Jurusan / Bidang *"
-                  validation="required"
-                  v-model="formData.jurusan_bidang"
-                />
-              </div>
-
-              <!-- Pembiayaan Pengajian -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-black-700"
-                    >Pembiayaan Pengajian</label
-                  >
+                <!-- Asrama/Rumah Sewa -->
+                <div v-if="formData.tinggal_bersama_keluarga === 'T'">
                   <FormKit
-                    type="checkbox"
-                    name="pembiayaan_pengajian"
-                    :options="['JPA', 'PTPTN', 'LZS', 'Tiada', 'Lain-lain']"
-                    validation="required|min:1"
-                    v-model="formData.pembiayaan_pengajian"
-                    :validation-messages="{
-                      required: 'Sila pilih sekurang-kurangnya satu pembiayaan',
-                      min: 'Sila pilih sekurang-kurangnya satu pembiayaan',
-                    }"
+                    type="text"
+                    name="asrama_rumah_sewa"
+                    label="Asrama/Rumah Sewa *"
+                    validation="required"
+                    v-model="formData.asrama_rumah_sewa"
                   />
                 </div>
-              </div>
 
-              <!-- Lain-lain Pembiayaan Pengajian -->
-              <div
-                v-if="
-                  formData.pembiayaan_pengajian &&
-                  formData.pembiayaan_pengajian.includes('Lain-lain')
-                "
-                class="mt-4"
-              >
-                <FormKit
-                  type="text"
-                  name="lain_pembiayaan"
-                  label="Lain-lain Pembiayaan Pengajian *"
-                  validation="required"
-                  v-model="formData.lain_pembiayaan"
-                />
-              </div>
-
-              <!-- Catatan -->
-              <div class="mt-6">
-                <FormKit
-                  type="textarea"
-                  name="catatan_pendidikan"
-                  label="Catatan"
-                  v-model="formData.catatan_pendidikan"
-                  rows="3"
-                />
               </div>
             </div>
+
+
           </div>
 
           <div class="flex justify-between gap-3 mt-6">
@@ -1019,23 +891,23 @@
               </div>
             </div>
 
-            <!-- Nama Selepas Islam -->
+            <!-- Nama Lain -->
             <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="text"
-                name="nama_selepas_islam"
-                label="Nama Selepas Islam"
+                name="nama_lain"
+                label="Nama Lain"
                 validation="required"
-                validation-label="Nama Selepas Islam"
+                validation-label="Nama Lain"
                 :validation-messages="{
-                  required: 'Sila masukkan nama selepas Islam',
+                  required: 'Sila masukkan nama lain',
                 }"
-                v-model="formData.nama_selepas_islam"
+                v-model="formData.nama_lain"
               />
             </div>
 
             <!-- Nama Sebelum Islam -->
-            <div v-if="formData.adakah_muallaf === 'Y'">
+            <!-- <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="text"
                 name="nama_sebelum_islam"
@@ -1047,10 +919,10 @@
                 }"
                 v-model="formData.nama_sebelum_islam"
               />
-            </div>
+            </div> -->
 
             <!-- Tarikh Keluar Muallaf -->
-            <div v-if="formData.adakah_muallaf === 'Y'">
+            <!-- <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="text"
                 name="tarikh_keluar_muallaf"
@@ -1063,10 +935,10 @@
                 :model-value="tarikhKeluarMuallaf"
                 readonly
               />
-            </div>
+            </div> -->
 
             <!-- Tarikh Keluar KFAM -->
-            <div v-if="formData.adakah_muallaf === 'Y'">
+            <!-- <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="date"
                 name="tarikh_had_taklif_muallaf"
@@ -1078,7 +950,7 @@
                 :model-value="tarikhHadTaklifMuallaf"
                 readonly
               />
-            </div>
+            </div> -->
 
             <!-- Dokumen Pengislaman -->
             <div v-if="formData.adakah_muallaf === 'Y'">
@@ -1100,19 +972,7 @@
             </div>
           </div>
 
-          <!-- Lain-lain Pendidikan Tertinggi -->
-          <div
-            v-if="formData.pendidikan_tertinggi === 'Lain-lain'"
-            class="mt-4"
-          >
-            <FormKit
-              type="text"
-              name="lain_pendidikan_tertinggi"
-              label="Lain-lain Pendidikan Tertinggi *"
-              validation="required"
-              v-model="formData.lain_pendidikan_tertinggi"
-            />
-          </div>
+
 
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
@@ -1150,29 +1010,29 @@
           <div class="mb-6">
             <!-- <h4 class="text-md font-medium mb-3">Maklumat Bank</h4> -->
 
-            <!-- Kaedah Pembayaran -->
+            <!-- Adakah anda mempunyai akaun bank? -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-black-700"
-                  >Kaedah Pembayaran
+                  >Adakah anda mempunyai akaun bank?
                 </label>
                 <div class="mb-6">
                   <FormKit
                     type="radio"
                     name="kaedah_pembayaran"
-                    :options="paymentMethodOptions"
+                    :options="paymentMethodOptionsMain"
                     validation="required"
                     v-model="formData.kaedah_pembayaran"
                     :validation-messages="{
-                      required: 'Kaedah pembayaran adalah wajib',
+                      required: 'Sila pilih sama ada anda mempunyai akaun bank',
                     }"
                   />
                 </div>
               </div>
             </div>
 
-            <!-- A. Jika Kaedah Pembayaran = Akaun -->
-            <div v-if="formData.kaedah_pembayaran === 'akaun'" class="mb-6">
+            <!-- A. Jika mempunyai akaun bank -->
+            <div v-if="formData.kaedah_pembayaran === 'ya'" class="mb-6">
               <h5 class="text-md font-medium mb-4">Maklumat Akaun Bank</h5>
 
               <div
@@ -1233,6 +1093,39 @@
                     validation="required"
                     v-model="account.nama_pemegang_akaun"
                   />
+
+                  <!-- Jenis Akaun -->
+                  <FormKit
+                    type="select"
+                    :name="`bank${index}JenisAkaun`"
+                    label="Jenis Akaun *"
+                    placeholder="Pilih jenis akaun"
+                    :options="[
+                      { label: 'Individu', value: 'individu' },
+                      { label: 'Bersama', value: 'bersama' }
+                    ]"
+                    validation="required"
+                    v-model="account.jenis_akaun"
+                  />
+
+                  <!-- ID Pengenalan -->
+                  <FormKit
+                    type="text"
+                    :name="`bank${index}IdPengenalan`"
+                    label="ID Pengenalan *"
+                    validation="required"
+                    v-model="account.id_pengenalan"
+                  />
+
+                  <!-- Nama (if Bersama is selected) -->
+                  <FormKit
+                    v-if="account.jenis_akaun === 'bersama'"
+                    type="text"
+                    :name="`bank${index}NamaBersama`"
+                    label="Nama *"
+                    validation="required"
+                    v-model="account.nama_bersama"
+                  />
                 </div>
               </div>
 
@@ -1248,8 +1141,8 @@
               </div>
             </div>
 
-            <!-- B. Jika Kaedah Pembayaran = Tiada -->
-            <div v-if="formData.kaedah_pembayaran === 'tiada'" class="mb-6">
+            <!-- B. Jika tidak mempunyai akaun bank -->
+            <div v-if="formData.kaedah_pembayaran === 'tidak'" class="mb-6">
               <h5 class="text-md font-medium mb-4">Sebab Tiada Akaun Bank</h5>
               <div class="md:col-span-2">
                 <FormKit
@@ -5012,7 +4905,7 @@
             </div>
 
             <!-- 4. Maklumat Majikan -->
-            <div
+            <!-- <div
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
@@ -5124,10 +5017,10 @@
                   v-model="getCurrentTanggungan().negara_majikan"
                 />
               </div>
-            </div>
+            </div> -->
 
             <!-- 5. Jawatan & Status -->
-            <div
+            <!-- <div
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
@@ -5158,10 +5051,10 @@
                   v-model="getCurrentTanggungan().status_jawatan"
                 />
               </div>
-            </div>
+            </div> -->
 
             <!-- 6. Pendapatan -->
-            <div
+            <!-- <div
               v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
               class="mb-6"
             >
@@ -5194,7 +5087,7 @@
                   v-model="getCurrentTanggungan().dokumen_pendapatan"
                 />
               </div>
-            </div>
+            </div> -->
           </div>
 
           <div class="flex justify-between gap-3 mt-6">
@@ -5620,7 +5513,7 @@
 
           <!-- PAK Officer Information (Readonly) -->
           <h4 class="font-medium mb-3">
-            Maklumat Pegawai PAK yang Mengesahkan
+            Maklumat Pegawai/Penolong Amil yang Mengesahkan
           </h4>
 
           <!-- Original Form Fields (Hidden/Readonly) -->
@@ -6091,6 +5984,7 @@ const formData = ref({
 
   // Section A - Maklumat Pendidikan
   masih_bersekolah: "",
+  pendidikan_tertinggi: "",
   lain_pendidikan_tertinggi: "",
   tahap_pendidikan: [],
   lain_tahap_pendidikan: "",
@@ -6334,7 +6228,13 @@ const formData = ref({
 // ============================================================================
 // OPTIONS DATA
 // ============================================================================
-// Payment Method Options
+// Payment Method Options for Main Applicant
+const paymentMethodOptionsMain = [
+  { label: "Ya", value: "ya" },
+  { label: "Tidak", value: "tidak" },
+];
+
+// Payment Method Options for Tanggungan (keeping original)
 const paymentMethodOptions = [
   { label: "Akaun", value: "akaun" },
   { label: "Tiada", value: "tiada" },
@@ -6344,7 +6244,7 @@ const paymentMethodOptions = [
 const noPaymentReasonOptions = [
   { label: "Bawah Umur", value: "bawah-umur" },
   { label: "Muflis", value: "muflis" },
-  { label: "Senarai Hitam Bank", value: "senarai-hitam-bank" },
+  { label: "Disenarai hitam oleh bank", value: "disenarai-hitam-oleh-bank" },
   { label: "Bukan Warganegara", value: "bukan-warganegara" },
   { label: "Sakit", value: "sakit" },
 ];
@@ -6617,6 +6517,9 @@ const addBankAccount = () => {
     nama_bank: "",
     no_akaun_bank: "",
     nama_pemegang_akaun: "",
+    jenis_akaun: "",
+    id_pengenalan: "",
+    nama_bersama: "",
   });
 };
 
@@ -7707,12 +7610,15 @@ onMounted(() => {
     adakah_muallaf: "T",
 
     // Mock data for Maklumat Perbankan
-    kaedah_pembayaran: "akaun",
+    kaedah_pembayaran: "ya",
     bank_accounts: [
       {
         nama_bank: "bank-islam",
         no_akaun_bank: "3063020371170",
         nama_pemegang_akaun: "adnan bin abu",
+        jenis_akaun: "individu",
+        id_pengenalan: "801004035672",
+        nama_bersama: "",
       },
     ],
 
@@ -8567,6 +8473,9 @@ const addEducationEntry = () => {
     asrama_rumah_sewa: "",
     bidang_kursus: "",
     jurusan_bidang: "",
+    pembiayaan_pengajian: [],
+    lain_pembiayaan: "",
+    catatan: "",
   });
 };
 
