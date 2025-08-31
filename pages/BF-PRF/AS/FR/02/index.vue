@@ -820,7 +820,7 @@
         >
           <h3 class="text-lg font-semibold mb-4">3. Maklumat Pengislaman</h3>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
             <!-- Adakah anda seorang Muallaf? -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
@@ -846,6 +846,7 @@
             </div>
 
             <!-- Tarikh Masuk Islam -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="date"
@@ -3259,6 +3260,7 @@
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  v-model="formData.dokumen_surat_nikah"
                 />
               </div>
 
@@ -5992,6 +5994,7 @@ const formData = ref({
   status_poligami: "",
   bilangan_isteri: "",
   isteri_list: [],
+  dokumen_surat_nikah: null,
   taraf_penduduk: "",
   nopassportlama: "",
   lain_warganegara: "",
@@ -6240,6 +6243,21 @@ const formData = ref({
 
   // Tanggungan array for multiple dependents
   tanggungan: [],
+});
+
+// Mock file data for demonstration
+onMounted(() => {
+  // Set mock file data
+  formData.value.dokumen_surat_nikah = [
+    {
+      name: 'surat_nikah_sample.pdf',
+      size: 2048576, // 2MB in bytes
+      type: 'application/pdf',
+      file: new File(['mock content'], 'surat_nikah_sample.pdf', {
+        type: 'application/pdf'
+      })
+    }
+  ];
 });
 
 // ============================================================================
@@ -7753,6 +7771,7 @@ onMounted(() => {
         ...tanggunganList.value[0],
         hubungan_pemohon: "Pasangan Pemohon",
         nama_tanggungan: "ROHANA BINTI AHMAD",
+        dokumen_surat_nikah:"test.pdf",
         jenis_pengenalan_tanggungan: "MyKad",
         pengenalan_id_tanggungan: "801004035672",
         warganegara_tanggungan: "Malaysia",
