@@ -398,7 +398,7 @@
               <FormKit
                 type="select"
                 name="pendidikan_tertinggi"
-                label="Pendidikan Tertinggi *"
+                label="Pendidikan Tertinggi"
                 placeholder="Pilih Pendidikan Tertinggi"
                 :options="[
                   'Peringkat Rendah',
@@ -423,7 +423,7 @@
               <FormKit
                 type="text"
                 name="lain_pendidikan_tertinggi"
-                label="Lain-lain Pendidikan Tertinggi *"
+                label="Lain-lain Pendidikan Tertinggi"
                 validation="required"
                 v-model="formData.lain_pendidikan_tertinggi"
               />
@@ -1060,7 +1060,7 @@
                   <FormKit
                     type="select"
                     :name="`bank${index}NamaBank`"
-                    label="Nama Bank *"
+                    label="Nama Bank"
                     placeholder="Pilih nama bank"
                     :options="bankOptions"
                     validation="required"
@@ -1082,7 +1082,7 @@
                   <FormKit
                     type="text"
                     :name="`bank${index}NoAkaun`"
-                    label="No. Akaun Bank *"
+                    label="No. Akaun Bank"
                     validation="required"
                     v-model="account.no_akaun_bank"
                   />
@@ -1091,7 +1091,7 @@
                   <FormKit
                     type="text"
                     :name="`bank${index}NamaPemegang`"
-                    label="Nama Pemegang Akaun *"
+                    label="Nama Pemegang Akaun "
                     validation="required"
                     v-model="account.nama_pemegang_akaun"
                   />
@@ -1100,7 +1100,7 @@
                   <FormKit
                     type="select"
                     :name="`bank${index}JenisAkaun`"
-                    label="Jenis Akaun *"
+                    label="Jenis Akaun "
                     placeholder="Pilih jenis akaun"
                     :options="[
                       { label: 'Individu', value: 'individu' },
@@ -1114,7 +1114,7 @@
                   <FormKit
                     type="text"
                     :name="`bank${index}IdPengenalan`"
-                    label="ID Pengenalan *"
+                    label="ID Pengenalan "
                     validation="required"
                     v-model="account.id_pengenalan"
                   />
@@ -1124,7 +1124,7 @@
                     v-if="account.jenis_akaun === 'bersama'"
                     type="text"
                     :name="`bank${index}NamaBersama`"
-                    label="Nama *"
+                    label="Nama "
                     validation="required"
                     v-model="account.nama_bersama"
                   />
@@ -1150,7 +1150,7 @@
                 <FormKit
                   type="select"
                   name="sebab_tiada_akaun"
-                  label="Sebab *"
+                  label="Sebab "
                   :options="noPaymentReasonOptions"
                   validation="required"
                   placeholder="Pilih sebab tiada akaun bank"
@@ -1199,7 +1199,7 @@
             <FormKit
               type="select"
               name="tahap_kesihatan"
-              label="Tahap Kesihatan *"
+              label="Tahap Kesihatan "
               :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
               validation="required"
               v-model="formData.tahap_kesihatan"
@@ -1216,7 +1216,7 @@
               <FormKit
                 type="select"
                 name="keadaan_kesihatan_sakit"
-                label="Keadaan Kesihatan *"
+                label="Keadaan Kesihatan "
                 :options="['Terlantar', 'Tidak Terlantar']"
                 validation="required"
                 v-model="formData.keadaan_kesihatan_sakit"
@@ -1227,7 +1227,7 @@
               <FormKit
                 type="select"
                 name="kos_penjagaan_sakit"
-                label="Kos Penjagaan *"
+                label="Kos Penjagaan "
                 :options="['Berbayar', 'Tidak Berbayar']"
                 validation="required"
                 v-model="formData.kos_penjagaan_sakit"
@@ -1240,7 +1240,7 @@
               <FormKit
                 type="text"
                 name="perbelanjaan_bulanan_sakit"
-                label="Jumlah Perbelanjaan Bulanan (RM) *"
+                label="Jumlah Perbelanjaan Bulanan (RM) "
                 validation="required"
                 placeholder="9999.99"
                 v-model="formData.perbelanjaan_bulanan_sakit"
@@ -1258,7 +1258,7 @@
               <FormKit
                 type="select"
                 name="kesempurnaan_fizikal"
-                label="Kesempurnaan Fizikal *"
+                label="Kesempurnaan Fizikal "
                 :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
                 validation="required"
                 v-model="formData.kesempurnaan_fizikal"
@@ -1269,7 +1269,7 @@
               <FormKit
                 type="select"
                 name="sebab_kecacatan"
-                label="Sebab Kecacatan (Jika Cacat) *"
+                label="Sebab Kecacatan (Jika Cacat) "
                 :options="['Sejak Lahir', 'Musibah']"
                 validation="required"
                 v-model="formData.sebab_kecacatan"
@@ -1282,7 +1282,7 @@
               <FormKit
                 type="select"
                 name="tahap_kecacatan"
-                label="Tahap Kecacatan *"
+                label="Tahap Kecacatan "
                 :options="['Terlantar', 'Tidak Terlantar']"
                 validation="required"
                 v-model="formData.tahap_kecacatan"
@@ -1293,7 +1293,7 @@
               <FormKit
                 type="text"
                 name="perbelanjaan_bulanan_oku"
-                label="Jumlah Perbelanjaan Bulanan (RM) *"
+                label="Jumlah Perbelanjaan Bulanan (RM) "
                 validation="required"
                 placeholder="9999.99"
                 v-model="formData.perbelanjaan_bulanan_oku"
@@ -1311,7 +1311,7 @@
               <FormKit
                 type="select"
                 name="keadaan_kesihatan_uzur"
-                label="Keadaan Kesihatan *"
+                label="Keadaan Kesihatan "
                 :options="['Terlantar', 'Tidak Terlantar']"
                 validation="required"
                 v-model="formData.keadaan_kesihatan_uzur"
@@ -1322,7 +1322,7 @@
               <FormKit
                 type="select"
                 name="kos_penjagaan_uzur"
-                label="Kos Penjagaan *"
+                label="Kos Penjagaan "
                 :options="['Berbayar', 'Tidak Berbayar']"
                 validation="required"
                 v-model="formData.kos_penjagaan_uzur"
@@ -1335,7 +1335,7 @@
               <FormKit
                 type="text"
                 name="perbelanjaan_bulanan_uzur"
-                label="Jumlah Perbelanjaan Bulanan (RM) *"
+                label="Jumlah Perbelanjaan Bulanan (RM) "
                 validation="required"
                 placeholder="9999.99"
                 v-model="formData.perbelanjaan_bulanan_uzur"
@@ -1356,7 +1356,7 @@
             <FormKit
               type="file"
               name="dokumen_sokongan_kesihatan"
-              label="Upload Dokumen Sokongan Berkaitan Kesihatan *"
+              label="Upload Dokumen Sokongan Berkaitan Kesihatan "
               accept=".pdf,.jpg,.jpeg,.png"
               multiple="true"
               help="Format yang dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
@@ -2075,7 +2075,7 @@
               type="number"
               name="wang_simpanan"
               label="Jumlah wang simpanan (RM)"
-              help="*sertakan penyata bank"
+              help="sertakan penyata bank"
               step="0.01"
               min="0"
             />
@@ -3216,7 +3216,7 @@
               <FormKit
                 type="select"
                 name="hubungan_pemohon"
-                label="Hubungan dengan Pemohon/Asnaf *"
+                label="Hubungan dengan Pemohon/Asnaf "
                 placeholder="Pilih hubungan"
                 :options="[
                   'Pasangan Pemohon',
@@ -3244,7 +3244,7 @@
                 v-if="showLainLainHubungan"
                 type="text"
                 name="lain_lain_hubungan"
-                label="Lain-lain Hubungan *"
+                label="Lain-lain Hubungan "
                 placeholder="Nyatakan hubungan lain"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_hubungan"
@@ -3255,7 +3255,7 @@
                 <FormKit
                   type="file"
                   name="dokumen_surat_nikah"
-                  label="Dokumen Surat Nikah *"
+                  label="Dokumen Surat Nikah "
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -3266,7 +3266,7 @@
               <FormKit
                 type="text"
                 name="nama_tanggungan"
-                label="Nama Mengikut Dokumen Pengenalan *"
+                label="Nama Mengikut Dokumen Pengenalan "
                 placeholder="Masukkan nama penuh"
                 validation="required"
                 v-model="getCurrentTanggungan().nama_tanggungan"
@@ -3276,7 +3276,7 @@
               <FormKit
                 type="select"
                 name="jenis_pengenalan_tanggungan"
-                label="Jenis Pengenalan *"
+                label="Jenis Pengenalan "
                 placeholder="Pilih jenis pengenalan"
                 :options="[
                   { label: 'MyKad', value: 'MyKad' },
@@ -3290,7 +3290,7 @@
               <FormKit
                 type="text"
                 name="pengenalan_id_tanggungan"
-                label="Pengenalan ID Tanggungan *"
+                label="Pengenalan ID Tanggungan "
                 placeholder="Masukkan nombor ID"
                 :validation="
                   getCurrentTanggungan().jenis_pengenalan_tanggungan === 'MyKad'
@@ -3310,7 +3310,7 @@
                 <FormKit
                   type="file"
                   name="dokumen_nombor_id"
-                  label="Upload Dokumen Nombor ID *"
+                  label="Upload Dokumen Nombor ID "
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -3321,7 +3321,7 @@
               <FormKit
                 type="select"
                 name="warganegara_tanggungan"
-                label="Warganegara *"
+                label="Warganegara "
                 placeholder="Pilih warganegara"
                 :options="[
                   { label: 'Malaysia', value: 'Malaysia' },
@@ -3336,7 +3336,7 @@
                 v-if="showLainLainWarganegara"
                 type="text"
                 name="lain_lain_warganegara"
-                label="Lain-lain Warganegara *"
+                label="Lain-lain Warganegara "
                 placeholder="Nyatakan warganegara"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_warganegara"
@@ -3365,7 +3365,7 @@
                 v-if="showPassportFields"
                 type="text"
                 name="no_pasport"
-                label="No Pasport *"
+                label="No Pasport "
                 placeholder="Masukkan nombor pasport"
                 validation="required"
                 v-model="getCurrentTanggungan().no_pasport"
@@ -3376,7 +3376,7 @@
                 v-if="showPassportFields"
                 type="date"
                 name="tarikh_mula_pasport"
-                label="Tarikh Mula Pasport (DD/MM/YYYY) *"
+                label="Tarikh Mula Pasport (DD/MM/YYYY) "
                 validation="required"
                 v-model="getCurrentTanggungan().tarikh_mula_pasport"
               />
@@ -3386,7 +3386,7 @@
                 v-if="showPassportFields"
                 type="date"
                 name="tarikh_tamat_pasport"
-                label="Tarikh Tamat Pasport (DD/MM/YYYY) *"
+                label="Tarikh Tamat Pasport (DD/MM/YYYY) "
                 validation="required"
                 v-model="getCurrentTanggungan().tarikh_tamat_pasport"
               />
@@ -3412,7 +3412,7 @@
               <FormKit
                 type="date"
                 name="tarikh_lahir_tanggungan"
-                label="Tarikh Lahir (DD/MM/YYYY) *"
+                label="Tarikh Lahir (DD/MM/YYYY) "
                 validation="required"
                 v-model="getCurrentTanggungan().tarikh_lahir_tanggungan"
               />
@@ -3463,7 +3463,7 @@
                       type="select"
                       name="situasi_kelulusan_khas"
                       placeholder="Pilih situasi"
-                      label="Situasi *"
+                      label="Situasi "
                       :options="[
                         { label: 'Profiling', value: 'Profiling' },
                         { label: 'Permohonan Khas', value: 'Permohonan Khas' },
@@ -3538,7 +3538,7 @@
                 v-if="showLainLainAgama"
                 type="text"
                 name="lain_lain_agama"
-                label="Lain-lain Agama *"
+                label="Lain-lain Agama "
                 placeholder="Nyatakan agama lain"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_agama"
@@ -3548,7 +3548,7 @@
               <FormKit
                 type="select"
                 name="bangsa_tanggungan"
-                label="Bangsa *"
+                label="Bangsa "
                 placeholder="Pilih bangsa"
                 :options="[
                   { label: 'Orang Asli', value: 'Orang Asli' },
@@ -3570,7 +3570,7 @@
                 v-if="showLainLainBangsa"
                 type="text"
                 name="lain_lain_bangsa"
-                label="Lain-lain Bangsa *"
+                label="Lain-lain Bangsa "
                 placeholder="Nyatakan bangsa lain"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_bangsa"
@@ -3580,7 +3580,7 @@
               <FormKit
                 type="text"
                 name="no_telefon_bimbit_tanggungan"
-                label="No Telefon Bimbit *"
+                label="No Telefon Bimbit "
                 placeholder="Contoh: 0123456789"
                 validation="required|matches:/^(\+?6?01)[0-46-9]-*[0-9]{7,8}$/"
                 :validation-messages="{
@@ -3621,7 +3621,7 @@
               <FormKit
                 type="number"
                 name="tempoh_menetap_selangor_tanggungan"
-                label="Tempoh Menetap di Selangor (Tahun) *"
+                label="Tempoh Menetap di Selangor (Tahun) "
                 placeholder="0"
                 min="0"
                 max="120"
@@ -3640,7 +3640,7 @@
               <FormKit
                 type="select"
                 name="status_perkahwinan_tanggungan"
-                label="Status Perkahwinan *"
+                label="Status Perkahwinan "
                 placeholder="Pilih status perkahwinan"
                 :options="[
                   { label: 'Bujang', value: 'Bujang' },
@@ -3656,7 +3656,7 @@
                 v-if="showLainLainStatusPerkahwinan"
                 type="text"
                 name="lain_lain_status_perkahwinan"
-                label="Lain-lain Status Perkahwinan *"
+                label="Lain-lain Status Perkahwinan "
                 placeholder="Nyatakan status perkahwinan lain"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_status_perkahwinan"
@@ -3740,7 +3740,7 @@
                   <FormKit
                     type="text"
                     name="nama_sebelum_islam_tanggungan"
-                    label="Nama Sebelum Islam (Muallaf) *"
+                    label="Nama Sebelum Islam (Muallaf) "
                     placeholder="Masukkan nama sebelum Islam"
                     validation="required"
                     v-model="
@@ -3752,7 +3752,7 @@
                   <FormKit
                     type="text"
                     name="nama_selepas_islam_tanggungan"
-                    label="Nama Selepas Islam (Muallaf) *"
+                    label="Nama Selepas Islam (Muallaf) "
                     placeholder="Masukkan nama selepas Islam"
                     validation="required"
                     v-model="
@@ -3764,7 +3764,7 @@
                   <FormKit
                     type="date"
                     name="tarikh_masuk_islam_tanggungan"
-                    label="Tarikh Masuk Islam (DD/MM/YYYY) *"
+                    label="Tarikh Masuk Islam (DD/MM/YYYY) "
                     validation="required"
                     v-model="
                       getCurrentTanggungan().tarikh_masuk_islam_tanggungan
@@ -3775,7 +3775,7 @@
                   <FormKit
                     type="date"
                     name="tarikh_masuk_kfam_tanggungan"
-                    label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) (DD/MM/YYYY) *"
+                    label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) (DD/MM/YYYY) "
                     validation="required"
                     v-model="
                       getCurrentTanggungan().tarikh_masuk_kfam_tanggungan
@@ -3812,7 +3812,7 @@
                     <FormKit
                       type="file"
                       name="dokumen_pengislaman_tanggungan"
-                      label="Dokumen Pengislaman *"
+                      label="Dokumen Pengislaman "
                       help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                       accept=".pdf,.jpg,.jpeg,.png"
                       validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -3893,7 +3893,7 @@
                 <FormKit
                   type="select"
                   name="nama_bank_tanggungan"
-                  label="Nama Bank *"
+                  label="Nama Bank "
                   placeholder="Pilih nama bank"
                   :options="bankOptions"
                   validation="required"
@@ -3916,7 +3916,7 @@
                 <FormKit
                   type="text"
                   name="no_akaun_bank_tanggungan"
-                  label="No. Akaun Bank *"
+                  label="No. Akaun Bank "
                   validation="required"
                   v-model="getCurrentTanggungan().no_akaun_bank_tanggungan"
                 />
@@ -3925,7 +3925,7 @@
                 <FormKit
                   type="text"
                   name="nama_pemegang_akaun_tanggungan"
-                  label="Nama Pemegang Akaun *"
+                  label="Nama Pemegang Akaun "
                   validation="required"
                   v-model="
                     getCurrentTanggungan().nama_pemegang_akaun_tanggungan
@@ -3946,7 +3946,7 @@
                 <FormKit
                   type="select"
                   name="sebab_tiada_akaun_tanggungan"
-                  label="Sebab *"
+                  label="Sebab "
                   :options="noPaymentReasonOptions"
                   validation="required"
                   placeholder="Pilih sebab tiada akaun bank"
@@ -4418,7 +4418,7 @@
                 <FormKit
                   type="select"
                   name="tahap_kesihatan_tanggungan"
-                  label="Tahap Kesihatan *"
+                  label="Tahap Kesihatan "
                   placeholder="Pilih tahap kesihatan"
                   :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
                   validation="required"
@@ -4442,7 +4442,7 @@
                 <FormKit
                   type="select"
                   name="keadaan_kesihatan_sakit_tanggungan"
-                  label="Keadaan Kesihatan *"
+                  label="Keadaan Kesihatan "
                   placeholder="Pilih keadaan kesihatan"
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
@@ -4456,7 +4456,7 @@
                 <FormKit
                   type="select"
                   name="kos_penjagaan_sakit_tanggungan"
-                  label="Kos Penjagaan *"
+                  label="Kos Penjagaan "
                   placeholder="Pilih kos penjagaan"
                   :options="['Berbayar', 'Tidak Berbayar']"
                   validation="required"
@@ -4470,7 +4470,7 @@
                 <FormKit
                   type="number"
                   name="perbelanjaan_bulanan_sakit_tanggungan"
-                  label="Jumlah Perbelanjaan Bulanan (RM) *"
+                  label="Jumlah Perbelanjaan Bulanan (RM) "
                   placeholder="0.00"
                   step="0.01"
                   min="0"
@@ -4494,7 +4494,7 @@
                 <FormKit
                   type="select"
                   name="kesempurnaan_fizikal_tanggungan"
-                  label="Kesempurnaan Fizikal *"
+                  label="Kesempurnaan Fizikal "
                   placeholder="Pilih kesempurnaan fizikal"
                   :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
                   validation="required"
@@ -4513,7 +4513,7 @@
                   "
                   type="select"
                   name="sebab_kecacatan_tanggungan"
-                  label="Sebab Kecacatan (Jika Cacat) *"
+                  label="Sebab Kecacatan (Jika Cacat) "
                   placeholder="Pilih sebab kecacatan"
                   :options="['Sejak Lahir', 'Musibah']"
                   validation="required"
@@ -4530,7 +4530,7 @@
                   "
                   type="select"
                   name="tahap_kecacatan_tanggungan"
-                  label="Tahap Kecacatan *"
+                  label="Tahap Kecacatan "
                   placeholder="Pilih tahap kecacatan"
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
@@ -4542,7 +4542,7 @@
                 <FormKit
                   type="number"
                   name="perbelanjaan_bulanan_oku_tanggungan"
-                  label="Jumlah Perbelanjaan Bulanan (RM) *"
+                  label="Jumlah Perbelanjaan Bulanan (RM) "
                   placeholder="0.00"
                   step="0.01"
                   min="0"
@@ -4568,7 +4568,7 @@
                 <FormKit
                   type="select"
                   name="keadaan_kesihatan_uzur_tanggungan"
-                  label="Keadaan Kesihatan *"
+                  label="Keadaan Kesihatan "
                   placeholder="Pilih keadaan kesihatan"
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
@@ -4582,7 +4582,7 @@
                 <FormKit
                   type="select"
                   name="kos_penjagaan_uzur_tanggungan"
-                  label="Kos Penjagaan *"
+                  label="Kos Penjagaan "
                   placeholder="Pilih kos penjagaan"
                   :options="['Berbayar', 'Tidak Berbayar']"
                   validation="required"
@@ -4594,7 +4594,7 @@
                 <FormKit
                   type="number"
                   name="perbelanjaan_bulanan_uzur_tanggungan"
-                  label="Jumlah Perbelanjaan Bulanan (RM) *"
+                  label="Jumlah Perbelanjaan Bulanan (RM) "
                   placeholder="0.00"
                   step="0.01"
                   min="0"
@@ -4627,7 +4627,7 @@
                   "
                   type="file"
                   name="dokumen_sakit_kronik_tanggungan"
-                  label="Upload Dokumen Sakit Kronik *"
+                  label="Upload Dokumen Sakit Kronik "
                   multiple
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
@@ -4647,7 +4647,7 @@
                   "
                   type="file"
                   name="dokumen_oku_tanggungan"
-                  label="Upload Dokumen OKU *"
+                  label="Upload Dokumen OKU "
                   multiple
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
@@ -4667,7 +4667,7 @@
                   "
                   type="file"
                   name="dokumen_uzur_tanggungan"
-                  label="Upload Dokumen Uzur *"
+                  label="Upload Dokumen Uzur "
                   multiple
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
@@ -4858,7 +4858,7 @@
                 <FormKit
                   type="text"
                   name="lain_lain_sumber_pendapatan_tanggungan"
-                  label="Lain-lain Sumber Pendapatan *"
+                  label="Lain-lain Sumber Pendapatan "
                   placeholder="Sila nyatakan sumber pendapatan lain"
                   validation="required"
                   validation-label="Lain-lain sumber pendapatan"
@@ -4877,7 +4877,7 @@
                 <FormKit
                   type="text"
                   name="jenis_pekerjaan_tanggungan"
-                  label="Jenis Pekerjaan *"
+                  label="Jenis Pekerjaan "
                   placeholder="Contoh: Kerani, Jurutera, Guru"
                   validation="required"
                   validation-label="Jenis pekerjaan"
@@ -4888,7 +4888,7 @@
                 <FormKit
                   type="select"
                   name="sektor_pekerjaan_tanggungan"
-                  label="Sektor Pekerjaan *"
+                  label="Sektor Pekerjaan "
                   placeholder="Pilih sektor pekerjaan"
                   :options="[
                     { label: 'Kerajaan', value: 'Kerajaan' },
@@ -4911,7 +4911,7 @@
                   <FormKit
                     type="text"
                     name="lain_lain_sektor_pekerjaan_tanggungan"
-                    label="Lain-lain Sektor Pekerjaan *"
+                    label="Lain-lain Sektor Pekerjaan "
                     placeholder="Sila nyatakan sektor pekerjaan lain"
                     validation="required"
                     validation-label="Lain-lain sektor pekerjaan"
@@ -4931,7 +4931,7 @@
                 <FormKit
                   type="text"
                   name="no_telefon_pejabat_tanggungan"
-                  label="No Telefon Pejabat *"
+                  label="No Telefon Pejabat "
                   placeholder="Contoh: 038881234"
                   validation="required"
                   validation-label="No telefon pejabat"
@@ -4941,7 +4941,7 @@
                 <FormKit
                   type="text"
                   name="nama_majikan_tanggungan"
-                  label="Nama Majikan *"
+                  label="Nama Majikan "
                   placeholder="Nama syarikat atau majikan"
                   validation="required"
                   validation-label="Nama majikan"
@@ -4951,7 +4951,7 @@
                 <FormKit
                   type="text"
                   name="no_tel_majikan_tanggungan"
-                  label="No Tel Majikan *"
+                  label="No Tel Majikan "
                   placeholder="Contoh: 038881234"
                   validation="required"
                   validation-label="No tel majikan"
@@ -4961,7 +4961,7 @@
                 <FormKit
                   type="text"
                   name="alamat_majikan_1_tanggungan"
-                  label="Alamat Majikan 1 *"
+                  label="Alamat Majikan 1 "
                   placeholder="Alamat baris 1"
                   validation="required"
                   validation-label="Alamat majikan 1"
@@ -4987,7 +4987,7 @@
                 <FormKit
                   type="text"
                   name="bandar_majikan_tanggungan"
-                  label="Bandar *"
+                  label="Bandar "
                   placeholder="Nama bandar"
                   validation="required"
                   validation-label="Bandar"
@@ -4997,7 +4997,7 @@
                 <FormKit
                   type="text"
                   name="poskod_majikan_tanggungan"
-                  label="Poskod *"
+                  label="Poskod "
                   placeholder="Contoh: 50000"
                   validation="required"
                   validation-label="Poskod"
@@ -5007,7 +5007,7 @@
                 <FormKit
                   type="text"
                   name="daerah_majikan_tanggungan"
-                  label="Daerah *"
+                  label="Daerah "
                   placeholder="Nama daerah"
                   validation="required"
                   validation-label="Daerah"
@@ -5017,7 +5017,7 @@
                 <FormKit
                   type="text"
                   name="negeri_majikan_tanggungan"
-                  label="Negeri *"
+                  label="Negeri "
                   placeholder="Nama negeri"
                   validation="required"
                   validation-label="Negeri"
@@ -5027,7 +5027,7 @@
                 <FormKit
                   type="text"
                   name="negara_majikan_tanggungan"
-                  label="Negara *"
+                  label="Negara "
                   placeholder="Nama negara"
                   validation="required"
                   validation-label="Negara"
@@ -5046,7 +5046,7 @@
                 <FormKit
                   type="text"
                   name="jawatan_tanggungan"
-                  label="Jawatan *"
+                  label="Jawatan "
                   placeholder="Contoh: Kerani, Jurutera, Guru"
                   validation="required"
                   validation-label="Jawatan"
@@ -5056,7 +5056,7 @@
                 <FormKit
                   type="select"
                   name="status_jawatan_tanggungan"
-                  label="Status Jawatan *"
+                  label="Status Jawatan "
                   placeholder="Pilih status jawatan"
                   :options="[
                     { label: 'Tetap', value: 'Tetap' },
@@ -5080,7 +5080,7 @@
                 <FormKit
                   type="text"
                   name="pendapatan_kasar_tanggungan"
-                  label="Pendapatan Kasar (RM) *"
+                  label="Pendapatan Kasar (RM) "
                   placeholder="Contoh: 2500.00"
                   validation="required|number"
                   validation-label="Pendapatan kasar"
@@ -5094,7 +5094,7 @@
                 <FormKit
                   type="file"
                   name="dokumen_pendapatan_tanggungan"
-                  label="Upload Dokumen *"
+                  label="Upload Dokumen "
                   accept=".pdf,.jpg,.jpeg,.png"
                   validation="required"
                   validation-label="Dokumen pendapatan"
