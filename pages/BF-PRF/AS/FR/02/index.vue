@@ -380,7 +380,7 @@
               <!-- Masih Bersekolah -->
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-black-700"
-                  >Masih Bersekolah *</label
+                  >Masih Bersekolah</label
                 >
                 <FormKit
                   type="radio"
@@ -434,12 +434,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-black-700"
-                >Tahap Pendidikan yang Dicapai *</label
+                >Tahap Pendidikan yang Dicapai</label
               >
               <FormKit
                 type="checkbox"
                 name="tahap_pendidikan"
-                label=""
                 placeholder="Pilih Tahap Pendidikan yang Dicapai"
                 :options="[
                   'Peringkat Rendah',
@@ -473,7 +472,7 @@
             <FormKit
               type="text"
               name="lain_tahap_pendidikan"
-              label="Lain-lain Tahap Pendidikan yang Dicapai *"
+              label="Lain-lain Tahap Pendidikan yang Dicapai"
               validation="required"
               v-model="formData.lain_tahap_pendidikan"
             />
@@ -555,7 +554,7 @@
                     <FormKit
                       type="text"
                       :name="`edu${index}TahunBersekolah`"
-                      label="Tahun Bersekolah (YYYY) *"
+                      label="Tahun Bersekolah (YYYY)"
                       validation="required"
                       placeholder="Contoh: 2024"
                       v-model="edu.tahun_bersekolah"
@@ -564,7 +563,7 @@
                     <FormKit
                       type="text"
                       :name="`edu${index}Tingkatan`"
-                      label="Tahun / Tingkatan / Tahun Pengajian / Semester *"
+                      label="Tahun / Tingkatan / Tahun Pengajian / Semester"
                       validation="required"
                       placeholder="Contoh: Tingkatan 3, Tahun 2, Semester 1"
                       v-model="edu.tahun_tingkatan"
@@ -575,18 +574,17 @@
                     <FormKit
                       type="text"
                       :name="`edu${index}NamaSekolah`"
-                      label="Nama Sekolah / Institusi *"
+                      label="Nama Sekolah / Institusi"
                       validation="required"
                       v-model="edu.nama_sekolah"
                     />
                   </div>
 
                   <div class="mt-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormKit
                         type="text"
                         :name="`edu${index}Alamat1`"
-                        label="Alamat 1 *"
+                        label="Alamat 1"
                         validation="required"
                         v-model="edu.alamat_sekolah_1"
                       />
@@ -596,8 +594,9 @@
                         :name="`edu${index}Alamat2`"
                         label="Alamat 2"
                         v-model="edu.alamat_sekolah_2"
+                        v-if="edu.alamat_sekolah_1"
                       />
-                    </div>
+                
 
                     <div class="mt-4">
                       <FormKit
@@ -605,6 +604,7 @@
                         :name="`edu${index}Alamat3`"
                         label="Alamat 3"
                         v-model="edu.alamat_sekolah_3"
+                        v-if="edu.alamat_sekolah_1"
                       />
                     </div>
 
@@ -612,7 +612,7 @@
                       <FormKit
                         type="text"
                         :name="`edu${index}Daerah`"
-                        label="Daerah *"
+                        label="Daerah"
                         validation="required"
                         v-model="edu.daerah_sekolah"
                       />
@@ -620,7 +620,7 @@
                       <FormKit
                         type="text"
                         :name="`edu${index}Bandar`"
-                        label="Bandar *"
+                        label="Bandar"
                         validation="required"
                         v-model="edu.bandar_sekolah"
                       />
@@ -628,14 +628,14 @@
                       <FormKit
                         type="text"
                         :name="`edu${index}Poskod`"
-                        label="Poskod *"
+                        label="Poskod"
                         validation="required"
                         v-model="edu.poskod_sekolah"
                       />
                     </div>
                   </div>
 
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                     <div class="space-y-2">
                       <label class="block text-sm font-medium text-black-700"
                         >Tinggal Bersama Keluarga?</label
@@ -657,11 +657,11 @@
                     <FormKit
                       type="text"
                       :name="`edu${index}AsramaRumahSewa`"
-                      label="Asrama / Rumah Sewa *"
+                      label="Asrama / Rumah Sewa"
                       validation="required"
                       v-model="edu.asrama_rumah_sewa"
                     />
-                  </div>
+                  </div> -->
 
                   <div class="mt-6">
                     <FormKit
@@ -682,7 +682,7 @@
                     <FormKit
                       type="text"
                       :name="`edu${index}JurusanBidang`"
-                      label="Jurusan / Bidang *"
+                      label="Jurusan / Bidang"
                       validation="required"
                       v-model="edu.jurusan_bidang"
                     />
@@ -692,7 +692,7 @@
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                     <div class="space-y-2">
                       <label class="block text-sm font-medium text-black-700"
-                        >Pembiayaan Pengajian *</label
+                        >Pembiayaan Pengajian</label
                       >
                       <FormKit
                         type="checkbox"
@@ -719,7 +719,7 @@
                     <FormKit
                       type="text"
                       :name="`edu${index}LainPembiayaan`"
-                      label="Lain-lain Pembiayaan Pengajian *"
+                      label="Lain-lain Pembiayaan Pengajian"
                       validation="required"
                       v-model="edu.lain_pembiayaan"
                     />
@@ -751,14 +751,14 @@
             </div>
 
             <!-- Lain-lain Maklumat -->
-            <div class="mb-8">
+            <div class="mb-8 mt-8">
               <h4 class="text-lg font-semibold mb-4">Lain-lain Maklumat</h4>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Tinggal Bersama Keluarga -->
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-black-700"
-                    >Tinggal Bersama Keluarga *</label
+                    >Tinggal Bersama Keluarga</label
                   >
                   <FormKit
                     type="radio"
@@ -777,7 +777,7 @@
                   <FormKit
                     type="text"
                     name="asrama_rumah_sewa"
-                    label="Asrama/Rumah Sewa *"
+                    label="Asrama/Rumah Sewa"
                     validation="required"
                     v-model="formData.asrama_rumah_sewa"
                   />
@@ -7670,7 +7670,7 @@ onMounted(() => {
     warganegara: "Malaysia",
     tarikh_lahir: "1977-03-19",
     umur: "48",
-    tempat_lahir: "hospital kajang",
+    tempat_lahir: "Kelantan",
     jantina: "Lelaki",
     agama: "Islam",
     bangsa: "Melayu",
