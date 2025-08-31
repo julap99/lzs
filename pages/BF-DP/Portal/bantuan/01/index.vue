@@ -43,9 +43,11 @@
       <template #body>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <rs-card variant="secondary">
-            <div class="p-2">
+            <div class="p-2 flex flex-col">
               <div class="text-sm text-gray-500">Status Semasa</div>
-              <div class="font-bold">{{ tindakanStatus.statusSemasa }}</div>
+              <rs-badge variant="info" size="sm">
+                Dalam Proses - Siasatan
+              </rs-badge>
             </div>
           </rs-card>
           <rs-card variant="secondary">
