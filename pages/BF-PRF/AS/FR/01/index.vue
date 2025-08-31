@@ -1187,7 +1187,7 @@ const updateProfile = (profile) => {
 
 const viewProfile = (profile) => {
   // Navigate to view profile page with profile data in read-only mode
-  navigateTo("/BF-PRF/AS/FR/02");
+  navigateTo("/BF-PRF/AS/FR/02_readonly");
 };
 
 const redirectToApplication = () => {
