@@ -41,11 +41,13 @@
     <rs-card class="mb-6">
       <template #header>Maklumat Tindakan & Status</template>
       <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <rs-card variant="secondary">
-            <div class="p-2">
+            <div class="p-2 flex flex-col">
               <div class="text-sm text-gray-500">Status Semasa</div>
-              <div class="font-bold">{{ tindakanStatus.statusSemasa }}</div>
+              <rs-badge variant="info" size="sm">
+                Dalam Proses - Siasatan
+              </rs-badge>
             </div>
           </rs-card>
           <rs-card variant="secondary">
@@ -60,49 +62,14 @@
               <div class="font-bold">{{ tindakanStatus.namaPegawaiBertugas }}</div>
             </div>
           </rs-card>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
           <rs-card variant="secondary">
             <div class="p-2">
               <div class="text-sm text-gray-500">Catatan Pegawai Bertugas</div>
               <div class="font-bold italic">{{ tindakanStatus.catatanPegawaiBertugas }}</div>
             </div>
           </rs-card>
-        </div>
-      </template>
-    </rs-card>
-
-    <!-- SLA Timeline Horizontal -->
-    <rs-card>
-      <template #header>Garis Masa SLA Standard</template>
-      <template #body>
-        <div class="relative flex items-center justify-between overflow-x-auto pb-4">
-          <template v-for="(step, index) in slaTimeline" :key="index">
-            <!-- Connector Line -->
-            <div
-              v-if="index !== 0"
-              class="w-8 h-0.5 bg-gray-300 mx-1"
-            ></div>
-
-            <!-- Step -->
-            <div class="flex flex-col items-center text-center min-w-[100px] relative z-10">
-              <div
-                class="w-10 h-10 flex items-center justify-center rounded-full text-white mb-2"
-                :class="[
-                  step.completed ? 'bg-gray-400' : step.active ? 'bg-blue-600' : 'bg-gray-300',
-                ]"
-              >
-                <Icon :name="step.icon" size="20" />
-              </div>
-              <div class="text-sm font-medium text-gray-800">{{ step.label }}</div>
-              <div class="text-xs text-gray-500">SLA: {{ step.sla }} hari</div>
-              <div
-                v-if="step.active"
-                class="text-xs mt-1 text-gray-600"
-              >
-                Jumlah SLA: {{ totalSla }} hari<br />
-                Baki: {{ getRemainingSla(step.label) }} hari
-              </div>
-            </div>
-          </template>
         </div>
       </template>
     </rs-card>
@@ -182,9 +149,7 @@
     <rs-card class="mb-6">
         <template #header>Dokumen Berkaitan</template>
         <template #body>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div
               v-for="(doc, index) in documents"
               :key="index"
