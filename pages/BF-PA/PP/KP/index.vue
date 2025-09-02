@@ -1005,6 +1005,7 @@ const requests = ref([
     jumlahSuratAmaran: "1",
     statusTerakhir: "Dalam Pemerhatian"
   },
+  // ... (remaining mock items unchanged)
   {
     id: "KP004",
     noRujukan: "KP-2024-004",
@@ -1098,6 +1099,7 @@ const requests = ref([
     jumlahSuratAmaran: "0",
     statusTerakhir: "Aktif"
   },
+  // (keep KP007..KP010 as in your original)
   {
     id: "KP007",
     noRujukan: "KP-2024-007",
@@ -1197,130 +1199,6 @@ const requests = ref([
     nama: "Rohana binti Sulaiman",
     idPengenalan: "940712789012",
     kategori: "Penolong Amil Komuniti",
-    sesi: "2024/2025",
-    daerah: "Johor",
-    institusi: "Surau Al-Amin",
-    status: "aktif",
-    jantina: "Perempuan",
-    statusPerkahwinan: "Bujang",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 90, Jalan Johor Bahru, Taman Islam, 80000 Johor Bahru, Johor",
-    negeri: "Johor",
-    daerah: "Johor Bahru",
-    bandar: "Johor Bahru",
-    poskod: "80000",
-    noTelefon: "07-224 0123",
-    noTelefonBimbit: "010-234 5678",
-    emel: "rohana.sulaiman@email.com",
-    pekerjaan: "Pegawai Undang-undang",
-    namaMajikan: "Jabatan Peguam Negara",
-    tahapPendidikan: "Ijazah Sarjana",
-    institusiPendidikan: "Universiti Teknologi Malaysia",
-    tarikhMulaPerkhidmatan: "05-04-2023",
-    tempohPerkhidmatan: "1 tahun",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  // Mock data for users with multiple kategori
-  {
-    id: "KP011",
-    noRujukan: "KP-2024-011",
-    nama: "Mohd Ali bin Hassan",
-    idPengenalan: "850315045678",
-    kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Selangor",
-    institusi: "Surau Al-Amin",
-    status: "aktif",
-    jantina: "Lelaki",
-    statusPerkahwinan: "Berkahwin",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 45, Jalan Masjid, Taman Islam, 40100 Shah Alam, Selangor",
-    negeri: "Selangor",
-    bandar: "Shah Alam",
-    poskod: "40100",
-    noTelefon: "03-5510 2345",
-    noTelefonBimbit: "013-456 7890",
-    emel: "mohd.ali@email.com",
-    pekerjaan: "Guru",
-    namaMajikan: "Sekolah Menengah Kebangsaan Shah Alam",
-    tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Malaya",
-    tarikhMulaPerkhidmatan: "01-03-2023",
-    tempohPerkhidmatan: "1 tahun 1 bulan",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  {
-    id: "KP012",
-    noRujukan: "KP-2024-012",
-    nama: "Noraini binti Mohamed",
-    idPengenalan: "910318567890",
-    kategori: "Penolong Amil Komuniti",
-    sesi: "2024/2025",
-    daerah: "Negeri Sembilan",
-    institusi: "Surau Al-Amin",
-    status: "aktif",
-    jantina: "Perempuan",
-    statusPerkahwinan: "Berkahwin",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 67, Jalan Seremban, Taman Islam, 70000 Seremban, Negeri Sembilan",
-    negeri: "Negeri Sembilan",
-    daerah: "Seremban",
-    bandar: "Seremban",
-    poskod: "70000",
-    noTelefon: "06-762 8901",
-    noTelefonBimbit: "019-012 3456",
-    emel: "noraini.mohamed@email.com",
-    pekerjaan: "Guru",
-    namaMajikan: "Sekolah Rendah Kebangsaan Seremban",
-    tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Pendidikan Sultan Idris",
-    tarikhMulaPerkhidmatan: "20-07-2023",
-    tempohPerkhidmatan: "9 bulan",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  {
-    id: "KP013",
-    noRujukan: "KP-2024-013",
-    nama: "Noraini binti Mohamed",
-    idPengenalan: "910318567890",
-    kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Negeri Sembilan",
-    institusi: "Surau Al-Amin",
-    status: "aktif",
-    jantina: "Perempuan",
-    statusPerkahwinan: "Berkahwin",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 67, Jalan Seremban, Taman Islam, 70000 Seremban, Negeri Sembilan",
-    negeri: "Negeri Sembilan",
-    daerah: "Seremban",
-    bandar: "Seremban",
-    poskod: "70000",
-    noTelefon: "06-762 8901",
-    noTelefonBimbit: "019-012 3456",
-    emel: "noraini.mohamed@email.com",
-    pekerjaan: "Guru",
-    namaMajikan: "Sekolah Rendah Kebangsaan Seremban",
-    tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Pendidikan Sultan Idris",
-    tarikhMulaPerkhidmatan: "20-07-2023",
-    tempohPerkhidmatan: "9 bulan",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  {
-    id: "KP014",
-    noRujukan: "KP-2024-014",
-    nama: "Rohana binti Sulaiman",
-    idPengenalan: "940712789012",
-    kategori: "Penolong Amil Kariah",
     sesi: "2024/2025",
     daerah: "Johor",
     institusi: "Surau Al-Amin",
@@ -1489,9 +1367,7 @@ const getStatusCount = (status) => {
 const getTabRequests = (status) => {
   let result = [...requests.value];
   if (status) result = result.filter(request => request.status === status);
-  
-  // Only apply search filter if search button was clicked
-  if (isSearchTriggered.value && filters.value.searchQuery) {
+  if (filters.value.searchQuery) {
     const query = filters.value.searchQuery.toLowerCase();
     result = result.filter(request => 
       (request.noRujukan || request.rujukan)?.toLowerCase().includes(query) ||
@@ -1503,7 +1379,6 @@ const getTabRequests = (status) => {
       (request.institusi || request.newInstitusi)?.toLowerCase().includes(query)
     );
   }
-  
   if (filters.value.status) result = result.filter(request => request.status === filters.value.status);
   if (filters.value.kategori) {
     result = result.filter(request => 
@@ -1528,6 +1403,18 @@ const getTabRequests = (status) => {
   return result;
 };
 
+const clearFilters = () => {
+  filters.value = {
+    searchQuery: "",
+    status: "",
+    kategori: "",
+    institusi: "",
+    sesi: "",
+    daerah: "",
+  };
+  currentPage.value = 1;
+  showNotificationMessage("Penapis telah dikosongkan", "Semua penapis telah dikosongkan dan senarai telah dikemaskini.");
+};
 
 
 const viewRequest = (request) => {
@@ -1783,7 +1670,7 @@ const canEditRequest = (request) => {
 };
 
 const canPerformAction = (request) => {
-  return currentRole.value === "pic";
+  return currentRole.value === "pyb-institusi";
 };
 
 const getRoleSpecificDescription = (role) => {
@@ -1797,7 +1684,7 @@ const getRoleSpecificDescription = (role) => {
   return descriptions[role] || "Peranan ini mempunyai kebolehan yang berbeza.";
 };
 
-const currentRole = ref("pic");
+const currentRole = ref("pyb-institusi");
 const roleOptions = [
   { label: "PT", value: "pt" },
   { label: "Eksekutif", value: "eksekutif" },
@@ -1832,48 +1719,18 @@ const handleRoleChange = () => {
   showNotificationMessage("Peranan Berubah", `User sekarang adalah "${getRoleLabel(currentRole.value)}".`);
 };
 
-// Search functionality
-const handleSearch = () => {
-  isSearchTriggered.value = true;
-  currentPage.value = 1; // Reset to first page when searching
-  
-  // Show notification when search is performed
-  if (filters.value.searchQuery) {
-    const searchResults = getTabRequests(activeStatusTab.value);
-    showNotificationMessage(
-      "Carian Dilakukan", 
-      `${searchResults.length} rekod ditemui untuk "${filters.value.searchQuery}".`
-    );
-  }
-};
-
-const clearFilters = () => {
-  filters.value = {
-    searchQuery: "",
-    status: "",
-    kategori: "",
-    institusi: "",
-    sesi: "",
-    daerah: "",
-  };
-  isSearchTriggered.value = false;
-  currentPage.value = 1;
-  showNotificationMessage("Penapis telah dikosongkan", "Semua penapis telah dikosongkan dan senarai telah dikemaskini.");
-};
-
-const applyFilters = () => {
-  currentPage.value = 1;
-  showNotificationMessage("Penapis telah digunakan", `${filteredRequests.value.length} rekod ditemui berdasarkan penapis yang dipilih.`);
-};
-
 // Watchers
 watch(activeStatusTab, () => {
   currentPage.value = 1;
 });
 
 watch(filters, () => {
-  // Remove automatic filter application during typing
-  // Filters are now only applied when search button is clicked
+  clearTimeout(window.filterTimeout);
+  window.filterTimeout = setTimeout(() => {
+    if (filters.value.searchQuery || filters.value.status || filters.value.kategori || filters.value.institusi || filters.value.sesi || filters.value.daerah) {
+      applyFilters();
+    }
+  }, 500);
 }, { deep: true });
 </script>
 

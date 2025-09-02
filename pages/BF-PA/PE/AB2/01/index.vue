@@ -392,19 +392,19 @@ const penolongAmil = ref([
     activities: [
       {
         id: 1,
-        name: 'Kutipan Zakat Kariah',
+        name: 'BANCIAN BARU : PER BORANG PERMOHONAN',
         allowanceRate: '20.00',
         kehadiran: 5
       },
       {
         id: 2,
-        name: 'Agihan Bantuan Asnaf',
+        name: 'KEMASKINI : PER BORANG PERMOHONAN',
         allowanceRate: '50.00',
         kehadiran: 3
       },
       {
         id: 3,
-        name: 'Program Tazkirah',
+        name: 'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
         allowanceRate: '100.00',
         kehadiran: 2
       }
@@ -418,13 +418,13 @@ const penolongAmil = ref([
     activities: [
       {
         id: 1,
-        name: 'Kutipan Zakat Kariah',
+        name: 'BANCIAN BARU : PER BORANG PERMOHONAN',
         allowanceRate: '50.00',
         kehadiran: 4
       },
       {
         id: 2,
-        name: 'Agihan Bantuan Asnaf',
+        name: 'KEMASKINI : PER BORANG PERMOHONAN',
         allowanceRate: '40.00',
         kehadiran: 1
       }
@@ -438,28 +438,23 @@ const penolongAmil = ref([
     activities: [
       {
         id: 1,
-        name: 'Kutipan Zakat Kariah',
+        name: 'BANCIAN BARU : PER BORANG PERMOHONAN',
         allowanceRate: '50.00',
         kehadiran: 6
       },
       {
         id: 2,
-        name: 'Agihan Bantuan Asnaf',
+        name: 'KEMASKINI : PER BORANG PERMOHONAN',
         allowanceRate: '40.00',
         kehadiran: 4
       },
       {
         id: 3,
-        name: 'Program Tazkirah',
+        name: 'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
         allowanceRate: '100.00',
         kehadiran: 3
       },
-      {
-        id: 4,
-        name: 'Program Qiamullail',
-        allowanceRate: '200.00',
-        kehadiran: 2
-      }
+      
     ]
   }
 ]);

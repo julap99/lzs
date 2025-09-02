@@ -252,7 +252,7 @@ const typeOptions = [
   { label: 'Pilih jenis elaun…', value: '' },
   { label: 'Elaun Tahunan KPAK', value: 'ET-KPAK' },
   { label: 'Elaun Tahunan KPAF', value: 'ET-KPAF' },
-  { label: 'Anugerah Penolong Amil', value: 'ET-ANUG' },
+  { label: 'KHAS - 48 AKTIVITI/TAHUN', value: 'ET-ANUG' },
   { label: 'Ketua Penolong Amil Kariah (KPAK) terbaik', value: 'ANUG-KPAK' },
   { label: 'Penolong Amil Kariah (PAK) terbaik', value: 'ANUG-PAK' },
   { label: 'Ketua Penolong Amil Fitrah (KPAF) terbaik', value: 'ANUG-KPAF' },
