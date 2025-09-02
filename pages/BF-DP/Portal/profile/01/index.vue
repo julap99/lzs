@@ -3,6 +3,17 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Role Simulator - For Demo/Presentation Only -->
+    <!-- This allows switching between different user roles to demonstrate role-based views -->
+    <!-- In production, this would be replaced with actual user authentication and role management -->
+    <div class="mb-4 flex items-center space-x-4">
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="pengguna-luar">Pengguna Luar</option>
+        <option value="pengguna-dalam">Pengguna Dalam</option>
+      </select>
+    </div>
+
     <!-- Section 1: Maklumat Profil -->
     <rs-card class="mb-6">
       <template #header>Maklumat Profil</template>
@@ -80,7 +91,7 @@
     </rs-card>
 
     <!-- Section 3: Review History -->
-    <rs-card>
+    <rs-card v-if="canViewSejarahSemakan">
       <template #header>Sejarah Semakan</template>
       <template #body>
         <div class="relative">
@@ -128,6 +139,8 @@
         </div>
       </template>
     </rs-card>
+
+
   </div>
 </template>
 
@@ -255,6 +268,10 @@ const canExport = ref(false); // true → utk Pengguna Dalaman
 const exportPDF = (): void => {
   alert("Export PDF triggered!");
 };
+
+// Role-based access control
+const selectedRole = ref("pengguna-dalam"); // default role
+const canViewSejarahSemakan = computed(() => selectedRole.value === "pengguna-dalam");
 </script>
 
 <style lang="scss" scoped>
