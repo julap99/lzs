@@ -1024,6 +1024,13 @@ export default [
         meta: {},
       },
       {
+        title: "Bantuan",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-BTN/bantuan",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Tugasan",
         icon: "iconamoon:arrow-right-2-duotone",
         path: "/BF-BTN/tugasan",
