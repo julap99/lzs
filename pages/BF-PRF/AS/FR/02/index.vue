@@ -3802,7 +3802,7 @@
           :actions="false"
           id="sectionB3"
         >
-          <h3 class="text-lg font-semibold mb-4">3. Maklumat Perbankan</h3>
+          <h3 class="text-lg font-semibold mb-4">3. Maklumat Perbankan Tanggungan</h3>
 
           <div class="mb-6">
             <!-- Kaedah Pembayaran -->
@@ -3810,82 +3810,157 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-black-700"
-                    >Kaedah Pembayaran</label
+                    >Adakah tanggungan mempunyai akaun bank?</label
                   >
-                  <FormKit
-                    type="radio"
-                    name="kaedah_pembayaran_tanggungan"
-                    :options="paymentMethodOptions"
-                    validation="required"
-                    v-model="
-                      getCurrentTanggungan().kaedah_pembayaran_tanggungan
-                    "
-                    :validation-messages="{
-                      required: 'Kaedah pembayaran adalah wajib',
-                    }"
-                  />
+                  <div class="mb-6">
+                    <FormKit
+                      type="radio"
+                      name="kaedah_pembayaran_tanggungan"
+                      :options="paymentMethodOptionsMain"
+                      validation="required"
+                      v-model="
+                        getCurrentTanggungan().kaedah_pembayaran_tanggungan
+                      "
+                      :validation-messages="{
+                        required: 'Sila pilih sama ada tanggungan mempunyai akaun bank',
+                      }"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- A. Jika Kaedah Pembayaran = Akaun -->
+            <!-- A. Jika mempunyai akaun bank -->
             <div
               v-if="
-                getCurrentTanggungan().kaedah_pembayaran_tanggungan === 'akaun'
+                getCurrentTanggungan().kaedah_pembayaran_tanggungan === 'ya'
               "
               class="mb-6"
             >
               <h5 class="text-md font-medium mb-4">Maklumat Akaun Bank</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Nama Bank -->
-                <FormKit
-                  type="select"
-                  name="nama_bank_tanggungan"
-                  label="Nama Bank "
-                  placeholder="Pilih nama bank"
-                  :options="bankOptions"
-                  validation="required"
-                  v-model="getCurrentTanggungan().nama_bank_tanggungan"
-                />
 
-                <!-- Swift Code (Read Only) -->
-                <FormKit
-                  v-if="getCurrentTanggungan().nama_bank_tanggungan"
-                  type="text"
-                  name="swift_code_tanggungan"
-                  label="Swift Code"
-                  v-model="getCurrentTanggungan().swift_code_tanggungan"
-                  :value="getSelectedBankSwiftCodeTanggungan()"
-                  readonly
-                  help="Swift Code dipaparkan secara automatik"
-                />
+              <div
+                v-for="(account, index) in getCurrentTanggungan().bank_accounts"
+                :key="index"
+                class="mb-6 p-4 border border-gray-200 rounded-lg"
+              >
+                <div class="flex justify-between items-center mb-4">
+                  <h6 class="text-sm font-medium">
+                    Akaun Bank #{{ index + 1 }}
+                  </h6>
+                  <button
+                    type="button"
+                    @click="removeBankAccountTanggungan(index)"
+                    class="text-red-500 hover:text-red-700"
+                  >
+                    <Icon name="mdi:delete" size="1.1rem" />
+                  </button>
+                </div>
 
-                <!-- No. Akaun Bank -->
-                <FormKit
-                  type="text"
-                  name="no_akaun_bank_tanggungan"
-                  label="No. Akaun Bank "
-                  validation="required"
-                  v-model="getCurrentTanggungan().no_akaun_bank_tanggungan"
-                />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Nama Bank -->
+                  <FormKit
+                    type="select"
+                    :name="`bankTanggungan${index}NamaBank`"
+                    label="Nama Bank"
+                    placeholder="Pilih nama bank"
+                    :options="bankOptions"
+                    validation="required"
+                    v-model="account.nama_bank"
+                  />
 
-                <!-- Nama Pemegang Akaun -->
-                <FormKit
-                  type="text"
-                  name="nama_pemegang_akaun_tanggungan"
-                  label="Nama Pemegang Akaun "
-                  validation="required"
-                  v-model="
-                    getCurrentTanggungan().nama_pemegang_akaun_tanggungan
-                  "
-                />
+                  <!-- Swift Code (Read Only) -->
+                  <FormKit
+                    v-if="account.nama_bank"
+                    type="text"
+                    :name="`bankTanggungan${index}SwiftCode`"
+                    label="Swift Code"
+                    :value="getSwiftCodeForBank(account.nama_bank)"
+                    readonly
+                    help="Swift Code dipaparkan secara automatik"
+                  />
+
+                  <!-- No. Akaun Bank -->
+                  <FormKit
+                    type="text"
+                    :name="`bankTanggungan${index}NoAkaun`"
+                    label="No. Akaun Bank"
+                    validation="required"
+                    v-model="account.no_akaun_bank"
+                  />
+
+                  <!-- Nama Pemegang Akaun -->
+                  <FormKit
+                    type="text"
+                    :name="`bankTanggungan${index}NamaPemegang`"
+                    label="Nama Pemegang Akaun "
+                    validation="required"
+                    v-model="account.nama_pemegang_akaun"
+                  />
+
+                  <!-- Jenis Akaun -->
+                  <FormKit
+                    type="select"
+                    :name="`bankTanggungan${index}JenisAkaun`"
+                    label="Jenis Akaun "
+                    placeholder="Pilih jenis akaun"
+                    :options="[
+                      { label: 'Individu', value: 'individu' },
+                      { label: 'Bersama', value: 'bersama' },
+                    ]"
+                    validation="required"
+                    v-model="account.jenis_akaun"
+                  />
+
+                  <!-- Pengenalan Id (show only if jenis akaun = Bersama) -->
+                  <FormKit
+                    v-if="account.jenis_akaun === 'bersama'"
+                    type="text"
+                    :name="`bankTanggungan${index}IdPengenalan`"
+                    label="Pengenalan Id "
+                    validation="required"
+                    v-model="account.id_pengenalan"
+                  />
+
+                  <!-- Nama (show only if jenis akaun = Bersama) -->
+                  <FormKit
+                    v-if="account.jenis_akaun === 'bersama'"
+                    type="text"
+                    :name="`bankTanggungan${index}NamaBersama`"
+                    label="Nama "
+                    validation="required"
+                    v-model="account.nama_bersama"
+                  />
+
+                  <!-- Tambah Hubungan (show only if jenis akaun = Bersama) -->
+                  <FormKit
+                    v-if="account.jenis_akaun === 'bersama'"
+                    type="text"
+                    :name="`bankTanggungan${index}Hubungan`"
+                    label="Hubungan "
+                    validation="required"
+                    v-model="account.hubungan"
+                  />
+                </div>
+              </div>
+
+              <div class="flex justify-center mt-4">
+                <rs-button
+                  variant="secondary"
+                  @click="addBankAccountTanggungan"
+                  type="button"
+                >
+                  <Icon name="mdi:plus" class="mr-1" size="1rem" />
+                  Tambah Akaun Bank
+                </rs-button>
               </div>
             </div>
 
-            <!-- B. Jika Kaedah Pembayaran = Tiada -->
+
+            <!-- B. Jika tidak mempunyai akaun bank -->
             <div
               v-if="
-                getCurrentTanggungan().kaedah_pembayaran_tanggungan === 'tiada'
+                getCurrentTanggungan().kaedah_pembayaran_tanggungan === 'tidak'
               "
               class="mb-6"
             >
@@ -7302,6 +7377,8 @@ const addTanggungan = (showNotification = true) => {
     nama_pemegang_akaun_tanggungan: "",
     kaedah_pembayaran_tanggungan: "",
     sebab_tiada_akaun_tanggungan: "",
+    // Multiple bank accounts for tanggungan (new)
+    bank_accounts: [],
 
     // Step 3: Maklumat Pendidikan Tanggungan
     masih_bersekolah: "",
@@ -8620,6 +8697,33 @@ const removeEducationEntryTanggungan = (index) => {
   const currentTanggungan = getCurrentTanggungan();
   if (currentTanggungan.education_entries) {
     currentTanggungan.education_entries.splice(index, 1);
+  }
+};
+
+// ============================================================================
+// TANGGUNGAN BANK ACCOUNTS MANAGEMENT FUNCTIONS
+// ============================================================================
+const addBankAccountTanggungan = () => {
+  const currentTanggungan = getCurrentTanggungan();
+  if (!currentTanggungan.bank_accounts) {
+    currentTanggungan.bank_accounts = [];
+  }
+  
+  currentTanggungan.bank_accounts.push({
+    nama_bank: "",
+    no_akaun_bank: "",
+    nama_pemegang_akaun: "",
+    jenis_akaun: "",
+    id_pengenalan: "",
+    nama_bersama: "",
+    hubungan: "",
+  });
+};
+
+const removeBankAccountTanggungan = (index) => {
+  const currentTanggungan = getCurrentTanggungan();
+  if (currentTanggungan.bank_accounts) {
+    currentTanggungan.bank_accounts.splice(index, 1);
   }
 };
 
