@@ -1024,6 +1024,13 @@ export default [
         meta: {},
       },
       {
+        title: "Bantuan",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-BTN/bantuan",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Tugasan",
         icon: "iconamoon:arrow-right-2-duotone",
         path: "/BF-BTN/tugasan",
@@ -1329,7 +1336,7 @@ export default [
           {
             title: "Pendaftaran Penolong Amil",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/pra-daftar-v3",
+            path: "/BF-PA/PP/PD",
             child: [],
             meta: {},
           },
