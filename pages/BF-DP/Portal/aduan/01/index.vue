@@ -57,9 +57,9 @@
       </template>
     </rs-card>
 
-    <!-- Timeline Pelaksanaan Aduan (Vertical) -->
+    <!-- Review History -->
     <rs-card>
-      <template #header>Garis Masa Pelaksanaan Aduan</template>
+      <template #header>Sejarah Semakan</template>
       <template #body>
         <div class="relative">
           <!-- Timeline Line -->
@@ -165,8 +165,8 @@ const breadcrumb = ref([
 const AduanInfo = ref({
   idPermohonan: 'ADN-250823-000123',
   namaAduan: 'Terputus Bekalan Makanan / Tiada Tempat Tinggal',
-  tarikhMohon: '2025-06-01',
-  tarikhPerubahanStatus: '2025-06-15',
+  tarikhMohon: '01-06-2025',
+  tarikhPerubahanStatus: '15-06-2025',
   namaPegawai: 'Pn. Zahrah',
 });
 
@@ -266,7 +266,7 @@ const getRemainingSla = (currentLabel: string): number => {
 const statusTimeline = [
   {
     label: 'Aduan Baru',
-    tarikh: '2025-06-10T09:00:00',
+    tarikh: '10-06-2025',
     completed: true,
     catatan: 'Aduan telah diterima dan direkod dalam sistem.',
     namaPegawai: 'Encik Ali',
@@ -274,7 +274,7 @@ const statusTimeline = [
   },
   {
     label: 'Dalam Tindakan - Siasatan Ringkas',
-    tarikh: '2025-06-10T10:00:00',
+    tarikh: '10-06-2025',
     inProgress: true,
     catatan: 'Pegawai sedang menilai aduan dan menjalankan semakan awal.',
     namaPegawai: 'Pn. Zahrah',
@@ -282,7 +282,7 @@ const statusTimeline = [
   },
   {
     label: 'Dalam Tindakan - Siasatan Lapangan',
-    tarikh: '2025-06-13T14:30:00',
+    tarikh: '13-06-2025',
     notStarted: true,
     catatan: 'Tindakan penyelesaian akan dilaksanakan selepas semakan selesai.',
     namaPegawai: 'Ustaz Hafiz',
@@ -290,7 +290,7 @@ const statusTimeline = [
   },
     {
     label: 'Selesai',
-    tarikh: '2025-06-13T14:30:00',
+    tarikh: '13-06-2025',
     notStarted: true,
     catatan: 'Tindakan penyelesaian akan dilaksanakan selepas semakan selesai.',
     namaPegawai: 'Ustaz Hafiz',
@@ -299,17 +299,11 @@ const statusTimeline = [
 ];
 
 
-const formatDate = (dateStr: string | undefined): string => {
+import { formatDate as formatDateUtil } from '~/utils/dateFormatter';
 
+const formatDate = (dateStr: string | Date): string => {
   if (!dateStr) return 'Belum Bermula';
-  const date = new Date(dateStr);
-  return date.toLocaleString('ms-MY', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return formatDateUtil(dateStr as string);
 };
 
 const getTextClass = (label: string): string => 'text-blue-800';

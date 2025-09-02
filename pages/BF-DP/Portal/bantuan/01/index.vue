@@ -74,9 +74,9 @@
       </template>
     </rs-card>
 
-    <!-- Timeline Pelaksanaan Bantuan (Vertical) -->
+    <!-- Review History -->
     <rs-card>
-      <template #header>Garis Masa Pelaksanaan Bantuan</template>
+      <template #header>Sejarah Semakan</template>
       <template #body>
         <div class="relative">
           <!-- Timeline Line -->
@@ -189,7 +189,7 @@ const breadcrumb = ref([
 const bantuanInfo = ref({
   idPermohonan: 'NAS-BTN-2025-0001',
   namaBantuan: 'Bantuan Pendidikan',
-  tarikhMohon: '2025-06-01',
+  tarikhMohon: '01-06-2025',
 });
 
 // Mock data - Replace with actual API calls
@@ -268,7 +268,7 @@ const getRemainingSla = (currentLabel: string): number => {
 const statusTimeline = [
   {
     label: 'Permohonan Dihantar',
-    tarikh: '2025-06-10T09:00:00',
+    tarikh: '10-06-2025',
     completed: true,
     catatan: 'Permohonan diterima untuk semakan.',
     namaPegawai: 'Encik Ali',
@@ -279,7 +279,7 @@ const statusTimeline = [
   },
   {
     label: 'Semakan Awal',
-    tarikh: '2025-06-11T10:00:00',
+    tarikh: '11-06-2025',
     completed: true,
     catatan: 'Semakan dokumen lengkap dan disahkan.',
     namaPegawai: 'Pn. Zahrah',
@@ -290,7 +290,7 @@ const statusTimeline = [
   },
   {
     label: 'Siasatan',
-    tarikh: '2025-06-13T14:30:00',
+    tarikh: '13-06-2025',
     inProgress: true,
     catatan: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
     namaPegawai: 'Ustaz Hafiz',
@@ -325,21 +325,16 @@ const statusTimeline = [
 
 const tindakanStatus = ref({
   statusSemasa: 'Siasatan',
-  tarikhKemaskini: '2025-06-13T14:30:00',
+  tarikhKemaskini: '13-06-2025',
   namaPegawaiBertugas: 'Ustaz Hafiz',
   catatanPegawaiBertugas: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
 });
 
+import { formatDate as formatDateUtil } from '~/utils/dateFormatter';
+
 const formatDate = (dateStr: string | Date): string => {
   if (!dateStr) return 'Belum Bermula';
-  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
-  return date.toLocaleString('ms-MY', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return formatDateUtil(dateStr as string);
 };
 
 const getTextClass = (label: string): string => 'text-blue-800';
