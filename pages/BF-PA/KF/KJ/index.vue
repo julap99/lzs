@@ -839,7 +839,7 @@ const tableColumns = [
   },
   {
     key: 'tarikhKuatkuasa',
-    name: 'Tarikh Kuatkuasa',
+    name: 'Tarikh Dicipta',
     sortable: true,
   },
   {

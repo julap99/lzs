@@ -49,9 +49,9 @@ const profileForm = ref({
   noTelefonPejabat: "",
   
   // Education
-  tahapPendidikan: "",
-  institusiPendidikan: "",
-  tahunTamat: "",
+//  tahapPendidikan: "",
+//  institusiPendidikan: "",
+//  tahunTamat: "",
   
   // Photo
   photo: null,
@@ -545,7 +545,7 @@ onMounted(() => {
             </div>
           </div>
 
-          <!-- Education Information -->
+          <!-- Education Information 
           <div class="space-y-6">
             <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">
               Maklumat Pendidikan
@@ -585,7 +585,7 @@ onMounted(() => {
                 max="2030"
               />
             </div>
-          </div>
+          </div>-->
 
           <!-- Photo Upload -->
           <div class="space-y-6">

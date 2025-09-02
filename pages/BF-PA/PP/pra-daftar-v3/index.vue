@@ -42,7 +42,7 @@
           </div>
           <!-- PA-PP-PD-01_03: Registration Form - Borang Pendaftaran Calon Penolong Amil -->
           <rs-button
-            v-if="currentRole !== 'eksekutif' && currentRole !== 'eksekutif-pengurusan-risiko' && currentRole !== 'pt'"
+            v-if="currentRole !== 'eksekutif' && currentRole !== 'eksekutif-pengurusan-risiko' && currentRole !== 'pt' && currentRole !== 'ketua-jabatan' && currentRole !== 'ketua-divisyen'"
             variant="primary"
             @click="navigateTo('/BF-PA/PP/pra-daftar-v3/daftar-baharu')"
           >
