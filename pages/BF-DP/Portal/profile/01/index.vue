@@ -307,7 +307,8 @@ const exportPDF = (): void => {
 
 // Role-based access control
 const selectedRole = ref("pengguna-dalam"); // default role
-const canViewSejarahSemakan = computed(() => selectedRole.value === "pengguna-dalam");
+// Both roles can view the timeline; only internal users see details (handled in template)
+const canViewSejarahSemakan = computed(() => ["pengguna-dalam", "pengguna-luar"].includes(selectedRole.value));
 </script>
 
 <style lang="scss" scoped>
