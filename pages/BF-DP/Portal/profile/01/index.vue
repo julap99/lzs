@@ -106,7 +106,7 @@
       </template>
     </rs-card>
 
-    <!-- Section 3: Review History -->
+    <!-- Section 3: Review History - Visible to both roles, details hidden for Pengguna Luar -->
     <rs-card v-if="canViewSejarahSemakan">
       <template #header>Prosedur Agihan</template>
       <template #body>
@@ -135,7 +135,7 @@
                 />
                 <span v-else>{{ index + 1 }}</span>
               </div>
-              <div class="ml-4 flex-1">
+              <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
                 <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
                 <div class="font-bold text-blue-800">{{ step.label }}</div>
                 <div class="text-sm mt-1">
@@ -149,6 +149,11 @@
                   "{{ step.catatan }}"
                 </div>
                 <div class="text-sm mt-1 text-gray-600">Pegawai: {{ step.namaPegawai }}</div>
+              </div>
+              <!-- Minimal content for Pengguna Luar: date + label only -->
+              <div v-else class="ml-4 flex-1">
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="font-bold text-blue-800">{{ step.label }}</div>
               </div>
             </div>
           </div>
@@ -248,13 +253,6 @@ const statusTimeline = [
     catatan: 'Dalam proses penilaian.',
     namaPegawai: 'Ustaz Hakim',
     masaBerbaki: '2 hari',
-  },
-  {
-    label: 'Sahkan Profil',
-    notStarted: true,
-    tarikh: '',
-    catatan: 'Tiada tindakan direkodkan setakat ini.',
-    namaPegawai: 'Belum Ditugaskan',
   },
 ];
 

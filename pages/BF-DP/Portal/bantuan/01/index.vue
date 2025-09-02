@@ -56,7 +56,7 @@
       </template>
     </rs-card>
 
-    <!-- Review History -->
+    <!-- Review History - Visible to both roles, details hidden for Pengguna Luar -->
     <rs-card v-if="canViewSejarahSemakan">
       <template #header>Prosedur Agihan</template>
       <template #body>
@@ -101,8 +101,8 @@
                 <span v-else class="text-white">{{ index + 1 }}</span>
               </div>
 
-              <!-- Content -->
-              <div class="ml-4 flex-1">
+              <!-- Content (only for Pengguna Dalam) -->
+              <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
                 <div class="text-sm text-gray-500">
                   {{ formatDate(step.tarikh) }}
                 </div>
@@ -120,6 +120,11 @@
                   "{{ step.catatan }}"
                 </div>
                 <div class="text-sm mt-1 text-gray-600">Pegawai: {{ step.namaPegawai }}</div>
+              </div>
+              <!-- Minimal content for Pengguna Luar: date + label only -->
+              <div v-else class="ml-4 flex-1">
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="font-bold text-blue-800">{{ step.label }}</div>
               </div>
             </div>
           </div>
@@ -284,28 +289,6 @@ const statusTimeline = [
     notStarted: false,
     rejected: false,
   },
-  {
-    label: 'Kelulusan',
-    notStarted: true,
-    tarikh: '',
-    catatan: 'Tiada tindakan direkodkan setakat ini.',
-    namaPegawai: 'Belum Ditugaskan',
-    masaBerbaki: '',
-    completed: false,
-    inProgress: false,
-    rejected: false,
-  },
-  {
-    label: 'Pembayaran',
-    notStarted: true,
-    tarikh: '',
-    catatan: 'Tiada tindakan direkodkan setakat ini.',
-    namaPegawai: 'Belum Ditugaskan',
-    masaBerbaki: '',
-    completed: false,
-    inProgress: false,
-    rejected: false,
-  },
 ];
 
 const tindakanStatus = ref({
@@ -336,7 +319,8 @@ const downloadDocument = (doc: Document): void => {
 
 // Role-based access control
 const selectedRole = ref("pengguna-dalam"); // default role
-const canViewSejarahSemakan = computed(() => selectedRole.value === "pengguna-dalam");
+// Both roles can view the timeline; only internal users see details
+const canViewSejarahSemakan = computed(() => ["pengguna-dalam", "pengguna-luar"].includes(selectedRole.value));
 </script>
 
 <style lang="scss" scoped>
