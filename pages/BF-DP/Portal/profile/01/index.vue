@@ -92,7 +92,7 @@
 
     <!-- Section 3: Review History -->
     <rs-card v-if="canViewSejarahSemakan">
-      <template #header>Sejarah Semakan</template>
+      <template #header>Prosedur Agihan</template>
       <template #body>
         <div class="relative">
           <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>

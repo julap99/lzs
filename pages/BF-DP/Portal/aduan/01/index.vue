@@ -70,7 +70,7 @@
 
     <!-- Review History - Only visible to Pengguna Dalam -->
     <rs-card v-if="canViewSejarahSemakan">
-      <template #header>Sejarah Semakan</template>
+      <template #header>Prosedur Agihan</template>
       <template #body>
         <div class="relative">
           <!-- Timeline Line -->
