@@ -357,7 +357,7 @@
               >Simpan</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Seterusnya ke Maklumat Pendidikan</rs-button
+              >Maklumat Pendidikan</rs-button
             >
           </div>
         </FormKit>
@@ -804,7 +804,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Islam</rs-button
+                >Maklumat Islam</rs-button
               >
             </div>
           </div>
@@ -994,7 +994,7 @@
                 Simpan
               </rs-button>
               <rs-button type="submit" variant="primary" @click="nextStepA">
-                Seterusnya ke Maklumat Bank
+                Maklumat Bank
               </rs-button>
             </div>
           </div>
@@ -1111,16 +1111,17 @@
                     v-model="account.jenis_akaun"
                   />
 
-                  <!-- ID Pengenalan -->
+                  <!-- Pengenalan Id (show only if jenis akaun = Bersama) -->
                   <FormKit
+                    v-if="account.jenis_akaun === 'bersama'"
                     type="text"
                     :name="`bank${index}IdPengenalan`"
-                    label="ID Pengenalan "
+                    label="Pengenalan Id "
                     validation="required"
                     v-model="account.id_pengenalan"
                   />
 
-                  <!-- Nama (if Bersama is selected) -->
+                  <!-- Nama (show only if jenis akaun = Bersama) -->
                   <FormKit
                     v-if="account.jenis_akaun === 'bersama'"
                     type="text"
@@ -1128,6 +1129,16 @@
                     label="Nama "
                     validation="required"
                     v-model="account.nama_bersama"
+                  />
+
+                  <!-- Tambah Hubungan (show only if jenis akaun = Bersama) -->
+                  <FormKit
+                    v-if="account.jenis_akaun === 'bersama'"
+                    type="text"
+                    :name="`bank${index}Hubungan`"
+                    label="Hubungan "
+                    validation="required"
+                    v-model="account.hubungan"
                   />
                 </div>
               </div>
@@ -1179,7 +1190,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Kesihatan</rs-button
+                >Maklumat Kesihatan</rs-button
               >
             </div>
           </div>
@@ -1381,7 +1392,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Kemahiran</rs-button
+                >Maklumat Kemahiran</rs-button
               >
             </div>
           </div>
@@ -1455,7 +1466,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Alamat</rs-button
+                >Maklumat Alamat</rs-button
               >
             </div>
           </div>
@@ -1930,7 +1941,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Pinjaman Harta</rs-button
+                >Maklumat Pinjaman Harta</rs-button
               >
             </div>
           </div>
@@ -2054,7 +2065,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Pemilikan</rs-button
+                >Maklumat Pemilikan</rs-button
               >
             </div>
           </div>
@@ -2179,7 +2190,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Pemilikan Barangan Rumah</rs-button
+                >Maklumat Pemilikan Barangan Rumah</rs-button
               >
             </div>
           </div>
@@ -2322,7 +2333,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Pekerjaan</rs-button
+                >Maklumat Pekerjaan</rs-button
               >
             </div>
           </div>
@@ -2403,12 +2414,8 @@
                   type="text"
                   name="lain_lain_sumber_pendapatan"
                   label="Lain-lain Sumber Pendapatan"
-                  validation="required"
                   placeholder="Nyatakan sumber pendapatan lain"
                   v-model="formData.lain_lain_sumber_pendapatan"
-                  :validation-messages="{
-                    required: 'Sila nyatakan sumber pendapatan lain',
-                  }"
                 />
               </div>
             </div>
@@ -2418,11 +2425,7 @@
                 type="text"
                 name="jenis_pekerjaan"
                 label="Jenis Pekerjaan"
-                validation="required"
                 v-model="formData.jenis_pekerjaan"
-                :validation-messages="{
-                  required: 'Jenis pekerjaan adalah wajib',
-                }"
               />
 
               <FormKit
@@ -2437,11 +2440,7 @@
                   'Kerja Sendiri',
                   'Lain-lain',
                 ]"
-                validation="required"
                 v-model="formData.sektor_pekerjaan"
-                :validation-messages="{
-                  required: 'Sektor pekerjaan adalah wajib',
-                }"
               />
 
               <FormKit
@@ -2449,44 +2448,28 @@
                 type="text"
                 name="lain_lain_sektor"
                 label="Lain-lain Sektor Pekerjaan"
-                validation="required"
                 v-model="formData.lain_lain_sektor"
-                :validation-messages="{
-                  required: 'Sila nyatakan sektor pekerjaan lain',
-                }"
               />
 
               <FormKit
                 type="text"
                 name="no_telefon_pejabat"
                 label="No. Telefon Pejabat"
-                validation="required"
                 v-model="formData.no_telefon_pejabat"
-                :validation-messages="{
-                  required: 'No. telefon pejabat adalah wajib',
-                }"
               />
 
               <FormKit
                 type="text"
                 name="nama_majikan"
                 label="Nama Majikan"
-                validation="required"
                 v-model="formData.nama_majikan"
-                :validation-messages="{
-                  required: 'Nama majikan adalah wajib',
-                }"
               />
 
               <FormKit
                 type="text"
                 name="no_telefon_majikan"
                 label="No. Telefon Majikan"
-                validation="required"
                 v-model="formData.no_telefon_majikan"
-                :validation-messages="{
-                  required: 'No. telefon majikan adalah wajib',
-                }"
               />
 
               <div class="md:col-span-2">
@@ -2494,11 +2477,7 @@
                   type="textarea"
                   name="alamat_majikan_1"
                   label="Alamat Majikan 1"
-                  validation="required"
                   v-model="formData.alamat_majikan_1"
-                  :validation-messages="{
-                    required: 'Alamat majikan adalah wajib',
-                  }"
                 />
 
                 <FormKit
@@ -2522,66 +2501,42 @@
                 type="text"
                 name="bandar_majikan"
                 label="Bandar"
-                validation="required"
                 v-model="formData.bandar_majikan"
-                :validation-messages="{
-                  required: 'Bandar adalah wajib',
-                }"
               />
 
               <FormKit
                 type="text"
                 name="poskod_majikan"
                 label="Poskod"
-                validation="required"
                 v-model="formData.poskod_majikan"
-                :validation-messages="{
-                  required: 'Poskod adalah wajib',
-                }"
               />
 
               <FormKit
                 type="text"
                 name="daerah_majikan"
-                label="Daerah"
-                validation="required"
+                label="Daerah"  
                 v-model="formData.daerah_majikan"
-                :validation-messages="{
-                  required: 'Daerah adalah wajib',
-                }"
               />
 
               <FormKit
                 type="text"
                 name="negeri_majikan"
                 label="Negeri"
-                validation="required"
                 v-model="formData.negeri_majikan"
-                :validation-messages="{
-                  required: 'Negeri adalah wajib',
-                }"
               />
 
               <FormKit
                 type="text"
                 name="negara_majikan"
                 label="Negara"
-                validation="required"
                 v-model="formData.negara_majikan"
-                :validation-messages="{
-                  required: 'Negara adalah wajib',
-                }"
               />
 
               <FormKit
                 type="text"
                 name="jawatan"
                 label="Jawatan"
-                validation="required"
                 v-model="formData.jawatan"
-                :validation-messages="{
-                  required: 'Jawatan adalah wajib',
-                }"
               />
 
               <FormKit
@@ -2590,11 +2545,7 @@
                 label="Status Jawatan"
                 placeholder="Pilih status jawatan"
                 :options="['Tetap', 'Kontrak', 'Sementara']"
-                validation="required"
                 v-model="formData.status_jawatan"
-                :validation-messages="{
-                  required: 'Status jawatan adalah wajib',
-                }"
               />
 
               <FormKit
@@ -2603,11 +2554,7 @@
                 label="Pendapatan Kasar (RM)"
                 step="0.01"
                 min="0"
-                validation="required"
                 v-model="formData.pendapatan_kasar"
-                :validation-messages="{
-                  required: 'Pendapatan kasar adalah wajib',
-                }"
               />
 
               <div class="md:col-span-2">
@@ -2617,9 +2564,8 @@
                   label="Muat naik pengesahan pendapatan / penyata gaji ketua keluarga"
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  validation="max:5|mime:application/pdf,image/jpeg,image/png"
                   :validation-messages="{
-                    required: 'Dokumen pengesahan pendapatan adalah wajib',
                     max: 'Saiz fail tidak boleh melebihi 5MB',
                     mime: 'Format fail tidak dibenarkan',
                   }"
@@ -2643,7 +2589,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Pendapatan & Perbelanjaan</rs-button
+                >Maklumat Pendapatan & Perbelanjaan</rs-button
               >
             </div>
           </div>
@@ -2868,7 +2814,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Waris</rs-button
+                >Maklumat Waris</rs-button
               >
             </div>
           </div>
@@ -3019,7 +2965,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Seterusnya ke Maklumat Tanggungan</rs-button
+                >Maklumat Tanggungan</rs-button
               >
             </div>
           </div>
@@ -3693,7 +3639,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Islam</rs-button
+                >Maklumat Islam</rs-button
               >
             </div>
           </div>
@@ -3840,7 +3786,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Bank</rs-button
+                >Maklumat Bank</rs-button
               >
             </div>
           </div>
@@ -3976,7 +3922,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Pendidikan</rs-button
+                >Maklumat Pendidikan</rs-button
               >
             </div>
           </div>
@@ -4395,7 +4341,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Kesihatan Tanggungan</rs-button
+                >Maklumat Kesihatan Tanggungan</rs-button
               >
             </div>
           </div>
@@ -4700,7 +4646,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Kemahiran Tanggungan</rs-button
+                >Maklumat Kemahiran Tanggungan</rs-button
               >
             </div>
           </div>
@@ -4772,7 +4718,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Maklumat Pekerjaan</rs-button
+                >Maklumat Pekerjaan</rs-button
               >
             </div>
           </div>
@@ -5133,7 +5079,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Pengesahan</rs-button
+                >Pengesahan</rs-button
               >
             </div>
           </div>
@@ -5370,7 +5316,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Pengesahan Pendapatan</rs-button
+                >Pengesahan Pendapatan</rs-button
               >
             </div>
           </div>
@@ -5512,7 +5458,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Pengesahan Bermastautin</rs-button
+                >Pengesahan Bermastautin</rs-button
               >
             </div>
           </div>
@@ -5640,7 +5586,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Seterusnya ke Pegawai Pendaftar</rs-button
+                >Pegawai Pendaftar</rs-button
               >
             </div>
           </div>
@@ -7693,7 +7639,7 @@ onMounted(() => {
     agama: "Islam",
     bangsa: "Melayu",
     no_telefon_bimbit: "0191105544",
-    emel: "adan.abu@gmail.com",
+    emel: "adnan.abu@gmail.com",
     status_perkahwinan: "Berkahwin",
     status_poligami: "tidak",
 
@@ -7724,6 +7670,45 @@ onMounted(() => {
     // Mock data for Maklumat Kemahiran
     kemahiran: ["Perniagaan"],
 
+    // Mock data for Maklumat Pekerjaan
+    status_pekerjaan: "bekerja",
+    jenis_pekerjaan: "Berniaga",
+    sektor_pekerjaan: "Kerja Sendiri",
+    // lain_lain_sektor: "",
+    // no_telefon_pejabat: "038881234",
+    // nama_majikan: "Syarikat Pengangkutan Maju Sdn Bhd",
+    // no_telefon_majikan: "038881234",
+    // alamat_majikan_1: "Lot 123, Kawasan Perindustrian Bangi",
+    // alamat_majikan_2: "Seksyen 15, Bandar Baru Bangi",
+    // alamat_majikan_3: "",
+    // bandar_majikan: "Bangi",
+    // poskod_majikan: "43000",
+    // daerah_majikan: "Hulu Langat",
+    // negeri_majikan: "Selangor",
+    // negara_majikan: "Malaysia",
+    // jawatan: "Pemandu Lori",
+    // status_jawatan: "Tetap",
+    pendapatan_kasar: "1000.00",
+    pengesahan_pendapatan: [],
+    sumber_pendapatan: ["Lain-lain"],
+    lain_lain_sumber_pendapatan: "Perniagaan",
+
+    // Mock data for Maklumat Pendapatan & Perbelanjaan
+    gaji_elaun_pendapatan: "1000.00",
+    pendapatan_isteri_suami_ibubapa_penjaga: "0.00",
+    pencen_perkeso: "0.00",
+    sumbangan_anak_anak: "0.00",
+    bantuan_jkm: "0.00",
+    takaful: "0.00",
+    sewa_rumah_tanah_kedai: "0.00",
+    pendapatan_tanggungan_serumah: "0.00",
+    pendapatan_lain_lain: "300.00",
+    perbelanjaan_makanan_minuman: "500.00",
+    sewa_bayaran_pinjaman_perumahan: "0.00",
+    perbelanjaan_persekolahan_anak: "100.00",
+    pengangkutan_tambang_bas_sekolah: "50.00",
+    bil_utiliti: "100.00",
+
     // Mock data for Maklumat Pinjaman Harta
     // nama_institusi_pemberi_pinjaman: "Bank Islam Malaysia Berhad",
     // jenis_pinjaman: "Pinjaman Peribadi",
@@ -7739,12 +7724,12 @@ onMounted(() => {
       alamat1: "32,jalan4/7a",
       alamat2: "bandar baru bangi",
       negeri: "selangor",
-      daerah: "hulu langat",
+      daerah: "hulu-langat",
       bandar: "kajang",
       poskod: "43000",
       kariah: "kariah masjid al hidayah",
       geolokasi: "lokasi semasa",
-      tempoh_menetap_selangor: "48",
+      tempoh_menetap_selangor: "28",
       status_kediaman: "Milik Sendiri Tidak Berbayar",
       tapak_rumah: "Milik Sendiri",
       jenis_rumah: "Teres",
@@ -7756,6 +7741,8 @@ onMounted(() => {
       bil_air: "50",
       bil_elektrik: "50",
     },
+
+    // Mock data for Maklumat Pendapatan & Perbelanjaan
   };
 
   if (tanggunganList.value.length === 0) {
