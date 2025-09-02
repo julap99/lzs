@@ -539,8 +539,8 @@ const investigationData = ref({
 
 /* PROFILING DATA */
 const profilingData = ref({
-  pengenalanId: "770319035991",
-  nama: "Adnan bin Abu",
+  pengenalanId: "091108030442",
+  nama: "NUR QISTINA BINTI ADNAN",
   hadKifayahSyor: "50.81",
   kategoriKeluargaAsnafSyor: "Miskin",
   kategoriAsnafSyor: "Miskin",

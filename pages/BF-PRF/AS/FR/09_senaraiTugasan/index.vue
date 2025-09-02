@@ -228,12 +228,28 @@ const applications = ref([
     tindakan: "NAS-2025-0001",
   },
   {
-    noRujukan: "NAS-2025-0002",
-    namaPemohon: "Mohd bin Ismail",
+    noRujukan: "801004035672",
+    namaPemohon: "ROHANA BINTI AHMAD",
     status: "Dalam Semakan",
     tarikhTerima: "2024-03-19",
     namaPegawai: "Aminah binti Hassan",
-    tindakan: "NAS-2025-0002",
+    tindakan: "801004035672",
+  },
+  {
+    noRujukan: "060802030272",
+    namaPemohon: "NUR NAJWA BINTI ADNAN",
+    status: "Dalam Semakan",
+    tarikhTerima: "2024-03-19",
+    namaPegawai: "Aminah binti Hassan",
+    tindakan: "060802030272",
+  },
+  {
+    noRujukan: "091108030442",
+    namaPemohon: "NUR QISTINA BINTI ADNAN",
+    status: "Dalam Semakan",
+    tarikhTerima: "2024-03-19",
+    namaPegawai: "Aminah binti Hassan",
+    tindakan: "091108030442",
   },
 ]);
 

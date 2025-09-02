@@ -1047,7 +1047,19 @@
 
         <!-- Section L: SEMAKAN RADIO BUTTONS (Screenshot Style) -->
         <div class="mb-8">
-          <h3 class="text-lg font-medium mb-4 border-b pb-2">SEMAKAN</h3>
+          <div class="flex justify-between items-center mb-4 border-b pb-2">
+            <h3 class="text-lg font-medium">SEMAKAN</h3>
+            <rs-button 
+              type="button" 
+              variant="secondary" 
+              size="sm"
+              @click="setAllSemakanToYa"
+              class="text-xs"
+            >
+              <Icon name="ph:check-circle" class="w-4 h-4 mr-1" />
+              Set All to Ya
+            </rs-button>
+          </div>
           <table class="w-full border border-gray-400 text-sm mb-6" style="background:#fff;">
             <thead>
               <tr class="bg-gray-100">
@@ -1058,50 +1070,54 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td class="border px-2 py-1">Peribadi</td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi" /></td></tr>
-              <tr><td class="border px-2 py-1">Pendidikan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan" /></td></tr>
-              <tr><td class="border px-2 py-1">Pengislaman</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman" /></td></tr>
-              <tr><td class="border px-2 py-1">Perbankan</td><td class="border px-2 py-1 text-center"><input type="radio" name="perbankan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perbankan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perbankan" /></td></tr>
-              <tr><td class="border px-2 py-1">Kesihatan</td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan" /></td></tr>
-              <tr><td class="border px-2 py-1">Kemahiran</td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran" /></td></tr>
-              <tr><td class="border px-2 py-1">Alamat dan Tempat Tinggal</td><td class="border px-2 py-1 text-center"><input type="radio" name="alamat" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="alamat" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="alamat" /></td></tr>
-              <tr><td class="border px-2 py-1">Pinjaman</td><td class="border px-2 py-1 text-center"><input type="radio" name="pinjaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pinjaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pinjaman" /></td></tr>
-              <tr><td class="border px-2 py-1">Pemilikan Aset</td><td class="border px-2 py-1 text-center"><input type="radio" name="aset" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="aset" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="aset" /></td></tr>
-              <tr><td class="border px-2 py-1">Pemilikan Barangan Rumah</td><td class="border px-2 py-1 text-center"><input type="radio" name="barang" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="barang" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="barang" /></td></tr>
-              <tr><td class="border px-2 py-1">Pekerjaan Ketua Keluarga</td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan" /></td></tr>
-              <tr><td class="border px-2 py-1">Pendapatan dan Perbelanjaan Seisi Rumah</td><td class="border px-2 py-1 text-center"><input type="radio" name="pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendapatan" /></td></tr>
-              <tr><td class="border px-2 py-1">Waris</td><td class="border px-2 py-1 text-center"><input type="radio" name="waris" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="waris" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="waris" /></td></tr>
-              <tr><td class="border px-2 py-1">Peribadi Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi_tanggungan" /></td></tr>
-              <tr><td class="border px-2 py-1">Pengislaman Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman_tanggungan" /></td></tr>
-              <tr><td class="border px-2 py-1">Pendidikan Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan_tanggungan" /></td></tr>
-              <tr><td class="border px-2 py-1">Kesihatan Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan_tanggungan" /></td></tr>
-              <tr><td class="border px-2 py-1">Kemahiran Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran_tanggungan" /></td></tr>
-              <tr><td class="border px-2 py-1">Pekerjaan Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan_tanggungan" /></td></tr>
-              <tr><td class="border px-2 py-1">Perakuan Ketua Keluarga</td><td class="border px-2 py-1 text-center"><input type="radio" name="perakuan_ketua_keluarga" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perakuan_ketua_keluarga" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perakuan_ketua_keluarga" /></td></tr>
-              <tr><td class="border px-2 py-1">Pengesahan Permastautin</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_permastautin" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_permastautin" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_permastautin" /></td></tr>
-              <tr><td class="border px-2 py-1">Pengesahan Pendapatan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_pendapatan" /></td></tr>
+              <tr><td class="border px-2 py-1">Peribadi</td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi" value="Ya" v-model="semakanData.peribadi" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi" value="Tidak" v-model="semakanData.peribadi" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi" value="Tidak Berkenaan" v-model="semakanData.peribadi" /></td></tr>
+              <tr><td class="border px-2 py-1">Pendidikan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan" value="Ya" v-model="semakanData.pendidikan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan" value="Tidak" v-model="semakanData.pendidikan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan" value="Tidak Berkenaan" v-model="semakanData.pendidikan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pengislaman</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman" value="Ya" v-model="semakanData.pengislaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman" value="Tidak" v-model="semakanData.pengislaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman" value="Tidak Berkenaan" v-model="semakanData.pengislaman" /></td></tr>
+              <tr><td class="border px-2 py-1">Perbankan</td><td class="border px-2 py-1 text-center"><input type="radio" name="perbankan" value="Ya" v-model="semakanData.perbankan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perbankan" value="Tidak" v-model="semakanData.perbankan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perbankan" value="Tidak Berkenaan" v-model="semakanData.perbankan" /></td></tr>
+              <tr><td class="border px-2 py-1">Kesihatan</td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan" value="Ya" v-model="semakanData.kesihatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan" value="Tidak" v-model="semakanData.kesihatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan" value="Tidak Berkenaan" v-model="semakanData.kesihatan" /></td></tr>
+              <tr><td class="border px-2 py-1">Kemahiran</td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran" value="Ya" v-model="semakanData.kemahiran" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran" value="Tidak" v-model="semakanData.kemahiran" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran" value="Tidak Berkenaan" v-model="semakanData.kemahiran" /></td></tr>
+              <tr><td class="border px-2 py-1">Alamat dan Tempat Tinggal</td><td class="border px-2 py-1 text-center"><input type="radio" name="alamat" value="Ya" v-model="semakanData.alamat" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="alamat" value="Tidak" v-model="semakanData.alamat" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="alamat" value="Tidak Berkenaan" v-model="semakanData.alamat" /></td></tr>
+              <tr><td class="border px-2 py-1">Pinjaman</td><td class="border px-2 py-1 text-center"><input type="radio" name="pinjaman" value="Ya" v-model="semakanData.pinjaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pinjaman" value="Tidak" v-model="semakanData.pinjaman" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pinjaman" value="Tidak Berkenaan" v-model="semakanData.pinjaman" /></td></tr>
+              <tr><td class="border px-2 py-1">Pemilikan Aset</td><td class="border px-2 py-1 text-center"><input type="radio" name="aset" value="Ya" v-model="semakanData.aset" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="aset" value="Tidak" v-model="semakanData.aset" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="aset" value="Tidak Berkenaan" v-model="semakanData.aset" /></td></tr>
+              <tr><td class="border px-2 py-1">Pemilikan Barangan Rumah</td><td class="border px-2 py-1 text-center"><input type="radio" name="barang" value="Ya" v-model="semakanData.barang" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="barang" value="Tidak" v-model="semakanData.barang" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="barang" value="Tidak Berkenaan" v-model="semakanData.barang" /></td></tr>
+              <tr><td class="border px-2 py-1">Pekerjaan Ketua Keluarga</td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan" value="Ya" v-model="semakanData.pekerjaan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan" value="Tidak" v-model="semakanData.pekerjaan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan" value="Tidak Berkenaan" v-model="semakanData.pekerjaan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pendapatan dan Perbelanjaan Seisi Rumah</td><td class="border px-2 py-1 text-center"><input type="radio" name="pendapatan" value="Ya" v-model="semakanData.pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendapatan" value="Tidak" v-model="semakanData.pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendapatan" value="Tidak Berkenaan" v-model="semakanData.pendapatan" /></td></tr>
+              <tr><td class="border px-2 py-1">Waris</td><td class="border px-2 py-1 text-center"><input type="radio" name="waris" value="Ya" v-model="semakanData.waris" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="waris" value="Tidak" v-model="semakanData.waris" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="waris" value="Tidak Berkenaan" v-model="semakanData.waris" /></td></tr>
+              <tr><td class="border px-2 py-1">Peribadi Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi_tanggungan" value="Ya" v-model="semakanData.peribadi_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi_tanggungan" value="Tidak" v-model="semakanData.peribadi_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="peribadi_tanggungan" value="Tidak Berkenaan" v-model="semakanData.peribadi_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pengislaman Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman_tanggungan" value="Ya" v-model="semakanData.pengislaman_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman_tanggungan" value="Tidak" v-model="semakanData.pengislaman_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengislaman_tanggungan" value="Tidak Berkenaan" v-model="semakanData.pengislaman_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pendidikan Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan_tanggungan" value="Ya" v-model="semakanData.pendidikan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan_tanggungan" value="Tidak" v-model="semakanData.pendidikan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pendidikan_tanggungan" value="Tidak Berkenaan" v-model="semakanData.pendidikan_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Kesihatan Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan_tanggungan" value="Ya" v-model="semakanData.kesihatan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan_tanggungan" value="Tidak" v-model="semakanData.kesihatan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kesihatan_tanggungan" value="Tidak Berkenaan" v-model="semakanData.kesihatan_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Kemahiran Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran_tanggungan" value="Ya" v-model="semakanData.kemahiran_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran_tanggungan" value="Tidak" v-model="semakanData.kemahiran_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="kemahiran_tanggungan" value="Tidak Berkenaan" v-model="semakanData.kemahiran_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Pekerjaan Tanggungan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan_tanggungan" value="Ya" v-model="semakanData.pekerjaan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan_tanggungan" value="Tidak" v-model="semakanData.pekerjaan_tanggungan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pekerjaan_tanggungan" value="Tidak Berkenaan" v-model="semakanData.pekerjaan_tanggungan" /></td></tr>
+              <tr><td class="border px-2 py-1">Perakuan Ketua Keluarga</td><td class="border px-2 py-1 text-center"><input type="radio" name="perakuan_ketua_keluarga" value="Ya" v-model="semakanData.perakuan_ketua_keluarga" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perakuan_ketua_keluarga" value="Tidak" v-model="semakanData.perakuan_ketua_keluarga" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="perakuan_ketua_keluarga" value="Tidak Berkenaan" v-model="semakanData.perakuan_ketua_keluarga" /></td></tr>
+              <tr><td class="border px-2 py-1">Pengesahan Permastautin</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_permastautin" value="Ya" v-model="semakanData.pengesahan_permastautin" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_permastautin" value="Tidak" v-model="semakanData.pengesahan_permastautin" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_permastautin" value="Tidak Berkenaan" v-model="semakanData.pengesahan_permastautin" /></td></tr>
+              <tr><td class="border px-2 py-1">Pengesahan Pendapatan</td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_pendapatan" value="Ya" v-model="semakanData.pengesahan_pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_pendapatan" value="Tidak" v-model="semakanData.pengesahan_pendapatan" /></td><td class="border px-2 py-1 text-center"><input type="radio" name="pengesahan_pendapatan" value="Tidak Berkenaan" v-model="semakanData.pengesahan_pendapatan" /></td></tr>
             </tbody>
           </table>
           <!-- Komen Penyemak and Dokumen Lengkap outside table -->
           <div class="mb-4 flex flex-col gap-4">
             <div>
               <label class="font-bold block mb-1">Komen Penyemak</label>
-              <textarea class="w-full border rounded p-2" rows="2"></textarea>
+              <textarea 
+                class="w-full border rounded p-2" 
+                rows="2"
+                v-model="komenPenyemak"
+                placeholder="Masukkan komen penyemak..."
+              ></textarea>
             </div>
             <div>
               <label class="font-bold block mb-2">Dokumen Lengkap?</label>
               <div class="flex gap-6">
-                <label class="flex items-center gap-2">
-                  <input 
-                    type="radio" 
-                    name="dokumen_lengkap" 
-                    value="Ya"
-                    v-model="dokumenLengkap"
-                    @change="handleDokumenLengkapChange"
-                    checked
-                  />
-                  <span>Ya</span>
-                </label>
+                                 <label class="flex items-center gap-2">
+                   <input 
+                     type="radio" 
+                     name="dokumen_lengkap" 
+                     value="Ya"
+                     v-model="dokumenLengkap"
+                     @change="handleDokumenLengkapChange"
+                   />
+                   <span>Ya</span>
+                 </label>
                 <label class="flex items-center gap-2">
                   <input 
                     type="radio" 
@@ -1410,14 +1426,34 @@ const handleKembali = () => {
 };
 
 // State for document completeness
-const dokumenLengkap = ref('Ya');
+const dokumenLengkap = ref(null);
+
+// New state for komen penyemak
+const komenPenyemak = ref('');
 
 // Function to handle document completeness change
 const handleDokumenLengkapChange = () => {
-  // This function is called when the radio button changes
-  // The popup will now only show when Hantar button is clicked
-  // eslint-disable-next-line no-console
-  console.log('Dokumen Lengkap changed to:', dokumenLengkap.value);
+  try {
+    // Validate that dokumenLengkap has a value
+    if (!dokumenLengkap.value) {
+      console.warn('Dokumen Lengkap value is undefined or null');
+      return;
+    }
+    
+    // This function is called when the radio button changes
+    // The popup will now only show when Hantar button is clicked
+    // eslint-disable-next-line no-console
+    console.log('Dokumen Lengkap changed to:', dokumenLengkap.value);
+    
+    // Automatically update komen penyemak based on selection
+    if (dokumenLengkap.value === 'Tidak') {
+      komenPenyemak.value = 'Tidak Lengkap';
+    } else if (dokumenLengkap.value === 'Ya') {
+      komenPenyemak.value = '';
+    }
+  } catch (error) {
+    console.error('Error handling dokumen lengkap change:', error);
+  }
 };
 
 // State for notification
@@ -1436,6 +1472,73 @@ const showNotificationMessage = (message) => {
       notificationFading.value = false;
     }, 300); // Transition duration
   }, 5000); // Show for 5 seconds
+};
+
+// New state for semakan data
+const semakanData = ref({
+  peribadi: 'Ya',
+  pendidikan: 'Ya',
+  pengislaman: 'Ya',
+  perbankan: 'Ya',
+  kesihatan: 'Ya',
+  kemahiran: 'Ya',
+  alamat: 'Ya',
+  pinjaman: 'Ya',
+  aset: 'Ya',
+  barang: 'Ya',
+  pekerjaan: 'Ya',
+  pendapatan: 'Ya',
+  waris: 'Ya',
+  peribadi_tanggungan: 'Ya',
+  pengislaman_tanggungan: 'Ya',
+  pendidikan_tanggungan: 'Ya',
+  kesihatan_tanggungan: 'Ya',
+  kemahiran_tanggungan: 'Ya',
+  pekerjaan_tanggungan: 'Ya',
+  perakuan_ketua_keluarga: 'Ya',
+  pengesahan_permastautin: 'Ya',
+  pengesahan_pendapatan: 'Ya',
+});
+
+// Function to set all semakan radio buttons to "Ya"
+const setAllSemakanToYa = () => {
+  try {
+    // Validate that semakanData exists
+    if (!semakanData.value) {
+      console.error('Semakan data is not initialized');
+      return;
+    }
+    
+    // Set all fields to "Ya"
+    semakanData.value.peribadi = 'Ya';
+    semakanData.value.pendidikan = 'Ya';
+    semakanData.value.pengislaman = 'Ya';
+    semakanData.value.perbankan = 'Ya';
+    semakanData.value.kesihatan = 'Ya';
+    semakanData.value.kemahiran = 'Ya';
+    semakanData.value.alamat = 'Ya';
+    semakanData.value.pinjaman = 'Ya';
+    semakanData.value.aset = 'Ya';
+    semakanData.value.barang = 'Ya';
+    semakanData.value.pekerjaan = 'Ya';
+    semakanData.value.pendapatan = 'Ya';
+    semakanData.value.waris = 'Ya';
+    semakanData.value.peribadi_tanggungan = 'Ya';
+    semakanData.value.pengislaman_tanggungan = 'Ya';
+    semakanData.value.pendidikan_tanggungan = 'Ya';
+    semakanData.value.kesihatan_tanggungan = 'Ya';
+    semakanData.value.kemahiran_tanggungan = 'Ya';
+    semakanData.value.pekerjaan_tanggungan = 'Ya';
+    semakanData.value.perakuan_ketua_keluarga = 'Ya';
+    semakanData.value.pengesahan_permastautin = 'Ya';
+    semakanData.value.pengesahan_pendapatan = 'Ya';
+    
+    // Show success notification
+    showNotificationMessage('Semua pilihan semakan telah diubah ke Ya.');
+  } catch (error) {
+    console.error('Error setting all semakan to Ya:', error);
+    showNotificationMessage('Ralat berlaku semasa mengubah pilihan semakan.');
+  }
 };
 
 </script>
