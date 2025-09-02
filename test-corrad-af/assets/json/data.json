@@ -1,0 +1,92 @@
+[
+  {
+    "id": "#001",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "johndoe@example.com",
+    "gender": "Male",
+    "status": "Active",
+    "age": 34
+  },
+  {
+    "id": "#002",
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "email": "janesmith@example.com",
+    "gender": "Female",
+    "status": "Inactive",
+    "age": 28
+  },
+  {
+    "id": "#003",
+    "firstName": "Robert",
+    "lastName": "Brown",
+    "email": "robertbrown@example.com",
+    "gender": "Male",
+    "status": "Banned",
+    "age": 45
+  },
+  {
+    "id": "#004",
+    "firstName": "Emily",
+    "lastName": "White",
+    "email": "emilywhite@example.com",
+    "gender": "Female",
+    "status": "Active",
+    "age": 37
+  },
+  {
+    "id": "#005",
+    "firstName": "Michael",
+    "lastName": "Johnson",
+    "email": "michaeljohnson@example.com",
+    "gender": "Male",
+    "status": "Inactive",
+    "age": 50
+  },
+  {
+    "id": "#006",
+    "firstName": "Linda",
+    "lastName": "Williams",
+    "email": "lindawilliams@example.com",
+    "gender": "Female",
+    "status": "Active",
+    "age": 32
+  },
+  {
+    "id": "#007",
+    "firstName": "James",
+    "lastName": "Taylor",
+    "email": "jamestaylor@example.com",
+    "gender": "Male",
+    "status": "Banned",
+    "age": 40
+  },
+  {
+    "id": "#008",
+    "firstName": "Patricia",
+    "lastName": "Brown",
+    "email": "patriciabrown@example.com",
+    "gender": "Female",
+    "status": "Inactive",
+    "age": 29
+  },
+  {
+    "id": "#009",
+    "firstName": "David",
+    "lastName": "Wilson",
+    "email": "davidwilson@example.com",
+    "gender": "Male",
+    "status": "Active",
+    "age": 38
+  },
+  {
+    "id": "#010",
+    "firstName": "Elizabeth",
+    "lastName": "Garcia",
+    "email": "elizabethgarcia@example.com",
+    "gender": "Female",
+    "status": "Banned",
+    "age": 42
+  }
+]

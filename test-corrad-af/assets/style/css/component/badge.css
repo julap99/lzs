@@ -1,0 +1,32 @@
+/* RS Badge Component */
+.badge {
+  @apply inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-semibold leading-none;
+}
+
+.badge.badge-primary {
+  @apply bg-primary text-white;
+}
+
+.badge.badge-secondary {
+  @apply bg-secondary text-white;
+}
+
+.badge.badge-success {
+  @apply bg-success text-white;
+}
+
+.badge.badge-info {
+  @apply bg-info text-white;
+}
+
+.badge.badge-warning {
+  @apply bg-warning text-white;
+}
+
+.badge.badge-danger {
+  @apply bg-danger text-white;
+}
+
+.badge.badge-disabled {
+  @apply bg-gray-300 text-gray-600;
+}

@@ -1,0 +1,50 @@
+/* RS Modal Component  */
+.modal {
+  @apply fixed top-0 left-0 w-full h-full overflow-hidden z-[1000] duration-300;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.modal.modal-top {
+  @apply flex items-start;
+}
+
+.modal.modal-center {
+  @apply flex items-center;
+}
+
+.modal.modal-end {
+  @apply flex items-end;
+}
+
+.modal.modal-hide-overlay {
+  @apply !bg-transparent;
+}
+
+.modal .modal-dialog {
+  @apply w-full md:w-auto relative z-[9999];
+  margin: 1.75rem auto;
+}
+
+.modal .modal-dialog .modal-content {
+  @apply border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-clip-padding rounded-md outline-none text-current;
+  background-color: rgb(var(--bg-2));
+}
+
+.modal .modal-dialog .modal-content .modal-header {
+  @apply flex flex-shrink-0 items-center justify-between p-4 border-b rounded-t-md;
+  border-color: rgb(var(--border-color));
+}
+
+.modal .modal-dialog .modal-content .modal-body {
+  @apply relative p-4;
+}
+
+.modal .modal-dialog .modal-content .modal-footer {
+  @apply flex flex-shrink-0 flex-wrap items-center justify-end px-4 pb-4 rounded-b-md gap-x-3;
+}
+
+@media screen and (max-width: 768px) {
+  .modal-dialog {
+    margin: 1.75rem 1rem;
+  }
+}

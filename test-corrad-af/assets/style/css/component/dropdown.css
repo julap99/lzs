@@ -1,0 +1,53 @@
+/* RS Dropdown Component */
+.dropdown {
+  @apply relative inline-flex;
+}
+
+.dropdown .dropdown-section {
+  @apply absolute z-10 shadow-md rounded-lg py-1 whitespace-nowrap;
+  background-color: rgb(var(--bg-2));
+}
+
+.dropdown-section.list-bottom-sm {
+  @apply top-10;
+}
+
+.dropdown-section.list-bottom-md {
+  @apply top-12;
+}
+
+.dropdown-section.list-bottom-lg {
+  @apply top-16;
+}
+
+.dropdown-section.list-top-sm {
+  @apply bottom-10;
+}
+
+.dropdown-section.list-top-md {
+  @apply bottom-12;
+}
+
+.dropdown-section.list-top-lg {
+  @apply bottom-16;
+}
+
+.dropdown-section.list-left {
+  @apply top-0 -left-[10.5rem];
+}
+
+.dropdown-section.list-right {
+  @apply top-0 -right-[10.5rem];
+}
+
+.dropdown-section.list-align-right {
+  @apply right-0;
+}
+
+.dropdown-section .dropdown-item {
+  @apply flex items-center cursor-pointer px-4 py-2;
+}
+
+.dropdown-section .dropdown-item:hover {
+  background-color: rgb(var(--bg-1));
+}

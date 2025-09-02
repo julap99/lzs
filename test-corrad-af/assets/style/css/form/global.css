@@ -1,0 +1,23 @@
+.formkit-label-global {
+  @apply text-[rgb(var(--text-color))];
+}
+
+.formkit-outer-global {
+  @apply mb-4 text-[rgb(var(--text-color))] formkit-disabled:opacity-50;
+}
+
+.formkit-help-global {
+  @apply text-xs mt-1;
+}
+
+.formkit-messages-global {
+  @apply list-none p-0 mt-1 mb-0;
+}
+
+.formkit-message-global {
+  @apply text-red-500 mb-1 text-xs;
+}
+
+.formkit-wrapper-global {
+  @apply relative;
+}

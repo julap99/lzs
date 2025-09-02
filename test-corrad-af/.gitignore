@@ -1,0 +1,95 @@
+# Nuxt dev/build outputs
+.output
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Package manager files
+package-lock.json
+pnpm-lock.yaml
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Editor directories and files
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Uploads directory
+public/uploads/
+
+# Development and testing files
+test-*.md
+fixes-*.md
+debug-*.md
+*-debug.*
+*-test.*
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# IDE and editor files
+.project
+.classpath
+.settings/
+*.sublime-*
+.brackets.json
+*.code-workspace
+
+# Backup files
+*.bak
+*.backup
+*~
+.#*
+
+# Documentation drafts (keep main docs)
+draft-*.md
+notes-*.md

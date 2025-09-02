@@ -258,22 +258,4 @@ const handleSubmit = (data) => {
   console.log("Form submitted:", data);
   calculateKifayahLimit();
 };
-
-function goToSummary() {
-  // Save Had Kifayah results to localStorage
-  localStorage.setItem('hadKifayahResult', JSON.stringify({
-    bakiPendapatan: bakiPendapatan.value,
-    peratusanPendapatan: peratusanPendapatan.value,
-    kategoriKeluarga: kategoriKeluarga.value,
-    kategoriAsnaf: kategoriAsnaf.value,
-    kifayahLimit: kifayahLimit.value,
-    breakdown: [
-      { kategori: 'Rumah Tidak Berbayar', had: 780, bil: 1, jumlah: 780 },
-      { kategori: 'Dewasa Tidak Bekerja', had: 167, bil: 1, jumlah: 167 },
-      { kategori: 'Tanggungan 7-17 tahun', had: 408, bil: 1, jumlah: 408 },
-      { kategori: 'Tanggungan Belajar IPT', had: 613, bil: 1, jumlah: 613 }
-    ]
-  }))
-  navigateTo('/BF-PRF/AS/FR/05')
-}
 </script>

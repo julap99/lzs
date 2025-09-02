@@ -1,0 +1,337 @@
+html[data-theme="biasa"] {
+  --color-primary: 0, 165, 154;
+  --color-secondary: 97, 176, 183;
+  --color-accent: 243, 244, 246;
+  --color-success: 79, 192, 103;
+  --color-info: 65, 133, 242;
+  --color-warning: 246, 141, 32;
+  --color-danger: 229, 83, 69;
+  --text-color: 9, 9, 11;
+  --border-color: 228, 228, 231;
+  --bg-1: 243, 244, 246;
+  --bg-2: 255, 255, 255;
+  --sidebar: 38, 50, 55;
+  --sidebar-menu: 26, 35, 38;
+  --sidebar-text: 255, 255, 255;
+  --header: 49, 65, 71;
+  --header-text: 255, 255, 255;
+  --scroll-color: 170, 170, 170;
+  --scroll-hover-color: 155, 155, 155;
+  --fk-border-color: 228, 228, 231;
+  --fk-placeholder-color: 146, 146, 153;
+  --box-shadow: rgba(36, 35, 71, 0.05) 0px 1px 1px,
+    rgba(36, 35, 71, 0.05) 0px 0px 1px 1px;
+  --cp-bg: 255, 255, 255;
+  --rounded-box: 0.2rem;
+  --rounded-btn: 0.2rem;
+  --rounded-badge: 1.9rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --padding-btn: 0.5rem;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+  --tw-shadow: #e5eaf2;
+}
+
+html[data-theme="gelap"] {
+  --color-primary: 97, 176, 183;
+  --color-secondary: 13, 27, 42;
+  --color-accent: 15, 23, 42;
+  --color-success: 79, 192, 103;
+  --color-info: 65, 133, 242;
+  --color-warning: 246, 141, 32;
+  --color-danger: 229, 83, 69;
+  --text-color: 209, 213, 219;
+  --border-color: 30, 41, 59;
+  --bg-1: 15, 23, 42;
+  --bg-2: 30, 41, 59;
+  --sidebar: 38, 50, 55;
+  --sidebar-menu: 26, 35, 38;
+  --sidebar-text: 255, 255, 255;
+  --header: 49, 65, 71;
+  --header-text: 255, 255, 255;
+  --scroll-color: 170, 170, 170;
+  --scroll-hover-color: 155, 155, 155;
+  --fk-border-color: 71, 85, 105;
+  --fk-placeholder-color: 71, 85, 105;
+  --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --cp-bg: 255, 255, 255;
+  --rounded-box: 0.5rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 1.9rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --padding-btn: 0.625rem 1.5rem;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+  --tw-shadow: #e5eaf2;
+}
+
+html[data-theme="biru"] {
+  --color-primary: 0, 102, 204;
+  --color-secondary: 51, 153, 255;
+  --color-accent: 255, 204, 0;
+  --color-success: 46, 204, 113;
+  --color-info: 52, 152, 219;
+  --color-warning: 246, 141, 32;
+  --color-danger: 231, 76, 60;
+  --text-color: 0, 0, 0;
+  --border-color: 200, 200, 200;
+  --bg-1: 240, 248, 255;
+  --bg-2: 230, 240, 250;
+  --sidebar: 38, 50, 55;
+  --sidebar-menu: 26, 35, 38;
+  --sidebar-text: 255, 255, 255;
+  --header: 49, 65, 71;
+  --header-text: 255, 255, 255;
+  --scroll-color: 180, 180, 180;
+  --scroll-hover-color: 150, 150, 150;
+  --fk-border-color: 200, 200, 200;
+  --fk-placeholder-color: 150, 150, 150;
+  --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --cp-bg: 255, 255, 255;
+  --rounded-box: 0.5rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 1.9rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --padding-btn: 0.625rem 1.5rem;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+  --tw-shadow: #e5eaf2;
+}
+
+html[data-theme="merah"] {
+  --color-primary: 204, 0, 0;
+  --color-secondary: 255, 102, 102;
+  --color-accent: 255, 255, 153;
+  --color-success: 46, 204, 113;
+  --color-info: 52, 152, 219;
+  --color-warning: 246, 141, 32;
+  --color-danger: 231, 76, 60;
+  --text-color: 0, 0, 0;
+  --border-color: 200, 200, 200;
+  --bg-1: 255, 240, 240;
+  --bg-2: 255, 230, 230;
+  --sidebar: 38, 50, 55;
+  --sidebar-menu: 26, 35, 38;
+  --sidebar-text: 255, 255, 255;
+  --header: 49, 65, 71;
+  --header-text: 255, 255, 255;
+  --scroll-color: 180, 180, 180;
+  --scroll-hover-color: 150, 150, 150;
+  --fk-border-color: 200, 200, 200;
+  --fk-placeholder-color: 150, 150, 150;
+  --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --cp-bg: 255, 255, 255;
+  --rounded-box: 0.5rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 1.9rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --padding-btn: 0.625rem 1.5rem;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+  --tw-shadow: #e5eaf2;
+}
+
+html[data-theme="ungu"] {
+  --color-primary: 75, 0, 130;
+  --color-secondary: 138, 43, 226;
+  --color-accent: 255, 215, 0;
+  --color-success: 46, 204, 113;
+  --color-info: 52, 152, 219;
+  --color-warning: 246, 141, 32;
+  --color-danger: 231, 76, 60;
+  --text-color: 0, 0, 0;
+  --border-color: 200, 200, 200;
+  --bg-1: 240, 248, 255;
+  --bg-2: 230, 240, 250;
+  --sidebar: 38, 50, 55;
+  --sidebar-menu: 26, 35, 38;
+  --sidebar-text: 255, 255, 255;
+  --header: 49, 65, 71;
+  --header-text: 255, 255, 255;
+  --scroll-color: 180, 180, 180;
+  --scroll-hover-color: 150, 150, 150;
+  --fk-border-color: 200, 200, 200;
+  --fk-placeholder-color: 150, 150, 150;
+  --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --cp-bg: 255, 255, 255;
+  --rounded-box: 0.5rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 1.9rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --padding-btn: 0.625rem 1.5rem;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+  --tw-shadow: #e5eaf2;
+}
+
+html[data-theme="oren"] {
+  --color-primary: 255, 103, 0;
+  --color-secondary: 255, 159, 64;
+  --color-accent: 0, 128, 128;
+  --color-success: 46, 204, 113;
+  --color-info: 52, 152, 219;
+  --color-warning: 246, 141, 32;
+  --color-danger: 231, 76, 60;
+  --text-color: 0, 0, 0;
+  --border-color: 200, 200, 200;
+  --bg-1: 255, 250, 240;
+  --bg-2: 255, 245, 230;
+  --sidebar: 38, 50, 55;
+  --sidebar-menu: 26, 35, 38;
+  --sidebar-text: 255, 255, 255;
+  --header: 49, 65, 71;
+  --header-text: 255, 255, 255;
+  --scroll-color: 180, 180, 180;
+  --scroll-hover-color: 150, 150, 150;
+  --fk-border-color: 200, 200, 200;
+  --fk-placeholder-color: 150, 150, 150;
+  --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --cp-bg: 255, 255, 255;
+  --rounded-box: 0.5rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 1.9rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --padding-btn: 0.625rem 1.5rem;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+  --tw-shadow: #e5eaf2;
+}
+
+html[data-theme="purplian"] {
+  /* Core colors */
+  --color-primary: 145, 54, 136; /* #913688 - Main Purple */
+  --color-secondary: 165, 94, 156; /* #a55e9c - Lighter Purple */
+  --color-accent: 241, 235, 245; /* #f1ebf5 - Very soft purple */
+ 
+  /* Status colors */
+  --color-success: 67, 160, 71; /* #43a047 - Modern green */
+  --color-info: 41, 121, 255; /* #2979ff - Bright blue */
+  --color-warning: 255, 145, 0; /* #ff9100 - Vibrant orange */
+  --color-danger: 229, 57, 53; /* #e53935 - Refined red */
+ 
+  /* Basic UI colors */
+  --text-color: 60, 60, 67; /* #3c3c43 - Dark gray text */
+  --border-color: 232, 232, 235; /* #e8e8eb - Light gray border */
+  --bg-1: 250, 250, 253; /* #fafafd - Almost white background */
+  --bg-2: 255, 255, 255; /* #ffffff - Pure white background */
+ 
+  /* Sidebar colors with interactive states */
+  --sidebar: 145, 54, 136; /* #913688 - Purple sidebar */
+  --sidebar-menu: 120, 40, 110; /* #78286e - Darker Purple for menu */
+  --sidebar-text: 255, 255, 255; /* White Text */
+  --sidebar-hover-bg: 165, 94, 156; /* #a55e9c - Lighter purple for hover */
+  --sidebar-active-bg: 100, 30, 90; /* #641e5a - Darker purple for active state */
+  --sidebar-selected-bg: 185, 114, 176; /* #b972b0 - Highlight purple for selected */
+  --sidebar-indicator: 255, 255, 255; /* #ffffff - White indicator line */
+  --sidebar-active-text: 255, 236, 249; /* #ffecf9 - Brighter white for active text */
+  --sidebar-item-spacing: 2px; /* Spacing between sidebar items */
+  --sidebar-item-radius: 8px; /* Rounded corners for items */
+ 
+  /* Header styles */
+  --header: 250, 250, 253; /* #fafafd - Light header */
+  --header-text: 60, 60, 67; /* #3c3c43 - Dark text for header */
+  --header-active-text: 145, 54, 136; /* #913688 - Purple for active header items */
+  --header-hover-bg: 241, 235, 245; /* #f1ebf5 - Very soft purple for hover */
+  --header-border: 232, 232, 235; /* #e8e8eb - Light border under header */
+ 
+  /* UI Element Colors */
+  --scroll-color: 220, 220, 225; /* #dcdce1 - Light gray scrollbar */
+  --scroll-hover-color: 145, 54, 136; /* #913688 - Purple on hover */
+  --fk-border-color: 232, 232, 235; /* #e8e8eb - Light gray border */
+  --fk-placeholder-color: 150, 150, 155; /* #96969b - Medium gray placeholder */
+  --fk-focus-border: 145, 54, 136; /* #913688 - Purple border on focus */
+  --fk-hover-border: 165, 94, 156; /* #a55e9c - Lighter purple on hover */
+  --box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px,
+    rgba(0, 0, 0, 0.04) 0px 0px 1px;
+  --cp-bg: 255, 255, 255; /* White Background */
+ 
+  /* Interactive elements */
+  --btn-hover-bg: 241, 235, 245; /* #f1ebf5 - Very soft purple for button hover */
+  --active-tab-border: 145, 54, 136; /* #913688 - Purple border for active tab */
+  --focus-ring: 185, 114, 176, 0.4; /* #b972b0 - Focus outline with opacity */
+ 
+  /* UI Settings */
+  --rounded-box: 0.4rem;
+  --rounded-btn: 0.375rem;
+  --rounded-badge: 1.9rem;
+  --animation-btn: 0.2s;
+  --animation-input: 0.2s;
+  --btn-text-case: capitalize;
+  --btn-focus-scale: 0.98;
+  --padding-btn: 0.6rem 1.2rem;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+  --tw-shadow: rgba(0, 0, 0, 0.05);
+}
+
+html[data-theme="LZS"] {
+  --color-primary: 0, 90, 173; /* #005AAD - Blue */
+  --color-secondary: 141, 199, 61; /* #8DC73D - Green */
+  --color-accent: 255, 242, 0; /* #FFF200 - Yellow */
+  --color-success: 141, 199, 61; /* Using the green for success */
+  --color-info: 0, 90, 173; /* Using the blue for info */
+  --color-warning: 246, 141, 32; /* Using consistent orange for warning */
+  --color-danger: 229, 83, 69; /* Keeping original red for danger */
+  --text-color: 0, 0, 0; /* Black text */
+  --border-color: 220, 220, 220; /* Light gray for borders */
+  --bg-1: 245, 250, 255; /* Very light blue background */
+  --bg-2: 255, 255, 255; /* White background */
+  --sidebar: 0, 58, 112; /* Darker blue for sidebar - #003A70 */
+  --sidebar-menu: 0, 40, 77; /* Even darker blue for sidebar menu - #00284D */
+  --sidebar-text: 255, 255, 255; /* White text for sidebar */
+  --header: 0, 90, 173; /* Blue header - #005AAD */
+  --header-text: 255, 255, 255; /* White text for header */
+  --scroll-color: 180, 180, 180; /* Gray scrollbar */
+  --scroll-hover-color: 150, 150, 150; /* Darker gray on hover */
+  --fk-border-color: 220, 220, 220; /* Light gray for form borders */
+  --fk-placeholder-color: 150, 150, 150; /* Gray for placeholders */
+  --box-shadow: rgba(0, 90, 173, 0.1) 0px 1px 2px,
+    rgba(0, 90, 173, 0.08) 0px 0px 2px; /* Blue-tinted shadow */
+  --cp-bg: 255, 255, 255; /* White background */
+  --rounded-box: 0.5rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 1.9rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --padding-btn: 0.625rem 1.5rem;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+  /* Yellow accents in specific UI elements */
+  --active-menu-bg: 255, 242, 0, 0.1; /* Subtle yellow background for active menu items */
+  --active-menu-border: 255, 242, 0; /* Yellow border for active menu items */
+  --focus-ring: 255, 242, 0, 0.5; /* Yellow focus ring */
+  --tw-shadow: #e5eaf2;
+}
+ 

@@ -1,0 +1,11 @@
+# Development files
+*.md
+!README.md
+
+# Logs
+*.log
+
+# Testing
+test/
+tests/
+*.test.js 

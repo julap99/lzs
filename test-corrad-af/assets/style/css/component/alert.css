@@ -1,0 +1,28 @@
+/* RS Alert Component */
+.alert {
+  @apply visible flex items-center justify-between py-3 px-3 rounded-lg;
+}
+
+.alert.alert-primary {
+  @apply bg-primary/20  text-primary;
+}
+
+.alert.alert-secondary {
+  @apply bg-secondary/20 text-secondary;
+}
+
+.alert.alert-success {
+  @apply bg-success/20 text-success;
+}
+
+.alert.alert-info {
+  @apply bg-info/20 text-info;
+}
+
+.alert.alert-warning {
+  @apply bg-warning/20 text-warning;
+}
+
+.alert.alert-danger {
+  @apply bg-danger/20 text-danger;
+}

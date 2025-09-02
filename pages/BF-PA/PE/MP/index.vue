@@ -5,1551 +5,245 @@
   ROUTE: /BF-PA/PE/MP
 -->
 <template>
-  <div>
-    <LayoutsBreadcrumb :items="breadcrumb" />
+  <div class="p-4 space-y-4">
+    <!-- Breadcrumb ringkas -->
+    <nav class="text-sm text-gray-500">
+      Pengurusan Elaun › Elaun Tahunan › <span class="text-gray-900 font-medium">Isi Maklumat Penerima</span>
+    </nav>
 
-    <!-- Page-specific Role Switcher -->
-    <div class="px-4 py-2 mt-0">
-      <div class="flex items-center space-x-3">
-        <div class="flex items-center space-x-2">
-          <Icon name="ic:baseline-account-circle" class="text-gray-600" size="20" />
-          <span class="text-sm font-medium text-gray-700">Simulasi Peranan:</span>
+    <!-- KAD UTAMA -->
+    <div class="rounded-xl border bg-white shadow-sm">
+      <!-- Header -->
+      <div class="px-5 py-4 border-b flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Borang Isi Maklumat Penerima Elaun Tahunan</h2>
+        <span v-if="locked" class="text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-700">Draft Terkunci</span>
+      </div>
+
+      <!-- Body -->
+      <div class="p-5 space-y-5">
+
+        <!-- Filter -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="text-sm font-medium">Tahun Elaun <span class="text-red-500">*</span></label>
+            <select class="mt-1 w-full border rounded-lg px-3 py-2"
+                    v-model="filters.year" :disabled="locked">
+              <option value="" disabled>Pilih tahun…</option>
+              <option v-for="y in yearOptions" :key="y" :value="y">{{ y }}</option>
+            </select>
+            <p class="text-xs text-gray-500 mt-1">Wajib dipilih; memandu skop data penerima & kawalan konflik tahun.</p>
+          </div>
+
+          <div>
+            <label class="text-sm font-medium">Jawatan (pilihan)</label>
+            <select class="mt-1 w-full border rounded-lg px-3 py-2"
+                    v-model="filters.role" :disabled="locked">
+              <option value="">Semua</option>
+              <option value="Penolong Amil">Penolong Amil</option>
+              <option value="Ketua Penolong Amil">Ketua Penolong Amil</option>
+            </select>
+            <p class="text-xs text-gray-500 mt-1">Menapis paparan jadual; tidak mengubah kelayakan asas.</p>
+          </div>
+
+          <div class="self-end">
+            <div class="text-sm">
+              <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border">
+                <span class="font-medium">Dipilih:</span> {{ selectedCount }}
+              </span>
+            </div>
+          </div>
         </div>
-        <select
-          v-model="currentRole"
-          @change="handleRoleChange"
-          class="py-1.5 px-3 text-sm rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-        >
-          <option 
-            v-for="option in roleOptions" 
-            :key="option.value" 
-            :value="option.value"
-          >
-            {{ option.label }}
-          </option>
-        </select>
+
+        <!-- Jadual penerima -->
+        <div class="overflow-x-auto rounded-lg border">
+          <table class="min-w-full text-sm">
+            <thead class="bg-gray-50">
+              <tr class="text-left">
+                <th class="px-4 py-3 w-10">
+                  <input type="checkbox" :disabled="locked || !canBulkToggle"
+                         :checked="allVisibleChecked" @change="toggleAll($event.target.checked)" />
+                </th>
+                <th class="px-4 py-3">Nama Penuh</th>
+                <th class="px-4 py-3">ID Pengenalan</th>
+                <th class="px-4 py-3">Jawatan</th>
+                <th class="px-4 py-3">Tahun Elaun</th>
+                <th class="px-4 py-3">Status Perkhidmatan</th>
+                <th class="px-4 py-3">Kategori</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="pa in visibleRows" :key="pa.id"
+                  class="border-t">
+                <td class="px-4 py-2">
+                  <input type="checkbox" v-model="selectedIds"
+                         :value="pa.id" :disabled="locked || !pa.isActive"/>
+                </td>
+                <td class="px-4 py-2">{{ pa.name }}</td>
+                <td class="px-4 py-2">{{ pa.nric }}</td>
+                <td class="px-4 py-2">{{ pa.role }}</td>
+                <td class="px-4 py-2">{{ filters.year || '—' }}</td>
+                <td class="px-4 py-2">
+                  <span class="px-2 py-1 rounded-full text-xs"
+                        :class="pa.isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                            : 'bg-rose-50 text-rose-700 border border-rose-200'">
+                    {{ pa.isActive ? 'Aktif' : 'Tidak Aktif' }}
+                  </span>
+                </td>
+                <td class="px-4 py-2">{{ pa.category }}</td>
+              </tr>
+              <tr v-if="visibleRows.length === 0">
+                <td colspan="7" class="px-4 py-6 text-center text-gray-500">Tiada rekod untuk penapis semasa.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Nota kelayakan -->
+        <div class="text-xs text-gray-600">
+          <p>• Sumber data: rekod PA <b>Aktif</b> pada tarikh rujukan <i>Tahun Elaun</i>. PA tidak aktif disembunyikan daripada pemilihan.</p>
+          <p>• Checkbox “Layak” menandakan penerima untuk batch tahun berkenaan (disahkan ketika Simpan).</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-between pt-2">
+          <button type="button" class="px-4 py-2 rounded-lg border hover:bg-gray-50"
+                  @click="goBack" :disabled="saving">Kembali</button>
+
+          <!-- Butang Simpan -->
+          <button type="button"
+                  class="px-4 py-2 rounded-lg text-white disabled:opacity-50"
+                  :class="locked ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'"
+                  :disabled="!canSave || locked || saving"
+                  @click="saveBatch">
+            <span v-if="!locked">Simpan</span>
+            <span v-else>Draft Terkunci</span>
+          </button>
+        </div>
+
+        <!-- Mesej berjaya -->
+        <div v-if="toast" class="mt-2 text-sm px-3 py-2 rounded-md border bg-green-50 text-green-700">
+          {{ toast }}
+        </div>
       </div>
     </div>
-
-    <!-- Dynamic Content Based on Role -->
-    <div v-if="currentRole === 'eksekutif'">
-      <!-- Eksekutif Content -->
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-semibold">
-              Senarai Elaun Penolong Amil (Eksekutif) - Mesyuarat/Program
-            </h2>
-          </div>
-        </div>
-      </template>
-
-      <template #body>
-          <!-- Smart Filter Section -->
-          <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                v-model="filters.searchQuery"
-                type="text"
-                placeholder="Cari Kod Aktiviti atau Nama Aktiviti..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <rs-button
-                variant="primary"
-                @click="performSearch"
-                class="!py-2 !px-4"
-              >
-                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-            </div>
-          </div>
-
-          <!-- Tabbed Table Section -->
-          <rs-tab v-model="activeTab" class="mt-4">
-            <rs-tab-item title="Sedang Proses">
-              <div class="p-4">
-                <rs-table
-                  :key="`table-${tableKey}-pending`"
-                  :data="getTableDataByStatus(['Sedang Proses'])"
-                  :columns="eksekutifColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                      <button
-                        @click="handleView(text)"
-                        title="Lihat"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                      </button>
-                    </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Lulus">
-              <div class="p-4">
-                <rs-table
-                  :key="`table-${tableKey}-approved`"
-                  :data="getTableDataByStatus(['Lulus'])"
-                  :columns="eksekutifApprovedColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                      <button
-                        @click="handleView(text)"
-                        title="Lihat"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                      </button>
-                    </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Ditolak">
-              <div class="p-4">
-                <rs-table
-                  :key="`table-${tableKey}-rejected`"
-                  :data="getTableDataByStatus(['Ditolak'])"
-                  :columns="eksekutifColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                      <button
-                        @click="handleView(text)"
-                        title="Lihat"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                      </button>
-                    </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-          </rs-tab>
-        </template>
-      </rs-card>
-
-
-    </div>
-
-    <!-- Ketua Jabatan Content -->
-    <div v-else-if="currentRole === 'ketua-jabatan'">
-      <rs-card class="mt-4">
-        <template #header>
-          <div class="flex justify-between items-center">
-            <div>
-              <h2 class="text-xl font-semibold">
-                Senarai Elaun Penolong Amil (Ketua Jabatan) - Mesyuarat/Program
-              </h2>
-            </div>
-          </div>
-        </template>
-
-        <template #body>
-          <!-- Smart Filter Section -->
-            <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                v-model="filters.searchQuery"
-                  type="text"
-                  placeholder="Cari Kod Aktiviti atau Nama Aktiviti..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <rs-button
-                variant="primary"
-                @click="performSearch"
-                class="!py-2 !px-4"
-              >
-                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-            </div>
-            </div>
-
-          <!-- Tabbed Table Section -->
-          <rs-tab v-model="activeTab" class="mt-4">
-            <rs-tab-item title="Sedang Proses">
-              <div class="p-4">
-                <rs-table
-                  :key="`table-${tableKey}-pending`"
-                  :data="getTableDataByStatus(['Sedang Proses'])"
-                  :columns="ketuaJabatanColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                      <button
-                        @click="handleView(text)"
-                        title="Lihat"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                      </button>
-                    </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Lulus">
-              <div class="p-4">
-                <rs-table
-                  :key="`table-${tableKey}-approved`"
-                  :data="getTableDataByStatus(['Lulus'])"
-                  :columns="ketuaJabatanApprovedColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                      <button
-                        @click="handleView(text)"
-                        title="Lihat"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                      </button>
-                    </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Ditolak">
-              <div class="p-4">
-                <rs-table
-                  :key="`table-${tableKey}-rejected`"
-                  :data="getTableDataByStatus(['Ditolak'])"
-                  :columns="ketuaJabatanColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                      <button
-                        @click="handleView(text)"
-                        title="Lihat"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                      </button>
-                    </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-          </rs-tab>
-        </template>
-      </rs-card>
-
-
-    </div>
-
-    <!-- Ketua Divisyen Dashboard Content -->
-    <div v-if="currentRole === 'ketua-divisyen'">
-      <rs-card class="mt-4">
-        <template #header>
-          <div class="flex justify-between items-center">
-            <div>
-              <h2 class="text-xl font-semibold">
-                Senarai Elaun Penolong Amil (Ketua Divisyen) - Mesyuarat/Program
-              </h2>
-            </div>
-          </div>
-        </template>
-
-        <template #body>
-          <!-- Smart Filter Section -->
-            <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                v-model="filters.searchQuery"
-                  type="text"
-                  placeholder="Cari Kod Aktiviti atau Nama Aktiviti..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <rs-button
-                variant="primary"
-                @click="performSearch"
-                class="!py-2 !px-4"
-              >
-                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-            </div>
-            </div>
-
-          <!-- Tabbed Table Section -->
-          <rs-tab v-model="activeTab" class="mt-4">
-            <rs-tab-item title="Sedang Proses">
-              <div class="p-4">
-                <rs-table
-                  :key="`table-${tableKey}-pending`"
-                  :data="getTableDataByStatus(['Sedang Proses'])"
-                  :columns="ketuaDivisyenColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                      <button
-                        @click="handleView(text)"
-                        title="Lihat"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                      </button>
-                    </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Lulus">
-              <div class="p-4">
-                <rs-table
-                  :key="`table-${tableKey}-approved`"
-                  :data="getTableDataByStatus(['Lulus'])"
-                  :columns="ketuaDivisyenApprovedColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                      <button
-                        @click="handleView(text)"
-                        title="Lihat"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                      </button>
-                    </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Ditolak">
-              <div class="p-4">
-                <rs-table
-                  :key="`table-${tableKey}-rejected`"
-                  :data="getTableDataByStatus(['Ditolak'])"
-                  :columns="ketuaDivisyenColumns"
-                  :pageSize="pageSize"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:status="{ text }">
-                    <rs-badge :variant="getStatusVariant(text)">
-                      {{ getStatusLabel(text) }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
-                    <div class="flex justify-center items-center gap-1">
-                      <button
-                        @click="handleView(text)"
-                        title="Lihat"
-                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                      </button>
-                    </div>
-                  </template>
-                </rs-table>
-              </div>
-            </rs-tab-item>
-          </rs-tab>
-        </template>
-      </rs-card>
-
-
-    </div>
-
-    <!-- Modals -->
-    <!-- Support Confirmation Modal -->
-    <rs-modal
-      v-model="showSupportModal"
-      title="Sahkan Sokongan"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="text-center">
-          <Icon
-            name="ic:baseline-check-circle"
-            class="text-green-500 text-5xl mb-4"
-          />
-          <p class="text-lg mb-2">
-            Adakah anda pasti untuk memberikan sokongan kepada aktiviti ini?
-          </p>
-          <p class="text-gray-600">
-            Aktiviti ini akan dihantar kepada Ketua Jabatan untuk kelulusan seterusnya.
-          </p>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-center space-x-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showSupportModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button variant="success" @click="confirmSupport">
-            Ya, Sokong
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Reject Confirmation Modal -->
-    <rs-modal
-      v-model="showRejectModal"
-      title="Sahkan Penolakan"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="text-center">
-          <Icon
-            name="ic:outline-cancel"
-            class="text-red-500 text-5xl mb-4"
-          />
-          <p class="text-lg mb-2">
-            Adakah anda pasti untuk menolak aktiviti ini?
-          </p>
-          <p class="text-gray-600">
-            Aktiviti ini akan dikembalikan kepada pemohon untuk pembetulan.
-          </p>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-center space-x-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showRejectModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button variant="danger" @click="confirmReject">
-            Ya, Tolak
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
-
-    <!-- Approve Confirmation Modal -->
-    <rs-modal
-      v-model="showApproveModal"
-      title="Sahkan Kelulusan"
-      size="md"
-      position="center"
-    >
-      <template #body>
-        <div class="text-center">
-          <Icon
-            name="ic:baseline-check-circle"
-            class="text-green-500 text-5xl mb-4"
-          />
-          <p class="text-lg mb-2">
-            Adakah anda pasti untuk meluluskan aktiviti ini?
-          </p>
-          <p class="text-gray-600">
-            Aktiviti ini akan diluluskan dan Payment Advice akan dijana secara automatik.
-          </p>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-center space-x-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showApproveModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button variant="success" @click="confirmApprove">
-            Ya, Lulus
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, nextTick, onMounted } from 'vue';
-import { useToast } from 'vue-toastification';
-
-definePageMeta({
-  title: "Pengurusan Elaun bagi Mesyuarat/Program",
-  description: "Senarai aktiviti mesyuarat dan program untuk pengurusan elaun",
-});
-
-const toast = useToast();
-
-const breadcrumb = ref([
-  {
-    name: "Pengurusan Elaun",
-    type: "link",
-    path: "/BF-PA/PE/MP",
-  },
-  {
-    name: "Mesyuarat/Program",
-    type: "current",
-    path: "/BF-PA/PE/MP",
-  },
-]);
-
-// Role Management
-const currentRole = ref('eksekutif');
-
-const roleOptions = [
-{ label: 'Eksekutif', value: 'eksekutif' },
-{ label: 'Ketua Jabatan', value: 'ketua-jabatan' },
-  { label: 'Ketua Divisyen', value: 'ketua-divisyen' },
-];
-
-const getRoleVariant = (role) => {
-  const variants = {
-    'pt': 'default',
-    'eksekutif': 'warning',
-    'ketua-jabatan': 'primary',
-  };
-  return variants[role] || 'default';
-};
-
-const getRoleLabel = (role) => {
-  const labels = {
-    'ketua-divisyen': 'Ketua Divisyen',
-    'eksekutif': 'Eksekutif',
-    'ketua-jabatan': 'Ketua Jabatan',
-  };
-  return labels[role] || 'Unknown';
-};
-
-
-
-const handleRoleChange = () => {
-  // Reset filters when role changes
-  filters.value.searchQuery = '';
-  selectedRows.value = [];
-};
-
-
-
-// Mock data for activities
-const activities = ref([
-    // PT specific activities - Sedang Proses
-  {
-    id: 'MP2024-001',
-    NamaAktiviti: 'Program Khidmat Masyarakat',
-    Tarikh: '15-04-2024',
-    Lokasi: 'Dewan Serbaguna Masjid Kg Delek, Daerah Klang',
-    status: 'Lulus'
-  },
-  {
-    id: 'MP2024-002',
-    NamaAktiviti: 'Mesyuarat Perancangan Bulanan',
-    Tarikh: '18-04-2024',
-    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
-    status: 'Sedang Proses'
-  },
-  {
-    id: 'MP2024-003',
-    NamaAktiviti: 'Latihan Pengurusan Zakat',
-    Tarikh: '20-04-2024',
-    Lokasi: 'Dewan Latihan LZS, Daerah Shah Alam',
-    status: 'Sedang Proses'
-  },
-    // Activities with various statuses for Eksekutif role
-  {
-    id: 'MP2024-004',
-    NamaAktiviti: 'Mesyuarat Eksekutif Bulanan',
-    Tarikh: '15-03-2024',
-    Lokasi: 'Dewan Mesyuarat Eksekutif, Daerah Petaling Jaya',
-    status: 'Sedang Proses'
-  },
-  {
-    id: 'MP2024-005',
-    NamaAktiviti: 'Latihan Pengurusan Zakat dan Fitrah',
-    Tarikh: '20-03-2024',
-    Lokasi: 'Dewan Latihan LZS, Kompleks Zakat Selangor, Daerah Shah Alam',
-    status: 'Lulus'
-  },
-  {
-    id: 'MP2024-006',
-    NamaAktiviti: 'Latihan Sistem e-Zakat',
-    Tarikh: '02-04-2024',
-    Lokasi: 'Bilik Latihan IT, Pejabat Zakat Petaling Jaya, Daerah Petaling Jaya',
-    status: 'Ditolak'
-  },
-  // Activities with various statuses for Ketua Jabatan role
-  {
-    id: 'MP2024-007',
-     NamaAktiviti: 'Program Khidmat Masyarakat',
-    Tarikh: '20-03-2024',
-    Lokasi: 'Masjid Al-Hidayah, Daerah Gombak',
-    status: 'Lulus'
-  },
-  {
-    id: 'MP2024-008',
-     NamaAktiviti: 'Latihan Pengurusan Aduan',
-    Tarikh: '12-04-2024',
-    Lokasi: 'Bilik Latihan, Pejabat Zakat Gombak, Daerah Gombak',
-    status: 'Lulus'
-  },
-  // Additional activities with various statuses for all roles
-  {
-    id: 'MP2024-009',
-     NamaAktiviti: 'Latihan Pengurusan Zakat',
-    Tarikh: '25-03-2024',
-    Lokasi: 'Dewan Latihan, Daerah Shah Alam',
-    status: 'Sedang Proses'
-  },
-  {
-    id: 'MP2024-010',
-     NamaAktiviti: 'Mesyuarat Koordinasi',
-    Tarikh: '30-03-2024',
-    Lokasi: 'Pejabat Zakat, Daerah Petaling Jaya',
-    status: 'Lulus'
-  },
-  // NEW: Additional activities for better status distribution
-  {
-    id: 'MP2024-011',
-    NamaAktiviti: 'Program Kesedaran Zakat',
-    Tarikh: '05-05-2024',
-    Lokasi: 'Dewan Komuniti, Daerah Klang',
-    status: 'Sedang Proses'
-  },
-  {
-    id: 'MP2024-012',
-    NamaAktiviti: 'Latihan Pengurusan Risiko',
-    Tarikh: '10-05-2024',
-    Lokasi: 'Bilik Latihan, Pejabat Zakat Shah Alam',
-    status: 'Sedang Proses'
-  },
-  {
-    id: 'MP2024-013',
-    NamaAktiviti: 'Mesyuarat Jawatankuasa Zakat',
-    Tarikh: '15-05-2024',
-    Lokasi: 'Dewan Mesyuarat Utama, Kompleks Zakat Selangor',
-    status: 'Lulus'
-  },
-  {
-    id: 'MP2024-014',
-    NamaAktiviti: 'Program Pembangunan Komuniti',
-    Tarikh: '20-05-2024',
-    Lokasi: 'Dewan Serbaguna, Daerah Petaling Jaya',
-    status: 'Lulus'
-  },
-  {
-    id: 'MP2024-015',
-    NamaAktiviti: 'Latihan Sistem Pengurusan',
-    Tarikh: '25-05-2024',
-    Lokasi: 'Bilik Latihan IT, Pejabat Zakat Gombak',
-    status: 'Ditolak'
-  },
-  {
-    id: 'MP2024-016',
-    NamaAktiviti: 'Program Khidmat Sosial',
-    Tarikh: '30-05-2024',
-    Lokasi: 'Dewan Komuniti, Daerah Shah Alam',
-    status: 'Ditolak'
-  },
-  {
-    id: 'MP2024-017',
-    NamaAktiviti: 'Mesyuarat Perancangan Strategik',
-    Tarikh: '05-06-2024',
-    Lokasi: 'Dewan Mesyuarat Eksekutif, Kompleks Zakat Selangor',
-    status: 'Sedang Proses'
-  },
-  {
-    id: 'MP2024-018',
-    NamaAktiviti: 'Latihan Pengurusan Kualiti',
-    Tarikh: '10-06-2024',
-    Lokasi: 'Bilik Latihan, Pejabat Zakat Klang',
-    status: 'Lulus'
-  }
-]);
-
-const eksekutifStatusOptions = [
-  { label: 'Sila pilih...', value: '' },
-  { label: 'Sedang Proses', value: 'Sedang Proses' },
-  { label: 'Lulus', value: 'Lulus' },
-  { label: 'Ditolak', value: 'Ditolak' },
-];
-
-const ketuaDivisyenStatusOptions = [
-  { label: 'Sila pilih...', value: '' },
-  { label: 'Sedang Proses', value: 'Sedang Proses' },
-  { label: 'Lulus', value: 'Lulus' },
-  { label: 'Ditolak', value: 'Ditolak' },
-];
-
-const ketuaJabatanStatusOptions = [
-  { label: 'Sila pilih...', value: '' },
-  { label: 'Sedang Proses', value: 'Sedang Proses' },
-  { label: 'Lulus', value: 'Lulus' },
-  { label: 'Ditolak', value: 'Ditolak' },
-];
-
-// Search and filter state
-const selectedRows = ref([]);
-const processing = ref(false);
-const showSupportModal = ref(false);
-const showRejectModal = ref(false);
-const showApproveModal = ref(false);
-const selectedActivity = ref(null);
-
-// Search state
-const isSearchPerformed = ref(false);
-const searchResults = ref([]);
-
-// Tab management
-const activeTab = ref("Sedang Proses");
-const tableKey = ref(0);
-
-// Computed filtered activities based on role
-const filteredActivities = computed(() => {
-  return activities.value.filter(activity => {
-    const matchesSearch = !searchQuery.value || 
-      activity.id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      activity.name.toLowerCase().includes(searchQuery.value.toLowerCase());
-    const matchesStatus = !selectedStatus.value || activity.status === selectedStatus.value;
-    const matchesJenis = !selectedJenisAktiviti.value || activity.type === selectedJenisAktiviti.value;
-    return matchesSearch && matchesStatus && matchesJenis;
-  });
-});
-
-// Handler functions for table actions
-const handleView = (activityId) => {
-  navigateTo(`/BF-PA/PE/MP/${activityId}?role=${currentRole.value}`);
-};
-
-const handleSupport = (activityId) => {
-  // Update activity status to supported
-  const activity = activities.value.find(a => a.id === activityId);
-  if (activity) {
-    activity.status = 'Lulus';
-    toast.success('Aktiviti berjaya disokong');
-  }
-};
-
-const handleApprove = (activityId) => {
-  // Update activity status to approved
-  const activity = activities.value.find(a => a.id === activityId);
-  if (activity) {
-    activity.status = 'Lulus';
-    toast.success('Aktiviti berjaya diluluskan');
-  }
-};
-
-const handleReject = (activityId) => {
-  // Update activity status to rejected
-  const activity = activities.value.find(a => a.id === activityId);
-  if (activity) {
-    activity.status = 'Ditolak';
-    toast.success('Aktiviti telah ditolak');
-  }
-};
-
-const handleLulusManualKuasa = (activityId) => {
-  // Navigate to activity review page for Ketua Divisyen role
-  navigateTo(`/BF-PA/PE/MP/01?id=${activityId}`);
-};
-
-// Update computed properties to work with rs-table
-const filteredEksekutifActivities = computed(() => {
-  return activities.value.filter(activity => {
-    const matchesSearch = !filters.value.searchQuery || 
-      activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    // Eksekutif can see activities with all three statuses
-    return matchesSearch;
-  }).map(activity => ({
-    ...activity,
-    tindakan: activity.id // Pass activity ID for action buttons
-  }));
-});
-
-const eksekutifApprovedActivities = computed(() => {
-  return activities.value.filter(activity => {
-    const matchesSearch = !filters.value.searchQuery || 
-      activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    return matchesSearch && activity.status === 'Lulus';
-  }).map(activity => ({
-    ...activity,
-    tindakan: activity.id
-  }));
-});
-
-const eksekutifRejectedActivities = computed(() => {
-  return activities.value.filter(activity => {
-    const matchesSearch = !filters.value.searchQuery || 
-      activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    return matchesSearch && activity.status === 'Ditolak';
-  }).map(activity => ({
-    ...activity,
-    tindakan: activity.id
-  }));
-});
-
-// Computed properties for separated tables
-const approvedActivities = computed(() => {
-  return filteredActivities.value.filter(activity => activity.status === 'Lulus');
-});
-
-const rejectedActivities = computed(() => {
-  return filteredActivities.value.filter(activity => activity.status === 'Ditolak');
-});
-
-// Ketua Jabatan specific computed properties
-const filteredKetuaJabatanActivities = computed(() => {
-  return activities.value.filter(activity => {
-    const matchesSearch = !filters.value.searchQuery || 
-      activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    // Ketua Jabatan can see activities with all three statuses
-    return matchesSearch;
-  }).map(activity => ({
-    ...activity,
-    tindakan: activity.id
-  }));
-});
-
-const ketuaJabatanApprovedActivities = computed(() => {
-  return activities.value.filter(activity => {
-    const matchesSearch = !filters.value.searchQuery || 
-      activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    const matchesJenis = !filters.value.jenisAktiviti || activity.type === filters.value.jenisAktiviti;
-    return matchesSearch && matchesStatus && matchesJenis && activity.status === 'Lulus';
-  }).map(activity => ({
-    ...activity,
-    tindakan: activity.id
-  }));
-});
-
-const ketuaJabatanRejectedActivities = computed(() => {
-  return activities.value.filter(activity => {
-    const matchesSearch = !filters.value.searchQuery || 
-      activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    const matchesStatus = !filters.value.status || activity.status === filters.value.status;
-    const matchesJenis = !filters.value.jenisAktiviti || activity.type === filters.value.jenisAktiviti;
-    return matchesSearch && matchesStatus && matchesJenis && activity.status === 'Ditolak';
-  }).map(activity => ({
-    ...activity,
-    tindakan: activity.id
-  }));
-});
-
-// Ketua Divisyen specific computed properties
-const filteredKetuaDivisyenActivities = computed(() => {
-  return activities.value.filter(activity => {
-    const matchesSearch = !filters.value.searchQuery || 
-      activity.id.toLowerCase().includes(filters.value.searchQuery.toLowerCase()) ||
-      activity.name.toLowerCase().includes(filters.value.searchQuery.toLowerCase());
-    // Ketua Divisyen can see activities with all three statuses
-    return matchesSearch;
-  }).map(activity => ({
-    ...activity,
-    tindakan: activity.id
-  }));
-});
-
-const pendingKetuaDivisyenActivities = computed(() => {
-  return filteredKetuaDivisyenActivities.value.filter(activity => 
-    activity.status === 'Sedang Proses'
-  ).map(activity => ({
-    ...activity,
-    tindakan: activity.id
-  }));
-});
-
-const ketuaDivisyenApprovedActivities = computed(() => {
-  return filteredKetuaDivisyenActivities.value.filter(activity => activity.status === 'Lulus')
-    .map(activity => ({
-      ...activity,
-      tindakan: activity.id
-    }));
-});
-
-const ketuaDivisyenRejectedActivities = computed(() => {
-  return filteredKetuaDivisyenActivities.value.filter(activity => activity.status === 'Ditolak')
-    .map(activity => ({
-      ...activity,
-      tindakan: activity.id
-    }));
-});
-
-// Computed properties for bulk selection
-const isAllSelected = computed(() => {
-  if (currentRole.value === 'ketua-divisyen') {
-    return filteredKetuaDivisyenActivities.value.length > 0 && selectedRows.value.length === filteredKetuaDivisyenActivities.value.length;
-  } else if (currentRole.value === 'eksekutif') {
-    return filteredEksekutifActivities.value.length > 0 && selectedRows.value.length === filteredEksekutifActivities.value.length;
-  } else if (currentRole.value === 'ketua-jabatan') {
-    return filteredKetuaJabatanActivities.value.length > 0 && selectedRows.value.length === filteredKetuaJabatanActivities.value.length;
-  }
-  return false;
-});
-
-// Helper functions
-const getActivityStatus = (activityId) => {
-  const activity = activities.value.find(a => a.id === activityId);
-  return activity ? activity.status : '';
-};
-
-// Search functionality
-const performSearch = () => {
-  if (!filters.value.searchQuery) {
-    toast.warning('Sila masukkan kriteria carian');
-    return;
-  }
-  
-  isSearchPerformed.value = true;
-  toast.success('Carian berjaya dilakukan');
-  refreshTable();
-};
-
-
-
-// Filter table data based on status and search criteria
-const getTableDataByStatus = (statuses) => {
-  let result = activities.value.filter(activity => 
-    statuses.includes(activity.status)
-  );
-  
-  // Only apply filters if search has been performed
-  if (isSearchPerformed.value) {
-    // Apply search filter
-    if (filters.value.searchQuery) {
-      const query = filters.value.searchQuery.toLowerCase();
-      result = result.filter(activity => 
-        activity.id.toLowerCase().includes(query) ||
-        activity.NamaAktiviti.toLowerCase().includes(query)
-      );
-    }
-  }
-  
-  return result.map(activity => ({
-    ...activity,
-    tindakan: activity.id // Pass activity ID for action buttons
-  }));
-};
-
-const refreshTable = () => {
-  nextTick(() => {
-    tableKey.value++; // Force table to re-render
-  });
-};
-
-const getStatusColor = (status) => {
-  switch (status) {
-    case 'Sedang Proses':
-      return 'bg-gray-100 text-gray-800'
-    case 'Lulus':
-      return 'bg-green-100 text-green-800'
-    case 'Ditolak':
-      return 'bg-red-100 text-red-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
-  }
-}
-
-const getStatusLabel = (status) => {
-  switch (status) {
-    case 'Sedang Proses':
-      return 'Sedang Proses'
-    case 'Lulus':
-      return 'Lulus'
-    case 'Ditolak':
-      return 'Ditolak'
-    default:
-      return status
-  }
-}
-
-const getStatusVariant = (status) => {
-  switch (status) {
-    case 'Sedang Proses':
-      return 'warning'
-    case 'Lulus':
-      return 'success'
-    case 'Ditolak':
-      return 'danger'
-    default:
-      return 'disabled'  // Use disabled for proper grey color
-  }
-}
-
-const getActionRoute = (status, activityId) => {
-  switch (status) {
-    case 'Sedang Proses':
-      return '/BF-PA/PE/MP/01'
-    case 'Lulus':
-      return `/BF-PA/PE/MP/view-lulus`
-    case 'Ditolak':
-      return `/BF-PA/PE/MP/07`
-    default:
-      return '#'
-  }
-}
-
-const getActionButtonText = (status) => {
-  switch (status) {
-    case 'Sedang Proses':
-      return 'Semak'
-    case 'Lulus':
-      return 'Lihat'
-    case 'Ditolak':
-      return 'Semak Semula'
-    default:
-      return 'Lihat'
-  }
-}
-
-// Event handlers
-const onCheckboxChange = (event, activity) => {
-  if (event.target.checked) {
-    selectedRows.value.push(activity.id);
-  } else {
-    selectedRows.value = selectedRows.value.filter(id => id !== activity.id);
-  }
-};
-
-const toggleSelectAll = (event) => {
-  if (event.target.checked) {
-    if (currentRole.value === 'ketua-divisyen') {
-      selectedRows.value = filteredKetuaDivisyenActivities.value.map(activity => activity.id);
-    } else if (currentRole.value === 'eksekutif') {
-      selectedRows.value = filteredEksekutifActivities.value.map(activity => activity.id);
-    } else if (currentRole.value === 'ketua-jabatan') {
-      selectedRows.value = filteredKetuaJabatanActivities.value.map(activity => activity.id);
-    }
-  } else {
-    selectedRows.value = [];
-  }
-};
-
-// Bulk action handlers
-const handleBulkLulusManualKuasa = async () => {
-  if (selectedRows.value.length === 0) {
-    toast.warning('Sila pilih aktiviti untuk diluluskan manual kuasa');
-    return;
-  }
-
-  processing.value = true;
-  
-  try {
-    // Navigate to activity selection for Ketua Divisyen role
-    navigateTo('/BF-PA/PE/MP/01');
-  } catch (error) {
-    toast.error('Ralat semasa memproses aktiviti');
-    console.error('Error in bulk lulus manual kuasa:', error);
-  } finally {
-    processing.value = false;
-  }
-};
-
-const handleBulkSupport = async () => {
-  if (selectedRows.value.length === 0) {
-    toast.warning('Sila pilih aktiviti untuk disokong');
-    return;
-  }
-
-  processing.value = true;
-  
-  try {
-    // Update status for selected activities
-    for (const activityId of selectedRows.value) {
-      const activity = activities.value.find(a => a.id === activityId);
-      if (activity) {
-        activity.status = 'Diluluskan';
-      }
-    }
-    
-    toast.success(`${selectedRows.value.length} aktiviti berjaya disokong dan diluluskan`);
-    selectedRows.value = [];
-  } catch (error) {
-    toast.error('Ralat semasa menyokong aktiviti');
-    console.error('Error in bulk support:', error);
-  } finally {
-    processing.value = false;
-  }
-};
-
-const handleBulkApproval = async () => {
-  if (selectedRows.value.length === 0) {
-    toast.warning('Sila pilih aktiviti untuk diluluskan');
-    return;
-  }
-
-  processing.value = true;
-  
-  try {
-    // Update status for selected activities
-    for (const activityId of selectedRows.value) {
-      const activity = activities.value.find(a => a.id === activityId);
-      if (activity) {
-        activity.status = 'Lulus';
-      }
-    }
-    
-    toast.success(`${selectedRows.value.length} aktiviti berjaya diluluskan`);
-    selectedRows.value = [];
-  } catch (error) {
-    toast.error('Ralat semasa meluluskan aktiviti');
-    console.error('Error in bulk approval:', error);
-  } finally {
-    processing.value = false;
-  }
-};
-
-// Individual action handlers
-const openSupportModal = (activityId) => {
-  selectedActivity.value = activityId;
-  showSupportModal.value = true;
-};
-
-const openRejectModal = (activityId) => {
-  selectedActivity.value = activityId;
-  showRejectModal.value = true;
-};
-
-const openApproveModal = (activityId) => {
-  selectedActivity.value = activityId;
-  showApproveModal.value = true;
-};
-
-const confirmSupport = async () => {
-  try {
-    const activity = activities.value.find(a => a.id === selectedActivity.value);
-    if (activity) {
-      activity.status = 'Lulus';
-    }
-    showSupportModal.value = false;
-    selectedActivity.value = null;
-    toast.success('Aktiviti berjaya disokong dan diluluskan');
-  } catch (error) {
-    toast.error('Ralat semasa menyokong aktiviti');
-    console.error('Error supporting activity:', error);
-  }
-};
-
-const confirmReject = async () => {
-  try {
-    const activity = activities.value.find(a => a.id === selectedActivity.value);
-    if (activity) {
-      activity.status = 'Ditolak';
-    }
-    showRejectModal.value = false;
-    selectedActivity.value = null;
-    toast.success('Aktiviti telah ditolak dan dikembalikan kepada pemohon');
-  } catch (error) {
-    toast.error('Ralat semasa menolak aktiviti');
-    console.error('Error rejecting activity:', error);
-  }
-};
-
-const confirmApprove = async () => {
-  try {
-    const activity = activities.value.find(a => a.id === selectedActivity.value);
-    if (activity) {
-      activity.status = 'Lulus';
-    }
-    showApproveModal.value = false;
-    selectedActivity.value = null;
-    toast.success('Aktiviti berjaya diluluskan dan Payment Advice akan dijana');
-  } catch (error) {
-    toast.error('Ralat semasa meluluskan aktiviti');
-    console.error('Error approving activity:', error);
-  }
-};
-
-// Table column definitions
-const eksekutifColumns = [
-  {
-    key: "id",
-    label: "Rujukan",
-    sortable: true,
-  },
-  {
-    key: "NamaAktiviti",
-    label: "Nama Aktiviti",
-    sortable: true,
-  },
-  {
-    key: "Tarikh",
-    label: "Tarikh",
-    sortable: true,
-  },
-  {
-    key: "Lokasi",
-    label: "Lokasi",
-    sortable: true,
-  },
-  {
-    key: "status",
-    label: "Status",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-    width: "200px",
-  },
-];
-
-const eksekutifApprovedColumns = [
-  {
-    key: "id",
-    label: "Rujukan",
-    sortable: true,
-  },
-  {
-    key: "NamaAktiviti",
-    label: "Nama Aktiviti",
-    sortable: true,
-  },
-  {
-    key: "Tarikh",
-    label: "Tarikh",
-    sortable: true,
-  },
-  {
-    key: "Lokasi",
-    label: "Lokasi",
-    sortable: true,
-  },
-  {
-    key: "status",
-    label: "Status",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-    width: "140px",
-  },
-];
-
-const ketuaJabatanColumns = [
-  {
-    key: "id",
-    label: "Rujukan",
-    sortable: true,
-  },
-  {
-    key: "NamaAktiviti",
-    label: "Nama Aktiviti",
-    sortable: true,
-  },
-  {
-    key: "Tarikh",
-    label: "Tarikh",
-    sortable: true,
-  },
-  {
-    key: "Lokasi",
-    label: "Lokasi",
-    sortable: true,
-  },
-  {
-    key: "status",
-    label: "Status",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-    width: "200px",
-  },
-];
-
-const ketuaJabatanApprovedColumns = [
-  {
-    key: "id",
-    label: "Rujukan",
-    sortable: true,
-  },
-  {
-    key: "NamaAktiviti",
-    label: "Nama Aktiviti",
-    sortable: true,
-  },
-  {
-    key: "Tarikh",
-    label: "Tarikh",
-    sortable: true,
-  },
-  {
-    key: "Lokasi",
-    label: "Lokasi",
-    sortable: true,
-  },
-  {
-    key: "status",
-    label: "Status",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-    width: "140px",
-  },
-];
-
-const ketuaDivisyenColumns = [
-  {
-    key: "id",
-    label: "Rujukan",
-    sortable: true,
-  },
-  {
-    key: "NamaAktiviti",
-    label: "Nama Aktiviti",
-    sortable: true,
-  },
-  {
-    key: "Tarikh",
-    label: "Tarikh",
-    sortable: true,
-  },
-  {
-    key: "Lokasi",
-    label: "Lokasi",
-    sortable: true,
-  },
-  {
-    key: "status",
-    label: "Status",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-    width: "200px",
-  },
-];
-
-const ketuaDivisyenApprovedColumns = [
-  {
-    key: "id",
-    label: "Rujukan",
-    sortable: true,
-  },
-  {
-    key: "NamaAktiviti",
-    label: "Nama Aktiviti",
-    sortable: true,
-  },
-  {
-    key: "Tarikh",
-    label: "Tarikh",
-    sortable: true,
-  },
-  {
-    key: "Lokasi",
-    label: "Lokasi",
-    sortable: true,
-  },
-  {
-    key: "status",
-    label: "Status",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-    width: "140px",
-  },
-];
-
-// Filters state
+import { ref, computed } from 'vue'
+
+// ---------- MOCK DATA: Senarai PA aktif (contoh) ----------
+const allCandidates = ref([
+  { id: 'PA001', name: 'Ahmad bin Ismail', nric: '880101-14-1234', role: 'Penolong Amil', category: 'PAK', isActive: true },
+  { id: 'PA002', name: 'Siti Aisyah binti Zainal', nric: '900202-10-5678', role: 'Penolong Amil', category: 'PAF', isActive: true },
+  { id: 'PA003', name: 'Faizal bin Rahman', nric: '850909-01-1122', role: 'Ketua Penolong Amil', category: 'PAK+', isActive: true },
+  { id: 'PA004', name: 'Noraini binti Omar', nric: '920606-08-7788', role: 'Penolong Amil', category: 'PAP', isActive: false }, // akan disorok
+])
+
+// ---------- State Filter ----------
+const currentYear = new Date().getFullYear()
+const yearOptions = Array.from({length: 5}, (_,i) => currentYear - 1 + i) // contoh: tahun semasa ±
 const filters = ref({
-  searchQuery: "",
-});
+  year: '',
+  role: '' // '' | 'Penolong Amil' | 'Ketua Penolong Amil'
+})
 
-const pageSize = ref(10);
+// ---------- Pemilihan ----------
+const selectedIds = ref([]) // ID PA ditandakan 'Layak'
 
-// Initialize with best available tab
-onMounted(() => {
-  // Set default tab based on available data
-  const hasPending = activities.value.some(a => a.status === 'Sedang Proses');
-  const hasApproved = activities.value.some(a => a.status === 'Lulus');
-  const hasRejected = activities.value.some(a => a.status === 'Ditolak');
-  
-  if (hasPending) {
-    activeTab.value = "Sedang Proses";
-  } else if (hasApproved) {
-    activeTab.value = "Lulus";
-  } else if (hasRejected) {
-    activeTab.value = "Ditolak";
+// ---------- Status Simpan / Kunci Draft ----------
+const locked = ref(false)
+const saving = ref(false)
+const toast = ref('')
+
+// ---------- Derivations ----------
+const visibleRows = computed(() => {
+  // hanya PA aktif, dan ikut filter jawatan
+  return allCandidates.value
+    .filter(pa => pa.isActive)
+    .filter(pa => !filters.value.role || pa.role === filters.value.role)
+})
+
+const selectedCount = computed(() => selectedIds.value.length)
+
+const canBulkToggle = computed(() => visibleRows.value.length > 0 && !locked.value)
+const allVisibleChecked = computed(() => {
+  if (visibleRows.value.length === 0) return false
+  return visibleRows.value.every(pa => selectedIds.value.includes(pa.id))
+})
+
+const canSave = computed(() => {
+  return !!filters.value.year && selectedIds.value.length > 0
+})
+
+// ---------- Actions ----------
+function toggleAll(checked) {
+  if (!canBulkToggle.value) return
+  if (checked) {
+    selectedIds.value = visibleRows.value.map(pa => pa.id)
+  } else {
+    selectedIds.value = []
   }
-});
+}
+
+function goBack() {
+  // letak routing sebenar jika ada
+  console.info('Kembali ke senarai Elaun Tahunan')
+}
+
+function generateBatchId(year) {
+  const rand = Math.floor(100000 + Math.random() * 900000)
+  return `ET01-${year}-${rand}`
+}
+
+async function saveBatch() {
+  if (!canSave.value || locked.value) return
+  saving.value = true
+  toast.value = ''
+
+  try {
+    // 1) Validasi server-side (disimulasikan)
+    // - Pastikan semua PA masih aktif & tiada duplikasi pada tahun
+    const chosen = allCandidates.value.filter(x => selectedIds.value.includes(x.id))
+    const invalid = chosen.filter(x => !x.isActive)
+    if (invalid.length) throw new Error('Terdapat calon tidak aktif.')
+
+    // 2) Simpan dataset penerima + metadata batch
+    const batchId = generateBatchId(filters.value.year)
+    const payload = {
+      batchId,
+      year: filters.value.year,
+      creator: 'LOGIN_USER_ID', // ganti dengan ID login sebenar
+      timestamp: new Date().toISOString(),
+      recipients: chosen.map(x => ({
+        id: x.id, name: x.name, nric: x.nric, role: x.role, category: x.category
+      }))
+    }
+    console.debug('SIMPAN ET-01 PAYLOAD', payload)
+
+    // 3) Tetapkan status proses: Draft Terkunci
+    locked.value = true
+
+    // 4) Trigger ET-02 (asynchronous) — simulasi
+    triggerET02(batchId)
+
+    // 5) Mesej berjaya
+    toast.value = 'Senarai penerima elaun tahunan berjaya disimpan dan dihantar untuk proses pengiraan.'
+  } catch (e) {
+    toast.value = e?.message || 'Ralat tidak dijangka semasa simpanan.'
+  } finally {
+    saving.value = false
+    // auto-clear mesej
+    setTimeout(() => (toast.value = ''), 5000)
+  }
+}
+
+function triggerET02(batchId) {
+  // Di dunia sebenar: panggil API /jobs/et02?batchId=...
+  console.info(`Trigger ET-02 untuk batch: ${batchId}`)
+}
 </script>
 
 <style scoped>
-/* Add any additional styles here */
+/* gaya ringkas; gantikan dengan design system projek jika ada */
 </style>
