@@ -5965,7 +5965,6 @@ const bangsa = ref("");
 // Islamic Information Variables
 const tarikhMasukIslam = ref(null);
 const tarikhMasukIslamTanggungan = ref(null);
-
 // Polygamy Variables
 const statusPoligami = ref(null);
 const bilanganIsteri = ref(null);
@@ -6763,7 +6762,6 @@ const showLainLainHubungan = computed(() => {
   const currentTanggungan = getCurrentTanggungan();
   return currentTanggungan?.hubungan_pemohon === "Lain-lain";
 });
-
 const showDokumenSuratNikah = computed(() => {
   const currentTanggungan = getCurrentTanggungan();
   return currentTanggungan?.hubungan_pemohon === "Pasangan Pemohon";
@@ -7553,7 +7551,6 @@ const getCompletionPercentage = () => {
   if (tanggunganList.value.length === 0) return 0;
   return Math.round((getCompletedCount() / tanggunganList.value.length) * 100);
 };
-
 const getTanggunganSummary = () => {
   if (tanggunganList.value.length === 3) {
     return {
@@ -7866,7 +7863,7 @@ onMounted(() => {
         no_telefon_tanggungan: "0138202398",
 
         // Islamic Information
-        adakah_muallaf_tanggungan: "Y",
+        adakah_muallaf_tanggungan: "N",
         nama_sebelum_islam_tanggungan: "ROHANA BINTI WONG",
         tarikh_masuk_islam_tanggungan: "1995-01-01",
         tarikh_masuk_kfam_tanggungan: "1995-01-01",
@@ -8018,31 +8015,31 @@ onMounted(() => {
         sebab_tiada_akaun_tanggungan: "",
 
         // Pendidikan Tanggungan
-        masih_bersekolah: "Y",
+        masih_bersekolah: "T",
         bersekolah_tanggungan: "Ya",
-        pendidikan_tertinggi_tanggungan: "Sijil Pelajaran Malaysia",
+        pendidikan_tertinggi_tanggungan: "SPM",
         lain_pendidikan_tertinggi_tanggungan: "",
-        tahap_pendidikan_dicapai: ["SRP-PMR", "SPM"],
+        tahap_pendidikan_dicapai: ["SPM"],
         lain_tahap_pendidikan_dicapai: "",
         sijil_pendidikan_tanggungan: null,
-        jenis_sekolah_institusi: "SMK",
-        kategori_sekolah_institusi: "SEK.MEN",
-        tahun_bersekolah: "2024",
-        tahun_tingkatan_pengajian: "Tingkatan 4",
-        nama_sekolah_institusi: "SMK Shah Alam",
-        alamat1_sekolah: "Jalan Sekolah, Shah Alam",
-        alamat2_sekolah: "",
+        jenis_sekolah_institusi: "IPTA",
+        kategori_sekolah_institusi: "IPTA",
+        tahun_bersekolah: "2025",
+        tahun_tingkatan_pengajian: "Tahun 1 / Semester 2",
+        nama_sekolah_institusi: "Universiti Putra Malaysia (UPM)",
+        alamat1_sekolah: "Universiti Putra Malaysia",
+        alamat2_sekolah: "Serdang, Seri Kembangan",
         alamat3_sekolah: "",
-        daerah_sekolah: "Petaling",
-        bandar_sekolah: "Shah Alam",
-        poskod_sekolah: "40000",
+        daerah_sekolah: "Seri Petaling",
+        bandar_sekolah: "Serdang",
+        poskod_sekolah: "43400",
         tinggal_bersama_keluarga: "Y",
         asrama_rumah_sewa: "",
-        bidang_kursus_pengajian: "",
-        jurusan_bidang: "",
+        bidang_kursus_pengajian: "Diploma",
+        jurusan_bidang: "Perniagaan Tani",
         pembiayaan_pengajian: ["Tiada"],
         lain_pembiayaan_pengajian: "",
-        catatan_pendidikan_tanggungan: "Masih bersekolah di Tingkatan 4",
+        catatan_pendidikan_tanggungan: "Upload sijil SPM",
         // Legacy fields for backward compatibility
         jenis_sekolah: "Sekolah Menengah",
         nama_sekolah: "SMK Shah Alam",
@@ -8301,7 +8298,7 @@ const handleSubmit = async () => {
   try {
     console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
-    router.push("/BF-PRF/AS/FR/04");
+    router.push("/BF-PRF/AS/FR/01");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);
@@ -8350,7 +8347,6 @@ const handleSaveStepA3 = async () => {
     console.error("Save Step A3 error:", error);
   }
 };
-
 const handleSaveStepA4 = async () => {
   try {
     console.log("Step A4 saved:", formData.value);
