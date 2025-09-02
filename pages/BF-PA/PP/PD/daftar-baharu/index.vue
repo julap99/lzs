@@ -740,23 +740,19 @@ const breadcrumb = ref([
 const sesiPerkhidmatanOptions = {
   PAK: [
     { label: "Sila pilih sesi perkhidmatan PAK", value: "" },
-    { label: "2025-2027", value: "2025-2027" },
-    { label: "2026-2028", value: "2026-2028" },
+    { label: "2025-2030", value: "2025-2030" },
   ],
   PAF: [
     { label: "Sila pilih sesi perkhidmatan PAF", value: "" },
-    { label: "2024-2026", value: "2024-2026" },
-    { label: "2025-2027", value: "2025-2027" },
+    { label: "2025-2030", value: "2025-2030" },
   ],
   PAP: [
     { label: "Sila pilih sesi perkhidmatan PAP", value: "" },
-    { label: "2024-2026", value: "2024-2026" },
-    { label: "2025-2027", value: "2025-2027" },
+    { label: "2025-2030", value: "2025-2030" },
   ],
   "PAK+": [
     { label: "Sila pilih sesi perkhidmatan PAK+", value: "" },
-    { label: "2024-2026", value: "2024-2026" },
-    { label: "2025-2027", value: "2025-2027" },
+    { label: "2025-2030", value: "2025-2030" },
   ],
 };
 
@@ -1001,8 +997,8 @@ const mockCandidatesData = [
       "PAF": "PAF-PENOLONG_AMIL",
     },
     sesiPerKategori: {
-      "PAK": "2025-2027",
-      "PAF": "2024-2026",
+      "PAK": "2025-2030",
+      "PAF": "2024-2029",
     },
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
@@ -1019,7 +1015,7 @@ const mockCandidatesData = [
       "PAK+": "PAK+-KETUA_PENOLONG_AMIL",
     },
     sesiPerKategori: {
-      "PAK+": "2024-2026",
+      "PAK+": "2024-2029",
     },
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
@@ -1036,7 +1032,7 @@ const mockCandidatesData = [
       "PAP": "PAP-PENOLONG_AMIL",
     },
     sesiPerKategori: {
-      "PAP": "2024-2026",
+      "PAP": "2024-2029",
     },
     salinanKadPengenalan: null,
     tarikhPendaftaran: currentDate.value,
@@ -1127,8 +1123,8 @@ const getSesiValidationError = (kategori) => {
 const checkActivePenolongAmil = (noKP) => {
   // Mock check - in real implementation, this would query the database
   const activePenolongAmil = [
-    { noKP: "850315071234", kategori: "PAK+", tempoh: "2024-2026" }, // SIMULATION: Active Penolong Amil
-    { noKP: "880420082345", kategori: "PAF", tempoh: "2023-2025" },
+    { noKP: "850315071234", kategori: "PAK+", tempoh: "2024-2029" }, // SIMULATION: Active Penolong Amil
+    { noKP: "880420082345", kategori: "PAF", tempoh: "2023-2028" },
   ];
   
   const active = activePenolongAmil.find(pa => pa.noKP === noKP);
