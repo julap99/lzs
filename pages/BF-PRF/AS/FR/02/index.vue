@@ -3686,20 +3686,10 @@
               >
                 <h5 class="font-medium mb-3">Maklumat Muallaf</h5>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <!-- Nama Sebelum Islam (Muallaf) -->
-                  <FormKit
-                    type="text"
-                    name="nama_sebelum_islam_tanggungan"
-                    label="Nama Sebelum Islam (Muallaf) "
-                    placeholder="Masukkan nama sebelum Islam"
-                    validation="required"
-                    v-model="
-                      getCurrentTanggungan().nama_sebelum_islam_tanggungan
-                    "
-                  />
+                 
 
                   <!-- Nama Selepas Islam (Muallaf) -->
-                  <FormKit
+                  <!-- <FormKit
                     type="text"
                     name="nama_selepas_islam_tanggungan"
                     label="Nama Selepas Islam (Muallaf) "
@@ -3708,7 +3698,7 @@
                     v-model="
                       getCurrentTanggungan().nama_selepas_islam_tanggungan
                     "
-                  />
+                  /> -->
 
                   <!-- Tarikh Masuk Islam -->
                   <FormKit
@@ -3726,39 +3716,35 @@
                     type="date"
                     name="tarikh_masuk_kfam_tanggungan"
                     label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) (DD/MM/YYYY) "
-                    validation="required"
                     v-model="
                       getCurrentTanggungan().tarikh_masuk_kfam_tanggungan
                     "
                   />
-
-                  <!-- Islamic Dates Validation Warning -->
-                  <div
-                    v-if="!islamicDatesValidationTanggungan.isValid"
-                    class="md:col-span-2"
-                  >
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-3">
-                      <div class="flex items-center gap-2">
-                        <i class="fas fa-exclamation-triangle text-red-500"></i>
-                        <span class="text-sm text-red-700 font-medium">
-                          {{ islamicDatesValidationTanggungan.message }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                   <!-- Nama Sebelum Islam (Muallaf) -->
+                   <FormKit
+                    type="text"
+                    name="nama_lain_tanggungan"
+                    label="Nama Lain (Jika ada) "
+                    placeholder="Masukkan nama lain"
+                    validation="required"
+                    v-model="
+                      getCurrentTanggungan().nama_lain_tanggungan
+                    "
+                  />
+      
 
                   <!-- Tarikh Keluar Muallaf (Auto-calculated) -->
-                  <FormKit
+                  <!-- <FormKit
                     type="text"
                     name="tarikh_keluar_muallaf_tanggungan"
                     label="Tarikh Keluar Muallaf"
                     :value="calculateTarikhKeluarMuallafTanggungan()"
                     readonly
                     help="Dikira secara automatik: Tarikh Masuk Islam + 5 tahun ATAU Tarikh Masuk KFAM + 5 tahun (pilih yang lebih lewat)"
-                  />
+                  /> -->
 
                   <!-- Dokumen Pengislaman -->
-                  <div class="md:col-span-2">
+
                     <FormKit
                       type="file"
                       name="dokumen_pengislaman_tanggungan"
@@ -3767,7 +3753,6 @@
                       accept=".pdf,.jpg,.jpeg,.png"
                       validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                     />
-                  </div>
                 </div>
               </div>
             </div>
