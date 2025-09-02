@@ -2,6 +2,17 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Role Simulator - For Demo/Presentation Only -->
+    <!-- This allows switching between different user roles to demonstrate role-based views -->
+    <!-- In production, this would be replaced with actual user authentication and role management -->
+    <div class="mb-4 flex items-center space-x-4">
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="pengguna-luar">Pengguna Luar</option>
+        <option value="pengguna-dalam">Pengguna Dalam</option>
+      </select>
+    </div>
+
     <!-- Section 1: Maklumat Permohonan Bantuan -->
     <rs-card class="mb-6">
       <template #header>Maklumat Permohonan Bantuan</template>
@@ -41,11 +52,13 @@
     <rs-card class="mb-6">
       <template #header>Maklumat Tindakan & Status</template>
       <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <rs-card variant="secondary">
-            <div class="p-2">
+            <div class="p-2 flex flex-col">
               <div class="text-sm text-gray-500">Status Semasa</div>
-              <div class="font-bold">{{ tindakanStatus.statusSemasa }}</div>
+              <rs-badge variant="info" size="sm">
+                Dalam Proses - Siasatan
+              </rs-badge>
             </div>
           </rs-card>
           <rs-card variant="secondary">
@@ -60,6 +73,8 @@
               <div class="font-bold">{{ tindakanStatus.namaPegawaiBertugas }}</div>
             </div>
           </rs-card>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
           <rs-card variant="secondary">
             <div class="p-2">
               <div class="text-sm text-gray-500">Catatan Pegawai Bertugas</div>
@@ -70,46 +85,9 @@
       </template>
     </rs-card>
 
-    <!-- SLA Timeline Horizontal -->
-    <rs-card>
-      <template #header>Garis Masa SLA Standard</template>
-      <template #body>
-        <div class="relative flex items-center justify-between overflow-x-auto pb-4">
-          <template v-for="(step, index) in slaTimeline" :key="index">
-            <!-- Connector Line -->
-            <div
-              v-if="index !== 0"
-              class="w-8 h-0.5 bg-gray-300 mx-1"
-            ></div>
-
-            <!-- Step -->
-            <div class="flex flex-col items-center text-center min-w-[100px] relative z-10">
-              <div
-                class="w-10 h-10 flex items-center justify-center rounded-full text-white mb-2"
-                :class="[
-                  step.completed ? 'bg-gray-400' : step.active ? 'bg-blue-600' : 'bg-gray-300',
-                ]"
-              >
-                <Icon :name="step.icon" size="20" />
-              </div>
-              <div class="text-sm font-medium text-gray-800">{{ step.label }}</div>
-              <div class="text-xs text-gray-500">SLA: {{ step.sla }} hari</div>
-              <div
-                v-if="step.active"
-                class="text-xs mt-1 text-gray-600"
-              >
-                Jumlah SLA: {{ totalSla }} hari<br />
-                Baki: {{ getRemainingSla(step.label) }} hari
-              </div>
-            </div>
-          </template>
-        </div>
-      </template>
-    </rs-card>
-
-    <!-- Timeline Pelaksanaan Bantuan (Vertical) -->
-    <rs-card>
-      <template #header>Garis Masa Pelaksanaan Bantuan</template>
+    <!-- Review History -->
+    <rs-card v-if="canViewSejarahSemakan">
+      <template #header>Sejarah Semakan</template>
       <template #body>
         <div class="relative">
           <!-- Timeline Line -->
@@ -178,13 +156,13 @@
       </template>
     </rs-card>
 
+
+
     <!-- Documents Section -->
     <rs-card class="mb-6">
         <template #header>Dokumen Berkaitan</template>
         <template #body>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div
               v-for="(doc, index) in documents"
               :key="index"
@@ -224,7 +202,7 @@ const breadcrumb = ref([
 const bantuanInfo = ref({
   idPermohonan: 'NAS-BTN-2025-0001',
   namaBantuan: 'Bantuan Pendidikan',
-  tarikhMohon: '2025-06-01',
+  tarikhMohon: '01-06-2025',
 });
 
 // Mock data - Replace with actual API calls
@@ -303,7 +281,7 @@ const getRemainingSla = (currentLabel: string): number => {
 const statusTimeline = [
   {
     label: 'Permohonan Dihantar',
-    tarikh: '2025-06-10T09:00:00',
+    tarikh: '10-06-2025',
     completed: true,
     catatan: 'Permohonan diterima untuk semakan.',
     namaPegawai: 'Encik Ali',
@@ -314,7 +292,7 @@ const statusTimeline = [
   },
   {
     label: 'Semakan Awal',
-    tarikh: '2025-06-11T10:00:00',
+    tarikh: '11-06-2025',
     completed: true,
     catatan: 'Semakan dokumen lengkap dan disahkan.',
     namaPegawai: 'Pn. Zahrah',
@@ -325,7 +303,7 @@ const statusTimeline = [
   },
   {
     label: 'Siasatan',
-    tarikh: '2025-06-13T14:30:00',
+    tarikh: '13-06-2025',
     inProgress: true,
     catatan: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
     namaPegawai: 'Ustaz Hafiz',
@@ -360,21 +338,16 @@ const statusTimeline = [
 
 const tindakanStatus = ref({
   statusSemasa: 'Siasatan',
-  tarikhKemaskini: '2025-06-13T14:30:00',
+  tarikhKemaskini: '13-06-2025',
   namaPegawaiBertugas: 'Ustaz Hafiz',
   catatanPegawaiBertugas: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
 });
 
+import { formatDate as formatDateUtil } from '~/utils/dateFormatter';
+
 const formatDate = (dateStr: string | Date): string => {
   if (!dateStr) return 'Belum Bermula';
-  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
-  return date.toLocaleString('ms-MY', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return formatDateUtil(dateStr as string);
 };
 
 const getTextClass = (label: string): string => 'text-blue-800';
@@ -388,6 +361,10 @@ const downloadDocument = (doc: Document): void => {
   // This would be replaced with actual download functionality
   alert(`Downloading ${doc.name}`);
 };
+
+// Role-based access control
+const selectedRole = ref("pengguna-dalam"); // default role
+const canViewSejarahSemakan = computed(() => selectedRole.value === "pengguna-dalam");
 </script>
 
 <style lang="scss" scoped>

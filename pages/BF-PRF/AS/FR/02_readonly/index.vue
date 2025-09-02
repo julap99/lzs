@@ -66,6 +66,7 @@
                 ]"
                 validation="required"
                 v-model="formData.jenis_id"
+                readonly
               />
 
               <FormKit
@@ -77,6 +78,7 @@
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                 v-model="formData.dokumen_id"
+                readonly
               />
 
               <FormKit
@@ -86,6 +88,7 @@
                 help="Mengikut Dokumen Pengenalan"
                 validation="required"
                 v-model="formData.no_pengenalan"
+                readonly
               />
 
               <FormKit
@@ -95,6 +98,7 @@
                 help="Mengikut Dokumen Pengenalan"
                 validation="required"
                 v-model="formData.nama"
+                readonly
               />
 
               <FormKit
@@ -105,6 +109,7 @@
                 :options="['Malaysia', 'Lain-lain']"
                 validation="required"
                 v-model="formData.warganegara"
+                readonly
               />
 
               <FormKit
@@ -116,6 +121,7 @@
                 accept=".pdf,.jpg,.jpeg,.png"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                 v-model="formData.lain_warganegara"
+                readonly
               />
 
               <div
@@ -135,6 +141,7 @@
                     ]"
                     validation="required"
                     v-model="formData.taraf_penduduk"
+                    readonly
                   />
                 </div>
               </div>
@@ -144,6 +151,7 @@
                 name="nopassportlama"
                 label="No Passport Lama"
                 v-model="formData.nopassportlama"
+                readonly
               />
 
               <FormKit
@@ -155,6 +163,7 @@
                 name="passportStartDate"
                 label="Tarikh mula passport"
                 v-model="formData.passportStartDate"
+                readonly
               />
               <FormKit
                 v-if="
@@ -165,6 +174,7 @@
                 name="passportEndDate"
                 label="Tarikh tamat passport"
                 v-model="formData.passportEndDate"
+                readonly
               />
             </div>
           </div>
@@ -180,6 +190,7 @@
                 help="Format: dd-mm-yyyy"
                 validation="required"
                 v-model="formData.tarikh_lahir"
+                readonly
               />
 
               <FormKit
@@ -198,6 +209,7 @@
                 label="Tempat Lahir"
                 validation="required"
                 v-model="formData.tempat_lahir"
+                readonly
               />
 
               <FormKit
@@ -208,6 +220,7 @@
                 placeholder="Pilih Jantina"
                 validation="required"
                 v-model="formData.jantina"
+                readonly
               />
 
               <FormKit
@@ -218,6 +231,7 @@
                 placeholder="Pilih Agama"
                 validation="required"
                 v-model="formData.agama"
+                readonly
               />
 
               <FormKit
@@ -227,6 +241,7 @@
                 label="Agama Lain"
                 validation="required"
                 v-model="formData.agama_lain"
+                readonly
               />
 
               <FormKit
@@ -237,6 +252,7 @@
                 validation="required"
                 placeholder="Pilih Bangsa"
                 v-model="formData.bangsa"
+                readonly
               />
 
               <FormKit
@@ -246,6 +262,7 @@
                 label="Bangsa Lain"
                 validation="required"
                 v-model="formData.bangsa_lain"
+                readonly
               />
 
               <FormKit
@@ -253,6 +270,7 @@
                 name="no_telefon_bimbit"
                 label="No Telefon Bimbit"
                 v-model="formData.no_telefon_bimbit"
+                readonly
               />
 
               <FormKit
@@ -260,6 +278,7 @@
                 name="no_telefon_rumah"
                 label="No Telefon Rumah"
                 v-model="formData.no_telefon_rumah"
+                readonly
               />
 
               <FormKit
@@ -268,6 +287,7 @@
                 label="Emel"
                 validation="required|email"
                 v-model="formData.emel"
+                readonly
               />
             </div>
           </div>
@@ -292,6 +312,7 @@
                 ]"
                 validation="required"
                 v-model="formData.status_perkahwinan"
+                readonly
               />
 
               <FormKit
@@ -305,6 +326,7 @@
                 ]"
                 validation="required"
                 v-model="formData.status_poligami"
+                readonly
               />
 
               <!-- Polygamy Information (Conditional) -->
@@ -324,6 +346,7 @@
                     { label: '4', value: 4 },
                   ]"
                   v-model="formData.bilangan_isteri"
+                  readonly
                 />
                 <div
                   v-for="(isteri, idx) in isteriList"
@@ -336,6 +359,7 @@
                     :label="`No Kp Pasangan #${idx + 1}`"
                     validation="required"
                     v-model="formData.isteri_list[idx].no_kp"
+                    readonly
                   />
                   <FormKit
                     type="text"
@@ -343,6 +367,7 @@
                     :label="`Nama Pasangan #${idx + 1}`"
                     validation="required"
                     v-model="formData.isteri_list[idx].nama"
+                    readonly
                   />
                 </div>
               </div>
@@ -391,6 +416,7 @@
                   ]"
                   validation="required"
                   v-model="formData.masih_bersekolah"
+                  readonly
                 />
               </div>
 
@@ -412,6 +438,7 @@
                 ]"
                 validation="required"
                 v-model="formData.pendidikan_tertinggi"
+                readonly
               />
             </div>
 
@@ -420,13 +447,14 @@
               v-if="formData.pendidikan_tertinggi === 'Lain-lain'"
               class="mt-4"
             >
-              <FormKit
-                type="text"
-                name="lain_pendidikan_tertinggi"
-                label="Lain-lain Pendidikan Tertinggi"
-                validation="required"
-                v-model="formData.lain_pendidikan_tertinggi"
-              />
+                          <FormKit
+              type="text"
+              name="lain_pendidikan_tertinggi"
+              label="Lain-lain Pendidikan Tertinggi"
+              validation="required"
+              v-model="formData.lain_pendidikan_tertinggi"
+              readonly
+            />
             </div>
           </div>
 
@@ -457,6 +485,7 @@
                     'Sila pilih sekurang-kurangnya satu tahap pendidikan',
                   min: 'Sila pilih sekurang-kurangnya satu tahap pendidikan',
                 }"
+                readonly
               />
             </div>
           </div>
@@ -475,6 +504,7 @@
               label="Lain-lain Tahap Pendidikan yang Dicapai"
               validation="required"
               v-model="formData.lain_tahap_pendidikan"
+              readonly
             />
           </div>
 
@@ -488,6 +518,7 @@
               accept=".pdf,.jpg,.jpeg,.png"
               help="Format yang diterima: PDF, JPG, JPEG, PNG"
               v-model="formData.sijil_pendidikan"
+              readonly
             />
           </div>
 
@@ -537,6 +568,7 @@
                       'Maahad Tahfiz',
                     ]"
                     v-model="edu.jenis_sekolah"
+                    readonly
                   />
 
                   <FormKit
@@ -546,6 +578,7 @@
                     placeholder="Pilih Kategori Sekolah / Institusi"
                     :options="['SEK.MEN', 'SRK', 'IPTA', 'IPTS', 'SRA', 'KAFA']"
                     v-model="edu.kategori_sekolah"
+                    readonly
                   />
                 </div>
 
@@ -558,6 +591,7 @@
                       validation="required"
                       placeholder="Contoh: 2024"
                       v-model="edu.tahun_bersekolah"
+                      readonly
                     />
 
                     <FormKit
@@ -567,6 +601,7 @@
                       validation="required"
                       placeholder="Contoh: Tingkatan 3, Tahun 2, Semester 1"
                       v-model="edu.tahun_tingkatan"
+                      readonly
                     />
                   </div>
 
@@ -577,6 +612,7 @@
                       label="Nama Sekolah / Institusi"
                       validation="required"
                       v-model="edu.nama_sekolah"
+                      readonly
                     />
                   </div>
 
@@ -587,6 +623,7 @@
                         label="Alamat 1"
                         validation="required"
                         v-model="edu.alamat_sekolah_1"
+                        readonly
                       />
 
                       <FormKit
@@ -595,17 +632,19 @@
                         label="Alamat 2"
                         v-model="edu.alamat_sekolah_2"
                         v-if="edu.alamat_sekolah_1"
+                        readonly
                       />
                 
 
                     <div class="mt-4">
-                      <FormKit
-                        type="text"
-                        :name="`edu${index}Alamat3`"
-                        label="Alamat 3"
-                        v-model="edu.alamat_sekolah_3"
-                        v-if="edu.alamat_sekolah_1"
-                      />
+                                          <FormKit
+                      type="text"
+                      :name="`edu${index}Alamat3`"
+                      label="Alamat 3"
+                      v-model="edu.alamat_sekolah_3"
+                      v-if="edu.alamat_sekolah_1"
+                      readonly
+                    />
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
@@ -615,6 +654,7 @@
                         label="Daerah"
                         validation="required"
                         v-model="edu.daerah_sekolah"
+                        readonly
                       />
 
                       <FormKit
@@ -623,6 +663,7 @@
                         label="Bandar"
                         validation="required"
                         v-model="edu.bandar_sekolah"
+                        readonly
                       />
 
                       <FormKit
@@ -631,6 +672,7 @@
                         label="Poskod"
                         validation="required"
                         v-model="edu.poskod_sekolah"
+                        readonly
                       />
                     </div>
                   </div>
@@ -664,28 +706,30 @@
                   </div> -->
 
                   <div class="mt-6">
-                    <FormKit
-                      type="select"
-                      :name="`edu${index}BidangKursus`"
-                      label="Bidang / Kursus Pengajian"
-                      :options="[
-                        'Sijil',
-                        'SKM',
-                        'Diploma',
-                        'Ijazah Sarjana Muda',
-                      ]"
-                      v-model="edu.bidang_kursus"
-                    />
+                                      <FormKit
+                    type="select"
+                    :name="`edu${index}BidangKursus`"
+                    label="Bidang / Kursus Pengajian"
+                    :options="[
+                      'Sijil',
+                      'SKM',
+                      'Diploma',
+                      'Ijazah Sarjana Muda',
+                    ]"
+                    v-model="edu.bidang_kursus"
+                    readonly
+                  />
                   </div>
 
                   <div v-if="edu.bidang_kursus" class="mt-4">
-                    <FormKit
-                      type="text"
-                      :name="`edu${index}JurusanBidang`"
-                      label="Jurusan / Bidang"
-                      validation="required"
-                      v-model="edu.jurusan_bidang"
-                    />
+                                      <FormKit
+                    type="text"
+                    :name="`edu${index}JurusanBidang`"
+                    label="Jurusan / Bidang"
+                    validation="required"
+                    v-model="edu.jurusan_bidang"
+                    readonly
+                  />
                   </div>
 
                   <!-- Pembiayaan Pengajian -->
@@ -704,6 +748,7 @@
                           required: 'Sila pilih sekurang-kurangnya satu pembiayaan',
                           min: 'Sila pilih sekurang-kurangnya satu pembiayaan',
                         }"
+                        readonly
                       />
                     </div>
                   </div>
@@ -716,24 +761,26 @@
                     "
                     class="mt-4"
                   >
-                    <FormKit
-                      type="text"
-                      :name="`edu${index}LainPembiayaan`"
-                      label="Lain-lain Pembiayaan Pengajian"
-                      validation="required"
-                      v-model="edu.lain_pembiayaan"
-                    />
+                                      <FormKit
+                    type="text"
+                    :name="`edu${index}LainPembiayaan`"
+                    label="Lain-lain Pembiayaan Pengajian"
+                    validation="required"
+                    v-model="edu.lain_pembiayaan"
+                    readonly
+                  />
                   </div>
 
                   <!-- Catatan -->
                   <div class="mt-6">
-                    <FormKit
-                      type="textarea"
-                      :name="`edu${index}Catatan`"
-                      label="Catatan"
-                      v-model="edu.catatan"
-                      rows="3"
-                    />
+                                      <FormKit
+                    type="textarea"
+                    :name="`edu${index}Catatan`"
+                    label="Catatan"
+                    v-model="edu.catatan"
+                    rows="3"
+                    readonly
+                  />
                   </div>
                 </div>
               </div>
@@ -760,27 +807,29 @@
                   <label class="block text-sm font-medium text-black-700"
                     >Tinggal Bersama Keluarga</label
                   >
-                  <FormKit
-                    type="radio"
-                    name="tinggal_bersama_keluarga"
-                    :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'T' },
-                    ]"
-                    validation="required"
-                    v-model="formData.tinggal_bersama_keluarga"
-                  />
+                                  <FormKit
+                  type="radio"
+                  name="tinggal_bersama_keluarga"
+                  :options="[
+                    { label: 'Ya', value: 'Y' },
+                    { label: 'Tidak', value: 'T' },
+                  ]"
+                  validation="required"
+                  v-model="formData.tinggal_bersama_keluarga"
+                  readonly
+                />
                 </div>
 
                 <!-- Asrama/Rumah Sewa -->
                 <div v-if="formData.tinggal_bersama_keluarga === 'T'">
-                  <FormKit
-                    type="text"
-                    name="asrama_rumah_sewa"
-                    label="Asrama/Rumah Sewa"
-                    validation="required"
-                    v-model="formData.asrama_rumah_sewa"
-                  />
+                                  <FormKit
+                  type="text"
+                  name="asrama_rumah_sewa"
+                  label="Asrama/Rumah Sewa"
+                  validation="required"
+                  v-model="formData.asrama_rumah_sewa"
+                  readonly
+                />
                 </div>
 
               </div>
@@ -841,6 +890,7 @@
                       'Sila pilih sama ada anda seorang muallaf atau tidak',
                   }"
                   v-model="formData.adakah_muallaf"
+                  readonly
                 />
               </div>
             </div>
@@ -860,6 +910,7 @@
                     'Format tarikh tidak sah. Sila gunakan format DD/MM/YYYY',
                 }"
                 v-model="formData.tarikh_masuk_islam"
+                readonly
               />
             </div>
 
@@ -878,6 +929,7 @@
                     'Format tarikh tidak sah. Sila gunakan format DD/MM/YYYY',
                 }"
                 v-model="formData.tarikh_masuk_kfam"
+                readonly
               />
             </div>
 
@@ -906,6 +958,7 @@
                   required: 'Sila masukkan nama lain',
                 }"
                 v-model="formData.nama_lain"
+                readonly
               />
             </div>
 
@@ -971,6 +1024,7 @@
                   mime: 'Format fail tidak sah. Sila pilih fail PDF, JPG, atau PNG',
                 }"
                 v-model="formData.dokumen_pengislaman"
+                readonly
               />
             </div>
           </div>
@@ -1029,6 +1083,7 @@
                     :validation-messages="{
                       required: 'Sila pilih sama ada anda mempunyai akaun bank',
                     }"
+                    readonly
                   />
                 </div>
               </div>
@@ -1066,6 +1121,7 @@
                     :options="bankOptions"
                     validation="required"
                     v-model="account.nama_bank"
+                    readonly
                   />
 
                   <!-- Swift Code (Read Only) -->
@@ -1086,6 +1142,7 @@
                     label="No. Akaun Bank"
                     validation="required"
                     v-model="account.no_akaun_bank"
+                    readonly
                   />
 
                   <!-- Nama Pemegang Akaun -->
@@ -1095,6 +1152,7 @@
                     label="Nama Pemegang Akaun "
                     validation="required"
                     v-model="account.nama_pemegang_akaun"
+                    readonly
                   />
 
                   <!-- Jenis Akaun -->
@@ -1109,6 +1167,7 @@
                     ]"
                     validation="required"
                     v-model="account.jenis_akaun"
+                    readonly
                   />
 
                   <!-- ID Pengenalan -->
@@ -1118,6 +1177,7 @@
                     label="ID Pengenalan "
                     validation="required"
                     v-model="account.id_pengenalan"
+                    readonly
                   />
 
                   <!-- Nama (if Bersama is selected) -->
@@ -1128,6 +1188,7 @@
                     label="Nama "
                     validation="required"
                     v-model="account.nama_bersama"
+                    readonly
                   />
                 </div>
               </div>
@@ -1159,6 +1220,7 @@
                   :validation-messages="{
                     required: 'Sila pilih sebab tiada akaun bank',
                   }"
+                  readonly
                 />
               </div>
             </div>
@@ -1205,6 +1267,7 @@
               validation="required"
               v-model="formData.tahap_kesihatan"
               placeholder="Pilih tahap kesihatan"
+              readonly
             />
           </div>
 
@@ -1222,6 +1285,7 @@
                 validation="required"
                 v-model="formData.keadaan_kesihatan_sakit"
                 placeholder="Pilih keadaan kesihatan"
+                readonly
               />
 
               <!-- Kos Penjagaan -->
@@ -1233,20 +1297,22 @@
                 validation="required"
                 v-model="formData.kos_penjagaan_sakit"
                 placeholder="Pilih kos penjagaan"
+                readonly
               />
             </div>
 
             <!-- Jumlah Perbelanjaan Bulanan -->
             <div class="mt-4">
-              <FormKit
-                type="text"
-                name="perbelanjaan_bulanan_sakit"
-                label="Jumlah Perbelanjaan Bulanan (RM) "
-                validation="required"
-                placeholder="9999.99"
-                v-model="formData.perbelanjaan_bulanan_sakit"
-                help="Format: 9999.99"
-              />
+                          <FormKit
+              type="text"
+              name="perbelanjaan_bulanan_sakit"
+              label="Jumlah Perbelanjaan Bulanan (RM) "
+              validation="required"
+              placeholder="9999.99"
+              v-model="formData.perbelanjaan_bulanan_sakit"
+              help="Format: 9999.99"
+              readonly
+            />
             </div>
           </div>
 
@@ -1424,6 +1490,7 @@
                 :validation-messages="{
                   required: 'Sila pilih kemahiran',
                 }"
+                readonly
               />
             </div>
           </div>
@@ -1438,6 +1505,7 @@
             "
             placeholder="Nyatakan kemahiran lain"
             v-model="formData.lain_lain_kemahiran"
+            readonly
           />
 
           <div class="flex justify-between gap-3 mt-6">
@@ -1486,6 +1554,7 @@
                   :validation-messages="{
                     required: 'Alamat 1 adalah wajib',
                   }"
+                  readonly
                 />
 
                 <FormKit
@@ -1495,6 +1564,7 @@
                   placeholder="Sila masukkan alamat 2 (tidak wajib)"
                   v-model="formData.addressInfo.alamat2"
                   v-if="formData.addressInfo.alamat1"
+                  readonly
                 />
 
                 <FormKit
@@ -1504,6 +1574,7 @@
                   placeholder="Sila masukkan alamat 3 (tidak wajib)"
                   v-model="formData.addressInfo.alamat3"
                   v-if="formData.addressInfo.alamat1"
+                  readonly
                 />
               </div>
 
@@ -1514,6 +1585,7 @@
                 value="Selangor"
                 :options="negeriOptions"
                 v-model="formData.addressInfo.negeri"
+                readonly
               />
 
               <FormKit
@@ -1527,6 +1599,7 @@
                 :validation-messages="{
                   required: 'Daerah adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1540,6 +1613,7 @@
                 :validation-messages="{
                   required: 'Bandar adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1553,6 +1627,7 @@
                 :validation-messages="{
                   required: 'Poskod adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1566,6 +1641,7 @@
                 :validation-messages="{
                   required: 'Kariah adalah wajib',
                 }"
+                readonly
               />
 
               <div class="flex gap-2">
@@ -1574,6 +1650,7 @@
                   label="Geolokasi"
                   type="text"
                   class="flex-1"
+                  readonly
                 />
                 <rs-button
                   type="button"
@@ -1597,6 +1674,7 @@
                   required: 'Tempoh menetap adalah wajib',
                   min: 'Tempoh menetap mesti 0 atau lebih',
                 }"
+                readonly
               />
             </div>
 
@@ -1649,6 +1727,7 @@
                 :validation-messages="{
                   required: 'Status kediaman adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1662,6 +1741,7 @@
                 :validation-messages="{
                   required: 'Sila nyatakan status kediaman lain',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1682,6 +1762,7 @@
                 :validation-messages="{
                   required: 'Tapak rumah adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1695,6 +1776,7 @@
                 :validation-messages="{
                   required: 'Sila nyatakan tapak rumah lain',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1713,6 +1795,7 @@
                 :validation-messages="{
                   required: 'Jenis rumah adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1726,6 +1809,7 @@
                 :validation-messages="{
                   required: 'Sila nyatakan jenis rumah lain',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1738,6 +1822,7 @@
                 :validation-messages="{
                   required: 'Binaan rumah adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1751,6 +1836,7 @@
                 :validation-messages="{
                   required: 'Sila nyatakan binaan rumah lain',
                 }"
+                readonly
               />
 
               <FormKit
@@ -1763,6 +1849,7 @@
                 :validation-messages="{
                   required: 'Keadaan kediaman adalah wajib',
                 }"
+                readonly
               />
             </div>
 
@@ -1786,6 +1873,7 @@
                     :validation-messages="{
                       required: 'Sila pilih status bekalan air',
                     }"
+                    readonly
                   />
                 </div>
 
@@ -1800,6 +1888,7 @@
                   :validation-messages="{
                     required: 'Anggaran bil air adalah wajib',
                   }"
+                  readonly
                 />
 
                 <div class="space-y-2">
@@ -1818,6 +1907,7 @@
                     :validation-messages="{
                       required: 'Sila pilih status bekalan elektrik',
                     }"
+                    readonly
                   />
                 </div>
 
@@ -1832,6 +1922,7 @@
                   :validation-messages="{
                     required: 'Anggaran bil elektrik adalah wajib',
                   }"
+                  readonly
                 />
 
                 <div class="space-y-2">
@@ -1850,6 +1941,7 @@
                     :validation-messages="{
                       required: 'Sila pilih status bil penyelenggaraan',
                     }"
+                    readonly
                   />
                 </div>
 
@@ -1864,6 +1956,7 @@
                   :validation-messages="{
                     required: 'Anggaran bil penyelenggaraan adalah wajib',
                   }"
+                  readonly
                 />
               </div>
             </div>
@@ -1884,6 +1977,7 @@
                     'Milik Sendiri Berbayar'
                   "
                   v-model="formData.addressInfo.kadar_bayaran_bulanan"
+                  readonly
                 />
 
                 <FormKit
@@ -1895,6 +1989,7 @@
                   placeholder="Isi kadar sewa bulanan (RM)"
                   v-if="formData.addressInfo.status_kediaman === 'Sewa'"
                   v-model="formData.addressInfo.kadar_sewa_bulanan"
+                  readonly
                 />
 
                 <FormKit
@@ -1910,6 +2005,7 @@
                     required:
                       'Dokumen perjanjian sewa adalah wajib untuk status sewa',
                   }"
+                  readonly
                 />
               </div>
             </div>
@@ -1955,6 +2051,7 @@
                 label="Nama Institusi / Individu Pemberi Pinjaman"
                 placeholder="Sila masukkan nama institusi atau individu"
                 v-model="formData.nama_institusi_pemberi_pinjaman"
+                readonly
               />
 
               <!-- Conditional fields - only show when nama institusi is filled -->
@@ -1970,6 +2067,7 @@
                     label="Jenis Pinjaman"
                     placeholder="Sila masukkan jenis pinjaman"
                     v-model="formData.jenis_pinjaman"
+                    readonly
                   />
 
                   <FormKit
@@ -1980,6 +2078,7 @@
                     min="0"
                     placeholder="0.00"
                     v-model="formData.amaun_bayaran_bulanan"
+                    readonly
                   />
 
                   <FormKit
@@ -1994,6 +2093,7 @@
                     :validation-messages="{
                       required: 'Jumlah keseluruhan perbelanjaan adalah wajib',
                     }"
+                    readonly
                   />
 
                   <FormKit
@@ -2005,6 +2105,7 @@
                     :validation-messages="{
                       required: 'Tahun mula pinjaman adalah wajib',
                     }"
+                    readonly
                   />
 
                   <FormKit
@@ -2016,6 +2117,7 @@
                     :validation-messages="{
                       required: 'Tahun akhir pinjaman adalah wajib',
                     }"
+                    readonly
                   />
 
                   <div class="md:col-span-2">
@@ -2032,6 +2134,7 @@
                         max: 'Saiz fail tidak boleh melebihi 5MB',
                         mime: 'Format fail tidak dibenarkan',
                       }"
+                      readonly
                     />
                   </div>
                 </div>
@@ -2079,6 +2182,7 @@
               help="sertakan penyata bank"
               step="0.01"
               min="0"
+              readonly
             />
 
             <FormKit
@@ -2087,6 +2191,7 @@
               label="Emas (gram)"
               step="0.01"
               min="0"
+              readonly
             />
 
             <FormKit
@@ -2095,6 +2200,7 @@
               label="Saham (RM)"
               step="0.01"
               min="0"
+              readonly
             />
           </div>
 
@@ -2109,6 +2215,7 @@
                 name="jenis_kenderaan"
                 :options="['Basikal', 'Kereta', 'Motosikal', 'Van', 'Lori']"
                 v-model="formData.jenis_kenderaan"
+                readonly
               />
             </div>
           </div>
@@ -2126,6 +2233,7 @@
               min: 'Masukkan sekurang-kurangnya 1 unit',
             }"
             v-model="formData.kenderaan_total"
+            readonly
           />
 
           <FormKit
@@ -2133,6 +2241,7 @@
             name="rumah_kedai"
             label="Rumah Kedai (unit)"
             min="0"
+            readonly
           />
 
           <FormKit
@@ -2141,6 +2250,7 @@
             label="Tanah/Sawah (ekar)"
             step="0.01"
             min="0"
+            readonly
           />
 
           <FormKit
@@ -2162,6 +2272,7 @@
               mime: 'Format fail tidak dibenarkan',
             }"
             v-model="formData.dokumen_pemilikan"
+            readonly
           />
 
           <div class="flex justify-between gap-3 mt-6">
@@ -2208,6 +2319,7 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               v-model="formData.television"
+              readonly
             />
 
             <FormKit
@@ -2220,7 +2332,8 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               v-model="formData.radio"
-            />
+              readonly
+              />
 
             <FormKit
               type="select"
@@ -2232,6 +2345,7 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               v-model="formData.perabot"
+              readonly
             />
 
             <FormKit
@@ -2244,6 +2358,7 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               v-model="formData.telefon_bimbit"
+              readonly
             />
 
             <FormKit
@@ -2256,6 +2371,7 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               v-model="formData.mesin_basuh"
+              readonly
             />
 
             <FormKit
@@ -2268,6 +2384,7 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               v-model="formData.astro"
+              readonly
             />
 
             <FormKit
@@ -2280,6 +2397,7 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               v-model="formData.video_player_cd_dvd"
+              readonly
             />
 
             <FormKit
@@ -2292,6 +2410,7 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               v-model="formData.peti_ais"
+              readonly
             />
 
             <FormKit
@@ -2304,6 +2423,7 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               v-model="formData.dapur_gas"
+              readonly
             />
           </div>
 
@@ -2360,6 +2480,7 @@
                   :validation-messages="{
                     required: 'Sila pilih status pekerjaan',
                   }"
+                  readonly
                 />
               </div>
             </div>
@@ -2389,6 +2510,7 @@
                   min: 'Sila pilih sekurang-kurangnya satu sumber pendapatan',
                 }"
                 v-model="formData.sumber_pendapatan"
+                readonly
               />
 
               <!-- Lain-lain Sumber Pendapatan (shown only when "Lain-lain" is selected) -->
@@ -2409,6 +2531,7 @@
                   :validation-messages="{
                     required: 'Sila nyatakan sumber pendapatan lain',
                   }"
+                  readonly
                 />
               </div>
             </div>
@@ -2423,6 +2546,7 @@
                 :validation-messages="{
                   required: 'Jenis pekerjaan adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2442,6 +2566,7 @@
                 :validation-messages="{
                   required: 'Sektor pekerjaan adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2454,6 +2579,7 @@
                 :validation-messages="{
                   required: 'Sila nyatakan sektor pekerjaan lain',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2465,6 +2591,7 @@
                 :validation-messages="{
                   required: 'No. telefon pejabat adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2476,6 +2603,7 @@
                 :validation-messages="{
                   required: 'Nama majikan adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2487,6 +2615,7 @@
                 :validation-messages="{
                   required: 'No. telefon majikan adalah wajib',
                 }"
+                readonly
               />
 
               <div class="md:col-span-2">
@@ -2499,6 +2628,7 @@
                   :validation-messages="{
                     required: 'Alamat majikan adalah wajib',
                   }"
+                  readonly
                 />
 
                 <FormKit
@@ -2507,6 +2637,7 @@
                   label="Alamat Majikan 2"
                   placeholder="(Tidak wajib)"
                   v-model="formData.alamat_majikan_2"
+                  readonly
                 />
 
                 <FormKit
@@ -2515,6 +2646,7 @@
                   label="Alamat Majikan 3"
                   placeholder="(Tidak wajib)"
                   v-model="formData.alamat_majikan_3"
+                  readonly
                 />
               </div>
 
@@ -2527,6 +2659,7 @@
                 :validation-messages="{
                   required: 'Bandar adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2538,6 +2671,7 @@
                 :validation-messages="{
                   required: 'Poskod adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2549,6 +2683,7 @@
                 :validation-messages="{
                   required: 'Daerah adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2560,6 +2695,7 @@
                 :validation-messages="{
                   required: 'Negeri adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2571,6 +2707,7 @@
                 :validation-messages="{
                   required: 'Negara adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2582,6 +2719,7 @@
                 :validation-messages="{
                   required: 'Jawatan adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2595,6 +2733,7 @@
                 :validation-messages="{
                   required: 'Status jawatan adalah wajib',
                 }"
+                readonly
               />
 
               <FormKit
@@ -2608,6 +2747,7 @@
                 :validation-messages="{
                   required: 'Pendapatan kasar adalah wajib',
                 }"
+                readonly
               />
 
               <div class="md:col-span-2">
@@ -2623,6 +2763,7 @@
                     max: 'Saiz fail tidak boleh melebihi 5MB',
                     mime: 'Format fail tidak dibenarkan',
                   }"
+                  readonly
                 />
               </div>
             </div>
@@ -2678,6 +2819,7 @@
                   required: 'Gaji / Elaun / Pendapatan Diperoleh adalah wajib',
                 }"
                 v-model="formData.gaji_elaun_pendapatan"
+                readonly
               />
 
               <FormKit
@@ -2692,6 +2834,7 @@
                     'Pendapatan Isteri/Suami/Ibubapa/Penjaga adalah wajib',
                 }"
                 v-model="formData.pendapatan_isteri_suami_ibubapa_penjaga"
+                readonly
               />
 
               <FormKit
@@ -2705,6 +2848,7 @@
                   required: 'Pencen / PERKESO adalah wajib',
                 }"
                 v-model="formData.pencen_perkeso"
+                readonly
               />
 
               <FormKit
@@ -2718,6 +2862,7 @@
                   required: 'Sumbangan Anak-anak adalah wajib',
                 }"
                 v-model="formData.sumbangan_anak_anak"
+                readonly
               />
 
               <FormKit
@@ -2731,6 +2876,7 @@
                   required: 'Bantuan Jabatan Kebajikan Masyarakat adalah wajib',
                 }"
                 v-model="formData.bantuan_jkm"
+                readonly
               />
 
               <FormKit
@@ -2744,6 +2890,7 @@
                   required: 'Takaful adalah wajib',
                 }"
                 v-model="formData.takaful"
+                readonly
               />
 
               <FormKit
@@ -2757,6 +2904,7 @@
                   required: 'Sewa Rumah / Tanah / Kedai adalah wajib',
                 }"
                 v-model="formData.sewa_rumah_tanah_kedai"
+                readonly
               />
 
               <FormKit
@@ -2771,6 +2919,7 @@
                     'Pendapatan Tanggungan yang Tinggal Serumah adalah wajib',
                 }"
                 v-model="formData.pendapatan_tanggungan_serumah"
+                readonly
               />
 
               <FormKit
@@ -2784,6 +2933,7 @@
                   required: 'Pendapatan Lain-lain adalah wajib',
                 }"
                 v-model="formData.pendapatan_lain_lain"
+                readonly
               />
 
               <FormKit
@@ -2797,6 +2947,7 @@
                   required: 'Perbelanjaan Makanan dan Minuman adalah wajib',
                 }"
                 v-model="formData.perbelanjaan_makanan_minuman"
+                readonly
               />
 
               <FormKit
@@ -2810,6 +2961,7 @@
                   required: 'Sewa / Bayaran Pinjaman Perumahan adalah wajib',
                 }"
                 v-model="formData.sewa_bayaran_pinjaman_perumahan"
+                readonly
               />
 
               <FormKit
@@ -2823,6 +2975,7 @@
                   required: 'Perbelanjaan Persekolahan Anak adalah wajib',
                 }"
                 v-model="formData.perbelanjaan_persekolahan_anak"
+                readonly
               />
 
               <FormKit
@@ -2836,6 +2989,7 @@
                   required: 'Pengangkutan / Tambang Bas Sekolah adalah wajib',
                 }"
                 v-model="formData.pengangkutan_tambang_bas_sekolah"
+                readonly
               />
 
               <FormKit
@@ -2849,6 +3003,7 @@
                   required: 'Bil Utiliti adalah wajib',
                 }"
                 v-model="formData.bil_utiliti"
+                readonly
               />
             </div>
           </div>
@@ -2901,99 +3056,105 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                :name="`heir${index}JenisId`"
-                label="Jenis Id"
-                placeholder="Pilih Jenis Id"
-                validation="required"
-                :options="[
-                  { label: 'MyKad', value: 'MyKad' },
-                  { label: 'ForeignId', value: 'ForeignId' },
-                ]"
-                v-model="heir.jenis_pengenalan"
-                :validation-messages="{
-                  required: 'Jenis Id adalah wajib',
-                }"
-              />
+                                <FormKit
+                    type="select"
+                    :name="`heir${index}JenisId`"
+                    label="Jenis Id"
+                    placeholder="Pilih Jenis Id"
+                    validation="required"
+                    :options="[
+                      { label: 'MyKad', value: 'MyKad' },
+                      { label: 'ForeignId', value: 'ForeignId' },
+                    ]"
+                    v-model="heir.jenis_pengenalan"
+                    :validation-messages="{
+                      required: 'Jenis Id adalah wajib',
+                    }"
+                    readonly
+                  />
 
-              <FormKit
-                type="text"
-                :name="'heir${index}IdPengenalan'"
-                label="Id Pengenalan"
-                :validation="heir.jenis_pengenalan ? 'required' : ''"
-                v-model="heir.id_pengenalan"
-                :validation-messages="{
-                  required: 'Id Pengenalan adalah wajib',
-                }"
-              />
+                                <FormKit
+                    type="text"
+                    :name="'heir${index}IdPengenalan'"
+                    label="Id Pengenalan"
+                    :validation="heir.jenis_pengenalan ? 'required' : ''"
+                    v-model="heir.id_pengenalan"
+                    :validation-messages="{
+                      required: 'Id Pengenalan adalah wajib',
+                    }"
+                    readonly
+                  />
 
-              <FormKit
-                type="text"
-                :name="`heir${index}Name`"
-                label="Nama Waris"
-                :validation="heir.jenis_pengenalan ? 'required' : ''"
-                v-model="heir.name"
-                :validation-messages="{
-                  required: 'Nama waris adalah wajib',
-                }"
-              />
+                                <FormKit
+                    type="text"
+                    :name="`heir${index}Name`"
+                    label="Nama Waris"
+                    :validation="heir.jenis_pengenalan ? 'required' : ''"
+                    v-model="heir.name"
+                    :validation-messages="{
+                      required: 'Nama waris adalah wajib',
+                    }"
+                    readonly
+                  />
 
-              <FormKit
-                type="select"
-                :name="`heir${index}Relationship`"
-                label="Hubungan"
-                :validation="heir.jenis_pengenalan ? 'required' : ''"
-                placeholder="Pilih Hubungan"
-                :options="[
-                  'Pasangan Pemohon',
-                  'Isteri Kedua',
-                  'Isteri Ketiga',
-                  'Isteri Keempat',
-                  'Ipar',
-                  'Abang',
-                  'Bapa',
-                  'Ibu',
-                  'Kakak',
-                  'Adik',
-                  'Anak',
-                  'Cucu',
-                  'Bapa Mertua',
-                  'Ibu Mertua',
-                  'Lain-lain',
-                ]"
-                v-model="heir.relationship"
-                :validation-messages="{
-                  required: 'Hubungan adalah wajib',
-                }"
-              />
+                                <FormKit
+                    type="select"
+                    :name="`heir${index}Relationship`"
+                    label="Hubungan"
+                    :validation="heir.jenis_pengenalan ? 'required' : ''"
+                    placeholder="Pilih Hubungan"
+                    :options="[
+                      'Pasangan Pemohon',
+                      'Isteri Kedua',
+                      'Isteri Ketiga',
+                      'Isteri Keempat',
+                      'Ipar',
+                      'Abang',
+                      'Bapa',
+                      'Ibu',
+                      'Kakak',
+                      'Adik',
+                      'Anak',
+                      'Cucu',
+                      'Bapa Mertua',
+                      'Ibu Mertua',
+                      'Lain-lain',
+                    ]"
+                    v-model="heir.relationship"
+                    :validation-messages="{
+                      required: 'Hubungan adalah wajib',
+                    }"
+                    readonly
+                  />
 
-              <FormKit
-                v-if="heir.relationship === 'Lain-lain'"
-                type="text"
-                :name="`heir${index}RelationshipOther`"
-                label="Lain-lain Hubungan"
-                :validation="
-                  heir.relationship === 'Lain-lain' && heir.jenis_pengenalan
-                    ? 'required'
-                    : ''
-                "
-                v-model="heir.relationship_other"
-                :validation-messages="{
-                  required: 'Sila nyatakan hubungan lain-lain',
-                }"
-              />
+                                <FormKit
+                    v-if="heir.relationship === 'Lain-lain'"
+                    type="text"
+                    :name="`heir${index}RelationshipOther`"
+                    label="Lain-lain Hubungan"
+                    :validation="
+                      heir.relationship === 'Lain-lain' && heir.jenis_pengenalan
+                        ? 'required'
+                        : ''
+                    "
+                    v-model="heir.relationship_other"
+                    :validation-messages="{
+                      required: 'Sila nyatakan hubungan lain-lain',
+                    }"
+                    readonly
+                  />
 
-              <FormKit
-                type="tel"
-                :name="`heir${index}Phone`"
-                label="No. Telefon Waris"
-                :validation="heir.jenis_pengenalan ? 'required' : ''"
-                v-model="heir.phone"
-                :validation-messages="{
-                  required: 'No. telefon waris adalah wajib',
-                }"
-              />
+                                <FormKit
+                    type="tel"
+                    :name="`heir${index}Phone`"
+                    label="No. Telefon Waris"
+                    :validation="heir.jenis_pengenalan ? 'required' : ''"
+                    v-model="heir.phone"
+                    :validation-messages="{
+                      required: 'No. telefon waris adalah wajib',
+                    }"
+                    readonly
+                  />
             </div>
           </div>
 
@@ -3238,6 +3399,7 @@
                 ]"
                 validation="required"
                 v-model="getCurrentTanggungan().hubungan_pemohon"
+                readonly
               />
 
               <!-- Lain-lain Hubungan -->
@@ -3249,6 +3411,7 @@
                 placeholder="Nyatakan hubungan lain"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_hubungan"
+                readonly
               />
 
               <!-- Dokumen Surat Nikah -->
@@ -3261,6 +3424,7 @@
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                   v-model="formData.dokumen_surat_nikah"
+                  readonly
                 />
               </div>
 
@@ -3272,6 +3436,7 @@
                 placeholder="Masukkan nama penuh"
                 validation="required"
                 v-model="getCurrentTanggungan().nama_tanggungan"
+                readonly
               />
 
               <!-- Jenis Pengenalan -->
@@ -3286,6 +3451,7 @@
                 ]"
                 validation="required"
                 v-model="getCurrentTanggungan().jenis_pengenalan_tanggungan"
+                readonly
               />
 
               <!-- Pengenalan ID Tanggungan -->
@@ -3305,6 +3471,7 @@
                   matches: 'MyKad mesti mengandungi nombor sahaja (12 digit)',
                 }"
                 v-model="getCurrentTanggungan().pengenalan_id_tanggungan"
+                readonly
               />
 
               <!-- Upload Dokumen Nombor ID -->
@@ -3316,6 +3483,7 @@
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  readonly
                 />
               </div>
 
@@ -3331,6 +3499,7 @@
                 ]"
                 validation="required"
                 v-model="getCurrentTanggungan().warganegara_tanggungan"
+                readonly
               />
 
               <!-- Lain-lain Warganegara -->
@@ -3342,6 +3511,7 @@
                 placeholder="Nyatakan warganegara"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_warganegara"
+                readonly
               />
 
               <!-- Taraf Penduduk Tetap -->
@@ -3359,6 +3529,7 @@
                     ]"
                     validation="required"
                     v-model="getCurrentTanggungan().taraf_penduduk_tetap"
+                    readonly
                   />
                 </div>
               </div>
@@ -3371,6 +3542,7 @@
                 placeholder="Masukkan nombor pasport"
                 validation="required"
                 v-model="getCurrentTanggungan().no_pasport"
+                readonly
               />
 
               <!-- Tarikh Mula Pasport -->
@@ -3381,6 +3553,7 @@
                 label="Tarikh Mula Pasport (DD/MM/YYYY) "
                 validation="required"
                 v-model="getCurrentTanggungan().tarikh_mula_pasport"
+                readonly
               />
 
               <!-- Tarikh Tamat Pasport -->
@@ -3391,6 +3564,7 @@
                 label="Tarikh Tamat Pasport (DD/MM/YYYY) "
                 validation="required"
                 v-model="getCurrentTanggungan().tarikh_tamat_pasport"
+                readonly
               />
 
               <!-- Passport Expiry Warning -->
@@ -3417,6 +3591,7 @@
                 label="Tarikh Lahir (DD/MM/YYYY) "
                 validation="required"
                 v-model="getCurrentTanggungan().tarikh_lahir_tanggungan"
+                readonly
               />
 
               <!-- Umur (Auto-calculated) -->
@@ -3440,6 +3615,7 @@
                 name="mohon_ketua_keluarga"
                 label="Mohon Ketua Keluarga?"
                 v-model="getCurrentTanggungan().mohon_ketua_keluarga"
+                readonly
               />
 
               <!-- Special Approval for Minors -->
@@ -3474,6 +3650,7 @@
                       :validation="getCurrentTanggungan().mohon_ketua_keluarga ? 'required' : ''"
                       :disabled="true"
                       v-model="getCurrentTanggungan().situasi_kelulusan_khas"
+                      readonly
                     />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div class="space-y-2">
@@ -3490,6 +3667,7 @@
                           :validation="getCurrentTanggungan().mohon_ketua_keluarga ? 'required' : ''"
                           :disabled="true"
                           v-model="getCurrentTanggungan().kelulusan_khas"
+                          readonly
                         />
                       </div>
                     </div>
@@ -3504,6 +3682,7 @@
                 label="Tempat Lahir"
                 placeholder="Masukkan tempat lahir"
                 v-model="getCurrentTanggungan().tempat_lahir_tanggungan"
+                readonly
               />
 
               <!-- Jantina -->
@@ -3517,6 +3696,7 @@
                   { label: 'Perempuan', value: 'Perempuan' },
                 ]"
                 v-model="getCurrentTanggungan().jantina_tanggungan"
+                readonly
               />
 
               <!-- Agama -->
@@ -3533,6 +3713,7 @@
                   { label: 'Lain-lain', value: 'Lain-lain' },
                 ]"
                 v-model="getCurrentTanggungan().agama_tanggungan"
+                readonly
               />
 
               <!-- Lain-lain Agama -->
@@ -3544,6 +3725,7 @@
                 placeholder="Nyatakan agama lain"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_agama"
+                readonly
               />
 
               <!-- Bangsa -->
@@ -3565,6 +3747,7 @@
                 ]"
                 validation="required"
                 v-model="getCurrentTanggungan().bangsa_tanggungan"
+                readonly
               />
 
               <!-- Lain-lain Bangsa -->
@@ -3576,6 +3759,7 @@
                 placeholder="Nyatakan bangsa lain"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_bangsa"
+                readonly
               />
 
               <!-- No Telefon Bimbit -->
@@ -3591,6 +3775,7 @@
                     'Format nombor telefon tidak sah. Contoh: 0123456789',
                 }"
                 v-model="getCurrentTanggungan().no_telefon_bimbit_tanggungan"
+                readonly
               />
 
               <!-- No Telefon Rumah -->
@@ -3604,6 +3789,7 @@
                   matches: 'Format nombor telefon tidak sah. Contoh: 038881234',
                 }"
                 v-model="getCurrentTanggungan().no_telefon_rumah_tanggungan"
+                readonly
               />
 
               <!-- Emel -->
@@ -3617,12 +3803,14 @@
                   email: 'Format emel tidak sah. Contoh: nama@email.com',
                 }"
                 v-model="getCurrentTanggungan().emel_tanggungan"
+                readonly
               />
 
               <!-- Tempoh Menetap di Selangor -->
               <FormKit
                 type="number"
                 name="tempoh_menetap_selangor_tanggungan"
+                readonly
                 label="Tempoh Menetap di Selangor (Tahun) "
                 placeholder="0"
                 min="0"
@@ -3651,6 +3839,7 @@
                 ]"
                 validation="required"
                 v-model="getCurrentTanggungan().status_perkahwinan_tanggungan"
+                readonly
               />
 
               <!-- Lain-lain Status Perkahwinan -->
@@ -3662,6 +3851,7 @@
                 placeholder="Nyatakan status perkahwinan lain"
                 validation="required"
                 v-model="getCurrentTanggungan().lain_lain_status_perkahwinan"
+                readonly
               />
 
               <!-- Jumlah Tanggungan (Auto-calculated) -->
@@ -3727,6 +3917,7 @@
                       ]"
                       validation="required"
                       v-model="getCurrentTanggungan().adakah_muallaf_tanggungan"
+                      readonly
                     />
                   </div>
                 </div>
@@ -3748,6 +3939,7 @@
                     v-model="
                       getCurrentTanggungan().nama_sebelum_islam_tanggungan
                     "
+                    readonly
                   />
 
                   <!-- Nama Selepas Islam (Muallaf) -->
@@ -3760,6 +3952,7 @@
                     v-model="
                       getCurrentTanggungan().nama_selepas_islam_tanggungan
                     "
+                    readonly
                   />
 
                   <!-- Tarikh Masuk Islam -->
@@ -3771,6 +3964,7 @@
                     v-model="
                       getCurrentTanggungan().tarikh_masuk_islam_tanggungan
                     "
+                    readonly
                   />
 
                   <!-- Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) -->
@@ -3782,6 +3976,7 @@
                     v-model="
                       getCurrentTanggungan().tarikh_masuk_kfam_tanggungan
                     "
+                    readonly
                   />
 
                   <!-- Islamic Dates Validation Warning -->

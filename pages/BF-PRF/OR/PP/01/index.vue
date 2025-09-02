@@ -303,8 +303,7 @@ const performSearch = async () => {
 
 const navigateNext = () => {
   if (profileExists.value) {
-    // Navigate to update profile page with mode=edit (ID FR 2.3)
-    // Use first available ID for demo - in real implementation, use found profile ID
+    // Consistent behavior for all users: proceed to edit page
     navigateTo("/BF-PRF/OR/PP/kemaskini/ORG-240501");
   } else {
     // Navigate to new registration page with mode=new (ID FR 2.4)

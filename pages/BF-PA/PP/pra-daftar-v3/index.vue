@@ -42,7 +42,7 @@
           </div>
           <!-- PA-PP-PD-01_03: Registration Form - Borang Pendaftaran Calon Penolong Amil -->
           <rs-button
-            v-if="currentRole !== 'eksekutif' && currentRole !== 'eksekutif-pengurusan-risiko'"
+            v-if="currentRole !== 'eksekutif' && currentRole !== 'eksekutif-pengurusan-risiko' && currentRole !== 'pt'"
             variant="primary"
             @click="navigateTo('/BF-PA/PP/pra-daftar-v3/daftar-baharu')"
           >
@@ -1453,10 +1453,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
       institusiKariah: "Masjid Negeri Selangor",
-      statusPendaftaran: "Lulus",
+      statusPendaftaran: "Diluluskan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Dilantik",
-      tindakan: { rujukan: "PA-2024-011", statusPendaftaran: "Lulus" },
+      tindakan: { rujukan: "PA-2024-011", statusPendaftaran: "Diluluskan" },
     },
     {
       no: 12,
@@ -1466,10 +1466,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Negeri Selangor",
-      statusPendaftaran: "Lulus",
+      statusPendaftaran: "Diluluskan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Dilantik",
-      tindakan: { rujukan: "PA-2024-012", statusPendaftaran: "Lulus" },
+      tindakan: { rujukan: "PA-2024-012", statusPendaftaran: "Diluluskan" },
     }
   ],
   "eksekutif-pengurusan-risiko": [
@@ -1549,7 +1549,7 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
       institusiKariah: "Masjid Negeri Selangor",
-      statusPendaftaran: "Disaring",
+      statusPendaftaran: "Telah Disaring",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disaring" },
@@ -1562,12 +1562,12 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Disaring",
+      statusPendaftaran: "Telah Disaring",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disaring" },
     },
-    // NEW: Additional PT data
+    // Additional PT data for both tabs
     {
       no: 3,
       rujukan: "PA-2024-003",
@@ -1576,7 +1576,7 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Komuniti",
       institusiKariah: "Masjid Kg Delek",
-      statusPendaftaran: "Disaring",
+      statusPendaftaran: "Telah Disaring",
       sesiPerkhidmatan: "Sesi 3",
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disaring" },
@@ -1589,10 +1589,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Padi",
       jawatan: "Penolong Amil Padi",
       institusiKariah: "Masjid Negeri Selangor",
-      statusPendaftaran: "Disaring",
+      statusPendaftaran: "Telah Disemak",
       sesiPerkhidmatan: "Sesi 4",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disemak" },
     },
     {
       no: 5,
@@ -1602,10 +1602,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Disaring",
+      statusPendaftaran: "Telah Disemak",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disemak" },
     }
   ],
   eksekutif: [
@@ -1750,10 +1750,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Komuniti",
       institusiKariah: "Masjid Kg Delek",
-      statusPendaftaran: "Telah Diluluskan",
+      statusPendaftaran: "Diluluskan",
       sesiPerkhidmatan: "Sesi 3",
       statusLantikan: "Dilantik",
-      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Diluluskan" },
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Diluluskan" },
     },
     {
       no: 4,
@@ -1763,10 +1763,23 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Padi",
       jawatan: "Penolong Amil Padi",
       institusiKariah: "Masjid Negeri Selangor",
-      statusPendaftaran: "Telah Diluluskan",
+      statusPendaftaran: "Diluluskan",
       sesiPerkhidmatan: "Sesi 4",
       statusLantikan: "Dilantik",
-      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Diluluskan" },
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Diluluskan" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Farid bin Zainal",
+      noKP: "860101011111",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Falah",
+      statusPendaftaran: "Diluluskan",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Diluluskan" },
     }
   ],
 };
