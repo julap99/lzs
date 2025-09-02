@@ -1074,7 +1074,7 @@ const kelulusanData = ref([
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0401",
-    tindakan: "bantuan/kelulusan/B106",
+    tindakan: "bantuan/kelulusan/siasatan-eoad",
   },
 ]);
 

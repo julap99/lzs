@@ -10,7 +10,7 @@
         >
           <div>
             <h1 class="text-2xl font-bold text-gray-900">
-              Kelulusan Siasatan Lapangan
+              Kelulusan Bantuan
             </h1>
             <p class="mt-1 text-sm text-gray-600">
               Semak dan nilai maklumat siasatan dan dapatan lapangan untuk
@@ -41,104 +41,136 @@
               </div>
               <div>
                 <h2 class="text-lg font-semibold text-gray-900">
-                  Maklumat Permohonan
+                  Maklumat Bantuan
                 </h2>
                 <p class="text-sm text-gray-500">
-                  Butiran pemohon dan status permohonan
+                  Butiran bantuan dan status 
                 </p>
               </div>
             </div>
           </template>
 
           <template #body>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">Nama</label>
+                <label class="text-sm font-medium text-gray-700"
+                  >Aid</label
+                >
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{ formData.nama }}</span>
+                  <span class="text-sm text-gray-900">{{
+                    formData.aid
+                  }}</span>
                 </div>
               </div>
 
-              <div class="space-y-1 md:col-span-2">
-                <label class="text-sm font-medium text-gray-700">Alamat</label>
+              <div class="space-y-1 ">
+                <label class="text-sm font-medium text-gray-700">Aid Product</label>
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm text-gray-900">{{
-                    formData.alamat
+                    formData.aidproduct
                   }}</span>
                 </div>
               </div>
 
               <div class="space-y-1">
                 <label class="text-sm font-medium text-gray-700"
-                  >Jenis Pengenalan</label
+                  >Product Package</label
                 >
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm text-gray-900">{{
-                    formData.jenisPengenalan
+                    formData.productpackage
                   }}</span>
                 </div>
               </div>
 
+
               <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">MyKad</label>
+                <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                   <span class="text-sm font-mono text-gray-900">{{
-                    formData.myKad
+                    formData.entitlementproduct
                   }}</span>
                 </div>
               </div>
 
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700"
-                  >No Telefon</label
-                >
+              <!-- Tarikh Permohonan (Read Only) -->
+              <div class="space-y-1 mt-4">
+                <label class="text-sm font-medium text-gray-700">Tarikh Permohonan</label>
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.noTelefon
-                  }}</span>
+                  <span class="text-sm text-gray-900">28/8/2025</span>
                 </div>
               </div>
 
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">E-mel</label>
+              <!-- SLA (Read Only) -->
+              <div class="space-y-1 mt-4">
+                <label class="text-sm font-medium text-gray-700">SLA</label>
                 <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{ formData.emel }}</span>
+                  <span class="text-sm text-gray-900">3 hari lagi</span>
                 </div>
               </div>
 
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700"
-                  >Status Keluarga</label
-                >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.statusKeluarga
-                  }}</span>
-                </div>
+
+              <!-- Toggle Button SEGERA -->
+              <div class="mt-6 flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="formData.segera" class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                          peer-checked:bg-green-500 peer-checked:after:translate-x-full 
+                          after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                          after:bg-white after:border-gray-300 after:border after:rounded-full 
+                          after:h-5 after:w-5 after:transition-all"
+                  ></div>
+                  <span class="ml-3 text-sm font-medium text-gray-700">SEGERA</span>
+                </label>
               </div>
 
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700"
-                  >Status Individu</label
-                >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.statusIndividu
-                  }}</span>
-                </div>
-              </div>
+              <!-- Toggle Button Kelulusan Khas -->
+              <!-- <div class="mt-6 flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="formData.kelulusankhas" class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                          peer-checked:bg-green-500 peer-checked:after:translate-x-full 
+                          after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                          after:bg-white after:border-gray-300 after:border after:rounded-full 
+                          after:h-5 after:w-5 after:transition-all"
+                  ></div>
+                  <span class="ml-3 text-sm font-medium text-gray-700">Kelulusan Khas</span>
+                </label>
+              </div> -->
 
-              <div class="space-y-1 md:col-span-3">
-                <label class="text-sm font-medium text-gray-700"
-                  >Status Multidimensi</label
-                >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.statusMultidimensi
-                  }}</span>
-                </div>
-              </div>
             </div>
+
+            <!-- Nyatakan Sebab (only shown if segera checked) -->
+            <div v-if="formData.segera" class="mt-4 space-y-1">
+              <label class="text-sm font-medium text-gray-700">Nyatakan Sebab</label>
+              <textarea
+                v-model="formData.sebabSegera"
+                rows="3"
+                class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                placeholder="Nyatakan sebab di sini..."
+              ></textarea>
+            </div>
+
+            <!-- Situasi Kelulusan Khas -->
+        <div v-if="formData.kelulusankhas" class="mt-4 space-y-1">
+          <label class="text-sm font-medium text-gray-700">Situasi</label>
+          <select
+            v-model="formData.situasikelulusankhas"
+            class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+          >
+            <option disabled value="">-- Sila pilih situasi --</option>
+            <option>Umur, sama ada melebihi atau di bawah umur</option>
+            <option>Tempoh masa terikatnya pemohon dengan sesuatu kelayakan bantuan</option>
+            <option>Tidak memenuhi syarat minimum permohonan bantuan</option>
+            <option>Pendapatan isi rumah yang melebihi jadual kelayakan pendapatan isi rumah yang ditetapkan</option>
+            <option>Melebihi kadar Had Kifayah</option>
+            <option>Lain-lain permohonan yang tidak memenuhi syarat dan kelayakan dalam GPSKAZ</option>
+            <option>Permohonan berulang bagi bantuan yang bersifat sekali kelulusan dalam tempoh masa tertentu</option>
+            <option>Jenis bantuan tidak tersenarai di dalam GPSKAZ/ Perkara yang melibatkan kepentingan akidah Islam dan nyawa</option>
+          </select>
+        </div>
           </template>
         </rs-card>
       </div>
@@ -525,7 +557,122 @@
               </rs-card>
             </rs-tab-item>
           </rs-tab>
+          
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="ph:currency-circle-dollar"
+                      class="w-6 h-6 text-emerald-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Maklumat Kadar Bantuan
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Nilai kadar bantuan berdasarkan BQ
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                  <div class="space-y-1">
+                    <!-- <label class="text-sm font-medium text-gray-700"
+                      >Kadar Bantuan</label
+                    > -->
+                    <div class="space-y-1">
+                      <label class="text-sm font-medium text-gray-700">Kadar Bantuan</label>
+                      <input
+                        type="number"
+                        v-model="formData.jumlahBantuan"
+                        class="mt-1 w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                        placeholder="Masukkan jumlah bantuan"
+                      />
+                      <span class="text-sm text-gray-500">(Diambil dari BQ)</span>
+                    </div>
+
+
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Tempoh/Kekerapan</label>
+                    <input
+                    type="number"
+                    v-model="formData.tempohKekerapan"
+                    class="mt-1 w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    placeholder="Masukkan bilangan tempoh/kekerapan"
+                    />
+                  </div>
+
+
+                </div>
+
+                <!-- Tarikh Mula & Tarikh Tamat side by side -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
+                    <input
+                      type="date"
+                      :value="formData.tarikhMula || '2025-08-28'"
+                      class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    />
+                    <!-- <input
+                      type="date"
+                      v-model="formData.tarikhMula"
+                      class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    /> -->
+                  </div>
+                  
+
+
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Tarikh Tamat</label>
+                    <!-- <input
+                      type="date"
+                      v-model="formData.tarikhTamat"
+                      class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    /> -->
+                    <input
+                      type="date"
+                      :value="formData.tarikhTamat || '2026-08-28'"
+                      class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Jumlah Keseluruhan Bantuan akan Diterima</label
+                  >
+                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <!-- <span class="text-lg font-semibold text-gray-900">
+                      RM {{ jumlahBantuan.toLocaleString() }}
+                    </span> -->
+                    <span class="text-lg font-semibold text-gray-900">
+                      RM {{ jumlahKeseluruhan.toLocaleString() }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </template>
+          </rs-card>
+
+          
         </div>
+
+        
+
+        
 
         <!-- Section 3: Catatan Lapangan -->
         <div class="col-span-1">
@@ -929,18 +1076,19 @@ const formData = ref({
   statusIndividu: "",
   statusMultidimensi: "",
   statusLawatan: "belum_selesai",
+  jumlahBantuan: 25000,
 });
+
+const jumlahKeseluruhan = computed(() => {
+  const kadar = parseFloat(formData.value.jumlahBantuan) || 0
+  const tempoh = parseInt(formData.value.tempohKekerapan) || 0
+  return kadar * tempoh
+})
 
 // Section 2: Dokumen Sokongan
 const dokumenSokongan = ref([
-  {
-    jenis: "Quotation (baik pulih)",
-    filename: "quotation.pdf",
-    url: "#",
-    status: "lengkap",
-  },
-  {
-    jenis: "Geran Tanah (bina rumah)",
+   {
+    jenis: "Geran Tanah",
     filename: "geran_tanah.pdf",
     url: "#",
     status: "lengkap",
@@ -949,7 +1097,7 @@ const dokumenSokongan = ref([
     jenis: "Carian Rasmi Pejabat Tanah",
     filename: "carian_rasmi.pdf",
     url: "#",
-    status: "tidak_lengkap",
+    status: "lengkap",
   },
 ]);
 
@@ -958,12 +1106,7 @@ const bqList = ref([
   {
     noBQ: "BQ01",
     namaBQ: "BQ MOHD ROSLI BIN SAAD",
-    status: "Dalam Kelulusan",
-  },
-  {
-    noBQ: "BQ02",
-    namaBQ: "BQ MOHD ROSLI BIN SAAD 2",
-    status: "Dalam Proses",
+    status: "Lulus",
   },
 ]);
 
@@ -1194,6 +1337,10 @@ onMounted(async () => {
     // Implement API call to fetch application data
     // This is mock data for now
     formData.value = {
+      aid: "B102	Bantuan Binaan Rumah (Fakir)",
+      aidproduct: "Bantuan Binaan Rumah (Fakir)",
+      productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+      entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
       nama: "Mohd Rosli bin Saad",
       alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
       jenisPengenalan: "No Pengenalan",
@@ -1204,6 +1351,10 @@ onMounted(async () => {
       statusIndividu: "Fakir",
       statusMultidimensi: "Asnaf Tidak Produktif",
       statusLawatan: "belum_selesai",
+      jumlahBantuan:25000,
+      tempohKekerapan: 1,
+      tarikhmula: "2025-08-28",
+
     };
 
     // Auto-populate laporan teknikal data

@@ -1092,15 +1092,42 @@
               <label class="font-bold block mb-2">Dokumen Lengkap?</label>
               <div class="flex gap-6">
                 <label class="flex items-center gap-2">
-                  <input type="radio" name="dokumen_lengkap" />
+                  <input 
+                    type="radio" 
+                    name="dokumen_lengkap" 
+                    value="Ya"
+                    v-model="dokumenLengkap"
+                    @change="handleDokumenLengkapChange"
+                    checked
+                  />
                   <span>Ya</span>
                 </label>
                 <label class="flex items-center gap-2">
-                  <input type="radio" name="dokumen_lengkap" />
+                  <input 
+                    type="radio" 
+                    name="dokumen_lengkap" 
+                    value="Tidak"
+                    v-model="dokumenLengkap"
+                    @change="handleDokumenLengkapChange"
+                  />
                   <span>Tidak</span>
                 </label>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Popup Notification -->
+        <div 
+          v-if="showNotification" 
+          class="fixed top-4 right-4 bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded shadow-lg z-50 transition-all duration-300"
+          :class="{ 'opacity-0': notificationFading }"
+        >
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="font-medium">{{ notificationMessage }}</span>
           </div>
         </div>
 
@@ -1361,6 +1388,13 @@ function downloadDocument(doc) {
 }
 
 const handleHantar = () => {
+  // Check if dokumen lengkap is "Tidak" before proceeding
+  if (dokumenLengkap.value === 'Tidak') {
+    // Show notification when "Tidak" is selected and Hantar is clicked
+    showNotificationMessage('Notifikasi sudah dihantar ke pemohon.');
+    return; // Don't proceed with navigation
+  }
+  
   // TODO: Implement send/hantar logic
   router.push('/BF-PRF/AS/FR/04');
 };
@@ -1374,6 +1408,36 @@ const handleKembali = () => {
   // TODO: Implement back/kembali logic
   router.back();
 };
+
+// State for document completeness
+const dokumenLengkap = ref('Ya');
+
+// Function to handle document completeness change
+const handleDokumenLengkapChange = () => {
+  // This function is called when the radio button changes
+  // The popup will now only show when Hantar button is clicked
+  // eslint-disable-next-line no-console
+  console.log('Dokumen Lengkap changed to:', dokumenLengkap.value);
+};
+
+// State for notification
+const showNotification = ref(false);
+const notificationMessage = ref('');
+const notificationFading = ref(false);
+
+// Function to show notification
+const showNotificationMessage = (message) => {
+  notificationMessage.value = message;
+  showNotification.value = true;
+  setTimeout(() => {
+    notificationFading.value = true;
+    setTimeout(() => {
+      showNotification.value = false;
+      notificationFading.value = false;
+    }, 300); // Transition duration
+  }, 5000); // Show for 5 seconds
+};
+
 </script>
 
 <style scoped>
