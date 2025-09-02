@@ -13,7 +13,23 @@
       </select>
     </div>
 
-    <!-- Section 1: Maklumat Permohonan Aduan -->
+    <!-- Section 1: Status Semasa -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="grid grid-cols-1 gap-4">
+          <rs-card variant="secondary">
+            <div class="p-2 flex flex-col">
+              <div class="text-sm text-gray-500">Status Semasa</div>
+              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
+                {{ currentStatus }}
+              </rs-badge>
+            </div>
+          </rs-card>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section 2: Maklumat Permohonan Aduan -->
     <rs-card class="mb-6">
       <template #header>Maklumat Permohonan Aduan</template>
       <template #body>
@@ -39,36 +55,8 @@
         </div>
       </template>
     </rs-card>
-    <rs-card class="mb-6">
-      <!-- Section 2: Maklumat Tindakan & Status -->
-      <template #header>Maklumat Tindakan & Status</template>
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <rs-card variant="secondary">
-            <div class="p-2 flex flex-col">
-              <div class="text-sm text-gray-500">Status Semasa</div>
-              <rs-badge variant="info" size="sm">
-                Dalam Proses - Siasatan Ringkas
-              </rs-badge>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Tarikh Setiap Perubahan Status </div>
-              <div class="font-bold">{{ formatDate(AduanInfo.tarikhPerubahanStatus) }}</div>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Nama & Peranan Pegawai / Unit </div>
-              <div class="font-bold">{{ AduanInfo.namaPegawai }}</div>
-            </div>
-          </rs-card>
-        </div>
-      </template>
-    </rs-card>
 
-    <!-- Review History - Only visible to Pengguna Dalam -->
+    <!-- Review History - Visible to both roles, details hidden for Pengguna Luar -->
     <rs-card v-if="canViewSejarahSemakan">
       <template #header>Prosedur Agihan</template>
       <template #body>
@@ -106,8 +94,8 @@
                 <span v-else class="text-white">{{ index + 1 }}</span>
               </div>
 
-              <!-- Content -->
-              <div class="ml-4 flex-1">
+              <!-- Content (only for Pengguna Dalam) -->
+              <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
                 <div class="text-sm text-gray-500">
                   {{ formatDate(step.tarikh) }}
                 </div>
@@ -125,6 +113,11 @@
                   "{{ step.catatan }}"
                 </div>
                 <div class="text-sm mt-1 text-gray-600">Pegawai: {{ step.namaPegawai }}</div>
+              </div>
+              <!-- Minimal content for Pengguna Luar: date + label only -->
+              <div v-else class="ml-4 flex-1">
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="font-bold text-blue-800">{{ step.label }}</div>
               </div>
             </div>
           </div>
@@ -182,6 +175,9 @@ const AduanInfo = ref({
   tarikhPerubahanStatus: '15-06-2025',
   namaPegawai: 'Pn. Zahrah',
 });
+
+// Current status to mirror other pages pattern
+const currentStatus = ref('Dalam Proses - Siasatan Ringkas');
 
 // Mock data - Replace with actual API calls
 const applicationDetails = ref({
@@ -293,22 +289,6 @@ const statusTimeline = [
     namaPegawai: 'Pn. Zahrah',
     masaBerbaki: '21 jam',
   },
-  {
-    label: 'Dalam Tindakan - Siasatan Lapangan',
-    tarikh: '13-06-2025',
-    notStarted: true,
-    catatan: 'Tindakan penyelesaian akan dilaksanakan selepas semakan selesai.',
-    namaPegawai: 'Ustaz Hafiz',
-    masaBerbaki: '19 jam',
-  },
-    {
-    label: 'Selesai',
-    tarikh: '13-06-2025',
-    notStarted: true,
-    catatan: 'Tindakan penyelesaian akan dilaksanakan selepas semakan selesai.',
-    namaPegawai: 'Ustaz Hafiz',
-    masaBerbaki: '19 jam',
-  },
 ];
 
 
@@ -333,7 +313,8 @@ const downloadDocument = (doc: Document): void => {
 
 // Role-based access control
 const selectedRole = ref("pengguna-dalam"); // default role
-const canViewSejarahSemakan = computed(() => selectedRole.value === "pengguna-dalam");
+// Both roles can view the timeline; only internal users see details
+const canViewSejarahSemakan = computed(() => ["pengguna-dalam", "pengguna-luar"].includes(selectedRole.value));
 </script>
 
 <style lang="scss" scoped>

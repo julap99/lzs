@@ -215,31 +215,136 @@
                             }"
                           />
 
-                          <!-- Pengenalan ID Tanggungan Group -->
+                          <!-- Merit Individu Syor and Pengenalan ID Tanggungan side by side -->
+                          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <!-- Merit Individu Syor Group -->
+                            <div class="bg-gray-50 p-4 rounded-lg border">
+                              <label class="block text-sm font-medium text-gray-700 mb-3">
+                                Merit Individu Syor
+                              </label>
+                              <div class="space-y-3">
+                                <FormKit
+                                  type="text"
+                                  name="meritIndividuSyor1"
+                                  placeholder="Merit Individu 1"
+                                  :classes="{
+                                    outer: 'mb-0',
+                                    input: '!py-2 text-sm',
+                                  }"
+                                />
+                                <FormKit
+                                  type="text"
+                                  name="meritIndividuSyor2"
+                                  placeholder="Merit Individu 2"
+                                  :classes="{
+                                    outer: 'mb-0',
+                                    input: '!py-2 text-sm',
+                                  }"
+                                />
+                              </div>
+                            </div>
+
+                            <!-- Pengenalan ID Tanggungan Group -->
+                            <div class="bg-gray-50 p-4 rounded-lg border">
+                              <label class="block text-sm font-medium text-gray-700 mb-3">
+                                Pengenalan ID Tanggungan
+                              </label>
+                              <div class="space-y-3">
+                                <FormKit
+                                  type="text"
+                                  name="pengenalanIdTanggungan1"
+                                  placeholder="ID Tanggungan 1"
+                                  :classes="{
+                                    outer: 'mb-0',
+                                    input: '!py-2 text-sm',
+                                  }"
+                                />
+                                <FormKit
+                                  type="text"
+                                  name="pengenalanIdTanggungan2"
+                                  placeholder="ID Tanggungan 2"
+                                  :classes="{
+                                    outer: 'mb-0',
+                                    input: '!py-2 text-sm',
+                                  }"
+                                />
+                              </div>
+                            </div>
+
+                            <!-- Status Multidimensi (Syor) Group -->
+                            <div class="bg-gray-50 p-4 rounded-lg border">
+                              <label class="block text-sm font-medium text-gray-700 mb-3">
+                                Status Multidimensi (Syor)
+                              </label>
+                              <div class="space-y-3">
+                                <FormKit
+                                  type="text"
+                                  name="statusMultidimensiSyor1"
+                                  placeholder="Status Multidimensi 1"
+                                  :classes="{
+                                    outer: 'mb-0',
+                                    input: '!py-2 text-sm',
+                                  }"
+                                />
+                                <FormKit
+                                  type="text"
+                                  name="statusMultidimensiSyor2"
+                                  placeholder="Status Multidimensi 2"
+                                  :classes="{
+                                    outer: 'mb-0',
+                                    input: '!py-2 text-sm',
+                                  }"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Merit Keluarga (Syor) -->
                           <div class="bg-gray-50 p-4 rounded-lg border">
                             <label class="block text-sm font-medium text-gray-700 mb-3">
-                              Pengenalan ID Tanggungan
+                              Merit Keluarga (Syor)
                             </label>
-                            <div class="space-y-3">
-                              <FormKit
-                                type="text"
-                                name="pengenalanIdTanggungan1"
-                                placeholder="ID Tanggungan 1"
-                                :classes="{
-                                  outer: 'mb-0',
-                                  input: '!py-2 text-sm',
-                                }"
-                              />
-                              <FormKit
-                                type="text"
-                                name="pengenalanIdTanggungan2"
-                                placeholder="ID Tanggungan 2"
-                                :classes="{
-                                  outer: 'mb-0',
-                                  input: '!py-2 text-sm',
-                                }"
-                              />
-                            </div>
+                            <FormKit
+                              type="text"
+                              name="meritKeluargaSyor"
+                              placeholder="Merit keluarga"
+                              :classes="{
+                                outer: 'mb-0',
+                                input: '!py-2 text-sm',
+                              }"
+                            />
+                          </div>
+
+                          <!-- Status Multidimensi Keluarga (Syor) -->
+                          <div class="bg-gray-50 p-4 rounded-lg border">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">
+                              Status Multidimensi Keluarga (Syor)
+                            </label>
+                            <FormKit
+                              type="text"
+                              name="statusMultidimensiKeluargaSyor"
+                              placeholder="Contoh: Asnaf Produktif / Tidak Produktif"
+                              :classes="{
+                                outer: 'mb-0',
+                                input: '!py-2 text-sm',
+                              }"
+                            />
+                          </div>
+
+                          <!-- Quadrant Multidimensi Keluarga (Syor) -->
+                          <div class="bg-gray-50 p-4 rounded-lg border">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">
+                              Quadrant Multidimensi Keluarga (Syor)
+                            </label>
+                            <FormKit
+                              type="text"
+                              name="quadrantMultidimensiKeluargaSyor"
+                              placeholder="Contoh: Q1 / Q2 / Q3 / Q4"
+                              :classes="{
+                                outer: 'mb-0',
+                                input: '!py-2 text-sm',
+                              }"
+                            />
                           </div>
                         </div>
                       </div>
@@ -492,6 +597,13 @@ const profilingData = ref({
   pengenalanIdTanggungan1: "990101015555",
   pengenalanIdTanggungan2: "030303030333",
   kategoriTanggunganSyor: "Anak sekolah rendah",
+  meritIndividuSyor1: "Tinggi",
+  meritIndividuSyor2: "Sederhana",
+  statusMultidimensiSyor1: "Asnaf Tidak Produktif",
+  statusMultidimensiSyor2: "Asnaf Produktif",
+  meritKeluargaSyor: "0.53",
+  statusMultidimensiKeluargaSyor: "Produktif C",
+  quadrantMultidimensiKeluargaSyor: "Asnaf Produktif Sementara",
   assignSiasatan: "Ustaz Karim",
   hadKifayahSah: "45",
   kategoriKeluargaAsnafSah: "Fakir",

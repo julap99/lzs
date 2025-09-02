@@ -14,7 +14,23 @@
       </select>
     </div>
 
-    <!-- Section 1: Maklumat Profil -->
+    <!-- Section 1: Status Semasa -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="grid grid-cols-1 gap-4">
+          <rs-card variant="secondary">
+            <div class="p-2 flex flex-col">
+              <div class="text-sm text-gray-500">Status Semasa</div>
+              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
+                {{ currentStatus }}
+              </rs-badge>
+            </div>
+          </rs-card>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section 2: Maklumat Profil -->
     <rs-card class="mb-6">
       <template #header>Maklumat Profil</template>
       <template #body>
@@ -36,7 +52,7 @@
       </template>
     </rs-card>
 
-    <!-- Section 2: Maklumat Kelayakan -->
+    <!-- Section 3: Maklumat Kelayakan -->
     <rs-card class="mb-6">
       <template #header>Maklumat Kelayakan</template>
       <template #body>
@@ -90,7 +106,7 @@
       </template>
     </rs-card>
 
-    <!-- Section 3: Review History -->
+    <!-- Section 3: Review History - Visible to both roles, details hidden for Pengguna Luar -->
     <rs-card v-if="canViewSejarahSemakan">
       <template #header>Prosedur Agihan</template>
       <template #body>
@@ -119,7 +135,7 @@
                 />
                 <span v-else>{{ index + 1 }}</span>
               </div>
-              <div class="ml-4 flex-1">
+              <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
                 <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
                 <div class="font-bold text-blue-800">{{ step.label }}</div>
                 <div class="text-sm mt-1">
@@ -134,6 +150,11 @@
                 </div>
                 <div class="text-sm mt-1 text-gray-600">Pegawai: {{ step.namaPegawai }}</div>
               </div>
+              <!-- Minimal content for Pengguna Luar: date + label only -->
+              <div v-else class="ml-4 flex-1">
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="font-bold text-blue-800">{{ step.label }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -145,7 +166,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 definePageMeta({
   title: "Status Fakir, Miskin, NonFM",
@@ -175,6 +196,16 @@ const profileInfo = ref({
   idProfil: "NAS-PRF-2025-0001",
   nama: "Ali bin Abu",
 });
+
+// Tindakan & Status (mock)
+const tindakanStatus = ref({
+  statusSemasa: 'Dalam Proses - Siasatan',
+  tarikhKemaskini: '13-06-2025',
+  namaPegawaiBertugas: 'Ustaz Hafiz',
+  catatanPegawaiBertugas: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
+});
+
+const currentStatus = computed(() => tindakanStatus.value.statusSemasa);
 
 const kelayakanInfo = ref({
   telahDinilai: true,
@@ -223,13 +254,6 @@ const statusTimeline = [
     namaPegawai: 'Ustaz Hakim',
     masaBerbaki: '2 hari',
   },
-  {
-    label: 'Sahkan Profil',
-    notStarted: true,
-    tarikh: '',
-    catatan: 'Tiada tindakan direkodkan setakat ini.',
-    namaPegawai: 'Belum Ditugaskan',
-  },
 ];
 
 const totalSla = Object.values(slaRules).reduce((a, b) => a + b, 0);
@@ -261,6 +285,18 @@ const getKategoriVariant = (kategori: string): string => {
   }
 };
 
+const getStatusVariant = (status: string): string => {
+  const variants: Record<string, string> = {
+    'Dalam Proses - Siasatan': 'info',
+    'Disemak': 'primary',
+    'Lulus': 'success',
+    'Tidak Lulus': 'danger',
+    'Diterima': 'info',
+    'Dibatalkan': 'default',
+  };
+  return variants[status] || 'default';
+};
+
 // Simulate user role
 const canExport = ref(false); // true → utk Pengguna Dalaman
 
@@ -271,7 +307,8 @@ const exportPDF = (): void => {
 
 // Role-based access control
 const selectedRole = ref("pengguna-dalam"); // default role
-const canViewSejarahSemakan = computed(() => selectedRole.value === "pengguna-dalam");
+// Both roles can view the timeline; only internal users see details (handled in template)
+const canViewSejarahSemakan = computed(() => ["pengguna-dalam", "pengguna-luar"].includes(selectedRole.value));
 </script>
 
 <style lang="scss" scoped>

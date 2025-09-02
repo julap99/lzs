@@ -437,10 +437,27 @@ const dokumenLengkap = ref('');
 
 // Function to handle document completeness change
 const handleDokumenLengkapChange = () => {
-  // This function is called when the radio button changes
-  // The popup will now only show when Hantar button is clicked
-  // eslint-disable-next-line no-console
-  console.log('Dokumen Lengkap changed to:', dokumenLengkap.value);
+  try {
+    // Validate that dokumenLengkap has a value
+    if (!dokumenLengkap.value) {
+      console.warn('Dokumen Lengkap value is undefined or null');
+      return;
+    }
+    
+    // This function is called when the radio button changes
+    // The popup will now only show when Hantar button is clicked
+    // eslint-disable-next-line no-console
+    console.log('Dokumen Lengkap changed to:', dokumenLengkap.value);
+    
+    // Automatically update komen penyemak based on selection
+    if (dokumenLengkap.value === 'Tidak') {
+      komenPenyemak.value = 'Tidak Lengkap';
+    } else if (dokumenLengkap.value === 'Ya') {
+      komenPenyemak.value = '';
+    }
+  } catch (error) {
+    console.error('Error handling dokumen lengkap change:', error);
+  }
 };
 
 // State for notification
@@ -459,6 +476,73 @@ const showNotificationMessage = (message) => {
       notificationFading.value = false;
     }, 300); // Transition duration
   }, 5000); // Show for 5 seconds
+};
+
+// New state for semakan data
+const semakanData = ref({
+  peribadi: 'Ya',
+  pendidikan: 'Ya',
+  pengislaman: 'Ya',
+  perbankan: 'Ya',
+  kesihatan: 'Ya',
+  kemahiran: 'Ya',
+  alamat: 'Ya',
+  pinjaman: 'Ya',
+  aset: 'Ya',
+  barang: 'Ya',
+  pekerjaan: 'Ya',
+  pendapatan: 'Ya',
+  waris: 'Ya',
+  peribadi_tanggungan: 'Ya',
+  pengislaman_tanggungan: 'Ya',
+  pendidikan_tanggungan: 'Ya',
+  kesihatan_tanggungan: 'Ya',
+  kemahiran_tanggungan: 'Ya',
+  pekerjaan_tanggungan: 'Ya',
+  perakuan_ketua_keluarga: 'Ya',
+  pengesahan_permastautin: 'Ya',
+  pengesahan_pendapatan: 'Ya',
+});
+
+// Function to set all semakan radio buttons to "Ya"
+const setAllSemakanToYa = () => {
+  try {
+    // Validate that semakanData exists
+    if (!semakanData.value) {
+      console.error('Semakan data is not initialized');
+      return;
+    }
+    
+    // Set all fields to "Ya"
+    semakanData.value.peribadi = 'Ya';
+    semakanData.value.pendidikan = 'Ya';
+    semakanData.value.pengislaman = 'Ya';
+    semakanData.value.perbankan = 'Ya';
+    semakanData.value.kesihatan = 'Ya';
+    semakanData.value.kemahiran = 'Ya';
+    semakanData.value.alamat = 'Ya';
+    semakanData.value.pinjaman = 'Ya';
+    semakanData.value.aset = 'Ya';
+    semakanData.value.barang = 'Ya';
+    semakanData.value.pekerjaan = 'Ya';
+    semakanData.value.pendapatan = 'Ya';
+    semakanData.value.waris = 'Ya';
+    semakanData.value.peribadi_tanggungan = 'Ya';
+    semakanData.value.pengislaman_tanggungan = 'Ya';
+    semakanData.value.pendidikan_tanggungan = 'Ya';
+    semakanData.value.kesihatan_tanggungan = 'Ya';
+    semakanData.value.kemahiran_tanggungan = 'Ya';
+    semakanData.value.pekerjaan_tanggungan = 'Ya';
+    semakanData.value.perakuan_ketua_keluarga = 'Ya';
+    semakanData.value.pengesahan_permastautin = 'Ya';
+    semakanData.value.pengesahan_pendapatan = 'Ya';
+    
+    // Show success notification
+    showNotificationMessage('Semua pilihan semakan telah diubah ke Ya.');
+  } catch (error) {
+    console.error('Error setting all semakan to Ya:', error);
+    showNotificationMessage('Ralat berlaku semasa mengubah pilihan semakan.');
+  }
 };
 
 </script>

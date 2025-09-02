@@ -13,11 +13,27 @@
       </select>
     </div>
 
-    <!-- Section 1: Maklumat Permohonan Bantuan -->
+    <!-- Section 1: Status Semasa (highlight only, no header) -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="grid grid-cols-1 gap-4">
+          <rs-card variant="secondary">
+            <div class="p-2 flex flex-col">
+              <div class="text-sm text-gray-500">Status Semasa</div>
+              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
+                {{ currentStatus }}
+              </rs-badge>
+            </div>
+          </rs-card>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section 2: Maklumat Permohonan Bantuan -->
     <rs-card class="mb-6">
       <template #header>Maklumat Permohonan Bantuan</template>
       <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <rs-card variant="secondary">
             <div class="p-2">
               <div class="text-sm text-gray-500">ID Permohonan</div>
@@ -36,56 +52,11 @@
               <div class="font-bold">{{ formatDate(bantuanInfo.tarikhMohon) }}</div>
             </div>
           </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2 flex flex-col">
-              <div class="text-sm text-gray-500">Status Semasa</div>
-              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
-                {{ currentStatus }}
-              </rs-badge>
-            </div>
-          </rs-card>
         </div>
       </template>
     </rs-card>
 
-    <!-- Section 2: Maklumat Tindakan & Status -->
-    <rs-card class="mb-6">
-      <template #header>Maklumat Tindakan & Status</template>
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <rs-card variant="secondary">
-            <div class="p-2 flex flex-col">
-              <div class="text-sm text-gray-500">Status Semasa</div>
-              <rs-badge variant="info" size="sm">
-                Dalam Proses - Siasatan
-              </rs-badge>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Tarikh Kemaskini</div>
-              <div class="font-bold">{{ formatDate(tindakanStatus.tarikhKemaskini) }}</div>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Nama Pegawai Bertugas</div>
-              <div class="font-bold">{{ tindakanStatus.namaPegawaiBertugas }}</div>
-            </div>
-          </rs-card>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Catatan Pegawai Bertugas</div>
-              <div class="font-bold italic">{{ tindakanStatus.catatanPegawaiBertugas }}</div>
-            </div>
-          </rs-card>
-        </div>
-      </template>
-    </rs-card>
-
-    <!-- Review History -->
+    <!-- Review History - Visible to both roles, details hidden for Pengguna Luar -->
     <rs-card v-if="canViewSejarahSemakan">
       <template #header>Prosedur Agihan</template>
       <template #body>
@@ -130,8 +101,8 @@
                 <span v-else class="text-white">{{ index + 1 }}</span>
               </div>
 
-              <!-- Content -->
-              <div class="ml-4 flex-1">
+              <!-- Content (only for Pengguna Dalam) -->
+              <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
                 <div class="text-sm text-gray-500">
                   {{ formatDate(step.tarikh) }}
                 </div>
@@ -149,6 +120,11 @@
                   "{{ step.catatan }}"
                 </div>
                 <div class="text-sm mt-1 text-gray-600">Pegawai: {{ step.namaPegawai }}</div>
+              </div>
+              <!-- Minimal content for Pengguna Luar: date + label only -->
+              <div v-else class="ml-4 flex-1">
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="font-bold text-blue-800">{{ step.label }}</div>
               </div>
             </div>
           </div>
@@ -241,6 +217,7 @@ interface Document {
 
 const getStatusVariant = (status: string) => {
   const variants: Record<string, string> = {
+    'Dalam Proses - Siasatan': 'info',
     'Dalam Penyaluran': 'primary',
     Selesai: 'success',
     Dibatalkan: 'danger',
@@ -251,7 +228,7 @@ const getStatusVariant = (status: string) => {
   return variants[status] || 'default';
 };
 
-const currentStatus = ref('Siasatan');
+const currentStatus = ref('Dalam Proses - Siasatan');
 
 // Dummy SLA & statusTimeline example
 const slaRules: Record<string, number> = {
@@ -312,28 +289,6 @@ const statusTimeline = [
     notStarted: false,
     rejected: false,
   },
-  {
-    label: 'Kelulusan',
-    notStarted: true,
-    tarikh: '',
-    catatan: 'Tiada tindakan direkodkan setakat ini.',
-    namaPegawai: 'Belum Ditugaskan',
-    masaBerbaki: '',
-    completed: false,
-    inProgress: false,
-    rejected: false,
-  },
-  {
-    label: 'Pembayaran',
-    notStarted: true,
-    tarikh: '',
-    catatan: 'Tiada tindakan direkodkan setakat ini.',
-    namaPegawai: 'Belum Ditugaskan',
-    masaBerbaki: '',
-    completed: false,
-    inProgress: false,
-    rejected: false,
-  },
 ];
 
 const tindakanStatus = ref({
@@ -364,7 +319,8 @@ const downloadDocument = (doc: Document): void => {
 
 // Role-based access control
 const selectedRole = ref("pengguna-dalam"); // default role
-const canViewSejarahSemakan = computed(() => selectedRole.value === "pengguna-dalam");
+// Both roles can view the timeline; only internal users see details
+const canViewSejarahSemakan = computed(() => ["pengguna-dalam", "pengguna-luar"].includes(selectedRole.value));
 </script>
 
 <style lang="scss" scoped>
