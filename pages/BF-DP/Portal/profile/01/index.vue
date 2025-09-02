@@ -14,7 +14,23 @@
       </select>
     </div>
 
-    <!-- Section 1: Maklumat Profil -->
+    <!-- Section 1: Status Semasa -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="grid grid-cols-1 gap-4">
+          <rs-card variant="secondary">
+            <div class="p-2 flex flex-col">
+              <div class="text-sm text-gray-500">Status Semasa</div>
+              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
+                {{ currentStatus }}
+              </rs-badge>
+            </div>
+          </rs-card>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section 2: Maklumat Profil -->
     <rs-card class="mb-6">
       <template #header>Maklumat Profil</template>
       <template #body>
@@ -36,7 +52,7 @@
       </template>
     </rs-card>
 
-    <!-- Section 2: Maklumat Kelayakan -->
+    <!-- Section 3: Maklumat Kelayakan -->
     <rs-card class="mb-6">
       <template #header>Maklumat Kelayakan</template>
       <template #body>
@@ -145,7 +161,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 definePageMeta({
   title: "Status Fakir, Miskin, NonFM",
@@ -175,6 +191,16 @@ const profileInfo = ref({
   idProfil: "NAS-PRF-2025-0001",
   nama: "Ali bin Abu",
 });
+
+// Tindakan & Status (mock)
+const tindakanStatus = ref({
+  statusSemasa: 'Dalam Proses - Siasatan',
+  tarikhKemaskini: '13-06-2025',
+  namaPegawaiBertugas: 'Ustaz Hafiz',
+  catatanPegawaiBertugas: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
+});
+
+const currentStatus = computed(() => tindakanStatus.value.statusSemasa);
 
 const kelayakanInfo = ref({
   telahDinilai: true,
@@ -259,6 +285,18 @@ const getKategoriVariant = (kategori: string): string => {
     case 'NonFM': return 'success';
     default: return 'default';
   }
+};
+
+const getStatusVariant = (status: string): string => {
+  const variants: Record<string, string> = {
+    'Dalam Proses - Siasatan': 'info',
+    'Disemak': 'primary',
+    'Lulus': 'success',
+    'Tidak Lulus': 'danger',
+    'Diterima': 'info',
+    'Dibatalkan': 'default',
+  };
+  return variants[status] || 'default';
 };
 
 // Simulate user role

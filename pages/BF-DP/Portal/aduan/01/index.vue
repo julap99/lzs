@@ -13,7 +13,23 @@
       </select>
     </div>
 
-    <!-- Section 1: Maklumat Permohonan Aduan -->
+    <!-- Section 1: Status Semasa -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="grid grid-cols-1 gap-4">
+          <rs-card variant="secondary">
+            <div class="p-2 flex flex-col">
+              <div class="text-sm text-gray-500">Status Semasa</div>
+              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
+                {{ currentStatus }}
+              </rs-badge>
+            </div>
+          </rs-card>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section 2: Maklumat Permohonan Aduan -->
     <rs-card class="mb-6">
       <template #header>Maklumat Permohonan Aduan</template>
       <template #body>
@@ -34,34 +50,6 @@
             <div class="p-2">
               <div class="text-sm text-gray-500">Tarikh Permohonan</div>
               <div class="font-bold">{{ formatDate(AduanInfo.tarikhMohon) }}</div>
-            </div>
-          </rs-card>
-        </div>
-      </template>
-    </rs-card>
-    <rs-card class="mb-6">
-      <!-- Section 2: Maklumat Tindakan & Status -->
-      <template #header>Maklumat Tindakan & Status</template>
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <rs-card variant="secondary">
-            <div class="p-2 flex flex-col">
-              <div class="text-sm text-gray-500">Status Semasa</div>
-              <rs-badge variant="info" size="sm">
-                Dalam Proses - Siasatan Ringkas
-              </rs-badge>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Tarikh Setiap Perubahan Status </div>
-              <div class="font-bold">{{ formatDate(AduanInfo.tarikhPerubahanStatus) }}</div>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Nama & Peranan Pegawai / Unit </div>
-              <div class="font-bold">{{ AduanInfo.namaPegawai }}</div>
             </div>
           </rs-card>
         </div>
@@ -182,6 +170,9 @@ const AduanInfo = ref({
   tarikhPerubahanStatus: '15-06-2025',
   namaPegawai: 'Pn. Zahrah',
 });
+
+// Current status to mirror other pages pattern
+const currentStatus = ref('Dalam Proses - Siasatan Ringkas');
 
 // Mock data - Replace with actual API calls
 const applicationDetails = ref({

@@ -13,11 +13,27 @@
       </select>
     </div>
 
-    <!-- Section 1: Maklumat Permohonan Bantuan -->
+    <!-- Section 1: Status Semasa (highlight only, no header) -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="grid grid-cols-1 gap-4">
+          <rs-card variant="secondary">
+            <div class="p-2 flex flex-col">
+              <div class="text-sm text-gray-500">Status Semasa</div>
+              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
+                {{ currentStatus }}
+              </rs-badge>
+            </div>
+          </rs-card>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section 2: Maklumat Permohonan Bantuan -->
     <rs-card class="mb-6">
       <template #header>Maklumat Permohonan Bantuan</template>
       <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <rs-card variant="secondary">
             <div class="p-2">
               <div class="text-sm text-gray-500">ID Permohonan</div>
@@ -34,51 +50,6 @@
             <div class="p-2">
               <div class="text-sm text-gray-500">Tarikh Permohonan</div>
               <div class="font-bold">{{ formatDate(bantuanInfo.tarikhMohon) }}</div>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2 flex flex-col">
-              <div class="text-sm text-gray-500">Status Semasa</div>
-              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
-                {{ currentStatus }}
-              </rs-badge>
-            </div>
-          </rs-card>
-        </div>
-      </template>
-    </rs-card>
-
-    <!-- Section 2: Maklumat Tindakan & Status -->
-    <rs-card class="mb-6">
-      <template #header>Maklumat Tindakan & Status</template>
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <rs-card variant="secondary">
-            <div class="p-2 flex flex-col">
-              <div class="text-sm text-gray-500">Status Semasa</div>
-              <rs-badge variant="info" size="sm">
-                Dalam Proses - Siasatan
-              </rs-badge>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Tarikh Kemaskini</div>
-              <div class="font-bold">{{ formatDate(tindakanStatus.tarikhKemaskini) }}</div>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Nama Pegawai Bertugas</div>
-              <div class="font-bold">{{ tindakanStatus.namaPegawaiBertugas }}</div>
-            </div>
-          </rs-card>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Catatan Pegawai Bertugas</div>
-              <div class="font-bold italic">{{ tindakanStatus.catatanPegawaiBertugas }}</div>
             </div>
           </rs-card>
         </div>
@@ -241,6 +212,7 @@ interface Document {
 
 const getStatusVariant = (status: string) => {
   const variants: Record<string, string> = {
+    'Dalam Proses - Siasatan': 'info',
     'Dalam Penyaluran': 'primary',
     Selesai: 'success',
     Dibatalkan: 'danger',
@@ -251,7 +223,7 @@ const getStatusVariant = (status: string) => {
   return variants[status] || 'default';
 };
 
-const currentStatus = ref('Siasatan');
+const currentStatus = ref('Dalam Proses - Siasatan');
 
 // Dummy SLA & statusTimeline example
 const slaRules: Record<string, number> = {
