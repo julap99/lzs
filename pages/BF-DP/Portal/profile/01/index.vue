@@ -3,6 +3,17 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
+    <!-- Role Simulator - For Demo/Presentation Only -->
+    <!-- This allows switching between different user roles to demonstrate role-based views -->
+    <!-- In production, this would be replaced with actual user authentication and role management -->
+    <div class="mb-4 flex items-center space-x-4">
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="pengguna-luar">Pengguna Luar</option>
+        <option value="pengguna-dalam">Pengguna Dalam</option>
+      </select>
+    </div>
+
     <!-- Section 1: Maklumat Profil -->
     <rs-card class="mb-6">
       <template #header>Maklumat Profil</template>
@@ -79,9 +90,9 @@
       </template>
     </rs-card>
 
-    <!-- Section 3: Garis Masa Penilaian (Vertical) -->
-    <rs-card>
-      <template #header>Garis Masa Penilaian Kelayakan</template>
+    <!-- Section 3: Review History -->
+    <rs-card v-if="canViewSejarahSemakan">
+      <template #header>Prosedur Agihan</template>
       <template #body>
         <div class="relative">
           <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
@@ -128,6 +139,8 @@
         </div>
       </template>
     </rs-card>
+
+
   </div>
 </template>
 
@@ -166,7 +179,7 @@ const profileInfo = ref({
 const kelayakanInfo = ref({
   telahDinilai: true,
   kategori: 'Fakir',
-  tarikhPenilaian: '2025-06-10',
+  tarikhPenilaian: '10-06-2025',
   catatan: 'Memerlukan bantuan sara hidup.',
   namaPegawai: 'Ahmad bin Salleh',
 });
@@ -188,7 +201,7 @@ const slaTimeline = [
 const statusTimeline = [
   {
     label: 'Permohonan Dihantar',
-    tarikh: '2025-06-01T09:00:00',
+    tarikh: '01-06-2025',
     completed: true,
     catatan: 'Profil diterima untuk semakan.',
     namaPegawai: 'Sistem NAS',
@@ -196,7 +209,7 @@ const statusTimeline = [
   },
   {
     label: 'Semakan Dokumen',
-    tarikh: '2025-06-02T11:00:00',
+    tarikh: '02-06-2025',
     completed: true,
     catatan: 'Semakan dokumen selesai.',
     namaPegawai: 'Pn. Suraya',
@@ -204,7 +217,7 @@ const statusTimeline = [
   },
   {
     label: 'Penilaian Kelayakan',
-    tarikh: '2025-06-04T10:00:00',
+    tarikh: '04-06-2025',
     inProgress: true,
     catatan: 'Dalam proses penilaian.',
     namaPegawai: 'Ustaz Hakim',
@@ -232,15 +245,11 @@ const calculateSlaStatus = (label: string, tarikh: string): string => {
   return label === 'Penilaian Kelayakan' ? 'Masih Dalam Tempoh' : 'Selesai';
 };
 
+import { formatDate as formatDateUtil } from '~/utils/dateFormatter';
+
 const formatDate = (date: string): string => {
   if (!date) return 'Belum Bermula';
-  return new Date(date).toLocaleDateString('ms-MY', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return formatDateUtil(date);
 };
 
 const getKategoriVariant = (kategori: string): string => {
@@ -259,6 +268,10 @@ const canExport = ref(false); // true → utk Pengguna Dalaman
 const exportPDF = (): void => {
   alert("Export PDF triggered!");
 };
+
+// Role-based access control
+const selectedRole = ref("pengguna-dalam"); // default role
+const canViewSejarahSemakan = computed(() => selectedRole.value === "pengguna-dalam");
 </script>
 
 <style lang="scss" scoped>
