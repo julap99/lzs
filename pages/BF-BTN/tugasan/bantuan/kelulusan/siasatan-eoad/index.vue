@@ -646,7 +646,7 @@
         <rs-card class="">
           <template #header>
             <div class="flex justify-between items-center">
-              <h2 class="text-xl font-semibold">Maklumat Lawatan & Siasatan</h2>
+              <h2 class="text-xl font-semibold">Maklumat Kelulusan</h2>
             </div>
           </template>
 
@@ -692,278 +692,37 @@
                       }}
                     </li>
                   </ul>
-                  <p class="text-sm text-gray-600 mt-3">
+                  <!-- <p class="text-sm text-gray-600 mt-3">
                     Registrasi dibuut berdasarkan profil asnaf
-                  </p>
+                  </p> -->
                 </div>
 
-                <!-- Keadaan Siasatan -->
-                <div>
-                  <FormKit
-                    type="select"
-                    name="keadaanSiasatan"
-                    label="Keadaan Siasatan"
-                    :options="keadaanSiasatanOptions"
-                    placeholder="--Sila Pilih--"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Sila pilih keadaan siasatan untuk meneruskan',
-                    }"
-                  />
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <h3 class="text-sm font-medium text-gray-700 mb-3">
+                    Ringkasan Kelulusan
+                  </h3>
+                  <ul class="text-sm space-y-1 text-gray-600">
+                    <li>• No Bantuan: NAS-2025-000001</li>
+                    <li>
+                      • Nama Bantuan: Bantuan Binaan Rumah (Fakir)
+                    </li>
+                    <li>
+                      • Kadar: RM43,000.00
+                    </li>
+                    <li>
+                      • Kekerapan: 1
+                    </li>
+                    <li>
+                      • Status: Lulus
+                    </li>
+                  </ul>
+                  <!-- <p class="text-sm text-gray-600 mt-3">
+                    Registrasi dibuut berdasarkan profil asnaf
+                  </p> -->
                 </div>
 
-                <!-- Tarikh Lawatan -->
-                <div>
-                  <FormKit
-                    type="date"
-                    name="tarikhLawatan"
-                    label="Tarikh Lawatan"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Sila pilih tarikh lawatan',
-                    }"
-                    placeholder="dd/mm/yyyy"
-                  />
-                </div>
+            
 
-                <!-- Masa Lawatan -->
-                <div>
-                  <FormKit
-                    type="time"
-                    name="masaLawatan"
-                    label="Masa Lawatan"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Sila pilih masa lawatan',
-                    }"
-                    placeholder="--:--:--"
-                  />
-                </div>
-
-                <!-- Catatan Penilaian Awal -->
-                <div>
-                  <FormKit
-                    type="textarea"
-                    name="catatanPenilianAwal"
-                    label="Catatan Penilaian Awal"
-                    rows="4"
-                    placeholder="Enter text..."
-                    :classes="{
-                      input: '!py-2',
-                    }"
-                  />
-                </div>
-
-                <!-- Gambar Lokasi/Bukti Visual -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Gambar Lokasi/Bukti Visual
-                  </label>
-
-                  <!-- Custom File Upload Area -->
-                  <div class="space-y-4">
-                    <!-- Upload Dropzone -->
-                    <div
-                      @click="triggerFileInput"
-                      @dragover.prevent
-                      @dragenter.prevent
-                      @drop.prevent="handleFileDrop"
-                      class="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 group"
-                    >
-                      <div class="space-y-2">
-                        <Icon
-                          name="ph:upload"
-                          class="w-12 h-12 text-blue-400 group-hover:text-blue-500 transition-colors duration-300 group-hover:scale-110 transform mx-auto"
-                        />
-                        <div>
-                          <p class="text-sm text-gray-600">
-                            <span
-                              class="font-medium text-blue-600 hover:text-blue-500"
-                              >Klik untuk pilih fail</span
-                            >
-                            atau seret dan lepas di sini
-                          </p>
-                          <p class="text-xs text-gray-500 mt-1">
-                            PNG, JPG, GIF sehingga 5MB setiap fail
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Hidden File Input -->
-                    <input
-                      ref="fileInputRef"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      @change="handleFileInputChange"
-                      class="hidden"
-                    />
-
-                    <!-- Upload Progress -->
-                    <div v-if="uploadProgress.length > 0" class="space-y-2">
-                      <div
-                        v-for="(progress, index) in uploadProgress"
-                        :key="index"
-                        class="bg-white rounded-lg border border-gray-200 p-3"
-                      >
-                        <div class="flex items-center justify-between mb-2">
-                          <span class="text-sm font-medium text-gray-700">{{
-                            progress.filename
-                          }}</span>
-                          <span class="text-xs text-gray-500">{{
-                            formatFileSize(progress.size)
-                          }}</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                          <div
-                            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                            :style="{ width: `${progress.progress}%` }"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Image Preview Gallery -->
-                    <div
-                      v-if="uploadedImages.length > 0"
-                      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
-                    >
-                      <div
-                        v-for="(image, index) in uploadedImages"
-                        :key="index"
-                        class="group relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm scroll-indicator hover:shadow-md transition-shadow"
-                      >
-                        <!-- Image Preview -->
-                        <div class="aspect-square bg-gray-100 relative">
-                          <img
-                            :src="image.url"
-                            :alt="`Gambar ${index + 1}`"
-                            class="w-full h-full object-cover cursor-pointer"
-                            @click="previewImage(image)"
-                          />
-
-                          <!-- Overlay Actions -->
-                          <div
-                            class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center"
-                          >
-                            <div
-                              class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2"
-                            >
-                              <button
-                                @click.stop="previewImage(image)"
-                                class="bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-700 p-2 rounded-full shadow-md transition-all"
-                                type="button"
-                                title="Preview"
-                              >
-                                <Icon name="ph:eye" class="w-4 h-4" />
-                              </button>
-                              <button
-                                @click.stop="removeImage(index)"
-                                class="bg-red-500 bg-opacity-90 hover:bg-opacity-100 text-white p-2 rounded-full shadow-md transition-all"
-                                type="button"
-                                title="Padam"
-                              >
-                                <Icon name="ph:trash" class="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-
-                          <!-- Loading Indicator -->
-                          <div
-                            v-if="image.loading"
-                            class="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center"
-                          >
-                            <Icon
-                              name="ph:spinner"
-                              class="w-6 h-6 text-blue-600 animate-spin"
-                            />
-                          </div>
-                        </div>
-
-                        <!-- Image Info -->
-                        <div class="p-3 space-y-2">
-                          <!-- File Name -->
-                          <div class="flex items-center justify-between">
-                            <span
-                              class="text-xs text-gray-500 truncate flex-1"
-                              :title="image.filename"
-                            >
-                              {{ image.filename }}
-                            </span>
-                            <span class="text-xs text-gray-400 ml-2">
-                              {{ formatFileSize(image.size) }}
-                            </span>
-                          </div>
-
-                          <!-- Image Caption -->
-                          <FormKit
-                            type="text"
-                            :name="`imageCaption_${index}`"
-                            v-model="image.caption"
-                            placeholder="Tambah keterangan..."
-                            :classes="{
-                              outer: 'mb-0',
-                              input: 'text-xs !py-1.5 !text-gray-700',
-                            }"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Sample Image Placeholder -->
-                    <div
-                      v-if="uploadedImages.length === 0"
-                      class="mt-6 border border-gray-300 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-slate-100 shadow-sm scroll-indicator"
-                    >
-                      <div
-                        class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
-                      >
-                        <div class="text-center">
-                          <Icon
-                            name="ph:image"
-                            class="w-12 h-12 text-gray-400 mx-auto mb-2"
-                          />
-                          <p class="text-sm text-gray-500">
-                            Tiada gambar dimuat naik lagi
-                          </p>
-                          <p class="text-xs text-gray-400 mt-1">
-                            Gambar anda akan dipaparkan di sini
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Catatan Lawatan ETD -->
-                <div>
-                  <FormKit
-                    type="textarea"
-                    name="catatanLawatanETD"
-                    label="Catatan Lawatan ETD"
-                    rows="4"
-                    placeholder="Enter text..."
-                    :classes="{
-                      input: '!py-2',
-                    }"
-                  />
-                </div>
-
-                <!-- Status Lawatan -->
-                <div>
-                  <FormKit
-                    type="select"
-                    name="statusLawatan"
-                    label="Status Lawatan"
-                    :options="statusLawatanOptions"
-                    placeholder="--Sila Pilih--"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Sila pilih status lawatan',
-                    }"
-                  />
-                </div>
 
                 <!-- Action Buttons -->
                 <div
@@ -977,22 +736,11 @@
                     class="flex-1 !py-3 text-sm font-medium"
                   >
                     <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
-                    Simpan
+                    Hantar
                   </rs-button>
 
                   <rs-button
-                    variant="primary"
-                    @click="handleHantarKelulusan"
-                    :disabled="processing || !canSubmitForApproval"
-                    :loading="processing && actionType === 'submit'"
-                    class="flex-1 !py-3 text-sm font-medium"
-                  >
-                    <Icon name="ph:paper-plane-tilt" class="w-5 h-5 mr-2" />
-                    Hantar Kelulusan
-                  </rs-button>
-
-                  <rs-button
-                    variant="secondary"
+                    variant="danger"
                     @click="handleKembali"
                     class="flex-1 !py-3 text-sm font-medium"
                   >
@@ -1116,7 +864,7 @@ const breadcrumb = ref([
     path: "/BF-BTN/tugasan",
   },
   {
-    name: "Siasatan EOAD",
+    name: "Kelulusan Bantuan",
     type: "current",
     path: "/BF-BTN/tugasan/bantuan/kelulusan/siasatan-eoad",
   },
