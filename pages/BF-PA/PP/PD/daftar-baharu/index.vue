@@ -50,7 +50,7 @@
                   <strong>{{ currentInstitution.name }}</strong>
                 </p>
                 <p class="mt-1 text-sm text-green-600">
-                  PYB: {{ currentInstitution.pic }} ({{ currentInstitution.picEmail }})
+                  PIC: {{ currentInstitution.pic }} ({{ currentInstitution.picEmail }})
                 </p>
               </div>
             </div>
@@ -844,7 +844,7 @@ const currentDate = computed(() => {
 // Institution type (for category logic)
 const institutionType = ref("masjid"); // "masjid" or "bukan-masjid"
 
-// Current institution data (based on logged-in PYB)
+// Current institution data (based on logged-in PIC)
 const currentInstitution = ref({
   id: "MASJID_NEGERI_SELANGOR_001",
   name: "Masjid Negeri Selangor",

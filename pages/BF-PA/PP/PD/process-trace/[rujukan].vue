@@ -336,7 +336,7 @@ const application = ref({
     {
       action: "Pendaftaran calon baharu",
       timestamp: "15-01-2024 10:30:00",
-      user: "Ahmad Abdullah (PYB)",
+      user: "Ahmad Abdullah (PIC)",
       notes: "Calon didaftarkan melalui borang pendaftaran"
     },
     {

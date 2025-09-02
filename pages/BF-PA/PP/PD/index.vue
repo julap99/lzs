@@ -76,7 +76,7 @@
         </div>
 
         <!-- Tabbed Table Section -->
-        <!-- PYB Role Tabs -->
+        <!-- PIC (formerly PYB) Role Tabs -->
         <div v-if="currentRole === 'pyb'">
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Draf">
@@ -973,7 +973,7 @@ const tableKey = ref(0);
 
 // Page-specific role options for Pra Daftar
 const roleOptions = [
-  { label: "PYB Institusi", value: "pyb" },
+  { label: "PIC", value: "pyb" },
   { label: "Eksekutif Pengurusan Risiko", value: "eksekutif-pengurusan-risiko" },
   { label: "PT", value: "pt" },
   { label: "Eksekutif", value: "eksekutif" },
@@ -984,7 +984,7 @@ const roleOptions = [
 // Role data for Pra Daftar
 const roleData = {
   pyb: {
-    label: "PYB Institusi",
+    label: "PIC",
     description: "Pendaftaran Calon Penolong Amil",
     capabilities: ["Daftar Calon", "Lihat Senarai", "Kemaskini Maklumat"],
   },
@@ -1069,7 +1069,7 @@ const refreshTable = () => {
 
 const getRoleSpecificDescription = () => {
   const roleDescriptions = {
-    pyb: "Urus permohonan penolong amil - Draf, Proses, Lulus, dan Ditolak",
+    pyb: "Urus permohonan penolong amil oleh PIC - Draf, Proses, Lulus, Ditolak",
     "eksekutif-pengurusan-risiko": "Saringan risiko untuk permohonan penolong amil",
     pt: "Semakan dokumen PT untuk permohonan penolong amil",
     eksekutif: "Sokongan eksekutif untuk permohonan penolong amil",

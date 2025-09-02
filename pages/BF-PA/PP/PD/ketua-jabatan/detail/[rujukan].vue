@@ -237,18 +237,18 @@
             </h3>
             
             <div class="space-y-4">
-              <!-- PYB Institusi Review -->
+              <!-- PIC Review -->
               <div class="flex items-start justify-between p-4">
                 <div class="flex items-start">
                   <Icon name="ph:user-plus" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-gray-900">PYB Institusi</h4>
+                      <h4 class="font-semibold text-gray-900">PIC</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
                     <p class="text-sm text-gray-700 mb-2">Mendaftar calon penolong amil</p>
                     <div class="text-xs text-gray-600 space-y-1">
-                      <p><strong>Disemak oleh:</strong> Ahmad Abdullah (PYB)</p>
+                      <p><strong>Disemak oleh:</strong> Ahmad Abdullah (PIC)</p>
                       <p><strong>Tarikh:</strong> 15-01-2024 10:30</p>
                       <p><strong>Catatan:</strong> Calon berjaya didaftarkan dengan maklumat lengkap</p>
                     </div>

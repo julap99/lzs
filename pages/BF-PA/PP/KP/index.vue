@@ -107,8 +107,8 @@
                           >
                             <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
                           </button>
-                          <!-- PYB Institusi specific actions -->
-                          <template v-if="currentRole === 'pyb-institusi'">
+                          <!-- PIC specific actions -->
+                          <template v-if="currentRole === 'pic'">
                             <button
                               v-if="request.status === 'aktif'"
                               @click="terminateService(request)"
@@ -179,8 +179,8 @@
                           >
                             <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
                           </button>
-                          <!-- PYB Institusi specific actions -->
-                          <template v-if="currentRole === 'pyb-institusi'">
+                          <!-- PIC specific actions -->
+                          <template v-if="currentRole === 'pic'">
                             <button
                               @click="terminateService(request)"
                               title="Tamatkan"
@@ -1387,7 +1387,7 @@ const applyFilters = () => {
 
 const viewRequest = (request) => {
   const role = currentRole.value;
-  if (role === "pyb-institusi") {
+  if (role === "pic") {
     navigateTo(`/BF-PA/PP/KP/pyb-institusi/detail/${request.noRujukan || request.rujukan}`);
   } else {
     navigateTo(`/BF-PA/PP/KP/${role}/detail/${request.noRujukan || request.rujukan}`);
@@ -1402,7 +1402,7 @@ const exportData = () => {
   showNotificationMessage("Muat Turun Berjaya", "Data telah dieksport ke fail Excel.");
 };
 
-// PYB Institusi specific actions
+// PIC specific actions
 const terminateService = (request) => {
   currentTerminateRequest.value = {
     ...request,
@@ -1638,7 +1638,7 @@ const canEditRequest = (request) => {
 };
 
 const canPerformAction = (request) => {
-  return currentRole.value === "pyb-institusi";
+  return currentRole.value === "pic";
 };
 
 const getRoleSpecificDescription = (role) => {
@@ -1647,18 +1647,18 @@ const getRoleSpecificDescription = (role) => {
     "eksekutif": "Lihat maklumat Perkhidmatan Penolong Amil",
     "ketua-jabatan": "Lihat maklumat Perkhidmatan Penolong Amil",
     "ketua-divisyen": "Lihat dan meluluskan maklumat Perkhidmatan Penolong Amil",
-    "pyb-institusi": "Pengurusan maklumat Perkhidmatan Penolong Amil oleh PYB Institusi",
+    "pic": "Pengurusan maklumat Perkhidmatan Penolong Amil oleh PIC",
   };
   return descriptions[role] || "Peranan ini mempunyai kebolehan yang berbeza.";
 };
 
-const currentRole = ref("pyb-institusi");
+const currentRole = ref("pic");
 const roleOptions = [
   { label: "PT", value: "pt" },
   { label: "Eksekutif", value: "eksekutif" },
   { label: "Ketua Jabatan", value: "ketua-jabatan" },
   { label: "Ketua Divisyen", value: "ketua-divisyen" },
-  { label: "PYB Institusi", value: "pyb-institusi" },
+  { label: "PIC", value: "pic" },
 ];
 
 const getRoleVariant = (role) => {
@@ -1667,7 +1667,7 @@ const getRoleVariant = (role) => {
     "eksekutif": "success",
     "ketua-jabatan": "warning",
     "ketua-divisyen": "danger",
-    "pyb-institusi": "primary",
+    "pic": "primary",
   };
   return variants[role] || "default";
 };
@@ -1678,7 +1678,7 @@ const getRoleLabel = (role) => {
     "eksekutif": "Eksekutif",
     "ketua-jabatan": "Ketua Jabatan",
     "ketua-divisyen": "Ketua Divisyen",
-    "pyb-institusi": "PYB Institusi",
+    "pic": "PIC",
   };
   return labels[role] || role;
 };
