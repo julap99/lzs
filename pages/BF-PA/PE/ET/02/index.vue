@@ -103,14 +103,14 @@
                     </ul>
                   </td>
                   <td class="px-4 py-3">
-                    <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
-                      <li v-for="a in aggregateActivities(row.activities)" :key="a.name">
+                    <div>
+                      <div v-for="a in aggregateActivities(row.activities)" :key="a.name" class="text-sm">
                         <span class="font-medium">{{ a.count }}</span>
-                      </li>
-                      <li v-if="!row.activities || !row.activities.length" class="list-none text-gray-500">
+                      </div>
+                      <div v-if="!row.activities || !row.activities.length" class="text-gray-500">
                         —
-                      </li>
-                    </ul>
+                      </div>
+                    </div>
                   </td>
                   <td class="px-4 py-3 text-gray-900">
                     {{ totalActivityCount(row.activities) }}

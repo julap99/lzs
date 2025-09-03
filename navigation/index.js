@@ -1426,7 +1426,7 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Tugasan",
+            title: "Elaun Tugasan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PE/AB2",
             child: [],
