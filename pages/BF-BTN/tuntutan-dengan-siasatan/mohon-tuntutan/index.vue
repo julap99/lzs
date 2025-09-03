@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #body>
         <RsTab variant="primary" type="default">
-          <!-- Tab 1: Maklumat Pemohon -->
+
           <RsTabItem title="Maklumat Pemohon" :active="true">
             <h3 class="text-lg font-medium mb-4">Maklumat Pemohon</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -28,7 +28,7 @@
             </div>
           </RsTabItem>
 
-          <!-- Tab 2: Maklumat Bantuan -->
+ 
           <RsTabItem title="Maklumat Bantuan">
             <h3 class="text-lg font-medium mb-4">Maklumat Bantuan</h3>
 
@@ -55,7 +55,7 @@
               </div>
             </div>
 
-            <!-- Distribution Items (DI) -->
+
             <h3 class="text-lg font-medium mt-6 mb-4">Senarai Distribution Item (DI)</h3>
             <RsTable
               :data="distributionItems"
@@ -92,11 +92,11 @@
             </RsTable>
           </RsTabItem>
 
-          <!-- Tab 3: Maklumat Tuntutan -->
+
           <RsTabItem title="Maklumat Tuntutan">
             <h3 class="text-lg font-medium mb-4">Maklumat Tuntutan</h3>
 
-            <!-- GL -->
+ 
             <h3 class="text-lg font-medium mt-6 mb-4">Senarai Guarantee Letter (GL)</h3>
             <RsTable
               :data="guaranteeLetters"
@@ -140,7 +140,7 @@
               </template>
             </RsTable>
 
-            <!-- Invoices -->
+
             <h3 class="text-lg font-medium mt-6 mb-4">Senarai Invoice</h3>
             <RsTable
               :data="invoices"
@@ -186,7 +186,7 @@
             </RsTable>
           </RsTabItem>
 
-          <!-- Tab 4: Dokumen Sokongan -->
+
           <RsTabItem title="Dokumen Sokongan">
             <h3 class="text-lg font-medium mb-4">Dokumen Sokongan</h3>
 
@@ -230,7 +230,7 @@
           </RsTabItem>
         </RsTab>
 
-        <!-- Footer Actions -->
+
         <div class="flex justify-end gap-4 mt-6">
           <rs-button type="button" variant="secondary" @click="handleSaveDraft">
             <Icon name="material-symbols:save" class="w-4 h-4 mr-1" /> Simpan
@@ -242,7 +242,7 @@
       </template>
     </rs-card>
 
-    <!-- Modal: Cipta Invoice -->
+
     <RsModal v-model="showInvoiceModal" title="Cipta Invoice" size="lr">
       <template #body>
         <div class="grid grid-cols-1 gap-6">
@@ -298,7 +298,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useNuxtApp, navigateTo } from '#app'
-import RsTable from '~/components/RsTable.vue' // Reusable table
+import RsTable from '~/components/RsTable.vue' 
 
 definePageMeta({ title: 'Mohon Tuntutan (TDS-01)' })
 const { $swal } = useNuxtApp()
