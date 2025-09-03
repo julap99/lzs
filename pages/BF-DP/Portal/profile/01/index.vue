@@ -254,6 +254,13 @@ const statusTimeline = [
     namaPegawai: 'Ustaz Hakim',
     masaBerbaki: '2 hari',
   },
+  {
+    label: 'Sahkan Profil',
+    notStarted: true,
+    tarikh: '',
+    catatan: 'Tiada tindakan direkodkan setakat ini.',
+    namaPegawai: 'Belum Ditugaskan',
+  },
 ];
 
 const totalSla = Object.values(slaRules).reduce((a, b) => a + b, 0);
