@@ -709,27 +709,32 @@ const isFormValid = computed(() => {
 // Mock application data based on RTMF requirements
 const application = ref({
   rujukan: route.params.rujukan,
-  noKP: "901231012345",
-  nama: "Ahmad bin Abdullah",
+  noKP: "870625098765",
+  nama: "Ismail bin Hassan",
   jantina: "Lelaki",
   bangsa: "Melayu",
   agama: "Islam",
-  emel: "ahmad.abdullah@email.com",
-  telefon: "0123456789",
-  alamatRumah: "No. 123, Jalan Utama, Taman Seri Indah",
-  poskod: "50000",
-  bandar: "Kuala Lumpur",
-  negeri: "Kuala Lumpur",
-  kategoriPenolongAmil: "Fitrah",
-  jawatan: "Penolong Amil Fitrah",
-  institusiKariah: "Masjid Wilayah Persekutuan",
+  emel: "ismail.hassan@email.com",
+  telefon: "0127789901",
+
+  // Alamat: pecahan (alamatRumah hanya baris jalan/taman, poskod/bandar/negeri asing)
+  alamatRumah: "No. 12, Jalan Semenyih, Taman Kajang Jaya",
+  poskod: "43000",
+  bandar: "Kajang",
+  negeri: "Selangor",
+
+  kategoriPenolongAmil: "Komuniti",
+  jawatan: "Penolong Amil Komuniti",
+  institusiKariah: "Masjid Al-Amin",
   sesiPerkhidmatan: "Sesi 1",
-  statusPendaftaran: "Disahkan Jabatan",
+
+  statusPendaftaran: "Dihantar",
   statusLantikan: "Menunggu",
-  salinanKadPengenalan: "salinan_kp_ahmad.pdf",
-  suratSokongan: "surat_sokongan_ahmad.pdf",
+
+  salinanKadPengenalan: "salinan_kp_ismail.pdf",
+  suratSokongan: "surat_sokongan_ismail.pdf",
   dokumenLain: null,
-      uploadDate: "15-03-2024",
+  uploadDate: "12-01-2024",
   timeline: [
     {
       action: "Permohonan Dihantar",
