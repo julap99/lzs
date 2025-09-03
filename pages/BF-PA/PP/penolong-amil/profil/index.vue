@@ -1,5 +1,7 @@
 <script setup>
+import { ref, computed, onMounted } from "vue";
 import { useUserStore } from "~/stores/user";
+import { useToast } from "vue-toastification";
 
 definePageMeta({
   title: "Lengkapkan Profil Penolong Amil",
@@ -9,8 +11,6 @@ definePageMeta({
 const { $swal } = useNuxtApp();
 const route = useRoute();
 const userStore = useUserStore();
-import { useToast } from "vue-toastification";
-
 const toast = useToast();
 
 // Breadcrumb
@@ -21,148 +21,149 @@ const breadcrumb = [
   { title: "Lengkapkan Profil", path: "/BF-PA/PP/penolong-amil/profile-complete" },
 ];
 
-// Form data
+// ======= View/Edit Mode =======
+const isEdit = ref(false);
+const startEdit = () => (isEdit.value = true);
+const cancelEdit = () => {
+  // rollback ke snapshot asal
+  Object.assign(profileForm.value, JSON.parse(JSON.stringify(originalSnapshot.value)));
+  supportDoc.value = null;
+  isEdit.value = false;
+};
+
+// ======= Form data (tanpa Pendidikan & Pekerjaan) =======
 const profileForm = ref({
-  // Personal Information
-  nama: "Ahmad bin Abdullah",
-  noKadPengenalan: "800101015432",
-  tempatLahir: "Kuala Lumpur",
-  tarikhLahir: "1980-01-01",
-  jantina: "Lelaki",
-  statusPerkahwinan: "Berkahwin",
-  bangsa: "Melayu",
-  agama: "Islam",
-  
-  // Contact Information
+  // Maklumat Profil (read-only asal)
+  statusLantikan: "Aktif", // Diambil dari konfigurasi NAS (mock)
+  nama: "Ahmad bin Abdullah", // read-only
+  noKadPengenalan: "800101015432", // read-only, 12 digit tanpa dash
+  emel: "ahmad.abdullah@email.com", // optional, valid email
+  noTelefon: "03-87345678",
+  noTelefonBimbit: "0123456789",
+
+  // Alamat
   alamat1: "No. 15, Jalan Melati",
   alamat2: "Taman Sri Melati",
   alamat3: "Seksyen 3",
   poskod: "43000",
   bandar: "Kajang",
-  negeri: "Selangor",
   daerah: "Hulu Langat",
-  noTelefon: "03-87345678",
-  noTelefonBimbit: "012-3456789",
-  emel: "ahmad.abdullah@email.com",
-  
-  // Employment Information
-  pekerjaan: "Guru Sekolah Rendah",
-  namaMajikan: "Kementerian Pendidikan Malaysia",
-  alamatTempatKerja: "Sekolah Kebangsaan Sri Melati, Kajang",
-  noTelefonPejabat: "03-87345679",
-  
-  // Education
-  tahapPendidikan: "Ijazah Sarjana Muda",
-  institusiPendidikan: "Universiti Malaya",
-  tahunTamat: "2003",
-  
-  // Photo
+  negeri: "Selangor",
+
+  // Foto (kekalkan seperti asal)
   photo: null,
-  
+
+  // Maklumat Bank (read-only asal; wajib jika status=Aktif)
+  namaBank: "Maybank",
+  noAkaunBank: "123456789012",
 });
 
-// Form validation - Disabled for presentation
-const isFormValid = computed(() => {
-  return true; // Always allow submission for presentation
+// Snapshot untuk cancel
+const originalSnapshot = ref({});
+onMounted(() => {
+  originalSnapshot.value = JSON.parse(JSON.stringify(profileForm.value));
+
+  // Sembunyi sidebar jika perlu
+  const vLayout = document.querySelector(".v-layout");
+  if (vLayout) vLayout.classList.add("menu-hide");
+  const menuOverlay = document.querySelector(".menu-overlay");
+  if (menuOverlay) menuOverlay.classList.add("hide");
 });
 
-// Options for dropdowns
-const jantinaOptions = [
-  { label: "Sila Pilih Jantina", value: "" },
-  { label: "Lelaki", value: "Lelaki" },
-  { label: "Perempuan", value: "Perempuan" },
-];
+// ======= Derived helpers & validation =======
+const alamatGabungan = computed(() => {
+  const { alamat1, alamat2, alamat3, poskod, bandar, daerah, negeri } = profileForm.value;
+  return [alamat1, alamat2, alamat3, `${poskod} ${bandar}`, daerah, negeri].filter(Boolean).join(", ");
+});
+const isEmailValid = computed(() =>
+  !profileForm.value.emel ||
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.value.emel)
+);
+const isIdValid = computed(() => /^\d{12}$/.test(profileForm.value.noKadPengenalan));
+const isPoskodValid = computed(() => /^\d{5}$/.test(profileForm.value.poskod || ""));
+const bankRequired = computed(() => (profileForm.value.statusLantikan || "").toLowerCase() === "aktif");
 
-const statusPerkahwinanOptions = [
-  { label: "Sila Pilih Status", value: "" },
-  { label: "Bujang", value: "Bujang" },
-  { label: "Berkahwin", value: "Berkahwin" },
-  { label: "Bercerai", value: "Bercerai" },
-  { label: "Janda/Duda", value: "Janda/Duda" },
-];
-
-const bangsaOptions = [
-  { label: "Sila Pilih Bangsa", value: "" },
-  { label: "Melayu", value: "Melayu" },
-  { label: "Cina", value: "Cina" },
-  { label: "India", value: "India" },
-  { label: "Lain-lain", value: "Lain-lain" },
-];
-
-const negeriOptions = [
-  { label: "Sila Pilih Negeri", value: "" },
-  { label: "Selangor", value: "Selangor" },
-  { label: "Kuala Lumpur", value: "Kuala Lumpur" },
-  { label: "Putrajaya", value: "Putrajaya" },
-  { label: "Negeri Sembilan", value: "Negeri Sembilan" },
-  { label: "Melaka", value: "Melaka" },
-  { label: "Johor", value: "Johor" },
-  { label: "Pahang", value: "Pahang" },
-  { label: "Terengganu", value: "Terengganu" },
-  { label: "Kelantan", value: "Kelantan" },
-  { label: "Perak", value: "Perak" },
-  { label: "Perlis", value: "Perlis" },
-  { label: "Kedah", value: "Kedah" },
-  { label: "Pulau Pinang", value: "Pulau Pinang" },
-];
-
-const daerahOptions = [
-  { label: "Sila Pilih Daerah", value: "" },
-  { label: "Kuala Lumpur", value: "Kuala Lumpur" },
-  { label: "Putrajaya", value: "Putrajaya" },
-  { label: "Selangor", value: "Selangor" },
-];
-
-const tahapPendidikanOptions = [
-  { label: "Sila Pilih Tahap Pendidikan", value: "" },
-  { label: "Tiada Pendidikan Formal", value: "Tiada Pendidikan Formal" },
-  { label: "Pendidikan Rendah", value: "Pendidikan Rendah" },
-  { label: "Pendidikan Menengah", value: "Pendidikan Menengah" },
-  { label: "Diploma", value: "Diploma" },
-  { label: "Ijazah Sarjana Muda", value: "Ijazah Sarjana Muda" },
-  { label: "Ijazah Sarjana", value: "Ijazah Sarjana" },
-  { label: "Doktor Falsafah", value: "Doktor Falsafah" },
-];
-
-// Methods
-const handlePhotoUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      alert('Sila pilih fail gambar sahaja.');
-      return;
-    }
-    
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Saiz fail terlalu besar. Sila pilih fail kurang daripada 5MB.');
-      return;
-    }
-    
-    profileForm.value.photo = file;
+const canSave = computed(() => {
+  if (!isIdValid.value) return false;
+  if (!isPoskodValid.value) return false;
+  if (!isEmailValid.value) return false;
+  if (bankRequired.value) {
+    if (!profileForm.value.namaBank || !profileForm.value.noAkaunBank) return false;
   }
+  return true;
+});
+
+// ======= Upload handlers =======
+const supportDoc = ref(null); // Dokumen Sokongan
+const handleDocUpload = (e) => {
+  const f = e.target.files?.[0];
+  if (!f) return;
+  const okType = ["application/pdf", "image/jpeg", "image/png"];
+  if (!okType.includes(f.type)) {
+    toast.error("Hanya PDF/JPEG/PNG dibenarkan.");
+    e.target.value = "";
+    return;
+  }
+  if (f.size > 5 * 1024 * 1024) {
+    toast.error("Saiz maksimum 5MB.");
+    e.target.value = "";
+    return;
+  }
+  supportDoc.value = f;
 };
 
-const handleSubmit = async () => {
-  // Simple redirect for presentation
-  // In real implementation, this would save data and show loading
-  toast.success('Profil berjaya dikemaskini');
-  
-  // Redirect to dashboard immediately
-  navigateTo('/BF-PA/PP/penolong-amil/dashboard');
+const handlePhotoUpload = (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    toast.error("Sila pilih fail gambar sahaja.");
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    toast.error("Saiz maksimum gambar 5MB.");
+    return;
+  }
+  profileForm.value.photo = file;
 };
 
-// const handleBack = () => {
-//   navigateTo('/BF-PA/PP/penolong-amil');
-// };
+// ======= Save =======
+const saveProfile = async () => {
+  if (!canSave.value) {
+    toast.error("Sila semak semula maklumat (emel/ID/poskod/bank).");
+    return;
+  }
+  // Simulasi simpan
+  await new Promise((r) => setTimeout(r, 500));
+  originalSnapshot.value = JSON.parse(JSON.stringify(profileForm.value));
+  isEdit.value = false;
+  toast.success("Profil berjaya dikemaskini.");
+};
+
+// ======= Mock data: Sejarah Lantikan =======
+const sejarahPerkhidmatan = ref([
+  { sesi: "2023", tarikhMula: "2023-01-01", tarikhTamat: "2023-12-31", status: "Selesai" },
+  { sesi: "2024", tarikhMula: "2024-01-01", tarikhTamat: "2024-12-31", status: "Berjalan" },
+]);
+
+const sejarahTugasan = ref([
+  { tarikh: "2024-02-12", jenis: "Siasatan", rujukan: "SI-2024-014", status: "Selesai" },
+  { tarikh: "2024-03-05", jenis: "Bancian", rujukan: "BN-2024-221", status: "Selesai" },
+  { tarikh: "2024-04-18", jenis: "Review", rujukan: "RV-2024-077", status: "Dalam Semakan" },
+]);
+
+
+
+const rekodDisiplin = ref([
+  { tarikh: "2023-09-10", catatan: "Peringatan lisan lewat serahan laporan", tindakan: "Selesai" },
+  // Jika tiada data, kekalkan array kosong []
+]);
 </script>
 
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Progress Indicator -->
+    <!-- Header / Mode Indicator -->
     <rs-card class="mb-6">
       <template #body>
         <div class="flex items-center justify-between p-4">
@@ -171,373 +172,279 @@ const handleSubmit = async () => {
               3
             </div>
             <div>
-              <h3 class="font-semibold text-gray-900">Lengkapkan Profil</h3>
-              <p class="text-sm text-gray-600">Maklumat peribadi dan foto</p>
+              <h3 class="font-semibold text-gray-900">
+                {{ isEdit ? "Kemaskini Profil Penolong Amil" : "Maklumat Profil Penolong Amil" }}
+              </h3>
+              <p class="text-sm text-gray-600">
+                {{ isEdit ? "Mod kemaskini" : "Paparan maklumat" }}
+              </p>
             </div>
           </div>
-          <rs-badge variant="success">Kemaskini Profil</rs-badge>
+          <rs-badge :variant="profileForm.statusLantikan === 'Aktif' ? 'success' : 'warning'">
+            Status: {{ profileForm.statusLantikan }}
+          </rs-badge>
         </div>
       </template>
     </rs-card>
 
-    <!-- Profile Form -->
-    <rs-card>
+    <!-- Maklumat Profil -->
+    <rs-card class="mb-6">
       <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Maklumat Peribadi
-          </h2>
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold">Maklumat Profil</h2>
+          <div class="flex items-center gap-2">
+            <rs-button v-if="!isEdit" variant="primary" @click="startEdit">
+              <Icon name="ph:pencil-simple" class="w-4 h-4 mr-2" /> Kemaskini
+            </rs-button>
+            <template v-else>
+              <rs-button variant="secondary-outline" @click="cancelEdit">Batal</rs-button>
+              <rs-button variant="primary" :disabled="!canSave" @click="saveProfile">
+                <Icon name="ph:check" class="w-4 h-4 mr-2" /> Simpan
+              </rs-button>
+            </template>
+          </div>
         </div>
       </template>
 
       <template #body>
-        <div class="space-y-8">
-          <!-- Personal Information -->
-          <div class="space-y-6">
-            <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">
-              Maklumat Peribadi
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormKit
-                type="text"
-                name="nama"
-                label="Nama Penuh"
-                v-model="profileForm.nama"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="text"
-                name="noKadPengenalan"
-                label="Nombor Kad Pengenalan"
-                v-model="profileForm.noKadPengenalan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="text"
-                name="tempatLahir"
-                label="Tempat Lahir"
-                v-model="profileForm.tempatLahir"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="date"
-                name="tarikhLahir"
-                label="Tarikh Lahir"
-                v-model="profileForm.tarikhLahir"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="select"
-                name="jantina"
-                label="Jantina"
-                v-model="profileForm.jantina"
-                :options="jantinaOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="select"
-                name="statusPerkahwinan"
-                label="Status Perkahwinan"
-                v-model="profileForm.statusPerkahwinan"
-                :options="statusPerkahwinanOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="select"
-                name="bangsa"
-                label="Bangsa"
-                v-model="profileForm.bangsa"
-                :options="bangsaOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Status Lantikan (read-only) -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Status Lantikan</label>
+            <div class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              {{ profileForm.statusLantikan }} <span class="text-xs text-gray-500">(dari konfigurasi NAS)</span>
             </div>
           </div>
 
-          <!-- Contact Information -->
-          <div class="space-y-6">
-            <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">
-              Maklumat Perhubungan
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormKit
-                type="textarea"
-                name="alamat1"
-                label="Alamat 1"
-                v-model="profileForm.alamat1"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-
-              <FormKit
-                type="select"
-                name="negeri"
-                label="Negeri"
-                v-model="profileForm.negeri"
-                :options="negeriOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-
-              <FormKit
-                type="textarea"
-                name="alamat2"
-                label="Alamat 2"
-                v-model="profileForm.alamat2"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-
-              <FormKit
-                type="select"
-                name="daerah"
-                label="Daerah"
-                v-model="profileForm.daerah"
-                :options="daerahOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-
-              <FormKit
-                type="textarea"
-                name="alamat3"
-                label="Alamat 3"
-                v-model="profileForm.alamat3"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />      
-
-              <FormKit
-                type="text"
-                name="bandar"
-                label="Bandar"
-                v-model="profileForm.bandar"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-                
-
-              <FormKit
-                type="text"
-                name="poskod"
-                label="Poskod"
-                v-model="profileForm.poskod"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="tel"
-                name="noTelefon"
-                label="Nombor Telefon"
-                v-model="profileForm.noTelefon"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="tel"
-                name="noTelefonBimbit"
-                label="Nombor Telefon Bimbit"
-                v-model="profileForm.noTelefonBimbit"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="email"
-                name="emel"
-                label="Alamat E-mel"
-                v-model="profileForm.emel"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
+          <!-- Nama Penolong Amil (read-only) -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Penolong Amil</label>
+            <div class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              {{ profileForm.nama }}
             </div>
           </div>
 
-          <!-- Employment Information -->
-          <div class="space-y-6">
-            <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">
-              Maklumat Pekerjaan
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormKit
-                type="text"
-                name="pekerjaan"
-                label="Pekerjaan"
-                v-model="profileForm.pekerjaan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="text"
-                name="namaMajikan"
-                label="Nama Majikan"
-                v-model="profileForm.namaMajikan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="textarea"
-                name="alamatTempatKerja"
-                label="Alamat Tempat Kerja"
-                v-model="profileForm.alamatTempatKerja"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="tel"
-                name="noTelefonPejabat"
-                label="Nombor Telefon Pejabat"
-                v-model="profileForm.noTelefonPejabat"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
+          <!-- ID Pengenalan (read-only) -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">ID Pengenalan (MyKAD)</label>
+            <div class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              {{ profileForm.noKadPengenalan }}
+            </div>
+            <p v-if="!isIdValid" class="text-xs text-red-600 mt-1">Mesti 12 digit tanpa dash.</p>
+          </div>
+
+          <!-- Emel (optional) -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Emel</label>
+            <input
+              v-if="isEdit"
+              type="email"
+              v-model="profileForm.emel"
+              class="w-full px-3 py-2 border rounded"
+              placeholder="nama@domain.com"
+            />
+            <div v-else class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              {{ profileForm.emel || '-' }}
+            </div>
+            <p v-if="isEdit && !isEmailValid" class="text-xs text-red-600 mt-1">Format emel tidak sah.</p>
+          </div>
+
+          <!-- No. Telefon -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">No. Telefon</label>
+            <input
+              v-if="isEdit"
+              type="text"
+              v-model="profileForm.noTelefon"
+              class="w-full px-3 py-2 border rounded"
+            />
+            <div v-else class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              {{ profileForm.noTelefon || '-' }}
             </div>
           </div>
 
-          <!-- Education Information -->
-          <div class="space-y-6">
-            <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">
-              Maklumat Pendidikan
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormKit
-                type="select"
-                name="tahapPendidikan"
-                label="Tahap Pendidikan"
-                v-model="profileForm.tahapPendidikan"
-                :options="tahapPendidikanOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="text"
-                name="institusiPendidikan"
-                label="Institusi Pendidikan"
-                v-model="profileForm.institusiPendidikan"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              
-              <FormKit
-                type="number"
-                name="tahunTamat"
-                label="Tahun Tamat"
-                v-model="profileForm.tahunTamat"
-                :classes="{
-                  input: '!py-2',
-                }"
-                min="1950"
-                max="2030"
-              />
+          <!-- No. Telefon Bimbit -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">No. Telefon Bimbit</label>
+            <input
+              v-if="isEdit"
+              type="text"
+              v-model="profileForm.noTelefonBimbit"
+              class="w-full px-3 py-2 border rounded"
+            />
+            <div v-else class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              {{ profileForm.noTelefonBimbit || '-' }}
             </div>
           </div>
 
-          <!-- Photo Upload -->
-          <div class="space-y-6">
-            <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">
-              Foto Profil
-            </h3>
-            
-            <div class="space-y-4">
-              <div class="bg-warning/5 border border-warning/20 rounded-lg p-4">
-                <div class="flex items-start gap-3">
-                  <Icon name="ph:warning" class="text-warning mt-0.5" size="20" />
-                  <div>
-                    <p class="font-semibold text-warning mb-2">Foto Profil Diperlukan</p>
-                    <p class="text-gray-700 text-sm">
-                      Sila muat naik foto profil anda. Foto ini akan digunakan untuk kad tauliah dan dokumen rasmi.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Alamat -->
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+            <template v-if="isEdit">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" class="w-full px-3 py-2 border rounded" placeholder="Alamat 1" v-model="profileForm.alamat1" />
+                <input type="text" class="w-full px-3 py-2 border rounded" placeholder="Alamat 2" v-model="profileForm.alamat2" />
+                <input type="text" class="w-full px-3 py-2 border rounded" placeholder="Alamat 3" v-model="profileForm.alamat3" />
+                <input type="text" class="w-full px-3 py-2 border rounded" placeholder="Bandar" v-model="profileForm.bandar" />
+                <input type="text" class="w-full px-3 py-2 border rounded" placeholder="Daerah" v-model="profileForm.daerah" />
+                <input type="text" class="w-full px-3 py-2 border rounded" placeholder="Negeri" v-model="profileForm.negeri" />
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Muat Naik Foto
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    @change="handlePhotoUpload"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                  />
-                  <p class="text-xs text-gray-500 mt-1">
-                    Format: JPG, PNG. Saiz maksimum: 5MB
-                  </p>
-                </div>
-                
-                <div v-if="profileForm.photo" class="flex items-center justify-center">
-                  <div class="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                    <img
-                      :src="URL.createObjectURL(profileForm.photo)"
-                      alt="Preview"
-                      class="w-28 h-28 object-cover rounded"
-                    />
-                  </div>
+                  <input type="text" class="w-full px-3 py-2 border rounded" placeholder="Poskod (5 digit)" v-model="profileForm.poskod" />
+                  <p v-if="!isPoskodValid" class="text-xs text-red-600 mt-1">Poskod mesti 5 digit.</p>
                 </div>
               </div>
+            </template>
+            <div v-else class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              {{ alamatGabungan || '-' }}
             </div>
           </div>
 
-          <!-- Submit Button -->
-          <div class="flex justify-end gap-4 pt-6 border-t">
-            <rs-button variant="secondary-outline" @click="handleBack">
-              Reset
-            </rs-button>
-            <rs-button
-              variant="primary"
-              @click="handleSubmit"
-            >
-              <Icon name="ph:check" class="w-4 h-4 mr-2" />
-              Kemaskini
-            </rs-button>
+          <!-- Foto Profil (kekal) -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Foto Profil</label>
+            <div v-if="!isEdit" class="flex items-center gap-3">
+              <div class="w-16 h-16 border rounded bg-gray-50 flex items-center justify-center overflow-hidden">
+                <img v-if="profileForm.photo" :src="URL.createObjectURL(profileForm.photo)" class="w-full h-full object-cover" />
+                <Icon v-else name="ph:user" class="text-gray-400" size="28" />
+              </div>
+              <span class="text-sm text-gray-500">—</span>
+            </div>
+            <div v-else>
+              <input type="file" accept="image/*" @change="handlePhotoUpload" class="w-full px-3 py-2 border rounded" />
+              <p class="text-xs text-gray-500 mt-1">Format: JPG/PNG. Saiz maksimum: 5MB</p>
+            </div>
           </div>
+
+          <!-- Dokumen Sokongan -->
+          <div class="md:col-span-1">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Dokumen Sokongan</label>
+            <div v-if="isEdit">
+              <input type="file" accept="application/pdf,image/jpeg,image/png" @change="handleDocUpload" class="w-full px-3 py-2 border rounded" />
+              <p class="text-xs text-gray-500 mt-1">PDF/JPEG/PNG, maks 5MB.</p>
+              <p v-if="supportDoc" class="text-xs text-gray-700 mt-1">Terpilih: {{ supportDoc.name }}</p>
+            </div>
+            <div v-else class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              <span class="text-gray-500 text-sm">Tiada dokumen dilampirkan</span>
+            </div>
+          </div>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Maklumat Bank -->
+    <rs-card class="mb-6">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold">Maklumat Bank</h2>
+          <rs-button v-if="!isEdit" variant="secondary-outline" @click="startEdit">
+            <Icon name="ph:pencil-simple" class="w-4 h-4 mr-2" /> Kemaskini
+          </rs-button>
+        </div>
+      </template>
+      <template #body>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Nama Bank -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Nama Bank <span v-if="bankRequired" class="text-red-500">*</span>
+            </label>
+            <input
+              v-if="isEdit"
+              type="text"
+              v-model="profileForm.namaBank"
+              class="w-full px-3 py-2 border rounded"
+              :placeholder="bankRequired ? 'Wajib diisi (Status Aktif)' : 'Opsyenal'"
+            />
+            <div v-else class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              {{ profileForm.namaBank || '-' }}
+            </div>
+          </div>
+
+          <!-- No Akaun Bank -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              No. Akaun Bank <span v-if="bankRequired" class="text-red-500">*</span>
+            </label>
+            <input
+              v-if="isEdit"
+              type="text"
+              v-model="profileForm.noAkaunBank"
+              class="w-full px-3 py-2 border rounded"
+              placeholder="Nombor sahaja"
+            />
+            <div v-else class="px-3 py-2 bg-gray-50 border rounded text-gray-800">
+              {{ profileForm.noAkaunBank || '-' }}
+            </div>
+          </div>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Maklumat Sejarah Lantikan -->
+    <rs-card>
+      <template #header>
+        <h2 class="text-xl font-semibold">Maklumat Sejarah Lantikan</h2>
+      </template>
+      <template #body>
+        <div class="space-y-8">
+          <!-- Sejarah Perkhidmatan -->
+          <div>
+            <h5 class="font-semibold text-gray-900 mb-2">Sejarah Perkhidmatan (Senarai Sesi)</h5>
+            <div class="overflow-x-auto border rounded">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Sesi</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tarikh Mula</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tarikh Tamat</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="(row, i) in sejarahPerkhidmatan" :key="'svc-'+i">
+                    <td class="px-4 py-2 text-sm text-gray-900">{{ row.sesi }}</td>
+                    <td class="px-4 py-2 text-sm text-gray-900">{{ row.tarikhMula }}</td>
+                    <td class="px-4 py-2 text-sm text-gray-900">{{ row.tarikhTamat }}</td>
+                    <td class="px-4 py-2 text-sm">
+                      <rs-badge :variant="row.status === 'Berjalan' ? 'info' : 'success'">{{ row.status }}</rs-badge>
+                    </td>
+                  </tr>
+                  <tr v-if="!sejarahPerkhidmatan.length">
+                    <td colspan="4" class="px-4 py-3 text-sm text-gray-500 italic">Tiada rekod.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+         
+          
+          <!-- Rekod Disiplin -->
+          <div>
+            <h5 class="font-semibold text-gray-900 mb-2">Rekod Disiplin (Catatan Perubahan Status)</h5>
+            <div class="overflow-x-auto border rounded">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tarikh</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Catatan</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tindakan/Status</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="(row, i) in rekodDisiplin" :key="'disc-'+i">
+                    <td class="px-4 py-2 text-sm text-gray-900">{{ row.tarikh }}</td>
+                    <td class="px-4 py-2 text-sm text-gray-900">{{ row.catatan }}</td>
+                    <td class="px-4 py-2 text-sm text-gray-900">{{ row.tindakan }}</td>
+                  </tr>
+                  <tr v-if="!rekodDisiplin.length">
+                    <td colspan="3" class="px-4 py-3 text-sm text-gray-500 italic">Tiada rekod.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
       </template>
     </rs-card>
@@ -546,4 +453,4 @@ const handleSubmit = async () => {
 
 <style scoped>
 /* Custom styles */
-</style> 
+</style>
