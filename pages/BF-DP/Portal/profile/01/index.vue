@@ -3,7 +3,34 @@
     <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Section 1: Maklumat Profil -->
+    <!-- Role Simulator - For Demo/Presentation Only -->
+    <!-- This allows switching between different user roles to demonstrate role-based views -->
+    <!-- In production, this would be replaced with actual user authentication and role management -->
+    <div class="mb-4 flex items-center space-x-4">
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="pengguna-luar">Pengguna Luar</option>
+        <option value="pengguna-dalam">Pengguna Dalam</option>
+      </select>
+    </div>
+
+    <!-- Section 1: Status Semasa -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="grid grid-cols-1 gap-4">
+          <rs-card variant="secondary">
+            <div class="p-2 flex flex-col">
+              <div class="text-sm text-gray-500">Status Semasa</div>
+              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
+                {{ currentStatus }}
+              </rs-badge>
+            </div>
+          </rs-card>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section 2: Maklumat Profil -->
     <rs-card class="mb-6">
       <template #header>Maklumat Profil</template>
       <template #body>
@@ -25,12 +52,12 @@
       </template>
     </rs-card>
 
-    <!-- Section 2: Maklumat Kelayakan -->
-    <rs-card>
+    <!-- Section 3: Maklumat Kelayakan -->
+    <rs-card class="mb-6">
       <template #header>Maklumat Kelayakan</template>
       <template #body>
         <div v-if="kelayakanInfo.telahDinilai">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <rs-card variant="secondary">
               <div class="p-2">
                 <div class="text-sm text-gray-500">Kategori Kelayakan</div>
@@ -53,8 +80,10 @@
                 <div class="font-bold">{{ kelayakanInfo.catatan }}</div>
               </div>
             </rs-card>
-
-            <rs-card variant="secondary" v-if="kelayakanInfo.namaPegawai">
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4" v-if="kelayakanInfo.namaPegawai">
+            <rs-card variant="secondary">
               <div class="p-2">
                 <div class="text-sm text-gray-500">Nama Pegawai Penilai</div>
                 <div class="font-bold">{{ kelayakanInfo.namaPegawai }}</div>
@@ -77,37 +106,9 @@
       </template>
     </rs-card>
 
-    <!-- Section 2: Garis Masa SLA Standard (Horizontal) -->
-    <rs-card class="mb-6">
-      <template #header>Garis Masa SLA Standard</template>
-      <template #body>
-        <div class="relative flex items-center justify-between overflow-x-auto pb-4">
-          <template v-for="(step, index) in slaTimeline" :key="index">
-            <div v-if="index !== 0" class="w-8 h-0.5 bg-gray-300 mx-1"></div>
-            <div class="flex flex-col items-center text-center min-w-[100px] relative z-10">
-              <div
-                class="w-10 h-10 flex items-center justify-center rounded-full text-white mb-2"
-                :class="[
-                  step.completed ? 'bg-gray-400' : step.active ? 'bg-blue-600' : 'bg-gray-300',
-                ]"
-              >
-                <Icon :name="step.icon" size="20" />
-              </div>
-              <div class="text-sm font-medium text-gray-800">{{ step.label }}</div>
-              <div class="text-xs text-gray-500">SLA: {{ step.sla }} hari</div>
-              <div v-if="step.active" class="text-xs mt-1 text-gray-600">
-                Jumlah SLA: {{ totalSla }} hari<br />
-                Baki: {{ getRemainingSla(step.label) }} hari
-              </div>
-            </div>
-          </template>
-        </div>
-      </template>
-    </rs-card>
-
-    <!-- Section 3: Garis Masa Penilaian (Vertical) -->
-    <rs-card>
-      <template #header>Garis Masa Penilaian Kelayakan</template>
+    <!-- Section 3: Review History - Visible to both roles, details hidden for Pengguna Luar -->
+    <rs-card v-if="canViewSejarahSemakan">
+      <template #header>Prosedur Agihan</template>
       <template #body>
         <div class="relative">
           <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
@@ -134,7 +135,7 @@
                 />
                 <span v-else>{{ index + 1 }}</span>
               </div>
-              <div class="ml-4 flex-1">
+              <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
                 <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
                 <div class="font-bold text-blue-800">{{ step.label }}</div>
                 <div class="text-sm mt-1">
@@ -149,16 +150,23 @@
                 </div>
                 <div class="text-sm mt-1 text-gray-600">Pegawai: {{ step.namaPegawai }}</div>
               </div>
+              <!-- Minimal content for Pengguna Luar: date + label only -->
+              <div v-else class="ml-4 flex-1">
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="font-bold text-blue-800">{{ step.label }}</div>
+              </div>
             </div>
           </div>
         </div>
       </template>
     </rs-card>
+
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 definePageMeta({
   title: "Status Fakir, Miskin, NonFM",
@@ -189,10 +197,20 @@ const profileInfo = ref({
   nama: "Ali bin Abu",
 });
 
+// Tindakan & Status (mock)
+const tindakanStatus = ref({
+  statusSemasa: 'Dalam Proses - Siasatan',
+  tarikhKemaskini: '13-06-2025',
+  namaPegawaiBertugas: 'Ustaz Hafiz',
+  catatanPegawaiBertugas: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
+});
+
+const currentStatus = computed(() => tindakanStatus.value.statusSemasa);
+
 const kelayakanInfo = ref({
   telahDinilai: true,
   kategori: 'Fakir',
-  tarikhPenilaian: '2025-06-10',
+  tarikhPenilaian: '10-06-2025',
   catatan: 'Memerlukan bantuan sara hidup.',
   namaPegawai: 'Ahmad bin Salleh',
 });
@@ -214,7 +232,7 @@ const slaTimeline = [
 const statusTimeline = [
   {
     label: 'Permohonan Dihantar',
-    tarikh: '2025-06-01T09:00:00',
+    tarikh: '01-06-2025',
     completed: true,
     catatan: 'Profil diterima untuk semakan.',
     namaPegawai: 'Sistem NAS',
@@ -222,7 +240,7 @@ const statusTimeline = [
   },
   {
     label: 'Semakan Dokumen',
-    tarikh: '2025-06-02T11:00:00',
+    tarikh: '02-06-2025',
     completed: true,
     catatan: 'Semakan dokumen selesai.',
     namaPegawai: 'Pn. Suraya',
@@ -230,7 +248,7 @@ const statusTimeline = [
   },
   {
     label: 'Penilaian Kelayakan',
-    tarikh: '2025-06-04T10:00:00',
+    tarikh: '04-06-2025',
     inProgress: true,
     catatan: 'Dalam proses penilaian.',
     namaPegawai: 'Ustaz Hakim',
@@ -258,15 +276,11 @@ const calculateSlaStatus = (label: string, tarikh: string): string => {
   return label === 'Penilaian Kelayakan' ? 'Masih Dalam Tempoh' : 'Selesai';
 };
 
+import { formatDate as formatDateUtil } from '~/utils/dateFormatter';
+
 const formatDate = (date: string): string => {
   if (!date) return 'Belum Bermula';
-  return new Date(date).toLocaleDateString('ms-MY', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return formatDateUtil(date);
 };
 
 const getKategoriVariant = (kategori: string): string => {
@@ -278,6 +292,18 @@ const getKategoriVariant = (kategori: string): string => {
   }
 };
 
+const getStatusVariant = (status: string): string => {
+  const variants: Record<string, string> = {
+    'Dalam Proses - Siasatan': 'info',
+    'Disemak': 'primary',
+    'Lulus': 'success',
+    'Tidak Lulus': 'danger',
+    'Diterima': 'info',
+    'Dibatalkan': 'default',
+  };
+  return variants[status] || 'default';
+};
+
 // Simulate user role
 const canExport = ref(false); // true → utk Pengguna Dalaman
 
@@ -285,6 +311,11 @@ const canExport = ref(false); // true → utk Pengguna Dalaman
 const exportPDF = (): void => {
   alert("Export PDF triggered!");
 };
+
+// Role-based access control
+const selectedRole = ref("pengguna-dalam"); // default role
+// Both roles can view the timeline; only internal users see details (handled in template)
+const canViewSejarahSemakan = computed(() => ["pengguna-dalam", "pengguna-luar"].includes(selectedRole.value));
 </script>
 
 <style lang="scss" scoped>

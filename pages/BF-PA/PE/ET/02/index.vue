@@ -48,7 +48,16 @@
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
-                  <th class="px-4 py-3 font-medium text-gray-900">Pilih</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">
+                    <FormKit
+                      v-model="selectAllCandidates"
+                      type="checkbox"
+                      :classes="{
+                        input: '!w-4 !h-4',
+                      }"
+                      @change="toggleSelectAllCandidates"
+                    />
+                  </th>
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
@@ -157,6 +166,42 @@
             <div class="text-xs text-gray-500">Status: <b>{{ statusLabel }}</b></div>
           </div>
 
+          <!-- Filter Controls for Cancelled Allowances -->
+          <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-2">
+              <FormKit
+                v-model="showCancelledAllowances"
+                type="checkbox"
+                label="Show Cancelled Allowances"
+                :classes="{ 
+                  input: '!w-4 !h-4',
+                  label: 'text-sm font-medium text-gray-700'
+                }"
+              />
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <label class="text-sm font-medium text-gray-700">Filter Status:</label>
+              <FormKit
+                v-model="filterStatus"
+                type="select"
+                :options="[
+                  { label: 'All', value: 'All' },
+                  { label: 'Active', value: 'Active' },
+                  { label: 'Cancelled', value: 'Cancelled' }
+                ]"
+                :classes="{ 
+                  input: '!py-1 !px-2 text-sm',
+                  wrapper: 'w-32'
+                }"
+              />
+            </div>
+            
+            <div class="text-xs text-gray-500">
+              Showing: <b>{{ filteredRecipients.length }}</b> of <b>{{ recipients.length }}</b> recipients
+            </div>
+          </div>
+
           <div class="overflow-x-auto rounded-lg border">
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
@@ -174,7 +219,11 @@
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
-                <tr v-for="(r, index) in recipients" :key="r.paId" class="hover:bg-gray-50">
+                <tr v-for="(r, index) in filteredRecipients" :key="r.paId" 
+                    :class="[
+                      'hover:bg-gray-50',
+                      r._cancelled ? 'bg-red-50 opacity-60' : ''
+                    ]">
                   <td class="px-4 py-3 font-medium text-gray-900">
                     <span>{{ r.name }}</span>
                   </td>
@@ -355,14 +404,14 @@
       </div>
     </div>
 
-    <!-- Allowance Change Modal -->
-    <div v-if="showAllowanceModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <!-- Form-Based Activities Modal -->
+    <div v-if="showFormBasedModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-hidden">
         <div class="p-6">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold">Perubahan Pembayaran Elaun - {{ selectedActivity }}</h3>
+            <h3 class="text-lg font-semibold">Pembatalan Pembayaran Elaun {{ selectedActivity }}</h3>
             <button 
-              @click="closeAllowanceModal"
+              @click="closeFormBasedModal"
               class="text-gray-400 hover:text-gray-600"
             >
               <Icon name="ic:baseline-close" size="24" />
@@ -373,55 +422,41 @@
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
-                  <th class="px-4 py-3 font-medium text-gray-900 w-16">No.</th>
+                  <th class="px-4 py-3 font-medium text-gray-900 w-16">Checkbox</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">ID Asnaf</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama Asnaf</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Elaun (RM)</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
-                <tr v-for="(recipient, index) in modalRecipients" :key="recipient.paId" class="hover:bg-gray-50">
+                <tr v-for="(item, index) in formBasedModalData" :key="index" class="hover:bg-gray-50">
                   <td class="px-4 py-3">
                     <FormKit
-                      v-model="recipient._modalChecked"
+                      v-model="item._modalChecked"
                       type="checkbox"
                       :classes="{
                         input: '!w-4 !h-4',
                       }"
                     />
                   </td>
-                  <td class="px-4 py-3 text-gray-900">{{ recipient.ic }}</td>
-                  <td class="px-4 py-3 font-medium text-gray-900">{{ recipient.name }}</td>
-                  <td class="px-4 py-3 w-48">
-                    <FormKit
-                      v-if="recipient._modalChecked"
-                      v-model.number="recipient._modalAllowance"
-                      type="number"
-                      :min="editableAllowanceRange.min"
-                      :max="editableAllowanceRange.max"
-                      step="0.01"
-                      placeholder="0.00"
-                      :classes="{
-                        input: '!py-1 !px-2',
-                      }"
-                    />
-                    <span v-else class="font-semibold">{{ recipient.allowance.toFixed(2) }}</span>
-                  </td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.idAsnaf }}</td>
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ item.namaAsnaf }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.idPengenalan }}</td>
                   <td class="px-4 py-3">
                     <FormKit
-                      v-if="recipient._modalChecked"
-                      v-model="recipient._modalNotes"
+                      v-if="item._modalChecked"
+                      v-model="item._modalCatatan"
                       type="textarea"
                       rows="2"
-                      placeholder="Masukkan catatan perubahan..."
+                      placeholder="Masukkan catatan pembatalan..."
                       :classes="{ input: '!py-2 !px-2 text-xs' }"
                     />
                     <input
                       v-else
                       type="text"
                       disabled
-                      placeholder="Tiada"
+                      :value="item._modalCatatan"
                       class="w-full py-2 px-2 text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded"
                     />
                   </td>
@@ -434,18 +469,198 @@
             <rs-button
               variant="secondary-outline"
               size="sm"
-              @click="closeAllowanceModal"
+              @click="closeFormBasedModal"
             >
               Batal
             </rs-button>
             <rs-button
               variant="primary"
               size="sm"
-              @click="applyAllowanceChanges"
-              :disabled="!hasModalChanges"
+              @click="applyFormBasedChanges"
+              :disabled="!hasFormBasedChanges"
             >
               <Icon name="ic:baseline-check" class="mr-2" />
-              Terapkan
+              Simpan
+            </rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Special Activity Modal -->
+    <div v-if="showSpecialModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-hidden">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold">Pembatalan Pembayaran Elaun Khas</h3>
+            <button 
+              @click="closeSpecialModal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <Icon name="ic:baseline-close" size="24" />
+            </button>
+          </div>
+          
+          <div class="overflow-x-auto rounded-lg border">
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900 w-16">Checkbox</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama Aktiviti</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Tarikh</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kadar Elaun</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="(item, index) in specialModalData" :key="index" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-model="item._modalChecked"
+                      type="checkbox"
+                      :classes="{
+                        input: '!w-4 !h-4',
+                      }"
+                    />
+                  </td>
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ item.namaAktiviti }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.tarikh }}</td>
+                  <td class="px-4 py-3 text-gray-900">RM {{ item.kadarElaun.toFixed(2) }}</td>
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-if="item._modalChecked"
+                      v-model="item._modalCatatan"
+                      type="textarea"
+                      rows="2"
+                      placeholder="Masukkan catatan pembatalan..."
+                      :classes="{ input: '!py-2 !px-2 text-xs' }"
+                    />
+                    <input
+                      v-else
+                      type="text"
+                      disabled
+                      :value="item._modalCatatan"
+                      class="w-full py-2 px-2 text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="flex items-center justify-end gap-3 mt-6">
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              @click="closeSpecialModal"
+            >
+              Batal
+            </rs-button>
+            <rs-button
+              variant="primary"
+              size="sm"
+              @click="applySpecialChanges"
+              :disabled="!hasSpecialChanges"
+            >
+              <Icon name="ic:baseline-check" class="mr-2" />
+              Simpan
+            </rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Award Activities Modal -->
+    <div v-if="showAwardModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-hidden">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold">Pembatalan Maklumat Anugerah Penolong Amil</h3>
+            <button 
+              @click="closeAwardModal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <Icon name="ic:baseline-close" size="24" />
+            </button>
+          </div>
+          
+          <div class="overflow-x-auto rounded-lg border">
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900 w-16">Checkbox</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">No</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama Aktiviti</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Tarikh</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kadar Elaun</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="(item, index) in awardModalData" :key="index" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-model="item._modalChecked"
+                      type="checkbox"
+                      :classes="{
+                        input: '!w-4 !h-4',
+                      }"
+                    />
+                  </td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.no }}</td>
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ item.namaAktiviti }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.tarikh }}</td>
+                  <td class="px-4 py-3 w-48">
+                    <FormKit
+                      v-if="item._modalChecked"
+                      v-model.number="item._modalKadarElaun"
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      :classes="{
+                        input: '!py-1 !px-2',
+                      }"
+                    />
+                    <span v-else class="font-semibold">RM {{ item.kadarElaun.toFixed(2) }}</span>
+                  </td>
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-if="item._modalChecked"
+                      v-model="item._modalCatatan"
+                      type="textarea"
+                      rows="2"
+                      placeholder="Masukkan catatan pembatalan..."
+                      :classes="{ input: '!py-2 !px-2 text-xs' }"
+                    />
+                    <input
+                      v-else
+                      type="text"
+                      disabled
+                      :value="item._modalCatatan"
+                      class="w-full py-2 px-2 text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="flex items-center justify-end gap-3 mt-6">
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              @click="closeAwardModal"
+            >
+              Batal
+            </rs-button>
+            <rs-button
+              variant="primary"
+              size="sm"
+              @click="applyAwardChanges"
+              :disabled="!hasAwardChanges"
+            >
+              <Icon name="ic:baseline-check" class="mr-2" />
+              Simpan
             </rs-button>
           </div>
         </div>
@@ -599,10 +814,72 @@ const saving = ref(false);
 const showSubmitModal = ref(false);
 const submitNotes = ref('');
 
-// Allowance change modal states
-const showAllowanceModal = ref(false);
+// Activity-specific modal states
+const showFormBasedModal = ref(false);
+const showSpecialModal = ref(false);
+const showAwardModal = ref(false);
 const selectedActivity = ref('');
-const modalRecipients = ref([]);
+
+// Activity-specific modal data
+const formBasedModalData = ref([]);
+const specialModalData = ref([]);
+const awardModalData = ref([]);
+
+// Bulk selection state for Maklumat Penerima section
+const selectAllCandidates = ref(false);
+
+// Filtering state for cancelled allowances
+const showCancelledAllowances = ref(true);
+const filterStatus = ref('All'); // 'All', 'Active', 'Cancelled'
+
+// Mock data generators for different modal types
+function generateFormBasedModalData(activityName) {
+  const mockData = {
+    'BANCIAN BARU : PER BORANG PERMOHONAN': [
+      { idAsnaf: 'ASN001', namaAsnaf: 'Ahmad bin Abdullah', idPengenalan: '800101011234', catatan: 'Permohonan bancian baru untuk keluarga 5 orang', _modalChecked: false, _modalCatatan: 'Tiada' },
+      { idAsnaf: 'ASN002', namaAsnaf: 'Siti Aminah binti Hassan', idPengenalan: '820520149012', catatan: 'Permohonan bancian untuk anak tunggal', _modalChecked: false, _modalCatatan: 'Tiada' },
+      { idAsnaf: 'ASN003', namaAsnaf: 'Mohd Razak bin Ibrahim', idPengenalan: '750315085678', catatan: 'Permohonan bancian untuk keluarga 3 orang', _modalChecked: false, _modalCatatan: 'Tiada' },
+      { idAsnaf: 'ASN004', namaAsnaf: 'Fatimah binti Omar', idPengenalan: '830615083456', catatan: 'Permohonan bancian untuk ibu tunggal', _modalChecked: false, _modalCatatan: 'Tiada' },
+      { idAsnaf: 'ASN005', namaAsnaf: 'Abdul Rahman bin Ahmad', idPengenalan: '780812063456', catatan: 'Permohonan bancian untuk keluarga 7 orang', _modalChecked: false, _modalCatatan: 'Tiada' }
+    ],
+    'KEMASKINI : PER BORANG PERMOHONAN': [
+      { idAsnaf: 'ASN006', namaAsnaf: 'Nor Azizah binti Ahmad', idPengenalan: '830615083456', catatan: 'Kemaskini maklumat keluarga - perubahan alamat', _modalChecked: false, _modalCatatan: 'Tiada' },
+      { idAsnaf: 'ASN007', namaAsnaf: 'Mohd Faiz bin Omar', idPengenalan: '790325127890', catatan: 'Kemaskini maklumat pendapatan bulanan', _modalChecked: false, _modalCatatan: 'Tiada' },
+      { idAsnaf: 'ASN008', namaAsnaf: 'Zulkifli bin Ahmad', idPengenalan: '760628096789', catatan: 'Kemaskini maklumat tanggungan keluarga', _modalChecked: false, _modalCatatan: 'Tiada' },
+      { idAsnaf: 'ASN009', namaAsnaf: 'Ahmad Fadzil bin Ibrahim', idPengenalan: '810415032345', catatan: 'Kemaskini maklumat status perkahwinan', _modalChecked: false, _modalCatatan: 'Tiada' }
+    ],
+    'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN': [
+      { idAsnaf: 'ASN010', namaAsnaf: 'Siti Khadijah binti Zainal', idPengenalan: '800915036789', catatan: 'Permohonan bantuan pendidikan anak', _modalChecked: false, _modalCatatan: 'Tiada' },
+      { idAsnaf: 'ASN011', namaAsnaf: 'Mohd Hafiz bin Zainal', idPengenalan: '830710150123', catatan: 'Permohonan bantuan perubatan keluarga', _modalChecked: false, _modalCatatan: 'Tiada' },
+      { idAsnaf: 'ASN012', namaAsnaf: 'Aishah binti Hassan', idPengenalan: '840812062345', catatan: 'Permohonan bantuan kecemasan', _modalChecked: false, _modalCatatan: 'Tiada' }
+    ]
+  };
+  return mockData[activityName] || [];
+}
+
+function generateSpecialModalData() {
+  return [
+    { namaAktiviti: 'Program Qiamullail', tarikh: '2024-01-15', kadarElaun: 50.00, catatan: 'Program qiamullail bulanan', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Program Tazkirah', tarikh: '2024-01-20', kadarElaun: 30.00, catatan: 'Tazkirah mingguan', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Kutipan Zakat Fitrah', tarikh: '2024-03-15', kadarElaun: 25.00, catatan: 'Kutipan zakat fitrah', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Agihan Bantuan Asnaf', tarikh: '2024-02-10', kadarElaun: 40.00, catatan: 'Agihan bantuan bulanan', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Program Pendidikan', tarikh: '2024-01-25', kadarElaun: 35.00, catatan: 'Program pendidikan kanak-kanak', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Kutipan Zakat Harta', tarikh: '2024-02-05', kadarElaun: 45.00, catatan: 'Kutipan zakat harta', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Program Kesihatan', tarikh: '2024-01-30', kadarElaun: 20.00, catatan: 'Program kesihatan komuniti', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Majlis Hari Raya', tarikh: '2024-04-10', kadarElaun: 60.00, catatan: 'Majlis hari raya komuniti', _modalChecked: false, _modalCatatan: 'Tiada' }
+  ];
+}
+
+function generateAwardModalData() {
+  return [
+    { no: 1, namaAktiviti: 'Ketua Penolong Amil Kariah (KPAK) terbaik', tarikh: '2024-12-31', kadarElaun: 500.00, catatan: 'Anugerah untuk prestasi cemerlang tahun 2024', _modalChecked: false, _modalKadarElaun: 500.00, _modalCatatan: 'Tiada' },
+    { no: 2, namaAktiviti: 'Penolong Amil Kariah (PAK) terbaik', tarikh: '2024-12-31', kadarElaun: 400.00, catatan: 'Anugerah untuk komitmen tinggi dalam tugas', _modalChecked: false, _modalKadarElaun: 400.00, _modalCatatan: 'Tiada' },
+    { no: 3, namaAktiviti: 'Ketua Penolong Amil Fitrah (KPAF) terbaik', tarikh: '2024-12-31', kadarElaun: 450.00, catatan: 'Anugerah untuk kepimpinan yang berkesan', _modalChecked: false, _modalKadarElaun: 450.00, _modalCatatan: 'Tiada' },
+    { no: 4, namaAktiviti: 'Penolong Amil Fitrah (PAF) terbaik', tarikh: '2024-12-31', kadarElaun: 350.00, catatan: 'Anugerah untuk dedikasi dalam kutipan fitrah', _modalChecked: false, _modalKadarElaun: 350.00, _modalCatatan: 'Tiada' },
+    { no: 5, namaAktiviti: 'Penolong Amil Padi (PAP) terbaik', tarikh: '2024-12-31', kadarElaun: 300.00, catatan: 'Anugerah untuk kecemerlangan dalam kutipan padi', _modalChecked: false, _modalKadarElaun: 300.00, _modalCatatan: 'Tiada' },
+    { no: 6, namaAktiviti: 'Penolong Amil Komuniti (PAK+) terbaik', tarikh: '2024-12-31', kadarElaun: 400.00, catatan: 'Anugerah untuk perkhidmatan komuniti yang cemerlang', _modalChecked: false, _modalKadarElaun: 400.00, _modalCatatan: 'Tiada' }
+  ];
+}
 
 // Missing category options for editing
 const categoryOptions = [
@@ -744,15 +1021,44 @@ function getMockCandidates(year, type) {
   return mockData[type] || [];
 }
 
-// Simple activity generation - much simpler than before
+// Activity classification system based on BA requirements
+const activityCategories = {
+  FORM_BASED: [
+    'BANCIAN BARU : PER BORANG PERMOHONAN',
+    'KEMASKINI : PER BORANG PERMOHONAN', 
+    'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN'
+  ],
+  SPECIAL: [
+    'KHAS - 48 AKTIVITI/TAHUN'
+  ],
+  AWARD: [
+    'Ketua Penolong Amil Kariah (KPAK) terbaik',
+    'Penolong Amil Kariah (PAK) terbaik',
+    'Ketua Penolong Amil Fitrah (KPAF) terbaik',
+    'Penolong Amil Fitrah (PAF) terbaik',
+    'Penolong Amil Padi (PAP) terbaik',
+    'Penolong Amil Komuniti (PAK+) terbaik'
+  ]
+};
+
+// Enhanced activity generation with BA-specific activities
 function generateSimpleActivities() {
   const activityPool = [
-    { name: 'Elaun Bancian Baru : per borang permohonan', count: 3 },
-    { name: 'Elaun Kemaskini/permohonan bantuan : per borang permohonan', count: 4 },
-    { name: 'Elaun Khas - 48 aktiviti/tahun', count: 1 },
-    { name: 'Elaun Tahunan KPAK', count: 1 },
-    { name: 'Elaun Tahunan KPAF', count: 1 },
-    { name: 'Anugerah Penolong Amil', count: 1 }
+    // Form-based activities
+    { name: 'BANCIAN BARU : PER BORANG PERMOHONAN', count: 3, category: 'FORM_BASED' },
+    { name: 'KEMASKINI : PER BORANG PERMOHONAN', count: 4, category: 'FORM_BASED' },
+    { name: 'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN', count: 2, category: 'FORM_BASED' },
+    
+    // Special activity
+    { name: 'KHAS - 48 AKTIVITI/TAHUN', count: 1, category: 'SPECIAL' },
+    
+    // Award activities
+    { name: 'Ketua Penolong Amil Kariah (KPAK) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Penolong Amil Kariah (PAK) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Ketua Penolong Amil Fitrah (KPAF) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Penolong Amil Fitrah (PAF) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Penolong Amil Padi (PAP) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Penolong Amil Komuniti (PAK+) terbaik', count: 1, category: 'AWARD' }
   ];
   
   // Randomly select 3-5 activities
@@ -762,7 +1068,8 @@ function generateSimpleActivities() {
   return shuffled.slice(0, selectedCount).map((activity, index) => ({
     id: `A${index + 1}`,
     name: activity.name,
-    count: activity.count
+    count: activity.count,
+    category: activity.category
   }));
 }
 
@@ -938,10 +1245,7 @@ const canSubmit = computed(() => recipients.value.length > 0 && recipients.value
 const status = ref('DRAF');
 const statusLabel = computed(() => status.value === 'MENUNGGU KELULUSAN' ? 'menunggu kelulusan' : status.value.toLowerCase());
 
-// Check if there are any changes in the modal
-const hasModalChanges = computed(() => {
-  return modalRecipients.value.some(r => r._modalChecked);
-});
+
 
 // Computed property to show allowance type information
 const allowanceTypeInfo = computed(() => {
@@ -1204,54 +1508,133 @@ function cancelEdit(recipient) {
   toast.info('Penyuntingan dibatalkan');
 }
 
-// Allowance change modal functions
+// Enhanced allowance change modal functions
 function openAllowanceModal(activityName) {
   selectedActivity.value = activityName;
   
-  // Create a copy of current recipients for modal editing
-  modalRecipients.value = recipients.value.map(recipient => ({
-    ...recipient,
-    _modalChecked: false,
-    _modalAllowance: Number(recipient.allowance) || 0,
-    _modalNotes: ''
-  }));
-  
-  showAllowanceModal.value = true;
-}
-
-function closeAllowanceModal() {
-  showAllowanceModal.value = false;
-  selectedActivity.value = '';
-  modalRecipients.value = [];
-}
-
-function applyAllowanceChanges() {
-  // Apply changes from modal to main recipients list
-  modalRecipients.value.forEach(modalRecipient => {
-    if (modalRecipient._modalChecked) {
-      const mainRecipient = recipients.value.find(r => r.paId === modalRecipient.paId);
-      if (mainRecipient) {
-        // Update allowance if it's different
-        if (modalRecipient._modalAllowance !== mainRecipient.allowance) {
-          mainRecipient.allowance = Number(modalRecipient._modalAllowance);
-        }
-        
-        // Store notes in a custom property (for display purposes)
-        if (modalRecipient._modalNotes && modalRecipient._modalNotes.trim()) {
-          mainRecipient._allowanceNotes = modalRecipient._modalNotes.trim();
-        }
-      }
-    }
-  });
-  
-  // Show success message
-  const changedCount = modalRecipients.value.filter(r => r._modalChecked).length;
-  if (changedCount > 0) {
-    toast.success(`${changedCount} penerima telah dikemas kini`);
+  // Determine activity category and prepare appropriate data
+  if (activityCategories.FORM_BASED.includes(activityName)) {
+    formBasedModalData.value = generateFormBasedModalData(activityName);
+    showFormBasedModal.value = true;
+  } else if (activityCategories.SPECIAL.includes(activityName)) {
+    specialModalData.value = generateSpecialModalData();
+    showSpecialModal.value = true;
+  } else if (activityCategories.AWARD.includes(activityName)) {
+    awardModalData.value = generateAwardModalData();
+    showAwardModal.value = true;
   }
-  
-  closeAllowanceModal();
 }
+
+function closeFormBasedModal() {
+  showFormBasedModal.value = false;
+  selectedActivity.value = '';
+  formBasedModalData.value = [];
+}
+
+function closeSpecialModal() {
+  showSpecialModal.value = false;
+  selectedActivity.value = '';
+  specialModalData.value = [];
+}
+
+function closeAwardModal() {
+  showAwardModal.value = false;
+  selectedActivity.value = '';
+  awardModalData.value = [];
+}
+
+function applyFormBasedChanges() {
+  // Apply changes from form-based modal
+  const changedItems = formBasedModalData.value.filter(r => r._modalChecked);
+  if (changedItems.length > 0) {
+    // Mark items as cancelled in the main recipients list
+    changedItems.forEach(item => {
+      const recipient = recipients.value.find(r => r.paId === item.idAsnaf);
+      if (recipient) {
+        recipient._cancelled = true;
+        recipient._cancellationDate = new Date().toISOString().split('T')[0];
+        recipient._cancellationReason = item._modalCatatan || 'Dibatalkan melalui modal';
+      }
+    });
+    toast.success(`${changedItems.length} rekod telah diproses untuk ${selectedActivity.value}`);
+  }
+  closeFormBasedModal();
+}
+
+function applySpecialChanges() {
+  // Apply changes from special modal
+  const changedItems = specialModalData.value.filter(r => r._modalChecked);
+  if (changedItems.length > 0) {
+    // For special activities, we can mark all recipients as having cancelled special activities
+    recipients.value.forEach(recipient => {
+      recipient._cancelledSpecialActivities = true;
+      recipient._cancellationDate = new Date().toISOString().split('T')[0];
+      recipient._cancellationReason = 'Aktiviti khas dibatalkan';
+    });
+    toast.success(`${changedItems.length} aktiviti khas telah diproses`);
+  }
+  closeSpecialModal();
+}
+
+function applyAwardChanges() {
+  // Apply changes from award modal
+  const changedItems = awardModalData.value.filter(r => r._modalChecked);
+  if (changedItems.length > 0) {
+    // For award activities, mark recipients as having cancelled awards
+    recipients.value.forEach(recipient => {
+      recipient._cancelledAwards = true;
+      recipient._cancellationDate = new Date().toISOString().split('T')[0];
+      recipient._cancellationReason = 'Anugerah dibatalkan';
+    });
+    toast.success(`${changedItems.length} anugerah telah diproses untuk pembatalan`);
+  }
+  closeAwardModal();
+}
+
+// Computed properties for modal changes
+const hasFormBasedChanges = computed(() => {
+  return formBasedModalData.value.some(r => r._modalChecked);
+});
+
+const hasSpecialChanges = computed(() => {
+  return specialModalData.value.some(r => r._modalChecked);
+});
+
+const hasAwardChanges = computed(() => {
+  return awardModalData.value.some(r => r._modalChecked);
+});
+
+// Filtered recipients for presentation
+const filteredRecipients = computed(() => {
+  if (filterStatus.value === 'Cancelled') {
+    return recipients.value.filter(r => r._cancelled);
+  } else if (filterStatus.value === 'Active') {
+    return recipients.value.filter(r => !r._cancelled);
+  }
+  return recipients.value; // Show all
+});
+
+// Bulk selection functions for Maklumat Penerima section
+function toggleSelectAllCandidates() {
+  const shouldSelect = selectAllCandidates.value;
+  filteredRows.value.forEach(row => {
+    row._checked = shouldSelect;
+  });
+}
+
+// Watch for changes in individual checkboxes to update select all state
+watch(() => filteredRows.value.map(r => r._checked), (newValues) => {
+  const totalRows = filteredRows.value.length;
+  const checkedRows = newValues.filter(Boolean).length;
+  
+  if (checkedRows === 0) {
+    selectAllCandidates.value = false;
+  } else if (checkedRows === totalRows) {
+    selectAllCandidates.value = true;
+  } else {
+    selectAllCandidates.value = false; // Indeterminate state
+  }
+}, { deep: true });
 </script>
 
 <style scoped>

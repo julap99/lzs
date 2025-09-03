@@ -38,7 +38,11 @@
                 <template v-slot:status="{ text }">
                   <div class="flex flex-col gap-1">
                     <template v-if="text.includes('\n')">
-                      <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                      <div
+                        v-for="(line, index) in text.split('\n')"
+                        :key="index"
+                        class="text-xs"
+                      >
                         {{ line }}
                       </div>
                     </template>
@@ -115,7 +119,9 @@
 
               <!-- Simulasi Peranan -->
               <div class="mb-4 flex items-center gap-3">
-                <label class="text-sm text-gray-700 font-medium">Simulasi Peranan</label>
+                <label class="text-sm text-gray-700 font-medium"
+                  >Simulasi Peranan</label
+                >
                 <FormKit
                   v-model="selectedRole"
                   type="select"
@@ -125,12 +131,13 @@
                     outer: 'mb-0',
                     input: '!rounded-lg',
                   }"
+                  @change="onChangeSimulasiPeranan"
                 />
               </div>
 
               <!-- Sub-tabs for Bantuan -->
               <rs-tab variant="secondary" type="border" class="mb-6">
-                <rs-tab-item title="Permohonan" active>
+                <rs-tab-item title="Permohonan" active v-if="permohonanTable">
                   <!-- Permohonan Sub-tab Content -->
                   <div>
                     <h4 class="text-md font-medium mb-3 text-gray-700">
@@ -155,7 +162,11 @@
                       <template v-slot:status="{ text }">
                         <div class="flex flex-col gap-1">
                           <template v-if="text.includes('\n')">
-                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                            <div
+                              v-for="(line, index) in text.split('\n')"
+                              :key="index"
+                              class="text-xs"
+                            >
                               {{ line }}
                             </div>
                           </template>
@@ -226,7 +237,7 @@
                   </div>
                 </rs-tab-item>
 
-                <rs-tab-item title="Semakan">
+                <rs-tab-item title="Semakan" v-if="semakanTable">
                   <!-- Semakan Sub-tab Content -->
                   <div>
                     <h4 class="text-md font-medium mb-3 text-gray-700">
@@ -251,7 +262,11 @@
                       <template v-slot:status="{ text }">
                         <div class="flex flex-col gap-1">
                           <template v-if="text.includes('\n')">
-                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                            <div
+                              v-for="(line, index) in text.split('\n')"
+                              :key="index"
+                              class="text-xs"
+                            >
                               {{ line }}
                             </div>
                           </template>
@@ -322,7 +337,7 @@
                   </div>
                 </rs-tab-item>
 
-                <rs-tab-item title="Siasatan">
+                <rs-tab-item title="Siasatan" v-if="siasatanTable">
                   <!-- Siasatan Sub-tab Content -->
                   <div>
                     <h4 class="text-md font-medium mb-3 text-gray-700">
@@ -347,7 +362,11 @@
                       <template v-slot:status="{ text }">
                         <div class="flex flex-col gap-1">
                           <template v-if="text.includes('\n')">
-                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                            <div
+                              v-for="(line, index) in text.split('\n')"
+                              :key="index"
+                              class="text-xs"
+                            >
                               {{ line }}
                             </div>
                           </template>
@@ -358,8 +377,6 @@
                           </template>
                         </div>
                       </template>
-
-
 
                       <template v-slot:tindakan="{ text, row }">
                         <div class="flex justify-center items-center gap-2">
@@ -429,7 +446,7 @@
                   </div>
                 </rs-tab-item>
 
-                <rs-tab-item title="Sokongan">
+                <rs-tab-item title="Sokongan" v-if="sokonganTable">
                   <!-- Sokongan Sub-tab Content -->
                   <div>
                     <h4 class="text-md font-medium mb-3 text-gray-700">
@@ -454,7 +471,11 @@
                       <template v-slot:status="{ text }">
                         <div class="flex flex-col gap-1">
                           <template v-if="text.includes('\n')">
-                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                            <div
+                              v-for="(line, index) in text.split('\n')"
+                              :key="index"
+                              class="text-xs"
+                            >
                               {{ line }}
                             </div>
                           </template>
@@ -525,7 +546,7 @@
                   </div>
                 </rs-tab-item>
 
-                <rs-tab-item title="Rework">
+                <rs-tab-item title="Rework" v-if="reworkTable">
                   <!-- Rework Sub-tab Content -->
                   <div>
                     <h4 class="text-md font-medium mb-3 text-gray-700">
@@ -550,7 +571,11 @@
                       <template v-slot:status="{ text }">
                         <div class="flex flex-col gap-1">
                           <template v-if="text.includes('\n')">
-                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                            <div
+                              v-for="(line, index) in text.split('\n')"
+                              :key="index"
+                              class="text-xs"
+                            >
                               {{ line }}
                             </div>
                           </template>
@@ -621,7 +646,7 @@
                   </div>
                 </rs-tab-item>
 
-                <rs-tab-item title="Kelulusan">
+                <rs-tab-item title="Kelulusan" v-if="kelulusanTable">
                   <!-- Kelulusan Sub-tab Content -->
                   <div>
                     <h4 class="text-md font-medium mb-3 text-gray-700">
@@ -646,7 +671,11 @@
                       <template v-slot:status="{ text }">
                         <div class="flex flex-col gap-1">
                           <template v-if="text.includes('\n')">
-                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                            <div
+                              v-for="(line, index) in text.split('\n')"
+                              :key="index"
+                              class="text-xs"
+                            >
                               {{ line }}
                             </div>
                           </template>
@@ -717,7 +746,7 @@
                   </div>
                 </rs-tab-item>
 
-                <rs-tab-item title="Selesai">
+                <rs-tab-item title="Selesai" v-if="selesaiTable">
                   <!-- Selesai Sub-tab Content -->
                   <div>
                     <h4 class="text-md font-medium mb-3 text-gray-700">
@@ -742,7 +771,11 @@
                       <template v-slot:status="{ text }">
                         <div class="flex flex-col gap-1">
                           <template v-if="text.includes('\n')">
-                            <div v-for="(line, index) in text.split('\n')" :key="index" class="text-xs">
+                            <div
+                              v-for="(line, index) in text.split('\n')"
+                              :key="index"
+                              class="text-xs"
+                            >
                               {{ line }}
                             </div>
                           </template>
@@ -821,7 +854,10 @@
   </div>
 
   <!-- Modal: Tugas Kepada -->
-  <div v-if="isAssignModalOpen" class="fixed inset-0 z-50 z-[9999] flex items-center justify-center">
+  <div
+    v-if="isAssignModalOpen"
+    class="fixed inset-0 z-50 z-[9999] flex items-center justify-center"
+  >
     <div class="absolute inset-0 bg-black/50" @click="closeAssignModal"></div>
     <div class="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
       <div class="mb-4">
@@ -851,7 +887,9 @@
         />
       </div>
       <div class="mt-6 flex justify-end gap-2">
-        <rs-button variant="secondary-outline" @click="closeAssignModal">Batal</rs-button>
+        <rs-button variant="secondary-outline" @click="closeAssignModal"
+          >Batal</rs-button
+        >
         <rs-button variant="primary" @click="submitAssign">Hantar</rs-button>
       </div>
     </div>
@@ -940,6 +978,11 @@ const siasatanColumns = [
     sortable: true,
   },
   {
+    key: "jenistugasan",
+    label: "Jenis Tugasan",
+    sortable: true,
+  },
+  {
     key: "status",
     label: "Status",
     sortable: true,
@@ -947,7 +990,7 @@ const siasatanColumns = [
 
   {
     key: "noRujukan",
-    label: "No Rujukan",
+    label: "No Bantuan",
     sortable: true,
   },
   {
@@ -1002,6 +1045,7 @@ const siasatanData = ref([
     daerah: "Kuala Lumpur",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan",
     noRujukan: "NAS-2025-0001",
     tindakan: "bantuan/siasatan/siasatan-eoad",
   },
@@ -1074,7 +1118,7 @@ const kelulusanData = ref([
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0401",
-    tindakan: "bantuan/kelulusan/B106",
+    tindakan: "bantuan/kelulusan/siasatan-eoad",
   },
 ]);
 
@@ -1105,12 +1149,12 @@ const reworkData = ref([
 ]);
 
 // Simulasi Peranan (dropdown only, no logic)
-const selectedRole = ref('Penyemak');
+const selectedRole = ref("Penyemak");
 const roleOptions = [
-  { label: 'Penyemak', value: 'Penyemak' },
-  { label: 'EOAD', value: 'EOAD' },
-  { label: 'ETD', value: 'ETD' },
-  { label: 'KOAD, KJ, KD', value: 'KOAD,KJ,KD' },
+  { label: "Penyemak", value: "Penyemak" },
+  { label: "EOAD", value: "EOAD" },
+  { label: "ETD", value: "ETD" },
+  { label: "KOAD, KJ, KD", value: "KOAD,KJ,KD" },
 ];
 
 // Computed properties for Profiling tab
@@ -1218,7 +1262,10 @@ const totalPagesPermohonan = computed(() => {
 });
 
 const paginationEndPermohonan = computed(() => {
-  return Math.min(currentPage.value * pageSize.value, totalPermohonanData.value);
+  return Math.min(
+    currentPage.value * pageSize.value,
+    totalPermohonanData.value
+  );
 });
 
 // Computed properties for Semakan sub-tab
@@ -1432,16 +1479,16 @@ const getStatusVariant = (status) => {
 
 // Assign Modal State & Handlers
 const isAssignModalOpen = ref(false);
-const assignForm = ref({ jawatan: '', kariah: '', namaPegawai: '' });
+const assignForm = ref({ jawatan: "", kariah: "", namaPegawai: "" });
 const jawatanOptions = [
-  { label: 'EOAD', value: 'EOAD' },
-  { label: 'ETD', value: 'ETD' },
+  { label: "EOAD", value: "EOAD" },
+  { label: "ETD", value: "ETD" },
 ];
 const namaPegawaiOptions = [
-  { label: 'Ali bin Ahmad', value: 'Ali bin Ahmad' },
-  { label: 'Siti binti Zainal', value: 'Siti binti Zainal' },
-  { label: 'Rahman bin Karim', value: 'Rahman bin Karim' },
-  { label: 'Ainun binti Musa', value: 'Ainun binti Musa' },
+  { label: "Ali bin Ahmad", value: "Ali bin Ahmad" },
+  { label: "Siti binti Zainal", value: "Siti binti Zainal" },
+  { label: "Rahman bin Karim", value: "Rahman bin Karim" },
+  { label: "Ainun binti Musa", value: "Ainun binti Musa" },
 ];
 const kariahOptions = computed(() => {
   const set = new Set(siasatanData.value.map((r) => r.kariah));
@@ -1451,9 +1498,9 @@ const kariahOptions = computed(() => {
 const openAssignModal = (row) => {
   isAssignModalOpen.value = true;
   assignForm.value = {
-    jawatan: assignForm.value.jawatan || 'EOAD',
-    kariah: row && row.kariah ? row.kariah : '',
-    namaPegawai: assignForm.value.namaPegawai || 'Ali bin Ahmad',
+    jawatan: assignForm.value.jawatan || "EOAD",
+    kariah: row && row.kariah ? row.kariah : "",
+    namaPegawai: assignForm.value.namaPegawai || "Ali bin Ahmad",
   };
 };
 
@@ -1462,10 +1509,64 @@ const closeAssignModal = () => {
 };
 
 const submitAssign = () => {
-  console.log('Assign Task:', assignForm.value);
+  console.log("Assign Task:", assignForm.value);
   isAssignModalOpen.value = false;
 };
 
+// Initialize table visibility based on default role "Penyemak"
+const permohonanTable = ref(true);
+const semakanTable = ref(true);
+const siasatanTable = ref(true);
+const sokonganTable = ref(true);
+const reworkTable = ref(true);
+const kelulusanTable = ref(true);
+const selesaiTable = ref(true);
+
+const onChangeSimulasiPeranan = () => {
+  console.log("Jawatan:", selectedRole.value);
+
+  if (selectedRole.value === "Penyemak") {
+    permohonanTable.value = true;
+    semakanTable.value = true;
+    siasatanTable.value = false;
+    sokonganTable.value = false;
+    reworkTable.value = false;
+    kelulusanTable.value = false;
+    selesaiTable.value = true;
+  } else if (selectedRole.value === "EOAD") {
+    permohonanTable.value = false;
+    semakanTable.value = false;
+    siasatanTable.value = true;
+    sokonganTable.value = false;
+    reworkTable.value = false;
+    kelulusanTable.value = false;
+    selesaiTable.value = true;
+  } else if (selectedRole.value === "ETD") {
+    permohonanTable.value = false;
+    semakanTable.value = false;
+    siasatanTable.value = true;
+    sokonganTable.value = false;
+    reworkTable.value = true;
+    kelulusanTable.value = false;
+    selesaiTable.value = true;
+  } else if (selectedRole.value === "KOAD,KJ,KD") {
+    permohonanTable.value = false;
+    semakanTable.value = false;
+    siasatanTable.value = false;
+    sokonganTable.value = false;
+    reworkTable.value = false;
+    kelulusanTable.value = true;
+    selesaiTable.value = true;
+  } else {
+    permohonanTable.value = true;
+    semakanTable.value = true;
+    siasatanTable.value = true;
+    sokonganTable.value = true;
+    reworkTable.value = true;
+    kelulusanTable.value = true;
+    selesaiTable.value = true;
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

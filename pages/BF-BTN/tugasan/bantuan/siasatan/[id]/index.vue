@@ -717,8 +717,6 @@
                       RM {{ jumlahKeseluruhan.toLocaleString() }}
                     </span>
                   </div>
-                  
-
                 </div>
                 
 

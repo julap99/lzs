@@ -681,6 +681,35 @@ export default [
     description: "Profiling",
     child: [
       {
+        title: "Konfigurasi New",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Had Kifayah",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/HK/01_01",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/HK/01_02",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
+          
+        ],
+        meta: {},
+      },
+      {
         title: "Konfigurasi",
         icon: "iconamoon:component-fill",
         child: [
@@ -1024,6 +1053,13 @@ export default [
         meta: {},
       },
       {
+        title: "Bantuan",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-BTN/bantuan",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Tugasan",
         icon: "iconamoon:arrow-right-2-duotone",
         path: "/BF-BTN/tugasan",
@@ -1329,7 +1365,7 @@ export default [
           {
             title: "Pendaftaran Penolong Amil",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/pra-daftar-v3",
+            path: "/BF-PA/PP/PD",
             child: [],
             meta: {},
           },
