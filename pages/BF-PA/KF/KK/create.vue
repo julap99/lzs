@@ -106,7 +106,7 @@
                   name="status"
                   label="Status Awal"
                   :options="[
-                    { name: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' }
+                    { label: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' }
                   ]"
                   validation="required"
                   :validation-messages="{

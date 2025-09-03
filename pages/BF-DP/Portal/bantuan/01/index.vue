@@ -2,11 +2,38 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <!-- Section 1: Maklumat Permohonan Bantuan -->
+    <!-- Role Simulator - For Demo/Presentation Only -->
+    <!-- This allows switching between different user roles to demonstrate role-based views -->
+    <!-- In production, this would be replaced with actual user authentication and role management -->
+    <div class="mb-4 flex items-center space-x-4">
+      <label class="font-medium text-gray-700">Pilih Role:</label>
+      <select v-model="selectedRole" class="border rounded p-1">
+        <option value="pengguna-luar">Pengguna Luar</option>
+        <option value="pengguna-dalam">Pengguna Dalam</option>
+      </select>
+    </div>
+
+    <!-- Section 1: Status Semasa (highlight only, no header) -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="grid grid-cols-1 gap-4">
+          <rs-card variant="secondary">
+            <div class="p-2 flex flex-col">
+              <div class="text-sm text-gray-500">Status Semasa</div>
+              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
+                {{ currentStatus }}
+              </rs-badge>
+            </div>
+          </rs-card>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section 2: Maklumat Permohonan Bantuan -->
     <rs-card class="mb-6">
       <template #header>Maklumat Permohonan Bantuan</template>
       <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <rs-card variant="secondary">
             <div class="p-2">
               <div class="text-sm text-gray-500">ID Permohonan</div>
@@ -25,58 +52,13 @@
               <div class="font-bold">{{ formatDate(bantuanInfo.tarikhMohon) }}</div>
             </div>
           </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2 flex flex-col">
-              <div class="text-sm text-gray-500">Status Semasa</div>
-              <rs-badge :variant="getStatusVariant(currentStatus)" size="sm">
-                {{ currentStatus }}
-              </rs-badge>
-            </div>
-          </rs-card>
         </div>
       </template>
     </rs-card>
 
-    <!-- Section 2: Maklumat Tindakan & Status -->
-    <rs-card class="mb-6">
-      <template #header>Maklumat Tindakan & Status</template>
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <rs-card variant="secondary">
-            <div class="p-2 flex flex-col">
-              <div class="text-sm text-gray-500">Status Semasa</div>
-              <rs-badge variant="info" size="sm">
-                Dalam Proses - Siasatan
-              </rs-badge>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Tarikh Kemaskini</div>
-              <div class="font-bold">{{ formatDate(tindakanStatus.tarikhKemaskini) }}</div>
-            </div>
-          </rs-card>
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Nama Pegawai Bertugas</div>
-              <div class="font-bold">{{ tindakanStatus.namaPegawaiBertugas }}</div>
-            </div>
-          </rs-card>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
-          <rs-card variant="secondary">
-            <div class="p-2">
-              <div class="text-sm text-gray-500">Catatan Pegawai Bertugas</div>
-              <div class="font-bold italic">{{ tindakanStatus.catatanPegawaiBertugas }}</div>
-            </div>
-          </rs-card>
-        </div>
-      </template>
-    </rs-card>
-
-    <!-- Timeline Pelaksanaan Bantuan (Vertical) -->
-    <rs-card>
-      <template #header>Garis Masa Pelaksanaan Bantuan</template>
+    <!-- Review History - Visible to both roles, details hidden for Pengguna Luar -->
+    <rs-card v-if="canViewSejarahSemakan">
+      <template #header>Prosedur Agihan</template>
       <template #body>
         <div class="relative">
           <!-- Timeline Line -->
@@ -119,8 +101,8 @@
                 <span v-else class="text-white">{{ index + 1 }}</span>
               </div>
 
-              <!-- Content -->
-              <div class="ml-4 flex-1">
+              <!-- Content (only for Pengguna Dalam) -->
+              <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
                 <div class="text-sm text-gray-500">
                   {{ formatDate(step.tarikh) }}
                 </div>
@@ -139,11 +121,18 @@
                 </div>
                 <div class="text-sm mt-1 text-gray-600">Pegawai: {{ step.namaPegawai }}</div>
               </div>
+              <!-- Minimal content for Pengguna Luar: date + label only -->
+              <div v-else class="ml-4 flex-1">
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="font-bold text-blue-800">{{ step.label }}</div>
+              </div>
             </div>
           </div>
         </div>
       </template>
     </rs-card>
+
+
 
     <!-- Documents Section -->
     <rs-card class="mb-6">
@@ -189,7 +178,7 @@ const breadcrumb = ref([
 const bantuanInfo = ref({
   idPermohonan: 'NAS-BTN-2025-0001',
   namaBantuan: 'Bantuan Pendidikan',
-  tarikhMohon: '2025-06-01',
+  tarikhMohon: '01-06-2025',
 });
 
 // Mock data - Replace with actual API calls
@@ -228,6 +217,7 @@ interface Document {
 
 const getStatusVariant = (status: string) => {
   const variants: Record<string, string> = {
+    'Dalam Proses - Siasatan': 'info',
     'Dalam Penyaluran': 'primary',
     Selesai: 'success',
     Dibatalkan: 'danger',
@@ -238,7 +228,7 @@ const getStatusVariant = (status: string) => {
   return variants[status] || 'default';
 };
 
-const currentStatus = ref('Siasatan');
+const currentStatus = ref('Dalam Proses - Siasatan');
 
 // Dummy SLA & statusTimeline example
 const slaRules: Record<string, number> = {
@@ -268,7 +258,7 @@ const getRemainingSla = (currentLabel: string): number => {
 const statusTimeline = [
   {
     label: 'Permohonan Dihantar',
-    tarikh: '2025-06-10T09:00:00',
+    tarikh: '10-06-2025',
     completed: true,
     catatan: 'Permohonan diterima untuk semakan.',
     namaPegawai: 'Encik Ali',
@@ -279,7 +269,7 @@ const statusTimeline = [
   },
   {
     label: 'Semakan Awal',
-    tarikh: '2025-06-11T10:00:00',
+    tarikh: '11-06-2025',
     completed: true,
     catatan: 'Semakan dokumen lengkap dan disahkan.',
     namaPegawai: 'Pn. Zahrah',
@@ -290,7 +280,7 @@ const statusTimeline = [
   },
   {
     label: 'Siasatan',
-    tarikh: '2025-06-13T14:30:00',
+    tarikh: '13-06-2025',
     inProgress: true,
     catatan: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
     namaPegawai: 'Ustaz Hafiz',
@@ -325,21 +315,16 @@ const statusTimeline = [
 
 const tindakanStatus = ref({
   statusSemasa: 'Siasatan',
-  tarikhKemaskini: '2025-06-13T14:30:00',
+  tarikhKemaskini: '13-06-2025',
   namaPegawaiBertugas: 'Ustaz Hafiz',
   catatanPegawaiBertugas: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
 });
 
+import { formatDate as formatDateUtil } from '~/utils/dateFormatter';
+
 const formatDate = (dateStr: string | Date): string => {
   if (!dateStr) return 'Belum Bermula';
-  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
-  return date.toLocaleString('ms-MY', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return formatDateUtil(dateStr as string);
 };
 
 const getTextClass = (label: string): string => 'text-blue-800';
@@ -353,6 +338,11 @@ const downloadDocument = (doc: Document): void => {
   // This would be replaced with actual download functionality
   alert(`Downloading ${doc.name}`);
 };
+
+// Role-based access control
+const selectedRole = ref("pengguna-dalam"); // default role
+// Both roles can view the timeline; only internal users see details
+const canViewSejarahSemakan = computed(() => ["pengguna-dalam", "pengguna-luar"].includes(selectedRole.value));
 </script>
 
 <style lang="scss" scoped>

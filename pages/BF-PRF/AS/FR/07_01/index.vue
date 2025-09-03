@@ -56,22 +56,10 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">No Telefon</label>
                 <p class="text-gray-900">{{ formData.noTelefon }}</p>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">E-mel</label>
-                <p class="text-gray-900">{{ formData.email }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status Keluarga</label>
-                <p class="text-gray-900">{{ formData.statusKeluarga }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status Individu</label>
-                <p class="text-gray-900">{{ formData.statusIndividu }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status Multidimensi</label>
-                <p class="text-gray-900">{{ formData.statusMultidimensi }}</p>
-              </div>
+                             <div>
+                 <label class="block text-sm font-medium text-gray-700 mb-1">E-mel</label>
+                 <p class="text-gray-900">{{ formData.email }}</p>
+               </div>
             </div>
           </rs-fieldset>
         </FormKit>
@@ -82,7 +70,7 @@
     <div class="flex flex-col lg:flex-row gap-4 mt-4">
       <rs-card class="flex-1">
         <template #body>
-          <rs-tab variant="primary" type="card" v-model="activeTab">
+                     <rs-tab variant="primary" type="card" v-model="forcedActiveTab">
                                        <!-- === TAB: PENGESAHAN STATUS === -->
               <rs-tab-item title="Pengesahan Status" name="pengesahan-status">
                <div class="space-y-6">
@@ -162,21 +150,26 @@
                         </div>
 
                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                         <FormKit
-                           type="select"
-                           name="assignSiasatan"
-                           label="Assign Siasatan"
-                           :options="assignSiasatanOptions"
-                           placeholder="Pilih petugas siasatan"
-                           :classes="{ input: '!py-2.5', label: 'text-sm font-medium text-gray-700' }"
-                           v-model="profilingData.assignSiasatan"
-                         />
-                         <div class="md:col-span-2 flex items-end justify-end">
-                           <rs-button variant="primary" @click="handleTugasanHantar" class="px-6 py-2.5">
-                             <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" />
-                             Hantar
-                           </rs-button>
-                         </div>
+                                                   <FormKit
+                            type="select"
+                            name="assignSiasatan"
+                            label="Assign Siasatan"
+                            :options="assignSiasatanOptions"
+                            placeholder="Pilih petugas siasatan"
+                            :classes="{ input: '!py-2.5', label: 'text-sm font-medium text-gray-700' }"
+                            v-model="profilingData.assignSiasatan"
+                            @change="saveToLocalStorage"
+                          />
+                                                   <div class="md:col-span-2 flex items-end justify-end gap-3">
+                            <rs-button variant="secondary" @click="resetForm" class="px-6 py-2.5">
+                              <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                              Reset
+                            </rs-button>
+                            <rs-button variant="primary" @click="handleTugasanHantar" class="px-6 py-2.5">
+                              <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" />
+                              Hantar
+                            </rs-button>
+                          </div>
                        </div>
                      </section>
 
@@ -491,7 +484,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from "vue";
+import { ref, computed, onMounted, nextTick, watch } from "vue";
 import { useInvestigationStore } from "~/stores/investigation";
 
 /* PAGE META */
@@ -518,9 +511,6 @@ const formData = ref({
   noPengenalan: "770319035991",
   noTelefon: "0123456789",
   email: "adnan@gmail.com",
-  statusKeluarga: "Fakir",
-  statusIndividu: "Fakir",
-  statusMultidimensi: "Asnaf Tidak Produktif",
   status: "Dalam Siasatan",
   keputusanSiasatan: "",
   tarikhLawatan: "",
@@ -551,9 +541,9 @@ const investigationData = ref({
 const profilingData = ref({
   pengenalanId: "770319035991",
   nama: "Adnan bin Abu",
-  hadKifayahSyor: "85.00",
-  kategoriKeluargaAsnafSyor: "Fakir",
-  kategoriAsnafSyor: "Asnaf Produktif",
+  hadKifayahSyor: "50.81",
+  kategoriKeluargaAsnafSyor: "Miskin",
+  kategoriAsnafSyor: "Miskin",
   tarikhPengesyoran: new Date().toLocaleDateString("ms-MY", { day: "2-digit", month: "2-digit", year: "numeric" }),
   pengenalanIdTanggungan1: "050101101234",
   pengenalanIdTanggungan2: "070202105678",
@@ -618,6 +608,14 @@ const showPengesahanStatus = computed(() => {
   return !!profilingData.value.assignSiasatan;
 });
 
+// Force active tab to be pengesahan-status when assignSiasatan has value
+const forcedActiveTab = computed(() => {
+  if (profilingData.value.assignSiasatan) {
+    return "pengesahan-status";
+  }
+  return activeTab.value;
+});
+
 /* HELPERS */
 function getStatusVariant(status: string) {
   if (status === "Dalam Siasatan") return "primary";
@@ -637,8 +635,95 @@ function getAssignSiasatanLabel(value: string) {
   return option ? option.label : value;
 }
 
+/* LOCAL STORAGE HELPERS */
+function saveToLocalStorage() {
+  try {
+    const dataToSave = {
+      assignSiasatan: profilingData.value.assignSiasatan,
+      hasSubmittedData: hasSubmittedData.value,
+      investigationData: investigationData.value
+    };
+    localStorage.setItem('lzs-07-01-data', JSON.stringify(dataToSave));
+  } catch (error) {
+    console.warn('Failed to save to localStorage:', error);
+  }
+}
+
+async function loadFromLocalStorage() {
+  try {
+    const savedData = localStorage.getItem('lzs-07-01-data');
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      
+      // Restore profiling data
+      if (parsed.assignSiasatan) {
+        profilingData.value.assignSiasatan = parsed.assignSiasatan;
+        // Automatically activate Pengesahan Status tab when tugasan siasatan has value
+        activeTab.value = "pengesahan-status";
+        
+        // Ensure the tab is properly activated after component rendering
+        await nextTick();
+        setTimeout(() => {
+          activeTab.value = "pengesahan-status";
+        }, 100);
+      }
+      
+      // Restore investigation data
+      if (parsed.investigationData) {
+        investigationData.value = { ...investigationData.value, ...parsed.investigationData };
+      }
+      
+      // Restore UI state
+      if (parsed.hasSubmittedData) {
+        hasSubmittedData.value = parsed.hasSubmittedData;
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to load from localStorage:', error);
+  }
+}
+
+function clearLocalStorage() {
+  try {
+    localStorage.removeItem('lzs-07-01-data');
+  } catch (error) {
+    console.warn('Failed to clear localStorage:', error);
+  }
+}
+
 /* LIFECYCLE */
 onMounted(async () => {
+  // Load saved data from localStorage first
+  await loadFromLocalStorage();
+  
+  // Force tab activation if assignSiasatan has value with multiple timing strategies
+  if (profilingData.value.assignSiasatan) {
+    // Strategy 1: Immediate activation
+    activeTab.value = "pengesahan-status";
+    
+    // Strategy 2: After nextTick
+    await nextTick();
+    activeTab.value = "pengesahan-status";
+    
+    // Strategy 3: Multiple delayed activations
+    setTimeout(() => {
+      activeTab.value = "pengesahan-status";
+    }, 100);
+    
+    setTimeout(() => {
+      activeTab.value = "pengesahan-status";
+    }, 300);
+    
+    setTimeout(() => {
+      activeTab.value = "pengesahan-status";
+    }, 500);
+    
+    // Strategy 4: After a longer delay to ensure component is fully rendered
+    setTimeout(() => {
+      activeTab.value = "pengesahan-status";
+    }, 1000);
+  }
+  
   // Check if there's investigation data from the store
   if (investigationStore.latestSubmission) {
     comingFromInvestigation.value = true;
@@ -685,6 +770,62 @@ onMounted(async () => {
   }
 });
 
+/* WATCHERS */
+// Auto-save data when assignSiasatan changes
+watch(() => profilingData.value.assignSiasatan, (newValue) => {
+  if (newValue) {
+    // Automatically switch to Pengesahan Status tab when tugasan siasatan is selected
+    activeTab.value = "pengesahan-status";
+    
+    // Small delay to ensure all reactive updates are complete
+    setTimeout(() => {
+      saveToLocalStorage();
+    }, 100);
+  }
+});
+
+// Ensure tab is properly activated when component is fully mounted
+watch(() => profilingData.value.assignSiasatan, (newValue) => {
+  if (newValue && activeTab.value !== "pengesahan-status") {
+    // Force tab activation with multiple timing strategies
+    activeTab.value = "pengesahan-status";
+    
+    setTimeout(() => {
+      activeTab.value = "pengesahan-status";
+    }, 100);
+    
+    setTimeout(() => {
+      activeTab.value = "pengesahan-status";
+    }, 300);
+    
+    setTimeout(() => {
+      activeTab.value = "pengesahan-status";
+    }, 500);
+    
+    setTimeout(() => {
+      activeTab.value = "pengesahan-status";
+    }, 1000);
+  }
+}, { immediate: true });
+
+// Auto-save data when investigation data changes
+watch(() => investigationData.value, () => {
+  // Small delay to ensure all reactive updates are complete
+  setTimeout(() => {
+    saveToLocalStorage();
+  }, 100);
+}, { deep: true });
+
+// Additional watcher to ensure tab activation after component is fully ready
+watch(() => activeTab.value, (newTab) => {
+  // If we're trying to set to pengesahan-status but it's not working, force it again
+  if (profilingData.value.assignSiasatan && newTab !== "pengesahan-status") {
+    setTimeout(() => {
+      activeTab.value = "pengesahan-status";
+    }, 100);
+  }
+});
+
 /* HANDLERS */
 function handleSubmit(data: any) {
   console.log("Form submitted:", data);
@@ -714,6 +855,10 @@ async function handleTugasanHantar() {
     
     // Execute current functionality after popup disappears
     hasSubmittedData.value = true;
+    
+    // Save data to localStorage
+    saveToLocalStorage();
+    
     requestAnimationFrame(() => {
       const el = document.getElementById("lawatan-siasatan-section");
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -722,6 +867,40 @@ async function handleTugasanHantar() {
 }
 function handleSubmitLawatan(data: any) {
   console.log("Lawatan form submitted:", data);
+}
+
+function resetForm() {
+  // Reset all form data
+  profilingData.value.assignSiasatan = "";
+  hasSubmittedData.value = false;
+  
+  // Clear investigation data
+  investigationData.value = {
+    jenisPekerjaan: "Bekerja sebagai tukang sapu di sekolah",
+    statusKediaman: "Rumah Sewa",
+    jumlahBayaranRumah: "RM500",
+    bilTanggungan: "2 Orang (Anak)",
+    statusTanggungan: "Tanggungan Utama",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilianAwal: "",
+    catatanLawatanETD: "",
+    statusLawatan: "",
+    RingkasanPemerhatian: "",
+    komenPengesahanLawatan: "",
+    tarikhPengesyoranAkhir: "",
+  };
+  
+  // Clear localStorage
+  clearLocalStorage();
+  
+  // Show success message
+  showPopupMessage.value = true;
+  popupMessage.value = "Form telah direset";
+  setTimeout(() => {
+    showPopupMessage.value = false;
+  }, 3000);
 }
 
 /* (commented profiling actions retained for future use)

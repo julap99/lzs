@@ -548,6 +548,7 @@
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
+                  <th class="px-4 py-3"></th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Kategori</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod Singkatan</th>
@@ -556,6 +557,9 @@
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="item in selectedItems" :key="item.tindakan" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <input type="checkbox" v-model="selectedMap[item.tindakan]" class="w-4 h-4" />
+                  </td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.kodSingkatan }}</td>
@@ -595,7 +599,7 @@
             :loading="false"
           >
             <Icon name="ic:baseline-check" class="w-4 h-4 mr-2" />
-            Luluskan Semua ({{ selectedItems.length }})
+            Luluskan Terpilih ({{ selectedCount }})
           </rs-button>
         </div>
       </div>
@@ -1063,6 +1067,10 @@ const performSearch = () => {
 const showBulkApprovalModal = ref(false);
 const selectedItems = ref([]);
 const bulkApprovalNotes = ref("");
+const selectedMap = ref({});
+const selectedCount = computed(() => {
+  return selectedItems.value.filter(item => selectedMap.value[item.tindakan]).length;
+});
 
 const hasPendingApprovals = computed(() => {
   return categoriesList.value.filter(category => 
@@ -1080,6 +1088,10 @@ const openBulkApprovalModal = () => {
   selectedItems.value = categoriesList.value.filter(category => 
     category.status === 'Menunggu Kelulusan'
   );
+  selectedMap.value = {};
+  selectedItems.value.forEach(item => {
+    selectedMap.value[item.tindakan] = true;
+  });
   showBulkApprovalModal.value = true;
 };
 
@@ -1106,13 +1118,18 @@ const performBulkApproval = async () => {
     const year = currentDate.getFullYear();
     const formattedDate = `${day}-${month}-${year}`;
     
-    // Update all selected items
-    selectedItems.value.forEach(category => {
+    // Update only checked items
+    const toApprove = selectedItems.value.filter(item => selectedMap.value[item.tindakan]);
+    if (toApprove.length === 0) {
+      toast.warning('Sila pilih sekurang-kurangnya satu kategori');
+      return;
+    }
+    toApprove.forEach(category => {
       category.status = 'Aktif';
       category.tarikhKuatkuasa = formattedDate;
     });
     
-    toast.success(`${selectedItems.value.length} kategori berjaya diluluskan`);
+    toast.success(`${toApprove.length} kategori berjaya diluluskan`);
     closeBulkApprovalModal();
     refreshTable();
   } catch (error) {

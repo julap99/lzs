@@ -194,7 +194,7 @@
           <rs-button variant="secondary-outline" @click="showProfile = false">
             Tutup
           </rs-button>
-          <rs-button variant="primary" @click="navigateTo('/BF-PA/PP/pra-daftar-v3/profile/edit')">
+          <rs-button variant="primary" @click="navigateTo('/BF-PA/PP/PD/profile/edit')">
             Kemaskini Profil
           </rs-button>
         </div>
@@ -473,9 +473,9 @@ const breadcrumb = ref([
     path: "/BF-PA/PP/PM/01",
   },
   {
-    name: "Pra Daftar V3",
+    name: "Pra Daftar",
     type: "link",
-    path: "/BF-PA/PP/pra-daftar-v3",
+    path: "/BF-PA/PP/PD",
   },
   {
     name: "Dashboard Penolong Amil",

@@ -47,6 +47,7 @@
         type="form"
         id="editCategoryForm"
         :actions="false"
+        v-model="formModel"
         @submit="handleSubmit"
       >
         <!-- Maklumat Kategori Section -->
@@ -75,7 +76,6 @@
                   :validation-messages="{
                     required: 'Kategori penolong amil diperlukan',
                   }"
-                  :value="formData.kategoriPenolongAmil"
                   :disabled="formData.isDefault"
                   :help="formData.isDefault ? 'Nama kategori asas tidak boleh diubah' : ''"
                 />
@@ -88,7 +88,6 @@
                   :validation-messages="{
                     required: 'Kod singkatan diperlukan',
                   }"
-                  :value="formData.kodSingkatan"
                   :disabled="formData.isDefault"
                   :help="formData.isDefault ? 'Kod singkatan kategori asas tidak boleh diubah' : ''"
                 />
@@ -101,7 +100,6 @@
                   :validation-messages="{
                     required: 'Status diperlukan',
                   }"
-                  :value="formData.status"
                   help="Status akan berubah kepada 'Menunggu Pengesahan' selepas kemaskini"
                 />
                 <FormKit
@@ -123,7 +121,6 @@
                     :validation-messages="{
                       required: 'Penerangan kategori diperlukan',
                     }"
-                    :value="formData.penerangan"
                   />
                 </div>
               </div>
@@ -336,6 +333,14 @@ const formData = ref({
   }
 })
 
+// Reactive model for FormKit form values
+const formModel = ref({
+  kategoriPenolongAmil: '',
+  kodSingkatan: '',
+  status: 'Aktif',
+  penerangan: ''
+})
+
 // Confirmation modal state
 const showConfirmModal = ref(false)
 const pendingFormData = ref(null)
@@ -461,6 +466,14 @@ onMounted(async () => {
         diluluskanOleh: 'Datuk Seri Wan Ahmad bin Wan Omar',
         tarikhKelulusan: '30-11-2023'
       }
+    }
+
+    // Initialize form model so inputs reflect loaded data even when disabled
+    formModel.value = {
+      kategoriPenolongAmil: selectedCategory.kategoriPenolongAmil,
+      kodSingkatan: selectedCategory.kodSingkatan,
+      status: selectedCategory.status,
+      penerangan: selectedCategory.penerangan
     }
   } catch (error) {
     toast.error('Ralat semasa memuat data kategori')
