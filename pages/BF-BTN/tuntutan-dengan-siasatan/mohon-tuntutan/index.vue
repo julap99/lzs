@@ -56,6 +56,37 @@
               </div>
             </div>
 
+			<!-- New Distribution Item Table  -->
+            <h3 class="text-lg font-medium mt-6 mb-4">Senarai Distribution Item (DI)</h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full border-collapse border border-gray-200">
+                <thead>
+                  <tr>
+                    <th class="border border-gray-300 px-4 py-2">No</th>
+                    <th class="border border-gray-300 px-4 py-2">DI No</th>
+                    <th class="border border-gray-300 px-4 py-2">Entitlement Product</th>
+                    <th class="border border-gray-300 px-4 py-2">Penerima</th>
+                    <th class="border border-gray-300 px-4 py-2">Bulan</th>
+                    <th class="border border-gray-300 px-4 py-2">Tahun</th>
+                    <th class="border border-gray-300 px-4 py-2">Status</th>
+                    <th class="border border-gray-300 px-4 py-2">Amaun (RM)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in distributionItems" :key="index">
+                    <td class="border border-gray-300 px-4 py-2">{{ index + 1 }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ item.diNo }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ item.entitlementProduct }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ item.penerima }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ item.bulan }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ item.tahun }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ item.status }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ item.amaun }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
             
             <h3 class="text-lg font-medium mt-6 mb-4">Senarai Distribution Item (DI)</h3>
             <RsTable
