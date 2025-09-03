@@ -299,7 +299,7 @@
                         class="mr-2 text-green-600 focus:ring-green-500"
                         required
                       />
-                      <span class="text-sm font-medium text-gray-900">Lulus</span>
+                      <span class="text-sm font-medium text-gray-900">Lulus Saringan</span>
                     </label>
                     <label class="flex items-center">
                       <input
@@ -309,7 +309,7 @@
                         class="mr-2 text-red-600 focus:ring-red-500"
                         required
                       />
-                      <span class="text-sm font-medium text-gray-900">Tidak Lulus</span>
+                      <span class="text-sm font-medium text-gray-900">Tidak Lulus Saringan</span>
                     </label>
                   </div>
                   <div v-if="!screeningForm.statusSaringan" class="mt-1 text-sm text-red-600">
