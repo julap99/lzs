@@ -10,14 +10,45 @@
       </template>
 
       <template #body>
-        <!-- Main Tabs -->
-        <rs-tab variant="primary" type="card">
-          <rs-tab-item title="Permohonan" active>
-            <!-- Permohonan Tab Content -->
-            <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                Senarai Permohonan
-              </h3>
+        <!-- Custom Tabs Component -->
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <!-- Tab Header -->
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-6 h-6 bg-teal-500 rounded flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800">Tabs Component</h3>
+          </div>
+          
+          <!-- Tab Description -->
+          <p class="text-gray-600 mb-6">Tabs are used to organize content into different sections.</p>
+
+          <!-- Tab Navigation -->
+          <div class="flex border-b border-gray-200 mb-6">
+            <button
+              v-for="(tab, index) in tabs"
+              :key="index"
+              @click="activeTab = tab.id"
+              :class="[
+                'px-6 py-3 text-sm font-medium transition-colors duration-200',
+                activeTab === tab.id
+                  ? 'text-teal-600 border-b-2 border-teal-600'
+                  : 'text-gray-700 hover:text-gray-900'
+              ]"
+            >
+              {{ tab.title }}
+            </button>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="tab-content">
+            <!-- Permohonan Tab -->
+            <div v-if="activeTab === 'permohonan'" class="space-y-4">
+              <h4 class="text-lg font-semibold text-gray-800">Permohonan</h4>
+              <p class="text-gray-600">This tab displays the applications submitted for assistance.</p>
+              
               <!-- Applications Table -->
               <rs-table
                 :data="filteredPermohonanData"
@@ -104,14 +135,12 @@
                 </div>
               </div>
             </div>
-          </rs-tab-item>
 
-          <rs-tab-item title="Lulus">
-            <!-- Lulus Tab Content -->
-            <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                Senarai Permohonan Lulus
-              </h3>
+            <!-- Lulus Tab -->
+            <div v-if="activeTab === 'lulus'" class="space-y-4">
+              <h4 class="text-lg font-semibold text-gray-800">Lulus</h4>
+              <p class="text-gray-600">This tab displays the approved applications.</p>
+              
               <!-- Applications Table -->
               <rs-table
                 :data="filteredLulusData"
@@ -198,14 +227,12 @@
                 </div>
               </div>
             </div>
-          </rs-tab-item>
 
-          <rs-tab-item title="Ditolak">
-            <!-- Ditolak Tab Content -->
-            <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                Senarai Permohonan Ditolak
-              </h3>
+            <!-- Ditolak Tab -->
+            <div v-if="activeTab === 'ditolak'" class="space-y-4">
+              <h4 class="text-lg font-semibold text-gray-800">Ditolak</h4>
+              <p class="text-gray-600">This tab displays the rejected applications.</p>
+              
               <!-- Applications Table -->
               <rs-table
                 :data="filteredDitolakData"
@@ -292,13 +319,11 @@
                 </div>
               </div>
             </div>
-          </rs-tab-item>
-        </rs-tab>
+          </div>
+        </div>
       </template>
     </rs-card>
   </div>
-
-
 </template>
 
 <script setup>
@@ -320,6 +345,15 @@ const breadcrumb = ref([
     path: "/BF-BTN/bantuan",
   },
 ]);
+
+// Tab configuration
+const tabs = [
+  { id: 'permohonan', title: 'Permohonan' },
+  { id: 'lulus', title: 'Lulus' },
+  { id: 'ditolak', title: 'Ditolak' }
+];
+
+const activeTab = ref('permohonan');
 
 // Table columns configuration for Bantuan tabs
 const bantuanColumns = [

@@ -978,6 +978,11 @@ const siasatanColumns = [
     sortable: true,
   },
   {
+    key: "jenistugasan",
+    label: "Jenis Tugasan",
+    sortable: true,
+  },
+  {
     key: "status",
     label: "Status",
     sortable: true,
@@ -985,7 +990,7 @@ const siasatanColumns = [
 
   {
     key: "noRujukan",
-    label: "No Rujukan",
+    label: "No Bantuan",
     sortable: true,
   },
   {
@@ -1040,6 +1045,7 @@ const siasatanData = ref([
     daerah: "Kuala Lumpur",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan",
     noRujukan: "NAS-2025-0001",
     tindakan: "bantuan/siasatan/siasatan-eoad",
   },
