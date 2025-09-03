@@ -61,8 +61,8 @@
         <span class="font-medium">{{ data.text }}</span>
       </template>
 
-      <!-- Column: Nama Pengadu/Wakil -->
-      <template v-slot:namaPengadu="data">
+      <!-- Column: Nama Individu/Wakil -->
+      <template v-slot:namaIndividu="data">
         <span>{{ data.text }}</span>
       </template>
 
@@ -148,7 +148,7 @@ const searchSummary = ref({
 const aduanData = ref([
   {
     idPermohonan: "ADN-250823-000123",
-    namaPengadu: "Ahmad bin Ali",
+    namaIndividu: "Ahmad bin Ali",
     tarikhAduan: "2025-08-20",
     statusSemasa: "Aduan Baru",
     tarikhKemaskini: "2025-08-21",
@@ -156,7 +156,7 @@ const aduanData = ref([
   },
   {
     idPermohonan: "ADN-250823-000124",
-    namaPengadu: "Siti Aminah",
+    namaIndividu: "Siti Aminah",
     tarikhAduan: "2025-08-19",
     statusSemasa: "Dalam Tindakan - Siasatan Ringkas",
     tarikhKemaskini: "2025-08-22",
@@ -164,7 +164,7 @@ const aduanData = ref([
   },
   {
     idPermohonan: "ADN-250823-000125",
-    namaPengadu: "Rahman bin Ismail",
+    namaIndividu: "Rahman bin Ismail",
     tarikhAduan: "2025-08-18",
     statusSemasa: "Selesai",
     tarikhKemaskini: "2025-08-23",
