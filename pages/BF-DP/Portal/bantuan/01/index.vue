@@ -289,6 +289,28 @@ const statusTimeline = [
     notStarted: false,
     rejected: false,
   },
+  {
+    label: 'Kelulusan',
+    notStarted: true,
+    tarikh: '',
+    catatan: 'Tiada tindakan direkodkan setakat ini.',
+    namaPegawai: 'Belum Ditugaskan',
+    masaBerbaki: '',
+    completed: false,
+    inProgress: false,
+    rejected: false,
+  },
+  {
+    label: 'Pembayaran',
+    notStarted: true,
+    tarikh: '',
+    catatan: 'Tiada tindakan direkodkan setakat ini.',
+    namaPegawai: 'Belum Ditugaskan',
+    masaBerbaki: '',
+    completed: false,
+    inProgress: false,
+    rejected: false,
+  },
 ];
 
 const tindakanStatus = ref({

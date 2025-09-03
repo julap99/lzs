@@ -289,6 +289,28 @@ const statusTimeline = [
     namaPegawai: 'Pn. Zahrah',
     masaBerbaki: '21 jam',
   },
+  {
+    label: 'Kelulusan',
+    notStarted: true,
+    tarikh: '',
+    catatan: 'Tiada tindakan direkodkan setakat ini.',
+    namaPegawai: 'Belum Ditugaskan',
+    masaBerbaki: '',
+    completed: false,
+    inProgress: false,
+    rejected: false,
+  },
+  {
+    label: 'Pembayaran',
+    notStarted: true,
+    tarikh: '',
+    catatan: 'Tiada tindakan direkodkan setakat ini.',
+    namaPegawai: 'Belum Ditugaskan',
+    masaBerbaki: '',
+    completed: false,
+    inProgress: false,
+    rejected: false,
+  },
 ];
 
 
