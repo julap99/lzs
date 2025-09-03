@@ -47,7 +47,7 @@
 
     <!-- Smart Filter Section -->
     <div class="mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormKit
           v-model="filters.searchQuery"
           type="text"
@@ -55,15 +55,26 @@
           :classes="{
             input: '!py-2',
           }"
+          class="md:col-span-2"
         />
-        <rs-button
-          variant="primary"
-          @click="handleSearch"
-          class="!py-2 !px-4"
-        >
-          <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
-          Cari
-        </rs-button>
+                 <div class="flex gap-2">
+           <rs-button
+             variant="primary"
+             @click="handleSearch"
+             class="!py-2 !px-6 whitespace-nowrap"
+           >
+             <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
+             Cari
+           </rs-button>
+           <rs-button
+             variant="secondary"
+             @click="clearFilters"
+             class="!py-2 !px-6 whitespace-nowrap"
+           >
+             <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
+             Set Semula
+           </rs-button>
+         </div>
       </div>
     </div>
 
@@ -74,15 +85,6 @@
           <h3 class="text-lg font-semibold text-gray-900">Senarai Perkhidmatan Penolong Amil</h3>
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-600">{{ filteredRequests.length }} daripada {{ requests.length }} rekod</span>
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              @click="clearFilters"
-              class="flex items-center"
-            >
-              <Icon name="ph:x-circle" class="w-4 h-4 mr-1" />
-              Kosongkan
-            </rs-button>
             <rs-button
               variant="secondary-outline"
               size="sm"
@@ -1834,6 +1836,15 @@ const handleRoleChange = () => {
 const handleSearch = () => {
   isSearchTriggered.value = true;
   currentPage.value = 1; // Reset to first page when searching
+  
+  // Show notification when search is performed
+  if (filters.value.searchQuery) {
+    const searchResults = getTabRequests(activeStatusTab.value);
+    showNotificationMessage(
+      "Carian Dilakukan", 
+      `${searchResults.length} rekod ditemui untuk "${filters.value.searchQuery}".`
+    );
+  }
 };
 
 const clearFilters = () => {
@@ -1861,12 +1872,8 @@ watch(activeStatusTab, () => {
 });
 
 watch(filters, () => {
-  clearTimeout(window.filterTimeout);
-  window.filterTimeout = setTimeout(() => {
-    if (filters.value.searchQuery || filters.value.status || filters.value.kategori || filters.value.institusi || filters.value.sesi || filters.value.daerah) {
-      applyFilters();
-    }
-  }, 500);
+  // Remove automatic filter application during typing
+  // Filters are now only applied when search button is clicked
 }, { deep: true });
 </script>
 
