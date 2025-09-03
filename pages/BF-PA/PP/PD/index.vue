@@ -99,6 +99,14 @@
                   }"
                   advanced
                 >
+                <template v-slot:select="{ row }">
+  <input 
+    type="checkbox" 
+    v-model="selectedRows" 
+    :value="row.rujukan" 
+  />
+</template>
+
                   <template v-slot:statusPendaftaran="{ text }">
                     <rs-badge :variant="getStatusPendaftaranVariant(text)">
                       {{ text }}
@@ -798,7 +806,7 @@ definePageMeta({
   title: "Senarai Permohonan Penolong Amil",
   description: "Senarai permohonan penolong amil untuk semakan dan kelulusan",
 });
-
+const selectedRows = ref([]);
 const breadcrumb = ref([
   {
     name: "Penolong Amil",
@@ -867,6 +875,12 @@ const eksekutifColumns = columns;
 
 // Create specific columns for Eksekutif role (without Status Lantikan) - UPDATED LABELS
 const eksekutifColumnsWithoutStatusLantikan = [
+{
+    key: "select",
+    label: "",
+    sortable: false,
+    width: "40px",
+  },
   {
     key: "rujukan",
     label: "Rujukan",
