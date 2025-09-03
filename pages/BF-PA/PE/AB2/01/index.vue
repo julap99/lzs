@@ -482,7 +482,8 @@ const kariahLocations = [
 const filteredActivities = (activities = []) => {
   const allowed = new Set([
     'BANCIAN BARU : PER BORANG PERMOHONAN',
-    'KEMASKINI/PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+    'KEMASKINI : PER BORANG PERMOHONAN',
+    'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
   ]);
   return (activities || []).filter(a => allowed.has(a.name));
 };
@@ -505,7 +506,7 @@ const penolongAmil = ref([
       },
       {
         id: 2,
-        name: 'KEMASKINI/PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+        name: 'KEMASKINI : PER BORANG PERMOHONAN',
         allowanceRate: '20.00',
         kehadiran: 3,
         originalKehadiran: 3,
@@ -530,8 +531,16 @@ const penolongAmil = ref([
       },
       {
         id: 2,
-        name: 'KEMASKINI/PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+        name: 'KEMASKINI : PER BORANG PERMOHONAN',
         allowanceRate: '20.00',
+        kehadiran: 2,
+        originalKehadiran: 2,
+        cancelledAsnaf: []
+      },
+      {
+        id: 3,
+        name: 'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+        allowanceRate: '25.00',
         kehadiran: 1,
         originalKehadiran: 1,
         cancelledAsnaf: []
@@ -555,7 +564,7 @@ const penolongAmil = ref([
       },
       {
         id: 2,
-        name: 'KEMASKINI/PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+        name: 'KEMASKINI : PER BORANG PERMOHONAN',
         allowanceRate: '20.00',
         kehadiran: 4,
         originalKehadiran: 4,
