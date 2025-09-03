@@ -10,7 +10,6 @@
   "resolutions": {
     "entities": "^4.5.0"
   },
-
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@nuxtjs/vercel-builder": "^0.25.0",
@@ -47,6 +46,7 @@
     "@fullcalendar/timegrid": "^5.11.3",
     "@fullcalendar/vue3": "^5.11.2",
     "@kiwicom/eslint-config": "^12.7.3",
+    "@nuxt/kit": "^4.0.3",
     "@pinia/nuxt": "^0.4.11",
     "@popperjs/core": "^2.11.8",
     "@shimyshack/uid": "^0.1.7",
