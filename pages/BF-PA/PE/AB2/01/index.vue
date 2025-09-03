@@ -19,44 +19,44 @@
             :actions="false"
             @submit="handleSubmit"
           >
-            <!-- Maklumat Pengiraan Elaun -->
+            <!-- Section 1: Elaun Tugasan -->
             <div class="mb-6">
-              <h3 class="text-lg font-semibold mb-4">Maklumat Pengiraan Elaun</h3>
+              <h3 class="text-lg font-semibold mb-4">Elaun Tugasan</h3>
               
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormKit
                   type="select"
-                  name="kariahCategory"
-                  label="Jenis Kategori"
-                  placeholder="Pilih kategori"
+                  name="kariah"
+                  label="Kariah"
+                  placeholder="Pilih kariah"
                   :options="kariahCategories"
                   validation="required"
                   :validation-messages="{
-                    required: 'Jenis Kategori diperlukan',
+                    required: 'Kariah diperlukan',
                   }"
                 />
-                <!-- Lokasi Institusi -->
+                <!-- Institusi -->
                 <FormKit
                   type="select"
-                  name="kariahLocation"
-                  label="Lokasi Institusi"
-                  placeholder="Pilih lokasi institusi"
+                  name="institusi"
+                  label="Institusi"
+                  placeholder="Pilih institusi"
                   :options="kariahLocations"
                   validation="required"
                   :validation-messages="{
-                    required: 'Lokasi Institusi diperlukan',
+                    required: 'Institusi diperlukan',
                   }"
                 />
 
-                <!-- Tarikh Tugasan Tamat -->
+                <!-- Tarikh Tamat Tugasan -->
                 <FormKit
                   type="date"
                   name="assignmentEndDate"
-                  label="Tarikh Tugasan Tamat"
+                  label="Tarikh Tamat Tugasan"
                   :value="currentDate"
                   validation="required"
                   :validation-messages="{
-                    required: 'Tarikh Tugasan Tamat diperlukan',
+                    required: 'Tarikh Tamat Tugasan diperlukan',
                   }"
                 />
 
@@ -85,17 +85,9 @@
       </template>
     </rs-card>
 
-    <!-- Calculation Table Section (shown after clicking Kira) -->
+    <!-- Section 2: Senarai Penerima (shown after clicking Kira) -->
     <div v-if="showCalculationTable" class="mt-8">
-      <h3 class="text-lg font-semibold mb-4">Senarai Penolong Amil dan Aktiviti</h3>
-      
-      <!-- Selection Info -->
-      <!-- <div v-if="selectedRowsCount > 0" class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-        <p class="text-blue-800 text-sm">
-          <Icon name="heroicons:information-circle" class="inline mr-2" />
-          {{ selectedRowsCount }} baris dipilih
-        </p>
-      </div> -->
+      <h3 class="text-lg font-semibold mb-4">Senarai Penerima</h3>
       
       <div class="bg-gray-50 p-4 rounded-lg">
         <div class="overflow-x-auto">
@@ -111,22 +103,16 @@
                   />
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  No.
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nama
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   ID Pengenalan
                 </th>
-                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Aktiviti
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Aktiviti : Kehadiran
                 </th>
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kehadiran
-                </th>
-                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kadar Elaun
+                  Elaun
                 </th>
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Jumlah Elaun
@@ -145,32 +131,27 @@
                     />
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    {{ index + 1 }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
                     {{ pa.name }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ pa.idPengenalan }}
                   </td>
-                  <td class="px-6 py-4">
-                    <ul class="list-disc list-inside">
-                      <li v-for="activity in pa.activities" :key="activity.id" class="flex justify-between items-center">
-                        <span class="flex-1 text-center">{{ activity.name }}</span>
+                  <td class="px-6 py-4 align-top">
+                    <ul class="list-disc list-inside space-y-1">
+                      <li v-for="activity in filteredActivities(pa.activities)" :key="activity.id" class="flex items-center gap-2">
+                        <button class="text-blue-600 hover:text-blue-800 hover:underline text-left"
+                                @click="openActivityModal(pa, activity)">
+                          {{ activity.name }}
+                        </button>
+                        <span class="text-gray-500 text-sm">: {{ activity.kehadiran }} kali</span>
                       </li>
+                      <li v-if="filteredActivities(pa.activities).length === 0" class="list-none text-gray-400">Tiada aktiviti berkaitan</li>
                     </ul>
                   </td>
-                  <td class="px-6 py-4 text-center">
-                    <ul class="list-disc list-inside">
-                      <li v-for="(activity, actIndex) in pa.activities" :key="activity.id" class="flex justify-center items-center">
-                        <span class="text-sm font-medium">{{ actIndex + 1 }}</span>
-                      </li>
-                    </ul>
-                  </td>
-                  <td class="px-6 py-4 text-center">
-                    <ul class="list-disc list-inside">
-                      <li v-for="activity in pa.activities" :key="activity.id" class="flex justify-between items-center">
-                        <span class="ml-4">RM {{ activity.allowanceRate }}</span>
+                  <td class="px-6 py-4 text-center align-top">
+                    <ul class="list-none space-y-1">
+                      <li v-for="activity in filteredActivities(pa.activities)" :key="activity.id">
+                        RM {{ Number(activity.allowanceRate).toFixed(2) }}
                       </li>
                     </ul>
                   </td>
@@ -183,7 +164,7 @@
             </tbody>
             <tfoot class="bg-white">
               <tr>
-                <td colspan="7" class="px-6 py-4 text-right font-medium">
+                <td colspan="4" class="px-6 py-4 text-right font-medium">
                   Jumlah Keseluruhan Elaun (Baris Dipilih):
                 </td>
                 <td class="px-6 py-4 font-medium text-right">
@@ -200,113 +181,128 @@
         </div>
       </div>
 
-      <!-- Simpan Button -->
-      <div class="flex justify-end mt-6">
-        <rs-button
-          variant="primary"
-          @click="showConfirmationModal = true"
-        >
-          Simpan
-        </rs-button>
+      <!-- Section 3: Maklumat Penerima -->
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold mb-4">Maklumat Penerima</h3>
+        <div class="overflow-x-auto rounded-lg border">
+          <table class="min-w-full divide-y">
+            <thead class="bg-gray-50 text-left">
+              <tr>
+                <th class="px-6 py-3 text-sm font-medium text-gray-900">Nama</th>
+                <th class="px-6 py-3 text-sm font-medium text-gray-900">ID Pengenalan</th>
+                <th class="px-6 py-3 text-sm font-medium text-gray-900">Aktiviti</th>
+                <th class="px-6 py-3 text-sm font-medium text-gray-900">Jumlah Elaun</th>
+                <th class="px-6 py-3 text-sm font-medium text-gray-900">Tindakan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y bg-white">
+              <tr v-for="pa in selectedRecipients" :key="pa.id">
+                <td class="px-6 py-3">{{ pa.name }}</td>
+                <td class="px-6 py-3">{{ pa.idPengenalan }}</td>
+                <td class="px-6 py-3">
+                  <ul class="list-disc pl-5 space-y-1 text-sm">
+                    <li v-for="activity in filteredActivities(pa.activities)" :key="activity.id">{{ activity.name }} ({{ activity.kehadiran }})</li>
+                    <li v-if="filteredActivities(pa.activities).length === 0" class="list-none text-gray-400">—</li>
+                  </ul>
+                </td>
+                <td class="px-6 py-3 font-semibold">RM {{ rowTotal(pa).toFixed(2) }}</td>
+                <td class="px-6 py-3">
+                  <rs-button variant="secondary-outline" size="sm" @click="openActivityModal(pa)">Aktiviti</rs-button>
+                </td>
+              </tr>
+              <tr v-if="selectedRecipients.length === 0">
+                <td class="px-6 py-6 text-center text-gray-500" colspan="5">Tiada penerima dipilih.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Confirmation Modal -->
-    <div v-if="showConfirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+    <!-- Modal Aktiviti: Pembatalan Elaun -->
+    <div v-if="showActivityModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-5xl mx-4 max-h-[90vh] overflow-hidden">
         <div class="p-6">
-          <div class="flex items-center mb-4">
-            <Icon name="ic:baseline-warning" class="w-6 h-6 text-orange-600 mr-3" />
-            <h3 class="text-lg font-semibold text-gray-900">Pengesahan Tindakan</h3>
-          </div>
-          
-          <p class="text-gray-600 mb-4">
-            Adakah anda pasti untuk menyimpan perubahan ini? Perubahan akan dihantar untuk pengesahan Ketua Jabatan.
-          </p>
-
-          <!-- Confirmation Fields -->
-          <div class="space-y-4 mb-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Ulasan Sokongan</label>
-              <textarea
-                v-model="confirmationData.ulasanSokongan"
-                rows="3"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Masukkan ulasan sokongan anda..."
-                required
-              ></textarea>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Nama Penyokong</label>
-              <input
-                v-model="confirmationData.namaPenyokong"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Masukkan nama anda..."
-                required
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Tarikh Sokongan</label>
-              <input
-                v-model="confirmationData.tarikhSokongan"
-                type="date"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold">Pembatalan Elaun: Senarai Nama Asnaf oleh: {{ selectedRecipient?.name || '—' }}</h3>
+            <button 
+              @click="closeActivityModal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <Icon name="ic:baseline-close" size="24" />
+            </button>
           </div>
 
-          <div class="flex justify-end space-x-3">
+          <div class="overflow-x-auto rounded-lg border">
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900 w-16">Checkbox</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama Asnaf</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Aktiviti</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="(item, index) in activityModalData" :key="index" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-model="item._checked"
+                      type="checkbox"
+                      :classes="{ input: '!w-4 !h-4' }"
+                    />
+                  </td>
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ item.namaAsnaf }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.idPengenalan }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.aktiviti }}</td>
+                  <td class="px-4 py-3 text-gray-900">RM {{ Number(item.jumlahElaun).toFixed(2) }}</td>
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-if="item._checked"
+                      v-model="item._catatan"
+                      type="textarea"
+                      rows="2"
+                      placeholder="Masukkan catatan pembatalan..."
+                      :classes="{ input: '!py-2 !px-2 text-xs' }"
+                    />
+                    <input
+                      v-else
+                      type="text"
+                      disabled
+                      :value="item._catatan"
+                      class="w-full py-2 px-2 text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded"
+                    />
+                  </td>
+                </tr>
+                <tr v-if="activityModalData.length === 0">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="6">Tiada data untuk dipaparkan.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 mt-6">
             <rs-button
-              variant="secondary"
-              @click="showConfirmationModal = false"
+              variant="secondary-outline"
+              size="sm"
+              @click="closeActivityModal"
             >
               Batal
             </rs-button>
             <rs-button
               variant="primary"
-              @click="confirmAction"
-              :disabled="!confirmationData.ulasanSokongan.trim() || !confirmationData.namaPenyokong.trim()"
-              :loading="isSubmitting"
+              size="sm"
+              @click="applyActivityModalChanges"
+              :disabled="!hasActivityChanges"
             >
-              Ya, Simpan
+              Simpan
             </rs-button>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Success Modal -->
-    <rs-modal
-      v-model="showSuccessModal"
-      title="Berjaya"
-      size="sm"
-      position="center"
-    >
-      <template #body>
-        <div class="text-center p-4">
-          <Icon
-            name="ic:baseline-check-circle"
-            class="text-green-500 mx-auto mb-4"
-            size="48"
-          />
-          <p class="text-gray-700">
-            Maklumat pengiraan elaun telah berjaya disimpan dan dihantar untuk pengesahan Ketua Jabatan.
-          </p>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-center">
-                      <rs-button
-              variant="primary"
-              @click="navigateTo('/BF-PA/PE/AB2')"
-            >
-              OK
-            </rs-button>
-        </div>
-      </template>
-    </rs-modal>
   </div>
 </template>
 
@@ -338,19 +334,16 @@ const breadcrumb = ref([
 
 // Form state
 const isSubmitting = ref(false);
-const showSuccessModal = ref(false);
 const showCalculationTable = ref(false);
-const showConfirmationModal = ref(false);
 
 // Current date for default value
 const currentDate = ref(new Date().toISOString().split('T')[0]);
 
-// Confirmation data
-const confirmationData = ref({
-  ulasanSokongan: '',
-  namaPenyokong: '',
-  tarikhSokongan: new Date().toISOString().split('T')[0]
-});
+// Activity modal state
+const showActivityModal = ref(false);
+const selectedRecipient = ref(null);
+const selectedActivityName = ref('');
+const activityModalData = ref([]);
 
 // Checkbox selection state
 const selectedRows = ref([]);
@@ -378,16 +371,14 @@ const kariahLocations = [
 
 
 
-// Computed values
-const calculatedAllowance = computed(() => {
-  // Mock calculation - in real app, this would be based on actual business logic
-  return '1,500.00';
-});
-
-const isEligible = computed(() => {
-  // Mock eligibility check - in real app, this would be based on actual business rules
-  return true;
-});
+// Helpers
+const filteredActivities = (activities = []) => {
+  const allowed = new Set([
+    'BANCIAN BARU : PER BORANG PERMOHONAN',
+    'KEMASKINI/PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+  ]);
+  return (activities || []).filter(a => allowed.has(a.name));
+};
 
 const penolongAmil = ref([
   {
@@ -398,21 +389,15 @@ const penolongAmil = ref([
     activities: [
       {
         id: 1,
-        name: 'Kutipan Zakat Kariah',
-        allowanceRate: '20.00',
+        name: 'BANCIAN BARU : PER BORANG PERMOHONAN',
+        allowanceRate: '30.00',
         kehadiran: 5
       },
       {
         id: 2,
-        name: 'Agihan Bantuan Asnaf',
-        allowanceRate: '50.00',
+        name: 'KEMASKINI/PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+        allowanceRate: '20.00',
         kehadiran: 3
-      },
-      {
-        id: 3,
-        name: 'Program Tazkirah',
-        allowanceRate: '100.00',
-        kehadiran: 2
       }
     ]
   },
@@ -424,14 +409,14 @@ const penolongAmil = ref([
     activities: [
       {
         id: 1,
-        name: 'Kutipan Zakat Kariah',
-        allowanceRate: '50.00',
+        name: 'BANCIAN BARU : PER BORANG PERMOHONAN',
+        allowanceRate: '30.00',
         kehadiran: 4
       },
       {
         id: 2,
-        name: 'Agihan Bantuan Asnaf',
-        allowanceRate: '40.00',
+        name: 'KEMASKINI/PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+        allowanceRate: '20.00',
         kehadiran: 1
       }
     ]
@@ -444,27 +429,15 @@ const penolongAmil = ref([
     activities: [
       {
         id: 1,
-        name: 'Kutipan Zakat Kariah',
-        allowanceRate: '50.00',
+        name: 'BANCIAN BARU : PER BORANG PERMOHONAN',
+        allowanceRate: '30.00',
         kehadiran: 6
       },
       {
         id: 2,
-        name: 'Agihan Bantuan Asnaf',
-        allowanceRate: '40.00',
+        name: 'KEMASKINI/PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+        allowanceRate: '20.00',
         kehadiran: 4
-      },
-      {
-        id: 3,
-        name: 'Program Tazkirah',
-        allowanceRate: '100.00',
-        kehadiran: 3
-      },
-      {
-        id: 4,
-        name: 'Program Qiamullail',
-        allowanceRate: '200.00',
-        kehadiran: 2
       }
     ]
   }
@@ -486,6 +459,9 @@ const isAllSelected = computed(() => {
 const selectedRowsCount = computed(() => {
   return selectedRows.value.length;
 });
+
+const selectedRecipients = computed(() => penolongAmil.value.filter(pa => selectedRows.value.includes(pa.id)));
+const rowTotal = (pa) => pa.activities.reduce((s, a) => s + (parseFloat(a.allowanceRate) * a.kehadiran), 0);
 
 // Methods for checkbox selection
 const toggleRowSelection = (id) => {
@@ -526,46 +502,37 @@ const handleKira = () => {
   selectedRows.value = []; // Reset selection when showing table
 };
 
-const handleSimpan = () => {
-  if (selectedRows.value.length === 0) {
-    alert('Sila pilih sekurang-kurangnya satu baris untuk disimpan.');
-    return;
-  }
-  
-  // Show confirmation modal instead of direct navigation
-  showConfirmationModal.value = true;
-};
+function openActivityModal(pa, activity) {
+  selectedRecipient.value = pa || null;
+  selectedActivityName.value = activity?.name || '';
+  // Generate simple mock data for asnaf list
+  activityModalData.value = generateMockAsnafData(selectedActivityName.value);
+  showActivityModal.value = true;
+}
 
-const confirmAction = async () => {
-  if (!confirmationData.value.ulasanSokongan.trim() || !confirmationData.value.namaPenyokong.trim()) {
-    return;
-  }
+function closeActivityModal() {
+  showActivityModal.value = false;
+  selectedRecipient.value = null;
+  selectedActivityName.value = '';
+  activityModalData.value = [];
+}
 
-  isSubmitting.value = true;
-  
-  try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Close confirmation modal
-    showConfirmationModal.value = false;
-    
-    // Show success message
-    showSuccessModal.value = true;
-    
-    // Reset confirmation data
-    confirmationData.value = {
-      ulasanSokongan: '',
-      namaPenyokong: '',
-      tarikhSokongan: new Date().toISOString().split('T')[0]
-    };
-    
-  } catch (error) {
-    console.error('Error saving:', error);
-  } finally {
-    isSubmitting.value = false;
-  }
-};
+function generateMockAsnafData(activityName) {
+  const base = [
+    { namaAsnaf: 'Ahmad bin Abdullah', idPengenalan: '800101011234', aktiviti: activityName || '—', jumlahElaun: 30, _checked: false, _catatan: '' },
+    { namaAsnaf: 'Siti Aminah binti Hassan', idPengenalan: '820520149012', aktiviti: activityName || '—', jumlahElaun: 20, _checked: false, _catatan: '' },
+    { namaAsnaf: 'Mohd Razak bin Ibrahim', idPengenalan: '750315085678', aktiviti: activityName || '—', jumlahElaun: 20, _checked: false, _catatan: '' },
+  ];
+  return base;
+}
+
+const hasActivityChanges = computed(() => activityModalData.value.some(r => r._checked));
+
+function applyActivityModalChanges() {
+  // In prototype, simply close after basic validation
+  if (!hasActivityChanges.value) return;
+  closeActivityModal();
+}
 </script>
 
 <style scoped>
