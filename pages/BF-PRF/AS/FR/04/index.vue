@@ -258,6 +258,7 @@ const handleSubmit = (data) => {
   console.log("Form submitted:", data);
   calculateKifayahLimit();
 };
+<<<<<<< HEAD
 
 function goToSummary() {
   // Save Had Kifayah results to localStorage
@@ -276,4 +277,6 @@ function goToSummary() {
   }))
   navigateTo('/BF-PRF/AS/FR/05_01')
 }
+=======
+>>>>>>> 8ad1287acaf2f8adfddcac8cf0309fa0676d34f3
 </script>

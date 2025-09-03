@@ -1416,6 +1416,10 @@ const clearFilters = () => {
   showNotificationMessage("Penapis telah dikosongkan", "Semua penapis telah dikosongkan dan senarai telah dikemaskini.");
 };
 
+const applyFilters = () => {
+  currentPage.value = 1;
+  showNotificationMessage("Penapis telah digunakan", `${filteredRequests.value.length} rekod ditemui berdasarkan penapis yang dipilih.`);
+};
 
 const viewRequest = (request) => {
   const role = currentRole.value;
