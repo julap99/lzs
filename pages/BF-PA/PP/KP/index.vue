@@ -818,6 +818,7 @@ const isTerminateSubmitting = ref(false);
 const terminationCategoryOptions = [
   { label: "Tukar Kariah", value: "tukar_kariah" },
   { label: "Masalah Disiplin", value: "masalah_disiplin" },
+  { label: "Meninggal Dunia", value: "meninggal_dunia" },
 ];
 
 // NEW: dropdown options sebab bagi Tukar Kariah

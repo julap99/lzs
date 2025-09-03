@@ -145,16 +145,11 @@ const sejarahPerkhidmatan = ref([
   { sesi: "2024", tarikhMula: "2024-01-01", tarikhTamat: "2024-12-31", status: "Berjalan" },
 ]);
 
-const sejarahTugasan = ref([
-  { tarikh: "2024-02-12", jenis: "Siasatan", rujukan: "SI-2024-014", status: "Selesai" },
-  { tarikh: "2024-03-05", jenis: "Bancian", rujukan: "BN-2024-221", status: "Selesai" },
-  { tarikh: "2024-04-18", jenis: "Review", rujukan: "RV-2024-077", status: "Dalam Semakan" },
-]);
 
 
 
 const rekodDisiplin = ref([
-  { tarikh: "2023-09-10", catatan: "Peringatan lisan lewat serahan laporan", tindakan: "Selesai" },
+  { tarikh: "10/09/2025", catatan: "Peringatan lisan lewat serahan laporan", tindakan: "Selesai" },
   // Jika tiada data, kekalkan array kosong []
 ]);
 </script>

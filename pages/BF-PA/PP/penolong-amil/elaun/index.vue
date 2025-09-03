@@ -25,12 +25,12 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
           <div class="p-4 rounded-xl border">
             <div class="text-xs text-gray-500">Tugasan Hari Ini</div>
-            <div class="text-2xl font-semibold">{{ kpi.tugasan.units }} unit</div>
+            <div class="text-2xl font-semibold">{{ kpi.tugasan.aktiviti }} aktiviti</div>
             <div class="text-sm text-gray-600">RM {{ formatCurrency(kpi.tugasan.amount) }}</div>
           </div>
           <div class="p-4 rounded-xl border">
             <div class="text-xs text-gray-500">Mesyuarat (bulan ini)</div>
-            <div class="text-2xl font-semibold">{{ kpi.mesyuarat.units }} kehadiran</div>
+            <div class="text-2xl font-semibold">{{ kpi.mesyuarat.aktiviti }} kehadiran</div>
             <div class="text-sm">
               <span class="text-gray-600">RM {{ formatCurrency(kpi.mesyuarat.amount) }}</span>
               <span class="mx-2">•</span>
@@ -60,7 +60,7 @@
                       <th class="px-4 py-2">Status</th>
                       <th class="px-4 py-2">Jenis Elaun</th>
                       <th class="px-4 py-2">Kod Bajet</th>
-                      <th class="px-4 py-2 text-right">Amaun Unit (RM)</th>
+                      <th class="px-4 py-2 text-right">Amaun aktiviti (RM)</th>
                       <th class="px-4 py-2 text-right">Bil. Borang</th>
                       <th class="px-4 py-2 text-right">Jumlah Elaun (RM)</th>
                       <th class="px-4 py-2">Status Pembayaran</th>
@@ -72,7 +72,7 @@
                       <td class="px-4 py-2">{{ row.jenisElaun }}</td>
                       <td class="px-4 py-2">{{ row.kodBajet }}</td>
                       <td class="px-4 py-2 text-right">RM {{ formatCurrency(row.amaun) }}</td>
-                      <td class="px-4 py-2 text-right">{{ row.units }}</td>
+                      <td class="px-4 py-2 text-right">{{ row.aktiviti }}</td>
                       <td class="px-4 py-2 text-right font-medium">RM {{ formatCurrency(row.jumlah) }}</td>
                       <td class="px-4 py-2">
                         <rs-badge :variant="variantBayaran(row.paymentStatus)">{{ row.paymentStatus }}</rs-badge>
@@ -85,7 +85,7 @@
                   <tfoot v-if="tugasanHariIni.length" class="bg-gray-50">
                     <tr>
                       <td class="px-4 py-3 font-semibold" colspan="4">Jumlah</td>
-                      <td class="px-4 py-3 text-right font-semibold">{{ sumUnits(tugasanHariIni) }}</td>
+                      <td class="px-4 py-3 text-right font-semibold">{{ sumaktiviti(tugasanHariIni) }}</td>
                       <td class="px-4 py-3 text-right font-semibold">RM {{ formatCurrency(sumAmount(tugasanHariIni)) }}</td>
                       <td></td>
                     </tr>
@@ -181,8 +181,8 @@
                     <tr>
                       <th class="px-4 py-2">Jenis Elaun Tahunan</th>
                       <th class="px-4 py-2">Kod Bajet</th>
-                      <th class="px-4 py-2 text-right">Amaun Unit (RM)</th>
-                      <th class="px-4 py-2 text-right">Unit (YTD)</th>
+                      <th class="px-4 py-2 text-right">Amaun aktiviti (RM)</th>
+                      <th class="px-4 py-2 text-right">aktiviti (YTD)</th>
                       <th class="px-4 py-2 text-right">Jumlah Elaun (RM)</th>
                       <th class="px-4 py-2">Status</th>
                       <th class="px-4 py-2">Status Pembayaran</th>
@@ -193,7 +193,7 @@
                       <td class="px-4 py-2">{{ row.jenisElaun }}</td>
                       <td class="px-4 py-2">{{ row.kodBajet }}</td>
                       <td class="px-4 py-2 text-right">RM {{ formatCurrency(row.amaun) }}</td>
-                      <td class="px-4 py-2 text-right">{{ row.units }}</td>
+                      <td class="px-4 py-2 text-right">{{ row.aktiviti }}</td>
                       <td class="px-4 py-2 text-right font-medium">RM {{ formatCurrency(row.jumlah) }}</td>
                       <td class="px-4 py-2"><rs-badge :variant="variantAktif(row.status)">{{ row.status }}</rs-badge></td>
                       <td class="px-4 py-2">
@@ -250,25 +250,25 @@ const tugasanHariIni = ref([
   rowTask("PERMOHONAN BANTUAN : PER BORANG PERMOHONAN", "PAK", 20, "B34106", "AKTIF", 2, "BELUM DIBAYAR"),
 ]);
 
-// Mesyuarat / Kehadiran (bulan ini - setiap satunya 1 unit)
+// Mesyuarat / Kehadiran (bulan ini - setiap satunya 1 aktiviti)
 const mesyuaratBulanIni = ref([
-  rowMeet("2025-09-01", "KEHADIRAN DALAM DAERAH 1/2 HARI", "PAK", 50, "B31702", "Disahkan", "SUDAH DIBAYAR", "2025-09-02", "Mesyuarat Kariah"),
-  rowMeet("2025-09-05", "KEHADIRAN DALAM DAERAH 1 HARI", "PAK", 100, "B31702", "Disahkan", "BELUM DIBAYAR", null, "Bengkel PA Daerah"),
-  rowMeet("2025-09-10", "KEHADIRAN LUAR DAERAH 1/2 HARI", "PAK", 100, "B31702", "Disahkan", "BELUM DIBAYAR", null, "Lawatan Antardaerah"),
+  rowMeet("01/09/2025", "KEHADIRAN DALAM DAERAH 1/2 HARI", "PAK", 50, "B31702", "Disahkan", "SUDAH DIBAYAR", "02/09/2025", "Mesyuarat Kariah"),
+  rowMeet("05/09/2025", "KEHADIRAN DALAM DAERAH 1 HARI", "PAK", 100, "B31702", "Disahkan", "BELUM DIBAYAR", null, "Bengkel PA Daerah"),
+  rowMeet("10/09/2025", "KEHADIRAN LUAR DAERAH 1/2 HARI", "PAK", 100, "B31702", "Disahkan", "BELUM DIBAYAR", null, "Lawatan Antardaerah"),
 ]);
 
-// Elaun Tahunan (tahun ini — unit = penerima/aktiviti layak/YTD)
+// Elaun Tahunan (tahun ini — aktiviti = penerima/aktiviti layak/YTD)
 const tahunanTahunIni = ref([
   rowAnnual("KHAS - 48 AKTIVITI/TAHUN", "PAK", 400, "B31702", "AKTIF", 1, "BELUM DIBAYAR"),
   rowAnnual("TAHUNAN KETUA PENOLONG AMIL", "PAK", 500, "B31702", "AKTIF", 1, "SUDAH DIBAYAR", "2025-01-31"),
   rowAnnual("ANUGERAH PENOLONG AMIL TERBAIK", "PAK", 400, "B31702", "AKTIF", 0, "—"),
 ]);
 
-function rowTask(jenisElaun, kategoriPA, amaun, kodBajet, status, units, paymentStatus){
+function rowTask(jenisElaun, kategoriPA, amaun, kodBajet, status, aktiviti, paymentStatus){
   return {
     id: `TASK-${jenisElaun}`.replace(/\s+/g,"_"),
-    jenisElaun, kategoriPA, amaun, kodBajet, status, units,
-    jumlah: amaun * units,
+    jenisElaun, kategoriPA, amaun, kodBajet, status, aktiviti,
+    jumlah: amaun * aktiviti,
     paymentStatus
   };
 }
@@ -276,16 +276,16 @@ function rowMeet(tarikh, jenisElaun, kategoriPA, amaun, kodBajet, statusHadir, p
   return {
     id: `MEET-${tarikh}-${jenisElaun}`.replace(/\s+/g,"_"),
     tarikh, jenisElaun, kategoriPA, amaun, kodBajet, statusHadir,
-    units: 1,
+    aktiviti: 1,
     jumlah: amaun * 1,
     paymentStatus, paidAt, program
   };
 }
-function rowAnnual(jenisElaun, kategoriPA, amaun, kodBajet, status, units, paymentStatus, paidAt=null){
+function rowAnnual(jenisElaun, kategoriPA, amaun, kodBajet, status, aktiviti, paymentStatus, paidAt=null){
   return {
     id: `ANNUAL-${jenisElaun}`.replace(/\s+/g,"_"),
-    jenisElaun, kategoriPA, amaun, kodBajet, status, units,
-    jumlah: amaun * units,
+    jenisElaun, kategoriPA, amaun, kodBajet, status, aktiviti,
+    jumlah: amaun * aktiviti,
     paymentStatus, paidAt
   };
 }
@@ -293,11 +293,11 @@ function rowAnnual(jenisElaun, kategoriPA, amaun, kodBajet, status, units, payme
 // ========== KPI (ringkas) ==========
 const kpi = computed(() => ({
   tugasan: {
-    units: sumUnits(tugasanHariIni.value),
+    aktiviti: sumaktiviti(tugasanHariIni.value),
     amount: sumAmount(tugasanHariIni.value),
   },
   mesyuarat: {
-    units: mesyuaratBulanIni.value.length,
+    aktiviti: mesyuaratBulanIni.value.length,
     amount: sumAmount(mesyuaratBulanIni.value),
     paid: sumPaid(mesyuaratBulanIni.value),
   },
@@ -311,7 +311,7 @@ const activeTab = ref(0);
 
 // ========== HELPERS ==========
 function formatCurrency(n){ return Number(n||0).toLocaleString("en-MY",{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function sumUnits(arr){ return arr.reduce((s,r)=>s+Number(r.units||0),0); }
+function sumaktiviti(arr){ return arr.reduce((s,r)=>s+Number(r.aktiviti||0),0); }
 function sumAmount(arr){ return arr.reduce((s,r)=>s+Number(r.jumlah||0),0); }
 function sumPaid(arr){ return arr.reduce((s,r)=>s+(r.paymentStatus==='SUDAH DIBAYAR'?Number(r.jumlah||0):0),0); }
 function sumUnpaid(arr){ return arr.reduce((s,r)=>s+(r.paymentStatus==='BELUM DIBAYAR'?Number(r.jumlah||0):0),0); }
