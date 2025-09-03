@@ -11,15 +11,6 @@
       </template>
 
       <template #body>
-        <!-- Search Section -->
-        <div class="mb-4">
-          <rs-input
-            v-model="searchQuery"
-            placeholder="Cari..."
-            prepend-icon="ic:outline-search"
-          />
-        </div>
-
         <!-- Table Section -->
         <rs-table
           :data="filteredApplications"
@@ -33,7 +24,7 @@
           }"
           :options-advanced="{
             sortable: true,
-            filterable: true,
+            filterable: false,
           }"
           advanced
         >

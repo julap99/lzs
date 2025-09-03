@@ -21,26 +21,19 @@
         </div>
       </div>
       <div class="mt-8 flex justify-end gap-4">
-        <rs-button variant="primary-outline" @click="navigateTo('/BF-PRF/AS/FR/05')">Kembali</rs-button>
-        <rs-button variant="primary" @click="navigateTo('/BF-PRF/AS/FR/07_1')">Seterusnya</rs-button>
+        <rs-button variant="primary-outline" @click="handleKembali">Kembali</rs-button>
+        <rs-button variant="primary" @click="handleSeterusnya">Seterusnya</rs-button>
       </div>
     </div>
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue'
-  
-  const hadKifayah = ref(null)
-  
-  onMounted(() => {
-    const data = localStorage.getItem('hadKifayahResult')
-    if (data) {
-      hadKifayah.value = JSON.parse(data)
-    }
-  })
-  
-  function navigateTo(path) {
-    window.location.href = path;
+ 
+  const handleKembali = () => {
+    navigateTo('/BF-PRF/AS/FR/05')
+  }
+  const handleSeterusnya = () => {
+    navigateTo('/BF-PRF/AS/FR/07_1')
   }
   </script>
   

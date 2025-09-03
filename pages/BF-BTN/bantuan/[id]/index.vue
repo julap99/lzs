@@ -14,7 +14,7 @@
         <div>
           <h1 class="text-2xl font-bold text-gray-900 flex items-center">
             <Icon name="ph:hand-heart" class="w-6 h-6 mr-3 text-primary" />
-            Maklumat Bantuan
+            Bantuan
           </h1>
           <p class="text-gray-600 mt-1">Maklumat lengkap bantuan dan agihan</p>
         </div>
@@ -116,14 +116,52 @@
     <!-- Tabbed Interface for Maklumat Bantuan -->
     <rs-card>
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900">
-          Maklumat Bantuan
-        </h3>
+        <div class="flex justify-between items-center">
+          <!-- <h3 class="text-lg font-semibold text-gray-900">
+            Maklumat Bantuan
+          </h3> -->
+        </div>
       </template>
       <template #body>
-        <div class="p-6">
-          <rs-tab variant="primary" type="card">
-            <rs-tab-item title="Agihan Bantuan" active>
+        <!-- Custom Tabs Component -->
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <!-- Tab Header -->
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-6 h-6 bg-teal-500 rounded flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800">Maklumat Bantuan</h3>
+          </div>
+          
+          <!-- Tab Description -->
+          <!-- <p class="text-gray-600 mb-6">Tabs are used to organize content into different sections.</p> -->
+
+          <!-- Tab Navigation -->
+          <div class="flex border-b border-gray-200 mb-6">
+            <button
+              v-for="(tab, index) in tabs"
+              :key="index"
+              @click="activeTab = tab.id"
+              :class="[
+                'px-6 py-3 text-sm font-medium transition-colors duration-200',
+                activeTab === tab.id
+                  ? 'text-teal-600 border-b-2 border-teal-600'
+                  : 'text-gray-700 hover:text-gray-900'
+              ]"
+            >
+              {{ tab.title }}
+            </button>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="tab-content">
+            <!-- Agihan Bantuan Tab -->
+            <div v-if="activeTab === 'agihan'" class="space-y-4">
+              <!-- <h4 class="text-lg font-semibold text-gray-800">Agihan Bantuan</h4> -->
+              <!-- <p class="text-gray-600">This tab displays the aid distribution information.</p> -->
+              
               <!-- Maklumat Agihan Bantuan -->
               <div class="mb-6">
                 <h4 class="text-md font-semibold text-gray-800 mb-4">
@@ -274,50 +312,74 @@
                   :showNoColumn="true"
                 />
               </div>
-            </rs-tab-item>
+            </div>
 
-            <rs-tab-item title="Tuntutan">
+            <!-- Tuntutan Tab -->
+            <div v-if="activeTab === 'tuntutan'" class="space-y-4">
+              <h4 class="text-lg font-semibold text-gray-800">Tuntutan</h4>
+              <p class="text-gray-600">This tab displays the claim information.</p>
+              
               <div class="p-4 text-center text-gray-500">
                 <Icon name="ph:file-text" class="w-12 h-12 mx-auto mb-2" />
                 <p>Maklumat Tuntutan akan dipaparkan di sini</p>
               </div>
-            </rs-tab-item>
+            </div>
 
-            <rs-tab-item title="Payment Advice">
+            <!-- Payment Advice Tab -->
+            <div v-if="activeTab === 'payment'" class="space-y-4">
+              <h4 class="text-lg font-semibold text-gray-800">Payment Advice</h4>
+              <p class="text-gray-600">This tab displays the payment advice information.</p>
+              
               <div class="p-4 text-center text-gray-500">
                 <Icon name="ph:credit-card" class="w-12 h-12 mx-auto mb-2" />
                 <p>Maklumat Payment Advice akan dipaparkan di sini</p>
               </div>
-            </rs-tab-item>
+            </div>
 
-            <rs-tab-item title="Cash Issuance">
+            <!-- Cash Issuance Tab -->
+            <div v-if="activeTab === 'cash'" class="space-y-4">
+              <h4 class="text-lg font-semibold text-gray-800">Cash Issuance</h4>
+              <p class="text-gray-600">This tab displays the cash issuance information.</p>
+              
               <div class="p-4 text-center text-gray-500">
                 <Icon name="ph:banknotes" class="w-12 h-12 mx-auto mb-2" />
                 <p>Maklumat Cash Issuance akan dipaparkan di sini</p>
               </div>
-            </rs-tab-item>
+            </div>
 
-            <rs-tab-item title="Purchase Requisition">
+            <!-- Purchase Requisition Tab -->
+            <div v-if="activeTab === 'purchase'" class="space-y-4">
+              <h4 class="text-lg font-semibold text-gray-800">Purchase Requisition</h4>
+              <p class="text-gray-600">This tab displays the purchase requisition information.</p>
+              
               <div class="p-4 text-center text-gray-500">
                 <Icon name="ph:shopping-cart" class="w-12 h-12 mx-auto mb-2" />
                 <p>Maklumat Purchase Requisition akan dipaparkan di sini</p>
               </div>
-            </rs-tab-item>
+            </div>
 
-            <rs-tab-item title="Pemantauan">
+            <!-- Pemantauan Tab -->
+            <div v-if="activeTab === 'pemantauan'" class="space-y-4">
+              <h4 class="text-lg font-semibold text-gray-800">Pemantauan</h4>
+              <p class="text-gray-600">This tab displays the monitoring information.</p>
+              
               <div class="p-4 text-center text-gray-500">
                 <Icon name="ph:chart-line" class="w-12 h-12 mx-auto mb-2" />
                 <p>Maklumat Pemantauan akan dipaparkan di sini</p>
               </div>
-            </rs-tab-item>
+            </div>
 
-            <rs-tab-item title="Lampiran">
+            <!-- Lampiran Tab -->
+            <div v-if="activeTab === 'lampiran'" class="space-y-4">
+              <h4 class="text-lg font-semibold text-gray-800">Lampiran</h4>
+              <p class="text-gray-600">This tab displays the attachment information.</p>
+              
               <div class="p-4 text-center text-gray-500">
                 <Icon name="ph:paperclip" class="w-12 h-12 mx-auto mb-2" />
                 <p>Maklumat Lampiran akan dipaparkan di sini</p>
               </div>
-            </rs-tab-item>
-          </rs-tab>
+            </div>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -407,6 +469,19 @@ const breadcrumb = ref([
     path: `/BF-BTN/bantuan/${route.params.id}`,
   },
 ]);
+
+// Tab configuration
+const tabs = [
+  { id: 'agihan', title: 'Agihan Bantuan' },
+  { id: 'tuntutan', title: 'Tuntutan' },
+  { id: 'payment', title: 'Payment Advice' },
+  { id: 'cash', title: 'Cash Issuance' },
+  { id: 'purchase', title: 'Purchase Requisition' },
+  { id: 'pemantauan', title: 'Pemantauan' },
+  { id: 'lampiran', title: 'Lampiran' }
+];
+
+const activeTab = ref('agihan');
 
 
 // Sample data - replace with actual API calls

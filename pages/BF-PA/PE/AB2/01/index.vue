@@ -23,19 +23,19 @@
             <div class="mb-6">
               <h3 class="text-lg font-semibold mb-4">Maklumat Pengiraan Elaun</h3>
               
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormKit
                   type="select"
-                  name="kariahLocation"
+                  name="kariahCategory"
                   label="Jenis Kategori"
                   placeholder="Pilih kategori"
                   :options="kariahCategories"
                   validation="required"
                   :validation-messages="{
-                    required: 'Jenis-jenis Kariah',
+                    required: 'Jenis Kategori diperlukan',
                   }"
                 />
-                <!-- Lokasi Kariah  (To be added : a dropdown list of kariah (FAIZ))-->
+                <!-- Lokasi Institusi -->
                 <FormKit
                   type="select"
                   name="kariahLocation"
@@ -44,7 +44,7 @@
                   :options="kariahLocations"
                   validation="required"
                   :validation-messages="{
-                    required: 'Lokasi Kariah diperlukan',
+                    required: 'Lokasi Institusi diperlukan',
                   }"
                 />
 
@@ -53,6 +53,7 @@
                   type="date"
                   name="assignmentEndDate"
                   label="Tarikh Tugasan Tamat"
+                  :value="currentDate"
                   validation="required"
                   :validation-messages="{
                     required: 'Tarikh Tugasan Tamat diperlukan',
@@ -341,6 +342,9 @@ const showSuccessModal = ref(false);
 const showCalculationTable = ref(false);
 const showConfirmationModal = ref(false);
 
+// Current date for default value
+const currentDate = ref(new Date().toISOString().split('T')[0]);
+
 // Confirmation data
 const confirmationData = ref({
   ulasanSokongan: '',
@@ -354,23 +358,25 @@ const selectedRows = ref([]);
 // Mock data for dropdowns
 const kariahCategories = [
   { label: 'Kariah', value: 'KARIAH' },
+  { label: 'Padi', value: 'PADI' },
+  { label: 'Fitrah', value: 'FITRAH' },
   { label: 'Komuniti', value: 'KOMUNITI' },
 ];
 
 const kariahLocations = [
-  { label: 'Masjid Wilayah Persekutuan', value: 'MSJ-KUL-001' },
-  { label: 'Masjid Al-Khairiyah', value: 'MSJ-KUL-002' },
-  { label: 'Masjid Bandar Utama', value: 'MSJ-KUL-003' },
-  { label: 'Masjid Damansara Perdana', value: 'MSJ-KUL-004' },
-  { label: 'Masjid Kg Delek', value: 'MSJ-KUL-005' },
+  { label: 'Masjid Sultan Salahuddin Abdul Aziz Shah, Shah Alam', value: 'MSJ-SGR-001' },
+  { label: 'Masjid Al-Hidayah, Petaling Jaya', value: 'MSJ-SGR-002' },
+  { label: 'Masjid Al-Ikhlas, Subang Jaya', value: 'MSJ-SGR-003' },
+  { label: 'Masjid Al-Muttaqin, Klang', value: 'MSJ-SGR-004' },
+  { label: 'Masjid Al-Rahman, Kajang', value: 'MSJ-SGR-005' },
+  { label: 'Masjid Al-Amin, Ampang', value: 'MSJ-SGR-006' },
+  { label: 'Masjid Al-Huda, Hulu Langat', value: 'MSJ-SGR-007' },
+  { label: 'Masjid Al-Mustaqim, Sepang', value: 'MSJ-SGR-008' },
+  { label: 'Masjid Al-Istiqamah, Kuala Selangor', value: 'MSJ-SGR-009' },
+  { label: 'Masjid Al-Hidayah, Sabak Bernam', value: 'MSJ-SGR-010' },
 ];
 
-const assignmentTypes = [
-  { label: 'Fitrah', value: 'FITRAH' },
-  { label: 'Padi', value: 'PADI' },
-  { label: 'Kariah', value: 'KARIAH' },
-  { label: 'Komuniti', value: 'KOMUNITI' },
-];
+
 
 // Computed values
 const calculatedAllowance = computed(() => {
