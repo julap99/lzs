@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Bantuan</h2>
+          <!-- <h2 class="text-xl font-semibold">Senarai Bantuan</h2> -->
         </div>
       </template>
 
@@ -19,11 +19,11 @@
                 <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
               </svg>
             </div>
-            <h3 class="text-lg font-semibold text-gray-800">Tabs Component</h3>
+            <h3 class="text-lg font-semibold text-gray-800">Senarai Bantuan</h3>
           </div>
           
           <!-- Tab Description -->
-          <p class="text-gray-600 mb-6">Tabs are used to organize content into different sections.</p>
+          <!-- <p class="text-gray-600 mb-6">Tabs are used to organize content into different sections.</p> -->
 
           <!-- Tab Navigation -->
           <div class="flex border-b border-gray-200 mb-6">
@@ -47,7 +47,7 @@
             <!-- Permohonan Tab -->
             <div v-if="activeTab === 'permohonan'" class="space-y-4">
               <h4 class="text-lg font-semibold text-gray-800">Permohonan</h4>
-              <p class="text-gray-600">This tab displays the applications submitted for assistance.</p>
+              <!-- <p class="text-gray-600">This tab displays the applications submitted for assistance.</p> -->
               
               <!-- Applications Table -->
               <rs-table
