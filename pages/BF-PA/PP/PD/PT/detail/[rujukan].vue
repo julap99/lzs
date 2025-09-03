@@ -314,7 +314,7 @@
                       <input
                         v-model="reviewForm.statusReview"
                         type="radio"
-                        value="Lulus"
+                        value="Lengkap"
                         class="mr-2 text-green-600 focus:ring-green-500"
                         required
                       />
@@ -324,7 +324,7 @@
                       <input
                         v-model="reviewForm.statusReview"
                         type="radio"
-                        value="Tidak Lulus"
+                        value="Tidak Lengkap"
                         class="mr-2 text-red-600 focus:ring-red-500"
                         required
                       />

@@ -23,6 +23,7 @@
       </template>
 
       <template #body>
+        <!-- IMPORTANT: FormKit now has a closing tag -->
         <FormKit v-model="formData" type="form" @submit="handleSubmit" :actions="false">
           <!-- Maklumat Peribadi -->
           <rs-card class="mb-6">
@@ -73,9 +74,9 @@
             <template #header>
               <div class="flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-800">Maklumat Pendaftaran</h3>
-                <!--<rs-button size="sm" variant="info" @click="handleLihatPendaftaran">
+                <!-- <rs-button size="sm" variant="info" @click="handleLihatPendaftaran">
                   <Icon name="ph:eye" class="w-4 h-4 mr-1" /> Lihat
-                </rs-button>-->
+                </rs-button> -->
               </div>
             </template>
             <template #body>
@@ -95,9 +96,9 @@
             <template #header>
               <div class="flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-800">Maklumat Perkhidmatan</h3>
-                <!--<rs-button size="sm" variant="info" @click="handleLihatPerkhidmatan">
+                <!-- <rs-button size="sm" variant="info" @click="handleLihatPerkhidmatan">
                   <Icon name="ph:eye" class="w-4 h-4 mr-1" /> Lihat
-                </rs-button>-->
+                </rs-button> -->
               </div>
             </template>
             <template #body>
@@ -141,30 +142,76 @@
             </template>
           </rs-card>
 
-          <!-- Action Buttons -->
-          <div class="flex justify-end gap-4 mt-6">
-            <rs-button variant="secondary" @click="handleCancel">Batal</rs-button>
-            <rs-button type="button" variant="primary" :disabled="isSubmitting" @click="handleSubmitDirect">
-              <Icon v-if="isSubmitting" name="ph:spinner" class="w-4 h-4 mr-2 animate-spin" />
-              {{ isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
-            </rs-button>
-          </div>
-        </FormKit>
+          
+              <!-- Submit Buttons -->
+              <div class="flex justify-end gap-4 mt-6">
+                <rs-button
+                  type="button"
+                  variant="secondary-outline"
+                  @click="handleBack"
+                  :disabled="isSubmitting"
+                >
+                  Batal
+                </rs-button>
+                <rs-button
+                  type="button"
+                  variant="primary"
+                  :disabled="isSubmitting"
+                  @click="showConfirmationModal = true"
+                >
+                  <Icon
+                    v-if="isSubmitting"
+                    name="ph:spinner"
+                    class="w-4 h-4 mr-2 animate-spin"
+                  />
+                  {{ isSubmitting ? 'Menghantar...' : 'Hantar Keputusan' }}
+                </rs-button>
+              </div>
+              </FormKit>
       </template>
     </rs-card>
 
-    <!-- Success Modal -->
-    <rs-modal v-model="showSuccessModal" title="Berjaya!" size="sm" @close="handleModalClose">
-      <div class="text-center">
-        <Icon name="ph:check-circle" class="w-16 h-16 text-green-500 mx-auto mb-4" />
-        <h3 class="text-lg font-semibold mb-2">Permohonan Berjaya Dikemaskini!</h3>
-        <p class="text-gray-600 mb-4">
-          Nombor Rujukan: <strong>{{ generatedRujukan }}</strong>
-        </p>
-        <p class="text-sm text-gray-500">
-          Permohonan anda telah berjaya dikemaskini dan dihantar untuk semakan.
-        </p>
-      </div>
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmationModal"
+      title="Sahkan Keputusan"
+      size="md"
+    >
+      <template #body>
+        <div class="text-center">
+          <Icon name="ph:warning-circle" class="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            Adakah anda pasti?
+          </h3>
+          <p class="text-gray-600 mb-4">
+            Anda akan menghantar keputusan pengesahan jabatan untuk permohonan ini. 
+            Tindakan ini tidak boleh dibatalkan.
+          </p>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <p class="text-sm text-blue-800">
+              <strong>Keputusan:</strong> {{ confirmationForm.statusPengesahan || 'Belum dipilih' }}
+            </p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="showConfirmationModal = false"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="primary"
+            @click="confirmSubmit"
+            :loading="isSubmitting"
+          >
+            <Icon name="ph:check" class="w-4 h-4 mr-2" />
+            Ya, Hantar Keputusan
+          </rs-button>
+        </div>
+      </template>
     </rs-modal>
   </div>
 </template>
@@ -282,7 +329,6 @@ const jawatanOptions = [
   { label: "Penolong Amil Fitrah", value: "Penolong Amil Fitrah" },
   { label: "Penolong Amil Zakat", value: "Penolong Amil Zakat" },
 ];
-// Masjid di Selangor
 const institusiKariahOptions = [
   { label: "Masjid Al-Amin (Hulu Langat)", value: "Masjid Al-Amin" },
   { label: "Masjid Sultan Salahuddin Abdul Aziz Shah (Shah Alam)", value: "Masjid Sultan Salahuddin Abdul Aziz Shah" },
@@ -324,11 +370,30 @@ const hubunganWarisOptions = [
   { label: "Lain-lain", value: "Lain-lain" },
 ];
 
-// UMUR (dikira auto)
+// UMUR (auto): guna tarikhLahir; jika kosong, cuba derive dari noKP (YYMMDD)
 const umur = computed(() => {
-  if (!formData.tarikhLahir) return "";
+  let dob = null;
+
+  // 1) Jika tarikhLahir diisi
+  if (formData.tarikhLahir) {
+    const d = new Date(formData.tarikhLahir);
+    if (!isNaN(d)) dob = d;
+  }
+
+  // 2) Jika tiada tarikhLahir, cuba dari noKP (12 digit, YYMMDDxxxxxx)
+  if (!dob && /^\d{12}$/.test(formData.noKP)) {
+    const yy = Number(formData.noKP.slice(0, 2));
+    const mm = Number(formData.noKP.slice(2, 4)) - 1; // zero-based
+    const dd = Number(formData.noKP.slice(4, 6));
+    const thisYY = new Date().getFullYear() % 100;
+    const century = yy > thisYY ? 1900 : 2000; // anggar abad
+    const parsed = new Date(century + yy, mm, dd);
+    if (!isNaN(parsed)) dob = parsed;
+  }
+
+  if (!dob) return "";
+
   const today = new Date();
-  const dob = new Date(formData.tarikhLahir);
   let age = today.getFullYear() - dob.getFullYear();
   const m = today.getMonth() - dob.getMonth();
   if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;

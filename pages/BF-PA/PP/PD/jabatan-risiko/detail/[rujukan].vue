@@ -295,7 +295,7 @@
                       <input
                         v-model="screeningForm.statusSaringan"
                         type="radio"
-                        value="Lulus"
+                        value="Disaring"
                         class="mr-2 text-green-600 focus:ring-green-500"
                         required
                       />
@@ -305,7 +305,7 @@
                       <input
                         v-model="screeningForm.statusSaringan"
                         type="radio"
-                        value="Tidak Lulus"
+                        value="Tidak Disaring"
                         class="mr-2 text-red-600 focus:ring-red-500"
                         required
                       />

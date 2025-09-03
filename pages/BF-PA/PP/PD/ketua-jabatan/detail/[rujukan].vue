@@ -352,7 +352,7 @@
                       <input
                         v-model="confirmationForm.statusPengesahan"
                         type="radio"
-                        value="Lulus"
+                        value="Sah"
                         class="mr-2 text-green-600 focus:ring-green-500"
                         required
                       />
@@ -362,7 +362,7 @@
                       <input
                         v-model="confirmationForm.statusPengesahan"
                         type="radio"
-                        value="Tidak Lulus"
+                        value="Tidak Sah"
                         class="mr-2 text-red-600 focus:ring-red-500"
                         required
                       />

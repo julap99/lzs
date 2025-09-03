@@ -333,7 +333,7 @@
                       <input
                         v-model="supportForm.statusSokongan"
                         type="radio"
-                        value="Lulus"
+                        value="Sokong"
                         class="mr-2 text-green-600 focus:ring-green-500"
                         required
                       />
@@ -343,7 +343,7 @@
                       <input
                         v-model="supportForm.statusSokongan"
                         type="radio"
-                        value="Tidak Lulus"
+                        value="Tidak Sokong"
                         class="mr-2 text-red-600 focus:ring-red-500"
                         required
                       />
