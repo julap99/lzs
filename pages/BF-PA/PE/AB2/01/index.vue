@@ -533,16 +533,16 @@ const penolongAmil = ref([
         id: 2,
         name: 'KEMASKINI : PER BORANG PERMOHONAN',
         allowanceRate: '20.00',
-        kehadiran: 2,
-        originalKehadiran: 2,
+        kehadiran: 3,
+        originalKehadiran: 3,
         cancelledAsnaf: []
       },
       {
         id: 3,
         name: 'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
         allowanceRate: '25.00',
-        kehadiran: 1,
-        originalKehadiran: 1,
+        kehadiran: 3,
+        originalKehadiran: 3,
         cancelledAsnaf: []
       }
     ]
@@ -566,8 +566,8 @@ const penolongAmil = ref([
         id: 2,
         name: 'KEMASKINI : PER BORANG PERMOHONAN',
         allowanceRate: '20.00',
-        kehadiran: 4,
-        originalKehadiran: 4,
+        kehadiran: 3,
+        originalKehadiran: 3,
         cancelledAsnaf: []
       }
     ]
