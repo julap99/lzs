@@ -64,60 +64,37 @@
                 <h3 class="font-medium text-gray-700 mb-2">
                   Hasil Pengiraan Had Kifayah
                 </h3>
-                <div v-if="kifayahLimit" class="text-lg font-semibold">
-                  <div class="mb-2">Baki Pendapatan: <span class="font-bold">RM {{ bakiPendapatan.toFixed(2) }}</span></div>
-                  <div class="mb-2">Peratusan Perbezaan: <span class="font-bold">{{ peratusanPendapatan.toFixed(2) }}%</span></div>
-                  <div class="mb-2">Kategori Keluarga Asnaf: <span class="text-blue-600 font-bold">{{ kategoriKeluarga }}</span></div>
-                  <div class="mb-4">Kategori Asnaf: <span class="text-blue-600 font-bold">{{ kategoriAsnaf }}</span></div>
-
+                <div class="text-lg font-semibold">
+                  
                   <!-- Household Breakdown Table -->
                   <div class="overflow-x-auto mb-2">
-                    <table class="min-w-max w-full text-sm border border-blue-300 mb-2">
-                      <thead class="bg-blue-100">
-                        <tr>
-                          <th class="border px-2 py-1">Kategori</th>
-                          <th class="border px-2 py-1">Had Kifayah</th>
-                          <th class="border px-2 py-1">Bil</th>
-                          <th class="border px-2 py-1">Jumlah</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td class="border px-2 py-1">Rumah Tidak Berbayar</td>
-                          <td class="border px-2 py-1">780.00</td>
-                          <td class="border px-2 py-1">1</td>
-                          <td class="border px-2 py-1">780.00</td>
-                        </tr>
-                        <tr>
-                          <td class="border px-2 py-1">Dewasa Tidak Bekerja</td>
-                          <td class="border px-2 py-1">167.00</td>
-                          <td class="border px-2 py-1">1</td>
-                          <td class="border px-2 py-1">167.00</td>
-                        </tr>
-                        <tr>
-                          <td class="border px-2 py-1">Tanggungan 7-17 tahun</td>
-                          <td class="border px-2 py-1">408.00</td>
-                          <td class="border px-2 py-1">1</td>
-                          <td class="border px-2 py-1">408.00</td>
-                        </tr>
-                        <tr>
-                          <td class="border px-2 py-1">Tanggungan Belajar IPT</td>
-                          <td class="border px-2 py-1">613.00</td>
-                          <td class="border px-2 py-1">1</td>
-                          <td class="border px-2 py-1">613.00</td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr class="bg-blue-100 font-bold">
-                          <td class="border px-2 py-1 text-right" colspan="3">Jumlah Had Kifayah</td>
-                          <td class="border px-2 py-1">1968.00</td>
-                        </tr>
-                      </tfoot>
-                    </table>
+                    <rs-table 
+                      :field="tableFields" 
+                      :data="tableData" 
+                      :options="{
+                        variant: 'default',
+                        striped: true,
+                        borderless: false,
+                        hover: true
+                      }"
+                      basic
+                      class="mb-2 border border-gray-300"
+                    >
+                    </rs-table>
+                    
+                    <!-- Footer row as separate div since rs-table might not support footer slot -->
+                    <div class="bg-blue-100 font-bold p-2 text-end border border-blue-300">
+                      <div class="mr-20">
+                      <span>Jumlah Had Kifayah: RM1968.00</span>
+                    </div>
+                    </div>
+                    
+                  <div class="mb-2">Baki Pendapatan: Jumlah Pendapatan Keluarga - Jumlah Had Kifayah = 1000 - 1968 = -968</div>
+                  <div class="mb-2">Peratusan Perbezaan: (Pendapatan Isi Rumah / Jumlah Had Kifayah) × 100 = (1000 / 1968) × 100 = 50.81% </div>
+                  <div class="mb-2">Kategori Keluarga Asnaf: Miskin </div>
+                  <div class="mb-4">Kategori Asnaf: Miskin</div>
+
                   </div>
-                </div>
-                <div v-else class="text-gray-500">
-                  Masukkan maklumat untuk pengiraan
                 </div>
               </div>
             </div>
@@ -134,27 +111,11 @@
 
               <div>
                 <rs-button
-                  v-if="!kifayahLimit"
-                  variant="primary"
-                  class="ml-auto"
-                  @click="calculateKifayahLimit"
-                  :disabled="processing"
-                >
-                  <span v-if="processing">
-                    <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
-                  </span>
-                  <span v-else>Kira Had Kifayah</span>
-                </rs-button>
-
-                <rs-button
-                  v-else
                   variant="primary"
                   class="ml-auto"
                   @click="goToSummary"
                   :disabled="processing"
                 >
-
-                <!-- BF-BTN/PB/syorkan-bantuan -->
                   <span v-if="processing">
                     <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
                   </span>
@@ -170,7 +131,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 definePageMeta({
   title: "Analisa Data Had Kifayah",
@@ -194,6 +155,16 @@ const formData = ref({
 });
 
 const kifayahLimit = ref(null);
+
+// Table data for rs-table
+const tableFields = ref(["Kategori", "Had Kifayah", "Bil", "Jumlah"]);
+
+const tableData = ref([
+  { "Kategori": 'Rumah Tidak Berbayar', "Had Kifayah": '780.00', "Bil": '1', "Jumlah": '780.00' },
+  { "Kategori": 'Dewasa Tidak Bekerja', "Had Kifayah": '167.00', "Bil": '1', "Jumlah": '167.00' },
+  { "Kategori": 'Tanggungan 7-17 tahun', "Had Kifayah": '408.00', "Bil": '1', "Jumlah": '408.00' },
+  { "Kategori": 'Tanggungan Belajar IPT', "Had Kifayah": '613.00', "Bil": '1', "Jumlah": '613.00' }
+]);
 
 // Computed values for calculation and categorization
 const totalIncome = computed(() => {
@@ -258,6 +229,11 @@ const handleSubmit = (data) => {
   console.log("Form submitted:", data);
   calculateKifayahLimit();
 };
+
+// Automatically calculate kifayah limit when component mounts
+onMounted(() => {
+  calculateKifayahLimit();
+});
 
 function goToSummary() {
   // Save Had Kifayah results to localStorage
