@@ -31,14 +31,9 @@
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
-            <div class="flex items-center gap-2">
-              <rs-badge :variant="getStatusVariant(selectedKifayah.status)">
-                {{ selectedKifayah.status }}
-              </rs-badge>
-              <rs-button variant="secondary" @click="goBack">
-                <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
-              </rs-button>
-            </div>
+            <rs-button variant="secondary" @click="goBack">
+              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
+            </rs-button>
           </div>
         </template>
       </rs-card>
@@ -49,53 +44,37 @@
           <h3 class="text-lg font-semibold">Maklumat Asas</h3>
         </template>
         <template #body>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Left Column -->
-            <div class="space-y-4">
-              <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                <span class="text-sm font-medium text-gray-600">ID Had Kifayah:</span>
-                <span class="text-sm text-gray-900 font-mono">{{ selectedKifayah.idHadKifayah }}</span>
-              </div>
-              
-              <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                <span class="text-sm font-medium text-gray-600">Nama Had Kifayah:</span>
-                <span class="text-sm text-gray-900">{{ selectedKifayah.namaHadKifayah }}</span>
-              </div>
-              
-              <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                <span class="text-sm font-medium text-gray-600">Kategori:</span>
-                <span class="text-sm text-gray-900">{{ selectedKifayah.kategori || 'N/A' }}</span>
-              </div>
-              
-              <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                <span class="text-sm font-medium text-gray-600">Jenis Isi Rumah:</span>
-                <span class="text-sm text-gray-900">{{ selectedKifayah.jenisIsiRumah || 'N/A' }}</span>
-              </div>
+          <div class="space-y-4">
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Nama Had Kifayah:</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.namaHadKifayah }}</span>
             </div>
-
-            <!-- Right Column -->
-            <div class="space-y-4">
-              <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                <span class="text-sm font-medium text-gray-600">Kadar Berbayar:</span>
-                <span class="text-sm text-gray-900 font-semibold">RM {{ formatCurrency(selectedKifayah.kadarBerbayar) }}</span>
-              </div>
-              
-              <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                <span class="text-sm font-medium text-gray-600">Kadar Percuma:</span>
-                <span class="text-sm text-gray-900 font-semibold">RM {{ formatCurrency(selectedKifayah.kadarPercuma) }}</span>
-              </div>
-              
-              <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                <span class="text-sm font-medium text-gray-600">Tarikh Mula:</span>
-                <span class="text-sm text-gray-900">{{ formatDate(selectedKifayah.tarikhMula) }}</span>
-              </div>
-              
-              <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                <span class="text-sm font-medium text-gray-600">Status:</span>
-                <rs-badge :variant="getStatusVariant(selectedKifayah.status)">
-                  {{ selectedKifayah.status }}
-                </rs-badge>
-              </div>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Jenis Isi Rumah:</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.jenisIsiRumah || 'N/A' }}</span>
+            </div>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Pelarasan:</span>
+              <span class="text-sm text-gray-900 font-semibold">RM {{ formatCurrency(selectedKifayah.kadarBerbayar) }}</span>
+            </div>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Mula:</span>
+              <span class="text-sm text-gray-900">{{ formatDate(selectedKifayah.tarikhMula) }}</span>
+            </div>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Status:</span>
+              <rs-badge :variant="getStatusVariant(selectedKifayah.status)">
+                {{ selectedKifayah.status }}
+              </rs-badge>
+            </div>
+            
+            <div v-if="selectedKifayah.keterangan" class="flex items-start py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
+              <span class="text-sm text-gray-900 flex-1">{{ selectedKifayah.keterangan }}</span>
             </div>
           </div>
         </template>
@@ -150,13 +129,6 @@
       <!-- Action Buttons Card -->
       <rs-card>
         <template #body>
-          <!-- Debug info - remove in production -->
-          <div class="mb-4 p-2 bg-yellow-50 rounded border border-yellow-200">
-            <p class="text-sm text-yellow-800">
-              <strong>Debug:</strong> Current ID: {{ selectedId || 'Not found' }}
-            </p>
-          </div>
-          
           <div class="flex justify-end">
             <rs-button 
               variant="primary" 

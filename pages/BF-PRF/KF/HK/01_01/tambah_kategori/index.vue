@@ -13,13 +13,6 @@
       </template>
 
       <template #body>
-        <!-- Debug info - remove in production -->
-        <div class="mb-4 p-2 bg-blue-50 rounded border border-blue-200">
-          <p class="text-sm text-blue-800">
-            <strong>Debug Info:</strong> Selected ID: {{ selectedId || 'Not found' }}
-          </p>
-        </div>
-        
         <div class="max-w-3xl mx-auto">
           <FormKit
             type="form"
@@ -27,6 +20,13 @@
             @submit="handleSubmit"
             v-model="formData"
           >
+            <!-- Hidden ID Had Kifayah field -->
+            <FormKit
+              type="hidden"
+              name="idHadKifayah"
+              :value="selectedId"
+            />
+            
             <!-- Maklumat Kategori Had Kifayah -->
             <div class="mb-8">
               <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -35,17 +35,6 @@
               </h3>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- 0. ID Had Kifayah (Hidden/Read-only) -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="idHadKifayah"
-                    label="ID Had Kifayah"
-                    :value="selectedId"
-                    disabled
-                    help="ID Had Kifayah yang dipilih"
-                  />
-                </div>
 
                 <!-- 1. Level Had Kifayah -->
                 <div>
@@ -89,16 +78,57 @@
                   />
                 </div>
 
-                <!-- 4. Indicator -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="indicator"
-                    label="Indicator"
-                    placeholder="Contoh: UMUR >= 18"
-                    validation="required"
-                    :validation-messages="{ required: 'Indicator diperlukan' }"
-                  />
+                <!-- 4. Indicators (Dynamic) -->
+                <div class="md:col-span-2">
+                  <div class="flex items-center justify-between mb-2">
+                    <label class="text-sm font-medium text-gray-700">Indicator</label>
+                    <div class="flex gap-2">
+                      <rs-button 
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        @click="addIndicator"
+                        :disabled="indicators.length >= 5"
+                      >
+                        <Icon name="mdi:plus" class="mr-1" size="14px" />
+                        Tambah Indicator
+                      </rs-button>
+                      <rs-button 
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        @click="removeIndicator"
+                        :disabled="indicators.length <= 1"
+                        class="text-red-600 hover:text-red-700"
+                      >
+                        <Icon name="mdi:minus" class="mr-1" size="14px" />
+                        Buang
+                      </rs-button>
+                    </div>
+                  </div>
+                  
+                  <div class="space-y-3">
+                    <div 
+                      v-for="(indicator, index) in indicators" 
+                      :key="index"
+                      class="flex items-center gap-2"
+                    >
+                      <FormKit
+                        type="text"
+                        :name="`indicator_${index}`"
+                        :label="`Indicator ${index + 1}`"
+                        :placeholder="`Contoh: UMUR >= 18`"
+                        v-model="indicators[index]"
+                        validation="required"
+                        :validation-messages="{ required: 'Indicator diperlukan' }"
+                        class="flex-1"
+                      />
+                    </div>
+                  </div>
+                  
+                  <p class="text-xs text-gray-500 mt-2">
+                    Minimum 1 indicator, maksimum 5 indicators
+                  </p>
                 </div>
 
                 <!-- Status (dua checkbox) Aktif / Tidak Aktif -->
@@ -210,12 +240,14 @@ const formData = reactive({
   levelHadKifayah: "",
   bil: "",
   kategoriHadKifayah: "",
-  indicator: "",
   statusAktif: false,
   statusTidakAktif: false,
   statusData: "",
   tarikhMula: "",
 });
+
+// Dynamic indicators array
+const indicators = ref([""]);
 
 const isSubmitting = ref(false);
 
@@ -247,6 +279,19 @@ const loadExistingCategories = () => {
   return [];
 };
 
+// Methods for managing indicators
+const addIndicator = () => {
+  if (indicators.value.length < 5) {
+    indicators.value.push("");
+  }
+};
+
+const removeIndicator = () => {
+  if (indicators.value.length > 1) {
+    indicators.value.pop();
+  }
+};
+
 // no auto-id required for these fields
 
 const handleSubmit = async (payload) => {
@@ -266,12 +311,15 @@ const handleSubmit = async (payload) => {
     const isTidakAktif = payload.statusTidakAktif === true || payload.statusTidakAktif === 'true';
     const resolvedStatusAktif = isAktif && !isTidakAktif ? true : (!isAktif && isTidakAktif ? false : isAktif);
 
+    // Combine all indicators into a single string
+    const combinedIndicators = indicators.value.filter(ind => ind.trim() !== "").join("; ");
+    
     const record = {
       idHadKifayah: selectedId || payload.idHadKifayah,
       levelHadKifayah: payload.levelHadKifayah,
       bil: Number(payload.bil),
       kategoriHadKifayah: payload.kategoriHadKifayah,
-      indicator: payload.indicator,
+      indicator: combinedIndicators,
       statusAktif: resolvedStatusAktif,
       statusData: payload.statusData,
       tarikhMula: payload.tarikhMula,
@@ -292,10 +340,6 @@ onMounted(() => {
   // Initialize form data with selected ID
   if (selectedId) {
     formData.idHadKifayah = selectedId;
-    console.log('Selected ID from URL:', selectedId);
-    console.log('Form data initialized with ID:', formData.idHadKifayah);
-  } else {
-    console.warn('No ID found in URL parameters');
   }
 });
 </script>
