@@ -99,7 +99,7 @@
               </div>
             </div>
 
-            <div class="mt-6 flex justify-end gap-4">
+            <div class="flex justify-between items-center mt-6">
               <div>
                 <rs-button
                   variant="primary-outline"

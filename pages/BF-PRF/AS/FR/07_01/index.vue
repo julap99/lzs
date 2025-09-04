@@ -57,10 +57,10 @@
     </template>
   </rs-card>
 
-  <!-- ===== Maklumat Tanggungan===== -->
+  <!-- ===== Pengesahan Status ===== -->
   <rs-card class="mt-4">
     <template #header>
-      <h2 class="text-xl font-semibold">Maklumat Tanggungan</h2>
+      <h2 class="text-xl font-semibold">Pengesahan Status</h2>
     </template>
 
     <template #body>
