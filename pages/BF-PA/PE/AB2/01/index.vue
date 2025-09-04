@@ -8,6 +8,9 @@
           <h2 class="text-xl font-semibold">
             Kira Jumlah Elaun Mengikut Penolong Amil dan Kariah
           </h2>
+          <rs-badge variant="info">
+            Draf
+          </rs-badge>
         </div>
       </template>
 
@@ -191,19 +194,20 @@
       </div>
 
       <!-- Section 3: Maklumat Penerima -->
-      <div class="mt-8">
+      <div class="mb-6">
         <h3 class="text-lg font-semibold mb-4">Maklumat Penerima</h3>
-        <div class="overflow-x-auto rounded-lg border">
-          <table class="min-w-full divide-y">
-            <thead class="bg-gray-50 text-left">
-              <tr>
-                <th class="px-6 py-3 text-sm font-medium text-gray-900">Nama</th>
-                <th class="px-6 py-3 text-sm font-medium text-gray-900">ID Pengenalan</th>
-                <th class="px-6 py-3 text-sm font-medium text-gray-900">Aktiviti</th>
-                <th class="px-6 py-3 text-sm font-medium text-gray-900">Jumlah Elaun</th>
-                <th class="px-6 py-3 text-sm font-medium text-gray-900">Tindakan</th>
-              </tr>
-            </thead>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-white">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Pengenalan</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aktiviti</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Elaun</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                </tr>
+              </thead>
             <tbody class="divide-y bg-white">
               <tr v-for="(pa, index) in recipients" :key="pa.id">
                 <td class="px-6 py-3">{{ pa.name }}</td>
@@ -229,7 +233,7 @@
                 <td class="px-6 py-6 text-center text-gray-500" colspan="5">Tiada penerima dipilih.</td>
               </tr>
             </tbody>
-            <tfoot class="bg-gray-50">
+            <tfoot class="bg-white">
               <tr>
                 <td class="px-6 py-3 text-right font-medium" colspan="4">Jumlah Keseluruhan Elaun:</td>
                 <td class="px-6 py-3 font-semibold">RM {{ totalRecipientsAllowance.toFixed(2) }}</td>
@@ -237,6 +241,7 @@
               </tr>
             </tfoot>
           </table>
+          </div>
         </div>
       </div>
 
@@ -386,12 +391,12 @@
           <div class="flex items-center justify-end gap-3 mt-6">
             <rs-button
               variant="secondary-outline"
-              size="sm"
+      size="sm"
               @click="closeSubmitModal"
             >
               Batal
             </rs-button>
-            <rs-button
+                      <rs-button
               variant="primary"
               size="sm"
               @click="confirmSubmit"
@@ -409,6 +414,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { useToast } from 'vue-toastification';
 
 definePageMeta({
   title: "Kira Jumlah Elaun",
@@ -788,8 +794,9 @@ function saveDraft() {
   saving.value = true;
   setTimeout(() => {
     saving.value = false;
-    // Show success message (mockup only)
-    alert('Draf berjaya disimpan');
+    // Show success message using toast
+    const toast = useToast();
+    toast.success('Draf berjaya disimpan');
   }, 1000);
 }
 

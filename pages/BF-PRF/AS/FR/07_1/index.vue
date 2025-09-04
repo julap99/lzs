@@ -69,24 +69,6 @@
                 Menunjukkan {{ paginationStart }} hingga
                 {{ paginationEnd }} daripada {{ totalApplications }} entri
               </span>
-              <div class="flex gap-1">
-                <rs-button
-                  variant="primary-outline"
-                  class="!p-1 !w-8 !h-8"
-                  :disabled="currentPage === 1"
-                  @click="currentPage--"
-                >
-                  <Icon name="ic:round-keyboard-arrow-left" />
-                </rs-button>
-                <rs-button
-                  variant="primary-outline"
-                  class="!p-1 !w-8 !h-8"
-                  :disabled="currentPage === totalPages"
-                  @click="currentPage++"
-                >
-                  <Icon name="ic:round-keyboard-arrow-right" />
-                </rs-button>
-              </div>
             </div>
           </div>
         </div>
@@ -152,27 +134,27 @@ const applications = ref([
   {
     noRujukan: "770319035991",
     namaPemohon: "ADNAN BIN ABU",
-    status: "Baru",
+    status: "Menunggu Pengesahan",
     tarikhTerima: "2024-03-20",
     namaPegawai: "Siti binti Ali",
     tindakan: "NAS-2025-0001",
   },
-  {
-    noRujukan: "060802030272",
-    namaPemohon: "NUR NAJWA BINTI ADNAN",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
-    namaPegawai: "Aminah binti Hassan",
-    tindakan: "NAS-2025-0002",
-  },
-  {
-    noRujukan: "091108030442",
-    namaPemohon: "NUR QISTINA BINTI ADNAN",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
-    namaPegawai: "Aminah binti Hassan",
-    tindakan: "NAS-2025-0003",
-  },
+  // {
+  //   noRujukan: "060802030272",
+  //   namaPemohon: "NUR NAJWA BINTI ADNAN",
+  //   status: "Dalam Semakan",
+  //   tarikhTerima: "2024-03-19",
+  //   namaPegawai: "Aminah binti Hassan",
+  //   tindakan: "NAS-2025-0002",
+  // },
+  // {
+  //   noRujukan: "091108030442",
+  //   namaPemohon: "NUR QISTINA BINTI ADNAN",
+  //   status: "Dalam Semakan",
+  //   tarikhTerima: "2024-03-19",
+  //   namaPegawai: "Aminah binti Hassan",
+  //   tindakan: "NAS-2025-0003",
+  // },
 ]);
 
 // Computed properties for Profiling tab
@@ -241,11 +223,11 @@ const getStatusVariant = (status) => {
   const variants = {
     baru: "info",
     "dalam semakan": "warning",
-    tidak_lengkap: "danger",
-    untuk_siasatan: "secondary",
-    dalam_siasatan: "warning",
-    selesai_siasatan: "success",
-    menunggu_siasatan: "info",
+    "tidak lengkap": "danger",
+    "untuk siasatan": "secondary",
+    "dalam siasatan": "warning",
+    "selesai siasatan": "success",
+   "menunggu pengesahan": "info",
   };
   return variants[status.toLowerCase()] || "default";
 };
