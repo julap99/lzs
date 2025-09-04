@@ -202,34 +202,34 @@
                 </div>
               </div>
 
-              <!-- Current Status (Pending) -->
-              <div v-if="currentStatus === 'Menunggu Pengesahan'" class="flex items-start justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+                            <!-- Current Status (Pending) -->
+              <div v-if="currentStatus === 'Menunggu Pengesahan'" class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
                 <div class="flex items-start">
-                  <Icon name="ph:clock" class="w-5 h-5 mr-3 text-blue-500 mt-1" />
+                  <Icon name="ph:clock" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-blue-700">Ketua Jabatan</h4>
+                      <h4 class="font-semibold text-orange-700">Ketua Jabatan</h4>
                       <rs-badge variant="warning">Menunggu</rs-badge>
                     </div>
-                    <p class="text-sm text-blue-700 mb-2">Pengesahan ketua jabatan</p>
-                    <div class="text-xs text-blue-600 space-y-1">
+                    <p class="text-sm text-orange-700 mb-2">Pengesahan ketua jabatan</p>
+                    <div class="text-xs text-orange-600 space-y-1">
                       <p><strong>Status:</strong> Menunggu pengesahan</p>
                       <p><strong>Langkah seterusnya:</strong> Ketua Jabatan akan menyemak dan mengesahkan permohonan</p>
                     </div>
-                  </div>
                 </div>
               </div>
+            </div>
 
-              <div v-if="currentStatus === 'Menunggu Kelulusan'" class="flex items-start justify-between p-4 bg-purple-50 rounded-lg border border-purple-200">
+              <div v-if="currentStatus === 'Menunggu Kelulusan'" class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
                 <div class="flex items-start">
-                  <Icon name="ph:clock" class="w-5 h-5 mr-3 text-purple-500 mt-1" />
+                  <Icon name="ph:clock" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-purple-700">Ketua Divisyen</h4>
-                      <rs-badge variant="info">Menunggu</rs-badge>
+                      <h4 class="font-semibold text-orange-700">Ketua Divisyen</h4>
+                      <rs-badge variant="warning">Menunggu</rs-badge>
                     </div>
-                    <p class="text-sm text-purple-700 mb-2">Kelulusan akhir</p>
-                    <div class="text-xs text-purple-600 space-y-1">
+                    <p class="text-sm text-orange-700 mb-2">Kelulusan akhir</p>
+                    <div class="text-xs text-orange-600 space-y-1">
                       <p><strong>Status:</strong> Menunggu kelulusan</p>
                       <p><strong>Langkah seterusnya:</strong> Ketua Divisyen akan memberikan kelulusan akhir</p>
                     </div>
@@ -543,9 +543,9 @@ const getStatusLabel = (status) => {
 const getStatusInfoClass = () => {
   switch (currentStatus.value) {
     case 'Menunggu Pengesahan':
-      return 'bg-blue-50 p-4 rounded-lg border border-blue-200'
+      return 'bg-orange-50 p-4 rounded-lg border border-orange-200'
     case 'Menunggu Kelulusan':
-      return 'bg-purple-50 p-4 rounded-lg border border-purple-200'
+      return 'bg-orange-50 p-4 rounded-lg border border-orange-200'
     default:
       return 'bg-gray-50 p-4 rounded-lg border border-gray-200'
   }
@@ -554,9 +554,9 @@ const getStatusInfoClass = () => {
 const getStatusTextClass = () => {
   switch (currentStatus.value) {
     case 'Menunggu Pengesahan':
-      return 'text-sm text-blue-600 font-medium'
+      return 'text-sm text-orange-600 font-medium'
     case 'Menunggu Kelulusan':
-      return 'text-sm text-purple-600 font-medium'
+      return 'text-sm text-orange-600 font-medium'
     default:
       return 'text-sm text-gray-600 font-medium'
   }
