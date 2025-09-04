@@ -76,85 +76,54 @@
             </div>
           </div>
 
-          <!-- Tables Section -->
+          <!-- Section 3: Maklumat Penerima -->
           <div class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Senarai Penolong Amil -->
-              <div>
-                <h3 class="text-lg font-semibold mb-4">Senarai Penolong Amil</h3>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-white">
-                        <tr>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            No.
-                          </th>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Nama Penolong Amil
-                          </th>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Total Elaun
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(pa, index) in penolongAmil" :key="pa.id">
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            {{ index + 1 }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            {{ pa.name }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            RM {{ pa.totalAllowance }}
-                          </td>
-                        </tr>
-                      </tbody>
-                      <tfoot class="bg-white">
-                        <tr>
-                          <td colspan="2" class="px-6 py-4 text-right font-medium">
-                            Jumlah Keseluruhan:
-                          </td>
-                          <td class="px-6 py-4 font-medium text-blue-600">
-                            RM {{ totalAllowance }}
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Senarai Aktiviti -->
-              <div>
-                <h3 class="text-lg font-semibold mb-4">Senarai Aktiviti</h3>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-white">
-                        <tr>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            No.
-                          </th>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Nama Aktiviti
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(activity, index) in activities" :key="activity.id">
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            {{ index + 1 }}
-                          </td>
-                          <td class="px-6 py-4">
-                            {{ activity.name }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+            <h3 class="text-lg font-semibold mb-4">Maklumat Penerima</h3>
+            <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="min-w-full text-sm divide-y">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-6 py-3 font-medium text-gray-900">Nama</th>
+                      <th class="px-6 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                      <th class="px-6 py-3 font-medium text-gray-900">Aktiviti</th>
+                      <th class="px-6 py-3 font-medium text-gray-900">Jumlah Elaun</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y bg-white">
+                    <tr v-for="(pa, index) in recipients" :key="pa.id">
+                      <td class="px-6 py-3">{{ pa.name }}</td>
+                      <td class="px-6 py-3">{{ pa.idPengenalan }}</td>
+                      <td class="px-6 py-3">
+                        <ul class="list-disc pl-5 space-y-1 text-sm">
+                          <li v-for="activity in filteredActivities(pa.activities)" :key="activity.id">
+                            <button 
+                              @click="openActivityModal(pa, activity)"
+                              class="text-blue-600 hover:text-blue-800 underline"
+                            >
+                              {{ activity.name }}
+                            </button>
+                            <span class="text-gray-600">: 
+                              <span class="text-green-600 font-medium">{{ activity.kehadiran }}</span>
+                              <span v-if="activity.cancelledAsnaf.length > 0" class="text-red-600">({{ activity.cancelledAsnaf.length }})</span>
+                            </span>
+                          </li>
+                          <li v-if="filteredActivities(pa.activities).length === 0" class="list-none text-gray-400">—</li>
+                        </ul>
+                      </td>
+                      <td class="px-6 py-3 font-semibold">RM {{ rowTotal(pa).toFixed(2) }}</td>
+                    </tr>
+                    <tr v-if="recipients.length === 0">
+                      <td class="px-6 py-6 text-center text-gray-500" colspan="4">Tiada penerima dipilih.</td>
+                    </tr>
+                  </tbody>
+                  <tfoot class="bg-gray-50">
+                    <tr>
+                      <td class="px-6 py-3 text-right font-medium" colspan="3">Jumlah Keseluruhan Elaun:</td>
+                      <td class="px-6 py-3 font-semibold">RM {{ totalRecipientsAllowance.toFixed(2) }}</td>
+                    </tr>
+                  </tfoot>
+                </table>
               </div>
             </div>
           </div>
@@ -166,18 +135,18 @@
             </h3>
             
             <div class="space-y-4">
-              <!-- JPPA Review -->
+              <!-- Ketua Jabatan Review -->
               <div class="flex items-start justify-between p-4">
                 <div class="flex items-start">
                   <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
                   <div class="flex-1">
                     <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-gray-900">JPPA</h4>
+                      <h4 class="font-semibold text-gray-900">Eksekutif</h4>
                       <rs-badge variant="success">Selesai</rs-badge>
                     </div>
                     <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
                     <div class="text-xs text-gray-600 space-y-1">
-                      <p><strong>Disemak oleh:</strong> {{ application.jppaSupport.reviewedBy }} (Eksekutif)</p>
+                      <p><strong>Disemak oleh:</strong> {{ application.jppaSupport.reviewedBy }}</p>
                       <p><strong>Tarikh:</strong> {{ application.jppaSupport.reviewedAt }}</p>
                       <p><strong>Catatan:</strong> {{ application.jppaSupport.comments }}</p>
                     </div>
@@ -225,9 +194,9 @@
             </div>
           </div>
 
-          <!-- Maklumat Sokongan JPPA -->
+          <!-- Maklumat Sokongan Ketua Jabatan -->
           <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Maklumat Sokongan JPPA</h3>
+            <h3 class="text-lg font-semibold mb-4">Maklumat Sokongan Ketua Jabatan</h3>
             <div class="bg-gray-50 p-4 rounded-lg">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -255,7 +224,7 @@
             </div>
           </div>
 
-          <!-- Penilaian Ketua JPPA -->
+          <!-- Penilaian Ketua Jabatan -->
           <div class="mb-6">
             <FormKit
               type="form"
@@ -264,7 +233,7 @@
               :actions="false"
             >
               <div class="mb-6">
-                <h3 class="font-medium mb-3">Penilaian Ketua JPPA</h3>
+                <h3 class="font-medium mb-3">Penilaian Ketua Jabatan</h3>
 
                 <div class="mt-4">
                   <FormKit
@@ -285,7 +254,7 @@
           <div class="flex justify-end gap-4 mt-6">
             <rs-button
               variant="primary-outline"
-              @click="navigateTo('/BF-PA/PE/AB')"
+              @click="navigateTo('/BF-PA/PE/AB2')"
             >
               Kembali
             </rs-button>
@@ -421,13 +390,95 @@
         <div class="flex justify-center">
           <rs-button
             variant="primary"
-            @click="navigateTo('/BF-PA/PE/AB')"
+            @click="navigateTo('/BF-PA/PE/AB2')"
           >
             OK
           </rs-button>
         </div>
       </template>
     </rs-modal>
+
+    <!-- Activity Modal: Read-only Review -->
+    <div v-if="showActivityModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-5xl mx-4 max-h-[90vh] overflow-hidden">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold">Pembatalan Elaun: Senarai Nama Asnaf oleh: {{ selectedRecipient?.name || '—' }}</h3>
+            <button 
+              @click="closeActivityModal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <Icon name="ic:baseline-close" size="24" />
+            </button>
+          </div>
+          
+          <div class="overflow-x-auto rounded-lg border">
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900">Status</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama Asnaf</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Aktiviti</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="(item, index) in activityModalData" :key="index" 
+                    :class="[
+                      'hover:bg-gray-50',
+                      item._isCancelled ? 'bg-red-50 opacity-75' : ''
+                    ]">
+                  <td class="px-4 py-3">
+                    <span 
+                      class="px-2 py-1 text-xs font-medium rounded-full"
+                      :class="item._isCancelled ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'"
+                    >
+                      {{ item._isCancelled ? 'Dibatalkan' : 'Aktif' }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 font-medium" 
+                      :class="item._isCancelled ? 'text-red-600 line-through' : 'text-gray-900'">
+                    {{ item.namaAsnaf }}
+                  </td>
+                  <td class="px-4 py-3" 
+                      :class="item._isCancelled ? 'text-red-600 line-through' : 'text-gray-900'">
+                    {{ item.idPengenalan }}
+                  </td>
+                  <td class="px-4 py-3" 
+                      :class="item._isCancelled ? 'text-red-600 line-through' : 'text-gray-900'">
+                    {{ item.aktiviti }}
+                  </td>
+                  <td class="px-4 py-3" 
+                      :class="item._isCancelled ? 'text-red-600 line-through' : 'text-gray-900'">
+                    RM {{ Number(item.jumlahElaun).toFixed(2) }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <div class="text-xs text-gray-600">
+                      {{ item._catatan || '—' }}
+                    </div>
+                  </td>
+                </tr>
+                <tr v-if="activityModalData.length === 0">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="6">Tiada data untuk dipaparkan.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 mt-6">
+            <rs-button
+              variant="secondary"
+              size="sm"
+              @click="closeActivityModal"
+            >
+              Tutup
+            </rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -477,40 +528,92 @@ const application = ref({
   },
 });
 
-// Mock Penolong Amil data
-const penolongAmil = ref([
+// Mock recipients data (processed from AB2/01)
+const recipients = ref([
   {
-    id: 'PA001',
+    id: 1,
     name: 'Ahmad bin Abdullah',
-    totalAllowance: '50.00',
+    idPengenalan: '800101011234',
+    activities: [
+      {
+        id: 1,
+        name: 'BANCIAN BARU : PER BORANG PERMOHONAN',
+        allowanceRate: '30.00',
+        kehadiran: 2,
+        originalKehadiran: 3,
+        cancelledAsnaf: [1]
+      },
+      {
+        id: 2,
+        name: 'KEMASKINI : PER BORANG PERMOHONAN',
+        allowanceRate: '20.00',
+        kehadiran: 3,
+        originalKehadiran: 3,
+        cancelledAsnaf: []
+      }
+    ]
   },
   {
-    id: 'PA002',
-    name: 'Ahmad bin Abdullah',
-    totalAllowance: '50.00',
+    id: 2,
+    name: 'Mohd Razak bin Ibrahim',
+    idPengenalan: '750315085678',
+    activities: [
+      {
+        id: 1,
+        name: 'BANCIAN BARU : PER BORANG PERMOHONAN',
+        allowanceRate: '30.00',
+        kehadiran: 3,
+        originalKehadiran: 3,
+        cancelledAsnaf: []
+      },
+      {
+        id: 2,
+        name: 'KEMASKINI : PER BORANG PERMOHONAN',
+        allowanceRate: '20.00',
+        kehadiran: 2,
+        originalKehadiran: 3,
+        cancelledAsnaf: [2]
+      },
+      {
+        id: 3,
+        name: 'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+        allowanceRate: '25.00',
+        kehadiran: 1,
+        originalKehadiran: 3,
+        cancelledAsnaf: [1, 3]
+      }
+    ]
   },
   {
-    id: 'PA003',
-    name: 'Ahmad bin Abdullah',
-    totalAllowance: '50.00',
-  },
+    id: 3,
+    name: 'Siti Aminah binti Hassan',
+    idPengenalan: '820520149012',
+    activities: [
+      {
+        id: 1,
+        name: 'BANCIAN BARU : PER BORANG PERMOHONAN',
+        allowanceRate: '30.00',
+        kehadiran: 3,
+        originalKehadiran: 3,
+        cancelledAsnaf: []
+      },
+      {
+        id: 2,
+        name: 'KEMASKINI : PER BORANG PERMOHONAN',
+        allowanceRate: '20.00',
+        kehadiran: 3,
+        originalKehadiran: 3,
+        cancelledAsnaf: []
+      }
+    ]
+  }
 ]);
 
-// Mock activities data
-const activities = ref([
-  {
-    id: 'ACT001',
-    name: 'Kutipan Zakat Fitrah',
-  },
-  {
-    id: 'ACT002',
-    name: 'Agihan Bantuan Asnaf',
-  },
-  {
-    id: 'ACT003',
-    name: 'Program Tazkirah',
-  },
-]);
+// Activity modal state
+const showActivityModal = ref(false);
+const selectedRecipient = ref(null);
+const selectedActivity = ref(null);
+const activityModalData = ref([]);
 
 // Modal states
 const showApproveModal = ref(false);
@@ -551,13 +654,58 @@ const getStatusClass = (status) => {
   return statusClasses[status] || "bg-gray-100 text-gray-800";
 };
 
+// Helper functions
+const filteredActivities = (activities = []) => {
+  const allowed = new Set([
+    'BANCIAN BARU : PER BORANG PERMOHONAN',
+    'KEMASKINI : PER BORANG PERMOHONAN',
+    'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN',
+  ]);
+  return (activities || []).filter(a => allowed.has(a.name));
+};
+
+const rowTotal = (pa) => pa.activities.reduce((s, a) => s + (parseFloat(a.allowanceRate) * a.kehadiran), 0);
+
 // Computed properties
-const totalAllowance = computed(() => {
-  return penolongAmil.value
-    .reduce((sum, pa) => sum + parseFloat(pa.totalAllowance.replace(/,/g, '')), 0)
-    .toFixed(2)
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const totalRecipientsAllowance = computed(() => {
+  return recipients.value.reduce((total, pa) => total + rowTotal(pa), 0);
 });
+
+// Activity modal functions
+const openActivityModal = (recipient, activity) => {
+  selectedRecipient.value = recipient;
+  selectedActivity.value = activity;
+  activityModalData.value = generateMockAsnafData(activity);
+  showActivityModal.value = true;
+};
+
+const closeActivityModal = () => {
+  showActivityModal.value = false;
+  selectedRecipient.value = null;
+  selectedActivity.value = null;
+  activityModalData.value = [];
+};
+
+const generateMockAsnafData = (activity) => {
+  const mockAsnaf = [
+    { namaAsnaf: 'Ahmad bin Ali', idPengenalan: '800101011234', aktiviti: activity.name, jumlahElaun: '30.00', _isCancelled: false, _catatan: '' },
+    { namaAsnaf: 'Siti Fatimah binti Omar', idPengenalan: '820520149012', aktiviti: activity.name, jumlahElaun: '30.00', _isCancelled: false, _catatan: '' },
+    { namaAsnaf: 'Mohd Hassan bin Abdullah', idPengenalan: '750315085678', aktiviti: activity.name, jumlahElaun: '30.00', _isCancelled: false, _catatan: '' },
+  ];
+  
+  // Simulate some cancelled Asnaf
+  if (activity.cancelledAsnaf && activity.cancelledAsnaf.length > 0) {
+    activity.cancelledAsnaf.forEach((cancelledId, index) => {
+      if (mockAsnaf[index]) {
+        mockAsnaf[index]._isCancelled = true;
+        mockAsnaf[index]._catatan = 'Dibatalkan oleh Eksekutif';
+      }
+    });
+  }
+  
+  return mockAsnaf;
+};
+
 
 // Form handlers
 const handleApprove = async () => {
