@@ -482,17 +482,17 @@ const penolongAmil = ref([
   {
     id: 'PA001',
     name: 'Ahmad bin Abdullah',
-    totalAllowance: '1,500.00',
+    totalAllowance: '50.00',
   },
   {
     id: 'PA002',
     name: 'Ahmad bin Abdullah',
-    totalAllowance: '1,500.00',
+    totalAllowance: '50.00',
   },
   {
     id: 'PA003',
     name: 'Ahmad bin Abdullah',
-    totalAllowance: '1,500.00',
+    totalAllowance: '50.00',
   },
 ]);
 

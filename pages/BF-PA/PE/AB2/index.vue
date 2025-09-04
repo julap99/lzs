@@ -81,7 +81,7 @@
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="batch in getTableDataByStatus(['Menunggu Pengesahan', 'Menunggu Kelulusan'])" :key="batch.id">
+                      <tr v-for="batch in getTableDataByStatus(getSedangProsesStatuses())" :key="batch.id">
                         <td class="px-6 py-4 whitespace-nowrap">
                           <a 
                             href="#" 
@@ -102,13 +102,23 @@
                           </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            @click="navigateTo(getActionRoute(batch.status))"
-                            :title="getActionButtonText(batch.status)"
-                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                          >
-                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                          </button>
+                          <div class="flex items-center justify-end gap-2">
+                            <button
+                              @click="navigateTo(getActionRoute(batch.status))"
+                              :title="getActionButtonText(batch.status)"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
+                            <button
+                              v-if="shouldShowSemakButton(batch.status)"
+                              @click="navigateTo(getSemakRoute())"
+                              title="Semak"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -152,13 +162,23 @@
                           </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            @click="navigateTo(getActionRoute(batch.status))"
-                            :title="getActionButtonText(batch.status)"
-                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                          >
-                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                          </button>
+                          <div class="flex items-center justify-end gap-2">
+                            <button
+                              @click="navigateTo(getActionRoute(batch.status))"
+                              :title="getActionButtonText(batch.status)"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
+                            <button
+                              v-if="shouldShowSemakButton(batch.status)"
+                              @click="navigateTo(getSemakRoute())"
+                              title="Semak"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -202,13 +222,23 @@
                           </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            @click="navigateTo(getActionRoute(batch.status))"
-                            :title="getActionButtonText(batch.status)"
-                            class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                          >
-                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                          </button>
+                          <div class="flex items-center justify-end gap-2">
+                            <button
+                              @click="navigateTo(getActionRoute(batch.status))"
+                              :title="getActionButtonText(batch.status)"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                            </button>
+                            <button
+                              v-if="shouldShowSemakButton(batch.status)"
+                              @click="navigateTo(getSemakRoute())"
+                              title="Semak"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -553,6 +583,34 @@ const getActionButtonText = (status) => {
     default:
       return 'Lihat'
   }
+}
+
+// New functions for Semak button
+const shouldShowSemakButton = (status) => {
+  if (currentRole.value === 'ketua-jabatan') {
+    return status === 'Menunggu Pengesahan';
+  } else if (currentRole.value === 'ketua-divisyen') {
+    return status === 'Menunggu Kelulusan';
+  }
+  return false;
+}
+
+const getSemakRoute = () => {
+  if (currentRole.value === 'ketua-jabatan') {
+    return '/BF-PA/PE/AB2/03';
+  } else if (currentRole.value === 'ketua-divisyen') {
+    return '/BF-PA/PE/AB2/06';
+  }
+  return '#';
+}
+
+const getSedangProsesStatuses = () => {
+  if (currentRole.value === 'ketua-jabatan') {
+    return ['Menunggu Pengesahan'];
+  } else if (currentRole.value === 'ketua-divisyen') {
+    return ['Menunggu Kelulusan'];
+  }
+  return ['Menunggu Pengesahan', 'Menunggu Kelulusan'];
 }
 
 // Fungsi carian
