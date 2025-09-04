@@ -233,6 +233,23 @@
             </FormKit>
           </div>
 
+          <!-- Ulasan Ketua Divisyen -->
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-4">Ulasan (Jika Ada)</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <FormKit
+                type="textarea"
+                name="remarks"
+                placeholder="Masukkan ulasan atau komen jika ada..."
+                rows="4"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <p class="text-xs text-gray-600 mt-2">Ulasan ini akan disimpan dalam rekod kelulusan</p>
+            </div>
+          </div>
+
           <!-- Action Buttons -->
           <div class="flex justify-end gap-4 mt-6">
             <rs-button

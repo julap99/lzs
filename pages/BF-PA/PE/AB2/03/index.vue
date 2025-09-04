@@ -176,35 +176,6 @@
             </div>
           </div>
 
-          <!-- Maklumat Sokongan Ketua Jabatan -->
-          <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Maklumat Sokongan Ketua Jabatan</h3>
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p class="text-sm text-gray-500">Disokong Oleh</p>
-                  <p class="font-medium">{{ application.jppaSupport.reviewedBy }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Tarikh Sokongan</p>
-                  <p class="font-medium">{{ application.jppaSupport.reviewedAt }}</p>
-                </div>
-                <div>
-                  <p class="text-sm text-gray-500">Status</p>
-                  <span
-                    class="px-2 py-1 text-xs font-medium rounded-full"
-                    :class="application.jppaSupport.isSupported ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                  >
-                    {{ application.jppaSupport.isSupported ? 'Disokong' : 'Tidak Disokong' }}
-                  </span>
-                </div>
-                <div class="md:col-span-2">
-                  <p class="text-sm text-gray-500">Catatan</p>
-                  <p class="font-medium">{{ application.jppaSupport.comments }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- Penilaian Ketua Jabatan -->
           <div class="mb-6">
@@ -230,6 +201,23 @@
                 </div>
               </div>
             </FormKit>
+          </div>
+
+          <!-- Ulasan Ketua Jabatan -->
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-4">Ulasan (Jika Ada)</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <FormKit
+                type="textarea"
+                name="remarks"
+                placeholder="Masukkan ulasan atau komen jika ada..."
+                rows="4"
+                :classes="{
+                  input: '!py-2',
+                }"
+              />
+              <p class="text-xs text-gray-600 mt-2">Ulasan ini akan dilihat oleh Ketua Divisyen</p>
+            </div>
           </div>
 
           <!-- Action Buttons -->
