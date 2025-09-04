@@ -125,6 +125,18 @@
                     help="Pilih status Had Kifayah"
                   />
                 </div>
+
+                <!-- Keterangan -->
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="textarea"
+                    name="keterangan"
+                    label="Keterangan"
+                    placeholder="Masukkan keterangan tambahan (opsional)"
+                    rows="3"
+                    help="Keterangan atau nota tambahan untuk Had Kifayah ini"
+                  />
+                </div>
               </div>
             </div>
 
@@ -186,6 +198,7 @@ const formData = reactive({
   kadarBerbayar: "",
   tarikhMula: "",
   status: "",
+  keterangan: "",
 });
 
 // Form state
@@ -243,6 +256,7 @@ const handleSubmit = async (formData) => {
       kadarBerbayar: parseFloat(formData.kadarBerbayar),
       tarikhMula: formData.tarikhMula,
       status: formData.status,
+      keterangan: formData.keterangan || "",
       tindakan: existingData.length + 1,
     };
     
