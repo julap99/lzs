@@ -86,43 +86,36 @@
           <h3 class="text-lg font-semibold">Kategori Berkaitan</h3>
         </template>
         <template #body>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div 
-              v-for="(category, index) in relatedCategories" 
-              :key="index"
-              class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-            >
-              <div class="flex justify-between items-start mb-3">
-                <h4 class="font-semibold text-gray-900">{{ category.kategoriHadKifayah }}</h4>
-                <rs-badge :variant="category.statusAktif ? 'success' : 'danger'">
-                  {{ category.statusAktif ? 'Aktif' : 'Tidak Aktif' }}
-                </rs-badge>
-              </div>
-              
-              <div class="space-y-2 text-sm">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Level:</span>
-                  <span class="text-gray-900">{{ category.levelHadKifayah }}</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">ID Level:</span>
-                  <span class="text-gray-900">{{ category.bil }}</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Indicator:</span>
-                  <span class="text-gray-900">{{ category.indicator }}</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Status Data:</span>
-                  <span class="text-gray-900">{{ category.statusData }}</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Tarikh Mula:</span>
-                  <span class="text-gray-900">{{ formatDate(category.tarikhMula) }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <rs-table
+            class="mt-2"
+            :data="relatedCategories"
+            :field="[
+              'kategoriHadKifayah',
+              'levelHadKifayah',
+              'bil',
+              'indicator',
+              'hadKifayah',
+              'statusAktif',
+              'statusData',
+              'tarikhMula'
+            ]"
+            :pageSize="10"
+            :showNoColumn="true"
+            :options="{ variant: 'default', hover: true }"
+          >
+            <template v-slot:kategoriHadKifayah="data">{{ data.value.kategoriHadKifayah }}</template>
+            <template v-slot:levelHadKifayah="data">{{ data.value.levelHadKifayah }}</template>
+            <template v-slot:bil="data">{{ data.value.bil }}</template>
+            <template v-slot:indicator="data">{{ data.value.indicator }}</template>
+            <template v-slot:hadKifayah="data">RM {{ formatCurrency(data.value.hadKifayah) }}</template>
+            <template v-slot:statusAktif="data">
+              <rs-badge :variant="data.value.statusAktif ? 'success' : 'danger'">
+                {{ data.value.statusAktif ? 'Aktif' : 'Tidak Aktif' }}
+              </rs-badge>
+            </template>
+            <template v-slot:statusData="data">{{ data.value.statusData }}</template>
+            <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+          </rs-table>
         </template>
       </rs-card>
 

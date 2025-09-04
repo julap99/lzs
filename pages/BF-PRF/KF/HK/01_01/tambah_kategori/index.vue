@@ -52,15 +52,14 @@
                 <!-- 2. Id Level -->
                 <div>
                   <FormKit
-                    type="number"
+                    type="text"
                     name="bil"
                     label="Id Level"
-                    placeholder="Contoh: 1, 2, 3"
-                    validation="required|number|min:0"
+                    placeholder="Contoh: A1, B02, L3"
+                    validation="required|matches:/^[a-zA-Z0-9]+$/"
                     :validation-messages="{
                       required: 'Id Level diperlukan',
-                      number: 'Masukkan Id Level yang sah',
-                      min: 'Nilai mesti >= 0'
+                      matches: 'Hanya huruf dan nombor dibenarkan'
                     }"
                   />
                 </div>
@@ -75,6 +74,23 @@
                     placeholder="Pilih kategori"
                     validation="required"
                     :validation-messages="{ required: 'Kategori diperlukan' }"
+                  />
+                </div>
+
+                <!-- 3b. Had Kifayah (RM) -->
+                <div>
+                  <FormKit
+                    type="number"
+                    name="hadKifayah"
+                    label="Had Kifayah (RM)"
+                    placeholder="Contoh: 100.00"
+                    step="0.01"
+                    min="0"
+                    validation="required|min:0"
+                    :validation-messages="{
+                      required: 'Nilai had kifayah diperlukan',
+                      min: 'Nilai mesti >= 0'
+                    }"
                   />
                 </div>
 
@@ -136,19 +152,27 @@
                   <div class="mb-2">
                     <label class="text-sm font-medium text-gray-700">Status</label>
                   </div>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <FormKit
-                      type="checkbox"
-                      name="statusAktif"
-                      label="Aktif"
-                      help="Tandakan jika kategori ini aktif"
-                    />
-                    <FormKit
-                      type="checkbox"
-                      name="statusTidakAktif"
-                      label="Tidak Aktif"
-                      help="Tandakan jika kategori ini tidak aktif"
-                    />
+                  <div class="flex gap-6">
+                    <div class="flex items-center">
+                      <FormKit
+                        type="checkbox"
+                        name="statusAktif"
+                        label="Aktif"
+                        label-position="after"
+                        :classes="{ outer: 'm-0' }"
+                        help="Tandakan jika kategori ini aktif"
+                      />
+                    </div>
+                    <div class="flex items-center">
+                      <FormKit
+                        type="checkbox"
+                        name="statusTidakAktif"
+                        label="Tidak Aktif"
+                        label-position="after"
+                        :classes="{ outer: 'm-0' }"
+                        help="Tandakan jika kategori ini tidak aktif"
+                      />
+                    </div>
                   </div>
                   <p class="text-xs text-gray-500 mt-1">Sila pilih salah satu status sahaja.</p>
                 </div>
@@ -240,6 +264,7 @@ const formData = reactive({
   levelHadKifayah: "",
   bil: "",
   kategoriHadKifayah: "",
+  hadKifayah: "",
   statusAktif: false,
   statusTidakAktif: false,
   statusData: "",
@@ -317,8 +342,9 @@ const handleSubmit = async (payload) => {
     const record = {
       idHadKifayah: selectedId || payload.idHadKifayah,
       levelHadKifayah: payload.levelHadKifayah,
-      bil: Number(payload.bil),
+      bil: String(payload.bil),
       kategoriHadKifayah: payload.kategoriHadKifayah,
+      hadKifayah: parseFloat(payload.hadKifayah),
       indicator: combinedIndicators,
       statusAktif: resolvedStatusAktif,
       statusData: payload.statusData,
