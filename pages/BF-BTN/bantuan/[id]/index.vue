@@ -139,7 +139,7 @@
           <!-- <p class="text-gray-600 mb-6">Tabs are used to organize content into different sections.</p> -->
 
           <!-- Tab Navigation -->
-          <div class="flex border-b border-gray-200 mb-6">
+          <div class="flex flex-wrap border-b border-gray-200 mb-6">
             <button
               v-for="(tab, index) in tabs"
               :key="index"
@@ -328,56 +328,137 @@
             <!-- Payment Advice Tab -->
             <div v-if="activeTab === 'payment'" class="space-y-4">
               <h4 class="text-lg font-semibold text-gray-800">Payment Advice</h4>
-              <p class="text-gray-600">This tab displays the payment advice information.</p>
               
-              <div class="p-4 text-center text-gray-500">
-                <Icon name="ph:credit-card" class="w-12 h-12 mx-auto mb-2" />
-                <p>Maklumat Payment Advice akan dipaparkan di sini</p>
-              </div>
+              <rs-table
+                :data="paymentAdviceData"
+                :columns="paymentAdviceColumns"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: false, striped: false, bordered: false }"
+              >
+                <template v-slot:status="{ text }">
+                  <rs-badge :variant="getPaymentStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+                <template v-slot:tindakan="{ text }">
+                  <div class="flex justify-center items-center gap-2">
+                    <rs-button
+                      variant="primary"
+                      size="sm"
+                      class="p-1 flex gap-2"
+                      @click="handleReviewPayment(text)"
+                    >
+                      Semak
+                    </rs-button>
+                  </div>
+                </template>
+              </rs-table>
             </div>
 
             <!-- Cash Issuance Tab -->
             <div v-if="activeTab === 'cash'" class="space-y-4">
               <h4 class="text-lg font-semibold text-gray-800">Cash Issuance</h4>
-              <p class="text-gray-600">This tab displays the cash issuance information.</p>
-              
-              <div class="p-4 text-center text-gray-500">
-                <Icon name="ph:banknotes" class="w-12 h-12 mx-auto mb-2" />
-                <p>Maklumat Cash Issuance akan dipaparkan di sini</p>
-              </div>
+
+              <rs-table
+                :data="cashIssuanceData"
+                :columns="cashIssuanceColumns"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: false, striped: false, bordered: false }"
+              >
+                <template v-slot:status="{ text }">
+                  <rs-badge :variant="getPaymentStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+                <template v-slot:tindakan="{ text }">
+                  <div class="flex justify-center items-center gap-2">
+                    <rs-button
+                      variant="primary"
+                      size="sm"
+                      class="p-1 flex gap-2"
+                      @click="handleReviewCash(text)"
+                    >
+                      Semak
+                    </rs-button>
+                  </div>
+                </template>
+              </rs-table>
             </div>
 
             <!-- Purchase Requisition Tab -->
             <div v-if="activeTab === 'purchase'" class="space-y-4">
               <h4 class="text-lg font-semibold text-gray-800">Purchase Requisition</h4>
-              <p class="text-gray-600">This tab displays the purchase requisition information.</p>
-              
-              <div class="p-4 text-center text-gray-500">
-                <Icon name="ph:shopping-cart" class="w-12 h-12 mx-auto mb-2" />
-                <p>Maklumat Purchase Requisition akan dipaparkan di sini</p>
-              </div>
+
+              <rs-table
+                :data="purchaseReqData"
+                :columns="purchaseReqColumns"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: false, striped: false, bordered: false }"
+              >
+                <template v-slot:status="{ text }">
+                  <rs-badge :variant="getPaymentStatusVariant(text)">{{ text }}</rs-badge>
+                </template>
+                <template v-slot:tindakan="{ text }">
+                  <div class="flex justify-center items-center gap-2">
+                    <rs-button
+                      variant="primary"
+                      size="sm"
+                      class="p-1 flex gap-2"
+                      @click="handleReviewPR(text)"
+                    >
+                      Semak
+                    </rs-button>
+                  </div>
+                </template>
+              </rs-table>
             </div>
 
-            <!-- Pemantauan Tab -->
-            <div v-if="activeTab === 'pemantauan'" class="space-y-4">
-              <h4 class="text-lg font-semibold text-gray-800">Pemantauan</h4>
-              <p class="text-gray-600">This tab displays the monitoring information.</p>
-              
-              <div class="p-4 text-center text-gray-500">
-                <Icon name="ph:chart-line" class="w-12 h-12 mx-auto mb-2" />
-                <p>Maklumat Pemantauan akan dipaparkan di sini</p>
-              </div>
-            </div>
+            
 
             <!-- Lampiran Tab -->
             <div v-if="activeTab === 'lampiran'" class="space-y-4">
               <h4 class="text-lg font-semibold text-gray-800">Lampiran</h4>
-              <p class="text-gray-600">This tab displays the attachment information.</p>
-              
-              <div class="p-4 text-center text-gray-500">
-                <Icon name="ph:paperclip" class="w-12 h-12 mx-auto mb-2" />
-                <p>Maklumat Lampiran akan dipaparkan di sini</p>
-              </div>
+
+              <rs-table
+                :data="lampiranData"
+                :columns="lampiranColumns"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: false, striped: false, bordered: false }"
+              >
+                <template v-slot:dokumen="{ text }">
+                  <div class="text-sm text-gray-800">{{ text }}</div>
+                </template>
+                <template v-slot:aksi="{ row }">
+                  <div class="flex items-center gap-2">
+                    <rs-button variant="secondary-outline" size="sm" class="p-1" @click="previewDokumen(row)">Viewable</rs-button>
+                    <rs-button variant="primary-outline" size="sm" class="p-1" @click="downloadDokumen(row)">Download</rs-button>
+                  </div>
+                </template>
+                <template v-slot:statusDokumen="{ text, row }">
+                  <div v-if="row">
+                    <FormKit
+                      v-model="row.statusDokumen"
+                      type="select"
+                      :options="statusDokumenOptions"
+                      :classes="{ input: '!rounded-lg !py-1 !text-sm' }"
+                    />
+                  </div>
+                  <span v-else class="text-gray-400 text-sm">-</span>
+                </template>
+                <template v-slot:catatan="{ row }">
+                  <div v-if="row">
+                    <FormKit
+                      v-if="row.statusDokumen === 'Tidak Lengkap'"
+                      v-model="row.catatan"
+                      type="text"
+                      placeholder="Nyatakan ketidaklengkapan"
+                      :classes="{ input: '!rounded-lg !py-1 !text-sm' }"
+                    />
+                    <span v-else class="text-gray-400 text-sm">-</span>
+                  </div>
+                  <span v-else class="text-gray-400 text-sm">-</span>
+                </template>
+              </rs-table>
             </div>
           </div>
         </div>
@@ -477,7 +558,6 @@ const tabs = [
   { id: 'payment', title: 'Payment Advice' },
   { id: 'cash', title: 'Cash Issuance' },
   { id: 'purchase', title: 'Purchase Requisition' },
-  { id: 'pemantauan', title: 'Pemantauan' },
   { id: 'lampiran', title: 'Lampiran' }
 ];
 
@@ -636,6 +716,163 @@ const getProcessStatusVariant = (status) => {
     'Lulus': 'success'
   }
   return variants[status] || 'primary'
+}
+
+// Payment Advice mock data and helpers
+const paymentAdviceData = ref([
+  {
+    paNo: 'PA-2024-001',
+    diNo: 'DI-2024-001',
+    dateCreated: '2024-02-01',
+    penerimaBayaran: 'Ahmad bin Abdullah',
+    status: 'Selesai',
+    invoiceNo: 'INV-0001',
+    amaun: '500.00',
+    tindakan: 'PA-2024-001'
+  },
+  {
+    paNo: 'PA-2024-002',
+    diNo: 'DI-2024-002',
+    dateCreated: '2024-03-01',
+    penerimaBayaran: 'Ahmad bin Abdullah',
+    status: 'Dalam Proses',
+    invoiceNo: 'INV-0002',
+    amaun: '500.00',
+    tindakan: 'PA-2024-002'
+  }
+])
+
+const paymentAdviceColumns = [
+  { key: 'paNo', label: 'PA No' },
+  { key: 'diNo', label: 'DI No' },
+  { key: 'dateCreated', label: 'Date Created' },
+  { key: 'penerimaBayaran', label: 'Penerima Bayaran' },
+  { key: 'status', label: 'Status' },
+  { key: 'invoiceNo', label: 'Invoice No' },
+  { key: 'amaun', label: 'Amaun (RM)' },
+  { key: 'tindakan', label: 'Tindakan' },
+]
+
+const getPaymentStatusVariant = (status) => {
+  const variants = {
+    'Selesai': 'success',
+    'Dalam Proses': 'warning',
+    'Dibatalkan': 'danger',
+  }
+  return variants[status] || 'primary'
+}
+
+const handleReviewPayment = (paNo) => {
+  console.log('Semak Payment Advice:', paNo)
+}
+
+// Cash Issuance mock data and helpers (follow same columns as Payment Advice image)
+const cashIssuanceData = ref([
+  {
+    ciNo: 'CI-2024-001',
+    diNo: 'DI-2024-004',
+    dateCreated: '2024-04-01',
+    penerimaBayaran: 'Ahmad bin Abdullah',
+    status: 'Selesai',
+    invoiceNo: 'INV-0101',
+    amaun: '500.00',
+    tindakan: 'CI-2024-001'
+  },
+  {
+    ciNo: 'CI-2024-002',
+    diNo: 'DI-2024-005',
+    dateCreated: '2024-05-01',
+    penerimaBayaran: 'Ahmad bin Abdullah',
+    status: 'Dalam Proses',
+    invoiceNo: 'INV-0102',
+    amaun: '500.00',
+    tindakan: 'CI-2024-002'
+  }
+])
+
+const cashIssuanceColumns = [
+  { key: 'ciNo', label: 'CI No' },
+  { key: 'diNo', label: 'DI No' },
+  { key: 'dateCreated', label: 'Date Created' },
+  { key: 'penerimaBayaran', label: 'Penerima Bayaran' },
+  { key: 'status', label: 'Status' },
+  { key: 'invoiceNo', label: 'Invoice No' },
+  { key: 'amaun', label: 'Amaun (RM)' },
+  { key: 'tindakan', label: 'Tindakan' },
+]
+
+const handleReviewCash = (ciNo) => {
+  console.log('Semak Cash Issuance:', ciNo)
+}
+
+// Purchase Requisition data and helpers
+const purchaseReqData = ref([
+  {
+    prNo: 'PR-2024-001',
+    diNo: 'DI-2024-006',
+    dateCreated: '2024-06-01',
+    penerimaBayaran: 'Ahmad bin Abdullah',
+    status: 'Selesai',
+    paNo: 'PA-2024-010',
+    invoiceNo: 'INV-0201',
+    amaun: '500.00',
+    tindakan: 'PR-2024-001'
+  },
+  {
+    prNo: 'PR-2024-002',
+    diNo: 'DI-2024-007',
+    dateCreated: '2024-07-01',
+    penerimaBayaran: 'Ahmad bin Abdullah',
+    status: 'Dalam Proses',
+    paNo: 'PA-2024-011',
+    invoiceNo: 'INV-0202',
+    amaun: '500.00',
+    tindakan: 'PR-2024-002'
+  }
+])
+
+const purchaseReqColumns = [
+  { key: 'prNo', label: 'PR No' },
+  { key: 'diNo', label: 'DI No' },
+  { key: 'dateCreated', label: 'Date Created' },
+  { key: 'penerimaBayaran', label: 'Penerima Bayaran' },
+  { key: 'status', label: 'Status' },
+  { key: 'paNo', label: 'PA No' },
+  { key: 'invoiceNo', label: 'Invoice No' },
+  { key: 'amaun', label: 'Amaun (RM)' },
+  { key: 'tindakan', label: 'Tindakan' },
+]
+
+const handleReviewPR = (prNo) => {
+  console.log('Semak Purchase Requisition:', prNo)
+}
+
+// Lampiran data and helpers
+const statusDokumenOptions = [
+  { label: 'Lengkap', value: 'Lengkap' },
+  { label: 'Tidak Lengkap', value: 'Tidak Lengkap' },
+  { label: 'Tiada Keperluan', value: 'Tiada Keperluan' }
+]
+
+const lampiranData = ref([
+  { dokumen: 'Kad Pengenalan.pdf', statusDokumen: 'Lengkap', catatan: '' },
+  { dokumen: 'Bukti Pendapatan.pdf', statusDokumen: 'Tidak Lengkap', catatan: '' },
+  { dokumen: 'Bil Utiliti.pdf', statusDokumen: 'Tiada Keperluan', catatan: '' }
+])
+
+const lampiranColumns = [
+  { key: 'dokumen', label: 'Dokumen' },
+  { key: 'aksi', label: 'Tindakan' },
+  { key: 'statusDokumen', label: 'Status Dokumen' },
+  { key: 'catatan', label: 'Catatan' },
+]
+
+const previewDokumen = (row) => {
+  console.log('Preview dokumen:', row.nama)
+}
+
+const downloadDokumen = (row) => {
+  console.log('Download dokumen:', row.nama)
 }
 
 // Event handlers

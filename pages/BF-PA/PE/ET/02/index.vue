@@ -70,6 +70,10 @@
               <tbody class="divide-y bg-white">
                 <tr v-for="row in pagedRows" :key="row.paId" class="hover:bg-gray-50">
                   <td class="px-4 py-3">
+                    <template v-if="isInRecipients(row.paId) || row._selected">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">Telah Dipilih</span>
+                    </template>
+                    <template v-else>
                     <FormKit
                       v-model="row._checked"
                       type="checkbox"
@@ -77,6 +81,7 @@
                         input: '!w-4 !h-4',
                       }"
                     />
+                    </template>
                   </td>
                   <td class="px-4 py-3 font-medium text-gray-900">{{ row.name }}</td>
                   <td class="px-4 py-3 text-gray-900">{{ row.ic }}</td>
@@ -98,14 +103,14 @@
                     </ul>
                   </td>
                   <td class="px-4 py-3">
-                    <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
-                      <li v-for="a in aggregateActivities(row.activities)" :key="a.name">
+                    <div>
+                      <div v-for="a in aggregateActivities(row.activities)" :key="a.name" class="text-sm">
                         <span class="font-medium">{{ a.count }}</span>
-                      </li>
-                      <li v-if="!row.activities || !row.activities.length" class="list-none text-gray-500">
+                      </div>
+                      <div v-if="!row.activities || !row.activities.length" class="text-gray-500">
                         —
-                      </li>
-                    </ul>
+                      </div>
+                    </div>
                   </td>
                   <td class="px-4 py-3 text-gray-900">
                     {{ totalActivityCount(row.activities) }}
@@ -166,41 +171,7 @@
             <div class="text-xs text-gray-500">Status: <b>{{ statusLabel }}</b></div>
           </div>
 
-          <!-- Filter Controls for Cancelled Allowances -->
-          <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-            <div class="flex items-center gap-2">
-              <FormKit
-                v-model="showCancelledAllowances"
-                type="checkbox"
-                label="Show Cancelled Allowances"
-                :classes="{ 
-                  input: '!w-4 !h-4',
-                  label: 'text-sm font-medium text-gray-700'
-                }"
-              />
-            </div>
-            
-            <div class="flex items-center gap-2">
-              <label class="text-sm font-medium text-gray-700">Filter Status:</label>
-              <FormKit
-                v-model="filterStatus"
-                type="select"
-                :options="[
-                  { label: 'All', value: 'All' },
-                  { label: 'Active', value: 'Active' },
-                  { label: 'Cancelled', value: 'Cancelled' }
-                ]"
-                :classes="{ 
-                  input: '!py-1 !px-2 text-sm',
-                  wrapper: 'w-32'
-                }"
-              />
-            </div>
-            
-            <div class="text-xs text-gray-500">
-              Showing: <b>{{ filteredRecipients.length }}</b> of <b>{{ recipients.length }}</b> recipients
-            </div>
-          </div>
+          
 
           <div class="overflow-x-auto rounded-lg border">
             <table class="min-w-full text-sm divide-y">
@@ -219,7 +190,7 @@
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
-                <tr v-for="(r, index) in filteredRecipients" :key="r.paId" 
+                <tr v-for="(r, index) in recipients" :key="r.paId" 
                     :class="[
                       'hover:bg-gray-50',
                       r._cancelled ? 'bg-red-50 opacity-60' : ''
@@ -828,9 +799,7 @@ const awardModalData = ref([]);
 // Bulk selection state for Maklumat Penerima section
 const selectAllCandidates = ref(false);
 
-// Filtering state for cancelled allowances
-const showCancelledAllowances = ref(true);
-const filterStatus = ref('All'); // 'All', 'Active', 'Cancelled'
+// Filtering state removed per request
 
 // Mock data generators for different modal types
 function generateFormBasedModalData(activityName) {
@@ -1201,14 +1170,22 @@ function commitSelected() {
     }
     
     if (!map.has(s.paId)) {
-      map.set(s.paId, { ...s, allowance, _checked: false });
+      map.set(s.paId, { ...s, allowance, _checked: false, _selected: true });
+    } else {
+      // Mark as selected if already exists
+      const existing = map.get(s.paId);
+      map.set(s.paId, { ...existing, _selected: true });
     }
   });
   
   // Remove unchecked recipients from the list
   const uncheckedItems = filteredRows.value.filter(r => !r._checked);
   uncheckedItems.forEach(s => {
-    map.delete(s.paId);
+    // Do not auto-remove; simply ignore if not selected
+    if (map.has(s.paId)) {
+      const existing = map.get(s.paId);
+      map.set(s.paId, { ...existing, _selected: existing?._selected || false });
+    }
   });
   
   recipients.value = Array.from(map.values());
@@ -1218,14 +1195,12 @@ function commitSelected() {
   
   // Show success message
   const addedCount = selectedItems.filter(s => !isInRecipients(s.paId)).length;
-  const removedCount = uncheckedItems.filter(s => isInRecipients(s.paId)).length;
-  
-  if (addedCount > 0 && removedCount > 0) {
-    toast.success(`${addedCount} penerima ditambah, ${removedCount} penerima dibuang`);
-  } else if (addedCount > 0) {
-    toast.success(`${addedCount} penerima ditambah ke senarai`);
-  } else if (removedCount > 0) {
-    toast.success(`${removedCount} penerima dibuang dari senarai`);
+  if (addedCount > 0) {
+    toast.success(`${addedCount} penerima ditambah & ditanda sebagai 'Telah Dipilih'`);
+  } else if (selectedItems.length > 0) {
+    toast.success(`${selectedItems.length} penerima ditanda sebagai 'Telah Dipilih'`);
+  } else {
+    toast.info('Tiada perubahan dibuat');
   }
 }
 
@@ -1604,20 +1579,12 @@ const hasAwardChanges = computed(() => {
   return awardModalData.value.some(r => r._modalChecked);
 });
 
-// Filtered recipients for presentation
-const filteredRecipients = computed(() => {
-  if (filterStatus.value === 'Cancelled') {
-    return recipients.value.filter(r => r._cancelled);
-  } else if (filterStatus.value === 'Active') {
-    return recipients.value.filter(r => !r._cancelled);
-  }
-  return recipients.value; // Show all
-});
+// filteredRecipients removed per request
 
 // Bulk selection functions for Maklumat Penerima section
 function toggleSelectAllCandidates() {
   const shouldSelect = selectAllCandidates.value;
-  filteredRows.value.forEach(row => {
+  pagedRows.value.forEach(row => {
     row._checked = shouldSelect;
   });
 }
@@ -1635,6 +1602,15 @@ watch(() => filteredRows.value.map(r => r._checked), (newValues) => {
     selectAllCandidates.value = false; // Indeterminate state
   }
 }, { deep: true });
+
+// Ensure header checkbox drives visible row checkboxes reliably
+watch(selectAllCandidates, (val) => {
+  pagedRows.value.forEach(row => {
+    if (!isInRecipients(row.paId) && !row._selected) {
+      row._checked = val;
+    }
+  });
+});
 </script>
 
 <style scoped>

@@ -1352,41 +1352,6 @@ export default [
     description: "Pengurusan Penolong Amil",
     child: [
       {
-        title: "Penolong Amil",
-        icon: "iconamoon:component-fill",
-        child: [
-          // {
-          //   title: "PIC Masjid",
-          //   icon: "iconamoon:arrow-right-2-duotone",
-          //   path: "/BF-PA/PP/PM/01",
-          //   child: [],
-          //   meta: {},
-          // },
-          {
-            title: "Pendaftaran Penolong Amil",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/PD",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Penamatan Jawatan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/KP",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Login Penolong Amil",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PP/penolong-amil/login",
-            child: [],
-            meta: {},
-          },
-        ],
-        meta: {},
-      },
-      {
         title: "Konfigurasi",
         icon: "iconamoon:component-fill",
         child: [
@@ -1421,24 +1386,62 @@ export default [
         ],
         meta: {},
       },
+      
+      {
+        title: "Penolong Amil",
+        icon: "iconamoon:component-fill",
+        child: [
+          // {
+          //   title: "PIC Masjid",
+          //   icon: "iconamoon:arrow-right-2-duotone",
+          //   path: "/BF-PA/PP/PM/01",
+          //   child: [],
+          //   meta: {},
+          // },
+          {
+            title: "Pendaftaran Penolong Amil",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/PP/PD",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Penamatan Jawatan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/PP/KP",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Login Penolong Amil",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/PP/penolong-amil/login",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      
       {
         title: "Pengurusan Elaun",
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Tugasan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PA/PE/AB2",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Mesyuarat/Program",
+            title: "Elaun Mesyuarat/Program",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PE/MP",
             child: [],
             meta: {},
           },
+          {
+            title: "Elaun Tugasan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/PE/AB2",
+            child: [],
+            meta: {},
+          },
+          
           {
             title: "Elaun Tahunan",
             icon: "iconamoon:arrow-right-2-duotone",

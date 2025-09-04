@@ -1,7 +1,7 @@
 <!-- 
   RTMF SCREEN: PA-KF-KE-01_01 (Allowance List)
   PURPOSE: Senarai elaun penolong amil dengan workflow kelulusan
-  DESCRIPTION: Allowance list with approval workflow for Penolong Amil allowances
+  DESCRIPTION: Allowance list (tanpa lajur Jenis Elaun & Amaun). Kategori: PAK, PAK+, PAP, PAF
   ROUTE: /BF-PA/KF/KE
 -->
 <template>
@@ -20,11 +20,7 @@
           @change="handleRoleChange"
           class="py-1.5 px-3 text-sm rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
         >
-          <option 
-            v-for="option in roleOptions" 
-            :key="option.value" 
-            :value="option.value"
-          >
+          <option v-for="option in roleOptions" :key="option.value" :value="option.value">
             {{ option.label }}
           </option>
         </select>
@@ -36,8 +32,10 @@
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-xl font-semibold">Senarai Elaun Penolong Amil</h2>
+            <p class="text-xs text-gray-500 mt-1">
+              Paparan lajur: Rujukan, Kategori (PAK, PAK+, PAP, PAF), Kod Bajet, Status, Tarikh Dipaparkan, Tindakan
+            </p>
           </div>
-          <!-- Create new allowance functionality removed - KF/KE only edits existing allowances linked to approved categories -->
         </div>
       </template>
 
@@ -48,23 +46,16 @@
             <FormKit
               v-model="filters.searchQuery"
               type="text"
-              placeholder="Cari rujukan, kategori, atau jenis elaun..."
-              :classes="{
-                input: '!py-2',
-              }"
+              placeholder="Cari rujukan, kategori, atau kod bajet..."
+              :classes="{ input: '!py-2' }"
             />
-            <rs-button
-              variant="primary"
-              @click="performSearch"
-              class="!py-2 !px-4"
-            >
+            <rs-button variant="primary" @click="performSearch" class="!py-2 !px-4">
               <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
               Cari
             </rs-button>
           </div>
         </div>
 
-        <!-- Tabbed Table Section -->
         <!-- Eksekutif Tabs -->
         <div v-if="currentRole === 'eksekutif'">
           <rs-tab v-model="activeTab" class="mt-4">
@@ -76,23 +67,16 @@
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge :variant="getStatusVariant(data.text)">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -123,23 +107,16 @@
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge :variant="getStatusVariant(data.text)">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -162,23 +139,16 @@
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge :variant="getStatusVariant(data.text)">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -209,28 +179,21 @@
             <rs-tab-item title="Aktif">
               <div class="p-4">
                 <rs-table
-                  :key="`table-${tableKey}-active`"
+                  :key="`table-${tableKey}-active-kj`"
                   :data="getTableDataByStatus(['Aktif'])"
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge :variant="getStatusVariant(data.text)">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -248,28 +211,21 @@
             <rs-tab-item title="Menunggu Pengesahan">
               <div class="p-4">
                 <rs-table
-                  :key="`table-${tableKey}-pending`"
+                  :key="`table-${tableKey}-pending-kj`"
                   :data="getTableDataByStatus(['Menunggu Pengesahan'])"
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge :variant="getStatusVariant(data.text)">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -294,28 +250,21 @@
             <rs-tab-item title="Tidak Aktif">
               <div class="p-4">
                 <rs-table
-                  :key="`table-${tableKey}-inactive`"
+                  :key="`table-${tableKey}-inactive-kj`"
                   :data="getTableDataByStatus(['Tidak Aktif'])"
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge :variant="getStatusVariant(data.text)">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -338,28 +287,21 @@
             <rs-tab-item title="Aktif">
               <div class="p-4">
                 <rs-table
-                  :key="`table-${tableKey}-active`"
+                  :key="`table-${tableKey}-active-kd`"
                   :data="getTableDataByStatus(['Aktif'])"
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge :variant="getStatusVariant(data.text)">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -377,42 +319,30 @@
             <rs-tab-item title="Sedang Proses - Lulus">
               <div class="p-4">
                 <div class="flex justify-between items-center mb-4">
-                  <!-- Bulk Approval Button - Only in this tab -->
                   <div v-if="hasPendingApprovals" class="flex space-x-3">
-                    <rs-button
-                      variant="success"
-                      @click="openBulkApprovalModal"
-                      class="flex items-center"
-                    >
+                    <rs-button variant="success" @click="openBulkApprovalModal" class="flex items-center">
                       <Icon name="ic:baseline-check-circle" class="w-4 h-4 mr-2" />
                       Lulus Semua ({{ pendingApprovalCount }})
                     </rs-button>
                   </div>
                 </div>
-                
+
                 <rs-table
-                  :key="`table-${tableKey}-approved-pending`"
+                  :key="`table-${tableKey}-approved-pending-kd`"
                   :data="getTableDataByStatus(['Menunggu Kelulusan'])"
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge :variant="getStatusVariant(data.text)">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -437,28 +367,21 @@
             <rs-tab-item title="Sedang Proses - Ditolak">
               <div class="p-4">
                 <rs-table
-                  :key="`table-${tableKey}-rejected`"
+                  :key="`table-${tableKey}-rejected-kd`"
                   :data="getTableDataByStatus(['Ditolak Ketua Jabatan'])"
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge variant="warning">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge variant="warning">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -483,28 +406,21 @@
             <rs-tab-item title="Tidak Aktif">
               <div class="p-4">
                 <rs-table
-                  :key="`table-${tableKey}-inactive`"
+                  :key="`table-${tableKey}-inactive-kd`"
                   :data="getTableDataByStatus(['Tidak Aktif'])"
                   :pageSize="10"
                   :showNoColumn="false"
                   :columns="tableColumns"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                  }"
+                  :options="{ variant: 'default', hover: true }"
                 >
-                  <template v-slot:status="data">
-                    <rs-badge :variant="getStatusVariant(data.text)">
-                      {{ data.text }}
-                    </rs-badge>
+                  <template #status="data">
+                    <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template #tarikhKuatkuasa="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
-
-                  <template v-slot:tindakan="data">
+                  <template #tindakan="data">
                     <div class="flex space-x-3">
                       <button
                         @click="viewAllowance(data.text)"
@@ -522,7 +438,7 @@
         </div>
       </template>
     </rs-card>
-    
+
     <!-- Bulk Approval Modal -->
     <div v-if="showBulkApprovalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
@@ -531,31 +447,24 @@
             <Icon name="ic:baseline-check-circle" class="w-6 h-6 mr-3 text-success" />
             Lulus Semua Elaun Yang Telah Disahkan
           </h3>
-          <button
-            @click="closeBulkApprovalModal"
-            class="text-gray-400 hover:text-gray-600"
-          >
+          <button @click="closeBulkApprovalModal" class="text-gray-400 hover:text-gray-600">
             <Icon name="ic:baseline-close" class="w-6 h-6" />
           </button>
         </div>
-        
+
         <div class="mb-4">
           <p class="text-gray-600 mb-2">
             Anda akan meluluskan <strong>{{ selectedItems.length }} elaun</strong> yang telah disahkan oleh Ketua Jabatan.
           </p>
-          
-          <!-- Selected Items Table -->
+
+          <!-- Selected Items Table (tanpa Jenis Elaun & Amaun) -->
           <div class="border rounded-lg overflow-hidden">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-4 py-3">
-                    <!-- Placeholder for checkbox column (no select-all per requirement) -->
-                  </th>
+                  <th class="px-4 py-3"></th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Elaun</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 </tr>
               </thead>
@@ -566,8 +475,6 @@
                   </td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
-                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.jenisElaun }}</td>
-                  <td class="px-4 py-3 text-sm text-gray-900">RM {{ item.amaun }}</td>
                   <td class="px-4 py-3">
                     <rs-badge variant="info" size="sm">{{ item.status }}</rs-badge>
                   </td>
@@ -576,7 +483,7 @@
             </table>
           </div>
         </div>
-        
+
         <!-- Approval Notes -->
         <div class="mb-6">
           <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -589,20 +496,11 @@
             placeholder="Masukkan ulasan untuk kelulusan ini..."
           ></textarea>
         </div>
-        
+
         <!-- Action Buttons -->
         <div class="flex justify-end space-x-3">
-          <rs-button
-            variant="secondary-outline"
-            @click="closeBulkApprovalModal"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="success"
-            @click="performBulkApproval"
-            :loading="false"
-          >
+          <rs-button variant="secondary-outline" @click="closeBulkApprovalModal">Batal</rs-button>
+          <rs-button variant="success" @click="performBulkApproval">
             <Icon name="ic:baseline-check" class="w-4 h-4 mr-2" />
             Luluskan Terpilih ({{ selectedCount }})
           </rs-button>
@@ -613,7 +511,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick, computed, watch } from "vue";
+import { ref, nextTick, computed, watch, onMounted } from "vue";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -623,404 +521,169 @@ definePageMeta({
 });
 
 const breadcrumb = [
-  { name: 'Laman Utama', path: '/' },
-  { name: 'Modul BF-PA', path: '/BF-PA' },
-  { name: 'Konfigurasi', path: '/BF-PA/KF' },
-  { name: 'Maklumat Elaun', path: null }
+  { name: "Laman Utama", path: "/" },
+  { name: "Modul BF-PA", path: "/BF-PA" },
+  { name: "Konfigurasi", path: "/BF-PA/KF" },
+  { name: "Maklumat Elaun", path: null },
 ];
 
 // Role Simulator State
-const currentRole = ref("eksekutif"); // Default role
+const currentRole = ref("eksekutif");
 
-// Page-specific role options for KF/KE module
+// Page-specific role options
 const roleOptions = [
   { label: "Eksekutif", value: "eksekutif" },
   { label: "Ketua Jabatan", value: "ketua-jabatan" },
   { label: "Ketua Divisyen", value: "ketua-divisyen" },
 ];
 
-// Role data for KF/KE module
+// (Helpers – if you need label/variants elsewhere)
 const roleData = {
-      eksekutif: {
-      name: "Eksekutif",
-      description: "Kemaskini Elaun Penolong Amil",
-      capabilities: ["Lihat Senarai", "Kemaskini Elaun", "Edit Penuh"],
-  },
-  "ketua-jabatan": {
-    name: "Ketua Jabatan",
-    description: "Pengesahan Elaun Penolong Amil",
-    capabilities: ["Lihat Senarai", "Sahkan Elaun", "Monitor Progress"],
-  },
-  "ketua-divisyen": {
-    name: "Ketua Divisyen",
-    description: "Kelulusan Akhir Elaun Penolong Amil",
-    capabilities: ["Lihat Senarai", "Sahkan/Tolak Elaun", "Kelulusan Akhir"],
-  },
+  eksekutif: { name: "Eksekutif" },
+  "ketua-jabatan": { name: "Ketua Jabatan" },
+  "ketua-divisyen": { name: "Ketua Divisyen" },
 };
-
-// Role simulator helper functions
-const getRoleVariant = (role) => {
-  const variants = {
-    eksekutif: "success",
-    "ketua-jabatan": "warning",
-    "ketua-divisyen": "danger",
-  };
-  return variants[role] || "default";
-};
-
-const getRoleLabel = (role) => {
-  return roleData[role]?.name || role;
-};
-
-
+const getRoleLabel = (role) => roleData[role]?.name || role;
 
 const handleRoleChange = () => {
-  // Role changed
-  
-  // Show role change notification
-  const roleLabel = getRoleLabel(currentRole.value);
-  toast.info(`Peranan berubah kepada: ${roleLabel}`);
-  
-  // Refresh table to show role-specific data
+  toast.info(`Peranan berubah kepada: ${getRoleLabel(currentRole.value)}`);
   refreshTable();
 };
 
-// Filters
-const filters = ref({
-  searchQuery: "",
-});
-
-// Search state
+// Filters & search state
+const filters = ref({ searchQuery: "" });
 const isSearchPerformed = ref(false);
-const searchResults = ref([]);
 
 // Bulk approval state
 const showBulkApprovalModal = ref(false);
 const selectedItems = ref([]);
 const bulkApprovalNotes = ref("");
 const selectedMap = ref({});
-const selectedCount = computed(() => {
-  return selectedItems.value.filter(item => selectedMap.value[item.tindakan]).length;
-});
+const selectedCount = computed(() => selectedItems.value.filter((i) => selectedMap.value[i.tindakan]).length);
 
-
-
-
-
-// Table data and reactivity control
+// Table data
 const tableKey = ref(0);
 const allowancesList = ref([
+  // PAK
   {
     rujukan: "KE-2024-001",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
-    jenisElaun: "Elaun Bancian Baru : per borang permohonan",
-    amaun: 30,
-    kodBajet: "B34106",
+    kategoriPenolongAmil: "PAK",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
-    tindakan: 1
+    tindakan: 1,
   },
-  {
-    rujukan: "KE-2024-002",
-    kategoriPenolongAmil: "Penolong Amil Padi",
-    jenisElaun: "Elaun Bancian Semula : per borang permohonan",
-    amaun: 25,
-    kodBajet: "B34107",
-    status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
-    tindakan: 2
-  },
+
+  // PAK+
   {
     rujukan: "KE-2024-003",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
-    jenisElaun: "Elaun Bancian Pindah : per borang permohonan",
-    amaun: 20,
-    kodBajet: "B34108",
+    kategoriPenolongAmil: "PAK+",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
-    tindakan: 3
+    tindakan: 2,
   },
   {
     rujukan: "KE-2024-004",
-    kategoriPenolongAmil: "Penolong Amil Komuniti",
-    jenisElaun: "Elaun Bancian Khas : per borang permohonan",
-    amaun: 35,
-    kodBajet: "B34109",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 4
+    kategoriPenolongAmil: "PAF",
+    status: "Aktif",
+    tarikhKuatkuasa: "01-03-2024",
+    tindakan: 3,
   },
+
+  // PAP
   {
     rujukan: "KE-2024-005",
-    kategoriPenolongAmil: "Penolong Amil Wakaf",
-    jenisElaun: "Elaun Bancian Luar Bandar : per borang permohonan",
-    amaun: 40,
-    kodBajet: "B34110",
-    status: "Tidak Aktif",
-    tarikhKuatkuasa: "01-01-2024",
-    tindakan: 5
-  },
-  {
-    rujukan: "KE-2024-006",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
-    jenisElaun: "Elaun Kemaskini/permohonan bantuan : per borang",
-    amaun: 45,
-    kodBajet: "B34115",
-    status: "Ditolak Ketua Jabatan",
-    tarikhKuatkuasa: "", // Empty - rejected
-    tindakan: 6
-  },
-  // Additional items for "Sedang Proses - Lulus" to showcase bulk approval
-  {
-    rujukan: "KE-2024-007",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
-    jenisElaun: "Elaun Bancian Khas : per borang permohonan",
-    amaun: 50,
-    kodBajet: "B34116",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 7
-  },
-  {
-    rujukan: "KE-2024-008",
-    kategoriPenolongAmil: "Penolong Amil Padi",
-    jenisElaun: "Elaun Bancian Semula : per borang permohonan",
-    amaun: 55,
-    kodBajet: "B34117",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 8
-  },
-  {
-    rujukan: "KE-2024-009",
-    kategoriPenolongAmil: "Penolong Amil Komuniti",
-    jenisElaun: "Elaun Bancian Pindah : per borang permohonan",
-    amaun: 60,
-    kodBajet: "B34118",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 9
-  },
-  {
-    rujukan: "KE-2024-010",
-    kategoriPenolongAmil: "Penolong Amil Wakaf",
-    jenisElaun: "Elaun Bancian Khas : per borang permohonan",
-    amaun: 65,
-    kodBajet: "B34119",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 10
-  },
-  // NEW: Ketua Jabatan "Menunggu Pengesahan" data
-  {
-    rujukan: "KE-2024-011",
-    kategoriPenolongAmil: "Penolong Amil Zakat Perkhidmatan Digital",
-    jenisElaun: "Elaun Bancian Digital : per borang permohonan",
-    amaun: 70,
-    kodBajet: "B34120",
-    status: "Menunggu Pengesahan",
-    tarikhKuatkuasa: "", // Empty - not yet verified
-    tindakan: 11
-  },
-  {
-    rujukan: "KE-2024-012",
-    kategoriPenolongAmil: "Penolong Amil Zakat Pendidikan",
-    jenisElaun: "Elaun Bancian Pendidikan : per borang permohonan",
-    amaun: 75,
-    kodBajet: "B34121",
-    status: "Menunggu Pengesahan",
-    tarikhKuatkuasa: "", // Empty - not yet verified
-    tindakan: 12
-  },
-  {
-    rujukan: "KE-2024-013",
-    kategoriPenolongAmil: "Penolong Amil Zakat Kesihatan",
-    jenisElaun: "Elaun Bancian Kesihatan : per borang permohonan",
-    amaun: 80,
-    kodBajet: "B34122",
-    status: "Menunggu Pengesahan",
-    tarikhKuatkuasa: "", // Empty - not yet verified
-    tindakan: 13
+    kategoriPenolongAmil: "PAP",
+    status: "Aktif",
+    tarikhKuatkuasa: "01-03-2024",
+    tindakan: 4,
   }
 ]);
 
-// Table columns
+// Table columns (tanpa Jenis Elaun & Amaun)
 const tableColumns = [
-  {
-    key: 'rujukan',
-    name: 'Rujukan',
-    sortable: true,
-  },
-  {
-    key: 'kategoriPenolongAmil',
-    name: 'Kategori',
-    sortable: true,
-  },
-  {
-    key: 'jenisElaun',
-    name: 'Jenis Elaun',
-    sortable: true,
-  },
-  {
-    key: 'amaun',
-    name: 'Amaun (RM)',
-    sortable: true,
-  },
-  {
-    key: 'kodBajet',
-    name: 'Kod Bajet',
-    sortable: true,
-  },
-  {
-    key: 'status',
-    name: 'Status',
-    sortable: true,
-  },
-  {
-    key: 'tarikhKuatkuasa',
-    name: 'Tarikh Kuatkuasa',
-    sortable: true,
-  },
-  {
-    key: 'tindakan',
-    name: 'Tindakan',
-    sortable: false,
-  },
+  { key: "rujukan", name: "Rujukan", sortable: true },
+  { key: "kategoriPenolongAmil", name: "Kategori", sortable: true },
+  { key: "status", name: "Status", sortable: true },
+  { key: "tarikhKuatkuasa", name: "Tarikh Dipaparkan", sortable: true },
+  { key: "tindakan", name: "Tindakan", sortable: false },
 ];
 
-// Tab management
+// Tabs
 const activeTab = ref("Aktif");
 
-// Watch for role changes and adjust active tab
 watch(currentRole, (newRole) => {
   const bestTab = getBestAvailableTabForRole.value;
   if (bestTab && isTabValidForRole(bestTab, newRole)) {
     activeTab.value = bestTab;
   } else {
-    // Find first valid tab for the new role
     const validTabs = getValidTabsForRole(newRole);
-    if (validTabs.length > 0) {
-      activeTab.value = validTabs[0];
-    }
+    if (validTabs.length > 0) activeTab.value = validTabs[0];
   }
 });
 
-// Get the best available tab for the current role
 const getBestAvailableTabForRole = computed(() => {
   const role = currentRole.value;
-  
-  if (role === 'ketua-jabatan') {
-    // Ketua Jabatan can see: "Menunggu Pengesahan", "Aktif", "Tidak Aktif"
-    // Priority: Aktif > Menunggu Pengesahan > Tidak Aktif
-    if (getTableDataByStatus(['Aktif']).length > 0) {
-      return "Aktif";
-    } else if (getTableDataByStatus(['Menunggu Pengesahan']).length > 0) {
-      return "Menunggu Pengesahan";
-    } else {
-      return "Tidak Aktif";
-    }
-  } else if (role === 'ketua-divisyen') {
-    // Ketua Divisyen can see: "Menunggu Kelulusan", "Aktif", "Tidak Aktif"
-    // Priority: Aktif > Menunggu Kelulusan > Tidak Aktif
-    if (getTableDataByStatus(['Aktif']).length > 0) {
-      return "Aktif";
-    } else if (getTableDataByStatus(['Menunggu Kelulusan']).length > 0) {
-      return "Menunggu Kelulusan";
-    } else {
-      return "Tidak Aktif";
-    }
+  if (role === "ketua-jabatan") {
+    if (getTableDataByStatus(["Aktif"]).length > 0) return "Aktif";
+    if (getTableDataByStatus(["Menunggu Pengesahan"]).length > 0) return "Menunggu Pengesahan";
+    return "Tidak Aktif";
+  } else if (role === "ketua-divisyen") {
+    if (getTableDataByStatus(["Aktif"]).length > 0) return "Aktif";
+    if (getTableDataByStatus(["Menunggu Kelulusan"]).length > 0) return "Menunggu Kelulusan";
+    return "Tidak Aktif";
   } else {
-    // Eksekutif can see: "Aktif", "Sedang Proses", "Tidak Aktif"
-    // Priority: Aktif > Sedang Proses > Tidak Aktif
-    if (getTableDataByStatus(['Aktif']).length > 0) {
-      return "Aktif";
-    } else if (getTableDataByStatus(['Menunggu Pengesahan', 'Menunggu Kelulusan']).length > 0) {
-      return "Sedang Proses";
-    } else {
-      return "Tidak Aktif";
-    }
+    if (getTableDataByStatus(["Aktif"]).length > 0) return "Aktif";
+    if (getTableDataByStatus(["Menunggu Pengesahan", "Menunggu Kelulusan"]).length > 0) return "Sedang Proses";
+    return "Tidak Aktif";
   }
 });
 
-// Check if a tab is valid for a specific role
 const isTabValidForRole = (tab, role) => {
   switch (tab) {
     case "Sedang Proses":
-      return role === 'eksekutif';
+      return role === "eksekutif";
     case "Menunggu Pengesahan":
-      return role === 'ketua-jabatan';
+      return role === "ketua-jabatan";
     case "Menunggu Kelulusan":
-      return role === 'ketua-divisyen';
+      return role === "ketua-divisyen";
     case "Aktif":
-      return true; // All roles can see active items
     case "Tidak Aktif":
-      return true; // All roles can see inactive items
+      return true;
     default:
       return false;
   }
 };
 
-// Get valid tabs for a specific role
 const getValidTabsForRole = (role) => {
   const allTabs = ["Sedang Proses", "Menunggu Pengesahan", "Menunggu Kelulusan", "Aktif", "Tidak Aktif"];
-  return allTabs.filter(tab => isTabValidForRole(tab, role));
+  return allTabs.filter((tab) => isTabValidForRole(tab, role));
 };
 
-// Filter table data based on status
+// Data filter (carian berdasarkan rujukan / kategori / kod bajet sahaja)
 const getTableDataByStatus = (statuses) => {
-  let result = allowancesList.value.filter(allowance => 
-    statuses.includes(allowance.status)
-  );
-  
-  // Only apply filters if search has been performed
-  if (isSearchPerformed.value) {
-    // Apply search filter
-    if (filters.value.searchQuery) {
-      const query = filters.value.searchQuery.toLowerCase();
-      result = result.filter(allowance => 
-        allowance.rujukan.toLowerCase().includes(query) ||
-        allowance.kategoriPenolongAmil.toLowerCase().includes(query) ||
-        allowance.jenisElaun.toLowerCase().includes(query) ||
-        allowance.kodBajet.toLowerCase().includes(query)
-      );
-    }
-    
-
-    
-    // Apply kategori filter
-
+  let result = allowancesList.value.filter((a) => statuses.includes(a.status));
+  if (isSearchPerformed.value && filters.value.searchQuery) {
+    const q = filters.value.searchQuery.toLowerCase();
+    result = result.filter(
+      (a) =>
+        a.rujukan.toLowerCase().includes(q) ||
+        a.kategoriPenolongAmil.toLowerCase().includes(q)
+    );
   }
-  
   return result;
 };
 
-// Role-based access control
-// Create functionality removed - KF/KE only edits existing allowances linked to approved categories
-
-const canEditAllowance = (allowanceId) => {
-  return currentRole.value === "eksekutif"; // Only Eksekutif can edit
-};
-
-const canVerifyAllowance = (allowanceId) => {
-  return currentRole.value === "ketua-jabatan";
-};
-
-const canApproveAllowance = (allowanceId) => {
-  return currentRole.value === "ketua-divisyen";
-};
+// Access control
+const canEditAllowance = () => currentRole.value === "eksekutif";
+const canVerifyAllowance = () => currentRole.value === "ketua-jabatan";
+const canApproveAllowance = () => currentRole.value === "ketua-divisyen";
 
 // Methods
-const viewAllowance = (allowanceId) => {
-  navigateTo(`/BF-PA/KF/KE/detail/${allowanceId}`);
-};
-
-const editAllowance = (allowanceId) => {
-  navigateTo(`/BF-PA/KF/KE/edit/${allowanceId}`);
-};
+const viewAllowance = (allowanceId) => navigateTo(`/BF-PA/KF/KE/detail/${allowanceId}`);
+const editAllowance = (allowanceId) => navigateTo(`/BF-PA/KF/KE/edit/${allowanceId}`);
 
 const verifyAllowance = (allowanceId) => {
-  // Update status to "Menunggu Kelulusan"
-  const allowance = allowancesList.value.find(a => a.tindakan === allowanceId);
+  const allowance = allowancesList.value.find((a) => a.tindakan === allowanceId);
   if (allowance) {
     allowance.status = "Menunggu Kelulusan";
     refreshTable();
@@ -1029,8 +692,7 @@ const verifyAllowance = (allowanceId) => {
 };
 
 const approveAllowance = (allowanceId) => {
-  // Update status to "Aktif"
-  const allowance = allowancesList.value.find(a => a.tindakan === allowanceId);
+  const allowance = allowancesList.value.find((a) => a.tindakan === allowanceId);
   if (allowance) {
     allowance.status = "Aktif";
     refreshTable();
@@ -1039,84 +701,54 @@ const approveAllowance = (allowanceId) => {
 };
 
 const navigateToVerification = (allowanceId, action) => {
-  if (action === 'verify') {
-    navigateTo(`/BF-PA/KF/KE/verify/${allowanceId}`);
-  } else if (action === 'approve') {
-    navigateTo(`/BF-PA/KF/KE/approve/${allowanceId}`);
-  }
+  if (action === "verify") navigateTo(`/BF-PA/KF/KE/verify/${allowanceId}`);
+  else if (action === "approve") navigateTo(`/BF-PA/KF/KE/approve/${allowanceId}`);
 };
 
 const refreshTable = () => {
-  nextTick(() => {
-    tableKey.value++; // Force table to re-render
-  });
+  nextTick(() => (tableKey.value += 1));
 };
 
-// Helper function to determine badge variant based on status
 const getStatusVariant = (status) => {
   const variants = {
-    'Aktif': 'success',
-    'Tidak Aktif': 'danger',
-    'Menunggu Pengesahan': 'warning',
-    'Menunggu Kelulusan': 'info',
-    'Ditolak Ketua Jabatan': 'warning',
+    Aktif: "success",
+    "Tidak Aktif": "danger",
+    "Menunggu Pengesahan": "warning",
+    "Menunggu Kelulusan": "info",
+    "Ditolak Ketua Jabatan": "warning",
   };
-  return variants[status] || 'disabled';
+  return variants[status] || "disabled";
 };
 
-const getRoleSpecificDescription = () => {
-  const roleData = {
-    eksekutif: "Kemaskini Elaun Penolong Amil - Edit Penuh",
-    "ketua-jabatan": "Pengesahan Elaun Penolong Amil - Sahkan Elaun",
-    "ketua-divisyen": "Kelulusan Akhir Elaun Penolong Amil - Sahkan/Tolak dalam Borang",
-  };
-  return roleData[currentRole.value] || "Tidak Diketahui";
-};
-
-// Initialize with best available tab
+// Initialize with best tab
 onMounted(() => {
   const bestTab = getBestAvailableTabForRole.value;
-  if (bestTab) {
-    activeTab.value = bestTab;
-  }
+  if (bestTab) activeTab.value = bestTab;
 });
 
-// Search functionality
+// Search
 const performSearch = () => {
   if (!filters.value.searchQuery) {
-    toast.warning('Sila masukkan kriteria carian');
+    toast.warning("Sila masukkan kriteria carian");
     return;
   }
-  
   isSearchPerformed.value = true;
-  toast.success('Carian berjaya dilakukan');
+  toast.success("Carian berjaya dilakukan");
   refreshTable();
 };
 
-
-
-// Bulk approval functionality
-const hasPendingApprovals = computed(() => {
-  return allowancesList.value.filter(allowance => 
-    allowance.status === 'Menunggu Kelulusan'
-  ).length > 0;
-});
-
-const pendingApprovalCount = computed(() => {
-  return allowancesList.value.filter(allowance => 
-    allowance.status === 'Menunggu Kelulusan'
-  ).length;
-});
+// Bulk approval
+const hasPendingApprovals = computed(
+  () => allowancesList.value.filter((a) => a.status === "Menunggu Kelulusan").length > 0
+);
+const pendingApprovalCount = computed(
+  () => allowancesList.value.filter((a) => a.status === "Menunggu Kelulusan").length
+);
 
 const openBulkApprovalModal = () => {
-  selectedItems.value = allowancesList.value.filter(allowance => 
-    allowance.status === 'Menunggu Kelulusan'
-  );
-  // Default all checkboxes to checked
+  selectedItems.value = allowancesList.value.filter((a) => a.status === "Menunggu Kelulusan");
   selectedMap.value = {};
-  selectedItems.value.forEach(item => {
-    selectedMap.value[item.tindakan] = true;
-  });
+  selectedItems.value.forEach((item) => (selectedMap.value[item.tindakan] = true));
   showBulkApprovalModal.value = true;
 };
 
@@ -1128,37 +760,32 @@ const closeBulkApprovalModal = () => {
 
 const performBulkApproval = async () => {
   if (!bulkApprovalNotes.value.trim()) {
-    toast.warning('Sila masukkan ulasan kelulusan');
+    toast.warning("Sila masukkan ulasan kelulusan");
     return;
   }
-  
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Get current date in DD-MM-YYYY format
-    const currentDate = new Date();
-    const day = currentDate.getDate().toString().padStart(2, '0');
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-    const year = currentDate.getFullYear();
-    const formattedDate = `${day}-${month}-${year}`;
-    
-    // Update only checked items
-    const toApprove = selectedItems.value.filter(item => selectedMap.value[item.tindakan]);
+    await new Promise((r) => setTimeout(r, 500));
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    const today = `${dd}-${mm}-${yyyy}`;
+
+    const toApprove = selectedItems.value.filter((i) => selectedMap.value[i.tindakan]);
     if (toApprove.length === 0) {
-      toast.warning('Sila pilih sekurang-kurangnya satu elaun');
+      toast.warning("Sila pilih sekurang-kurangnya satu elaun");
       return;
     }
-    toApprove.forEach(allowance => {
-      allowance.status = 'Aktif';
-      allowance.tarikhKuatkuasa = formattedDate;
+    toApprove.forEach((a) => {
+      a.status = "Aktif";
+      a.tarikhKuatkuasa = today;
     });
-    
+
     toast.success(`${toApprove.length} elaun berjaya diluluskan`);
     closeBulkApprovalModal();
     refreshTable();
-  } catch (error) {
-    toast.error('Ralat semasa meluluskan elaun');
+  } catch (e) {
+    toast.error("Ralat semasa meluluskan elaun");
   }
 };
-</script> 
+</script>

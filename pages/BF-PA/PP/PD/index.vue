@@ -99,6 +99,14 @@
                   }"
                   advanced
                 >
+                <template v-slot:select="{ row }">
+  <input 
+    type="checkbox" 
+    v-model="selectedRows" 
+    :value="row.rujukan" 
+  />
+</template>
+
                   <template v-slot:statusPendaftaran="{ text }">
                     <rs-badge :variant="getStatusPendaftaranVariant(text)">
                       {{ text }}
@@ -798,7 +806,7 @@ definePageMeta({
   title: "Senarai Permohonan Penolong Amil",
   description: "Senarai permohonan penolong amil untuk semakan dan kelulusan",
 });
-
+const selectedRows = ref([]);
 const breadcrumb = ref([
   {
     name: "Penolong Amil",
@@ -867,6 +875,12 @@ const eksekutifColumns = columns;
 
 // Create specific columns for Eksekutif role (without Status Lantikan) - UPDATED LABELS
 const eksekutifColumnsWithoutStatusLantikan = [
+{
+    key: "select",
+    label: "",
+    sortable: false,
+    width: "40px",
+  },
   {
     key: "rujukan",
     label: "Rujukan",
@@ -1138,10 +1152,10 @@ const applications = ref([
   {
     no: 1,
     rujukan: "PA-2024-001",
-    nama: "Ahmad bin Abdullah",
-    noKP: "901231012345",
-    kategoriPenolongAmil: "Fitrah",
-    jawatan: "Penolong Amil Fitrah",
+    nama: "Ismail bin Hassan",
+    noKP: "870625098765",
+    kategoriPenolongAmil: "Kariah",
+    jawatan: "Penolong Amil Kariah",
     institusiKariah: "Masjid Al-Amin",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
     statusPendaftaran: "Dihantar",
@@ -1192,7 +1206,7 @@ const applications = ref([
     rujukan: "PA-2024-005",
     nama: "Abdul Rahman bin Hassan",
     noKP: "870625098765",
-    kategoriPenolongAmil: "Fitrah",
+    kategoriPenolongAmil: "Komuniti",
     jawatan: "Penolong Amil Fitrah",
     institusiKariah: "Masjid Kg Delek",
     institusiId: "MASJID_KG_DELEK_003",
@@ -1209,7 +1223,7 @@ const completedApplications = ref([
     rujukan: "PA-2023-001",
     nama: "Mohd Zulkifli bin Ahmad",
     noKP: "850315071234",
-    kategoriPenolongAmil: "Fitrah",
+    kategoriPenolongAmil: "Komuniti",
     jawatan: "Penolong Amil Fitrah",
     institusiKariah: "Masjid Al-Amin",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
@@ -1318,9 +1332,9 @@ const roleSpecificData = {
     {
       no: 1,
       rujukan: "PA-2024-001",
-      nama: "Ahmad bin Abdullah",
-      noKP: "901231012345",
-      kategoriPenolongAmil: "Fitrah",
+      nama: "Malik bin Husin",
+      noKP: "700501010101",
+      kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Fitrah",
       institusiKariah: "Masjid Al-Amin",
       institusiId: "MASJID_NEGERI_SELANGOR_001",
@@ -1423,8 +1437,8 @@ const roleSpecificData = {
       rujukan: "PA-2024-009",
       nama: "Ismail bin Hassan",
       noKP: "870625098765",
-      kategoriPenolongAmil: "Komuniti",
-      jawatan: "Penolong Amil Komuniti",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
       statusPendaftaran: "Draf",
       sesiPerkhidmatan: "Sesi 1",
@@ -1476,10 +1490,10 @@ const roleSpecificData = {
     {
       no: 1,
       rujukan: "PA-2024-001",
-      nama: "Ahmad bin Abdullah",
-      noKP: "901231012345",
-      kategoriPenolongAmil: "Fitrah",
-      jawatan: "Penolong Amil Fitrah",
+      nama: "Ismail bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
               statusPendaftaran: "Dihantar",
         sesiPerkhidmatan: "Sesi 1",
@@ -1544,10 +1558,10 @@ const roleSpecificData = {
     {
       no: 1,
       rujukan: "PA-2024-001",
-      nama: "Ahmad bin Abdullah",
-      noKP: "901231012345",
-      kategoriPenolongAmil: "Fitrah",
-      jawatan: "Penolong Amil Fitrah",
+      nama: "Ismail bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
       statusPendaftaran: "Telah Disaring",
       sesiPerkhidmatan: "Sesi 1",
@@ -1612,10 +1626,10 @@ const roleSpecificData = {
     {
       no: 1,
       rujukan: "PA-2024-001",
-      nama: "Ahmad bin Abdullah",
-      noKP: "901231012345",
-      kategoriPenolongAmil: "Fitrah",
-      jawatan: "Penolong Amil Fitrah",
+      nama: "Ismail bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
       statusPendaftaran: "Telah Disemak",
       sesiPerkhidmatan: "Sesi 1",
@@ -1663,10 +1677,10 @@ const roleSpecificData = {
     {
       no: 1,
       rujukan: "PA-2024-001",
-      nama: "Ahmad bin Abdullah",
-      noKP: "901231012345",
-      kategoriPenolongAmil: "Fitrah",
-      jawatan: "Penolong Amil Fitrah",
+      nama: "Ismail bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
       statusPendaftaran: "Telah Disokong",
       sesiPerkhidmatan: "Sesi 1",
@@ -1718,10 +1732,10 @@ const roleSpecificData = {
     {
       no: 1,
       rujukan: "PA-2024-001",
-      nama: "Ahmad bin Abdullah",
-      noKP: "901231012345",
-      kategoriPenolongAmil: "Fitrah",
-      jawatan: "Penolong Amil Fitrah",
+      nama: "Ismail bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
       statusPendaftaran: "Telah Disahkan",
       sesiPerkhidmatan: "Sesi 1",

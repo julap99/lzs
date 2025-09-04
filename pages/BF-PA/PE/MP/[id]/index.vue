@@ -515,8 +515,8 @@ const activityDataMap = {
     status: 'Belum Disemak',
     allowanceRate: '50.00',
     penolongAmil: [
-      { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:45 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
-      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825-12-6789', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512032345', attended: true, sesiDaftar: 1, checkInTime: '08:45 AM', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825126789', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
       // { id: 'PA003', name: 'Mohd Razak bin Ibrahim', idPengenalan: '790330-06-3456', attended: false, sesiDaftar: null, checkInTime: null, daerah: null, allowanceRate: '50.00', reason: 'Sakit' }
     ]
   },
@@ -529,9 +529,9 @@ const activityDataMap = {
     status: 'Belum Disemak',
     allowanceRate: '75.00',
     penolongAmil: [
-      { id: 'PA006', name: 'Zainab binti Ibrahim', idPengenalan: '860415-09-4567', attended: true, sesiDaftar: 2, checkInTime: '07:30, 12:45', daerah: 'Dalam Daerah', allowanceRate: '75.00' },
-      { id: 'PA007', name: 'Ibrahim bin Ahmad', idPengenalan: '810728-14-7890', attended: true, sesiDaftar: 1, checkInTime: '07:45', daerah: 'Dalam Daerah', allowanceRate: '75.00' },
-      { id: 'PA008', name: 'Aminah binti Mohamed', idPengenalan: '880912-07-1234', attended: true, sesiDaftar: 3, checkInTime: '08:00, 13:20, 17:15', daerah: 'Luar Daerah', allowanceRate: '75.00' }
+      { id: 'PA006', name: 'Zainab binti Ibrahim', idPengenalan: '860415-09-4567', attended: true, sesiDaftar: 2, checkInTime: '07:30, 12:45', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA007', name: 'Ibrahim bin Ahmad', idPengenalan: '810728-14-7890', attended: true, sesiDaftar: 1, checkInTime: '07:45', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA008', name: 'Aminah binti Mohamed', idPengenalan: '880912-07-1234', attended: true, sesiDaftar: 3, checkInTime: '08:00, 13:20, 17:15', daerah: 'Luar Daerah', allowanceRate: '100.00' }
     ]
   },
   'MP2024-004': {
@@ -556,8 +556,8 @@ const activityDataMap = {
     status: 'Diluluskan',
     allowanceRate: '60.00',
     penolongAmil: [
-      { id: 'PA009', name: 'Hassan bin Omar', idPengenalan: '810625-08-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '60.00' },
-      { id: 'PA010', name: 'Mariam binti Ali', idPengenalan: '870912-14-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15, 13:45', daerah: 'Dalam Daerah', allowanceRate: '60.00' }
+      { id: 'PA009', name: 'Hassan bin Omar', idPengenalan: '810625-08-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA010', name: 'Mariam binti Ali', idPengenalan: '870912-14-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15, 13:45', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-006': {
@@ -583,7 +583,7 @@ const activityDataMap = {
     allowanceRate: '100.00',
     penolongAmil: [
       { id: 'PA016', name: 'Ali bin Mohamed', idPengenalan: '830415-07-1234', attended: true, sesiDaftar: 2, checkInTime: '09:00, 14:00', daerah: 'Luar Daerah', allowanceRate: '100.00' },
-      { id: 'PA017', name: 'Nurul binti Omar', idPengenalan: '880625-12-5678', attended: true, sesiDaftar: 1, checkInTime: '09:15', daerah: 'Dalam Daerah', allowanceRate: '100.00' }
+      { id: 'PA017', name: 'Nurul binti Omar', idPengenalan: '880625-12-5678', attended: true, sesiDaftar: 1, checkInTime: '09:15', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-008': {
@@ -595,8 +595,8 @@ const activityDataMap = {
     status: 'Diluluskan',
     allowanceRate: '70.00',
     penolongAmil: [
-      { id: 'PA018', name: 'Hassan bin Ibrahim', idPengenalan: '810912-05-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '70.00' },
-      { id: 'PA019', name: 'Aminah binti Hassan', idPengenalan: '870318-16-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15, 13:30', daerah: 'Dalam Daerah', allowanceRate: '70.00' }
+      { id: 'PA018', name: 'Hassan bin Ibrahim', idPengenalan: '810912-05-3456', attended: true, sesiDaftar: 1, checkInTime: '09:00', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA019', name: 'Aminah binti Hassan', idPengenalan: '870318-16-7890', attended: true, sesiDaftar: 2, checkInTime: '09:15, 13:30', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-009': {
@@ -608,8 +608,8 @@ const activityDataMap = {
     status: 'Belum Disemak',
     allowanceRate: '100.00',
     penolongAmil: [
-      { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:00', daerah: 'Dalam Daerah', allowanceRate: '100.00' },
-      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825-12-6789', attended: true, sesiDaftar: 3, checkInTime: '08:15, 12:00, 15:45', daerah: 'Dalam Daerah', allowanceRate: '100.00' }
+      { id: 'PA001', name: 'Ahmad bin Abdullah', idPengenalan: '820512-03-2345', attended: true, sesiDaftar: 1, checkInTime: '08:00', daerah: 'Dalam Daerah', allowanceRate: '50.00' },
+      { id: 'PA002', name: 'Siti Aminah binti Hassan', idPengenalan: '870825-12-6789', attended: true, sesiDaftar: 3, checkInTime: '08:15, 12:00, 15:45', daerah: 'Dalam Daerah', allowanceRate: '50.00' }
     ]
   },
   'MP2024-010': {
