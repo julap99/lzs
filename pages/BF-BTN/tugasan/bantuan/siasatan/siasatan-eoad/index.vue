@@ -858,7 +858,7 @@
                     placeholder="--Sila Pilih--"
                     validation="required"
                     :validation-messages="{
-                      required: 'Sila pilih keadaan siasatan untuk meneruskan',
+                      required: 'Sila pilih kaedah siasatan untuk meneruskan',
                     }"
                   />
                 </div>
@@ -910,7 +910,7 @@
 
 
                 <!-- Catatan Penilaian Awal -->
-                <div>
+                <!-- <div>
                   <FormKit
                     type="textarea"
                     name="catatanPenilaianAwal"
@@ -921,7 +921,7 @@
                       input: '!py-2',
                     }"
                   />
-                </div>
+                </div> -->
 
                 <!-- Gambar Lokasi/Bukti Visual -->
                 <div>
