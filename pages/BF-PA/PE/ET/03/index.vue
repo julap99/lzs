@@ -333,7 +333,7 @@ const searchQuery = ref('');
 const typeOptions = {
   'ET-KPAK': 'Elaun Tahunan KPAK',
   'ET-KPAF': 'Elaun Tahunan KPAF', 
-  'ET-ANUG': 'Anugerah Penolong Amil',
+  'ET-KHAS': 'Elaun Khas - 48 Aktiviti/Tahun',
   'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
   'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
   'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
@@ -612,7 +612,7 @@ function loadBatchData() {
 function loadMockData() {
   // Generate mock batch data
   const mockYear = 2024;
-  const mockType = 'ET-KPAK';
+  const mockType = 'ET-KHAS';
   const mockStatus = 'MENUNGGU KELULUSAN';
   
   batchData.value = {
@@ -623,10 +623,10 @@ function loadMockData() {
     typeLabel: typeOptions[mockType] || mockType,
     status: mockStatus,
     budget: 15000,
-    notes: 'Elaun tahunan untuk KPAK tahun 2024. Permohonan ini telah disemak dan disokong oleh eksekutif.'
+    notes: 'Elaun khas untuk 48 aktiviti/tahun 2024. Permohonan ini telah disemak dan disokong oleh eksekutif.'
   };
   
-  // Generate mock recipients data
+  // Generate mock recipients data for ET-KHAS (Elaun Khas - 48 Aktiviti/Tahun)
   recipients.value = [
     {
       paId: 'PA2024001',
@@ -634,7 +634,7 @@ function loadMockData() {
       ic: '800101011234',
       category: 'KPAK',
       parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
-      allowance: 500.00
+      allowance: 400.00
     },
     {
       paId: 'PA2024002',
@@ -642,47 +642,39 @@ function loadMockData() {
       ic: '750315085678',
       category: 'KPAK',
       parish: 'Kariah Masjid Al-Amin',
-      allowance: 500.00
+      allowance: 400.00
     },
     {
       paId: 'PA2024003',
-      name: 'Abdul Rahman bin Hassan',
+      name: 'Siti Aminah binti Omar',
       ic: '820520149012',
-      category: 'KPAK',
+      category: 'KPAF',
       parish: 'Kariah Masjid Al-Hidayah',
-      allowance: 500.00
+      allowance: 400.00
     },
     {
       paId: 'PA2024004',
-      name: 'Mohd Faiz bin Omar',
+      name: 'Abdul Rahman bin Hassan',
       ic: '780812063456',
-      category: 'KPAK',
+      category: 'PAK',
       parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
-      allowance: 500.00
+      allowance: 400.00
     },
     {
       paId: 'PA2024005',
-      name: 'Zulkifli bin Ahmad',
-      ic: '790325127890',
-      category: 'KPAK',
+      name: 'Nor Azizah binti Ahmad',
+      ic: '830615083456',
+      category: 'PAF',
       parish: 'Kariah Masjid Al-Amin',
-      allowance: 500.00
+      allowance: 400.00
     },
     {
       paId: 'PA2024006',
-      name: 'Ahmad Fadzil bin Ibrahim',
-      ic: '810415032345',
-      category: 'KPAK',
+      name: 'Mohd Faiz bin Omar',
+      ic: '790325127890',
+      category: 'PAP',
       parish: 'Kariah Masjid Al-Hidayah',
-      allowance: 500.00
-    },
-    {
-      paId: 'PA2024007',
-      name: 'Mohd Hafiz bin Zainal',
-      ic: '760628096789',
-      category: 'KPAK',
-      parish: 'Kariah Masjid Sultan Salahuddin Abdul Aziz Shah',
-      allowance: 500.00
+      allowance: 400.00
     }
   ];
   

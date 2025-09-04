@@ -375,88 +375,7 @@
       </div>
     </div>
 
-    <!-- Form-Based Activities Modal -->
-    <div v-if="showFormBasedModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-hidden">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold">Pembatalan Pembayaran Elaun {{ selectedActivity }}</h3>
-            <button 
-              @click="closeFormBasedModal"
-              class="text-gray-400 hover:text-gray-600"
-            >
-              <Icon name="ic:baseline-close" size="24" />
-            </button>
-          </div>
-          
-          <div class="overflow-x-auto rounded-lg border">
-            <table class="min-w-full text-sm divide-y">
-              <thead class="bg-gray-50 text-left">
-                <tr>
-                  <th class="px-4 py-3 font-medium text-gray-900 w-16">Checkbox</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">ID Asnaf</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Nama Asnaf</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y bg-white">
-                <tr v-for="(item, index) in formBasedModalData" :key="index" class="hover:bg-gray-50">
-                  <td class="px-4 py-3">
-                    <FormKit
-                      v-model="item._modalChecked"
-                      type="checkbox"
-                      :classes="{
-                        input: '!w-4 !h-4',
-                      }"
-                    />
-                  </td>
-                  <td class="px-4 py-3 text-gray-900">{{ item.idAsnaf }}</td>
-                  <td class="px-4 py-3 font-medium text-gray-900">{{ item.namaAsnaf }}</td>
-                  <td class="px-4 py-3 text-gray-900">{{ item.idPengenalan }}</td>
-                  <td class="px-4 py-3">
-                    <FormKit
-                      v-if="item._modalChecked"
-                      v-model="item._modalCatatan"
-                      type="textarea"
-                      rows="2"
-                      placeholder="Masukkan catatan pembatalan..."
-                      :classes="{ input: '!py-2 !px-2 text-xs' }"
-                    />
-                    <input
-                      v-else
-                      type="text"
-                      disabled
-                      :value="item._modalCatatan"
-                      class="w-full py-2 px-2 text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <div class="flex items-center justify-end gap-3 mt-6">
-            <rs-button
-              variant="secondary-outline"
-              size="sm"
-              @click="closeFormBasedModal"
-            >
-              Batal
-            </rs-button>
-            <rs-button
-              variant="primary"
-              size="sm"
-              @click="applyFormBasedChanges"
-              :disabled="!hasFormBasedChanges"
-            >
-              <Icon name="ic:baseline-check" class="mr-2" />
-              Simpan
-            </rs-button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Note: Form-based activities modal removed - moved to AB2 module -->
 
     <!-- Special Activity Modal -->
     <div v-if="showSpecialModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -694,9 +613,7 @@ const query = reactive({
 const typeOptions = {
   'ET-KPAK': 'Elaun Tahunan KPAK',
   'ET-KPAF': 'Elaun Tahunan KPAF',
-  'ET-ANUG': 'Elaun Khas - 48 aktiviti/tahun',
-  'ET-BANCIAN': 'Elaun Bancian Baru : per borang permohonan',
-  'ET-KEMASKINI': 'Elaun Kemaskini/permohonan bantuan : per borang permohonan',
+  'ET-KHAS': 'Elaun Khas - 48 Aktiviti/Tahun',
   'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
   'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
   'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
@@ -712,9 +629,7 @@ const typeLabel = computed(() => typeOptions[query.type] || '');
 const fixedAllowanceByType = { 
   'ET-KPAK': 500, 
   'ET-KPAF': 300, 
-  'ET-ANUG': 400,
-  'ET-BANCIAN': 30,
-  'ET-KEMASKINI': 20
+  'ET-KHAS': 400
 };
 
 // Editable allowances with range validation
@@ -786,13 +701,11 @@ const showSubmitModal = ref(false);
 const submitNotes = ref('');
 
 // Activity-specific modal states
-const showFormBasedModal = ref(false);
 const showSpecialModal = ref(false);
 const showAwardModal = ref(false);
 const selectedActivity = ref('');
 
 // Activity-specific modal data
-const formBasedModalData = ref([]);
 const specialModalData = ref([]);
 const awardModalData = ref([]);
 
@@ -802,29 +715,7 @@ const selectAllCandidates = ref(false);
 // Filtering state removed per request
 
 // Mock data generators for different modal types
-function generateFormBasedModalData(activityName) {
-  const mockData = {
-    'BANCIAN BARU : PER BORANG PERMOHONAN': [
-      { idAsnaf: 'ASN001', namaAsnaf: 'Ahmad bin Abdullah', idPengenalan: '800101011234', catatan: 'Permohonan bancian baru untuk keluarga 5 orang', _modalChecked: false, _modalCatatan: 'Tiada' },
-      { idAsnaf: 'ASN002', namaAsnaf: 'Siti Aminah binti Hassan', idPengenalan: '820520149012', catatan: 'Permohonan bancian untuk anak tunggal', _modalChecked: false, _modalCatatan: 'Tiada' },
-      { idAsnaf: 'ASN003', namaAsnaf: 'Mohd Razak bin Ibrahim', idPengenalan: '750315085678', catatan: 'Permohonan bancian untuk keluarga 3 orang', _modalChecked: false, _modalCatatan: 'Tiada' },
-      { idAsnaf: 'ASN004', namaAsnaf: 'Fatimah binti Omar', idPengenalan: '830615083456', catatan: 'Permohonan bancian untuk ibu tunggal', _modalChecked: false, _modalCatatan: 'Tiada' },
-      { idAsnaf: 'ASN005', namaAsnaf: 'Abdul Rahman bin Ahmad', idPengenalan: '780812063456', catatan: 'Permohonan bancian untuk keluarga 7 orang', _modalChecked: false, _modalCatatan: 'Tiada' }
-    ],
-    'KEMASKINI : PER BORANG PERMOHONAN': [
-      { idAsnaf: 'ASN006', namaAsnaf: 'Nor Azizah binti Ahmad', idPengenalan: '830615083456', catatan: 'Kemaskini maklumat keluarga - perubahan alamat', _modalChecked: false, _modalCatatan: 'Tiada' },
-      { idAsnaf: 'ASN007', namaAsnaf: 'Mohd Faiz bin Omar', idPengenalan: '790325127890', catatan: 'Kemaskini maklumat pendapatan bulanan', _modalChecked: false, _modalCatatan: 'Tiada' },
-      { idAsnaf: 'ASN008', namaAsnaf: 'Zulkifli bin Ahmad', idPengenalan: '760628096789', catatan: 'Kemaskini maklumat tanggungan keluarga', _modalChecked: false, _modalCatatan: 'Tiada' },
-      { idAsnaf: 'ASN009', namaAsnaf: 'Ahmad Fadzil bin Ibrahim', idPengenalan: '810415032345', catatan: 'Kemaskini maklumat status perkahwinan', _modalChecked: false, _modalCatatan: 'Tiada' }
-    ],
-    'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN': [
-      { idAsnaf: 'ASN010', namaAsnaf: 'Siti Khadijah binti Zainal', idPengenalan: '800915036789', catatan: 'Permohonan bantuan pendidikan anak', _modalChecked: false, _modalCatatan: 'Tiada' },
-      { idAsnaf: 'ASN011', namaAsnaf: 'Mohd Hafiz bin Zainal', idPengenalan: '830710150123', catatan: 'Permohonan bantuan perubatan keluarga', _modalChecked: false, _modalCatatan: 'Tiada' },
-      { idAsnaf: 'ASN012', namaAsnaf: 'Aishah binti Hassan', idPengenalan: '840812062345', catatan: 'Permohonan bantuan kecemasan', _modalChecked: false, _modalCatatan: 'Tiada' }
-    ]
-  };
-  return mockData[activityName] || [];
-}
+// Note: Form-based activities (BANCIAN, KEMASKINI, PERMOHONAN BANTUAN) moved to AB2 module
 
 function generateSpecialModalData() {
   return [
@@ -910,28 +801,13 @@ function getMockCandidates(year, type) {
       { paId: `PA${year}003`, name: 'Fatimah binti Hassan', ic: '810723127890', category: 'KPAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}004`, name: 'Aishah binti Ibrahim', ic: '840812062345', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
     ],
-    'ET-ANUG': [
+    'ET-KHAS': [
       { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}003`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}004`, name: 'Abdul Rahman bin Hassan', ic: '780812063456', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}006`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
-    ],
-    'ET-BANCIAN': [
-      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520149012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}004`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false }
-    ],
-    'ET-KEMASKINI': [
-      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520149012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}004`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}006`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false }
     ],
     'ANUG-KPAK': [
       { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
@@ -990,13 +866,8 @@ function getMockCandidates(year, type) {
   return mockData[type] || [];
 }
 
-// Activity classification system based on BA requirements
+// Activity classification system for ET module (Yearly/Special Allowances)
 const activityCategories = {
-  FORM_BASED: [
-    'BANCIAN BARU : PER BORANG PERMOHONAN',
-    'KEMASKINI : PER BORANG PERMOHONAN', 
-    'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN'
-  ],
   SPECIAL: [
     'KHAS - 48 AKTIVITI/TAHUN'
   ],
@@ -1010,14 +881,9 @@ const activityCategories = {
   ]
 };
 
-// Enhanced activity generation with BA-specific activities
+// Enhanced activity generation for ET module (Yearly/Special Allowances only)
 function generateSimpleActivities() {
   const activityPool = [
-    // Form-based activities
-    { name: 'BANCIAN BARU : PER BORANG PERMOHONAN', count: 3, category: 'FORM_BASED' },
-    { name: 'KEMASKINI : PER BORANG PERMOHONAN', count: 4, category: 'FORM_BASED' },
-    { name: 'PERMOHONAN BANTUAN : PER BORANG PERMOHONAN', count: 2, category: 'FORM_BASED' },
-    
     // Special activity
     { name: 'KHAS - 48 AKTIVITI/TAHUN', count: 1, category: 'SPECIAL' },
     
@@ -1030,8 +896,8 @@ function generateSimpleActivities() {
     { name: 'Penolong Amil Komuniti (PAK+) terbaik', count: 1, category: 'AWARD' }
   ];
   
-  // Randomly select 3-5 activities
-  const selectedCount = Math.floor(Math.random() * 3) + 3; // 3-5 activities
+  // Randomly select 2-4 activities (reduced since we have fewer activity types)
+  const selectedCount = Math.floor(Math.random() * 3) + 2; // 2-4 activities
   const shuffled = [...activityPool].sort(() => 0.5 - Math.random());
   
   return shuffled.slice(0, selectedCount).map((activity, index) => ({
@@ -1047,9 +913,7 @@ function getCategoryFilterText() {
   const categoryMapping = {
     'ET-KPAK': ['KPAK'],
     'ET-KPAF': ['KPAF'],
-    'ET-ANUG': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'],
-    'ET-BANCIAN': ['KPAK', 'KPAF', 'PAK', 'PAF'],
-    'ET-KEMASKINI': ['KPAK', 'KPAF', 'PAK', 'PAF'],
+    'ET-KHAS': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'],
     'ANUG-KPAK': ['KPAK'],         // Anugerah KPAK - only KPAK
     'ANUG-PAK': ['PAK'],           // Anugerah PAK - only PAK
     'ANUG-KPAF': ['KPAF'],         // Anugerah KPAF - only KPAF
@@ -1102,9 +966,7 @@ const baseRows = computed(() => {
   const categoryMapping = {
     'ET-KPAK': ['KPAK'],           // Elaun Tahunan KPAK - only KPAK
     'ET-KPAF': ['KPAF'],           // Elaun Tahunan KPAF - only KPAF  
-    'ET-ANUG': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'], // Anugerah - all categories
-    'ET-BANCIAN': ['KPAK', 'KPAF', 'PAK', 'PAF'],
-    'ET-KEMASKINI': ['KPAK', 'KPAF', 'PAK', 'PAF'],
+    'ET-KHAS': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'], // Elaun Khas - all categories
     'ANUG-KPAK': ['KPAK'],         // Anugerah KPAK - only KPAK
     'ANUG-PAK': ['PAK'],           // Anugerah PAK - only PAK
     'ANUG-KPAF': ['KPAF'],         // Anugerah KPAF - only KPAF
@@ -1488,22 +1350,13 @@ function openAllowanceModal(activityName) {
   selectedActivity.value = activityName;
   
   // Determine activity category and prepare appropriate data
-  if (activityCategories.FORM_BASED.includes(activityName)) {
-    formBasedModalData.value = generateFormBasedModalData(activityName);
-    showFormBasedModal.value = true;
-  } else if (activityCategories.SPECIAL.includes(activityName)) {
+  if (activityCategories.SPECIAL.includes(activityName)) {
     specialModalData.value = generateSpecialModalData();
     showSpecialModal.value = true;
   } else if (activityCategories.AWARD.includes(activityName)) {
     awardModalData.value = generateAwardModalData();
     showAwardModal.value = true;
   }
-}
-
-function closeFormBasedModal() {
-  showFormBasedModal.value = false;
-  selectedActivity.value = '';
-  formBasedModalData.value = [];
 }
 
 function closeSpecialModal() {
@@ -1516,24 +1369,6 @@ function closeAwardModal() {
   showAwardModal.value = false;
   selectedActivity.value = '';
   awardModalData.value = [];
-}
-
-function applyFormBasedChanges() {
-  // Apply changes from form-based modal
-  const changedItems = formBasedModalData.value.filter(r => r._modalChecked);
-  if (changedItems.length > 0) {
-    // Mark items as cancelled in the main recipients list
-    changedItems.forEach(item => {
-      const recipient = recipients.value.find(r => r.paId === item.idAsnaf);
-      if (recipient) {
-        recipient._cancelled = true;
-        recipient._cancellationDate = new Date().toISOString().split('T')[0];
-        recipient._cancellationReason = item._modalCatatan || 'Dibatalkan melalui modal';
-      }
-    });
-    toast.success(`${changedItems.length} rekod telah diproses untuk ${selectedActivity.value}`);
-  }
-  closeFormBasedModal();
 }
 
 function applySpecialChanges() {
@@ -1567,10 +1402,6 @@ function applyAwardChanges() {
 }
 
 // Computed properties for modal changes
-const hasFormBasedChanges = computed(() => {
-  return formBasedModalData.value.some(r => r._modalChecked);
-});
-
 const hasSpecialChanges = computed(() => {
   return specialModalData.value.some(r => r._modalChecked);
 });
