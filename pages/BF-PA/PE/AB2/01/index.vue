@@ -386,12 +386,12 @@
           <div class="flex items-center justify-end gap-3 mt-6">
             <rs-button
               variant="secondary-outline"
-              size="sm"
+      size="sm"
               @click="closeSubmitModal"
             >
               Batal
             </rs-button>
-            <rs-button
+                      <rs-button
               variant="primary"
               size="sm"
               @click="confirmSubmit"
@@ -409,6 +409,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { useToast } from 'vue-toastification';
 
 definePageMeta({
   title: "Kira Jumlah Elaun",
@@ -788,8 +789,9 @@ function saveDraft() {
   saving.value = true;
   setTimeout(() => {
     saving.value = false;
-    // Show success message (mockup only)
-    alert('Draf berjaya disimpan');
+    // Show success message using toast
+    const toast = useToast();
+    toast.success('Draf berjaya disimpan');
   }, 1000);
 }
 

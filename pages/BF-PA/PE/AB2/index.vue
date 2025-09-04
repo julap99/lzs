@@ -137,6 +137,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Advice</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
                       </tr>
                     </thead>
@@ -161,6 +162,25 @@
                             {{ getStatusLabel(batch.status) }}
                           </span>
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div v-if="batch.paymentAdviceStatus" class="space-y-1">
+                            <div class="flex items-center space-x-2">
+                              <span
+                                class="px-2 py-1 text-xs font-medium rounded-full"
+                                :class="getPaymentAdviceStatusColor(batch.paymentAdviceStatus)"
+                              >
+                                {{ batch.paymentAdviceStatus }}
+                              </span>
+                            </div>
+                            <div v-if="batch.paymentAdviceNo" class="text-xs text-gray-600">
+                              {{ batch.paymentAdviceNo }}
+                            </div>
+                            <div v-if="batch.sapStatus" class="text-xs" :class="getSapStatusColor(batch.sapStatus)">
+                              {{ batch.sapStatus }}
+                            </div>
+                          </div>
+                          <span v-else class="text-xs text-gray-400">-</span>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div class="flex items-center justify-end gap-2">
                             <button
@@ -177,6 +197,14 @@
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
                               <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
+                            </button>
+                            <button
+                              v-if="shouldShowRegenerateButton(batch)"
+                              @click="regeneratePaymentAdvice(batch)"
+                              title="Jana Semula Payment Advice"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-refresh" class="w-5 h-5 text-orange-600" />
                             </button>
                           </div>
                         </td>
@@ -229,14 +257,6 @@
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
                               <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                            </button>
-                            <button
-                              v-if="shouldShowSemakButton(batch.status)"
-                              @click="navigateTo(getSemakRoute())"
-                              title="Semak"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                             </button>
                           </div>
                         </td>
@@ -320,7 +340,10 @@ const batches = ref([
     institusi: 'Masjid Al-Hidayah',
     kategori: 'Kariah',
     status: 'Menunggu Pengesahan',
-    tarikhCipta: '2024-03-15'
+    tarikhCipta: '2024-03-15',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 2,
@@ -328,7 +351,10 @@ const batches = ref([
     institusi: 'Masjid Al-Ikhlas',
     kategori: 'Kariah',
     status: 'Menunggu Pengesahan',
-    tarikhCipta: '2024-03-16'
+    tarikhCipta: '2024-03-16',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 3,
@@ -336,7 +362,10 @@ const batches = ref([
     institusi: 'Masjid Al-Amin',
     kategori: 'Kariah',
     status: 'Menunggu Kelulusan',
-    tarikhCipta: '2024-03-10'
+    tarikhCipta: '2024-03-10',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 4,
@@ -344,7 +373,10 @@ const batches = ref([
     institusi: 'Masjid Al-Falah',
     kategori: 'Kariah',
     status: 'Lulus',
-    tarikhCipta: '2024-03-12'
+    tarikhCipta: '2024-03-12',
+    paymentAdviceStatus: 'Berjaya',
+    paymentAdviceNo: 'PA/2024/001',
+    sapStatus: 'Sudah Dihantar ke SAP'
   },
   {
     id: 5,
@@ -352,7 +384,10 @@ const batches = ref([
     institusi: 'Masjid Al-Muttaqin',
     kategori: 'Kariah',
     status: 'Ditolak',
-    tarikhCipta: '2024-03-18'
+    tarikhCipta: '2024-03-18',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   // NEW: Additional batches for better status distribution and variety
   {
@@ -361,7 +396,10 @@ const batches = ref([
     institusi: 'Masjid Negeri Selangor',
     kategori: 'Fitrah',
     status: 'Menunggu Pengesahan',
-    tarikhCipta: '2024-03-20'
+    tarikhCipta: '2024-03-20',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 7,
@@ -369,7 +407,10 @@ const batches = ref([
     institusi: 'Masjid Kg Delek',
     kategori: 'Komuniti',
     status: 'Menunggu Kelulusan',
-    tarikhCipta: '2024-03-22'
+    tarikhCipta: '2024-03-22',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 8,
@@ -377,7 +418,10 @@ const batches = ref([
     institusi: 'Masjid Al-Khairiyah',
     kategori: 'Padi',
     status: 'Lulus',
-    tarikhCipta: '2024-03-25'
+    tarikhCipta: '2024-03-25',
+    paymentAdviceStatus: 'Berjaya',
+    paymentAdviceNo: 'PA/2024/002',
+    sapStatus: 'Sudah Dihantar ke SAP'
   },
   {
     id: 9,
@@ -385,7 +429,10 @@ const batches = ref([
     institusi: 'Masjid Al-Rahman',
     kategori: 'Fitrah',
     status: 'Ditolak',
-    tarikhCipta: '2024-03-28'
+    tarikhCipta: '2024-03-28',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 10,
@@ -393,7 +440,10 @@ const batches = ref([
     institusi: 'Masjid Al-Mustaqim',
     kategori: 'Kariah',
     status: 'Menunggu Pengesahan',
-    tarikhCipta: '2024-04-01'
+    tarikhCipta: '2024-04-01',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 11,
@@ -401,7 +451,10 @@ const batches = ref([
     institusi: 'Masjid Al-Huda',
     kategori: 'Komuniti',
     status: 'Menunggu Kelulusan',
-    tarikhCipta: '2024-04-03'
+    tarikhCipta: '2024-04-03',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 12,
@@ -409,7 +462,10 @@ const batches = ref([
     institusi: 'Masjid Al-Iman',
     kategori: 'Padi',
     status: 'Lulus',
-    tarikhCipta: '2024-04-05'
+    tarikhCipta: '2024-04-05',
+    paymentAdviceStatus: 'Gagal',
+    paymentAdviceNo: 'PA/2024/003',
+    sapStatus: 'Gagal Dihantar ke SAP'
   },
   {
     id: 13,
@@ -417,7 +473,10 @@ const batches = ref([
     institusi: 'Masjid Al-Taqwa',
     kategori: 'Fitrah',
     status: 'Ditolak',
-    tarikhCipta: '2024-04-08'
+    tarikhCipta: '2024-04-08',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 14,
@@ -425,7 +484,10 @@ const batches = ref([
     institusi: 'Masjid Al-Salam',
     kategori: 'Kariah',
     status: 'Menunggu Pengesahan',
-    tarikhCipta: '2024-04-10'
+    tarikhCipta: '2024-04-10',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   },
   {
     id: 15,
@@ -433,7 +495,10 @@ const batches = ref([
     institusi: 'Masjid Al-Nur',
     kategori: 'Komuniti',
     status: 'Menunggu Kelulusan',
-    tarikhCipta: '2024-04-12'
+    tarikhCipta: '2024-04-12',
+    paymentAdviceStatus: null,
+    paymentAdviceNo: null,
+    sapStatus: null
   }
 ]);
 
@@ -542,6 +607,32 @@ const getStatusColor = (status) => {
   }
 }
 
+const getPaymentAdviceStatusColor = (status) => {
+  switch (status) {
+    case 'Berjaya':
+      return 'bg-green-100 text-green-800'
+    case 'Gagal':
+      return 'bg-red-100 text-red-800'
+    case 'Dalam Proses':
+      return 'bg-yellow-100 text-yellow-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getSapStatusColor = (status) => {
+  switch (status) {
+    case 'Sudah Dihantar ke SAP':
+      return 'text-green-600'
+    case 'Gagal Dihantar ke SAP':
+      return 'text-red-600'
+    case 'Menunggu Penghantaran':
+      return 'text-yellow-600'
+    default:
+      return 'text-gray-600'
+  }
+}
+
 const getStatusLabel = (status) => {
   switch (status) {
     case 'Menunggu Pengesahan':
@@ -560,13 +651,13 @@ const getStatusLabel = (status) => {
 const getActionRoute = (status) => {
   switch (status) {
     case 'Menunggu Pengesahan':
-      return '/BF-PA/PE/AB2/03'
+      return '/BF-PA/PE/AB2/05?status=Menunggu Pengesahan'  // View page
     case 'Menunggu Kelulusan':
-      return '/BF-PA/PE/AB2/06'
+      return '/BF-PA/PE/AB2/05?status=Menunggu Kelulusan'  // View page
     case 'Lulus':
-      return '/BF-PA/PE/AB2/04'
+      return '/BF-PA/PE/AB2/04'  // View page
     case 'Ditolak':
-      return '/BF-PA/PE/AB2/07'
+      return '/BF-PA/PE/AB2/07'  // View page
     default:
       return '#'
   }
@@ -611,6 +702,41 @@ const getSedangProsesStatuses = () => {
     return ['Menunggu Kelulusan'];
   }
   return ['Menunggu Pengesahan', 'Menunggu Kelulusan'];
+}
+
+// Payment Advice regeneration functions
+const shouldShowRegenerateButton = (batch) => {
+  return batch.status === 'Lulus' && batch.paymentAdviceStatus === 'Gagal';
+}
+
+const regeneratePaymentAdvice = async (batch) => {
+  try {
+    // Show loading state
+    batch.paymentAdviceStatus = 'Dalam Proses';
+    batch.sapStatus = 'Menunggu Penghantaran';
+    
+    // Mock API call to regenerate Payment Advice
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Simulate success/failure (80% success rate for demo)
+    const isSuccess = Math.random() > 0.2;
+    
+    if (isSuccess) {
+      batch.paymentAdviceStatus = 'Berjaya';
+      batch.sapStatus = 'Sudah Dihantar ke SAP';
+      // Show success notification
+      console.log(`Payment Advice regenerated successfully for ${batch.noBatch}`);
+    } else {
+      batch.paymentAdviceStatus = 'Gagal';
+      batch.sapStatus = 'Gagal Dihantar ke SAP';
+      // Show error notification
+      console.log(`Payment Advice regeneration failed for ${batch.noBatch}`);
+    }
+  } catch (error) {
+    batch.paymentAdviceStatus = 'Gagal';
+    batch.sapStatus = 'Gagal Dihantar ke SAP';
+    console.error('Error regenerating Payment Advice:', error);
+  }
 }
 
 // Fungsi carian

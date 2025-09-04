@@ -454,6 +454,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useToast } from 'vue-toastification';
 
 definePageMeta({
   title: "Semakan dan Kelulusan",
@@ -686,9 +687,15 @@ const handleApprove = async () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     showApproveModal.value = false;
-    successMessage.value = "Permohonan telah berjaya disahkan.";
+    successMessage.value = "Permohonan telah berjaya disahkan dan dihantar kepada Ketua Divisyen.";
     showSuccessModal.value = true;
+    
+    // Show toast notification
+    const toast = useToast();
+    toast.success('Permohonan telah berjaya disahkan');
   } catch (error) {
+    const toast = useToast();
+    toast.error('Ralat semasa mengesahkan permohonan');
     console.error('Error approving application:', error);
   } finally {
     isSubmitting.value = false;
@@ -705,7 +712,13 @@ const handleReject = async () => {
     showRejectModal.value = false;
     successMessage.value = "Permohonan telah ditolak.";
     showSuccessModal.value = true;
+    
+    // Show toast notification
+    const toast = useToast();
+    toast.success('Permohonan telah ditolak');
   } catch (error) {
+    const toast = useToast();
+    toast.error('Ralat semasa menolak permohonan');
     console.error('Error rejecting application:', error);
   } finally {
     isSubmitting.value = false;
