@@ -6,9 +6,14 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Had Kifayah Utama</h2>
-          <rs-button variant="primary" @click="navigateTo('01_01/tambah')">
-            <Icon name="material-symbols:add" class="mr-1" /> Tambah Baharu
-          </rs-button>
+          <div class="flex items-center gap-2">
+            <rs-button variant="primary" @click="navigateTo('01_01/tambah')">
+              <Icon name="material-symbols:add" class="mr-1" /> Tambah Baharu
+            </rs-button>
+            <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/HK/01_01/tambah_kategori')">
+              <Icon name="mdi:folder-plus" class="mr-1" /> Tambah Kategori
+            </rs-button>
+          </div>
         </div>
       </template>
 
@@ -24,6 +29,7 @@
           class="mt-4"
           :key="tableKey"
           :data="kifayahLimits"
+          :field="['idHadKifayah','namaHadKifayah','kadarBerbayar','tarikhMula','status','tindakan']"
           :pageSize="10"
           :showNoColumn="true"
           :options="{
@@ -31,16 +37,13 @@
             hover: true,
           }"
         >
-          <template v-slot:idHadKifayah="data">{{ data.text }}</template>
-          <template v-slot:namaHadKifayah="data">{{ data.text }}</template>
-          <template v-slot:kategori="data">{{ data.text }}</template>
-          <template v-slot:jenisIsiRumah="data">{{ data.text }}</template>
-          <template v-slot:kadarBerbayar="data">RM {{ formatCurrency(data.text) }}</template>
-          <template v-slot:kadarPercuma="data">RM {{ formatCurrency(data.text) }}</template>
-          <template v-slot:tarikhMula="data">{{ formatDate(data.text) }}</template>
+          <template v-slot:idHadKifayah="data">{{ data.value.idHadKifayah }}</template>
+          <template v-slot:namaHadKifayah="data">{{ data.value.namaHadKifayah }}</template>
+          <template v-slot:kadarBerbayar="data">RM {{ formatCurrency(data.value.kadarBerbayar) }}</template>
+          <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
           <template v-slot:status="data">
-            <rs-badge :variant="getStatusVariant(data.text)">
-              {{ data.text }}
+            <rs-badge :variant="getStatusVariant(data.value.status)">
+              {{ data.value.status }}
             </rs-badge>
           </template>
           <template v-slot:tindakan="data">
@@ -48,7 +51,7 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo('01_02')"
+              @click="navigateTo(`/BF-PRF/KF/HK/01_02?id=${data.value.idHadKifayah}`)"
               >Lebih
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -99,23 +102,40 @@ const defaultData = [
   },
 ];
 
+// Function to validate and sanitize data item
+const validateDataItem = (item) => {
+  return {
+    ...item,
+    // Ensure numeric values are valid
+    kadarBerbayar: isNaN(parseFloat(item.kadarBerbayar)) ? 0 : parseFloat(item.kadarBerbayar),
+    kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
+    // Ensure date is valid
+    tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
+    // Ensure status is valid
+    status: item.status || "Aktif"
+  };
+};
+
 // Function to load data from localStorage
 const loadData = () => {
   try {
     const savedData = localStorage.getItem('kifayahLimits');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
+      // Validate and sanitize parsed data
+      const validatedData = parsedData.map(validateDataItem);
+      
       // Merge with default data, giving priority to saved data
       const mergedData = [...defaultData];
-      parsedData.forEach(savedItem => {
+      validatedData.forEach(savedItem => {
         // Check if item already exists in default data
         const existingIndex = mergedData.findIndex(item => item.idHadKifayah === savedItem.idHadKifayah);
         if (existingIndex >= 0) {
           // Replace existing item
-          mergedData[existingIndex] = savedItem;
+          mergedData[existingIndex] = validateDataItem(savedItem);
         } else {
           // Add new item
-          mergedData.push(savedItem);
+          mergedData.push(validateDataItem(savedItem));
         }
       });
       kifayahLimits.value = mergedData;
@@ -152,18 +172,45 @@ const refreshTable = () => {
     tableKey.value++; // Force table to re-render
     console.log("Table refreshed, records:", kifayahLimits.value.length);
     console.log("Pending approval:", pendingApprovalCount.value);
+    console.log("Sample data:", kifayahLimits.value[0]);
   });
 };
 
 const formatDate = (dateString) => {
   if (!dateString) return "";
+  
+  // Handle different date formats and validate
+  let date;
+  if (typeof dateString === 'string') {
+    // Check if it's a valid date string
+    date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "Tarikh Tidak Sah";
+    }
+  } else if (dateString instanceof Date) {
+    date = dateString;
+    if (isNaN(date.getTime())) {
+      return "Tarikh Tidak Sah";
+    }
+  } else {
+    return "Tarikh Tidak Sah";
+  }
+  
   const options = { year: "numeric", month: "short", day: "numeric" };
-  return new Date(dateString).toLocaleDateString("ms-MY", options);
+  return date.toLocaleDateString("ms-MY", options);
 };
 
 const formatCurrency = (value) => {
-  if (value === undefined || value === null) return "0.00";
-  return parseFloat(value).toFixed(2);
+  if (value === undefined || value === null || value === "") return "0.00";
+  
+  // Convert to number and validate
+  const numValue = parseFloat(value);
+  if (isNaN(numValue)) {
+    return "0.00";
+  }
+  
+  // Ensure it's a valid number and format to 2 decimal places
+  return numValue.toFixed(2);
 };
 
 // Helper function to determine badge variant based on status
