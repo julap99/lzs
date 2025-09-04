@@ -140,34 +140,6 @@
             </div>
           </div>
 
-          <!-- Approval History -->
-          <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">Sejarah Kelulusan</h3>
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <div class="space-y-3">
-                <div class="flex items-center justify-between p-3 bg-white rounded-lg border">
-                  <div class="flex items-center space-x-3">
-                    <rs-badge variant="success" size="sm">JPPA</rs-badge>
-                    <span class="text-sm font-medium">Sokongan JPPA</span>
-                  </div>
-                  <div class="text-right">
-                    <p class="text-sm text-gray-600">{{ application.jppaApprovalDate }}</p>
-                    <p class="text-xs text-gray-500">oleh {{ application.jppaApprover }}</p>
-                  </div>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-white rounded-lg border">
-                  <div class="flex items-center space-x-3">
-                    <rs-badge variant="warning" size="sm">Ketua Jabatan</rs-badge>
-                    <span class="text-sm font-medium">Kelulusan Ketua Jabatan</span>
-                  </div>
-                  <div class="text-right">
-                    <p class="text-sm text-gray-600">{{ application.ketuaJabatanApprovalDate }}</p>
-                    <p class="text-xs text-gray-500">oleh {{ application.ketuaJabatanApprover }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- Review History -->
           <div class="mb-6 p-6 border border-gray-200 rounded-lg">
@@ -239,80 +211,48 @@
           <div class="mb-6">
             <FormKit
               type="form"
-              id="approvalForm"
+              id="reviewForm"
               @submit="handleSubmit"
-              v-model="approvalData"
+              :actions="false"
             >
-              <div class="space-y-4">
-                <h3 class="text-lg font-semibold">Penilaian Ketua Divisyen</h3>
-                
-                <FormKit
-                  type="textarea"
-                  name="comments"
-                  label="Ulasan (Opsional)"
-                  placeholder="Masukkan ulasan atau komen jika perlu..."
-                  :classes="{
-                    input: '!py-2',
-                  }"
-                />
+              <div class="mb-6">
+                <h3 class="font-medium mb-3">Penilaian Ketua Divisyen</h3>
 
-                <div class="flex items-center space-x-4">
+                <div class="mt-4">
                   <FormKit
-                    type="radio"
-                    name="decision"
-                    label="Keputusan"
-                    :options="[
-                      { label: 'Lulus', value: 'lulus' },
-                      { label: 'Tolak', value: 'tolak' }
-                    ]"
-                    validation="required"
+                    type="checkbox"
+                    name="confirmationCheck"
+                    label="Saya mengesahkan bahawa semua maklumat telah disemak dan keputusan saya adalah berdasarkan penilaian yang teliti dan meluluskan permohonan elaun ini"
+                    validation="accepted"
                     :validation-messages="{
-                      required: 'Keputusan diperlukan',
+                      accepted: 'Sila buat pengesahan sebelum hantar',
                     }"
                   />
                 </div>
-
-                <div v-if="approvalData.decision === 'tolak'" class="mt-4">
-                  <FormKit
-                    type="textarea"
-                    name="rejectionReason"
-                    label="Sebab Penolakan"
-                    placeholder="Masukkan sebab penolakan..."
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Sebab penolakan diperlukan',
-                    }"
-                    :classes="{
-                      input: '!py-2',
-                    }"
-                  />
-                </div>
-              </div>
-
-              <!-- Action Buttons -->
-              <div class="flex justify-end gap-4 mt-6">
-                <rs-button
-                  variant="primary-outline"
-                  @click="navigateTo('/BF-PA/PE/AB2')"
-                >
-                  Kembali
-                </rs-button>
-                <rs-button
-                  variant="danger-outline"
-                  @click="showRejectModal = true"
-                  :disabled="!approvalData.decision || approvalData.decision !== 'tolak'"
-                >
-                  Tolak
-                </rs-button>
-                <rs-button
-                  variant="primary"
-                  @click="showApproveModal = true"
-                  :disabled="!approvalData.decision || approvalData.decision !== 'lulus'"
-                >
-                  Lulus
-                </rs-button>
               </div>
             </FormKit>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex justify-end gap-4 mt-6">
+            <rs-button
+              variant="primary-outline"
+              @click="navigateTo('/BF-PA/PE/AB2')"
+            >
+              Kembali
+            </rs-button>
+            <rs-button
+              variant="danger-outline"
+              @click="showRejectModal = true"
+            >
+              Tolak
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="showApproveModal = true"
+            >
+              Lulus
+            </rs-button>
           </div>
         </div>
       </template>
@@ -671,7 +611,7 @@ const activityModalData = ref([]);
 
 // Approval form data
 const approvalData = ref({
-  decision: '',
+  confirmationCheck: false,
   comments: '',
   rejectionReason: ''
 });

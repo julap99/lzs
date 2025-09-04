@@ -173,24 +173,6 @@
                 </div>
               </div>
 
-              <!-- Ketua Divisyen Review (Pending) -->
-              <div class="flex items-start justify-between p-4">
-                <div class="flex items-start">
-                  <Icon name="ph:circle" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
-                  <div class="flex-1">
-                    <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-gray-900">Ketua Divisyen</h4>
-                      <rs-badge variant="secondary">Belum Dimulakan</rs-badge>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-2">Pengesahan ketua divisyen</p>
-                    <div class="text-xs text-gray-600 space-y-1">
-                      <p><strong>Disemak oleh:</strong> -</p>
-                      <p><strong>Tarikh:</strong> -</p>
-                      <p><strong>Status:</strong> Belum dicapai</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
