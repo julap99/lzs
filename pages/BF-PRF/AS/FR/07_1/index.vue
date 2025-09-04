@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Profiling Data</h2>
+          <h2 class="text-xl font-semibold">Senarai Pengesahan</h2>
         </div>
       </template>
 
@@ -139,14 +139,14 @@ const applications = ref([
     namaPegawai: "Siti binti Ali",
     tindakan: "NAS-2025-0001",
   },
-  // {
-  //   noRujukan: "060802030272",
-  //   namaPemohon: "NUR NAJWA BINTI ADNAN",
-  //   status: "Dalam Semakan",
-  //   tarikhTerima: "2024-03-19",
-  //   namaPegawai: "Aminah binti Hassan",
-  //   tindakan: "NAS-2025-0002",
-  // },
+  {
+    noRujukan: "060802030272",
+    namaPemohon: "NUR NAJWA BINTI ADNAN",
+    status: "Dalam Semakan",
+    tarikhTerima: "2024-03-19",
+    namaPegawai: "Aminah binti Hassan",
+    tindakan: "NAS-2025-0002",
+  },
   // {
   //   noRujukan: "091108030442",
   //   namaPemohon: "NUR QISTINA BINTI ADNAN",
@@ -207,10 +207,10 @@ const paginationEnd = computed(() => {
 });
 
 const handleReview = (status) => {
-  if (status === "Baru") {
+  if (status === "Menunggu Pengesahan") {
     navigateTo(`/BF-PRF/AS/FR/07_01`);
   } else if (status === "Dalam Semakan") {
-    navigateTo(`/BF-PRF/AS/FR/07_01_2`);
+    navigateTo(`/BF-PRF/AS/FR/07_01_copy`);
   }
   // }else if(status === "Tidak Lengkap"){
   //   navigateTo(`/BF-PRF/AS/FR/07_01`);

@@ -81,7 +81,7 @@
 
               <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div>
-                  <label class="block text-xs uppercase tracking-wide">
+                  <!-- <label class="block text-xs uppercase tracking-wide">
                    Jumlah Had Kifayah
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -93,7 +93,7 @@
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.bakiHadKifayahSah }}
-                  </p>
+                  </p> -->
 
                   <label class="block text-xs uppercase tracking-wide mt-4">
                     Peratusan Perbezaan
@@ -106,6 +106,12 @@
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.kategoriKeluargaAsnaf }}
+                  </p>
+                  <label class="block text-xs uppercase tracking-wide mt-4">
+                    Kategori Asnaf
+                  </label>
+                  <p class="text-gray-900 font-medium">
+                    {{ profilingData.kategoriAsnaf }}
                   </p>
                 </div>
                 <div class="hidden lg:block"></div>
