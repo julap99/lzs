@@ -6,18 +6,18 @@
         <!-- Had Kifayah Summary -->
         <div class="bg-white rounded-lg shadow-md p-6">
           <h3 class="text-lg font-semibold mb-2">Had Kifayah</h3>
-    <div class="mb-2">Baki Pendapatan: <span class="font-bold">RM {{ hadKifayah?.bakiPendapatan?.toFixed(2) }}</span></div>
-    <div class="mb-2">Peratusan Perbezaan: <span class="font-bold">{{ hadKifayah?.peratusanPendapatan?.toFixed(2) }}%</span></div>
-    <div class="mb-2">Kategori Keluarga Asnaf: <span class="font-bold text-blue-700">{{ hadKifayah?.kategoriKeluarga }}</span></div>
-    <div class="mb-2">Kategori Asnaf: <span class="font-bold text-blue-700">{{ hadKifayah?.kategoriAsnaf }}</span></div>
-    <div class="mb-2">Jumlah Had Kifayah: <span class="font-bold">RM {{ hadKifayah?.kifayahLimit?.toFixed(2) }}</span></div>
+    <div class="mb-2">Baki Pendapatan: <span class="font-bold">RM-968</span></div>
+    <div class="mb-2">Peratusan Perbezaan: <span class="font-bold">50.81%</span></div>
+    <div class="mb-2">Kategori Keluarga Asnaf: <span class="font-bold">Miskin</span></div>
+    <div class="mb-2">Kategori Asnaf: <span class="font-bold">Miskin</span></div>
+    <div class="mb-2">Jumlah Had Kifayah: <span class="font-bold">RM1968.00 </span></div>
         </div>
         <!-- Multidimensi Summary -->
-        <div class="bg-blue-50 rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
           <h3 class="text-lg font-semibold mb-2">Multidimensi</h3>
-          <div class="mb-2">Merit Keluarga: <span class="font-bold text-blue-700">0.55</span></div>
-          <div class="mb-2">Status Multidimensi: <span class="font-bold text-green-700">Produktif C</span></div>
-          <div class="mb-2">Quadrant: <span class="font-bold text-purple-700">Asnaf Produktif Sementara</span></div>
+          <div class="mb-2">Merit Keluarga: <span class="font-bold">0.55</span></div>
+          <div class="mb-2">Status Multidimensi: <span class="font-bold ">Produktif C</span></div>
+          <div class="mb-2">Quadrant: <span class="font-bold ">Asnaf Produktif Sementara</span></div>
         </div>
       </div>
       <div class="flex justify-between items-center mt-6">

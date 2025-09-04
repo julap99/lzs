@@ -10,14 +10,8 @@
       </template>
 
       <template #body>
-        <!-- Main Tabs -->
-        <rs-tab variant="primary" type="card">
-          <rs-tab-item title="Profiling" active>
-            <!-- Profiling Tab Content -->
-            <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                Profiling Data
-              </h3>
+        <!-- Profiling Content -->
+        <div>
               <!-- Applications Table -->
               <rs-table
                 :data="filteredApplications"
@@ -77,7 +71,7 @@
                     Menunjukkan {{ paginationStart }} hingga
                     {{ paginationEnd }} daripada {{ totalApplications }} entri
                   </span>
-                  <div class="flex gap-1">
+                  <!-- <div class="flex gap-1">
                     <rs-button
                       variant="primary-outline"
                       class="!p-1 !w-8 !h-8"
@@ -94,14 +88,10 @@
                     >
                       <Icon name="ic:round-keyboard-arrow-right" />
                     </rs-button>
-                  </div>
+                  </div> -->
                 </div>
               </div>
-            </div>
-          </rs-tab-item>
-
-          
-        </rs-tab>
+        </div>
       </template>
     </rs-card>
   </div>
@@ -151,54 +141,6 @@ const columns = [
   },
 ];
 
-// Table columns configuration for Siasatan tab
-const siasatanColumns = [
-  {
-    key: "no",
-    label: "No",
-    sortable: true,
-  },
-  {
-    key: "pemohon",
-    label: "Pemohon",
-    sortable: true,
-  },
-  {
-    key: "kariah",
-    label: "Kariah",
-    sortable: true,
-  },
-  {
-    key: "daerah",
-    label: "Daerah",
-    sortable: true,
-  },
-  {
-    key: "bilanganBantuan",
-    label: "Bilangan Bantuan",
-    sortable: true,
-  },
-  {
-    key: "status",
-    label: "Status",
-    sortable: true,
-  },
-  {
-    key: "statusLaluan",
-    label: "Status Laluan Proses",
-    sortable: true,
-  },
-  {
-    key: "noRujukan",
-    label: "No Rujukan",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-  },
-];
 
 // Options for filters
 const statusOptions = [
@@ -222,60 +164,13 @@ const applications = ref([
   {
     noRujukan: "770319035991",
     namaPemohon: "Adnan Bin Abu",
-    status: "Baru",
+    status: "Menunggu Siasatan",
     tarikhTerima: "2024-03-20",
     namaPegawai: "Siti binti Ali",
     tindakan: "NAS-2025-0001",
-  },
-  {
-    noRujukan: "801004035672",
-    namaPemohon: "ROHANA BINTI AHMAD",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
-    namaPegawai: "Aminah binti Hassan",
-    tindakan: "801004035672",
-  },
-  {
-    noRujukan: "060802030272",
-    namaPemohon: "NUR NAJWA BINTI ADNAN",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
-    namaPegawai: "Aminah binti Hassan",
-    tindakan: "060802030272",
-  },
-  {
-    noRujukan: "091108030442",
-    namaPemohon: "NUR QISTINA BINTI ADNAN",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
-    namaPegawai: "Aminah binti Hassan",
-    tindakan: "091108030442",
-  },
+  }
 ]);
 
-// Mock data for Siasatan tab - would be replaced with API call
-const siasatanData = ref([
-  {
-    pemohon: "Ahmad bin Abdullah (800101-01-1234)",
-    kariah: "Masjid Al-Hidayah",
-    daerah: "Kuala Lumpur",
-    bilanganBantuan: 2,
-    status: "Dalam Siasatan",
-    statusLaluan: "Untuk Siasatan",
-    noRujukan: "NAS-2025-0001",
-    tindakan: "siasatan-eoad",
-  },
-  {
-    pemohon: "Siti binti Hassan (850505-05-5678)",
-    kariah: "Masjid Al-Ikhlas",
-    daerah: "Selangor",
-    bilanganBantuan: 1,
-    status: "Selesai Siasatan",
-    statusLaluan: "Untuk Kelulusan",
-    noRujukan: "NAS-2025-0002",
-    tindakan: "siasatan-eoad",
-  },
-]);
 
 // Computed properties for Profiling tab
 const filteredApplications = computed(() => {
@@ -314,39 +209,8 @@ const totalApplications = computed(() => {
   return applications.value.length;
 });
 
-// Computed properties for Siasatan tab
-const filteredSiasatanData = computed(() => {
-  let result = [...siasatanData.value];
-
-  // Apply search
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    result = result.filter(
-      (app) =>
-        app.noRujukan.toLowerCase().includes(query) ||
-        app.pemohon.toLowerCase().includes(query) ||
-        app.kariah.toLowerCase().includes(query) ||
-        app.daerah.toLowerCase().includes(query)
-    );
-  }
-
-  // Apply filters
-  if (filters.value.status) {
-    result = result.filter((app) => app.status === filters.value.status);
-  }
-
-  // Apply pagination
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return result.slice(start, end);
-});
-
-const totalSiasatanData = computed(() => {
-  return siasatanData.value.length;
-});
-
 const totalPages = computed(() => {
-  return Math.ceil(totalSiasatanData.value / pageSize.value);
+  return Math.ceil(totalApplications.value / pageSize.value);
 });
 
 const paginationStart = computed(() => {
@@ -354,7 +218,7 @@ const paginationStart = computed(() => {
 });
 
 const paginationEnd = computed(() => {
-  return Math.min(currentPage.value * pageSize.value, totalSiasatanData.value);
+  return Math.min(currentPage.value * pageSize.value, totalApplications.value);
 });
 
 // Methods
@@ -376,9 +240,9 @@ const handleAssignTask = (noRujukan) => {
 const getStatusVariant = (status) => {
   const variants = {
     baru: "info",
-    dalam_semakan: "warning",
-    tidak_lengkap: "danger",
-    untuk_siasatan: "secondary",
+    "dalam semakan": "warning",
+    "tidak lengkap": "danger",
+    "untuk siasatan": "secondary",
     "dalam siasatan": "warning",
     "selesai siasatan": "success",
     "menunggu siasatan": "info",
@@ -386,15 +250,6 @@ const getStatusVariant = (status) => {
   return variants[status.toLowerCase()] || "default";
 };
 
-const getLaluanStatusVariant = (status) => {
-  const variants = {
-    "untuk semakan": "info",
-    "untuk pengesahan lawatan": "warning",
-    "untuk siasatan": "secondary",
-    "untuk kelulusan": "success",
-  };
-  return variants[status.toLowerCase()] || "default";
-};
 </script>
 
 <style lang="scss" scoped></style>

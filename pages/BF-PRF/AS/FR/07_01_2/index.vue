@@ -92,6 +92,36 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div>
+                  <label class="block text-xs uppercase tracking-wide">
+                   Jumlah Had Kifayah
+                  </label>
+                  <p class="text-gray-900 font-medium">
+                    {{ profilingData.jumlahHadKifayahSah }}
+                  </p>
+
+                  <label class="block text-xs uppercase tracking-wide mt-4">
+                    Baki Pendapatan
+                  </label>
+                  <p class="text-gray-900 font-medium">
+                    {{ profilingData.bakiHadKifayahSah }}
+                  </p>
+
+                  <label class="block text-xs uppercase tracking-wide mt-4">
+                    Peratusan Perbezaan
+                  </label>
+                  <p class="text-gray-900 font-medium">
+                    {{ profilingData.peratusanPerbezaan }}
+                  </p>
+                  <label class="block text-xs uppercase tracking-wide mt-4">
+                    Kategori Keluarga Asnaf
+                  </label>
+                  <p class="text-gray-900 font-medium">
+                    {{ profilingData.kategoriKeluargaAsnaf }}
+                  </p>
+                </div>
+                <div class="hidden lg:block"></div>
+                <div class="hidden lg:block"></div>
+                  <div>
                     <label class="block text-xs uppercase tracking-wide">
                       Pengenalan Id Tanggungan
                     </label>
@@ -397,7 +427,7 @@ const formData = ref({
   jenisPengenalan: "MyKad",
   noPengenalan: "770319035991",
   noTelefon: "0123456789",
-  email: "adnan@gmail.com",
+  email: "adnan.abu@gmail.com",
   status: "Dalam Siasatan",
   keputusanSiasatan: "",
   tarikhLawatan: "",
@@ -433,16 +463,12 @@ const profilingData = ref({
   meritKeluargaSyor: "0.55",
   statusMultidimensiKeluargaSyor: "Produktif C",
   quadrantMultidimensiKeluargaSyor: "Asnaf Produktif Sementara",
+  bakiHadKifayahSah: "RM-968.00",
+  peratusanPerbezaan: "50.81%",
+  kategoriKeluargaAsnaf: "Miskin",
+  kategoriAsnaf: "Miskin",
+  jumlahHadKifayahSah: "RM1968.00",
   assignSiasatan: "",
-  hadKifayahSah: null as number | null,
-  kategoriKeluargaAsnafSah: "",
-  kategoriAsnafSah: "",
-  pengenalanIdTanggunganSah1: "",
-  pengenalanIdTanggunganSah2: "",
-  kategoriTanggunganSah1: "",
-  kategoriTanggunganSah2: "",
-  komenPengesahan: "",
-  tarikhPengesyoranBottom: "",
 });
 
 /* OPTIONS */
