@@ -20,7 +20,7 @@
           <div class="mb-2">Quadrant: <span class="font-bold text-purple-700">Asnaf Produktif Sementara</span></div>
         </div>
       </div>
-      <div class="mt-8 flex justify-end gap-4">
+      <div class="flex justify-between items-center mt-6">
         <rs-button variant="primary-outline" @click="handleKembali">Kembali</rs-button>
         <rs-button variant="primary" @click="handleSeterusnya">Seterusnya</rs-button>
       </div>
