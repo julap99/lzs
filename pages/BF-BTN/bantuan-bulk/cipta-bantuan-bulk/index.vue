@@ -19,6 +19,8 @@
           :columns="columns"
           :pageSize="pageSize"
           :showNoColumn="true"
+          :showSearch="true"
+          :showFilter="true"
           :options="{
             variant: 'default',
             hover: true,

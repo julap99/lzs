@@ -192,7 +192,7 @@
               :pageSize="5"
               :showNoColumn="true"
               :options="{ variant: 'default', hover: true, striped: true }"
-              :options-advanced="{ sortable: true, filterable: true }"
+              :options-advanced="{ sortable: true, filterable: false }"
               advanced
             >
               <template v-slot:actions="{ row }">
@@ -222,7 +222,7 @@
             :pageSize="5"
             :showNoColumn="true"
             :options="{ variant: 'default', hover: true, striped: true }"
-            :options-advanced="{ sortable: true, filterable: true }"
+            :options-advanced="{ sortable: true, filterable: false }"
             advanced
           >
             <template v-slot:default>
@@ -273,7 +273,7 @@
               :pageSize="5"
               :showNoColumn="true"
               :options="{ variant: 'default', hover: true, striped: true }"
-              :options-advanced="{ sortable: true, filterable: true }"
+              :options-advanced="{ sortable: true, filterable: false }"
               advanced
             >
               <template v-slot:actions="{ row }">
