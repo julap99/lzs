@@ -106,67 +106,52 @@
       </template>
     </rs-card>
 
-    <!-- Approval Workflow Card -->
-    <rs-card class="mb-6">
-      <template #header>
-        <h3 class="text-lg font-semibold text-gray-900">Aliran Kerja Kelulusan</h3>
-      </template>
-      <template #body>
-        <div class="p-6">
-          <div class="space-y-4">
-            <!-- Eksekutif -->
-            <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
-              <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
-                  <Icon name="ic:outline-person" class="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Eksekutif</p>
-                  <p class="text-sm text-gray-600">Dibuat</p>
-                </div>
+    <!-- Review History -->
+    <div class="mb-6 p-6 border border-gray-200 rounded-lg">
+      <h3 class="text-lg font-semibold mb-4 text-gray-900">
+        Sejarah Semakan
+      </h3>
+      
+      <div class="space-y-4">
+        <!-- Eksekutif -->
+        <div class="flex items-start justify-between p-4">
+          <div class="flex items-start">
+            <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+            <div class="flex-1">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="font-semibold text-gray-900">Eksekutif</h4>
+                <rs-badge variant="success">Selesai</rs-badge>
               </div>
-              <rs-badge variant="success" size="sm">Selesai</rs-badge>
-            </div>
-            
-            <!-- Ketua Jabatan -->
-            <div class="flex items-center justify-between p-3 border rounded-lg" 
-                 :class="getTimelineClass('KETUA_JABATAN')">
-              <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3"
-                     :class="getTimelineStatus('KETUA_JABATAN')">
-                  <Icon name="ic:outline-person" class="w-4 h-4" />
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Ketua Jabatan</p>
-                  <p class="text-sm text-gray-600">{{ getTimelineText('KETUA_JABATAN') }}</p>
-                </div>
+              <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
+              <div class="text-xs text-gray-600 space-y-1">
+                <p><strong>Disemak oleh:</strong> Ahmad bin Abdullah</p>
+                <p><strong>Tarikh:</strong> 15 Jan 2024</p>
+                <p><strong>Catatan:</strong> Permohonan elaun khas untuk 48 aktiviti/tahun telah disemak dan disokong.</p>
               </div>
-              <rs-badge :variant="getTimelineBadge('KETUA_JABATAN')" size="sm">
-                {{ getTimelineStatusText('KETUA_JABATAN') }}
-              </rs-badge>
-            </div>
-            
-            <!-- Ketua Divisyen -->
-            <div class="flex items-center justify-between p-3 border rounded-lg"
-                 :class="getTimelineClass('KETUA_DIVISYEN')">
-              <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3"
-                     :class="getTimelineStatus('KETUA_DIVISYEN')">
-                  <Icon name="ic:outline-person" class="w-4 h-4" />
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Ketua Divisyen</p>
-                  <p class="text-sm text-gray-600">{{ getTimelineText('KETUA_DIVISYEN') }}</p>
-                </div>
-              </div>
-              <rs-badge :variant="getTimelineBadge('KETUA_DIVISYEN')" size="sm">
-                {{ getTimelineStatusText('KETUA_DIVISYEN') }}
-              </rs-badge>
             </div>
           </div>
         </div>
-      </template>
-    </rs-card>
+
+        <!-- Ketua Jabatan Review (Current) -->
+        <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+          <div class="flex items-start">
+            <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+            <div class="flex-1">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="font-semibold text-orange-900">Ketua Jabatan</h4>
+                <rs-badge variant="warning">Dalam Proses</rs-badge>
+              </div>
+              <p class="text-sm text-orange-700 mb-2">Pengesahan ketua jabatan</p>
+              <div class="text-xs text-orange-600 space-y-1">
+                <p><strong>Disemak oleh:</strong> -</p>
+                <p><strong>Tarikh:</strong> -</p>
+                <p><strong>Status:</strong> Menunggu keputusan pengesahan</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Recipients List Card -->
     <rs-card class="mb-6">
@@ -426,137 +411,7 @@ function getStatusVariant(status) {
   }
 }
 
-function getTimelineStatus(role) {
-  const status = batchData.value.status;
-  
-  if (role === 'KETUA_JABATAN') {
-    if (['LULUS', 'DITOLAK'].includes(status)) {
-      return 'bg-green-500 text-white';
-    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
-      return 'bg-yellow-500 text-white';
-    } else {
-      return 'bg-gray-300 text-gray-600';
-    }
-  }
-  
-  if (role === 'KETUA_DIVISYEN') {
-    if (status === 'LULUS') {
-      return 'bg-green-500 text-white';
-    } else if (status === 'DITOLAK') {
-      return 'bg-red-500 text-white';
-    } else {
-      return 'bg-gray-300 text-gray-600';
-    }
-  }
-  
-  return 'bg-gray-300 text-gray-600';
-}
-
-function getTimelineClass(role) {
-  const status = batchData.value.status;
-  
-  if (role === 'KETUA_JABATAN') {
-    if (['LULUS', 'DITOLAK'].includes(status)) {
-      return 'bg-green-50 border-green-200';
-    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
-      return 'bg-yellow-50 border-yellow-200';
-    } else {
-      return 'bg-gray-50 border-gray-200';
-    }
-  }
-  
-  if (role === 'KETUA_DIVISYEN') {
-    if (status === 'LULUS') {
-      return 'bg-green-50 border-green-200';
-    } else if (status === 'DITOLAK') {
-      return 'bg-red-50 border-red-200';
-    } else {
-      return 'bg-gray-50 border-gray-200';
-    }
-  }
-  
-  return 'bg-gray-50 border-gray-200';
-}
-
-function getTimelineText(role) {
-  const status = batchData.value.status;
-  
-  if (role === 'KETUA_JABATAN') {
-    if (status === 'LULUS' || status === 'DITOLAK') {
-      return 'Selesai';
-    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
-      return 'Sedang Proses';
-    } else {
-      return 'Menunggu';
-    }
-  }
-  
-  if (role === 'KETUA_DIVISYEN') {
-    if (status === 'LULUS') {
-      return 'Diluluskan';
-    } else if (status === 'DITOLAK') {
-      return 'Ditolak';
-    } else {
-      return 'Menunggu';
-    }
-  }
-  
-  return 'Menunggu';
-}
-
-function getTimelineStatusText(role) {
-  const status = batchData.value.status;
-  
-  if (role === 'KETUA_JABATAN') {
-    if (status === 'LULUS' || status === 'DITOLAK') {
-      return 'Selesai';
-    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
-      return 'Dalam Proses';
-    } else {
-      return 'Belum Mula';
-    }
-  }
-  
-  if (role === 'KETUA_DIVISYEN') {
-    if (status === 'LULUS') {
-      return 'Diluluskan';
-    } else if (status === 'DITOLAK') {
-      return 'Ditolak';
-    } else {
-      return 'Belum Mula';
-    }
-  }
-  
-  return 'Belum Mula';
-}
-
-function getTimelineBadge(role) {
-  const status = batchData.value.status;
-  
-  if (role === 'KETUA_JABATAN') {
-    if (['LULUS', 'DITOLAK'].includes(status)) {
-      return 'success';
-    } else if (['SEDANG PROSES', 'MENUNGGU KELULUSAN', 'PERLU PENGESAHAN'].includes(status)) {
-      return 'warning';
-    } else {
-      return 'secondary';
-    }
-  }
-  
-  if (role === 'KETUA_DIVISYEN') {
-    if (status === 'LULUS') {
-      return 'success';
-    } else if (status === 'DITOLAK') {
-      return 'danger';
-    } else if (status === 'MENUNGGU KELULUSAN') {
-      return 'info';
-    } else {
-      return 'secondary';
-    }
-  }
-  
-  return 'secondary';
-}
+// Note: Timeline functions removed - using simple "Sejarah Semakan" pattern instead
 
 // Load data function
 function loadBatchData() {

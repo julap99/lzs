@@ -109,7 +109,7 @@
                               title="Lihat"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                             </button>
                             <button
                               @click="editAllowance(item)"
@@ -166,7 +166,7 @@
                               title="Lihat"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                             </button>
                           </div>
                         </td>
@@ -216,7 +216,7 @@
                               title="Lihat"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                             </button>
                           </div>
                         </td>
@@ -271,7 +271,7 @@
                               title="Lihat"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                             </button>
                             <button
                               @click="verifyExcessAllowance(item)"
@@ -328,7 +328,7 @@
                               title="Lihat"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                             </button>
                           </div>
                         </td>
@@ -383,7 +383,7 @@
                               title="Lihat"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                             </button>
                             <button
                               @click="approveAllowance(item)"
@@ -440,7 +440,7 @@
                               title="Lihat"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
                             </button>
                           </div>
                         </td>
