@@ -513,7 +513,7 @@ const allowancesList = ref([
     typeLabel: "Elaun Tahunan",
     status: "DRAF",
     count: 150,
-    totalAmount: 45000,
+    totalAmount: 5000,
   },
   {
     id: 2,
@@ -523,7 +523,7 @@ const allowancesList = ref([
     typeLabel: "Elaun Khas",
     status: "SEDANG PROSES",
     count: 75,
-    totalAmount: 22500,
+    totalAmount: 5000,
   },
   {
     id: 3,
@@ -533,7 +533,7 @@ const allowancesList = ref([
     typeLabel: "Elaun Tambahan",
     status: "MENUNGGU KELULUSAN",
     count: 100,
-    totalAmount: 30000,
+    totalAmount: 5000,
   },
   {
     id: 4,
@@ -543,7 +543,7 @@ const allowancesList = ref([
     typeLabel: "Elaun Tahunan",
     status: "LULUS",
     count: 200,
-    totalAmount: 60000,
+    totalAmount: 5000,
   },
 ]);
 
