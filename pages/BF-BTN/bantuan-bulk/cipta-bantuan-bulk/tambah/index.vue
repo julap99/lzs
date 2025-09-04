@@ -1971,7 +1971,6 @@ const damagedDataList = computed(() => {
       namaPenerima: p.bayaranKepada,
       catatan: parts.join(" · "),
       jenisMasalah: reasons.join(", "), // Hidden but needed for logic
-      pointer: p.kod, // Hidden but needed for logic
       idPermohonan: p.idPermohonan, // Hidden but needed for logic
       actions: "",
     });
