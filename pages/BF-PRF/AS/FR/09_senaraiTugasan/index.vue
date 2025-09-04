@@ -163,7 +163,7 @@ const pageSize = ref(10);
 const applications = ref([
   {
     noRujukan: "770319035991",
-    namaPemohon: "Adnan Bin Abu",
+    namaPemohon: "ADNAN BIN ABU",
     status: "Menunggu Siasatan",
     tarikhTerima: "2024-03-20",
     namaPegawai: "Siti binti Ali",
