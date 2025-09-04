@@ -649,31 +649,85 @@ const getStatusLabel = (status) => {
 }
 
 const getActionRoute = (status) => {
-  switch (status) {
-    case 'Menunggu Pengesahan':
-      return '/BF-PA/PE/AB2/05?status=Menunggu Pengesahan'  // View page
-    case 'Menunggu Kelulusan':
-      return '/BF-PA/PE/AB2/05?status=Menunggu Kelulusan'  // View page
-    case 'Lulus':
-      return '/BF-PA/PE/AB2/04'  // View page
-    case 'Ditolak':
-      return '/BF-PA/PE/AB2/07'  // View page
-    default:
-      return '#'
+  // Role-based routing for "Lihat" button
+  if (currentRole.value === 'eksekutif') {
+    // Eksekutif can only view their own submitted applications
+    switch (status) {
+      case 'Menunggu Pengesahan':
+      case 'Menunggu Kelulusan':
+        return '/BF-PA/PE/AB2/05?status=' + encodeURIComponent(status)  // View page for Eksekutif
+      case 'Lulus':
+        return '/BF-PA/PE/AB2/04'  // View approved page
+      case 'Ditolak':
+        return '/BF-PA/PE/AB2/07'  // View rejected page
+      default:
+        return '#'
+    }
+  } else if (currentRole.value === 'ketua-jabatan') {
+    // Ketua Jabatan can view and process applications
+    switch (status) {
+      case 'Menunggu Pengesahan':
+        return '/BF-PA/PE/AB2/03'  // Review page for Ketua Jabatan
+      case 'Menunggu Kelulusan':
+        return '/BF-PA/PE/AB2/05?status=' + encodeURIComponent(status)  // View page
+      case 'Lulus':
+        return '/BF-PA/PE/AB2/04'  // View approved page
+      case 'Ditolak':
+        return '/BF-PA/PE/AB2/07'  // View rejected page
+      default:
+        return '#'
+    }
+  } else if (currentRole.value === 'ketua-divisyen') {
+    // Ketua Divisyen can view and approve applications
+    switch (status) {
+      case 'Menunggu Pengesahan':
+        return '/BF-PA/PE/AB2/05?status=' + encodeURIComponent(status)  // View page
+      case 'Menunggu Kelulusan':
+        return '/BF-PA/PE/AB2/06'  // Review page for Ketua Divisyen
+      case 'Lulus':
+        return '/BF-PA/PE/AB2/04'  // View approved page
+      case 'Ditolak':
+        return '/BF-PA/PE/AB2/07'  // View rejected page
+      default:
+        return '#'
+    }
   }
+  
+  return '#'
 }
 
 const getActionButtonText = (status) => {
-  switch (status) {
-    case 'Menunggu Pengesahan':
-    case 'Menunggu Kelulusan':
-      return 'Semak'
-    case 'Lulus':
-    case 'Ditolak':
-      return 'Lihat'
-    default:
-      return 'Lihat'
+  // Role-based button text
+  if (currentRole.value === 'eksekutif') {
+    // Eksekutif can only view
+    return 'Lihat'
+  } else if (currentRole.value === 'ketua-jabatan') {
+    // Ketua Jabatan can review or view
+    switch (status) {
+      case 'Menunggu Pengesahan':
+        return 'Semak'  // Can review
+      case 'Menunggu Kelulusan':
+      case 'Lulus':
+      case 'Ditolak':
+        return 'Lihat'  // Can only view
+      default:
+        return 'Lihat'
+    }
+  } else if (currentRole.value === 'ketua-divisyen') {
+    // Ketua Divisyen can approve or view
+    switch (status) {
+      case 'Menunggu Kelulusan':
+        return 'Semak'  // Can approve
+      case 'Menunggu Pengesahan':
+      case 'Lulus':
+      case 'Ditolak':
+        return 'Lihat'  // Can only view
+      default:
+        return 'Lihat'
+    }
   }
+  
+  return 'Lihat'
 }
 
 // New functions for Semak button
