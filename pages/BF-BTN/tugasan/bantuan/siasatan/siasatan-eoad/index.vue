@@ -43,6 +43,18 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Kariah</label
+                >
+                <p class="text-gray-900">{{ formData.kariah }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Daerah</label
+                >
+                <p class="text-gray-900">{{ formData.daerah }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
                   >Jenis Pengenalan</label
                 >
                 <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
@@ -923,8 +935,8 @@
                   />
                 </div> -->
 
-                <!-- Gambar Lokasi/Bukti Visual -->
-                <div>
+                <!-- Gambar Lokasi/Bukti Visual - Only show when kaedah siasatan is "Lapangan" -->
+                <div v-if="showLawatanFields">
                   <label class="block text-sm font-medium text-gray-700 mb-2">
                     Gambar Lokasi/Bukti Visual
                   </label>
@@ -1110,7 +1122,7 @@
                   <FormKit
                     type="textarea"
                     name="catatanLawatanETD"
-                    label="Catatan Lawatan Pegawai"
+                    label="Catatan Siasatan"
                     rows="4"
                     placeholder="Enter text..."
                     :classes="{
@@ -1119,7 +1131,7 @@
                   />
                 </div>
 
-                <div>
+                <!-- <div>
                   <FormKit
                     type="select"
                     name="statusSiasatan"
@@ -1131,7 +1143,7 @@
                       required: 'Sila pilih status siasatan untuk meneruskan',
                     }"
                   />
-                </div>
+                </div> -->
 
                 <!-- Status Lawatan -->
                 <!-- <div>
@@ -1310,6 +1322,8 @@ const formData = ref({
   // Personal Information
   nama: "Mohd Rosli bin Saad",
   alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
+  kariah: "Masjid Al-Taqwa",
+  daerah: "Kuala Selangor",
   jenisPengenalan: "MyKad",
   noPengenalan: "810101121234",
   noTelefon: "0123456789",

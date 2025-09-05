@@ -1040,9 +1040,9 @@ const applications = ref([
 // Mock data for Siasatan tab - would be replaced with API call
 const siasatanData = ref([
   {
-    pemohon: "Ahmad bin Abdullah (800101-01-1234)",
-    kariah: "Masjid Al-Hidayah",
-    daerah: "Kuala Lumpur",
+    pemohon: "Mohd Rosli bin Saad (800101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     jenistugasan: "Bantuan",

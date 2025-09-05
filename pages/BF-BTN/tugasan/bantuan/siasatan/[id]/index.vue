@@ -335,12 +335,12 @@
                 v-for="(tab, index) in tabs"
                 :key="index"
                 @click="activeTab = tab.id"
-                :class="[
-                  'px-6 py-3 text-sm font-medium transition-colors duration-200',
-                  activeTab === tab.id
-                    ? 'text-teal-600 border-b-2 border-teal-600'
-                    : 'text-gray-700 hover:text-gray-900'
-                ]"
+                              :class="[
+                'px-6 py-3 text-lg font-medium transition-colors duration-200',
+                activeTab === tab.id
+                  ? 'text-teal-600 border-b-2 border-teal-600'
+                  : 'text-gray-700 hover:text-gray-900'
+              ]"
               >
                 {{ tab.title }}
               </button>
@@ -495,21 +495,22 @@
                     <div
                       v-for="(gambar, index) in gambarLokasi"
                       :key="index"
-                      class="relative aspect-square rounded-lg overflow-hidden border border-gray-200"
+                      class="bg-white rounded-lg border border-gray-200 overflow-hidden"
                     >
-                      <img
-                        :src="gambar.url"
-                        :alt="gambar.catatan"
-                        class="w-full h-full object-cover"
-                      />
-                      <div
-                        class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-opacity"
-                      >
-                        <div
-                          class="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50 text-white text-sm"
-                        >
+                      <div class="aspect-square overflow-hidden">
+                        <img
+                          :src="gambar.url"
+                          :alt="gambar.catatan"
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div class="p-3">
+                        <p class="text-sm text-gray-700 font-medium">
                           {{ gambar.catatan }}
-                        </div>
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                          {{ formatDateTime(gambar.masaUpload) }}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1149,7 +1150,7 @@ const accordionOpen = reactive({
 const permohonanDetails = ref({
   dibuatOleh: 'Ahmad bin Abdullah',
   tarikhPermohonan: '2024-01-01 09:00:00',
-  sebabMemohon: 'Mohon bantuan bina bu rumah'
+  sebabMemohon: 'Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan bantuan bina baru rumah'
 })
 
 const siasatanDetails = ref({
@@ -1176,13 +1177,13 @@ const editingBQ = ref(null);
 // Section 4: Laporan Gambar
 const gambarLokasi = ref([
   {
-    url: "/img/placeholder-image.jpg",
-    catatan: "Keadaan semasa rumah",
+    url: "https://scontent.fkul10-1.fna.fbcdn.net/v/t1.6435-9/33382272_977231325777776_3291633360509599744_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=tsi5WpsPCREQ7kNvwEe3GJk&_nc_oc=Adl4_F7yjD2xX6siXLa_NANICn4Cak1Wmni5VBa7XhbSYIByOReFS3wwQc7n0JHnBqz05IBIajWiWh8LE9coTq0L&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=4p3_JCn3HWweiLZBezB58w&oh=00_AfZFYLhw-KRbw3goXGgJkj7ewaf54KBCnG0_XXcl4y3TWQ&oe=68E1A4D7",
+    catatan: "Keadaan dinding papan rumah",
     masaUpload: new Date().toISOString(),
   },
   {
-    url: "/img/placeholder-image.jpg",
-    catatan: "Bahagian yang perlu dibaiki",
+    url: "https://scontent.fkul15-1.fna.fbcdn.net/v/t39.30808-6/309943384_196941696025849_726196766864978484_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=IyNAhW7CUkgQ7kNvwHTA3nK&_nc_oc=AdmN3PYsmtpYr9gnvcQLzYd-zejr8nOaNfL2SkYiGIJsfKhvEWLi_gLtezJSzXrXrSpit_KvkUj1zjOCHOKl8Y4n&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=aY79tE8vuTPag6wRgWP07g&oh=00_AfZvZmX3DPqOBnADSlF0Occy0BA6qGPavBKb7ME7Qre1eQ&oe=68C01482",
+    catatan: "Pandangan depan rumah",
     masaUpload: new Date().toISOString(),
   },
 ]);
