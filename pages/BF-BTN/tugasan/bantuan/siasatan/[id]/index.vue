@@ -1242,9 +1242,7 @@ const hasStatusSokongan = computed(() => {
                                  formData.value.statusLawatan !== "";
   
   const hasValidStatusProses = formData.value.statusproses && 
-                               formData.value.statusproses !== "belum_selesai" && 
-                               formData.value.statusproses !== "kiv" &&
-                               formData.value.statusproses !== "";
+                               formData.value.statusproses === "selesai";
   
   return hasValidStatusSokongan && hasValidStatusProses;
 })
@@ -1488,7 +1486,7 @@ onMounted(() => {
     // statusKeluarga: "Fakir",
     // statusIndividu: "Fakir",
     // statusMultidimensi: "Asnaf Tidak Produktif",
-    statusLawatan: "Perlu Diproses",
+    // statusLawatan: "Perlu Diproses",
   };
 
   console.log("formData set:", formData.value); // Debug log
