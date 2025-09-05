@@ -1311,11 +1311,11 @@ export default [
         meta: {},
       },
       {
-        title: "Bantuan Bulk",
+        title: "Bulk Processing",
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Senarai Bantuan Bulk",
+            title: "Senarai Bulk Processing",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/bantuan-bulk/cipta-bantuan-bulk",
             child: [],

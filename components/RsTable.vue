@@ -123,6 +123,8 @@ const maxPageShown = ref(3);
 
 // Searching Variable
 const keyword = ref("");
+const columnSearch = ref({}); // Store search terms for each column
+const selectedSearchColumn = ref(""); // Currently selected column for search
 
 // Filtering Variable
 const filter = ref([]);
@@ -306,20 +308,39 @@ const computedData = computed(() => {
       return 0;
     })
     .filter((row) => {
-      // Search all json object if keyword not equal null
-      if (!props.showSearch || keyword.value === "") return true;
-      let result = false;
-      Object.entries(row).forEach(([key, value]) => {
-        try {
-          if (value.toString().toLowerCase().includes(keyword.value.toLowerCase())) {
-            result = true;
-            currentPage.value = 1;
+      // Global search filter
+      let globalSearchResult = true;
+      if (props.showSearch && keyword.value !== "") {
+        globalSearchResult = false;
+        Object.entries(row).forEach(([key, value]) => {
+          try {
+            if (value.toString().toLowerCase().includes(keyword.value.toLowerCase())) {
+              globalSearchResult = true;
+              currentPage.value = 1;
+            }
+          } catch (error) {
+            globalSearchResult = false;
           }
-        } catch (error) {
-          result = false;
-        }
-      });
-      return result;
+        });
+      }
+
+      // Column-specific search filter
+      let columnSearchResult = true;
+      if (Object.keys(columnSearch.value).length > 0) {
+        columnSearchResult = true;
+        Object.entries(columnSearch.value).forEach(([columnKey, searchTerm]) => {
+          try {
+            const cellValue = filteredDatabyTitle(row, columnKey);
+            if (!cellValue.toString().toLowerCase().includes(searchTerm.toLowerCase())) {
+              columnSearchResult = false;
+            }
+          } catch (error) {
+            columnSearchResult = false;
+          }
+        });
+      }
+
+      return globalSearchResult && columnSearchResult;
     })
     .filter((_, index) => {
       let start = (currentPage.value - 1) * pageSize.value;
@@ -378,6 +399,29 @@ const firstPage = () => {
 
 const lastPage = () => {
   currentPage.value = totalPage.value;
+};
+
+// Column search methods
+const setColumnSearch = (columnKey, searchTerm) => {
+  if (searchTerm && searchTerm.trim() !== "") {
+    columnSearch.value[columnKey] = searchTerm.trim();
+    // Reset to first page when searching
+    currentPage.value = 1;
+  } else {
+    delete columnSearch.value[columnKey];
+  }
+};
+
+const clearColumnSearch = (columnKey) => {
+  delete columnSearch.value[columnKey];
+};
+
+const clearAllColumnSearches = () => {
+  columnSearch.value = {};
+};
+
+const getColumnSearchTerm = (columnKey) => {
+  return columnSearch.value[columnKey] || "";
 };
 
 const hideColumn = (key) => {
@@ -541,30 +585,71 @@ watch(
           v-for="(val, index) in dataTitle"
           :key="index"
         >
-          <rs-dropdown-item @click="hideColumn(val)">
-            {{ getFilter(val) ? "Show Column" : "Hide Column" }}
-            <Icon
-              :name="getFilter(val) ? 'mdi:eye-outline' : 'mdi:eye-off-outline'"
-              size="1rem"
-              class="ml-auto"
-            ></Icon>
-          </rs-dropdown-item>
+          <div class="p-3 min-w-[280px]">
+            <div class="mb-2">
+              <label class="text-sm font-medium text-gray-700">
+                Search in {{ getColumnLabel(val) }}
+              </label>
+            </div>
+            <div class="flex gap-2">
+              <FormKit
+                type="text"
+                :model-value="getColumnSearchTerm(val)"
+                @input="setColumnSearch(val, $event)"
+                placeholder="Enter search term..."
+                outer-class="mb-0 flex-1"
+                :classes="{
+                  input: '!py-1.5 !text-sm !border-gray-300 focus:!border-blue-500'
+                }"
+              />
+              <rs-button
+                variant="secondary"
+                size="sm"
+                @click="clearColumnSearch(val)"
+                :disabled="!getColumnSearchTerm(val)"
+                class="!px-2 !py-1.5"
+                title="Clear search"
+              >
+                <Icon name="ic:round-close" size="1rem" />
+              </rs-button>
+            </div>
+            <div v-if="getColumnSearchTerm(val)" class="mt-2 text-xs text-gray-500">
+              <Icon name="ic:round-info" size="0.75rem" class="inline mr-1" />
+              Searching for: "{{ getColumnSearchTerm(val) }}"
+            </div>
+          </div>
         </rs-dropdown>
+        
+        <!-- Clear all searches button -->
+        <div class="mt-3" v-if="Object.keys(columnSearch).length > 0">
+          <rs-button
+            variant="secondary"
+            size="sm"
+            @click="clearAllColumnSearches"
+            class="!px-3"
+          >
+            <Icon name="ic:round-clear-all" size="1rem" class="mr-1" />
+            Clear All
+          </rs-button>
+        </div>
       </div>
     </div>
-    <div v-if="filterComputed.length > 0" class="table-header-filter-list w-full mt-2 mb-1">
+    <div v-if="Object.keys(columnSearch).length > 0" class="table-header-filter-list w-full mt-2 mb-1">
       <div class="flex flex-wrap items-center justify-start gap-x-2">
         <div
-          class="flex items-center justify-center gap-x-2 border border-primary text-primary rounded-lg py-1 px-2"
-          v-for="(val, index) in filterComputed"
-          :key="index"
+          class="flex items-center justify-center gap-x-2 border border-blue-500 text-blue-600 bg-blue-50 rounded-lg py-1 px-2"
+          v-for="(searchTerm, columnKey) in columnSearch"
+          :key="columnKey"
         >
-          {{ val ? getColumnLabel(val.title) : "" }}
+          <Icon name="ic:round-search" size="1rem" />
+          <span class="text-sm">
+            {{ getColumnLabel(columnKey) }}: "{{ searchTerm }}"
+          </span>
           <Icon
             name="ic:round-close"
             class="mr-0 md:mr-1 hover:text-red-500 cursor-pointer"
             size="1rem"
-            @click="hideColumn(val.title)"
+            @click="clearColumnSearch(columnKey)"
           ></Icon>
         </div>
       </div>
