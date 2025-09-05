@@ -1013,7 +1013,7 @@
               <rs-button
                 variant="primary"
                 @click="handleSelesaiDanHantar"
-                :disabled="processing"
+                :disabled="processing || !hasStatusSokongan"
                 :loading="processing && actionType === 'complete_submit'"
               >
                 Hantar Kelulusan
@@ -1235,6 +1235,19 @@ const jumlahKeseluruhan = computed(() => {
   return kadar * tempoh
 })
 
+// Check if both status sokongan and status proses have valid data
+const hasStatusSokongan = computed(() => {
+  const hasValidStatusSokongan = formData.value.statusLawatan && 
+                                 formData.value.statusLawatan !== "sila_pilih" && 
+                                 formData.value.statusLawatan !== "";
+  
+  const hasValidStatusProses = formData.value.statusproses && 
+                               formData.value.statusproses !== "belum_selesai" && 
+                               formData.value.statusproses !== "kiv" &&
+                               formData.value.statusproses !== "";
+  
+  return hasValidStatusSokongan && hasValidStatusProses;
+})
 
 // Methods
 const getStatusVariant = (status) => {
