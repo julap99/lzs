@@ -303,14 +303,12 @@
                             @click="previewDocument(dokumen)"
                           >
                             <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                            Preview
                           </rs-button>
                           <rs-button
                             variant="success"
                             @click="downloadDocument(dokumen)"
                           >
                             <Icon name="ph:download" class="w-4 h-4 mr-1" />
-                            Muat Turun
                           </rs-button>
                         </div>
                       </td>
@@ -330,9 +328,28 @@
           </rs-card>
 
           <!-- BQ, Laporan Gambar, Laporan Teknikal in Tabs -->
-          <rs-tab variant="primary" type="card"  default-active="BQ">
-            <!-- Tab: BQ -->
-            <rs-tab-item title="BQ" active>
+          <div class="bg-white">
+            <!-- Custom Tab Navigation -->
+            <div class="flex border-b border-gray-200">
+              <button
+                v-for="(tab, index) in tabs"
+                :key="index"
+                @click="activeTab = tab.id"
+                              :class="[
+                'px-6 py-3 text-lg font-medium transition-colors duration-200',
+                activeTab === tab.id
+                  ? 'text-teal-600 border-b-2 border-teal-600'
+                  : 'text-gray-700 hover:text-gray-900'
+              ]"
+              >
+                {{ tab.title }}
+              </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+              <!-- BQ Tab -->
+              <div v-if="activeTab === 'bq'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -436,10 +453,10 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
+              </div>
 
-            <!-- Tab: Laporan Gambar -->
-            <rs-tab-item title="Laporan Gambar">
+              <!-- Laporan Gambar Tab -->
+              <div v-if="activeTab === 'gambar'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -478,21 +495,22 @@
                     <div
                       v-for="(gambar, index) in gambarLokasi"
                       :key="index"
-                      class="relative aspect-square rounded-lg overflow-hidden border border-gray-200"
+                      class="bg-white rounded-lg border border-gray-200 overflow-hidden"
                     >
-                      <img
-                        :src="gambar.url"
-                        :alt="gambar.catatan"
-                        class="w-full h-full object-cover"
-                      />
-                      <div
-                        class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-opacity"
-                      >
-                        <div
-                          class="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50 text-white text-sm"
-                        >
+                      <div class="aspect-square overflow-hidden">
+                        <img
+                          :src="gambar.url"
+                          :alt="gambar.catatan"
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div class="p-3">
+                        <p class="text-sm text-gray-700 font-medium">
                           {{ gambar.catatan }}
-                        </div>
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                          {{ formatDateTime(gambar.masaUpload) }}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -508,10 +526,10 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
+              </div>
 
-            <!-- Tab: Laporan Teknikal -->
-            <rs-tab-item title="Laporan Teknikal">
+              <!-- Laporan Teknikal Tab -->
+              <div v-if="activeTab === 'teknikal'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -599,8 +617,9 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
-          </rs-tab>
+              </div>
+            </div>
+          </div>
           
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -620,7 +639,7 @@
                     Maklumat Kadar Bantuan
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Nilai kadar bantuan berdasarkan BQ
+                    Nilai kadar bantuan yang dicadangkan
                   </p>
                 </div>
               </div>
@@ -802,6 +821,121 @@
             </template>
           </rs-card> -->
 
+          <!-- Laluan Process  -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="iconamoon:check-circle-2-duotone"
+                      class="w-6 h-6 text-yellow-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Laluan Proses
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Laluan Proses Permohonan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            
+
+            <template #body>
+              
+              <div class="space-y-4">
+                <!-- Accordion: Laluan Proses Details -->
+                <div class="space-y-3">
+                  <!-- Permohonan Accordion Item -->
+                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.permohonan = !accordionOpen.permohonan"
+                    >
+                      <span class="font-medium text-gray-900">Permohonan</span>
+                      <Icon
+                        :name="accordionOpen.permohonan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.permohonan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Permohonan Dibuat Oleh</label>
+                          <p class="text-gray-900">{{ permohonanDetails.dibuatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Permohonan</label>
+                          <p class="text-gray-900">{{ formatDateTime(permohonanDetails.tarikhPermohonan) }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Sebab Memohon Bantuan</label>
+                          <p class="text-gray-900">{{ permohonanDetails.sebabMemohon }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Siasatan Accordion Item -->
+                  <!-- <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.siasatan = !accordionOpen.siasatan"
+                    >
+                      <span class="font-medium text-gray-900">Siasatan</span>
+                      <Icon
+                        :name="accordionOpen.siasatan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.siasatan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Disiasat Oleh</label>
+                          <p class="text-gray-900">{{ siasatanDetails.disiasatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Status Siasatan</label>
+                          <rs-badge :variant="getProcessStatusVariant(siasatanDetails.statusSiasatan)">
+                            {{ siasatanDetails.statusSiasatan }}
+                          </rs-badge>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Selesai Siasatan</label>
+                          <p class="text-gray-900">{{ formatDateTime(siasatanDetails.tarikhSelesai) }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">SLA</label>
+                          <p class="text-gray-900">{{ siasatanDetails.sla }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Catatan Siasatan</label>
+                          <p class="text-gray-900">{{ siasatanDetails.catatan }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+
+                <!-- <div class="text-xs text-gray-500">
+                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
+                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
+                </div> -->
+              </div>
+              
+            </template>
+            
+          </rs-card>
+
           <!-- Section 7: Status Lawatan -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -838,10 +972,10 @@
               <div class="space-y-4">
                 <FormKit
                   type="textarea"
-                  label="Catatan Lapangan"
+                  label="Catatan"
                   v-model="catatanLapangan.catatan"
                   rows="6"
-                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa lawatan lapangan..."
+                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa siasatan..."
                   :classes="{ input: 'text-sm' }"
                 />
 
@@ -879,7 +1013,7 @@
               <rs-button
                 variant="primary"
                 @click="handleSelesaiDanHantar"
-                :disabled="processing"
+                :disabled="processing || !hasStatusSokongan"
                 :loading="processing && actionType === 'complete_submit'"
               >
                 Hantar Kelulusan
@@ -961,6 +1095,15 @@ const breadcrumb = ref([
   },
 ]);
 
+// Tab configuration
+const tabs = [
+  { id: 'bq', title: 'BQ' },
+  { id: 'gambar', title: 'Laporan Gambar' },
+  { id: 'teknikal', title: 'Laporan Teknikal' }
+];
+
+const activeTab = ref('bq');
+
 // Section 1: Maklumat Pemohon data
 const formData = ref({
   aid: "B102	Bantuan Binaan Rumah (Fakir)",
@@ -998,6 +1141,26 @@ const dokumenSokongan = ref([
   },
 ]);
 
+// Accordion state and mock details
+const accordionOpen = reactive({
+  permohonan: false,
+  siasatan: false,
+})
+
+const permohonanDetails = ref({
+  dibuatOleh: 'Ahmad bin Abdullah',
+  tarikhPermohonan: '2024-01-01 09:00:00',
+  sebabMemohon: 'Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan bantuan bina baru rumah'
+})
+
+const siasatanDetails = ref({
+  disiasatOleh: 'Siti binti Ali',
+  statusSiasatan: 'Semak',
+  tarikhSelesai: '2024-01-03 17:30:00',
+  catatan: 'Lawatan lapangan telah dilakukan dan dokumen disahkan.',
+  sla: '3 hari bekerja'
+})
+
 // Section 3: Draf BQ
 const bqList = ref([
   {
@@ -1014,13 +1177,13 @@ const editingBQ = ref(null);
 // Section 4: Laporan Gambar
 const gambarLokasi = ref([
   {
-    url: "/img/placeholder-image.jpg",
-    catatan: "Keadaan semasa rumah",
+    url: "https://scontent.fkul10-1.fna.fbcdn.net/v/t1.6435-9/33382272_977231325777776_3291633360509599744_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=tsi5WpsPCREQ7kNvwEe3GJk&_nc_oc=Adl4_F7yjD2xX6siXLa_NANICn4Cak1Wmni5VBa7XhbSYIByOReFS3wwQc7n0JHnBqz05IBIajWiWh8LE9coTq0L&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=4p3_JCn3HWweiLZBezB58w&oh=00_AfZFYLhw-KRbw3goXGgJkj7ewaf54KBCnG0_XXcl4y3TWQ&oe=68E1A4D7",
+    catatan: "Keadaan dinding papan rumah",
     masaUpload: new Date().toISOString(),
   },
   {
-    url: "/img/placeholder-image.jpg",
-    catatan: "Bahagian yang perlu dibaiki",
+    url: "https://scontent.fkul15-1.fna.fbcdn.net/v/t39.30808-6/309943384_196941696025849_726196766864978484_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=IyNAhW7CUkgQ7kNvwHTA3nK&_nc_oc=AdmN3PYsmtpYr9gnvcQLzYd-zejr8nOaNfL2SkYiGIJsfKhvEWLi_gLtezJSzXrXrSpit_KvkUj1zjOCHOKl8Y4n&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=aY79tE8vuTPag6wRgWP07g&oh=00_AfZvZmX3DPqOBnADSlF0Occy0BA6qGPavBKb7ME7Qre1eQ&oe=68C01482",
+    catatan: "Pandangan depan rumah",
     masaUpload: new Date().toISOString(),
   },
 ]);
@@ -1072,6 +1235,17 @@ const jumlahKeseluruhan = computed(() => {
   return kadar * tempoh
 })
 
+// Check if both status sokongan and status proses have valid data
+const hasStatusSokongan = computed(() => {
+  const hasValidStatusSokongan = formData.value.statusLawatan && 
+                                 formData.value.statusLawatan !== "sila_pilih" && 
+                                 formData.value.statusLawatan !== "";
+  
+  const hasValidStatusProses = formData.value.statusproses && 
+                               formData.value.statusproses === "selesai";
+  
+  return hasValidStatusSokongan && hasValidStatusProses;
+})
 
 // Methods
 const getStatusVariant = (status) => {
@@ -1109,6 +1283,22 @@ const getBQStatusVariant = (status) => {
   };
   return variants[status] || "default";
 };
+
+const getProcessStatusVariant = (status) => {
+  const variants = {
+    'Permohonan': 'info',
+    'Semak': 'warning',
+    'Sokong': 'primary',
+    'Lulus': 'success'
+  }
+  return variants[status] || 'primary'
+}
+
+const formatDateTime = (dateTimeString) => {
+  if (!dateTimeString) return '-'
+  const date = new Date(dateTimeString)
+  return date.toLocaleString('ms-MY')
+}
 
 const previewDocument = (dokumen) => {
   console.log("Previewing document:", dokumen);
@@ -1296,7 +1486,7 @@ onMounted(() => {
     // statusKeluarga: "Fakir",
     // statusIndividu: "Fakir",
     // statusMultidimensi: "Asnaf Tidak Produktif",
-    statusLawatan: "Perlu Diproses",
+    // statusLawatan: "Perlu Diproses",
   };
 
   console.log("formData set:", formData.value); // Debug log

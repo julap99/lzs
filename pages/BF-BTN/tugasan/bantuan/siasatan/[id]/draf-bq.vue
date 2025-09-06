@@ -9,15 +9,15 @@
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         >
           <div class="flex-1">
-            <!-- <h1
+            <h1
               class="text-3xl font-bold text-gray-900 tracking-tight"
               id="page-title"
-            > Maklumat BQ
-             {{ editingBQ ? "Edit" : "Tambah" }} Draf B
+            > Siasatan dan Anggaran Kos
+             <!-- {{ editingBQ ? "Edit" : "Tambah" }} Draf BQ -->
             </h1> 
             <p class="mt-2 text-sm text-gray-600 max-w-2xl" role="doc-subtitle">
-              Bill of Quantity untuk kerja-kerja cadangan
-            </p> -->
+              Senarai kerja-kerja cadangan
+            </p>
           </div>
           <rs-button
             variant="primary-outline"
@@ -236,18 +236,36 @@
                         step="0.01"
                       />
                     </div>
+                    <div class="space-y-1">
+                      <label class="text-xs font-medium text-gray-700"
+                        >Jumlah (RM)</label
+                      >
+                      <div class="p-2 bg-gray-50 rounded-lg border border-gray-200">
+                        <span class="text-sm font-medium text-gray-900">
+                          {{ formatCurrency((Number(item.kuantiti) || 0) * (Number(item.kadar) || 0)) }}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div class="mt-3 space-y-1">
+                  <div class="mt-3 space-y-2">
                     <label class="text-xs font-medium text-gray-700"
                       >Keterangan Kerja</label
                     >
                     <FormKit
+                      type="select"
+                      v-model="item.jenisKerja"
+                      :classes="{ input: 'text-sm !p-2' }"
+                      :options="jenisKerjaOptions"
+                      placeholder="Pilih jenis kerja..."
+                      @input="handleJenisKerjaChange(item, index)"
+                    />
+                    <FormKit
                       type="textarea"
                       v-model="item.keteranganKerja"
-                      rows="2"
+                      rows="4"
                       :classes="{ input: 'text-sm !p-2' }"
-                      placeholder="Masukkan jenis kerja..."
+                      placeholder="Masukkan keterangan kerja..."
                     />
                   </div>
                 </div>
@@ -313,6 +331,13 @@
                         Kadar (RM)
                       </th>
                       <th
+                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32"
+                        scope="col"
+                        role="columnheader"
+                      >
+                        Jumlah (RM)
+                      </th>
+                      <th
                         class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20"
                         scope="col"
                         role="columnheader"
@@ -350,19 +375,33 @@
                         />
                       </td>
                       <td class="px-3 py-4" role="gridcell">
-                        <FormKit
-                          type="textarea"
-                          v-model="item.keteranganKerja"
-                          rows="2"
-                          :classes="{
-                            input:
-                              'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
-                          }"
-                          placeholder="Masukkan jenis kerja..."
-                          :aria-label="`Keterangan kerja untuk item ${
-                            index + 1
-                          }`"
-                        />
+                        <div class="space-y-2">
+                          <FormKit
+                            type="select"
+                            v-model="item.jenisKerja"
+                            :classes="{
+                              input:
+                                'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
+                            }"
+                            :options="jenisKerjaOptions"
+                            placeholder="Pilih jenis kerja..."
+                            @input="handleJenisKerjaChange(item, index)"
+                            :aria-label="`Jenis kerja untuk item ${index + 1}`"
+                          />
+                          <FormKit
+                            type="textarea"
+                            v-model="item.keteranganKerja"
+                            rows="4"
+                            :classes="{
+                              input:
+                                'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
+                            }"
+                            placeholder="Masukkan keterangan kerja..."
+                            :aria-label="`Keterangan kerja untuk item ${
+                              index + 1
+                            }`"
+                          />
+                        </div>
                       </td>
                       <td class="px-3 py-4" role="gridcell">
                         <FormKit
@@ -407,6 +446,11 @@
                             index + 1
                           }`"
                         />
+                      </td>
+                      <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900" role="gridcell">
+                        <div class="font-medium">
+                          {{ formatCurrency((Number(item.kuantiti) || 0) * (Number(item.kadar) || 0)) }}
+                        </div>
                       </td>
                       <td class="px-3 py-4" role="gridcell">
                         <rs-button
@@ -507,9 +551,9 @@
             <template #body>
               <div class="space-y-6">
                                  <!-- Editable Catatan Pengesyoran -->
-                 <div class="space-y-2">
+                 <!-- <div class="space-y-2">
                    <label class="block text-sm font-medium text-gray-700">
-                     Catatan Pengesyoran
+                     Ringgit
                      <span class="text-xs text-gray-500 font-normal ml-1">*</span>
                    </label>
                    <FormKit
@@ -523,7 +567,14 @@
                      placeholder="Masukkan catatan pengesyoran untuk dokumen BQ ini..."
                      help="Catatan ini akan dipaparkan dalam dokumen BQ sebagai pengesyoran rasmi."
                    />
-                 </div>
+                 </div> -->
+
+                <!-- Ringgit Malaysia Word Conversion -->
+                <div class="p-4">
+                  <p class="text-base font-bold text-gray-900">
+                    <strong>Ringgit Malaysia :</strong> {{ numberToWords(formData.jumlahKeseluruhan).toUpperCase() }}
+                  </p>
+                </div>
 
                 <!-- Recommendation line mirroring the document -->
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -572,14 +623,15 @@
                           name="ph:pencil-simple"
                           class="w-4 h-4 inline mr-1 text-green-600"
                         />
-                        Disediakan
+                        Disediakan Oleh
                       </label>
                       <div class="p-3 bg-white rounded border border-green-200">
                         <div class="text-sm font-medium text-gray-900">
                           {{ formData.disediakanOleh }}
                         </div>
                         <div class="text-xs text-gray-500 mt-1">
-                          Pegawai Teknikal
+                          Eksekutif Teknikal Daerah Kuala Selangor<br>
+                          Jabatan Pengurusan Operasi Agihan Daerah
                         </div>
                       </div>
                       <div
@@ -588,10 +640,10 @@
                         <Icon name="ph:calendar" class="w-3 h-3 mr-1" />
                         Tarikh: {{ new Date().toLocaleDateString("ms-MY") }}
                       </div>
-                      <div class="text-xs text-green-600 flex items-center">
+                      <!-- <div class="text-xs text-green-600 flex items-center">
                         <Icon name="ph:check-circle" class="w-3 h-3 mr-1" />
                         Status: Aktif
-                      </div>
+                      </div> -->
                     </div>
 
                     <!-- Disemak 1 Stage -->
@@ -759,7 +811,7 @@
         <rs-card class="p-4">
           <div class="flex flex-col lg:flex-row gap-3 lg:justify-end">
             <!-- Mobile: Full width buttons -->
-            <rs-button
+            <!-- <rs-button
               variant="primary-outline"
               @click="handleSaveDraft"
               :disabled="processing"
@@ -767,7 +819,7 @@
             >
               <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
               Simpan Draf
-            </rs-button>
+            </rs-button> -->
 
             <rs-button
               variant="success-outline"
@@ -793,6 +845,131 @@
         </rs-card>
       </main>
     </div>
+
+    <!-- PDF Preview Modal -->
+    <div v-if="showPDFModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">Preview</h3>
+          <button @click="showPDFModal = false" class="text-gray-400 hover:text-gray-600">
+            <Icon name="ph:x" class="w-6 h-6" />
+          </button>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="p-6">
+          <!-- Document Header -->
+          <div class="text-center mb-6">
+            <h1 class="text-xl font-bold text-gray-900 mb-2">BORANG SIASATAN & ANGGARAN KOS</h1>
+            <p class="text-sm text-gray-600">LEMBAGA ZAKAT SELANGOR</p>
+          </div>
+
+          <!-- Applicant Details -->
+          <div class="mb-6 space-y-2">
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span class="font-medium">Nama Pemohon & Institusi:</span> {{ formData.namaPemohon }}
+              </div>
+              <div>
+                <span class="font-medium">No BR:</span> {{ formData.noBR }}
+              </div>
+              <div class="col-span-2">
+                <span class="font-medium">Alamat:</span> {{ formData.alamat }}
+              </div>
+              <div>
+                <span class="font-medium">Tarikh Siasatan:</span> {{ new Date(formData.tarikhSiasatan).toLocaleDateString("ms-MY") }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Work Items Table -->
+          <div class="mb-6">
+            <table class="w-full border border-gray-300 text-sm">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th class="border border-gray-300 px-2 py-1 text-left">BIL</th>
+                  <th class="border border-gray-300 px-2 py-1 text-left">REF</th>
+                  <th class="border border-gray-300 px-2 py-1 text-left">KETERANGAN KERJA</th>
+                  <th class="border border-gray-300 px-2 py-1 text-left">UNIT</th>
+                  <th class="border border-gray-300 px-2 py-1 text-left">KUANTITI</th>
+                  <th class="border border-gray-300 px-2 py-1 text-left">KADAR</th>
+                  <th class="border border-gray-300 px-2 py-1 text-left">JUMLAH</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in formData.itemKerja" :key="index">
+                  <td class="border border-gray-300 px-2 py-1">{{ index + 1 }}</td>
+                  <td class="border border-gray-300 px-2 py-1">{{ item.ref }}</td>
+                  <td class="border border-gray-300 px-2 py-1 text-xs">{{ item.keteranganKerja }}</td>
+                  <td class="border border-gray-300 px-2 py-1">{{ item.unit }}</td>
+                  <td class="border border-gray-300 px-2 py-1 text-right">{{ item.kuantiti }}</td>
+                  <td class="border border-gray-300 px-2 py-1 text-right">{{ formatCurrency(item.kadar) }}</td>
+                  <td class="border border-gray-300 px-2 py-1 text-right font-medium">{{ formatCurrency((Number(item.kuantiti) || 0) * (Number(item.kadar) || 0)) }}</td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td colspan="6" class="border border-gray-300 px-2 py-1 font-bold text-right">JUMLAH KESELURUHAN</td>
+                  <td class="border border-gray-300 px-2 py-1 text-right font-bold">{{ formatCurrency(formData.jumlahKeseluruhan) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Amount in Words & Recommendation -->
+          <div class="mb-6 space-y-3">
+            <div class="text-left">
+              <p class="text-base font-bold text-gray-900">
+                <strong>Ringgit Malaysia :</strong> {{ numberToWords(formData.jumlahKeseluruhan).toUpperCase() }}
+              </p>
+            </div>
+            <div class="text-left">
+              <p class="text-sm text-gray-800">
+                Disyorkan kerja-kerja baik pulih dengan nilai RM{{ formData.jumlahKeseluruhan.toLocaleString("ms-MY") }}.
+              </p>
+            </div>
+          </div>
+
+          <!-- Signature Section -->
+          <div class="grid grid-cols-2 gap-6 text-sm">
+            <div>
+              <p class="font-medium mb-2">Disediakan Oleh:</p>
+              <!-- <div class="border border-gray-300 h-16 mb-2"></div> -->
+              <p class="font-medium">{{ formData.disediakanOleh }}</p>
+              <p class="text-xs text-gray-600">Eksekutif Teknikal Daerah Kuala Selangor<br>Jabatan Pengurusan Operasi Agihan Daerah</p>
+            </div>
+            <div>
+              <p class="font-medium mb-2">Disemak 1 Oleh:</p>
+              <!-- <div class="border border-gray-300 h-16 mb-2"></div> -->
+              <p class="font-medium">{{ formData.disemak1 }}</p>
+              <p class="text-xs text-gray-600">Eksekutif Pengurusan Projek<br>Jabatan Pengurusan Hartanah</p>
+            </div>
+            <div>
+              <p class="font-medium mb-2">Disemak 2 Oleh:</p>
+              <!-- <div class="border border-gray-300 h-16 mb-2"></div> -->
+              <p class="font-medium">{{ formData.disemak2 }}</p>
+              <p class="text-xs text-gray-600">Ketua<br>Jabatan Pengurusan Hartanah</p>
+            </div>
+            <div>
+              <p class="font-medium mb-2">Disahkan Oleh:</p>
+              <!-- <div class="border border-gray-300 h-16 mb-2"></div> -->
+              <p class="font-medium">{{ formData.diluluskan }}</p>
+              <p class="text-xs text-gray-600">Ketua</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+          <rs-button variant="secondary" @click="showPDFModal = false">
+            Tutup
+          </rs-button>
+          <rs-button variant="primary" @click="generateActualPDF">
+            <Icon name="ph:file-pdf" class="w-4 h-4 mr-2" />
+            Cetak PDF
+          </rs-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -805,6 +982,7 @@ const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 const processing = ref(false);
+const showPDFModal = ref(false);
 
 definePageMeta({
   title: "Draf BQ - Siasatan Lapangan",
@@ -843,6 +1021,25 @@ const pegawaiOptions = ref([
   { label: "Mohd bin Ibrahim - Ketua Pegawai", value: "mohd_ibrahim" },
 ]);
 
+const jenisKerjaOptions = ref([
+  { label: "Roboh Rumah Kayu", value: "roboh_rumah_kayu" },
+  { label: "Bina Semula Bangunan Bilik", value: "bina_semula_bangunan_bilik" },
+]);
+
+// Predefined data for each jenis kerja
+const jenisKerjaData = {
+  roboh_rumah_kayu: {
+    keteranganKerja: "Membuka,memecah dan membawa keluar keseluruhan struktur binaan rumah kayu,membuka dan memindahkan meter elektrik TNB,papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
+    unit: "Pukal",
+    kadar: 3000
+  },
+  bina_semula_bangunan_bilik: {
+    keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
+    unit: "Pukal",
+    kadar: 40000
+  }
+};
+
 // Form data with better structure
 const formData = ref({
   noBQ: "",
@@ -868,19 +1065,56 @@ const currentStage = ref("disediakan"); // 'disediakan', 'disemak1', 'disemak2',
 
 // Utility functions (moved before computed properties to avoid hoisting issues)
 const numberToWords = (amount) => {
-  if (!amount || amount === 0) return "";
+  if (!amount || amount === 0) return "TIADA RINGGIT SAHAJA";
 
-  // Simplified implementation - in production, use a proper number-to-words library
-  const thousands = Math.floor(amount / 1000);
-  const remainder = Math.round(amount % 1000);
+  const num = Math.round(amount);
+  
+  // Convert numbers to Malay words
+  const convertToWords = (n) => {
+    const ones = ['', 'SATU', 'DUA', 'TIGA', 'EMPAT', 'LIMA', 'ENAM', 'TUJUH', 'LAPAN', 'SEMBILAN'];
+    const teens = ['SEPULUH', 'SEBELAS', 'DUA BELAS', 'TIGA BELAS', 'EMPAT BELAS', 'LIMA BELAS', 'ENAM BELAS', 'TUJUH BELAS', 'LAPAN BELAS', 'SEMBILAN BELAS'];
+    const tens = ['', '', 'DUA PULUH', 'TIGA PULUH', 'EMPAT PULUH', 'LIMA PULUH', 'ENAM PULUH', 'TUJUH PULUH', 'LAPAN PULUH', 'SEMBILAN PULUH'];
+    
+    if (n === 0) return '';
+    if (n < 10) return ones[n];
+    if (n < 20) return teens[n - 10];
+    if (n < 100) {
+      const ten = Math.floor(n / 10);
+      const one = n % 10;
+      return tens[ten] + (one > 0 ? ' ' + ones[one] : '');
+    }
+    if (n < 1000) {
+      const hundred = Math.floor(n / 100);
+      const remainder = n % 100;
+      return (hundred === 1 ? 'SERATUS' : ones[hundred] + ' RATUS') + 
+             (remainder > 0 ? ' ' + convertToWords(remainder) : '');
+    }
+    if (n < 1000000) {
+      const thousand = Math.floor(n / 1000);
+      const remainder = n % 1000;
+      return (thousand === 1 ? 'SERIBU' : convertToWords(thousand) + ' RIBU') + 
+             (remainder > 0 ? ' ' + convertToWords(remainder) : '');
+    }
+    if (n < 1000000000) {
+      const million = Math.floor(n / 1000000);
+      const remainder = n % 1000000;
+      return (million === 1 ? 'SEJUTA' : convertToWords(million) + ' JUTA') + 
+             (remainder > 0 ? ' ' + convertToWords(remainder) : '');
+    }
+    return 'NOMBOR TERLALU BESAR';
+  };
+  
+  return convertToWords(num) + ' RINGGIT SAHAJA';
+};
 
-  if (thousands > 0) {
-    return `${thousands} ribu ${
-      remainder > 0 ? remainder : ""
-    } ringgit sahaja`.trim();
-  } else {
-    return `${Math.round(amount)} ringgit sahaja`;
-  }
+const formatCurrency = (amount) => {
+  if (!amount || amount === 0) return "RM 0.00";
+  return new Intl.NumberFormat('ms-MY', {
+    style: 'currency',
+    currency: 'MYR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
 };
 
 const generateCatatanPengesyoran = (total = 0) => {
@@ -948,11 +1182,24 @@ const updateTotals = () => {
   formData.value.jumlahKeseluruhan = currentSubtotal;
 };
 
+// Function to auto-populate data based on jenis kerja selection
+const handleJenisKerjaChange = (item, index) => {
+  if (item.jenisKerja && jenisKerjaData[item.jenisKerja]) {
+    const data = jenisKerjaData[item.jenisKerja];
+    item.keteranganKerja = data.keteranganKerja;
+    item.unit = data.unit;
+    item.kadar = data.kadar;
+    // Trigger total update
+    updateTotals();
+  }
+};
+
 // Item management methods
 const addItem = () => {
   formData.value.itemKerja.push({
     ref: "CMP",
     keteranganKerja: "",
+    jenisKerja: "",
     unit: "",
     kuantiti: 1,
     kadar: 0,
@@ -1008,19 +1255,28 @@ const handleGeneratePDF = async () => {
       return;
     }
 
-    // Validate catatan pengesyoran
-    if (!formData.value.catatanPengesyoran || formData.value.catatanPengesyoran.trim() === '') {
-      toast.error("Sila masukkan catatan pengesyoran sebelum menjana PDF");
-      return;
-    }
+    // Show PDF preview modal
+    showPDFModal.value = true;
+  } catch (error) {
+    toast.error("Ralat semasa membuka pratonton PDF");
+    console.error("PDF preview error:", error);
+  } finally {
+    processing.value = false;
+  }
+};
 
-    // Implement PDF generation functionality
-    console.log("Generating PDF for BQ:", formData.value);
+const generateActualPDF = async () => {
+  try {
+    processing.value = true;
+
+    // Implement actual PDF generation functionality
+    console.log("Generating actual PDF for BQ:", formData.value);
 
     await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate PDF generation
     toast.success("PDF BQ telah dijana berjaya");
+    showPDFModal.value = false;
   } catch (error) {
-    toast.error("Ralat semasa menjana PDF");
+    toast.error("Ralat semasa menjana PDF BQ");
     console.error("PDF generation error:", error);
   } finally {
     processing.value = false;
@@ -1069,8 +1325,8 @@ const initializeFormData = () => {
   const baseData = {
     noBQ: generateBQNumber(),
     noBR: generateBRNumber(),
-    namaPemohon: "MOHD ROSLI BIN SAAD",
-    alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
+    namaPemohon: "Mohd Rosli Bin Saad",
+    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
     tarikhSiasatan: today.toISOString().split("T")[0],
     itemKerja: [],
     jumlahKeseluruhan: 0,
@@ -1090,18 +1346,28 @@ const initializeFormData = () => {
     baseData.itemKerja = [
       {
         ref: "CMP",
-        keteranganKerja: "Membaiki kebocoran bumbung",
+        keteranganKerja: " Membuka,memecah dan membawa keluar keseluruhan struktur binaan rumah kayu,membuka dan memindahkan meter elektrik TNB,papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
+        jenisKerja: "roboh_rumah_kayu",
         unit: "Pukal",
         kuantiti: 1,
         kadar: 3000,
       },
       {
         ref: "CMP",
-        keteranganKerja: "Rekabentuk semula ruang dapur dan kemasan",
-        unit: "Pai",
+        keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
+        jenisKerja: "bina_semula_bangunan_bilik",
+        unit: "Pukal",
         kuantiti: 1,
         kadar: 40000,
       },
+             {
+         ref: "CMP",
+         keteranganKerja: "Bumbung metal deck termasuk struktur jenis sesikat",
+        //  jenisKerja: "bina_semula_bangunan_bilik",
+        //  unit: "Pukal",
+        //  kuantiti: 1,
+        //  kadar: 15000,
+       },
     ];
   }
 
