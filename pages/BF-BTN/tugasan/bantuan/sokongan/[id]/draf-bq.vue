@@ -295,6 +295,13 @@
                       >
                         Kadar (RM)
                       </th>
+                      <th
+                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32"
+                        scope="col"
+                        role="columnheader"
+                      >
+                        Jumlah (RM)
+                      </th>
                     </tr>
                   </thead>
                   <tbody
@@ -361,6 +368,15 @@
                           >
                         </div>
                       </td>
+                      <td class="px-3 py-4" role="gridcell">
+                        <div
+                          class="p-2 bg-gray-50 rounded border border-gray-200"
+                        >
+                          <span class="text-sm text-gray-900 font-mono font-semibold"
+                            >RM {{ ((item.kadar || 0) * (item.kuantiti || 0)).toFixed(2) }}</span
+                          >
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -404,7 +420,9 @@
             </template>
           </rs-card>
         </section>
-
+      
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
         <!-- Summary & Additional Info -->
         <section aria-labelledby="summary-title">
           <rs-card class="shadow-sm border-0 bg-white">
@@ -434,7 +452,7 @@
             <template #body>
               <div class="space-y-6">
                 <!-- Read-only Catatan Pengesyoran -->
-                <div class="space-y-2">
+                <!-- <div class="space-y-2">
                   <label class="block text-sm font-medium text-gray-700">
                     Catatan Pengesyoran
                   </label>
@@ -446,6 +464,12 @@
                       "Tiada catatan pengesyoran."
                     }}</span>
                   </div>
+                </div> -->
+
+                <div class="p-4">
+                  <p class="text-base font-bold text-gray-900">
+                    <strong>Ringgit Malaysia :</strong> {{ numberToWords(formData.jumlahKeseluruhan).toUpperCase() }}
+                  </p>
                 </div>
 
                 <!-- Recommendation line mirroring the document -->
@@ -473,7 +497,7 @@
                   />
                 </div> -->
 
-                <div class="space-y-2">
+                <!-- <div class="space-y-2">
                   <label class="block text-sm font-medium text-gray-700">
                     Catatan Hartanah
                   </label>
@@ -482,7 +506,7 @@
                     class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 outline-none min-h-[100px]"
                     placeholder="Masukkan catatan hartanah jika perlu kemaskini BQ"
                   ></textarea>
-                </div>
+                </div> -->
 
 
 
@@ -503,25 +527,22 @@
                     </div>
                   </div>
 
-                  <!-- Dynamic signature display based on current stage -->
-                  <div class="max-w-md">
-                    <!-- Disediakan Stage -->
-                    <div
-                      v-if="currentStage === 'disediakan'"
-                      class="space-y-3 p-4 bg-green-50 rounded-lg border-2 border-green-300 relative"
-                    >
+                  <!-- Digital signature display -->
+                  <div class="space-y-4">
+                    <!-- Disediakan Oleh - Always Visible -->
+                    <div class="space-y-3 p-4 bg-green-50 rounded-lg border-2 border-green-300 relative">
                       <div
                         class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center"
                       >
                         <Icon name="ph:user" class="w-3 h-3 mr-1" />
-                        Anda
+                        Disediakan
                       </div>
                       <label class="block text-sm font-medium text-green-700">
                         <Icon
                           name="ph:pencil-simple"
                           class="w-4 h-4 inline mr-1 text-green-600"
                         />
-                        Disediakan
+                        Disediakan Oleh
                       </label>
                       <div class="p-3 bg-white rounded border border-green-200">
                         <div class="text-sm font-medium text-gray-900">
@@ -539,55 +560,109 @@
                       </div>
                       <div class="text-xs text-green-600 flex items-center">
                         <Icon name="ph:check-circle" class="w-3 h-3 mr-1" />
-                        Status: Aktif
+                        Status: Selesai
                       </div>
                     </div>
 
                     <!-- Disemak 1 Stage -->
                     <div
-                      v-else-if="currentStage === 'disemak1'"
-                      class="space-y-3 p-4 bg-blue-50 rounded-lg border-2 border-blue-300 relative"
+                      v-if="currentStage === 'disemak1'"
+                      :class="[
+                        'space-y-3 p-4 rounded-lg border-2 relative',
+                        formData.keputusanSokongan === 'lulus' 
+                          ? 'bg-green-50 border-green-300' 
+                          : 'bg-blue-50 border-blue-300'
+                      ]"
                     >
                       <div
-                        class="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full flex items-center"
+                        :class="[
+                          'absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full flex items-center',
+                          formData.keputusanSokongan === 'lulus' 
+                            ? 'bg-green-500' 
+                            : 'bg-blue-500'
+                        ]"
                       >
                         <Icon name="ph:user" class="w-3 h-3 mr-1" />
-                        Anda
+                        {{ formData.keputusanSokongan === 'lulus' ? 'Disemak 1' : 'Anda' }}
                       </div>
-                      <label class="block text-sm font-medium text-blue-700">
+                      <label 
+                        :class="[
+                          'block text-sm font-medium',
+                          formData.keputusanSokongan === 'lulus' 
+                            ? 'text-green-700' 
+                            : 'text-blue-700'
+                        ]"
+                      >
                         <Icon
-                          name="ph:check-circle"
-                          class="w-4 h-4 inline mr-1 text-blue-600"
+                          :name="formData.keputusanSokongan === 'lulus' ? 'ph:seal-check' : 'ph:check-circle'"
+                          :class="[
+                            'w-4 h-4 inline mr-1',
+                            formData.keputusanSokongan === 'lulus' 
+                              ? 'text-green-600' 
+                              : 'text-blue-600'
+                          ]"
                         />
-                        Disemak 1
+                        {{ formData.keputusanSokongan === 'lulus' ? 'Disemak 1 Oleh' : 'Disemak 1 Oleh' }}
                       </label>
-                      <div class="p-3 bg-white rounded border border-blue-200">
+                      <div 
+                        :class="[
+                          'p-3 bg-white rounded border',
+                          formData.keputusanSokongan === 'lulus' 
+                            ? 'border-green-200' 
+                            : 'border-blue-200'
+                        ]"
+                      >
                         <div class="text-sm font-medium text-gray-900">
-                          {{ formData.disemak1 || "Menunggu tindakan anda" }}
+                          {{ 
+                            formData.keputusanSokongan === 'lulus' 
+                              ? 'Ahmad Hafiz bin Abdullah' 
+                              : (formData.disemak1 || "Menunggu tindakan anda") 
+                          }}
                         </div>
-                        <div class="text-xs text-gray-500 mt-1">
-                          Pegawai Penyemak 1
+                        <div class="text-xs text-gray-500 mt-1" 
+                            v-html="formData.keputusanSokongan === 'lulus'
+                              ? 'Eksekutif Pengurusan Projek <br> Jabatan Pengurusan Hartanah'
+                              : 'Pegawai Penyemak 1'">
                         </div>
+                        <!-- <div class="text-xs text-gray-500 mt-1">
+                          {{ formData.keputusanSokongan === 'lulus' ? ' Eksekutif Pengurusan Projek <br> Jabatan Pengurusan Hartanah' : 'Pegawai Penyemak 1' }}
+                        </div> -->
                       </div>
                       <div
-                        class="text-xs text-blue-600 flex items-center font-medium"
+                        :class="[
+                          'text-xs flex items-center font-medium',
+                          formData.keputusanSokongan === 'lulus' 
+                            ? 'text-green-600' 
+                            : 'text-blue-600'
+                        ]"
                       >
                         <Icon name="ph:calendar" class="w-3 h-3 mr-1" />
                         Tarikh:
                         {{
-                          formData.tarikhDisemak1 ||
-                          new Date().toLocaleDateString("ms-MY")
+                          formData.keputusanSokongan === 'lulus' 
+                            ? new Date().toLocaleDateString("ms-MY")
+                            : (formData.tarikhDisemak1 || new Date().toLocaleDateString("ms-MY"))
                         }}
                       </div>
-                      <div class="text-xs text-blue-600 flex items-center">
-                        <Icon name="ph:clock" class="w-3 h-3 mr-1" />
-                        Status: Sedang Disemak
+                      <div 
+                        :class="[
+                          'text-xs flex items-center',
+                          formData.keputusanSokongan === 'lulus' 
+                            ? 'text-green-600' 
+                            : 'text-blue-600'
+                        ]"
+                      >
+                        <Icon 
+                          :name="formData.keputusanSokongan === 'lulus' ? 'ph:seal-check' : 'ph:clock'" 
+                          class="w-3 h-3 mr-1" 
+                        />
+                        Status: {{ formData.keputusanSokongan === 'lulus' ? 'Lulus' : 'Sedang Disemak' }}
                       </div>
                     </div>
 
                     <!-- Disemak 2 Stage -->
                     <div
-                      v-else-if="currentStage === 'disemak2'"
+                      v-if="currentStage === 'disemak2'"
                       class="space-y-3 p-4 bg-purple-50 rounded-lg border-2 border-purple-300 relative"
                     >
                       <div
@@ -631,7 +706,7 @@
 
                     <!-- Diluluskan Stage -->
                     <div
-                      v-else-if="currentStage === 'diluluskan'"
+                      v-if="currentStage === 'diluluskan'"
                       class="space-y-3 p-4 bg-emerald-50 rounded-lg border-2 border-emerald-300 relative"
                     >
                       <div
@@ -699,13 +774,102 @@
             </template>
           </rs-card>
         </section>
+      </div>
+    
+
+    <div class="lg:col-span-1 space-y-6">
+          <rs-card class="shadow-sm border-0 bg-white sticky top-6">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="ph:clipboard-text"
+                      class="w-6 h-6 text-purple-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Keputusan Sokongan BQ
+                  </h2>
+                  <p class="text-sm text-gray-500">Penilaian dan tindakan</p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <!-- Keputusan Dropdown -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    Keputusan <span class="text-red-500">*</span>
+                  </label>
+                  <FormKit
+                    type="select"
+                    name="keputusanSokongan"
+                    v-model="formData.keputusanSokongan"
+                    :options="keputusanOptions"
+                    validation="required"
+                    placeholder="Pilih keputusan"
+                    input-class="w-full"
+                    @input="handleKeputusanChange"
+                  />
+                </div>
+
+
+                <!-- Catatan Textarea - Conditional -->
+                <div v-if="showCatatan" class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    Catatan <span class="text-red-500">*</span>
+                  </label>
+                  <FormKit
+                    type="textarea"
+                    name="catatanKeputusan"
+                    v-model="formData.catatanKeputusan"
+                    validation="required"
+                    placeholder="Masukkan catatan untuk keputusan ini"
+                    rows="4"
+                    input-class="w-full"
+                  />
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 pt-4">
+                  <rs-button
+                    variant="primary"
+                    @click="handleSimpanKeputusan"
+                    :disabled="processing || !isKeputusanValid"
+                    :loading="processing"
+                    class="flex-1"
+                  >
+                    <Icon name="ph:floppy-disk" class="w-4 h-4 mr-2" />
+                    Simpan
+                  </rs-button>
+                  <rs-button
+                    variant="secondary"
+                    @click="handleKembali"
+                    :disabled="processing"
+                    class="flex-1"
+                  >
+                    <Icon name="ph:arrow-left" class="w-4 h-4 mr-2" />
+                    Kembali
+                  </rs-button>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+        </div>
+    </div>
 
         <!-- Action Buttons -->
         <section aria-labelledby="actions-title" class="sr-only">
           <h2 id="actions-title">Tindakan BQ</h2>
         </section>
 
-        <rs-card class="p-4">
+        <!-- <rs-card class="p-4">
           <div class="flex flex-col lg:flex-row gap-3 lg:justify-between">
             <div class="flex gap-3">
               <rs-button
@@ -751,7 +915,7 @@
               Kembali
             </rs-button>
           </div>
-        </rs-card>
+        </rs-card> -->
       </main>
     </div>
   </div>
@@ -793,6 +957,33 @@ const breadcrumb = ref([
 // Check if we're editing an existing BQ
 const editingBQ = computed(() => route.query.edit === "true");
 
+// Check if catatan should be shown
+const showCatatan = computed(() => {
+  return formData.value.keputusanSokongan === 'rework' || formData.value.keputusanSokongan === 'tolak';
+});
+
+// Validation for keputusan sokongan
+const isKeputusanValid = computed(() => {
+  if (!formData.value.keputusanSokongan) return false;
+  
+  // If rework or tolak, catatan is required
+  if (formData.value.keputusanSokongan === 'rework' || formData.value.keputusanSokongan === 'tolak') {
+    return formData.value.catatanKeputusan.trim() !== '';
+  }
+  
+  // If lulus, no catatan required
+  return true;
+});
+
+
+// Options for keputusan sokongan
+const keputusanOptions = ref([
+  { label: '-- Sila Pilih --', value: '' },
+  { label: 'Lulus', value: 'lulus' },
+  { label: 'Rework', value: 'rework' },
+  { label: 'Tolak', value: 'tolak' }
+]);
+
 // Options for pegawai selection
 const pegawaiOptions = ref([
   { label: "Ahmad bin Ali - Pegawai Teknikal", value: "ahmad_ali" },
@@ -818,6 +1009,9 @@ const formData = ref({
   tarikhDisemak1: "",
   tarikhDisemak2: "",
   tarikhDisahkan: "",
+  // Keputusan Sokongan BQ
+  keputusanSokongan: "",
+  catatanKeputusan: "",
   // Personal Information
   nama: "Mohd Rosli bin Saad",
   alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
@@ -835,20 +1029,64 @@ const currentStage = ref("disemak1"); // 'disediakan', 'disemak1', 'disemak2', '
 
 
 // Utility functions (moved before computed properties to avoid hoisting issues)
+// const numberToWords = (amount) => {
+//   if (!amount || amount === 0) return "";
+
+//   // Simplified implementation - in production, use a proper number-to-words library
+//   const thousands = Math.floor(amount / 1000);
+//   const remainder = Math.round(amount % 1000);
+
+//   if (thousands > 0) {
+//     return `${thousands} ribu ${
+//       remainder > 0 ? remainder : ""
+//     } ringgit sahaja`.trim();
+//   } else {
+//     return `${Math.round(amount)} ringgit sahaja`;
+//   }
+// };
+
+// Utility functions (moved before computed properties to avoid hoisting issues)
 const numberToWords = (amount) => {
-  if (!amount || amount === 0) return "";
+  if (!amount || amount === 0) return "TIADA RINGGIT SAHAJA";
 
-  // Simplified implementation - in production, use a proper number-to-words library
-  const thousands = Math.floor(amount / 1000);
-  const remainder = Math.round(amount % 1000);
-
-  if (thousands > 0) {
-    return `${thousands} ribu ${
-      remainder > 0 ? remainder : ""
-    } ringgit sahaja`.trim();
-  } else {
-    return `${Math.round(amount)} ringgit sahaja`;
-  }
+  const num = Math.round(amount);
+  
+  // Convert numbers to Malay words
+  const convertToWords = (n) => {
+    const ones = ['', 'SATU', 'DUA', 'TIGA', 'EMPAT', 'LIMA', 'ENAM', 'TUJUH', 'LAPAN', 'SEMBILAN'];
+    const teens = ['SEPULUH', 'SEBELAS', 'DUA BELAS', 'TIGA BELAS', 'EMPAT BELAS', 'LIMA BELAS', 'ENAM BELAS', 'TUJUH BELAS', 'LAPAN BELAS', 'SEMBILAN BELAS'];
+    const tens = ['', '', 'DUA PULUH', 'TIGA PULUH', 'EMPAT PULUH', 'LIMA PULUH', 'ENAM PULUH', 'TUJUH PULUH', 'LAPAN PULUH', 'SEMBILAN PULUH'];
+    
+    if (n === 0) return '';
+    if (n < 10) return ones[n];
+    if (n < 20) return teens[n - 10];
+    if (n < 100) {
+      const ten = Math.floor(n / 10);
+      const one = n % 10;
+      return tens[ten] + (one > 0 ? ' ' + ones[one] : '');
+    }
+    if (n < 1000) {
+      const hundred = Math.floor(n / 100);
+      const remainder = n % 100;
+      return (hundred === 1 ? 'SERATUS' : ones[hundred] + ' RATUS') + 
+             (remainder > 0 ? ' ' + convertToWords(remainder) : '');
+    }
+    if (n < 1000000) {
+      const thousand = Math.floor(n / 1000);
+      const remainder = n % 1000;
+      return (thousand === 1 ? 'SERIBU' : convertToWords(thousand) + ' RIBU') + 
+             (remainder > 0 ? ' ' + convertToWords(remainder) : '');
+    }
+    if (n < 1000000000) {
+      const million = Math.floor(n / 1000000);
+      const remainder = n % 1000000;
+      return (million === 1 ? 'SEJUTA' : convertToWords(million) + ' JUTA') + 
+             (remainder > 0 ? ' ' + convertToWords(remainder) : '');
+    }
+    return 'NOMBOR TERLALU BESAR';
+  };
+  
+  return convertToWords(num) + ' RINGGIT SAHAJA';
 };
 
 const generateCatatanPengesyoran = (total = 0) => {
@@ -1014,6 +1252,66 @@ const handleTolak = async () => {
 
 const handleBack = () => {
   router.push(`/BF-BTN/tugasan/bantuan/sokongan/${route.params.id}`);
+};
+
+// Handle simpan keputusan sokongan
+const handleSimpanKeputusan = async () => {
+  try {
+    processing.value = true;
+    
+    // Validate form
+    if (!isKeputusanValid.value) {
+      toast.error("Sila lengkapkan semua medan yang diperlukan");
+      return;
+    }
+    
+    // Prepare data
+    const keputusanData = {
+      keputusan: formData.value.keputusanSokongan,
+      catatan: formData.value.catatanKeputusan,
+      tarikh: new Date().toISOString(),
+      pegawai: "Current User" // This should be from auth context
+    };
+    
+    console.log("Saving keputusan sokongan:", keputusanData);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Show success message
+    const keputusanText = {
+      'lulus': 'Lulus',
+      'rework': 'Rework',
+      'tolak': 'Tolak'
+    };
+    
+    toast.success(`Keputusan ${keputusanText[formData.value.keputusanSokongan]} telah disimpan`);
+    
+    // Navigate back
+    router.push(`/BF-BTN/tugasan/bantuan/sokongan/${route.params.id}`);
+    
+  } catch (error) {
+    console.error("Error saving keputusan:", error);
+    toast.error("Ralat semasa menyimpan keputusan");
+  } finally {
+    processing.value = false;
+  }
+};
+
+// Handle kembali
+const handleKembali = () => {
+  router.push(`/BF-BTN/tugasan/bantuan/sokongan/${route.params.id}`);
+};
+
+// Handle keputusan change
+const handleKeputusanChange = (value) => {
+  console.log('Keputusan changed to:', value);
+  formData.value.keputusanSokongan = value;
+  
+  // Clear catatan when switching to lulus
+  if (value === 'lulus') {
+    formData.value.catatanKeputusan = '';
+  }
 };
 
 // Generate unique IDs

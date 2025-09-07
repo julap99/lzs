@@ -505,9 +505,50 @@
           </rs-card>
 
           <!-- BQ, Laporan Gambar, Laporan Teknikal in Tabs -->
-          <rs-tab variant="primary" type="card">
-            <!-- Tab: BQ -->
-            <rs-tab-item title="BQ" active>
+          <div class="bg-white">
+            <!-- Custom Tab Navigation -->
+            <div class="border-b border-gray-200">
+              <nav class="-mb-px flex space-x-8">
+                <button
+                  @click="activeTab = 'bq'"
+                  :class="[
+                    activeTab === 'bq'
+                      ? 'border-teal-500 text-teal-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                    'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
+                  ]"
+                >
+                  BQ
+                </button>
+                <button
+                  @click="activeTab = 'gambar'"
+                  :class="[
+                    activeTab === 'gambar'
+                      ? 'border-teal-500 text-teal-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                    'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
+                  ]"
+                >
+                  Laporan Gambar
+                </button>
+                <button
+                  @click="activeTab = 'teknikal'"
+                  :class="[
+                    activeTab === 'teknikal'
+                      ? 'border-teal-500 text-teal-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                    'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
+                  ]"
+                >
+                  Laporan Teknikal
+                </button>
+              </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="mt-6">
+              <!-- Tab: BQ -->
+              <div v-if="activeTab === 'bq'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -536,80 +577,85 @@
                   <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                       <thead class="bg-gray-50">
-                        <tr>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            No BQ
-                          </th>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Nama BQ
-                          </th>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Status
-                          </th>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Action
-                          </th>
-                        </tr>
+                         <tr>
+                           <th
+                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                           >
+                             No BQ
+                           </th>
+                           <th
+                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                           >
+                             Nama BQ
+                           </th>
+                           <th
+                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                           >
+                             Jumlah Keseluruhan
+                           </th>
+                           <th
+                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                           >
+                             Status
+                           </th>
+                           <th
+                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                           >
+                             Action
+                           </th>
+                         </tr>
                       </thead>
                       <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(bq, index) in bqList" :key="index">
-                          <td
-                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                          >
-                            {{ bq.noBQ }}
-                          </td>
-                          <td
-                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                          >
-                            {{ bq.namaBQ }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <rs-badge
-                              :variant="getBQStatusVariant(bq.status)"
-                              class="text-sm"
-                            >
-                              {{ bq.status }}
-                            </rs-badge>
-                          </td>
-                          <td
-                            class="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                          >
-                            <rs-button
-                              variant="primary-outline"
-                              @click="viewBQ(bq)"
-                              size="sm"
-                            >
-                              <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                              Lihat
-                            </rs-button>
-                          </td>
-                        </tr>
-                        <tr v-if="bqList.length === 0">
-                          <td
-                            colspan="4"
-                            class="px-6 py-4 text-center text-sm text-gray-500"
-                          >
-                            Tiada BQ dijumpai. Klik butang "Tambah Baru" untuk
-                            menambah BQ.
-                          </td>
-                        </tr>
+                         <tr v-for="(bq, index) in bqList" :key="index">
+                           <td
+                             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                           >
+                             {{ bq.noBQ }}
+                           </td>
+                           <td
+                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                           >
+                             {{ bq.namaBQ }}
+                           </td>
+                           <td
+                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                           >
+                             {{ bq.jumlahBQ }}
+                           </td>
+                           <td class="px-6 py-4 whitespace-nowrap">
+                             <rs-badge
+                               :variant="getBQStatusVariant(bq.status)"
+                               class="text-sm"
+                             >
+                               {{ bq.status }}
+                             </rs-badge>
+                           </td>
+                           <td
+                             class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                           >
+                             <rs-button variant="primary" @click="editBQ(bq)">
+                               Edit
+                             </rs-button>
+                           </td>
+                         </tr>
+                         <tr v-if="bqList.length === 0">
+                           <td
+                             colspan="5"
+                             class="px-6 py-4 text-center text-sm text-gray-500"
+                           >
+                             Tiada BQ dijumpai. Klik butang "Tambah Baru" untuk
+                             menambah BQ.
+                           </td>
+                         </tr>
                       </tbody>
                     </table>
                   </div>
-                </template>
-              </rs-card>
-            </rs-tab-item>
+                 </template>
+               </rs-card>
+              </div>
 
-            <!-- Tab: Laporan Gambar -->
-            <rs-tab-item title="Laporan Gambar">
+              <!-- Tab: Laporan Gambar -->
+              <div v-if="activeTab === 'gambar'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -677,12 +723,12 @@
                     />
                     <p>Tiada gambar telah dimuat naik untuk siasatan ini.</p>
                   </div>
-                </template>
-              </rs-card>
-            </rs-tab-item>
+                 </template>
+               </rs-card>
+              </div>
 
-            <!-- Tab: Laporan Teknikal -->
-            <rs-tab-item title="Laporan Teknikal">
+              <!-- Tab: Laporan Teknikal -->
+              <div v-if="activeTab === 'teknikal'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -772,10 +818,11 @@
                       </div>
                     </div>
                   </div>
-                </template>
-              </rs-card>
-            </rs-tab-item>
-          </rs-tab>
+                 </template>
+               </rs-card>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Section 3: Catatan Lapangan -->
@@ -864,6 +911,10 @@
                           <p class="text-gray-900">{{ siasatanDetails.disiasatOleh }}</p>
                         </div>
                         <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Kaedah Siasatan</label>
+                          <p class="text-gray-900">{{ siasatanDetails.kaedahSiasatan }}</p>
+                        </div>
+                        <div>
                           <label class="block text-sm font-medium text-gray-600 mb-1">Status Siasatan</label>
                           <rs-badge :variant="getProcessStatusVariant(siasatanDetails.statusSiasatan)">
                             {{ siasatanDetails.statusSiasatan }}
@@ -880,6 +931,25 @@
                         <div class="md:col-span-2">
                           <label class="block text-sm font-medium text-gray-600 mb-1">Catatan Siasatan</label>
                           <p class="text-gray-900">{{ siasatanDetails.catatan }}</p>
+                        </div>
+                        
+                        <!-- Gambar Lokasi/Bukti Visual Section -->
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-3">Gambar Lokasi/Bukti Visual</label>
+                          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div v-for="(gambar, index) in siasatanDetails.gambarLokasi" :key="index" class="relative">
+                              <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                                <img 
+                                  :src="gambar.url" 
+                                  :alt="gambar.catatan"
+                                  class="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div class="mt-2">
+                                <p class="text-xs text-gray-600 text-center">{{ gambar.catatan }}</p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -908,10 +978,10 @@
                 </div>
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">
-                    Catatan Lapangan
+                    Keputusan Hartanah
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Nota dan dapatan semasa lawatan lapangan
+                    Keputusan pihak Hartanah terhadap BQ
                   </p>
                 </div>
               </div>
@@ -934,7 +1004,7 @@
                 </div> -->
 
                 <!-- Status Sokongan -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Keputusan Siasatan</label
                   >
@@ -946,10 +1016,10 @@
                       {{ catatanLapangan.keputusanSiasatan === 'sokong' ? 'Sokong' : 'Tidak Sokong' }}
                     </rs-badge>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Catatan Sokongan -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Catatan Siasatan</label
                   >
@@ -960,7 +1030,7 @@
                       catatanLapangan.catatanSokongan || "Tiada catatan sokongan."
                     }}</span>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Item Bantuan -->
                 <!-- <div class="space-y-1">
@@ -980,7 +1050,7 @@
                 </div> -->
 
                 <!-- Tarikh Sokongan -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Tarikh Siasatan</label
                   >
@@ -990,10 +1060,10 @@
                       {{ catatanLapangan.tarikhSokongan }}
                     </div>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Keputusan Hartanah -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Keputusan Hartanah</label
                   >
@@ -1004,12 +1074,12 @@
                     placeholder="Pilih keputusan hartanah"
                     required
                   />
-                </div>
+                </div> -->
 
                 <!-- Status Sokongan Hartanah -->
                 <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
-                    >Status Sokongan Hartanah</label
+                    >Status Semakan BQ</label
                   >
                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                     <rs-badge
@@ -1024,18 +1094,18 @@
                 <!-- Catatan Sokongan Hartanah -->
                 <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
-                    >Catatan Sokongan Hartanah</label
+                    >Catatan</label
                   >
                   <FormKit
                     type="textarea"
                     v-model="catatanLapangan.catatanSokonganHartanah"
-                    placeholder="Boleh mengisi catatan sokongan atau ulasan pembetulan sekiranya BQ memerlukan rework"
+                    placeholder="Boleh mengisi catatan"
                     rows="4"
                   />
                 </div>
 
                 <!-- Tarikh Sokongan Hartanah -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Tarikh Sokongan Hartanah</label
                   >
@@ -1045,6 +1115,10 @@
                       {{ catatanLapangan.tarikhSokonganHartanah }}
                     </div>
                   </div>
+                </div> -->
+                <div class="text-xs text-gray-500">
+                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
+                  Masa/Tarikh: {{ catatanLapangan.tarikhSokonganHartanah  }}
                 </div>
               </div>
             </template>
@@ -1186,7 +1260,7 @@
                 class="w-full"
                 variant="primary"
                 @click="handleHantar"
-                :disabled="processing || !isFormComplete"
+                
                 :loading="processing && actionType === 'hantar'"
               >
                 Hantar
@@ -1264,6 +1338,36 @@ const breadcrumb = ref([
   },
 ]);
 
+// Tab state
+const activeTab = ref('bq');
+
+// BQ data
+const bqList = ref([
+  {
+    noBQ: "BQ202508647",
+    namaBQ: "BQ MOHD ROSLI BIN SAAD",
+    jumlahBQ: "RM43,000",
+    status: "DALAM PROSES"
+  }
+]);
+
+const editBQ = (bq) => {
+  // Navigate to dedicated BQ drafting/editing page with current id and edit flag
+  router.push(
+    `/BF-BTN/tugasan/bantuan/sokongan/${route.params.id}/draf-bq?edit=true`
+  );
+};
+
+// Technical report data
+const laporanTeknikal = ref({
+  latarBelakang: "Rumah dalam keadaan uzur dan memerlukan baik pulih segera untuk keselamatan keluarga",
+  keperluan: "Kerja-kerja baik pulih bumbung bocor dan cat dinding luar",
+  cadangan: "Membaik pulih bumbung dan mengecat dinding luar rumah",
+  nilaiKerja: 43000
+});
+
+// Image data
+
 // Accordion state and mock details
 const accordionOpen = reactive({
   permohonan: false,
@@ -1279,10 +1383,22 @@ const permohonanDetails = ref({
 
 const siasatanDetails = ref({
   disiasatOleh: "Ahmad bin Ali",
+  kaedahSiasatan: "Lapangan",
   statusSiasatan: "Sokong",
   tarikhSelesai: "2025-01-20T14:45:00Z",
   sla: "5 hari",
-  catatan: "Siasatan telah selesai dan laporan teknikal telah disediakan"
+  catatan: "Siasatan telah selesai dan laporan teknikal telah disediakan",
+  gambarLokasi: [
+    {
+      url: "https://www.ukm.my/zakat/wp-content/uploads/2021/04/169461828_4043716242359225_2282346416989438479_n.jpg",
+      catatan: ""
+    },
+    {
+      url: "https://assets.nst.com.my/images/articles/lzsel_%282%29_1729555212.jpg",
+      catatan: ""
+    },
+    
+  ]
 });
 
 // Section 1: Maklumat Pemohon data
@@ -1305,14 +1421,14 @@ const formData = ref({
 
 // Section 2: Dokumen Sokongan
 const dokumenSokongan = ref([
+  // {
+  //   jenis: "Quotation (baik pulih)",
+  //   filename: "quotation.pdf",image.png
+  //   url: "#",
+  //   status: "lengkap",
+  // },
   {
-    jenis: "Quotation (baik pulih)",
-    filename: "quotation.pdf",
-    url: "#",
-    status: "lengkap",
-  },
-  {
-    jenis: "Geran Tanah (bina rumah)",
+    jenis: "Geran Tanah",
     filename: "geran_tanah.pdf",
     url: "#",
     status: "lengkap",
@@ -1326,13 +1442,6 @@ const dokumenSokongan = ref([
 ]);
 
 // Section 3: Draf BQ
-const bqList = ref([
-  {
-    noBQ: "BQ01",
-    namaBQ: "BQ MOHD ROSLI BIN SAAD",
-    status: "Dalam Kelulusan",
-  },
-]);
 
 const showBQModal = ref(false);
 const editingBQ = ref(null);
@@ -1352,12 +1461,6 @@ const gambarLokasi = ref([
 ]);
 
 // Section 5: Laporan Teknikal
-const laporanTeknikal = ref({
-  latarBelakang: "",
-  keperluan: "",
-  cadangan: "",
-  nilaiKerja: 0,
-});
 
 // Section 6: Catatan Lapangan
 const catatanLapangan = ref({
@@ -1514,15 +1617,6 @@ const getStatusText = (status) => {
   return statusMap[status?.toLowerCase()] || status;
 };
 
-const getBQStatusVariant = (status) => {
-  const variants = {
-    "Dalam Kelulusan": "warning",
-    "Dalam Proses": "info",
-    Selesai: "success",
-    Ditolak: "danger",
-  };
-  return variants[status] || "default";
-};
 
 const previewDocument = (dokumen) => {
   console.log("Previewing document:", dokumen);
@@ -1736,6 +1830,19 @@ const getProcessStatusVariant = (status) => {
   };
   return variants[status] || 'default';
 };
+
+// BQ functions
+const getBQStatusVariant = (status) => {
+  const variants = {
+    'DALAM PROSES': 'warning',
+    'DALAM KELULUSAN': 'warning',
+    'DILULUSKAN': 'success',
+    'DITOLAK': 'danger',
+    'DRAFT': 'info'
+  };
+  return variants[status] || 'default';
+};
+
 </script>
 
 <style lang="scss" scoped>
