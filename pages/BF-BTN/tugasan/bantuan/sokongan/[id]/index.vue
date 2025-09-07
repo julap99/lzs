@@ -257,58 +257,42 @@
           <template #body>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700"
-                  >Aid</label
-                >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.aid
-                  }}</span>
-                </div>
+                <FormKit
+                  type="select"
+                  name="aid"
+                  label="Aid"
+                  v-model="formData.aid"
+                  :options="aidOptions"
+                  @input="handleAidChange"
+                  validation="required"
+                />
               </div>
-
-              <div class="space-y-1 ">
-                <label class="text-sm font-medium text-gray-700">Aid Product</label>
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.aidproduct
-                  }}</span>
-                </div>
-              </div>
-
-              <!-- <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700"
-                  >Product Package</label
-                >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.productpackage
-                  }}</span>
-                </div>
-              </div> -->
 
               <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">Product Package</label>
+                <FormKit
+                  type="select"
+                  name="aidproduct"
+                  label="Aid Product"
+                  v-model="formData.aidproduct"
+                  :options="filteredAidProductOptions"
+                  @input="handleAidProductChange"
+                  validation="required"
+                  :disabled="!formData.aid"
+                />
+              </div>
+
+              <div class="space-y-1">
                 <FormKit
                   type="select"
                   name="productpackage"
+                  label="Product Package"
                   v-model="formData.productpackage"
-                  placeholder="Sila pilih product package"
-                  :options="[
-                    // '(PEROLEHAN) BINA RUMAH (FAKIR)',
-                    // '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
-                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
-                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
-                    { label: '-- Sila Pilih --', value: '' }, // 👈 default option
-                    { label: '(PEROLEHAN) BINA RUMAH (FAKIR)', value: 'PEROLEHAN' },
-                    { label: '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG', value: 'WO' },
-                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN1' },
-                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN2' }
-                  ]"
-                  searchable="true"
-                  class="mt-1"
+                  :options="filteredProductPackageOptions"
+                  validation="required"
+                  :disabled="!formData.aidproduct"
                 />
               </div>
+
 
 
               <!-- <div class="space-y-1">
@@ -321,21 +305,14 @@
               </div> -->
 
               <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
                 <FormKit
                   type="select"
                   name="entitlementproduct"
+                  label="Entitlement Product"
                   v-model="formData.entitlementproduct"
-                  placeholder="Sila pilih entitlement product"
-                  :options="[
-                    '-- Sila Pilih --', // 👈 default option
-                    '(PEROLEHAN) BINA RUMAH (FAKIR)',
-                    '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
-                    '(PEROLEHAN) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
-                    '(WO) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
-                  ]"
-                  searchable="true"
-                  class="mt-1"
+                  :options="filteredEntitlementProductOptions"
+                  validation="required"
+                  :disabled="!formData.aidproduct"
                 />
               </div>
 
@@ -803,6 +780,121 @@
 
         <!-- Section 3: Catatan Lapangan -->
         <div class="col-span-1">
+
+          <!-- Laluan Process  -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="iconamoon:check-circle-2-duotone"
+                      class="w-6 h-6 text-yellow-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Laluan Proses
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Laluan Proses Permohonan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            
+
+            <template #body>
+              
+              <div class="space-y-4">
+                <!-- Accordion: Laluan Proses Details -->
+                <div class="space-y-3">
+                  <!-- Permohonan Accordion Item -->
+                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.permohonan = !accordionOpen.permohonan"
+                    >
+                      <span class="font-medium text-gray-900">Permohonan</span>
+                      <Icon
+                        :name="accordionOpen.permohonan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.permohonan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Permohonan Dibuat Oleh</label>
+                          <p class="text-gray-900">{{ permohonanDetails.dibuatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Permohonan</label>
+                          <p class="text-gray-900">{{ formatDateTime(permohonanDetails.tarikhPermohonan) }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Sebab Memohon Bantuan</label>
+                          <p class="text-gray-900">{{ permohonanDetails.sebabMemohon }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Siasatan Accordion Item -->
+                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.siasatan = !accordionOpen.siasatan"
+                    >
+                      <span class="font-medium text-gray-900">Siasatan</span>
+                      <Icon
+                        :name="accordionOpen.siasatan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.siasatan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Disiasat Oleh</label>
+                          <p class="text-gray-900">{{ siasatanDetails.disiasatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Status Siasatan</label>
+                          <rs-badge :variant="getProcessStatusVariant(siasatanDetails.statusSiasatan)">
+                            {{ siasatanDetails.statusSiasatan }}
+                          </rs-badge>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Selesai Siasatan</label>
+                          <p class="text-gray-900">{{ formatDateTime(siasatanDetails.tarikhSelesai) }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">SLA</label>
+                          <p class="text-gray-900">{{ siasatanDetails.sla }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Catatan Siasatan</label>
+                          <p class="text-gray-900">{{ siasatanDetails.catatan }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- <div class="text-xs text-gray-500">
+                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
+                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
+                </div> -->
+              </div>
+              
+            </template>
+            
+          </rs-card>
           <!-- Catatan Lapangan (C/U/V) -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -1172,6 +1264,27 @@ const breadcrumb = ref([
   },
 ]);
 
+// Accordion state and mock details
+const accordionOpen = reactive({
+  permohonan: false,
+  siasatan: false,
+})
+
+// Mock data for accordion
+const permohonanDetails = ref({
+  dibuatOleh: "Siti binti Ali",
+  tarikhPermohonan: "2025-01-15T10:30:00Z",
+  sebabMemohon: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan bantuan bina baru rumah"
+});
+
+const siasatanDetails = ref({
+  disiasatOleh: "Ahmad bin Ali",
+  statusSiasatan: "Sokong",
+  tarikhSelesai: "2025-01-20T14:45:00Z",
+  sla: "5 hari",
+  catatan: "Siasatan telah selesai dan laporan teknikal telah disediakan"
+});
+
 // Section 1: Maklumat Pemohon data
 const formData = ref({
   nama: "Mohd Rosli bin Saad",
@@ -1184,6 +1297,10 @@ const formData = ref({
   statusIndividu: "Fakir",
   statusMultidimensi: "Asnaf Tidak Produktif",
   statusLawatan: "belum_selesai",
+  aid: "B125 - Bantuan Baikpulih Rumah (Fakir)",
+  aidproduct: "Bantuan Baikpulih Rumah Am (Fakir)",
+  productpackage: "Baikpulih Rumah (Fakir)",
+  entitlementproduct: "Baikpulih Rumah (Fakir)",
 });
 
 // Section 2: Dokumen Sokongan
@@ -1274,12 +1391,99 @@ const keputusanHartanahOptions = ref([
   { label: "Rework", value: "rework" },
 ]);
 
+// Aid and Aid Product options
+const aidOptions = ref([
+  { label: "B102 - Bantuan Binaan Rumah (Fakir)", value: "B102 - Bantuan Binaan Rumah (Fakir)" },
+  { label: "B125 - Bantuan Baikpulih Rumah (Fakir)", value: "B125 - Bantuan Baikpulih Rumah (Fakir)" },
+]);
+
+const aidProductOptions = ref([
+  { label: "(HQ) Bantuan Binaan Rumah (Fakir)", value: "(HQ) Bantuan Binaan Rumah (Fakir)" },
+  { label: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)", value: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "Bantuan Baikpulih Rumah Am (Fakir)", value: "Bantuan Baikpulih Rumah Am (Fakir)" },
+  { label: "Pemasangan Bekalan Elektrik dan Air Am (Fakir)", value: "Pemasangan Bekalan Elektrik dan Air Am (Fakir)" },
+]);
+
+// Product Package options based on Aid Product
+const productPackageOptions = ref([
+  // For Binaan Rumah
+  { label: "(Perolehan) Bina Rumah (Fakir)", value: "(Perolehan) Bina Rumah (Fakir)", aidProduct: "(HQ) Bantuan Binaan Rumah (Fakir)" },
+  { label: "(WO) 3 Bilik (Fakir) - Tanggungan 3-6 Orang", value: "(WO) 3 Bilik (Fakir) - Tanggungan 3-6 Orang", aidProduct: "(HQ) Bantuan Binaan Rumah (Fakir)" },
+  { label: "Pemantauan dan Pengawasan Tapak Projek (Fakir)", value: "Pemantauan dan Pengawasan Tapak Projek (Fakir)", aidProduct: "(HQ) Bantuan Binaan Rumah (Fakir)" },
+  // For Pembelian Rumah
+  { label: "(HQ) Ansuran Tertunggak (Fakir)", value: "(HQ) Ansuran Tertunggak (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(HQ) Baki Akhir (Fakir)", value: "(HQ) Baki Akhir (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(HQ) Bayaran Deposit Pembelian (Fakir)", value: "(HQ) Bayaran Deposit Pembelian (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(HQ) Pembelian Rumah PBT (Fakir)", value: "(HQ) Pembelian Rumah PBT (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(HQ) Separa Pembiayaan (Fakir)", value: "(HQ) Separa Pembiayaan (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  // For Baikpulih Rumah
+  { label: "Bantuan Baikpulih Rumah Am (Fakir)", value: "Bantuan Baikpulih Rumah Am (Fakir)", aidProduct: "Bantuan Baikpulih Rumah Am (Fakir)" },
+  { label: "Pemasangan Bekalan Elektrik dan Air Am (Fakir)", value: "Pemasangan Bekalan Elektrik dan Air Am (Fakir)", aidProduct: "Bantuan Baikpulih Rumah Am (Fakir)" },
+]);
+
+// Entitlement Product options based on Aid Product
+const entitlementProductOptions = ref([
+  // For Binaan Rumah
+  { label: "(Perolehan) Bina Rumah (Fakir)", value: "(Perolehan) Bina Rumah (Fakir)", aidProduct: "(HQ) Bantuan Binaan Rumah (Fakir)" },
+  { label: "(WO) 3 Bilik (Fakir) - Tanggungan 3-6 Orang", value: "(WO) 3 Bilik (Fakir) - Tanggungan 3-6 Orang", aidProduct: "(HQ) Bantuan Binaan Rumah (Fakir)" },
+  { label: "(Perolehan) Pemantauan dan Pengawasan Tapak Projek (Fakir)", value: "(Perolehan) Pemantauan dan Pengawasan Tapak Projek (Fakir)", aidProduct: "(HQ) Bantuan Binaan Rumah (Fakir)" },
+  { label: "(WO) Pemantauan dan Pengawasan Tapak Projek (Fakir)", value: "(WO) Pemantauan dan Pengawasan Tapak Projek (Fakir)", aidProduct: "(HQ) Bantuan Binaan Rumah (Fakir)" },
+  // For Pembelian Rumah
+  { label: "(HQ) Ansuran Tertunggak (Fakir)", value: "(HQ) Ansuran Tertunggak (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(HQ) Baki Akhir (Fakir)", value: "(HQ) Baki Akhir (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(HQ) Bayaran Deposit Pembelian (Fakir)", value: "(HQ) Bayaran Deposit Pembelian (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(Direct) Legal Fee (Fakir)", value: "(Direct) Legal Fee (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(Direct) Pembayaran Baki 90% (Fakir)", value: "(Direct) Pembayaran Baki 90% (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(Direct) Pembayaran Pendahuluan 10% (Fakir)", value: "(Direct) Pembayaran Pendahuluan 10% (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  { label: "(HQ) Separa Pembiayaan (Fakir)", value: "(HQ) Separa Pembiayaan (Fakir)", aidProduct: "(HQ) Bantuan Pembelian Rumah Kos Rendah/Sederhana (Fakir)" },
+  // For Baikpulih Rumah
+  { label: "Baikpulih Rumah (Fakir)", value: "Baikpulih Rumah (Fakir)", aidProduct: "Bantuan Baikpulih Rumah Am (Fakir)" },
+  { label: "Pemasangan Bekalan Air (Fakir)", value: "Pemasangan Bekalan Air (Fakir)", aidProduct: "Bantuan Baikpulih Rumah Am (Fakir)" },
+  { label: "Pemasangan Bekalan Elektrik (Fakir)", value: "Pemasangan Bekalan Elektrik (Fakir)", aidProduct: "Bantuan Baikpulih Rumah Am (Fakir)" },
+  { label: "Pemasangan Bekalan Elektrik dan Air (Fakir)", value: "Pemasangan Bekalan Elektrik dan Air (Fakir)", aidProduct: "Bantuan Baikpulih Rumah Am (Fakir)" },
+]);
+
 // Computed properties
 const isFormComplete = computed(() => {
   return (
     catatanLapangan.value.keputusanSiasatan &&
     catatanLapangan.value.keputusanHartanah &&
     catatanLapangan.value.catatanSokonganHartanah
+  );
+});
+
+// Filtered aid product options based on selected aid
+const filteredAidProductOptions = computed(() => {
+  if (!formData.value.aid) return [];
+  
+  if (formData.value.aid.includes("Binaan Rumah")) {
+    return aidProductOptions.value.filter(option => 
+      option.value.includes("Binaan Rumah") || option.value.includes("Pembelian Rumah")
+    );
+  } else if (formData.value.aid.includes("Baikpulih Rumah")) {
+    return aidProductOptions.value.filter(option => 
+      option.value.includes("Baikpulih Rumah") || option.value.includes("Bekalan Elektrik")
+    );
+  }
+  
+  return aidProductOptions.value;
+});
+
+// Filtered product package options based on selected aid product
+const filteredProductPackageOptions = computed(() => {
+  if (!formData.value.aidproduct) return [];
+  
+  return productPackageOptions.value.filter(option => 
+    option.aidProduct === formData.value.aidproduct
+  );
+});
+
+// Filtered entitlement product options based on selected aid product
+const filteredEntitlementProductOptions = computed(() => {
+  if (!formData.value.aidproduct) return [];
+  
+  return entitlementProductOptions.value.filter(option => 
+    option.aidProduct === formData.value.aidproduct
   );
 });
 
@@ -1380,6 +1584,23 @@ const urusPemantauan = () => {
 };
 
 // Action Button Functions
+// Handle aid selection change
+const handleAidChange = (value) => {
+  formData.value.aid = value;
+  // Reset dependent fields when aid changes
+  formData.value.aidproduct = "";
+  formData.value.productpackage = "";
+  formData.value.entitlementproduct = "";
+};
+
+// Handle aid product selection change
+const handleAidProductChange = (value) => {
+  formData.value.aidproduct = value;
+  // Reset dependent fields when aid product changes
+  formData.value.productpackage = "";
+  formData.value.entitlementproduct = "";
+};
+
 const handleSimpan = async () => {
   try {
     processing.value = true;
@@ -1448,7 +1669,7 @@ onMounted(() => {
   // This is mock data for now
   formData.value = {
     nama: "Mohd Rosli bin Saad",
-    alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
+    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
     jenisPengenalan: "myKad",
     mykad: "880701121234",
     noTelefon: "0123456789",
@@ -1457,10 +1678,10 @@ onMounted(() => {
     statusIndividu: "Fakir",
     statusMultidimensi: "Asnaf Tidak Produktif",
     statusLawatan: "belum_selesai",
-    aid: "B102	Bantuan Binaan Rumah (Fakir)",
-    aidproduct: "Bantuan Binaan Rumah (Fakir)",
-    productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
-    entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    aid: "B125 - Bantuan Baikpulih Rumah (Fakir)",
+    aidproduct: "Bantuan Baikpulih Rumah Am (Fakir)",
+    productpackage: "Baikpulih Rumah (Fakir)",
+    entitlementproduct: "Baikpulih Rumah (Fakir)",
   };
 
   // Auto-populate laporan teknikal data
@@ -1490,6 +1711,31 @@ onMounted(() => {
     tarikhSokonganHartanah: new Date().toLocaleString("ms-MY"),
   };
 });
+
+// Utility functions
+const formatDateTime = (dateString) => {
+  if (!dateString) return '-';
+  const date = new Date(dateString);
+  return date.toLocaleString('ms-MY', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+const getProcessStatusVariant = (status) => {
+  const variants = {
+    'Selesai': 'success',
+    'Sokong': 'success',
+    'Dalam Proses': 'warning',
+    'Tidak Sokong': 'warning',
+    'Belum Mula': 'info',
+    'Lewat': 'danger'
+  };
+  return variants[status] || 'default';
+};
 </script>
 
 <style lang="scss" scoped>

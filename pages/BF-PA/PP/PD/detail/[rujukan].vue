@@ -8,34 +8,20 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Maklumat Terperinci Penolong Amil
-          </h2>
+          <h2 class="text-xl font-semibold">Maklumat Terperinci Penolong Amil</h2>
           <div class="flex gap-2">
-            <rs-button
-              variant="secondary-outline"
-              @click="handleBack"
-            >
+            <rs-button variant="secondary-outline" @click="handleBack">
               <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
               Kembali
             </rs-button>
-            <rs-button
-              v-if="canEdit"
-              variant="primary"
-              @click="handleEdit"
-            >
+            <rs-button v-if="canEdit" variant="primary" @click="handleEdit">
               <Icon name="ph:pencil" class="w-4 h-4 mr-1" />
               Kemaskini
             </rs-button>
-            <rs-button
-              variant="info"
-              @click="handleViewProcessTrace"
-              title="PA-PP-PD-01_04: Jejak Proses"
-            >
+            <rs-button variant="info" @click="handleViewProcessTrace" title="PA-PP-PD-01_04: Jejak Proses">
               <Icon name="ph:flow-arrow" class="w-4 h-4 mr-1" />
               Jejak Proses
             </rs-button>
@@ -45,20 +31,16 @@
 
       <template #body>
         <div class="p-4">
-          <!-- Application Status -->
+          <!-- Ringkasan Status -->
           <div class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-start">
               <div>
-                <h3 class="text-lg font-semibold text-gray-900">
-                  Status Permohonan
-                </h3>
-                <p class="text-sm text-gray-600">
-                  Rujukan: {{ application.rujukan }}
-                </p>
+                <h3 class="text-lg font-semibold text-gray-900">Status Permohonan</h3>
+                <p class="text-sm text-gray-600">Rujukan: {{ application.rujukan }}</p>
               </div>
               <div class="flex gap-2">
-                <rs-badge :variant="getStatusPendaftaranVariant(application.statusPendaftaran)">
-                  {{ application.statusPendaftaran }}
+                <rs-badge :variant="getStatusPendaftaranVariant(application.statusAkhir)">
+                  {{ application.statusAkhir }}
                 </rs-badge>
                 <rs-badge :variant="getStatusLantikanVariant(application.statusLantikan)">
                   {{ application.statusLantikan }}
@@ -67,210 +49,111 @@
             </div>
           </div>
 
-          <!-- Personal Information -->
+          <!-- Maklumat Peribadi -->
           <div class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Maklumat Peribadi
-            </h3>
-            
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Peribadi</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Field label="Nama" :value="application.nama" />
+              <Field label="Jenis Pengenalan" :value="application.jenisPengenalan" />
+              <Field label="ID Pengenalan" :value="application.noKP" />
+              <Field label="Tarikh Lahir" :value="formatDate(application.tarikhLahir)" />
+              <Field label="Umur" :value="umur + ' tahun'" />
+              <Field label="Jantina" :value="application.jantina" />
+              <Field label="Taraf Perkahwinan" :value="application.tarafPerkahwinan" />
+              <Field label="Warganegara" :value="application.warganegara" />
+            </div>
+          </div>
+
+          <!-- Maklumat Untuk Dihubungi -->
+<div class="mb-6 p-6 border border-gray-200 rounded-lg">
+  <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Untuk Dihubungi</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <Field label="Emel" :value="application.email" />
+    <Field label="No Telefon" :value="application.noTelefon" />
+
+    <!-- Alamat 1/2/3 berasingan tapi dalam kolum yang sama -->
+    <div class="md:col-span-2 grid grid-cols-1 gap-2">
+      <Field label="Alamat 1" :value="application.alamat1 || '-'" />
+      <Field v-if="application.alamat2" label="Alamat 2" :value="application.alamat2" />
+      <Field v-if="application.alamat3" label="Alamat 3" :value="application.alamat3" />
+      <p
+        v-if="!application.alamat1 && !application.alamat2 && !application.alamat3"
+        class="text-gray-500"
+      >-</p>
+    </div>
+
+    <Field label="Daerah" :value="application.daerah" />
+    <Field label="Bandar" :value="application.bandar" />
+    <Field label="Poskod" :value="application.poskod" />
+    <Field label="Negeri" :value="application.negeri" />
+  </div>
+</div>
+
+
+          <!-- Maklumat Pendaftaran -->
+          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-900">Maklumat Pendaftaran</h3>
+              <rs-button size="sm" variant="primary-outline" @click="handleViewPendaftaran">
+                <Icon name="ph:eye" class="w-4 h-4 mr-1" /> Lihat
+              </rs-button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Field label="Kategori Penolong Amil" :value="application.kategoriPenolongAmil" />
+              <Field label="Jawatan" :value="application.jawatan" />
+              <Field label="Institusi / Kariah" :value="application.institusiKariah" />
+              <Field label="Tarikh Pendaftaran" :value="formatDate(application.tarikhPendaftaran)" />
+              <Field label="Sesi Perkhidmatan" :value="application.sesiPerkhidmatan" />
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Nombor Kad Pengenalan
-                </label>
-                <p class="text-gray-900">{{ application.noKP }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Nama Penuh
-                </label>
-                <p class="text-gray-900">{{ application.nama }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Jantina
-                </label>
-                <p class="text-gray-900">{{ application.jantina }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Bangsa
-                </label>
-                <p class="text-gray-900">{{ application.bangsa }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Tarikh Lahir
-                </label>
-                <p class="text-gray-900">{{ application.tarikhLahir }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Tempat Lahir
-                </label>
-                <p class="text-gray-900">{{ application.tempatLahir }}</p>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status Akhir</label>
+                <rs-badge :variant="getStatusPendaftaranVariant(application.statusAkhir)">
+                  {{ application.statusAkhir }}
+                </rs-badge>
               </div>
             </div>
           </div>
 
-          <!-- Contact Information -->
+          <!-- Maklumat Perkhidmatan -->
           <div class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Maklumat Perhubungan
-            </h3>
-            
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-900">Maklumat Perkhidmatan</h3>
+              <rs-button size="sm" variant="primary-outline" @click="handleViewPerkhidmatan">
+                <Icon name="ph:eye" class="w-4 h-4 mr-1" /> Lihat
+              </rs-button>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Field label="Kategori Penolong Amil" :value="application.kategoriPenolongAmil" />
+              <Field label="Jawatan" :value="application.jawatan" />
+              <Field label="Institusi / Kariah" :value="application.institusiKariah" />
+              <Field label="Tarikh Lantikan" :value="application.tarikhLantikan ? formatDate(application.tarikhLantikan) : '-'" />
+              <Field label="Sesi Perkhidmatan" :value="application.sesiPerkhidmatan" />
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Alamat Rumah
-                </label>
-                <p class="text-gray-900">{{ application.alamatRumah }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Alamat Pejabat
-                </label>
-                <p class="text-gray-900">{{ application.alamatPejabat }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Nombor Telefon
-                </label>
-                <p class="text-gray-900">{{ application.nomborTelefon }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Alamat E-mel
-                </label>
-                <p class="text-gray-900">{{ application.alamatEmel }}</p>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status Lantikan / Perkhidmatan</label>
+                <rs-badge :variant="getStatusLantikanVariant(application.statusLantikan)">
+                  {{ application.statusLantikan }}
+                </rs-badge>
               </div>
             </div>
           </div>
 
-          <!-- Professional Information -->
+          <!-- Maklumat Bank -->
           <div class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Maklumat Profesional
-            </h3>
-            
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Bank</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Kategori Penolong Amil
-                </label>
-                <p class="text-gray-900">{{ application.kategoriPenolongAmil }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Jawatan
-                </label>
-                <p class="text-gray-900">{{ application.jawatan }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Institusi Kariah
-                </label>
-                <p class="text-gray-900">{{ application.institusiKariah }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Sesi Perkhidmatan
-                </label>
-                <p class="text-gray-900">{{ application.sesiPerkhidmatan }}</p>
-              </div>
+              <Field label="Nama Bank" :value="application.namaBank" />
+              <Field label="No Akaun Bank" :value="application.noAkaunBank" />
+              <Field label="Swiftcode" :value="application.swiftcode" />
+              <Field label="Nama Pemegang Akaun" :value="application.namaPemegangAkaun" />
             </div>
           </div>
 
-          <!-- Documents Section -->
-          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Dokumen Sokongan
-            </h3>
-            
+          <!-- Maklumat Waris -->
+          <div class="mb-2 p-6 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Waris</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Salinan Kad Pengenalan -->
-              <div>
-                <h4 class="font-medium mb-3">Salinan Kad Pengenalan</h4>
-                <div class="border border-gray-200 rounded-md">
-                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
-                    <div class="flex items-center">
-                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
-                      <span>{{ application.salinanKadPengenalan }}</span>
-                    </div>
-                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('salinanKadPengenalan')">
-                      <Icon name="heroicons:eye" class="mr-1" size="16" />
-                      Lihat Dokumen
-                    </rs-button>
-                  </div>
-                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
-                    Dimuat naik oleh {{ application.nama }} pada {{ application.uploadDate }}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Surat Sokongan (if exists) -->
-              <div v-if="application.suratSokongan">
-                <h4 class="font-medium mb-3">Surat Sokongan</h4>
-                <div class="border border-gray-200 rounded-md">
-                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
-                    <div class="flex items-center">
-                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
-                      <span>{{ application.suratSokongan }}</span>
-                    </div>
-                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('suratSokongan')">
-                      <Icon name="heroicons:eye" class="mr-1" size="16" />
-                      Lihat Dokumen
-                    </rs-button>
-                  </div>
-                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
-                    Dimuat naik oleh {{ application.nama }} pada {{ application.uploadDate }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Verification History -->
-          <div v-if="showVerificationHistory" class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Sejarah Verifikasi
-            </h3>
-            
-            <div class="space-y-3">
-              <div 
-                v-for="verification in verificationHistory" 
-                :key="verification.id"
-                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-              >
-                <div class="flex items-center">
-                  <Icon 
-                    :name="verification.icon" 
-                    class="w-5 h-5 mr-3"
-                    :class="verification.iconColor"
-                  />
-                  <div>
-                    <p class="font-medium">{{ verification.role }}</p>
-                    <p class="text-sm text-gray-600">{{ verification.action }}</p>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm text-gray-600">{{ verification.date }}</p>
-                  <rs-badge :variant="verification.statusVariant">
-                    {{ verification.status }}
-                  </rs-badge>
-                </div>
-              </div>
+              <Field label="Nama Waris" :value="application.namaWaris" />
+              <Field label="Hubungan" :value="application.hubunganWaris" />
+              <Field label="No Telefon Waris" :value="application.telefonWaris" />
             </div>
           </div>
         </div>
@@ -280,7 +163,21 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, defineComponent, h } from "vue";
+import { useRoute, navigateTo } from "#app";
+
+/** Kecil & reusable: paparan label + nilai */
+const Field = defineComponent({
+  name: "Field",
+  props: { label: String, value: [String, Number] },
+  setup(props) {
+    return () =>
+      h("div", {}, [
+        h("label", { class: "block text-sm font-medium text-gray-700 mb-1" }, props.label),
+        h("p", { class: "text-gray-900" }, props.value || "-"),
+      ]);
+  },
+});
 
 definePageMeta({
   title: "Maklumat Terperinci Penolong Amil",
@@ -288,308 +185,139 @@ definePageMeta({
 });
 
 const route = useRoute();
-const currentRole = ref(route.query.role || "pyb"); // Read from query parameter
+const currentRole = ref(route.query.role || "pyb");
 
+/** Breadcrumb */
 const breadcrumb = ref([
-  {
-    name: "Penolong Amil",
-    type: "link",
-    path: "/BF-PA/PP/PM/01",
-  },
-  {
-    name: "Pendaftaran",
-    type: "link",
-    path: "/BF-PA/PP/PM/01",
-  },
-  {
-    name: "Pra Daftar",
-    type: "link",
-    path: "/BF-PA/PP/PD",
-  },
-  {
-    name: "Maklumat Terperinci",
-    type: "current",
-    path: `/BF-PA/PP/PD/detail/${route.params.rujukan}`,
-  },
+  { name: "Penolong Amil", type: "link", path: "/BF-PA/PP/PM/01" },
+  { name: "Pendaftaran", type: "link", path: "/BF-PA/PP/PM/01" },
+  { name: "Pra Daftar", type: "link", path: "/BF-PA/PP/PD" },
+  { name: "Maklumat Terperinci", type: "current", path: `/BF-PA/PP/PD/detail/${route.params.rujukan || "PA-2024-009"}` },
 ]);
 
-// Workflow steps based on role hierarchy
-const workflowSteps = computed(() => {
-  const steps = [
-    { key: 'registration', label: 'Pendaftaran', icon: 'ph:user-plus' },
-    { key: 'screening', label: 'Saringan', icon: 'ph:shield-check' },
-    { key: 'review', label: 'Semakan PT', icon: 'ph:clipboard-text' },
-    { key: 'support', label: 'Sokongan', icon: 'ph:thumbs-up' },
-    { key: 'confirmation', label: 'Pengesahan', icon: 'ph:check-circle' },
-    { key: 'approval', label: 'Kelulusan', icon: 'ph:check-circle' }
-  ];
-
-  // Show only steps up to current role's position
-  const roleHierarchy = {
-    'pyb': 1,
-    'eksekutif-pengurusan-risiko': 2,
-    'pt': 3,
-    'eksekutif': 4,
-    'ketua-jabatan': 5,
-    'ketua-divisyen': 6
-  };
-
-  const maxSteps = roleHierarchy[currentRole.value] || 1;
-  return steps.slice(0, maxSteps);
-});
-
-// Mock application data
+/** ========= MOCK DATA (mengikut senarai yang diminta) =========
+ *  PA-2024-009 | Ismail bin Hassan | 870625098765 | Komuniti | Penolong Amil Komuniti | Masjid Al-Amin
+ */
 const application = ref({
-  rujukan: route.params.rujukan,
-  nama: "Ahmad bin Abdullah",
-  noKP: "901231012345",
+  // Ringkasan/Status
+  rujukan: route.params.rujukan || "PA-2024-009",
+  statusAkhir: "Draf",           // Status akhir pendaftaran
+  statusLantikan: "Menunggu",    // Status perkhidmatan
+
+  // Maklumat Peribadi
+  nama: "Ismail bin Hassan",
+  jenisPengenalan: "MyKAD",
+  noKP: "870625098765",
+  tarikhLahir: "1987-06-25",     // dari IC 870625
   jantina: "Lelaki",
-  bangsa: "Melayu",
-      tarikhLahir: "15-12-1990",
-  tempatLahir: "Kuala Lumpur",
-  alamatRumah: "No. 123, Jalan Ampang, 68000 Ampang, Selangor",
-  alamatPejabat: "No. 456, Jalan Tun Razak, 50400 Kuala Lumpur",
-  nomborTelefon: "012-3456789",
-  alamatEmel: "ahmad.abdullah@email.com",
-  kategoriPenolongAmil: "Fitrah",
-  jawatan: "Penolong Amil Fitrah",
-  institusiKariah: "Masjid Negeri Selangor",
+  tarafPerkahwinan: "Berkahwin",
+  warganegara: "Warganegara",
+
+  // Maklumat Untuk Dihubungi
+  email: "ismail.hassan@email.com",
+  noTelefon: "0127789901",
+  alamat1: "No. 12, Jalan Semenyih",
+  alamat2: "Taman Kajang Jaya",
+  alamat3: "",
+  daerah: "Hulu Langat",
+  bandar: "Kajang",
+  poskod: "43000",
+  negeri: "Selangor",
+
+  // Maklumat Pendaftaran
+  kategoriPenolongAmil: "Komuniti",
+  jawatan: "Penolong Amil Komuniti",
+  institusiKariah: "Masjid Al-Amin",
+  tarikhPendaftaran: "2024-02-10",
   sesiPerkhidmatan: "Sesi 1",
-  statusPendaftaran: "Telah Disokong",
-  statusLantikan: "Menunggu",
-  salinanKadPengenalan: "salinan_kp_ahmad.pdf",
-  suratSokongan: "surat_sokongan_ahmad.pdf",
-      uploadDate: "15-01-2024"
+
+  // Maklumat Perkhidmatan
+  tarikhLantikan: "", // belum dilantik
+
+  // Maklumat Bank
+  namaBank: "Bank Islam Malaysia Berhad",
+  noAkaunBank: "123456789012",
+  swiftcode: "BIMBMYKL",
+  namaPemegangAkaun: "Ismail bin Hassan",
+
+  // Maklumat Waris
+  namaWaris: "Siti Aminah binti Ali",
+  hubunganWaris: "Isteri",
+  telefonWaris: "0123456780",
 });
 
-// Verification history based on current role
-const verificationHistory = computed(() => {
-  const history = [
-    {
-      id: 1,
-      role: "PYB Institusi",
-      action: "Mendaftar calon",
-      date: "15-01-2024",
-      status: "Selesai",
-      statusVariant: "success",
-      icon: "ph:user-plus",
-      iconColor: "text-green-500"
-    }
-  ];
-
-  // Add screening if role can see it
-  if (canSeeStep('screening')) {
-    history.push({
-      id: 2,
-      role: "Jabatan Pengurusan Risiko",
-      action: "Saringan calon",
-      date: "16-01-2024",
-      status: "Selesai",
-      statusVariant: "success",
-      icon: "ph:shield-check",
-      iconColor: "text-blue-500"
-    });
+/** Umur dikira dari tarikh lahir */
+const umur = computed(() => {
+  try {
+    const dob = new Date(application.value.tarikhLahir);
+    if (Number.isNaN(dob.getTime())) return "-";
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+    return age;
+  } catch {
+    return "-";
   }
-
-  // Add PT review if role can see it
-  if (canSeeStep('review')) {
-    history.push({
-      id: 3,
-      role: "PT",
-      action: "Semakan dokumen",
-      date: "17-01-2024",
-      status: "Selesai",
-      statusVariant: "success",
-      icon: "ph:clipboard-text",
-      iconColor: "text-purple-500"
-    });
-  }
-
-  // Add executive support if role can see it
-  if (canSeeStep('support')) {
-    history.push({
-      id: 4,
-      role: "Eksekutif",
-      action: "Sokongan eksekutif",
-      date: "18-01-2024",
-      status: "Selesai",
-      statusVariant: "success",
-      icon: "ph:thumbs-up",
-      iconColor: "text-green-500"
-    });
-  }
-
-  // Add department confirmation if role can see it
-  if (canSeeStep('confirmation')) {
-    history.push({
-      id: 5,
-      role: "Ketua Jabatan",
-      action: "Pengesahan jabatan",
-      date: "19-01-2024",
-      status: "Selesai",
-      statusVariant: "success",
-      icon: "ph:check-circle",
-      iconColor: "text-blue-500"
-    });
-  }
-
-  // Add division approval if role can see it
-  if (canSeeStep('approval')) {
-    history.push({
-      id: 6,
-      role: "Ketua Divisyen",
-      action: "Kelulusan akhir",
-      date: "20-01-2024",
-      status: "Dalam Proses",
-      statusVariant: "warning",
-      icon: "ph:check-circle",
-      iconColor: "text-orange-500"
-    });
-  }
-
-  return history;
 });
 
-// Computed properties
-const canEdit = computed(() => {
-  return currentRole.value === 'pyb' && 
-         ['Draf', 'Dihantar'].includes(application.value.statusPendaftaran);
+const alamatPenuh = computed(() => {
+  const parts = [
+    application.value.alamat1,
+    application.value.alamat2,
+    application.value.alamat3,
+  ].filter(Boolean).map(s => s.trim()).filter(s => s.length > 0);
+  return parts.join(', ');
 });
 
-const showRoleActions = computed(() => {
-  return ['eksekutif-pengurusan-risiko', 'pt', 'eksekutif', 'ketua-jabatan', 'ketua-divisyen'].includes(currentRole.value);
-});
-
-const showVerificationHistory = computed(() => {
-  return verificationHistory.value.length > 0;
-});
-
-// Helper functions
-const canSeeStep = (step) => {
-  const roleHierarchy = {
-    'pyb': ['registration'],
-    'eksekutif-pengurusan-risiko': ['registration', 'screening'],
-    'pt': ['registration', 'screening', 'review'],
-    'eksekutif': ['registration', 'screening', 'review', 'support'],
-    'ketua-jabatan': ['registration', 'screening', 'review', 'support', 'confirmation'],
-    'ketua-divisyen': ['registration', 'screening', 'review', 'support', 'confirmation', 'approval']
-  };
-
-  return roleHierarchy[currentRole.value]?.includes(step) || false;
+/** Util: format tarikh ke DD-MM-YYYY */
+const pad2 = (n) => String(n).padStart(2, "0");
+const formatDate = (iso) => {
+  if (!iso) return "-";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return `${pad2(d.getDate())}-${pad2(d.getMonth() + 1)}-${d.getFullYear()}`;
 };
 
-const getStepVariant = (step) => {
-  if (canSeeStep(step)) {
-    return 'bg-green-100 text-green-800 border-2 border-green-300';
-  }
-  return 'bg-gray-100 text-gray-400 border-2 border-gray-200';
-};
-
-const getStepLineVariant = (step) => {
-  if (canSeeStep(step)) {
-    return 'bg-green-300';
-  }
-  return 'bg-gray-200';
-};
-
-const getCurrentRoleLabel = () => {
-  const roleLabels = {
-    'pyb': 'PYB Institusi',
-    'eksekutif-pengurusan-risiko': 'Jabatan Pengurusan Risiko',
-    'pt': 'PT',
-    'eksekutif': 'Eksekutif',
-    'ketua-jabatan': 'Ketua Jabatan',
-    'ketua-divisyen': 'Ketua Divisyen'
-  };
-  return roleLabels[currentRole.value] || '';
-};
-
-const getCurrentRoleBadgeVariant = () => {
-  const badgeVariants = {
-    'pyb': 'primary',        // Use primary instead of default
-    'eksekutif-pengurusan-risiko': 'info',
-    'pt': 'warning',
-    'eksekutif': 'success',
-    'ketua-jabatan': 'warning',
-    'ketua-divisyen': 'primary'
-  };
-  return badgeVariants[currentRole.value] || 'secondary'; // Use secondary instead of default
-};
-
+/** Badge variants */
 const getStatusPendaftaranVariant = (status) => {
-  const variants = {
-    'Draf': 'disabled',        // Use disabled for proper grey color
-    'Dihantar': 'warning',
-    'Telah Disaring': 'info',
-    'Telah Disemak': 'info',
-    'Telah Disokong': 'success',
-    'Telah Disahkan': 'success',
-    'Telah Diluluskan': 'success',
-    'Ditolak': 'danger'
+  const map = {
+    Draf: "disabled",
+    Dihantar: "warning",
+    "Telah Disaring": "info",
+    "Telah Disemak": "info",
+    "Telah Disokong": "success",
+    "Telah Disahkan": "success",
+    "Telah Diluluskan": "success",
+    Ditolak: "danger",
   };
-  return variants[status] || 'secondary'; // Use secondary instead of default
+  return map[status] || "secondary";
 };
 
 const getStatusLantikanVariant = (status) => {
-  const variants = {
-    'Menunggu': 'warning',
-    'Dilantik': 'info',
-    'Aktif': 'success',
-    'Tidak Aktif': 'secondary',
-    'Ditamatkan': 'danger'
+  const map = {
+    Menunggu: "warning",
+    Dilantik: "info",
+    Aktif: "success",
+    "Tidak Aktif": "secondary",
+    Ditamatkan: "danger",
   };
-  return variants[status] || 'secondary'; // Use secondary instead of default
+  return map[status] || "secondary";
 };
 
-// Action handlers with proper navigation
-const handleBack = () => {
-  // Navigate back to the appropriate dashboard based on role
-  const dashboardPaths = {
-    'pyb': '/BF-PA/PP/PD',
-    'eksekutif-pengurusan-risiko': '/BF-PA/PP/PD',
-    'pt': '/BF-PA/PP/PD',
-    'eksekutif': '/BF-PA/PP/PD',
-    'ketua-jabatan': '/BF-PA/PP/PD',
-    'ketua-divisyen': '/BF-PA/PP/PD'
-  };
-  
-  navigateTo(dashboardPaths[currentRole.value] || '/BF-PA/PP/PD');
-};
+/** Boleh edit? */
+const canEdit = computed(() => {
+  return currentRole.value === "pyb" && ["Draf", "Dihantar"].includes(application.value.statusAkhir);
+});
 
-const handleEdit = () => {
-  navigateTo(`/BF-PA/PP/PD/edit/${route.params.rujukan}`);
-};
-
-const handleViewProcessTrace = () => {
-  navigateTo(`/BF-PA/PP/PD/process-trace/${route.params.rujukan}`);
-};
-
-const handleScreening = () => {
-  navigateTo(`/BF-PA/PP/PD/jabatan-risiko/detail/${route.params.rujukan}`);
-};
-
-const handleReview = () => {
-  navigateTo(`/BF-PA/PP/PD/PT/detail/${route.params.rujukan}`);
-};
-
-const handleSupport = () => {
-  navigateTo(`/BF-PA/PP/PD/eksekutif/detail/${route.params.rujukan}`);
-};
-
-const handleConfirm = () => {
-  navigateTo(`/BF-PA/PP/PD/ketua-jabatan/detail/${route.params.rujukan}`);
-};
-
-const handleApprove = () => {
-  navigateTo(`/BF-PA/PP/PD/ketua-divisyen/detail/${route.params.rujukan}`);
-};
-
-const previewDocument = (documentType) => {
-  // Simulate document preview
-  alert(`Melihat dokumen: ${documentType}`);
-};
+/** Actions */
+const handleBack = () => navigateTo("/BF-PA/PP/PD");
+const handleEdit = () => navigateTo(`/BF-PA/PP/PD/edit/${application.value.rujukan}`);
+const handleViewPendaftaran = () => navigateTo(`/BF-PA/PP/PD/detail-pendaftaran/${application.value.rujukan}`);
+const handleViewPerkhidmatan = () => navigateTo(`/BF-PA/PP/PD/detail-perkhidmatan/${application.value.rujukan}`);
+const handleViewProcessTrace = () => navigateTo(`/BF-PA/PP/PD/process-trace/${application.value.rujukan}`);
 </script>
 
 <style scoped>
-/* Custom styles for RTMF compliance */
-</style> 
+/* Custom styles for RTMF compliance (optional) */
+</style>

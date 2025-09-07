@@ -184,7 +184,7 @@
                 </div>
               </div>
 
-              <!-- Ketua Divisyen Review (Pending) -->
+              <!-- Ketua Divisyen Review (Pending) 
               <div class="flex items-start justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <div class="flex items-start">
                   <Icon name="ph:star" class="w-5 h-5 mr-3 text-gray-400 mt-1" />
@@ -199,7 +199,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div>-->
             </div>
           </div>
         </template>

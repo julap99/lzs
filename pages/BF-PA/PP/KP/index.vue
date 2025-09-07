@@ -36,8 +36,17 @@
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">
-            Penamatan Jawatan
+            Perkhidmatan Penolong Amil
           </h1>
+
+          <!-- === Badge skop akses PIC === -->
+          <div v-if="currentRole === 'pic'" class="mt-1 text-xs text-gray-600">
+            Skop Akses PIC ({{ currentPICName }}):
+            <rs-badge variant="info" class="ml-1">
+              {{ picScope.institusi.join(', ') }} — {{ picScope.daerah.join(', ') }}
+            </rs-badge>
+          </div>
+          <!-- === tamat badge skop === -->
         </div>
         <div class="flex gap-2">
           <!-- Button removed as PP/KP doesn't handle adding new data/services -->
@@ -57,24 +66,24 @@
           }"
           class="md:col-span-2"
         />
-                 <div class="flex gap-2">
-           <rs-button
-             variant="primary"
-             @click="handleSearch"
-             class="!py-2 !px-6 whitespace-nowrap"
-           >
-             <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
-             Cari
-           </rs-button>
-           <rs-button
-             variant="secondary"
-             @click="clearFilters"
-             class="!py-2 !px-6 whitespace-nowrap"
-           >
-             <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
-             Set Semula
-           </rs-button>
-         </div>
+        <div class="flex gap-2">
+          <rs-button
+            variant="primary"
+            @click="handleSearch"
+            class="!py-2 !px-6 whitespace-nowrap"
+          >
+            <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
+            Cari
+          </rs-button>
+          <rs-button
+            variant="secondary"
+            @click="clearFilters"
+            class="!py-2 !px-6 whitespace-nowrap"
+          >
+            <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
+            Set Semula
+          </rs-button>
+        </div>
       </div>
     </div>
 
@@ -719,41 +728,17 @@ import { Icon } from "#components";
 definePageMeta({
   title: "Perkhidmatan Penolong Amil",
   breadcrumb: [
-    {
-      name: "BF-PA",
-      type: "link",
-      path: "/BF-PA",
-    },
-    {
-      name: "PP",
-      type: "link",
-      path: "/BF-PA/PP",
-    },
-    {
-      name: "Perkhidmatan Penolong Amil",
-      type: "current",
-      path: "/BF-PA/PP/KP",
-    },
+    { name: "BF-PA", type: "link", path: "/BF-PA" },
+    { name: "PP", type: "link", path: "/BF-PA/PP" },
+    { name: "Perkhidmatan Penolong Amil", type: "current", path: "/BF-PA/PP/KP" },
   ],
 });
 
 // Enhanced reactive data
 const breadcrumb = ref([
-  {
-    name: "BF-PA",
-    type: "link",
-    path: "/BF-PA",
-  },
-  {
-    name: "PP",
-    type: "link",
-    path: "/BF-PA/PP",
-  },
-  {
-    name: "Perkhidmatan Penolong Amil",
-    type: "current",
-    path: "/BF-PA/PP/KP",
-  },
+  { name: "BF-PA", type: "link", path: "/BF-PA" },
+  { name: "PP", type: "link", path: "/BF-PA/PP" },
+  { name: "Perkhidmatan Penolong Amil", type: "current", path: "/BF-PA/PP/KP" },
 ]);
 
 // Search state to control when filters are applied
@@ -806,7 +791,6 @@ const warningReasonOptions = [
   { label: "Lewat menghantar laporan", value: "lewat_hantar_laporan" },
   { label: "Aduan masyarakat", value: "aduan_masyarakat" },
   { label: "Gagal mematuhi arahan", value: "gagal_mematuhi_arahan" },
-
   { label: "Lain-lain", value: "lain-lain" },
 ];
 // reset custom reason kalau bukan 'lain-lain'
@@ -834,12 +818,13 @@ const isTerminateSubmitting = ref(false);
 const terminationCategoryOptions = [
   { label: "Tukar Kariah", value: "tukar_kariah" },
   { label: "Masalah Disiplin", value: "masalah_disiplin" },
+  { label: "Meninggal Dunia", value: "meninggal_dunia" },
 ];
 
 // NEW: dropdown options sebab bagi Tukar Kariah
 const terminationReasonMoveOptions = [
   { label: "Berpindah alamat/kariah", value: "berpindah_alamat" },
-  { label: "Pertukaran institusi (masjid/surau)", value: "pertukaran_institusi" },
+  { label: "Pertukaran institusi (masjid/Masjid)", value: "pertukaran_institusi" },
   { label: "Penggabungan/penutupan institusi", value: "penggabungan_penutupan" },
   { label: "Pertukaran kategori (PAK → KPAK dll.)", value: "pertukaran_kategori" },
   { label: "Lain-lain", value: "lain-lain" },
@@ -881,48 +866,47 @@ const kategoriOptions = [
   { label: "Penolong Amil Fitrah", value: "fitrah" },
   { label: "Penolong Amil Padi", value: "padi" },
   { label: "Penolong Amil Kariah", value: "kariah" },
-  { label: "Penolong Amil Komuniti", value: "komuniti" },
+  { label: "Penolong Amil Kariah", value: "Kariah" },
 ];
 
 const institusiOptions = [
   { label: "Sila pilih...", value: "" },
   { label: "Masjid Al-Hidayah", value: "masjid_al_hidayah" },
-  { label: "Surau Al-Amin", value: "surau_al_amin" },
+  { label: "Masjid Al-Amin", value: "Masjid_al_amin" },
   { label: "Kompleks Islam", value: "kompleks_islam" },
 ];
 
 const sesiOptions = [
   { label: "Sila pilih...", value: "" },
   { label: "2023/2024", value: "2023/2024" },
-  { label: "2024/2025", value: "2024/2025" },
+  { label: "2025-2030", value: "2025-2030" },
   { label: "2025/2026", value: "2025/2026" },
 ];
 
 const daerahOptions = [
   { label: "Sila pilih...", value: "" },
-  { label: "Kuala Lumpur", value: "kuala_lumpur" },
-  { label: "Selangor", value: "selangor" },
-  { label: "Johor", value: "johor" },
-  { label: "Pahang", value: "pahang" },
-  { label: "Terengganu", value: "terengganu" },
-  { label: "Kedah", value: "kedah" },
-  { label: "Negeri Sembilan", value: "negeri_sembilan" },
-  { label: "Melaka", value: "melaka" },
-  { label: "Perak", value: "perak" },
-  { label: "Kelantan", value: "kelantan" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu_langat" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Selangor", value: "kuala_selangor" },
+  { label: "Hulu Selangor", value: "hulu_selangor" },
+  { label: "Sabak Bernam", value: "sabak_bernam" },
+  { label: "Sepang", value: "sepang" },
+  { label: "Kuala Langat", value: "kuala_langat" },
 ];
 
-// Enhanced mock data with new structure
+// === DATA: Requests (contoh) ===
 const requests = ref([
   {
     id: "KP001",
     noRujukan: "KP-2024-001",
-    nama: "Ahmad bin Abdullah",
-    idPengenalan: "901231012345",
+    nama: "Ismail bin Hassan",
+    idPengenalan: "870625098765",
     kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Kuala Lumpur",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Hulu Langat",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
     jantina: "Lelaki",
     statusPerkahwinan: "Berkahwin",
@@ -949,16 +933,16 @@ const requests = ref([
     noRujukan: "KP-2024-002",
     nama: "Mohd Ali bin Hassan",
     idPengenalan: "850315045678",
-    kategori: "Penolong Amil Komuniti",
-    sesi: "2024/2025",
-    daerah: "Selangor",
-    institusi: "Surau Al-Amin",
+    kategori: "Penolong Amil Kariah",
+    sesi: "2025-2030",
+    daerah: "Petaling",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
     jantina: "Lelaki",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 45, Jalan Masjid, Taman Islam, 40100 Shah Alam, Selangor",
+    alamat: "No. 45, Jalan Masjid, Seksyen 9, 40100 Shah Alam, Selangor",
     negeri: "Selangor",
     bandar: "Shah Alam",
     poskod: "40100",
@@ -980,19 +964,18 @@ const requests = ref([
     nama: "Fatimah binti Omar",
     idPengenalan: "920512078901",
     kategori: "Penolong Amil Fitrah",
-    sesi: "2024/2025",
-    daerah: "Perak",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Klang",
+    institusi: "Masjid Al-Amin",
     status: "suspended",
     jantina: "Perempuan",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 78, Jalan Sultan, Taman Diraja, 30000 Ipoh, Perak",
-    negeri: "Perak",
-    daerah: "Kinta",
-    bandar: "Ipoh",
-    poskod: "30000",
+    alamat: "No. 78, Jalan Sultan Abdul Aziz, 41200 Klang, Selangor",
+    negeri: "Selangor",
+    bandar: "Klang",
+    poskod: "41200",
     noTelefon: "05-255 1234",
     noTelefonBimbit: "014-567 8901",
     emel: "fatimah.omar@email.com",
@@ -1011,19 +994,18 @@ const requests = ref([
     nama: "Siti Aminah binti Ismail",
     idPengenalan: "880723123456",
     kategori: "Penolong Amil Padi",
-    sesi: "2024/2025",
-    daerah: "Kedah",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Hulu Selangor",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
     jantina: "Perempuan",
     statusPerkahwinan: "Bujang",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 12, Kampung Padi, Mukim Alor Setar, 05000 Alor Setar, Kedah",
-    negeri: "Kedah",
-    daerah: "Alor Setar",
-    bandar: "Alor Setar",
-    poskod: "05000",
+    alamat: "No. 12, Taman Arif, 44000 Kuala Kubu Bharu, Selangor",
+    negeri: "Selangor",
+    bandar: "Kuala Kubu Bharu",
+    poskod: "44000",
     noTelefon: "04-733 4567",
     noTelefonBimbit: "015-678 9012",
     emel: "siti.aminah@email.com",
@@ -1042,19 +1024,18 @@ const requests = ref([
     nama: "Zainal bin Ibrahim",
     idPengenalan: "870415234567",
     kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Kelantan",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Kuala Selangor",
+    institusi: "Masjid Al-Amin",
     status: "terminated",
     jantina: "Lelaki",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 56, Jalan Kota Bharu, Taman Islam, 15000 Kota Bharu, Kelantan",
-    negeri: "Kelantan",
-    daerah: "Kota Bharu",
-    bandar: "Kota Bharu",
-    poskod: "15000",
+    alamat: "No. 56, Jalan Raja Lumu, 45000 Kuala Selangor, Selangor",
+    negeri: "Selangor",
+    bandar: "Kuala Selangor",
+    poskod: "45000",
     noTelefon: "09-744 5678",
     noTelefonBimbit: "016-789 0123",
     emel: "zainal.ibrahim@email.com",
@@ -1072,20 +1053,19 @@ const requests = ref([
     noRujukan: "KP-2024-006",
     nama: "Nurul Huda binti Ahmad",
     idPengenalan: "930625345678",
-    kategori: "Penolong Amil Komuniti",
-    sesi: "2024/2025",
-    daerah: "Terengganu",
-    institusi: "Surau Al-Amin",
+    kategori: "Penolong Amil Kariah",
+    sesi: "2025-2030",
+    daerah: "Kuala Langat",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
     jantina: "Perempuan",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 89, Jalan Kuala Terengganu, Taman Islam, 20000 Kuala Terengganu, Terengganu",
-    negeri: "Terengganu",
-    daerah: "Kuala Terengganu",
-    bandar: "Kuala Terengganu",
-    poskod: "20000",
+    alamat: "No. 89, Jalan Sultan Alam Shah, 42700 Banting, Selangor",
+    negeri: "Selangor",
+    bandar: "Banting",
+    poskod: "42700",
     noTelefon: "09-622 6789",
     noTelefonBimbit: "017-890 1234",
     emel: "nurul.huda@email.com",
@@ -1104,19 +1084,18 @@ const requests = ref([
     nama: "Abdul Rahman bin Hassan",
     idPengenalan: "890715456789",
     kategori: "Penolong Amil Fitrah",
-    sesi: "2024/2025",
-    daerah: "Pahang",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Gombak",
+    institusi: "Masjid Al-Amin",
     status: "suspended",
     jantina: "Lelaki",
     statusPerkahwinan: "Bercerai",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 34, Jalan Kuantan, Taman Islam, 25000 Kuantan, Pahang",
-    negeri: "Pahang",
-    daerah: "Kuantan",
-    bandar: "Kuantan",
-    poskod: "25000",
+    alamat: "No. 34, Jalan Samudera, 68100 Batu Caves, Selangor",
+    negeri: "Selangor",
+    bandar: "Batu Caves",
+    poskod: "68100",
     noTelefon: "09-516 7890",
     noTelefonBimbit: "018-901 2345",
     emel: "abdul.rahman@email.com",
@@ -1135,19 +1114,18 @@ const requests = ref([
     nama: "Noraini binti Mohamed",
     idPengenalan: "910318567890",
     kategori: "Penolong Amil Padi",
-    sesi: "2024/2025",
-    daerah: "Negeri Sembilan",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Sabak Bernam",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
     jantina: "Perempuan",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 67, Jalan Seremban, Taman Islam, 70000 Seremban, Negeri Sembilan",
-    negeri: "Negeri Sembilan",
-    daerah: "Seremban",
-    bandar: "Seremban",
-    poskod: "70000",
+    alamat: "No. 67, Jalan Perdana, 45200 Sabak Bernam, Selangor",
+    negeri: "Selangor",
+    bandar: "Sabak Bernam",
+    poskod: "45200",
     noTelefon: "06-762 8901",
     noTelefonBimbit: "019-012 3456",
     emel: "noraini.mohamed@email.com",
@@ -1166,26 +1144,25 @@ const requests = ref([
     nama: "Ismail bin Yusof",
     idPengenalan: "860420678901",
     kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Melaka",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Sepang",
+    institusi: "Masjid Al-Amin",
     status: "terminated",
     jantina: "Lelaki",
     statusPerkahwinan: "Janda/Duda",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 23, Jalan Melaka, Taman Islam, 75000 Melaka, Melaka",
-    negeri: "Melaka",
-    daerah: "Melaka Tengah",
-    bandar: "Bandaraya Melaka",
-    poskod: "75000",
+    alamat: "No. 23, Jalan Teknokrat, 63000 Cyberjaya, Selangor",
+    negeri: "Selangor",
+    bandar: "Cyberjaya",
+    poskod: "63000",
     noTelefon: "06-283 9012",
     noTelefonBimbit: "011-123 4567",
     emel: "ismail.yusof@email.com",
     pekerjaan: "Pegawai Pelancongan",
     namaMajikan: "Lembaga Pelancongan Melaka",
     tahapPendidikan: "Diploma",
-    institusiPendidikan: "Kolej Komuniti Melaka",
+    institusiPendidikan: "Kolej Kariah Melaka",
     tarikhMulaPerkhidmatan: "10-02-2023",
     tempohPerkhidmatan: "1 tahun 2 bulan",
     jumlahSuratAmaran: "3",
@@ -1196,144 +1173,19 @@ const requests = ref([
     noRujukan: "KP-2024-010",
     nama: "Rohana binti Sulaiman",
     idPengenalan: "940712789012",
-    kategori: "Penolong Amil Komuniti",
-    sesi: "2024/2025",
-    daerah: "Johor",
-    institusi: "Surau Al-Amin",
+    kategori: "Penolong Amil Kariah",
+    sesi: "2025-2030",
+    daerah: "Petaling",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
     jantina: "Perempuan",
     statusPerkahwinan: "Bujang",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 90, Jalan Johor Bahru, Taman Islam, 80000 Johor Bahru, Johor",
-    negeri: "Johor",
-    daerah: "Johor Bahru",
-    bandar: "Johor Bahru",
-    poskod: "80000",
-    noTelefon: "07-224 0123",
-    noTelefonBimbit: "010-234 5678",
-    emel: "rohana.sulaiman@email.com",
-    pekerjaan: "Pegawai Undang-undang",
-    namaMajikan: "Jabatan Peguam Negara",
-    tahapPendidikan: "Ijazah Sarjana",
-    institusiPendidikan: "Universiti Teknologi Malaysia",
-    tarikhMulaPerkhidmatan: "05-04-2023",
-    tempohPerkhidmatan: "1 tahun",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  // Mock data for users with multiple kategori
-  {
-    id: "KP011",
-    noRujukan: "KP-2024-011",
-    nama: "Mohd Ali bin Hassan",
-    idPengenalan: "850315045678",
-    kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Selangor",
-    institusi: "Surau Al-Amin",
-    status: "aktif",
-    jantina: "Lelaki",
-    statusPerkahwinan: "Berkahwin",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 45, Jalan Masjid, Taman Islam, 40100 Shah Alam, Selangor",
+    alamat: "No. 90, Jalan SS 21/1, 47400 Petaling Jaya, Selangor",
     negeri: "Selangor",
-    bandar: "Shah Alam",
-    poskod: "40100",
-    noTelefon: "03-5510 2345",
-    noTelefonBimbit: "013-456 7890",
-    emel: "mohd.ali@email.com",
-    pekerjaan: "Guru",
-    namaMajikan: "Sekolah Menengah Kebangsaan Shah Alam",
-    tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Malaya",
-    tarikhMulaPerkhidmatan: "01-03-2023",
-    tempohPerkhidmatan: "1 tahun 1 bulan",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  {
-    id: "KP012",
-    noRujukan: "KP-2024-012",
-    nama: "Noraini binti Mohamed",
-    idPengenalan: "910318567890",
-    kategori: "Penolong Amil Komuniti",
-    sesi: "2024/2025",
-    daerah: "Negeri Sembilan",
-    institusi: "Surau Al-Amin",
-    status: "aktif",
-    jantina: "Perempuan",
-    statusPerkahwinan: "Berkahwin",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 67, Jalan Seremban, Taman Islam, 70000 Seremban, Negeri Sembilan",
-    negeri: "Negeri Sembilan",
-    daerah: "Seremban",
-    bandar: "Seremban",
-    poskod: "70000",
-    noTelefon: "06-762 8901",
-    noTelefonBimbit: "019-012 3456",
-    emel: "noraini.mohamed@email.com",
-    pekerjaan: "Guru",
-    namaMajikan: "Sekolah Rendah Kebangsaan Seremban",
-    tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Pendidikan Sultan Idris",
-    tarikhMulaPerkhidmatan: "20-07-2023",
-    tempohPerkhidmatan: "9 bulan",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  {
-    id: "KP013",
-    noRujukan: "KP-2024-013",
-    nama: "Noraini binti Mohamed",
-    idPengenalan: "910318567890",
-    kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Negeri Sembilan",
-    institusi: "Surau Al-Amin",
-    status: "aktif",
-    jantina: "Perempuan",
-    statusPerkahwinan: "Berkahwin",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 67, Jalan Seremban, Taman Islam, 70000 Seremban, Negeri Sembilan",
-    negeri: "Negeri Sembilan",
-    daerah: "Seremban",
-    bandar: "Seremban",
-    poskod: "70000",
-    noTelefon: "06-762 8901",
-    noTelefonBimbit: "019-012 3456",
-    emel: "noraini.mohamed@email.com",
-    pekerjaan: "Guru",
-    namaMajikan: "Sekolah Rendah Kebangsaan Seremban",
-    tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Pendidikan Sultan Idris",
-    tarikhMulaPerkhidmatan: "20-07-2023",
-    tempohPerkhidmatan: "9 bulan",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  {
-    id: "KP014",
-    noRujukan: "KP-2024-014",
-    nama: "Rohana binti Sulaiman",
-    idPengenalan: "940712789012",
-    kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Johor",
-    institusi: "Surau Al-Amin",
-    status: "aktif",
-    jantina: "Perempuan",
-    statusPerkahwinan: "Bujang",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 90, Jalan Johor Bahru, Taman Islam, 80000 Johor Bahru, Johor",
-    negeri: "Johor",
-    daerah: "Johor Bahru",
-    bandar: "Johor Bahru",
-    poskod: "80000",
+    bandar: "Petaling Jaya",
+    poskod: "47400",
     noTelefon: "07-224 0123",
     noTelefonBimbit: "010-234 5678",
     emel: "rohana.sulaiman@email.com",
@@ -1346,7 +1198,170 @@ const requests = ref([
     jumlahSuratAmaran: "0",
     statusTerakhir: "Aktif"
   },
+  {
+  id: "KP011",
+  noRujukan: "KP-2024-011",
+  nama: "Hafiz bin Saadon",
+  idPengenalan: "950812086543",
+  kategori: "Penolong Amil Kariah",
+  sesi: "2025-2030",
+  daerah: "Hulu Langat",
+  institusi: "Masjid Al-Amin",
+  status: "aktif",
+  jantina: "Lelaki",
+  statusPerkahwinan: "Bujang",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 21, Jalan Reko, 43000 Kajang, Selangor",
+  negeri: "Selangor",
+  bandar: "Kajang",
+  poskod: "43000",
+  noTelefon: "03-8920 1122",
+  noTelefonBimbit: "012-889 2211",
+  emel: "hafiz.saadon@email.com",
+  pekerjaan: "Eksekutif",
+  namaMajikan: "Syarikat Perkhidmatan Kajang",
+  tahapPendidikan: "Ijazah Sarjana Muda",
+  institusiPendidikan: "Universiti Kebangsaan Malaysia",
+  tarikhMulaPerkhidmatan: "12-11-2023",
+  tempohPerkhidmatan: "1 tahun 9 bulan",
+  jumlahSuratAmaran: "0",
+  statusTerakhir: "Aktif"
+},{
+  id: "KP012",
+  noRujukan: "KP-2024-012",
+  nama: "Aisyah binti Zulkifli",
+  idPengenalan: "940106105432",
+  kategori: "Penolong Amil Fitrah",
+  sesi: "2025-2030",
+  daerah: "Hulu Langat",
+  institusi: "Masjid Al-Amin",
+  status: "suspended",
+  jantina: "Perempuan",
+  statusPerkahwinan: "Berkahwin",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 8, Jalan Delima, 43000 Kajang, Selangor",
+  negeri: "Selangor",
+  bandar: "Kajang",
+  poskod: "43000",
+  noTelefon: "03-8735 7788",
+  noTelefonBimbit: "013-772 8899",
+  emel: "aisyah.zulkifli@email.com",
+  pekerjaan: "Guru",
+  namaMajikan: "SK Saujana Impian",
+  tahapPendidikan: "Ijazah Sarjana Muda",
+  institusiPendidikan: "Universiti Malaya",
+  tarikhMulaPerkhidmatan: "05-03-2024",
+  tempohPerkhidmatan: "6 bulan",
+  jumlahSuratAmaran: "1",
+  statusTerakhir: "Dalam Pemerhatian"
+},{
+  id: "KP013",
+  noRujukan: "KP-2024-013",
+  nama: "Muhammad Faiz bin Razak",
+  idPengenalan: "900221086711",
+  kategori: "Penolong Amil Kariah",
+  sesi: "2025-2030",
+  daerah: "Petaling",
+  institusi: "Masjid Al-Amin",
+  status: "aktif",
+  jantina: "Lelaki",
+  statusPerkahwinan: "Berkahwin",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 5, Jalan Flora, 40100 Shah Alam, Selangor",
+  negeri: "Selangor",
+  bandar: "Shah Alam",
+  poskod: "40100",
+  noTelefon: "03-5523 2210",
+  noTelefonBimbit: "017-222 7788",
+  emel: "faiz.razak@email.com",
+  pekerjaan: "Pegawai IT",
+  namaMajikan: "Syarikat Teknologi Shah Alam",
+  tahapPendidikan: "Ijazah Sarjana Muda",
+  institusiPendidikan: "UiTM Shah Alam",
+  tarikhMulaPerkhidmatan: "10-01-2024",
+  tempohPerkhidmatan: "8 bulan",
+  jumlahSuratAmaran: "0",
+  statusTerakhir: "Aktif"
+},{
+  id: "KP014",
+  noRujukan: "KP-2024-014",
+  nama: "Zulaikha binti Salleh",
+  idPengenalan: "970904106532",
+  kategori: "Penolong Amil Padi",
+  sesi: "2025-2030",
+  daerah: "Hulu Langat",
+  institusi: "Masjid Al-Hidayah",
+  status: "terminated",
+  jantina: "Perempuan",
+  statusPerkahwinan: "Bujang",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 33, Jalan Bukit, 43000 Kajang, Selangor",
+  negeri: "Selangor",
+  bandar: "Kajang",
+  poskod: "43000",
+  noTelefon: "03-8734 9900",
+  noTelefonBimbit: "016-444 9911",
+  emel: "zulaikha.salleh@email.com",
+  pekerjaan: "Pegawai Pertanian",
+  namaMajikan: "LPP",
+  tahapPendidikan: "Diploma",
+  institusiPendidikan: "Politeknik Sultan Salahuddin Abdul Aziz Shah",
+  tarikhMulaPerkhidmatan: "22-05-2023",
+  tempohPerkhidmatan: "1 tahun 3 bulan",
+  jumlahSuratAmaran: "2",
+  statusTerakhir: "Telah Ditamatkan"
+}
+,{
+  id: "KP015",
+  noRujukan: "KP-2024-015",
+  nama: "Ali bin Bahri",
+  idPengenalan: "820304105432",
+  kategori: "Penolong Amil Kariah",
+  sesi: "2025-2030",
+  daerah: "Hulu Langat",
+  institusi: "Masjid Al-Amin",
+  status: "aktif",
+  jantina: "Lelaki",
+  statusPerkahwinan: "Berkahwin",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 14, Jalan Impian, 43000 Kajang, Selangor",
+  negeri: "Selangor",
+  bandar: "Kajang",
+  poskod: "43000",
+  noTelefon: "03-8737 2200",
+  noTelefonBimbit: "012-668 5522",
+  emel: "ali.bahri@email.com",
+  pekerjaan: "Pegawai Pentadbiran",
+  namaMajikan: "Majlis Agama Islam Selangor",
+  tahapPendidikan: "Ijazah Sarjana Muda",
+  institusiPendidikan: "Universiti Kebangsaan Malaysia",
+  tarikhMulaPerkhidmatan: "18-07-2023",
+  tempohPerkhidmatan: "2 tahun 1 bulan",
+  jumlahSuratAmaran: "0",
+  statusTerakhir: "Aktif"
+}
+
 ]);
+
+/* =========================================================
+   === SKOP PAPARAN PIC (Ali bin Ahad → Al-Amin @ Hulu Langat) ===
+   ========================================================= */
+const currentPICName = ref('Ali bin Ahad'); // contoh PIC aktif
+const picScope = ref({
+  institusi: ['Masjid Al-Amin'], // boleh lebih dari satu
+  daerah: ['Hulu Langat'],       // boleh lebih dari satu
+});
+// normalizer & helper untuk perbandingan yang robust
+const normalize = (s) =>
+  (s || '').toString().toLowerCase().replace(/[_-]/g, ' ').replace(/\s+/g, ' ').trim();
+const inList = (val, list) =>
+  !list?.length || list.map(normalize).includes(normalize(val));
+/* ======================================================= */
 
 // Enhanced computed properties with role-specific filtering
 const filteredRequests = computed(() => {
@@ -1401,6 +1416,14 @@ const filteredRequests = computed(() => {
   if (filters.value.daerah) {
     result = result.filter(request => 
       (request.daerah || request.newDaerah)?.toLowerCase().includes(filters.value.daerah.toLowerCase())
+    );
+  }
+
+  // === Hadkan paparan jika role = PIC ===
+  if (currentRole.value === 'pic') {
+    result = result.filter((r) =>
+      inList(r.institusi || r.newInstitusi, picScope.value.institusi) &&
+      inList(r.daerah || r.newDaerah, picScope.value.daerah)
     );
   }
   
@@ -1489,6 +1512,14 @@ const getStatusCount = (status) => {
 const getTabRequests = (status) => {
   let result = [...requests.value];
   if (status) result = result.filter(request => request.status === status);
+
+  // === Hadkan paparan jika role = PIC (untuk setiap tab) ===
+  if (currentRole.value === 'pic') {
+    result = result.filter((r) =>
+      inList(r.institusi || r.newInstitusi, picScope.value.institusi) &&
+      inList(r.daerah || r.newDaerah, picScope.value.daerah)
+    );
+  }
   
   // Only apply search filter if search button was clicked
   if (isSearchTriggered.value && filters.value.searchQuery) {
@@ -1528,8 +1559,6 @@ const getTabRequests = (status) => {
   return result;
 };
 
-
-
 const viewRequest = (request) => {
   const role = currentRole.value;
   if (role === "pic") {
@@ -1554,7 +1583,7 @@ const terminateService = (request) => {
     nama: request.nama || "Ahmad bin Abdullah",
     idPengenalan: request.idPengenalan || "901231012345",
     kategori: request.kategori || "Penolong Amil Kariah",
-    sesi: request.sesi || "2024/2025",
+    sesi: request.sesi || "2025-2030",
     institusi: request.institusi || "Masjid Al-Hidayah",
   };
   
@@ -1638,7 +1667,7 @@ const sendWarningLetter = (request) => {
     noTelefonBimbit: request.noTelefonBimbit || "012-345 6789",
     emel: request.emel || "ahmad.abdullah@email.com",
     kategori: request.kategori || "Penolong Amil Kariah",
-    sesi: request.sesi || "2024/2025",
+    sesi: request.sesi || "2025-2030",
     institusi: request.institusi || "Masjid Al-Hidayah",
     tarikhMulaPerkhidmatan: request.tarikhMulaPerkhidmatan || "15-01-2023",
     tempohPerkhidmatan: request.tempohPerkhidmatan || "1 tahun 3 bulan",

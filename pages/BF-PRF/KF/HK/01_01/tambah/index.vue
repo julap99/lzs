@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Tambah Had Kifayah Baharu</h2>
-          <rs-button variant="secondary" @click="navigateTo('01_01')">
+          <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/HK/01_01')">
             <Icon name="material-symbols:arrow-back" class="mr-1" /> Kembali
           </rs-button>
         </div>
@@ -58,38 +58,6 @@
                     help="Masukkan nama lengkap Had Kifayah"
                   />
                 </div>
-
-                <!-- Kategori -->
-                <div>
-                  <FormKit
-                    type="select"
-                    name="kategori"
-                    label="Kategori"
-                    :options="kategoriOptions"
-                    placeholder="Pilih kategori"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Kategori diperlukan'
-                    }"
-                    help="Pilih kategori Had Kifayah"
-                  />
-                </div>
-
-                <!-- Jenis Isi Rumah -->
-                <div>
-                  <FormKit
-                    type="select"
-                    name="jenisIsiRumah"
-                    label="Jenis Isi Rumah"
-                    :options="jenisIsiRumahOptions"
-                    placeholder="Pilih jenis isi rumah"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Jenis isi rumah diperlukan'
-                    }"
-                    help="Pilih jenis isi rumah yang berkaitan"
-                  />
-                </div>
               </div>
             </div>
 
@@ -97,7 +65,7 @@
             <div class="mb-8">
               <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <Icon name="mdi:currency-usd" class="mr-2 text-green-600" />
-                Maklumat Kewangan
+                Pelarasan
               </h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -115,23 +83,6 @@
                       min: 'Nilai mesti lebih besar atau sama dengan 0'
                     }"
                     help="Masukkan kadar berbayar dalam Ringgit Malaysia"
-                  />
-                </div>
-
-                <!-- Kadar Percuma -->
-                <div>
-                  <FormKit
-                    type="money"
-                    name="kadarPercuma"
-                    label="Kadar Percuma (RM)"
-                    placeholder="0.00"
-                    validation="required|number|min:0"
-                    :validation-messages="{
-                      required: 'Kadar percuma diperlukan',
-                      number: 'Masukkan nilai angka yang sah',
-                      min: 'Nilai mesti lebih besar atau sama dengan 0'
-                    }"
-                    help="Masukkan kadar percuma dalam Ringgit Malaysia"
                   />
                 </div>
               </div>
@@ -174,6 +125,18 @@
                     help="Pilih status Had Kifayah"
                   />
                 </div>
+
+                <!-- Keterangan -->
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="textarea"
+                    name="keterangan"
+                    label="Keterangan"
+                    placeholder="Masukkan keterangan tambahan (opsional)"
+                    rows="3"
+                    help="Keterangan atau nota tambahan untuk Had Kifayah ini"
+                  />
+                </div>
               </div>
             </div>
 
@@ -182,7 +145,7 @@
               <rs-button 
                 type="button" 
                 variant="secondary" 
-                @click="navigateTo('01_01')"
+                @click="navigateTo('/BF-PRF/KF/HK/01_01')"
               >
                 Batal
               </rs-button>
@@ -232,33 +195,17 @@ const breadcrumb = ref([
 const formData = reactive({
   idHadKifayah: "",
   namaHadKifayah: "",
-  kategori: "",
-  jenisIsiRumah: "",
   kadarBerbayar: "",
-  kadarPercuma: "",
   tarikhMula: "",
   status: "",
+  keterangan: "",
 });
 
 // Form state
 const isSubmitting = ref(false);
 
 // Options for select fields
-const kategoriOptions = [
-  { label: "Utama", value: "Utama" },
-  { label: "Tambahan", value: "Tambahan" },
-  { label: "Khas", value: "Khas" },
-];
-
-const jenisIsiRumahOptions = [
-  { label: "Ketua Keluarga", value: "Ketua Keluarga" },
-  { label: "Dewasa Bekerja", value: "Dewasa Bekerja" },
-  { label: "Dewasa Tidak Bekerja", value: "Dewasa Tidak Bekerja" },
-  { label: "Kanak-kanak", value: "Kanak-kanak" },
-  { label: "Bayi", value: "Bayi" },
-  { label: "Warga Emas", value: "Warga Emas" },
-  { label: "Orang Kurang Upaya", value: "Orang Kurang Upaya" },
-];
+// removed kategori and jenisIsiRumah options
 
 const statusOptions = [
   { label: "Aktif", value: "Aktif" },
@@ -306,12 +253,10 @@ const handleSubmit = async (formData) => {
     const newRecord = {
       idHadKifayah: formData.idHadKifayah,
       namaHadKifayah: formData.namaHadKifayah,
-      kategori: formData.kategori,
-      jenisIsiRumah: formData.jenisIsiRumah,
       kadarBerbayar: parseFloat(formData.kadarBerbayar),
-      kadarPercuma: parseFloat(formData.kadarPercuma),
       tarikhMula: formData.tarikhMula,
       status: formData.status,
+      keterangan: formData.keterangan || "",
       tindakan: existingData.length + 1,
     };
     

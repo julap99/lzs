@@ -5,103 +5,73 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai</h2>
+          <h2 class="text-xl font-semibold">Senarai Pengesahan</h2>
         </div>
       </template>
 
       <template #body>
-        <!-- Main Tabs -->
-        <rs-tab variant="primary" type="card">
-          <rs-tab-item title="Profiling" active>
-            <!-- Profiling Tab Content -->
-            <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                Profiling Data
-              </h3>
-              <!-- Applications Table -->
-              <rs-table
-                :data="filteredApplications"
-                :columns="columns"
-                :pageSize="pageSize"
-                :showNoColumn="true"
-                :options="{
-                  variant: 'default',
-                  hover: true,
-                  striped: true,
-                }"
-                :options-advanced="{
-                  sortable: true,
-                  filterable: false,
-                }"
-                advanced
-              >
-                <template #header-tindakan>
-                  <div class="text-center w-full">Aksi</div>
-                </template>
-                <template v-slot:status="{ text }">
-                  <rs-badge :variant="getStatusVariant(text)">
-                    {{ text }}
-                  </rs-badge>
-                </template>
+        <div>
+          <rs-table
+            :data="filteredApplications"
+            :columns="columns"
+            :pageSize="pageSize"
+            :showNoColumn="true"
+            :options="{
+              variant: 'default',
+              hover: true,
+              striped: true,
+            }"
+            :options-advanced="{
+              sortable: true,
+              filterable: false,
+            }"
+            advanced
+          >
+            <template #header-tindakan>
+              <div class="text-center w-full">Aksi</div>
+            </template>
+            <template v-slot:status="{ text }">
+              <rs-badge :variant="getStatusVariant(text)">
+                {{ text }}
+              </rs-badge>
+            </template>
 
-                <template v-slot:tindakan="{ text }">
-                  <div class="flex justify-center items-center gap-2">
-                    <rs-button
-                      variant="primary"
-                      class="p-1 flex gap-2"
-                      @click="handleReview(text)"
-                    >
-                      Semak
-                    </rs-button>
-                  </div>
-                </template>
-              </rs-table>
-
-              <!-- Pagination -->
-              <div class="flex items-center justify-between px-5 mt-4">
-                <div class="flex items-center gap-2">
-                  <span class="text-sm text-gray-700">Baris per halaman:</span>
-                  <FormKit
-                    v-model="pageSize"
-                    type="select"
-                    :options="[10, 25, 50]"
-                    :classes="{
-                      wrapper: 'w-20',
-                      outer: 'mb-0',
-                      input: '!rounded-lg',
-                    }"
-                  />
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-sm text-gray-700">
-                    Menunjukkan {{ paginationStart }} hingga
-                    {{ paginationEnd }} daripada {{ totalApplications }} entri
-                  </span>
-                  <div class="flex gap-1">
-                    <rs-button
-                      variant="primary-outline"
-                      class="!p-1 !w-8 !h-8"
-                      :disabled="currentPage === 1"
-                      @click="currentPage--"
-                    >
-                      <Icon name="ic:round-keyboard-arrow-left" />
-                    </rs-button>
-                    <rs-button
-                      variant="primary-outline"
-                      class="!p-1 !w-8 !h-8"
-                      :disabled="currentPage === totalPages"
-                      @click="currentPage++"
-                    >
-                      <Icon name="ic:round-keyboard-arrow-right" />
-                    </rs-button>
-                  </div>
-                </div>
+            <template v-slot:tindakan="{ text, value }">
+              <div class="flex justify-center items-center gap-2">
+                <rs-button
+                  variant="primary"
+                  class="p-1 flex gap-2"
+                  @click="handleReview(value.status)"
+                >
+                  Semak
+                </rs-button>
               </div>
-            </div>
-          </rs-tab-item>
+            </template>
+          </rs-table>
 
-          
-        </rs-tab>
+          <!-- Pagination -->
+          <div class="flex items-center justify-between px-5 mt-4">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-700">Baris per halaman:</span>
+              <FormKit
+                v-model="pageSize"
+                type="select"
+                :options="[10, 25, 50]"
+                :classes="{
+                  wrapper: 'w-20',
+                  outer: 'mb-0',
+                  input: '!rounded-lg',
+                }"
+              />
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-700">
+                Menunjukkan {{ paginationStart }} hingga
+                {{ paginationEnd }} daripada {{ totalApplications }} entri
+              </span>
+            </div>
+          </div>
+        </div>
       </template>
     </rs-card>
   </div>
@@ -151,64 +121,6 @@ const columns = [
   },
 ];
 
-// Table columns configuration for Siasatan tab
-const siasatanColumns = [
-  {
-    key: "no",
-    label: "No",
-    sortable: true,
-  },
-  {
-    key: "pemohon",
-    label: "Pemohon",
-    sortable: true,
-  },
-  {
-    key: "kariah",
-    label: "Kariah",
-    sortable: true,
-  },
-  {
-    key: "daerah",
-    label: "Daerah",
-    sortable: true,
-  },
-  {
-    key: "bilanganBantuan",
-    label: "Bilangan Bantuan",
-    sortable: true,
-  },
-  {
-    key: "status",
-    label: "Status",
-    sortable: true,
-  },
-  {
-    key: "statusLaluan",
-    label: "Status Laluan Proses",
-    sortable: true,
-  },
-  {
-    key: "noRujukan",
-    label: "No Rujukan",
-    sortable: true,
-  },
-  {
-    key: "tindakan",
-    label: "Tindakan",
-    sortable: false,
-  },
-];
-
-// Options for filters
-const statusOptions = [
-  { label: "Semua Status", value: "" },
-  { label: "Baru", value: "baru" },
-  { label: "Dalam Semakan", value: "dalam_semakan" },
-  { label: "Tidak Lengkap", value: "tidak_lengkap" },
-  { label: "Untuk Siasatan", value: "untuk_siasatan" },
-];
-
 // State
 const searchQuery = ref("");
 const filters = ref({
@@ -221,8 +133,8 @@ const pageSize = ref(10);
 const applications = ref([
   {
     noRujukan: "770319035991",
-    namaPemohon: "Adnan Bin Abu",
-    status: "Baru",
+    namaPemohon: "ADNAN BIN ABU",
+    status: "Menunggu Pengesahan",
     tarikhTerima: "2024-03-20",
     namaPegawai: "Siti binti Ali",
     tindakan: "NAS-2025-0001",
@@ -235,38 +147,14 @@ const applications = ref([
     namaPegawai: "Aminah binti Hassan",
     tindakan: "NAS-2025-0002",
   },
-  {
-    noRujukan: "091108030442",
-    namaPemohon: "NUR QISTINA BINTI ADNAN",
-    status: "Dalam Semakan",
-    tarikhTerima: "2024-03-19",
-    namaPegawai: "Aminah binti Hassan",
-    tindakan: "NAS-2025-0003",
-  },
-]);
-
-// Mock data for Siasatan tab - would be replaced with API call
-const siasatanData = ref([
-  {
-    pemohon: "Ahmad bin Abdullah (800101-01-1234)",
-    kariah: "Masjid Al-Hidayah",
-    daerah: "Kuala Lumpur",
-    bilanganBantuan: 2,
-    status: "Dalam Siasatan",
-    statusLaluan: "Untuk Siasatan",
-    noRujukan: "NAS-2025-0001",
-    tindakan: "siasatan-eoad",
-  },
-  {
-    pemohon: "Siti binti Hassan (850505-05-5678)",
-    kariah: "Masjid Al-Ikhlas",
-    daerah: "Selangor",
-    bilanganBantuan: 1,
-    status: "Selesai Siasatan",
-    statusLaluan: "Untuk Kelulusan",
-    noRujukan: "NAS-2025-0002",
-    tindakan: "siasatan-eoad",
-  },
+  // {
+  //   noRujukan: "091108030442",
+  //   namaPemohon: "NUR QISTINA BINTI ADNAN",
+  //   status: "Dalam Semakan",
+  //   tarikhTerima: "2024-03-19",
+  //   namaPegawai: "Aminah binti Hassan",
+  //   tindakan: "NAS-2025-0003",
+  // },
 ]);
 
 // Computed properties for Profiling tab
@@ -288,12 +176,12 @@ const filteredApplications = computed(() => {
     result = result.filter((app) => app.status === filters.value.status);
   }
 
-  // Strip hidden fields so table won't render their columns
-  result = result.map(({ noRujukan, namaPemohon, status, tindakan }) => ({
-    noRujukan,
-    namaPemohon,
-    status,
-    tindakan,
+  // Keep all fields for the table to work properly
+  result = result.map((app) => ({
+    noRujukan: app.noRujukan,
+    namaPemohon: app.namaPemohon,
+    status: app.status,
+    tindakan: app.noRujukan, // Use noRujukan as tindakan for the button
   }));
 
   // Apply pagination
@@ -306,39 +194,8 @@ const totalApplications = computed(() => {
   return applications.value.length;
 });
 
-// Computed properties for Siasatan tab
-const filteredSiasatanData = computed(() => {
-  let result = [...siasatanData.value];
-
-  // Apply search
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    result = result.filter(
-      (app) =>
-        app.noRujukan.toLowerCase().includes(query) ||
-        app.pemohon.toLowerCase().includes(query) ||
-        app.kariah.toLowerCase().includes(query) ||
-        app.daerah.toLowerCase().includes(query)
-    );
-  }
-
-  // Apply filters
-  if (filters.value.status) {
-    result = result.filter((app) => app.status === filters.value.status);
-  }
-
-  // Apply pagination
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return result.slice(start, end);
-});
-
-const totalSiasatanData = computed(() => {
-  return siasatanData.value.length;
-});
-
 const totalPages = computed(() => {
-  return Math.ceil(totalSiasatanData.value / pageSize.value);
+  return Math.ceil(totalApplications.value / pageSize.value);
 });
 
 const paginationStart = computed(() => {
@@ -346,47 +203,32 @@ const paginationStart = computed(() => {
 });
 
 const paginationEnd = computed(() => {
-  return Math.min(currentPage.value * pageSize.value, totalSiasatanData.value);
+  return Math.min(currentPage.value * pageSize.value, totalApplications.value);
 });
 
-// Methods
-const handleViewDetails = (noRujukan) => {
-  navigateTo(`/BF-BTN/PB/senarai/${noRujukan}`);
-};
-
-const handleReview = (noRujukan) => {
-  console.log(noRujukan);
-  navigateTo(`/BF-PRF/AS/FR/07_01`);
-};
-
-const handleAssignTask = (noRujukan) => {
-  // Handle task assignment - would be replaced with actual implementation
-  console.log(`Assigning task for: ${noRujukan}`);
-  // You can add navigation or modal logic here
+const handleReview = (status) => {
+  if (status === "Menunggu Pengesahan") {
+    navigateTo(`/BF-PRF/AS/FR/07_01`);
+  } else if (status === "Dalam Semakan") {
+    navigateTo(`/BF-PRF/AS/FR/07_01_copy`);
+  }
+  // }else if(status === "Tidak Lengkap"){
+  //   navigateTo(`/BF-PRF/AS/FR/07_01`);
+  // }else if(status === "Untuk Siasatan"){
+  //   navigateTo(`/BF-PRF/AS/FR/07_01`);
+  // }
 };
 
 const getStatusVariant = (status) => {
   const variants = {
     baru: "info",
-    dalam_semakan: "warning",
-    tidak_lengkap: "danger",
-    untuk_siasatan: "secondary",
+    "dalam semakan": "warning",
+    "tidak lengkap": "danger",
+    "untuk siasatan": "secondary",
     "dalam siasatan": "warning",
     "selesai siasatan": "success",
-    "menunggu siasatan": "info",
-  };
-  return variants[status.toLowerCase()] || "default";
-};
-
-const getLaluanStatusVariant = (status) => {
-  const variants = {
-    "untuk semakan": "info",
-    "untuk pengesahan lawatan": "warning",
-    "untuk siasatan": "secondary",
-    "untuk kelulusan": "success",
+   "menunggu pengesahan": "info",
   };
   return variants[status.toLowerCase()] || "default";
 };
 </script>
-
-<style lang="scss" scoped></style>

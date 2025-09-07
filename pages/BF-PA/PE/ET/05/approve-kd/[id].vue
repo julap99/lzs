@@ -12,8 +12,7 @@
     <div class="mb-6">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <Icon name="ic:baseline-gavel" class="w-6 h-6 mr-3 text-purple-600" />
+          <h1 class="text-2xl font-bold text-gray-900">
             Kelulusan Akhir Elaun Tahunan
           </h1>
           <p class="text-gray-600 mt-1">
@@ -133,61 +132,71 @@
       </template>
     </rs-card>
 
-    <!-- Full Approval Timeline Card -->
-    <rs-card class="mb-6">
-      <template #header>
-        <h3 class="text-lg font-semibold text-gray-900">Aliran Kerja Kelulusan Lengkap</h3>
-      </template>
-      <template #body>
-        <div class="p-6">
-          <div class="space-y-4">
-            <!-- Eksekutif -->
-            <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
-              <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
-                  <Icon name="ic:baseline-person" class="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Eksekutif</p>
-                  <p class="text-sm text-gray-600">Dibuat & Dihantar</p>
-                </div>
+    <!-- Review History -->
+    <div class="mb-6 p-6 border border-gray-200 rounded-lg">
+      <h3 class="text-lg font-semibold mb-4 text-gray-900">
+        Sejarah Semakan
+      </h3>
+      
+      <div class="space-y-4">
+        <!-- Eksekutif -->
+        <div class="flex items-start justify-between p-4">
+          <div class="flex items-start">
+            <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+            <div class="flex-1">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="font-semibold text-gray-900">Eksekutif</h4>
+                <rs-badge variant="success">Selesai</rs-badge>
               </div>
-              <rs-badge variant="success" size="sm">Selesai</rs-badge>
-            </div>
-            
-            <!-- Ketua Jabatan -->
-            <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
-              <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
-                  <Icon name="ic:baseline-check-circle" class="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Ketua Jabatan</p>
-                  <p class="text-sm text-gray-600">
-                    {{ excessAmount > 0 ? 'Pengesahan (Selesai)' : 'Kelulusan (Selesai)' }}
-                  </p>
-                </div>
+              <p class="text-sm text-gray-700 mb-2">Sokongan eksekutif</p>
+              <div class="text-xs text-gray-600 space-y-1">
+                <p><strong>Disemak oleh:</strong> Ahmad bin Abdullah</p>
+                <p><strong>Tarikh:</strong> 15 Jan 2024</p>
+                <p><strong>Catatan:</strong> Permohonan elaun tahunan telah disemak dan disokong.</p>
               </div>
-              <rs-badge variant="success" size="sm">Selesai</rs-badge>
-            </div>
-            
-            <!-- Ketua Divisyen (Current) -->
-            <div class="flex items-center justify-between p-3 bg-purple-50 border border-purple-200 rounded-lg">
-              <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center mr-3">
-                  <Icon name="ic:baseline-gavel" class="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Ketua Divisyen</p>
-                  <p class="text-sm text-gray-600">Kelulusan Akhir (Sedang Proses)</p>
-                </div>
-              </div>
-              <rs-badge variant="warning" size="sm">Sedang Proses</rs-badge>
             </div>
           </div>
         </div>
-      </template>
-    </rs-card>
+
+        <!-- Ketua Jabatan -->
+        <div class="flex items-start justify-between p-4">
+          <div class="flex items-start">
+            <Icon name="ph:thumbs-up" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
+            <div class="flex-1">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="font-semibold text-gray-900">Ketua Jabatan</h4>
+                <rs-badge variant="success">Selesai</rs-badge>
+              </div>
+              <p class="text-sm text-gray-700 mb-2">{{ excessAmount > 0 ? 'Pengesahan ketua jabatan' : 'Kelulusan ketua jabatan' }}</p>
+              <div class="text-xs text-gray-600 space-y-1">
+                <p><strong>Disemak oleh:</strong> Mohd Zain bin Ismail</p>
+                <p><strong>Tarikh:</strong> 20 Jan 2024</p>
+                <p><strong>Catatan:</strong> {{ excessAmount > 0 ? 'Elaun melebihi bajet telah disahkan dan diluluskan.' : 'Permohonan elaun telah disemak dan diluluskan.' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ketua Divisyen Review (Current) -->
+        <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+          <div class="flex items-start">
+            <Icon name="ph:check-circle" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
+            <div class="flex-1">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="font-semibold text-orange-900">Ketua Divisyen</h4>
+                <rs-badge variant="warning">Dalam Proses</rs-badge>
+              </div>
+              <p class="text-sm text-orange-700 mb-2">Kelulusan akhir</p>
+              <div class="text-xs text-orange-600 space-y-1">
+                <p><strong>Disemak oleh:</strong> -</p>
+                <p><strong>Tarikh:</strong> -</p>
+                <p><strong>Status:</strong> Menunggu keputusan kelulusan akhir</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Previous Approvals Card -->
     <rs-card v-if="previousApprovals.length > 0" class="mb-6">
@@ -478,7 +487,7 @@ const finalApprovalData = ref({
 const typeOptions = {
   'ET-KPAK': 'Elaun Tahunan KPAK',
   'ET-KPAF': 'Elaun Tahunan KPAF', 
-  'ET-ANUG': 'Anugerah Penolong Amil',
+  'ET-KHAS': 'Elaun Khas - 48 Aktiviti/Tahun',
   'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
   'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
   'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',

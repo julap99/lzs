@@ -703,7 +703,6 @@ const positionsList = ref([
     rujukan: "KJ-2024-001",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
     namaJawatan: "Ketua Penolong Amil",
-    kodSingkatan: "KPA",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
     tindakan: 1
@@ -711,8 +710,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-002",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaJawatan: "Penolong Ketua Amil",
-    kodSingkatan: "PKA",
+    namaJawatan: "Penolong Amil",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
     tindakan: 2
@@ -720,8 +718,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-003",
     kategoriPenolongAmil: "Penolong Amil Padi",
-    namaJawatan: "Ketua Penolong Amil Padi",
-    kodSingkatan: "KPAP",
+    namaJawatan: "Ketua Penolong Amil",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
     tindakan: 3
@@ -729,8 +726,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-004",
     kategoriPenolongAmil: "Penolong Amil Padi",
-    namaJawatan: "Penolong Amil Eksekutif",
-    kodSingkatan: "PAE",
+    namaJawatan: "Penolong Amil",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
     tindakan: 4
@@ -738,8 +734,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-005",
     kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaJawatan: "Ketua Penolong Amil Kariah",
-    kodSingkatan: "KPAK",
+    namaJawatan: "Ketua Penolong Amil",
     status: "Menunggu Pengesahan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 5
@@ -747,8 +742,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-006",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    namaJawatan: "Penolong Amil Koordinator",
-    kodSingkatan: "PAC",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 6
@@ -756,8 +750,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-007",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    namaJawatan: "Penolong Amil Pembantu",
-    kodSingkatan: "PAP",
+    namaJawatan: "Penolong Amil",
     status: "Tidak Aktif",
     tarikhKuatkuasa: "01-01-2023",
     tindakan: 7
@@ -765,8 +758,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-008",
     kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaJawatan: "Penolong Amil Pentadbir",
-    kodSingkatan: "PAPT",
+    namaJawatan: "Penolong Amil",
     status: "Tidak Aktif",
     tarikhKuatkuasa: "01-01-2023",
     tindakan: 8
@@ -775,8 +767,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-009",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaJawatan: "Penolong Amil Khas",
-    kodSingkatan: "PAK",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 9
@@ -784,8 +775,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-010",
     kategoriPenolongAmil: "Penolong Amil Padi",
-    namaJawatan: "Penolong Amil Senior",
-    kodSingkatan: "PAS",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 10
@@ -793,8 +783,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-011",
     kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaJawatan: "Penolong Amil Junior",
-    kodSingkatan: "PAJ",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 11
@@ -802,8 +791,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-012",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    namaJawatan: "Penolong Amil Trainee",
-    kodSingkatan: "PAT",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 12
@@ -811,8 +799,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-013",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaJawatan: "Penolong Amil Supervisor",
-    kodSingkatan: "PASV",
+    namaJawatan: "Penolong Amil",
     status: "Ditolak Ketua Jabatan",
     tarikhKuatkuasa: "", // Empty - rejected
     tindakan: 13
@@ -836,11 +823,7 @@ const tableColumns = [
     name: 'Nama Jawatan',
     sortable: true,
   },
-  {
-    key: 'kodSingkatan',
-    name: 'Kod Singkatan',
-    sortable: true,
-  },
+
   {
     key: 'tarikhKuatkuasa',
     name: 'Tarikh Kuatkuasa',
@@ -958,8 +941,7 @@ const getTableDataByStatus = (statuses) => {
     result = result.filter(position => 
       position.rujukan.toLowerCase().includes(query) ||
       position.kategoriPenolongAmil.toLowerCase().includes(query) ||
-      position.namaJawatan.toLowerCase().includes(query) ||
-      position.kodSingkatan.toLowerCase().includes(query)
+      position.namaJawatan.toLowerCase().includes(query) 
     );
   }
   

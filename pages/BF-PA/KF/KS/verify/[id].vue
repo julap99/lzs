@@ -284,7 +284,7 @@
             class="flex items-center"
           >
             <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
-            Sahkan
+            Lulus
           </rs-button>
         </div>
       </div>

@@ -49,7 +49,7 @@
        </template>
      </rs-card>
 
-    <!-- PAK Quick Stats - Focus on Agihan -->
+    <!-- PAK Quick Stats - Focus on Agihan 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <rs-card>
         <template #body>
@@ -90,7 +90,7 @@
           </div>
         </template>
       </rs-card>
-    </div>
+    </div>-->
 
     <!-- Senarai Tugasan Table -->
     <rs-card class="mb-6">

@@ -703,7 +703,7 @@ const sessionsList = ref([
   {
     rujukan: "KS-2024-001",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaSesi: "Sesi 2025",
+    namaSesi: "2021-2025",
     tarikhMula: "01-01-2025",
     tarikhTamat: "31-12-2025",
     tarikhKuatkuasa: "01-01-2025",
@@ -713,7 +713,7 @@ const sessionsList = ref([
   {
     rujukan: "KS-2024-002",
     kategoriPenolongAmil: "Penolong Amil Padi",
-    namaSesi: "Sesi 2024",
+    namaSesi: "2021-2025",
     tarikhMula: "01-01-2024",
     tarikhTamat: "31-12-2024",
     tarikhKuatkuasa: "01-01-2024",
@@ -723,7 +723,7 @@ const sessionsList = ref([
   {
     rujukan: "KS-2024-003",
     kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaSesi: "Sesi 2023",
+    namaSesi: "2021-2025",
     tarikhMula: "01-01-2023",
     tarikhTamat: "31-12-2023",
     tarikhKuatkuasa: "01-01-2023",
@@ -733,63 +733,24 @@ const sessionsList = ref([
   {
     rujukan: "KS-2024-004",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    namaSesi: "Sesi 2026",
-    tarikhMula: "01-01-2026",
-    tarikhTamat: "31-12-2026",
+    namaSesi: "2021-2025",
+    tarikhMula: "01-01-2025",
+    tarikhTamat: "31-12-2025",
     tarikhKuatkuasa: "",
     status: "Menunggu Kelulusan",
     tindakan: 4
   },
   {
     rujukan: "KS-2024-005",
-    kategoriPenolongAmil: "Penolong Amil Wakaf",
-    namaSesi: "Sesi 2022",
+    kategoriPenolongAmil: "Penolong Amil Kariah",
+    namaSesi: "2021-2025",
     tarikhMula: "01-01-2022",
     tarikhTamat: "31-12-2022",
     tarikhKuatkuasa: "01-01-2022",
     status: "Tidak Aktif",
     tindakan: 5
   },
-  {
-    rujukan: "KS-2024-006",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaSesi: "Sesi 2027",
-    tarikhMula: "01-01-2027",
-    tarikhTamat: "31-12-2027",
-    tarikhKuatkuasa: "",
-    status: "Menunggu Pengesahan",
-    tindakan: 6
-  },
-  {
-    rujukan: "KS-2024-007",
-    kategoriPenolongAmil: "Penolong Amil Padi",
-    namaSesi: "Sesi 2028",
-    tarikhMula: "01-01-2028",
-    tarikhTamat: "31-12-2028",
-    tarikhKuatkuasa: "",
-    status: "Menunggu Pengesahan",
-    tindakan: 7
-  },
-  {
-    rujukan: "KS-2024-008",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaSesi: "Sesi 2021",
-    tarikhMula: "01-01-2021",
-    tarikhTamat: "31-12-2021",
-    tarikhKuatkuasa: "01-01-2021",
-    status: "Ditolak Ketua Jabatan",
-    tindakan: 8
-  },
-  {
-    rujukan: "KS-2024-009",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaSesi: "Sesi 2023 Khas",
-    tarikhMula: "01-07-2023",
-    tarikhTamat: "31-12-2023",
-    tarikhKuatkuasa: "",
-    status: "Ditolak Ketua Jabatan",
-    tindakan: 9
-  }
+  
 ]);
 
 // Table columns

@@ -288,7 +288,7 @@
             :disabled="!isFormValid"
           >
             <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
-            Sahkan
+            lulus
           </rs-button>
         </div>
       </div>

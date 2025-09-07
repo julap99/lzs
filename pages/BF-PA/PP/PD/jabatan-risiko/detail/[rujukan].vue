@@ -295,21 +295,21 @@
                       <input
                         v-model="screeningForm.statusSaringan"
                         type="radio"
-                        value="Lulus"
+                        value="Disaring"
                         class="mr-2 text-green-600 focus:ring-green-500"
                         required
                       />
-                      <span class="text-sm font-medium text-gray-900">Lulus</span>
+                      <span class="text-sm font-medium text-gray-900">Lulus Saringan</span>
                     </label>
                     <label class="flex items-center">
                       <input
                         v-model="screeningForm.statusSaringan"
                         type="radio"
-                        value="Tidak Lulus"
+                        value="Tidak Disaring"
                         class="mr-2 text-red-600 focus:ring-red-500"
                         required
                       />
-                      <span class="text-sm font-medium text-gray-900">Tidak Lulus</span>
+                      <span class="text-sm font-medium text-gray-900">Tidak Lulus Saringan</span>
                     </label>
                   </div>
                   <div v-if="!screeningForm.statusSaringan" class="mt-1 text-sm text-red-600">
@@ -551,27 +551,32 @@ const isFormValid = computed(() => {
 // Mock application data based on RTMF requirements
 const application = ref({
   rujukan: route.params.rujukan,
-  noKP: "901231012345",
-  nama: "Ahmad bin Abdullah",
+  noKP: "870625098765",
+  nama: "Ismail bin Hassan",
   jantina: "Lelaki",
   bangsa: "Melayu",
   agama: "Islam",
-  emel: "ahmad.abdullah@email.com",
-  telefon: "0123456789",
-  alamatRumah: "No. 123, Jalan Utama, Taman Seri Indah",
-  poskod: "50000",
-  bandar: "Kuala Lumpur",
-  negeri: "Kuala Lumpur",
-  kategoriPenolongAmil: "Fitrah",
-  jawatan: "Penolong Amil Fitrah",
-  institusiKariah: "Masjid Wilayah Persekutuan",
+  emel: "ismail.hassan@email.com",
+  telefon: "0127789901",
+
+  // Alamat: pecahan (alamatRumah hanya baris jalan/taman, poskod/bandar/negeri asing)
+  alamatRumah: "No. 12, Jalan Semenyih, Taman Kajang Jaya",
+  poskod: "43000",
+  bandar: "Kajang",
+  negeri: "Selangor",
+
+  kategoriPenolongAmil: "Komuniti",
+  jawatan: "Penolong Amil Komuniti",
+  institusiKariah: "Masjid Al-Amin",
   sesiPerkhidmatan: "Sesi 1",
+
   statusPendaftaran: "Dihantar",
   statusLantikan: "Menunggu",
-  salinanKadPengenalan: "salinan_kp_ahmad.pdf",
-  suratSokongan: "surat_sokongan_ahmad.pdf",
+
+  salinanKadPengenalan: "salinan_kp_ismail.pdf",
+  suratSokongan: "surat_sokongan_ismail.pdf",
   dokumenLain: null,
-  uploadDate: "15-03-2024",
+  uploadDate: "12-01-2024",
   timeline: [
     {
       action: "Permohonan Dihantar",

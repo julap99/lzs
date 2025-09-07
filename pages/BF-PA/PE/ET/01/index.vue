@@ -227,7 +227,7 @@ const mockCounts = {
   2024: {
     'ET-KPAK': 7,
     'ET-KPAF': 4,
-    'ET-ANUG': 6,
+    'ET-KHAS': 6,
     'ANUG-KPAK': 8,
     'ANUG-PAK': 7,
     'ANUG-KPAF': 5,
@@ -238,7 +238,7 @@ const mockCounts = {
   2025: {
     'ET-KPAK': 7,
     'ET-KPAF': 4,
-    'ET-ANUG': 6,
+    'ET-KHAS': 6,
     'ANUG-KPAK': 8,
     'ANUG-PAK': 7,
     'ANUG-KPAF': 5,
@@ -252,7 +252,7 @@ const typeOptions = [
   { label: 'Pilih jenis elaun…', value: '' },
   { label: 'Elaun Tahunan KPAK', value: 'ET-KPAK' },
   { label: 'Elaun Tahunan KPAF', value: 'ET-KPAF' },
-  { label: 'Anugerah Penolong Amil', value: 'ET-ANUG' },
+  { label: 'Elaun Khas - 48 Aktiviti/Tahun', value: 'ET-KHAS' },
   { label: 'Ketua Penolong Amil Kariah (KPAK) terbaik', value: 'ANUG-KPAK' },
   { label: 'Penolong Amil Kariah (PAK) terbaik', value: 'ANUG-PAK' },
   { label: 'Ketua Penolong Amil Fitrah (KPAF) terbaik', value: 'ANUG-KPAF' },
