@@ -517,10 +517,16 @@ const handleHantar = () => {
       console.log('Toast not available, using fallback');
       alert('Data berjaya dihantar kepada pelulus');
     }
+    // Redirect to HK/01_01 after brief delay
+    setTimeout(() => {
+      navigateTo('/BF-PRF/KF/HK/01_01');
+    }, 1000);
   } catch (error) {
     console.error('Error showing notification:', error);
     // Fallback notification
     alert('Data berjaya dihantar kepada pelulus');
+    // Redirect even if toast fails
+    navigateTo('/BF-PRF/KF/HK/01_01');
   }
 };
 
