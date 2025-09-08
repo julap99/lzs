@@ -255,7 +255,6 @@
               validation="required"
               placeholder="Pilih bandar"
               :options="[
-                'Kuala Lumpur',
                 'Shah Alam',
                 'Petaling Jaya',
                 'Subang Jaya',
@@ -264,22 +263,30 @@
                 'Cheras',
                 'Kajang',
                 'Bangi',
-                'Putrajaya',
-                'Cyberjaya',
                 'Puchong',
                 'Selayang',
                 'Gombak',
                 'Rawang',
-                'Johor Bahru',
-                'Skudai',
-                'Iskandar Puteri',
-                'Kulai',
-                'Batu Pahat',
-                'Muar',
-                'Kluang',
-                'Pontian',
-                'Segamat',
-                'Yong Peng',
+                'Sungai Buloh',
+                'Batu Caves',
+                'Kuala Selangor',
+                'Bestari Jaya',
+                'Ijok',
+                'Tanjong Karang',
+                'Sabak Bernam',
+                'Sungai Besar',
+                'Kuala Kubu Bharu',
+                'Batang Kali',
+                'Serendah',
+                'Hulu Bernam',
+                'Semenyih',
+                'Beranang',
+                'Sepang',
+                'Cyberjaya',
+                'Dengkil',
+                'Banting',
+                'Teluk Panglima Garang',
+                'Port Klang'
               ]"
               v-model="formData.city"
             />
@@ -694,7 +701,8 @@ const showZoneForOthers = computed(() => {
 });
 
 const showHQDropdown = computed(() => {
-  return formData.value.structure === 'cawangan';
+  return formData.value.structure === 'cawangan' && 
+         !['masjid', 'surau'].includes(formData.value.organizationType);
 });
 
 const formData = ref({
