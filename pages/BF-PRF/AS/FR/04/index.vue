@@ -61,13 +61,13 @@
 
             <div class="mt-6">
               <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="font-medium mb-2">
+                <h3 class="text-xl font-semibold">
                   Hasil Pengiraan Had Kifayah
                 </h3>
                 <div class="text-lg font-semibold">
                   
                   <!-- Household Breakdown Table -->
-                  <div class="overflow-x-auto mb-2">
+                  <div class="overflow-x-auto mb-2 text-sm">
                     <rs-table 
                       :field="tableFields" 
                       :data="tableData" 
@@ -78,21 +78,21 @@
                         hover: true
                       }"
                       basic
-                      class="mb-2 border border-gray-300"
+                      class="mb-2 border border-gray-300 text-sm"
                     >
                     </rs-table>
                     
                     <!-- Footer row as separate div since rs-table might not support footer slot -->
-                    <div class="bg-blue-100 font-bold p-2 text-end border border-blue-300">
+                    <div class="bg-blue-100 font-bold p-2 text-end border border-blue-300 text-sm">
                       <div class="mr-20">
                       <span>Jumlah Had Kifayah: RM1968.00</span>
                     </div>
                     </div>
                     
-                  <div class="mb-2">Baki Pendapatan: Jumlah Pendapatan Keluarga - Jumlah Had Kifayah = 1000 - 1968 = -968</div>
-                  <div class="mb-2">Peratusan Perbezaan: (Pendapatan Isi Rumah / Jumlah Had Kifayah) × 100 = (1000 / 1968) × 100 = 50.81% </div>
-                  <div class="mb-2">Kategori Keluarga Asnaf: Miskin </div>
-                  <div class="mb-4">Kategori Asnaf: Miskin</div>
+                  <div class="mb-2 text-sm">Baki Pendapatan: Jumlah Pendapatan Keluarga - Jumlah Had Kifayah = 1000 - 1968 = -968</div>
+                  <div class="mb-2 text-sm">Peratusan Perbezaan: (Pendapatan Isi Rumah / Jumlah Had Kifayah) × 100 = (1000 / 1968) × 100 = 50.81% </div>
+                  <div class="mb-2 text-sm">Kategori Keluarga Asnaf: Miskin </div>
+                  <div class="mb-4 text-sm">Kategori Asnaf: Miskin</div>
 
                   </div>
                 </div>

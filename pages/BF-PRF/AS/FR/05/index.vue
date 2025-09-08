@@ -10,7 +10,7 @@
 
     <div v-for="(member, idx) in family" :key="member.ic" class="mb-8 ">
       <div class="mr-4">
-        <h4 class="text-md font-bold text-blue-700 mb-2">
+        <h4 class="text-lg font-semibold text-blue-800 mb-2">
         {{ member.nama }} ({{ member.ic }})
       </h4>
       </div>
