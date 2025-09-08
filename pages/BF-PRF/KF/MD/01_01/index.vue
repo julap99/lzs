@@ -18,18 +18,13 @@
       </template>
 
       <template #body>
-        <!-- Debug info - remove in production -->
-        <div class="mb-4 p-2 bg-gray-100 rounded">
-          <p>Jumlah Konfigurasi: {{ kifayahLimits.length }}</p>
-          <p>Kelulusan Menunggu: {{ pendingApprovalCount }}</p>
-        </div>
 
-        <!-- Updated Table Section with 8 columns -->
+        <!-- Table Section with 5 columns -->
         <rs-table
           class="mt-4"
           :key="tableKey"
           :data="kifayahLimits"
-          :field="['idHadKifayah','namaHadKifayah','kadarBerbayar','tarikhMula','status','tindakan']"
+          :field="['nama','keterangan','tarikhMula','status','tindakan']"
           :pageSize="10"
           :showNoColumn="true"
           :options="{
@@ -37,9 +32,8 @@
             hover: true,
           }"
         >
-          <template v-slot:idHadKifayah="data">{{ data.value.idHadKifayah }}</template>
-          <template v-slot:namaHadKifayah="data">{{ data.value.namaHadKifayah }}</template>
-          <template v-slot:kadarBerbayar="data">RM {{ formatCurrency(data.value.kadarBerbayar) }}</template>
+          <template v-slot:nama="data">{{ data.value.namaHadKifayah }}</template>
+          <template v-slot:keterangan="data">{{ data.value.keterangan || 'N/A' }}</template>
           <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
           <template v-slot:status="data">
             <rs-badge :variant="getStatusVariant(data.value.status)">
@@ -51,7 +45,7 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PRF/KF/HK/01_02?id=${data.value.idHadKifayah}`)"
+              @click="navigateTo(`/BF-PRF/KF/MD/01_02?id=${data.value.idHadKifayah}`)"
               >Kemaskini
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -59,7 +53,7 @@
               variant="secondary"
               size="sm"
               class="!px-2 !py-1 ml-2"
-              @click="navigateTo({ path: '/BF-PRF/KF/HK/01_02/01_02_lihat', query: { id: data.value.idHadKifayah } })"
+              @click="navigateTo({ path: '/BF-PRF/KF/HK/02_02', query: { id: data.value.idHadKifayah } })"
               >Lihat
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -107,6 +101,7 @@ const defaultData = [
     tarikhMula: "2025-01-01",
     status: "Aktif",
     tindakan: 1,
+    keterangan: "Had kifayah untuk ketua keluarga",
   },
 ];
 
@@ -156,12 +151,6 @@ const loadData = () => {
   }
 };
 
-// Computed property to count pending approval items
-const pendingApprovalCount = computed(() => {
-  return kifayahLimits.value.filter(
-    (item) => item.status === "Menunggu Kelulusan"
-  ).length;
-});
 
 // Make sure the table refreshes when component mounts
 onMounted(() => {
@@ -179,7 +168,6 @@ const refreshTable = () => {
   nextTick(() => {
     tableKey.value++; // Force table to re-render
     console.log("Table refreshed, records:", kifayahLimits.value.length);
-    console.log("Pending approval:", pendingApprovalCount.value);
     console.log("Sample data:", kifayahLimits.value[0]);
   });
 };

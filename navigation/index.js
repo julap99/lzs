@@ -698,7 +698,7 @@ export default [
               {
                 title: "Pelulus",
                 icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-PRF/KF/HK/01_02",
+                path: "/BF-PRF/KF/HK/02_01",
                 child: [],
                 meta: {},
               },
@@ -1675,7 +1675,7 @@ export default [
       },
       {
         title: "Carian Organisasi",
-        icon: "heroicons:building-office",
+        icon: "iconamoon:component-fill",
         path: "/BF-PRF/OR/PP/01",
         meta: {
           auth: {
@@ -1685,7 +1685,7 @@ export default [
       },
       {
         title: "Carian Cawangan",
-        icon: "heroicons:building-office-2",
+        icon: "iconamoon:component-fill",
         path: "/BF-PRF/OR/PB/01",
         meta: {
           auth: {
@@ -1695,7 +1695,7 @@ export default [
       },
       {
         title: "Carian Recipient",
-        icon: "heroicons:user-group",
+        icon: "iconamoon:component-fill",
         path: "/BF-PRF/TP/PP/01",
         meta: {
           auth: {
