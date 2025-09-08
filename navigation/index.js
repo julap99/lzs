@@ -1302,6 +1302,13 @@ export default [
                           meta: {},
                         },
                         {
+                          title: "Senarai Tuntutan (Asnaf)",
+                          icon: "iconamoon:arrow-right-2-duotone",
+                          path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
+                          child: [],
+                          meta: {},
+                        },
+                        {
                           title: "Mohon Tuntutan (Asnaf)",
                           icon: "iconamoon:arrow-right-2-duotone",
                           path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf",

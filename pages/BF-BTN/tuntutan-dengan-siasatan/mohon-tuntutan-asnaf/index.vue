@@ -1,6 +1,9 @@
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
+    <div>
+      <h3>Senarai Bantuan untuk Tuntutan</h3>
+    </div>
 
     <!-- Import and use the TableComponent here -->
     <TableComponent />

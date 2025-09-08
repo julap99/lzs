@@ -57,6 +57,11 @@
             <div>{{ text }}</div>
           </template>
 
+          <template v-slot:pemohon="{ text }">
+            <div>{{ text || '-' }}</div>
+          </template>
+
+
           <template v-slot:namaPemohon="{ text }">
             <div>{{ text }}</div>
           </template>
@@ -95,7 +100,6 @@
               </span>
             </rs-button>
           </template>
-
 
 
 
@@ -180,14 +184,14 @@ const breadcrumb = ref([
 
 // Table columns configuration
 const columns = [
-  { key: 'no', label: 'No.' }, // add this if you want to show your computed "no"
+  { key: 'no', label: 'No.' },
   { key: 'noBantuan', label: 'No. Bantuan', sortable: true },
   { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
+  { key: 'pemohon', label: 'Pemohon', sortable: true },              // NEW (Asnaf/Third Party/etc)
   { key: 'namaPemohon', label: 'Nama Pemohon', sortable: true },
   { key: 'noKPPemohon', label: 'No. KP Pemohon', sortable: true },
-  { key: 'namaPenerima', label: 'Nama Penerima', sortable: true },
-  { key: 'tarikhMohon', label: 'Tarikh Mohon', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
+  { key: 'tarikhMohon', label: 'Tarikh Mohon', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
 
@@ -210,6 +214,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001481',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'MOHD FARHAN BIN ALI',
     noKPPemohon: '940511146045',
     namaPenerima: 'KIDDOS PLAY LAB REHAB CENTRE',
@@ -220,6 +225,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001482',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'ALI BIN MOHAMED',
     noKPPemohon: '850610146523',
     namaPenerima: 'SCHOOL OF EXCELLENCE',
@@ -230,6 +236,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001483',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'FATIMAH BINTI AHMAD',
     noKPPemohon: '920511146555',
     namaPenerima: 'LEARNING CENTER OF ASIA',
@@ -240,6 +247,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001484',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'ZAINAB BINTI MOHD',
     noKPPemohon: '940211146012',
     namaPenerima: 'PUSAT PENDIDIKAN MALAYSIA',
@@ -250,6 +258,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001485',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'ABDUL RAZAK BIN ABU',
     noKPPemohon: '940801146089',
     namaPenerima: 'SCHOOL OF INTEGRATED LEARNING',
@@ -260,6 +269,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001486',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'MOHAMAD FIRDAUS BIN ZULKIFLI',
     noKPPemohon: '890509146211',
     namaPenerima: 'KIDS EDUCATION CENTRE',
@@ -270,6 +280,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001487',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'AHMAD NASRUL BIN ZAHARI',
     noKPPemohon: '880210146321',
     namaPenerima: 'HARMONY SCHOOL OF LEARNING',
@@ -280,6 +291,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001488',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'SARAH BINTI ABDULLAH',
     noKPPemohon: '920708146788',
     namaPenerima: 'LEARNING ADVANCEMENT SCHOOL',
@@ -290,6 +302,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001489',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'FATIMAH BINTI RAZAK',
     noKPPemohon: '880311146134',
     namaPenerima: 'PUSAT PENDIDIKAN KUALA LUMPUR',
@@ -300,6 +313,7 @@ const bantuanList = ref([
   {
     noBantuan: 'APP-2025-001490',
     maklumatBantuan: '(HQ)PE<BAngunan Pendidikan OKU',
+    pemohon: 'Asnaf',
     namaPemohon: 'MOHD AZRUL BIN ISMAIL',
     noKPPemohon: '950211146232',
     namaPenerima: 'SCHOOL OF VISIONARY EDUCATION',
@@ -312,24 +326,26 @@ const bantuanList = ref([
 
 // Computed properties
 const filteredBantuan = computed(() => {
-  let filtered = [...bantuanList.value];
+  // Start with ONLY eligible bantuan
+  let base = bantuanList.value.filter(isEligibleForDisplay);
 
+  // Search (optional)
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(item => 
-      item.noBantuan.toLowerCase().includes(query) ||
-      item.namaPemohon.toLowerCase().includes(query)
+    const q = searchQuery.value.toLowerCase();
+    base = base.filter(item =>
+      item.noBantuan.toLowerCase().includes(q) ||
+      (item.namaPemohon || '').toLowerCase().includes(q)
     );
   }
 
+  // Extra filter (status dropdown) if you still want it usable
   if (filters.value.status) {
-    filtered = filtered.filter(item => 
-      item.status === filters.value.status
-    );
+    base = base.filter(item => normalizeStatus(item.status) === normalizeStatus(filters.value.status));
   }
 
-  return filtered;
+  return base;
 });
+
 
 const totalBantuan = computed(() => filteredBantuan.value.length);
 const totalPages = computed(() => Math.ceil(totalBantuan.value / pageSize.value));
@@ -346,6 +362,61 @@ const tableDataWithNo = computed(() =>
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('ms-MY');
 };
+
+// --- Eligibility helpers ---
+
+// Treat many shapes safely (fallbacks).
+const getNumber = (v) => Number.isFinite(Number(v)) ? Number(v) : 0;
+
+const isStatusLulus = (s) => {
+  const ns = normalizeStatus(s);
+  return ns === 'LULUS' || ns === 'DILULUSKAN';
+};
+
+// We will read `row.pemohon` (e.g. 'Asnaf'). If you store it under a different key,
+// map it here or at data source.
+const isAsnafRow = (row) => {
+  const val = (row.pemohon ?? row.jenisPemohon ?? '').toString().trim().toUpperCase();
+  return val === 'ASNAF';
+};
+
+// Flexible GL fields reader (support multiple naming schemes)
+const readGL = (row) => ({
+  jumlahDiluluskan: getNumber(row.gl?.jumlahDiluluskan ?? row.jumlahDiluluskan),
+  jumlahDituntut:   getNumber(row.gl?.jumlahDituntut   ?? row.jumlahDituntut),
+  tarikhTamat:      row.gl?.tarikhTamat ?? row.tarikhTamatGL ?? null, // ISO string expected
+});
+
+const hasBalance = (row) => {
+  const { jumlahDiluluskan, jumlahDituntut } = readGL(row);
+  return (jumlahDiluluskan - jumlahDituntut) > 0;
+};
+
+const isGLStillValid = (row) => {
+  const { tarikhTamat } = readGL(row);
+  if (!tarikhTamat) return false;
+  const tamat = new Date(tarikhTamat);
+  if (Number.isNaN(tamat.getTime())) return false;
+  return Date.now() <= tamat.getTime();
+};
+
+const noClaimYet = (row) => {
+  const { jumlahDituntut } = readGL(row);
+  return getNumber(jumlahDituntut) <= 0;
+};
+
+// Core rule:
+// Show ONLY rows where:
+//  - Pemohon = Asnaf
+//  - Status = Lulus/Diluluskan
+//  - And (no existing tuntutan) OR (hasBalance AND GL valid)
+const isEligibleForDisplay = (row) => {
+  if (!isAsnafRow(row)) return false;
+  if (!isStatusLulus(row.status)) return false;
+  if (noClaimYet(row)) return true;
+  return hasBalance(row) && isGLStillValid(row);
+};
+
 
 // Helpers for status badge
 const normalizeStatus = (s) => (s ?? '').toString().trim().toUpperCase();

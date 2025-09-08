@@ -103,7 +103,7 @@
               :field="fieldsGL"
               :columns="columnsGL"
               :showSearch="true"
-              :showFilter="true"
+              :showFilter="false"
               advanced
               :options="{
                 variant: 'default',
@@ -133,11 +133,25 @@
                   {{ text }}
                 </rs-badge>
               </template>
-              <template #tindakan="{ value }">
-                <div class="text-center">
-                  <rs-button @click="openInvoiceModal(value.glNo)">Cipta Invoice</rs-button>
-                </div>
+              <template v-slot:tindakan="{ value }">
+                <rs-button
+                  variant="ghost"
+                  size="sm"
+                  class="group relative p-1 flex flex-col items-center bg-transparent border-0 shadow-none text-blue-600 hover:text-blue-800"
+                  @click="openInvoiceModal(value.glNo)"
+                >
+                  
+                  <Icon name="material-symbols:add" size="24" class="mb-2" />
+
+                  
+                  <span
+                    class="absolute left-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    Cipta Invoice
+                  </span>
+                </rs-button>
               </template>
+
             </RsTable>
 
 
@@ -185,6 +199,52 @@
               </template>
             </RsTable>
           </RsTabItem>
+
+          <RsTabItem title="Maklumat Bayaran">
+            <h3 class="text-lg font-medium mb-2">Maklumat Bayaran</h3>
+            <p class="text-sm text-gray-500 mb-4">
+              Data akan wujud selepas invoice telah dicipta.
+            </p>
+
+            <RsTable
+              :data="paTableData"
+              :field="fieldsPA"
+              :columns="columnsPA"
+              advanced
+              :showSearch="true"
+              :showFilter="true"
+              :options="{
+                variant: 'default',
+                striped: true,
+                bordered: false,
+                borderless: false,
+                hover: true
+              }"
+              :optionsAdvanced="{
+                sortable: true,
+                filterable: true,
+                responsive: true,
+                outsideBorder: true
+              }"
+              :pageSize="10"
+              :showNoColumn="true"
+              :sort="{ column: 'createdDate', direction: 'desc' }"
+            >
+              <template #amaun="{ text }">
+                RM {{ toMYR(text) }}
+              </template>
+
+              <template #status="{ text }">
+                <rs-badge
+                  :variant="text === 'SAH' ? 'success' : text === 'DITOLAK' ? 'danger' : 'warning'"
+                >
+                  {{ text || '—' }}
+                </rs-badge>
+              </template>
+            </RsTable>
+          </RsTabItem>
+
+
 
 
           <RsTabItem title="Dokumen Sokongan">
@@ -473,6 +533,8 @@ function openInvoiceModal(glNo) {
 
 function createInvoice() {
   const gl = guaranteeLetters.value.find(g => g.glNo === selectedGlNo.value) || {}
+
+  // 1) Create Invoice (existing)
   invoices.value.unshift({
     invoiceNo: newInvoice.value.invoiceNo,
     title: newInvoice.value.tajuk,
@@ -483,9 +545,22 @@ function createInvoice() {
     approverStatus: 'PENDING',
     amaun: String(newInvoice.value.amaun ?? ''),
   })
+
+  // 2) Auto-create PA row (NEW)
+  paymentAdvices.value.push({
+    paNo: `PA-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000 + 10000)}`,
+    diNo: gl.diNo || '',
+    createdDate: new Date().toLocaleDateString('ms-MY'),
+    penerimaBayaran: newInvoice.value.penerimaBayaran || gl.penerimaBayaran || formData.value.penerimaBayaran || '',
+    status: 'DRAF', // you can change based on your flow
+    invoiceNo: newInvoice.value.invoiceNo,
+    amaun: Number(newInvoice.value.amaun ?? 0),
+  })
+
   showInvoiceModal.value = false
   $swal.fire({ icon: 'success', title: 'Berjaya!', text: 'Invois telah dicipta', confirmButtonText: 'OK' })
 }
+
 
 function viewDocument(id) {
   console.log('View doc id:', id)
@@ -572,6 +647,43 @@ function populateFormDataFromSession() {
   formData.value.noTelefonPemohon = '012-3456789'
 }
 populateFormDataFromSession()
+
+
+// --- PA (Payment Advice) table schema ---
+const fieldsPA = ['paNo', 'diNo', 'createdDate', 'penerimaBayaran', 'status', 'invoiceNo', 'amaun']
+const columnsPA = [
+  { key: 'paNo', label: 'PA No' },
+  { key: 'diNo', label: 'DI No' },
+  { key: 'createdDate', label: 'Created Date' },
+  { key: 'penerimaBayaran', label: 'Penerima Bayaran' },
+  { key: 'status', label: 'Status' },
+  { key: 'invoiceNo', label: 'Invoice No' },
+  { key: 'amaun', label: 'Amaun (RM)' },
+]
+
+// Holds PA rows generated after invoices are created
+const paymentAdvices = ref([])
+
+// Table data with a final "TOTAL" row
+const paTableData = computed(() => {
+  if (!paymentAdvices.value.length) return []
+  const total = paymentAdvices.value.reduce((sum, r) => {
+    const n = typeof r.amaun === 'number' ? r.amaun : Number(String(r.amaun || '').replace(/,/g, ''))
+    return sum + (isNaN(n) ? 0 : n)
+  }, 0)
+  return [
+    ...paymentAdvices.value,
+    {
+      paNo: 'TOTAL',
+      diNo: '',
+      createdDate: '',
+      penerimaBayaran: '',
+      status: '',
+      invoiceNo: '',
+      amaun: total,
+    },
+  ]
+})
 </script>
 
 <style lang="scss" scoped>
