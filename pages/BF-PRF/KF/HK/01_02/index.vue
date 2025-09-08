@@ -554,7 +554,11 @@ const openEditCategory = (row) => {
   if (Array.isArray(row.indicator)) {
     categoryIndicators.value = [...row.indicator];
   } else if (typeof row.indicator === 'string' && row.indicator.trim() !== '') {
-    categoryIndicators.value = row.indicator.split(',').map(s => s.trim()).filter(Boolean);
+    // Split by semicolon or comma, support "ff1; ff2" or "ff1, ff2"
+    categoryIndicators.value = row.indicator
+      .split(/[;,]+/)
+      .map(s => s.trim())
+      .filter(Boolean);
   } else {
     categoryIndicators.value = [''];
   }
@@ -572,7 +576,7 @@ const saveCategory = () => {
   const indicatorValue = categoryIndicators.value
     .map(v => (v || '').toString().trim())
     .filter(Boolean)
-    .join(', ');
+    .join('; '); // persist using semicolon to match existing data format
   relatedCategories.value[editingCategoryIndex] = { ...categoryForm.value, indicator: indicatorValue };
 
   // Persist to localStorage (preserve other entries for other IDs if present)

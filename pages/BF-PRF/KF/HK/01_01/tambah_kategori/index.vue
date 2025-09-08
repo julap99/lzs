@@ -355,6 +355,29 @@ const kategoriOptions = [
   { label: 'kos perubatan sakit kronik', value: 'kos perubatan sakit kronik' },
 ];
 
+// Persisted kategori options helpers
+const KATEGORI_OPTIONS_KEY = 'kifayahKategoriOptions';
+
+const loadSavedKategoriOptions = () => {
+  try {
+    const raw = localStorage.getItem(KATEGORI_OPTIONS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+  } catch (e) {
+    console.error('Gagal memuat kategori tersimpan:', e);
+  }
+  return [];
+};
+
+const saveKategoriOptions = () => {
+  try {
+    localStorage.setItem(KATEGORI_OPTIONS_KEY, JSON.stringify(kategoriOptions));
+  } catch (e) {
+    console.error('Gagal menyimpan kategori:', e);
+  }
+};
+
 const loadExistingCategories = () => {
   try {
     const saved = localStorage.getItem('kifayahCategories');
@@ -402,6 +425,8 @@ const addNewKategori = () => {
     label: trimmedName,
     value: trimmedName
   });
+  // Persist to localStorage
+  saveKategoriOptions();
   
   // Set the new kategori as selected in the form
   formData.kategoriHadKifayah = trimmedName;
@@ -472,6 +497,17 @@ onMounted(() => {
   // Initialize form data with selected ID
   if (selectedId) {
     formData.idHadKifayah = selectedId;
+  }
+  // Merge saved kategori options into defaults (avoid duplicates)
+  const savedOpts = loadSavedKategoriOptions();
+  if (Array.isArray(savedOpts) && savedOpts.length > 0) {
+    const existingValues = new Set(kategoriOptions.map(o => (o.value || '').toLowerCase()));
+    savedOpts.forEach(opt => {
+      if (opt && opt.value && !existingValues.has(opt.value.toLowerCase())) {
+        kategoriOptions.push({ label: opt.label || opt.value, value: opt.value });
+        existingValues.add((opt.value || '').toLowerCase());
+      }
+    });
   }
 });
 </script>
