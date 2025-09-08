@@ -99,23 +99,11 @@
               'statusData',
               'tarikhMula'
             ]"
-            :columns="[
-              { key: 'kategoriHadKifayah', label: 'Kategori' },
-              { key: 'levelHadKifayah', label: 'Level Had Kifayah' },
-              { key: 'bil', label: 'Bil' },
-              { key: 'indicator', label: 'Indicator' },
-              { key: 'hadKifayah', label: 'Had Kifayah' },
-              { key: 'statusAktif', label: 'Status Aktif' },
-              { key: 'statusData', label: 'Status Data' },
-              { key: 'tarikhMula', label: 'Tarikh Mula' }
-            ]"
             :pageSize="10"
             :showNoColumn="true"
             :options="{ variant: 'default', hover: true }"
           >
-            <template v-slot:kategoriHadKifayah="data">
-              <span class="font-medium">{{ data.value.kategoriHadKifayah }}</span>
-            </template>
+            <template v-slot:kategoriHadKifayah="data">{{ data.value.kategoriHadKifayah }}</template>
             <template v-slot:levelHadKifayah="data">{{ data.value.levelHadKifayah }}</template>
             <template v-slot:bil="data">{{ data.value.bil }}</template>
             <template v-slot:indicator="data">{{ data.value.indicator }}</template>
@@ -134,20 +122,13 @@
       <!-- Action Buttons Card -->
       <rs-card>
         <template #body>
-          <div class="flex justify-end gap-3">
-            <rs-button 
+          <div class="flex justify-end">
+            <rs-button v-if="false"
               variant="primary" 
               @click="navigateTo(`/BF-PRF/KF/HK/01_01/tambah_kategori?id=${selectedId}`)"
               class="px-6 py-3"
             >
               <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori
-            </rs-button>
-            <rs-button 
-              variant="success" 
-              @click="handleHantar"
-              class="px-6 py-3"
-            >
-              <Icon name="mdi:send" class="mr-2" /> Hantar
             </rs-button>
           </div>
         </template>
@@ -311,27 +292,6 @@ const loadData = () => {
 // Navigation function
 const goBack = () => {
   navigateTo('/BF-PRF/KF/HK/01_01');
-};
-
-// Handle Hantar button click
-const handleHantar = () => {
-  console.log('Hantar button clicked!'); // Debug log
-  try {
-    // Show success notification
-    const { $toast } = useNuxtApp();
-    if ($toast) {
-      $toast.success('Data berjaya dihantar kepada pelulus');
-      console.log('Toast notification sent successfully');
-    } else {
-      // Fallback notification if toast is not available
-      console.log('Toast not available, using fallback');
-      alert('Data berjaya dihantar kepada pelulus');
-    }
-  } catch (error) {
-    console.error('Error showing notification:', error);
-    // Fallback notification
-    alert('Data berjaya dihantar kepada pelulus');
-  }
 };
 
 // Make sure the data loads when component mounts

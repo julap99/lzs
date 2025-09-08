@@ -24,12 +24,12 @@
           <p>Kelulusan Menunggu: {{ pendingApprovalCount }}</p>
         </div>
 
-        <!-- Updated Table Section with 8 columns -->
+        <!-- Table Section with 4 columns -->
         <rs-table
           class="mt-4"
           :key="tableKey"
           :data="kifayahLimits"
-          :field="['idHadKifayah','namaHadKifayah','kadarBerbayar','tarikhMula','status','tindakan']"
+          :field="['namaHadKifayah','tarikhMula','status','tindakan']"
           :pageSize="10"
           :showNoColumn="true"
           :options="{
@@ -37,9 +37,7 @@
             hover: true,
           }"
         >
-          <template v-slot:idHadKifayah="data">{{ data.value.idHadKifayah }}</template>
           <template v-slot:namaHadKifayah="data">{{ data.value.namaHadKifayah }}</template>
-          <template v-slot:kadarBerbayar="data">RM {{ formatCurrency(data.value.kadarBerbayar) }}</template>
           <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
           <template v-slot:status="data">
             <rs-badge :variant="getStatusVariant(data.value.status)">
@@ -51,15 +49,15 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PRF/KF/HK/01_02?id=${data.value.idHadKifayah}`)"
-              >Kemaskini
+              @click="navigateTo(`/BF-PRF/KF/HK/02_03?id=${data.value.idHadKifayah}`)"
+              >Kelulusan
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
             <rs-button
               variant="secondary"
               size="sm"
               class="!px-2 !py-1 ml-2"
-              @click="navigateTo({ path: '/BF-PRF/KF/HK/01_02/01_02_lihat', query: { id: data.value.idHadKifayah } })"
+              @click="navigateTo({ path: '/BF-PRF/KF/HK/02_02', query: { id: data.value.idHadKifayah } })"
               >Lihat
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>

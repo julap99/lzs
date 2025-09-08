@@ -99,23 +99,11 @@
               'statusData',
               'tarikhMula'
             ]"
-            :columns="[
-              { key: 'kategoriHadKifayah', label: 'Kategori' },
-              { key: 'levelHadKifayah', label: 'Level Had Kifayah' },
-              { key: 'bil', label: 'Bil' },
-              { key: 'indicator', label: 'Indicator' },
-              { key: 'hadKifayah', label: 'Had Kifayah' },
-              { key: 'statusAktif', label: 'Status Aktif' },
-              { key: 'statusData', label: 'Status Data' },
-              { key: 'tarikhMula', label: 'Tarikh Mula' }
-            ]"
             :pageSize="10"
             :showNoColumn="true"
             :options="{ variant: 'default', hover: true }"
           >
-            <template v-slot:kategoriHadKifayah="data">
-              <span class="font-medium">{{ data.value.kategoriHadKifayah }}</span>
-            </template>
+            <template v-slot:kategoriHadKifayah="data">{{ data.value.kategoriHadKifayah }}</template>
             <template v-slot:levelHadKifayah="data">{{ data.value.levelHadKifayah }}</template>
             <template v-slot:bil="data">{{ data.value.bil }}</template>
             <template v-slot:indicator="data">{{ data.value.indicator }}</template>
@@ -131,23 +119,90 @@
         </template>
       </rs-card>
 
+      <!-- Kelulusan Section -->
+      <rs-card>
+        <template #header>
+          <h3 class="text-lg font-semibold">Kelulusan</h3>
+        </template>
+        <template #body>
+          <div class="space-y-4">
+            <div class="flex items-center space-x-6">
+              <label class="text-sm font-medium text-gray-700">Status Kelulusan:</label>
+              <div class="flex items-center space-x-4">
+                <label class="flex items-center">
+                  <input 
+                    type="radio" 
+                    v-model="statusKelulusan" 
+                    value="lulus"
+                    class="mr-2 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span class="text-sm text-gray-700">Lulus</span>
+                </label>
+                <label class="flex items-center">
+                  <input 
+                    type="radio" 
+                    v-model="statusKelulusan" 
+                    value="tolak"
+                    class="mr-2 text-red-600 focus:ring-red-500"
+                  />
+                  <span class="text-sm text-gray-700">Tolak</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700">Catatan:</label>
+              <textarea 
+                v-model="catatan"
+                rows="4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+                placeholder="Masukkan catatan kelulusan..."
+              ></textarea>
+            </div>
+            
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700">Tarikh Lulus:</label>
+              <input 
+                type="date"
+                v-model="tarikhLulus"
+                class="w-fit px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700">Nama Pelulus:</label>
+              <input 
+                type="text"
+                v-model="namaPelulus"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Masukkan nama pelulus..."
+              />
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Submit Button -->
+      <div class="flex justify-end">
+        <rs-button 
+          variant="primary" 
+          @click="hantarKelulusan"
+          class="px-6 py-3"
+        >
+          <Icon name="mdi:send" class="mr-2" /> Hantar
+        </rs-button>
+      </div>
+
       <!-- Action Buttons Card -->
       <rs-card>
         <template #body>
-          <div class="flex justify-end gap-3">
-            <rs-button 
+          <div class="flex justify-end">
+            <rs-button v-if="false"
               variant="primary" 
               @click="navigateTo(`/BF-PRF/KF/HK/01_01/tambah_kategori?id=${selectedId}`)"
               class="px-6 py-3"
             >
               <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori
-            </rs-button>
-            <rs-button 
-              variant="success" 
-              @click="handleHantar"
-              class="px-6 py-3"
-            >
-              <Icon name="mdi:send" class="mr-2" /> Hantar
             </rs-button>
           </div>
         </template>
@@ -207,6 +262,10 @@ const error = ref(null);
 const selectedKifayah = ref(null);
 const allKifayahData = ref([]);
 const relatedCategories = ref([]);
+const statusKelulusan = ref('');
+const catatan = ref('');
+const tarikhLulus = ref('');
+const namaPelulus = ref('');
 
 // Default data (fallback if no data in localStorage)
 const defaultData = [
@@ -310,28 +369,80 @@ const loadData = () => {
 
 // Navigation function
 const goBack = () => {
-  navigateTo('/BF-PRF/KF/HK/01_01');
+  navigateTo('/BF-PRF/KF/HK/02_01');
 };
 
-// Handle Hantar button click
-const handleHantar = () => {
-  console.log('Hantar button clicked!'); // Debug log
-  try {
-    // Show success notification
-    const { $toast } = useNuxtApp();
-    if ($toast) {
-      $toast.success('Data berjaya dihantar kepada pelulus');
-      console.log('Toast notification sent successfully');
-    } else {
-      // Fallback notification if toast is not available
-      console.log('Toast not available, using fallback');
-      alert('Data berjaya dihantar kepada pelulus');
-    }
-  } catch (error) {
-    console.error('Error showing notification:', error);
-    // Fallback notification
-    alert('Data berjaya dihantar kepada pelulus');
+// Function to handle form submission
+const hantarKelulusan = () => {
+  // Validate required fields
+  if (!statusKelulusan.value) {
+    alert('Sila pilih status kelulusan');
+    return;
   }
+  
+  if (!tarikhLulus.value) {
+    alert('Sila masukkan tarikh lulus');
+    return;
+  }
+  
+  if (!namaPelulus.value.trim()) {
+    alert('Sila masukkan nama pelulus');
+    return;
+  }
+  
+  // Create approval data object
+  const approvalData = {
+    idHadKifayah: selectedId,
+    statusKelulusan: statusKelulusan.value,
+    catatan: catatan.value,
+    tarikhLulus: tarikhLulus.value,
+    namaPelulus: namaPelulus.value,
+    tarikhHantar: new Date().toISOString().split('T')[0]
+  };
+  
+  console.log('Approval data:', approvalData);
+  
+  // Here you can add logic to save the approval data
+  // For example, save to localStorage or send to API
+  
+  // Show success notification
+  showNotification();
+  
+  // Navigate back to the list after a short delay
+  setTimeout(() => {
+    goBack();
+  }, 2000);
+};
+
+// Function to show notification
+const showNotification = () => {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 transform transition-all duration-300 ease-in-out';
+  notification.innerHTML = `
+    <div class="flex items-center">
+      <Icon name="mdi:check-circle" class="mr-2" size="20px" />
+      <span class="font-medium">Kelulusan telah dihantar</span>
+    </div>
+  `;
+  
+  // Add to body
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => {
+    notification.classList.add('translate-x-0', 'opacity-100');
+  }, 100);
+  
+  // Remove after 3 seconds
+  setTimeout(() => {
+    notification.classList.add('translate-x-full', 'opacity-0');
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 300);
+  }, 3000);
 };
 
 // Make sure the data loads when component mounts
