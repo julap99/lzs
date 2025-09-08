@@ -74,6 +74,7 @@
           />
 
           <FormKit
+            v-if="!['masjid','surau'].includes(formData.organizationType)"
             type="select"
             name="registrationStatus"
             label="Status Pendaftaran"
@@ -87,6 +88,7 @@
           />
 
           <FormKit
+            v-if="!['masjid','surau'].includes(formData.organizationType)"
             type="select"
             name="structure"
             label="Struktur"
@@ -132,16 +134,6 @@
             label="Kawasan / Zon (jika berkaitan)"
             placeholder="Masukkan kawasan/zon"
             v-model="formData.zone"
-          />
-
-          <!-- Branch - Show when Organization Type is NOT Masjid or Surau -->
-          <FormKit
-            v-if="showBranch"
-            type="text"
-            name="branch"
-            label="Branch / Cawangan"
-            placeholder="Masukkan cawangan"
-            v-model="formData.branch"
           />
 
           <!-- Zone for Others - Show when Organization Type is NOT Masjid or Surau -->
@@ -563,7 +555,7 @@
             </rs-button>
 
             <div class="flex gap-3">
-              <rs-button variant="secondary" @click="saveDraft">
+              <rs-button variant="secondary" @click="showDraftModal = true">
                 Simpan DRAF
               </rs-button>
               <rs-button type="submit" @click="submitForm">
@@ -634,6 +626,81 @@
         </div>
       </div>
     </rs-card>
+
+    <!-- Simpan DRAF Confirmation Modal -->
+    <rs-modal v-model="showDraftModal" title="Sahkan Simpan DRAF" size="lg">
+      <template #body>
+        <div class="space-y-4">
+          <p class="text-sm text-gray-700">Sila semak ringkasan maklumat sebelum simpan:</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <label class="block text-gray-600 font-medium">Nama Organisasi</label>
+              <p class="text-gray-900">{{ formData.organizationName || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Nombor Pendaftaran</label>
+              <p class="text-gray-900">{{ formData.registrationNumber || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Jenis Organisasi</label>
+              <p class="text-gray-900">{{ formData.organizationType || '-' }}</p>
+            </div>
+            <div v-if="!['masjid','surau'].includes(formData.organizationType)">
+              <label class="block text-gray-600 font-medium">Struktur</label>
+              <p class="text-gray-900">{{ formData.structure || '-' }}</p>
+            </div>
+            <div v-if="showHQDropdown">
+              <label class="block text-gray-600 font-medium">HQ</label>
+              <p class="text-gray-900">{{ (hqOptions.find(h=>h.value===formData.hq)?.label) || '-' }}</p>
+            </div>
+            <div v-if="showKariah">
+              <label class="block text-gray-600 font-medium">Kariah</label>
+              <p class="text-gray-900">{{ formData.kariah || '-' }}</p>
+            </div>
+            <div v-if="showZone || showZoneForOthers">
+              <label class="block text-gray-600 font-medium">Zon</label>
+              <p class="text-gray-900">{{ formData.zone || '-' }}</p>
+            </div>
+            <div class="md:col-span-2"><hr class="my-2" /></div>
+            <div>
+              <label class="block text-gray-600 font-medium">Alamat 1</label>
+              <p class="text-gray-900">{{ formData.addressLine1 || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Alamat 2</label>
+              <p class="text-gray-900">{{ formData.addressLine2 || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Alamat 3</label>
+              <p class="text-gray-900">{{ formData.addressLine3 || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Poskod</label>
+              <p class="text-gray-900">{{ formData.postcode || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Daerah</label>
+              <p class="text-gray-900">{{ formData.district || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Bandar</label>
+              <p class="text-gray-900">{{ formData.city || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Negeri</label>
+              <p class="text-gray-900">{{ formData.state || '-' }}</p>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <rs-button variant="secondary-outline" @click="showDraftModal = false">Batal</rs-button>
+          <rs-button variant="primary" @click="confirmSaveDraft">Ya, Simpan</rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -793,10 +860,15 @@ const saveDraft = () => {
 
   // Show toast notification
   // In a real implementation, you would use a toast library like vue-toastification
-  alert("Maklumat Permohonan telah berjaya disimpan");
+  alert("Maklumat permohonan telah berjaya disimpan");
   
   // For demo purposes, we'll just log the action
   console.log("Draft saved successfully");
+};
+
+const confirmSaveDraft = () => {
+  saveDraft();
+  showDraftModal.value = false;
 };
 
 const submitForm = () => {
