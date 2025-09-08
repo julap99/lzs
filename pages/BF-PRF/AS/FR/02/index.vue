@@ -518,27 +518,50 @@
                     type="select"
                     :name="`edu${index}JenisSekolah`"
                     label="Jenis Sekolah / Institusi"
-                    placeholder="Pilih Jenis Sekolah / Institusi"
+                    placeholder="Pilih Peringkat"
                     :options="[
-                      'Pra Sekolah',
-                      'SRK',
-                      'SMK',
-                      'SMA',
-                      'SRK+Agama',
-                      'IPTA',
-                      'IPTS',
-                      'Maahad Tahfiz',
+                      { label: 'Peringkat Rendah', value: 'rendah' },
+                      { label: 'Peringkat Tinggi', value: 'tinggi' },
                     ]"
                     v-model="edu.jenis_sekolah"
                   />
 
+                  <!-- If Peringkat Rendah, show checkbox for category -->
+                  <FormKit
+                    v-if="edu.jenis_sekolah === 'rendah'"
+                    type="checkbox"
+                    :name="`edu${index}KategoriRendah`"
+                    label="Kategori Sekolah Rendah"
+                    :options="[
+                      { label: 'Sekolah Agama', value: 'agama' },
+                      { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
+                    ]"
+                    v-model="edu.sekolah_rendah_kategori"
+                  />
+
+                  <!-- Kategori select is always shown -->
                   <FormKit
                     type="select"
                     :name="`edu${index}KategoriSekolah`"
                     label="Kategori Sekolah / Institusi"
                     placeholder="Pilih Kategori Sekolah / Institusi"
-                    :options="['SEK.MEN', 'SRK', 'IPTA', 'IPTS', 'SRA', 'KAFA']"
+                    :options="['SEK.MEN', 'SRK', 'IPT', 'SRA', 'KAFA']"
                     v-model="edu.kategori_sekolah"
+                  />
+                </div>
+
+                <div v-if="edu.kategori_sekolah === 'IPT'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <FormKit
+                    type="date"
+                    :name="`edu${index}TarikhMulaPengajian`"
+                    label="Tarikh Mula Pengajian"
+                    v-model="edu.tarikh_mula_pengajian"
+                  />
+                  <FormKit
+                    type="date"
+                    :name="`edu${index}TarikhTamatPengajian`"
+                    label="Tarikh Tamat Pengajian"
+                    v-model="edu.tarikh_tamat_pengajian"
                   />
                 </div>
 
@@ -565,11 +588,14 @@
 
                   <div class="mt-4">
                     <FormKit
-                      type="text"
+                      type="select"
                       :name="`edu${index}NamaSekolah`"
                       label="Nama Sekolah / Institusi"
+                      placeholder="Pilih sekolah / institusi"
+                      :options="schoolOptions"
                       validation="required"
                       v-model="edu.nama_sekolah"
+                      @input="onSelectSchool(index, $event)"
                     />
                   </div>
 
@@ -626,34 +652,6 @@
                       />
                     </div>
                   </div>
-
-                  <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                    <div class="space-y-2">
-                      <label class="block text-sm font-medium text-black-700"
-                        >Tinggal Bersama Keluarga?</label
-                      >
-                      <FormKit
-                        type="radio"
-                        :name="`edu${index}TinggalBersamaKeluarga`"
-                        :options="[
-                          { label: 'Ya', value: 'Y' },
-                          { label: 'Tidak', value: 'T' },
-                        ]"
-                        validation="required"
-                        v-model="edu.tinggal_bersama_keluarga"
-                      />
-                    </div>
-                  </div>
-
-                  <div v-if="edu.tinggal_bersama_keluarga === 'T'" class="mt-4">
-                    <FormKit
-                      type="text"
-                      :name="`edu${index}AsramaRumahSewa`"
-                      label="Asrama / Rumah Sewa"
-                      validation="required"
-                      v-model="edu.asrama_rumah_sewa"
-                    />
-                  </div> -->
 
                   <div class="mt-6">
                     <FormKit
@@ -773,6 +771,13 @@
                     label="Asrama/Rumah Sewa"
                     validation="required"
                     v-model="formData.asrama_rumah_sewa"
+                  />
+                  <FormKit
+                    class="mt-4"
+                    type="text"
+                    name="nama_baitul"
+                    label="Nama Baitul"
+                    v-model="formData.nama_baitul"
                   />
                 </div>
               </div>
@@ -1016,6 +1021,26 @@
                     :validation-messages="{
                       required: 'Sila pilih sama ada anda mempunyai akaun bank',
                     }"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Adakah anda muflis/disenarai hitam oleh bank? -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Adakah anda muflis/disenarai hitam oleh bank? Y/T
+                </label>
+                <div class="mb-6">
+                  <FormKit
+                    type="radio"
+                    name="muflis_disenarai_hitam"
+                    :options="[
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'T' },
+                    ]"
+                    v-model="formData.muflis_disenarai_hitam"
                   />
                 </div>
               </div>
@@ -1599,18 +1624,66 @@
                 </rs-button>
               </div>
 
-              <FormKit
-                type="number"
-                name="tempoh_menetap_selangor"
-                label="Tempoh Menetap di Selangor (Tahun)"
-                min="0"
-                validation="required|min:0"
-                v-model="formData.addressInfo.tempoh_menetap_selangor"
-                :validation-messages="{
-                  required: 'Tempoh menetap adalah wajib',
-                  min: 'Tempoh menetap mesti 0 atau lebih',
-                }"
-              />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="number"
+                  name="tempoh_menetap_selangor_nilai"
+                  label="Tempoh Menetap di Selangor"
+                  placeholder="0"
+                  min="0"
+                  validation="required|min:0"
+                  v-model="formData.addressInfo.tempoh_menetap_selangor_nilai"
+                  :validation-messages="{
+                    required: 'Tempoh menetap adalah wajib',
+                    min: 'Tempoh menetap mesti 0 atau lebih',
+                  }"
+                />
+                <FormKit
+                  type="select"
+                  name="tempoh_menetap_selangor_unit"
+                  label="Unit Tempoh"
+                  placeholder="Pilih unit"
+                  :options="[
+                    { label: 'Hari', value: 'hari' },
+                    { label: 'Bulan', value: 'bulan' },
+                    { label: 'Tahun', value: 'tahun' },
+                  ]"
+                  validation="required"
+                  v-model="formData.addressInfo.tempoh_menetap_selangor_unit"
+                />
+              </div>
+
+              <!-- Kategori (Musafir/Mukim/Bermastautin) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="select"
+                  name="kategori_menetap"
+                  label="Kategori"
+                  placeholder="Pilih kategori"
+                  :options="[
+                    { label: 'Musafir', value: 'musafir' },
+                    { label: 'Mukim', value: 'mukim' },
+                    { label: 'Bermastautin', value: 'bermastautin' },
+                  ]"
+                  v-model="formData.addressInfo.kategori_menetap"
+                />
+
+                <div
+                  v-if="['musafir','mukim'].includes(formData.addressInfo.kategori_menetap)"
+                  class="space-y-2"
+                >
+                  <label class="block text-sm font-medium text-black-700">Kelulusan Khas</label>
+                  <FormKit
+                    type="radio"
+                    name="kelulusan_khas"
+                    :options="[
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'T' },
+                    ]"
+                    v-model="formData.addressInfo.kelulusan_khas"
+                  />
+                </div>
+              </div>
             </div>
 
             <div v-if="formData.adakah_muallaf === 'Y'" class="flex gap-2">
@@ -3021,6 +3094,20 @@
                 "
               />
 
+              <!-- Kelulusan Khas (ikuti gaya label Muallaf) -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700">Kelulusan Khas</label>
+                <FormKit
+                  type="radio"
+                  name="kelulusan_khas_tanggungan"
+                  :options="[
+                    { label: 'Ya', value: 'Y' },
+                    { label: 'Tidak', value: 'T' },
+                  ]"
+                  v-model="getCurrentTanggungan().kelulusan_khas"
+                />
+              </div>
+
               <!-- Status Perkahwinan -->
               <FormKit
                 type="select"
@@ -3246,6 +3333,26 @@
                       }"
                     />
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Adakah tanggungan muflis/disenarai hitam oleh bank? -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-black-700"
+                  >Adakah tanggungan muflis/disenarai hitam oleh bank? Y/T
+                </label>
+                <div class="mb-6">
+                  <FormKit
+                    type="radio"
+                    name="muflis_disenarai_hitam_tanggungan"
+                    :options="[
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'T' },
+                    ]"
+                    v-model="getCurrentTanggungan().muflis_disenarai_hitam"
+                  />
                 </div>
               </div>
             </div>
@@ -3601,27 +3708,50 @@
                     type="select"
                     :name="`eduTanggungan${index}JenisSekolah`"
                     label="Jenis Sekolah / Institusi"
-                    placeholder="Pilih Jenis Sekolah / Institusi"
+                    placeholder="Pilih Peringkat"
                     :options="[
-                      'Pra Sekolah',
-                      'SRK',
-                      'SMK',
-                      'SMA',
-                      'SRK+Agama',
-                      'IPTA',
-                      'IPTS',
-                      'Maahad Tahfiz',
+                      { label: 'Peringkat Rendah', value: 'rendah' },
+                      { label: 'Peringkat Tinggi', value: 'tinggi' },
                     ]"
                     v-model="edu.jenis_sekolah"
                   />
 
+                  <!-- If Peringkat Rendah, show checkbox for category -->
+                  <FormKit
+                    v-if="edu.jenis_sekolah === 'rendah'"
+                    type="checkbox"
+                    :name="`eduTanggungan${index}KategoriRendah`"
+                    label="Kategori Sekolah Rendah"
+                    :options="[
+                      { label: 'Sekolah Agama', value: 'agama' },
+                      { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
+                    ]"
+                    v-model="edu.sekolah_rendah_kategori"
+                  />
+
+                  <!-- Kategori select is always shown -->
                   <FormKit
                     type="select"
                     :name="`eduTanggungan${index}KategoriSekolah`"
                     label="Kategori Sekolah / Institusi"
                     placeholder="Pilih Kategori Sekolah / Institusi"
-                    :options="['SEK.MEN', 'SRK', 'IPTA', 'IPTS', 'SRA', 'KAFA']"
+                    :options="['SEK.MEN', 'SRK', 'IPT', 'SRA', 'KAFA']"
                     v-model="edu.kategori_sekolah"
+                  />
+                </div>
+
+                <div v-if="edu.kategori_sekolah === 'IPT'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <FormKit
+                    type="date"
+                    :name="`eduTanggungan${index}TarikhMulaPengajian`"
+                    label="Tarikh Mula Pengajian"
+                    v-model="edu.tarikh_mula_pengajian"
+                  />
+                  <FormKit
+                    type="date"
+                    :name="`eduTanggungan${index}TarikhTamatPengajian`"
+                    label="Tarikh Tamat Pengajian"
+                    v-model="edu.tarikh_tamat_pengajian"
                   />
                 </div>
 
@@ -3648,11 +3778,14 @@
 
                   <div class="mt-4">
                     <FormKit
-                      type="text"
+                      type="select"
                       :name="`eduTanggungan${index}NamaSekolah`"
                       label="Nama Sekolah / Institusi"
+                      placeholder="Pilih sekolah / institusi"
+                      :options="schoolOptions"
                       validation="required"
                       v-model="edu.nama_sekolah"
+                      @input="onSelectSchoolTanggungan(index, $event)"
                     />
                   </div>
 
@@ -3846,6 +3979,13 @@
                     label="Asrama/Rumah Sewa"
                     validation="required"
                     v-model="getCurrentTanggungan().asrama_rumah_sewa"
+                  />
+                  <FormKit
+                    class="mt-4"
+                    type="text"
+                    name="nama_baitul_tanggungan"
+                    label="Nama Baitul"
+                    v-model="getCurrentTanggungan().nama_baitul"
                   />
                 </div>
               </div>
@@ -5262,6 +5402,14 @@ const stepsB = [
   { id: 11, label: "Pegawai Pendaftar" },
 ];
 
+// Predefined School/Institution options with addresses
+const schoolOptions = [
+  { label: "SMK Kuala Lumpur", value: "smk-kuala-lumpur", alamat1: "Jalan Sultan, Kuala Lumpur", alamat2: "", alamat3: "" },
+  { label: "SK Petaling Jaya", value: "sk-petaling-jaya", alamat1: "Jalan Sekolah, Petaling Jaya", alamat2: "", alamat3: "" },
+  { label: "UPM", value: "upm", alamat1: "Universiti Putra Malaysia", alamat2: "Serdang, Seri Kembangan", alamat3: "" },
+  { label: "SMK Shah Alam", value: "smk-shah-alam", alamat1: "Jalan Sekolah, Shah Alam", alamat2: "", alamat3: "" },
+];
+
 // ============================================================================
 // FORM STATE VARIABLES
 // ============================================================================
@@ -5288,7 +5436,6 @@ const tarikhMasukIslamTanggungan = ref(null);
 const statusPoligami = ref(null);
 const bilanganIsteri = ref(null);
 const isteriList = ref([]);
-
 // Payment Variables
 const caraPembayaran = ref(null);
 const paymentMethod = ref("");
@@ -5367,6 +5514,7 @@ const formData = ref({
   poskod_sekolah: "",
   tinggal_bersama_keluarga: "",
   asrama_rumah_sewa: "",
+  nama_baitul: "",
   bidang_kursus: "",
   jurusan_bidang: "",
   pembiayaan_pengajian: [],
@@ -5464,6 +5612,10 @@ const formData = ref({
     kariah: "",
     geolokasi: "",
     tempoh_menetap_selangor: "",
+    tempoh_menetap_selangor_nilai: "",
+    tempoh_menetap_selangor_unit: "",
+    kategori_menetap: "",
+    kelulusan_khas: "",
     kursus_terpilih: "",
     selectedKursus: null,
     selectedGuru: null,
@@ -5595,9 +5747,6 @@ const paymentMethodOptions = [
 
 // No Payment Reason Options
 const noPaymentReasonOptions = [
-  { label: "Bawah Umur", value: "bawah-umur" },
-  { label: "Muflis", value: "muflis" },
-  { label: "Disenarai hitam oleh bank", value: "disenarai-hitam-oleh-bank" },
   { label: "Bukan Warganegara", value: "bukan-warganegara" },
   { label: "Sakit Terlantar", value: "sakit" },
   { label: "Lain-lain", value: "lain-lain" },
@@ -6358,6 +6507,21 @@ watch(
   { immediate: true }
 );
 
+// Keep legacy string `tempoh_menetap_selangor` in sync with split inputs
+watch(
+  () => [
+    formData.value.addressInfo.tempoh_menetap_selangor_nilai,
+    formData.value.addressInfo.tempoh_menetap_selangor_unit,
+  ],
+  ([nilai, unit]) => {
+    if (nilai !== undefined && unit) {
+      formData.value.addressInfo.tempoh_menetap_selangor = String(nilai);
+    } else {
+      formData.value.addressInfo.tempoh_menetap_selangor = "";
+    }
+  }
+);
+
 // Seed one education entry when masih_bersekolah === 'Y'
 watch(
   () => formData.value.masih_bersekolah,
@@ -6697,6 +6861,7 @@ const addTanggungan = (showNotification = true) => {
     poskod_sekolah: "",
     tinggal_bersama_keluarga: "",
     asrama_rumah_sewa: "",
+    nama_baitul: "",
     bidang_kursus_pengajian: "",
     jurusan_bidang: "",
     pembiayaan_pengajian: [],
@@ -7887,7 +8052,10 @@ const handleSaveStepB11 = async () => {
 const addEducationEntry = () => {
   formData.value.education_entries.push({
     jenis_sekolah: "",
+    sekolah_rendah_kategori: [],
     kategori_sekolah: "",
+    tarikh_mula_pengajian: "",
+    tarikh_tamat_pengajian: "",
     tahun_bersekolah: "",
     tahun_tingkatan: "",
     nama_sekolah: "",
@@ -7911,6 +8079,16 @@ const removeEducationEntry = (index) => {
   formData.value.education_entries.splice(index, 1);
 };
 
+const onSelectSchool = (index, selectedValue) => {
+  const selected = schoolOptions.find((s) => s.value === selectedValue);
+  if (!selected) return;
+  const entry = formData.value.education_entries[index];
+  if (!entry) return;
+  entry.alamat_sekolah_1 = selected.alamat1 || "";
+  entry.alamat_sekolah_2 = selected.alamat2 || "";
+  entry.alamat_sekolah_3 = selected.alamat3 || "";
+};
+
 // ============================================================================
 // TANGGUNGAN EDUCATION ENTRIES MANAGEMENT FUNCTIONS
 // ============================================================================
@@ -7922,7 +8100,10 @@ const addEducationEntryTanggungan = () => {
   
   currentTanggungan.education_entries.push({
     jenis_sekolah: "",
+    sekolah_rendah_kategori: [],
     kategori_sekolah: "",
+    tarikh_mula_pengajian: "",
+    tarikh_tamat_pengajian: "",
     tahun_bersekolah: "",
     tahun_tingkatan: "",
     nama_sekolah: "",
@@ -7947,6 +8128,18 @@ const removeEducationEntryTanggungan = (index) => {
   if (currentTanggungan.education_entries) {
     currentTanggungan.education_entries.splice(index, 1);
   }
+};
+
+const onSelectSchoolTanggungan = (index, selectedValue) => {
+  const selected = schoolOptions.find((s) => s.value === selectedValue);
+  if (!selected) return;
+  const currentTanggungan = getCurrentTanggungan();
+  if (!currentTanggungan || !currentTanggungan.education_entries) return;
+  const entry = currentTanggungan.education_entries[index];
+  if (!entry) return;
+  entry.alamat_sekolah_1 = selected.alamat1 || "";
+  entry.alamat_sekolah_2 = selected.alamat2 || "";
+  entry.alamat_sekolah_3 = selected.alamat3 || "";
 };
 
 // ============================================================================
