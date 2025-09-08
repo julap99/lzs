@@ -19,7 +19,35 @@
       </template>
     </rs-card>
 
-    <!-- Alert Section for Pending Applications -->
+    <!-- User Profile Card -->
+    <rs-card class="mb-6">
+      <template #body>
+        <div class="flex items-center justify-between p-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-lg">
+              {{ userProfile.nama.charAt(0) }}
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900">{{ userProfile.nama }}</h2>
+              <p class="text-xs text-primary font-medium">{{ userProfile.organisasi }}</p>
+              <p class="text-xs text-info font-medium">{{ userProfile.emel }}</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <rs-button size="sm" variant="primary-outline" @click="showProfile = true" title="Profil">
+              <Icon name="heroicons:user" size="16" class="mr-2" />
+              Profil
+            </rs-button>
+            <rs-button size="sm" variant="danger-outline" @click="handleLogout" title="Log Keluar">
+              <Icon name="heroicons:arrow-right-on-rectangle" size="16" class="mr-2" />
+              Log Keluar
+            </rs-button>
+          </div>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Alert Section for Pending Applications (moved below profile) -->
     <rs-card v-if="hasPendingApplications && !alertDismissed" class="mb-6 border-l-4 border-warning bg-warning/5">
       <template #body>
         <div class="p-4">
@@ -77,94 +105,6 @@
         </div>
       </template>
     </rs-card>
-
-    <!-- User Profile Card -->
-    <rs-card class="mb-6">
-      <template #body>
-        <div class="flex items-center justify-between p-4">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-lg">
-              {{ userProfile.nama.charAt(0) }}
-            </div>
-            <div>
-              <h2 class="text-lg font-semibold text-gray-900">{{ userProfile.nama }}</h2>
-              <p class="text-xs text-primary font-medium">{{ userProfile.organisasi }}</p>
-              <p class="text-xs text-info font-medium">{{ userProfile.emel }}</p>
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <rs-button size="sm" variant="primary-outline" @click="showProfile = true" title="Profil">
-              <Icon name="heroicons:user" size="16" class="mr-2" />
-              Profil
-            </rs-button>
-            <rs-button size="sm" variant="danger-outline" @click="handleLogout" title="Log Keluar">
-              <Icon name="heroicons:arrow-right-on-rectangle" size="16" class="mr-2" />
-              Log Keluar
-            </rs-button>
-          </div>
-        </div>
-      </template>
-    </rs-card>
-
-    <!-- Search Options Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <!-- Carian Organisasi -->
-      <rs-card class="hover:shadow-lg transition-shadow duration-300 cursor-pointer" @click="navigateTo('/BF-PRF/OR/PP/01')">
-        <template #body>
-          <div class="text-center p-6">
-            <div class="mb-4">
-              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                <Icon name="heroicons:building-office" size="2rem" class="text-blue-600" />
-              </div>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Carian Organisasi</h3>
-            <p class="text-gray-600 mb-4">Cari maklumat organisasi yang berdaftar dengan LZS</p>
-            <rs-button variant="primary" class="w-full">
-              Mula Cari
-              <Icon name="heroicons:arrow-right" size="1rem" class="ml-2" />
-            </rs-button>
-          </div>
-        </template>
-      </rs-card>
-
-      <!-- Carian Cawangan -->
-      <rs-card class="hover:shadow-lg transition-shadow duration-300 cursor-pointer" @click="navigateTo('/BF-PRF/OR/PB/01')">
-        <template #body>
-          <div class="text-center p-6">
-            <div class="mb-4">
-              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <Icon name="heroicons:building-office-2" size="2rem" class="text-green-600" />
-              </div>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Carian Cawangan</h3>
-            <p class="text-gray-600 mb-4">Cari maklumat cawangan organisasi yang berdaftar</p>
-            <rs-button variant="success" class="w-full">
-              Mula Cari
-              <Icon name="heroicons:arrow-right" size="1rem" class="ml-2" />
-            </rs-button>
-          </div>
-        </template>
-      </rs-card>
-
-      <!-- Carian Recipient -->
-      <rs-card class="hover:shadow-lg transition-shadow duration-300 cursor-pointer" @click="navigateTo('/BF-PRF/TP/PP/01')">
-        <template #body>
-          <div class="text-center p-6">
-            <div class="mb-4">
-              <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
-                <Icon name="heroicons:user-group" size="2rem" class="text-purple-600" />
-              </div>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Carian Recipient</h3>
-            <p class="text-gray-600 mb-4">Cari maklumat recipient yang berdaftar dengan LZS</p>
-            <rs-button variant="secondary" class="w-full">
-              Mula Cari
-              <Icon name="heroicons:arrow-right" size="1rem" class="ml-2" />
-            </rs-button>
-          </div>
-        </template>
-      </rs-card>
-    </div>
 
     <!-- Help Section -->
     <rs-card class="mb-6">
