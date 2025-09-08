@@ -74,6 +74,7 @@
           />
 
           <FormKit
+            v-if="!['masjid','surau'].includes(formData.organizationType)"
             type="select"
             name="registrationStatus"
             label="Status Pendaftaran"
@@ -87,6 +88,7 @@
           />
 
           <FormKit
+            v-if="!['masjid','surau'].includes(formData.organizationType)"
             type="select"
             name="structure"
             label="Struktur"
@@ -99,9 +101,7 @@
             v-model="formData.structure"
           />
 
-          <!-- Conditional Fields based on Organization Type and Structure -->
-          
-          <!-- HQ Dropdown - Show when Structure is Cawangan -->
+          <!-- HQ Dropdown - Show when Structure is Cawangan and Organization Type is not 'Masjid' or 'Surau' -->
           <FormKit
             v-if="showHQDropdown"
             type="select"
@@ -113,7 +113,7 @@
             v-model="formData.hq"
           />
 
-          <!-- Kariah - Show when Organization Type is Surau -->
+          <!-- Kariah - Show when Organization Type is not 'Masjid' -->
           <FormKit
             v-if="showKariah"
             type="text"
@@ -126,7 +126,7 @@
 
           <!-- Zone - Show when Organization Type is Masjid -->
           <FormKit
-            v-if="showZone"
+            v-if="formData.organizationType === 'masjid'"
             type="text"
             name="zone"
             label="Kawasan / Zon (jika berkaitan)"
@@ -187,21 +187,6 @@
               placeholder="Pilih negeri"
               :options="[
                 'Selangor',
-                'Johor',
-                'Kedah',
-                'Kelantan',
-                'Melaka',
-                'Negeri Sembilan',
-                'Pahang',
-                'Perak',
-                'Perlis',
-                'Pulau Pinang',
-                'Sabah',
-                'Sarawak',
-                'Terengganu',
-                'Wilayah Persekutuan Kuala Lumpur',
-                'Wilayah Persekutuan Labuan',
-                'Wilayah Persekutuan Putrajaya',
               ]"
               v-model="formData.state"
             />
@@ -249,7 +234,6 @@
               validation="required"
               placeholder="Pilih bandar"
               :options="[
-                'Kuala Lumpur',
                 'Shah Alam',
                 'Petaling Jaya',
                 'Subang Jaya',
@@ -258,22 +242,30 @@
                 'Cheras',
                 'Kajang',
                 'Bangi',
-                'Putrajaya',
-                'Cyberjaya',
                 'Puchong',
                 'Selayang',
                 'Gombak',
                 'Rawang',
-                'Johor Bahru',
-                'Skudai',
-                'Iskandar Puteri',
-                'Kulai',
-                'Batu Pahat',
-                'Muar',
-                'Kluang',
-                'Pontian',
-                'Segamat',
-                'Yong Peng',
+                'Sungai Buloh',
+                'Batu Caves',
+                'Kuala Selangor',
+                'Bestari Jaya',
+                'Ijok',
+                'Tanjong Karang',
+                'Sabak Bernam',
+                'Sungai Besar',
+                'Kuala Kubu Bharu',
+                'Batang Kali',
+                'Serendah',
+                'Hulu Bernam',
+                'Semenyih',
+                'Beranang',
+                'Sepang',
+                'Cyberjaya',
+                'Dengkil',
+                'Banting',
+                'Teluk Panglima Garang',
+                'Port Klang'
               ]"
               v-model="formData.city"
             />
@@ -539,7 +531,7 @@
             </rs-button>
 
             <div class="flex gap-3">
-              <rs-button variant="secondary" @click="saveDraft">
+              <rs-button type="button" variant="secondary" @click="showDraftModal = true">
                 Simpan DRAF
               </rs-button>
               <rs-button type="button" @click="showSubmissionModal">
@@ -638,6 +630,157 @@
         </div>
       </template>
     </rs-modal>
+
+    <!-- Simpan DRAF Confirmation Modal -->
+    <rs-modal v-model="showDraftModal" title="Sahkan Simpan DRAF" size="lg">
+      <template #body>
+        <div class="space-y-4">
+          <p class="text-sm text-gray-700">Sila semak ringkasan maklumat sebelum simpan:</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <label class="block text-gray-600 font-medium">Nama Organisasi</label>
+              <p class="text-gray-900">{{ formData.organizationName || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Nombor Pendaftaran</label>
+              <p class="text-gray-900">{{ formData.registrationNumber || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Jenis Organisasi</label>
+              <p class="text-gray-900">{{ formData.organizationType || '-' }}</p>
+            </div>
+            <div v-if="!['masjid','surau'].includes(formData.organizationType)">
+              <label class="block text-gray-600 font-medium">Struktur</label>
+              <p class="text-gray-900">{{ formData.structure || '-' }}</p>
+            </div>
+            <div v-if="showHQDropdown">
+              <label class="block text-gray-600 font-medium">HQ</label>
+              <p class="text-gray-900">{{ (hqOptions.find(h=>h.value===formData.hq)?.label) || '-' }}</p>
+            </div>
+            <div v-if="showKariah">
+              <label class="block text-gray-600 font-medium">Kariah</label>
+              <p class="text-gray-900">{{ formData.kariah || '-' }}</p>
+            </div>
+            <div v-if="formData.zone">
+              <label class="block text-gray-600 font-medium">Zon</label>
+              <p class="text-gray-900">{{ formData.zone || '-' }}</p>
+            </div>
+            <div class="md:col-span-2"><hr class="my-2" /></div>
+            <div>
+              <label class="block text-gray-600 font-medium">Alamat 1</label>
+              <p class="text-gray-900">{{ formData.addressLine1 || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Alamat 2</label>
+              <p class="text-gray-900">{{ formData.addressLine2 || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Alamat 3</label>
+              <p class="text-gray-900">{{ formData.addressLine3 || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Poskod</label>
+              <p class="text-gray-900">{{ formData.postcode || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Daerah</label>
+              <p class="text-gray-900">{{ formData.district || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Bandar</label>
+              <p class="text-gray-900">{{ formData.city || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Negeri</label>
+              <p class="text-gray-900">{{ formData.state || '-' }}</p>
+            </div>
+          </div>
+
+          <!-- Step 3: Maklumat Perhubungan -->
+          <div class="mt-4">
+            <h4 class="font-medium text-gray-900 mb-2">Step 3: Maklumat Perhubungan</h4>
+            <div v-if="formData.representatives && formData.representatives.length" class="space-y-3 text-sm">
+              <div v-for="(rep, i) in formData.representatives" :key="i" class="p-3 border rounded bg-gray-50">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-gray-600 font-medium">Nama Wakil</label>
+                    <p class="text-gray-900">{{ rep.name || '-' }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-gray-600 font-medium">ID Pengenalan</label>
+                    <p class="text-gray-900">{{ rep.ic || '-' }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-gray-600 font-medium">No Telefon</label>
+                    <p class="text-gray-900">{{ rep.phoneNumber || '-' }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-gray-600 font-medium">Emel</label>
+                    <p class="text-gray-900">{{ rep.email || '-' }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p v-else class="text-sm text-gray-600">Tiada maklumat wakil diisi.</p>
+          </div>
+
+          <!-- Step 4: Maklumat Bank -->
+          <div class="mt-4">
+            <h4 class="font-medium text-gray-900 mb-2">Step 4: Maklumat Bank</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div v-if="formData.structure === 'cawangan'">
+                <label class="block text-gray-600 font-medium">Sama seperti HQ?</label>
+                <p class="text-gray-900">{{ formData.bankSameAsHQ === 'ya' ? 'Ya' : (formData.bankSameAsHQ === 'tidak' ? 'Tidak' : '-') }}</p>
+              </div>
+              <template v-if="formData.structure !== 'cawangan' || formData.bankSameAsHQ === 'tidak'">
+                <div>
+                  <label class="block text-gray-600 font-medium">Nama Bank</label>
+                  <p class="text-gray-900">{{ formData.bankName || '-' }}</p>
+                </div>
+                <div>
+                  <label class="block text-gray-600 font-medium">Nombor Akaun</label>
+                  <p class="text-gray-900">{{ formData.bankAccountNumber || '-' }}</p>
+                </div>
+                <div>
+                  <label class="block text-gray-600 font-medium">Penama Akaun</label>
+                  <p class="text-gray-900">{{ formData.penamaBank || '-' }}</p>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Step 5: Dokumen Sokongan -->
+          <div class="mt-4">
+            <h4 class="font-medium text-gray-900 mb-2">Step 5: Dokumen Sokongan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <label class="block text-gray-600 font-medium">Sijil Pendaftaran SSM / ROS</label>
+                <rs-badge :variant="hasRegistrationCert ? 'success' : 'danger'">{{ hasRegistrationCert ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
+              </div>
+              <div>
+                <label class="block text-gray-600 font-medium">Surat Lantikan / Sokongan</label>
+                <rs-badge :variant="hasAppointmentLetter ? 'success' : 'danger'">{{ hasAppointmentLetter ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
+              </div>
+              <div>
+                <label class="block text-gray-600 font-medium">Bukti Pemilikan Akaun Bank</label>
+                <rs-badge :variant="hasBankProof ? 'success' : 'danger'">{{ hasBankProof ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
+              </div>
+              <div>
+                <label class="block text-gray-600 font-medium">Dokumen Tambahan</label>
+                <rs-badge :variant="additionalDocsCount > 0 ? 'success' : 'warning'">{{ additionalDocsCount > 0 ? (additionalDocsCount + ' dokumen') : 'Tiada' }}</rs-badge>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <rs-button variant="secondary-outline" @click="showDraftModal = false">Batal</rs-button>
+          <rs-button variant="primary" @click="confirmSaveDraft">Ya, Simpan</rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -693,7 +836,7 @@ const hqOptions = [
 
 // Computed properties for conditional field visibility
 const showKariah = computed(() => {
-  return formData.value.organizationType === 'surau';
+  return formData.value.organizationType && formData.value.organizationType !== 'masjid';
 });
 
 const showZone = computed(() => {
@@ -711,11 +854,12 @@ const showZoneForOthers = computed(() => {
 });
 
 const showHQDropdown = computed(() => {
-  return formData.value.structure === 'cawangan';
+  return formData.value.structure === 'cawangan' && !['masjid','surau'].includes(formData.value.organizationType);
 });
 
 // Confirmation modal state
 const showConfirmationModal = ref(false);
+const showDraftModal = ref(false);
 
 const formData = ref({
   // Step 1: Maklumat Pendaftaran Organisasi
@@ -817,6 +961,11 @@ const saveDraft = () => {
   
   // For demo purposes, we'll just log the action
   console.log("Draft saved successfully");
+};
+
+const confirmSaveDraft = () => {
+  saveDraft();
+  showDraftModal.value = false;
 };
 
 const confirmSubmission = () => {
@@ -1048,6 +1197,24 @@ const loadExistingData = async () => {
     }
   }, 500);
 };
+
+// Computed helpers for attachments (mirror PP/02)
+const hasRegistrationCert = computed(() => {
+  const f = formData.value.registrationCertificate;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+const hasAppointmentLetter = computed(() => {
+  const f = formData.value.appointmentLetter;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+const hasBankProof = computed(() => {
+  const f = formData.value.bankProof;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+const additionalDocsCount = computed(() => {
+  const f = formData.value.additionalDocuments;
+  return Array.isArray(f) ? f.length : (f ? 1 : 0);
+});
 </script>
 
 <style lang="scss" scoped>
