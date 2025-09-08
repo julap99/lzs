@@ -33,11 +33,11 @@
           </rs-table>
         </div>
 
-        <!-- Section 2: Ulasan EOAD (Read-only) -->
+        <!-- Section 2: Ulasan Eksekutif (Read-only) -->
         <div class="mb-6">
-          <label class="block font-semibold mb-1">Ulasan EOAD</label>
+          <label class="block font-semibold mb-1">Ulasan Eksekutif</label>
           <div class="p-3 border rounded bg-gray-50">
-            {{ ulasanEoad }}
+            {{ ulasanEksekutif }}
           </div>
         </div>
 
@@ -68,7 +68,7 @@
         <!-- Section 5: Action Button -->
         <div class="flex gap-2">
           <rs-button variant="primary" @click="submitForm" :disabled="loading || isSubmitted">
-            <span v-if="!loading">Hantar Semula Permohonan</span>
+            <span v-if="!loading">Kemaskini Permohonan</span>
             <span v-else>Memuatkan...</span>
           </rs-button>
           <rs-button variant="secondary" @click="cancelForm" :disabled="loading || isSubmitted">
@@ -114,8 +114,8 @@ const permohonan = ref({
   statusPermohonan: "Perlu Pembetulan",
 });
 
-// Ulasan EOAD → ganti dengan API GET ulasan
-const ulasanEoad = ref(
+// Ulasan Eksekutif → ganti dengan API GET ulasan
+const ulasanEksekutif = ref(
   "Sila kemaskini alamat organisasi & no telefon. Muat naik dokumen terkini jika perlu."
 );
 
