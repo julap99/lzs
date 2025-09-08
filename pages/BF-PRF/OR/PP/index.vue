@@ -8,6 +8,12 @@
           <div>
             <h2 class="text-xl font-semibold">Pengesahan Organisasi</h2>
           </div>
+          <div>
+            <rs-button variant="primary" @click="navigateTo('/BF-PRF/OR/PP/02')">
+              <Icon name="heroicons:plus" size="1rem" class="mr-2" />
+              Tambah Baru
+            </rs-button>
+          </div>
         </div>
       </template>
 
