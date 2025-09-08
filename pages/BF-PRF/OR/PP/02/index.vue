@@ -185,21 +185,6 @@
               placeholder="Pilih negeri"
               :options="[
                 'Selangor',
-                'Johor',
-                'Kedah',
-                'Kelantan',
-                'Melaka',
-                'Negeri Sembilan',
-                'Pahang',
-                'Perak',
-                'Perlis',
-                'Pulau Pinang',
-                'Sabah',
-                'Sarawak',
-                'Terengganu',
-                'Wilayah Persekutuan Kuala Lumpur',
-                'Wilayah Persekutuan Labuan',
-                'Wilayah Persekutuan Putrajaya',
               ]"
               v-model="formData.state"
             />
@@ -692,6 +677,82 @@
               <p class="text-gray-900">{{ formData.state || '-' }}</p>
             </div>
           </div>
+
+          <!-- Step 3: Maklumat Perhubungan -->
+          <div class="mt-4">
+            <h4 class="font-medium text-gray-900 mb-2">Step 3: Maklumat Perhubungan</h4>
+            <div v-if="formData.representatives && formData.representatives.length" class="space-y-3 text-sm">
+              <div v-for="(rep, i) in formData.representatives" :key="i" class="p-3 border rounded bg-gray-50">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-gray-600 font-medium">Nama Wakil</label>
+                    <p class="text-gray-900">{{ rep.name || '-' }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-gray-600 font-medium">ID Pengenalan</label>
+                    <p class="text-gray-900">{{ rep.ic || '-' }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-gray-600 font-medium">No Telefon</label>
+                    <p class="text-gray-900">{{ rep.phoneNumber || '-' }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-gray-600 font-medium">Emel</label>
+                    <p class="text-gray-900">{{ rep.email || '-' }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p v-else class="text-sm text-gray-600">Tiada maklumat wakil diisi.</p>
+          </div>
+
+          <!-- Step 4: Maklumat Bank -->
+          <div class="mt-4">
+            <h4 class="font-medium text-gray-900 mb-2">Step 4: Maklumat Bank</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div v-if="formData.structure === 'cawangan'">
+                <label class="block text-gray-600 font-medium">Sama seperti HQ?</label>
+                <p class="text-gray-900">{{ formData.bankSameAsHQ === 'ya' ? 'Ya' : (formData.bankSameAsHQ === 'tidak' ? 'Tidak' : '-') }}</p>
+              </div>
+              <template v-if="formData.structure !== 'cawangan' || formData.bankSameAsHQ === 'tidak'">
+                <div>
+                  <label class="block text-gray-600 font-medium">Nama Bank</label>
+                  <p class="text-gray-900">{{ formData.bankName || '-' }}</p>
+                </div>
+                <div>
+                  <label class="block text-gray-600 font-medium">Nombor Akaun</label>
+                  <p class="text-gray-900">{{ formData.bankAccountNumber || '-' }}</p>
+                </div>
+                <div>
+                  <label class="block text-gray-600 font-medium">Penama Akaun</label>
+                  <p class="text-gray-900">{{ formData.penamaBank || '-' }}</p>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Step 5: Dokumen Sokongan -->
+          <div class="mt-4">
+            <h4 class="font-medium text-gray-900 mb-2">Step 5: Dokumen Sokongan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <label class="block text-gray-600 font-medium">Sijil Pendaftaran SSM / ROS</label>
+                <rs-badge :variant="hasRegistrationCert ? 'success' : 'danger'">{{ hasRegistrationCert ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
+              </div>
+              <div>
+                <label class="block text-gray-600 font-medium">Surat Lantikan / Sokongan</label>
+                <rs-badge :variant="hasAppointmentLetter ? 'success' : 'danger'">{{ hasAppointmentLetter ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
+              </div>
+              <div>
+                <label class="block text-gray-600 font-medium">Bukti Pemilikan Akaun Bank</label>
+                <rs-badge :variant="hasBankProof ? 'success' : 'danger'">{{ hasBankProof ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
+              </div>
+              <div>
+                <label class="block text-gray-600 font-medium">Dokumen Tambahan</label>
+                <rs-badge :variant="additionalDocsCount > 0 ? 'success' : 'warning'">{{ additionalDocsCount > 0 ? (additionalDocsCount + ' dokumen') : 'Tiada' }}</rs-badge>
+              </div>
+            </div>
+          </div>
         </div>
       </template>
       <template #footer>
@@ -731,6 +792,9 @@ const referenceNumber = ref(
       .toString()
       .padStart(6, "0")
 );
+
+// Modal state
+const showDraftModal = ref(false);
 
 // Mock HQ data for realistic dropdown options
 const hqOptions = [
@@ -887,6 +951,24 @@ const printApplication = () => {
 const goToHomepage = () => {
   router.push("/");
 };
+
+// Attachment presence helpers for modal rendering
+const hasRegistrationCert = computed(() => {
+  const f = formData.value.registrationCertificate;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+const hasAppointmentLetter = computed(() => {
+  const f = formData.value.appointmentLetter;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+const hasBankProof = computed(() => {
+  const f = formData.value.bankProof;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+const additionalDocsCount = computed(() => {
+  const f = formData.value.additionalDocuments;
+  return Array.isArray(f) ? f.length : (f ? 1 : 0);
+});
 </script>
 
 <style lang="scss" scoped>
