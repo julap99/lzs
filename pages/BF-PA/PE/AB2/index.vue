@@ -66,207 +66,434 @@
           </div>
 
           <!-- Bahagian Jadual Bertab -->
-          <rs-tab v-model="activeTab" class="mt-4">
-            <rs-tab-item title="Sedang Proses">
-              <div class="p-4">
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                      <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="batch in getTableDataByStatus(getSedangProsesStatuses())" :key="batch.id">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <a 
-                            href="#" 
-                            class="text-blue-600 hover:text-blue-800"
-                            @click.prevent="navigateTo(getActionRoute(batch.status))"
-                          >
-                            {{ batch.noBatch }}
-                          </a>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <span
-                            class="px-2 py-1 text-xs font-medium rounded-full"
-                            :class="getStatusColor(batch.status)"
-                          >
-                            {{ getStatusLabel(batch.status) }}
-                          </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div class="flex items-center justify-end gap-2">
-                            <button
-                              @click="navigateTo(getActionRoute(batch.status))"
-                              :title="getActionButtonText(batch.status)"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                            </button>
-                            <button
-                              v-if="shouldShowSemakButton(batch.status)"
-                              @click="navigateTo(getSemakRoute())"
-                              title="Semak"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+          <div v-if="currentRole === 'eksekutif'">
+            <rs-tab v-model="activeTab" class="mt-4">
+              <rs-tab-item title="Sedang Proses - Pengesahan">
+                <div class="p-4">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="batch in getTableDataByStatus(['Menunggu Pengesahan'])" :key="batch.id">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <a href="#" class="text-blue-600 hover:text-blue-800" @click.prevent="navigateTo(getActionRoute(batch.status))">{{ batch.noBatch }}</a>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getStatusColor(batch.status)">{{ getStatusLabel(batch.status) }}</span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex items-center justify-end gap-2">
+                              <button @click="navigateTo(getActionRoute(batch.status))" :title="getActionButtonText(batch.status)" class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200">
+                                <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              </button>
+                              <button v-if="shouldShowSemakButton(batch.status)" @click="navigateTo(getSemakRoute())" title="Semak" class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200">
+                                <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            </rs-tab-item>
+              </rs-tab-item>
 
-            <rs-tab-item title="Lulus">
-              <div class="p-4">
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                      <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Advice</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="batch in getTableDataByStatus(['Lulus'])" :key="batch.id">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <a 
-                            href="#" 
-                            class="text-blue-600 hover:text-blue-800"
-                            @click.prevent="navigateTo(getActionRoute(batch.status))"
-                          >
-                            {{ batch.noBatch }}
-                          </a>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <span
-                            class="px-2 py-1 text-xs font-medium rounded-full"
-                            :class="getStatusColor(batch.status)"
-                          >
-                            {{ getStatusLabel(batch.status) }}
-                          </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <div v-if="batch.paymentAdviceStatus" class="space-y-1">
-                            <div class="flex items-center space-x-2">
-                              <span
-                                class="px-2 py-1 text-xs font-medium rounded-full"
-                                :class="getPaymentAdviceStatusColor(batch.paymentAdviceStatus)"
+              <rs-tab-item title="Sedang Proses - Kelulusan">
+                <div class="p-4">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="batch in getTableDataByStatus(['Menunggu Kelulusan'])" :key="batch.id">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <a href="#" class="text-blue-600 hover:text-blue-800" @click.prevent="navigateTo(getActionRoute(batch.status))">{{ batch.noBatch }}</a>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getStatusColor(batch.status)">{{ getStatusLabel(batch.status) }}</span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex items-center justify-end gap-2">
+                              <button @click="navigateTo(getActionRoute(batch.status))" :title="getActionButtonText(batch.status)" class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200">
+                                <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              </button>
+                              <button v-if="shouldShowSemakButton(batch.status)" @click="navigateTo(getSemakRoute())" title="Semak" class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200">
+                                <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </rs-tab-item>
+            
+              <!-- Lulus and Ditolak remain as-is -->
+              <rs-tab-item title="Lulus">
+                <div class="p-4">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Advice</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="batch in getTableDataByStatus(['Lulus'])" :key="batch.id">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <a 
+                              href="#" 
+                              class="text-blue-600 hover:text-blue-800"
+                              @click.prevent="navigateTo(getActionRoute(batch.status))"
+                            >
+                              {{ batch.noBatch }}
+                            </a>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                              class="px-2 py-1 text-xs font-medium rounded-full"
+                              :class="getStatusColor(batch.status)"
+                            >
+                              {{ getStatusLabel(batch.status) }}
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <div v-if="batch.paymentAdviceStatus" class="space-y-1">
+                              <div class="flex items-center space-x-2">
+                                <span
+                                  class="px-2 py-1 text-xs font-medium rounded-full"
+                                  :class="getPaymentAdviceStatusColor(batch.paymentAdviceStatus)"
+                                >
+                                  {{ batch.paymentAdviceStatus }}
+                                </span>
+                              </div>
+                              <div v-if="batch.paymentAdviceNo" class="text-xs text-gray-600">
+                                {{ batch.paymentAdviceNo }}
+                              </div>
+                              <div v-if="batch.sapStatus" class="text-xs" :class="getSapStatusColor(batch.sapStatus)">
+                                {{ batch.sapStatus }}
+                              </div>
+                            </div>
+                            <span v-else class="text-xs text-gray-400">-</span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex items-center justify-end gap-2">
+                              <button
+                                @click="navigateTo(getActionRoute(batch.status))"
+                                :title="getActionButtonText(batch.status)"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                               >
-                                {{ batch.paymentAdviceStatus }}
-                              </span>
+                                <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              </button>
+                              <button
+                                v-if="shouldShowSemakButton(batch.status)"
+                                @click="navigateTo(getSemakRoute())"
+                                title="Semak"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              >
+                                <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
+                              </button>
+                              <button
+                                v-if="shouldShowRegenerateButton(batch)"
+                                @click="regeneratePaymentAdvice(batch)"
+                                title="Jana Semula Payment Advice"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              >
+                                <Icon name="ic:baseline-refresh" class="w-5 h-5 text-orange-600" />
+                              </button>
                             </div>
-                            <div v-if="batch.paymentAdviceNo" class="text-xs text-gray-600">
-                              {{ batch.paymentAdviceNo }}
-                            </div>
-                            <div v-if="batch.sapStatus" class="text-xs" :class="getSapStatusColor(batch.sapStatus)">
-                              {{ batch.sapStatus }}
-                            </div>
-                          </div>
-                          <span v-else class="text-xs text-gray-400">-</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div class="flex items-center justify-end gap-2">
-                            <button
-                              @click="navigateTo(getActionRoute(batch.status))"
-                              :title="getActionButtonText(batch.status)"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                            </button>
-                            <button
-                              v-if="shouldShowSemakButton(batch.status)"
-                              @click="navigateTo(getSemakRoute())"
-                              title="Semak"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
-                            </button>
-                            <button
-                              v-if="shouldShowRegenerateButton(batch)"
-                              @click="regeneratePaymentAdvice(batch)"
-                              title="Jana Semula Payment Advice"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:baseline-refresh" class="w-5 h-5 text-orange-600" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            </rs-tab-item>
+              </rs-tab-item>
 
-            <rs-tab-item title="Ditolak">
-              <div class="p-4">
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                      <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="batch in getTableDataByStatus(['Ditolak'])" :key="batch.id">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <a 
-                            href="#" 
-                            class="text-blue-600 hover:text-blue-800"
-                            @click.prevent="navigateTo(getActionRoute(batch.status))"
-                          >
-                            {{ batch.noBatch }}
-                          </a>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <span
-                            class="px-2 py-1 text-xs font-medium rounded-full"
-                            :class="getStatusColor(batch.status)"
-                          >
-                            {{ getStatusLabel(batch.status) }}
-                          </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div class="flex items-center justify-end gap-2">
-                            <button
-                              @click="navigateTo(getActionRoute(batch.status))"
-                              :title="getActionButtonText(batch.status)"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              <rs-tab-item title="Ditolak">
+                <div class="p-4">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="batch in getTableDataByStatus(['Ditolak'])" :key="batch.id">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <a 
+                              href="#" 
+                              class="text-blue-600 hover:text-blue-800"
+                              @click.prevent="navigateTo(getActionRoute(batch.status))"
                             >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                              {{ batch.noBatch }}
+                            </a>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                              class="px-2 py-1 text-xs font-medium rounded-full"
+                              :class="getStatusColor(batch.status)"
+                            >
+                              {{ getStatusLabel(batch.status) }}
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex items-center justify-end gap-2">
+                              <button
+                                @click="navigateTo(getActionRoute(batch.status))"
+                                :title="getActionButtonText(batch.status)"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              >
+                                <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            </rs-tab-item>
-          </rs-tab>
+              </rs-tab-item>
+            </rs-tab>
+          </div>
+
+          <div v-else>
+            <rs-tab v-model="activeTab" class="mt-4">
+              <rs-tab-item title="Sedang Proses">
+                <div class="p-4">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="batch in getTableDataByStatus(getSedangProsesStatuses())" :key="batch.id">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <a 
+                              href="#" 
+                              class="text-blue-600 hover:text-blue-800"
+                              @click.prevent="navigateTo(getActionRoute(batch.status))"
+                            >
+                              {{ batch.noBatch }}
+                            </a>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                              class="px-2 py-1 text-xs font-medium rounded-full"
+                              :class="getStatusColor(batch.status)"
+                            >
+                              {{ getStatusLabel(batch.status) }}
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex items-center justify-end gap-2">
+                              <button
+                                @click="navigateTo(getActionRoute(batch.status))"
+                                :title="getActionButtonText(batch.status)"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              >
+                                <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              </button>
+                              <button
+                                v-if="shouldShowSemakButton(batch.status)"
+                                @click="navigateTo(getSemakRoute())"
+                                title="Semak"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              >
+                                <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </rs-tab-item>
+
+              <rs-tab-item title="Lulus">
+                <div class="p-4">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Advice</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="batch in getTableDataByStatus(['Lulus'])" :key="batch.id">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <a 
+                              href="#" 
+                              class="text-blue-600 hover:text-blue-800"
+                              @click.prevent="navigateTo(getActionRoute(batch.status))"
+                            >
+                              {{ batch.noBatch }}
+                            </a>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                              class="px-2 py-1 text-xs font-medium rounded-full"
+                              :class="getStatusColor(batch.status)"
+                            >
+                              {{ getStatusLabel(batch.status) }}
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <div v-if="batch.paymentAdviceStatus" class="space-y-1">
+                              <div class="flex items-center space-x-2">
+                                <span
+                                  class="px-2 py-1 text-xs font-medium rounded-full"
+                                  :class="getPaymentAdviceStatusColor(batch.paymentAdviceStatus)"
+                                >
+                                  {{ batch.paymentAdviceStatus }}
+                                </span>
+                              </div>
+                              <div v-if="batch.paymentAdviceNo" class="text-xs text-gray-600">
+                                {{ batch.paymentAdviceNo }}
+                              </div>
+                              <div v-if="batch.sapStatus" class="text-xs" :class="getSapStatusColor(batch.sapStatus)">
+                                {{ batch.sapStatus }}
+                              </div>
+                            </div>
+                            <span v-else class="text-xs text-gray-400">-</span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex items-center justify-end gap-2">
+                              <button
+                                @click="navigateTo(getActionRoute(batch.status))"
+                                :title="getActionButtonText(batch.status)"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              >
+                                <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              </button>
+                              <button
+                                v-if="shouldShowSemakButton(batch.status)"
+                                @click="navigateTo(getSemakRoute())"
+                                title="Semak"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              >
+                                <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-primary" />
+                              </button>
+                              <button
+                                v-if="shouldShowRegenerateButton(batch)"
+                                @click="regeneratePaymentAdvice(batch)"
+                                title="Jana Semula Payment Advice"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              >
+                                <Icon name="ic:baseline-refresh" class="w-5 h-5 text-orange-600" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </rs-tab-item>
+
+              <rs-tab-item title="Ditolak">
+                <div class="p-4">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="batch in getTableDataByStatus(['Ditolak'])" :key="batch.id">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <a 
+                              href="#" 
+                              class="text-blue-600 hover:text-blue-800"
+                              @click.prevent="navigateTo(getActionRoute(batch.status))"
+                            >
+                              {{ batch.noBatch }}
+                            </a>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.institusi }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ batch.kategori }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                              class="px-2 py-1 text-xs font-medium rounded-full"
+                              :class="getStatusColor(batch.status)"
+                            >
+                              {{ getStatusLabel(batch.status) }}
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex items-center justify-end gap-2">
+                              <button
+                                @click="navigateTo(getActionRoute(batch.status))"
+                                :title="getActionButtonText(batch.status)"
+                                class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              >
+                                <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </rs-tab-item>
+            </rs-tab>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -274,7 +501,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, nextTick, onMounted } from 'vue';
 
 definePageMeta({
   title: "Elaun Tugasan",
@@ -298,7 +525,7 @@ const breadcrumb = ref([
 const currentRole = ref('eksekutif');
 
 // Pengurusan tab
-const activeTab = ref("Sedang Proses");
+const activeTab = ref("Sedang Proses - Pengesahan");
 const tableKey = ref(0);
 
 // Keadaan carian dan penapis
@@ -816,6 +1043,29 @@ const refreshTable = () => {
 const handleSearch = (event) => {
   searchQuery.value = event.target.value;
 };
+
+const handleRoleChange = () => {
+  // Set default tab based on role
+  if (currentRole.value === 'eksekutif') {
+    activeTab.value = "Sedang Proses - Pengesahan";
+  } else {
+    activeTab.value = "Sedang Proses";
+  }
+  refreshTable();
+};
+
+// Ensure a valid default tab is selected on initial load
+onMounted(() => {
+  if (currentRole.value === 'eksekutif') {
+    activeTab.value = "Sedang Proses - Pengesahan";
+  } else if (currentRole.value === 'ketua-jabatan') {
+    activeTab.value = "Sedang Proses";
+  } else if (currentRole.value === 'ketua-divisyen') {
+    activeTab.value = "Sedang Proses";
+  } else {
+    activeTab.value = "Sedang Proses";
+  }
+});
 </script>
 
 <style scoped>
