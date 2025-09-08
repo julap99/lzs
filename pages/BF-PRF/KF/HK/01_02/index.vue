@@ -212,9 +212,21 @@
               <label class="text-sm font-medium text-gray-700">Bil</label>
               <input v-model.number="categoryForm.bil" type="number" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
-            <div>
-              <label class="text-sm font-medium text-gray-700">Indicator</label>
-              <input v-model="categoryForm.indicator" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <div class="md:col-span-2">
+              <div class="flex items-center justify-between">
+                <label class="text-sm font-medium text-gray-700">Indicator</label>
+                <rs-button size="sm" variant="secondary" class="!px-2 !py-1" @click="addIndicatorRow">
+                  <Icon name="mdi:plus" class="mr-1" /> Tambah Baris
+                </rs-button>
+              </div>
+              <div class="mt-2 space-y-2">
+                <div v-for="(ind, idx) in categoryIndicators" :key="idx" class="flex items-center gap-2">
+                  <input v-model="categoryIndicators[idx]" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  <rs-button size="sm" variant="danger" class="!px-2 !py-1" @click="removeIndicatorRow(idx)">
+                    <Icon name="mdi:delete" />
+                  </rs-button>
+                </div>
+              </div>
             </div>
             <div>
               <label class="text-sm font-medium text-gray-700">Had Kifayah (RM)</label>
@@ -333,6 +345,7 @@ const categoryForm = ref({
   tarikhMula: '',
 });
 let editingCategoryIndex = -1;
+const categoryIndicators = ref([]); // array of indicator strings
 const showEditModal = ref(false);
 const editForm = ref({
   namaHadKifayah: '',
@@ -517,10 +530,16 @@ const handleHantar = () => {
       console.log('Toast not available, using fallback');
       alert('Data berjaya dihantar kepada pelulus');
     }
+    // Redirect to HK/01_01 after brief delay
+    setTimeout(() => {
+      navigateTo('/BF-PRF/KF/HK/01_01');
+    }, 1000);
   } catch (error) {
     console.error('Error showing notification:', error);
     // Fallback notification
     alert('Data berjaya dihantar kepada pelulus');
+    // Redirect even if toast fails
+    navigateTo('/BF-PRF/KF/HK/01_01');
   }
 };
 
@@ -531,6 +550,18 @@ const openEditCategory = (row) => {
     (c) => c.kategoriHadKifayah === row.kategoriHadKifayah && c.levelHadKifayah === row.levelHadKifayah && c.bil === row.bil
   );
   categoryForm.value = { ...row };
+  // Seed indicators array (split by comma if string)
+  if (Array.isArray(row.indicator)) {
+    categoryIndicators.value = [...row.indicator];
+  } else if (typeof row.indicator === 'string' && row.indicator.trim() !== '') {
+    // Split by semicolon or comma, support "ff1; ff2" or "ff1, ff2"
+    categoryIndicators.value = row.indicator
+      .split(/[;,]+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+  } else {
+    categoryIndicators.value = [''];
+  }
   showCategoryModal.value = true;
 };
 
@@ -542,7 +573,11 @@ const closeEditCategory = () => {
 const saveCategory = () => {
   if (editingCategoryIndex < 0) return;
   // Update in-memory
-  relatedCategories.value[editingCategoryIndex] = { ...categoryForm.value };
+  const indicatorValue = categoryIndicators.value
+    .map(v => (v || '').toString().trim())
+    .filter(Boolean)
+    .join('; '); // persist using semicolon to match existing data format
+  relatedCategories.value[editingCategoryIndex] = { ...categoryForm.value, indicator: indicatorValue };
 
   // Persist to localStorage (preserve other entries for other IDs if present)
   try {
@@ -566,6 +601,18 @@ const saveCategory = () => {
 
   showCategoryModal.value = false;
   editingCategoryIndex = -1;
+};
+
+const addIndicatorRow = () => {
+  categoryIndicators.value.push('');
+};
+
+const removeIndicatorRow = (index) => {
+  if (categoryIndicators.value.length <= 1) {
+    categoryIndicators.value[0] = '';
+    return;
+  }
+  categoryIndicators.value.splice(index, 1);
 };
 
 // Make sure the data loads when component mounts
