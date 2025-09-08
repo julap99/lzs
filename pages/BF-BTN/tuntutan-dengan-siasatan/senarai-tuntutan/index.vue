@@ -45,21 +45,17 @@
         <RsTab variant="primary" type="default">
           <RsTabItem title="Draf">
             <rs-table
-              :data="filteredTuntutan('Draf')"
-              :columns="columns"
-              :pageSize="pageSize"
-              :showNoColumn="true"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-              }"
-              :options-advanced="{
-                sortable: true,
-                filterable: true,
-              }"
-              advanced
-            >
+  :data="filteredTuntutan('Draf')"
+  :columns="columns"
+  :pageSize="pageSize"
+  :showNoColumn="true"
+  :options="{
+    variant: 'default',
+    hover: true,
+    striped: true,
+  }"
+>
+
               <template v-slot:noTuntutan="data">
                 <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewDetails(data.text)">
                   {{ data.text }}
@@ -108,12 +104,8 @@
                 hover: true,
                 striped: true,
               }"
-              :options-advanced="{
-                sortable: true,
-                filterable: true,
-              }"
-              advanced
             >
+
               <template v-slot:noTuntutan="data">
                 <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewDetails(data.text)">
                   {{ data.text }}
@@ -148,22 +140,18 @@
           </RsTabItem>
 
           <RsTabItem title="Lulus">
-            <rs-table
+                <rs-table
               :data="filteredTuntutan('Lulus')"
-              :columns="columnsLulus"
-              :pageSize="pageSizeLulus"
+              :columns="columns"
+              :pageSize="pageSize"
               :showNoColumn="true"
               :options="{
                 variant: 'default',
                 hover: true,
                 striped: true,
               }"
-              :options-advanced="{
-                sortable: true,
-                filterable: true,
-              }"
-              advanced
             >
+
               <template v-slot:noTuntutan="data">
                 <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewDetails(data.text)">
                   {{ data.text }}
