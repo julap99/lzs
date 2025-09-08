@@ -256,13 +256,6 @@
               />
 
               <FormKit
-                type="text"
-                name="no_telefon_rumah"
-                label="No Telefon Rumah"
-                v-model="formData.no_telefon_rumah"
-              />
-
-              <FormKit
                 type="email"
                 name="emel"
                 label="Emel"
@@ -1166,6 +1159,21 @@
                   }"
                 />
               </div>
+              
+              <!-- Lain-lain Sebab Tiada Akaun -->
+              <div v-if="showLainLainSebabTiadaAkaun" class="mt-4">
+                <FormKit
+                  type="text"
+                  name="lain_lain_sebab_tiada_akaun"
+                  label="Lain-lain Sebab Tiada Akaun"
+                  placeholder="Sila nyatakan sebab lain"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila nyatakan sebab lain',
+                  }"
+                  v-model="formData.lain_lain_sebab_tiada_akaun"
+                />
+              </div>
             </div>
           </div>
 
@@ -1669,94 +1677,8 @@
                 }"
               />
 
-              <FormKit
-                type="select"
-                name="tapak_rumah"
-                label="Tapak Rumah"
-                :options="[
-                  'Milik Sendiri',
-                  'Tanah Wakaf',
-                  'Tanah Kerajaan / Persendirian / Setinggan (Izin)',
-                  'Kebenaran Menduduki Sementara (TOL)',
-                  'Menumpang / Sewa / Pajak daripada Orang Lain',
-                  'Tanah Keluarga',
-                  'Lain-lain',
-                ]"
-                validation="required"
-                v-model="formData.addressInfo.tapak_rumah"
-                :validation-messages="{
-                  required: 'Tapak rumah adalah wajib',
-                }"
-              />
 
-              <FormKit
-                type="text"
-                name="lain_lain_tapak_rumah"
-                label="Lain-lain Tapak Rumah"
-                validation="required"
-                v-if="formData.addressInfo.tapak_rumah === 'Lain-lain'"
-                placeholder="Nyatakan tapak rumah lain"
-                v-model="formData.addressInfo.lain_lain_tapak_rumah"
-                :validation-messages="{
-                  required: 'Sila nyatakan tapak rumah lain',
-                }"
-              />
 
-              <FormKit
-                type="select"
-                name="jenis_rumah"
-                label="Jenis Rumah"
-                :options="[
-                  'Kos Rendah',
-                  'Kos Sederhana',
-                  'Pangsapuri/Flat',
-                  'Teres',
-                  'Lain-lain',
-                ]"
-                validation="required"
-                v-model="formData.addressInfo.jenis_rumah"
-                :validation-messages="{
-                  required: 'Jenis rumah adalah wajib',
-                }"
-              />
-
-              <FormKit
-                type="text"
-                name="lain_lain_jenis_rumah"
-                label="Lain-lain Jenis Rumah"
-                validation="required"
-                v-if="formData.addressInfo.jenis_rumah === 'Lain-lain'"
-                placeholder="Nyatakan jenis rumah lain"
-                v-model="formData.addressInfo.lain_lain_jenis_rumah"
-                :validation-messages="{
-                  required: 'Sila nyatakan jenis rumah lain',
-                }"
-              />
-
-              <FormKit
-                type="select"
-                name="binaan_rumah"
-                label="Binaan Rumah"
-                :options="['Batu', 'Kayu', 'Separa Batu', 'Lain-lain']"
-                validation="required"
-                v-model="formData.addressInfo.binaan_rumah"
-                :validation-messages="{
-                  required: 'Binaan rumah adalah wajib',
-                }"
-              />
-
-              <FormKit
-                type="text"
-                name="lain_lain_binaan_rumah"
-                label="Lain-lain Binaan Rumah"
-                validation="required"
-                v-if="formData.addressInfo.binaan_rumah === 'Lain-lain'"
-                placeholder="Nyatakan binaan rumah lain"
-                v-model="formData.addressInfo.lain_lain_binaan_rumah"
-                :validation-messages="{
-                  required: 'Sila nyatakan binaan rumah lain',
-                }"
-              />
 
               <FormKit
                 type="select"
@@ -1771,107 +1693,6 @@
               />
             </div>
 
-            <!-- Kemudahan Asas Section -->
-            <div class="mt-6">
-              <h5 class="text-md font-medium mb-3">Kemudahan Asas</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700"
-                    >Bekalan Air</label
-                  >
-                  <FormKit
-                    type="radio"
-                    name="bekalan_air"
-                    :options="[
-                      { label: 'Ada', value: 'ada' },
-                      { label: 'Tiada', value: 'tiada' },
-                    ]"
-                    validation="required"
-                    v-model="formData.addressInfo.bekalan_air"
-                    :validation-messages="{
-                      required: 'Sila pilih status bekalan air',
-                    }"
-                  />
-                </div>
-
-                <FormKit
-                  type="number"
-                  name="bil_air"
-                  label="Anggaran Bil Air Sebulan (RM)"
-                  step="0.01"
-                  min="0"
-                  validation="required"
-                  v-model="formData.addressInfo.bil_air"
-                  :validation-messages="{
-                    required: 'Anggaran bil air adalah wajib',
-                  }"
-                />
-
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700"
-                    >Bekalan Elektrik</label
-                  >
-                  <FormKit
-                    type="radio"
-                    name="bekalan_elektrik"
-                    :options="[
-                      { label: 'Ada', value: 'ada' },
-                      { label: 'Tiada', value: 'tiada' },
-                    ]"
-                    validation="required"
-                    v-model="formData.addressInfo.bekalan_elektrik"
-                    :validation-messages="{
-                      required: 'Sila pilih status bekalan elektrik',
-                    }"
-                  />
-                </div>
-
-                <FormKit
-                  type="number"
-                  name="bil_elektrik"
-                  label="Anggaran Bil Elektrik Sebulan (RM)"
-                  step="0.01"
-                  min="0"
-                  validation="required"
-                  v-model="formData.addressInfo.bil_elektrik"
-                  :validation-messages="{
-                    required: 'Anggaran bil elektrik adalah wajib',
-                  }"
-                />
-
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700"
-                    >Bil Penyelenggaraan</label
-                  >
-                  <FormKit
-                    type="radio"
-                    name="penyelenggaraan"
-                    :options="[
-                      { label: 'Ada', value: 'ada' },
-                      { label: 'Tiada', value: 'tiada' },
-                    ]"
-                    validation="required"
-                    v-model="formData.addressInfo.penyelenggaraan"
-                    :validation-messages="{
-                      required: 'Sila pilih status bil penyelenggaraan',
-                    }"
-                  />
-                </div>
-
-                <FormKit
-                  type="number"
-                  name="bil_penyelenggaraan"
-                  label="Anggaran Bil Penyelenggaraan Sebulan (RM)"
-                  step="0.01"
-                  min="0"
-                  validation="required"
-                  v-model="formData.addressInfo.bil_penyelenggaraan"
-                  :validation-messages="{
-                    required: 'Anggaran bil penyelenggaraan adalah wajib',
-                  }"
-                />
-              </div>
-            </div>
 
             <!-- Kos Tempat Tinggal Section -->
             <div class="mt-6">
@@ -2184,13 +2005,14 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Pemilikan Barangan Rumah</rs-button
+                >Maklumat Pekerjaan</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 10: Maklumat Pemilikan Barangan Rumah -->
+
+        <!-- Section A Form - Step 10: Maklumat Pekerjaan -->
         <FormKit
           v-if="currentStepA === 10"
           type="form"
@@ -2198,150 +2020,7 @@
           :actions="false"
           id="sectionA11"
         >
-          <h3 class="text-lg font-semibold mb-4">
-            10. Maklumat Pemilikan Barangan Rumah
-          </h3>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit
-              type="select"
-              name="television"
-              label="Television"
-              placeholder="Pilih status television"
-              :options="[
-                { label: 'Ya', value: 'ya' },
-                { label: 'Tidak', value: 'tidak' },
-              ]"
-              v-model="formData.television"
-            />
-
-            <FormKit
-              type="select"
-              name="radio"
-              label="Radio"
-              placeholder="Pilih status radio"
-              :options="[
-                { label: 'Ya', value: 'ya' },
-                { label: 'Tidak', value: 'tidak' },
-              ]"
-              v-model="formData.radio"
-            />
-
-            <FormKit
-              type="select"
-              name="perabot"
-              label="Perabot"
-              placeholder="Pilih status perabot"
-              :options="[
-                { label: 'Ya', value: 'ya' },
-                { label: 'Tidak', value: 'tidak' },
-              ]"
-              v-model="formData.perabot"
-            />
-
-            <FormKit
-              type="select"
-              name="telefon_bimbit"
-              label="Telefon Bimbit"
-              placeholder="Pilih status telefon bimbit"
-              :options="[
-                { label: 'Ya', value: 'ya' },
-                { label: 'Tidak', value: 'tidak' },
-              ]"
-              v-model="formData.telefon_bimbit"
-            />
-
-            <FormKit
-              type="select"
-              name="mesin_basuh"
-              label="Mesin Basuh"
-              placeholder="Pilih status mesin basuh"
-              :options="[
-                { label: 'Ya', value: 'ya' },
-                { label: 'Tidak', value: 'tidak' },
-              ]"
-              v-model="formData.mesin_basuh"
-            />
-
-            <FormKit
-              type="select"
-              name="astro"
-              label="Astro"
-              placeholder="Pilih status astro"
-              :options="[
-                { label: 'Ya', value: 'ya' },
-                { label: 'Tidak', value: 'tidak' },
-              ]"
-              v-model="formData.astro"
-            />
-
-            <FormKit
-              type="select"
-              name="video_player_cd_dvd"
-              label="Video / Player / CD / DVD"
-              placeholder="Pilih status video player"
-              :options="[
-                { label: 'Ya', value: 'ya' },
-                { label: 'Tidak', value: 'tidak' },
-              ]"
-              v-model="formData.video_player_cd_dvd"
-            />
-
-            <FormKit
-              type="select"
-              name="peti_ais"
-              label="Peti Ais"
-              placeholder="Pilih status peti ais"
-              :options="[
-                { label: 'Ya', value: 'ya' },
-                { label: 'Tidak', value: 'tidak' },
-              ]"
-              v-model="formData.peti_ais"
-            />
-
-            <FormKit
-              type="select"
-              name="dapur_gas"
-              label="Dapur Gas"
-              placeholder="Pilih status dapur gas"
-              :options="[
-                { label: 'Ya', value: 'ya' },
-                { label: 'Tidak', value: 'tidak' },
-              ]"
-              v-model="formData.dapur_gas"
-            />
-          </div>
-
-          <div class="flex justify-between gap-3 mt-6">
-            <rs-button
-              type="button"
-              variant="primary-outline"
-              @click="prevStepA"
-              >Kembali</rs-button
-            >
-            <div class="flex gap-3">
-              <rs-button
-                type="button"
-                variant="secondary"
-                @click="handleSaveStepA11"
-                >Simpan</rs-button
-              >
-              <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Pekerjaan</rs-button
-              >
-            </div>
-          </div>
-        </FormKit>
-
-        <!-- Section A Form - Step 11: Maklumat Pekerjaan -->
-        <FormKit
-          v-if="currentStepA === 11"
-          type="form"
-          @submit="nextStepA"
-          :actions="false"
-          id="sectionA12"
-        >
-          <h3 class="text-lg font-semibold mb-4">11. Maklumat Pekerjaan</h3>
+          <h3 class="text-lg font-semibold mb-4">10. Maklumat Pekerjaan</h3>
 
           <!-- Hidden field for ID type -->
           <FormKit type="hidden" name="jenis_id_pekerjaan" :value="jenisId" />
@@ -2447,87 +2126,6 @@
 
               <FormKit
                 type="text"
-                name="no_telefon_pejabat"
-                label="No. Telefon Pejabat"
-                v-model="formData.no_telefon_pejabat"
-              />
-
-              <FormKit
-                type="text"
-                name="nama_majikan"
-                label="Nama Majikan"
-                v-model="formData.nama_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="no_telefon_majikan"
-                label="No. Telefon Majikan"
-                v-model="formData.no_telefon_majikan"
-              />
-
-              <div class="md:col-span-2">
-                <FormKit
-                  type="textarea"
-                  name="alamat_majikan_1"
-                  label="Alamat Majikan 1"
-                  v-model="formData.alamat_majikan_1"
-                />
-
-                <FormKit
-                  type="textarea"
-                  name="alamat_majikan_2"
-                  label="Alamat Majikan 2"
-                  placeholder="(Tidak wajib)"
-                  v-model="formData.alamat_majikan_2"
-                />
-
-                <FormKit
-                  type="textarea"
-                  name="alamat_majikan_3"
-                  label="Alamat Majikan 3"
-                  placeholder="(Tidak wajib)"
-                  v-model="formData.alamat_majikan_3"
-                />
-              </div>
-
-              <FormKit
-                type="text"
-                name="bandar_majikan"
-                label="Bandar"
-                v-model="formData.bandar_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="poskod_majikan"
-                label="Poskod"
-                v-model="formData.poskod_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="daerah_majikan"
-                label="Daerah"
-                v-model="formData.daerah_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="negeri_majikan"
-                label="Negeri"
-                v-model="formData.negeri_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="negara_majikan"
-                label="Negara"
-                v-model="formData.negara_majikan"
-              />
-
-              <FormKit
-                type="text"
                 name="jawatan"
                 label="Jawatan"
                 v-model="formData.jawatan"
@@ -2579,7 +2177,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA12"
+                @click="handleSaveStepA11"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2589,16 +2187,16 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 12: Maklumat Pendapatan & Perbelanjaan -->
+        <!-- Section A Form - Step 11: Maklumat Pendapatan & Perbelanjaan -->
         <FormKit
-          v-if="currentStepA === 12"
+          v-if="currentStepA === 11"
           type="form"
           @submit="nextStepA"
           :actions="false"
-          id="sectionA13"
+          id="sectionA12"
         >
           <h3 class="text-lg font-semibold mb-4">
-            12. Maklumat Pendapatan & Perbelanjaan
+            11. Maklumat Pendapatan & Perbelanjaan
           </h3>
 
           <!-- Income Information -->
@@ -2804,158 +2402,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA13"
-                >Simpan</rs-button
-              >
-              <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Waris</rs-button
-              >
-            </div>
-          </div>
-        </FormKit>
-
-        <!-- Section A Form - Step 13: Maklumat Waris -->
-        <FormKit
-          v-if="currentStepA === 13"
-          type="form"
-          @submit="nextStepA"
-          :actions="false"
-          id="sectionA14"
-        >
-          <h3 class="text-lg font-semibold mb-4">13. Maklumat Waris</h3>
-
-          <div
-            v-for="(heir, index) in formData.heirs"
-            :key="index"
-            class="mb-8 p-4 border border-gray-200 rounded-lg"
-          >
-            <div class="flex justify-between items-center mb-4">
-              <h4 class="text-md font-medium">Waris #{{ index + 1 }}</h4>
-              <button
-                type="button"
-                @click="removeHeir(index)"
-                class="text-red-500 hover:text-red-700"
-              >
-                <Icon name="mdi:delete" size="1.25rem" />
-              </button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                :name="`heir${index}JenisId`"
-                label="Jenis Id"
-                placeholder="Pilih Jenis Id"
-                validation="required"
-                :options="[
-                  { label: 'MyKad', value: 'MyKad' },
-                  { label: 'ForeignId', value: 'ForeignId' },
-                ]"
-                v-model="heir.jenis_pengenalan"
-                :validation-messages="{
-                  required: 'Jenis Id adalah wajib',
-                }"
-              />
-
-              <FormKit
-                type="text"
-                :name="'heir${index}IdPengenalan'"
-                label="Id Pengenalan"
-                :validation="heir.jenis_pengenalan ? 'required' : ''"
-                v-model="heir.id_pengenalan"
-                :validation-messages="{
-                  required: 'Id Pengenalan adalah wajib',
-                }"
-              />
-
-              <FormKit
-                type="text"
-                :name="`heir${index}Name`"
-                label="Nama Waris"
-                :validation="heir.jenis_pengenalan ? 'required' : ''"
-                v-model="heir.name"
-                :validation-messages="{
-                  required: 'Nama waris adalah wajib',
-                }"
-              />
-
-              <FormKit
-                type="select"
-                :name="`heir${index}Relationship`"
-                label="Hubungan"
-                :validation="heir.jenis_pengenalan ? 'required' : ''"
-                placeholder="Pilih Hubungan"
-                :options="[
-                  'Pasangan Pemohon',
-                  'Isteri Kedua',
-                  'Isteri Ketiga',
-                  'Isteri Keempat',
-                  'Ipar',
-                  'Abang',
-                  'Bapa',
-                  'Ibu',
-                  'Kakak',
-                  'Adik',
-                  'Anak',
-                  'Cucu',
-                  'Bapa Mertua',
-                  'Ibu Mertua',
-                  'Lain-lain',
-                ]"
-                v-model="heir.relationship"
-                :validation-messages="{
-                  required: 'Hubungan adalah wajib',
-                }"
-              />
-
-              <FormKit
-                v-if="heir.relationship === 'Lain-lain'"
-                type="text"
-                :name="`heir${index}RelationshipOther`"
-                label="Lain-lain Hubungan"
-                :validation="
-                  heir.relationship === 'Lain-lain' && heir.jenis_pengenalan
-                    ? 'required'
-                    : ''
-                "
-                v-model="heir.relationship_other"
-                :validation-messages="{
-                  required: 'Sila nyatakan hubungan lain-lain',
-                }"
-              />
-
-              <FormKit
-                type="tel"
-                :name="`heir${index}Phone`"
-                label="No. Telefon Waris"
-                :validation="heir.jenis_pengenalan ? 'required' : ''"
-                v-model="heir.phone"
-                :validation-messages="{
-                  required: 'No. telefon waris adalah wajib',
-                }"
-              />
-            </div>
-          </div>
-
-          <div class="flex justify-center mt-4">
-            <rs-button variant="secondary" @click="addHeir" type="button">
-              <Icon name="mdi:plus" class="mr-1" size="1rem" />
-              Tambah Waris
-            </rs-button>
-          </div>
-
-          <div class="flex justify-between gap-3 mt-6">
-            <rs-button
-              type="button"
-              variant="primary-outline"
-              @click="prevStepA"
-              >Kembali</rs-button
-            >
-            <div class="flex gap-3">
-              <rs-button
-                type="button"
-                variant="secondary"
-                @click="handleSaveStepA15"
+                @click="handleSaveStepA11"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2964,6 +2411,7 @@
             </div>
           </div>
         </FormKit>
+
       </template>
     </rs-card>
 
@@ -3541,19 +2989,6 @@
                 v-model="getCurrentTanggungan().no_telefon_bimbit_tanggungan"
               />
 
-              <!-- No Telefon Rumah -->
-              <FormKit
-                type="text"
-                name="no_telefon_rumah_tanggungan"
-                label="No Telefon Rumah"
-                placeholder="Contoh: 038881234"
-                validation="matches:/^(\+?6?0)[0-9]{1,2}-*[0-9]{6,8}$/"
-                :validation-messages="{
-                  matches: 'Format nombor telefon tidak sah. Contoh: 038881234',
-                }"
-                v-model="getCurrentTanggungan().no_telefon_rumah_tanggungan"
-              />
-
               <!-- Emel -->
               <FormKit
                 type="email"
@@ -3962,6 +3397,21 @@
                   :validation-messages="{
                     required: 'Sila pilih sebab tiada akaun bank',
                   }"
+                />
+              </div>
+              
+              <!-- Lain-lain Sebab Tiada Akaun -->
+              <div v-if="showLainLainSebabTiadaAkaunTanggungan" class="mt-4">
+                <FormKit
+                  type="text"
+                  name="lain_lain_sebab_tiada_akaun_tanggungan"
+                  label="Lain-lain Sebab Tiada Akaun"
+                  placeholder="Sila nyatakan sebab lain"
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila nyatakan sebab lain',
+                  }"
+                  v-model="getCurrentTanggungan().lain_lain_sebab_tiada_akaun_tanggungan"
                 />
               </div>
             </div>
@@ -4919,164 +4369,25 @@
                     { label: 'Swasta', value: 'Swasta' },
                     { label: 'Badan Berkanun', value: 'Badan Berkanun' },
                     { label: 'Kerja Sendiri', value: 'Kerja Sendiri' },
+                    { label: 'Lain-lain', value: 'Lain-lain' },
                   ]"
                   validation="required"
                   validation-label="Sektor pekerjaan"
                   v-model="getCurrentTanggungan().sektor_pekerjaan"
                 />
 
-                <!-- 3.2.1 Lain-lain Sektor Pekerjaan -->
-                <div
-                  v-if="
-                    getCurrentTanggungan().sektor_pekerjaan === 'Kerja Sendiri'
-                  "
-                  class="md:col-span-2"
-                >
-                  <FormKit
-                    type="text"
-                    name="lain_lain_sektor_pekerjaan_tanggungan"
-                    label="Lain-lain Sektor Pekerjaan "
-                    placeholder="Sila nyatakan sektor pekerjaan lain"
-                    validation="required"
-                    validation-label="Lain-lain sektor pekerjaan"
-                    v-model="getCurrentTanggungan().lain_lain_sektor_pekerjaan"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- 4. Maklumat Majikan -->
-            <!-- <div
-              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
-              class="mb-6"
-            >
-              <h5 class="font-medium mb-3">Maklumat Majikan</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="text"
-                  name="no_telefon_pejabat_tanggungan"
-                  label="No Telefon Pejabat "
-                  placeholder="Contoh: 038881234"
-                  validation="required"
-                  validation-label="No telefon pejabat"
-                  v-model="getCurrentTanggungan().no_telefon_pejabat"
-                />
-
-                <FormKit
-                  type="text"
-                  name="nama_majikan_tanggungan"
-                  label="Nama Majikan "
-                  placeholder="Nama syarikat atau majikan"
-                  validation="required"
-                  validation-label="Nama majikan"
-                  v-model="getCurrentTanggungan().nama_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="no_tel_majikan_tanggungan"
-                  label="No Tel Majikan "
-                  placeholder="Contoh: 038881234"
-                  validation="required"
-                  validation-label="No tel majikan"
-                  v-model="getCurrentTanggungan().no_tel_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="alamat_majikan_1_tanggungan"
-                  label="Alamat Majikan 1 "
-                  placeholder="Alamat baris 1"
-                  validation="required"
-                  validation-label="Alamat majikan 1"
-                  v-model="getCurrentTanggungan().alamat_majikan_1"
-                />
-
-                <FormKit
-                  type="text"
-                  name="alamat_majikan_2_tanggungan"
-                  label="Alamat Majikan 2"
-                  placeholder="Alamat baris 2 (pilihan)"
-                  v-model="getCurrentTanggungan().alamat_majikan_2"
-                />
-
-                <FormKit
-                  type="text"
-                  name="alamat_majikan_3_tanggungan"
-                  label="Alamat Majikan 3"
-                  placeholder="Alamat baris 3 (pilihan)"
-                  v-model="getCurrentTanggungan().alamat_majikan_3"
-                />
-
-                <FormKit
-                  type="text"
-                  name="bandar_majikan_tanggungan"
-                  label="Bandar "
-                  placeholder="Nama bandar"
-                  validation="required"
-                  validation-label="Bandar"
-                  v-model="getCurrentTanggungan().bandar_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="poskod_majikan_tanggungan"
-                  label="Poskod "
-                  placeholder="Contoh: 50000"
-                  validation="required"
-                  validation-label="Poskod"
-                  v-model="getCurrentTanggungan().poskod_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="daerah_majikan_tanggungan"
-                  label="Daerah "
-                  placeholder="Nama daerah"
-                  validation="required"
-                  validation-label="Daerah"
-                  v-model="getCurrentTanggungan().daerah_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="negeri_majikan_tanggungan"
-                  label="Negeri "
-                  placeholder="Nama negeri"
-                  validation="required"
-                  validation-label="Negeri"
-                  v-model="getCurrentTanggungan().negeri_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="negara_majikan_tanggungan"
-                  label="Negara "
-                  placeholder="Nama negara"
-                  validation="required"
-                  validation-label="Negara"
-                  v-model="getCurrentTanggungan().negara_majikan"
-                />
-              </div>
-            </div> -->
-
-            <!-- 5. Jawatan & Status -->
-            <!-- <div
-              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
-              class="mb-6"
-            >
-              <h5 class="font-medium mb-3">Jawatan & Status</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 3.3 Jawatan -->
                 <FormKit
                   type="text"
                   name="jawatan_tanggungan"
                   label="Jawatan "
-                  placeholder="Contoh: Kerani, Jurutera, Guru"
+                  placeholder="Contoh: Pengurus, Penolong Pengurus"
                   validation="required"
                   validation-label="Jawatan"
                   v-model="getCurrentTanggungan().jawatan"
                 />
 
+                <!-- 3.4 Status Jawatan -->
                 <FormKit
                   type="select"
                   name="status_jawatan_tanggungan"
@@ -5091,44 +4402,54 @@
                   validation-label="Status jawatan"
                   v-model="getCurrentTanggungan().status_jawatan"
                 />
-              </div>
-            </div> -->
 
-            <!-- 6. Pendapatan -->
-            <!-- <div
-              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
-              class="mb-6"
-            >
-              <h5 class="font-medium mb-3">Pendapatan</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 3.5 Pendapatan Kasar -->
                 <FormKit
-                  type="text"
+                  type="number"
                   name="pendapatan_kasar_tanggungan"
                   label="Pendapatan Kasar (RM) "
-                  placeholder="Contoh: 2500.00"
-                  validation="required|number"
+                  step="0.01"
+                  min="0"
+                  validation="required"
                   validation-label="Pendapatan kasar"
-                  validation-messages="{
-                    required: 'Pendapatan kasar adalah wajib',
-                    number: 'Pendapatan kasar mestilah nombor'
-                  }"
                   v-model="getCurrentTanggungan().pendapatan_kasar"
                 />
 
-                <FormKit
-                  type="file"
-                  name="dokumen_pendapatan_tanggungan"
-                  label="Upload Dokumen "
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  validation="required"
-                  validation-label="Dokumen pendapatan"
-                  validation-messages="{
-                    required: 'Dokumen pendapatan adalah wajib'
-                  }"
-                  v-model="getCurrentTanggungan().dokumen_pendapatan"
-                />
+                <!-- 3.2.1 Lain-lain Sektor Pekerjaan -->
+                <div
+                  v-if="showLainLainSektorTanggungan"
+                  class="md:col-span-2"
+                >
+                  <FormKit
+                    type="text"
+                    name="lain_lain_sektor_pekerjaan_tanggungan"
+                    label="Lain-lain Sektor Pekerjaan "
+                    placeholder="Sila nyatakan sektor pekerjaan lain"
+                    validation="required"
+                    validation-label="Lain-lain sektor pekerjaan"
+                    v-model="getCurrentTanggungan().lain_lain_sektor_pekerjaan"
+                  />
+                </div>
+
+                <!-- 3.6 Pengesahan Pendapatan -->
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="file"
+                    name="pengesahan_pendapatan_tanggungan"
+                    label="Muat naik pengesahan pendapatan / penyata gaji"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                    :validation-messages="{
+                      required: 'Sila muat naik pengesahan pendapatan',
+                      max: 'Saiz fail tidak boleh melebihi 5MB',
+                      mime: 'Format fail tidak dibenarkan',
+                    }"
+                    v-model="getCurrentTanggungan().pengesahan_pendapatan"
+                  />
+                </div>
               </div>
-            </div> -->
+            </div>
           </div>
 
           <div class="flex justify-between gap-3 mt-6">
@@ -5904,7 +5225,7 @@ const currentSection = ref(1);
 
 // Section A - Main Form Steps
 const currentStepA = ref(1);
-const totalStepsA = 13;
+const totalStepsA = 11;
 const stepsA = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Pendidikan" },
@@ -5915,10 +5236,8 @@ const stepsA = [
   { id: 7, label: "Alamat" },
   { id: 8, label: "Pinjaman Harta" },
   { id: 9, label: "Pemilikan" },
-  { id: 10, label: "Pemilikan Barangan Rumah" },
-  { id: 11, label: "Pekerjaan" },
-  { id: 12, label: "Pendapatan & Perbelanjaan" },
-  { id: 13, label: "Waris" },
+  { id: 10, label: "Pekerjaan" },
+  { id: 11, label: "Pendapatan & Perbelanjaan" },
 ];
 
 // Section B - Tanggungan Form Steps (11 steps with separate tabs for different info sections)
@@ -6070,6 +5389,7 @@ const formData = ref({
   swift_code: "",
   kaedah_pembayaran: "",
   sebab_tiada_akaun: "",
+  lain_lain_sebab_tiada_akaun: "",
   sebab_tunai: "",
   // Multiple bank accounts (new)
   bank_accounts: [],
@@ -6149,22 +5469,11 @@ const formData = ref({
     selectedGuru: null,
     // Maklumat Tempat Tinggal
     status_kediaman: "",
-    tapak_rumah: "",
-    jenis_rumah: "",
-    binaan_rumah: "",
     keadaan_kediaman: "",
-    bekalan_air: "",
-    bekalan_elektrik: "",
-    penyelenggaraan: "",
-    bil_air: "",
-    bil_elektrik: "",
     kadar_bayaran_bulanan: "",
     kadar_sewa_bulanan: "",
     dokumen_perjanjian_sewa: null,
     lain_lain_status_kediaman: "",
-    lain_lain_tapak_rumah: "",
-    lain_lain_jenis_rumah: "",
-    lain_lain_binaan_rumah: "",
   },
 
   // Section H - Maklumat Pemilikan
@@ -6186,16 +5495,6 @@ const formData = ref({
   tahun_akhir_pinjaman: "",
   dokumen_perjanjian_pinjaman: null,
 
-  // Section I - Maklumat Barangan Rumah
-  television: "",
-  radio: "",
-  perabot: "",
-  telefon_bimbit: "",
-  mesin_basuh: "",
-  astro: "",
-  video_player_cd_dvd: "",
-  peti_ais: "",
-  dapur_gas: "",
 
   // Section J - Pengesahan
   pengesahan: {
@@ -6259,8 +5558,6 @@ const formData = ref({
   // Note: Individual tanggungan fields are now handled in tanggunganList array
   // These fields are kept for backward compatibility but will be replaced
 
-  // Heirs array
-  heirs: [],
 
   // Tanggungan array for multiple dependents
   tanggungan: [],
@@ -6302,7 +5599,8 @@ const noPaymentReasonOptions = [
   { label: "Muflis", value: "muflis" },
   { label: "Disenarai hitam oleh bank", value: "disenarai-hitam-oleh-bank" },
   { label: "Bukan Warganegara", value: "bukan-warganegara" },
-  { label: "Sakit", value: "sakit" },
+  { label: "Sakit Terlantar", value: "sakit" },
+  { label: "Lain-lain", value: "lain-lain" },
 ];
 
 // Bank Options with SWIFT Codes
@@ -6551,6 +5849,20 @@ const kfamClassesList = ref([
 
 const showLainLainSektor = computed(() => {
   return formData.value.sektor_pekerjaan === "Lain-lain";
+});
+
+const showLainLainSektorTanggungan = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.sektor_pekerjaan === "Lain-lain";
+});
+
+const showLainLainSebabTiadaAkaun = computed(() => {
+  return formData.value.sebab_tiada_akaun === "lain-lain";
+});
+
+const showLainLainSebabTiadaAkaunTanggungan = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.sebab_tiada_akaun_tanggungan === "lain-lain";
 });
 
 const showLainLainSumberPendapatan = computed(() => {
@@ -7360,6 +6672,7 @@ const addTanggungan = (showNotification = true) => {
     nama_pemegang_akaun_tanggungan: "",
     kaedah_pembayaran_tanggungan: "",
     sebab_tiada_akaun_tanggungan: "",
+    lain_lain_sebab_tiada_akaun_tanggungan: "",
     // Multiple bank accounts for tanggungan (new)
     bank_accounts: [],
 
@@ -7433,6 +6746,10 @@ const addTanggungan = (showNotification = true) => {
     jenis_pekerjaan: "",
     sektor_pekerjaan: "",
     lain_lain_sektor_pekerjaan: "",
+    jawatan: "",
+    status_jawatan: "",
+    pendapatan_kasar: "",
+    pengesahan_pendapatan: null,
 
     // Maklumat Majikan
     no_telefon_pejabat: "",
@@ -7808,15 +7125,7 @@ onMounted(() => {
       geolokasi: "lokasi semasa",
       tempoh_menetap_selangor: "28",
       status_kediaman: "Milik Sendiri Tidak Berbayar",
-      tapak_rumah: "Milik Sendiri",
-      jenis_rumah: "Teres",
-      binaan_rumah: "Batu",
       keadaan_kediaman: "Baik",
-      bekalan_air: "ada",
-      bekalan_elektrik: "ada",
-      penyelenggaraan: "tiada",
-      bil_air: "50",
-      bil_elektrik: "50",
     },
 
     // Mock data for Maklumat Pendapatan & Perbelanjaan
@@ -7943,6 +7252,10 @@ onMounted(() => {
         jenis_pekerjaan: "Kerani",
         sektor_pekerjaan: "Swasta",
         lain_lain_sektor_pekerjaan: "",
+        jawatan: "Kerani Pentadbiran",
+        status_jawatan: "Tetap",
+        pendapatan_kasar: "2500.00",
+        pengesahan_pendapatan: null,
 
         // Maklumat Majikan
         no_telefon_pejabat: "038881234",
@@ -8078,6 +7391,10 @@ onMounted(() => {
         jenis_pekerjaan: "",
         sektor_pekerjaan: "",
         lain_lain_sektor_pekerjaan: "",
+        jawatan: "",
+        status_jawatan: "",
+        pendapatan_kasar: "",
+        pengesahan_pendapatan: null,
 
         // Maklumat Majikan
         no_telefon_pejabat: "",
@@ -8213,6 +7530,10 @@ onMounted(() => {
         jenis_pekerjaan: "",
         sektor_pekerjaan: "",
         lain_lain_sektor_pekerjaan: "",
+        jawatan: "",
+        status_jawatan: "",
+        pendapatan_kasar: "",
+        pengesahan_pendapatan: null,
 
         // Maklumat Majikan
         no_telefon_pejabat: "",
@@ -8410,7 +7731,7 @@ const handleSaveStepA9 = async () => {
 const handleSaveStepA10 = async () => {
   try {
     console.log("Step A10 saved:", formData.value);
-    toast.success("Maklumat Pendapatan berjaya disimpan");
+    toast.success("Maklumat Pekerjaan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A10 error:", error);
@@ -8420,52 +7741,14 @@ const handleSaveStepA10 = async () => {
 const handleSaveStepA11 = async () => {
   try {
     console.log("Step A11 saved:", formData.value);
-    toast.success("Maklumat Pendapatan berjaya disimpan");
+    toast.success("Maklumat Pendapatan & Perbelanjaan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A11 error:", error);
   }
 };
 
-const handleSaveStepA12 = async () => {
-  try {
-    console.log("Step A12 saved:", formData.value);
-    toast.success("Maklumat Pekerjaan berjaya disimpan");
-  } catch (error) {
-    toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A12 error:", error);
-  }
-};
 
-const handleSaveStepA13 = async () => {
-  try {
-    console.log("Step A13 saved:", formData.value);
-    toast.success("Maklumat Pemilikan berjaya disimpan");
-  } catch (error) {
-    toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A13 error:", error);
-  }
-};
-
-const handleSaveStepA14 = async () => {
-  try {
-    console.log("Step A14 saved:", formData.value);
-    toast.success("Maklumat Pemilikan Barangan Rumah berjaya disimpan");
-  } catch (error) {
-    toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A14 error:", error);
-  }
-};
-
-const handleSaveStepA15 = async () => {
-  try {
-    console.log("Step A15 saved:", formData.value);
-    toast.success("Maklumat Waris berjaya disimpan");
-  } catch (error) {
-    toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A15 error:", error);
-  }
-};
 
 // ============================================================================
 // STEP SAVE FUNCTIONS - SECTION B
@@ -8597,21 +7880,6 @@ const handleSaveStepB11 = async () => {
   }
 };
 
-// ============================================================================
-// HEIRS MANAGEMENT FUNCTIONS
-// ============================================================================
-const addHeir = () => {
-  formData.value.heirs.push({
-    name: "",
-    relationship: "",
-    relationship_other: "",
-    phone: "",
-  });
-};
-
-const removeHeir = (index) => {
-  formData.value.heirs.splice(index, 1);
-};
 
 // ============================================================================
 // EDUCATION ENTRIES MANAGEMENT FUNCTIONS
