@@ -124,6 +124,58 @@
         </template>
       </rs-card>
     </div>
+
+    <!-- KFAM Section -->
+    <rs-card>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Kelas Fardu Ain Muallaf (KFAM) Terdekat</h2>
+          <rs-button variant="primary" class="bg-teal-600 hover:bg-teal-700" @click="printKfam">
+            <i class="fas fa-print mr-2"></i>
+            Cetak
+          </rs-button>
+        </div>
+      </template>
+      <template #body>
+        <div ref="kfamSectionRef" class="overflow-x-auto">
+          <table class="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">Nama Pengajar</th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">No Telefon</th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">Tempat Mengajar</th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">Daerah</th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-medium text-gray-700">Bahasa Penghantar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="kelas in kfamClassesList" :key="kelas.id">
+                <td class="border border-gray-300 px-4 py-3">
+                  <div class="font-medium">{{ kelas.nama_pengajar }}</div>
+                  <div class="text-sm text-gray-600">{{ kelas.kelulusan }}</div>
+                </td>
+                <td class="border border-gray-300 px-4 py-3">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-phone text-blue-600"></i>
+                    <span>{{ kelas.no_telefon }}</span>
+                  </div>
+                </td>
+                <td class="border border-gray-300 px-4 py-3">
+                  <div class="font-medium">{{ kelas.tempat_mengajar }}</div>
+                  <div class="text-sm text-gray-600">{{ kelas.alamat_tempat }}</div>
+                </td>
+                <td class="border border-gray-300 px-4 py-3">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">{{ kelas.daerah }}</span>
+                </td>
+                <td class="border border-gray-300 px-4 py-3">
+                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">{{ kelas.bahasa_penghantar }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </rs-card>
   </div>
 </template>
 
@@ -223,6 +275,76 @@ const fetchDashboardData = () => {
 onMounted(() => {
   fetchDashboardData();
 });
+
+// KFAM mock data and print logic (referenced from AS/FR/02)
+const kfamSectionRef = ref<HTMLElement | null>(null);
+const kfamClassesList = ref([
+  {
+    id: 1,
+    nama_pengajar: 'Ustaz Ahmad',
+    kelulusan: 'Sijil Pengajian Islam',
+    no_telefon: '012-3456789',
+    tempat_mengajar: 'Masjid Al-Khairiyah',
+    alamat_tempat: 'Jalan Masjid, 53100 Gombak, Selangor',
+    daerah: 'Gombak',
+    bahasa_penghantar: 'Bahasa Melayu',
+  },
+  {
+    id: 2,
+    nama_pengajar: 'Ustazah Farah',
+    kelulusan: 'Ijazah Syariah',
+    no_telefon: '013-9876543',
+    tempat_mengajar: 'Surau Al-Hidayah',
+    alamat_tempat: 'Taman Bukit, 68000 Ampang, Selangor',
+    daerah: 'Ampang',
+    bahasa_penghantar: 'Bahasa Melayu',
+  },
+  {
+    id: 3,
+    nama_pengajar: 'Brother Ali',
+    kelulusan: 'Certified Daee',
+    no_telefon: '011-2233445',
+    tempat_mengajar: 'Community Center',
+    alamat_tempat: 'Jalan Damai, 47400 Petaling Jaya, Selangor',
+    daerah: 'Petaling',
+    bahasa_penghantar: 'English',
+  },
+]);
+
+const printKfam = () => {
+  const node = kfamSectionRef.value;
+  if (!node) return;
+  const content = node.innerHTML;
+  const printWindow = window.open('', '_blank', 'noopener,noreferrer');
+  if (!printWindow) return;
+  printWindow.document.open();
+  printWindow.document.write(`<!doctype html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Cetak KFAM</title>
+      <style>
+        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; padding: 16px; }
+        h1 { font-size: 18px; margin: 0 0 12px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #d1d5db; padding: 8px; text-align: left; }
+        thead tr { background: #f9fafb; }
+        .text-sm { font-size: 12px; color: #6b7280; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 12px; }
+        .badge-blue { background: #dbeafe; color: #1d4ed8; }
+        .badge-green { background: #d1fae5; color: #047857; }
+        @media print { @page { size: A4; margin: 12mm; } }
+      </style>
+    </head>
+    <body>
+      <h1>Kelas Fardu Ain Muallaf (KFAM) Terdekat</h1>
+      ${content}
+      <script>window.onload = function(){ window.print(); setTimeout(function(){ window.close(); }, 300); }<\/script>
+    </body>
+  </html>`);
+  printWindow.document.close();
+};
 </script>
 
 <style scoped></style>
