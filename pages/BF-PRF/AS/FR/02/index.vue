@@ -256,13 +256,6 @@
               />
 
               <FormKit
-                type="text"
-                name="no_telefon_rumah"
-                label="No Telefon Rumah"
-                v-model="formData.no_telefon_rumah"
-              />
-
-              <FormKit
                 type="email"
                 name="emel"
                 label="Emel"
@@ -2447,87 +2440,6 @@
 
               <FormKit
                 type="text"
-                name="no_telefon_pejabat"
-                label="No. Telefon Pejabat"
-                v-model="formData.no_telefon_pejabat"
-              />
-
-              <FormKit
-                type="text"
-                name="nama_majikan"
-                label="Nama Majikan"
-                v-model="formData.nama_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="no_telefon_majikan"
-                label="No. Telefon Majikan"
-                v-model="formData.no_telefon_majikan"
-              />
-
-              <div class="md:col-span-2">
-                <FormKit
-                  type="textarea"
-                  name="alamat_majikan_1"
-                  label="Alamat Majikan 1"
-                  v-model="formData.alamat_majikan_1"
-                />
-
-                <FormKit
-                  type="textarea"
-                  name="alamat_majikan_2"
-                  label="Alamat Majikan 2"
-                  placeholder="(Tidak wajib)"
-                  v-model="formData.alamat_majikan_2"
-                />
-
-                <FormKit
-                  type="textarea"
-                  name="alamat_majikan_3"
-                  label="Alamat Majikan 3"
-                  placeholder="(Tidak wajib)"
-                  v-model="formData.alamat_majikan_3"
-                />
-              </div>
-
-              <FormKit
-                type="text"
-                name="bandar_majikan"
-                label="Bandar"
-                v-model="formData.bandar_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="poskod_majikan"
-                label="Poskod"
-                v-model="formData.poskod_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="daerah_majikan"
-                label="Daerah"
-                v-model="formData.daerah_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="negeri_majikan"
-                label="Negeri"
-                v-model="formData.negeri_majikan"
-              />
-
-              <FormKit
-                type="text"
-                name="negara_majikan"
-                label="Negara"
-                v-model="formData.negara_majikan"
-              />
-
-              <FormKit
-                type="text"
                 name="jawatan"
                 label="Jawatan"
                 v-model="formData.jawatan"
@@ -3539,19 +3451,6 @@
                     'Format nombor telefon tidak sah. Contoh: 0123456789',
                 }"
                 v-model="getCurrentTanggungan().no_telefon_bimbit_tanggungan"
-              />
-
-              <!-- No Telefon Rumah -->
-              <FormKit
-                type="text"
-                name="no_telefon_rumah_tanggungan"
-                label="No Telefon Rumah"
-                placeholder="Contoh: 038881234"
-                validation="matches:/^(\+?6?0)[0-9]{1,2}-*[0-9]{6,8}$/"
-                :validation-messages="{
-                  matches: 'Format nombor telefon tidak sah. Contoh: 038881234',
-                }"
-                v-model="getCurrentTanggungan().no_telefon_rumah_tanggungan"
               />
 
               <!-- Emel -->
@@ -4919,164 +4818,25 @@
                     { label: 'Swasta', value: 'Swasta' },
                     { label: 'Badan Berkanun', value: 'Badan Berkanun' },
                     { label: 'Kerja Sendiri', value: 'Kerja Sendiri' },
+                    { label: 'Lain-lain', value: 'Lain-lain' },
                   ]"
                   validation="required"
                   validation-label="Sektor pekerjaan"
                   v-model="getCurrentTanggungan().sektor_pekerjaan"
                 />
 
-                <!-- 3.2.1 Lain-lain Sektor Pekerjaan -->
-                <div
-                  v-if="
-                    getCurrentTanggungan().sektor_pekerjaan === 'Kerja Sendiri'
-                  "
-                  class="md:col-span-2"
-                >
-                  <FormKit
-                    type="text"
-                    name="lain_lain_sektor_pekerjaan_tanggungan"
-                    label="Lain-lain Sektor Pekerjaan "
-                    placeholder="Sila nyatakan sektor pekerjaan lain"
-                    validation="required"
-                    validation-label="Lain-lain sektor pekerjaan"
-                    v-model="getCurrentTanggungan().lain_lain_sektor_pekerjaan"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- 4. Maklumat Majikan -->
-            <!-- <div
-              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
-              class="mb-6"
-            >
-              <h5 class="font-medium mb-3">Maklumat Majikan</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="text"
-                  name="no_telefon_pejabat_tanggungan"
-                  label="No Telefon Pejabat "
-                  placeholder="Contoh: 038881234"
-                  validation="required"
-                  validation-label="No telefon pejabat"
-                  v-model="getCurrentTanggungan().no_telefon_pejabat"
-                />
-
-                <FormKit
-                  type="text"
-                  name="nama_majikan_tanggungan"
-                  label="Nama Majikan "
-                  placeholder="Nama syarikat atau majikan"
-                  validation="required"
-                  validation-label="Nama majikan"
-                  v-model="getCurrentTanggungan().nama_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="no_tel_majikan_tanggungan"
-                  label="No Tel Majikan "
-                  placeholder="Contoh: 038881234"
-                  validation="required"
-                  validation-label="No tel majikan"
-                  v-model="getCurrentTanggungan().no_tel_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="alamat_majikan_1_tanggungan"
-                  label="Alamat Majikan 1 "
-                  placeholder="Alamat baris 1"
-                  validation="required"
-                  validation-label="Alamat majikan 1"
-                  v-model="getCurrentTanggungan().alamat_majikan_1"
-                />
-
-                <FormKit
-                  type="text"
-                  name="alamat_majikan_2_tanggungan"
-                  label="Alamat Majikan 2"
-                  placeholder="Alamat baris 2 (pilihan)"
-                  v-model="getCurrentTanggungan().alamat_majikan_2"
-                />
-
-                <FormKit
-                  type="text"
-                  name="alamat_majikan_3_tanggungan"
-                  label="Alamat Majikan 3"
-                  placeholder="Alamat baris 3 (pilihan)"
-                  v-model="getCurrentTanggungan().alamat_majikan_3"
-                />
-
-                <FormKit
-                  type="text"
-                  name="bandar_majikan_tanggungan"
-                  label="Bandar "
-                  placeholder="Nama bandar"
-                  validation="required"
-                  validation-label="Bandar"
-                  v-model="getCurrentTanggungan().bandar_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="poskod_majikan_tanggungan"
-                  label="Poskod "
-                  placeholder="Contoh: 50000"
-                  validation="required"
-                  validation-label="Poskod"
-                  v-model="getCurrentTanggungan().poskod_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="daerah_majikan_tanggungan"
-                  label="Daerah "
-                  placeholder="Nama daerah"
-                  validation="required"
-                  validation-label="Daerah"
-                  v-model="getCurrentTanggungan().daerah_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="negeri_majikan_tanggungan"
-                  label="Negeri "
-                  placeholder="Nama negeri"
-                  validation="required"
-                  validation-label="Negeri"
-                  v-model="getCurrentTanggungan().negeri_majikan"
-                />
-
-                <FormKit
-                  type="text"
-                  name="negara_majikan_tanggungan"
-                  label="Negara "
-                  placeholder="Nama negara"
-                  validation="required"
-                  validation-label="Negara"
-                  v-model="getCurrentTanggungan().negara_majikan"
-                />
-              </div>
-            </div> -->
-
-            <!-- 5. Jawatan & Status -->
-            <!-- <div
-              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
-              class="mb-6"
-            >
-              <h5 class="font-medium mb-3">Jawatan & Status</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 3.3 Jawatan -->
                 <FormKit
                   type="text"
                   name="jawatan_tanggungan"
                   label="Jawatan "
-                  placeholder="Contoh: Kerani, Jurutera, Guru"
+                  placeholder="Contoh: Pengurus, Penolong Pengurus"
                   validation="required"
                   validation-label="Jawatan"
                   v-model="getCurrentTanggungan().jawatan"
                 />
 
+                <!-- 3.4 Status Jawatan -->
                 <FormKit
                   type="select"
                   name="status_jawatan_tanggungan"
@@ -5091,44 +4851,54 @@
                   validation-label="Status jawatan"
                   v-model="getCurrentTanggungan().status_jawatan"
                 />
-              </div>
-            </div> -->
 
-            <!-- 6. Pendapatan -->
-            <!-- <div
-              v-if="getCurrentTanggungan().pekerjaan_status === 'Bekerja'"
-              class="mb-6"
-            >
-              <h5 class="font-medium mb-3">Pendapatan</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 3.5 Pendapatan Kasar -->
                 <FormKit
-                  type="text"
+                  type="number"
                   name="pendapatan_kasar_tanggungan"
                   label="Pendapatan Kasar (RM) "
-                  placeholder="Contoh: 2500.00"
-                  validation="required|number"
+                  step="0.01"
+                  min="0"
+                  validation="required"
                   validation-label="Pendapatan kasar"
-                  validation-messages="{
-                    required: 'Pendapatan kasar adalah wajib',
-                    number: 'Pendapatan kasar mestilah nombor'
-                  }"
                   v-model="getCurrentTanggungan().pendapatan_kasar"
                 />
 
-                <FormKit
-                  type="file"
-                  name="dokumen_pendapatan_tanggungan"
-                  label="Upload Dokumen "
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  validation="required"
-                  validation-label="Dokumen pendapatan"
-                  validation-messages="{
-                    required: 'Dokumen pendapatan adalah wajib'
-                  }"
-                  v-model="getCurrentTanggungan().dokumen_pendapatan"
-                />
+                <!-- 3.2.1 Lain-lain Sektor Pekerjaan -->
+                <div
+                  v-if="showLainLainSektorTanggungan"
+                  class="md:col-span-2"
+                >
+                  <FormKit
+                    type="text"
+                    name="lain_lain_sektor_pekerjaan_tanggungan"
+                    label="Lain-lain Sektor Pekerjaan "
+                    placeholder="Sila nyatakan sektor pekerjaan lain"
+                    validation="required"
+                    validation-label="Lain-lain sektor pekerjaan"
+                    v-model="getCurrentTanggungan().lain_lain_sektor_pekerjaan"
+                  />
+                </div>
+
+                <!-- 3.6 Pengesahan Pendapatan -->
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="file"
+                    name="pengesahan_pendapatan_tanggungan"
+                    label="Muat naik pengesahan pendapatan / penyata gaji"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                    :validation-messages="{
+                      required: 'Sila muat naik pengesahan pendapatan',
+                      max: 'Saiz fail tidak boleh melebihi 5MB',
+                      mime: 'Format fail tidak dibenarkan',
+                    }"
+                    v-model="getCurrentTanggungan().pengesahan_pendapatan"
+                  />
+                </div>
               </div>
-            </div> -->
+            </div>
           </div>
 
           <div class="flex justify-between gap-3 mt-6">
@@ -6553,6 +6323,11 @@ const showLainLainSektor = computed(() => {
   return formData.value.sektor_pekerjaan === "Lain-lain";
 });
 
+const showLainLainSektorTanggungan = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  return currentTanggungan?.sektor_pekerjaan === "Lain-lain";
+});
+
 const showLainLainSumberPendapatan = computed(() => {
   return (
     formData.value.sumber_pendapatan &&
@@ -7433,6 +7208,10 @@ const addTanggungan = (showNotification = true) => {
     jenis_pekerjaan: "",
     sektor_pekerjaan: "",
     lain_lain_sektor_pekerjaan: "",
+    jawatan: "",
+    status_jawatan: "",
+    pendapatan_kasar: "",
+    pengesahan_pendapatan: null,
 
     // Maklumat Majikan
     no_telefon_pejabat: "",
@@ -7943,6 +7722,10 @@ onMounted(() => {
         jenis_pekerjaan: "Kerani",
         sektor_pekerjaan: "Swasta",
         lain_lain_sektor_pekerjaan: "",
+        jawatan: "Kerani Pentadbiran",
+        status_jawatan: "Tetap",
+        pendapatan_kasar: "2500.00",
+        pengesahan_pendapatan: null,
 
         // Maklumat Majikan
         no_telefon_pejabat: "038881234",
@@ -8078,6 +7861,10 @@ onMounted(() => {
         jenis_pekerjaan: "",
         sektor_pekerjaan: "",
         lain_lain_sektor_pekerjaan: "",
+        jawatan: "",
+        status_jawatan: "",
+        pendapatan_kasar: "",
+        pengesahan_pendapatan: null,
 
         // Maklumat Majikan
         no_telefon_pejabat: "",
@@ -8213,6 +8000,10 @@ onMounted(() => {
         jenis_pekerjaan: "",
         sektor_pekerjaan: "",
         lain_lain_sektor_pekerjaan: "",
+        jawatan: "",
+        status_jawatan: "",
+        pendapatan_kasar: "",
+        pengesahan_pendapatan: null,
 
         // Maklumat Majikan
         no_telefon_pejabat: "",
