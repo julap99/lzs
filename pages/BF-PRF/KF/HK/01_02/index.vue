@@ -80,6 +80,59 @@
         </template>
       </rs-card>
 
+      <!-- Edit Maklumat Asas Button -->
+      <div class="flex justify-end">
+        <rs-button variant="primary" class="px-6 py-3" @click="openEditMaklumatAsas">
+          <Icon name="mdi:pencil" class="mr-2" /> Kemaskini Maklumat Asas
+        </rs-button>
+      </div>
+
+      <!-- Edit Maklumat Asas Modal -->
+      <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40" @click="closeEditMaklumatAsas"></div>
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-xl mx-4">
+          <div class="px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Kemaskini Maklumat Asas</h3>
+          </div>
+          <div class="px-6 py-4 space-y-4">
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Nama Had Kifayah</label>
+              <input v-model="editForm.namaHadKifayah" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Jenis Isi Rumah</label>
+              <input v-model="editForm.jenisIsiRumah" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Pelarasan (RM)</label>
+              <input v-model.number="editForm.kadarBerbayar" type="number" step="0.01" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Tarikh Mula</label>
+              <input v-model="editForm.tarikhMula" type="date" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Status</label>
+              <select v-model="editForm.status" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Aktif">Aktif</option>
+                <option value="Tidak Aktif">Tidak Aktif</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+              </select>
+            </div>
+            <div class="flex items-start">
+              <label class="text-sm font-medium text-gray-700 w-40 mt-2">Keterangan</label>
+              <textarea v-model="editForm.keterangan" rows="3" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t flex justify-end gap-2">
+            <rs-button variant="secondary" @click="closeEditMaklumatAsas">Batal</rs-button>
+            <rs-button variant="primary" @click="saveMaklumatAsas">
+              <Icon name="mdi:content-save" class="mr-2" /> Simpan
+            </rs-button>
+          </div>
+        </div>
+      </div>
+
       <!-- Categories Section -->
       <rs-card v-if="relatedCategories.length > 0">
         <template #header>
@@ -207,6 +260,15 @@ const error = ref(null);
 const selectedKifayah = ref(null);
 const allKifayahData = ref([]);
 const relatedCategories = ref([]);
+const showEditModal = ref(false);
+const editForm = ref({
+  namaHadKifayah: '',
+  jenisIsiRumah: '',
+  kadarBerbayar: 0,
+  tarikhMula: '',
+  status: 'Aktif',
+  keterangan: ''
+});
 
 // Default data (fallback if no data in localStorage)
 const defaultData = [
@@ -294,6 +356,15 @@ const loadData = () => {
       } else {
         // Load related categories
         loadRelatedCategories();
+        // Seed edit form with current values
+        editForm.value = {
+          namaHadKifayah: selectedKifayah.value.namaHadKifayah || '',
+          jenisIsiRumah: selectedKifayah.value.jenisIsiRumah || '',
+          kadarBerbayar: selectedKifayah.value.kadarBerbayar ?? 0,
+          tarikhMula: selectedKifayah.value.tarikhMula || '',
+          status: selectedKifayah.value.status || 'Aktif',
+          keterangan: selectedKifayah.value.keterangan || ''
+        };
       }
     } else {
       error.value = "ID Had Kifayah tidak disediakan.";
@@ -311,6 +382,52 @@ const loadData = () => {
 // Navigation function
 const goBack = () => {
   navigateTo('/BF-PRF/KF/HK/01_01');
+};
+
+// Edit modal handlers
+const openEditMaklumatAsas = () => {
+  if (!selectedKifayah.value) return;
+  editForm.value = {
+    namaHadKifayah: selectedKifayah.value.namaHadKifayah || '',
+    jenisIsiRumah: selectedKifayah.value.jenisIsiRumah || '',
+    kadarBerbayar: selectedKifayah.value.kadarBerbayar ?? 0,
+    tarikhMula: selectedKifayah.value.tarikhMula || '',
+    status: selectedKifayah.value.status || 'Aktif',
+    keterangan: selectedKifayah.value.keterangan || ''
+  };
+  showEditModal.value = true;
+};
+
+const closeEditMaklumatAsas = () => {
+  showEditModal.value = false;
+};
+
+const saveMaklumatAsas = () => {
+  if (!selectedKifayah.value) return;
+  // Update the selected item
+  const updated = {
+    ...selectedKifayah.value,
+    ...editForm.value,
+    kadarBerbayar: Number(editForm.value.kadarBerbayar) || 0,
+  };
+  selectedKifayah.value = updated;
+
+  // Persist back into the array
+  const index = allKifayahData.value.findIndex(i => i.idHadKifayah === selectedId);
+  if (index !== -1) {
+    allKifayahData.value[index] = { ...updated };
+  }
+
+  // Save to localStorage
+  try {
+    localStorage.setItem('kifayahLimits', JSON.stringify(allKifayahData.value));
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Maklumat asas telah dikemaskini');
+  } catch (e) {
+    console.error('Gagal menyimpan data:', e);
+  }
+
+  showEditModal.value = false;
 };
 
 // Handle Hantar button click
