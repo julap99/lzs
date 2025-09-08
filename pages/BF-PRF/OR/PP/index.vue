@@ -97,18 +97,59 @@
                     >
                       <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
-                    
-                    <!-- Delete Button - Only for Eksekutif role -->
-                    <!-- 
+                  </div>
+                </template>
+              </rs-table>
+            </div>
+          </rs-tab-item>
+
+          <rs-tab-item title="Dalam Pembetulan">
+            <div class="p-4">
+              <rs-table
+                :key="`table-${tableKey}-correction`"
+                :data="getTableDataByStatus(['Dalam Pembetulan'])"
+                :columns="columns"
+                :pageSize="pageSize"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: true, striped: true }"
+                :options-advanced="{ sortable: true, filterable: false }"
+                advanced
+              >
+                <template v-slot:noRujukan="{ text }">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewOrganization(text)">
+                    {{ text }}
+                  </a>
+                </template>
+
+                <template v-slot:tarikhPermohonan="{ text }">
+                  <div class="font-medium">{{ formatDate(text) }}</div>
+                </template>
+
+                <template v-slot:status="{ text }">
+                  <rs-badge :variant="getStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
+                <template v-slot:tindakan="{ text }">
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
                     <button
-                      v-if="canDelete(text.status)"
-                      @click="confirmDelete(text.id, text)"
-                      title="Padam"
+                      @click="viewItem(text.id)"
+                      title="Lihat"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:outline-delete" size="20" class="text-danger" />
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
                     </button>
-                    -->
+                    
+                    <!-- Edit Button - User can update during correction -->
+                    <button
+                      @click="editItem(text.id)"
+                      title="Kemaskini"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                    </button>
                   </div>
                 </template>
               </rs-table>
@@ -408,6 +449,15 @@ const organizationList = ref([
     status: 'Ditolak',
     tindakan: { id: 'ORG-240507', status: 'Ditolak' },
   },
+  // New mock entry for correction status
+  {
+    noRujukan: 'ORG-240508',
+    namaOrganisasi: 'Yayasan Pendidikan Selangor',
+    tarikhPermohonan: '05/8/2025',
+    jenisOrganisasi: 'Yayasan',
+    status: 'Dalam Pembetulan',
+    tindakan: { id: 'ORG-240508', status: 'Dalam Pembetulan' },
+  },
 ]);
 
 const searchQuery = ref('');
@@ -463,6 +513,7 @@ const formatDate = (dateString) => {
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
+    'Dalam Pembetulan': 'info',
     'Diluluskan': 'success',
     'Ditolak': 'danger'
   };

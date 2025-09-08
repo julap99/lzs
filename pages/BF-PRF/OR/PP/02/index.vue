@@ -103,7 +103,7 @@
 
           <!-- Conditional Fields based on Organization Type and Structure -->
           
-          <!-- HQ Dropdown - Show when Structure is Cawangan -->
+          <!-- HQ Dropdown - Show when Structure is Cawangan and Organization Type is not 'Masjid' or 'Surau' -->
           <FormKit
             v-if="showHQDropdown"
             type="select"
@@ -115,7 +115,7 @@
             v-model="formData.hq"
           />
 
-          <!-- Kariah - Show when Organization Type is Surau -->
+          <!-- Kariah - Show when Organization Type is not 'Masjid' -->
           <FormKit
             v-if="showKariah"
             type="text"
@@ -750,7 +750,7 @@ const hqOptions = [
 
 // Computed properties for conditional field visibility
 const showKariah = computed(() => {
-  return formData.value.organizationType === 'surau';
+  return formData.value.organizationType && formData.value.organizationType !== 'masjid';
 });
 
 const showZone = computed(() => {
