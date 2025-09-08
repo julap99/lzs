@@ -106,19 +106,19 @@
                     {{ profilingData.bakiHadKifayahSah }}
                   </p> -->
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Peratusan Perbezaan
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.peratusanPerbezaan }}
                   </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Kategori Keluarga Asnaf
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.kategoriKeluargaAsnaf }}
                   </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Kategori Asnaf
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -128,7 +128,7 @@
                 <div class="hidden lg:block"></div>
                 <div class="hidden lg:block"></div>
                   <div>
-                    <label class="block text-xs uppercase tracking-wide">
+                    <label class="block text-xs uppercase tracking-wide font-bold">
                       Pengenalan Id Tanggungan
                     </label>
                     <p class="text-gray-900 font-medium">
@@ -140,7 +140,7 @@
                     </p>
                   </div>
                   <div>
-                    <label class="block text-xs uppercase tracking-wide">
+                    <label class="block text-xs uppercase tracking-wide font-bold">
                       Kategori Tanggungan (Syor)
                     </label>
                     <p class="text-gray-900 font-medium">
@@ -154,7 +154,7 @@
                   <!-- spacer to align like screenshot: leave empty third column on first row -->
                   <div class="hidden lg:block"></div>
                   <div>
-                    <label class="block text-xs uppercase tracking-wide">
+                    <label class="block text-xs uppercase tracking-wide font-bold">
                       Pengenalan Id Asnaf/Tanggungan
                     </label>
                     <p class="text-gray-900 font-medium">
@@ -168,7 +168,7 @@
                     </p>
                   </div>
                   <div>
-                    <label class="block text-xs uppercase tracking-wide">
+                    <label class="block text-xs uppercase tracking-wide font-bold">
                       Merit Individu(Syor)
                     </label>
                     <p class="text-gray-900 font-medium">
@@ -182,7 +182,7 @@
                     </p>
                   </div>
                   <div>
-                    <label class="block text-xs uppercase tracking-wide">
+                    <label class="block text-xs uppercase tracking-wide font-bold">
                       Status Multidimensi(Syor)
                     </label>
                     <p class="text-gray-900 font-medium">
@@ -198,21 +198,21 @@
                 </div>
                 <!-- Row 3 in one column -->
                 <div class="mt-4">
-                  <label class="block text-xs uppercase tracking-wide">
+                  <label class="block text-xs uppercase tracking-wide font-bold">
                     Merit Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.meritKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Status Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.statusMultidimensiKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Quadrant Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -286,14 +286,25 @@
                 Tingkah laku Asnaf
               </h4>
               <FormKit
-                type="textarea"
+                type="select"
                 name="tingkahLakuAsnaf"
-                placeholder="Pemerhatian..."
-                value="Asnaf Garang dan Baran, perlukan bantuan masyarakat"
-                rows="4"
-                readonly="true"
+                placeholder="Pilih tingkah laku asnaf"
+                :options="tingkahLakuAsnafOptions"
                 :classes="{ input: '!py-2.5' }"
+                v-model="formData.tingkahLakuAsnaf"
               />
+              
+              <!-- Conditional textarea for "lain-lain" option -->
+              <div v-if="formData.tingkahLakuAsnaf === 'lain-lain'" class="mt-3">
+                <FormKit
+                  type="textarea"
+                  name="tingkahLakuAsnafLain"
+                  placeholder="Sila nyatakan tingkah laku asnaf..."
+                  rows="3"
+                  :classes="{ input: '!py-2.5' }"
+                  v-model="formData.tingkahLakuAsnafLain"
+                />
+              </div>
             </section>
 
             <section>
@@ -381,6 +392,8 @@ const formData = ref({
   masaLawatan: "",
   catatanPenilianAwal: "",
   gambarLokasi: null as File | null,
+  tingkahLakuAsnaf: "",
+  tingkahLakuAsnafLain: "",
 });
 
 /* PROFILING DATA */
@@ -433,6 +446,12 @@ const statusLawatanOptions = ref([
   { label: "Lengkap", value: "lengkap" },
   { label: "Tidak Lengkap", value: "tidak-lengkap" },
   { label:"Perlukan Lawatan Semula",value:"lawatan-semula"}
+]);
+
+const tingkahLakuAsnafOptions = ref([
+  { label: "Beremosi", value: "beremosi" },
+  { label: "Baran", value: "baran" },
+  { label: "Lain-lain", value: "lain-lain" }
 ]);
 
 /* HELPERS */

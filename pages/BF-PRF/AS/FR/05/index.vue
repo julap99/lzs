@@ -1,6 +1,7 @@
 <template>
-  <!-- Multi-dimensional Merit Breakdown -->
-  <rs-card class="mt-4">
+  <div>
+    <!-- Multi-dimensional Merit Breakdown -->
+    <rs-card class="mt-4">
     <template #header>
       <h3 class="text-lg font-semibold text-gray-800">
         Perincian Pengiraan Merit Multidimensi Keluarga
@@ -113,6 +114,7 @@
       </rs-button>
     </div>
   </rs-card>
+  </div>
 </template>
 
 <script setup>

@@ -61,7 +61,7 @@
 
             <div class="mt-6">
               <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="font-medium text-gray-700 mb-2">
+                <h3 class="font-medium mb-2">
                   Hasil Pengiraan Had Kifayah
                 </h3>
                 <div class="text-lg font-semibold">
@@ -141,7 +141,7 @@ const processing = ref(false);
 
 const breadcrumb = ref([
   {
-    name: "Analisa Data",
+    name: "Pengiraan Had Kifayah",
     type: "current",
     path: "/kifayah-analysis",
   },
