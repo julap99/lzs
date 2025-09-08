@@ -555,7 +555,7 @@
             </rs-button>
 
             <div class="flex gap-3">
-              <rs-button variant="secondary" @click="showDraftModal = true">
+              <rs-button type="button" variant="secondary" @click="showDraftModal = true">
                 Simpan DRAF
               </rs-button>
               <rs-button type="submit" @click="submitForm">
