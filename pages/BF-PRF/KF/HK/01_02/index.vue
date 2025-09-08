@@ -150,7 +150,8 @@
               'hadKifayah',
               'statusAktif',
               'statusData',
-              'tarikhMula'
+              'tarikhMula',
+              'tindakan'
             ]"
             :columns="[
               { key: 'kategoriHadKifayah', label: 'Kategori' },
@@ -160,7 +161,8 @@
               { key: 'hadKifayah', label: 'Had Kifayah' },
               { key: 'statusAktif', label: 'Status Aktif' },
               { key: 'statusData', label: 'Status Data' },
-              { key: 'tarikhMula', label: 'Tarikh Mula' }
+              { key: 'tarikhMula', label: 'Tarikh Mula' },
+              { key: 'tindakan', label: 'Tindakan' }
             ]"
             :pageSize="10"
             :showNoColumn="true"
@@ -180,9 +182,68 @@
             </template>
             <template v-slot:statusData="data">{{ data.value.statusData }}</template>
             <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+            <template v-slot:tindakan="data">
+              <rs-button variant="primary" size="sm" class="!px-2 !py-1" @click="openEditCategory(data.value)">
+                Kemaskini
+                <Icon name="mdi:pencil" class="ml-1" size="1rem" />
+              </rs-button>
+            </template>
           </rs-table>
         </template>
       </rs-card>
+
+      <!-- Edit Category Modal -->
+      <div v-if="showCategoryModal" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40" @click="closeEditCategory"></div>
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+          <div class="px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Kemaskini Kategori</h3>
+          </div>
+          <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium text-gray-700">Kategori Had Kifayah</label>
+              <input v-model="categoryForm.kategoriHadKifayah" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Level Had Kifayah</label>
+              <input v-model="categoryForm.levelHadKifayah" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Bil</label>
+              <input v-model.number="categoryForm.bil" type="number" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Indicator</label>
+              <input v-model="categoryForm.indicator" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Had Kifayah (RM)</label>
+              <input v-model.number="categoryForm.hadKifayah" type="number" step="0.01" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status Aktif</label>
+              <select v-model="categoryForm.statusAktif" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option :value="true">Aktif</option>
+                <option :value="false">Tidak Aktif</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status Data</label>
+              <input v-model="categoryForm.statusData" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
+              <input v-model="categoryForm.tarikhMula" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t flex justify-end gap-2">
+            <rs-button variant="secondary" @click="closeEditCategory">Batal</rs-button>
+            <rs-button variant="primary" @click="saveCategory">
+              <Icon name="mdi:content-save" class="mr-2" /> Simpan
+            </rs-button>
+          </div>
+        </div>
+      </div>
 
       <!-- Action Buttons Card -->
       <rs-card>
@@ -260,6 +321,18 @@ const error = ref(null);
 const selectedKifayah = ref(null);
 const allKifayahData = ref([]);
 const relatedCategories = ref([]);
+const showCategoryModal = ref(false);
+const categoryForm = ref({
+  kategoriHadKifayah: '',
+  levelHadKifayah: '',
+  bil: 0,
+  indicator: '',
+  hadKifayah: 0,
+  statusAktif: true,
+  statusData: '',
+  tarikhMula: '',
+});
+let editingCategoryIndex = -1;
 const showEditModal = ref(false);
 const editForm = ref({
   namaHadKifayah: '',
@@ -449,6 +522,50 @@ const handleHantar = () => {
     // Fallback notification
     alert('Data berjaya dihantar kepada pelulus');
   }
+};
+
+// Category edit handlers
+const openEditCategory = (row) => {
+  if (!relatedCategories.value) return;
+  editingCategoryIndex = relatedCategories.value.findIndex(
+    (c) => c.kategoriHadKifayah === row.kategoriHadKifayah && c.levelHadKifayah === row.levelHadKifayah && c.bil === row.bil
+  );
+  categoryForm.value = { ...row };
+  showCategoryModal.value = true;
+};
+
+const closeEditCategory = () => {
+  showCategoryModal.value = false;
+  editingCategoryIndex = -1;
+};
+
+const saveCategory = () => {
+  if (editingCategoryIndex < 0) return;
+  // Update in-memory
+  relatedCategories.value[editingCategoryIndex] = { ...categoryForm.value };
+
+  // Persist to localStorage (preserve other entries for other IDs if present)
+  try {
+    const savedCategoriesRaw = localStorage.getItem('kifayahCategories');
+    let all = [];
+    if (savedCategoriesRaw) {
+      all = JSON.parse(savedCategoriesRaw);
+      // Remove entries for this selectedId
+      all = all.filter((c) => c.idHadKifayah !== selectedId);
+    }
+    // Append updated entries with the same idHadKifayah
+    const updatedForId = relatedCategories.value.map((c) => ({ ...c, idHadKifayah: selectedId }));
+    const merged = [...all, ...updatedForId];
+    localStorage.setItem('kifayahCategories', JSON.stringify(merged));
+
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Kategori berjaya dikemaskini');
+  } catch (e) {
+    console.error('Gagal menyimpan kategori:', e);
+  }
+
+  showCategoryModal.value = false;
+  editingCategoryIndex = -1;
 };
 
 // Make sure the data loads when component mounts
