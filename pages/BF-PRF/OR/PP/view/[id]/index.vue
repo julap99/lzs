@@ -231,16 +231,17 @@ const breadcrumb = ref([
   { name: 'Maklumat Organisasi', type: 'current', path: `/BF-PRF/OR/PP/view/${route.params.id}` },
 ]);
 
-// Mock data for the organisasi
+// Mock data for the organisasi (standardized to PP/02/kemaskini fields)
 const organisasiData = ref({
   noRujukan: 'ORG-240501',
   namaOrganisasi: 'Syarikat Teknologi Maju Sdn Bhd',
-  jenisOrganisasi: 'Swasta',
+  jenisOrganisasi: 'NGO',
   noPendaftaran: '201801012345',
   tarikhPermohonan: new Date().toISOString(),
   status: 'Menunggu Pengesahan',
   statusPendaftaran: 'Berdaftar',
   struktur: 'HQ',
+  hq: '',
   alamat: {
     alamat1: 'No. 45, Jalan Teknologi 2/1',
     alamat2: 'Taman Perindustrian Teknologi',
@@ -251,21 +252,15 @@ const organisasiData = ref({
   },
   kariah: {
     kariah: 'MASJID PEKAN SHAH ALAM',
-    cawangan: 'Cawangan Utama',
-    zon: 'Zon A'
+    cawangan: '',
+    zon: ''
   },
   wakil: [
     {
-      nama: 'Dato\' Ahmad bin Hassan',
+      nama: "Dato' Ahmad bin Hassan",
       idPengenalan: '750101014567',
       telefon: '03-55123456',
       emel: 'ahmad.hassan@teknologimaju.com'
-    },
-    {
-      nama: 'Siti Zainab binti Omar',
-      idPengenalan: '820515023456',
-      telefon: '019-2345678',
-      emel: 'zainab.omar@teknologimaju.com'
     }
   ],
   bank: {
@@ -281,6 +276,7 @@ const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-M
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
+    'Dalam Pembetulan': 'info',
     'Diluluskan': 'success',
     'Ditolak': 'danger'
   };
@@ -291,36 +287,58 @@ const goBack = () => navigateTo('/BF-PRF/OR/PP');
 
 // Load data based on ID when component mounts
 onMounted(() => {
-  // In a real implementation, this would fetch data from API based on route.params.id
-  // For now, we use mock data with different values based on ID
   loadOrganisasiData(route.params.id);
 });
 
+// Standardized mock dataset per ID
 const loadOrganisasiData = (id) => {
-  // Mock different data based on ID
-  const mockData = {
+  const dataset = {
     'ORG-240501': {
       noRujukan: 'ORG-240501',
       namaOrganisasi: 'Syarikat Teknologi Maju Sdn Bhd',
-      jenisOrganisasi: 'Swasta',
-      status: 'Menunggu Pengesahan'
+      jenisOrganisasi: 'NGO',
+      noPendaftaran: '201801012345',
+      status: 'Menunggu Pengesahan',
+      statusPendaftaran: 'Berdaftar',
+      struktur: 'HQ',
+      hq: '',
+      alamat: { alamat1: 'No. 45, Jalan Teknologi 2/1', alamat2: 'Taman Perindustrian Teknologi', alamat3: 'Seksyen 2', poskod: '40000', bandar: 'Shah Alam', negeri: 'Selangor' },
+      kariah: { kariah: 'MASJID PEKAN SHAH ALAM', cawangan: '', zon: '' },
+      wakil: [ { nama: "Dato' Ahmad bin Hassan", idPengenalan: '750101014567', telefon: '03-55123456', emel: 'ahmad.hassan@teknologimaju.com' } ],
+      bank: { namaBank: 'CIMB Bank', noAkaun: '8001234567890', namaPemilik: 'Syarikat Teknologi Maju Sdn Bhd' }
     },
     'ORG-240502': {
       noRujukan: 'ORG-240502',
       namaOrganisasi: 'Pertubuhan Amal Iman Malaysia',
       jenisOrganisasi: 'NGO',
-      status: 'Diluluskan'
+      noPendaftaran: 'PPM-123/2020',
+      status: 'Dalam Pembetulan',
+      statusPendaftaran: 'Berdaftar',
+      struktur: 'HQ',
+      hq: '',
+      alamat: { alamat1: 'No. 10, Jalan Iman 3/2', alamat2: 'Taman Iman Jaya', alamat3: '', poskod: '53100', bandar: 'Kuala Selangor', negeri: 'Selangor' },
+      kariah: { kariah: 'MASJID PEKAN KUALA SELANGOR', cawangan: '', zon: 'Zon A' },
+      wakil: [ { nama: 'Ustaz Ibrahim bin Yusof', idPengenalan: '730505045678', telefon: '03-22345678', emel: 'ibrahim@amaliman.org' } ],
+      bank: { namaBank: 'Maybank', noAkaun: '5123456789012', namaPemilik: 'Pertubuhan Amal Iman Malaysia' }
     },
     'ORG-240503': {
       noRujukan: 'ORG-240503',
       namaOrganisasi: 'Sekolah Menengah Tahfiz Al-Amin',
-      jenisOrganisasi: 'IPT',
-      status: 'Diluluskan'
+      jenisOrganisasi: 'Institusi',
+      noPendaftaran: 'IPT-456/2019',
+      status: 'Diluluskan',
+      statusPendaftaran: 'Berdaftar',
+      struktur: 'HQ',
+      hq: '',
+      alamat: { alamat1: 'No. 88, Jalan Aman 2/4', alamat2: 'Taman Aman', alamat3: 'Seksyen 5', poskod: '28400', bandar: 'Rawang', negeri: 'Selangor' },
+      kariah: { kariah: 'MASJID RAWANG', cawangan: '', zon: 'Zon Utara' },
+      wakil: [ { nama: 'Dr. Ahmad Fauzi bin Abdul Rahman', idPengenalan: '650815056789', telefon: '09-33456789', emel: 'fauzi@tahfizalamin.edu.my' } ],
+      bank: { namaBank: 'Bank Islam', noAkaun: '2098765432109', namaPemilik: 'Sekolah Menengah Tahfiz Al-Amin' }
     }
   };
 
-  if (mockData[id]) {
-    organisasiData.value = { ...organisasiData.value, ...mockData[id] };
+  if (dataset[id]) {
+    organisasiData.value = { ...organisasiData.value, ...dataset[id] };
   }
 };
 </script> 
