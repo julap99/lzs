@@ -302,25 +302,61 @@
         </template>
         <template #body>
           <div v-if="damagedDataList.length === 0" class="text-center py-8 text-gray-500">
-            Tiada maklumat data rosak. Klik "Tambah" untuk menambah maklumat data rosak.
+            <div v-if="paymentList.length === 0">
+              Tiada maklumat data rosak. Sila import data terlebih dahulu untuk melihat data rosak.
+            </div>
+            <div v-else>
+              Tiada maklumat data rosak. Semua data dalam keadaan baik.
+            </div>
           </div>
           <div v-else>
+            <!-- Data Table with the requested columns using rs-table component -->
             <rs-table
               :data="damagedDataList"
               :columns="damagedDataColumns"
               :pageSize="5"
-              :showNoColumn="true"
+               :showNoColumn="false"
               :options="{ variant: 'default', hover: true, striped: true }"
-              :options-advanced="{ sortable: true, filterable: true }"
+              :options-advanced="{ sortable: true, filterable: false }"
               advanced
             >
-              <template v-slot:actions="{ row }">
+              <!-- Custom column templates -->
+              <template v-slot:namaPenerima="{ text, value }">
+                  <!-- Check if this row has Duplikasi issue -->
+                <button 
+                    v-if="value?.jenisMasalah?.includes('Duplikasi')"
+                  @click="openDuplicateModalFor(value)"
+                    class="text-blue-600 hover:text-blue-800 underline font-medium transition-colors duration-200 cursor-pointer"
+                >
+                  {{ text }}
+                </button>
+                  
+                  <!-- For non-duplicate issues, show disabled text -->
+                  <span 
+                    v-else
+                    class="text-gray-400 cursor-not-allowed select-none"
+                    :title="`Tidak boleh diklik - ${value?.jenisMasalah || 'Tiada maklumat'}`"
+                  >
+                    {{ text }}
+                  </span>
+              </template>
+
+              <template v-slot:catatan="{ text }">
+                <div class="max-w-xs truncate" :title="text">
+                  {{ text }}
+                </div>
+              </template>
+
+              <template v-slot:actions="{ value }">
                 <div class="flex space-x-2 justify-center">
-                  <rs-button variant="info" size="sm" @click="handleEditDamagedData(row)">
-                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" /> Lihat
-                  </rs-button>
-                  <rs-button variant="danger" size="sm" @click="handleDeleteDamagedData(row)">
-                    <Icon name="material-symbols:delete" class="w-4 h-4" />
+                  <rs-button 
+                    variant="primary" 
+                    size="sm" 
+                    @click="handleKemaskiniDamagedData(value)"
+                    class="!px-3 !py-1"
+                  >
+                    <Icon name="material-symbols:edit" class="w-4 h-4 mr-1" />
+                    Kemaskini
                   </rs-button>
                 </div>
               </template>
@@ -650,6 +686,243 @@
         </div>
       </template>
     </rs-modal>
+
+         <!-- View Details Modal for Damaged Data -->
+     <rs-modal 
+       v-model="showViewDetailsModal" 
+       title="Butiran Data Rosak"
+       size="lg"
+     >
+       <template #body>
+         <div v-if="selectedDamagedData" class="space-y-4">
+           <!-- Recipient Details -->
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <FormKit
+               type="text"
+               name="namaPenerima"
+               label="Nama Penerima"
+               :value="selectedDamagedData.namaPenerima"
+               disabled
+             />
+             <FormKit
+               type="text"
+               name="idPermohonan"
+               label="ID Permohonan"
+               :value="selectedDamagedData.idPermohonan || 'Tiada maklumat'"
+               disabled
+             />
+           </div>
+           
+           <!-- Notes Section -->
+           <FormKit
+             type="textarea"
+             name="catatan"
+             label="Catatan"
+             :value="selectedDamagedData.catatan"
+             disabled
+             :classes="{
+               input: 'min-h-[60px]',
+             }"
+           />
+           
+           <!-- Issue Details -->
+           <FormKit
+             type="text"
+             name="jenisMasalah"
+             label="Jenis Masalah"
+             :value="selectedDamagedData.jenisMasalah || 'Tiada maklumat'"
+             disabled
+           />
+           
+         </div>
+       </template>
+      
+      <template #footer>
+        <div class="flex justify-end space-x-2">
+          <rs-button variant="secondary" @click="showViewDetailsModal = false">
+            Tutup
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Kemaskini Modal for Damaged Data -->
+    <rs-modal 
+      v-model="showKemaskiniModal" 
+      title="Kemaskini Data Rosak"
+      size="lg"
+    >
+      <template #body>
+        <div v-if="editingPaymentForDefect" class="space-y-4">
+          <!-- Form for editing damaged data - showing all payment fields -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="kod"
+              label="Kod"
+              :value="editingPaymentForDefect.kod"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              type="text"
+              name="idPermohonan"
+              label="ID Permohonan"
+              :value="editingPaymentForDefect.idPermohonan"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="bayaranKepada"
+              label="Bayaran Kepada"
+              :value="editingPaymentForDefect.bayaranKepada"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              type="text"
+              name="asnaf"
+              label="Asnaf"
+              :value="editingPaymentForDefect.asnaf"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="contributor"
+              label="Contributor"
+              :value="editingPaymentForDefect.contributor"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              type="text"
+              name="recipient"
+              label="Recipient"
+              :value="editingPaymentForDefect.recipient"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="organization"
+              label="Organization"
+              :value="editingPaymentForDefect.organization"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              type="text"
+              name="tarikhBayaran"
+              label="Tarikh Bayaran"
+              :value="editingPaymentForDefect.tarikhBayaran"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="select"
+              name="bankName"
+              label="Bank"
+              :options="allowedBanks.map(bank => ({ label: bank, value: bank }))"
+              v-model="editingPaymentForDefect.bankName"
+              validation="required"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          
+            <FormKit
+              type="text"
+              name="bankAccount"
+              label="No. Akaun"
+              v-model="editingPaymentForDefect.bankAccount"
+              validation="required"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
+            
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="select"
+              name="amaun"
+              label="Amaun"
+              :options="validAmounts.map(amount => ({ label: fmt(amount), value: amount }))"
+              v-model="editingPaymentForDefect.amaun"
+              validation="required"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          
+          <FormKit
+              type="text"
+              name="status"
+              label="Status"
+              :value="editingPaymentForDefect.status"
+              disabled
+            :classes="{
+                input: '!py-2',
+            }"
+          />
+          </div>
+        </div>
+      </template>
+      
+      <template #footer>
+        <div class="flex justify-end space-x-2">
+          <rs-button variant="secondary" @click="() => { showKemaskiniModal = false; editingPaymentForDefect = null; }">
+            Batal
+          </rs-button>
+          <rs-button variant="primary" @click="handleSaveDamagedDataChanges">
+            Simpan
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+    
+    <!-- Duplicate List Modal -->
+    <DuplicateListModal
+      v-model="showDuplicateModal"
+      :rows="duplicateRows"
+      @close="onDuplicateClose"
+      @confirm="onDuplicateConfirm"
+      @open-application="onOpenApplication"
+    />
   </div>
 </template>
 

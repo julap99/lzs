@@ -219,6 +219,121 @@
         </div>
           </template>
         </rs-card>
+
+        <!-- NEW: Maklumat Pendidikan (read-only, shown for B300/B307) -->
+        <rs-card v-if="educationInfo" class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                    <Icon name="ph:graduation-cap" class="w-6 h-6 text-cyan-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Manfaat & Pendidikan</h2>
+                  <p class="text-sm text-gray-500">{{ educationInfo.tablefor }}</p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <!-- Penerima Manfaat (merged on top) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Nama</label>
+                  <FormKit
+                    type="select"
+                    v-model="dependentSelection.nama"
+                    :options="dependentNameOptions"
+                    placeholder="-- Sila Pilih --"
+                    searchable="true"
+                    class="mt-1"
+                  />
+                </div>
+
+                <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <label class="text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{ selectedDependent?.noKadPengenalan || '-' }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <label class="text-sm font-medium text-gray-700">Hubungan</label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{ selectedDependent?.hubungan || '-' }}</span>
+                  </div>
+                </div>
+              </div>
+              <!-- /Penerima Manfaat -->
+
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="(value, label) in educationInfo.fields" :key="label">
+                      <td class="px-6 py-3 w-1/3 text-sm font-medium text-gray-600">{{ label }}</td>
+                      <td class="px-6 py-3 text-sm text-gray-900">{{ value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Editable table: Semester/Tahap (only for B307) -->
+              <div v-if="isB307" class="mt-6">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-md font-semibold text-gray-900">Perincian Semester/Tahap</h3>
+                  <rs-button variant="primary" size="sm" @click="addSemesterRow">Tambah Baris</rs-button>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Semester/Tahap</th>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bulan Mula Pengajian</th>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bulan Tamat Pengajian</th>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Semester</th>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GPA (jika ada)</th>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CGPA (jika ada)</th>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="(sem, index) in educationSemesters" :key="index" class="hover:bg-gray-50">
+                        <td class="px-3 py-2 text-sm text-gray-900">
+                          <input type="number" min="1" class="w-20 p-2 border rounded" v-model.number="sem.semester" @input="normalizeSemesterNumbers" />
+                        </td>
+                        <td class="px-3 py-2">
+                          <input type="text" class="w-full p-2 border rounded text-sm" v-model="sem.bulanMula" placeholder="cth: Jan-25" />
+                        </td>
+                        <td class="px-3 py-2">
+                          <input type="text" class="w-full p-2 border rounded text-sm" v-model="sem.bulanTamat" placeholder="cth: Jun-25" />
+                        </td>
+                        <td class="px-3 py-2">
+                          <select class="w-full p-2 border rounded text-sm" v-model="sem.jenis">
+                            <option value="">-- Pilih --</option>
+                            <option>Semester Panjang</option>
+                            <option>Semester Pendek</option>
+                          </select>
+                        </td>
+                        <td class="px-3 py-2">
+                          <input type="text" class="w-full p-2 border rounded text-sm" v-model="sem.gpa" placeholder="cth: 3.75" />
+                        </td>
+                        <td class="px-3 py-2">
+                          <input type="text" class="w-full p-2 border rounded text-sm" v-model="sem.cgpa" placeholder="cth: 3.60" />
+                        </td>
+                        <td class="px-3 py-2">
+                          <rs-button variant="danger" size="sm" @click="removeSemesterRow(index)">Padam</rs-button>
+                        </td>
+                      </tr>
+                      <tr v-if="educationSemesters.length === 0">
+                        <td colspan="7" class="px-3 py-4 text-center text-sm text-gray-500">Tiada rekod. Klik "Tambah Baris" untuk menambah.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </template>
+          </rs-card>
       </div>
 
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -600,7 +715,116 @@
                 </template>
               </rs-card>
             </rs-tab-item>
-          </rs-tab>
+            </rs-tab>
+          
+          
+          <!-- NEW: Maklumat Penerima Manfaat (jika tanggungan)
+          <rs-card v-if="false" class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    <Icon name="ph:users" class="w-6 h-6 text-indigo-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Manfaat <span class="text-gray-500 text-sm">(jika tanggungan)</span></h2>
+                  <p class="text-sm text-gray-500">Pilih nama tanggungan untuk paparan maklumat</p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Nama</label>
+                  <FormKit
+                    type="select"
+                    v-model="dependentSelection.nama"
+                    :options="dependentNameOptions"
+                    placeholder="-- Sila Pilih --"
+                    searchable="true"
+                    class="mt-1"
+                  />
+                </div>
+
+                <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <label class="text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{ selectedDependent?.noKadPengenalan || '-' }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <label class="text-sm font-medium text-gray-700">Hubungan</label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{ selectedDependent?.hubungan || '-' }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </rs-card> -->
+
+          <!-- NEW: Maklumat Penerima Bayaran (hidden for B1) -->
+          <rs-card v-if="!isB1" class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+                    <Icon name="ph:hand-coins" class="w-6 h-6 text-rose-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Bayaran</h2>
+                  <p class="text-sm text-gray-500">Isi maklumat untuk pembayaran</p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-1 md:col-span-2">
+                  <label class="text-sm font-medium text-gray-700">Kaedah Pembayaran <span class="text-red-500">*</span></label>
+                  <FormKit
+                    type="select"
+                    v-model="paymentInfo.kaedah"
+                    :options="paymentMethodOptions"
+                    placeholder="-- Sila Pilih --"
+                    validation="required"
+                    :classes="{ input: 'text-sm' }"
+                  />
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">No Kad Pengenalan/No Pendaftaran <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.noId" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Nama Penerima/Institusi/Syarikat <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.namaPenerima" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Nama Pemegang Akaun <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.namaAkaun" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Bank <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.bank" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+
+                <div class="space-y-1 md:col-span-2">
+                  <label class="text-sm font-medium text-gray-700">No. Akaun Bank <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.noAkaun" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+
+          
           
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -895,8 +1119,10 @@
               </rs-button>
             </div>
           </rs-card>
+
         </div>
       </div>
+
     </div>
 
     <!-- BQ Modal -->
@@ -961,19 +1187,63 @@ const breadcrumb = ref([
   },
 ]);
 
-// Section 1: Maklumat Pemohon data
-const formData = ref({
-  aid: "B102	Bantuan Binaan Rumah (Fakir)",
+// Tab configuration
+const tabs = [
+  { id: 'bq', title: 'BQ' },
+  { id: 'gambar', title: 'Laporan Gambar' },
+  { id: 'teknikal', title: 'Laporan Teknikal' }
+];
+
+const activeTab = ref('bq');
+
+// Show/hide rules by bantuan id
+const isB1 = computed(() => String(route.params.id || '').toUpperCase().startsWith('B1'));
+const isB307 = computed(() => String(route.params.id || '').toUpperCase() === 'B307');
+const visibleTabs = computed(() => (isB1.value ? tabs : []));
+
+// Ensure active tab is valid when rules change
+watch(visibleTabs, (arr) => {
+  if (!arr.find(t => t.id === activeTab.value)) {
+    activeTab.value = arr[0]?.id || '';
+  }
+}, { immediate: true });
+
+// Mock data for different assistance types
+const mockAssistanceData = {
+  "B102": {
+    id: "B102",
+    aid: "B102 - BANTUAN BINAAN RUMAH (Fakir)",
   aidproduct: "Bantuan Binaan Rumah (Fakir)",
   productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
   entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
   jumlahBantuan: 43000,
-  // noTelefon: "0123456789",
-  // emel: "rosli@gmail.com",
-  // statusKeluarga: "Fakir",
-  // statusIndividu: "Fakir",
-  // statusMultidimensi: "Asnaf Tidak Produktif",
-  // statusLawatan: "belum_selesai",
+  },
+  "B300": {
+    id: "B300",
+    aid: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    aidproduct: "Bantuan Dermasiswa Sekolah Asrama (Fakir)",
+    productpackage: "Sekolah Asrama - Tingkatan 1-5",
+    entitlementproduct: "Dermasiswa Bulanan - RM 200",
+    jumlahBantuan: 2400,
+  },
+  "B307": {
+    id: "B307",
+    aid: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+    aidproduct: "Dermasiswa IPT Dalam Negara (Fakir)",
+    productpackage: "IPTA/IPTS - Diploma/Degree",
+    entitlementproduct: "Dermasiswa Semester - RM 1500",
+    jumlahBantuan: 3000,
+  }
+};
+
+// Section 1: Maklumat Pemohon data
+const formData = ref({
+  id: "",
+  aid: "",
+  aidproduct: "",
+  productpackage: "",
+  entitlementproduct: "",
+  jumlahBantuan: 0,
 });
 
 // Section 2: Dokumen Sokongan
@@ -1131,6 +1401,7 @@ const editBQ = (bq) => {
   router.push(
     `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/draf-bq?edit=true`
   );
+
 };
 
 const closeBQModal = () => {
