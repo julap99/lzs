@@ -1309,7 +1309,7 @@ export default [
                 icon: "iconamoon:arrow-right-2-duotone",
                 child: [
                         {
-                          title: "Senarai Tuntutan (Pemohon)",
+                          title: "Senarai Tuntutan (Vendor)",
                           icon: "iconamoon:arrow-right-2-duotone",
                           path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
                           child: [],
@@ -1370,12 +1370,6 @@ export default [
               ],
               meta: {},
           },
-          {
-            title: "Tuntutan Tanpa Siasatan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            child: [],
-            meta: {},
-            },
         ],
         meta: {},
       },
