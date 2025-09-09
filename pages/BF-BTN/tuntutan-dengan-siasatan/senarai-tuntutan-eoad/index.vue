@@ -10,8 +10,8 @@
       </template>
 
       <template #body>
-        <!-- Search and Filter Section -->
-        <!-- <div class="mb-6">
+        Search and Filter Section
+         <div class="mb-6">
           <div class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
               <FormKit
@@ -35,7 +35,6 @@
             </div>
           </div>
         </div>
-        -->
 
         <!-- Main Table -->
         <rs-table

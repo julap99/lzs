@@ -140,8 +140,8 @@ const applications = ref([
     tindakan: "NAS-2025-0001",
   },
   {
-    noRujukan: "060802030272",
-    namaPemohon: "NUR NAJWA BINTI ADNAN",
+    noRujukan: "770319035991",
+    namaPemohon: "ADNAN BIN ABU",
     status: "Dalam Semakan",
     tarikhTerima: "2024-03-19",
     namaPegawai: "Aminah binti Hassan",
