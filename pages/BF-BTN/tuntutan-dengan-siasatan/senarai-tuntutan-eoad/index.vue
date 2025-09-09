@@ -10,78 +10,25 @@
       </template>
 
       <template #body>
-         <!-- <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-              <FormKit
-                v-model="searchQuery"
-                type="text"
-                placeholder="Cari No Tuntutan, Nama Pemohon, atau No GL..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-            <div class="flex gap-2">
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="statusOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-          </div>
-        </div> -->
-
         <!-- Main Table -->
         <rs-table
           :data="tableDataWithNo"
           :columns="columns"
           :showNoColumn="true"
           :showSearch="true"
-          :options="{
-            variant: 'default',
-            hover: true,
-            striped: true,
-          }"
-          :options-advanced="{
-            sortable: true,
-            filterable: true,
-          }"
+          :options="{ variant: 'default', hover: true, striped: true }"
+          :options-advanced="{ sortable: true, filterable: true }"
           :show-filter="true"
           advanced
         >
-          
-          <!-- <template #no="{ value }">
-            <div class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                class="form-checkbox h-4 w-4 text-primary-600"
-                :value="asRow(value).noTuntutan"
-                :checked="selectedRows.includes(asRow(value).noTuntutan)"
-                @change="onCheckboxChange($event, asRow(value))"
-              />
-              <span>{{ asRow(value).no }}</span>
-            </div>
-          </template> -->
-
-          <!-- Custom column templates -->
           <template #noTuntutan="{ text }">
-            <a
-              href="#"
-              class="text-primary-600 hover:text-primary-800"
-              @click.prevent="viewTuntutan(text)"
-            >
+            <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewTuntutan(text)">
               {{ text }}
             </a>
           </template>
 
           <template #amaunTuntutan="{ text }">
-            <div class="font-medium text-right">
-              RM {{ formatNumber(Number(text)) }}
-            </div>
+            <div class="font-medium text-right">RM {{ formatNumber(Number(text)) }}</div>
           </template>
 
           <template #tarikhTuntutan="{ text }">
@@ -92,9 +39,7 @@
           </template>
 
           <template #statusPermohonan="{ text }">
-            <rs-badge :variant="getStatusVariant(text)">
-              {{ text }}
-            </rs-badge>
+            <rs-badge :variant="getStatusVariant(text)">{{ text }}</rs-badge>
           </template>
 
           <template #tindakan="{ value }">
@@ -112,11 +57,6 @@
               </rs-button>
             </div>
           </template>
-
-
-
-
-
         </rs-table>
 
         <!-- Pagination -->
@@ -127,25 +67,15 @@
               v-model="pageSize"
               type="select"
               :options="[10, 25, 50]"
-              :classes="{
-                wrapper: 'w-20',
-                outer: 'mb-0',
-                input: '!rounded-lg',
-              }"
+              :classes="{ wrapper: 'w-20', outer: 'mb-0', input: '!rounded-lg' }"
             />
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-700">
-              Menunjukkan {{ paginationStart }} hingga
-              {{ paginationEnd }} daripada {{ totalTuntutan }} entri
+              Menunjukkan {{ paginationStart }} hingga {{ paginationEnd }} daripada {{ totalTuntutan }} entri
             </span>
             <div class="flex gap-1">
-              <rs-button
-                variant="primary-outline"
-                class="!p-1 !w-8 !h-8"
-                :disabled="currentPage === 1"
-                @click="currentPage--"
-              >
+              <rs-button variant="primary-outline" class="!p-1 !w-8 !h-8" :disabled="currentPage === 1" @click="currentPage--">
                 <Icon name="ic:round-keyboard-arrow-left" />
               </rs-button>
               <rs-button
@@ -164,11 +94,7 @@
 
     <!-- Bulk Approval Button at Bottom -->
     <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
-      <rs-button
-        variant="success"
-        @click="handleBulkApproval"
-        :disabled="processing"
-      >
+      <rs-button variant="success" @click="handleBulkApproval" :disabled="processing">
         <Icon name="material-symbols:approval" class="w-4 h-4 mr-1" />
         Pengesahan (Bulk) ({{ selectedRows.length }})
       </rs-button>
@@ -179,61 +105,59 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useNuxtApp, navigateTo } from '#app'
-import { tuntutanList as baseList, statusVariant as mapStatusVariant } from '~/mocks/tuntutan'
 
-const { $swal } = useNuxtApp() as any
-// ---- Types for table rows & tindakan cell
-type TindakanCell = { noTuntutan: string; status: string }
-type Row = {
-  no: number
+definePageMeta({ title: 'Senarai Semua Tuntutan (EOAD / ETD)' })
+
+/** ========== Local Types & helpers (no external file) ========== */
+type StatusPermohonan =
+  | 'Dalam Semakan'
+  | 'Untuk Kelulusan'
+  | 'Perlu Penambahbaikan'
+  | 'Diluluskan'
+  | 'Ditolak'
+
+const statusVariant = (s: StatusPermohonan): 'warning' | 'primary' | 'secondary' | 'success' | 'danger' => {
+  switch (s) {
+    case 'Dalam Semakan': return 'warning'
+    case 'Untuk Kelulusan': return 'primary'
+    case 'Perlu Penambahbaikan': return 'secondary'
+    case 'Diluluskan': return 'success'
+    case 'Ditolak': return 'danger'
+    default: return 'secondary'
+  }
+}
+
+type TuntutanListItem = {
   noTuntutan: string
   noGL: string
   namaPemohon: string
   tarikhTuntutan: string
   amaunTuntutan: number
-  statusPermohonan: 'Dalam Semakan' | 'Untuk Kelulusan' | 'Perlu Penambahbaikan' | 'Diluluskan' | 'Ditolak'
-  tindakan: TindakanCell
+  statusPermohonan: StatusPermohonan
 }
 
-// ---- Narrowing helpers (used by template to avoid `never`)
-const asRow = (v: unknown) => v as Row
-const asTindakan = (v: unknown) => v as TindakanCell
-// Accepts whatever the slot provides and normalizes to { noTuntutan, status }
-// Normalizer: apapun yang table hantar, kita jadikan { noTuntutan, status }
-const getTindakanFrom = (slotValue: unknown): { noTuntutan: string; status: string } => {
-  const v: any = slotValue
-  if (v && typeof v === 'object') {
-    // Case A: cell value memang tindakan
-    if ('noTuntutan' in v && 'status' in v) {
-      return { noTuntutan: v.noTuntutan, status: v.status }
-    }
-    // Case B: diberikan satu row penuh
-    if ('noTuntutan' in v && 'statusPermohonan' in v) {
-      return { noTuntutan: v.noTuntutan, status: v.statusPermohonan }
-    }
-    // Case C: tindakan nested
-    if (v.tindakan && 'noTuntutan' in v.tindakan && 'status' in v.tindakan) {
-      return { noTuntutan: v.tindakan.noTuntutan, status: v.tindakan.status }
-    }
-  }
-  return { noTuntutan: '', status: '' }
-}
-
-
-
-
-definePageMeta({ title: 'Senarai Semua Tuntutan (EOAD / ETD)' })
+type TindakanCell = { noTuntutan: string; status: string }
+type Row = TuntutanListItem & { tindakan: TindakanCell }
 
 const breadcrumb = ref([
   { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad' },
   { name: 'Senarai Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad' },
 ])
 
-// Build tindakan objects for table
-const tuntutanList = ref(
-  baseList.map((r) => ({ ...r, tindakan: { noTuntutan: r.noTuntutan, status: r.statusPermohonan } }))
+/** ========== Seed list (local only to this file) ========== */
+const baseList = ref<TuntutanListItem[]>([
+  { noTuntutan: 'TUN-2024-001', noGL: 'GL-001-2024', namaPemohon: 'Ahmad bin Abdullah', tarikhTuntutan: new Date().toISOString(), amaunTuntutan: 5000.0, statusPermohonan: 'Dalam Semakan' },
+  { noTuntutan: 'TUN-2024-002', noGL: 'GL-002-2024', namaPemohon: 'Masjid Al-Hidayah', tarikhTuntutan: new Date(Date.now() - 86400000).toISOString(), amaunTuntutan: 8000.0, statusPermohonan: 'Dalam Semakan' },
+  { noTuntutan: 'TUN-2024-003', noGL: 'GL-003-2024', namaPemohon: 'Sekolah Agama Rakyat Al-Amin', tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(), amaunTuntutan: 12000.0, statusPermohonan: 'Dalam Semakan' },
+  { noTuntutan: 'TUN-2024-004', noGL: 'GL-004-2024', namaPemohon: 'Surau Kampung Baru', tarikhTuntutan: new Date(Date.now() - 259200000).toISOString(), amaunTuntutan: 3500.0, statusPermohonan: 'Dalam Semakan' },
+  { noTuntutan: 'TUN-2024-005', noGL: 'GL-005-2024', namaPemohon: 'Pusat Tahfiz Al-Quran', tarikhTuntutan: new Date(Date.now() - 345600000).toISOString(), amaunTuntutan: 15000.0, statusPermohonan: 'Dalam Semakan' },
+])
+
+const tuntutanList = ref<Row[]>(
+  baseList.value.map((r) => ({ ...r, tindakan: { noTuntutan: r.noTuntutan, status: r.statusPermohonan } }))
 )
 
+/** ========== Table config ========== */
 const columns = [
   { key: 'noTuntutan', label: 'No. Tuntutan / ID Tuntutan', sortable: true },
   { key: 'noGL', label: 'No. GL', sortable: true },
@@ -244,6 +168,7 @@ const columns = [
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ]
 
+/** ========== Filters, pagination, selection ========== */
 const searchQuery = ref('')
 const filters = ref({ status: '' })
 const pageSize = ref(10)
@@ -280,23 +205,32 @@ const tableDataWithNo = computed<Row[]>(() =>
   }) as Row)
 )
 
-
-
+/** ========== Utils ========== */
 const formatDate = (s: string) => new Date(s).toLocaleDateString('ms-MY')
 const formatTime = (s: string) => new Date(s).toLocaleTimeString('ms-MY')
 const formatNumber = (n: number) =>
   new Intl.NumberFormat('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     .format(Number.isFinite(n) ? n : 0)
 
-const getStatusVariant = (status: string) => mapStatusVariant(status)
+const getStatusVariant = (status: string) => statusVariant(status as StatusPermohonan)
+const asRow = (v: unknown) => v as Row
+const getTindakanFrom = (slotValue: unknown): { noTuntutan: string; status: string } => {
+  const v: any = slotValue
+  if (v && typeof v === 'object') {
+    if ('noTuntutan' in v && 'status' in v) return { noTuntutan: v.noTuntutan, status: v.status }
+    if ('noTuntutan' in v && 'statusPermohonan' in v) return { noTuntutan: v.noTuntutan, status: v.statusPermohonan }
+    if (v.tindakan && 'noTuntutan' in v.tindakan && 'status' in v.tindakan) return { noTuntutan: v.tindakan.noTuntutan, status: v.tindakan.status }
+  }
+  return { noTuntutan: '', status: '' }
+}
+
+/** ========== Actions ========== */
+const { $swal } = useNuxtApp() as any
 
 const viewTuntutan = (noTuntutan: string) => {
   navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${noTuntutan}/pengesahan`)
 }
-
-const handleSemakPengesahan = (noTuntutan: string) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${noTuntutan}/pengesahan`)
-}
+const handleSemakPengesahan = (noTuntutan: string) => viewTuntutan(noTuntutan)
 
 const onCheckboxChange = (event: Event, row: any) => {
   const input = event.target as HTMLInputElement
@@ -310,7 +244,6 @@ const onCheckboxChange = (event: Event, row: any) => {
 const handleBulkApproval = async () => {
   try {
     processing.value = true
-    // @ts-ignore (provided by Nuxt app)
     const result = await $swal.fire({
       icon: 'question',
       title: 'Pengesahan (Bulk)',
@@ -322,12 +255,10 @@ const handleBulkApproval = async () => {
     })
     if (result.isConfirmed) {
       await new Promise((r) => setTimeout(r, 800))
-      // @ts-ignore
       await $swal.fire({ icon: 'success', title: 'Berjaya!', text: 'Semua permohonan yang dipilih telah berjaya disahkan' })
       selectedRows.value = []
     }
-  } catch (e) {
-    // @ts-ignore
+  } catch {
     await $swal.fire({ icon: 'error', title: 'Ralat', text: 'Ralat telah berlaku semasa memproses pengesahan bulk' })
   } finally {
     processing.value = false
@@ -335,7 +266,4 @@ const handleBulkApproval = async () => {
 }
 </script>
 
-
-<style lang="scss" scoped>
-// Add any custom styles here if needed
-</style>
+<style scoped lang="scss"></style>
