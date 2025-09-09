@@ -461,6 +461,22 @@ const lulusData = ref([
     tarikhPermohonan: "2024-01-14",
     aksi: "B007",
   },
+  {
+    noBantuan: "B010",
+    namaBantuan: "(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    status: "Lulus",
+    kekerapan: "Sekali",
+    tarikhPermohonan: "2025-08-09",
+    aksi: "B010",
+  },
+  {
+    noBantuan: "B011",
+    namaBantuan: "(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS)",
+    status: "Lulus",
+    kekerapan: "Sekali",
+    tarikhPermohonan: "2025-09-09",
+    aksi: "B011",
+  },
 ]);
 
 // Mock data for Ditolak tab - applications with status: Tidak Lulus
@@ -554,6 +570,8 @@ const filteredLulusData = computed(() => {
     result = result.filter((app) => app.status === filters.value.status);
   }
 
+
+
   // Apply pagination
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
@@ -623,6 +641,7 @@ const handleCancel = (noBantuan) => {
   // Handle cancel logic - would be replaced with actual implementation
   // You can add confirmation modal or API call here
 };
+
 
 const getStatusVariant = (status) => {
   const variants = {
