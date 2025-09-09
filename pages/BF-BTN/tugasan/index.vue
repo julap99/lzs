@@ -1047,7 +1047,7 @@ const siasatanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     jenistugasan: "Bantuan",
     noRujukan: "NAS-2025-0001",
-    tindakan: "bantuan/siasatan/siasatan-eoad",
+    tindakan: "bantuan/siasatan/siasatan-eoad/btn-001",
   },
   {
     pemohon: "Siti binti Hassan (850505-05-5678)",
@@ -1056,7 +1056,7 @@ const siasatanData = ref([
     bilanganBantuan: 2,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 2",
     noRujukan: "NAS-2025-0002",
-    tindakan: "bantuan/siasatan/siasatan-eoad",
+    tindakan: "bantuan/siasatan/siasatan-eoad/btn-002",
   },
 ]);
 
@@ -1118,7 +1118,7 @@ const kelulusanData = ref([
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0401",
-    tindakan: "bantuan/kelulusan/siasatan-eoad",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-001",
   },
 ]);
 

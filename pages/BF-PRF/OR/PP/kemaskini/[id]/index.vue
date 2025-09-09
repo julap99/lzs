@@ -134,7 +134,7 @@
             v-model="formData.zone"
           />
 
-          <!-- Branch - Show when Organization Type is NOT Masjid or Surau -->
+          <!-- Branch - Show when Structure is Cawangan and Organization Type is NOT Masjid or Surau -->
           <FormKit
             v-if="showBranch"
             type="text"
@@ -844,7 +844,7 @@ const showZone = computed(() => {
 });
 
 const showBranch = computed(() => {
-  return formData.value.organizationType && 
+  return formData.value.structure === 'cawangan' && 
          !['masjid', 'surau'].includes(formData.value.organizationType);
 });
 
