@@ -141,9 +141,10 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Status Semasa
               </label>
-              <rs-badge variant="warning" class="text-lg">
-                Dalam Semakan
+              <rs-badge :variant="tuntutanData.status === 'Dalam Semakan' ? 'warning' : 'default'" class="text-lg">
+                {{ tuntutanData.status }}
               </rs-badge>
+
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -197,74 +198,112 @@ const breadcrumb = ref([
   },
 ]);
 
-// Sample data - in real app, this would be fetched from API
+/**
+ * MOCK DB — keep it in sync with list page data
+ * Keyed by id (same as noTuntutan).
+ */
+const MOCK_DB = {
+  "TUN-2024-003": {
+    tuntutan: {
+      id: "TUN-2024-003",
+      noGL: "GL-003",
+      amaunTuntutan: 12000.0,
+      tarikh: "2024-03-15",
+      catatanTambahan: "Catatan untuk TUN-2024-003...",
+      tarikhHantar: "2024-03-16T10:30:00",
+      pemohon: "Sekolah Agama Rakyat Al-Amin",
+      pegawaiSemakan: "Siti Aminah binti Omar",
+      dokumenSokongan: [
+        { id: "DOC-003-1", nama: "GL_Karpet_AlAmin.pdf", url: "/documents/GL_Karpet_AlAmin.pdf" },
+        { id: "DOC-003-2", nama: "Invoice_AlAmin_Mar2024.pdf", url: "/documents/Invoice_AlAmin_Mar2024.pdf" },
+      ],
+      status: "Dalam Semakan",
+    },
+    bantuan: {
+      kodBantuan: "B400",
+      jenisBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+      bahanBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA",
+      pakejBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
+      kelayakanBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
+    },
+  },
+
+  "TUN-2024-004": {
+    tuntutan: {
+      id: "TUN-2024-004",
+      noGL: "GL-004",
+      amaunTuntutan: 3500.0,
+      tarikh: "2024-03-12",
+      catatanTambahan: "Catatan untuk TUN-2024-004...",
+      tarikhHantar: "2024-03-13T09:10:00",
+      pemohon: "Surau Kampung Baru",
+      pegawaiSemakan: "Belum ditugaskan",
+      dokumenSokongan: [
+        { id: "DOC-004-1", nama: "GL_SurauKarpet.pdf", url: "/documents/GL_SurauKarpet.pdf" },
+      ],
+      status: "Dalam Semakan",
+    },
+    bantuan: {
+      kodBantuan: "B400",
+      jenisBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+      bahanBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA",
+      pakejBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
+      kelayakanBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
+    },
+  },
+};
+
+// Page state
 const tuntutanData = ref({
-  id: route.params.id,
-  noGL: "GL-2025-001",
-  amaunTuntutan: 5000.00,
-  tarikh: "2024-03-20",
-  catatanTambahan: "Catatan tambahan untuk tuntutan ini...",
-  tarikhHantar: "2024-03-21T10:30:00",
-  pemohon: "Ahmad bin Abdullah",
-  pegawaiSemakan: "Siti Aminah binti Omar",
-  dokumenSokongan: [
-    {
-      id: "DOC-001",
-      nama: "GL_Bantuan_Sumbangan_Karpet.pdf",
-      url: "/documents/gl_bantuan_sumbangan_karpet.pdf",
-    },
-    {
-      id: "DOC-002",
-      nama: "Invoice_March2024.pdf",
-      url: "/documents/invoice_march2024.pdf",
-    },
-  ],
+  id: "",
+  noGL: "",
+  amaunTuntutan: 0,
+  tarikh: "",
+  catatanTambahan: "",
+  tarikhHantar: "",
+  pemohon: "",
+  pegawaiSemakan: "",
+  dokumenSokongan: [],
+  status: "Dalam Semakan",
 });
 
-// Sample bantuan data - in real app, this would be fetched from API based on GL
 const bantuanData = ref({
-  kodBantuan: "B400",
-  jenisBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
-  bahanBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA",
-  pakejBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
-  kelayakanBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
+  kodBantuan: "",
+  jenisBantuan: "",
+  bahanBantuan: "",
+  pakejBantuan: "",
+  kelayakanBantuan: "",
 });
 
-// Load data on mount
 onMounted(async () => {
   await loadTuntutanData();
 });
 
-// Load tuntutan data
 const loadTuntutanData = async () => {
   try {
-    // In real app, fetch data from API based on route.params.id
-    console.log("Loading tuntutan data for ID:", route.params.id);
-    // API call would go here
+    const id = String(route.params.id || "");
+    const found = MOCK_DB[id];
+
+    if (!found) {
+      console.warn("Record not found for id", id);
+      return;
+    }
+
+    tuntutanData.value = { ...found.tuntutan };
+    bantuanData.value = { ...found.bantuan };
   } catch (error) {
     console.error("Error loading tuntutan data:", error);
   }
 };
 
-// Utility functions
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("ms-MY");
-};
+// Utils
+const formatDate = (dateString) => new Date(dateString).toLocaleDateString("ms-MY");
+const formatNumber = (number) =>
+  new Intl.NumberFormat("ms-MY", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(number);
 
-const formatNumber = (number) => {
-  return new Intl.NumberFormat("ms-MY", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(number);
-};
-
-const viewDocument = (doc) => {
-  // Implement document viewing logic
-  window.open(doc.url, "_blank");
-};
+const viewDocument = (doc) => window.open(doc.url, "_blank");
 
 const downloadDocument = (doc) => {
-  // Implement document download logic
   const link = document.createElement("a");
   link.href = doc.url;
   link.download = doc.nama;
@@ -273,11 +312,11 @@ const downloadDocument = (doc) => {
   document.body.removeChild(link);
 };
 
-// Handle back
 const handleBack = () => {
-  navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan');
+  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan");
 };
 </script>
+
 
 <style lang="scss" scoped>
 // Add any additional styles here

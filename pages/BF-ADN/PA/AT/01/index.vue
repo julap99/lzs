@@ -36,28 +36,28 @@
           <template v-slot:tarikhAduan="data">
             <span class="font-medium">{{ formatDate(data.text) }}</span>
           </template>
-          <template v-slot:aksi="data">
+          <template v-slot:aksi="{ value }">
             <rs-button
-              v-if="!isStatusFinal(data.text)"
+              v-if="!isStatusFinal(value.status)"
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateByStatus(data.text)"
+              @click="navigateByStatus(value.status, value.link)"
             >
               Lebih
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
 
-            <rs-button 
-              v-if="!isKemaskiniFinal(data.text)"
-                variant="secondary"
-                size="sm"
-                class="!px-2 !py-1 mt-3"
-                @click="bukaPopup(data.text)"
-              >
-                Kemaskini
-                <Icon name="mdi:pencil" class="ml-1" size="1rem" />
-              </rs-button>
+            <rs-button
+              v-if="!isKemaskiniFinal(value.status)"
+              variant="secondary"
+              size="sm"
+              class="!px-2 !py-1 mt-3"
+              @click="bukaPopup(value)"
+            >
+              Kemaskini
+              <Icon name="mdi:pencil" class="ml-1" size="1rem" />
+            </rs-button>
           </template>
         </rs-table>
       </template>
@@ -256,24 +256,18 @@ const formatDate = (date) => {
   });
 };
 
-const navigateByStatus = (status) => {
-  console.log(status)
-  if (status === "Aduan Baru") {
-    navigateTo("/BF-ADN/PA/AT/02");
-  } else if (status === "Dalam Proses - Siasatan Ringkas") {
-    navigateTo("/BF-ADN/PA/TS/02");
-  } else if (status == "Dalam Proses - Siasatan Lapangan") {
-    navigateTo("/BF-ADN/PA/TS/05");
-  } else if (status == "Dalam Proses - Quick Assessment") {
-    navigateTo("/BF-ADN/PA/QA/01");
-  } 
-  else if (status == "Dalam Proses - Quick Assessment") {
-    navigateTo("/BF-ADN/PA/QA/01");
-  }else {
-    // Default fallback kalau nak
-    navigateTo("/BF-ADN/PA/AT/02");
-  }
-};
+const navigateByStatus = (status, link) => {
+  // If a deep-link is provided (e.g., /BF-ADN/tugasan/889), follow it
+  if (link) return navigateTo(link)
+
+  // Fallbacks (existing behaviour)
+  if (status === "Aduan Baru") return navigateTo("/BF-ADN/PA/AT/02")
+  if (status === "Dalam Proses - Siasatan Ringkas") return navigateTo("/BF-ADN/PA/TS/02")
+  if (status === "Dalam Proses - Siasatan Lapangan") return navigateTo("/BF-ADN/PA/TS/05")
+  if (status === "Dalam Proses - Quick Assessment") return navigateTo("/BF-ADN/PA/QA/01")
+
+  return navigateTo("/BF-ADN/PA/AT/02")
+}
 
 
 const performSearch = () => {
@@ -316,8 +310,9 @@ const pegawaiOptions = [
 ];
 
 const bukaPopup = (row) => {
-  showPopup.value = true;
-};
+  form.value = { status: row.status, pegawai: '' }
+  showPopup.value = true
+}
 
 const submitKemaskini = () => {
   console.log('Kemaskini:', form.value);

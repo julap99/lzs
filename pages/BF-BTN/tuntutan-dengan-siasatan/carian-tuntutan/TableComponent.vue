@@ -84,22 +84,27 @@
             </rs-badge>
           </template>
 
-         <template v-slot:tindakan="{ text }">
+         <template v-slot:tindakan="{ text, value }">
+  <!-- Use the whole row via `value` if your RsTable injects it; otherwise use `text` -->
+          <div class="relative inline-flex group">
             <rs-button
               variant="ghost"
               size="sm"
-              class="p-1 flex flex-col items-center bg-transparent border-0 shadow-none text-blue-600 hover:text-blue-800"
-              @click="handleTindakan(text.noBantuan)"
+              class="p-1 bg-transparent border-0 shadow-none text-blue-600 hover:text-blue-800"
+              @click="saveSelectedAndGo(value || text)"
+              title="Mohon Tuntutan"
             >
-              <!-- Plus Icon -->
-              <Icon name="material-symbols:add" size="24" class="mb-2" />
-
-              <!-- Label that shows on hover -->
-              <span class="absolute left-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Mohon Tuntutan
-              </span>
+              <Icon name="material-symbols:add" size="24" />
             </rs-button>
-          </template>
+
+            <!-- Hover label (blue) -->
+            <span
+              class="pointer-events-none absolute left-9 top-1/2 -translate-y-1/2 text-sm text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            >
+            </span>
+          </div>
+        </template>
+
 
 
 
@@ -469,9 +474,23 @@ const statusIcon = (status) => {
 };
 
 
-const handleTindakan = (noBantuan) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan`);
+const saveSelectedAndGo = (row) => {
+  try {
+    // Persist the entire selected bantuan row for next page
+    sessionStorage.setItem('NAS_SELECTED_BANTUAN', JSON.stringify(row));
+  } catch (e) {
+    console.warn('Unable to save selected bantuan in sessionStorage', e);
+  }
+  navigateTo('/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan');
 };
+
+// (Optional) keep your existing handler for other entry points
+const handleTindakan = (noBantuan) => {
+  // Fallback if only ID is available
+  const row = bantuanList.value.find(b => b.noBantuan === noBantuan);
+  saveSelectedAndGo(row || { noBantuan });
+};
+
 
 const handleBulkApproval = async () => {
   try {
