@@ -526,18 +526,6 @@
                     v-model="edu.jenis_sekolah"
                   />
 
-                  <!-- If Peringkat Rendah, show checkbox for category -->
-                  <FormKit
-                    v-if="edu.jenis_sekolah === 'rendah'"
-                    type="checkbox"
-                    :name="`edu${index}KategoriRendah`"
-                    label="Kategori Sekolah Rendah"
-                    :options="[
-                      { label: 'Sekolah Agama', value: 'agama' },
-                      { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
-                    ]"
-                    v-model="edu.sekolah_rendah_kategori"
-                  />
 
                   <!-- Kategori select is always shown -->
                   <FormKit
@@ -592,10 +580,26 @@
                       :name="`edu${index}NamaSekolah`"
                       label="Nama Sekolah / Institusi"
                       placeholder="Pilih sekolah / institusi"
-                      :options="schoolOptions"
+                      :options="getFilteredSchoolOptions(edu.kategori_sekolah)"
                       validation="required"
                       v-model="edu.nama_sekolah"
                       @input="onSelectSchool(index, $event)"
+                    />
+                  </div>
+
+                  <!-- Kategori Sekolah Rendah - shown when kategori sekolah is SRA or SRK -->
+                  <div v-if="edu.kategori_sekolah === 'SRA' || edu.kategori_sekolah === 'SRK'" class="mt-4">
+                    <label class="block text-sm font-medium text-black-700 mb-4"
+                      >Kategori Sekolah Rendah</label
+                    >
+                    <FormKit
+                      type="checkbox"
+                      :name="`edu${index}KategoriRendah`"
+                      :options="[
+                        { label: 'Sekolah Agama', value: 'agama' },
+                        { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
+                      ]"
+                      v-model="edu.sekolah_rendah_kategori"
                     />
                   </div>
 
@@ -799,7 +803,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Islam</rs-button
+                >Maklumat Pengislaman</rs-button
               >
             </div>
           </div>
@@ -3716,18 +3720,6 @@
                     v-model="edu.jenis_sekolah"
                   />
 
-                  <!-- If Peringkat Rendah, show checkbox for category -->
-                  <FormKit
-                    v-if="edu.jenis_sekolah === 'rendah'"
-                    type="checkbox"
-                    :name="`eduTanggungan${index}KategoriRendah`"
-                    label="Kategori Sekolah Rendah"
-                    :options="[
-                      { label: 'Sekolah Agama', value: 'agama' },
-                      { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
-                    ]"
-                    v-model="edu.sekolah_rendah_kategori"
-                  />
 
                   <!-- Kategori select is always shown -->
                   <FormKit
@@ -3782,10 +3774,26 @@
                       :name="`eduTanggungan${index}NamaSekolah`"
                       label="Nama Sekolah / Institusi"
                       placeholder="Pilih sekolah / institusi"
-                      :options="schoolOptions"
+                      :options="getFilteredSchoolOptions(edu.kategori_sekolah)"
                       validation="required"
                       v-model="edu.nama_sekolah"
                       @input="onSelectSchoolTanggungan(index, $event)"
+                    />
+                  </div>
+
+                  <!-- Kategori Sekolah Rendah - shown when kategori sekolah is SRA or SRK -->
+                  <div v-if="edu.kategori_sekolah === 'SRA' || edu.kategori_sekolah === 'SRK'" class="mt-4">
+                    <label class="block text-sm font-medium text-black-700 mb-4"
+                      >Kategori Sekolah Rendah</label
+                    >
+                    <FormKit
+                      type="checkbox"
+                      :name="`eduTanggungan${index}KategoriRendah`"
+                      :options="[
+                        { label: 'Sekolah Agama', value: 'agama' },
+                        { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
+                      ]"
+                      v-model="edu.sekolah_rendah_kategori"
                     />
                   </div>
 
@@ -5350,6 +5358,16 @@ definePageMeta({
 // BREADCRUMB CONFIGURATION
 // ============================================================================
 const breadcrumb = ref([
+{
+    name: "Profiling",
+    type: "link",
+    path: "/BF-PRF",
+  },
+  {
+    name: "Asnaf",
+    type: "link",
+    path: "/BF-PRF/AS",
+  },
   {
     name: " Pendaftaran Lengkap",
     type: "current",
@@ -5402,13 +5420,208 @@ const stepsB = [
   { id: 11, label: "Pegawai Pendaftar" },
 ];
 
-// Predefined School/Institution options with addresses
-const schoolOptions = [
-  { label: "SMK Kuala Lumpur", value: "smk-kuala-lumpur", alamat1: "Jalan Sultan, Kuala Lumpur", alamat2: "", alamat3: "" },
-  { label: "SK Petaling Jaya", value: "sk-petaling-jaya", alamat1: "Jalan Sekolah, Petaling Jaya", alamat2: "", alamat3: "" },
-  { label: "UPM", value: "upm", alamat1: "Universiti Putra Malaysia", alamat2: "Serdang, Seri Kembangan", alamat3: "" },
-  { label: "SMK Shah Alam", value: "smk-shah-alam", alamat1: "Jalan Sekolah, Shah Alam", alamat2: "", alamat3: "" },
+// Mock data for Sekolah Agama
+const sekolahAgamaOptions = [
+  // Sekolah Rendah Agama (SRA)
+  { 
+    label: "SRA Al-Amin Kuala Lumpur", 
+    value: "sra-al-amin-kl", 
+    kategori: "SRA",
+    alamat1: "Jalan Ampang, Kuala Lumpur", 
+    alamat2: "Wilayah Persekutuan", 
+    alamat3: "50450 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50450"
+  },
+  { 
+    label: "SRA Al-Hidayah Shah Alam", 
+    value: "sra-al-hidayah-sa", 
+    kategori: "SRA",
+    alamat1: "Jalan Masjid, Shah Alam", 
+    alamat2: "Selangor", 
+    alamat3: "40000 Shah Alam",
+    daerah: "Shah Alam",
+    bandar: "Shah Alam",
+    poskod: "40000"
+  },
+  { 
+    label: "SRA Al-Ikhlas Petaling Jaya", 
+    value: "sra-al-ikhlas-pj", 
+    kategori: "SRA",
+    alamat1: "Jalan SS2, Petaling Jaya", 
+    alamat2: "Selangor", 
+    alamat3: "47300 Petaling Jaya",
+    daerah: "Petaling Jaya",
+    bandar: "Petaling Jaya",
+    poskod: "47300"
+  },
+  // KAFA
+  { 
+    label: "KAFA Al-Falah Kuala Lumpur", 
+    value: "kafa-al-falah-kl", 
+    kategori: "KAFA",
+    alamat1: "Jalan TAR, Kuala Lumpur", 
+    alamat2: "Wilayah Persekutuan", 
+    alamat3: "50100 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50100"
+  },
+  { 
+    label: "KAFA Al-Munawwarah Klang", 
+    value: "kafa-al-munawwarah-klang", 
+    kategori: "KAFA",
+    alamat1: "Jalan Meru, Klang", 
+    alamat2: "Selangor", 
+    alamat3: "41050 Klang",
+    daerah: "Klang",
+    bandar: "Klang",
+    poskod: "41050"
+  },
+  // IPT (Islamic)
+  { 
+    label: "Universiti Islam Antarabangsa Malaysia (UIAM)", 
+    value: "uiam", 
+    kategori: "IPT",
+    alamat1: "Jalan Gombak, Gombak", 
+    alamat2: "Selangor", 
+    alamat3: "53100 Gombak",
+    daerah: "Gombak",
+    bandar: "Gombak",
+    poskod: "53100"
+  },
+  { 
+    label: "Kolej Universiti Islam Selangor (KUIS)", 
+    value: "kuis", 
+    kategori: "IPT",
+    alamat1: "Bandar Seri Putra, Kajang", 
+    alamat2: "Selangor", 
+    alamat3: "43000 Kajang",
+    daerah: "Kajang",
+    bandar: "Kajang",
+    poskod: "43000"
+  }
 ];
+
+// Mock data for Sekolah Kebangsaan
+const sekolahKebangsaanOptions = [
+  // Sekolah Rendah Kebangsaan (SRK)
+  { 
+    label: "SK Taman Tun Dr Ismail", 
+    value: "sk-ttdi", 
+    kategori: "SRK",
+    alamat1: "Jalan TTD1, Taman Tun Dr Ismail", 
+    alamat2: "Kuala Lumpur", 
+    alamat3: "60000 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "60000"
+  },
+  { 
+    label: "SK Bandar Utama", 
+    value: "sk-bandar-utama", 
+    kategori: "SRK",
+    alamat1: "Jalan BU 3/1, Bandar Utama", 
+    alamat2: "Petaling Jaya", 
+    alamat3: "47800 Petaling Jaya",
+    daerah: "Petaling Jaya",
+    bandar: "Petaling Jaya",
+    poskod: "47800"
+  },
+  { 
+    label: "SK Seksyen 7, Shah Alam", 
+    value: "sk-seksyen-7-sa", 
+    kategori: "SRK",
+    alamat1: "Jalan Seksyen 7, Shah Alam", 
+    alamat2: "Selangor", 
+    alamat3: "40000 Shah Alam",
+    daerah: "Shah Alam",
+    bandar: "Shah Alam",
+    poskod: "40000"
+  },
+  // Sekolah Menengah Kebangsaan (SEK.MEN)
+  { 
+    label: "SMK Taman Melawati", 
+    value: "smk-taman-melawati", 
+    kategori: "SEK.MEN",
+    alamat1: "Jalan Melawati, Taman Melawati", 
+    alamat2: "Kuala Lumpur", 
+    alamat3: "53100 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "53100"
+  },
+  { 
+    label: "SMK Bandar Baru Bangi", 
+    value: "smk-bandar-baru-bangi", 
+    kategori: "SEK.MEN",
+    alamat1: "Jalan 2/1, Bandar Baru Bangi", 
+    alamat2: "Selangor", 
+    alamat3: "43650 Bandar Baru Bangi",
+    daerah: "Bangi",
+    bandar: "Bangi",
+    poskod: "43650"
+  },
+  { 
+    label: "SMK Seksyen 18, Shah Alam", 
+    value: "smk-seksyen-18-sa", 
+    kategori: "SEK.MEN",
+    alamat1: "Jalan Seksyen 18, Shah Alam", 
+    alamat2: "Selangor", 
+    alamat3: "40000 Shah Alam",
+    daerah: "Shah Alam",
+    bandar: "Shah Alam",
+    poskod: "40000"
+  },
+  // IPT (Public/Private)
+  { 
+    label: "Universiti Malaya (UM)", 
+    value: "um", 
+    kategori: "IPT",
+    alamat1: "Jalan Universiti, Kuala Lumpur", 
+    alamat2: "Wilayah Persekutuan", 
+    alamat3: "50603 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50603"
+  },
+  { 
+    label: "Universiti Putra Malaysia (UPM)", 
+    value: "upm", 
+    kategori: "IPT",
+    alamat1: "Universiti Putra Malaysia", 
+    alamat2: "Serdang, Seri Kembangan", 
+    alamat3: "43400 UPM Serdang",
+    daerah: "Serdang",
+    bandar: "Seri Kembangan",
+    poskod: "43400"
+  },
+  { 
+    label: "Universiti Teknologi Malaysia (UTM)", 
+    value: "utm", 
+    kategori: "IPT",
+    alamat1: "Jalan Sultan Yahya Petra", 
+    alamat2: "Kuala Lumpur", 
+    alamat3: "54100 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "54100"
+  }
+];
+
+// Combined school options for backward compatibility
+const schoolOptions = [...sekolahAgamaOptions, ...sekolahKebangsaanOptions];
+
+// ============================================================================
+// COMPUTED PROPERTIES FOR SCHOOL FILTERING
+// ============================================================================
+// Computed property to get filtered school options based on kategori sekolah
+const getFilteredSchoolOptions = (kategoriSekolah) => {
+  if (!kategoriSekolah) return schoolOptions;
+  
+  return schoolOptions.filter(school => school.kategori === kategoriSekolah);
+};
 
 // ============================================================================
 // FORM STATE VARIABLES
@@ -5434,7 +5647,6 @@ const tarikhMasukIslam = ref(null);
 const tarikhMasukIslamTanggungan = ref(null);
 // Polygamy Variables
 const statusPoligami = ref(null);
-const bilanganIsteri = ref(null);
 const isteriList = ref([]);
 // Payment Variables
 const caraPembayaran = ref(null);
@@ -6470,15 +6682,49 @@ watch(
   },
   { immediate: true }
 );
-watch(bilanganIsteri, (newVal) => {
-  const count = parseInt(newVal) || 0;
-  isteriList.value = Array(count).fill({});
-});
+// Watch formData.bilangan_isteri to update both isteriList and formData.isteri_list
+watch(
+  () => formData.value.bilangan_isteri,
+  (newVal) => {
+    const count = parseInt(newVal) || 0;
+    isteriList.value = Array(count).fill({});
+    formData.value.isteri_list = Array(count).fill({ no_kp: '', nama: '' });
+  }
+);
+
+// Watch for kategori sekolah changes to clear nama sekolah selection
+watch(
+  () => formData.value.education_entries,
+  (newEntries) => {
+    if (!newEntries) return;
+    newEntries.forEach((entry, index) => {
+      // Watch each entry's kategori_sekolah
+      watch(
+        () => entry.kategori_sekolah,
+        (newKategori, oldKategori) => {
+          if (newKategori !== oldKategori && entry.nama_sekolah) {
+            // Clear nama sekolah when kategori changes
+            entry.nama_sekolah = "";
+            entry.alamat_sekolah_1 = "";
+            entry.alamat_sekolah_2 = "";
+            entry.alamat_sekolah_3 = "";
+            entry.daerah_sekolah = "";
+            entry.bandar_sekolah = "";
+            entry.poskod_sekolah = "";
+          }
+        },
+        { deep: true }
+      );
+    });
+  },
+  { deep: true }
+);
 
 watch(statusPoligami, (newVal) => {
   if (newVal !== "ya") {
-    bilanganIsteri.value = null;
     isteriList.value = [];
+    formData.value.bilangan_isteri = "";
+    formData.value.isteri_list = [];
   }
 });
 
@@ -8084,9 +8330,24 @@ const onSelectSchool = (index, selectedValue) => {
   if (!selected) return;
   const entry = formData.value.education_entries[index];
   if (!entry) return;
+  
+  // Auto-check kategori sekolah based on selected school
+  entry.kategori_sekolah = selected.kategori;
+  
+  // Auto-check sekolah rendah kategori if it's a religious school
+  if (selected.kategori === 'SRA' || selected.kategori === 'KAFA') {
+    entry.sekolah_rendah_kategori = ['agama'];
+  } else if (selected.kategori === 'SRK' || selected.kategori === 'SEK.MEN') {
+    entry.sekolah_rendah_kategori = ['kebangsaan'];
+  }
+  
+  // Populate address fields
   entry.alamat_sekolah_1 = selected.alamat1 || "";
   entry.alamat_sekolah_2 = selected.alamat2 || "";
   entry.alamat_sekolah_3 = selected.alamat3 || "";
+  entry.daerah_sekolah = selected.daerah || "";
+  entry.bandar_sekolah = selected.bandar || "";
+  entry.poskod_sekolah = selected.poskod || "";
 };
 
 // ============================================================================
@@ -8137,9 +8398,24 @@ const onSelectSchoolTanggungan = (index, selectedValue) => {
   if (!currentTanggungan || !currentTanggungan.education_entries) return;
   const entry = currentTanggungan.education_entries[index];
   if (!entry) return;
+  
+  // Auto-check kategori sekolah based on selected school
+  entry.kategori_sekolah = selected.kategori;
+  
+  // Auto-check sekolah rendah kategori if it's a religious school
+  if (selected.kategori === 'SRA' || selected.kategori === 'KAFA') {
+    entry.sekolah_rendah_kategori = ['agama'];
+  } else if (selected.kategori === 'SRK' || selected.kategori === 'SEK.MEN') {
+    entry.sekolah_rendah_kategori = ['kebangsaan'];
+  }
+  
+  // Populate address fields
   entry.alamat_sekolah_1 = selected.alamat1 || "";
   entry.alamat_sekolah_2 = selected.alamat2 || "";
   entry.alamat_sekolah_3 = selected.alamat3 || "";
+  entry.daerah_sekolah = selected.daerah || "";
+  entry.bandar_sekolah = selected.bandar || "";
+  entry.poskod_sekolah = selected.poskod || "";
 };
 
 // ============================================================================
