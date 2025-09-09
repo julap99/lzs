@@ -1112,13 +1112,22 @@ const sokonganData = ref([
 // Mock data for Kelulusan sub-tab (own dataset, same format)
 const kelulusanData = ref([
   {
-    pemohon: "Rosnah binti Karim (750707-07-7788)",
+    pemohon: "Rosli bin Saad (750707-07-7788)",
     kariah: "Masjid As-Salam",
-    daerah: "Sepang",
+    daerah: "Kuala Selangor",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0401",
     tindakan: "bantuan/kelulusan/siasatan-eoad/btn-001",
+  },
+  {
+    pemohon: "Muhammad Farhan bin Fitri (970707-07-7788)",
+    kariah: "Masjid As-Salam",
+    daerah: "Seri Kembangan",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0402",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-002",
   },
 ]);
 

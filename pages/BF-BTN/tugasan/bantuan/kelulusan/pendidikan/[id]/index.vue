@@ -9,9 +9,9 @@
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         >
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">Siasatan</h1>
+            <h1 class="text-2xl font-bold text-gray-900">Kelulusan Bantuan</h1>
             <p class="mt-1 text-sm text-gray-600">
-              Kemaskini maklumat bantuan
+              Semak dan nilai maklumat siasatan untuk kelulusan
             </p>
           </div>
           <rs-badge
@@ -1349,6 +1349,7 @@
           </rs-card> -->
 
           <!-- Laluan Process  -->
+           
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
@@ -1364,7 +1365,7 @@
                 </div>
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">
-                    Laluan Proses
+                    Prosedur Agihan
                   </h2>
                   <p class="text-sm text-gray-500">
                     Laluan Proses Permohonan
@@ -1412,7 +1413,7 @@
                   </div>
 
                   <!-- Siasatan Accordion Item -->
-                  <!-- <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
                     <button
                       type="button"
                       class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
@@ -1429,6 +1430,10 @@
                         <div>
                           <label class="block text-sm font-medium text-gray-600 mb-1">Disiasat Oleh</label>
                           <p class="text-gray-900">{{ siasatanDetails.disiasatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Kaedah Siasatan</label>
+                          <p class="text-gray-900">{{ siasatanDetails.kaedahSiasatan }}</p>
                         </div>
                         <div>
                           <label class="block text-sm font-medium text-gray-600 mb-1">Status Siasatan</label>
@@ -1450,7 +1455,7 @@
                         </div>
                       </div>
                     </div>
-                  </div> -->
+                  </div>
                 </div>
 
                 <!-- <div class="text-xs text-gray-500">
@@ -1613,15 +1618,15 @@ const breadcrumb = ref([
     path: "/BF-BTN/tugasan",
   },
   {
-    name: "Siasatan",
-    type: "link",
-    path: "/BF-BTN/tugasan",
-  },
-  {
-    name: "Kemaskini Siasatan",
+    name: "Kelulusan Siasatan",
     type: "current",
-    path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
+    path: `/BF-BTN/tugasan/bantuan/kelulusan/${route.params.id}`,
   },
+  // {
+  //   name: "Kemaskini Siasatan",
+  //   type: "current",
+  //   path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
+  // },
 ]);
 
 // Tab configuration
@@ -1715,9 +1720,9 @@ const entitlementProductOptions = computed(() => {
 const b300EntitlementOptions = ref([
   { label: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_KEPERLUAN' },
   { label: '(HQ) TUNTUTAN PROGRAM (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_PROGRAM' },
-  { label: '(HQ) WANG PERSEDIAAN SEKOLAH ASRAMA (FAKIR)', value: 'WANG_PERSEDIAAN' },
-  { label: '(HQ) WANG SAKU SEKOLAH ASRAMA (FAKIR)', value: 'WANG_SAKU' },
-  { label: '(HQ) YURAN SEKOLAH ASRAMA (FAKIR)', value: 'YURAN' }
+  { label: '(HQ) WANG PERSEDIAAN SEKOLAH ASRAMA (FAKIR)', value: 'wang_persediaan_sekolah_asrama' },
+  { label: '(HQ) WANG SAKU SEKOLAH ASRAMA (FAKIR)', value: 'wang_saku_sekolah_asrama' },
+  { label: '(HQ) YURAN SEKOLAH ASRAMA (FAKIR)', value: 'yuran_sekolah_asrama' }
 ]);
 
 // B307 Entitlement Product options for checkboxes
@@ -1748,7 +1753,130 @@ const currentEntitlementOptions = computed(() => {
 });
 
 // Reactive data for entitlement products
-const entitlementProductsData = ref([]);
+const entitlementProductsData = ref([
+  // B300 Cards
+  {
+    code: 'wang_persediaan_sekolah_asrama',
+    penerimaBayaran: {
+      kategoriPenerima: 'asnaf',
+      noPendaftaran: '',
+      kaedahPembayaran: 'EFT',
+      noKadPengenalan: '880701121234',
+      namaPenerima: 'Siti binti Amin',
+      namaPemegangAkaun: 'Siti binti Amin',
+      bank: 'MAYBANK',
+      noAkaunBank: '1234567890'
+    },
+    kadarBantuan: {
+      kadarBantuan: 300,
+      tempohKekerapan: 1,
+      tarikhMula: '2025-01-01',
+      tarikhTamat: '2025-01-31',
+      jumlahKeseluruhan: 'RM 300.00'
+    }
+  },
+  {
+    code: 'wang_saku_sekolah_asrama',
+    penerimaBayaran: {
+      kategoriPenerima: 'asnaf',
+      noPendaftaran: '',
+      kaedahPembayaran: 'EFT',
+      noKadPengenalan: '880701121234',
+      namaPenerima: 'Siti binti Amin',
+      namaPemegangAkaun: 'Siti binti Amin',
+      bank: 'MAYBANK',
+      noAkaunBank: '1234567890'
+    },
+    kadarBantuan: {
+      kadarBantuan: 80,
+      tempohKekerapan: 11,
+      tarikhMula: '2025-01-01',
+      tarikhTamat: '2025-11-30',
+      jumlahKeseluruhan: 'RM 880.00'
+    }
+  },
+  {
+    code: 'yuran_sekolah_asrama',
+    penerimaBayaran: {
+      kategoriPenerima: 'organisasi',
+      noPendaftaran: 'ABA1234',
+      kaedahPembayaran: 'EFT',
+      noKadPengenalan: 'ABA1234',
+      namaPenerima: 'SM Sains Kuala Selangor',
+      namaPemegangAkaun: 'SM Sains Kuala Selangor',
+      bank: 'MAYBANK',
+      noAkaunBank: '1234567890'
+    },
+    kadarBantuan: {
+      kadarBantuan: 2000,
+      tempohKekerapan: 1,
+      tarikhMula: '2025-01-01',
+      tarikhTamat: '2025-01-31',
+      jumlahKeseluruhan: 'RM 2,000.00'
+    }
+  },
+  // B307 Cards
+  {
+    code: 'DERMASISWA_IPT',
+    penerimaBayaran: {
+      kategoriPenerima: 'asnaf',
+      noPendaftaran: '',
+      kaedahPembayaran: 'EFT',
+      noKadPengenalan: '880701121234',
+      namaPenerima: 'Ali bin Amin',
+      namaPemegangAkaun: 'Ali bin Amin',
+      bank: 'MAYBANK',
+      noAkaunBank: '1234567890'
+    },
+    kadarBantuan: {
+      kadarBantuan: 600,
+      tempohKekerapan: 36,
+      tarikhMula: '2025-01-01',
+      tarikhTamat: '2028-01-31',
+      jumlahKeseluruhan: 'RM 21,600.00'
+    }
+  },
+  {
+    code: 'wangpersediaan_IPT',
+    penerimaBayaran: {
+      kategoriPenerima: 'asnaf',
+      noPendaftaran: '',
+      kaedahPembayaran: 'EFT',
+      noKadPengenalan: '880701121234',
+      namaPenerima: 'Ali bin Amin',
+      namaPemegangAkaun: 'Ali bin Amin',
+      bank: 'MAYBANK',
+      noAkaunBank: '1234567890'
+    },
+    kadarBantuan: {
+      kadarBantuan: 1000,
+      tempohKekerapan: 1,
+      tarikhMula: '2025-01-01',
+      tarikhTamat: '2025-01-31',
+      jumlahKeseluruhan: 'RM 1,000.00'
+    }
+  },
+  {
+    code: 'yuran_pengajian',
+    penerimaBayaran: {
+      kategoriPenerima: 'organisasi',
+      noPendaftaran: 'UPM3344',
+      kaedahPembayaran: 'EFT',
+      noKadPengenalan: 'UPM3344',
+      namaPenerima: 'Universiti Putra Malaysia',
+      namaPemegangAkaun: 'Universiti Putra Malaysia',
+      bank: 'MAYBANK',
+      noAkaunBank: '1234567890'
+    },
+    kadarBantuan: {
+      kadarBantuan: 0,
+      tempohKekerapan: 0,
+      tarikhMula: '',
+      tarikhTamat: '',
+      jumlahKeseluruhan: 'RM 30,000.00'
+    }
+  }
+]);
 
 // Selected Entitlement Products (computed from checkbox selections)
 const selectedEntitlementProducts = computed(() => {
@@ -1954,9 +2082,10 @@ const permohonanDetails = ref({
 
 const siasatanDetails = ref({
   disiasatOleh: 'Siti binti Ali',
-  statusSiasatan: 'Semak',
+  kaedahSiasatan: 'Semak Dokumen Sahaja',
+  statusSiasatan: 'Sokong',
   tarikhSelesai: '2024-01-03 17:30:00',
-  catatan: 'Lawatan lapangan telah dilakukan dan dokumen disahkan.',
+  catatan: 'Siasatan telah dilakukan dan dokumen disahkan.',
   sla: '3 hari bekerja'
 })
 
@@ -2045,7 +2174,7 @@ const dependentSelection = ref({
 
 const dependentNameOptions = ref([
   { label: "-- Sila Pilih --", value: "" },
-  { label: "Ali Bin Ahmad", value: "ALI" },
+  { label: "Ali Bin Amin", value: "ALI" },
   { label: "Siti Binti Amin", value: "SITI" },
 ]);
 
@@ -2599,8 +2728,23 @@ onMounted(() => {
     console.warn("Assistance type not found, using fallback:", selectedType);
   }
 
-  // Initialize dokumen sokongan based on route ID
-  initializeDokumenSokongan();
+  // Auto-select entitlement products for B300
+  if (selectedType === 'B300') {
+    formData.value.entitlementProducts = [
+      'wang_persediaan_sekolah_asrama',
+      'wang_saku_sekolah_asrama', 
+      'yuran_sekolah_asrama'
+    ];
+  }
+
+  // Auto-select entitlement products for B307
+  if (selectedType === 'B307') {
+    formData.value.entitlementProducts = [
+      'DERMASISWA_IPT',
+      'wangpersediaan_IPT',
+      'yuran_pengajian'
+    ];
+  }
 
   // Set initial nama based on route ID
   if (selectedType === 'B300') {
@@ -2608,6 +2752,9 @@ onMounted(() => {
   } else if (selectedType === 'B307') {
     dependentSelection.value.nama = 'ALI';
   }
+
+  // Initialize dokumen sokongan based on route ID
+  initializeDokumenSokongan();
 
   console.log("formData set:", formData.value); // Debug log
 
