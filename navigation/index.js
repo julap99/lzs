@@ -644,7 +644,30 @@ export default [
           },
         ],
         meta: {},
-      }, 
+      },
+      
+      {
+          title: "Laporan",
+          icon: "iconamoon:component-fill",
+          path: "/BF-TNI/laporan",
+          child: [
+            {
+              title: "Laporan Serahan Bantuan Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/serahan-bantuan-tunai",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Baki Tabung Semasa",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-baki-tabung-semasa",
+              child: [],
+              meta: {},
+            }
+          ],
+          meta: {},
+        },
 
       // {
       //   title: "Mengurus Tunai",
