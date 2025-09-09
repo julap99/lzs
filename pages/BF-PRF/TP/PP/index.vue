@@ -108,11 +108,11 @@
             </div>
           </rs-tab-item>
 
-          <rs-tab-item title="Diluluskan">
+          <rs-tab-item title="Disahkan">
             <div class="p-4">
               <rs-table
                 :key="`table-${tableKey}-approved`"
-                :data="getTableDataByStatus(['Diluluskan'])"
+                :data="getTableDataByStatus(['Disahkan'])"
                 :columns="columns"
                 :pageSize="pageSize"
                 :showNoColumn="true"
@@ -183,11 +183,86 @@
             </div>
           </rs-tab-item>
 
-          <rs-tab-item title="Ditolak">
+          <rs-tab-item title="Dalam Pembetulan">
+            <div class="p-4">
+              <rs-table
+                :key="`table-${tableKey}-correction`"
+                :data="getTableDataByStatus(['Dalam Pembetulan'])"
+                :columns="columns"
+                :pageSize="pageSize"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: true, striped: true }"
+                :options-advanced="{ sortable: true, filterable: false }"
+                advanced
+              >
+                <template v-slot:noRujukan="{ text }">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewRecipient(text)">
+                    {{ text }}
+                  </a>
+                </template>
+
+                <template v-slot:tarikhPermohonan="{ text }">
+                  <div class="font-medium">{{ formatDate(text) }}</div>
+                </template>
+
+                <template v-slot:status="{ text }">
+                  <rs-badge :variant="getStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
+                <template v-slot:tindakan="{ text }">
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
+                    <button
+                      @click="viewItem(text.id)"
+                      title="Lihat"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                    </button>
+                    
+                    <!-- Edit Button - Available for all statuses -->
+                    <button
+                      @click="editItem(text.id)"
+                      title="Kemaskini"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                    </button>
+                    
+                    <!-- Semak Button - Only for pending items -->
+                    <button
+                      v-if="canPerformAction(text.status)"
+                      @click="handleSemakPengesahan(text.id)"
+                      title="Semak"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
+                    </button>
+                    
+                    <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
+                    <button
+                      v-if="canDelete(text.status)"
+                      @click="confirmDelete(text.id, text)"
+                      title="Padam"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-delete" size="20" class="text-danger" />
+                    </button>
+                    -->
+                  </div>
+                </template>
+              </rs-table>
+            </div>
+          </rs-tab-item>
+
+          <rs-tab-item title="Tidak Sah">
             <div class="p-4">
               <rs-table
                 :key="`table-${tableKey}-rejected`"
-                :data="getTableDataByStatus(['Ditolak'])"
+                :data="getTableDataByStatus(['Tidak Sah'])"
                 :columns="columns"
                 :pageSize="pageSize"
                 :showNoColumn="true"
@@ -394,16 +469,24 @@ const recipientList = ref([
     namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '15/6/2025',
-    status: 'Diluluskan',
-    tindakan: { id: 'RE-240512', status: 'Diluluskan' },
+    status: 'Disahkan',
+    tindakan: { id: 'RE-240512', status: 'Disahkan' },
   },
   {
     noRujukan: 'RE-240513',
     namaRecipient: 'Siti Fatimah Binti Ali',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '8/5/2025',
-    status: 'Ditolak',
-    tindakan: { id: 'RE-240513', status: 'Ditolak' },
+    status: 'Tidak Sah',
+    tindakan: { id: 'RE-240513', status: 'Tidak Sah' },
+  },
+  {
+    noRujukan: 'RE-240517',
+    namaRecipient: 'Mohd Zaki bin Hassan',
+    jenisRecipient: 'Individu',
+    tarikhPermohonan: '20/7/2025',
+    status: 'Dalam Pembetulan',
+    tindakan: { id: 'RE-240517', status: 'Dalam Pembetulan' },
   },
   {
     noRujukan: 'RE-240514',
@@ -418,16 +501,16 @@ const recipientList = ref([
     namaRecipient: 'Zainab Binti Hassan',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '12/6/2025',
-    status: 'Diluluskan',
-    tindakan: { id: 'RE-240515', status: 'Diluluskan' },
+    status: 'Disahkan',
+    tindakan: { id: 'RE-240515', status: 'Disahkan' },
   },
   {
     noRujukan: 'RE-240516',
     namaRecipient: 'Pembekal Makanan Halal Sdn Bhd',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '25/5/2025',
-    status: 'Ditolak',
-    tindakan: { id: 'RE-240516', status: 'Ditolak' },
+    status: 'Tidak Sah',
+    tindakan: { id: 'RE-240516', status: 'Tidak Sah' },
   },
 ]);
 
@@ -480,8 +563,10 @@ const formatDate = (dateString) => {
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Diluluskan': 'success',
-    'Ditolak': 'danger'
+    'Dalam Pembetulan': 'warning',
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
   };
   return variants[status] || 'default';
 };

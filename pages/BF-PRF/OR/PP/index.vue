@@ -513,9 +513,10 @@ const formatDate = (dateString) => {
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Dalam Pembetulan': 'info',
-    'Diluluskan': 'success',
-    'Ditolak': 'danger'
+    'Dalam Pembetulan': 'warning',
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
   };
   return variants[status] || 'default';
 };

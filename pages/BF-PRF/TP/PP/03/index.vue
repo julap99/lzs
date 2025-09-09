@@ -112,19 +112,20 @@
                 label="Status Pengesahan"
                 validation="required"
                 :options="[
-                  { label: 'Lulus', value: 'approved' },
-                  { label: 'Tidak Lulus', value: 'rejected' },
+                  { label: 'Disahkan', value: 'approved' },
+                  { label: 'Perlu Pembetulan', value: 'correction_required' },
+                  { label: 'Tidak Sah', value: 'rejected' },
                 ]"
                 v-model="approvalData.status"
               />
 
               <FormKit
-                v-if="approvalData.status === 'rejected'"
+                v-if="approvalData.status === 'correction_required' || approvalData.status === 'rejected'"
                 type="textarea"
                 name="justification"
-                label="Justifikasi Penolakan"
+                :label="approvalData.status === 'correction_required' ? 'Ulasan Pembetulan' : 'Justifikasi Penolakan'"
                 validation="required"
-                placeholder="Sila nyatakan sebab penolakan"
+                :placeholder="approvalData.status === 'correction_required' ? 'Sila nyatakan perkara yang perlu diperbetulkan' : 'Sila nyatakan sebab penolakan'"
                 v-model="approvalData.justification"
               />
 
@@ -206,9 +207,11 @@ const approvalData = ref({
 
 const getStatusBadgeVariant = () => {
   switch (applicationData.value.status) {
-    case "Diluluskan":
+    case "Disahkan":
       return "success";
-    case "Ditolak":
+    case "Perlu Pembetulan":
+      return "warning";
+    case "Tidak Sah":
       return "danger";
     case "Menunggu Pengesahan":
       return "warning";
@@ -218,9 +221,9 @@ const getStatusBadgeVariant = () => {
 };
 
 const handleApprovalSubmit = async () => {
-  // Validate justification if rejection
+  // Validate justification if correction required or rejection
   if (
-    approvalData.value.status === "rejected" &&
+    (approvalData.value.status === "correction_required" || approvalData.value.status === "rejected") &&
     !approvalData.value.justification
   ) {
     return;
@@ -234,10 +237,13 @@ const handleApprovalSubmit = async () => {
 
     // Update application status based on approval decision
     if (approvalData.value.status === "approved") {
-      applicationData.value.status = "Diluluskan";
-      toast.success("Permohonan telah berjaya diluluskan");
+      applicationData.value.status = "Disahkan";
+      toast.success("Permohonan telah berjaya disahkan");
+    } else if (approvalData.value.status === "correction_required") {
+      applicationData.value.status = "Perlu Pembetulan";
+      toast.success("Keputusan pembetulan telah direkodkan");
     } else {
-      applicationData.value.status = "Ditolak";
+      applicationData.value.status = "Tidak Sah";
       toast.success("Keputusan penolakan telah direkodkan");
     }
 
