@@ -2,113 +2,136 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <!-- Loading State -->
+    <div v-if="isLoading" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <Icon name="ph:spinner" class="w-8 h-8 text-blue-600 animate-spin mr-3" />
+            <span class="text-gray-600">Memuatkan maklumat recipient...</span>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <div class="text-center">
+              <Icon name="ph:warning" class="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Ralat Memuatkan Data</h3>
+              <p class="text-gray-600 mb-4">{{ error }}</p>
+              <rs-button variant="primary" @click="retryLoad">
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Cuba Lagi
+              </rs-button>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Main Content -->
+    <rs-card v-else class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-semibold">Maklumat Recipient</h2>
-            <p class="text-sm text-gray-600 mt-1">{{ recipientData.noRujukan }}</p>
-          </div>
-          <rs-badge :variant="getStatusVariant(recipientData.status)">
-            {{ recipientData.status }}
-          </rs-badge>
+          <h2 class="text-xl font-semibold">Maklumat Recipient Terperinci</h2>
         </div>
       </template>
 
       <template #body>
-        <div class="space-y-8">
-          <!-- Maklumat Recipient -->
-          <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Recipient</h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Rujukan:</span>
-                  <span class="text-gray-900">{{ recipientData.noRujukan }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Jenis Recipient:</span>
-                  <span class="text-gray-900">{{ recipientData.jenisRecipient === 'individu' ? 'Individu' : 'Syarikat' }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama:</span>
-                  <span class="text-gray-900">{{ recipientData.jenisRecipient === 'individu' ? recipientData.namaPenuh : recipientData.namaSyarikat }}</span>
-                </div>
+        <div class="p-4">
+          <!-- Status Summary Card -->
+          <div class="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">Status Permohonan</h3>
+                <p class="text-sm text-gray-600">Rujukan: {{ recipientData.noRujukan }}</p>
+                <p class="text-sm text-gray-600">Tarikh Permohonan: {{ formatDate(recipientData.tarikhPermohonan) }}</p>
               </div>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Jenis Pengenalan:</span>
-                  <span class="text-gray-900">{{ getJenisPengenalanLabel(recipientData.jenisPengenalan) }}</span>
+              <div class="flex gap-2">
+                <rs-badge :variant="getStatusVariant(recipientData.status)">
+                  {{ recipientData.status }}
+                </rs-badge>
+              </div>
+            </div>
                 </div>
                 
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">ID Pengenalan:</span>
-                  <span class="text-gray-900">{{ recipientData.jenisPengenalan === 'id_syarikat' ? recipientData.idSyarikat : recipientData.idPengenalan }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Status:</span>
-                  <rs-badge :variant="getStatusVariant(recipientData.status)">
-                    {{ recipientData.status }}
-                  </rs-badge>
-                </div>
+          <!-- Maklumat Recipient -->
+          <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Recipient</h3>
+          <div class="mb-8 p-6 border border-gray-200 rounded-lg">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Jenis Recipient:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ getJenisRecipientLabel(recipientData.jenisRecipient) }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Nama:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ getNamaLabel(recipientData) }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Jenis Pengenalan:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ getJenisPengenalanLabel(recipientData.jenisPengenalan) }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">ID Pengenalan:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ getIDPengenalan(recipientData) }}</span>
               </div>
             </div>
           </div>
 
-          <!-- Maklumat Akaun Bank -->
-          <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Akaun Bank</h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama Bank:</span>
-                  <span class="text-gray-900">{{ recipientData.namaBank }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Akaun Bank:</span>
-                  <span class="text-gray-900">{{ recipientData.noAkaunBank }}</span>
-                </div>
+          <!-- Maklumat Bank -->
+          <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Bank</h3>
+          <div class="mb-8 p-6 border border-gray-200 rounded-lg">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Nama Bank:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ recipientData.bank?.bankName || '-' }}</span>
               </div>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Penama Akaun Bank:</span>
-                  <span class="text-gray-900">{{ recipientData.penamaAkaunBank }}</span>
-                </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">No. Akaun Bank:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ recipientData.bank?.bankAccountNumber || '-' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Nama Pemegang Akaun:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ recipientData.bank?.penamaBank || '-' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Kaedah Pembayaran:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ recipientData.bank?.paymentMethod || '-' }}</span>
               </div>
             </div>
           </div>
 
           <!-- Dokumen Sokongan -->
-          <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Dokumen Sokongan</h3>
-            
-            <div class="space-y-3">
-              <div class="flex justify-between py-2 border-b border-gray-100">
+          <h3 class="text-lg font-semibold mb-4 text-gray-900">Dokumen Sokongan</h3>
+          <div class="mb-8 p-6 border border-gray-200 rounded-lg">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex justify-between items-center py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Dokumen Sokongan Bank:</span>
-                <div class="flex items-center space-x-2">
-                  <Icon name="mdi:file-document-outline" class="text-blue-600" size="1.25rem" />
-                  <span class="text-gray-900">{{ recipientData.dokumenSokongan || 'Dokumen telah dimuat naik' }}</span>
+                <div class="flex items-center gap-2">
+                  <span v-if="hasDocument(recipientData.dokumenSokongan)" class="text-gray-900 font-semibold">{{ getDocumentName(recipientData.dokumenSokongan) }}</span>
+                  <rs-badge v-else variant="warning">Tiada</rs-badge>
+                  <rs-button v-if="hasDocument(recipientData.dokumenSokongan)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Dokumen Sokongan Bank')">
+                    <Icon name="ph:download" class="w-4 h-4" />
+                  </rs-button>
+                  <rs-button v-if="hasDocument(recipientData.dokumenSokongan)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Dokumen Sokongan Bank')">
+                    <Icon name="ph:eye" class="w-4 h-4" />
+                  </rs-button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="flex justify-start mt-8 pt-6 border-t">
-          <rs-button variant="primary-outline" @click="goBack" class="mr-4">
-            Kembali
-          </rs-button>
-          <rs-button variant="primary" @click="editRecipient">
-            Kemaskini
-          </rs-button>
+          <!-- Action Buttons - Bottom Right -->
+          <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
+            <rs-button variant="secondary" @click="handleBack">
+              <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
+              Kembali
+            </rs-button>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -116,78 +139,147 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
+definePageMeta({ title: 'Maklumat Recipient Terperinci' })
 
-definePageMeta({ title: 'Maklumat Recipient' });
+const route = useRoute()
+const isLoading = ref(false)
+const error = ref(null)
 
 const breadcrumb = ref([
   { name: 'Pengesahan', type: 'link', path: '/BF-PRF/TP/PP' },
   { name: 'Senarai Recipient', type: 'link', path: '/BF-PRF/TP/PP' },
-  { name: 'Maklumat Recipient', type: 'current', path: `/BF-PRF/TP/PP/view/${route.params.id}` },
-]);
+  { name: 'Maklumat Terperinci', type: 'current', path: `/BF-PRF/TP/PP/view/${route.params.id}` },
+])
 
-// Mock data for the recipient
+// Mock data structure aligned with registration form (TP/PP/02)
 const recipientData = ref({
-  noRujukan: 'RE-240511',
-  jenisRecipient: 'individu',
-  namaPenuh: 'Ahmad Bin Abdullah',
+  noRujukan: '',
+  jenisRecipient: '',
+  namaPenuh: '',
   namaSyarikat: '',
-  jenisPengenalan: 'mykad',
-  idPengenalan: '880101011234',
+  jenisPengenalan: '',
+  idPengenalan: '',
   idSyarikat: '',
-  namaBank: 'Maybank',
-  noAkaunBank: '1234567890',
-  penamaAkaunBank: 'Ahmad Bin Abdullah',
-  dokumenSokongan: 'dokumen_sokongan.pdf',
-  status: 'Menunggu Pengesahan'
-});
+  bank: {
+    bankName: '',
+    bankAccountNumber: '',
+    penamaBank: '',
+    paymentMethod: ''
+  },
+  identityDocument: null,
+  dokumenSokongan: null,
+  bankDocument: null,
+  additionalDocuments: null,
+  status: '',
+  tarikhPermohonan: ''
+})
 
-const getJenisPengenalanLabel = (jenis) => {
-  const labels = {
-    'mykad': 'MyKad',
-    'foreign_id': 'Foreign ID',
-    'id_syarikat': 'ID Syarikat'
-  };
-  return labels[jenis] || jenis;
-};
+// User role simulation - for demo purposes
+const currentUserRole = ref('Eksekutif')
 
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Diluluskan': 'success',
-    'Ditolak': 'danger'
-  };
-  return variants[status] || 'default';
-};
+    'Dalam Pembetulan': 'warning',
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
+  }
+  return variants[status] || 'default'
+}
 
-const goBack = () => navigateTo('/BF-PRF/TP/PP');
-const editRecipient = () => navigateTo(`/BF-PRF/TP/PP/kemaskini/${route.params.id}`);
+const getJenisRecipientLabel = (jenis) => {
+  const labels = {
+    'individu': 'Individu',
+    'syarikat': 'Syarikat'
+  }
+  return labels[jenis] || jenis
+}
 
-// Load data based on ID when component mounts
-onMounted(() => {
-  // In a real implementation, this would fetch data from API based on route.params.id
-  loadRecipientData(route.params.id);
-});
+const getNamaLabel = (data) => {
+  if (data.jenisRecipient === 'individu') {
+    return data.namaPenuh
+  } else {
+    return data.namaSyarikat
+  }
+}
+
+const getJenisPengenalanLabel = (jenis) => {
+  const labels = {
+    'ic': 'Kad Pengenalan',
+    'passport': 'Pasport',
+    'id_syarikat': 'No. Pendaftaran Syarikat'
+  }
+  return labels[jenis] || jenis
+}
+
+const getIDPengenalan = (data) => {
+  if (data.jenisPengenalan === 'id_syarikat') {
+    return data.idSyarikat
+  } else {
+    return data.idPengenalan
+  }
+}
+
+const hasDocument = (document) => {
+  if (!document) return false
+  if (Array.isArray(document) && document.length > 0) return true
+  if (typeof document === 'object' && document.name) return true
+  return false
+}
+
+const getDocumentName = (document) => {
+  if (!document) return 'Tiada'
+  if (Array.isArray(document) && document.length > 0) return document[0].name || 'Dilampirkan'
+  if (typeof document === 'object' && document.name) return document.name
+  return 'Tiada'
+}
+
+const handleDownload = (documentType) => {
+  alert(`Download ${documentType} - Ini adalah UI mockup prototype untuk presentation kepada client.`)
+}
+
+const handleView = (documentType) => {
+  alert(`View ${documentType} - Ini adalah UI mockup prototype untuk presentation kepada client.`)
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return '-'
+  if (typeof dateString === 'string' && !dateString.includes('T')) {
+    return dateString
+  }
+  try {
+    return new Date(dateString).toLocaleDateString('ms-MY')
+  } catch (error) {
+    return dateString
+  }
+}
 
 const loadRecipientData = (id) => {
-  // Mock different data based on ID
-  const mockData = {
+  const dataset = {
     'RE-240511': {
       noRujukan: 'RE-240511',
       jenisRecipient: 'individu',
       namaPenuh: 'Ahmad Bin Abdullah',
       namaSyarikat: '',
-      jenisPengenalan: 'mykad',
-      idPengenalan: '880101011234',
+      jenisPengenalan: 'ic',
+      idPengenalan: '800123456789',
       idSyarikat: '',
-      namaBank: 'Maybank',
-      noAkaunBank: '1234567890',
-      penamaAkaunBank: 'Ahmad Bin Abdullah',
-      dokumenSokongan: 'dokumen_sokongan.pdf',
-      status: 'Menunggu Pengesahan'
+      bank: {
+        bankName: 'Maybank',
+        bankAccountNumber: '5123456789012',
+        penamaBank: 'Ahmad Bin Abdullah',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'ic_ahmad_abdullah_2025.pdf' },
+      dokumenSokongan: { name: 'dokumen_sokongan_bank_2025.pdf' },
+      bankDocument: { name: 'bank_statement_jan_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Menunggu Pengesahan',
+      tarikhPermohonan: '23/7/2025'
     },
     'RE-240512': {
       noRujukan: 'RE-240512',
@@ -196,31 +288,91 @@ const loadRecipientData = (id) => {
       namaSyarikat: 'Pusat Dialisis Al-Falah Sdn Bhd',
       jenisPengenalan: 'id_syarikat',
       idPengenalan: '',
-      idSyarikat: '201801023456',
-      namaBank: 'Public Bank',
-      noAkaunBank: '9876543210',
-      penamaAkaunBank: 'Pusat Dialisis Al-Falah Sdn Bhd',
-      dokumenSokongan: 'dokumen_syarikat.pdf',
-      status: 'Diluluskan'
+      idSyarikat: '123456-A',
+      bank: {
+        bankName: 'CIMB Bank',
+        bankAccountNumber: '8001234567890',
+        penamaBank: 'Pusat Dialisis Al-Falah Sdn Bhd',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'sijil_ssm_2025.pdf' },
+      dokumenSokongan: { name: 'surat_pengesahan_bank_2025.pdf' },
+      bankDocument: { name: 'bank_confirmation_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Disahkan',
+      tarikhPermohonan: '15/6/2025'
     },
     'RE-240513': {
       noRujukan: 'RE-240513',
       jenisRecipient: 'individu',
       namaPenuh: 'Siti Fatimah Binti Ali',
       namaSyarikat: '',
-      jenisPengenalan: 'foreign_id',
-      idPengenalan: 'FID123456789',
-      idSyarikat: '',
-      namaBank: 'CIMB Bank',
-      noAkaunBank: '8765432109',
-      penamaAkaunBank: 'Siti Fatimah Binti Ali',
-      dokumenSokongan: 'dokumen_foreign.pdf',
-      status: 'Ditolak'
+      jenisPengenalan: 'ic',
+      idPengenalan: '820315234567',
+      bank: {
+        bankName: 'Bank Islam',
+        bankAccountNumber: '2098765432109',
+        penamaBank: 'Siti Fatimah Binti Ali',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'ic_siti_fatimah_2025.pdf' },
+      dokumenSokongan: { name: 'penyata_bank_2025.pdf' },
+      bankDocument: { name: 'bank_statement_feb_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Tidak Sah',
+      tarikhPermohonan: '8/5/2025'
+    },
+    'RE-240514': {
+      noRujukan: 'RE-240514',
+      jenisRecipient: 'syarikat',
+      namaPenuh: '',
+      namaSyarikat: 'Klinik Kesihatan Sejahtera',
+      jenisPengenalan: 'id_syarikat',
+      idPengenalan: '',
+      idSyarikat: 'PPM-2023-001',
+      bank: {
+        bankName: 'RHB Bank',
+        bankAccountNumber: '3456789012345',
+        penamaBank: 'Klinik Kesihatan Sejahtera',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'sijil_ros_2023.pdf' },
+      dokumenSokongan: { name: 'surat_pengesahan_bank_klinik.pdf' },
+      bankDocument: { name: 'bank_verification_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Perlu Pembetulan',
+      tarikhPermohonan: '30/7/2025'
     }
-  };
-
-  if (mockData[id]) {
-    recipientData.value = { ...recipientData.value, ...mockData[id] };
   }
-};
+
+  if (dataset[id]) {
+    recipientData.value = { ...recipientData.value, ...dataset[id] }
+  }
+}
+
+const handleBack = () => {
+  navigateTo('/BF-PRF/TP/PP')
+}
+
+
+const retryLoad = () => {
+  error.value = null
+  loadData()
+}
+
+const loadData = async () => {
+  isLoading.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
+    loadRecipientData(route.params.id)
+  } catch (err) {
+    error.value = 'Gagal memuatkan data penerima'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  loadData()
+})
 </script> 

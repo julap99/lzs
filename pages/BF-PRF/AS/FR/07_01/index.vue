@@ -1,6 +1,7 @@
 <template>
-  <LayoutsBreadcrumb :items="breadcrumb" />
-  <rs-card class="mt-4">
+  <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+    <rs-card class="mt-4">
     <template #header>
       <div class="flex justify-between items-center">
         <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
@@ -95,19 +96,19 @@
                     {{ profilingData.bakiHadKifayahSah }}
                   </p> -->
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 text-black font-bold">
                     Peratusan Perbezaan
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.peratusanPerbezaan }}
                   </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Kategori Keluarga Asnaf
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.kategoriKeluargaAsnaf }}
                   </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Kategori Asnaf
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -118,7 +119,7 @@
                 <div class="hidden lg:block"></div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Pengenalan Id Tanggungan
                   </label>
@@ -132,7 +133,7 @@
                 </div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Kategori Tanggungan (Syor)
                   </label>
@@ -148,7 +149,7 @@
                 <div class="hidden lg:block"></div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Pengenalan Id Asnaf/Tanggungan
                   </label>
@@ -164,7 +165,7 @@
                 </div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Merit Individu(Syor)
                   </label>
@@ -180,7 +181,7 @@
                 </div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Status Multidimensi(Syor)
                   </label>
@@ -196,21 +197,21 @@
                 </div>
                 <!-- Row 3 in one column -->
                 <div>
-                  <label class="block text-xs uppercase tracking-wide">
+                  <label class="block text-xs uppercase tracking-wide font-bold">
                     Merit Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.meritKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Status Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.statusMultidimensiKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Quadrant Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -284,6 +285,7 @@
       </div>
     </template>
   </rs-card>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LayoutsBreadcrumb :items="breadcrumb" />
+      <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
       <template #header>
@@ -29,12 +29,12 @@
             </template>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+      <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
                   >Nama</label
                 >
                 <p class="text-gray-900">{{ formData.nama }}</p>
-              </div>
+                </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
                   >Alamat</label
@@ -43,10 +43,22 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Kariah</label
+                >
+                <p class="text-gray-900">{{ formData.kariah }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Daerah</label
+                >
+                <p class="text-gray-900">{{ formData.daerah }}</p>
+            </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
                   >Jenis Pengenalan</label
                 >
                 <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
-              </div>
+                </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
                   >No Pengenalan</label
@@ -58,7 +70,7 @@
                   >No Telefon</label
                 >
                 <p class="text-gray-900">{{ formData.noTelefon }}</p>
-              </div>
+                </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
                   >E-mel</label
@@ -70,7 +82,7 @@
                   >Status Keluarga</label
                 >
                 <p class="text-gray-900">{{ formData.statusKeluarga }}</p>
-              </div>
+                </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
                   >Status Individu</label
@@ -82,23 +94,23 @@
                   >Status Multidimensi</label
                 >
                 <p class="text-gray-900">{{ formData.statusMultidimensi }}</p>
-              </div>
+        </div>
             </div>
           </rs-fieldset>
         </FormKit>
-      </template>
-    </rs-card>
+          </template>
+        </rs-card>
 
     <div class="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4">
       <div class="col-span-1">
         <rs-card class="">
-          <template #header>
+            <template #header>
             <div class="flex justify-between items-center">
               <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
-            </div>
-          </template>
+              </div>
+            </template>
 
-          <template #body>
+            <template #body>
             <!-- Main Tabs -->
             <rs-tab variant="primary" type="card">
               <rs-tab-item title="Profiling" active>
@@ -126,17 +138,17 @@
                       <!-- Pengenalan ID with Search -->
                       <div class="lg:col-span-2">
                         <div class="flex gap-3">
-                          <FormKit
+                        <FormKit
                             type="text"
                             name="pengenalanId"
                             label="Pengenalan ID"
                             placeholder="Masukkan nombor pengenalan"
-                            :classes="{
+                          :classes="{
                               outer: 'flex-1',
                               input: '!py-2.5',
                               label: 'text-sm font-medium text-gray-700',
-                            }"
-                          />
+                          }"
+                        />
                           <rs-button
                             variant="primary"
                             class="mt-7 px-6 h-fit"
@@ -150,7 +162,7 @@
                             Cari
                           </rs-button>
                         </div>
-                      </div>
+              </div>
 
                       <!-- Nama -->
                       <div class="lg:col-span-2">
@@ -167,14 +179,14 @@
                         />
                       </div>
                     </div>
-                  </div>
+            </div>
 
                   <!-- Section 2: Maklumat Syor -->
                   <div class="p-6">
                     <h4
                       class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                    >
-                      <Icon
+                        >
+                          <Icon
                         name="ph:clipboard-text"
                         class="w-5 h-5 mr-2 text-green-600"
                       />
@@ -228,8 +240,8 @@
                             input: '!py-2.5',
                             label: 'text-sm font-medium text-gray-700',
                           }"
-                        />
-                      </div>
+                          />
+                        </div>
 
                       <!-- Right Column - Tanggungan Syor -->
                       <div class="space-y-4">
@@ -270,10 +282,10 @@
                                 input: '!py-2 text-sm',
                               }"
                             />
-                          </div>
-                        </div>
+                      </div>
                       </div>
                     </div>
+                  </div>
                   </div>
 
                   <!-- Section 3: Assignment -->
@@ -298,14 +310,14 @@
                         label: 'text-sm font-medium text-gray-700',
                       }"
                     />
-                  </div>
+              </div>
 
                   <!-- Section 4: Maklumat Disahkan -->
                   <div class="p-6">
                     <h4
                       class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                    >
-                      <Icon
+                        >
+                          <Icon
                         name="ph:check-circle"
                         class="w-5 h-5 mr-2 text-blue-600"
                       />
@@ -348,8 +360,8 @@
                             input: '!py-2.5',
                             label: 'text-sm font-medium text-gray-700',
                           }"
-                        />
-                      </div>
+                          />
+                        </div>
 
                       <!-- Right Column - Tanggungan Sah -->
                       <div class="space-y-4">
@@ -381,8 +393,8 @@
                                 input: '!py-2 text-sm',
                               }"
                             />
-                          </div>
-                        </div>
+                  </div>
+              </div>
 
                         <!-- Kategori Tanggungan (Sah) -->
                         <div
@@ -411,9 +423,9 @@
                                 outer: 'mb-0',
                                 input: '!py-2 text-sm',
                               }"
-                            />
-                          </div>
+                          />
                         </div>
+                      </div>
                       </div>
                     </div>
 
@@ -439,7 +451,7 @@
                             <span class="text-sm text-red-600 font-medium"
                               >FALSE</span
                             >
-                          </div>
+                      </div>
                           <div class="flex flex-col items-center">
                             <Icon
                               name="ph:x-circle"
@@ -451,7 +463,7 @@
                             <span class="text-sm text-red-600 font-medium"
                               >FALSE</span
                             >
-                          </div>
+                      </div>
                           <div class="flex flex-col items-center">
                             <Icon
                               name="ph:x-circle"
@@ -463,18 +475,18 @@
                             <span class="text-sm text-red-600 font-medium"
                               >FALSE</span
                             >
-                          </div>
-                        </div>
                       </div>
                     </div>
-                  </div>
-
+              </div>
+            </div>
+          </div>
+          
                   <!-- Section 5: Komen & Tarikh -->
                   <div class="p-6 bg-gray-50">
                     <h4
                       class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                    >
-                      <Icon
+                  >
+                    <Icon
                         name="ph:note"
                         class="w-5 h-5 mr-2 text-purple-600"
                       />
@@ -504,10 +516,10 @@
                             input: '!py-2.5',
                             label: 'text-sm font-medium text-gray-700',
                           }"
-                        />
-                      </div>
-                    </div>
+                    />
                   </div>
+                </div>
+                </div>
 
                   <!-- Action Buttons -->
                   <div class="p-6 bg-white border-t border-gray-200">
@@ -539,7 +551,7 @@
                         <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
                         Sahkan & Simpan
                       </rs-button>
-                    </div>
+              </div>
                   </div>
                 </FormKit>
               </rs-tab-item>
@@ -575,7 +587,7 @@
                             outer-class="mb-0"
                           />
                           <span class="text-sm">Pilih Semua</span>
-                        </div>
+                    </div>
                       </template>
                       <template v-slot:kadarDicadangkan="{ text }"
                         >RM {{ text }}</template
@@ -597,7 +609,7 @@
 
                     <div class="flex justify-end">
                       <rs-button variant="primary">Sahkan</rs-button>
-                    </div>
+                  </div>
                   </rs-tab-item>
 
                   <rs-tab-item title="Bantuan daripada Agensi">
@@ -691,7 +703,7 @@
                                 outer-class="mb-0"
                               />
                               <span class="text-sm">Pilih Semua</span>
-                            </div>
+                  </div>
                           </template>
                           <template v-slot:terimaCadangan="{ value }">
                             <FormKit
@@ -705,9 +717,9 @@
                         <div class="flex justify-end">
                           <rs-button variant="primary">Sahkan</rs-button>
                         </div>
-                      </div>
-                    </div>
-
+                  </div>
+                </div>
+                
                     <hr class="my-4" />
 
                     <!-- Senarai Bantuan Sedia Ada yang akan dibatalkan -->
@@ -740,7 +752,7 @@
                               outer-class="mb-0"
                             />
                             <span class="text-sm">Pilih Semua</span>
-                          </div>
+                  </div>
                         </template>
                         <template v-slot:batalBantuan="{ value }">
                           <FormKit
@@ -780,32 +792,32 @@
                       </template>
 
                       <template v-slot:actions="{ value }">
-                        <rs-button
+                  <rs-button
                           variant="primary"
                           @click="editAssistance(value)"
-                        >
+                  >
                           Edit
-                        </rs-button>
+                  </rs-button>
                       </template>
                     </rs-table>
                   </rs-tab-item>
                 </rs-tab>
               </rs-tab-item>
             </rs-tab>
-          </template>
-        </rs-card>
-      </div>
+            </template>
+          </rs-card>
+        </div>
 
-      <div class="col-span-1">
+        <div class="col-span-1">
         <rs-card class="">
-          <template #header>
+            <template #header>
             <div class="flex justify-between items-center">
               <h2 class="text-xl font-semibold">Maklumat Lawatan & Siasatan</h2>
-            </div>
-          </template>
+              </div>
+            </template>
 
-          <template #body>
-            <FormKit
+            <template #body>
+                <FormKit
               type="form"
               :actions="false"
               @submit="handleSubmitLawatan"
@@ -858,10 +870,10 @@
                     placeholder="--Sila Pilih--"
                     validation="required"
                     :validation-messages="{
-                      required: 'Sila pilih keadaan siasatan untuk meneruskan',
+                      required: 'Sila pilih kaedah siasatan untuk meneruskan',
                     }"
                   />
-                </div>
+              </div>
 
                 <div v-if="showLawatanFields" class="flex gap-4">
                   <!-- Tarikh Lawatan -->
@@ -890,7 +902,7 @@
                       }"
                       placeholder="--:--:--"
                     />
-                  </div>
+                </div>
 
                   
                 </div>
@@ -906,11 +918,11 @@
                       required: 'Sila pilih status pengesahan lawatan',
                     }"
                   />
-                </div>
+              </div>
 
 
                 <!-- Catatan Penilaian Awal -->
-                <div>
+                <!-- <div>
                   <FormKit
                     type="textarea"
                     name="catatanPenilaianAwal"
@@ -921,16 +933,16 @@
                       input: '!py-2',
                     }"
                   />
-                </div>
+                </div> -->
 
-                <!-- Gambar Lokasi/Bukti Visual -->
-                <div>
+                <!-- Gambar Lokasi/Bukti Visual - Only show when kaedah siasatan is "Lapangan" -->
+                <div v-if="showLawatanFields">
                   <label class="block text-sm font-medium text-gray-700 mb-2">
                     Gambar Lokasi/Bukti Visual
                   </label>
 
                   <!-- Custom File Upload Area -->
-                  <div class="space-y-4">
+              <div class="space-y-4">
                     <!-- Upload Dropzone -->
                     <div
                       @click="triggerFileInput"
@@ -940,10 +952,10 @@
                       class="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 group"
                     >
                       <div class="space-y-2">
-                        <Icon
+                      <Icon
                           name="ph:upload"
                           class="w-12 h-12 text-blue-400 group-hover:text-blue-500 transition-colors duration-300 group-hover:scale-110 transform mx-auto"
-                        />
+                      />
                         <div>
                           <p class="text-sm text-gray-600">
                             <span
@@ -956,8 +968,8 @@
                             PNG, JPG, GIF sehingga 5MB setiap fail
                           </p>
                         </div>
-                      </div>
-                    </div>
+                        </div>
+                        </div>
 
                     <!-- Hidden File Input -->
                     <input
@@ -989,9 +1001,9 @@
                             class="bg-blue-600 h-2 rounded-full transition-all duration-300"
                             :style="{ width: `${progress.progress}%` }"
                           ></div>
-                        </div>
                       </div>
                     </div>
+                  </div>
 
                     <!-- Image Preview Gallery -->
                     <div
@@ -1019,14 +1031,14 @@
                             <div
                               class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2"
                             >
-                              <button
+                    <button
                                 @click.stop="previewImage(image)"
                                 class="bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-700 p-2 rounded-full shadow-md transition-all"
-                                type="button"
+                      type="button"
                                 title="Preview"
                               >
                                 <Icon name="ph:eye" class="w-4 h-4" />
-                              </button>
+                    </button>
                               <button
                                 @click.stop="removeImage(index)"
                                 class="bg-red-500 bg-opacity-90 hover:bg-opacity-100 text-white p-2 rounded-full shadow-md transition-all"
@@ -1035,8 +1047,8 @@
                               >
                                 <Icon name="ph:trash" class="w-4 h-4" />
                               </button>
-                            </div>
-                          </div>
+                        </div>
+                        </div>
 
                           <!-- Loading Indicator -->
                           <div
@@ -1047,7 +1059,7 @@
                               name="ph:spinner"
                               class="w-6 h-6 text-blue-600 animate-spin"
                             />
-                          </div>
+                        </div>
                         </div>
 
                         <!-- Image Info -->
@@ -1063,7 +1075,7 @@
                             <span class="text-xs text-gray-400 ml-2">
                               {{ formatFileSize(image.size) }}
                             </span>
-                          </div>
+                        </div>
 
                           <!-- Image Caption -->
                           <FormKit
@@ -1076,9 +1088,9 @@
                               input: 'text-xs !py-1.5 !text-gray-700',
                             }"
                           />
-                        </div>
                       </div>
                     </div>
+                </div>
 
                     <!-- Sample Image Placeholder -->
                     <div
@@ -1089,28 +1101,28 @@
                         class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
                       >
                         <div class="text-center">
-                          <Icon
+                    <Icon
                             name="ph:image"
                             class="w-12 h-12 text-gray-400 mx-auto mb-2"
                           />
-                          <p class="text-sm text-gray-500">
+                  <p class="text-sm text-gray-500">
                             Tiada gambar dimuat naik lagi
                           </p>
                           <p class="text-xs text-gray-400 mt-1">
                             Gambar anda akan dipaparkan di sini
-                          </p>
-                        </div>
-                      </div>
+                  </p>
+                </div>
+              </div>
                     </div>
                   </div>
                 </div>
 
                 <!-- Catatan Lawatan ETD -->
                 <div>
-                  <FormKit
+              <FormKit
                     type="textarea"
                     name="catatanLawatanETD"
-                    label="Catatan Lawatan Pegawai"
+                    label="Catatan Siasatan"
                     rows="4"
                     placeholder="Enter text..."
                     :classes="{
@@ -1119,8 +1131,8 @@
                   />
                 </div>
 
-                <div>
-                  <FormKit
+                <!-- <div>
+                <FormKit
                     type="select"
                     name="statusSiasatan"
                     label="Status Siasatan"
@@ -1131,12 +1143,12 @@
                       required: 'Sila pilih status siasatan untuk meneruskan',
                     }"
                   />
-                </div>
+                </div> -->
 
                 <!-- Status Lawatan -->
                 <!-- <div>
-                  <FormKit
-                    type="select"
+                <FormKit
+                type="select"
                     name="statusLawatan"
                     label="Status Lawatan"
                     :options="statusLawatanOptions"
@@ -1152,41 +1164,41 @@
                 <div
                   class="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-200"
                 >
-                  <rs-button
-                    variant="success"
-                    @click="handleSimpan"
-                    :disabled="processing"
+              <rs-button
+                variant="success"
+                @click="handleSimpan"
+                :disabled="processing"
                     :loading="processing && actionType === 'save'"
                     class="flex-1 !py-3 text-sm font-medium"
-                  >
+              >
                     <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
-                    Simpan
-                  </rs-button>
+                Simpan
+              </rs-button>
 
-                  <rs-button
-                    variant="primary"
+              <rs-button
+                variant="primary"
                     @click="handleHantarKelulusan"
                     :disabled="processing || !canSubmitForApproval"
                     :loading="processing && actionType === 'submit'"
                     class="flex-1 !py-3 text-sm font-medium"
                   >
                     <Icon name="ph:paper-plane-tilt" class="w-5 h-5 mr-2" />
-                    Hantar Kelulusan
-                  </rs-button>
+                Hantar Kelulusan
+              </rs-button>
 
-                  <rs-button
-                    variant="danger"
+              <rs-button
+                variant="danger"
                     @click="handleKembali"
                     class="flex-1 !py-3 text-sm font-medium"
-                  >
+              >
                     <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
-                    Kembali
-                  </rs-button>
-                </div>
+                Kembali
+              </rs-button>
+            </div>
               </div>
             </FormKit>
           </template>
-        </rs-card>
+          </rs-card>
       </div>
     </div>
 
@@ -1278,10 +1290,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 
 definePageMeta({
   title: "Maklumat Pemohon - Siasatan EOAD",
@@ -1301,44 +1314,156 @@ const breadcrumb = ref([
   {
     name: "Siasatan EOAD",
     type: "current",
-    path: "/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad",
+    path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
   },
 ]);
+
+// Mock data for different records
+const mockByNoBantuan = {
+  "NAS-2025-0001": {
+    // Personal Information
+    noBantuan: "NAS-2025-0001",
+    nama: "Mohd Rosli bin Saad",
+    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "810101121234",
+    noTelefon: "0123456789",
+    email: "rosli@gmail.com",
+    statusKeluarga: "Fakir",
+    statusIndividu: "Fakir",
+    statusMultidimensi: "Asnaf Tidak Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: null,
+  },
+  "NAS-2025-0002": {
+    // Personal Information
+    noBantuan: "NAS-2025-0002",
+    nama: "Siti binti Hassan",
+    alamat: "Jalan Merdeka, Taman Seri Indah, 45600 Selangor",
+    kariah: "Masjid Al-Ikhlas",
+    daerah: "Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "850505055678",
+    noTelefon: "0198765432",
+    email: "siti.hassan@gmail.com",
+    statusKeluarga: "Miskin",
+    statusIndividu: "Miskin",
+    statusMultidimensi: "Asnaf Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: null,
+  }
+};
+
+// Mock investigation data
+const mockInvestigationData = {
+  "NAS-2025-0001": {
+    jenisPekerjaan: "Bekerja sebagai tukang sapu di sekolah",
+    statusKediaman: "Rumah Sewa",
+    jumlahBayaranRumah: "RM500",
+    bilTanggungan: "2 Orang (Anak)",
+    statusTanggungan: "Masih Bersekolah, Tidak Bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+    assistanceApplications: [
+      {
+        id: "B102",
+        jenisBantuan: "B102 - BANTUAN BINAAN RUMAH (Fakir)",
+        status: "Perlu Diproses",
+        sla: "3 hari lagi",
+        actions: "/",
+      }
+    ]
+  },
+  "NAS-2025-0002": {
+    jenisPekerjaan: "Suri rumah sepenuh masa",
+    statusKediaman: "Rumah Sendiri",
+    jumlahBayaranRumah: "RM0",
+    bilTanggungan: "3 Orang (2 Anak + Suami)",
+    statusTanggungan: "Anak sakit kronik, Suami tidak bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+    assistanceApplications: [
+      {
+        id: "B300",
+        jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+        status: "Perlu Diproses",
+        sla: "5 hari lagi",
+        actions: "/",
+      },
+      {
+        id: "B307",
+        jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+        status: "Perlu Diproses",
+        sla: "2 hari lagi",
+        actions: "/",
+      }
+    ]
+  }
+};
 
 // Form data
 const formData = ref({
   // Personal Information
-  nama: "Mohd Rosli bin Saad",
-  alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
-  jenisPengenalan: "MyKad",
-  noPengenalan: "810101121234",
-  noTelefon: "0123456789",
-  email: "rosli@gmail.com",
-  statusKeluarga: "Fakir",
-  statusIndividu: "Fakir",
-  statusMultidimensi: "Asnaf Tidak Produktif",
-  status: "Dalam Siasatan",
+  noBantuan: "",
+  nama: "",
+  alamat: "",
+  kariah: "",
+  daerah: "",
+  jenisPengenalan: "",
+  noPengenalan: "",
+  noTelefon: "",
+  email: "",
+  statusKeluarga: "",
+  statusIndividu: "",
+  statusMultidimensi: "",
+  status: "",
 
   // Investigation fields
   keputusanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
-  catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+  catatanPenilaianAwal: "",
   gambarLokasi: null,
 });
 
 // Investigation form data
 const investigationData = ref({
-  jenisPekerjaan: "Bekerja sebagai tukang sapu di sekolah",
-  statusKediaman: "Rumah Sewa",
-  jumlahBayaranRumah: "RM500",
-  bilTanggungan: "2 Orang (Anak)",
-  statusTanggungan: "Masih Bersekolah, Tidak Bekerja",
+  jenisPekerjaan: "",
+  statusKediaman: "",
+  jumlahBayaranRumah: "",
+  bilTanggungan: "",
+  statusTanggungan: "",
   keadaanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
   StatusPengesahanLawatan: "belum_sah",
-  catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+  catatanPenilaianAwal: "",
   gambarLokasi: [],
   catatanLawatanETD: "",
   statusLawatan: "",
@@ -1481,14 +1606,7 @@ const pembatalanColumns = [
 ];
 
 // Mock data for tables
-const assistanceApplications = ref([
-  {
-    jenisBantuan: "B102 - Bantuan Binaan Rumah (Fakir)",
-    status: "Perlu Diproses",
-    sla: "3 hari lagi",
-    actions: "/",
-  },
-]);
+const assistanceApplications = ref([]);
 
 const existingAssistance = ref([
   {
@@ -1660,7 +1778,7 @@ const addNewAssistance = () => {
 };
 
 const editAssistance = (row) => {
-  router.push(`/BF-BTN/tugasan/bantuan/siasatan/B106`);
+  router.push(`/BF-BTN/tugasan/bantuan/siasatan/${row.id}`);
 };
 
 const saveData = () => {
@@ -1941,8 +2059,8 @@ const handleProfilingSubmit = (formData) => {
 const searchPengenalanId = async () => {
   if (!profilingData.value.pengenalanId) {
     console.error("Please enter an ID to search");
-    return;
-  }
+      return;
+    }
 
   try {
     searchingId.value = true;
@@ -1995,8 +2113,8 @@ const saveProfilingDraft = async () => {
 const submitProfiling = async () => {
   if (!isProfilingFormValid.value) {
     console.error("Please complete all required fields");
-    return;
-  }
+      return;
+    }
 
   try {
     submittingProfile.value = true;
@@ -2012,6 +2130,26 @@ const submitProfiling = async () => {
     submittingProfile.value = false;
   }
 };
+
+// Load data based on route parameter
+onMounted(() => {
+  const noBantuan = route.params.id || "NAS-2025-0001"; // Default to first record
+  const record = mockByNoBantuan[noBantuan];
+  const investigationRecord = mockInvestigationData[noBantuan];
+  
+  if (record) {
+    Object.assign(formData.value, record);
+  }
+  
+  if (investigationRecord) {
+    Object.assign(investigationData.value, investigationRecord);
+    
+    // Load assistance applications for this ID
+    if (investigationRecord.assistanceApplications) {
+      assistanceApplications.value = investigationRecord.assistanceApplications;
+    }
+  }
+});
 </script>
 
 <style lang="scss" scoped>

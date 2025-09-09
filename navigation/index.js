@@ -132,6 +132,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Jana Laporan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/reports/R5",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
@@ -637,7 +644,30 @@ export default [
           },
         ],
         meta: {},
-      }, 
+      },
+      
+      {
+          title: "Laporan",
+          icon: "iconamoon:component-fill",
+          path: "/BF-TNI/laporan",
+          child: [
+            {
+              title: "Laporan Serahan Bantuan Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/serahan-bantuan-tunai",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Baki Tabung Semasa",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-baki-tabung-semasa",
+              child: [],
+              meta: {},
+            }
+          ],
+          meta: {},
+        },
 
       // {
       //   title: "Mengurus Tunai",
@@ -698,7 +728,7 @@ export default [
               {
                 title: "Pelulus",
                 icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-PRF/KF/HK/01_02",
+                path: "/BF-PRF/KF/HK/02_01",
                 child: [],
                 meta: {},
               },
@@ -854,6 +884,20 @@ export default [
             meta: {},
           },
           {
+            title: "Penilaian Awal",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/PA/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Kemaskini",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/UP/01",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Pendaftaran Lengkap",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/FR/01",
@@ -889,13 +933,7 @@ export default [
           //   child: [],
           //   meta: {},
           // },
-          {
-            title: "Kemaskini",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/UP/01",
-            child: [],
-            meta: {},
-          },
+         
           {
             title: "Family Tree",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -903,13 +941,7 @@ export default [
             child: [],
             meta: {},
           },
-          {
-            title: "Penilaian Awal",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/PA/01",
-            child: [],
-            meta: {},
-          },
+          
           {
             title: "Senarai Pre-Review",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -1017,6 +1049,18 @@ export default [
     header: "BF-BTN",
     description: "Pengurusan Bantuan",
     child: [
+            {
+        title: "test",
+        icon: "iconamoon:component-fill",
+        path: "/BF-BTN/test",
+        meta: {},
+      },
+      {
+        title: "testing",
+        icon: "iconamoon:component-fill",
+        path: "/BF-BTN/testing",
+        meta: {},
+      },
       {
         title: "Konfigurasi",
         icon: "iconamoon:component-fill",
@@ -1280,42 +1324,84 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Senarai Tuntutan (Pemohon)",
+            title: "Tuntutan Dengan Siasatan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
-            child: [],
+            child: [
+              {
+                title: "Pemohon",
+                icon: "iconamoon:arrow-right-2-duotone",
+                child: [
+                        {
+                          title: "Senarai Tuntutan (Vendor)",
+                          icon: "iconamoon:arrow-right-2-duotone",
+                          path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+                          child: [],
+                          meta: {},
+                        },
+                        {
+                          title: "Mohon Tuntutan (Vendor)",
+                          icon: "iconamoon:arrow-right-2-duotone",
+                          path: "/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan",
+                          child: [],
+                          meta: {},
+                        },
+                        {
+                          title: "Senarai Tuntutan (Asnaf)",
+                          icon: "iconamoon:arrow-right-2-duotone",
+                          path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
+                          child: [],
+                          meta: {},
+                        },
+                        {
+                          title: "Mohon Tuntutan (Asnaf)",
+                          icon: "iconamoon:arrow-right-2-duotone",
+                          path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf",
+                          child: [],
+                          meta: {},
+                        },
+                     ],
+                meta: {},
+              },
+              {
+                title: "EOAD",
+                icon: "iconamoon:arrow-right-2-duotone",
+                child: [
+                  {
+                    title: "Senarai Tuntutan (EOAD)",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad",
+                    child: [],
+                    meta: {},
+                  },
+                ],
+                meta: {},
+               },
+               {
+            title: "Pelulus",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [
+              {
+                title: "Senarai Tuntutan (Pelulus)",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus",
+                child: [],
+                meta: {},
+             },
+            ],
             meta: {},
           },
-          {
-            title: "Mohon Tuntutan (Pemohon)",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Senarai Tuntutan (EOAD)",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Senarai Tuntutan (Pelulus)",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus",
-            child: [],
-            meta: {},
+              ],
+              meta: {},
           },
         ],
         meta: {},
       },
       {
-        title: "Bantuan Bulk",
+        title: "Bulk Processing",
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Senarai Bantuan Bulk",
+            title: "Senarai Bulk Processing",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/bantuan-bulk/cipta-bantuan-bulk",
             child: [],
@@ -1627,7 +1713,7 @@ export default [
       },
       {
         title: "Carian Organisasi",
-        icon: "heroicons:building-office",
+        icon: "iconamoon:component-fill",
         path: "/BF-PRF/OR/PP/01",
         meta: {
           auth: {
@@ -1637,7 +1723,7 @@ export default [
       },
       {
         title: "Carian Cawangan",
-        icon: "heroicons:building-office-2",
+        icon: "iconamoon:component-fill",
         path: "/BF-PRF/OR/PB/01",
         meta: {
           auth: {
@@ -1647,7 +1733,7 @@ export default [
       },
       {
         title: "Carian Recipient",
-        icon: "heroicons:user-group",
+        icon: "iconamoon:component-fill",
         path: "/BF-PRF/TP/PP/01",
         meta: {
           auth: {

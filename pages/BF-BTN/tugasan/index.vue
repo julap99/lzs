@@ -243,40 +243,40 @@
                     <h4 class="text-md font-medium mb-3 text-gray-700">
                       Semakan
                     </h4>
-                    <rs-table
-                      :data="filteredSemakanData"
-                      :columns="siasatanColumns"
-                      :pageSize="pageSize"
-                      :showNoColumn="true"
-                      :options="{
-                        variant: 'default',
-                        hover: true,
-                        striped: true,
-                      }"
-                      :options-advanced="{
-                        sortable: true,
-                        filterable: false,
-                      }"
-                      advanced
-                    >
-                      <template v-slot:status="{ text }">
-                        <div class="flex flex-col gap-1">
-                          <template v-if="text.includes('\n')">
-                            <div
-                              v-for="(line, index) in text.split('\n')"
-                              :key="index"
-                              class="text-xs"
-                            >
-                              {{ line }}
-                            </div>
-                          </template>
-                          <template v-else>
-                            <rs-badge :variant="getStatusVariant(text)">
-                              {{ text }}
-                            </rs-badge>
-                          </template>
-                        </div>
-                      </template>
+                     <rs-table
+                       :data="filteredSemakanData"
+                       :columns="siasatanColumns"
+                       :pageSize="pageSize"
+                       :showNoColumn="true"
+                       :options="{
+                         variant: 'default',
+                         hover: true,
+                         striped: true,
+                       }"
+                       :options-advanced="{
+                         sortable: true,
+                         filterable: false,
+                       }"
+                       advanced
+                     >
+                       <template v-slot:status="{ text }">
+                         <div class="flex flex-col gap-1">
+                           <template v-if="text.includes('\n')">
+                             <div
+                               v-for="(line, index) in text.split('\n')"
+                               :key="index"
+                               class="text-xs"
+                             >
+                               {{ line }}
+                             </div>
+                           </template>
+                           <template v-else>
+                             <rs-badge :variant="getStatusVariant(text)">
+                               {{ text }}
+                             </rs-badge>
+                           </template>
+                         </div>
+                       </template>
 
                       <template v-slot:tindakan="{ text }">
                         <div class="flex justify-center items-center gap-2">
@@ -1040,9 +1040,9 @@ const applications = ref([
 // Mock data for Siasatan tab - would be replaced with API call
 const siasatanData = ref([
   {
-    pemohon: "Ahmad bin Abdullah (800101-01-1234)",
-    kariah: "Masjid Al-Hidayah",
-    daerah: "Kuala Lumpur",
+    pemohon: "Mohd Rosli bin Saad (800101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     jenistugasan: "Bantuan",
@@ -1085,13 +1085,13 @@ const permohonanData = ref([
 // Mock data for Semakan sub-tab (own dataset, same format)
 const semakanData = ref([
   {
-    pemohon: "Hakim bin Nor (820303-03-3344)",
-    kariah: "Masjid Al-Hikmah",
-    daerah: "Gombak",
+    pemohon: "Ahmad bin Abdullah (800101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
-    noRujukan: "NAS-2025-0201",
-    tindakan: "siasatan-eoad",
+    noRujukan: "NAS-2025-0001",
+    tindakan: "bantuan/semakan/NAS-2025-0001",
   },
 ]);
 
@@ -1104,7 +1104,7 @@ const sokonganData = ref([
     bilanganBantuan: 2,
     status: "Segera - 0\nMelebihi SLA - 1\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0301",
-    tindakan: "bantuan/sokongan/B106",
+    tindakan: "bantuan/sokongan/NAS-2025-0001",
     //tindakan: "bantuan/sokongan/B106/draf-bq?view=true",
   },
 ]);

@@ -79,19 +79,35 @@
 
                 <!-- 3b. Had Kifayah (RM) -->
                 <div>
-                  <FormKit
-                    type="number"
-                    name="hadKifayah"
-                    label="Had Kifayah (RM)"
-                    placeholder="Contoh: 100.00"
-                    step="0.01"
-                    min="0"
-                    validation="required|min:0"
-                    :validation-messages="{
-                      required: 'Nilai had kifayah diperlukan',
-                      min: 'Nilai mesti >= 0'
-                    }"
-                  />
+                  <div class="flex items-end gap-2">
+                    <div class="flex-1">
+                      <FormKit
+                        type="number"
+                        name="hadKifayah"
+                        label="Had Kifayah (RM)"
+                        placeholder="Contoh: 100.00"
+                        step="0.01"
+                        min="0"
+                        validation="required|min:0"
+                        :validation-messages="{
+                          required: 'Nilai had kifayah diperlukan',
+                          min: 'Nilai mesti >= 0'
+                        }"
+                      />
+                    </div>
+                    <div class="pb-2">
+                      <rs-button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        @click="showAddKategoriModal = true"
+                        class="whitespace-nowrap"
+                      >
+                        <Icon name="mdi:plus" class="mr-1" size="14px" />
+                        Tambah Kategori
+                      </rs-button>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- 4. Indicators (Dynamic) -->
@@ -227,6 +243,47 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Add Kategori Modal -->
+    <rs-modal v-model="showAddKategoriModal" title="Tambah Kategori Baru" size="md">
+      <template #body>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Nama Kategori Baru
+            </label>
+            <input
+              v-model="newKategoriName"
+              type="text"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Masukkan nama kategori baru"
+              @keyup.enter="addNewKategori"
+            />
+          </div>
+          <div class="text-sm text-gray-500">
+            Kategori baru akan ditambah ke senarai pilihan "Kategori Had Kifayah"
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button
+            variant="secondary"
+            @click="cancelAddKategori"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="primary"
+            @click="addNewKategori"
+            :disabled="!newKategoriName.trim()"
+          >
+            <Icon name="mdi:plus" class="mr-2" />
+            Tambah
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -276,6 +333,10 @@ const indicators = ref([""]);
 
 const isSubmitting = ref(false);
 
+// Modal state for adding new kategori
+const showAddKategoriModal = ref(false);
+const newKategoriName = ref("");
+
 const levelOptions = [
   { label: 'A: Belanja keluarga sebulan', value: 'A: Belanja keluarga sebulan' },
   { label: 'B: Tambahan', value: 'B: Tambahan' },
@@ -293,6 +354,29 @@ const kategoriOptions = [
   { label: 'Kos penjagaan anak/tanggungan', value: 'Kos penjagaan anak/tanggungan' },
   { label: 'kos perubatan sakit kronik', value: 'kos perubatan sakit kronik' },
 ];
+
+// Persisted kategori options helpers
+const KATEGORI_OPTIONS_KEY = 'kifayahKategoriOptions';
+
+const loadSavedKategoriOptions = () => {
+  try {
+    const raw = localStorage.getItem(KATEGORI_OPTIONS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+  } catch (e) {
+    console.error('Gagal memuat kategori tersimpan:', e);
+  }
+  return [];
+};
+
+const saveKategoriOptions = () => {
+  try {
+    localStorage.setItem(KATEGORI_OPTIONS_KEY, JSON.stringify(kategoriOptions));
+  } catch (e) {
+    console.error('Gagal menyimpan kategori:', e);
+  }
+};
 
 const loadExistingCategories = () => {
   try {
@@ -315,6 +399,53 @@ const removeIndicator = () => {
   if (indicators.value.length > 1) {
     indicators.value.pop();
   }
+};
+
+// Methods for adding new kategori
+const addNewKategori = () => {
+  const trimmedName = newKategoriName.value.trim();
+  
+  if (!trimmedName) {
+    alert('Sila masukkan nama kategori');
+    return;
+  }
+  
+  // Check if kategori already exists
+  const existingKategori = kategoriOptions.find(option => 
+    option.value.toLowerCase() === trimmedName.toLowerCase()
+  );
+  
+  if (existingKategori) {
+    alert('Kategori ini sudah wujud dalam senarai');
+    return;
+  }
+  
+  // Add new kategori to options
+  kategoriOptions.push({
+    label: trimmedName,
+    value: trimmedName
+  });
+  // Persist to localStorage
+  saveKategoriOptions();
+  
+  // Set the new kategori as selected in the form
+  formData.kategoriHadKifayah = trimmedName;
+  
+  // Show success message
+  const { $toast } = useNuxtApp();
+  if ($toast) {
+    $toast.success(`Kategori "${trimmedName}" berjaya ditambah`);
+  } else {
+    alert(`Kategori "${trimmedName}" berjaya ditambah`);
+  }
+  
+  // Close modal and reset
+  cancelAddKategori();
+};
+
+const cancelAddKategori = () => {
+  showAddKategoriModal.value = false;
+  newKategoriName.value = "";
 };
 
 // no auto-id required for these fields
@@ -366,6 +497,17 @@ onMounted(() => {
   // Initialize form data with selected ID
   if (selectedId) {
     formData.idHadKifayah = selectedId;
+  }
+  // Merge saved kategori options into defaults (avoid duplicates)
+  const savedOpts = loadSavedKategoriOptions();
+  if (Array.isArray(savedOpts) && savedOpts.length > 0) {
+    const existingValues = new Set(kategoriOptions.map(o => (o.value || '').toLowerCase()));
+    savedOpts.forEach(opt => {
+      if (opt && opt.value && !existingValues.has(opt.value.toLowerCase())) {
+        kategoriOptions.push({ label: opt.label || opt.value, value: opt.value });
+        existingValues.add((opt.value || '').toLowerCase());
+      }
+    });
   }
 });
 </script>

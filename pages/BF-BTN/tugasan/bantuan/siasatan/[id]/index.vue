@@ -278,7 +278,7 @@
                 </table>
               </div>
 
-              <!-- Editable table: Semester/Tahap (only for B307) -->
+              <!-- Editable table: Semester/Tahap (B307 only) -->
               <div v-if="isB307" class="mt-6">
                 <div class="flex items-center justify-between mb-3">
                   <h3 class="text-md font-semibold text-gray-900">Perincian Semester/Tahap</h3>
@@ -418,14 +418,12 @@
                             @click="previewDocument(dokumen)"
                           >
                             <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                            Preview
                           </rs-button>
                           <rs-button
                             variant="success"
                             @click="downloadDocument(dokumen)"
                           >
                             <Icon name="ph:download" class="w-4 h-4 mr-1" />
-                            Muat Turun
                           </rs-button>
                         </div>
                       </td>
@@ -445,9 +443,28 @@
           </rs-card>
 
           <!-- BQ, Laporan Gambar, Laporan Teknikal in Tabs -->
-          <rs-tab variant="primary" type="card"  default-active="BQ">
-            <!-- Tab: BQ -->
-            <rs-tab-item title="BQ" active>
+          <div v-if="visibleTabs.length" class="bg-white">
+            <!-- Custom Tab Navigation -->
+            <div class="flex border-b border-gray-200">
+              <button
+                v-for="(tab, index) in visibleTabs"
+                :key="index"
+                @click="activeTab = tab.id"
+                              :class="[
+                'px-6 py-3 text-lg font-medium transition-colors duration-200',
+                activeTab === tab.id
+                  ? 'text-teal-600 border-b-2 border-teal-600'
+                  : 'text-gray-700 hover:text-gray-900'
+              ]"
+              >
+                {{ tab.title }}
+              </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+              <!-- BQ Tab -->
+              <div v-if="activeTab === 'bq' && isB1">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -551,10 +568,10 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
+              </div>
 
-            <!-- Tab: Laporan Gambar -->
-            <rs-tab-item title="Laporan Gambar">
+              <!-- Laporan Gambar Tab -->
+              <div v-if="activeTab === 'gambar'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -593,21 +610,22 @@
                     <div
                       v-for="(gambar, index) in gambarLokasi"
                       :key="index"
-                      class="relative aspect-square rounded-lg overflow-hidden border border-gray-200"
+                      class="bg-white rounded-lg border border-gray-200 overflow-hidden"
                     >
-                      <img
-                        :src="gambar.url"
-                        :alt="gambar.catatan"
-                        class="w-full h-full object-cover"
-                      />
-                      <div
-                        class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-opacity"
-                      >
-                        <div
-                          class="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50 text-white text-sm"
-                        >
+                      <div class="aspect-square overflow-hidden">
+                        <img
+                          :src="gambar.url"
+                          :alt="gambar.catatan"
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div class="p-3">
+                        <p class="text-sm text-gray-700 font-medium">
                           {{ gambar.catatan }}
-                        </div>
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                          {{ formatDateTime(gambar.masaUpload) }}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -623,10 +641,10 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
+              </div>
 
-            <!-- Tab: Laporan Teknikal -->
-            <rs-tab-item title="Laporan Teknikal">
+              <!-- Laporan Teknikal Tab -->
+              <div v-if="activeTab === 'teknikal'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -714,9 +732,9 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
-            </rs-tab>
-          
+              </div>
+            </div>
+          </div>
           
           <!-- NEW: Maklumat Penerima Manfaat (jika tanggungan)
           <rs-card v-if="false" class="shadow-sm border-0 bg-white">
@@ -765,8 +783,8 @@
             </template>
           </rs-card> -->
 
-          <!-- NEW: Maklumat Penerima Bayaran (hidden for B1) -->
-          <rs-card v-if="!isB1" class="shadow-sm border-0 bg-white">
+          <!-- NEW: Maklumat Penerima Bayaran -->
+          <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -825,7 +843,7 @@
 
 
           
-          
+
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
@@ -844,7 +862,7 @@
                     Maklumat Kadar Bantuan
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Nilai kadar bantuan berdasarkan BQ
+                    Nilai kadar bantuan yang dicadangkan
                   </p>
                 </div>
               </div>
@@ -1026,6 +1044,121 @@
             </template>
           </rs-card> -->
 
+          <!-- Laluan Process  -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="iconamoon:check-circle-2-duotone"
+                      class="w-6 h-6 text-yellow-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Laluan Proses
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Laluan Proses Permohonan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            
+
+            <template #body>
+              
+              <div class="space-y-4">
+                <!-- Accordion: Laluan Proses Details -->
+                <div class="space-y-3">
+                  <!-- Permohonan Accordion Item -->
+                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.permohonan = !accordionOpen.permohonan"
+                    >
+                      <span class="font-medium text-gray-900">Permohonan</span>
+                      <Icon
+                        :name="accordionOpen.permohonan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.permohonan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Permohonan Dibuat Oleh</label>
+                          <p class="text-gray-900">{{ permohonanDetails.dibuatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Permohonan</label>
+                          <p class="text-gray-900">{{ formatDateTime(permohonanDetails.tarikhPermohonan) }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Sebab Memohon Bantuan</label>
+                          <p class="text-gray-900">{{ permohonanDetails.sebabMemohon }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Siasatan Accordion Item -->
+                  <!-- <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.siasatan = !accordionOpen.siasatan"
+                    >
+                      <span class="font-medium text-gray-900">Siasatan</span>
+                      <Icon
+                        :name="accordionOpen.siasatan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.siasatan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Disiasat Oleh</label>
+                          <p class="text-gray-900">{{ siasatanDetails.disiasatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Status Siasatan</label>
+                          <rs-badge :variant="getProcessStatusVariant(siasatanDetails.statusSiasatan)">
+                            {{ siasatanDetails.statusSiasatan }}
+                          </rs-badge>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Selesai Siasatan</label>
+                          <p class="text-gray-900">{{ formatDateTime(siasatanDetails.tarikhSelesai) }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">SLA</label>
+                          <p class="text-gray-900">{{ siasatanDetails.sla }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Catatan Siasatan</label>
+                          <p class="text-gray-900">{{ siasatanDetails.catatan }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+
+                <!-- <div class="text-xs text-gray-500">
+                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
+                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
+                </div> -->
+              </div>
+              
+            </template>
+            
+          </rs-card>
+
           <!-- Section 7: Status Lawatan -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -1062,10 +1195,10 @@
               <div class="space-y-4">
                 <FormKit
                   type="textarea"
-                  label="Catatan Lapangan"
+                  label="Catatan"
                   v-model="catatanLapangan.catatan"
                   rows="6"
-                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa lawatan lapangan..."
+                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa siasatan..."
                   :classes="{ input: 'text-sm' }"
                 />
 
@@ -1103,7 +1236,7 @@
               <rs-button
                 variant="primary"
                 @click="handleSelesaiDanHantar"
-                :disabled="processing"
+                :disabled="processing || !hasStatusSokongan"
                 :loading="processing && actionType === 'complete_submit'"
               >
                 Hantar Kelulusan
@@ -1155,7 +1288,7 @@
 
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -1198,6 +1331,7 @@ const activeTab = ref('bq');
 
 // Show/hide rules by bantuan id
 const isB1 = computed(() => String(route.params.id || '').toUpperCase().startsWith('B1'));
+const isB300 = computed(() => String(route.params.id || '').toUpperCase() === 'B300');
 const isB307 = computed(() => String(route.params.id || '').toUpperCase() === 'B307');
 const visibleTabs = computed(() => (isB1.value ? tabs : []));
 
@@ -1213,10 +1347,10 @@ const mockAssistanceData = {
   "B102": {
     id: "B102",
     aid: "B102 - BANTUAN BINAAN RUMAH (Fakir)",
-  aidproduct: "Bantuan Binaan Rumah (Fakir)",
-  productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
-  entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
-  jumlahBantuan: 43000,
+    aidproduct: "Bantuan Binaan Rumah (Fakir)",
+    productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    jumlahBantuan: 43000,
   },
   "B300": {
     id: "B300",
@@ -1268,6 +1402,26 @@ const dokumenSokongan = ref([
   },
 ]);
 
+// Accordion state and mock details
+const accordionOpen = reactive({
+  permohonan: false,
+  siasatan: false,
+})
+
+const permohonanDetails = ref({
+  dibuatOleh: 'Ahmad bin Abdullah',
+  tarikhPermohonan: '2024-01-01 09:00:00',
+  sebabMemohon: 'Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan bantuan bina baru rumah'
+})
+
+const siasatanDetails = ref({
+  disiasatOleh: 'Siti binti Ali',
+  statusSiasatan: 'Semak',
+  tarikhSelesai: '2024-01-03 17:30:00',
+  catatan: 'Lawatan lapangan telah dilakukan dan dokumen disahkan.',
+  sla: '3 hari bekerja'
+})
+
 // Section 3: Draf BQ
 const bqList = ref([
   {
@@ -1276,6 +1430,18 @@ const bqList = ref([
     jumlahBQ: "RM43,000",
     status: "Dalam Proses",
   },
+  // {
+  //   noBQ: "BQ202508648",
+  //   namaBQ: "BQ SITI BINTI HASSAN - DERMASISWA SEKOLAH",
+  //   jumlahBQ: "RM2,400",
+  //   status: "Dalam Proses",
+  // },
+  // {
+  //   noBQ: "BQ202508649",
+  //   namaBQ: "BQ SITI BINTI HASSAN - DERMASISWA IPT",
+  //   jumlahBQ: "RM3,000",
+  //   status: "Dalam Proses",
+  // },
 ]);
 
 const showBQModal = ref(false);
@@ -1284,13 +1450,13 @@ const editingBQ = ref(null);
 // Section 4: Laporan Gambar
 const gambarLokasi = ref([
   {
-    url: "/img/placeholder-image.jpg",
-    catatan: "Keadaan semasa rumah",
+    url: "https://scontent.fkul10-1.fna.fbcdn.net/v/t1.6435-9/33382272_977231325777776_3291633360509599744_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=tsi5WpsPCREQ7kNvwEe3GJk&_nc_oc=Adl4_F7yjD2xX6siXLa_NANICn4Cak1Wmni5VBa7XhbSYIByOReFS3wwQc7n0JHnBqz05IBIajWiWh8LE9coTq0L&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=4p3_JCn3HWweiLZBezB58w&oh=00_AfZFYLhw-KRbw3goXGgJkj7ewaf54KBCnG0_XXcl4y3TWQ&oe=68E1A4D7",
+    catatan: "Keadaan dinding papan rumah",
     masaUpload: new Date().toISOString(),
   },
   {
-    url: "/img/placeholder-image.jpg",
-    catatan: "Bahagian yang perlu dibaiki",
+    url: "https://scontent.fkul15-1.fna.fbcdn.net/v/t39.30808-6/309943384_196941696025849_726196766864978484_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=IyNAhW7CUkgQ7kNvwHTA3nK&_nc_oc=AdmN3PYsmtpYr9gnvcQLzYd-zejr8nOaNfL2SkYiGIJsfKhvEWLi_gLtezJSzXrXrSpit_KvkUj1zjOCHOKl8Y4n&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=aY79tE8vuTPag6wRgWP07g&oh=00_AfZvZmX3DPqOBnADSlF0Occy0BA6qGPavBKb7ME7Qre1eQ&oe=68C01482",
+    catatan: "Pandangan depan rumah",
     masaUpload: new Date().toISOString(),
   },
 ]);
@@ -1334,7 +1500,124 @@ const statusDokumenOptions = ref([
   { label: "Tiada Keperluan", value: "tiada_keperluan" },
 ]);
 
+// NEW: Maklumat Penerima Manfaat (jika tanggungan)
+const dependentSelection = ref({
+  nama: "",
+});
 
+const dependentNameOptions = ref([
+  { label: "-- Sila Pilih --", value: "" },
+  { label: "Ali Bin Ahmad", value: "ALI" },
+  { label: "Siti Binti Amin", value: "SITI" },
+]);
+
+const dependentsDirectory = {
+  ALI: { noKadPengenalan: "010101-01-0101", hubungan: "Anak" },
+  SITI: { noKadPengenalan: "020202-02-0202", hubungan: "Anak" },
+};
+
+const selectedDependent = computed(() => dependentsDirectory[dependentSelection.value.nama] || null);
+
+// NEW: Maklumat Penerima Bayaran
+const paymentInfo = ref({
+  kaedah: "",
+  noId: "",
+  namaPenerima: "",
+  namaAkaun: "",
+  bank: "",
+  noAkaun: "",
+});
+
+const paymentMethodOptions = ref([
+  { label: "-- Sila Pilih --", value: "" },
+  { label: "EFT", value: "EFT" },
+  { label: "Vcash", value: "VCASH" },
+  { label: "Cheque", value: "CHEQUE" },
+  { label: "TT", value: "TT" },
+  { label: "eWallet", value: "EWALLET" },
+  { label: "Tunai", value: "TUNAI" },
+  { label: "Tunai (Kaunter Ekspres)", value: "TUNAI_KAUNTER" },
+  { label: "Tunai (Lapangan)", value: "TUNAI_LAPANGAN" },
+]);
+
+// NEW: Keputusan Siasatan
+const investigationDecision = ref({
+  status: "",
+  catatan: "",
+  itemBantuan: "",
+});
+
+const supportDateTime = computed(() => new Date().toLocaleString("ms-MY"));
+
+// NEW: Education info (read-only) for B300/B307
+const educationByAid = {
+  B300: {
+    tablefor: "(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    fields: {
+      "Jenis Sekolah/Institusi": "Peringkat Tinggi",
+      "Kategori Sekolah/Institusi": "SBP",
+      "Tahun Bersekolah": "2025",
+      "Tahun/Tingkatan/Tahun Pengajian/Semester": "Tingkatan 4",
+      "Nama Sekolah/ Institusi": "SEKOLAH MENENGAH SAINS BANTING",
+      "Tempat Tinggal Semasa Belajar": "Tidak Tinggal Bersama Keluarga",
+      "Maklumat Asrama/Rumah Sewa": "Asrama Puteri",
+      "Pembiayaan Pengajian": "Tiada",
+      "Catatan": "Masih Bersekolah di Tingkatan 4",
+    },
+  },
+  B307: {
+    tablefor: "(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+    fields: {
+      "Jenis Sekolah/Institusi": "Peringkat Tinggi",
+      "Kategori Sekolah/Institusi": "IPT",
+      "Tarikh Mula Pengajian": "1/1/2025",
+      "Tarikh Tamat Pengajian": "6/1/2028",
+      "Tahun Bersekolah": "2025",
+      "Tahun/Tingkatan/Tahun Pengajian/Semester": "Semester 1",
+      "Nama Sekolah/ Institusi": "UPM",
+      "Bidang/Kursus Pengajian": "Ijazah Sarjana Muda:Ijazah Sarjana Muda Sains Komputer",
+      "Jurusan/Bidang": "-",
+      "Pembiayaan Pengajian": "Tiada",
+      "Catatan": "",
+      "Tinggal Bersama Keluarga Semasa Belajar": "Tidak",
+      "Maklumat Asrama/Rumah Sewa": "Kolej Melati",
+    },
+  },
+};
+
+const educationInfo = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  return educationByAid[id] || null;
+});
+
+// NEW: Editable semesters/tahap table state
+const educationSemesters = ref([
+  { semester: 1, bulanMula: 'Jan-25', bulanTamat: 'Jun-25', jenis: 'Semester Panjang', gpa: '', cgpa: '' },
+  { semester: 2, bulanMula: 'Aug-25', bulanTamat: 'Dec-25', jenis: 'Semester Pendek', gpa: '', cgpa: '' },
+  { semester: 3, bulanMula: 'Jan-26', bulanTamat: 'Jun-26', jenis: 'Semester Panjang', gpa: '', cgpa: '' },
+  { semester: 4, bulanMula: 'Aug-26', bulanTamat: 'Feb-26', jenis: 'Semester Panjang', gpa: '', cgpa: '' },
+  { semester: 5, bulanMula: 'Apr-26', bulanTamat: 'Oct-26', jenis: 'Semester Panjang', gpa: '', cgpa: '' },
+  { semester: 6, bulanMula: 'Dec-26', bulanTamat: 'May-27', jenis: 'Semester Panjang', gpa: '', cgpa: '' },
+  { semester: 7, bulanMula: 'Jun-27', bulanTamat: 'Jan-28', jenis: 'Semester Panjang', gpa: '', cgpa: '' },
+]);
+
+const addSemesterRow = () => {
+  const next = (educationSemesters.value.at(-1)?.semester || 0) + 1;
+  educationSemesters.value.push({ semester: next, bulanMula: '', bulanTamat: '', jenis: '', gpa: '', cgpa: '' });
+};
+
+const removeSemesterRow = (index) => {
+  if (index >= 0 && index < educationSemesters.value.length) {
+    educationSemesters.value.splice(index, 1);
+    normalizeSemesterNumbers();
+  }
+};
+
+const normalizeSemesterNumbers = () => {
+  educationSemesters.value
+    .sort((a, b) => (a.semester || 0) - (b.semester || 0))
+    .forEach((row, idx) => { row.semester = idx + 1; });
+};
 
 const jumlahKeseluruhan = computed(() => {
   const kadar = parseFloat(formData.value.jumlahBantuan) || 0
@@ -1342,6 +1625,17 @@ const jumlahKeseluruhan = computed(() => {
   return kadar * tempoh
 })
 
+// Check if both status sokongan and status proses have valid data
+const hasStatusSokongan = computed(() => {
+  const hasValidStatusSokongan = formData.value.statusLawatan && 
+                                 formData.value.statusLawatan !== "sila_pilih" && 
+                                 formData.value.statusLawatan !== "";
+  
+  const hasValidStatusProses = formData.value.statusproses && 
+                               formData.value.statusproses === "selesai";
+  
+  return hasValidStatusSokongan && hasValidStatusProses;
+})
 
 // Methods
 const getStatusVariant = (status) => {
@@ -1380,6 +1674,22 @@ const getBQStatusVariant = (status) => {
   return variants[status] || "default";
 };
 
+const getProcessStatusVariant = (status) => {
+  const variants = {
+    'Permohonan': 'info',
+    'Semak': 'warning',
+    'Sokong': 'primary',
+    'Lulus': 'success'
+  }
+  return variants[status] || 'primary'
+}
+
+const formatDateTime = (dateTimeString) => {
+  if (!dateTimeString) return '-'
+  const date = new Date(dateTimeString)
+  return date.toLocaleString('ms-MY')
+}
+
 const previewDocument = (dokumen) => {
   console.log("Previewing document:", dokumen);
   // Implement document preview functionality
@@ -1398,9 +1708,12 @@ const openBQForm = () => {
 
 const editBQ = (bq) => {
   // Navigate to dedicated BQ drafting/editing page with current id and edit flag
+  // router.push(
+  //   `/BF-BTN/tugasan/bantuan/siasatan/draf-bq/${route.params.id}`
+  // );
   router.push(
     `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/draf-bq?edit=true`
-  );
+  );
 
 };
 
@@ -1553,7 +1866,7 @@ onMounted(() => {
   // Implement API call to fetch application data
   // This is mock data for now
   formData.value = {
-    aid: "B102	Bantuan Binaan Rumah (Fakir)",
+    aid: "B102\tBantuan Binaan Rumah (Fakir)",
     aidproduct: "Bantuan Binaan Rumah (Fakir)",
     productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
     entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
@@ -1567,8 +1880,17 @@ onMounted(() => {
     // statusKeluarga: "Fakir",
     // statusIndividu: "Fakir",
     // statusMultidimensi: "Asnaf Tidak Produktif",
-    statusLawatan: "Perlu Diproses",
+    // statusLawatan: "Perlu Diproses",
   };
+
+  // Load by assistance type from route.params.id (e.g. B102/B300/B307)
+  const selectedType = String(route.params.id || '').toUpperCase();
+  if (mockAssistanceData[selectedType]) {
+    Object.assign(formData.value, mockAssistanceData[selectedType]);
+    console.log("Loaded assistance by id:", selectedType, formData.value);
+  } else {
+    console.warn("Assistance type not found, using fallback:", selectedType);
+  }
 
   console.log("formData set:", formData.value); // Debug log
 
@@ -1591,24 +1913,25 @@ Ketua Keluarga : Pemohon (MISKIN)
 Pasangan : 1 orang isteri tinggal bersama
 Tanggungan : - NIL-
 Lain-lain : - NIL-`;
-laporanTeknikal.value.keperluan = `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
+  laporanTeknikal.value.keperluan = `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
 Keadaan rumah tidak sempuma.
 
 Pemohon tidak mepunyai pendapatan yang mencukupi untuk membaiki kerosakan yang berlaku dirumahnya.
 Untuk rekod, rumah masih dalam keadaan baik untuk diduduki dan sesuai untuk dibaikpulih.`;
 
-laporanTeknikal.value.cadangan = `Dicadangkan kerja-kerja baikpulih berikut :
+  laporanTeknikal.value.cadangan = `Dicadangkan kerja-kerja baikpulih berikut :
 
 1. Meroboh bahagian rumah yang rosak dan retak.
 2. Membina semula struktur bangunan rumah yang baru.
 3. Membaikpulih dan menaiktaraf pendawalan elektrik bahagian rumah yang terlibat.`;
 
-laporanTeknikal.value.nilaiKerja = "43000"
+  laporanTeknikal.value.nilaiKerja = "43000"
   // Auto-calculate jumlah bantuan from BQ (mock calculation)
   jumlahBantuan.value = 25000;
   catatanPengesyoran.value =
     "Cadangan kerja baik pulih bumbung bocor dan cat dinding luar untuk memastikan keselamatan dan keselesaan pemohon.";
 });
+
 </script>
 
 <style lang="scss" scoped>

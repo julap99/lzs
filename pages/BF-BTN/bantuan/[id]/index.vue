@@ -300,7 +300,8 @@
                 </h4>
                 
                 <rs-table
-                  :data="distributionItems"
+                  :key="`distribution-table-${currentPage}-${distributionItems.length}`"
+                  :data="paginatedDistributionItems"
                   :field="distributionItemFieldKeys"
                   :columns="distributionItemFields"
                   :options="{
@@ -311,6 +312,85 @@
                   }"
                   :showNoColumn="true"
                 />
+                
+                <!-- Pagination Controls -->
+                <div v-if="totalPages > 1" class="flex items-center justify-between mt-4 px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                  <div class="flex-1 flex justify-between sm:hidden">
+                    <button
+                      @click="currentPage = Math.max(1, currentPage - 1)"
+                      :disabled="currentPage === 1"
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                      :disabled="currentPage === totalPages"
+                      class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                  <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                      <p class="text-sm text-gray-700">
+                        Showing
+                        <span class="font-medium">{{ (currentPage - 1) * itemsPerPage + 1 }}</span>
+                        to
+                        <span class="font-medium">{{ Math.min(currentPage * itemsPerPage, totalItems) }}</span>
+                        of
+                        <span class="font-medium">{{ totalItems }}</span>
+                        results
+                      </p>
+                    </div>
+                    <div>
+                      <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <button
+                          @click="currentPage = Math.max(1, currentPage - 1)"
+                          :disabled="currentPage === 1"
+                          class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <span class="sr-only">Previous</span>
+                          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                          </svg>
+                        </button>
+                        
+                        <template v-for="page in totalPages" :key="page">
+                          <button
+                            v-if="page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)"
+                            @click="currentPage = page"
+                            :class="[
+                              'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
+                              page === currentPage
+                                ? 'z-10 bg-primary border-primary text-white'
+                                : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                            ]"
+                          >
+                            {{ page }}
+                          </button>
+                          <span
+                            v-else-if="page === currentPage - 2 || page === currentPage + 2"
+                            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                          >
+                            ...
+                          </span>
+                        </template>
+                        
+                        <button
+                          @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                          :disabled="currentPage === totalPages"
+                          class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <span class="sr-only">Next</span>
+                          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                          </svg>
+                        </button>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -565,7 +645,8 @@ const activeTab = ref('agihan');
 
 
 // Sample data - replace with actual API calls
-const applicantInfo = ref({
+// Default data for most IDs
+const defaultApplicantInfo = {
   namaPenuh: 'Ahmad bin Abdullah',
   noKadPengenalan: '800101-01-1234',
   noTelefon: '+60123456789',
@@ -574,9 +655,9 @@ const applicantInfo = ref({
   statusHousehold: 'Aktif',
   statusIndividu: 'Lulus',
   statusMultidimensi: 'Miskin'
-})
+}
 
-const aidInfo = ref({
+const defaultAidInfo = {
   aid: 'Bantuan Asnaf',
   aidProduct: 'Bantuan Kewangan Bulanan',
   productPackage: 'Paket Asnaf Standard',
@@ -595,9 +676,76 @@ const aidInfo = ref({
   bank: 'Maybank',
   noAkaunBank: '1234567890',
   sapCode: 'SAP-001'
-})
+}
 
-const distributionItems = ref([
+// B010 specific data
+const b010ApplicantInfo = {
+  namaPenuh: 'Muhammad Farhan bin Fitri',
+  noKadPengenalan: '940511-12-6045',
+  noTelefon: '+60123456789',
+  emel: 'farhan@example.com',
+  alamat: 'No. 123, Jalan Merdeka, Taman Merdeka, 50000 Kuala Lumpur',
+  statusHousehold: 'Aktif',
+  statusIndividu: 'Lulus',
+  statusMultidimensi: 'Miskin'
+}
+
+const b010AidInfo = {
+  aid: 'B300 - (HQ) BANTUAN DERMASISWA MENENGAH (FAKIR)',
+  aidProduct: '(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)',
+  productPackage: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) - (FAKIR)',
+  entitlementProduct: 'Bantuan RM 80/bulan',
+  catatanSebabMemohon: 'Memerlukan bantuan kewangan untuk keperluan sekolah',
+  kadarBantuan: '80.00',
+  tempohKekerapan: 'Bulanan',
+  tarikhMula: '2025-01-01',
+  tarikhTamat: '2025-12-31',
+  jumlahKeseluruhan: '960.00',
+  kodBajet: 'AGHQ0101',
+  penerima: 'Asnaf',
+  namaPenerima: 'Fitri bin Fahrin',
+  kaedahPembayaran: 'Bank Transfer',
+  namaPemegangAkaun: 'Fitri bin Fahrin',
+  bank: 'Maybank',
+  noAkaunBank: '1234567890',
+  sapCode: 'SAP-001'
+}
+
+// B011 specific data
+const b011ApplicantInfo = {
+  namaPenuh: 'Muhammad Firdaus bin Amri',
+  noKadPengenalan: '900211-11-5041',
+  noTelefon: '+60126246789',
+  emel: 'firdaus@example.com',
+  alamat: 'No. 123, Jalan Indah Jaya, Taman Indah Jaya, 50000 Kuala Lumpur',
+  statusHousehold: 'Aktif',
+  statusIndividu: 'Lulus',
+  statusMultidimensi: 'Miskin'
+}
+
+const b011AidInfo = {
+  aid: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+  aidProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+  productPackage: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+  entitlementProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+  catatanSebabMemohon: 'Memerlukan bantuan kewangan untuk keperluan IPTA/IPTS',
+  kadarBantuan: '800.00',
+  tempohKekerapan: '7 Sem',
+  tarikhMula: '2025-01-01',
+  tarikhTamat: '2027-06-30',
+  jumlahKeseluruhan: '5600.00',
+  kodBajet: 'AGHQ0101',
+  penerima: 'Asnaf',
+  namaPenerima: 'Fitri bin Fahrin',
+  kaedahPembayaran: 'Bank Transfer',
+  namaPemegangAkaun: 'Muhammad Farhan bin Fitri',
+  bank: 'Maybank',
+  noAkaunBank: '1234567890',
+  sapCode: 'SAP-001'
+}
+
+// Default distribution items for most IDs
+const defaultDistributionItems = [
   {
     diNo: 'DI-2024-001',
     entitlementProduct: 'Bantuan RM 500/bulan',
@@ -625,7 +773,110 @@ const distributionItems = ref([
     status: 'Menunggu',
     amaun: '500.00'
   }
-])
+]
+
+// B010 specific distribution items
+const b010DistributionItems = [
+  {
+    diNo: 'DI-2025-123456',
+    entitlementProduct: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+    penerima: 'Asnaf',
+    bulan: '1',
+    tahun: '2025',
+    status: 'lulus',
+    amaun: '80'
+  },
+  {
+    diNo: 'DI-2025-123457',
+    entitlementProduct: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+    penerima: 'Asnaf',
+    bulan: '2',
+    tahun: '2025',
+    status: 'lulus',
+    amaun: '80'
+  },
+  {
+    diNo: 'DI-2025-123458',
+    entitlementProduct: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+    penerima: 'Asnaf',
+    bulan: '3',
+    tahun: '2025',
+    status: 'lulus',
+    amaun: '80'
+  },
+  {
+    diNo: 'DI-2025-123459',
+    entitlementProduct: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+    penerima: 'Asnaf',
+    bulan: '4',
+    tahun: '2025',
+    status: 'lulus',
+    amaun: '80'
+  },
+  {
+    diNo: 'DI-2025-123460',
+    entitlementProduct: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+    penerima: 'Asnaf',
+    bulan: '5',
+    tahun: '2025',
+    status: 'lulus',
+    amaun: '80'
+  },
+  {
+    diNo: 'DI-2025-123461',
+    entitlementProduct: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+    penerima: 'Asnaf',
+    bulan: '6',
+    tahun: '2025',
+    status: 'lulus',
+    amaun: '80'
+  },
+  {
+    diNo: 'DI-2025-123462',
+    entitlementProduct: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+    penerima: 'Asnaf',
+    bulan: '7',
+    tahun: '2025',
+    status: 'lulus',
+    amaun: '80'
+  },
+  {
+    diNo: 'DI-2025-123463',
+    entitlementProduct: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+    penerima: 'Asnaf',
+    bulan: '8',
+    tahun: '2025',
+    status: 'lulus',
+    amaun: '80'
+  },
+  {
+    diNo: 'DI-2025-123464',
+    entitlementProduct: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+    penerima: 'Asnaf',
+    bulan: '9',
+    tahun: '2025',
+    status: 'lulus',
+    amaun: '80'
+  }
+]
+
+// Initialize with default data, will be updated based on ID
+const applicantInfo = ref({ ...defaultApplicantInfo })
+const aidInfo = ref({ ...defaultAidInfo })
+const distributionItems = ref([...defaultDistributionItems])
+
+// Pagination for distribution items
+const currentPage = ref(1)
+const itemsPerPage = ref(5)
+const totalItems = computed(() => distributionItems.value.length)
+const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value))
+
+const paginatedDistributionItems = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return distributionItems.value.slice(start, end)
+})
+
 
 const distributionItemFields = [
   { key: 'diNo', label: 'DI No' },
@@ -638,7 +889,7 @@ const distributionItemFields = [
 ]
 
 const distributionItemFieldKeys = [
-  'diNo', 
+  'diNo',
   'entitlementProduct',
   'penerima',
   'bulan',
@@ -647,7 +898,9 @@ const distributionItemFieldKeys = [
   'amaun'
 ]
 
-const processFlow = ref([
+
+// Default process flow for most IDs
+const defaultProcessFlow = [
   {
     status: 'Permohonan',
     namaPegawai: 'Siti binti Ali',
@@ -672,7 +925,37 @@ const processFlow = ref([
     tarikhMasa: '2024-01-04 16:45:00',
     catatan: 'Permohonan diluluskan untuk bantuan bulanan'
   }
-])
+]
+
+// B010 specific process flow with 2025 dates
+const b010ProcessFlow = [
+  {
+    status: 'Permohonan',
+    namaPegawai: 'Siti binti Ali',
+    tarikhMasa: '2025-01-01 09:00:00',
+    catatan: 'Permohonan diterima dan sedang diproses'
+  },
+  {
+    status: 'Semak',
+    namaPegawai: 'Ahmad bin Hassan',
+    tarikhMasa: '2025-01-02 14:30:00',
+    catatan: 'Dokumen lengkap, layak untuk bantuan'
+  },
+  {
+    status: 'Sokong',
+    namaPegawai: 'Fatimah binti Omar',
+    tarikhMasa: '2025-01-03 11:15:00',
+    catatan: 'Menyokong permohonan bantuan'
+  },
+  {
+    status: 'Lulus',
+    namaPegawai: 'Mohd bin Ibrahim',
+    tarikhMasa: '2025-01-04 16:45:00',
+    catatan: 'Permohonan diluluskan untuk bantuan bulanan'
+  }
+]
+
+const processFlow = ref([...defaultProcessFlow])
 
 // Utility functions
 const formatDate = (dateString) => {
@@ -891,9 +1174,35 @@ const handleCheck = () => {
   console.log('Check process for aid ID:', aidId)
 }
 
+// Function to load data based on ID
+const loadDataForId = (id) => {
+  if (id === 'B010') {
+    applicantInfo.value = { ...b010ApplicantInfo }
+    aidInfo.value = { ...b010AidInfo }
+    distributionItems.value = [...b010DistributionItems]
+    processFlow.value = [...b010ProcessFlow]
+  } else if (id === 'B011') {
+    applicantInfo.value = { ...b011ApplicantInfo }
+    aidInfo.value = { ...b011AidInfo }
+    // re-use default distribution/process for now unless provided
+    distributionItems.value = [...defaultDistributionItems]
+    processFlow.value = [...defaultProcessFlow]
+  } else {
+    // Use default data for other IDs
+    applicantInfo.value = { ...defaultApplicantInfo }
+    aidInfo.value = { ...defaultAidInfo }
+    distributionItems.value = [...defaultDistributionItems]
+    processFlow.value = [...defaultProcessFlow]
+  }
+  // Reset pagination to first page when data changes
+  currentPage.value = 1
+}
+
 // Fetch data on mount
 onMounted(async () => {
   try {
+    loadDataForId(aidId)
+    
     // Replace with actual API calls
     // const response = await $fetch(`/api/bantuan/${aidId}`)
     // applicantInfo.value = response.applicantInfo
@@ -902,6 +1211,13 @@ onMounted(async () => {
     // processFlow.value = response.processFlow
   } catch (error) {
     console.error('Error fetching aid information:', error)
+  }
+})
+
+// Watch for route changes to reload data
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    loadDataForId(newId)
   }
 })
 </script>
