@@ -1290,10 +1290,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 
 definePageMeta({
   title: "Maklumat Pemohon - Siasatan EOAD",
@@ -1313,46 +1314,131 @@ const breadcrumb = ref([
   {
     name: "Siasatan EOAD",
     type: "current",
-    path: "/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad",
+    path: `/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad/${route.params.id}`,
   },
 ]);
+
+// Mock data for different records
+const mockByNoBantuan = {
+  "NAS-2025-0001": {
+    // Personal Information
+    noBantuan: "NAS-2025-0001",
+    nama: "Mohd Rosli bin Saad",
+    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "810101121234",
+    noTelefon: "0123456789",
+    email: "rosli@gmail.com",
+    statusKeluarga: "Fakir",
+    statusIndividu: "Fakir",
+    statusMultidimensi: "Asnaf Tidak Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: null,
+  },
+  "NAS-2025-0002": {
+    // Personal Information
+    noBantuan: "NAS-2025-0002",
+    nama: "Siti binti Hassan",
+    alamat: "Jalan Merdeka, Taman Seri Indah, 45600 Selangor",
+    kariah: "Masjid Al-Ikhlas",
+    daerah: "Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "850505055678",
+    noTelefon: "0198765432",
+    email: "siti.hassan@gmail.com",
+    statusKeluarga: "Miskin",
+    statusIndividu: "Miskin",
+    statusMultidimensi: "Asnaf Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: null,
+  }
+};
+
+// Mock investigation data
+const mockInvestigationData = {
+  "NAS-2025-0001": {
+    jenisPekerjaan: "Bekerja sebagai tukang sapu di sekolah",
+    statusKediaman: "Rumah Sewa",
+    jumlahBayaranRumah: "RM500",
+    bilTanggungan: "2 Orang (Anak)",
+    statusTanggungan: "Masih Bersekolah, Tidak Bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+  },
+  "NAS-2025-0002": {
+    jenisPekerjaan: "Suri rumah sepenuh masa",
+    statusKediaman: "Rumah Sendiri",
+    jumlahBayaranRumah: "RM0",
+    bilTanggungan: "3 Orang (2 Anak + Suami)",
+    statusTanggungan: "Anak sakit kronik, Suami tidak bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+  }
+};
 
 // Form data
 const formData = ref({
   // Personal Information
-  nama: "Mohd Rosli bin Saad",
-  alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
-  kariah: "Masjid Al-Taqwa",
-  daerah: "Kuala Selangor",
-  jenisPengenalan: "MyKad",
-  noPengenalan: "810101121234",
-  noTelefon: "0123456789",
-  email: "rosli@gmail.com",
-  statusKeluarga: "Fakir",
-  statusIndividu: "Fakir",
-  statusMultidimensi: "Asnaf Tidak Produktif",
-  status: "Dalam Siasatan",
+  noBantuan: "",
+  nama: "",
+  alamat: "",
+  kariah: "",
+  daerah: "",
+  jenisPengenalan: "",
+  noPengenalan: "",
+  noTelefon: "",
+  email: "",
+  statusKeluarga: "",
+  statusIndividu: "",
+  statusMultidimensi: "",
+  status: "",
 
   // Investigation fields
   keputusanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
-  catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+  catatanPenilaianAwal: "",
   gambarLokasi: null,
 });
 
 // Investigation form data
 const investigationData = ref({
-  jenisPekerjaan: "Bekerja sebagai tukang sapu di sekolah",
-  statusKediaman: "Rumah Sewa",
-  jumlahBayaranRumah: "RM500",
-  bilTanggungan: "2 Orang (Anak)",
-  statusTanggungan: "Masih Bersekolah, Tidak Bekerja",
+  jenisPekerjaan: "",
+  statusKediaman: "",
+  jumlahBayaranRumah: "",
+  bilTanggungan: "",
+  statusTanggungan: "",
   keadaanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
   StatusPengesahanLawatan: "belum_sah",
-  catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+  catatanPenilaianAwal: "",
   gambarLokasi: [],
   catatanLawatanETD: "",
   statusLawatan: "",
@@ -1674,7 +1760,7 @@ const addNewAssistance = () => {
 };
 
 const editAssistance = (row) => {
-  router.push(`/BF-BTN/tugasan/bantuan/siasatan/B106`);
+  router.push(`/BF-BTN/tugasan/bantuan/siasatan/${row.noBantuan}`);
 };
 
 const saveData = () => {
@@ -2026,6 +2112,21 @@ const submitProfiling = async () => {
     submittingProfile.value = false;
   }
 };
+
+// Load data based on route parameter
+onMounted(() => {
+  const noBantuan = route.params.id || "NAS-2025-0001"; // Default to first record
+  const record = mockByNoBantuan[noBantuan];
+  const investigationRecord = mockInvestigationData[noBantuan];
+  
+  if (record) {
+    Object.assign(formData.value, record);
+  }
+  
+  if (investigationRecord) {
+    Object.assign(investigationData.value, investigationRecord);
+  }
+});
 </script>
 
 <style lang="scss" scoped>

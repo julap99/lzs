@@ -1040,25 +1040,7 @@ const jenisKerjaData = {
   }
 };
 
-// Form data with better structure
-const formData = ref({
-  noBQ: "",
-  noBR: "",
-  namaPemohon: "",
-  alamat: "",
-  tarikhSiasatan: "",
-  itemKerja: [],
-  jumlahKeseluruhan: 0,
-  ringgiMalaysiaPerkataan: "",
-  catatanPengesyoran: "",
-  disediakanOleh: "",
-  disemak1: "",
-  disemak2: "",
-  diluluskan: "",
-  tarikhDisemak1: "",
-  tarikhDisemak2: "",
-  tarikhDisahkan: "",
-});
+
 
 // Current workflow stage - in a real app this would come from the document status
 const currentStage = ref("disediakan"); // 'disediakan', 'disemak1', 'disemak2', 'diluluskan'
@@ -1316,6 +1298,27 @@ const generateBRNumber = () => {
   const random = String(Math.floor(Math.random() * 1000)).padStart(3, "0");
   return `BR-${year}-${random}`;
 };
+
+
+// Form data with better structure
+const formData = ref({
+  noBQ: "",
+  noBR: "",
+  namaPemohon: "",
+  alamat: "",
+  tarikhSiasatan: "",
+  itemKerja: [],
+  jumlahKeseluruhan: 0,
+  ringgiMalaysiaPerkataan: "",
+  catatanPengesyoran: "",
+  disediakanOleh: "",
+  disemak1: "",
+  disemak2: "",
+  diluluskan: "",
+  tarikhDisemak1: "",
+  tarikhDisemak2: "",
+  tarikhDisahkan: "",
+});
 
 // Initialize form data
 const initializeFormData = () => {

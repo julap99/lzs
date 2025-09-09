@@ -243,40 +243,40 @@
                     <h4 class="text-md font-medium mb-3 text-gray-700">
                       Semakan
                     </h4>
-                    <rs-table
-                      :data="filteredSemakanData"
-                      :columns="siasatanColumns"
-                      :pageSize="pageSize"
-                      :showNoColumn="true"
-                      :options="{
-                        variant: 'default',
-                        hover: true,
-                        striped: true,
-                      }"
-                      :options-advanced="{
-                        sortable: true,
-                        filterable: false,
-                      }"
-                      advanced
-                    >
-                      <template v-slot:status="{ text }">
-                        <div class="flex flex-col gap-1">
-                          <template v-if="text.includes('\n')">
-                            <div
-                              v-for="(line, index) in text.split('\n')"
-                              :key="index"
-                              class="text-xs"
-                            >
-                              {{ line }}
-                            </div>
-                          </template>
-                          <template v-else>
-                            <rs-badge :variant="getStatusVariant(text)">
-                              {{ text }}
-                            </rs-badge>
-                          </template>
-                        </div>
-                      </template>
+                     <rs-table
+                       :data="filteredSemakanData"
+                       :columns="siasatanColumns"
+                       :pageSize="pageSize"
+                       :showNoColumn="true"
+                       :options="{
+                         variant: 'default',
+                         hover: true,
+                         striped: true,
+                       }"
+                       :options-advanced="{
+                         sortable: true,
+                         filterable: false,
+                       }"
+                       advanced
+                     >
+                       <template v-slot:status="{ text }">
+                         <div class="flex flex-col gap-1">
+                           <template v-if="text.includes('\n')">
+                             <div
+                               v-for="(line, index) in text.split('\n')"
+                               :key="index"
+                               class="text-xs"
+                             >
+                               {{ line }}
+                             </div>
+                           </template>
+                           <template v-else>
+                             <rs-badge :variant="getStatusVariant(text)">
+                               {{ text }}
+                             </rs-badge>
+                           </template>
+                         </div>
+                       </template>
 
                       <template v-slot:tindakan="{ text }">
                         <div class="flex justify-center items-center gap-2">
@@ -1047,7 +1047,7 @@ const siasatanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     jenistugasan: "Bantuan",
     noRujukan: "NAS-2025-0001",
-    tindakan: "bantuan/siasatan/siasatan-eoad/btn-001",
+    tindakan: "bantuan/siasatan/NAS-2025-0001",
   },
   {
     pemohon: "Siti binti Hassan (850505-05-5678)",
@@ -1056,7 +1056,7 @@ const siasatanData = ref([
     bilanganBantuan: 2,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 2",
     noRujukan: "NAS-2025-0002",
-    tindakan: "bantuan/siasatan/siasatan-eoad/btn-002",
+    tindakan: "bantuan/siasatan/NAS-2025-0002",
   },
 ]);
 
@@ -1085,13 +1085,13 @@ const permohonanData = ref([
 // Mock data for Semakan sub-tab (own dataset, same format)
 const semakanData = ref([
   {
-    pemohon: "Hakim bin Nor (820303-03-3344)",
-    kariah: "Masjid Al-Hikmah",
-    daerah: "Gombak",
+    pemohon: "Ahmad bin Abdullah (800101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
-    noRujukan: "NAS-2025-0201",
-    tindakan: "siasatan-eoad",
+    noRujukan: "NAS-2025-0001",
+    tindakan: "bantuan/semakan/NAS-2025-0001",
   },
 ]);
 
@@ -1104,7 +1104,7 @@ const sokonganData = ref([
     bilanganBantuan: 2,
     status: "Segera - 0\nMelebihi SLA - 1\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0301",
-    tindakan: "bantuan/sokongan/B106",
+    tindakan: "bantuan/sokongan/NAS-2025-0001",
     //tindakan: "bantuan/sokongan/B106/draf-bq?view=true",
   },
 ]);
@@ -1118,7 +1118,7 @@ const kelulusanData = ref([
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0401",
-    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-001",
+    tindakan: "bantuan/kelulusan/siasatan-eoad",
   },
 ]);
 

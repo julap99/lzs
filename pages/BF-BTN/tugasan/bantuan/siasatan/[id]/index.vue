@@ -1,1080 +1,1303 @@
 <template>
-  <div class="min-h-screen">
-    <div class="">
+  <div>
       <LayoutsBreadcrumb :items="breadcrumb" />
 
-      <!-- Page Header -->
-      <div class="mt-6 mb-8">
-        <div
-          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-        >
-          <div>
-            <h1 class="text-2xl font-bold text-gray-900">Siasatan Lapangan</h1>
-            <p class="mt-1 text-sm text-gray-600">
-              Kemaskini maklumat bantuan
-            </p>
-          </div>
+    <rs-card class="mt-4">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
           <rs-badge
-            v-if="formData.statusLawatan"
-            :variant="getStatusVariant(formData.statusLawatan)"
-            class="text-sm px-4 py-2"
+            v-if="formData.status"
+            :variant="getStatusVariant(formData.status)"
           >
-            {{ getStatusText(formData.statusLawatan) }}
+            {{ formData.status }}
           </rs-badge>
         </div>
-      </div>
+      </template>
 
-      <!-- Debug Section (remove this later) -->
-      <!-- <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <h3 class="text-sm font-medium text-yellow-800">Debug Info:</h3>
-        <p class="text-xs text-yellow-700">Nama: {{ formData.nama }}</p>
-        <p class="text-xs text-yellow-700">formData reactive: {{ JSON.stringify(formData) }}</p>
-      </div> -->
+      <template #body>
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="handleSubmit"
+          v-model="formData"
+        >
+          <!-- Section 1: Maklumat Pemohon -->
+          <rs-fieldset class="mb-6">
+            <template #legend>
+              <h3 class="text-lg font-medium">Information</h3>
+            </template>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <!-- Section 1: Maklumat Pemohon (Read-only) -->
-        <rs-card class="shadow-sm border-0 bg-white">
-          <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="flex-shrink-0">
-                <div
-                  class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Nama</label
                 >
-                  <Icon name="ph:user-circle" class="w-6 h-6 text-blue-600" />
+                <p class="text-gray-900">{{ formData.nama }}</p>
                 </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Alamat</label
+                >
+                <p class="text-gray-900">{{ formData.alamat }}</p>
               </div>
               <div>
-                <h2 class="text-lg font-semibold text-gray-900">
-                  Maklumat Bantuan
-                </h2>
-                <p class="text-sm text-gray-500">
-                  Butiran bantuan dan status 
-                </p>
-              </div>
-            </div>
-          </template>
-
-          <template #body>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700"
-                  >Aid</label
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Kariah</label
                 >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.aid
-                  }}</span>
-                </div>
+                <p class="text-gray-900">{{ formData.kariah }}</p>
               </div>
-
-              <div class="space-y-1 ">
-                <label class="text-sm font-medium text-gray-700">Aid Product</label>
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.aidproduct
-                  }}</span>
-                </div>
-              </div>
-
-              <!-- <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700"
-                  >Product Package</label
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Daerah</label
                 >
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">{{
-                    formData.productpackage
-                  }}</span>
-                </div>
-              </div> -->
-
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">Product Package</label>
-                <FormKit
-                  type="select"
-                  name="productpackage"
-                  v-model="formData.productpackage"
-                  placeholder="Sila pilih product package"
-                  :options="[
-                    // '(PEROLEHAN) BINA RUMAH (FAKIR)',
-                    // '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
-                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
-                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
-                    { label: '-- Sila Pilih --', value: '' }, // 👈 default option
-                    { label: '(PEROLEHAN) BINA RUMAH (FAKIR)', value: 'PEROLEHAN' },
-                    { label: '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG', value: 'WO' },
-                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN1' },
-                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN2' }
-                  ]"
-                  searchable="true"
-                  class="mt-1"
-                />
-              </div>
-
-
-              <!-- <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm font-mono text-gray-900">{{
-                    formData.entitlementproduct
-                  }}</span>
-                </div>
-              </div> -->
-
-              <div class="space-y-1">
-                <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
-                <FormKit
-                  type="select"
-                  name="entitlementproduct"
-                  v-model="formData.entitlementproduct"
-                  placeholder="Sila pilih entitlement product"
-                  :options="[
-                    '-- Sila Pilih --', // 👈 default option
-                    '(PEROLEHAN) BINA RUMAH (FAKIR)',
-                    '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
-                    '(PEROLEHAN) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
-                    '(WO) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
-                  ]"
-                  searchable="true"
-                  class="mt-1"
-                />
-              </div>
-
-              <!-- Tarikh Permohonan (Read Only) -->
-              <div class="space-y-1 mt-4">
-                <label class="text-sm font-medium text-gray-700">Tarikh Permohonan</label>
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">28/8/2025</span>
-                </div>
-              </div>
-
-              <!-- SLA (Read Only) -->
-              <div class="space-y-1 mt-4">
-                <label class="text-sm font-medium text-gray-700">SLA</label>
-                <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                  <span class="text-sm text-gray-900">3 hari lagi</span>
-                </div>
-              </div>
-
-
-              <!-- Toggle Button SEGERA -->
-              <div class="mt-6 flex items-center">
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" v-model="formData.segera" class="sr-only peer">
-                  <div
-                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
-                          peer-checked:bg-green-500 peer-checked:after:translate-x-full 
-                          after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
-                          after:bg-white after:border-gray-300 after:border after:rounded-full 
-                          after:h-5 after:w-5 after:transition-all"
-                  ></div>
-                  <span class="ml-3 text-sm font-medium text-gray-700">SEGERA</span>
-                </label>
-              </div>
-
-              <!-- Toggle Button Kelulusan Khas -->
-              <div class="mt-6 flex items-center">
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" v-model="formData.kelulusankhas" class="sr-only peer">
-                  <div
-                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
-                          peer-checked:bg-green-500 peer-checked:after:translate-x-full 
-                          after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
-                          after:bg-white after:border-gray-300 after:border after:rounded-full 
-                          after:h-5 after:w-5 after:transition-all"
-                  ></div>
-                  <span class="ml-3 text-sm font-medium text-gray-700">Kelulusan Khas</span>
-                </label>
-              </div>
-
+                <p class="text-gray-900">{{ formData.daerah }}</p>
             </div>
-
-            <!-- Nyatakan Sebab (only shown if segera checked) -->
-            <div v-if="formData.segera" class="mt-4 space-y-1">
-              <label class="text-sm font-medium text-gray-700">Nyatakan Sebab</label>
-              <textarea
-                v-model="formData.sebabSegera"
-                rows="3"
-                class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                placeholder="Nyatakan sebab di sini..."
-              ></textarea>
-            </div>
-
-            <!-- Situasi Kelulusan Khas -->
-        <div v-if="formData.kelulusankhas" class="mt-4 space-y-1">
-          <label class="text-sm font-medium text-gray-700">Situasi</label>
-          <select
-            v-model="formData.situasikelulusankhas"
-            class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
-          >
-            <option disabled value="">-- Sila pilih situasi --</option>
-            <option>Umur, sama ada melebihi atau di bawah umur</option>
-            <option>Tempoh masa terikatnya pemohon dengan sesuatu kelayakan bantuan</option>
-            <option>Tidak memenuhi syarat minimum permohonan bantuan</option>
-            <option>Pendapatan isi rumah yang melebihi jadual kelayakan pendapatan isi rumah yang ditetapkan</option>
-            <option>Melebihi kadar Had Kifayah</option>
-            <option>Lain-lain permohonan yang tidak memenuhi syarat dan kelayakan dalam GPSKAZ</option>
-            <option>Permohonan berulang bagi bantuan yang bersifat sekali kelulusan dalam tempoh masa tertentu</option>
-            <option>Jenis bantuan tidak tersenarai di dalam GPSKAZ/ Perkara yang melibatkan kepentingan akidah Islam dan nyawa</option>
-          </select>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Jenis Pengenalan</label
+                >
+                <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
+                </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >No Pengenalan</label
+                >
+                <p class="text-gray-900">{{ formData.noPengenalan }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >No Telefon</label
+                >
+                <p class="text-gray-900">{{ formData.noTelefon }}</p>
+                </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >E-mel</label
+                >
+                <p class="text-gray-900">{{ formData.email }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Status Keluarga</label
+                >
+                <p class="text-gray-900">{{ formData.statusKeluarga }}</p>
+                </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Status Individu</label
+                >
+                <p class="text-gray-900">{{ formData.statusIndividu }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Status Multidimensi</label
+                >
+                <p class="text-gray-900">{{ formData.statusMultidimensi }}</p>
         </div>
+            </div>
+          </rs-fieldset>
+        </FormKit>
           </template>
         </rs-card>
-      </div>
 
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <div class="col-span-1 space-y-6">
-          <!-- Section 2: Dokumen Sokongan (Read-only) -->
-          <rs-card class="shadow-sm border-0 bg-white">
+    <div class="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4">
+      <div class="col-span-1">
+        <rs-card class="">
             <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon
-                      name="ph:folder-open"
-                      class="w-6 h-6 text-green-600"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Dokumen Sokongan
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Dokumen yang dikemukakan oleh pemohon
-                  </p>
-                </div>
+            <div class="flex justify-between items-center">
+              <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
               </div>
             </template>
 
             <template #body>
-              <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Dokumen
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Status
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Aksi
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr
-                      v-for="(dokumen, index) in dokumenSokongan"
-                      :key="index"
-                      class="hover:bg-gray-50"
+            <!-- Main Tabs -->
+            <rs-tab variant="primary" type="card">
+              <rs-tab-item title="Profiling" active>
+                <!-- Profiling Tab Content -->
+
+                <FormKit
+                  type="form"
+                  :actions="false"
+                  @submit="handleProfilingSubmit"
+                  v-model="profilingData"
+                  class="divide-y divide-gray-200"
+                >
+                  <!-- Section 1: Search & Basic Info -->
+                  <div class="p-6 bg-gray-50">
+                    <h4
+                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
                     >
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ dokumen.jenis }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
+                      <Icon
+                        name="ph:magnifying-glass"
+                        class="w-5 h-5 mr-2 text-blue-600"
+                      />
+                      Carian Maklumat
+                    </h4>
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                      <!-- Pengenalan ID with Search -->
+                      <div class="lg:col-span-2">
+                        <div class="flex gap-3">
                         <FormKit
-                          type="select"
-                          :options="statusDokumenOptions"
-                          v-model="dokumen.status"
+                            type="text"
+                            name="pengenalanId"
+                            label="Pengenalan ID"
+                            placeholder="Masukkan nombor pengenalan"
                           :classes="{
-                            input: 'text-sm border-gray-300 rounded-md',
+                              outer: 'flex-1',
+                              input: '!py-2.5',
+                              label: 'text-sm font-medium text-gray-700',
                           }"
-                          outer-class="mb-0"
-                          wrapper-class="mb-0"
-                          inner-class="mb-0"
                         />
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                      >
-                        <div class="flex items-center space-x-2">
                           <rs-button
                             variant="primary"
-                            @click="previewDocument(dokumen)"
+                            class="mt-7 px-6 h-fit"
+                            @click="searchPengenalanId"
+                            :loading="searchingId"
                           >
-                            <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                          </rs-button>
-                          <rs-button
-                            variant="success"
-                            @click="downloadDocument(dokumen)"
-                          >
-                            <Icon name="ph:download" class="w-4 h-4 mr-1" />
+                            <Icon
+                              name="ph:magnifying-glass"
+                              class="w-4 h-4 mr-1"
+                            />
+                            Cari
                           </rs-button>
                         </div>
-                      </td>
-                    </tr>
-                    <tr v-if="dokumenSokongan.length === 0">
-                      <td
-                        colspan="3"
-                        class="px-6 py-4 text-center text-sm text-gray-500"
-                      >
-                        Tiada dokumen dijumpai.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </template>
-          </rs-card>
-
-          <!-- BQ, Laporan Gambar, Laporan Teknikal in Tabs -->
-          <div class="bg-white">
-            <!-- Custom Tab Navigation -->
-            <div class="flex border-b border-gray-200">
-              <button
-                v-for="(tab, index) in tabs"
-                :key="index"
-                @click="activeTab = tab.id"
-                              :class="[
-                'px-6 py-3 text-lg font-medium transition-colors duration-200',
-                activeTab === tab.id
-                  ? 'text-teal-600 border-b-2 border-teal-600'
-                  : 'text-gray-700 hover:text-gray-900'
-              ]"
-              >
-                {{ tab.title }}
-              </button>
-            </div>
-
-            <!-- Tab Content -->
-            <div class="tab-content">
-              <!-- BQ Tab -->
-              <div v-if="activeTab === 'bq'">
-              <rs-card class="shadow-sm border-0 bg-white">
-                <template #header>
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <div class="flex-shrink-0">
-                        <div
-                          class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center"
-                        >
-                          <Icon
-                            name="ph:file-text"
-                            class="w-6 h-6 text-purple-600"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <h2 class="text-lg font-semibold text-gray-900">BQ</h2>
-                        <p class="text-sm text-gray-500">
-                          Bill of Quantity untuk kerja-kerja cadangan
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-
-                <template #body>
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-gray-50">
-                        <tr>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            No BQ
-                          </th>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Nama BQ
-                          </th>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Jumlah Keseluruhan
-                          </th>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Status
-                          </th>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Action
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(bq, index) in bqList" :key="index">
-                          <td
-                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                          >
-                            {{ bq.noBQ }}
-                          </td>
-                          <td
-                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                          >
-                            {{ bq.namaBQ }}
-                          </td>
-                          <td
-                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                          >
-                            {{ bq.jumlahBQ }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <rs-badge
-                              :variant="getBQStatusVariant(bq.status)"
-                              class="text-sm"
-                            >
-                              {{ bq.status }}
-                            </rs-badge>
-                          </td>
-                          <td
-                            class="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                          >
-                            <rs-button variant="primary" @click="editBQ(bq)">
-                              Edit
-                            </rs-button>
-                          </td>
-                        </tr>
-                        <tr v-if="bqList.length === 0">
-                          <td
-                            colspan="4"
-                            class="px-6 py-4 text-center text-sm text-gray-500"
-                          >
-                            Tiada BQ dijumpai. Klik butang "Tambah Baru" untuk
-                            menambah BQ.
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </template>
-              </rs-card>
               </div>
 
-              <!-- Laporan Gambar Tab -->
-              <div v-if="activeTab === 'gambar'">
-              <rs-card class="shadow-sm border-0 bg-white">
-                <template #header>
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <div class="flex-shrink-0">
-                        <div
-                          class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center"
-                        >
-                          <Icon
-                            name="ph:image"
-                            class="w-6 h-6 text-orange-600"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <h2 class="text-lg font-semibold text-gray-900">
-                          Laporan Gambar
-                        </h2>
-                        <p class="text-sm text-gray-500">
-                          Gambar lokasi dan dokumentasi kerja
-                        </p>
-                      </div>
-                    </div>
-                    <rs-button variant="primary" @click="openLaporanGambar">
-                      <Icon name="ph:camera" class="w-4 h-4 mr-2" />
-                      Laporan Gambar
-                    </rs-button>
-                  </div>
-                </template>
-
-                <template #body>
-                  <div
-                    v-if="gambarLokasi.length > 0"
-                    class="grid grid-cols-2 md:grid-cols-4 gap-4"
-                  >
-                    <div
-                      v-for="(gambar, index) in gambarLokasi"
-                      :key="index"
-                      class="bg-white rounded-lg border border-gray-200 overflow-hidden"
-                    >
-                      <div class="aspect-square overflow-hidden">
-                        <img
-                          :src="gambar.url"
-                          :alt="gambar.catatan"
-                          class="w-full h-full object-cover"
+                      <!-- Nama -->
+                      <div class="lg:col-span-2">
+                        <FormKit
+                          type="text"
+                          name="nama"
+                          label="Nama Penuh"
+                          placeholder="Nama akan dipaparkan setelah carian"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
+                          :disabled="!profilingData.pengenalanId"
                         />
                       </div>
-                      <div class="p-3">
-                        <p class="text-sm text-gray-700 font-medium">
-                          {{ gambar.catatan }}
-                        </p>
-                        <p class="text-xs text-gray-500 mt-1">
-                          {{ formatDateTime(gambar.masaUpload) }}
-                        </p>
+                    </div>
+            </div>
+
+                  <!-- Section 2: Maklumat Syor -->
+                  <div class="p-6">
+                    <h4
+                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
+                        >
+                          <Icon
+                        name="ph:clipboard-text"
+                        class="w-5 h-5 mr-2 text-green-600"
+                      />
+                      Maklumat Syor
+                    </h4>
+                    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+                      <!-- Left Column - Syor -->
+                      <div class="space-y-4">
+                        <FormKit
+                          type="number"
+                          name="hadKifayahSyor"
+                          :value="50"
+                          label="%Had Kifayah (Syor)"
+                          placeholder="0"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
+                          min="0"
+                          max="100"
+                          step="0.01"
+                        />
+
+                        <FormKit
+                          type="text"
+                          name="kategoriKeluargaAsnafSyor"
+                          label="Kategori Keluarga Asnaf (Syor)"
+                          placeholder="Kategori keluarga"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
+                        />
+
+                        <FormKit
+                          type="text"
+                          name="kategoriAsnafSyor"
+                          label="Kategori Asnaf (Syor)"
+                          placeholder="Kategori asnaf"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
+                        />
+
+                        <FormKit
+                          type="date"
+                          name="tarikhPengesyoran"
+                          label="Tarikh Pengesyoran"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
+                          />
+                        </div>
+
+                      <!-- Right Column - Tanggungan Syor -->
+                      <div class="space-y-4">
+                        <FormKit
+                          type="text"
+                          name="kategoriTanggunganSyor"
+                          label="Kategori Tanggungan (Syor)"
+                          placeholder="Kategori tanggungan"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
+                        />
+
+                        <!-- Pengenalan ID Tanggungan Group -->
+                        <div class="bg-gray-50 p-4 rounded-lg border">
+                          <label
+                            class="block text-sm font-medium text-gray-700 mb-3"
+                          >
+                            Pengenalan ID Tanggungan
+                          </label>
+                          <div class="space-y-3">
+                            <FormKit
+                              type="text"
+                              name="pengenalanIdTanggungan1"
+                              placeholder="ID Tanggungan 1"
+                              :classes="{
+                                outer: 'mb-0',
+                                input: '!py-2 text-sm',
+                              }"
+                            />
+                            <FormKit
+                              type="text"
+                              name="pengenalanIdTanggungan2"
+                              placeholder="ID Tanggungan 2"
+                              :classes="{
+                                outer: 'mb-0',
+                                input: '!py-2 text-sm',
+                              }"
+                            />
+                      </div>
                       </div>
                     </div>
                   </div>
-                  <div v-else class="text-center py-8 text-gray-500">
-                    <Icon
-                      name="ph:image"
-                      class="w-12 h-12 mx-auto mb-2 text-gray-400"
-                    />
-                    <p>
-                      Tiada gambar dimuat naik. Klik butang "Laporan Gambar"
-                      untuk menambah gambar.
-                    </p>
                   </div>
-                </template>
-              </rs-card>
+
+                  <!-- Section 3: Assignment -->
+                  <div class="p-6 bg-amber-50">
+                    <h4
+                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
+                    >
+                      <Icon
+                        name="ph:user-gear"
+                        class="w-5 h-5 mr-2 text-amber-600"
+                      />
+                      Tugasan Siasatan
+                    </h4>
+                    <FormKit
+                      type="select"
+                      name="assignSiasatan"
+                      label="Assign Siasatan"
+                      :options="assignSiasatanOptions"
+                      placeholder="Pilih petugas siasatan"
+                      :classes="{
+                        input: '!py-2.5',
+                        label: 'text-sm font-medium text-gray-700',
+                      }"
+                    />
               </div>
 
-              <!-- Laporan Teknikal Tab -->
-              <div v-if="activeTab === 'teknikal'">
-              <rs-card class="shadow-sm border-0 bg-white">
-                <template #header>
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <div class="flex-shrink-0">
-                        <div
-                          class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center"
+                  <!-- Section 4: Maklumat Disahkan -->
+                  <div class="p-6">
+                    <h4
+                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
                         >
                           <Icon
-                            name="ph:file-doc"
-                            class="w-6 h-6 text-teal-600"
+                        name="ph:check-circle"
+                        class="w-5 h-5 mr-2 text-blue-600"
+                      />
+                      Maklumat Disahkan
+                    </h4>
+                    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+                      <!-- Left Column - Sah -->
+                      <div class="space-y-4">
+                        <FormKit
+                          type="number"
+                          name="hadKifayahSah"
+                          label="%Had Kifayah (Sah)"
+                          placeholder="0"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
+                          min="0"
+                          max="100"
+                          step="0.01"
+                        />
+
+                        <FormKit
+                          type="text"
+                          name="kategoriKeluargaAsnafSah"
+                          label="Kategori Keluarga Asnaf (Sah)"
+                          placeholder="Kategori keluarga disahkan"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
+                        />
+
+                        <FormKit
+                          type="text"
+                          name="kategoriAsnafSah"
+                          label="Kategori Asnaf (Sah)"
+                          placeholder="Kategori asnaf disahkan"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
+                          />
+                        </div>
+
+                      <!-- Right Column - Tanggungan Sah -->
+                      <div class="space-y-4">
+                        <!-- Pengenalan ID Tanggungan (Sah) -->
+                        <div
+                          class="bg-blue-50 p-4 rounded-lg border border-blue-200"
+                        >
+                          <label
+                            class="block text-sm font-medium text-gray-700 mb-3"
+                          >
+                            Pengenalan ID Tanggungan (Sah)
+                          </label>
+                          <div class="space-y-3">
+                            <FormKit
+                              type="text"
+                              name="pengenalanIdTanggunganSah1"
+                              placeholder="ID Tanggungan Sah 1"
+                              :classes="{
+                                outer: 'mb-0',
+                                input: '!py-2 text-sm',
+                              }"
+                            />
+                            <FormKit
+                              type="text"
+                              name="pengenalanIdTanggunganSah2"
+                              placeholder="ID Tanggungan Sah 2"
+                              :classes="{
+                                outer: 'mb-0',
+                                input: '!py-2 text-sm',
+                              }"
+                            />
+                  </div>
+              </div>
+
+                        <!-- Kategori Tanggungan (Sah) -->
+                        <div
+                          class="bg-blue-50 p-4 rounded-lg border border-blue-200"
+                        >
+                          <label
+                            class="block text-sm font-medium text-gray-700 mb-3"
+                          >
+                            Kategori Tanggungan (Sah)
+                          </label>
+                          <div class="space-y-3">
+                            <FormKit
+                              type="text"
+                              name="kategoriTanggunganSah1"
+                              placeholder="Kategori Tanggungan Sah 1"
+                              :classes="{
+                                outer: 'mb-0',
+                                input: '!py-2 text-sm',
+                              }"
+                            />
+                            <FormKit
+                              type="text"
+                              name="kategoriTanggunganSah2"
+                              placeholder="Kategori Tanggungan Sah 2"
+                              :classes="{
+                                outer: 'mb-0',
+                                input: '!py-2 text-sm',
+                              }"
                           />
                         </div>
                       </div>
-                      <div>
-                        <h2 class="text-lg font-semibold text-gray-900">
-                          Laporan Teknikal
-                        </h2>
-                        <p class="text-sm text-gray-500">
-                          Analisis teknikal dan cadangan kerja
-                        </p>
                       </div>
                     </div>
-                    <rs-button variant="primary" @click="openLaporanTeknikal">
-                      <Icon name="ph:file-doc" class="w-4 h-4 mr-2" />
-                      Laporan Teknikal
-                    </rs-button>
-                  </div>
-                </template>
 
-                <template #body>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-1">
-                      <label class="text-sm font-medium text-gray-700"
-                        >Latar Belakang</label
+                    <!-- Pelarasan (Sah) -->
+                    <div class="mt-6">
+                      <label
+                        class="block text-sm font-medium text-gray-700 mb-3"
                       >
+                        Pelarasan (Sah)
+                      </label>
                       <div
-                        class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[100px]"
+                        class="bg-gray-50 border border-gray-200 rounded-lg p-4"
                       >
-                        <span class="text-sm text-gray-900 whitespace-pre-wrap">{{
-                          laporanTeknikal.latarBelakang || "Belum diisi"
-                        }}</span>
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                          <div class="flex flex-col items-center">
+                            <Icon
+                              name="ph:x-circle"
+                              class="w-6 h-6 text-red-500 mb-2"
+                            />
+                            <span class="text-sm font-medium text-gray-700"
+                              >Status 1</span
+                            >
+                            <span class="text-sm text-red-600 font-medium"
+                              >FALSE</span
+                            >
+                      </div>
+                          <div class="flex flex-col items-center">
+                            <Icon
+                              name="ph:x-circle"
+                              class="w-6 h-6 text-red-500 mb-2"
+                            />
+                            <span class="text-sm font-medium text-gray-700"
+                              >Status 2</span
+                            >
+                            <span class="text-sm text-red-600 font-medium"
+                              >FALSE</span
+                            >
+                      </div>
+                          <div class="flex flex-col items-center">
+                            <Icon
+                              name="ph:x-circle"
+                              class="w-6 h-6 text-red-500 mb-2"
+                            />
+                            <span class="text-sm font-medium text-gray-700"
+                              >Status 3</span
+                            >
+                            <span class="text-sm text-red-600 font-medium"
+                              >FALSE</span
+                            >
                       </div>
                     </div>
-
-                    <div class="space-y-1">
-                      <label class="text-sm font-medium text-gray-700 "
-                        >Keperluan</label
-                      >
-                      <div
-                        class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[100px]"
-                      >
-                        <span class="text-sm text-gray-900 whitespace-pre-wrap">{{
-                          laporanTeknikal.keperluan || "Belum diisi"
-                        }}</span>
-                      </div>
-                    </div>
-
-                    <div class="space-y-1">
-                      <label class="text-sm font-medium text-gray-700"
-                        >Cadangan</label
-                      >
-                      <div
-                        class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[100px]"
-                      >
-                        <span class="text-sm text-gray-900 whitespace-pre-wrap">{{
-                          laporanTeknikal.cadangan || "Belum diisi"
-                        }}</span>
-                      </div>
-                    </div>
-
-                    <div class="space-y-1">
-                      <label class="text-sm font-medium text-gray-700"
-                        >Nilai Kerja Dicadangkan</label
-                      >
-                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                        <span class="text-sm font-medium text-gray-900 whitespace-pre-wrap">
-                          RM
-                          {{
-                            laporanTeknikal.nilaiKerja?.toLocaleString() || "0"
-                          }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-              </rs-card>
               </div>
             </div>
           </div>
           
-          <rs-card class="shadow-sm border-0 bg-white">
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center"
+                  <!-- Section 5: Komen & Tarikh -->
+                  <div class="p-6 bg-gray-50">
+                    <h4
+                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
                   >
                     <Icon
-                      name="ph:currency-circle-dollar"
-                      class="w-6 h-6 text-emerald-600"
+                        name="ph:note"
+                        class="w-5 h-5 mr-2 text-purple-600"
+                      />
+                      Komen & Finalisasi
+                    </h4>
+                    <div class="space-y-4">
+                      <!-- Komen Pengesahan -->
+                      <FormKit
+                        type="textarea"
+                        name="komenPengesahan"
+                        label="Komen Pengesahan"
+                        rows="4"
+                        placeholder="Masukkan komen pengesahan..."
+                        :classes="{
+                          input: '!py-3',
+                          label: 'text-sm font-medium text-gray-700',
+                        }"
+                      />
+
+                      <!-- Tarikh Pengesyoran (Bottom) -->
+                      <div class="max-w-md">
+                        <FormKit
+                          type="date"
+                          name="tarikhPengesyoranBottom"
+                          label="Tarikh Pengesyoran Akhir"
+                          :classes="{
+                            input: '!py-2.5',
+                            label: 'text-sm font-medium text-gray-700',
+                          }"
                     />
                   </div>
                 </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Maklumat Kadar Bantuan
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Nilai kadar bantuan yang dicadangkan
-                  </p>
                 </div>
-              </div>
-            </template>
 
-            <template #body>
-              <div class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                  <div class="space-y-1">
-                    <!-- <label class="text-sm font-medium text-gray-700"
-                      >Kadar Bantuan</label
-                    > -->
-                    <div class="space-y-1">
-                      <label class="text-sm font-medium text-gray-700">Kadar Bantuan</label>
-                      <input
-                        type="number"
-                        v-model="formData.jumlahBantuan"
-                        class="mt-1 w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                        placeholder="Masukkan jumlah bantuan"
-                      />
-                      <span class="text-sm text-gray-500">(Diambil dari BQ)</span>
-                    </div>
-                    <!-- <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                       <span class="text-lg font-semibold text-gray-900">
-                        RM {{ jumlahBantuan.toLocaleString() }}
-                      </span> 
-                      <input
-                        type="number"
-                        v-model="formData.jumlahBantuan"
-                        class="mt-1 w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                        placeholder="Masukkan jumlah bantuan"
-                      />
-                      <span class="text-sm text-gray-500 ml-2"
-                        >(Diambil dari BQ)</span
+                  <!-- Action Buttons -->
+                  <div class="p-6 bg-white border-t border-gray-200">
+                    <div class="flex flex-col sm:flex-row gap-4 justify-end">
+                      <rs-button
+                        variant="secondary"
+                        @click="resetProfilingForm"
+                        class="flex items-center justify-center px-6 py-2.5"
                       >
-                    </div> -->
+                        <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                        Reset
+                      </rs-button>
+                      <rs-button
+                        variant="primary-outline"
+                        @click="saveProfilingDraft"
+                        :loading="savingDraft"
+                        class="flex items-center justify-center px-6 py-2.5"
+                      >
+                        <Icon name="ph:floppy-disk" class="w-4 h-4 mr-2" />
+                        Simpan Draf
+                      </rs-button>
+                      <rs-button
+                        variant="primary"
+                        @click="submitProfiling"
+                        :loading="submittingProfile"
+                        :disabled="!isProfilingFormValid"
+                        class="flex items-center justify-center px-6 py-2.5"
+                      >
+                        <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
+                        Sahkan & Simpan
+                      </rs-button>
+              </div>
                   </div>
+                </FormKit>
+              </rs-tab-item>
 
-                  <!-- <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700"
-                      >Tempoh/Kekerapan</label
+              <rs-tab-item title="Bantuan">
+                <rs-tab variant="secondary" type="border">
+                  <rs-tab-item title="Syor" active>
+                    <!-- Syor Sub-tab Content -->
+                    <!-- <div
+                    class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
+                  > -->
+                    <rs-table
+                      :data="recommendedAid"
+                      :columns="recommendedAidColumns"
+                      :showNoColumn="true"
+                      :options="{
+                        variant: 'default',
+                        striped: true,
+                        hover: true,
+                      }"
+                      :options-advanced="{
+                        sortable: true,
+                        filterable: false,
+                      }"
+                      advanced
                     >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-lg font-semibold text-gray-900">
-                        RM {{ jumlahBantuan.toLocaleString() }}
-                      </span>
-                      <span class="text-sm text-gray-500 ml-2"
-                        >(Diambil dari BQ)</span>
+                      <template #header-terimaCadangan>
+                        <div class="flex items-center gap-2" @click.stop>
+                          <FormKit
+                            type="checkbox"
+                            v-model="selectAllSyor"
+                            @change="toggleSelectAllSyor"
+                            outer-class="mb-0"
+                          />
+                          <span class="text-sm">Pilih Semua</span>
                     </div>
-                  </div> -->
+                      </template>
+                      <template v-slot:kadarDicadangkan="{ text }"
+                        >RM {{ text }}</template
+                      >
+                      <template v-slot:skorAI="{ text }">
+                        <rs-badge :variant="getScoreVariant(text)"
+                          >{{ text }}%</rs-badge
+                        >
+                      </template>
+                      <template v-slot:terimaCadangan="{ value }">
+                        <FormKit
+                          type="checkbox"
+                          v-model="value.terimaCadangan"
+                          outer-class="mb-0"
+                        />
+                      </template>
+                    </rs-table>
+                    <!-- </div> -->
 
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700">Tempoh/Kekerapan</label>
-                    <input
-                    type="number"
-                    v-model="formData.tempohKekerapan"
-                    class="mt-1 w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                    placeholder="Masukkan bilangan tempoh/kekerapan"
-                    />
+                    <div class="flex justify-end">
+                      <rs-button variant="primary">Sahkan</rs-button>
                   </div>
+                  </rs-tab-item>
 
-                </div>
+                  <rs-tab-item title="Bantuan daripada Agensi">
+                    <!-- Bantuan daripada Agensi Sub-tab Content -->
 
-                <!-- Tarikh Mula & Tarikh Tamat side by side -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
-                    <input
-                      type="date"
-                      v-model="formData.tarikhMula"
-                      class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                    />
+                    <!-- <div
+                    class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
+                  > -->
+                    <rs-table
+                      :data="otherAgencyAssistance"
+                      :columns="otherAgencyColumns"
+                      :showNoColumn="true"
+                      :options="{
+                        variant: 'default',
+                        striped: true,
+                        hover: true,
+                      }"
+                      :options-advanced="{
+                        sortable: true,
+                        filterable: false,
+                      }"
+                      advanced
+                    >
+                      <template v-slot:jumlah="{ text }"
+                        >RM {{ text }}</template
+                      >
+                    </rs-table>
+                    <!-- </div> -->
+                  </rs-tab-item>
+
+                  <rs-tab-item title="Bantuan Sedia Ada">
+                    <rs-table
+                      :data="existingAssistance"
+                      :columns="existingAssistanceColumns"
+                      :showNoColumn="true"
+                      :options="{
+                        variant: 'default',
+                        striped: true,
+                        hover: true,
+                      }"
+                      :options-advanced="{
+                        sortable: true,
+                        filterable: false,
+                      }"
+                      advanced
+                    >
+                      <template v-slot:kadar="{ text }">RM {{ text }}</template>
+                      <template v-slot:jumlah="{ text }"
+                        >RM {{ text }}</template
+                      >
+                      <template v-slot:status="{ text }">
+                        <rs-badge :variant="getAssistanceStatusVariant(text)">{{
+                          text
+                        }}</rs-badge>
+                      </template>
+                    </rs-table>
+                  </rs-tab-item>
+
+                  <rs-tab-item title="Perubahan Bantuan">
+                    <div class="space-y-8">
+                      <!-- Senarai Bantuan yang mengalami Perubahan Kadar -->
+                      <div class="space-y-3">
+                        <h3 class="text-md font-semibold text-gray-900">
+                          Perubahan Status: Miskin > Fakir
+                        </h3>
+                        <h4 class="text-md font-semibold text-gray-900">
+                          Senarai Bantuan yang mengalami Perubahan Kadar
+                        </h4>
+
+                        <rs-table
+                          :data="bantuanPerubahanKadar"
+                          :columns="perubahanColumns"
+                          :showNoColumn="true"
+                          :options="{
+                            variant: 'default',
+                            striped: true,
+                            hover: true,
+                          }"
+                          :options-advanced="{
+                            sortable: true,
+                            filterable: false,
+                          }"
+                          advanced
+                        >
+                          <template #header-terimaCadangan>
+                            <div class="flex items-center gap-2" @click.stop>
+                              <FormKit
+                                type="checkbox"
+                                v-model="selectAllPerubahan"
+                                @change="toggleSelectAllPerubahan"
+                                outer-class="mb-0"
+                              />
+                              <span class="text-sm">Pilih Semua</span>
                   </div>
+                          </template>
+                          <template v-slot:terimaCadangan="{ value }">
+                            <FormKit
+                              type="checkbox"
+                              v-model="value.terimaCadangan"
+                              outer-class="mb-0"
+                            />
+                          </template>
+                        </rs-table>
 
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700">Tarikh Tamat</label>
-                    <input
-                      type="date"
-                      v-model="formData.tarikhTamat"
-                      class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Jumlah Keseluruhan Bantuan akan Diterima</label
-                  >
-                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                    <!-- <span class="text-lg font-semibold text-gray-900">
-                      RM {{ jumlahBantuan.toLocaleString() }}
-                    </span> -->
-                    <span class="text-lg font-semibold text-gray-900">
-                      RM {{ jumlahKeseluruhan.toLocaleString() }}
-                    </span>
+                        <div class="flex justify-end">
+                          <rs-button variant="primary">Sahkan</rs-button>
+                        </div>
                   </div>
                 </div>
                 
+                    <hr class="my-4" />
 
-                <!-- <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Catatan Pengesyoran</label
-                  >
-                  <div
-                    class="mt-1 p-3 bg-gray-50 rounded-lg border min-h-[80px]"
-                  >
-                    <span class="text-sm text-gray-900">{{
-                      catatanPengesyoran || "Diambil dari BQ"
-                    }}</span>
+                    <!-- Senarai Bantuan Sedia Ada yang akan dibatalkan -->
+                    <div class="space-y-3">
+                      <h4 class="text-md font-semibold text-gray-900">
+                        Senarai Bantuan Sedia Ada yang akan dibatalkan
+                      </h4>
+
+                      <rs-table
+                        :data="bantuanPembatalan"
+                        :columns="pembatalanColumns"
+                        :showNoColumn="true"
+                        :options="{
+                          variant: 'default',
+                          striped: true,
+                          hover: true,
+                        }"
+                        :options-advanced="{
+                          sortable: true,
+                          filterable: false,
+                        }"
+                        advanced
+                      >
+                        <template #header-batalBantuan>
+                          <div class="flex items-center gap-2" @click.stop>
+                            <FormKit
+                              type="checkbox"
+                              v-model="selectAllPembatalan"
+                              @change="toggleSelectAllPembatalan"
+                              outer-class="mb-0"
+                            />
+                            <span class="text-sm">Pilih Semua</span>
                   </div>
-                </div> -->
+                        </template>
+                        <template v-slot:batalBantuan="{ value }">
+                          <FormKit
+                            type="checkbox"
+                            v-model="value.batalBantuan"
+                            outer-class="mb-0"
+                          />
+                        </template>
+                      </rs-table>
 
-                <!-- Post-approval buttons (only shown after approval) -->
-                <div v-if="isApproved" class="space-y-2 pt-4 border-t">
+                      <div class="flex justify-end">
+                        <rs-button variant="primary">Sahkan</rs-button>
+                      </div>
+                    </div>
+                  </rs-tab-item>
+
+                  <rs-tab-item title="Bantuan Baru">
+                    <rs-table
+                      :data="assistanceApplications"
+                      :columns="assistanceColumns"
+                      :showNoColumn="true"
+                      :options="{
+                        variant: 'default',
+                        striped: true,
+                        hover: true,
+                      }"
+                      :options-advanced="{
+                        sortable: true,
+                        filterable: false,
+                      }"
+                      advanced
+                    >
+                      <template v-slot:status="{ text }">
+                        <rs-badge :variant="getAssistanceStatusVariant(text)">{{
+                          text
+                        }}</rs-badge>
+                      </template>
+
+                      <template v-slot:actions="{ value }">
                   <rs-button
-                    variant="success-outline"
-                    @click="viewArahanKerja"
-                    class="w-full !py-2 text-sm"
+                          variant="primary"
+                          @click="editAssistance(value)"
                   >
-                    <Icon name="ph:file-text" class="w-4 h-4 mr-2" />
-                    Lihat Arahan Kerja
+                          Edit
                   </rs-button>
-
-                  <rs-button
-                    variant="info-outline"
-                    @click="urusPemantauan"
-                    class="w-full !py-2 text-sm"
-                  >
-                    <Icon name="ph:monitor" class="w-4 h-4 mr-2" />
-                    Urus Pemantauan
-                  </rs-button>
-                </div>
-              </div>
-
-              
+                      </template>
+                    </rs-table>
+                  </rs-tab-item>
+                </rs-tab>
+              </rs-tab-item>
+            </rs-tab>
             </template>
           </rs-card>
-
         </div>
+
         <div class="col-span-1">
-          <!-- Section 6: Catatan Lapangan (C/U/V) -->
-          <!-- <rs-card class="shadow-sm border-0 bg-white">
+        <rs-card class="">
             <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon name="ph:notebook" class="w-6 h-6 text-indigo-600" />
-                  </div>
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Catatan Lapangan
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Nota dan dapatan semasa lawatan lapangan
-                  </p>
-                </div>
+            <div class="flex justify-between items-center">
+              <h2 class="text-xl font-semibold">Maklumat Lawatan & Siasatan</h2>
               </div>
             </template>
 
             <template #body>
-              <div class="space-y-4">
                 <FormKit
-                  type="textarea"
-                  label="Catatan Lapangan"
-                  v-model="catatanLapangan.catatan"
-                  rows="6"
-                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa lawatan lapangan..."
-                  :classes="{ input: 'text-sm' }"
-                />
-
-                <div class="text-xs text-gray-500">
-                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
-                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
+              type="form"
+              :actions="false"
+              @submit="handleSubmitLawatan"
+              v-model="investigationData"
+            >
+              <div class="space-y-8">
+                <!-- Ringkasan Profil -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <h3 class="text-sm font-medium text-gray-700 mb-3">
+                    Ringkasan Profil
+                  </h3>
+                  <ul class="text-sm space-y-1 text-gray-600">
+                    <li>
+                      • Jenis Pekerjaan:
+                      {{
+                        investigationData.jenisPekerjaan ||
+                        "Bekerja sebagai tukang sapu di sekolah"
+                      }}
+                    </li>
+                    <li>
+                      • Status Kediaman:
+                      {{ investigationData.statusKediaman || "Rumah Sewa" }}
+                    </li>
+                    <li>
+                      • Jumlah bayaran rumah:
+                      {{ investigationData.jumlahBayaranRumah || "RM500" }}
+                    </li>
+                    <li>
+                      • Bil Tanggungan:
+                      {{ investigationData.bilTanggungan || "2 Orang (Anak)" }}
+                    </li>
+                    <li>
+                      • Status Tanggungan:
+                      {{
+                        investigationData.statusTanggungan ||
+                        "Masih Bersekolah, Tidak Bekerja"
+                      }}
+                    </li>
+                  </ul>
+                  
                 </div>
-              </div>
-            </template>
-          </rs-card> -->
 
-          <!-- Laluan Process  -->
-          <rs-card class="shadow-sm border-0 bg-white">
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon
-                      name="iconamoon:check-circle-2-duotone"
-                      class="w-6 h-6 text-yellow-600"
+                <!-- Keadaan Siasatan -->
+                <div>
+                  <FormKit
+                    type="select"
+                    name="keadaanSiasatan"
+                    label="Kaedah Siasatan"
+                    :options="keadaanSiasatanOptions"
+                    placeholder="--Sila Pilih--"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Sila pilih kaedah siasatan untuk meneruskan',
+                    }"
+                  />
+              </div>
+
+                <div v-if="showLawatanFields" class="flex gap-4">
+                  <!-- Tarikh Lawatan -->
+                  <div class="flex-1">
+                    <FormKit
+                      type="date"
+                      name="tarikhLawatan"
+                      label="Tarikh Lawatan"
+                      :validation="showLawatanFields ? 'required' : ''"
+                      :validation-messages="{
+                        required: 'Sila pilih tarikh lawatan',
+                      }"
+                      placeholder="dd/mm/yyyy"
                     />
                   </div>
+
+                  <!-- Masa Lawatan -->
+                  <div class="flex-1">
+                    <FormKit
+                      type="time"
+                      name="masaLawatan"
+                      label="Masa Lawatan"
+                      :validation="showLawatanFields ? 'required' : ''"
+                      :validation-messages="{
+                        required: 'Sila pilih masa lawatan',
+                      }"
+                      placeholder="--:--:--"
+                    />
                 </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Laluan Proses
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Laluan Proses Permohonan
-                  </p>
+
+                  
                 </div>
+
+                <div v-if="showLawatanFields">
+                  <FormKit
+                    type="select"
+                    name="StatusPengesahanLawatan"
+                    label="Status Pengesahan Lawatan"
+                    :options="statuspengesahanlawatanOptions"
+                    :validation="showLawatanFields ? 'required' : ''"
+                    :validation-messages="{
+                      required: 'Sila pilih status pengesahan lawatan',
+                    }"
+                  />
               </div>
-            </template>
 
-            
 
-            <template #body>
-              
-              <div class="space-y-4">
-                <!-- Accordion: Laluan Proses Details -->
-                <div class="space-y-3">
-                  <!-- Permohonan Accordion Item -->
-                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                    <button
-                      type="button"
-                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
-                      @click="accordionOpen.permohonan = !accordionOpen.permohonan"
-                    >
-                      <span class="font-medium text-gray-900">Permohonan</span>
-                      <Icon
-                        :name="accordionOpen.permohonan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
-                        class="w-6 h-6 text-gray-500"
-                      />
-                    </button>
-                    <div v-show="accordionOpen.permohonan" class="px-4 pb-4 pt-1">
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label class="block text-sm font-medium text-gray-600 mb-1">Permohonan Dibuat Oleh</label>
-                          <p class="text-gray-900">{{ permohonanDetails.dibuatOleh }}</p>
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Permohonan</label>
-                          <p class="text-gray-900">{{ formatDateTime(permohonanDetails.tarikhPermohonan) }}</p>
-                        </div>
-                        <div class="md:col-span-2">
-                          <label class="block text-sm font-medium text-gray-600 mb-1">Sebab Memohon Bantuan</label>
-                          <p class="text-gray-900">{{ permohonanDetails.sebabMemohon }}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Siasatan Accordion Item -->
-                  <!-- <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                    <button
-                      type="button"
-                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
-                      @click="accordionOpen.siasatan = !accordionOpen.siasatan"
-                    >
-                      <span class="font-medium text-gray-900">Siasatan</span>
-                      <Icon
-                        :name="accordionOpen.siasatan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
-                        class="w-6 h-6 text-gray-500"
-                      />
-                    </button>
-                    <div v-show="accordionOpen.siasatan" class="px-4 pb-4 pt-1">
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label class="block text-sm font-medium text-gray-600 mb-1">Disiasat Oleh</label>
-                          <p class="text-gray-900">{{ siasatanDetails.disiasatOleh }}</p>
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-600 mb-1">Status Siasatan</label>
-                          <rs-badge :variant="getProcessStatusVariant(siasatanDetails.statusSiasatan)">
-                            {{ siasatanDetails.statusSiasatan }}
-                          </rs-badge>
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Selesai Siasatan</label>
-                          <p class="text-gray-900">{{ formatDateTime(siasatanDetails.tarikhSelesai) }}</p>
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-600 mb-1">SLA</label>
-                          <p class="text-gray-900">{{ siasatanDetails.sla }}</p>
-                        </div>
-                        <div class="md:col-span-2">
-                          <label class="block text-sm font-medium text-gray-600 mb-1">Catatan Siasatan</label>
-                          <p class="text-gray-900">{{ siasatanDetails.catatan }}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div> -->
-                </div>
-
-                <!-- <div class="text-xs text-gray-500">
-                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
-                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
+                <!-- Catatan Penilaian Awal -->
+                <!-- <div>
+                  <FormKit
+                    type="textarea"
+                    name="catatanPenilaianAwal"
+                    label="Catatan Penilaian Awal"
+                    rows="4"
+                    placeholder="Enter text..."
+                    :classes="{
+                      input: '!py-2',
+                    }"
+                  />
                 </div> -->
-              </div>
-              
-            </template>
-            
-          </rs-card>
 
-          <!-- Section 7: Status Lawatan -->
-          <rs-card class="shadow-sm border-0 bg-white">
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon
-                      name="ph:check-circle"
-                      class="w-6 h-6 text-yellow-600"
+                <!-- Gambar Lokasi/Bukti Visual - Only show when kaedah siasatan is "Lapangan" -->
+                <div v-if="showLawatanFields">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Gambar Lokasi/Bukti Visual
+                  </label>
+
+                  <!-- Custom File Upload Area -->
+              <div class="space-y-4">
+                    <!-- Upload Dropzone -->
+                    <div
+                      @click="triggerFileInput"
+                      @dragover.prevent
+                      @dragenter.prevent
+                      @drop.prevent="handleFileDrop"
+                      class="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 group"
+                    >
+                      <div class="space-y-2">
+                      <Icon
+                          name="ph:upload"
+                          class="w-12 h-12 text-blue-400 group-hover:text-blue-500 transition-colors duration-300 group-hover:scale-110 transform mx-auto"
+                      />
+                        <div>
+                          <p class="text-sm text-gray-600">
+                            <span
+                              class="font-medium text-blue-600 hover:text-blue-500"
+                              >Klik untuk pilih fail</span
+                            >
+                            atau seret dan lepas di sini
+                          </p>
+                          <p class="text-xs text-gray-500 mt-1">
+                            PNG, JPG, GIF sehingga 5MB setiap fail
+                          </p>
+                        </div>
+                        </div>
+                        </div>
+
+                    <!-- Hidden File Input -->
+                    <input
+                      ref="fileInputRef"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      @change="handleFileInputChange"
+                      class="hidden"
                     />
+
+                    <!-- Upload Progress -->
+                    <div v-if="uploadProgress.length > 0" class="space-y-2">
+                      <div
+                        v-for="(progress, index) in uploadProgress"
+                        :key="index"
+                        class="bg-white rounded-lg border border-gray-200 p-3"
+                      >
+                        <div class="flex items-center justify-between mb-2">
+                          <span class="text-sm font-medium text-gray-700">{{
+                            progress.filename
+                          }}</span>
+                          <span class="text-xs text-gray-500">{{
+                            formatFileSize(progress.size)
+                          }}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                            :style="{ width: `${progress.progress}%` }"
+                          ></div>
+                      </div>
+                    </div>
                   </div>
+
+                    <!-- Image Preview Gallery -->
+                    <div
+                      v-if="uploadedImages.length > 0"
+                      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+                    >
+                      <div
+                        v-for="(image, index) in uploadedImages"
+                        :key="index"
+                        class="group relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm scroll-indicator hover:shadow-md transition-shadow"
+                      >
+                        <!-- Image Preview -->
+                        <div class="aspect-square bg-gray-100 relative">
+                          <img
+                            :src="image.url"
+                            :alt="`Gambar ${index + 1}`"
+                            class="w-full h-full object-cover cursor-pointer"
+                            @click="previewImage(image)"
+                          />
+
+                          <!-- Overlay Actions -->
+                          <div
+                            class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center"
+                          >
+                            <div
+                              class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2"
+                            >
+                    <button
+                                @click.stop="previewImage(image)"
+                                class="bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-700 p-2 rounded-full shadow-md transition-all"
+                      type="button"
+                                title="Preview"
+                              >
+                                <Icon name="ph:eye" class="w-4 h-4" />
+                    </button>
+                              <button
+                                @click.stop="removeImage(index)"
+                                class="bg-red-500 bg-opacity-90 hover:bg-opacity-100 text-white p-2 rounded-full shadow-md transition-all"
+                                type="button"
+                                title="Padam"
+                              >
+                                <Icon name="ph:trash" class="w-4 h-4" />
+                              </button>
+                        </div>
+                        </div>
+
+                          <!-- Loading Indicator -->
+                          <div
+                            v-if="image.loading"
+                            class="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center"
+                          >
+                            <Icon
+                              name="ph:spinner"
+                              class="w-6 h-6 text-blue-600 animate-spin"
+                            />
+                        </div>
+                        </div>
+
+                        <!-- Image Info -->
+                        <div class="p-3 space-y-2">
+                          <!-- File Name -->
+                          <div class="flex items-center justify-between">
+                            <span
+                              class="text-xs text-gray-500 truncate flex-1"
+                              :title="image.filename"
+                            >
+                              {{ image.filename }}
+                            </span>
+                            <span class="text-xs text-gray-400 ml-2">
+                              {{ formatFileSize(image.size) }}
+                            </span>
+                        </div>
+
+                          <!-- Image Caption -->
+                          <FormKit
+                            type="text"
+                            :name="`imageCaption_${index}`"
+                            v-model="image.caption"
+                            placeholder="Tambah keterangan..."
+                            :classes="{
+                              outer: 'mb-0',
+                              input: 'text-xs !py-1.5 !text-gray-700',
+                            }"
+                          />
+                      </div>
+                    </div>
                 </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Keputusan Siasatan
-                  </h2>
+
+                    <!-- Sample Image Placeholder -->
+                    <div
+                      v-if="uploadedImages.length === 0"
+                      class="mt-6 border border-gray-300 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-slate-100 shadow-sm scroll-indicator"
+                    >
+                      <div
+                        class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
+                      >
+                        <div class="text-center">
+                    <Icon
+                            name="ph:image"
+                            class="w-12 h-12 text-gray-400 mx-auto mb-2"
+                          />
                   <p class="text-sm text-gray-500">
-                    Kemaskini status siasatan lapangan
+                            Tiada gambar dimuat naik lagi
+                          </p>
+                          <p class="text-xs text-gray-400 mt-1">
+                            Gambar anda akan dipaparkan di sini
                   </p>
                 </div>
               </div>
-            </template>
-
-            <template #body>
-              <FormKit
-                type="select"
-                label="Status Sokongan"
-                :options="statusLawatanOptions"
-                v-model="formData.statusLawatan"
-                :classes="{ input: 'text-sm' }"
-              />
-              <div class="space-y-4">
-                <FormKit
-                  type="textarea"
-                  label="Catatan"
-                  v-model="catatanLapangan.catatan"
-                  rows="6"
-                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa siasatan..."
-                  :classes="{ input: 'text-sm' }"
-                />
-
-                <FormKit
-                type="select"
-                label="Status Proses"
-                :options="statusprosesOptions"
-                v-model="formData.statusproses"
-                :classes="{ input: 'text-sm' }"
-                />
-
-                <div class="text-xs text-gray-500">
-                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
-                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </template>
-            
-          </rs-card>
 
-          
+                <!-- Catatan Lawatan ETD -->
+                <div>
+              <FormKit
+                    type="textarea"
+                    name="catatanLawatanETD"
+                    label="Catatan Siasatan"
+                    rows="4"
+                    placeholder="Enter text..."
+                    :classes="{
+                      input: '!py-2',
+                    }"
+                  />
+                </div>
 
-          <!-- Section 9: Action Buttons -->
-          <rs-card class="p-4">
-            <div class="flex flex-col sm:flex-row gap-3 justify-end">
+                <!-- <div>
+                <FormKit
+                    type="select"
+                    name="statusSiasatan"
+                    label="Status Siasatan"
+                    :options="statusSiasatanOptions"
+                    placeholder="--Sila Pilih--"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Sila pilih status siasatan untuk meneruskan',
+                    }"
+                  />
+                </div> -->
+
+                <!-- Status Lawatan -->
+                <!-- <div>
+                <FormKit
+                type="select"
+                    name="statusLawatan"
+                    label="Status Lawatan"
+                    :options="statusLawatanOptions"
+                    placeholder="--Sila Pilih--"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Sila pilih status lawatan',
+                    }"
+                  />
+                </div> -->
+
+                <!-- Action Buttons -->
+                <div
+                  class="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-200"
+                >
               <rs-button
                 variant="success"
                 @click="handleSimpan"
                 :disabled="processing"
-                :loading="processing && actionType === 'simpan'"
+                    :loading="processing && actionType === 'save'"
+                    class="flex-1 !py-3 text-sm font-medium"
               >
+                    <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
                 Simpan
               </rs-button>
 
               <rs-button
                 variant="primary"
-                @click="handleSelesaiDanHantar"
-                :disabled="processing || !hasStatusSokongan"
-                :loading="processing && actionType === 'complete_submit'"
-              >
+                    @click="handleHantarKelulusan"
+                    :disabled="processing || !canSubmitForApproval"
+                    :loading="processing && actionType === 'submit'"
+                    class="flex-1 !py-3 text-sm font-medium"
+                  >
+                    <Icon name="ph:paper-plane-tilt" class="w-5 h-5 mr-2" />
                 Hantar Kelulusan
               </rs-button>
 
               <rs-button
                 variant="danger"
-                @click="handleBatal"
-                :disabled="processing"
-                :loading="processing"
+                    @click="handleKembali"
+                    class="flex-1 !py-3 text-sm font-medium"
               >
+                    <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
                 Kembali
               </rs-button>
             </div>
+              </div>
+            </FormKit>
+          </template>
           </rs-card>
-        </div>
       </div>
     </div>
 
-    <!-- BQ Modal -->
-    <rs-modal v-model="showBQModal" size="xl" :closable="false">
+    <!-- Image Preview Modal -->
+    <rs-modal v-model="showPreviewModal" size="xl" :closable="true">
       <template #header>
-        <h3 class="text-lg font-semibold">
-          {{ editingBQ ? "Edit" : "Tambah" }} BQ
-        </h3>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-medium text-gray-900">Preview Gambar</h3>
+          <div v-if="previewingImage" class="flex items-center gap-3">
+            <span class="text-sm text-gray-500">{{
+              formatFileSize(previewingImage.size)
+            }}</span>
+            <rs-button
+              variant="primary-outline"
+              size="sm"
+              @click="downloadImage(previewingImage)"
+            >
+              <Icon name="ph:download" class="w-4 h-4 mr-1" />
+              Muat Turun
+            </rs-button>
+          </div>
+        </div>
       </template>
       <template #body>
-        <!-- BQ form content will be added here -->
-        <div class="text-center py-8 text-gray-500">
-          <p>
-            BQ Form content akan dibangunkan mengikut keperluan dalam
-            REQUIREMENTS.md
-          </p>
+        <div v-if="previewingImage" class="space-y-4">
+          <!-- Image Container -->
+          <div class="relative bg-gray-100 rounded-lg overflow-hidden">
+            <img
+              :src="previewingImage.url"
+              :alt="previewingImage.filename"
+              class="w-full h-auto max-h-96 object-contain mx-auto"
+              style="max-height: 70vh"
+            />
+          </div>
+
+          <!-- Image Details -->
+          <div
+            class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-6 space-y-4"
+          >
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Nama Fail</label
+                >
+                <p class="text-sm text-gray-900 bg-white p-2 rounded border">
+                  {{ previewingImage.filename }}
+                </p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Saiz Fail</label
+                >
+                <p class="text-sm text-gray-900 bg-white p-2 rounded border">
+                  {{ formatFileSize(previewingImage.size) }}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Keterangan</label
+              >
+              <FormKit
+                type="textarea"
+                v-model="previewingImage.caption"
+                placeholder="Tambah keterangan untuk gambar ini..."
+                rows="3"
+                :classes="{
+                  outer: 'mb-0',
+                  input: 'text-sm !py-2',
+                }"
+              />
+            </div>
+          </div>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <rs-button variant="primary-outline" @click="closeBQModal">
-            Batal
+          <rs-button variant="secondary" @click="showPreviewModal = false">
+            Tutup
           </rs-button>
-          <rs-button variant="primary" @click="saveBQ"> Simpan </rs-button>
+          <rs-button variant="primary" @click="saveImageCaption">
+            Simpan Keterangan
+          </rs-button>
         </div>
       </template>
     </rs-modal>
   </div>
 </template>
 
-
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
+import { ref, computed, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
-const route = useRoute();
 const router = useRouter();
-const toast = useToast();
-const processing = ref(false);
-const actionType = ref("");
+const route = useRoute();
 
 definePageMeta({
-  title: "Siasatan Lapangan",
+  title: "Maklumat Pemohon - Siasatan EOAD",
 });
 
 const breadcrumb = ref([
@@ -1084,475 +1307,937 @@ const breadcrumb = ref([
     path: "/BF-BTN/tugasan",
   },
   {
-    name: "Siasatan ke Lapangan",
+    name: "Siasatan",
     type: "link",
     path: "/BF-BTN/tugasan",
   },
   {
-    name: "Kemaskini Siasatan",
+    name: "Siasatan EOAD",
     type: "current",
     path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
   },
 ]);
 
-// Tab configuration
-const tabs = [
-  { id: 'bq', title: 'BQ' },
-  { id: 'gambar', title: 'Laporan Gambar' },
-  { id: 'teknikal', title: 'Laporan Teknikal' }
+// Mock data for different records
+const mockByNoBantuan = {
+  "NAS-2025-0001": {
+    // Personal Information
+    noBantuan: "NAS-2025-0001",
+    nama: "Mohd Rosli bin Saad",
+    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "810101121234",
+    noTelefon: "0123456789",
+    email: "rosli@gmail.com",
+    statusKeluarga: "Fakir",
+    statusIndividu: "Fakir",
+    statusMultidimensi: "Asnaf Tidak Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: null,
+  },
+  "NAS-2025-0002": {
+    // Personal Information
+    noBantuan: "NAS-2025-0002",
+    nama: "Siti binti Hassan",
+    alamat: "Jalan Merdeka, Taman Seri Indah, 45600 Selangor",
+    kariah: "Masjid Al-Ikhlas",
+    daerah: "Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "850505055678",
+    noTelefon: "0198765432",
+    email: "siti.hassan@gmail.com",
+    statusKeluarga: "Miskin",
+    statusIndividu: "Miskin",
+    statusMultidimensi: "Asnaf Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: null,
+  }
+};
+
+// Mock investigation data
+const mockInvestigationData = {
+  "NAS-2025-0001": {
+    jenisPekerjaan: "Bekerja sebagai tukang sapu di sekolah",
+    statusKediaman: "Rumah Sewa",
+    jumlahBayaranRumah: "RM500",
+    bilTanggungan: "2 Orang (Anak)",
+    statusTanggungan: "Masih Bersekolah, Tidak Bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+  },
+  "NAS-2025-0002": {
+    jenisPekerjaan: "Suri rumah sepenuh masa",
+    statusKediaman: "Rumah Sendiri",
+    jumlahBayaranRumah: "RM0",
+    bilTanggungan: "3 Orang (2 Anak + Suami)",
+    statusTanggungan: "Anak sakit kronik, Suami tidak bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+  }
+};
+
+// Form data
+const formData = ref({
+  // Personal Information
+  noBantuan: "",
+  nama: "",
+  alamat: "",
+  kariah: "",
+  daerah: "",
+  jenisPengenalan: "",
+  noPengenalan: "",
+  noTelefon: "",
+  email: "",
+  statusKeluarga: "",
+  statusIndividu: "",
+  statusMultidimensi: "",
+  status: "",
+
+  // Investigation fields
+  keputusanSiasatan: "",
+  tarikhLawatan: "",
+  masaLawatan: "",
+  catatanPenilaianAwal: "",
+  gambarLokasi: null,
+});
+
+// Investigation form data
+const investigationData = ref({
+  jenisPekerjaan: "",
+  statusKediaman: "",
+  jumlahBayaranRumah: "",
+  bilTanggungan: "",
+  statusTanggungan: "",
+  keadaanSiasatan: "",
+  tarikhLawatan: "",
+  masaLawatan: "",
+  StatusPengesahanLawatan: "belum_sah",
+  catatanPenilaianAwal: "",
+  gambarLokasi: [],
+  catatanLawatanETD: "",
+  statusLawatan: "",
+});
+
+// Profiling form data
+const profilingData = ref({
+  pengenalanId: "",
+  nama: "",
+  hadKifayahSyor: "",
+  kategoriKeluargaAsnafSyor: "",
+  kategoriAsnafSyor: "",
+  tarikhPengesyoran: "",
+  pengenalanIdTanggungan1: "",
+  pengenalanIdTanggungan2: "",
+  kategoriTanggunganSyor: "",
+  assignSiasatan: "",
+  hadKifayahSah: "",
+  kategoriKeluargaAsnafSah: "",
+  kategoriAsnafSah: "",
+  pengenalanIdTanggunganSah1: "",
+  pengenalanIdTanggunganSah2: "",
+  kategoriTanggunganSah1: "",
+  kategoriTanggunganSah2: "",
+  komenPengesahan: "",
+  tarikhPengesyoranBottom: "",
+});
+
+// State for image handling
+const uploadedImages = ref([]);
+const showPreviewModal = ref(false);
+const previewingImage = ref(null);
+const processing = ref(false);
+const actionType = ref("");
+const uploadProgress = ref([]);
+const fileInputRef = ref(null);
+
+// State for profiling form
+const searchingId = ref(false);
+const savingDraft = ref(false);
+const submittingProfile = ref(false);
+
+// Pagination state
+const currentPage = ref(1);
+const pageSize = ref(10);
+
+// Dropdown options
+const keadaanSiasatanOptions = [
+  { label: "Semak Dokumen Sahaja", value: "semak" },
+  { label: "Telefon", value: "telefon" },
+  { label: "Lapangan", value: "lapangan" },
 ];
 
-const activeTab = ref('bq');
-
-// Section 1: Maklumat Pemohon data
-const formData = ref({
-  aid: "B102	Bantuan Binaan Rumah (Fakir)",
-  aidproduct: "Bantuan Binaan Rumah (Fakir)",
-  productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
-  entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
-  jumlahBantuan: 43000,
-  // noTelefon: "0123456789",
-  // emel: "rosli@gmail.com",
-  // statusKeluarga: "Fakir",
-  // statusIndividu: "Fakir",
-  // statusMultidimensi: "Asnaf Tidak Produktif",
-  // statusLawatan: "belum_selesai",
-});
-
-// Section 2: Dokumen Sokongan
-const dokumenSokongan = ref([
-  // {
-  //   jenis: "Quotation (baik pulih)",
-  //   filename: "quotation.pdf",
-  //   url: "#",
-  //   status: "lengkap",
-  // },
-  {
-    jenis: "Geran Tanah",
-    filename: "geran_tanah.pdf",
-    url: "#",
-    status: "lengkap",
-  },
-  {
-    jenis: "Carian Rasmi Pejabat Tanah",
-    filename: "carian_rasmi.pdf",
-    url: "#",
-    status: "lengkap",
-  },
-]);
-
-// Accordion state and mock details
-const accordionOpen = reactive({
-  permohonan: false,
-  siasatan: false,
-})
-
-const permohonanDetails = ref({
-  dibuatOleh: 'Ahmad bin Abdullah',
-  tarikhPermohonan: '2024-01-01 09:00:00',
-  sebabMemohon: 'Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan bantuan bina baru rumah'
-})
-
-const siasatanDetails = ref({
-  disiasatOleh: 'Siti binti Ali',
-  statusSiasatan: 'Semak',
-  tarikhSelesai: '2024-01-03 17:30:00',
-  catatan: 'Lawatan lapangan telah dilakukan dan dokumen disahkan.',
-  sla: '3 hari bekerja'
-})
-
-// Section 3: Draf BQ
-const bqList = ref([
-  {
-    noBQ: "BQ202508647",
-    namaBQ: "BQ MOHD ROSLI BIN SAAD",
-    jumlahBQ: "RM43,000",
-    status: "Dalam Proses",
-  },
-]);
-
-const showBQModal = ref(false);
-const editingBQ = ref(null);
-
-// Section 4: Laporan Gambar
-const gambarLokasi = ref([
-  {
-    url: "https://scontent.fkul10-1.fna.fbcdn.net/v/t1.6435-9/33382272_977231325777776_3291633360509599744_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=tsi5WpsPCREQ7kNvwEe3GJk&_nc_oc=Adl4_F7yjD2xX6siXLa_NANICn4Cak1Wmni5VBa7XhbSYIByOReFS3wwQc7n0JHnBqz05IBIajWiWh8LE9coTq0L&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=4p3_JCn3HWweiLZBezB58w&oh=00_AfZFYLhw-KRbw3goXGgJkj7ewaf54KBCnG0_XXcl4y3TWQ&oe=68E1A4D7",
-    catatan: "Keadaan dinding papan rumah",
-    masaUpload: new Date().toISOString(),
-  },
-  {
-    url: "https://scontent.fkul15-1.fna.fbcdn.net/v/t39.30808-6/309943384_196941696025849_726196766864978484_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=IyNAhW7CUkgQ7kNvwHTA3nK&_nc_oc=AdmN3PYsmtpYr9gnvcQLzYd-zejr8nOaNfL2SkYiGIJsfKhvEWLi_gLtezJSzXrXrSpit_KvkUj1zjOCHOKl8Y4n&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=aY79tE8vuTPag6wRgWP07g&oh=00_AfZvZmX3DPqOBnADSlF0Occy0BA6qGPavBKb7ME7Qre1eQ&oe=68C01482",
-    catatan: "Pandangan depan rumah",
-    masaUpload: new Date().toISOString(),
-  },
-]);
-
-// Section 5: Laporan Teknikal
-const laporanTeknikal = ref({
-  latarBelakang: "",
-  keperluan: "",
-  cadangan: "",
-  nilaiKerja: 0,
-});
-
-// Section 6: Catatan Lapangan
-const catatanLapangan = ref({
-  catatan: "",
-  masaTarikh: new Date().toLocaleString("ms-MY"),
-});
-
-// Section 8: Jumlah Bantuan & Catatan Pengesyoran
-const jumlahBantuan = ref(25000);
-const catatanPengesyoran = ref("");
-const isApproved = ref(false); // This will be true after approval
-
-// Dropdown options
-const statusLawatanOptions = ref([
-  { label: "--Sila Pilih--", value: "sila_pilih" },
-  { label: "Sokong", value: "sokong" },
-  { label: "Tidak Sokong", value: "tidak_sokong" },
-]);
-
-// Dropdown options
-const statusprosesOptions = ref([
-  { label: "--Sila Pilih--", value: "belum_selesai" },
-  { label: "Selesai Diproses", value: "selesai" },
+const statusSiasatanOptions = [
+  { label: "Selesai Siasatan", value: "selesai" },
   { label: "KIV", value: "kiv" },
-]);
+];
 
-const statusDokumenOptions = ref([
+// Dropdown options
+const statuspengesahanlawatanOptions = [
+  { label: "Belum Sah", value: "belum_sah" },
+  { label: "Sah", value: "sah" },
+];
+
+const statusLawatanOptions = [
   { label: "Lengkap", value: "lengkap" },
-  { label: "Tidak Lengkap", value: "tidak_lengkap" },
-  { label: "Tiada Keperluan", value: "tiada_keperluan" },
+  { label: "Tidak lengkap", value: "tidak_lengkap" },
+  { label: "Perlu lawatan semula", value: "perlu_lawatan_semula" },
+];
+
+const assignSiasatanOptions = [
+  { label: "PAK", value: "pak" },
+  { label: "PAK+", value: "pak_plus" },
+  { label: "Pegawai LZS", value: "pegawai_lzs" },
+];
+
+// Computed property to show/hide lawatan fields based on kaedah siasatan
+const showLawatanFields = computed(() => {
+  return investigationData.value.keadaanSiasatan === "lapangan";
+});
+
+// Table columns for assistance applications
+const assistanceColumns = [
+  { key: "jenisBantuan", label: "JENIS BANTUAN", sortable: true },
+  { key: "status", label: "STATUS", sortable: true },
+  { key: "sla", label: "SLA", sortable: true },
+  { key: "actions", label: "ACTIONS", sortable: false },
+];
+
+// Table columns for existing assistance
+const existingAssistanceColumns = [
+  { key: "jan", label: "JAN", sortable: true },
+  { key: "kadar", label: "KADAR (RM)", sortable: true },
+  { key: "frekuensi", label: "FREKUENSI", sortable: true },
+  { key: "jumlah", label: "JUMLAH (RM)", sortable: true },
+  { key: "status", label: "STATUS", sortable: true },
+];
+
+// Table columns for other agency assistance
+const otherAssistanceColumns = [
+  { key: "namaBantuan", label: "NAMA BANTUAN", sortable: true },
+  { key: "jumlah", label: "JUMLAH (RM)", sortable: true },
+  { key: "kekerapan", label: "KEKERAPAN", sortable: true },
+  { key: "tahun", label: "TAHUN", sortable: true },
+  { key: "tarikhDiperoleh", label: "TARIKH DATA DIPEROLEH", sortable: true },
+  { key: "dataDaripada", label: "DATA DARIPADA", sortable: true },
+];
+
+// Table columns for Syor (Recommended Aid)
+const recommendedAidColumns = [
+  { key: "aid", label: "Aid", sortable: true },
+  { key: "aidProduct", label: "Aid Product", sortable: true },
+  { key: "productPackage", label: "Product Package", sortable: true },
+  { key: "entitlementProduct", label: "Entitlement Product", sortable: true },
+  { key: "kadarDicadangkan", label: "Kadar Dicadangkan", sortable: true },
+  { key: "skorAI", label: "Skor AI", sortable: true },
+  { key: "tarikhSyor", label: "Tarikh Syor", sortable: true },
+  { key: "justifikasiSyor", label: "Justifikasi Syor", sortable: false },
+  { key: "terimaCadangan", label: "Terima Cadangan", sortable: false },
+];
+
+// Alias for template usage
+const otherAgencyColumns = otherAssistanceColumns;
+
+// Perubahan Bantuan - columns
+const perubahanColumns = [
+  { key: "aid", label: "Aid", sortable: true },
+  { key: "aidProduct", label: "Aid Product", sortable: true },
+  { key: "productPackage", label: "Product Package", sortable: true },
+  { key: "entitlementProduct", label: "Entitlement Product", sortable: true },
+  { key: "terimaCadangan", label: "Terima Cadangan", sortable: false },
+];
+
+const pembatalanColumns = [
+  { key: "aid", label: "Aid", sortable: true },
+  { key: "aidProduct", label: "Aid Product", sortable: true },
+  { key: "productPackage", label: "Product Package", sortable: true },
+  { key: "entitlementProduct", label: "Entitlement Product", sortable: true },
+  { key: "batalBantuan", label: "Batal Bantuan", sortable: false },
+];
+
+// Mock data for tables
+const assistanceApplications = ref([
+  {
+    jenisBantuan: "B102 - Bantuan Binaan Rumah (Fakir)",
+    status: "Perlu Diproses",
+    sla: "3 hari lagi",
+    actions: "/",
+  },
 ]);
 
+const existingAssistance = ref([
+  {
+    jan: "Jan Sewaan/Ansuran Rumah (Fakir)",
+    kadar: "800",
+    frekuensi: "12",
+    jumlah: "9,600",
+    status: "Lulus",
+  },
+  {
+    jan: "Jan Pendidikan Dialisis (Fakir)",
+    kadar: "2,800",
+    frekuensi: "6",
+    jumlah: "16,800",
+    status: "Lulus",
+  },
+]);
 
+const otherAgencyAssistance = ref([
+  {
+    namaBantuan: "Program Kasih Siswa (dKasih)",
+    jumlah: "1,300",
+    kekerapan: "One-off",
+    tahun: "2025",
+    tarikhDiperoleh: "8/21/2025",
+    dataDaripada: "ICU",
+  },
+  {
+    namaBantuan: "Sumbangan Asas Rahmah (SARA)",
+    jumlah: "2,100",
+    kekerapan: "Berkala",
+    tahun: "2025",
+    tarikhDiperoleh: "8/21/2025",
+    dataDaripada: "ICU",
+  },
+]);
 
-const jumlahKeseluruhan = computed(() => {
-  const kadar = parseFloat(formData.value.jumlahBantuan) || 0
-  const tempoh = parseInt(formData.value.tempohKekerapan) || 0
-  return kadar * tempoh
-})
+// Recommended Aid data (Syor)
+const recommendedAid = ref([
+  {
+    aid: "[B103] (HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)",
+    aidProduct: "(HQ) KATEGORI HEMODIALISIS (FAKIR)",
+    productPackage: "(GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)",
+    entitlementProduct: "(GL) (HQ) SUNTIKAN EPO (FAKIR)",
+    kadarDicadangkan: "500.00/bulan",
+    skorAI: 87,
+    tarikhSyor: "2025-08-07",
+    justifikasiSyor:
+      "Asnaf mempunyai masalah kesihatan dan perlu menjalani rawatan dialisis",
+    terimaCadangan: false,
+  },
+  {
+    aid: "[B106] BANTUAN MAKANAN BULANAN (FAKIR)",
+    aidProduct: "MAKANAN BULANAN (FAKIR)",
+    productPackage: "MAKANAN BULANAN TERAS (FAKIR) - K2",
+    entitlementProduct:
+      "K2 FAKIR - (10KG BERAS, 2KG TEPUNG, 2KG MINYAK, 2KG GULA, 2 BIHUN, 1 KICAP)",
+    kadarDicadangkan: "56.00",
+    skorAI: 95,
+    tarikhSyor: "2025-08-06",
+    justifikasiSyor: "Bantuan Asasi untuk Fakir",
+    terimaCadangan: false,
+  },
+  {
+    aid: "[B105] BANTUAN KEWANGAN BULANAN (FAKIR)",
+    aidProduct: "BANTUAN KEWANGAN BULANAN (FAKIR)",
+    productPackage: "KEWANGAN BULANAN (FAKIR) - T2",
+    entitlementProduct: "KEWANGAN BULANAN (FAKIR) - T2",
+    kadarDicadangkan: "400.00",
+    skorAI: 96,
+    tarikhSyor: "2025-08-06",
+    justifikasiSyor: "Bantuan Asasi untuk Fakir",
+    terimaCadangan: false,
+  },
+]);
 
-// Check if both status sokongan and status proses have valid data
-const hasStatusSokongan = computed(() => {
-  const hasValidStatusSokongan = formData.value.statusLawatan && 
-                                 formData.value.statusLawatan !== "sila_pilih" && 
-                                 formData.value.statusLawatan !== "";
-  
-  const hasValidStatusProses = formData.value.statusproses && 
-                               formData.value.statusproses === "selesai";
-  
-  return hasValidStatusSokongan && hasValidStatusProses;
-})
+const selectAllSyor = ref(false);
+
+// Perubahan Bantuan - mock data
+const bantuanPerubahanKadar = ref([
+  {
+    aid: "[B106] BANTUAN MAKANAN BULANAN (FAKIR)",
+    aidProduct: "MAKANAN BULANAN (FAKIR)",
+    productPackage: "MAKANAN BULANAN TERAS (FAKIR) - K2",
+    entitlementProduct:
+      "K2 FAKIR - (10KG BERAS, 2KG TEPUNG, 2KG MINYAK, 2KG GULA, 2 BIHUN, 1 KICAP)",
+    terimaCadangan: false,
+  },
+  {
+    aid: "[B105] BANTUAN KEWANGAN BULANAN (FAKIR)",
+    aidProduct: "BANTUAN KEWANGAN BULANAN (FAKIR)",
+    productPackage: "KEWANGAN BULANAN (FAKIR) - T2",
+    entitlementProduct: "KEWANGAN BULANAN (FAKIR) - T2",
+    terimaCadangan: false,
+  },
+  {
+    aid: "[B601] BANTUAN PENDIDIKAN (FISABILILLAH)",
+    aidProduct: "BANTUAN PENDIDIKAN (FISABILILLAH)",
+    productPackage: "(EFT) YURAN PENDIDIKAN (FISABILILLAH)",
+    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FISABILILLAH)",
+    terimaCadangan: false,
+  },
+  {
+    aid: "[B503] BANTUAN MAKANAN BULANAN (FAKIR)",
+    aidProduct: "MAKANAN BULANAN (FAKIR)",
+    productPackage: "(VCASH) BANTUAN BULANAN (FAKIR)",
+    entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (FAKIR)",
+    terimaCadangan: false,
+  },
+  {
+    aid: "[B701] BANTUAN BENCANA (MISKIN)",
+    aidProduct: "BANTUAN BENCANA (MISKIN)",
+    productPackage: "(CASH) BANTUAN SEGERA (MISKIN)",
+    entitlementProduct: "(CASH) BENCANA ALAM (MISKIN)",
+    terimaCadangan: false,
+  },
+]);
+
+const bantuanPembatalan = ref([
+  {
+    aid: "[B601] BANTUAN PENDIDIKAN (FISABILILLAH)",
+    aidProduct: "BANTUAN PENDIDIKAN (FISABILILLAH)",
+    productPackage: "(EFT) YURAN PENDIDIKAN (FISABILILLAH)",
+    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FISABILILLAH)",
+    batalBantuan: false,
+  },
+  {
+    aid: "[B503] BANTUAN MAKANAN BULANAN (FAKIR)",
+    aidProduct: "BANTUAN MAKANAN BULANAN (FAKIR)",
+    productPackage: "(VCASH) BANTUAN BULANAN (FAKIR)",
+    entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (FAKIR)",
+    batalBantuan: false,
+  },
+  {
+    aid: "[B304] BANTUAN KEPERLUAN HIDUP (GHARIMIN)",
+    aidProduct: "BANTUAN KEPERLUAN HIDUP (GHARIMIN)",
+    productPackage: "(VCASH) BANTUAN BULANAN (GHARIMIN)",
+    entitlementProduct: "(VCASH) BAYARAN BULANAN KELUARGA (GHARIMIN)",
+    batalBantuan: false,
+  },
+  {
+    aid: "[B701] BANTUAN BENCANA (MISKIN)",
+    aidProduct: "BANTUAN BENCANA (MISKIN)",
+    productPackage: "(CASH) BANTUAN SEGERA (MISKIN)",
+    entitlementProduct: "(CASH) BENCANA ALAM (MISKIN)",
+    batalBantuan: false,
+  },
+  {
+    aid: "[B205] BANTUAN PERUBATAN DIALISIS (MISKIN)",
+    aidProduct: "BANTUAN PERUBATAN DIALISIS (MISKIN)",
+    productPackage: "(GL) BANTUAN BULANAN (MISKIN)",
+    entitlementProduct: "(GL) BANTUAN PERUBATAN DIALISIS (MISKIN)",
+    batalBantuan: false,
+  },
+]);
+
+const selectAllPerubahan = ref(false);
+const selectAllPembatalan = ref(false);
 
 // Methods
+const handleSubmit = (formData) => {
+  console.log("Form submitted:", formData);
+  // Handle form submission
+};
+
+const addNewAssistance = () => {
+  console.log("Add new assistance");
+  // Handle adding new assistance
+};
+
+const editAssistance = (row) => {
+  router.push(`/BF-BTN/tugasan/bantuan/siasatan/${row.noBantuan}`);
+};
+
+const saveData = () => {
+  console.log("Save data");
+  // Handle saving data
+};
+
+const saveDraft = () => {
+  console.log("Save draft");
+  // Handle saving draft
+};
+
 const getStatusVariant = (status) => {
   const variants = {
-    baru: "info",
-    dalam_semakan: "warning",
-    tidak_lengkap: "danger",
-    lengkap: "success",
-    menunggu_siasatan: "warning",
-    lawatan_dijadualkan: "info",
-    selesai_lawatan: "success",
+    "dalam siasatan": "warning",
+    "selesai siasatan": "success",
+    "menunggu siasatan": "info",
   };
-  return variants[status?.toLowerCase()] || "default";
+  return variants[status.toLowerCase()] || "default";
 };
 
-const getStatusText = (status) => {
-  const statusMap = {
-    baru: "Baru",
-    dalam_semakan: "Dalam Semakan",
-    tidak_lengkap: "Tidak Lengkap",
-    lengkap: "Lengkap",
-    menunggu_siasatan: "Menunggu Siasatan Lapangan",
-    lawatan_dijadualkan: "Lawatan Dijadualkan",
-    selesai_lawatan: "Selesai Lawatan Lapangan",
-  };
-  return statusMap[status?.toLowerCase()] || status;
+const getScoreVariant = (score) => {
+  const value =
+    typeof score === "number"
+      ? score
+      : parseInt(String(score).replace(/[^0-9]/g, ""));
+  if (value >= 90) return "success";
+  if (value >= 75) return "warning";
+  return "danger";
 };
 
-const getBQStatusVariant = (status) => {
+const toggleSelectAllSyor = () => {
+  recommendedAid.value.forEach((row) => {
+    row.terimaCadangan = selectAllSyor.value;
+  });
+};
+
+const toggleSelectAllPerubahan = () => {
+  bantuanPerubahanKadar.value.forEach((row) => {
+    row.terimaCadangan = selectAllPerubahan.value;
+  });
+};
+
+const toggleSelectAllPembatalan = () => {
+  bantuanPembatalan.value.forEach((row) => {
+    row.batalBantuan = selectAllPembatalan.value;
+  });
+};
+
+const getAssistanceStatusVariant = (status) => {
   const variants = {
-    "Dalam Kelulusan": "warning",
-    "Dalam Proses": "info",
-    Selesai: "success",
-    Ditolak: "danger",
+    "perlu diproses": "warning",
+    lulus: "success",
+    "tidak lulus": "danger",
   };
-  return variants[status] || "default";
+  return variants[status.toLowerCase()] || "default";
 };
 
-const getProcessStatusVariant = (status) => {
-  const variants = {
-    'Permohonan': 'info',
-    'Semak': 'warning',
-    'Sokong': 'primary',
-    'Lulus': 'success'
+// Computed property for form validation
+const canSubmitForApproval = computed(() => {
+  const baseValidation = investigationData.value.keadaanSiasatan;
+  
+  if (investigationData.value.keadaanSiasatan === "lapangan") {
+    return (
+      baseValidation &&
+      investigationData.value.tarikhLawatan &&
+      investigationData.value.masaLawatan &&
+      investigationData.value.StatusPengesahanLawatan
+    );
   }
-  return variants[status] || 'primary'
-}
+  
+  return baseValidation;
+});
 
-const formatDateTime = (dateTimeString) => {
-  if (!dateTimeString) return '-'
-  const date = new Date(dateTimeString)
-  return date.toLocaleString('ms-MY')
-}
-
-const previewDocument = (dokumen) => {
-  console.log("Previewing document:", dokumen);
-  // Implement document preview functionality
-};
-
-const downloadDocument = (dokumen) => {
-  console.log("Downloading document:", dokumen);
-  // Implement document download functionality
-};
-
-// BQ Functions
-const openBQForm = () => {
-  editingBQ.value = null;
-  showBQModal.value = true;
-};
-
-const editBQ = (bq) => {
-  // Navigate to dedicated BQ drafting/editing page with current id and edit flag
-  router.push(
-    `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/draf-bq?edit=true`
+// Computed property for profiling form validation
+const isProfilingFormValid = computed(() => {
+  return (
+    profilingData.value.pengenalanId &&
+    profilingData.value.nama &&
+    profilingData.value.hadKifayahSyor &&
+    profilingData.value.assignSiasatan
   );
-};
+});
 
-const closeBQModal = () => {
-  showBQModal.value = false;
-  editingBQ.value = null;
-};
-
-const saveBQ = () => {
-  // Implement BQ save functionality
-  toast.success("BQ telah disimpan");
-  closeBQModal();
-};
-
-// Navigation Functions
-const openLaporanGambar = () => {
-  router.push(
-    `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/laporan-gambar`
-  );
-};
-
-const openLaporanTeknikal = () => {
-  router.push(
-    `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/laporan-teknikal`
-  );
-};
-
-const viewArahanKerja = () => {
-  router.push(
-    `/BF-BTN/permohonan/senarai-siasatan-lapangan/${route.params.id}/arahan-kerja`
-  );
-};
-
-const urusPemantauan = () => {
-  router.push(
-    `/BF-BTN/permohonan/senarai-siasatan-lapangan/${route.params.id}/pemantauan`
-  );
-};
-
-// Action Button Functions
-const handleSimpanDraf = async () => {
-  try {
-    processing.value = true;
-
-    // Implement save draft functionality
-    console.log("Saving draft...");
-
-    toast.success("Draf telah disimpan");
-  } catch (error) {
-    toast.error("Ralat semasa menyimpan draf");
-    console.error(error);
-  } finally {
-    processing.value = false;
+// Image handling methods
+const triggerFileInput = () => {
+  if (fileInputRef.value) {
+    fileInputRef.value.click();
   }
 };
 
-const handleSimpanDrafDanSahkan = async () => {
-  try {
-    processing.value = true;
-    actionType.value = "draft_confirm";
+const handleFileInputChange = (event) => {
+  const files = event.target.files;
+  if (files && files.length > 0) {
+    processFiles(Array.from(files));
+  }
+  // Reset input value so same file can be selected again
+  event.target.value = "";
+};
 
-    // Implement save draft and confirm completion functionality
-    console.log("Saving draft and confirming completion...");
-
-    // Update status lawatan
-    formData.value.statusLawatan = "selesai_lawatan";
-
-    toast.success("Draf telah disimpan dan status lawatan telah dikemaskini");
-  } catch (error) {
-    toast.error("Ralat semasa menyimpan dan mengesahkan");
-    console.error(error);
-  } finally {
-    processing.value = false;
-    actionType.value = "";
+const handleFileDrop = (event) => {
+  const files = event.dataTransfer.files;
+  if (files && files.length > 0) {
+    processFiles(Array.from(files));
   }
 };
 
-const handleSelesaiDanHantar = async () => {
-  try {
-    processing.value = true;
-    actionType.value = "complete_submit";
-
-    // Validate required fields before submission
-    if (
-      !formData.value.statusproses ||
-      formData.value.statusproses === "belum_selesai"
-    ) {
-      toast.error(
-        "Sila kemaskini Status Proses"
-      );
-      return;
+const processFiles = async (files) => {
+  const validFiles = files.filter((file) => {
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      console.error(`File ${file.name} is too large. Maximum 5MB allowed.`);
+      // You could show a toast notification here
+      return false;
     }
 
-    // Implement complete and submit functionality
-    console.log("Completing and submitting to approval...");
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      console.error(`File ${file.name} is not a valid image format.`);
+      // You could show a toast notification here
+      return false;
+    }
 
-    toast.success("Siasatan telah selesai dan dihantar untuk kelulusan");
+    return true;
+  });
 
-    // Navigate back to list
-    router.push("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad");
-  } catch (error) {
-    toast.error("Ralat semasa menyelesaikan dan menghantar");
-    console.error(error);
-  } finally {
-    processing.value = false;
-    actionType.value = "";
+  // Process each valid file
+  for (const file of validFiles) {
+    await processImageFile(file);
   }
+};
+
+const processImageFile = async (file) => {
+  // Create upload progress entry
+  const progressEntry = {
+    filename: file.name,
+    size: file.size,
+    progress: 0,
+  };
+  uploadProgress.value.push(progressEntry);
+
+  // Create image object with loading state
+  const uploadedImage = {
+    url: URL.createObjectURL(file),
+    filename: file.name,
+    caption: "",
+    file: file,
+    size: file.size,
+    loading: true,
+  };
+
+  uploadedImages.value.push(uploadedImage);
+
+  // Simulate upload progress
+  const progressInterval = setInterval(() => {
+    progressEntry.progress += Math.random() * 30;
+    if (progressEntry.progress >= 100) {
+      progressEntry.progress = 100;
+      clearInterval(progressInterval);
+
+      // Remove from progress and update image
+      const progressIndex = uploadProgress.value.indexOf(progressEntry);
+      if (progressIndex > -1) {
+        uploadProgress.value.splice(progressIndex, 1);
+      }
+
+      // Mark image as loaded
+      uploadedImage.loading = false;
+    }
+  }, 200);
+};
+
+const removeImage = (index) => {
+  // Revoke the object URL to free memory
+  URL.revokeObjectURL(uploadedImages.value[index].url);
+  uploadedImages.value.splice(index, 1);
+};
+
+const previewImage = (image) => {
+  previewingImage.value = image;
+  showPreviewModal.value = true;
+};
+
+// Form submission methods
+const handleSubmitLawatan = (formData) => {
+  console.log("Investigation form submitted:", formData);
+  // Handle form submission
 };
 
 const handleSimpan = async () => {
   try {
     processing.value = true;
-    actionType.value = "simpan";
+    actionType.value = "save";
 
-    // Validate required fields before submission
-    if (
-      !formData.value.statusproses ||
-      formData.value.statusproses === "belum_selesai"
-    ) {
-      toast.error(
-        "Sila kemaskini Status Proses"
-      );
-      return;
-    }
+    // Implement save functionality
+    console.log("Saving investigation data...", investigationData.value);
 
-    // Implement complete and submit functionality
-    console.log("Completing and submitting to approval...");
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    toast.success("Maklumat telah berjaya disimpan");
-
-    // Navigate back to list
-    //router.push("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad");
+    console.log("Investigation data saved successfully");
   } catch (error) {
-    toast.error("Ralat semasa menyelesaikan dan menghantar");
-    console.error(error);
+    console.error("Error saving investigation data:", error);
   } finally {
     processing.value = false;
     actionType.value = "";
   }
 };
 
-const handleBatal = () => {
-  router.push("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad");
+const handleHantarKelulusan = async () => {
+  try {
+    processing.value = true;
+    actionType.value = "submit";
+
+    // Validate required fields
+    if (!canSubmitForApproval.value) {
+      console.error("Please complete all required fields before submitting");
+      return;
+    }
+
+    // Implement submit for approval functionality
+    console.log("Submitting for approval...", investigationData.value);
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    console.log("Successfully submitted for approval");
+
+    // Navigate back to list or show success message
+    // navigateTo("/BF-BTN/tugasan");
+  } catch (error) {
+    console.error("Error submitting for approval:", error);
+  } finally {
+    processing.value = false;
+    actionType.value = "";
+  }
 };
 
-// Fetch application data on mount
+const handleKembali = () => {
+  // Navigate back to the task list
+  navigateTo("/BF-BTN/tugasan");
+};
+
+// Utility function for formatting file sizes
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
+
+// Enhanced modal functions
+const downloadImage = (image) => {
+  const link = document.createElement("a");
+  link.href = image.url;
+  link.download = image.filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const saveImageCaption = () => {
+  // Caption is already bound to the image object via v-model
+  // You could add validation or API call here if needed
+  console.log("Caption saved:", previewingImage.value.caption);
+  showPreviewModal.value = false;
+};
+
+// Profiling form methods
+const handleProfilingSubmit = (formData) => {
+  console.log("Profiling form submitted:", formData);
+  // Handle profiling form submission
+};
+
+const searchPengenalanId = async () => {
+  if (!profilingData.value.pengenalanId) {
+    console.error("Please enter an ID to search");
+      return;
+    }
+
+  try {
+    searchingId.value = true;
+    console.log(
+      "Searching for Pengenalan ID:",
+      profilingData.value.pengenalanId
+    );
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    // Mock data population (replace with actual API response)
+    profilingData.value.nama = "Mohd Ahmad bin Abdullah";
+    profilingData.value.hadKifayahSyor = "75.5";
+    profilingData.value.kategoriKeluargaAsnafSyor = "Fakir";
+    profilingData.value.kategoriAsnafSyor = "Asnaf Produktif";
+
+    console.log("Search completed successfully");
+  } catch (error) {
+    console.error("Error searching for ID:", error);
+  } finally {
+    searchingId.value = false;
+  }
+};
+
+const resetProfilingForm = () => {
+  // Reset all form fields to initial state
+  Object.keys(profilingData.value).forEach((key) => {
+    profilingData.value[key] = "";
+  });
+  console.log("Profiling form reset");
+};
+
+const saveProfilingDraft = async () => {
+  try {
+    savingDraft.value = true;
+    console.log("Saving profiling draft...", profilingData.value);
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log("Draft saved successfully");
+  } catch (error) {
+    console.error("Error saving draft:", error);
+  } finally {
+    savingDraft.value = false;
+  }
+};
+
+const submitProfiling = async () => {
+  if (!isProfilingFormValid.value) {
+    console.error("Please complete all required fields");
+      return;
+    }
+
+  try {
+    submittingProfile.value = true;
+    console.log("Submitting profiling data...", profilingData.value);
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    console.log("Profiling data submitted successfully");
+  } catch (error) {
+    console.error("Error submitting profiling data:", error);
+  } finally {
+    submittingProfile.value = false;
+  }
+};
+
+// Load data based on route parameter
 onMounted(() => {
-  console.log("onMounted executed"); // Debug log
+  const noBantuan = route.params.id || "NAS-2025-0001"; // Default to first record
+  const record = mockByNoBantuan[noBantuan];
+  const investigationRecord = mockInvestigationData[noBantuan];
   
-  // Implement API call to fetch application data
-  // This is mock data for now
-  formData.value = {
-    aid: "B102	Bantuan Binaan Rumah (Fakir)",
-    aidproduct: "Bantuan Binaan Rumah (Fakir)",
-    productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
-    entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
-    jumlahBantuan: 43000,
-    // nama: "Mohd Rosli bin Saad",
-    // alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
-    // jenisPengenalan: "No Pengenalan",
-    // myKad: "880701121234",
-    // noTelefon: "0123456789",
-    // emel: "rosli@gmail.com",
-    // statusKeluarga: "Fakir",
-    // statusIndividu: "Fakir",
-    // statusMultidimensi: "Asnaf Tidak Produktif",
-    // statusLawatan: "Perlu Diproses",
-  };
-
-  console.log("formData set:", formData.value); // Debug log
-
-  // Auto-populate laporan teknikal latar belakang from profiling
-  laporanTeknikal.value.latarBelakang =
-    `1. Keterangan Harta Benda:
-Binaan rumah daripada separa batu dan kayu.
-
-2. Status hakmilik tanah seperti berikut :
-No Lot : 3439
-Mukim : JERAM
-Daerah : KUALA SELANGOR
-Nama Pemilik : MOHD ROSLI BIN SAAD
-ANG Bahagian : 1/14
-Luas : 1.1635 HEKTAR
-Lain-lain : - NIL-
-
-3. Maklumat Isirumah :
-Ketua Keluarga : Pemohon (MISKIN)
-Pasangan : 1 orang isteri tinggal bersama
-Tanggungan : - NIL-
-Lain-lain : - NIL-`;
-laporanTeknikal.value.keperluan = `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
-Keadaan rumah tidak sempuma.
-
-Pemohon tidak mepunyai pendapatan yang mencukupi untuk membaiki kerosakan yang berlaku dirumahnya.
-Untuk rekod, rumah masih dalam keadaan baik untuk diduduki dan sesuai untuk dibaikpulih.`;
-
-laporanTeknikal.value.cadangan = `Dicadangkan kerja-kerja baikpulih berikut :
-
-1. Meroboh bahagian rumah yang rosak dan retak.
-2. Membina semula struktur bangunan rumah yang baru.
-3. Membaikpulih dan menaiktaraf pendawalan elektrik bahagian rumah yang terlibat.`;
-
-laporanTeknikal.value.nilaiKerja = "43000"
-  // Auto-calculate jumlah bantuan from BQ (mock calculation)
-  jumlahBantuan.value = 25000;
-  catatanPengesyoran.value =
-    "Cadangan kerja baik pulih bumbung bocor dan cat dinding luar untuk memastikan keselamatan dan keselesaan pemohon.";
+  if (record) {
+    Object.assign(formData.value, record);
+  }
+  
+  if (investigationRecord) {
+    Object.assign(investigationData.value, investigationRecord);
+  }
 });
 </script>
 
 <style lang="scss" scoped>
-// Custom animations and transitions
-.group:hover .group-hover\:text-blue-600 {
-  transition: color 0.2s ease-in-out;
+/* Table responsive enhancements */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
 
-// Enhanced focus states
+.scrollbar-thin::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background-color: #f3f4f6;
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+/* Enhanced table container */
+.table-container {
+  position: relative;
+}
+
+.table-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.table-container:hover::after {
+  opacity: 1;
+}
+
+/* Table minimum width for horizontal scrolling */
+.table-responsive {
+  min-width: 800px;
+}
+
+/* Mobile touch scrolling */
+@media (max-width: 768px) {
+  .scrollbar-thin {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Custom animations for image upload */
+.image-upload-enter-active,
+.image-upload-leave-active {
+  transition: all 0.3s ease;
+}
+
+.image-upload-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.image-upload-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+/* Hover effects for better interactivity */
+.group:hover .group-hover\:scale-105 {
+  transform: scale(1.05);
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions for progress bars */
+.progress-bar {
+  transition: width 0.3s ease-in-out;
+}
+
+/* Enhanced focus states for accessibility */
 .focus\:ring-2:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
-}
-
-// Table row hover effect
-.hover\:bg-gray-50:hover {
-  background-color: #f9fafb;
-}
-
-// Document card styling
-.border-gray-200 {
-  border-color: #e5e7eb;
-}
-
-.bg-gray-50 {
-  background-color: #f9fafb;
 }
 </style>
