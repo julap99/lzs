@@ -526,7 +526,6 @@
                     v-model="edu.jenis_sekolah"
                   />
 
-
                   <!-- Kategori select is always shown -->
                   <FormKit
                     type="select"
@@ -538,7 +537,10 @@
                   />
                 </div>
 
-                <div v-if="edu.kategori_sekolah === 'IPT'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div
+                  v-if="edu.kategori_sekolah === 'IPT'"
+                  class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
+                >
                   <FormKit
                     type="date"
                     :name="`edu${index}TarikhMulaPengajian`"
@@ -588,7 +590,13 @@
                   </div>
 
                   <!-- Kategori Sekolah Rendah - shown when kategori sekolah is SRA or SRK -->
-                  <div v-if="edu.kategori_sekolah === 'SRA' || edu.kategori_sekolah === 'SRK'" class="mt-4">
+                  <div
+                    v-if="
+                      edu.kategori_sekolah === 'SRA' ||
+                      edu.kategori_sekolah === 'SRK'
+                    "
+                    class="mt-4"
+                  >
                     <label class="block text-sm font-medium text-black-700 mb-4"
                       >Kategori Sekolah Rendah</label
                     >
@@ -1188,7 +1196,7 @@
                   }"
                 />
               </div>
-              
+
               <!-- Lain-lain Sebab Tiada Akaun -->
               <div v-if="showLainLainSebabTiadaAkaun" class="mt-4">
                 <FormKit
@@ -1673,10 +1681,16 @@
                 />
 
                 <div
-                  v-if="['musafir','mukim'].includes(formData.addressInfo.kategori_menetap)"
+                  v-if="
+                    ['musafir', 'mukim'].includes(
+                      formData.addressInfo.kategori_menetap
+                    )
+                  "
                   class="space-y-2"
                 >
-                  <label class="block text-sm font-medium text-black-700">Kelulusan Khas</label>
+                  <label class="block text-sm font-medium text-black-700"
+                    >Kelulusan Khas</label
+                  >
                   <FormKit
                     type="radio"
                     name="kelulusan_khas"
@@ -1754,9 +1768,6 @@
                 }"
               />
 
-
-
-
               <FormKit
                 type="select"
                 name="keadaan_kediaman"
@@ -1769,7 +1780,6 @@
                 }"
               />
             </div>
-
 
             <!-- Kos Tempat Tinggal Section -->
             <div class="mt-6">
@@ -2087,7 +2097,6 @@
             </div>
           </div>
         </FormKit>
-
 
         <!-- Section A Form - Step 10: Maklumat Pekerjaan -->
         <FormKit
@@ -2488,7 +2497,6 @@
             </div>
           </div>
         </FormKit>
-
       </template>
     </rs-card>
 
@@ -2811,7 +2819,10 @@
               />
 
               <!-- Taraf Penduduk Tetap -->
-              <div v-if="showLainLainWarganegara" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div
+                v-if="showLainLainWarganegara"
+                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-black-700"
                     >Taraf Penduduk Tetap</label
@@ -3115,7 +3126,9 @@
 
               <!-- Kelulusan Khas (ikuti gaya label Muallaf) -->
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-black-700">Kelulusan Khas</label>
+                <label class="block text-sm font-medium text-black-700"
+                  >Kelulusan Khas</label
+                >
                 <FormKit
                   type="radio"
                   name="kelulusan_khas_tanggungan"
@@ -3227,8 +3240,6 @@
               >
                 <h5 class="font-medium mb-3">Maklumat Muallaf</h5>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 
-
                   <!-- Nama Selepas Islam (Muallaf) -->
                   <!-- <FormKit
                     type="text"
@@ -3261,18 +3272,15 @@
                       getCurrentTanggungan().tarikh_masuk_kfam_tanggungan
                     "
                   />
-                   <!-- Nama Sebelum Islam (Muallaf) -->
-                   <FormKit
+                  <!-- Nama Sebelum Islam (Muallaf) -->
+                  <FormKit
                     type="text"
                     name="nama_lain_tanggungan"
                     label="Nama Lain (Jika ada) "
                     placeholder="Masukkan nama lain"
                     validation="required"
-                    v-model="
-                      getCurrentTanggungan().nama_lain_tanggungan
-                    "
+                    v-model="getCurrentTanggungan().nama_lain_tanggungan"
                   />
-      
 
                   <!-- Tarikh Keluar Muallaf (Auto-calculated) -->
                   <!-- <FormKit
@@ -3286,14 +3294,14 @@
 
                   <!-- Dokumen Pengislaman -->
 
-                    <FormKit
-                      type="file"
-                      name="dokumen_pengislaman_tanggungan"
-                      label="Dokumen Pengislaman "
-                      help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                    />
+                  <FormKit
+                    type="file"
+                    name="dokumen_pengislaman_tanggungan"
+                    label="Dokumen Pengislaman "
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  />
                 </div>
               </div>
             </div>
@@ -3328,7 +3336,9 @@
           :actions="false"
           id="sectionB3"
         >
-          <h3 class="text-lg font-semibold mb-4">3. Maklumat Perbankan Tanggungan</h3>
+          <h3 class="text-lg font-semibold mb-4">
+            3. Maklumat Perbankan Tanggungan
+          </h3>
 
           <div class="mb-6">
             <!-- Kaedah Pembayaran -->
@@ -3348,7 +3358,8 @@
                         getCurrentTanggungan().kaedah_pembayaran_tanggungan
                       "
                       :validation-messages="{
-                        required: 'Sila pilih sama ada tanggungan mempunyai akaun bank',
+                        required:
+                          'Sila pilih sama ada tanggungan mempunyai akaun bank',
                       }"
                     />
                   </div>
@@ -3459,11 +3470,14 @@
                   />
 
                   <!-- Multiple Pengenalan IDs (show only if jenis akaun = Bersama) -->
-                  <div v-if="account.jenis_akaun === 'bersama'" class="md:col-span-2">
+                  <div
+                    v-if="account.jenis_akaun === 'bersama'"
+                    class="md:col-span-2"
+                  >
                     <label class="block text-sm font-medium text-black-700 mb-4"
                       >Maklumat Pengenalan ID (Maksimum 3)</label
                     >
-                    
+
                     <!-- Existing single fields for backward compatibility -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <FormKit
@@ -3490,7 +3504,11 @@
                     </div>
 
                     <!-- Multiple pengenalan IDs -->
-                    <div v-for="(pengenalan, idIndex) in account.pengenalan_ids" :key="idIndex" class="mb-4 p-3 border border-gray-200 rounded-lg">
+                    <div
+                      v-for="(pengenalan, idIndex) in account.pengenalan_ids"
+                      :key="idIndex"
+                      class="mb-4 p-3 border border-gray-200 rounded-lg"
+                    >
                       <div class="flex justify-end items-center mb-2">
                         <button
                           type="button"
@@ -3554,7 +3572,6 @@
               </div>
             </div>
 
-
             <!-- B. Jika tidak mempunyai akaun bank -->
             <div
               v-if="
@@ -3577,7 +3594,7 @@
                   }"
                 />
               </div>
-              
+
               <!-- Lain-lain Sebab Tiada Akaun -->
               <div v-if="showLainLainSebabTiadaAkaunTanggungan" class="mt-4">
                 <FormKit
@@ -3589,7 +3606,10 @@
                   :validation-messages="{
                     required: 'Sila nyatakan sebab lain',
                   }"
-                  v-model="getCurrentTanggungan().lain_lain_sebab_tiada_akaun_tanggungan"
+                  v-model="
+                    getCurrentTanggungan()
+                      .lain_lain_sebab_tiada_akaun_tanggungan
+                  "
                 />
               </div>
             </div>
@@ -3616,7 +3636,7 @@
           </div>
         </FormKit>
 
-                <!-- Section B Form - Step 4: Maklumat Pendidikan Tanggungan -->
+        <!-- Section B Form - Step 4: Maklumat Pendidikan Tanggungan -->
         <FormKit
           v-if="currentStepB === 4"
           type="form"
@@ -3624,7 +3644,9 @@
           :actions="false"
           id="sectionB4"
         >
-          <h3 class="text-lg font-semibold mb-4">4. Maklumat Pendidikan Tanggungan</h3>
+          <h3 class="text-lg font-semibold mb-4">
+            4. Maklumat Pendidikan Tanggungan
+          </h3>
 
           <!-- A. Maklumat Pendidikan Asas -->
           <div class="mb-8">
@@ -3671,7 +3693,10 @@
 
             <!-- Lain-lain Pendidikan Tertinggi -->
             <div
-              v-if="getCurrentTanggungan().pendidikan_tertinggi_tanggungan === 'Lain-lain'"
+              v-if="
+                getCurrentTanggungan().pendidikan_tertinggi_tanggungan ===
+                'Lain-lain'
+              "
               class="mt-4"
             >
               <FormKit
@@ -3679,7 +3704,9 @@
                 name="lain_pendidikan_tertinggi_tanggungan"
                 label="Lain-lain Pendidikan Tertinggi"
                 validation="required"
-                v-model="getCurrentTanggungan().lain_pendidikan_tertinggi_tanggungan"
+                v-model="
+                  getCurrentTanggungan().lain_pendidikan_tertinggi_tanggungan
+                "
               />
             </div>
           </div>
@@ -3719,7 +3746,9 @@
           <div
             v-if="
               getCurrentTanggungan().tahap_pendidikan_dicapai &&
-              getCurrentTanggungan().tahap_pendidikan_dicapai.includes('Lain-lain')
+              getCurrentTanggungan().tahap_pendidikan_dicapai.includes(
+                'Lain-lain'
+              )
             "
             class="mt-4"
           >
@@ -3745,7 +3774,10 @@
             />
           </div>
 
-          <div v-if="getCurrentTanggungan().masih_bersekolah === 'Y'" class="mb-8">
+          <div
+            v-if="getCurrentTanggungan().masih_bersekolah === 'Y'"
+            class="mb-8"
+          >
             <h4 class="text-lg font-semibold mb-4">
               Maklumat Sekolah / Institusi
             </h4>
@@ -3787,7 +3819,6 @@
                     v-model="edu.jenis_sekolah"
                   />
 
-
                   <!-- Kategori select is always shown -->
                   <FormKit
                     type="select"
@@ -3799,7 +3830,10 @@
                   />
                 </div>
 
-                <div v-if="edu.kategori_sekolah === 'IPT'" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div
+                  v-if="edu.kategori_sekolah === 'IPT'"
+                  class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
+                >
                   <FormKit
                     type="date"
                     :name="`eduTanggungan${index}TarikhMulaPengajian`"
@@ -3849,7 +3883,13 @@
                   </div>
 
                   <!-- Kategori Sekolah Rendah - shown when kategori sekolah is SRA or SRK -->
-                  <div v-if="edu.kategori_sekolah === 'SRA' || edu.kategori_sekolah === 'SRK'" class="mt-4">
+                  <div
+                    v-if="
+                      edu.kategori_sekolah === 'SRA' ||
+                      edu.kategori_sekolah === 'SRK'
+                    "
+                    class="mt-4"
+                  >
                     <label class="block text-sm font-medium text-black-700 mb-4"
                       >Kategori Sekolah Rendah</label
                     >
@@ -4047,7 +4087,9 @@
                 </div>
 
                 <!-- Asrama/Rumah Sewa -->
-                <div v-if="getCurrentTanggungan().tinggal_bersama_keluarga === 'T'">
+                <div
+                  v-if="getCurrentTanggungan().tinggal_bersama_keluarga === 'T'"
+                >
                   <FormKit
                     type="text"
                     name="asrama_rumah_sewa_tanggungan"
@@ -4114,7 +4156,13 @@
             </div>
 
             <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
-            <div v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Sakit Kronik'" class="mb-8">
+            <div
+              v-if="
+                getCurrentTanggungan().tahap_kesihatan_tanggungan ===
+                'Sakit Kronik'
+              "
+              class="mb-8"
+            >
               <h5 class="text-lg font-semibold mb-4">Maklumat Sakit Kronik</h5>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4125,7 +4173,9 @@
                   label="Keadaan Kesihatan "
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
-                  v-model="getCurrentTanggungan().keadaan_kesihatan_sakit_tanggungan"
+                  v-model="
+                    getCurrentTanggungan().keadaan_kesihatan_sakit_tanggungan
+                  "
                   placeholder="Pilih keadaan kesihatan"
                 />
 
@@ -4136,7 +4186,9 @@
                   label="Kos Penjagaan "
                   :options="['Berbayar', 'Tidak Berbayar']"
                   validation="required"
-                  v-model="getCurrentTanggungan().kos_penjagaan_sakit_tanggungan"
+                  v-model="
+                    getCurrentTanggungan().kos_penjagaan_sakit_tanggungan
+                  "
                   placeholder="Pilih kos penjagaan"
                 />
               </div>
@@ -4149,14 +4201,19 @@
                   label="Jumlah Perbelanjaan Bulanan (RM) "
                   validation="required"
                   placeholder="9999.99"
-                  v-model="getCurrentTanggungan().perbelanjaan_bulanan_sakit_tanggungan"
+                  v-model="
+                    getCurrentTanggungan().perbelanjaan_bulanan_sakit_tanggungan
+                  "
                   help="Format: 9999.99"
                 />
               </div>
             </div>
 
             <!-- B. Jika Tahap Kesihatan = "OKU" -->
-            <div v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'" class="mb-8">
+            <div
+              v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'"
+              class="mb-8"
+            >
               <h5 class="text-lg font-semibold mb-4">Maklumat OKU</h5>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4167,7 +4224,9 @@
                   label="Kesempurnaan Fizikal "
                   :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
                   validation="required"
-                  v-model="getCurrentTanggungan().kesempurnaan_fizikal_tanggungan"
+                  v-model="
+                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan
+                  "
                   placeholder="Pilih kesempurnaan fizikal"
                 />
 
@@ -4202,14 +4261,21 @@
                   label="Jumlah Perbelanjaan Bulanan (RM) "
                   validation="required"
                   placeholder="9999.99"
-                  v-model="getCurrentTanggungan().perbelanjaan_bulanan_oku_tanggungan"
+                  v-model="
+                    getCurrentTanggungan().perbelanjaan_bulanan_oku_tanggungan
+                  "
                   help="Format: 9999.99"
                 />
               </div>
             </div>
 
             <!-- C. Jika Tahap Kesihatan = "Uzur" -->
-            <div v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Uzur'" class="mb-8">
+            <div
+              v-if="
+                getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Uzur'
+              "
+              class="mb-8"
+            >
               <h5 class="text-lg font-semibold mb-4">Maklumat Uzur</h5>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4220,7 +4286,9 @@
                   label="Keadaan Kesihatan "
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
-                  v-model="getCurrentTanggungan().keadaan_kesihatan_uzur_tanggungan"
+                  v-model="
+                    getCurrentTanggungan().keadaan_kesihatan_uzur_tanggungan
+                  "
                   placeholder="Pilih keadaan kesihatan"
                 />
 
@@ -4244,7 +4312,9 @@
                   label="Jumlah Perbelanjaan Bulanan (RM) "
                   validation="required"
                   placeholder="9999.99"
-                  v-model="getCurrentTanggungan().perbelanjaan_bulanan_uzur_tanggungan"
+                  v-model="
+                    getCurrentTanggungan().perbelanjaan_bulanan_uzur_tanggungan
+                  "
                   help="Format: 9999.99"
                 />
               </div>
@@ -4268,7 +4338,9 @@
                 multiple="true"
                 help="Format yang dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
                 validation="required"
-                v-model="getCurrentTanggungan().dokumen_sokongan_kesihatan_tanggungan"
+                v-model="
+                  getCurrentTanggungan().dokumen_sokongan_kesihatan_tanggungan
+                "
               />
             </div>
           </div>
@@ -4532,10 +4604,7 @@
                 />
 
                 <!-- 3.2.1 Lain-lain Sektor Pekerjaan -->
-                <div
-                  v-if="showLainLainSektorTanggungan"
-                  class="md:col-span-2"
-                >
+                <div v-if="showLainLainSektorTanggungan" class="md:col-span-2">
                   <FormKit
                     type="text"
                     name="lain_lain_sektor_pekerjaan_tanggungan"
@@ -5326,7 +5395,7 @@ definePageMeta({
 // BREADCRUMB CONFIGURATION
 // ============================================================================
 const breadcrumb = ref([
-{
+  {
     name: "Profiling",
     type: "link",
     path: "/BF-PRF",
@@ -5391,191 +5460,191 @@ const stepsB = [
 // Mock data for Sekolah Agama
 const sekolahAgamaOptions = [
   // Sekolah Rendah Agama (SRA)
-  { 
-    label: "SRA Al-Amin Kuala Lumpur", 
-    value: "sra-al-amin-kl", 
+  {
+    label: "SRA Al-Amin Kuala Lumpur",
+    value: "sra-al-amin-kl",
     kategori: "SRA",
-    alamat1: "Jalan Ampang, Kuala Lumpur", 
-    alamat2: "Wilayah Persekutuan", 
+    alamat1: "Jalan Ampang, Kuala Lumpur",
+    alamat2: "Wilayah Persekutuan",
     alamat3: "50450 Kuala Lumpur",
     daerah: "Kuala Lumpur",
     bandar: "Kuala Lumpur",
-    poskod: "50450"
+    poskod: "50450",
   },
-  { 
-    label: "SRA Al-Hidayah Shah Alam", 
-    value: "sra-al-hidayah-sa", 
+  {
+    label: "SRA Al-Hidayah Shah Alam",
+    value: "sra-al-hidayah-sa",
     kategori: "SRA",
-    alamat1: "Jalan Masjid, Shah Alam", 
-    alamat2: "Selangor", 
+    alamat1: "Jalan Masjid, Shah Alam",
+    alamat2: "Selangor",
     alamat3: "40000 Shah Alam",
     daerah: "Shah Alam",
     bandar: "Shah Alam",
-    poskod: "40000"
+    poskod: "40000",
   },
-  { 
-    label: "SRA Al-Ikhlas Petaling Jaya", 
-    value: "sra-al-ikhlas-pj", 
+  {
+    label: "SRA Al-Ikhlas Petaling Jaya",
+    value: "sra-al-ikhlas-pj",
     kategori: "SRA",
-    alamat1: "Jalan SS2, Petaling Jaya", 
-    alamat2: "Selangor", 
+    alamat1: "Jalan SS2, Petaling Jaya",
+    alamat2: "Selangor",
     alamat3: "47300 Petaling Jaya",
     daerah: "Petaling Jaya",
     bandar: "Petaling Jaya",
-    poskod: "47300"
+    poskod: "47300",
   },
   // KAFA
-  { 
-    label: "KAFA Al-Falah Kuala Lumpur", 
-    value: "kafa-al-falah-kl", 
+  {
+    label: "KAFA Al-Falah Kuala Lumpur",
+    value: "kafa-al-falah-kl",
     kategori: "KAFA",
-    alamat1: "Jalan TAR, Kuala Lumpur", 
-    alamat2: "Wilayah Persekutuan", 
+    alamat1: "Jalan TAR, Kuala Lumpur",
+    alamat2: "Wilayah Persekutuan",
     alamat3: "50100 Kuala Lumpur",
     daerah: "Kuala Lumpur",
     bandar: "Kuala Lumpur",
-    poskod: "50100"
+    poskod: "50100",
   },
-  { 
-    label: "KAFA Al-Munawwarah Klang", 
-    value: "kafa-al-munawwarah-klang", 
+  {
+    label: "KAFA Al-Munawwarah Klang",
+    value: "kafa-al-munawwarah-klang",
     kategori: "KAFA",
-    alamat1: "Jalan Meru, Klang", 
-    alamat2: "Selangor", 
+    alamat1: "Jalan Meru, Klang",
+    alamat2: "Selangor",
     alamat3: "41050 Klang",
     daerah: "Klang",
     bandar: "Klang",
-    poskod: "41050"
+    poskod: "41050",
   },
   // IPT (Islamic)
-  { 
-    label: "Universiti Islam Antarabangsa Malaysia (UIAM)", 
-    value: "uiam", 
+  {
+    label: "Universiti Islam Antarabangsa Malaysia (UIAM)",
+    value: "uiam",
     kategori: "IPT",
-    alamat1: "Jalan Gombak, Gombak", 
-    alamat2: "Selangor", 
+    alamat1: "Jalan Gombak, Gombak",
+    alamat2: "Selangor",
     alamat3: "53100 Gombak",
     daerah: "Gombak",
     bandar: "Gombak",
-    poskod: "53100"
+    poskod: "53100",
   },
-  { 
-    label: "Kolej Universiti Islam Selangor (KUIS)", 
-    value: "kuis", 
+  {
+    label: "Kolej Universiti Islam Selangor (KUIS)",
+    value: "kuis",
     kategori: "IPT",
-    alamat1: "Bandar Seri Putra, Kajang", 
-    alamat2: "Selangor", 
+    alamat1: "Bandar Seri Putra, Kajang",
+    alamat2: "Selangor",
     alamat3: "43000 Kajang",
     daerah: "Kajang",
     bandar: "Kajang",
-    poskod: "43000"
-  }
+    poskod: "43000",
+  },
 ];
 
 // Mock data for Sekolah Kebangsaan
 const sekolahKebangsaanOptions = [
   // Sekolah Rendah Kebangsaan (SRK)
-  { 
-    label: "SK Taman Tun Dr Ismail", 
-    value: "sk-ttdi", 
+  {
+    label: "SK Taman Tun Dr Ismail",
+    value: "sk-ttdi",
     kategori: "SRK",
-    alamat1: "Jalan TTD1, Taman Tun Dr Ismail", 
-    alamat2: "Kuala Lumpur", 
+    alamat1: "Jalan TTD1, Taman Tun Dr Ismail",
+    alamat2: "Kuala Lumpur",
     alamat3: "60000 Kuala Lumpur",
     daerah: "Kuala Lumpur",
     bandar: "Kuala Lumpur",
-    poskod: "60000"
+    poskod: "60000",
   },
-  { 
-    label: "SK Bandar Utama", 
-    value: "sk-bandar-utama", 
+  {
+    label: "SK Bandar Utama",
+    value: "sk-bandar-utama",
     kategori: "SRK",
-    alamat1: "Jalan BU 3/1, Bandar Utama", 
-    alamat2: "Petaling Jaya", 
+    alamat1: "Jalan BU 3/1, Bandar Utama",
+    alamat2: "Petaling Jaya",
     alamat3: "47800 Petaling Jaya",
     daerah: "Petaling Jaya",
     bandar: "Petaling Jaya",
-    poskod: "47800"
+    poskod: "47800",
   },
-  { 
-    label: "SK Seksyen 7, Shah Alam", 
-    value: "sk-seksyen-7-sa", 
+  {
+    label: "SK Seksyen 7, Shah Alam",
+    value: "sk-seksyen-7-sa",
     kategori: "SRK",
-    alamat1: "Jalan Seksyen 7, Shah Alam", 
-    alamat2: "Selangor", 
+    alamat1: "Jalan Seksyen 7, Shah Alam",
+    alamat2: "Selangor",
     alamat3: "40000 Shah Alam",
     daerah: "Shah Alam",
     bandar: "Shah Alam",
-    poskod: "40000"
+    poskod: "40000",
   },
   // Sekolah Menengah Kebangsaan (SEK.MEN)
-  { 
-    label: "SMK Taman Melawati", 
-    value: "smk-taman-melawati", 
+  {
+    label: "SMK Taman Melawati",
+    value: "smk-taman-melawati",
     kategori: "SEK.MEN",
-    alamat1: "Jalan Melawati, Taman Melawati", 
-    alamat2: "Kuala Lumpur", 
+    alamat1: "Jalan Melawati, Taman Melawati",
+    alamat2: "Kuala Lumpur",
     alamat3: "53100 Kuala Lumpur",
     daerah: "Kuala Lumpur",
     bandar: "Kuala Lumpur",
-    poskod: "53100"
+    poskod: "53100",
   },
-  { 
-    label: "SMK Bandar Baru Bangi", 
-    value: "smk-bandar-baru-bangi", 
+  {
+    label: "SMK Bandar Baru Bangi",
+    value: "smk-bandar-baru-bangi",
     kategori: "SEK.MEN",
-    alamat1: "Jalan 2/1, Bandar Baru Bangi", 
-    alamat2: "Selangor", 
+    alamat1: "Jalan 2/1, Bandar Baru Bangi",
+    alamat2: "Selangor",
     alamat3: "43650 Bandar Baru Bangi",
     daerah: "Bangi",
     bandar: "Bangi",
-    poskod: "43650"
+    poskod: "43650",
   },
-  { 
-    label: "SMK Seksyen 18, Shah Alam", 
-    value: "smk-seksyen-18-sa", 
+  {
+    label: "SMK Seksyen 18, Shah Alam",
+    value: "smk-seksyen-18-sa",
     kategori: "SEK.MEN",
-    alamat1: "Jalan Seksyen 18, Shah Alam", 
-    alamat2: "Selangor", 
+    alamat1: "Jalan Seksyen 18, Shah Alam",
+    alamat2: "Selangor",
     alamat3: "40000 Shah Alam",
     daerah: "Shah Alam",
     bandar: "Shah Alam",
-    poskod: "40000"
+    poskod: "40000",
   },
   // IPT (Public/Private)
-  { 
-    label: "Universiti Malaya (UM)", 
-    value: "um", 
+  {
+    label: "Universiti Malaya (UM)",
+    value: "um",
     kategori: "IPT",
-    alamat1: "Jalan Universiti, Kuala Lumpur", 
-    alamat2: "Wilayah Persekutuan", 
+    alamat1: "Jalan Universiti, Kuala Lumpur",
+    alamat2: "Wilayah Persekutuan",
     alamat3: "50603 Kuala Lumpur",
     daerah: "Kuala Lumpur",
     bandar: "Kuala Lumpur",
-    poskod: "50603"
+    poskod: "50603",
   },
-  { 
-    label: "Universiti Putra Malaysia (UPM)", 
-    value: "upm", 
+  {
+    label: "Universiti Putra Malaysia (UPM)",
+    value: "upm",
     kategori: "IPT",
-    alamat1: "Universiti Putra Malaysia", 
-    alamat2: "Serdang, Seri Kembangan", 
+    alamat1: "Universiti Putra Malaysia",
+    alamat2: "Serdang, Seri Kembangan",
     alamat3: "43400 UPM Serdang",
     daerah: "Serdang",
     bandar: "Seri Kembangan",
-    poskod: "43400"
+    poskod: "43400",
   },
-  { 
-    label: "Universiti Teknologi Malaysia (UTM)", 
-    value: "utm", 
+  {
+    label: "Universiti Teknologi Malaysia (UTM)",
+    value: "utm",
     kategori: "IPT",
-    alamat1: "Jalan Sultan Yahya Petra", 
-    alamat2: "Kuala Lumpur", 
+    alamat1: "Jalan Sultan Yahya Petra",
+    alamat2: "Kuala Lumpur",
     alamat3: "54100 Kuala Lumpur",
     daerah: "Kuala Lumpur",
     bandar: "Kuala Lumpur",
-    poskod: "54100"
-  }
+    poskod: "54100",
+  },
 ];
 
 // Combined school options for backward compatibility
@@ -5587,8 +5656,8 @@ const schoolOptions = [...sekolahAgamaOptions, ...sekolahKebangsaanOptions];
 // Computed property to get filtered school options based on kategori sekolah
 const getFilteredSchoolOptions = (kategoriSekolah) => {
   if (!kategoriSekolah) return schoolOptions;
-  
-  return schoolOptions.filter(school => school.kategori === kategoriSekolah);
+
+  return schoolOptions.filter((school) => school.kategori === kategoriSekolah);
 };
 
 // ============================================================================
@@ -5827,7 +5896,6 @@ const formData = ref({
   tahun_akhir_pinjaman: "",
   dokumen_perjanjian_pinjaman: null,
 
-
   // Section J - Pengesahan
   pengesahan: {
     dibantu_penolong_amil: "",
@@ -5889,7 +5957,6 @@ const formData = ref({
   // Section B (Tanggungan) - Maklumat Peribadi Tanggungan
   // Note: Individual tanggungan fields are now handled in tanggunganList array
   // These fields are kept for backward compatibility but will be replaced
-
 
   // Tanggungan array for multiple dependents
   tanggungan: [],
@@ -6224,7 +6291,6 @@ const addBankAccount = () => {
 const removeBankAccount = (index) => {
   formData.value.bank_accounts.splice(index, 1);
 };
-
 
 // Helper to get swift code for a given bank value
 const getSwiftCodeForBank = (bankValue) => {
@@ -6661,7 +6727,7 @@ watch(
   (newVal) => {
     const count = parseInt(newVal) || 0;
     isteriList.value = Array(count).fill({});
-    formData.value.isteri_list = Array(count).fill({ no_kp: '', nama: '' });
+    formData.value.isteri_list = Array(count).fill({ no_kp: "", nama: "" });
   }
 );
 
@@ -6726,15 +6792,14 @@ watch(
   { immediate: true }
 );
 
-
 // Ensure all existing tanggungan bank accounts have pengenalan_ids field
 watch(
   () => tanggunganList.value,
   (tanggunganList) => {
     if (tanggunganList) {
-      tanggunganList.forEach(tanggungan => {
+      tanggunganList.forEach((tanggungan) => {
         if (tanggungan.bank_accounts) {
-          tanggungan.bank_accounts.forEach(account => {
+          tanggungan.bank_accounts.forEach((account) => {
             if (!account.pengenalan_ids) {
               account.pengenalan_ids = [];
             }
@@ -7428,6 +7493,7 @@ onMounted(() => {
     ...formData.value,
     // Mock data for Maklumat Peribadi
     jenis_id: "mykad",
+    dokumen_id: "mykad.pdf",
     no_pengenalan: "770319035991",
     nama: "Adnan bin Abu",
     warganegara: "Malaysia",
@@ -8154,8 +8220,6 @@ const handleSaveStepA11 = async () => {
   }
 };
 
-
-
 // ============================================================================
 // STEP SAVE FUNCTIONS - SECTION B
 // ============================================================================
@@ -8286,7 +8350,6 @@ const handleSaveStepB11 = async () => {
   }
 };
 
-
 // ============================================================================
 // EDUCATION ENTRIES MANAGEMENT FUNCTIONS
 // ============================================================================
@@ -8325,17 +8388,17 @@ const onSelectSchool = (index, selectedValue) => {
   if (!selected) return;
   const entry = formData.value.education_entries[index];
   if (!entry) return;
-  
+
   // Auto-check kategori sekolah based on selected school
   entry.kategori_sekolah = selected.kategori;
-  
+
   // Auto-check sekolah rendah kategori if it's a religious school
-  if (selected.kategori === 'SRA' || selected.kategori === 'KAFA') {
-    entry.sekolah_rendah_kategori = ['agama'];
-  } else if (selected.kategori === 'SRK' || selected.kategori === 'SEK.MEN') {
-    entry.sekolah_rendah_kategori = ['kebangsaan'];
+  if (selected.kategori === "SRA" || selected.kategori === "KAFA") {
+    entry.sekolah_rendah_kategori = ["agama"];
+  } else if (selected.kategori === "SRK" || selected.kategori === "SEK.MEN") {
+    entry.sekolah_rendah_kategori = ["kebangsaan"];
   }
-  
+
   // Populate address fields
   entry.alamat_sekolah_1 = selected.alamat1 || "";
   entry.alamat_sekolah_2 = selected.alamat2 || "";
@@ -8353,7 +8416,7 @@ const addEducationEntryTanggungan = () => {
   if (!currentTanggungan.education_entries) {
     currentTanggungan.education_entries = [];
   }
-  
+
   currentTanggungan.education_entries.push({
     jenis_sekolah: "",
     sekolah_rendah_kategori: [],
@@ -8393,17 +8456,17 @@ const onSelectSchoolTanggungan = (index, selectedValue) => {
   if (!currentTanggungan || !currentTanggungan.education_entries) return;
   const entry = currentTanggungan.education_entries[index];
   if (!entry) return;
-  
+
   // Auto-check kategori sekolah based on selected school
   entry.kategori_sekolah = selected.kategori;
-  
+
   // Auto-check sekolah rendah kategori if it's a religious school
-  if (selected.kategori === 'SRA' || selected.kategori === 'KAFA') {
-    entry.sekolah_rendah_kategori = ['agama'];
-  } else if (selected.kategori === 'SRK' || selected.kategori === 'SEK.MEN') {
-    entry.sekolah_rendah_kategori = ['kebangsaan'];
+  if (selected.kategori === "SRA" || selected.kategori === "KAFA") {
+    entry.sekolah_rendah_kategori = ["agama"];
+  } else if (selected.kategori === "SRK" || selected.kategori === "SEK.MEN") {
+    entry.sekolah_rendah_kategori = ["kebangsaan"];
   }
-  
+
   // Populate address fields
   entry.alamat_sekolah_1 = selected.alamat1 || "";
   entry.alamat_sekolah_2 = selected.alamat2 || "";
@@ -8421,7 +8484,7 @@ const addBankAccountTanggungan = () => {
   if (!currentTanggungan.bank_accounts) {
     currentTanggungan.bank_accounts = [];
   }
-  
+
   currentTanggungan.bank_accounts.push({
     nama_bank: "",
     no_akaun_bank: "",
@@ -8449,7 +8512,7 @@ const addPengenalanIdTanggungan = (accountIndex) => {
     account.pengenalan_ids.push({
       id: "",
       nama: "",
-      hubungan: ""
+      hubungan: "",
     });
   }
 };
