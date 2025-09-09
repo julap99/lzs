@@ -5975,6 +5975,146 @@ onMounted(() => {
       }),
     },
   ];
+
+  // Mock MyKad upload similar to surat nikah
+  formData.value.dokumen_id = [
+    {
+      name: "mykad_sample.png",
+      size: 102400, // 100KB in bytes
+      type: "image/png",
+      file: new File(["mock content"], "mykad_sample.png", {
+        type: "image/png",
+      }),
+    },
+  ];
+
+  // Mock Sijil Pendidikan
+  formData.value.sijil_pendidikan = [
+    {
+      name: "sijil_pendidikan_sample.pdf",
+      size: 512000,
+      type: "application/pdf",
+      file: new File(["mock content"], "sijil_pendidikan_sample.pdf", {
+        type: "application/pdf",
+      }),
+    },
+  ];
+
+  // Mock Dokumen Pengislaman
+  formData.value.dokumen_pengislaman = [
+    {
+      name: "dokumen_pengislaman_sample.pdf",
+      size: 350000,
+      type: "application/pdf",
+      file: new File(["mock content"], "dokumen_pengislaman_sample.pdf", {
+        type: "application/pdf",
+      }),
+    },
+  ];
+
+  // Mock Dokumen Sokongan Kesihatan
+  formData.value.dokumen_sokongan_kesihatan = [
+    {
+      name: "dokumen_kesihatan_sample.pdf",
+      size: 420000,
+      type: "application/pdf",
+      file: new File(["mock content"], "dokumen_kesihatan_sample.pdf", {
+        type: "application/pdf",
+      }),
+    },
+  ];
+
+  // Mock Dokumen Perjanjian Sewa (alamat)
+  if (formData.value.addressInfo) {
+    formData.value.addressInfo.dokumen_perjanjian_sewa = [
+      {
+        name: "perjanjian_sewa_sample.pdf",
+        size: 600000,
+        type: "application/pdf",
+        file: new File(["mock content"], "perjanjian_sewa_sample.pdf", {
+          type: "application/pdf",
+        }),
+      },
+    ];
+  }
+
+  // Mock Dokumen Pemilikan Harta
+  formData.value.dokumen_pemilikan = [
+    {
+      name: "dokumen_pemilikan_sample.pdf",
+      size: 480000,
+      type: "application/pdf",
+      file: new File(["mock content"], "dokumen_pemilikan_sample.pdf", {
+        type: "application/pdf",
+      }),
+    },
+  ];
+
+  // Mock Dokumen Perjanjian Pinjaman
+  formData.value.dokumen_perjanjian_pinjaman = [
+    {
+      name: "perjanjian_pinjaman_sample.pdf",
+      size: 540000,
+      type: "application/pdf",
+      file: new File(["mock content"], "perjanjian_pinjaman_sample.pdf", {
+        type: "application/pdf",
+      }),
+    },
+  ];
+
+  // Mock Pengesahan Pendapatan (dokumen PA & LZS)
+  if (formData.value.pengesahan_pendapatan) {
+    formData.value.pengesahan_pendapatan.dokumen_pengesahan_pendapatan = [
+      {
+        name: "pengesahan_pendapatan_pa_sample.pdf",
+        size: 300000,
+        type: "application/pdf",
+        file: new File(
+          ["mock content"],
+          "pengesahan_pendapatan_pa_sample.pdf",
+          { type: "application/pdf" }
+        ),
+      },
+    ];
+    formData.value.pengesahan_pendapatan.dokumen_pengesahan_pegawai_lzs = [
+      {
+        name: "pengesahan_pendapatan_lzs_sample.pdf",
+        size: 300000,
+        type: "application/pdf",
+        file: new File(
+          ["mock content"],
+          "pengesahan_pendapatan_lzs_sample.pdf",
+          { type: "application/pdf" }
+        ),
+      },
+    ];
+  }
+
+  // Mock Surat Pengesahan Bermastautin
+  formData.value.surat_pengesahan_bermastautin = [
+    {
+      name: "surat_pengesahan_bermastautin_sample.pdf",
+      size: 320000,
+      type: "application/pdf",
+      file: new File(
+        ["mock content"],
+        "surat_pengesahan_bermastautin_sample.pdf",
+        { type: "application/pdf" }
+      ),
+    },
+  ];
+
+  // Mock Dokumen Sokongan (multiple)
+  formData.value.dokumen_sokongan = [
+    {
+      name: "dokumen_sokongan_1.pdf",
+      size: 250000,
+      type: "application/pdf",
+      file: new File(["mock content"], "dokumen_sokongan_1.pdf", {
+        type: "application/pdf",
+      }),
+    },
+  ];
 });
 
 // ============================================================================
