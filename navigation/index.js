@@ -861,6 +861,20 @@ export default [
             meta: {},
           },
           {
+            title: "Penilaian Awal",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/PA/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Kemaskini",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/UP/01",
+            child: [],
+            meta: {},
+          },
+          {
             title: "Pendaftaran Lengkap",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/FR/01",
@@ -896,13 +910,7 @@ export default [
           //   child: [],
           //   meta: {},
           // },
-          {
-            title: "Kemaskini",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/UP/01",
-            child: [],
-            meta: {},
-          },
+         
           {
             title: "Family Tree",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -910,13 +918,7 @@ export default [
             child: [],
             meta: {},
           },
-          {
-            title: "Penilaian Awal",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/PA/01",
-            child: [],
-            meta: {},
-          },
+          
           {
             title: "Senarai Pre-Review",
             icon: "iconamoon:arrow-right-2-duotone",

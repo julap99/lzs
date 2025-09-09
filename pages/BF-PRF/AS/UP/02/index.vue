@@ -887,6 +887,17 @@
               />
             </div>
 
+            <!-- Tarikh Jangkaan Mukalaf -->
+            <div v-if="formData.adakah_muallaf === 'Y'">
+              <FormKit
+                type="date"
+                name="tarikh_jangkaan_mukalaf"
+                label="Tarikh Jangkaan Mukalaf"
+                placeholder="DD/MM/YYYY"
+                v-model="formData.tarikh_jangkaan_mukalaf"
+              />
+            </div>
+
             <!-- Validation error message for Islamic dates -->
             <div
               v-if="
@@ -3270,6 +3281,15 @@
                     label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) (DD/MM/YYYY) "
                     v-model="
                       getCurrentTanggungan().tarikh_masuk_kfam_tanggungan
+                    "
+                  />
+
+                  <FormKit
+                    type="date"
+                    name="tarikh_jangkaan_mukalaf_tanggungan"
+                    label="Tarikh Jangkaan Mukalaf"
+                    v-model="
+                      getCurrentTanggungan().tarikh_jangkaan_mukalaf_tanggungan
                     "
                   />
                   <!-- Nama Sebelum Islam (Muallaf) -->
@@ -5774,6 +5794,7 @@ const formData = ref({
   adakah_muallaf: "",
   tarikh_masuk_islam: "",
   tarikh_masuk_kfam: "",
+  tarikh_jangkaan_mukalaf: "",
   nama_selepas_islam: "",
   nama_sebelum_islam: "",
   tarikh_keluar_muallaf: "",
@@ -7270,6 +7291,7 @@ const addTanggungan = (showNotification = true) => {
     nama_sebelum_islam_tanggungan: "",
     tarikh_masuk_islam_tanggungan: "",
     tarikh_masuk_kfam_tanggungan: "",
+    tarikh_jangkaan_mukalaf_tanggungan: "",
     nama_selepas_islam_tanggungan: "",
     tarikh_keluar_muallaf_tanggungan: "",
     dokumen_pengislaman_tanggungan: null,
