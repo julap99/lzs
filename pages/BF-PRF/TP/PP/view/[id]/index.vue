@@ -157,8 +157,9 @@ const getJenisPengenalanLabel = (jenis) => {
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Diluluskan': 'success',
-    'Ditolak': 'danger'
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
   };
   return variants[status] || 'default';
 };
@@ -201,7 +202,7 @@ const loadRecipientData = (id) => {
       noAkaunBank: '9876543210',
       penamaAkaunBank: 'Pusat Dialisis Al-Falah Sdn Bhd',
       dokumenSokongan: 'dokumen_syarikat.pdf',
-      status: 'Diluluskan'
+      status: 'Disahkan'
     },
     'RE-240513': {
       noRujukan: 'RE-240513',
@@ -215,7 +216,21 @@ const loadRecipientData = (id) => {
       noAkaunBank: '8765432109',
       penamaAkaunBank: 'Siti Fatimah Binti Ali',
       dokumenSokongan: 'dokumen_foreign.pdf',
-      status: 'Ditolak'
+      status: 'Tidak Sah'
+    },
+    'RE-240514': {
+      noRujukan: 'RE-240514',
+      jenisRecipient: 'individu',
+      namaPenuh: 'Mohd Zaki bin Hassan',
+      namaSyarikat: '',
+      jenisPengenalan: 'mykad',
+      idPengenalan: '900505123456',
+      idSyarikat: '',
+      namaBank: 'Bank Islam',
+      noAkaunBank: '1234567890123',
+      penamaAkaunBank: 'Mohd Zaki bin Hassan',
+      dokumenSokongan: 'dokumen_pembetulan.pdf',
+      status: 'Perlu Pembetulan'
     }
   };
 

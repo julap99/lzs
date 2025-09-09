@@ -1,6 +1,7 @@
 <template>
-  <LayoutsBreadcrumb :items="breadcrumb" />
-  <rs-card class="mt-4">
+  <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+    <rs-card class="mt-4">
     <template #header>
       <div class="flex justify-between items-center">
         <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
@@ -95,19 +96,19 @@
                     {{ profilingData.bakiHadKifayahSah }}
                   </p> -->
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Peratusan Perbezaan
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.peratusanPerbezaan }}
                   </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Kategori Keluarga Asnaf
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.kategoriKeluargaAsnaf }}
                   </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Kategori Asnaf
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -118,7 +119,7 @@
                 <div class="hidden lg:block"></div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Pengenalan Id Tanggungan
                   </label>
@@ -132,7 +133,7 @@
                 </div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Kategori Tanggungan (Syor)
                   </label>
@@ -148,7 +149,7 @@
                 <div class="hidden lg:block"></div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Pengenalan Id Asnaf/Tanggungan
                   </label>
@@ -164,7 +165,7 @@
                 </div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Merit Individu(Syor)
                   </label>
@@ -180,7 +181,7 @@
                 </div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide"
+                    class="block text-xs uppercase tracking-wide font-bold"
                   >
                     Status Multidimensi(Syor)
                   </label>
@@ -196,21 +197,21 @@
                 </div>
                 <!-- Row 3 in one column -->
                 <div>
-                  <label class="block text-xs uppercase tracking-wide">
+                  <label class="block text-xs uppercase tracking-wide font-bold">
                     Merit Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.meritKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Status Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.statusMultidimensiKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
+                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Quadrant Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -286,7 +287,7 @@
   </rs-card>
   <rs-card class="mt-4">
     <template #header>
-      <h2 class="text-xl font-semibold">Pengesahan Status 02</h2>
+      <h2 class="text-xl font-semibold">Pengesahan Status</h2>
     </template>
 
     <template #body>
@@ -310,7 +311,7 @@
                   name="peratusanPerbezaan"
                   label="Peratusan Perbezaan"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.peratusanPerbezaan"
@@ -322,7 +323,7 @@
                   label="Kategori Keluarga Asnaf"
                   :options="kategoriKeluargaOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700 mt-4',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.kategoriKeluargaAsnaf"
@@ -334,7 +335,7 @@
                   label="Kategori Asnaf"
                   :options="kategoriAsnafOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700 mt-4',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.kategoriAsnaf"
@@ -350,7 +351,7 @@
                   name="pengenalanIdTanggungan1"
                   label="Pengenalan Id Tanggungan 1"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.pengenalanIdTanggungan1"
@@ -361,7 +362,7 @@
                   name="pengenalanIdTanggungan2"
                   label="Pengenalan Id Tanggungan 2"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700 mt-4',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.pengenalanIdTanggungan2"
@@ -372,7 +373,7 @@
                   name="pengenalanIdTanggungan3"
                   label="Pengenalan Id Tanggungan 3"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700 mt-4',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.pengenalanIdTanggungan3"
@@ -389,7 +390,7 @@
                       label="Kategori Tanggungan (Syor) 1"
                       :options="kategoriTanggunganOptions"
                       :classes="{
-                        label: 'text-xs uppercase tracking-wide font-medium text-gray-700',
+                        label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
                         input: '!py-2.5 !text-gray-900 !font-medium'
                       }"
                       v-model="profilingData.kategoriTanggunganSyor1"
@@ -400,7 +401,7 @@
                       label="Kategori Tanggungan (Syor) 2"
                       :options="kategoriTanggunganOptions"
                       :classes="{
-                        label: 'text-xs uppercase tracking-wide font-medium text-gray-700 mt-4',
+                        label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
                         input: '!py-2.5 !text-gray-900 !font-medium'
                       }"
                       v-model="profilingData.kategoriTanggunganSyor2"
@@ -411,7 +412,7 @@
                       label="Kategori Tanggungan (Syor) 3"
                       :options="kategoriTanggunganOptions"
                       :classes="{
-                        label: 'text-xs uppercase tracking-wide font-medium text-gray-700 mt-4',
+                        label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
                         input: '!py-2.5 !text-gray-900 !font-medium'
                       }"
                       v-model="profilingData.kategoriTanggunganSyor3"
@@ -420,7 +421,7 @@
 
                   <!-- Right column: header + checkboxes stacked -->
                   <div class="pt-1 w-[160px] md:w-[200px]">
-                    <div class="text-xs uppercase tracking-wide font-medium text-gray-700 mb-2 text-center">
+                    <div class="text-xs uppercase tracking-wide font-bold text-gray-700 mb-2 text-center">
                       Pelarasan
                     </div>
                     <div class="flex flex-col items-center gap-4">
@@ -468,7 +469,7 @@
                   name="pengenalanId"
                   label="Pengenalan Id Asnaf/Tanggungan"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.pengenalanId"
@@ -481,7 +482,7 @@
                   name="merit"
                   label="Merit Individu(Syor)"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.merit"
@@ -495,7 +496,7 @@
                   label="Status Multidimensi(Syor)"
                   :options="statusMultidimensiOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.multidimensi"
@@ -509,7 +510,7 @@
                   name="meritKeluargaSyor"
                   label="Merit Keluarga(Syor)"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.meritKeluargaSyor"
@@ -521,7 +522,7 @@
                   label="Status Multidimensi Keluarga(Syor)"
                   :options="statusMultidimensiOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700 mt-4',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.statusMultidimensiKeluargaSyor"
@@ -533,7 +534,7 @@
                   label="Quadrant Multidimensi Keluarga(Syor)"
                   :options="quadrantMultidimensiOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-medium text-gray-700 mt-4',
+                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
                     input: '!py-2.5 !text-gray-900 !font-medium'
                   }"
                   v-model="profilingData.quadrantMultidimensiKeluargaSyor"
@@ -599,7 +600,7 @@
               </rs-button>
               <div class="flex gap-3">
                 <rs-button variant="secondary" @click="handleLihat">
-                  <Icon name="ph:eye" class="w-4 h-4 mr-2" /> Lihat
+                  <Icon name="ph:eye" class="w-4 h-4 mr-2" /> Siasatan
                 </rs-button>
                 <rs-button variant="success" @click="handleHantar">
                   <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" /> Hantar
@@ -611,6 +612,7 @@
         </div>
     </template>
   </rs-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -800,7 +802,7 @@ const handleKembali = () => {
 }
 
 const handleHantar = () => {
-  toast.success("Maklumat Pengesahan Status part 2 telah disimpan");
+  toast.success("Maklumat Pengesahan Status telah disimpan");
 }
 
 const handleLihat = () => {

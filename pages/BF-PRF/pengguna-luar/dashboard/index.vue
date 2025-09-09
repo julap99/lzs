@@ -47,65 +47,64 @@
       </template>
     </rs-card>
 
-    <!-- Search Options Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <!-- Carian Organisasi -->
-      <rs-card class="hover:shadow-lg transition-shadow duration-300 cursor-pointer" @click="navigateTo('/BF-PRF/OR/PP/01')">
-        <template #body>
-          <div class="text-center p-6">
-            <div class="mb-4">
-              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                <Icon name="heroicons:building-office" size="2rem" class="text-blue-600" />
+    <!-- Alert Section for Pending Applications (moved below profile) -->
+    <rs-card v-if="hasPendingApplications && !alertDismissed" class="mb-6 border-l-4 border-warning bg-warning/5">
+      <template #body>
+        <div class="p-4">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 bg-warning/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+              <Icon name="heroicons:exclamation-triangle" size="1.2rem" class="text-warning" />
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-warning mb-2">Permohonan Memerlukan Kemaskini</h3>
+              <p class="text-gray-700 mb-4">Anda mempunyai permohonan yang memerlukan kemaskini berdasarkan ulasan Eksekutif.</p>
+              
+              <!-- Pending Application Details -->
+              <div class="bg-white border border-warning/20 rounded-lg p-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">ID Permohonan</label>
+                    <p class="text-gray-900 font-mono">{{ pendingApplication.idPermohonan }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Status</label>
+                    <rs-badge variant="warning">{{ pendingApplication.statusPermohonan }}</rs-badge>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Permohonan</label>
+                    <p class="text-gray-900">{{ formatDate(pendingApplication.tarikhPermohonan) }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Ulasan</label>
+                    <p class="text-gray-900">{{ formatDate(pendingApplication.tarikhUlasan) }}</p>
+                  </div>
+                </div>
+                
+                <!-- Executive Review -->
+                <div class="mb-3">
+                  <label class="block text-sm font-medium text-gray-600 mb-1">Ulasan Eksekutif</label>
+                  <div class="p-3 border border-warning/20 rounded bg-warning/5">
+                    <p class="text-gray-800">{{ pendingApplication.ulasanEksekutif }}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Action Buttons -->
+              <div class="flex gap-3">
+                <rs-button variant="warning" @click="goToUpdateApplication">
+                  <Icon name="heroicons:pencil-square" size="1rem" class="mr-2" />
+                  Kemaskini Permohonan
+                </rs-button>
+                <rs-button variant="secondary-outline" @click="dismissAlert">
+                  <Icon name="heroicons:x-mark" size="1rem" class="mr-2" />
+                  Tutup
+                </rs-button>
               </div>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Carian Organisasi</h3>
-            <p class="text-gray-600 mb-4">Cari maklumat organisasi yang berdaftar dengan LZS</p>
-            <rs-button variant="primary" class="w-full">
-              Mula Cari
-              <Icon name="heroicons:arrow-right" size="1rem" class="ml-2" />
-            </rs-button>
           </div>
-        </template>
-      </rs-card>
-
-      <!-- Carian Cawangan -->
-      <rs-card class="hover:shadow-lg transition-shadow duration-300 cursor-pointer" @click="navigateTo('/BF-PRF/OR/PB/01')">
-        <template #body>
-          <div class="text-center p-6">
-            <div class="mb-4">
-              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <Icon name="heroicons:building-office-2" size="2rem" class="text-green-600" />
-              </div>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Carian Cawangan</h3>
-            <p class="text-gray-600 mb-4">Cari maklumat cawangan organisasi yang berdaftar</p>
-            <rs-button variant="success" class="w-full">
-              Mula Cari
-              <Icon name="heroicons:arrow-right" size="1rem" class="ml-2" />
-            </rs-button>
-          </div>
-        </template>
-      </rs-card>
-
-      <!-- Carian Recipient -->
-      <rs-card class="hover:shadow-lg transition-shadow duration-300 cursor-pointer" @click="navigateTo('/BF-PRF/TP/PP/01')">
-        <template #body>
-          <div class="text-center p-6">
-            <div class="mb-4">
-              <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
-                <Icon name="heroicons:user-group" size="2rem" class="text-purple-600" />
-              </div>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Carian Recipient</h3>
-            <p class="text-gray-600 mb-4">Cari maklumat recipient yang berdaftar dengan LZS</p>
-            <rs-button variant="secondary" class="w-full">
-              Mula Cari
-              <Icon name="heroicons:arrow-right" size="1rem" class="ml-2" />
-            </rs-button>
-          </div>
-        </template>
-      </rs-card>
-    </div>
+        </div>
+      </template>
+    </rs-card>
 
     <!-- Help Section -->
     <rs-card class="mb-6">
@@ -247,6 +246,19 @@ const searchHistory = ref([]);
 // Modal state
 const showProfile = ref(false);
 
+// Pending application data (mock data for presentation)
+const pendingApplication = ref({
+  idPermohonan: "PRF-2025-001",
+  statusPermohonan: "Perlu Pembetulan",
+  tarikhPermohonan: "2025-01-15",
+  tarikhUlasan: "2025-01-20",
+  ulasanEksekutif: "Sila kemaskini alamat organisasi & no telefon. Muat naik dokumen terkini jika perlu."
+});
+
+// Alert state
+const hasPendingApplications = ref(true); // Set to true for demo purposes
+const alertDismissed = ref(false);
+
 // Helper functions
 const getSearchIcon = (type) => {
   const icons = {
@@ -308,6 +320,29 @@ const handleLogout = () => {
   router.push('/BF-PRF/pengguna-luar/login');
 };
 
+// Alert functions
+const goToUpdateApplication = () => {
+  // Navigate to kemaskini page with the application ID
+  router.push(`/BF-PRF/OR/PP/kemaskini/${pendingApplication.value.idPermohonan}`);
+};
+
+const dismissAlert = () => {
+  alertDismissed.value = true;
+  hasPendingApplications.value = false;
+  toast.info('Alert telah ditutup');
+};
+
+// Check if user has pending applications (mock logic)
+const checkPendingApplications = () => {
+  // In real implementation, this would check API for pending applications
+  // For demo purposes, we'll use the mock data
+  if (alertDismissed.value) {
+    hasPendingApplications.value = false;
+  } else {
+    hasPendingApplications.value = true;
+  }
+};
+
 // Load user data from localStorage
 const loadUserData = () => {
   const storedUserInfo = localStorage.getItem('userInfo');
@@ -351,6 +386,9 @@ onMounted(() => {
   loadUserData();
   loadSearchHistory();
   loadStats();
+  
+  // Check for pending applications
+  checkPendingApplications();
   
   // Ensure sidebar is visible
   const vLayout = document.querySelector('.v-layout');

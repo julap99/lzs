@@ -10,7 +10,7 @@
             <rs-button variant="primary" @click="navigateTo('01_01/tambah')">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah Baharu
             </rs-button>
-            <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/HK/01_01/tambah_kategori')">
+            <rs-button v-if="false" variant="secondary" @click="navigateTo('/BF-PRF/KF/HK/01_01/tambah_kategori')">
               <Icon name="mdi:folder-plus" class="mr-1" /> Tambah Kategori
             </rs-button>
           </div>
@@ -52,7 +52,15 @@
               size="sm"
               class="!px-2 !py-1"
               @click="navigateTo(`/BF-PRF/KF/HK/01_02?id=${data.value.idHadKifayah}`)"
-              >Lebih
+              >Kemaskini
+              <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
+            </rs-button>
+            <rs-button
+              variant="secondary"
+              size="sm"
+              class="!px-2 !py-1 ml-2"
+              @click="navigateTo({ path: '/BF-PRF/KF/HK/01_02/01_02_lihat', query: { id: data.value.idHadKifayah } })"
+              >Lihat
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
           </template>

@@ -1,6 +1,7 @@
 <template>
-  <!-- Multi-dimensional Merit Breakdown -->
-  <rs-card class="mt-4">
+  <div>
+    <!-- Multi-dimensional Merit Breakdown -->
+    <rs-card class="mt-4">
     <template #header>
       <h3 class="text-lg font-semibold text-gray-800">
         Perincian Pengiraan Merit Multidimensi Keluarga
@@ -9,7 +10,7 @@
 
     <div v-for="(member, idx) in family" :key="member.ic" class="mb-8 ">
       <div class="mr-4">
-        <h4 class="text-md font-bold text-blue-700 mb-2">
+        <h4 class="text-lg font-semibold text-blue-800 mb-2">
         {{ member.nama }} ({{ member.ic }})
       </h4>
       </div>
@@ -113,6 +114,7 @@
       </rs-button>
     </div>
   </rs-card>
+  </div>
 </template>
 
 <script setup>

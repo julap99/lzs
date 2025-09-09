@@ -107,22 +107,23 @@
                   label="Status Pengesahan"
                   validation="required"
                   :options="[
-                    { label: 'Lulus', value: 'approved' },
-                    { label: 'Tidak Lulus', value: 'rejected' }
+                    { label: 'Disahkan', value: 'approved' },
+                    { label: 'Perlu Pembetulan', value: 'correction_required' },
+                    { label: 'Tidak Sah', value: 'rejected' }
                   ]"
                   v-model="approvalData.status"
                   :validation-messages="{ required: 'Status pengesahan adalah wajib' }"
                 />
 
                 <FormKit
-                  v-if="approvalData.status === 'rejected'"
+                  v-if="approvalData.status === 'correction_required' || approvalData.status === 'rejected'"
                   type="textarea"
                   name="justification"
-                  label="Justifikasi Penolakan"
+                  :label="approvalData.status === 'correction_required' ? 'Ulasan Pembetulan' : 'Justifikasi Penolakan'"
                   validation="required"
-                  placeholder="Sila nyatakan sebab penolakan permohonan ini"
+                  :placeholder="approvalData.status === 'correction_required' ? 'Sila nyatakan perkara yang perlu diperbetulkan' : 'Sila nyatakan sebab penolakan permohonan ini'"
                   v-model="approvalData.justification"
-                  :validation-messages="{ required: 'Justifikasi diperlukan untuk penolakan' }"
+                  :validation-messages="{ required: 'Ulasan diperlukan untuk status ini' }"
                 />
               </div>
 
