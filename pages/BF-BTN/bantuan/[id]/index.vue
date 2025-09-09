@@ -322,7 +322,8 @@
                 </h4>
 
                 <rs-table
-                  :data="distributionItems"
+                  :key="`distribution-table-${currentPage}-${distributionItems.length}`"
+                  :data="paginatedDistributionItems"
                   :field="distributionItemFieldKeys"
                   :columns="distributionItemFields"
                   :options="{
@@ -333,6 +334,85 @@
                   }"
                   :showNoColumn="true"
                 />
+                
+                <!-- Pagination Controls -->
+                <div v-if="totalPages > 1" class="flex items-center justify-between mt-4 px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                  <div class="flex-1 flex justify-between sm:hidden">
+                    <button
+                      @click="currentPage = Math.max(1, currentPage - 1)"
+                      :disabled="currentPage === 1"
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                      :disabled="currentPage === totalPages"
+                      class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                  <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                      <p class="text-sm text-gray-700">
+                        Showing
+                        <span class="font-medium">{{ (currentPage - 1) * itemsPerPage + 1 }}</span>
+                        to
+                        <span class="font-medium">{{ Math.min(currentPage * itemsPerPage, totalItems) }}</span>
+                        of
+                        <span class="font-medium">{{ totalItems }}</span>
+                        results
+                      </p>
+                    </div>
+                    <div>
+                      <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <button
+                          @click="currentPage = Math.max(1, currentPage - 1)"
+                          :disabled="currentPage === 1"
+                          class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <span class="sr-only">Previous</span>
+                          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                          </svg>
+                        </button>
+                        
+                        <template v-for="page in totalPages" :key="page">
+                          <button
+                            v-if="page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)"
+                            @click="currentPage = page"
+                            :class="[
+                              'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
+                              page === currentPage
+                                ? 'z-10 bg-primary border-primary text-white'
+                                : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                            ]"
+                          >
+                            {{ page }}
+                          </button>
+                          <span
+                            v-else-if="page === currentPage - 2 || page === currentPage + 2"
+                            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                          >
+                            ...
+                          </span>
+                        </template>
+                        
+                        <button
+                          @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                          :disabled="currentPage === totalPages"
+                          class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <span class="sr-only">Next</span>
+                          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                          </svg>
+                        </button>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -621,40 +701,10 @@ const tabs = [
 const activeTab = ref("agihan");
 
 // Sample data - replace with actual API calls
-const applicantInfo = ref({
-  namaPenuh: "Ahmad bin Abdullah",
-  noKadPengenalan: "800101-01-1234",
-  noTelefon: "+60123456789",
-  emel: "ahmad@example.com",
-  alamat: "No. 123, Jalan Merdeka, Taman Merdeka, 50000 Kuala Lumpur",
-  statusHousehold: "Aktif",
-  statusIndividu: "Lulus",
-  statusMultidimensi: "Miskin",
-});
 
-const aidInfo = ref({
-  aid: "Bantuan Asnaf",
-  aidProduct: "Bantuan Kewangan Bulanan",
-  productPackage: "Paket Asnaf Standard",
-  entitlementProduct: "Bantuan RM 500/bulan",
-  catatanSebabMemohon:
-    "Memerlukan bantuan kewangan untuk keperluan asas keluarga",
-  kadarBantuan: "500.00",
-  tempohKekerapan: "Bulanan",
-  tarikhMula: "2024-01-01",
-  tarikhTamat: "2024-12-31",
-  jumlahKeseluruhan: "6000.00",
-  kodBajet: "BUD-2024-001",
-  penerima: "Asnaf",
-  namaPenerima: "Ahmad bin Abdullah",
-  kaedahPembayaran: "Bank Transfer",
-  namaPemegangAkaun: "Ahmad bin Abdullah",
-  bank: "Maybank",
-  noAkaunBank: "1234567890",
-  sapCode: "SAP-001",
-});
 
-const distributionItems = ref([
+// Default distribution items for most IDs
+const defaultDistributionItems = [
   {
     diNo: "DI-2024-001",
     entitlementProduct: "Bantuan RM 500/bulan",
@@ -674,15 +724,7 @@ const distributionItems = ref([
     amaun: "500.00",
   },
   {
-    diNo: "DI-2024-003",
-    entitlementProduct: "Bantuan RM 500/bulan",
-    penerima: "Ahmad bin Abdullah",
-    bulan: "Mac",
-    tahun: "2024",
-    status: "Menunggu",
-    amaun: "500.00",
-  },
-]);
+
 
 const distributionItemFields = [
   { key: "diNo", label: "DI No" },
@@ -695,16 +737,10 @@ const distributionItemFields = [
 ];
 
 const distributionItemFieldKeys = [
-  "diNo",
-  "entitlementProduct",
-  "penerima",
-  "bulan",
-  "tahun",
-  "status",
-  "amaun",
-];
 
-const processFlow = ref([
+
+// Default process flow for most IDs
+const defaultProcessFlow = [
   {
     status: "Permohonan",
     namaPegawai: "Siti binti Ali",
@@ -724,12 +760,6 @@ const processFlow = ref([
     catatan: "Menyokong permohonan bantuan",
   },
   {
-    status: "Lulus",
-    namaPegawai: "Mohd bin Ibrahim",
-    tarikhMasa: "2024-01-04 16:45:00",
-    catatan: "Permohonan diluluskan untuk bantuan bulanan",
-  },
-]);
 
 // Utility functions
 const formatDate = (dateString) => {
@@ -943,9 +973,34 @@ const handleCheck = () => {
   console.log("Check process for aid ID:", aidId);
 };
 
+// Function to load data based on ID
+const loadDataForId = (id) => {
+  if (id === 'B010') {
+    applicantInfo.value = { ...b010ApplicantInfo }
+    aidInfo.value = { ...b010AidInfo }
+    distributionItems.value = [...b010DistributionItems]
+    processFlow.value = [...b010ProcessFlow]
+} else if (id === 'B011') {
+  applicantInfo.value = { ...b011ApplicantInfo }
+  aidInfo.value = { ...b011AidInfo }
+  distributionItems.value = [...b011DistributionItems]
+  processFlow.value = [...b011ProcessFlow]
+} else {
+    // Use default data for other IDs
+    applicantInfo.value = { ...defaultApplicantInfo }
+    aidInfo.value = { ...defaultAidInfo }
+    distributionItems.value = [...defaultDistributionItems]
+    processFlow.value = [...defaultProcessFlow]
+  }
+  // Reset pagination to first page when data changes
+  currentPage.value = 1
+}
+
 // Fetch data on mount
 onMounted(async () => {
   try {
+    loadDataForId(aidId)
+    
     // Replace with actual API calls
     // const response = await $fetch(`/api/bantuan/${aidId}`)
     // applicantInfo.value = response.applicantInfo
@@ -955,7 +1010,7 @@ onMounted(async () => {
   } catch (error) {
     console.error("Error fetching aid information:", error);
   }
-});
+
 </script>
 
 <style lang="scss" scoped>
