@@ -814,7 +814,7 @@ const showZone = computed(() => {
 });
 
 const showBranch = computed(() => {
-  return formData.value.organizationType && 
+  return formData.value.structure === 'cawangan' && 
          !['masjid', 'surau'].includes(formData.value.organizationType);
 });
 
