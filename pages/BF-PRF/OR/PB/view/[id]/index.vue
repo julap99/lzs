@@ -2,181 +2,256 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <!-- Loading State -->
+    <div v-if="isLoading" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <Icon name="ph:spinner" class="w-8 h-8 text-blue-600 animate-spin mr-3" />
+            <span class="text-gray-600">Memuatkan maklumat cawangan...</span>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="flex items-center justify-center py-8">
+            <div class="text-center">
+              <Icon name="ph:warning" class="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Ralat Memuatkan Data</h3>
+              <p class="text-gray-600 mb-4">{{ error }}</p>
+              <rs-button variant="primary" @click="retryLoad">
+                <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
+                Cuba Lagi
+              </rs-button>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+    </div>
+
+    <!-- Main Content -->
+    <rs-card v-else class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-semibold">Maklumat Cawangan</h2>
-            <p class="text-sm text-gray-600 mt-1">{{ cawanganData.noRujukan }}</p>
-          </div>
-          <rs-badge :variant="getStatusVariant(cawanganData.status)">
-            {{ cawanganData.status }}
-          </rs-badge>
+          <h2 class="text-xl font-semibold">Maklumat Cawangan Terperinci</h2>
         </div>
       </template>
 
       <template #body>
-        <div class="space-y-8">
-          <!-- Maklumat Asas -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="space-y-4">
-              <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Asas</h3>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Rujukan:</span>
-                  <span class="text-gray-900">{{ cawanganData.noRujukan }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama Cawangan:</span>
-                  <span class="text-gray-900">{{ cawanganData.namaCawangan }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama HQ:</span>
-                  <span class="text-gray-900">{{ cawanganData.namaHQ }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Jenis Organisasi:</span>
-                  <span class="text-gray-900">{{ cawanganData.jenisOrganisasi }}</span>
-                </div>
+        <div class="p-4">
+          <!-- Status Summary Card -->
+          <div class="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">Status Permohonan</h3>
+                <p class="text-sm text-gray-600">Rujukan: {{ cawanganData.noRujukan }}</p>
+                <p class="text-sm text-gray-600">Tarikh Permohonan: {{ formatDate(cawanganData.tarikhPermohonan) }}</p>
+              </div>
+              <div class="flex gap-2">
+                <rs-badge :variant="getStatusVariant(cawanganData.status)">
+                  {{ cawanganData.status }}
+                </rs-badge>
               </div>
             </div>
+          </div>
 
-            <div class="space-y-4">
-              <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Status & Tarikh</h3>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Status:</span>
-                  <rs-badge :variant="getStatusVariant(cawanganData.status)">
-                    {{ cawanganData.status }}
-                  </rs-badge>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Tarikh Permohonan:</span>
-                  <span class="text-gray-900">{{ formatDate(cawanganData.tarikhPermohonan) }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Masa Permohonan:</span>
-                  <span class="text-gray-900">{{ formatTime(cawanganData.tarikhPermohonan) }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Daerah:</span>
-                  <span class="text-gray-900">{{ cawanganData.daerah }}</span>
-                </div>
+          <!-- Maklumat Asas -->
+          <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Asas</h3>
+          <div class="mb-8 p-6 border border-gray-200 rounded-lg">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Nama Cawangan:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.namaCawangan }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Nama HQ:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.namaHQ }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Jenis Organisasi:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.jenisOrganisasi }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">No. Pendaftaran:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.noPendaftaran }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Status Pendaftaran:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.statusPendaftaran }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Kariah:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.kariah }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Kawasan/Zon:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.zone }}</span>
               </div>
             </div>
           </div>
 
           <!-- Maklumat Alamat -->
-          <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Alamat</h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Alamat 1:</span>
-                  <span class="text-gray-900">{{ cawanganData.alamat.alamat1 }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Alamat 2:</span>
-                  <span class="text-gray-900">{{ cawanganData.alamat.alamat2 }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Alamat 3:</span>
-                  <span class="text-gray-900">{{ cawanganData.alamat.alamat3 || '-' }}</span>
-                </div>
+          <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Alamat</h3>
+          <div class="mb-8 p-6 border border-gray-200 rounded-lg">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Alamat 1:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.alamat?.addressLine1 || '-' }}</span>
               </div>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Poskod:</span>
-                  <span class="text-gray-900">{{ cawanganData.alamat.poskod }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Bandar:</span>
-                  <span class="text-gray-900">{{ cawanganData.alamat.bandar }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Negeri:</span>
-                  <span class="text-gray-900">{{ cawanganData.alamat.negeri }}</span>
-                </div>
+              <div v-if="cawanganData.alamat?.addressLine2" class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Alamat 2:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.alamat?.addressLine2 }}</span>
+              </div>
+              <div v-if="cawanganData.alamat?.addressLine3" class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Alamat 3:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.alamat?.addressLine3 }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Poskod:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.alamat?.postcode || '-' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Bandar:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.alamat?.city || '-' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Daerah:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.alamat?.district || '-' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Negeri:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.alamat?.state || '-' }}</span>
               </div>
             </div>
           </div>
 
           <!-- Maklumat Perhubungan -->
-          <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Perhubungan</h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama Wakil:</span>
-                  <span class="text-gray-900">{{ cawanganData.wakil.nama }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Telefon:</span>
-                  <span class="text-gray-900">{{ cawanganData.wakil.telefon }}</span>
-                </div>
-              </div>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Emel:</span>
-                  <span class="text-gray-900">{{ cawanganData.wakil.emel }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Jawatan:</span>
-                  <span class="text-gray-900">{{ cawanganData.wakil.jawatan }}</span>
+          <div v-if="cawanganData.wakil && cawanganData.wakil.length > 0">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Perhubungan</h3>
+            <div class="mb-8 p-6 border border-gray-200 rounded-lg">
+              <div class="space-y-6">
+                <div v-for="(wakil, index) in cawanganData.wakil" :key="index" class="p-4 bg-gray-50 rounded-lg">
+                  <h4 class="font-medium text-gray-900 mb-3">Wakil {{ index + 1 }}</h4>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="py-2 border-b border-gray-100">
+                      <span class="font-medium text-gray-600">Nama:</span>
+                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.name }}</span>
+                    </div>
+                    <div class="py-2 border-b border-gray-100">
+                      <span class="font-medium text-gray-600">No. IC:</span>
+                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.ic }}</span>
+                    </div>
+                    <div class="py-2 border-b border-gray-100">
+                      <span class="font-medium text-gray-600">No. Telefon:</span>
+                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.phoneNumber }}</span>
+                    </div>
+                    <div class="py-2 border-b border-gray-100">
+                      <span class="font-medium text-gray-600">Emel:</span>
+                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.email }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Maklumat Bank -->
-          <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Maklumat Bank</h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama Bank:</span>
-                  <span class="text-gray-900">{{ cawanganData.bank.namaBank }}</span>
-                </div>
-                
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">No. Akaun:</span>
-                  <span class="text-gray-900">{{ cawanganData.bank.noAkaun }}</span>
+          <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Bank</h3>
+          <div class="mb-8 p-6 border border-gray-200 rounded-lg">
+            <div class="grid grid-cols-2 gap-4">
+              <div v-if="cawanganData.bank?.bankSameAsHQ" class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Sama seperti HQ:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.bank?.bankSameAsHQ === 'ya' ? 'Ya' : 'Tidak' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Nama Bank:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.bank?.bankName || '-' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">No. Akaun Bank:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.bank?.bankAccountNumber || '-' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Nama Pemegang Akaun:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.bank?.penamaBank || '-' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Kaedah Pembayaran:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ cawanganData.bank?.paymentMethod || '-' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dokumen Sokongan -->
+          <h3 class="text-lg font-semibold mb-4 text-gray-900">Dokumen Sokongan</h3>
+          <div class="mb-8 p-6 border border-gray-200 rounded-lg">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="py-2 border-b border-gray-100">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-gray-600">Sijil Pendaftaran:</span>
+                  <span v-if="hasDocument(cawanganData.registrationCertificate)" class="text-gray-900 font-semibold">{{ getDocumentName(cawanganData.registrationCertificate) }}</span>
+                  <rs-badge v-else variant="warning">Tiada</rs-badge>
+                  <rs-button v-if="hasDocument(cawanganData.registrationCertificate)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Sijil Pendaftaran')">
+                    <Icon name="ph:download" class="w-4 h-4" />
+                  </rs-button>
+                  <rs-button v-if="hasDocument(cawanganData.registrationCertificate)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Sijil Pendaftaran')">
+                    <Icon name="ph:eye" class="w-4 h-4" />
+                  </rs-button>
                 </div>
               </div>
-              
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Nama Pemilik:</span>
-                  <span class="text-gray-900">{{ cawanganData.bank.namaPemilik }}</span>
+              <div class="py-2 border-b border-gray-100">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-gray-600">Surat Perlantikan:</span>
+                  <span v-if="hasDocument(cawanganData.appointmentLetter)" class="text-gray-900 font-semibold">{{ getDocumentName(cawanganData.appointmentLetter) }}</span>
+                  <rs-badge v-else variant="warning">Tiada</rs-badge>
+                  <rs-button v-if="hasDocument(cawanganData.appointmentLetter)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Surat Perlantikan')">
+                    <Icon name="ph:download" class="w-4 h-4" />
+                  </rs-button>
+                  <rs-button v-if="hasDocument(cawanganData.appointmentLetter)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Surat Perlantikan')">
+                    <Icon name="ph:eye" class="w-4 h-4" />
+                  </rs-button>
+                </div>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-gray-600">Bukti Bank:</span>
+                  <span v-if="hasDocument(cawanganData.bankProof)" class="text-gray-900 font-semibold">{{ getDocumentName(cawanganData.bankProof) }}</span>
+                  <rs-badge v-else variant="warning">Tiada</rs-badge>
+                  <rs-button v-if="hasDocument(cawanganData.bankProof)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Bukti Bank')">
+                    <Icon name="ph:download" class="w-4 h-4" />
+                  </rs-button>
+                  <rs-button v-if="hasDocument(cawanganData.bankProof)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Bukti Bank')">
+                    <Icon name="ph:eye" class="w-4 h-4" />
+                  </rs-button>
+                </div>
+              </div>
+              <div class="py-2 border-b border-gray-100">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-gray-600">Dokumen Tambahan:</span>
+                  <span v-if="hasDocument(cawanganData.additionalDocuments)" class="text-gray-900 font-semibold">{{ getDocumentName(cawanganData.additionalDocuments) }}</span>
+                  <rs-badge v-else variant="warning">Tiada</rs-badge>
+                  <rs-button v-if="hasDocument(cawanganData.additionalDocuments)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Dokumen Tambahan')">
+                    <Icon name="ph:download" class="w-4 h-4" />
+                  </rs-button>
+                  <rs-button v-if="hasDocument(cawanganData.additionalDocuments)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Dokumen Tambahan')">
+                    <Icon name="ph:eye" class="w-4 h-4" />
+                  </rs-button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="flex justify-start mt-8 pt-6 border-t">
-          <rs-button variant="primary-outline" @click="goBack">
-            Kembali
-          </rs-button>
+          <!-- Action Buttons - Bottom Right -->
+          <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
+            <rs-button variant="secondary" @click="handleBack">
+              <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
+              Kembali
+            </rs-button>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -184,97 +259,296 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
+definePageMeta({ title: 'Maklumat Cawangan Terperinci' })
 
-definePageMeta({ title: 'Maklumat Cawangan' });
+const route = useRoute()
+const isLoading = ref(false)
+const error = ref(null)
 
 const breadcrumb = ref([
   { name: 'Pengesahan', type: 'link', path: '/BF-PRF/OR/PB' },
   { name: 'Senarai Cawangan', type: 'link', path: '/BF-PRF/OR/PB' },
-  { name: 'Maklumat Cawangan', type: 'current', path: `/BF-PRF/OR/PB/view/${route.params.id}` },
-]);
+  { name: 'Maklumat Terperinci', type: 'current', path: `/BF-PRF/OR/PB/view/${route.params.id}` },
+])
 
-// Mock data for the cawangan
+// Mock data structure aligned with current form
 const cawanganData = ref({
-  noRujukan: 'PB-240511',
-  namaCawangan: 'Cawangan Seri Damai',
-  namaHQ: 'Yayasan Insan Malaysia',
-  jenisOrganisasi: 'NGO',
-  daerah: 'Kuala Lumpur',
-  tarikhPermohonan: new Date().toISOString(),
-  status: 'Menunggu Pengesahan',
+  noRujukan: '',
+  namaCawangan: '',
+  namaHQ: '',
+  jenisOrganisasi: '',
+  noPendaftaran: '',
+  statusPendaftaran: '',
+  kariah: '',
+  zone: '',
   alamat: {
-    alamat1: 'No. 123, Jalan Seri Damai 5/2',
-    alamat2: 'Taman Seri Damai',
-    alamat3: '',
-    poskod: '43650',
-    bandar: 'Bangi',
-    negeri: 'Selangor'
+    addressLine1: '',
+    addressLine2: '',
+    addressLine3: '',
+    postcode: '',
+    city: '',
+    district: '',
+    state: ''
   },
-  wakil: {
-    nama: 'Ahmad bin Abdullah',
-    telefon: '012-3456789',
-    emel: 'ahmad@seridamai.org',
-    jawatan: 'Pengurus'
-  },
+  wakil: [],
   bank: {
-    namaBank: 'Maybank',
-    noAkaun: '1234567890123',
-    namaPemilik: 'Cawangan Seri Damai'
-  }
-});
+    bankSameAsHQ: '',
+    bankName: '',
+    bankAccountNumber: '',
+    penamaBank: '',
+    paymentMethod: ''
+  },
+  registrationCertificate: null,
+  appointmentLetter: null,
+  bankProof: null,
+  additionalDocuments: null,
+  status: '',
+  tarikhPermohonan: ''
+})
 
-const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
-const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
+// User role simulation - for demo purposes
+const currentUserRole = ref('Eksekutif')
 
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Diluluskan': 'success',
-    'Ditolak': 'danger'
-  };
-  return variants[status] || 'default';
-};
+    'Dalam Pembetulan': 'warning',
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
+  }
+  return variants[status] || 'default'
+}
 
-const goBack = () => navigateTo('/BF-PRF/OR/PB');
-const editItem = () => navigateTo(`/BF-PRF/OR/PB/kemaskini/${route.params.id}`);
-const reviewItem = () => navigateTo('/BF-PRF/OR/PB/03');
+const hasDocument = (document) => {
+  if (!document) return false
+  if (Array.isArray(document) && document.length > 0) return true
+  if (typeof document === 'object' && document.name) return true
+  return false
+}
 
-// Load data based on ID when component mounts
-onMounted(() => {
-  // In a real implementation, this would fetch data from API based on route.params.id
-  // For now, we use mock data with different values based on ID
-  loadCawanganData(route.params.id);
-});
+const getDocumentName = (document) => {
+  if (!document) return 'Tiada'
+  if (Array.isArray(document) && document.length > 0) return document[0].name || 'Dilampirkan'
+  if (typeof document === 'object' && document.name) return document.name
+  return 'Tiada'
+}
+
+const handleDownload = (documentType) => {
+  alert(`Download ${documentType} - Ini adalah UI mockup prototype untuk presentation kepada client.`)
+}
+
+const handleView = (documentType) => {
+  alert(`View ${documentType} - Ini adalah UI mockup prototype untuk presentation kepada client.`)
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return '-'
+  if (typeof dateString === 'string' && !dateString.includes('T')) {
+    return dateString
+  }
+  try {
+    return new Date(dateString).toLocaleDateString('ms-MY')
+  } catch (error) {
+    return dateString
+  }
+}
 
 const loadCawanganData = (id) => {
-  // Mock different data based on ID
-  const mockData = {
-    'PB-240511': {
-      noRujukan: 'PB-240511',
-      namaCawangan: 'Cawangan Seri Damai',
-      namaHQ: 'Yayasan Insan Malaysia',
-      status: 'Menunggu Pengesahan'
+  const dataset = {
+    'CB-240501': {
+      noRujukan: 'CB-240501',
+      namaCawangan: 'Institut Latihan Kemahiran Malaysia - Cawangan Shah Alam',
+      namaHQ: 'ILKM Shah Alam',
+      jenisOrganisasi: 'Institut',
+      noPendaftaran: 'ILKM-2023-012',
+      statusPendaftaran: 'Berdaftar',
+      kariah: 'MASJID SHAH ALAM',
+      zone: 'Zon Selangor',
+      alamat: {
+        addressLine1: 'No. 321, Jalan Kemahiran 4/1',
+        addressLine2: 'Taman Kemahiran Jaya',
+        addressLine3: '',
+        postcode: '40000',
+        city: 'Shah Alam',
+        district: 'Petaling',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Encik Mohd Rashid bin Hassan',
+          ic: '700301067890',
+          phoneNumber: '03-55567890',
+          email: 'rashid@ilkm.gov.my'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: 'tidak',
+        bankName: 'RHB Bank',
+        bankAccountNumber: '3456789012345',
+        penamaBank: 'Institut Latihan Kemahiran Malaysia',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'sijil_ilkm_2023.pdf' },
+      appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
+      bankProof: { name: 'bank_verification_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Menunggu Pengesahan',
+      tarikhPermohonan: '30/7/2025'
     },
-    'PB-240512': {
-      noRujukan: 'PB-240512',
-      namaCawangan: 'Cawangan Taman Ilmu',
-      namaHQ: 'Pertubuhan Amal Jariah',
-      status: 'Diluluskan'
+    'CB-240502': {
+      noRujukan: 'CB-240502',
+      namaCawangan: 'Pertubuhan Amal Iman Malaysia - Cawangan Klang',
+      namaHQ: 'Pertubuhan Amal Iman Malaysia',
+      jenisOrganisasi: 'NGO',
+      noPendaftaran: 'PPM-2023-001',
+      statusPendaftaran: 'Berdaftar',
+      kariah: 'MASJID KLANG',
+      zone: 'Zon Klang',
+      alamat: {
+        addressLine1: 'No. 789, Jalan Amal 3/2',
+        addressLine2: 'Taman Amal Klang',
+        addressLine3: '',
+        postcode: '41000',
+        city: 'Klang',
+        district: 'Klang',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Ustazah Siti Aisyah binti Mohd',
+          ic: '820315234567',
+          phoneNumber: '03-55551234',
+          email: 'aisyah@amaliman.org'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: 'ya',
+        bankName: 'Maybank',
+        bankAccountNumber: '5123456789012',
+        penamaBank: 'Pertubuhan Amal Iman Malaysia',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'sijil_ros_2023.pdf' },
+      appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
+      bankProof: null,
+      additionalDocuments: null,
+      status: 'Disahkan',
+      tarikhPermohonan: '15/6/2025'
     },
-    'PB-240513': {
-      noRujukan: 'PB-240513',
-      namaCawangan: 'Cawangan Bandar Baru',
-      namaHQ: 'Yayasan Pendidikan Islami Malaysia',
-      status: 'Ditolak'
+    'CB-240503': {
+      noRujukan: 'CB-240503',
+      namaCawangan: 'Sekolah Menengah Tahfiz Al-Amin - Cawangan Kajang',
+      namaHQ: 'Sekolah Menengah Tahfiz Al-Amin',
+      jenisOrganisasi: 'IPT',
+      noPendaftaran: 'IPT-2023-045',
+      statusPendaftaran: 'Berdaftar',
+      kariah: 'MASJID AL-AMIN',
+      zone: 'Zon Kajang',
+      alamat: {
+        addressLine1: 'Lot 456, Jalan Pendidikan 3/1',
+        addressLine2: 'Taman Pendidikan Islam',
+        addressLine3: '',
+        postcode: '43000',
+        city: 'Kajang',
+        district: 'Hulu Langat',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Ustaz Mohd Fikri bin Omar',
+          ic: '850610089012',
+          phoneNumber: '03-80123456',
+          email: 'fikri@tahfizalamin.edu.my'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: 'tidak',
+        bankName: 'Bank Islam',
+        bankAccountNumber: '2098765432109',
+        penamaBank: 'Sekolah Menengah Tahfiz Al-Amin',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'sijil_moe_2023.pdf' },
+      appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
+      bankProof: { name: 'bank_letter_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Perlu Pembetulan',
+      tarikhPermohonan: '8/5/2025'
+    },
+    'CB-240504': {
+      noRujukan: 'CB-240504',
+      namaCawangan: 'Syarikat Teknologi Maju Sdn Bhd - Cawangan Cyberjaya',
+      namaHQ: 'Syarikat Teknologi Maju Sdn Bhd',
+      jenisOrganisasi: 'Swasta',
+      noPendaftaran: '123456-A',
+      statusPendaftaran: 'Berdaftar',
+      kariah: 'MASJID CYBERJAYA',
+      zone: 'Zon Cyberjaya',
+      alamat: {
+        addressLine1: 'No. 123, Jalan Teknologi 3/1',
+        addressLine2: 'Taman Teknologi Malaysia',
+        addressLine3: '',
+        postcode: '63000',
+        city: 'Cyberjaya',
+        district: 'Sepang',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Encik Ahmad bin Abdullah',
+          ic: '800123456789',
+          phoneNumber: '03-12345678',
+          email: 'ahmad@teknologimaju.com'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: 'ya',
+        bankName: 'CIMB Bank',
+        bankAccountNumber: '8001234567890',
+        penamaBank: 'Syarikat Teknologi Maju Sdn Bhd',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'sijil_ssm_2025.pdf' },
+      appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
+      bankProof: null,
+      additionalDocuments: null,
+      status: 'Tidak Sah',
+      tarikhPermohonan: '12/6/2025'
     }
-  };
-
-  if (mockData[id]) {
-    cawanganData.value = { ...cawanganData.value, ...mockData[id] };
   }
-};
-</script> 
+
+  if (dataset[id]) {
+    cawanganData.value = { ...cawanganData.value, ...dataset[id] }
+  }
+}
+
+const handleBack = () => {
+  navigateTo('/BF-PRF/OR/PB')
+}
+
+
+const retryLoad = () => {
+  error.value = null
+  loadData()
+}
+
+const loadData = async () => {
+  isLoading.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
+    loadCawanganData(route.params.id)
+  } catch (err) {
+    error.value = 'Gagal memuatkan data cawangan'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  loadData()
+})
+</script>
