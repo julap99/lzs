@@ -130,8 +130,8 @@
                     type="radio"
                     name="taraf_penduduk"
                     :options="[
-                      { label: 'Ya', value: 'ya' },
-                      { label: 'Tidak', value: 'tidak' },
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'N' },
                     ]"
                     validation="required"
                     v-model="formData.taraf_penduduk"
@@ -526,18 +526,6 @@
                     v-model="edu.jenis_sekolah"
                   />
 
-                  <!-- If Peringkat Rendah, show checkbox for category -->
-                  <FormKit
-                    v-if="edu.jenis_sekolah === 'rendah'"
-                    type="checkbox"
-                    :name="`edu${index}KategoriRendah`"
-                    label="Kategori Sekolah Rendah"
-                    :options="[
-                      { label: 'Sekolah Agama', value: 'agama' },
-                      { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
-                    ]"
-                    v-model="edu.sekolah_rendah_kategori"
-                  />
 
                   <!-- Kategori select is always shown -->
                   <FormKit
@@ -592,10 +580,26 @@
                       :name="`edu${index}NamaSekolah`"
                       label="Nama Sekolah / Institusi"
                       placeholder="Pilih sekolah / institusi"
-                      :options="schoolOptions"
+                      :options="getFilteredSchoolOptions(edu.kategori_sekolah)"
                       validation="required"
                       v-model="edu.nama_sekolah"
                       @input="onSelectSchool(index, $event)"
+                    />
+                  </div>
+
+                  <!-- Kategori Sekolah Rendah - shown when kategori sekolah is SRA or SRK -->
+                  <div v-if="edu.kategori_sekolah === 'SRA' || edu.kategori_sekolah === 'SRK'" class="mt-4">
+                    <label class="block text-sm font-medium text-black-700 mb-4"
+                      >Kategori Sekolah Rendah</label
+                    >
+                    <FormKit
+                      type="checkbox"
+                      :name="`edu${index}KategoriRendah`"
+                      :options="[
+                        { label: 'Sekolah Agama', value: 'agama' },
+                        { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
+                      ]"
+                      v-model="edu.sekolah_rendah_kategori"
                     />
                   </div>
 
@@ -799,7 +803,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Islam</rs-button
+                >Maklumat Pengislaman</rs-button
               >
             </div>
           </div>
@@ -986,7 +990,7 @@
                 Simpan
               </rs-button>
               <rs-button type="submit" variant="primary" @click="nextStepA">
-                Maklumat Bank
+                Maklumat Perbankan
               </rs-button>
             </div>
           </div>
@@ -1030,7 +1034,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-black-700"
-                  >Adakah anda muflis/disenarai hitam oleh bank? Y/T
+                  >Adakah anda muflis/disenarai hitam oleh bank?
                 </label>
                 <div class="mb-6">
                   <FormKit
@@ -2797,16 +2801,17 @@
               <!-- Lain-lain Warganegara -->
               <FormKit
                 v-if="showLainLainWarganegara"
-                type="text"
+                type="file"
                 name="lain_lain_warganegara"
-                label="Lain-lain Warganegara "
-                placeholder="Nyatakan warganegara"
-                validation="required"
+                label="Lain-lain Warganegara"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                accept=".pdf,.jpg,.jpeg,.png"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                 v-model="getCurrentTanggungan().lain_lain_warganegara"
               />
 
               <!-- Taraf Penduduk Tetap -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-if="showLainLainWarganegara" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-black-700"
                     >Taraf Penduduk Tetap</label
@@ -2815,14 +2820,23 @@
                     type="radio"
                     name="taraf_penduduk_tetap"
                     :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'N' },
+                      { label: 'Ya', value: 'ya' },
+                      { label: 'Tidak', value: 'tidak' },
                     ]"
                     validation="required"
                     v-model="getCurrentTanggungan().taraf_penduduk_tetap"
                   />
                 </div>
               </div>
+
+              <!-- No Passport Lama -->
+              <FormKit
+                v-if="showLainLainWarganegara"
+                type="text"
+                name="no_pasport_lama"
+                label="No Passport Lama"
+                v-model="getCurrentTanggungan().no_pasport_lama"
+              />
               <!-- No Pasport -->
               <FormKit
                 v-if="showPassportFields"
@@ -2891,17 +2905,22 @@
               />
 
               <!-- Mohon Ketua Keluarga (for adults) -->
-              <FormKit
+              <div
                 v-if="
                   parseInt(
                     calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
                   ) > 18
                 "
-                type="checkbox"
-                name="mohon_ketua_keluarga"
-                label="Mohon Ketua Keluarga?"
-                v-model="getCurrentTanggungan().mohon_ketua_keluarga"
-              />
+              >
+                <label class="block text-sm font-medium text-black-700 mb-4"
+                  >Mohon Ketua Keluarga?</label
+                >
+                <FormKit
+                  type="checkbox"
+                  name="mohon_ketua_keluarga"
+                  v-model="getCurrentTanggungan().mohon_ketua_keluarga"
+                />
+              </div>
 
               <!-- Special Approval for Adults -->
               <div
@@ -3181,11 +3200,11 @@
 
           <div class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Adakah tanggungan anda seorang Muallaf? -->
+              <!-- Adakah tanggungan seorang Muallaf? -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-black-700"
-                    >Adakah tanggungan anda seorang Muallaf?</label
+                    >Adakah tanggungan seorang Muallaf?</label
                   >
                   <div class="md:col-span-2">
                     <FormKit
@@ -3295,7 +3314,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Maklumat Bank</rs-button
+                >Maklumat perbankan</rs-button
               >
             </div>
           </div>
@@ -3341,7 +3360,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-black-700"
-                  >Adakah tanggungan muflis/disenarai hitam oleh bank? Y/T
+                  >Adakah tanggungan muflis/disenarai hitam oleh bank?
                 </label>
                 <div class="mb-6">
                   <FormKit
@@ -3439,35 +3458,87 @@
                     v-model="account.jenis_akaun"
                   />
 
-                  <!-- Pengenalan Id (show only if jenis akaun = Bersama) -->
-                  <FormKit
-                    v-if="account.jenis_akaun === 'bersama'"
-                    type="text"
-                    :name="`bankTanggungan${index}IdPengenalan`"
-                    label="Pengenalan Id "
-                    validation="required"
-                    v-model="account.id_pengenalan"
-                  />
+                  <!-- Multiple Pengenalan IDs (show only if jenis akaun = Bersama) -->
+                  <div v-if="account.jenis_akaun === 'bersama'" class="md:col-span-2">
+                    <label class="block text-sm font-medium text-black-700 mb-4"
+                      >Maklumat Pengenalan ID (Maksimum 3)</label
+                    >
+                    
+                    <!-- Existing single fields for backward compatibility -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <FormKit
+                        type="text"
+                        :name="`bankTanggungan${index}IdPengenalan`"
+                        label="Pengenalan Id "
+                        validation="required"
+                        v-model="account.id_pengenalan"
+                      />
+                      <FormKit
+                        type="text"
+                        :name="`bankTanggungan${index}NamaBersama`"
+                        label="Nama "
+                        validation="required"
+                        v-model="account.nama_bersama"
+                      />
+                      <FormKit
+                        type="text"
+                        :name="`bankTanggungan${index}Hubungan`"
+                        label="Hubungan "
+                        validation="required"
+                        v-model="account.hubungan"
+                      />
+                    </div>
 
-                  <!-- Nama (show only if jenis akaun = Bersama) -->
-                  <FormKit
-                    v-if="account.jenis_akaun === 'bersama'"
-                    type="text"
-                    :name="`bankTanggungan${index}NamaBersama`"
-                    label="Nama "
-                    validation="required"
-                    v-model="account.nama_bersama"
-                  />
+                    <!-- Multiple pengenalan IDs -->
+                    <div v-for="(pengenalan, idIndex) in account.pengenalan_ids" :key="idIndex" class="mb-4 p-3 border border-gray-200 rounded-lg">
+                      <div class="flex justify-end items-center mb-2">
+                        <button
+                          type="button"
+                          @click="removePengenalanIdTanggungan(index, idIndex)"
+                          class="text-red-500 hover:text-red-700"
+                        >
+                          <Icon name="mdi:delete" size="1rem" />
+                        </button>
+                      </div>
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <FormKit
+                          type="text"
+                          :name="`bankTanggungan${index}PengenalanId${idIndex}`"
+                          label="Pengenalan Id"
+                          validation="required"
+                          v-model="pengenalan.id"
+                        />
+                        <FormKit
+                          type="text"
+                          :name="`bankTanggungan${index}PengenalanNama${idIndex}`"
+                          label="Nama"
+                          validation="required"
+                          v-model="pengenalan.nama"
+                        />
+                        <FormKit
+                          type="text"
+                          :name="`bankTanggungan${index}PengenalanHubungan${idIndex}`"
+                          label="Hubungan"
+                          validation="required"
+                          v-model="pengenalan.hubungan"
+                        />
+                      </div>
+                    </div>
 
-                  <!-- Tambah Hubungan (show only if jenis akaun = Bersama) -->
-                  <FormKit
-                    v-if="account.jenis_akaun === 'bersama'"
-                    type="text"
-                    :name="`bankTanggungan${index}Hubungan`"
-                    label="Hubungan "
-                    validation="required"
-                    v-model="account.hubungan"
-                  />
+                    <!-- Add button for pengenalan ID -->
+                    <div class="flex justify-center">
+                      <rs-button
+                        v-if="account.pengenalan_ids.length < 2"
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        @click="addPengenalanIdTanggungan(index)"
+                      >
+                        <Icon name="mdi:plus" class="mr-1" size="0.8rem" />
+                        Tambah Pengenalan ID
+                      </rs-button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -3716,18 +3787,6 @@
                     v-model="edu.jenis_sekolah"
                   />
 
-                  <!-- If Peringkat Rendah, show checkbox for category -->
-                  <FormKit
-                    v-if="edu.jenis_sekolah === 'rendah'"
-                    type="checkbox"
-                    :name="`eduTanggungan${index}KategoriRendah`"
-                    label="Kategori Sekolah Rendah"
-                    :options="[
-                      { label: 'Sekolah Agama', value: 'agama' },
-                      { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
-                    ]"
-                    v-model="edu.sekolah_rendah_kategori"
-                  />
 
                   <!-- Kategori select is always shown -->
                   <FormKit
@@ -3782,10 +3841,26 @@
                       :name="`eduTanggungan${index}NamaSekolah`"
                       label="Nama Sekolah / Institusi"
                       placeholder="Pilih sekolah / institusi"
-                      :options="schoolOptions"
+                      :options="getFilteredSchoolOptions(edu.kategori_sekolah)"
                       validation="required"
                       v-model="edu.nama_sekolah"
                       @input="onSelectSchoolTanggungan(index, $event)"
+                    />
+                  </div>
+
+                  <!-- Kategori Sekolah Rendah - shown when kategori sekolah is SRA or SRK -->
+                  <div v-if="edu.kategori_sekolah === 'SRA' || edu.kategori_sekolah === 'SRK'" class="mt-4">
+                    <label class="block text-sm font-medium text-black-700 mb-4"
+                      >Kategori Sekolah Rendah</label
+                    >
+                    <FormKit
+                      type="checkbox"
+                      :name="`eduTanggungan${index}KategoriRendah`"
+                      :options="[
+                        { label: 'Sekolah Agama', value: 'agama' },
+                        { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
+                      ]"
+                      v-model="edu.sekolah_rendah_kategori"
                     />
                   </div>
 
@@ -4023,47 +4098,35 @@
         >
           <!-- V. Maklumat Kesihatan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">5. Maklumat Kesihatan</h4>
+            <h3 class="text-lg font-semibold mb-4">5. Maklumat Kesihatan</h3>
 
-            <!-- 1. Tahap Kesihatan -->
+            <!-- Tahap Kesihatan -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3">Tahap Kesihatan</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="select"
-                  name="tahap_kesihatan_tanggungan"
-                  label="Tahap Kesihatan "
-                  placeholder="Pilih tahap kesihatan"
-                  :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
-                  validation="required"
-                  validation-label="Tahap Kesihatan"
-                  v-model="getCurrentTanggungan().tahap_kesihatan_tanggungan"
-                />
-              </div>
+              <FormKit
+                type="select"
+                name="tahap_kesihatan_tanggungan"
+                label="Tahap Kesihatan "
+                :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
+                validation="required"
+                v-model="getCurrentTanggungan().tahap_kesihatan_tanggungan"
+                placeholder="Pilih tahap kesihatan"
+              />
             </div>
 
-            <!-- 2. Sakit Kronik (Jika Tahap Kesihatan = Sakit Kronik) -->
-            <div
-              v-if="
-                getCurrentTanggungan().tahap_kesihatan_tanggungan ===
-                'Sakit Kronik'
-              "
-              class="mb-6"
-            >
-              <h5 class="text-md font-medium mb-3">Sakit Kronik</h5>
+            <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
+            <div v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Sakit Kronik'" class="mb-8">
+              <h5 class="text-lg font-semibold mb-4">Maklumat Sakit Kronik</h5>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Keadaan Kesihatan -->
                 <FormKit
                   type="select"
                   name="keadaan_kesihatan_sakit_tanggungan"
                   label="Keadaan Kesihatan "
-                  placeholder="Pilih keadaan kesihatan"
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
-                  validation-label="Keadaan Kesihatan"
-                  v-model="
-                    getCurrentTanggungan().keadaan_kesihatan_sakit_tanggungan
-                  "
+                  v-model="getCurrentTanggungan().keadaan_kesihatan_sakit_tanggungan"
+                  placeholder="Pilih keadaan kesihatan"
                 />
 
                 <!-- Kos Penjagaan -->
@@ -4071,125 +4134,94 @@
                   type="select"
                   name="kos_penjagaan_sakit_tanggungan"
                   label="Kos Penjagaan "
-                  placeholder="Pilih kos penjagaan"
                   :options="['Berbayar', 'Tidak Berbayar']"
                   validation="required"
-                  validation-label="Kos Penjagaan"
-                  v-model="
-                    getCurrentTanggungan().kos_penjagaan_sakit_tanggungan
-                  "
+                  v-model="getCurrentTanggungan().kos_penjagaan_sakit_tanggungan"
+                  placeholder="Pilih kos penjagaan"
                 />
+              </div>
 
-                <!-- Jumlah Perbelanjaan Bulanan (RM) -->
+              <!-- Jumlah Perbelanjaan Bulanan -->
+              <div class="mt-4">
                 <FormKit
-                  type="number"
+                  type="text"
                   name="perbelanjaan_bulanan_sakit_tanggungan"
                   label="Jumlah Perbelanjaan Bulanan (RM) "
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0"
                   validation="required"
-                  validation-label="Jumlah Perbelanjaan Bulanan"
-                  v-model="
-                    getCurrentTanggungan().perbelanjaan_bulanan_sakit_tanggungan
-                  "
+                  placeholder="9999.99"
+                  v-model="getCurrentTanggungan().perbelanjaan_bulanan_sakit_tanggungan"
+                  help="Format: 9999.99"
                 />
               </div>
             </div>
 
-            <!-- 3. OKU (Jika Tahap Kesihatan = OKU) -->
-            <div
-              v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'"
-              class="mb-6"
-            >
-              <h5 class="text-md font-medium mb-3">OKU</h5>
+            <!-- B. Jika Tahap Kesihatan = "OKU" -->
+            <div v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'" class="mb-8">
+              <h5 class="text-lg font-semibold mb-4">Maklumat OKU</h5>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Kesempurnaan Fizikal -->
                 <FormKit
                   type="select"
                   name="kesempurnaan_fizikal_tanggungan"
                   label="Kesempurnaan Fizikal "
-                  placeholder="Pilih kesempurnaan fizikal"
                   :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
                   validation="required"
-                  validation-label="Kesempurnaan Fizikal"
-                  v-model="
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan
-                  "
+                  v-model="getCurrentTanggungan().kesempurnaan_fizikal_tanggungan"
+                  placeholder="Pilih kesempurnaan fizikal"
                 />
 
-                <!-- Sebab Kecacatan (Jika Cacat) -->
+                <!-- Sebab Kecacatan -->
                 <FormKit
-                  v-if="
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan &&
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan !==
-                      'Sempurna'
-                  "
                   type="select"
                   name="sebab_kecacatan_tanggungan"
                   label="Sebab Kecacatan (Jika Cacat) "
-                  placeholder="Pilih sebab kecacatan"
                   :options="['Sejak Lahir', 'Musibah']"
                   validation="required"
-                  validation-label="Sebab Kecacatan"
                   v-model="getCurrentTanggungan().sebab_kecacatan_tanggungan"
+                  placeholder="Pilih sebab kecacatan"
                 />
+              </div>
 
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <!-- Tahap Kecacatan -->
                 <FormKit
-                  v-if="
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan &&
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan !==
-                      'Sempurna'
-                  "
                   type="select"
                   name="tahap_kecacatan_tanggungan"
                   label="Tahap Kecacatan "
-                  placeholder="Pilih tahap kecacatan"
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
-                  validation-label="Tahap Kecacatan"
                   v-model="getCurrentTanggungan().tahap_kecacatan_tanggungan"
+                  placeholder="Pilih tahap kecacatan"
                 />
 
-                <!-- Jumlah Perbelanjaan Bulanan (RM) -->
+                <!-- Jumlah Perbelanjaan Bulanan -->
                 <FormKit
-                  type="number"
+                  type="text"
                   name="perbelanjaan_bulanan_oku_tanggungan"
                   label="Jumlah Perbelanjaan Bulanan (RM) "
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0"
                   validation="required"
-                  validation-label="Jumlah Perbelanjaan Bulanan"
-                  v-model="
-                    getCurrentTanggungan().perbelanjaan_bulanan_oku_tanggungan
-                  "
+                  placeholder="9999.99"
+                  v-model="getCurrentTanggungan().perbelanjaan_bulanan_oku_tanggungan"
+                  help="Format: 9999.99"
                 />
               </div>
             </div>
 
-            <!-- 4. Uzur (Jika Tahap Kesihatan = Uzur) -->
-            <div
-              v-if="
-                getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Uzur'
-              "
-              class="mb-6"
-            >
-              <h5 class="text-md font-medium mb-3">Uzur</h5>
+            <!-- C. Jika Tahap Kesihatan = "Uzur" -->
+            <div v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Uzur'" class="mb-8">
+              <h5 class="text-lg font-semibold mb-4">Maklumat Uzur</h5>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Keadaan Kesihatan -->
                 <FormKit
                   type="select"
                   name="keadaan_kesihatan_uzur_tanggungan"
                   label="Keadaan Kesihatan "
-                  placeholder="Pilih keadaan kesihatan"
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
-                  validation-label="Keadaan Kesihatan"
-                  v-model="
-                    getCurrentTanggungan().keadaan_kesihatan_uzur_tanggungan
-                  "
+                  v-model="getCurrentTanggungan().keadaan_kesihatan_uzur_tanggungan"
+                  placeholder="Pilih keadaan kesihatan"
                 />
 
                 <!-- Kos Penjagaan -->
@@ -4197,31 +4229,28 @@
                   type="select"
                   name="kos_penjagaan_uzur_tanggungan"
                   label="Kos Penjagaan "
-                  placeholder="Pilih kos penjagaan"
                   :options="['Berbayar', 'Tidak Berbayar']"
                   validation="required"
-                  validation-label="Kos Penjagaan"
                   v-model="getCurrentTanggungan().kos_penjagaan_uzur_tanggungan"
+                  placeholder="Pilih kos penjagaan"
                 />
+              </div>
 
-                <!-- Jumlah Perbelanjaan Bulanan (RM) -->
+              <!-- Jumlah Perbelanjaan Bulanan -->
+              <div class="mt-4">
                 <FormKit
-                  type="number"
+                  type="text"
                   name="perbelanjaan_bulanan_uzur_tanggungan"
                   label="Jumlah Perbelanjaan Bulanan (RM) "
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0"
                   validation="required"
-                  validation-label="Jumlah Perbelanjaan Bulanan"
-                  v-model="
-                    getCurrentTanggungan().perbelanjaan_bulanan_uzur_tanggungan
-                  "
+                  placeholder="9999.99"
+                  v-model="getCurrentTanggungan().perbelanjaan_bulanan_uzur_tanggungan"
+                  help="Format: 9999.99"
                 />
               </div>
             </div>
 
-            <!-- 5. Dokumen Sokongan Kesihatan -->
+            <!-- D. Upload Dokumen Sokongan (Jika Tahap Kesihatan ≠ "Sihat") -->
             <div
               v-if="
                 getCurrentTanggungan().tahap_kesihatan_tanggungan &&
@@ -4229,71 +4258,18 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3">
-                Dokumen Sokongan Kesihatan
-              </h5>
-              <div class="grid grid-cols-1 gap-4">
-                <!-- Dokumen Sakit Kronik -->
-                <FormKit
-                  v-if="
-                    getCurrentTanggungan().tahap_kesihatan_tanggungan ===
-                    'Sakit Kronik'
-                  "
-                  type="file"
-                  name="dokumen_sakit_kronik_tanggungan"
-                  label="Upload Dokumen Sakit Kronik "
-                  multiple
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  validation-label="Dokumen Sakit Kronik"
-                  validation-messages="{
-                    required: 'Sila muat naik dokumen sokongan sakit kronik',
-                    max: 'Saiz fail tidak boleh melebihi 5MB',
-                    mime: 'Format fail tidak dibenarkan'
-                  }"
-                />
+              <h5 class="text-lg font-semibold mb-4">Dokumen Sokongan</h5>
 
-                <!-- Dokumen OKU -->
-                <FormKit
-                  v-if="
-                    getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'
-                  "
-                  type="file"
-                  name="dokumen_oku_tanggungan"
-                  label="Upload Dokumen OKU "
-                  multiple
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  validation-label="Dokumen OKU"
-                  validation-messages="{
-                    required: 'Sila muat naik dokumen sokongan OKU',
-                    max: 'Saiz fail tidak boleh melebihi 5MB',
-                    mime: 'Format fail tidak dibenarkan'
-                  }"
-                />
-
-                <!-- Dokumen Uzur -->
-                <FormKit
-                  v-if="
-                    getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Uzur'
-                  "
-                  type="file"
-                  name="dokumen_uzur_tanggungan"
-                  label="Upload Dokumen Uzur "
-                  multiple
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  validation-label="Dokumen Uzur"
-                  validation-messages="{
-                    required: 'Sila muat naik dokumen sokongan uzur',
-                    max: 'Saiz fail tidak boleh melebihi 5MB',
-                    mime: 'Format fail tidak dibenarkan'
-                  }"
-                />
-              </div>
+              <FormKit
+                type="file"
+                name="dokumen_sokongan_kesihatan_tanggungan"
+                label="Upload Dokumen Sokongan Berkaitan Kesihatan "
+                accept=".pdf,.jpg,.jpeg,.png"
+                multiple="true"
+                help="Format yang dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
+                validation="required"
+                v-model="getCurrentTanggungan().dokumen_sokongan_kesihatan_tanggungan"
+              />
             </div>
           </div>
 
@@ -5350,6 +5326,16 @@ definePageMeta({
 // BREADCRUMB CONFIGURATION
 // ============================================================================
 const breadcrumb = ref([
+{
+    name: "Profiling",
+    type: "link",
+    path: "/BF-PRF",
+  },
+  {
+    name: "Asnaf",
+    type: "link",
+    path: "/BF-PRF/AS",
+  },
   {
     name: " Pendaftaran Lengkap",
     type: "current",
@@ -5402,13 +5388,208 @@ const stepsB = [
   { id: 11, label: "Pegawai Pendaftar" },
 ];
 
-// Predefined School/Institution options with addresses
-const schoolOptions = [
-  { label: "SMK Kuala Lumpur", value: "smk-kuala-lumpur", alamat1: "Jalan Sultan, Kuala Lumpur", alamat2: "", alamat3: "" },
-  { label: "SK Petaling Jaya", value: "sk-petaling-jaya", alamat1: "Jalan Sekolah, Petaling Jaya", alamat2: "", alamat3: "" },
-  { label: "UPM", value: "upm", alamat1: "Universiti Putra Malaysia", alamat2: "Serdang, Seri Kembangan", alamat3: "" },
-  { label: "SMK Shah Alam", value: "smk-shah-alam", alamat1: "Jalan Sekolah, Shah Alam", alamat2: "", alamat3: "" },
+// Mock data for Sekolah Agama
+const sekolahAgamaOptions = [
+  // Sekolah Rendah Agama (SRA)
+  { 
+    label: "SRA Al-Amin Kuala Lumpur", 
+    value: "sra-al-amin-kl", 
+    kategori: "SRA",
+    alamat1: "Jalan Ampang, Kuala Lumpur", 
+    alamat2: "Wilayah Persekutuan", 
+    alamat3: "50450 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50450"
+  },
+  { 
+    label: "SRA Al-Hidayah Shah Alam", 
+    value: "sra-al-hidayah-sa", 
+    kategori: "SRA",
+    alamat1: "Jalan Masjid, Shah Alam", 
+    alamat2: "Selangor", 
+    alamat3: "40000 Shah Alam",
+    daerah: "Shah Alam",
+    bandar: "Shah Alam",
+    poskod: "40000"
+  },
+  { 
+    label: "SRA Al-Ikhlas Petaling Jaya", 
+    value: "sra-al-ikhlas-pj", 
+    kategori: "SRA",
+    alamat1: "Jalan SS2, Petaling Jaya", 
+    alamat2: "Selangor", 
+    alamat3: "47300 Petaling Jaya",
+    daerah: "Petaling Jaya",
+    bandar: "Petaling Jaya",
+    poskod: "47300"
+  },
+  // KAFA
+  { 
+    label: "KAFA Al-Falah Kuala Lumpur", 
+    value: "kafa-al-falah-kl", 
+    kategori: "KAFA",
+    alamat1: "Jalan TAR, Kuala Lumpur", 
+    alamat2: "Wilayah Persekutuan", 
+    alamat3: "50100 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50100"
+  },
+  { 
+    label: "KAFA Al-Munawwarah Klang", 
+    value: "kafa-al-munawwarah-klang", 
+    kategori: "KAFA",
+    alamat1: "Jalan Meru, Klang", 
+    alamat2: "Selangor", 
+    alamat3: "41050 Klang",
+    daerah: "Klang",
+    bandar: "Klang",
+    poskod: "41050"
+  },
+  // IPT (Islamic)
+  { 
+    label: "Universiti Islam Antarabangsa Malaysia (UIAM)", 
+    value: "uiam", 
+    kategori: "IPT",
+    alamat1: "Jalan Gombak, Gombak", 
+    alamat2: "Selangor", 
+    alamat3: "53100 Gombak",
+    daerah: "Gombak",
+    bandar: "Gombak",
+    poskod: "53100"
+  },
+  { 
+    label: "Kolej Universiti Islam Selangor (KUIS)", 
+    value: "kuis", 
+    kategori: "IPT",
+    alamat1: "Bandar Seri Putra, Kajang", 
+    alamat2: "Selangor", 
+    alamat3: "43000 Kajang",
+    daerah: "Kajang",
+    bandar: "Kajang",
+    poskod: "43000"
+  }
 ];
+
+// Mock data for Sekolah Kebangsaan
+const sekolahKebangsaanOptions = [
+  // Sekolah Rendah Kebangsaan (SRK)
+  { 
+    label: "SK Taman Tun Dr Ismail", 
+    value: "sk-ttdi", 
+    kategori: "SRK",
+    alamat1: "Jalan TTD1, Taman Tun Dr Ismail", 
+    alamat2: "Kuala Lumpur", 
+    alamat3: "60000 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "60000"
+  },
+  { 
+    label: "SK Bandar Utama", 
+    value: "sk-bandar-utama", 
+    kategori: "SRK",
+    alamat1: "Jalan BU 3/1, Bandar Utama", 
+    alamat2: "Petaling Jaya", 
+    alamat3: "47800 Petaling Jaya",
+    daerah: "Petaling Jaya",
+    bandar: "Petaling Jaya",
+    poskod: "47800"
+  },
+  { 
+    label: "SK Seksyen 7, Shah Alam", 
+    value: "sk-seksyen-7-sa", 
+    kategori: "SRK",
+    alamat1: "Jalan Seksyen 7, Shah Alam", 
+    alamat2: "Selangor", 
+    alamat3: "40000 Shah Alam",
+    daerah: "Shah Alam",
+    bandar: "Shah Alam",
+    poskod: "40000"
+  },
+  // Sekolah Menengah Kebangsaan (SEK.MEN)
+  { 
+    label: "SMK Taman Melawati", 
+    value: "smk-taman-melawati", 
+    kategori: "SEK.MEN",
+    alamat1: "Jalan Melawati, Taman Melawati", 
+    alamat2: "Kuala Lumpur", 
+    alamat3: "53100 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "53100"
+  },
+  { 
+    label: "SMK Bandar Baru Bangi", 
+    value: "smk-bandar-baru-bangi", 
+    kategori: "SEK.MEN",
+    alamat1: "Jalan 2/1, Bandar Baru Bangi", 
+    alamat2: "Selangor", 
+    alamat3: "43650 Bandar Baru Bangi",
+    daerah: "Bangi",
+    bandar: "Bangi",
+    poskod: "43650"
+  },
+  { 
+    label: "SMK Seksyen 18, Shah Alam", 
+    value: "smk-seksyen-18-sa", 
+    kategori: "SEK.MEN",
+    alamat1: "Jalan Seksyen 18, Shah Alam", 
+    alamat2: "Selangor", 
+    alamat3: "40000 Shah Alam",
+    daerah: "Shah Alam",
+    bandar: "Shah Alam",
+    poskod: "40000"
+  },
+  // IPT (Public/Private)
+  { 
+    label: "Universiti Malaya (UM)", 
+    value: "um", 
+    kategori: "IPT",
+    alamat1: "Jalan Universiti, Kuala Lumpur", 
+    alamat2: "Wilayah Persekutuan", 
+    alamat3: "50603 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50603"
+  },
+  { 
+    label: "Universiti Putra Malaysia (UPM)", 
+    value: "upm", 
+    kategori: "IPT",
+    alamat1: "Universiti Putra Malaysia", 
+    alamat2: "Serdang, Seri Kembangan", 
+    alamat3: "43400 UPM Serdang",
+    daerah: "Serdang",
+    bandar: "Seri Kembangan",
+    poskod: "43400"
+  },
+  { 
+    label: "Universiti Teknologi Malaysia (UTM)", 
+    value: "utm", 
+    kategori: "IPT",
+    alamat1: "Jalan Sultan Yahya Petra", 
+    alamat2: "Kuala Lumpur", 
+    alamat3: "54100 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "54100"
+  }
+];
+
+// Combined school options for backward compatibility
+const schoolOptions = [...sekolahAgamaOptions, ...sekolahKebangsaanOptions];
+
+// ============================================================================
+// COMPUTED PROPERTIES FOR SCHOOL FILTERING
+// ============================================================================
+// Computed property to get filtered school options based on kategori sekolah
+const getFilteredSchoolOptions = (kategoriSekolah) => {
+  if (!kategoriSekolah) return schoolOptions;
+  
+  return schoolOptions.filter(school => school.kategori === kategoriSekolah);
+};
 
 // ============================================================================
 // FORM STATE VARIABLES
@@ -5434,7 +5615,6 @@ const tarikhMasukIslam = ref(null);
 const tarikhMasukIslamTanggungan = ref(null);
 // Polygamy Variables
 const statusPoligami = ref(null);
-const bilanganIsteri = ref(null);
 const isteriList = ref([]);
 // Payment Variables
 const caraPembayaran = ref(null);
@@ -6037,12 +6217,14 @@ const addBankAccount = () => {
     jenis_akaun: "",
     id_pengenalan: "",
     nama_bersama: "",
+    hubungan: "",
   });
 };
 
 const removeBankAccount = (index) => {
   formData.value.bank_accounts.splice(index, 1);
 };
+
 
 // Helper to get swift code for a given bank value
 const getSwiftCodeForBank = (bankValue) => {
@@ -6235,7 +6417,10 @@ const showLainLainWarganegara = computed(() => {
 
 const showPassportFields = computed(() => {
   const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.warganegara_tanggungan !== "Malaysia";
+  return (
+    currentTanggungan?.warganegara_tanggungan === "Lain-lain" &&
+    currentTanggungan?.jenis_pengenalan_tanggungan === "ForeignId"
+  );
 });
 
 const showLainLainAgama = computed(() => {
@@ -6470,15 +6655,49 @@ watch(
   },
   { immediate: true }
 );
-watch(bilanganIsteri, (newVal) => {
-  const count = parseInt(newVal) || 0;
-  isteriList.value = Array(count).fill({});
-});
+// Watch formData.bilangan_isteri to update both isteriList and formData.isteri_list
+watch(
+  () => formData.value.bilangan_isteri,
+  (newVal) => {
+    const count = parseInt(newVal) || 0;
+    isteriList.value = Array(count).fill({});
+    formData.value.isteri_list = Array(count).fill({ no_kp: '', nama: '' });
+  }
+);
+
+// Watch for kategori sekolah changes to clear nama sekolah selection
+watch(
+  () => formData.value.education_entries,
+  (newEntries) => {
+    if (!newEntries) return;
+    newEntries.forEach((entry, index) => {
+      // Watch each entry's kategori_sekolah
+      watch(
+        () => entry.kategori_sekolah,
+        (newKategori, oldKategori) => {
+          if (newKategori !== oldKategori && entry.nama_sekolah) {
+            // Clear nama sekolah when kategori changes
+            entry.nama_sekolah = "";
+            entry.alamat_sekolah_1 = "";
+            entry.alamat_sekolah_2 = "";
+            entry.alamat_sekolah_3 = "";
+            entry.daerah_sekolah = "";
+            entry.bandar_sekolah = "";
+            entry.poskod_sekolah = "";
+          }
+        },
+        { deep: true }
+      );
+    });
+  },
+  { deep: true }
+);
 
 watch(statusPoligami, (newVal) => {
   if (newVal !== "ya") {
-    bilanganIsteri.value = null;
     isteriList.value = [];
+    formData.value.bilangan_isteri = "";
+    formData.value.isteri_list = [];
   }
 });
 
@@ -6496,15 +6715,35 @@ watch(
   }
 );
 
-// Ensure at least one bank account entry when method is 'akaun'
+// Ensure at least one bank account entry when method is 'ya'
 watch(
   () => formData.value.kaedah_pembayaran,
   (method) => {
-    if (method === "akaun" && formData.value.bank_accounts.length === 0) {
+    if (method === "ya" && formData.value.bank_accounts.length === 0) {
       addBankAccount();
     }
   },
   { immediate: true }
+);
+
+
+// Ensure all existing tanggungan bank accounts have pengenalan_ids field
+watch(
+  () => tanggunganList.value,
+  (tanggunganList) => {
+    if (tanggunganList) {
+      tanggunganList.forEach(tanggungan => {
+        if (tanggungan.bank_accounts) {
+          tanggungan.bank_accounts.forEach(account => {
+            if (!account.pengenalan_ids) {
+              account.pengenalan_ids = [];
+            }
+          });
+        }
+      });
+    }
+  },
+  { deep: true, immediate: true }
 );
 
 // Keep legacy string `tempoh_menetap_selangor` in sync with split inputs
@@ -6789,6 +7028,7 @@ const addTanggungan = (showNotification = true) => {
     pengenalan_id_tanggungan: "",
     warganegara_tanggungan: "",
     lain_lain_warganegara: "",
+    no_pasport_lama: "",
     taraf_penduduk_tetap: "",
     no_pasport: "",
     tarikh_mula_pasport: "",
@@ -7189,7 +7429,7 @@ onMounted(() => {
     // Mock data for Maklumat Peribadi
     jenis_id: "mykad",
     no_pengenalan: "770319035991",
-    nama: "adnan bin abu",
+    nama: "Adnan bin Abu",
     warganegara: "Malaysia",
     tarikh_lahir: "1977-03-19",
     umur: "48",
@@ -7220,6 +7460,7 @@ onMounted(() => {
         jenis_akaun: "individu",
         id_pengenalan: "801004035672",
         nama_bersama: "",
+        hubungan: "",
       },
     ],
 
@@ -8084,9 +8325,24 @@ const onSelectSchool = (index, selectedValue) => {
   if (!selected) return;
   const entry = formData.value.education_entries[index];
   if (!entry) return;
+  
+  // Auto-check kategori sekolah based on selected school
+  entry.kategori_sekolah = selected.kategori;
+  
+  // Auto-check sekolah rendah kategori if it's a religious school
+  if (selected.kategori === 'SRA' || selected.kategori === 'KAFA') {
+    entry.sekolah_rendah_kategori = ['agama'];
+  } else if (selected.kategori === 'SRK' || selected.kategori === 'SEK.MEN') {
+    entry.sekolah_rendah_kategori = ['kebangsaan'];
+  }
+  
+  // Populate address fields
   entry.alamat_sekolah_1 = selected.alamat1 || "";
   entry.alamat_sekolah_2 = selected.alamat2 || "";
   entry.alamat_sekolah_3 = selected.alamat3 || "";
+  entry.daerah_sekolah = selected.daerah || "";
+  entry.bandar_sekolah = selected.bandar || "";
+  entry.poskod_sekolah = selected.poskod || "";
 };
 
 // ============================================================================
@@ -8137,9 +8393,24 @@ const onSelectSchoolTanggungan = (index, selectedValue) => {
   if (!currentTanggungan || !currentTanggungan.education_entries) return;
   const entry = currentTanggungan.education_entries[index];
   if (!entry) return;
+  
+  // Auto-check kategori sekolah based on selected school
+  entry.kategori_sekolah = selected.kategori;
+  
+  // Auto-check sekolah rendah kategori if it's a religious school
+  if (selected.kategori === 'SRA' || selected.kategori === 'KAFA') {
+    entry.sekolah_rendah_kategori = ['agama'];
+  } else if (selected.kategori === 'SRK' || selected.kategori === 'SEK.MEN') {
+    entry.sekolah_rendah_kategori = ['kebangsaan'];
+  }
+  
+  // Populate address fields
   entry.alamat_sekolah_1 = selected.alamat1 || "";
   entry.alamat_sekolah_2 = selected.alamat2 || "";
   entry.alamat_sekolah_3 = selected.alamat3 || "";
+  entry.daerah_sekolah = selected.daerah || "";
+  entry.bandar_sekolah = selected.bandar || "";
+  entry.poskod_sekolah = selected.poskod || "";
 };
 
 // ============================================================================
@@ -8159,6 +8430,7 @@ const addBankAccountTanggungan = () => {
     id_pengenalan: "",
     nama_bersama: "",
     hubungan: "",
+    pengenalan_ids: [], // Array to store multiple pengenalan IDs
   });
 };
 
@@ -8166,6 +8438,27 @@ const removeBankAccountTanggungan = (index) => {
   const currentTanggungan = getCurrentTanggungan();
   if (currentTanggungan.bank_accounts) {
     currentTanggungan.bank_accounts.splice(index, 1);
+  }
+};
+
+// Add/remove pengenalan ID for tanggungan bank accounts
+const addPengenalanIdTanggungan = (accountIndex) => {
+  const currentTanggungan = getCurrentTanggungan();
+  const account = currentTanggungan.bank_accounts[accountIndex];
+  if (account && account.pengenalan_ids.length < 2) {
+    account.pengenalan_ids.push({
+      id: "",
+      nama: "",
+      hubungan: ""
+    });
+  }
+};
+
+const removePengenalanIdTanggungan = (accountIndex, idIndex) => {
+  const currentTanggungan = getCurrentTanggungan();
+  const account = currentTanggungan.bank_accounts[accountIndex];
+  if (account && account.pengenalan_ids) {
+    account.pengenalan_ids.splice(idIndex, 1);
   }
 };
 

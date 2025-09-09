@@ -14,14 +14,22 @@
         <div class="bg-gray-50 p-6 rounded-lg">
           <!-- Tab Header -->
           <div class="flex items-center gap-3 mb-2">
-            <div class="w-6 h-6 bg-teal-500 rounded flex items-center justify-center">
-              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+            <div
+              class="w-6 h-6 bg-teal-500 rounded flex items-center justify-center"
+            >
+              <svg
+                class="w-4 h-4 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
+                />
               </svg>
             </div>
             <h3 class="text-lg font-semibold text-gray-800">Senarai Bantuan</h3>
           </div>
-          
+
           <!-- Tab Description -->
           <!-- <p class="text-gray-600 mb-6">Tabs are used to organize content into different sections.</p> -->
 
@@ -35,7 +43,7 @@
                 'px-6 py-3 text-sm font-medium transition-colors duration-200',
                 activeTab === tab.id
                   ? 'text-teal-600 border-b-2 border-teal-600'
-                  : 'text-gray-700 hover:text-gray-900'
+                  : 'text-gray-700 hover:text-gray-900',
               ]"
             >
               {{ tab.title }}
@@ -48,7 +56,7 @@
             <div v-if="activeTab === 'permohonan'" class="space-y-4">
               <h4 class="text-lg font-semibold text-gray-800">Permohonan</h4>
               <!-- <p class="text-gray-600">This tab displays the applications submitted for assistance.</p> -->
-              
+
               <!-- Applications Table -->
               <rs-table
                 :data="filteredPermohonanData"
@@ -112,7 +120,8 @@
                 <div class="flex items-center gap-2">
                   <span class="text-sm text-gray-700">
                     Menunjukkan {{ paginationStart }} hingga
-                    {{ paginationEndPermohonan }} daripada {{ totalPermohonanData }} entri
+                    {{ paginationEndPermohonan }} daripada
+                    {{ totalPermohonanData }} entri
                   </span>
                   <div class="flex gap-1">
                     <rs-button
@@ -139,8 +148,10 @@
             <!-- Lulus Tab -->
             <div v-if="activeTab === 'lulus'" class="space-y-4">
               <h4 class="text-lg font-semibold text-gray-800">Lulus</h4>
-              <p class="text-gray-600">This tab displays the approved applications.</p>
-              
+              <p class="text-gray-600">
+                This tab displays the approved applications.
+              </p>
+
               <!-- Applications Table -->
               <rs-table
                 :data="filteredLulusData"
@@ -231,8 +242,10 @@
             <!-- Ditolak Tab -->
             <div v-if="activeTab === 'ditolak'" class="space-y-4">
               <h4 class="text-lg font-semibold text-gray-800">Ditolak</h4>
-              <p class="text-gray-600">This tab displays the rejected applications.</p>
-              
+              <p class="text-gray-600">
+                This tab displays the rejected applications.
+              </p>
+
               <!-- Applications Table -->
               <rs-table
                 :data="filteredDitolakData"
@@ -296,7 +309,8 @@
                 <div class="flex items-center gap-2">
                   <span class="text-sm text-gray-700">
                     Menunjukkan {{ paginationStart }} hingga
-                    {{ paginationEndDitolak }} daripada {{ totalDitolakData }} entri
+                    {{ paginationEndDitolak }} daripada
+                    {{ totalDitolakData }} entri
                   </span>
                   <div class="flex gap-1">
                     <rs-button
@@ -348,12 +362,12 @@ const breadcrumb = ref([
 
 // Tab configuration
 const tabs = [
-  { id: 'permohonan', title: 'Permohonan' },
-  { id: 'lulus', title: 'Lulus' },
-  { id: 'ditolak', title: 'Ditolak' }
+  { id: "permohonan", title: "Permohonan" },
+  { id: "lulus", title: "Lulus" },
+  { id: "ditolak", title: "Ditolak" },
 ];
 
-const activeTab = ref('permohonan');
+const activeTab = ref("permohonan");
 
 // Table columns configuration for Bantuan tabs
 const bantuanColumns = [
@@ -388,8 +402,6 @@ const bantuanColumns = [
     sortable: false,
   },
 ];
-
-
 
 // State
 const searchQuery = ref("");
@@ -489,14 +501,6 @@ const ditolakData = ref([
     tarikhPermohonan: "2024-01-05",
     aksi: "B008",
   },
-  {
-    noBantuan: "B009",
-    namaBantuan: "Bantuan Kenderaan",
-    status: "Tidak Lulus",
-    kekerapan: "Sekali",
-    tarikhPermohonan: "2024-01-08",
-    aksi: "B009",
-  },
 ]);
 
 // Simulasi Peranan (dropdown only, no logic)
@@ -547,7 +551,10 @@ const paginationStart = computed(() => {
 });
 
 const paginationEndPermohonan = computed(() => {
-  return Math.min(currentPage.value * pageSize.value, totalPermohonanData.value);
+  return Math.min(
+    currentPage.value * pageSize.value,
+    totalPermohonanData.value
+  );
 });
 
 // Computed properties for Lulus tab
@@ -628,8 +635,6 @@ const paginationEndDitolak = computed(() => {
   return Math.min(currentPage.value * pageSize.value, totalDitolakData.value);
 });
 
-
-
 // Methods
 const handleReview = (noBantuan) => {
   console.log("Review bantuan:", noBantuan);
@@ -649,14 +654,12 @@ const getStatusVariant = (status) => {
     "dalam semakan": "warning",
     "dalam siasatan": "warning",
     "dalam kelulusan": "secondary",
-    "lulus": "success",
+    lulus: "success",
     "tidak lulus": "danger",
-    "draf": "default",
+    draf: "default",
   };
   return variants[status.toLowerCase()] || "default";
 };
-
-
 </script>
 
 <style lang="scss" scoped></style>
