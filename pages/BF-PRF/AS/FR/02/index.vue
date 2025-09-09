@@ -130,8 +130,8 @@
                     type="radio"
                     name="taraf_penduduk"
                     :options="[
-                      { label: 'Ya', value: 'ya' },
-                      { label: 'Tidak', value: 'tidak' },
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'N' },
                     ]"
                     validation="required"
                     v-model="formData.taraf_penduduk"
@@ -2801,16 +2801,17 @@
               <!-- Lain-lain Warganegara -->
               <FormKit
                 v-if="showLainLainWarganegara"
-                type="text"
+                type="file"
                 name="lain_lain_warganegara"
-                label="Lain-lain Warganegara "
-                placeholder="Nyatakan warganegara"
-                validation="required"
+                label="Lain-lain Warganegara"
+                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                accept=".pdf,.jpg,.jpeg,.png"
+                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                 v-model="getCurrentTanggungan().lain_lain_warganegara"
               />
 
               <!-- Taraf Penduduk Tetap -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-if="showLainLainWarganegara" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-black-700"
                     >Taraf Penduduk Tetap</label
@@ -2819,14 +2820,23 @@
                     type="radio"
                     name="taraf_penduduk_tetap"
                     :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'N' },
+                      { label: 'Ya', value: 'ya' },
+                      { label: 'Tidak', value: 'tidak' },
                     ]"
                     validation="required"
                     v-model="getCurrentTanggungan().taraf_penduduk_tetap"
                   />
                 </div>
               </div>
+
+              <!-- No Passport Lama -->
+              <FormKit
+                v-if="showLainLainWarganegara"
+                type="text"
+                name="no_pasport_lama"
+                label="No Passport Lama"
+                v-model="getCurrentTanggungan().no_pasport_lama"
+              />
               <!-- No Pasport -->
               <FormKit
                 v-if="showPassportFields"
@@ -6407,7 +6417,10 @@ const showLainLainWarganegara = computed(() => {
 
 const showPassportFields = computed(() => {
   const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.warganegara_tanggungan !== "Malaysia";
+  return (
+    currentTanggungan?.warganegara_tanggungan === "Lain-lain" &&
+    currentTanggungan?.jenis_pengenalan_tanggungan === "ForeignId"
+  );
 });
 
 const showLainLainAgama = computed(() => {
@@ -7015,6 +7028,7 @@ const addTanggungan = (showNotification = true) => {
     pengenalan_id_tanggungan: "",
     warganegara_tanggungan: "",
     lain_lain_warganegara: "",
+    no_pasport_lama: "",
     taraf_penduduk_tetap: "",
     no_pasport: "",
     tarikh_mula_pasport: "",
@@ -7415,7 +7429,7 @@ onMounted(() => {
     // Mock data for Maklumat Peribadi
     jenis_id: "mykad",
     no_pengenalan: "770319035991",
-    nama: "adnan bin abu",
+    nama: "Adnan bin Abu",
     warganegara: "Malaysia",
     tarikh_lahir: "1977-03-19",
     umur: "48",
