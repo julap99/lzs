@@ -1,8 +1,4 @@
 <script setup>
-import { latest as latestListRef, unreadCount as unreadRef, markRead } from '~/mocks/notifications'
-import { computed } from 'vue'
-import { navigateTo } from '#app'
-
 const isVertical = ref(true);
 const isDesktop = ref(true);
 
@@ -66,18 +62,6 @@ onMounted(() => {
     emit("toggleMenu", true);
   }
 });
-
-const notifDropdown = ref(null)                  // ⬅️ dropdown ref
-const closeNotif = () => notifDropdown.value?.hide?.()
-
-const latestList = latestListRef
-const unreadCount = unreadRef
-
-const openNotif = (n) => {
-  markRead(n.id)
-  if (n.link) navigateTo(n.link)
-  closeNotif()                                   // ⬅️ close after opening
-}
 </script>
 
 <template>
@@ -162,41 +146,60 @@ const openNotif = (n) => {
           </template>
         </VDropdown>
 
-        <VDropdown ref="notifDropdown" placement="bottom-end" distance="13" name="notification">
+        <VDropdown placement="bottom-end" distance="13" name="notification">
           <button class="relative icon-btn h-10 w-10 rounded-full">
-            <span v-if="unreadCount > 0" class="w-3 h-3 absolute top-1 right-2 rounded-full bg-primary"></span>
-            <Icon name="ic:round-notifications-none" />
+            <span
+              class="w-3 h-3 absolute top-1 right-2 rounded-full bg-primary"
+            ></span>
+            <Icon name="ic:round-notifications-none" class="" />
           </button>
-
           <template #popper>
             <ul class="header-dropdown w-full md:w-80 text-[#4B5563]">
               <li class="d-head flex items-center justify-between py-2 px-4">
                 <span class="font-semibold">Notification</span>
-                <NuxtLink to="/notifications" v-close-popper>Lihat Semua</NuxtLink>
-                
-
+                <div
+                  class="flex items-center text-primary cursor-pointer hover:underline"
+                >
+                  <a class="ml-2">View All</a>
+                </div>
               </li>
-
               <NuxtScrollbar>
-                <li v-if="latestList.length === 0" class="px-4 py-6 text-center text-gray-500">
-                  Tiada notifikasi.
-                </li>
-
-                <li v-else>
-                  <a
-                    v-for="n in latestList.slice(0,6)"
-                    :key="n.id"
-                    class="py-2 px-4 block hover:bg-[rgb(var(--bg-1))]"
-                    @click="openNotif(n); closeNotif()"
-                  >
-                    <div class="flex items-start gap-2">
-                      <Icon name="ic:outline-circle" class="text-primary mt-1" />
-                      <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                          <span class="font-medium truncate">{{ n.title }}</span>
-                          <rs-badge v-if="n.status==='UNREAD'" variant="primary">Baru</rs-badge>
-                        </div>
-                        <p class="text-sm text-gray-600 line-clamp-2 whitespace-pre-line">{{ n.message }}</p>
+                <li>
+                  <div class="bg-[rgb(var(--bg-1))] py-2 px-4">Today</div>
+                  <a class="py-2 px-4 block">
+                    <div class="flex items-center">
+                      <Icon
+                        name="ic:outline-circle"
+                        class="text-primary flex-none"
+                      />
+                      <span class="mx-2"
+                        >Terdapat Satu Pembayaran yang berlaku menggunakan bil
+                        Kuih Raya Cik Kiah</span
+                      >
+                      <div class="w-12 h-12 rounded-full ml-auto flex-none">
+                        <img
+                          class="rounded-full"
+                          src="@/assets/img/user/default.svg"
+                        />
+                      </div>
+                    </div>
+                  </a>
+                  <a class="py-2 px-4 block">
+                    <div class="flex items-center">
+                      <Icon
+                        name="ic:outline-circle"
+                        class="text-primary flex-none"
+                      />
+                      <span class="mx-2"
+                        >Terdapat Satu Pembayaran yang berlaku menggunakan bil
+                        Mercun</span
+                      >
+                      <div class="w-12 h-12 rounded-full ml-auto flex-none">
+                        <img
+                          class="rounded-full"
+                          src="@/assets/img/user/default.svg"
+                          alt=""
+                        />
                       </div>
                     </div>
                   </a>
