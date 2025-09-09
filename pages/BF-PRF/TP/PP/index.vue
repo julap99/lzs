@@ -18,7 +18,7 @@
             <FormKit
               v-model="searchQuery"
               type="text"
-              placeholder="Cari No Rujukan, Nama Recipient, atau ID Pengenalan..."
+              placeholder="Cari No. Rujukan, Nama Recipient, atau ID Pengenalan..."
               :classes="{ input: '!py-2' }"
             />
             <rs-button
