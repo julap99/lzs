@@ -286,9 +286,50 @@
           </rs-card>
 
           <!-- BQ, Laporan Gambar, Laporan Teknikal in Tabs -->
-          <rs-tab variant="primary" type="card">
+          <div class="bg-white">
+            <!-- Custom Tab Navigation -->
+            <div class="border-b border-gray-200">
+              <nav class="-mb-px flex space-x-8">
+                <button
+                  @click="activeTab = 'bq'"
+                  :class="[
+                    activeTab === 'bq'
+                      ? 'border-teal-500 text-teal-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                    'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
+                  ]"
+                >
+                  BQ
+                </button>
+                <button
+                  @click="activeTab = 'gambar'"
+                  :class="[
+                    activeTab === 'gambar'
+                      ? 'border-teal-500 text-teal-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                    'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
+                  ]"
+                >
+                  Laporan Gambar
+                </button>
+                <button
+                  @click="activeTab = 'teknikal'"
+                  :class="[
+                    activeTab === 'teknikal'
+                      ? 'border-teal-500 text-teal-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                    'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
+                  ]"
+                >
+                  Laporan Teknikal
+                </button>
+              </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="mt-6">
             <!-- Tab: BQ -->
-            <rs-tab-item title="BQ" active>
+            <div v-if="activeTab === 'bq'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -331,6 +372,11 @@
                           <th
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
+                            Jumlah Keseluruhan
+                          </th>
+                          <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Status
                           </th>
                           <th
@@ -351,6 +397,11 @@
                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                           >
                             {{ bq.namaBQ }}
+                          </td>
+                          <td
+                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                          >
+                            {{ bq.jumlahBQ }}
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap">
                             <rs-badge
@@ -375,7 +426,7 @@
                         </tr>
                         <tr v-if="bqList.length === 0">
                           <td
-                            colspan="4"
+                            colspan="5"
                             class="px-6 py-4 text-center text-sm text-gray-500"
                           >
                             Tiada BQ dijumpai. Klik butang "Tambah Baru" untuk
@@ -387,10 +438,10 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
+            </div>
 
             <!-- Tab: Laporan Gambar -->
-            <rs-tab-item title="Laporan Gambar">
+            <div v-if="activeTab === 'gambar'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -460,10 +511,10 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
+            </div>
 
             <!-- Tab: Laporan Teknikal -->
-            <rs-tab-item title="Laporan Teknikal">
+            <div v-if="activeTab === 'teknikal'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -555,8 +606,9 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
-          </rs-tab>
+            </div>
+            </div>
+          </div>
           
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -585,7 +637,7 @@
             <template #body>
               <div class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                  <div class="space-y-1">
+                  <div v-if="!isB106" class="space-y-1">
                     <!-- <label class="text-sm font-medium text-gray-700"
                       >Kadar Bantuan</label
                     > -->
@@ -603,7 +655,7 @@
 
                   </div>
 
-                  <div class="space-y-1">
+                  <div v-if="!isB106" class="space-y-1">
                     <label class="text-sm font-medium text-gray-700">Tempoh/Kekerapan</label>
                     <input
                     type="number"
@@ -617,7 +669,7 @@
                 </div>
 
                 <!-- Tarikh Mula & Tarikh Tamat side by side -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div v-if="!isB106" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                   <div class="space-y-1">
                     <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
                     <input
@@ -676,6 +728,209 @@
 
         <!-- Section 3: Catatan Lapangan -->
         <div class="col-span-1">
+
+          <!-- Laluan Process  -->
+        <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="iconamoon:check-circle-2-duotone"
+                      class="w-6 h-6 text-yellow-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Laluan Proses
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Laluan Proses Permohonan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            
+
+            <template #body>
+              
+              <div class="space-y-4">
+                <!-- Accordion: Laluan Proses Details -->
+                <div class="space-y-3">
+                  <!-- Permohonan Accordion Item -->
+                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.permohonan = !accordionOpen.permohonan"
+                    >
+                      <span class="font-medium text-gray-900">Permohonan</span>
+                      <Icon
+                        :name="accordionOpen.permohonan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.permohonan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Permohonan Dibuat Oleh</label>
+                          <p class="text-gray-900">{{ permohonanDetails.dibuatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Permohonan</label>
+                          <p class="text-gray-900">{{ formatDateTime(permohonanDetails.tarikhPermohonan) }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Sebab Memohon Bantuan</label>
+                          <p class="text-gray-900">{{ permohonanDetails.sebabMemohon }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Siasatan Accordion Item -->
+                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.siasatan = !accordionOpen.siasatan"
+                    >
+                      <span class="font-medium text-gray-900">Siasatan</span>
+                      <Icon
+                        :name="accordionOpen.siasatan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.siasatan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Disiasat Oleh</label>
+                          <p class="text-gray-900">{{ siasatanDetails.disiasatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Kaedah Siasatan</label>
+                          <p class="text-gray-900">{{ siasatanDetails.kaedahSiasatan }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Status Siasatan</label>
+                          <rs-badge :variant="getProcessStatusVariant(siasatanDetails.statusSiasatan)">
+                            {{ siasatanDetails.statusSiasatan }}
+                          </rs-badge>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Selesai Siasatan</label>
+                          <p class="text-gray-900">{{ formatDateTime(siasatanDetails.tarikhSelesai) }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">SLA</label>
+                          <p class="text-gray-900">{{ siasatanDetails.sla }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Catatan Siasatan</label>
+                          <p class="text-gray-900">{{ siasatanDetails.catatan }}</p>
+                        </div>
+                        
+                        <!-- Gambar Lokasi/Bukti Visual Section -->
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-3">Gambar Lokasi/Bukti Visual</label>
+                          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div v-for="(gambar, index) in siasatanDetails.gambarLokasi" :key="index" class="relative">
+                              <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                                <img 
+                                  :src="gambar.url" 
+                                  :alt="gambar.catatan"
+                                  class="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div class="mt-2">
+                                <p class="text-xs text-gray-600 text-center">{{ gambar.catatan }}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- <div class="text-xs text-gray-500">
+                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
+                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
+                </div> -->
+              </div>
+              
+            </template>
+            
+          </rs-card>
+
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="ph:check-circle"
+                      class="w-6 h-6 text-yellow-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Maklumat Bajet
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Semakan bajet bantuan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Kod Bajet</label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">A-200400-1000-1-P-1-B102</span>
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Jumlah Bajet Semasa</label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">
+                      {{ showBajetInfo ? `RM ${jumlahBajetSemasa.toLocaleString()}` : '0.00' }}
+                    </span>
+                  </div>
+                  <rs-button 
+                    variant="primary-outline" 
+                    size="sm" 
+                    @click="handleSemakanBajet"
+                    :disabled="showBajetInfo"
+                    class="w-full mt-2"
+                  >
+                    Semakan Bajet
+                  </rs-button>
+                </div>
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Bajet Mencukupi</label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span v-if="!showBajetInfo" class="text-sm text-gray-500">
+                      
+                    </span>
+                    <rs-badge v-else :variant="bajetCukupVariant" class="text-sm">
+                      {{ bajetCukupText }}
+                    </rs-badge>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
           <!-- Catatan Lapangan (C/U/V) -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -689,10 +944,10 @@
                 </div>
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">
-                    Catatan Lapangan
+                    Maklumat Kelulusan
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Nota dan dapatan semasa lawatan lapangan
+                    Keputusan kelulusan bantuan
                   </p>
                 </div>
               </div>
@@ -703,6 +958,34 @@
                 <!-- Keputusan Siasatan -->
                 <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
+                    >Keputusan Kelulusan</label
+                  >
+                  <FormKit
+                    type="select"
+                    v-model="catatanLapangan.keputusanSiasatan"
+                    :options="keputusanSiasatanOptions"
+                    placeholder="Pilih keputusan kelulusan"
+                    required
+                  />
+                </div>
+                <!-- Keputusan Kelulusan  -->
+
+                <!-- Catatan Sokongan Hartanah -->
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Catatan</label
+                  >
+                  <FormKit
+                    type="textarea"
+                    v-model="catatanLapangan.catatanSokonganHartanah"
+                    placeholder="Boleh mengisi catatan"
+                    rows="4"
+                  />
+                </div>
+
+                <!-- Keputusan Siasatan -->
+                <!-- <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700"
                     >Keputusan Siasatan</label
                   >
                   <FormKit
@@ -712,10 +995,10 @@
                     placeholder="Pilih keputusan siasatan"
                     required
                   />
-                </div>
+                </div> -->
 
                 <!-- Status Sokongan -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Status Sokongan</label
                   >
@@ -735,10 +1018,10 @@
                       }}
                     </rs-badge>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Catatan Sokongan -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Catatan Sokongan</label
                   >
@@ -750,10 +1033,10 @@
                       "Tiada catatan sokongan."
                     }}</span>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Item Bantuan -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Item Bantuan (jika berkaitan)</label
                   >
@@ -768,10 +1051,10 @@
                       <strong>Cth:</strong> Cermin Mata
                     </div>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Tarikh Sokongan -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Tarikh Sokongan</label
                   >
@@ -781,10 +1064,10 @@
                       {{ catatanLapangan.tarikhSokongan }}
                     </div>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Keputusan Hartanah -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Keputusan Hartanah</label
                   >
@@ -795,10 +1078,10 @@
                     placeholder="Pilih keputusan hartanah"
                     required
                   />
-                </div>
+                </div> -->
 
                 <!-- Status Sokongan Hartanah -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Status Sokongan Hartanah</label
                   >
@@ -818,10 +1101,10 @@
                       }}
                     </rs-badge>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Catatan Sokongan Hartanah -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Catatan Sokongan Hartanah</label
                   >
@@ -831,10 +1114,10 @@
                     placeholder="Boleh mengisi catatan sokongan atau ulasan pembetulan sekiranya BQ memerlukan rework"
                     rows="4"
                   />
-                </div>
+                </div> -->
 
                 <!-- Tarikh Sokongan Hartanah -->
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
                     >Tarikh Sokongan Hartanah</label
                   >
@@ -844,13 +1127,13 @@
                       {{ catatanLapangan.tarikhSokonganHartanah }}
                     </div>
                   </div>
-                </div>
+                </div> -->
               </div>
             </template>
           </rs-card>
 
           <!-- Status Lawatan -->
-          <rs-card class="shadow-sm border-0 bg-white">
+          <!-- <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -889,10 +1172,10 @@
                 </div>
               </div>
             </template>
-          </rs-card>
+          </rs-card> -->
 
           <!-- Section 8: Jumlah Bantuan & Catatan Pengesyoran -->
-          <rs-card class="shadow-sm border-0 bg-white">
+          <!-- <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -943,10 +1226,10 @@
                       catatanPengesyoran || "Diambil dari BQ"
                     }}</span>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Post-approval buttons (only shown after approval) -->
-                <div v-if="isApproved" class="space-y-2 pt-4 border-t">
+                <!-- <div v-if="isApproved" class="space-y-2 pt-4 border-t">
                   <rs-button
                     variant="success-outline"
                     @click="viewArahanKerja"
@@ -967,7 +1250,7 @@
                 </div>
               </div>
             </template>
-          </rs-card>
+          </rs-card> -->
 
           <!-- Action Buttons -->
           <rs-card class="p-4">
@@ -1037,7 +1320,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -1046,6 +1329,10 @@ const router = useRouter();
 const toast = useToast();
 const processing = ref(false);
 const actionType = ref("");
+const activeTab = ref('bq');
+
+// Check if ID is B106 to hide kadar bantuan field
+const isB106 = computed(() => route.params.id === 'B106');
 
 definePageMeta({
   title: "Sokongan Siasatan Lapangan",
@@ -1076,7 +1363,7 @@ const formData = ref({
   statusIndividu: "",
   statusMultidimensi: "",
   statusLawatan: "belum_selesai",
-  jumlahBantuan: 25000,
+  jumlahBantuan: 43000,
 });
 
 const jumlahKeseluruhan = computed(() => {
@@ -1084,6 +1371,25 @@ const jumlahKeseluruhan = computed(() => {
   const tempoh = parseInt(formData.value.tempohKekerapan) || 0
   return kadar * tempoh
 })
+
+// Bajet semasa (mock: RM 1,000,000)
+const jumlahBajetSemasa = ref(1000000)
+const showBajetInfo = ref(false)
+
+// Bajet mencukupi?
+const bajetCukup = computed(() => {
+  const semasa = Number(jumlahBajetSemasa.value) || 0
+  const diperlukan = Number(jumlahKeseluruhan.value) || 0
+  return semasa >= diperlukan
+})
+
+const bajetCukupText = computed(() => (bajetCukup.value ? 'Ya' : 'Tidak'))
+const bajetCukupVariant = computed(() => (bajetCukup.value ? 'success' : 'danger'))
+
+// Handler for Semakan Bajet button
+const handleSemakanBajet = () => {
+  showBajetInfo.value = true
+}
 
 // Section 2: Dokumen Sokongan
 const dokumenSokongan = ref([
@@ -1104,8 +1410,9 @@ const dokumenSokongan = ref([
 // Section 3: Draf BQ
 const bqList = ref([
   {
-    noBQ: "BQ01",
+    noBQ: "BQ202508647",
     namaBQ: "BQ MOHD ROSLI BIN SAAD",
+    jumlahBQ: "RM43,000",
     status: "Lulus",
   },
 ]);
@@ -1135,6 +1442,41 @@ const laporanTeknikal = ref({
   nilaiKerja: 0,
 });
 
+
+// Accordion state and mock details
+const accordionOpen = reactive({
+  permohonan: false,
+  siasatan: false,
+})
+
+// Mock data for accordion
+const permohonanDetails = ref({
+  dibuatOleh: "Siti binti Ali",
+  tarikhPermohonan: "2025-01-15T10:30:00Z",
+  sebabMemohon: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan bantuan bina baru rumah"
+});
+
+const siasatanDetails = ref({
+  disiasatOleh: "Ahmad bin Ali",
+  kaedahSiasatan: "Lapangan",
+  statusSiasatan: "Sokong",
+  tarikhSelesai: "2025-01-20T14:45:00Z",
+  sla: "5 hari",
+  catatan: "Siasatan telah selesai dan laporan teknikal telah disediakan",
+  gambarLokasi: [
+    {
+      url: "https://www.ukm.my/zakat/wp-content/uploads/2021/04/169461828_4043716242359225_2282346416989438479_n.jpg",
+      catatan: ""
+    },
+    {
+      url: "https://assets.nst.com.my/images/articles/lzsel_%282%29_1729555212.jpg",
+      catatan: ""
+    },
+    
+  ]
+});
+
+
 // Section 6: Catatan Lapangan
 const catatanLapangan = ref({
   keputusanSiasatan: "",
@@ -1147,7 +1489,7 @@ const catatanLapangan = ref({
 });
 
 // Section 8: Jumlah Bantuan & Catatan Pengesyoran
-const jumlahBantuan = ref(25000);
+const jumlahBantuan = ref(43000);
 const catatanPengesyoran = ref("");
 const isApproved = ref(false); // This will be true after approval
 
@@ -1158,8 +1500,8 @@ const statusDokumenOptions = ref([
 ]);
 
 const keputusanSiasatanOptions = ref([
-  { label: "Sokong", value: "sokong" },
-  { label: "Tidak Sokong", value: "tidak_sokong" },
+  { label: "Lulus", value: "lulus" },
+  { label: "Tidak Lulus", value: "tidak_lulus" },
 ]);
 
 const keputusanHartanahOptions = ref([
@@ -1203,10 +1545,36 @@ const getStatusText = (status) => {
   return statusMap[status?.toLowerCase()] || status;
 };
 
+// Utility: date time formatter
+const formatDateTime = (isoString) => {
+  try {
+    if (!isoString) return '-';
+    const date = new Date(isoString);
+    return date.toLocaleString('ms-MY', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  } catch {
+    return isoString;
+  }
+};
+
+// Process status badge variant
+const getProcessStatusVariant = (status) => {
+  const map = {
+    Sokong: 'success',
+    'Tidak Sokong': 'danger',
+    'Dalam Proses': 'warning',
+    Selesai: 'success'
+  };
+  return map[status] || 'info';
+};
+
 const getBQStatusVariant = (status) => {
   const variants = {
     "Dalam Kelulusan": "warning",
     "Dalam Proses": "info",
+    "Lulus": "success",
     Selesai: "success",
     Ditolak: "danger",
   };
@@ -1351,7 +1719,7 @@ onMounted(async () => {
       statusIndividu: "Fakir",
       statusMultidimensi: "Asnaf Tidak Produktif",
       statusLawatan: "belum_selesai",
-      jumlahBantuan:25000,
+      jumlahBantuan:43000,
       tempohKekerapan: 1,
       tarikhmula: "2025-08-28",
 
@@ -1369,7 +1737,7 @@ onMounted(async () => {
     };
 
     // Auto-calculate jumlah bantuan from BQ (mock calculation)
-    jumlahBantuan.value = 25000;
+    jumlahBantuan.value = 43000;
     catatanPengesyoran.value =
       "Cadangan kerja baik pulih bumbung bocor dan cat dinding luar untuk memastikan keselamatan dan keselesaan pemohon.";
 
