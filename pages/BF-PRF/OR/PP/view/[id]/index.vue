@@ -277,8 +277,9 @@ const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
     'Dalam Pembetulan': 'info',
-    'Diluluskan': 'success',
-    'Ditolak': 'danger'
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
   };
   return variants[status] || 'default';
 };
@@ -326,7 +327,7 @@ const loadOrganisasiData = (id) => {
       namaOrganisasi: 'Sekolah Menengah Tahfiz Al-Amin',
       jenisOrganisasi: 'Institusi',
       noPendaftaran: 'IPT-456/2019',
-      status: 'Diluluskan',
+      status: 'Disahkan',
       statusPendaftaran: 'Berdaftar',
       struktur: 'HQ',
       hq: '',
@@ -334,6 +335,34 @@ const loadOrganisasiData = (id) => {
       kariah: { kariah: 'MASJID RAWANG', cawangan: '', zon: 'Zon Utara' },
       wakil: [ { nama: 'Dr. Ahmad Fauzi bin Abdul Rahman', idPengenalan: '650815056789', telefon: '09-33456789', emel: 'fauzi@tahfizalamin.edu.my' } ],
       bank: { namaBank: 'Bank Islam', noAkaun: '2098765432109', namaPemilik: 'Sekolah Menengah Tahfiz Al-Amin' }
+    },
+    'ORG-240504': {
+      noRujukan: 'ORG-240504',
+      namaOrganisasi: 'Pertubuhan Kebajikan Islam Selangor',
+      jenisOrganisasi: 'NGO',
+      noPendaftaran: 'PPM-789/2021',
+      status: 'Perlu Pembetulan',
+      statusPendaftaran: 'Berdaftar',
+      struktur: 'HQ',
+      hq: '',
+      alamat: { alamat1: 'No. 15, Jalan Kebajikan 4/2', alamat2: 'Taman Kebajikan', alamat3: 'Seksyen 3', poskod: '47000', bandar: 'Sungai Buloh', negeri: 'Selangor' },
+      kariah: { kariah: 'MASJID SUNGAI BULOH', cawangan: '', zon: 'Zon B' },
+      wakil: [ { nama: 'Ustazah Siti Aminah binti Mohd Ali', idPengenalan: '780312087654', telefon: '03-44567890', emel: 'siti@kebajikanislam.org' } ],
+      bank: { namaBank: 'RHB Bank', noAkaun: '2012345678901', namaPemilik: 'Pertubuhan Kebajikan Islam Selangor' }
+    },
+    'ORG-240505': {
+      noRujukan: 'ORG-240505',
+      namaOrganisasi: 'Syarikat Pembinaan Tidak Sah Sdn Bhd',
+      jenisOrganisasi: 'Swasta',
+      noPendaftaran: '201901012345',
+      status: 'Tidak Sah',
+      statusPendaftaran: 'Tidak Berdaftar',
+      struktur: 'HQ',
+      hq: '',
+      alamat: { alamat1: 'No. 99, Jalan Tidak Sah 1/1', alamat2: 'Taman Tidak Sah', alamat3: 'Seksyen 1', poskod: '50000', bandar: 'Klang', negeri: 'Selangor' },
+      kariah: { kariah: 'MASJID KLANG', cawangan: '', zon: 'Zon Selatan' },
+      wakil: [ { nama: 'Encik Ali bin Abu', idPengenalan: '850505123456', telefon: '03-55667788', emel: 'ali@tidaksh.com' } ],
+      bank: { namaBank: 'Public Bank', noAkaun: '3123456789012', namaPemilik: 'Syarikat Pembinaan Tidak Sah Sdn Bhd' }
     }
   };
 
