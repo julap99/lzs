@@ -990,7 +990,7 @@
                 Simpan
               </rs-button>
               <rs-button type="submit" variant="primary" @click="nextStepA">
-                Maklumat Bank
+                Maklumat Perbankan
               </rs-button>
             </div>
           </div>
@@ -1034,7 +1034,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-black-700"
-                  >Adakah anda muflis/disenarai hitam oleh bank? Y/T
+                  >Adakah anda muflis/disenarai hitam oleh bank?
                 </label>
                 <div class="mb-6">
                   <FormKit
@@ -2895,17 +2895,22 @@
               />
 
               <!-- Mohon Ketua Keluarga (for adults) -->
-              <FormKit
+              <div
                 v-if="
                   parseInt(
                     calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
                   ) > 18
                 "
-                type="checkbox"
-                name="mohon_ketua_keluarga"
-                label="Mohon Ketua Keluarga?"
-                v-model="getCurrentTanggungan().mohon_ketua_keluarga"
-              />
+              >
+                <label class="block text-sm font-medium text-black-700 mb-4"
+                  >Mohon Ketua Keluarga?</label
+                >
+                <FormKit
+                  type="checkbox"
+                  name="mohon_ketua_keluarga"
+                  v-model="getCurrentTanggungan().mohon_ketua_keluarga"
+                />
+              </div>
 
               <!-- Special Approval for Adults -->
               <div
@@ -3185,11 +3190,11 @@
 
           <div class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Adakah tanggungan anda seorang Muallaf? -->
+              <!-- Adakah tanggungan seorang Muallaf? -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-black-700"
-                    >Adakah tanggungan anda seorang Muallaf?</label
+                    >Adakah tanggungan seorang Muallaf?</label
                   >
                   <div class="md:col-span-2">
                     <FormKit
@@ -3299,7 +3304,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Maklumat Bank</rs-button
+                >Maklumat perbankan</rs-button
               >
             </div>
           </div>
@@ -3345,7 +3350,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-black-700"
-                  >Adakah tanggungan muflis/disenarai hitam oleh bank? Y/T
+                  >Adakah tanggungan muflis/disenarai hitam oleh bank?
                 </label>
                 <div class="mb-6">
                   <FormKit
@@ -3443,35 +3448,87 @@
                     v-model="account.jenis_akaun"
                   />
 
-                  <!-- Pengenalan Id (show only if jenis akaun = Bersama) -->
-                  <FormKit
-                    v-if="account.jenis_akaun === 'bersama'"
-                    type="text"
-                    :name="`bankTanggungan${index}IdPengenalan`"
-                    label="Pengenalan Id "
-                    validation="required"
-                    v-model="account.id_pengenalan"
-                  />
+                  <!-- Multiple Pengenalan IDs (show only if jenis akaun = Bersama) -->
+                  <div v-if="account.jenis_akaun === 'bersama'" class="md:col-span-2">
+                    <label class="block text-sm font-medium text-black-700 mb-4"
+                      >Maklumat Pengenalan ID (Maksimum 3)</label
+                    >
+                    
+                    <!-- Existing single fields for backward compatibility -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <FormKit
+                        type="text"
+                        :name="`bankTanggungan${index}IdPengenalan`"
+                        label="Pengenalan Id "
+                        validation="required"
+                        v-model="account.id_pengenalan"
+                      />
+                      <FormKit
+                        type="text"
+                        :name="`bankTanggungan${index}NamaBersama`"
+                        label="Nama "
+                        validation="required"
+                        v-model="account.nama_bersama"
+                      />
+                      <FormKit
+                        type="text"
+                        :name="`bankTanggungan${index}Hubungan`"
+                        label="Hubungan "
+                        validation="required"
+                        v-model="account.hubungan"
+                      />
+                    </div>
 
-                  <!-- Nama (show only if jenis akaun = Bersama) -->
-                  <FormKit
-                    v-if="account.jenis_akaun === 'bersama'"
-                    type="text"
-                    :name="`bankTanggungan${index}NamaBersama`"
-                    label="Nama "
-                    validation="required"
-                    v-model="account.nama_bersama"
-                  />
+                    <!-- Multiple pengenalan IDs -->
+                    <div v-for="(pengenalan, idIndex) in account.pengenalan_ids" :key="idIndex" class="mb-4 p-3 border border-gray-200 rounded-lg">
+                      <div class="flex justify-end items-center mb-2">
+                        <button
+                          type="button"
+                          @click="removePengenalanIdTanggungan(index, idIndex)"
+                          class="text-red-500 hover:text-red-700"
+                        >
+                          <Icon name="mdi:delete" size="1rem" />
+                        </button>
+                      </div>
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <FormKit
+                          type="text"
+                          :name="`bankTanggungan${index}PengenalanId${idIndex}`"
+                          label="Pengenalan Id"
+                          validation="required"
+                          v-model="pengenalan.id"
+                        />
+                        <FormKit
+                          type="text"
+                          :name="`bankTanggungan${index}PengenalanNama${idIndex}`"
+                          label="Nama"
+                          validation="required"
+                          v-model="pengenalan.nama"
+                        />
+                        <FormKit
+                          type="text"
+                          :name="`bankTanggungan${index}PengenalanHubungan${idIndex}`"
+                          label="Hubungan"
+                          validation="required"
+                          v-model="pengenalan.hubungan"
+                        />
+                      </div>
+                    </div>
 
-                  <!-- Tambah Hubungan (show only if jenis akaun = Bersama) -->
-                  <FormKit
-                    v-if="account.jenis_akaun === 'bersama'"
-                    type="text"
-                    :name="`bankTanggungan${index}Hubungan`"
-                    label="Hubungan "
-                    validation="required"
-                    v-model="account.hubungan"
-                  />
+                    <!-- Add button for pengenalan ID -->
+                    <div class="flex justify-center">
+                      <rs-button
+                        v-if="account.pengenalan_ids.length < 2"
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        @click="addPengenalanIdTanggungan(index)"
+                      >
+                        <Icon name="mdi:plus" class="mr-1" size="0.8rem" />
+                        Tambah Pengenalan ID
+                      </rs-button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -4031,47 +4088,35 @@
         >
           <!-- V. Maklumat Kesihatan Tanggungan -->
           <div class="mb-6">
-            <h4 class="font-medium mb-3">5. Maklumat Kesihatan</h4>
+            <h3 class="text-lg font-semibold mb-4">5. Maklumat Kesihatan</h3>
 
-            <!-- 1. Tahap Kesihatan -->
+            <!-- Tahap Kesihatan -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3">Tahap Kesihatan</h5>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="select"
-                  name="tahap_kesihatan_tanggungan"
-                  label="Tahap Kesihatan "
-                  placeholder="Pilih tahap kesihatan"
-                  :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
-                  validation="required"
-                  validation-label="Tahap Kesihatan"
-                  v-model="getCurrentTanggungan().tahap_kesihatan_tanggungan"
-                />
-              </div>
+              <FormKit
+                type="select"
+                name="tahap_kesihatan_tanggungan"
+                label="Tahap Kesihatan "
+                :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
+                validation="required"
+                v-model="getCurrentTanggungan().tahap_kesihatan_tanggungan"
+                placeholder="Pilih tahap kesihatan"
+              />
             </div>
 
-            <!-- 2. Sakit Kronik (Jika Tahap Kesihatan = Sakit Kronik) -->
-            <div
-              v-if="
-                getCurrentTanggungan().tahap_kesihatan_tanggungan ===
-                'Sakit Kronik'
-              "
-              class="mb-6"
-            >
-              <h5 class="text-md font-medium mb-3">Sakit Kronik</h5>
+            <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
+            <div v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Sakit Kronik'" class="mb-8">
+              <h5 class="text-lg font-semibold mb-4">Maklumat Sakit Kronik</h5>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Keadaan Kesihatan -->
                 <FormKit
                   type="select"
                   name="keadaan_kesihatan_sakit_tanggungan"
                   label="Keadaan Kesihatan "
-                  placeholder="Pilih keadaan kesihatan"
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
-                  validation-label="Keadaan Kesihatan"
-                  v-model="
-                    getCurrentTanggungan().keadaan_kesihatan_sakit_tanggungan
-                  "
+                  v-model="getCurrentTanggungan().keadaan_kesihatan_sakit_tanggungan"
+                  placeholder="Pilih keadaan kesihatan"
                 />
 
                 <!-- Kos Penjagaan -->
@@ -4079,125 +4124,94 @@
                   type="select"
                   name="kos_penjagaan_sakit_tanggungan"
                   label="Kos Penjagaan "
-                  placeholder="Pilih kos penjagaan"
                   :options="['Berbayar', 'Tidak Berbayar']"
                   validation="required"
-                  validation-label="Kos Penjagaan"
-                  v-model="
-                    getCurrentTanggungan().kos_penjagaan_sakit_tanggungan
-                  "
+                  v-model="getCurrentTanggungan().kos_penjagaan_sakit_tanggungan"
+                  placeholder="Pilih kos penjagaan"
                 />
+              </div>
 
-                <!-- Jumlah Perbelanjaan Bulanan (RM) -->
+              <!-- Jumlah Perbelanjaan Bulanan -->
+              <div class="mt-4">
                 <FormKit
-                  type="number"
+                  type="text"
                   name="perbelanjaan_bulanan_sakit_tanggungan"
                   label="Jumlah Perbelanjaan Bulanan (RM) "
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0"
                   validation="required"
-                  validation-label="Jumlah Perbelanjaan Bulanan"
-                  v-model="
-                    getCurrentTanggungan().perbelanjaan_bulanan_sakit_tanggungan
-                  "
+                  placeholder="9999.99"
+                  v-model="getCurrentTanggungan().perbelanjaan_bulanan_sakit_tanggungan"
+                  help="Format: 9999.99"
                 />
               </div>
             </div>
 
-            <!-- 3. OKU (Jika Tahap Kesihatan = OKU) -->
-            <div
-              v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'"
-              class="mb-6"
-            >
-              <h5 class="text-md font-medium mb-3">OKU</h5>
+            <!-- B. Jika Tahap Kesihatan = "OKU" -->
+            <div v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'" class="mb-8">
+              <h5 class="text-lg font-semibold mb-4">Maklumat OKU</h5>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Kesempurnaan Fizikal -->
                 <FormKit
                   type="select"
                   name="kesempurnaan_fizikal_tanggungan"
                   label="Kesempurnaan Fizikal "
-                  placeholder="Pilih kesempurnaan fizikal"
                   :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
                   validation="required"
-                  validation-label="Kesempurnaan Fizikal"
-                  v-model="
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan
-                  "
+                  v-model="getCurrentTanggungan().kesempurnaan_fizikal_tanggungan"
+                  placeholder="Pilih kesempurnaan fizikal"
                 />
 
-                <!-- Sebab Kecacatan (Jika Cacat) -->
+                <!-- Sebab Kecacatan -->
                 <FormKit
-                  v-if="
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan &&
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan !==
-                      'Sempurna'
-                  "
                   type="select"
                   name="sebab_kecacatan_tanggungan"
                   label="Sebab Kecacatan (Jika Cacat) "
-                  placeholder="Pilih sebab kecacatan"
                   :options="['Sejak Lahir', 'Musibah']"
                   validation="required"
-                  validation-label="Sebab Kecacatan"
                   v-model="getCurrentTanggungan().sebab_kecacatan_tanggungan"
+                  placeholder="Pilih sebab kecacatan"
                 />
+              </div>
 
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <!-- Tahap Kecacatan -->
                 <FormKit
-                  v-if="
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan &&
-                    getCurrentTanggungan().kesempurnaan_fizikal_tanggungan !==
-                      'Sempurna'
-                  "
                   type="select"
                   name="tahap_kecacatan_tanggungan"
                   label="Tahap Kecacatan "
-                  placeholder="Pilih tahap kecacatan"
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
-                  validation-label="Tahap Kecacatan"
                   v-model="getCurrentTanggungan().tahap_kecacatan_tanggungan"
+                  placeholder="Pilih tahap kecacatan"
                 />
 
-                <!-- Jumlah Perbelanjaan Bulanan (RM) -->
+                <!-- Jumlah Perbelanjaan Bulanan -->
                 <FormKit
-                  type="number"
+                  type="text"
                   name="perbelanjaan_bulanan_oku_tanggungan"
                   label="Jumlah Perbelanjaan Bulanan (RM) "
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0"
                   validation="required"
-                  validation-label="Jumlah Perbelanjaan Bulanan"
-                  v-model="
-                    getCurrentTanggungan().perbelanjaan_bulanan_oku_tanggungan
-                  "
+                  placeholder="9999.99"
+                  v-model="getCurrentTanggungan().perbelanjaan_bulanan_oku_tanggungan"
+                  help="Format: 9999.99"
                 />
               </div>
             </div>
 
-            <!-- 4. Uzur (Jika Tahap Kesihatan = Uzur) -->
-            <div
-              v-if="
-                getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Uzur'
-              "
-              class="mb-6"
-            >
-              <h5 class="text-md font-medium mb-3">Uzur</h5>
+            <!-- C. Jika Tahap Kesihatan = "Uzur" -->
+            <div v-if="getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Uzur'" class="mb-8">
+              <h5 class="text-lg font-semibold mb-4">Maklumat Uzur</h5>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Keadaan Kesihatan -->
                 <FormKit
                   type="select"
                   name="keadaan_kesihatan_uzur_tanggungan"
                   label="Keadaan Kesihatan "
-                  placeholder="Pilih keadaan kesihatan"
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
-                  validation-label="Keadaan Kesihatan"
-                  v-model="
-                    getCurrentTanggungan().keadaan_kesihatan_uzur_tanggungan
-                  "
+                  v-model="getCurrentTanggungan().keadaan_kesihatan_uzur_tanggungan"
+                  placeholder="Pilih keadaan kesihatan"
                 />
 
                 <!-- Kos Penjagaan -->
@@ -4205,31 +4219,28 @@
                   type="select"
                   name="kos_penjagaan_uzur_tanggungan"
                   label="Kos Penjagaan "
-                  placeholder="Pilih kos penjagaan"
                   :options="['Berbayar', 'Tidak Berbayar']"
                   validation="required"
-                  validation-label="Kos Penjagaan"
                   v-model="getCurrentTanggungan().kos_penjagaan_uzur_tanggungan"
+                  placeholder="Pilih kos penjagaan"
                 />
+              </div>
 
-                <!-- Jumlah Perbelanjaan Bulanan (RM) -->
+              <!-- Jumlah Perbelanjaan Bulanan -->
+              <div class="mt-4">
                 <FormKit
-                  type="number"
+                  type="text"
                   name="perbelanjaan_bulanan_uzur_tanggungan"
                   label="Jumlah Perbelanjaan Bulanan (RM) "
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0"
                   validation="required"
-                  validation-label="Jumlah Perbelanjaan Bulanan"
-                  v-model="
-                    getCurrentTanggungan().perbelanjaan_bulanan_uzur_tanggungan
-                  "
+                  placeholder="9999.99"
+                  v-model="getCurrentTanggungan().perbelanjaan_bulanan_uzur_tanggungan"
+                  help="Format: 9999.99"
                 />
               </div>
             </div>
 
-            <!-- 5. Dokumen Sokongan Kesihatan -->
+            <!-- D. Upload Dokumen Sokongan (Jika Tahap Kesihatan ≠ "Sihat") -->
             <div
               v-if="
                 getCurrentTanggungan().tahap_kesihatan_tanggungan &&
@@ -4237,71 +4248,18 @@
               "
               class="mb-6"
             >
-              <h5 class="text-md font-medium mb-3">
-                Dokumen Sokongan Kesihatan
-              </h5>
-              <div class="grid grid-cols-1 gap-4">
-                <!-- Dokumen Sakit Kronik -->
-                <FormKit
-                  v-if="
-                    getCurrentTanggungan().tahap_kesihatan_tanggungan ===
-                    'Sakit Kronik'
-                  "
-                  type="file"
-                  name="dokumen_sakit_kronik_tanggungan"
-                  label="Upload Dokumen Sakit Kronik "
-                  multiple
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  validation-label="Dokumen Sakit Kronik"
-                  validation-messages="{
-                    required: 'Sila muat naik dokumen sokongan sakit kronik',
-                    max: 'Saiz fail tidak boleh melebihi 5MB',
-                    mime: 'Format fail tidak dibenarkan'
-                  }"
-                />
+              <h5 class="text-lg font-semibold mb-4">Dokumen Sokongan</h5>
 
-                <!-- Dokumen OKU -->
-                <FormKit
-                  v-if="
-                    getCurrentTanggungan().tahap_kesihatan_tanggungan === 'OKU'
-                  "
-                  type="file"
-                  name="dokumen_oku_tanggungan"
-                  label="Upload Dokumen OKU "
-                  multiple
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  validation-label="Dokumen OKU"
-                  validation-messages="{
-                    required: 'Sila muat naik dokumen sokongan OKU',
-                    max: 'Saiz fail tidak boleh melebihi 5MB',
-                    mime: 'Format fail tidak dibenarkan'
-                  }"
-                />
-
-                <!-- Dokumen Uzur -->
-                <FormKit
-                  v-if="
-                    getCurrentTanggungan().tahap_kesihatan_tanggungan === 'Uzur'
-                  "
-                  type="file"
-                  name="dokumen_uzur_tanggungan"
-                  label="Upload Dokumen Uzur "
-                  multiple
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  validation-label="Dokumen Uzur"
-                  validation-messages="{
-                    required: 'Sila muat naik dokumen sokongan uzur',
-                    max: 'Saiz fail tidak boleh melebihi 5MB',
-                    mime: 'Format fail tidak dibenarkan'
-                  }"
-                />
-              </div>
+              <FormKit
+                type="file"
+                name="dokumen_sokongan_kesihatan_tanggungan"
+                label="Upload Dokumen Sokongan Berkaitan Kesihatan "
+                accept=".pdf,.jpg,.jpeg,.png"
+                multiple="true"
+                help="Format yang dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
+                validation="required"
+                v-model="getCurrentTanggungan().dokumen_sokongan_kesihatan_tanggungan"
+              />
             </div>
           </div>
 
@@ -6249,12 +6207,14 @@ const addBankAccount = () => {
     jenis_akaun: "",
     id_pengenalan: "",
     nama_bersama: "",
+    hubungan: "",
   });
 };
 
 const removeBankAccount = (index) => {
   formData.value.bank_accounts.splice(index, 1);
 };
+
 
 // Helper to get swift code for a given bank value
 const getSwiftCodeForBank = (bankValue) => {
@@ -6742,15 +6702,35 @@ watch(
   }
 );
 
-// Ensure at least one bank account entry when method is 'akaun'
+// Ensure at least one bank account entry when method is 'ya'
 watch(
   () => formData.value.kaedah_pembayaran,
   (method) => {
-    if (method === "akaun" && formData.value.bank_accounts.length === 0) {
+    if (method === "ya" && formData.value.bank_accounts.length === 0) {
       addBankAccount();
     }
   },
   { immediate: true }
+);
+
+
+// Ensure all existing tanggungan bank accounts have pengenalan_ids field
+watch(
+  () => tanggunganList.value,
+  (tanggunganList) => {
+    if (tanggunganList) {
+      tanggunganList.forEach(tanggungan => {
+        if (tanggungan.bank_accounts) {
+          tanggungan.bank_accounts.forEach(account => {
+            if (!account.pengenalan_ids) {
+              account.pengenalan_ids = [];
+            }
+          });
+        }
+      });
+    }
+  },
+  { deep: true, immediate: true }
 );
 
 // Keep legacy string `tempoh_menetap_selangor` in sync with split inputs
@@ -7466,6 +7446,7 @@ onMounted(() => {
         jenis_akaun: "individu",
         id_pengenalan: "801004035672",
         nama_bersama: "",
+        hubungan: "",
       },
     ],
 
@@ -8435,6 +8416,7 @@ const addBankAccountTanggungan = () => {
     id_pengenalan: "",
     nama_bersama: "",
     hubungan: "",
+    pengenalan_ids: [], // Array to store multiple pengenalan IDs
   });
 };
 
@@ -8442,6 +8424,27 @@ const removeBankAccountTanggungan = (index) => {
   const currentTanggungan = getCurrentTanggungan();
   if (currentTanggungan.bank_accounts) {
     currentTanggungan.bank_accounts.splice(index, 1);
+  }
+};
+
+// Add/remove pengenalan ID for tanggungan bank accounts
+const addPengenalanIdTanggungan = (accountIndex) => {
+  const currentTanggungan = getCurrentTanggungan();
+  const account = currentTanggungan.bank_accounts[accountIndex];
+  if (account && account.pengenalan_ids.length < 2) {
+    account.pengenalan_ids.push({
+      id: "",
+      nama: "",
+      hubungan: ""
+    });
+  }
+};
+
+const removePengenalanIdTanggungan = (accountIndex, idIndex) => {
+  const currentTanggungan = getCurrentTanggungan();
+  const account = currentTanggungan.bank_accounts[accountIndex];
+  if (account && account.pengenalan_ids) {
+    account.pengenalan_ids.splice(idIndex, 1);
   }
 };
 
