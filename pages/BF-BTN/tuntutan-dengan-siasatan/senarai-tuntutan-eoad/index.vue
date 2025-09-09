@@ -10,8 +10,7 @@
       </template>
 
       <template #body>
-        Search and Filter Section
-         <div class="mb-6">
+         <!-- <div class="mb-6">
           <div class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
               <FormKit
@@ -34,13 +33,14 @@
               />
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- Main Table -->
         <rs-table
           :data="tableDataWithNo"
           :columns="columns"
-          :showNoColumn="false"
+          :showNoColumn="true"
+          :showSearch="true"
           :options="{
             variant: 'default',
             hover: true,
@@ -50,26 +50,27 @@
             sortable: true,
             filterable: true,
           }"
+          :show-filter="true"
           advanced
         >
-          <!-- New No. column with checkbox and row number -->
-          <template v-slot:no="{ value, index }">
+          
+          <!-- <template #no="{ value }">
             <div class="flex items-center gap-2">
               <input
                 type="checkbox"
                 class="form-checkbox h-4 w-4 text-primary-600"
-                :value="value.noTuntutan"
-                :checked="selectedRows.includes(value.noTuntutan)"
-                @change="onCheckboxChange($event, value)"
+                :value="asRow(value).noTuntutan"
+                :checked="selectedRows.includes(asRow(value).noTuntutan)"
+                @change="onCheckboxChange($event, asRow(value))"
               />
-              <span>{{ value.no }}</span>
+              <span>{{ asRow(value).no }}</span>
             </div>
-          </template>
+          </template> -->
 
           <!-- Custom column templates -->
-          <template v-slot:noTuntutan="{ text }">
-            <a 
-              href="#" 
+          <template #noTuntutan="{ text }">
+            <a
+              href="#"
               class="text-primary-600 hover:text-primary-800"
               @click.prevent="viewTuntutan(text)"
             >
@@ -77,39 +78,45 @@
             </a>
           </template>
 
-          <template v-slot:amaunTuntutan="{ text }">
+          <template #amaunTuntutan="{ text }">
             <div class="font-medium text-right">
-              RM {{ formatNumber(text) }}
+              RM {{ formatNumber(Number(text)) }}
             </div>
           </template>
 
-          <template v-slot:tarikhTuntutan="{ text }">
+          <template #tarikhTuntutan="{ text }">
             <div>
               <div class="font-medium">{{ formatDate(text) }}</div>
               <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
             </div>
           </template>
 
-          <template v-slot:statusPermohonan="{ text }">
+          <template #statusPermohonan="{ text }">
             <rs-badge :variant="getStatusVariant(text)">
               {{ text }}
             </rs-badge>
           </template>
 
-          <template v-slot:tindakan="{ text }">
+          <template #tindakan="{ value }">
             <div class="flex space-x-2">
               <rs-button
-                v-if="text.status === 'Dalam Semakan'"
-                variant="primary"
+                v-if="getTindakanFrom(value).status === 'Dalam Semakan'"
+                variant="ghost"
                 size="sm"
-                class="!px-2 !py-1"
-                @click="handleSemakPengesahan(text.noTuntutan)"
+                class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
+                @click="handleSemakPengesahan(getTindakanFrom(value).noTuntutan)"
+                title="Semak"
+                aria-label="Semak"
               >
-                <Icon name="ph:check" class="w-4 h-4 mr-1" />
-                Semak
+                <Icon name="ph:check" class="w-5 h-5" />
               </rs-button>
             </div>
           </template>
+
+
+
+
+
         </rs-table>
 
         <!-- Pagination -->
@@ -169,27 +176,64 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useNuxtApp, navigateTo } from '#app'
+import { tuntutanList as baseList, statusVariant as mapStatusVariant } from '~/mocks/tuntutan'
 
-definePageMeta({
-  title: 'Senarai Semua Tuntutan (EOAD / ETD)',
-});
+const { $swal } = useNuxtApp() as any
+// ---- Types for table rows & tindakan cell
+type TindakanCell = { noTuntutan: string; status: string }
+type Row = {
+  no: number
+  noTuntutan: string
+  noGL: string
+  namaPemohon: string
+  tarikhTuntutan: string
+  amaunTuntutan: number
+  statusPermohonan: 'Dalam Semakan' | 'Untuk Kelulusan' | 'Perlu Penambahbaikan' | 'Diluluskan' | 'Ditolak'
+  tindakan: TindakanCell
+}
+
+// ---- Narrowing helpers (used by template to avoid `never`)
+const asRow = (v: unknown) => v as Row
+const asTindakan = (v: unknown) => v as TindakanCell
+// Accepts whatever the slot provides and normalizes to { noTuntutan, status }
+// Normalizer: apapun yang table hantar, kita jadikan { noTuntutan, status }
+const getTindakanFrom = (slotValue: unknown): { noTuntutan: string; status: string } => {
+  const v: any = slotValue
+  if (v && typeof v === 'object') {
+    // Case A: cell value memang tindakan
+    if ('noTuntutan' in v && 'status' in v) {
+      return { noTuntutan: v.noTuntutan, status: v.status }
+    }
+    // Case B: diberikan satu row penuh
+    if ('noTuntutan' in v && 'statusPermohonan' in v) {
+      return { noTuntutan: v.noTuntutan, status: v.statusPermohonan }
+    }
+    // Case C: tindakan nested
+    if (v.tindakan && 'noTuntutan' in v.tindakan && 'status' in v.tindakan) {
+      return { noTuntutan: v.tindakan.noTuntutan, status: v.tindakan.status }
+    }
+  }
+  return { noTuntutan: '', status: '' }
+}
+
+
+
+
+definePageMeta({ title: 'Senarai Semua Tuntutan (EOAD / ETD)' })
 
 const breadcrumb = ref([
-  {
-    name: 'Tuntutan',
-    type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad',
-  },
-  {
-    name: 'Senarai Tuntutan',
-    type: 'current',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad',
-  },
-]);
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad' },
+  { name: 'Senarai Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad' },
+])
 
-// Table columns configuration
+// Build tindakan objects for table
+const tuntutanList = ref(
+  baseList.map((r) => ({ ...r, tindakan: { noTuntutan: r.noTuntutan, status: r.statusPermohonan } }))
+)
+
 const columns = [
   { key: 'noTuntutan', label: 'No. Tuntutan / ID Tuntutan', sortable: true },
   { key: 'noGL', label: 'No. GL', sortable: true },
@@ -198,156 +242,75 @@ const columns = [
   { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
   { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
-];
+]
 
-const searchQuery = ref('');
-const filters = ref({ status: '' });
-const pageSize = ref(10);
-const currentPage = ref(1);
-const selectedRows = ref([]);
-const processing = ref(false);
+const searchQuery = ref('')
+const filters = ref({ status: '' })
+const pageSize = ref(10)
+const currentPage = ref(1)
+const selectedRows = ref<string[]>([])
+const processing = ref(false)
 
-// Options for filters
-const statusOptions = [
-  { label: 'Semua Status', value: '' },
-  { label: 'Dalam Semakan', value: 'Dalam Semakan' },
-  { label: 'Untuk Kelulusan', value: 'Untuk Kelulusan' },
-  { label: 'Perlu Penambahbaikan', value: 'Perlu Penambahbaikan' },
-];
-
-// Sample data - in real app, this would come from an API
-const tuntutanList = ref([
-  {
-    noTuntutan: 'TUN-2024-001',
-    noGL: 'GL-001-2024',
-    namaPemohon: 'Ahmad bin Abdullah',
-    tarikhTuntutan: new Date().toISOString(),
-    amaunTuntutan: 5000.00,
-    statusPermohonan: 'Dalam Semakan',
-    tindakan: { noTuntutan: 'TUN-2024-001', status: 'Dalam Semakan' }
-  },
-  {
-    noTuntutan: 'TUN-2024-002',
-    noGL: 'GL-002-2024',
-    namaPemohon: 'Masjid Al-Hidayah',
-    tarikhTuntutan: new Date(Date.now() - 86400000).toISOString(),
-    amaunTuntutan: 8000.00,
-    statusPermohonan: 'Dalam Semakan',
-    tindakan: { noTuntutan: 'TUN-2024-002', status: 'Dalam Semakan' }
-  },
-  {
-    noTuntutan: 'TUN-2024-003',
-    noGL: 'GL-003-2024',
-    namaPemohon: 'Sekolah Agama Rakyat Al-Amin',
-    tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(),
-    amaunTuntutan: 12000.00,
-    statusPermohonan: 'Dalam Semakan',
-    tindakan: { noTuntutan: 'TUN-2024-003', status: 'Dalam Semakan' }
-  },
-  {
-    noTuntutan: 'TUN-2024-004',
-    noGL: 'GL-004-2024',
-    namaPemohon: 'Surau Kampung Baru',
-    tarikhTuntutan: new Date(Date.now() - 259200000).toISOString(),
-    amaunTuntutan: 3500.00,
-    statusPermohonan: 'Dalam Semakan',
-    tindakan: { noTuntutan: 'TUN-2024-004', status: 'Dalam Semakan' }
-  },
-  {
-    noTuntutan: 'TUN-2024-005',
-    noGL: 'GL-005-2024',
-    namaPemohon: 'Pusat Tahfiz Al-Quran',
-    tarikhTuntutan: new Date(Date.now() - 345600000).toISOString(),
-    amaunTuntutan: 15000.00,
-    statusPermohonan: 'Dalam Semakan',
-    tindakan: { noTuntutan: 'TUN-2024-005', status: 'Dalam Semakan' }
-  },
-]);
-
-// Computed properties
 const filteredTuntutan = computed(() => {
-  let filtered = [...tuntutanList.value];
-
-  // Apply search filter
+  let filtered = [...tuntutanList.value]
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(item => 
-      item.noTuntutan.toLowerCase().includes(query) ||
-      item.namaPemohon.toLowerCase().includes(query) ||
-      item.noGL.toLowerCase().includes(query)
-    );
+    const q = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(
+      (i) =>
+        i.noTuntutan.toLowerCase().includes(q) ||
+        i.namaPemohon.toLowerCase().includes(q) ||
+        i.noGL.toLowerCase().includes(q)
+    )
   }
-
-  // Apply status filter
   if (filters.value.status) {
-    filtered = filtered.filter(item => 
-      item.statusPermohonan === filters.value.status
-    );
+    filtered = filtered.filter((i) => i.statusPermohonan === filters.value.status)
   }
+  return filtered
+})
 
-  return filtered;
-});
+const totalTuntutan = computed(() => filteredTuntutan.value.length)
+const totalPages = computed(() => Math.ceil(totalTuntutan.value / pageSize.value))
+const paginationStart = computed(() => (currentPage.value - 1) * pageSize.value + 1)
+const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalTuntutan.value))
 
-const totalTuntutan = computed(() => filteredTuntutan.value.length);
-const totalPages = computed(() => Math.ceil(totalTuntutan.value / pageSize.value));
-const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
-const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalTuntutan.value));
+const tableDataWithNo = computed<Row[]>(() =>
+  filteredTuntutan.value.map((row) => ({
+    ...row,
+    tindakan: { noTuntutan: row.noTuntutan, status: row.statusPermohonan },
+  }) as Row)
+)
 
-const tableDataWithNo = computed(() =>
-  filteredTuntutan.value.map((row, idx) => {
-    return Object.assign({ no: idx + 1 }, row);
-  })
-);
 
-// Methods
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('ms-MY');
-};
 
-const formatTime = (dateString) => {
-  return new Date(dateString).toLocaleTimeString('ms-MY');
-};
+const formatDate = (s: string) => new Date(s).toLocaleDateString('ms-MY')
+const formatTime = (s: string) => new Date(s).toLocaleTimeString('ms-MY')
+const formatNumber = (n: number) =>
+  new Intl.NumberFormat('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    .format(Number.isFinite(n) ? n : 0)
 
-const formatNumber = (number) => {
-  return new Intl.NumberFormat('ms-MY', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(number);
-};
+const getStatusVariant = (status: string) => mapStatusVariant(status)
 
-const getStatusVariant = (status) => {
-  const variants = {
-    'Dalam Semakan': 'warning',
-    'Untuk Kelulusan': 'info',
-    'Perlu Penambahbaikan': 'danger',
-    'Diluluskan': 'success',
-    'Ditolak': 'danger'
-  };
-  return variants[status] || 'default';
-};
+const viewTuntutan = (noTuntutan: string) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${noTuntutan}/pengesahan`)
+}
 
-const viewTuntutan = (noTuntutan) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${noTuntutan}`);
-};
+const handleSemakPengesahan = (noTuntutan: string) => {
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${noTuntutan}/pengesahan`)
+}
 
-const handleSemakPengesahan = (noTuntutan) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${noTuntutan}/pengesahan`);
-};
-
-const onCheckboxChange = (event, row) => {
-  const isChecked = event.target.checked;
-  if (isChecked) {
-    if (!selectedRows.value.includes(row.noTuntutan)) {
-      selectedRows.value.push(row.noTuntutan);
-    }
+const onCheckboxChange = (event: Event, row: any) => {
+  const input = event.target as HTMLInputElement
+  if (input.checked) {
+    if (!selectedRows.value.includes(row.noTuntutan)) selectedRows.value.push(row.noTuntutan)
   } else {
-    selectedRows.value = selectedRows.value.filter(id => id !== row.noTuntutan);
+    selectedRows.value = selectedRows.value.filter((id) => id !== row.noTuntutan)
   }
-};
+}
 
 const handleBulkApproval = async () => {
   try {
-    processing.value = true;
+    processing.value = true
+    // @ts-ignore (provided by Nuxt app)
     const result = await $swal.fire({
       icon: 'question',
       title: 'Pengesahan (Bulk)',
@@ -356,31 +319,22 @@ const handleBulkApproval = async () => {
       confirmButtonText: 'Ya, Sahkan',
       cancelButtonText: 'Batal',
       confirmButtonColor: '#10b981',
-    });
+    })
     if (result.isConfirmed) {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await $swal.fire({
-        icon: 'success',
-        title: 'Berjaya!',
-        text: `Semua permohonan yang dipilih telah berjaya disahkan`,
-        confirmButtonText: 'OK'
-      });
-      selectedRows.value = [];
-      // Refresh data if needed
+      await new Promise((r) => setTimeout(r, 800))
+      // @ts-ignore
+      await $swal.fire({ icon: 'success', title: 'Berjaya!', text: 'Semua permohonan yang dipilih telah berjaya disahkan' })
+      selectedRows.value = []
     }
-  } catch (error) {
-    await $swal.fire({
-      icon: 'error',
-      title: 'Ralat',
-      text: 'Ralat telah berlaku semasa memproses pengesahan bulk',
-      confirmButtonText: 'OK'
-    });
+  } catch (e) {
+    // @ts-ignore
+    await $swal.fire({ icon: 'error', title: 'Ralat', text: 'Ralat telah berlaku semasa memproses pengesahan bulk' })
   } finally {
-    processing.value = false;
+    processing.value = false
   }
-};
+}
 </script>
+
 
 <style lang="scss" scoped>
 // Add any custom styles here if needed

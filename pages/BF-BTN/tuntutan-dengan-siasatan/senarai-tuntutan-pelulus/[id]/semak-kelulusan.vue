@@ -2,8 +2,43 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <div class="space-y-6 mt-4">
-      <!-- Section 1: Maklumat Bantuan -->
+    <!-- success banners (3–5s auto-hide) -->
+    <transition name="fade">
+      <rs-alert
+        v-if="banner.type==='save' && banner.visible"
+        variant="success"
+        class="mt-4"
+        title="Maklumat telah berjaya disimpan!" />
+    </transition>
+    <transition name="fade">
+      <rs-alert
+        v-if="banner.type==='send' && banner.visible"
+        variant="success"
+        class="mt-4"
+        title="Maklumat telah berjaya dihantar!" />
+    </transition>
+
+    <div class="space-y-6 mt-4" v-if="row">
+      <!-- Section 0: Maklumat Pemohon (3.1) -->
+      <rs-card v-if="row">
+        <template #header>
+          <div class="flex items-center">
+            <Icon name="material-symbols:person-outline" class="mr-2" />
+            Maklumat Pemohon
+          </div>
+        </template>
+        <template #body>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormKit type="text" label="Nama Pemohon" :modelValue="pemohonView.nama" :disabled="true" />
+            <FormKit type="text" label="No. Kad Pengenalan / No. Institusi" :modelValue="pemohonView.noId" :disabled="true" />
+            <FormKit type="text" label="Emel" :modelValue="pemohonView.email" :disabled="true" />
+            <FormKit type="text" label="No. Telefon" :modelValue="pemohonView.telefon" :disabled="true" />
+            <FormKit type="text" label="Alamat" :modelValue="pemohonView.alamat" :disabled="true" />
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 1: Maklumat Bantuan (3.2) -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
@@ -15,42 +50,16 @@
           <div class="bg-gray-50 p-4 rounded-lg mb-6">
             <h4 class="text-md font-medium mb-4">Butiran Asas Jenis Bantuan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Kod Bantuan
-                </label>
-                <div class="text-gray-900">{{ bantuanData.kodBantuan }}</div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Jenis Bantuan
-                </label>
-                <div class="text-gray-900">{{ bantuanData.jenisBantuan }}</div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Bahan Bantuan
-                </label>
-                <div class="text-gray-900">{{ bantuanData.bahanBantuan }}</div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Pakej Bantuan
-                </label>
-                <div class="text-gray-900">{{ bantuanData.pakejBantuan }}</div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Kelayakan Bantuan
-                </label>
-                <div class="text-gray-900">{{ bantuanData.kelayakanBantuan }}</div>
-              </div>
+              <FormKit type="text" label="Aid (Kod Bantuan)" :modelValue="row.bantuanData?.kodBantuan || '-'" :disabled="true" />
+              <FormKit type="text" label="Aid Product" :modelValue="row.bantuanData?.jenisBantuan || '-'" :disabled="true" />
+              <FormKit type="text" label="Product Package" :modelValue="row.bantuanData?.pakejBantuan || '-'" :disabled="true" />
+              <FormKit type="text" label="Entitlement Product" :modelValue="row.bantuanData?.kelayakanBantuan || '-'" :disabled="true" />
             </div>
           </div>
         </template>
       </rs-card>
 
-      <!-- Section 2: Maklumat Tuntutan -->
+      <!-- Section 2: Maklumat Tuntutan (3.3) -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
@@ -60,168 +69,104 @@
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                ID Permohonan Tuntutan
-              </label>
-              <div class="text-gray-900">{{ tuntutan.idPermohonan }}</div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                No. GL
-              </label>
-              <div class="text-gray-900">{{ tuntutan.noGL }}</div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Amaun Tuntutan
-              </label>
-              <div class="text-gray-900">
-                RM {{ formatNumber(tuntutan.amaunTuntutan) }}
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Tarikh Permohonan
-              </label>
-              <div class="text-gray-900">
-                {{ formatDate(tuntutan.tarikhPermohonan) }}
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Pegawai ETD/EOAD
-              </label>
-              <div class="text-gray-900">{{ tuntutan.pegawaiETD }}</div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Dokumen Sokongan
-              </label>
-              <div class="flex items-center space-x-2">
-                <a
-                  v-for="(doc, index) in tuntutan.dokumenSokongan"
-                  :key="index"
-                  :href="doc.url"
-                  target="_blank"
-                  class="text-primary-600 hover:text-primary-800 flex items-center"
-                >
-                  <Icon
-                    name="material-symbols:file-present-outline"
-                    class="mr-1"
-                  />
-                  {{ doc.name }}
-                </a>
-              </div>
-            </div>
+            <FormKit type="text" label="Nombor GL" :modelValue="row.noGL" :disabled="true" />
+            <FormKit type="text" label="Nombor Invoice" :modelValue="noInvois" :disabled="true" />
+            <FormKit type="text" label="Amaun Tuntutan (RM)" :modelValue="`RM ${formatNumber(row.amaunTuntutan)}`" :disabled="true" />
+            <FormKit type="text" label="Tarikh Mohon Tuntutan" :modelValue="formatDate(row.tarikhPermohonan)" :disabled="true" />
+            <FormKit type="text" label="Catatan Tambahan" :modelValue="catatanTambahan" :disabled="true" />
           </div>
         </template>
       </rs-card>
 
-      <!-- Section 3: Semakan Maklumat -->
+      <!-- Section 3: Maklumat Dokumen Sokongan (3.4) -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            <Icon name="material-symbols:description" class="mr-2" />
+            Maklumat Dokumen Sokongan
+          </div>
+        </template>
+        <template #body>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Dokumen</label>
+              <div class="flex items-center flex-wrap gap-2">
+                <a v-for="(doc, i) in row.dokumenSokongan" :key="i" :href="doc.url" target="_blank"
+                   class="text-primary-600 hover:text-primary-800 flex items-center">
+                  <Icon name="material-symbols:file-present-outline" class="mr-1" />
+                  {{ doc.name }}
+                </a>
+              </div>
+            </div>
+            <!-- 3.4.2 Action (open links) already fulfilled by anchors -->
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 4: Keputusan Siasatan (3.5, Read-Only) -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
             <Icon name="material-symbols:fact-check-outline" class="mr-2" />
+            Keputusan Siasatan
+          </div>
+        </template>
+        <template #body>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormKit type="text" label="Kaedah Siasatan" :modelValue="siasatan.kaedah || '-'" :disabled="true" />
+            <FormKit type="text" label="Status Sokongan" :modelValue="siasatan.status || '-'" :disabled="true" />
+            <FormKit type="text" label="Catatan" :modelValue="siasatan.catatan || '-'" :disabled="true" />
+            <FormKit type="text" label="Tarikh" :modelValue="siasatan.tarikh ? formatDate(siasatan.tarikh) : '-'" :disabled="true" />
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 5: Semakan Maklumat (your existing GL compare keeps) -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            <Icon name="material-symbols:insights" class="mr-2" />
             Semakan Maklumat
           </div>
         </template>
         <template #body>
           <div class="space-y-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Status GL
-              </label>
-              <rs-badge
-                :variant="tuntutan.statusGL === 'Valid' ? 'success' : 'danger'"
-              >
-                {{ tuntutan.statusGL }}
+              <label class="block text-sm font-medium text-gray-700 mb-1">Status GL</label>
+              <rs-badge :variant="row.statusGL === 'Lulus' ? 'success' : 'danger'">
+                {{ row.statusGL }}
               </rs-badge>
             </div>
-
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Perbandingan Amaun GL vs Tuntutan
-              </label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Perbandingan Amaun GL vs Tuntutan</label>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="p-4 bg-gray-50 rounded-lg">
-                  <div class="text-sm text-gray-500">Amaun GL</div>
-                  <div class="text-lg font-semibold">
-                    RM {{ formatNumber(tuntutan.amaunGL) }}
-                  </div>
-                </div>
-                <div class="p-4 bg-gray-50 rounded-lg">
-                  <div class="text-sm text-gray-500">Amaun Tuntutan</div>
-                  <div class="text-lg font-semibold">
-                    RM {{ formatNumber(tuntutan.amaunTuntutan) }}
-                  </div>
-                </div>
-                <div class="p-4 bg-gray-50 rounded-lg">
-                  <div class="text-sm text-gray-500">Perbezaan</div>
-                  <div
-                    class="text-lg font-semibold"
-                    :class="{
-                      'text-danger': tuntutan.amaunTuntutan > tuntutan.amaunGL,
-                      'text-success':
-                        tuntutan.amaunTuntutan <= tuntutan.amaunGL,
-                    }"
-                  >
-                    RM
-                    {{
-                      formatNumber(
-                        Math.abs(tuntutan.amaunGL - tuntutan.amaunTuntutan)
-                      )
-                    }}
-                  </div>
-                </div>
+                <StatBox title="Amaun GL" :value="`RM ${formatNumber(row.amaunGL)}`" />
+                <StatBox title="Amaun Tuntutan" :value="`RM ${formatNumber(row.amaunTuntutan)}`" />
+                <StatBox title="Perbezaan"
+                         :value="`RM ${formatNumber(Math.abs(row.amaunGL - row.amaunTuntutan))}`"
+                         :classValue="row.amaunTuntutan > row.amaunGL ? 'text-danger' : 'text-success'" />
               </div>
             </div>
-
+            <!-- tarikh & dokumen perkhidmatan, lampiran lain kept as before -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Tarikh & Dokumen Perkhidmatan
-              </label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh & Dokumen Perkhidmatan</label>
               <div class="space-y-2">
-                <div>Tarikh: {{ formatDate(tuntutan.tarikhPerkhidmatan) }}</div>
-                <div class="flex items-center space-x-2">
-                  <a
-                    v-for="(doc, index) in tuntutan.dokumenPerkhidmatan"
-                    :key="index"
-                    :href="doc.url"
-                    target="_blank"
-                    class="text-primary-600 hover:text-primary-800 flex items-center"
-                  >
-                    <Icon
-                      name="material-symbols:file-present-outline"
-                      class="mr-1"
-                    />
+                <div>Tarikh: {{ row.tarikhPerkhidmatan ? formatDate(row.tarikhPerkhidmatan) : '-' }}</div>
+                <div class="flex items-center flex-wrap gap-2">
+                  <a v-for="(doc, i) in (row.dokumenPerkhidmatan || [])" :key="i" :href="doc.url" target="_blank"
+                     class="text-primary-600 hover:text-primary-800 flex items-center">
+                    <Icon name="material-symbols:file-present-outline" class="mr-1" />
                     {{ doc.name }}
                   </a>
                 </div>
               </div>
             </div>
-
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Lampiran Lain
-              </label>
-              <div class="flex items-center space-x-2">
-                <a
-                  v-for="(doc, index) in tuntutan.lampiranLain"
-                  :key="index"
-                  :href="doc.url"
-                  target="_blank"
-                  class="text-primary-600 hover:text-primary-800 flex items-center"
-                >
-                  <Icon
-                    name="material-symbols:file-present-outline"
-                    class="mr-1"
-                  />
+              <label class="block text-sm font-medium text-gray-700 mb-1">Lampiran Lain</label>
+              <div class="flex items-center flex-wrap gap-2">
+                <a v-for="(doc, i) in (row.lampiranLain || [])" :key="i" :href="doc.url" target="_blank"
+                   class="text-primary-600 hover:text-primary-800 flex items-center">
+                  <Icon name="material-symbols:file-present-outline" class="mr-1" />
                   {{ doc.name }}
                 </a>
               </div>
@@ -230,80 +175,66 @@
         </template>
       </rs-card>
 
-      <!-- Section 4: Keputusan Kelulusan -->
+      <!-- Section 6: Maklumat Kelulusan (3.6) -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
             <Icon name="material-symbols:approval-outline" class="mr-2" />
-            Keputusan Kelulusan
+            Maklumat Kelulusan
           </div>
         </template>
         <template #body>
-          <form @submit.prevent="handleSubmit" class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Keputusan Kelulusan
-              </label>
-              <div class="space-x-4">
+          <form @submit.prevent>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- 3.6.1 Status (Dropdown, Required) -->
+              <FormKit
+                type="select"
+                label="Status"
+                v-model="form.keputusan"
+                :options="[{ label: 'Lulus', value: 'Lulus' }, { label: 'Tidak Lulus', value: 'Tidak Lulus' }]"
+                :validation="[['required']]"
+              />
+
+              <!-- 3.6.3 Nama Pegawai (Session User) -->
+              <FormKit type="text" label="Nama Pegawai" :modelValue="currentUser.name" :disabled="true" />
+
+              <!-- 3.6.2 Catatan (cond-required if Tidak Lulus) -->
+              <div class="md:col-span-2">
                 <FormKit
-                  type="radio"
-                  name="keputusan"
-                  v-model="form.keputusan"
-                  :options="[
-                    { label: 'Lulus', value: 'Lulus' },
-                    { label: 'Tidak Lulus', value: 'Tidak Lulus' },
-                  ]"
-                  :validation="[['required']]"
+                  type="textarea"
+                  label="Catatan"
+                  v-model="form.catatan"
+                  :disabled="form.keputusan !== 'Tidak Lulus'"
+                  validation="required_if:keputusan,Tidak Lulus"
+                  :validation-messages="{ required_if: 'Catatan diperlukan untuk keputusan Tidak Lulus' }"
+                  placeholder="Masukkan catatan semakan..."
                 />
               </div>
+
+              <!-- 3.6.4 Tarikh (Default Date Today) -->
+              <FormKit type="text" label="Tarikh" :modelValue="today" :disabled="true" />
             </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Catatan Semakan
-              </label>
-              <FormKit
-                type="textarea"
-                v-model="form.catatan"
-                placeholder="Masukkan catatan semakan..."
-                validation="required_if:keputusan,Tidak Lulus"
-                :validation-messages="{
-                  required_if: 'Catatan diperlukan untuk keputusan Tidak Lulus',
-                }"
-              />
-            </div>
+            <!-- Buttons (2.1 Simpan) (2.2 Hantar Tuntutan) -->
+            <div class="flex justify-end gap-3 pt-6">
+              <rs-button type="button" variant="secondary" @click="handleCancel">Batal</rs-button>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Tarikh Kelulusan
-                </label>
-                <div class="text-gray-900">{{ formatDate(new Date()) }}</div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Pegawai Meluluskan
-                </label>
-                <div class="text-gray-900">{{ currentUser.name }}</div>
-              </div>
-            </div>
-
-            <div class="flex justify-end space-x-4 pt-4">
               <rs-button
                 type="button"
-                variant="secondary"
-                @click="handleCancel"
+                variant="default"
+                :disabled="isSubmitting || !form.keputusan"
+                @click="handleSave"
               >
-                Batal
+                Simpan
               </rs-button>
+
               <rs-button
-                type="submit"
+                type="button"
                 :variant="form.keputusan === 'Lulus' ? 'primary' : 'danger'"
                 :disabled="isSubmitting || !form.keputusan"
                 @click="handleSubmit"
               >
-                {{ form.keputusan === "Lulus" ? "Lulus" : "Tidak Lulus" }}
+                Hantar Tuntutan
               </rs-button>
             </div>
           </form>
@@ -311,73 +242,43 @@
       </rs-card>
     </div>
 
-    <!-- Confirmation Modal -->
-    <rs-modal
-      v-model="showConfirmationModal"
-      :title="
-        form.keputusan === 'Lulus'
-          ? 'Pengesahan Kelulusan'
-          : 'Pengesahan Tidak Lulus'
-      "
-      size="md"
-      position="center"
-    >
+    <!-- Empty state -->
+    <div v-else class="mt-8">
+      <rs-empty title="Rekod tidak dijumpai" text="Sila kembali ke senarai tuntutan.">
+        <template #actions>
+          <rs-button variant="secondary"
+            @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus')">
+            Kembali
+          </rs-button>
+        </template>
+      </rs-empty>
+    </div>
+
+    <!-- Confirmation Modal (for 2.2) -->
+    <rs-modal v-model="showConfirmationModal"
+      :title="form.keputusan === 'Lulus' ? 'Pengesahan Kelulusan' : 'Pengesahan Tidak Lulus'"
+      size="md" position="center">
       <template #body>
         <div class="space-y-4">
           <p class="mb-4">
-            Adakah anda pasti untuk
-            {{ form.keputusan === "Lulus" ? "meluluskan" : "tidak meluluskan" }}
-            tuntutan ini?
+            Adakah anda pasti untuk {{ form.keputusan === 'Lulus' ? 'meluluskan' : 'tidak meluluskan' }} tuntutan ini?
           </p>
           <div class="bg-gray-50 p-4 rounded-lg space-y-2">
-            <div class="flex justify-between">
-              <span class="font-medium">ID Permohonan:</span>
-              <span>{{ tuntutan.idPermohonan }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">No. GL:</span>
-              <span>{{ tuntutan.noGL }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Amaun Tuntutan:</span>
-              <span>RM {{ formatNumber(tuntutan.amaunTuntutan) }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Status GL:</span>
-              <span>{{ tuntutan.statusGL }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Catatan:</span>
-              <span>{{ form.catatan || "-" }}</span>
-            </div>
+            <div class="flex justify-between"><span class="font-medium">ID Permohonan:</span><span>{{ row?.idPermohonan }}</span></div>
+            <div class="flex justify-between"><span class="font-medium">No. GL:</span><span>{{ row?.noGL }}</span></div>
+            <div class="flex justify-between"><span class="font-medium">Amaun Tuntutan:</span><span>RM {{ formatNumber(row?.amaunTuntutan || 0) }}</span></div>
+            <div class="flex justify-between"><span class="font-medium">Status GL:</span><span>{{ row?.statusGL }}</span></div>
+            <div class="flex justify-between"><span class="font-medium">Catatan:</span><span>{{ form.catatan || '-' }}</span></div>
           </div>
         </div>
       </template>
-
       <template #footer>
-        <div class="flex justify-end space-x-4">
-          <rs-button
-            variant="secondary"
-            @click="showConfirmationModal = false"
-            :disabled="isSubmitting"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            :variant="form.keputusan === 'Lulus' ? 'primary' : 'danger'"
-            @click="handleConfirm"
-            :disabled="isSubmitting"
-          >
-            <span v-if="isSubmitting">
-              <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
-            </span>
-            <span v-else>
-              {{
-                form.keputusan === "Lulus"
-                  ? "Sahkan Lulus"
-                  : "Sahkan Tidak Lulus"
-              }}
-            </span>
+        <div class="flex justify-end gap-3">
+          <rs-button variant="secondary" @click="showConfirmationModal = false" :disabled="isSubmitting">Batal</rs-button>
+          <rs-button :variant="form.keputusan === 'Lulus' ? 'primary' : 'danger'"
+            @click="handleConfirmSend" :disabled="isSubmitting">
+            <span v-if="isSubmitting"><Icon name="eos-icons:loading" class="ml-1" size="1rem" /></span>
+            <span v-else>{{ form.keputusan === 'Lulus' ? 'Sahkan Lulus' : 'Sahkan Tidak Lulus' }}</span>
           </rs-button>
         </div>
       </template>
@@ -385,121 +286,157 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from "vue";
 
-definePageMeta({
-  title: "Semakan & Kelulusan Tuntutan",
-});
+<script setup lang="ts">
+import { ref, computed, defineComponent, h } from 'vue'
+import { useTuntutanPelulus } from '~/mocks/useTuntutanPelulus'
 
-const route = useRoute();
+definePageMeta({ title: 'Semakan & Kelulusan Tuntutan' })
+
+const route = useRoute()
+const { getById, setDecision } = useTuntutanPelulus()
+
+const paramId = computed<string>(() => {
+  const p = route.params as Record<string, string | number | undefined>
+  return String(p.id ?? p.rujukan ?? p.ref ?? p.slug ?? '')
+})
+
+// Infer the base type from the mock
+type RowBase = NonNullable<ReturnType<typeof getById>>
+
+// Optional bits your UI needs but the mock may not return yet
+type SiasatanInfo = {
+  kaedah?: 'Semak Dokumen Sahaja' | 'Telefon' | 'Lapangan'
+  status?: 'Sokong' | 'Tidak Sokong'
+  catatan?: string
+  tarikh?: string // ISO string
+}
+
+type RowWithOptionals = RowBase & {
+  noInvois?: string
+  catatanTambahan?: string
+  siasatan?: SiasatanInfo
+}
+
+type PemohonView = { nama: string; noId: string; telefon: string; email: string; alamat: string }
+
+const row = computed<RowWithOptionals | null>(() =>
+  (getById(paramId.value) as unknown as RowWithOptionals) || null
+)
+
+const pemohonView = computed((): PemohonView => {
+  const p = row.value?.pemohon
+  return {
+    nama: p?.nama ?? '-',
+    noId: p?.noId ?? '-',
+    telefon: p?.telefon ?? '-',
+    email: p?.email ?? '-',
+    alamat: p?.alamat ?? '-',
+  }
+})
 
 const breadcrumb = ref([
-  {
-    name: "Tuntutan dengan Siasatan",
-    type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan",
-  },
-  {
-    name: "Senarai Tuntutan Pelulus",
-    type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus",
-  },
-  {
-    name: "Semakan & Kelulusan",
-    type: "current",
-    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${route.params.id}/semak-kelulusan`,
-  },
-]);
+  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
+  { name: 'Senarai Tuntutan Pelulus', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
+  { name: 'Semakan & Kelulusan', type: 'current', path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${paramId.value}/semak-kelulusan` },
+])
 
-// Sample data - Replace with actual API call
-const tuntutan = ref({
-  idPermohonan: "TDS-2024-001",
-  noGL: "GL-2024-001",
-  amaunTuntutan: 5000.0,
-  amaunGL: 6000.0,
-  tarikhPermohonan: "2024-03-20T09:30:00",
-  pegawaiETD: "Sarah binti Omar",
-  statusGL: "Valid",
-  tarikhPerkhidmatan: "2024-03-15T00:00:00",
-  dokumenSokongan: [
-    { name: "Dokumen 1.pdf", url: "#" },
-    { name: "Dokumen 2.pdf", url: "#" },
-  ],
-  dokumenPerkhidmatan: [{ name: "Perkhidmatan 1.pdf", url: "#" }],
-  lampiranLain: [{ name: "Lampiran 1.pdf", url: "#" }],
-});
+// Ambil terus dari row.pegawaiETD
+const currentUser = computed(() => ({
+  name: row.value?.pegawaiETD || '-',
+  role: 'Pelulus',
+}))
 
-// Sample bantuan data - in real app, this would be fetched from API based on GL
-const bantuanData = ref({
-  kodBantuan: "B400",
-  jenisBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
-  bahanBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA",
-  pakejBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
-  kelayakanBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
-});
 
-// Form state
-const form = ref({
-  keputusan: "",
-  catatan: "",
-});
+const form = ref<{ keputusan: 'Lulus' | 'Tidak Lulus' | ''; catatan: string }>({
+  keputusan: '',
+  catatan: '',
+})
 
-const isSubmitting = ref(false);
-const showConfirmationModal = ref(false);
+const isSubmitting = ref(false)
+const showConfirmationModal = ref(false)
 
-// Mock current user - Replace with actual user data
-const currentUser = ref({
-  name: "Ahmad bin Ismail",
-  role: "Pelulus",
-});
+/** success banner controller (3–5s) */
+const banner = ref<{ visible: boolean; type: 'save' | 'send' | '' }>({ visible: false, type: '' })
+function showBanner(type: 'save' | 'send') {
+  banner.value = { visible: true, type }
+  setTimeout(() => (banner.value.visible = false), 3500)
+}
 
-// Utility functions
-const formatNumber = (value) => {
-  return new Intl.NumberFormat("ms-MY", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-};
+const formatNumber = (value: number) =>
+  new Intl.NumberFormat('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
+const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('ms-MY')
+const today = computed(() => new Date().toLocaleDateString('ms-MY'))
 
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("ms-MY");
-};
-
-// Action handlers
-const handleSubmit = async () => {
-  showConfirmationModal.value = true;
-};
-
-const handleConfirm = async () => {
+/** 2.1 Simpan — persist & stay */
+const handleSave = async () => {
+  if (!form.value.keputusan) return
   try {
-    isSubmitting.value = true;
-
-    // TODO: Implement actual API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Show success message
-    // useToast().add({
-    //   title: 'Berjaya',
-    //   description: `Tuntutan telah ${form.value.keputusan.toLowerCase()}`,
-    //   type: form.value.keputusan === 'Lulus' ? 'success' : 'info',
-    // });
-
-    // Navigate back to list
-    navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus");
-  } catch (error) {
-    // useToast().add({
-    //   title: "Ralat",
-    //   description: "Ralat telah berlaku. Sila cuba lagi.",
-    //   type: "error",
-    // });
+    isSubmitting.value = true
+    await new Promise((r) => setTimeout(r, 400)) // simulate API
+    setDecision(paramId.value, form.value.keputusan as 'Lulus' | 'Tidak Lulus', form.value.catatan)
+    showBanner('save')
   } finally {
-    isSubmitting.value = false;
-    showConfirmationModal.value = false;
+    isSubmitting.value = false
   }
-};
+}
+
+/** open modal for 2.2 Hantar Tuntutan */
+const handleSubmit = () => {
+  if (!form.value.keputusan) return
+  showConfirmationModal.value = true
+}
+
+/** confirm send (persist & redirect + move list handled by backend/mocks) */
+const handleConfirmSend = async () => {
+  try {
+    isSubmitting.value = true
+    await new Promise((r) => setTimeout(r, 600)) // simulate API
+    setDecision(paramId.value, form.value.keputusan as 'Lulus' | 'Tidak Lulus', form.value.catatan)
+    showBanner('send')
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus')
+  } finally {
+    isSubmitting.value = false
+    showConfirmationModal.value = false
+  }
+}
 
 const handleCancel = () => {
-  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus");
-};
+  navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus')
+}
+
+/* ===== Local atoms (inline components) ===== */
+const FieldRow = defineComponent({
+  name: 'FieldRow',
+  props: { label: { type: String, required: true }, value: { type: [String, Number], required: true } },
+  setup(props) {
+    return () =>
+      h('div', {}, [
+        h('label', { class: 'block text-sm font-medium text-gray-700 mb-1' }, props.label),
+        h('div', { class: 'text-gray-900' }, String(props.value)),
+      ])
+  },
+})
+
+const StatBox = defineComponent({
+  name: 'StatBox',
+  props: { title: { type: String, required: true }, value: { type: String, required: true }, classValue: { type: String, default: '' } },
+  setup(props) {
+    return () =>
+      h('div', { class: 'p-4 bg-gray-50 rounded-lg' }, [
+        h('div', { class: 'text-sm text-gray-500' }, props.title),
+        h('div', { class: `text-lg font-semibold ${props.classValue}` }, props.value),
+      ])
+  },
+})
+
+const noInvois = computed(() => row.value?.noInvois ?? '-')
+const catatanTambahan = computed(() => row.value?.catatanTambahan ?? '-')
+const siasatan = computed<SiasatanInfo>(() => row.value?.siasatan ?? {})
+
 </script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity .25s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>

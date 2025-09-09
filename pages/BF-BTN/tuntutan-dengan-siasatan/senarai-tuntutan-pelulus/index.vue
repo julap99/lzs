@@ -5,102 +5,69 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Semua Tuntutan (Pelulus)</h2>
+          <h2 class="text-xl font-semibold">Senarai Tuntutan (Pelulus)</h2>
         </div>
       </template>
 
       <template #body>
-        <!-- Search and Filter Section -->
-        <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-              <FormKit
-                v-model="searchQuery"
-                type="text"
-                placeholder="Cari No Tuntutan, Nama Pemohon, atau No GL..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-            <div class="flex gap-2">
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="statusOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-          </div>
-        </div>
-
         <!-- Main Table -->
         <rs-table
-          :data="tableDataWithNo"
+          :data="tableData"
           :columns="columns"
-          :showNoColumn="false"
-          :options="{
-            variant: 'default',
-            hover: true,
-            striped: true,
-          }"
-          :options-advanced="{
-            sortable: true,
-            filterable: true,
-          }"
+          :showNoColumn="true"
+          :showSearch="true"
+          :options="{ variant: 'default', hover: true, striped: true }"
+          :options-advanced="{ sortable: true, filterable: true }"
+          :show-filter="true"
           advanced
         >
-          <template v-slot:no="{ value, index }">
-            <div class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                class="form-checkbox h-4 w-4 text-primary-600"
-                :value="value.noTuntutan"
-                :checked="selectedRows.includes(value.noTuntutan)"
-                @change="onCheckboxChange($event, value)"
-              />
-              <span>{{ value.no }}</span>
-            </div>
+          <!-- ID Permohonan: linkable (use { text } like your EOAD example) -->
+          <template #idPermohonan="{ text }">
+            <a
+              href="#"
+              class="text-primary-600 hover:text-primary-800"
+              @click.prevent="goSemak(text)"
+            >
+              {{ text }}
+            </a>
           </template>
 
-          <template v-slot:amaunTuntutan="{ text }">
-            <div class="font-medium text-right">
-              RM {{ formatNumber(text) }}
-            </div>
+          <!-- Amaun Tuntutan -->
+          <template #amaunTuntutan="{ text }">
+            <div class="font-medium text-right">RM {{ formatNumber(Number(text)) }}</div>
           </template>
 
-          <template v-slot:tarikhTuntutan="{ text }">
+          <!-- Tarikh Permohonan (date + time optional) -->
+          <template #tarikhPermohonan="{ text }">
             <div>
               <div class="font-medium">{{ formatDate(text) }}</div>
               <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
             </div>
           </template>
 
-          <template v-slot:statusPermohonan="{ text }">
-            <rs-badge :variant="getStatusVariant(text)">
-              {{ text }}
-            </rs-badge>
+          <!-- Status Kelulusan -->
+          <template #statusKelulusan="{ text }">
+            <rs-badge :variant="statusVariant(text)">{{ text || 'Belum Diputus' }}</rs-badge>
           </template>
 
-          <template v-slot:tindakan="{ text }">
+          <!-- Tindakan: icon-only button (slot gets { value }) -->
+          <template #tindakan="{ value }">
             <div class="flex space-x-2">
               <rs-button
-                v-if="text.status === 'Untuk Kelulusan'"
-                variant="primary"
+                variant="ghost"
                 size="sm"
-                class="!px-2 !py-1"
-                @click="handleSemakKelulusan(text.noTuntutan)"
+                class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
+                @click="goSemak(getAction(value).id)"
+                title="Semak & Luluskan"
+                aria-label="Semak & Luluskan"
               >
-                <Icon name="ph:check" class="w-4 h-4 mr-1" />
-                Semak & Buat Kelulusan
+                <Icon name="material-symbols:fact-check-outline" class="w-5 h-5" />
               </rs-button>
             </div>
           </template>
         </rs-table>
 
-        <!-- Pagination -->
+        <!-- Pagination (same style as EOAD example) -->
         <div class="flex items-center justify-between px-5 mt-4">
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-700">Baris per halaman:</span>
@@ -108,17 +75,12 @@
               v-model="pageSize"
               type="select"
               :options="[10, 25, 50]"
-              :classes="{
-                wrapper: 'w-20',
-                outer: 'mb-0',
-                input: '!rounded-lg',
-              }"
+              :classes="{ wrapper: 'w-20', outer: 'mb-0', input: '!rounded-lg' }"
             />
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-700">
-              Menunjukkan {{ paginationStart }} hingga
-              {{ paginationEnd }} daripada {{ totalTuntutan }} entri
+              Menunjukkan {{ paginationStart }} hingga {{ paginationEnd }} daripada {{ totalRows }} entri
             </span>
             <div class="flex gap-1">
               <rs-button
@@ -140,264 +102,102 @@
             </div>
           </div>
         </div>
-
-        <!-- Bulk Approval Button at Bottom -->
-        <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
-          <rs-button
-            variant="success"
-            @click="handleBulkApproval"
-            :disabled="processing"
-          >
-            <Icon name="material-symbols:approval" class="w-4 h-4 mr-1" />
-            Kelulusan (Bulk) ({{ selectedRows.length }})
-          </rs-button>
-        </div>
       </template>
     </rs-card>
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useTuntutanPelulus } from '~/mocks/useTuntutanPelulus'
 
-definePageMeta({
-  title: 'Senarai Semua Tuntutan (Pelulus)',
-});
+definePageMeta({ title: 'Senarai Tuntutan Pelulus' })
 
 const breadcrumb = ref([
-  {
-    name: 'Tuntutan dengan Siasatan',
-    type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan',
-  },
-  {
-    name: 'Senarai Tuntutan Pelulus',
-    type: 'current',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus',
-  },
-]);
+  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
+  { name: 'Senarai Tuntutan Pelulus', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
+])
 
-// Table columns configuration
+const { list } = useTuntutanPelulus()
+
+/** Columns follow the same pattern as your EOAD/ETD page */
 const columns = [
-  { key: 'noTuntutan', label: 'No. Tuntutan', sortable: true },
+  { key: 'idPermohonan', label: 'ID Permohonan', sortable: true },
   { key: 'noGL', label: 'No. GL', sortable: true },
-  { key: 'namaPemohon', label: 'Nama Pemohon / Institusi', sortable: true },
-  { key: 'tarikhTuntutan', label: 'Tarikh Tuntutan', sortable: true },
-  { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
-  { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },
   { key: 'pegawaiETD', label: 'Pegawai ETD/EOAD', sortable: true },
+  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
+  { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
+  { key: 'statusKelulusan', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
-];
+]
 
-// Options for filters
-const statusOptions = [
-  { label: 'Semua Status', value: '' },
-  { label: 'Untuk Kelulusan', value: 'Untuk Kelulusan' },
-  { label: 'Lulus', value: 'Lulus' },
-  { label: 'Tidak Lulus', value: 'Tidak Lulus' },
-];
+// optional: search/filter inputs if you want to add them later
+const searchQuery = ref('')
+const pageSize = ref(10)
+const currentPage = ref(1)
 
-// State
-const searchQuery = ref('');
-const filters = ref({
-  status: '',
-});
-const pageSize = ref(10);
-const currentPage = ref(1);
+/** Map data to table rows + embed tindakan object so the tindakan slot gets a useful value */
+const baseRows = computed(() =>
+  list.value.map((x) => ({
+    id: x.id,
+    idPermohonan: x.idPermohonan,
+    noGL: x.noGL,
+    pegawaiETD: x.pegawaiETD,
+    tarikhPermohonan: x.tarikhPermohonan,
+    amaunTuntutan: x.amaunTuntutan,
+    statusKelulusan: x.statusKelulusan ?? 'Belum Diputus',
+    tindakan: { id: x.id }, // slot { value } -> { id }
+  }))
+)
 
-// Sample data - Replace with actual API call
-const tuntutanList = ref([
-  {
-    noTuntutan: 'TDS-2024-001',
-    noGL: 'GL-2024-001',
-    namaPemohon: 'Ahmad bin Abdullah',
-    tarikhTuntutan: '2024-03-20T09:30:00',
-    amaunTuntutan: 5000.00,
-    statusPermohonan: 'Untuk Kelulusan',
-    pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-001',
-      status: 'Untuk Kelulusan'
-    }
-  },
-  {
-    noTuntutan: 'TDS-2024-002',
-    noGL: 'GL-2024-002',
-    namaPemohon: 'Masjid Al-Hidayah',
-    tarikhTuntutan: '2024-03-19T14:15:00',
-    amaunTuntutan: 8000.00,
-    statusPermohonan: 'Untuk Kelulusan',
-    pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-002',
-      status: 'Untuk Kelulusan'
-    }
-  },
-  {
-    noTuntutan: 'TDS-2024-003',
-    noGL: 'GL-2024-003',
-    namaPemohon: 'Sekolah Agama Rakyat Al-Amin',
-    tarikhTuntutan: '2024-03-18T11:45:00',
-    amaunTuntutan: 12000.00,
-    statusPermohonan: 'Untuk Kelulusan',
-    pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-003',
-      status: 'Untuk Kelulusan'
-    }
-  },
-  {
-    noTuntutan: 'TDS-2024-004',
-    noGL: 'GL-2024-004',
-    namaPemohon: 'Surau Kampung Baru',
-    tarikhTuntutan: '2024-03-17T16:20:00',
-    amaunTuntutan: 3500.00,
-    statusPermohonan: 'Untuk Kelulusan',
-    pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-004',
-      status: 'Untuk Kelulusan'
-    }
-  },
-  {
-    noTuntutan: 'TDS-2024-005',
-    noGL: 'GL-2024-005',
-    namaPemohon: 'Pusat Tahfiz Al-Quran',
-    tarikhTuntutan: '2024-03-16T10:30:00',
-    amaunTuntutan: 15000.00,
-    statusPermohonan: 'Untuk Kelulusan',
-    pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-005',
-      status: 'Untuk Kelulusan'
-    }
-  },
-]);
+const filteredRows = computed(() => {
+  if (!searchQuery.value) return baseRows.value
+  const q = searchQuery.value.toLowerCase()
+  return baseRows.value.filter(
+    (r) =>
+      r.idPermohonan.toLowerCase().includes(q) ||
+      r.noGL.toLowerCase().includes(q) ||
+      r.pegawaiETD.toLowerCase().includes(q)
+  )
+})
 
-// Computed properties
-const filteredTuntutan = computed(() => {
-  let result = tuntutanList.value;
+/** Manual pagination (to mirror your EOAD layout) */
+const totalRows = computed(() => filteredRows.value.length)
+const totalPages = computed(() => Math.max(1, Math.ceil(totalRows.value / pageSize.value)))
+const paginationStart = computed(() => (currentPage.value - 1) * pageSize.value + 1)
+const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalRows.value))
 
-  // Filter by search query
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    result = result.filter(item => 
-      item.noTuntutan.toLowerCase().includes(query) ||
-      item.namaPemohon.toLowerCase().includes(query) ||
-      item.noGL.toLowerCase().includes(query)
-    );
-  }
+const tableData = computed(() =>
+  filteredRows.value.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize.value)
+)
 
-  // Filter by status
-  if (filters.value.status) {
-    result = result.filter(item => item.statusPermohonan === filters.value.status);
-  }
+/** Helpers */
+const formatDate = (s: string) => new Date(s).toLocaleDateString('ms-MY')
+const formatTime = (s: string) => new Date(s).toLocaleTimeString('ms-MY')
+const formatNumber = (n: number) =>
+  new Intl.NumberFormat('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    .format(Number.isFinite(n) ? n : 0)
 
-  return result;
-});
+const statusVariant = (status?: string) => {
+  if (status === 'Lulus') return 'success'
+  if (status === 'Tidak Lulus') return 'danger'
+  return 'warning' // Belum Diputus / others
+}
 
-const totalTuntutan = computed(() => filteredTuntutan.value.length);
+/** Tindakan slot value normalizer (keeps slot signature robust) */
+const getAction = (v: unknown): { id: string } => {
+  const anyV = v as any
+  if (anyV?.id) return { id: String(anyV.id) }
+  if (anyV?.tindakan?.id) return { id: String(anyV.tindakan.id) }
+  return { id: '' }
+}
 
-const totalPages = computed(() => Math.ceil(totalTuntutan.value / pageSize.value));
-
-const paginationStart = computed(() => {
-  return (currentPage.value - 1) * pageSize.value + 1;
-});
-
-const paginationEnd = computed(() => {
-  return Math.min(currentPage.value * pageSize.value, totalTuntutan.value);
-});
-
-const tableDataWithNo = computed(() =>
-  filteredTuntutan.value.map((row, idx) => {
-    return Object.assign({ no: idx + 1 }, row);
-  })
-);
-
-const selectedRows = ref([]);
-const processing = ref(false);
-
-const onCheckboxChange = (event, row) => {
-  const isChecked = event.target.checked;
-  if (isChecked) {
-    if (!selectedRows.value.includes(row.noTuntutan)) {
-      selectedRows.value.push(row.noTuntutan);
-    }
-  } else {
-    selectedRows.value = selectedRows.value.filter(id => id !== row.noTuntutan);
-  }
-};
-
-const handleBulkApproval = async () => {
-  try {
-    processing.value = true;
-    const result = await $swal.fire({
-      icon: 'question',
-      title: 'Kelulusan (Bulk)',
-      text: `Adakah anda pasti untuk mengesahkan ${selectedRows.value.length} tuntutan yang dipilih?`,
-      showCancelButton: true,
-      confirmButtonText: 'Ya, Sahkan',
-      cancelButtonText: 'Batal',
-      confirmButtonColor: '#10b981',
-    });
-    if (result.isConfirmed) {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await $swal.fire({
-        icon: 'success',
-        title: 'Berjaya!',
-        text: `Semua permohonan yang dipilih telah berjaya disahkan`,
-        confirmButtonText: 'OK'
-      });
-      selectedRows.value = [];
-      // Refresh data if needed
-    }
-  } catch (error) {
-    await $swal.fire({
-      icon: 'error',
-      title: 'Ralat',
-      text: 'Ralat telah berlaku semasa memproses kelulusan bulk',
-      confirmButtonText: 'OK'
-    });
-  } finally {
-    processing.value = false;
-  }
-};
-
-// Utility functions
-const formatNumber = (value) => {
-  return new Intl.NumberFormat('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
-};
-
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('ms-MY');
-};
-
-const formatTime = (dateString) => {
-  return new Date(dateString).toLocaleTimeString('ms-MY');
-};
-
-const getStatusVariant = (status) => {
-  switch (status) {
-    case 'Untuk Kelulusan':
-      return 'warning';
-    case 'Lulus':
-      return 'success';
-    case 'Tidak Lulus':
-      return 'danger';
-    default:
-      return 'primary';
-  }
-};
-
-// Action handlers
-const viewTuntutan = (noTuntutan) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${noTuntutan}`);
-};
-
-const handleSemakKelulusan = (noTuntutan) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${noTuntutan}/semak-kelulusan`);
-};
+const goSemak = (id: string) => {
+  if (!id) return
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${id}/semak-kelulusan`)
+}
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+/* optional styling hooks */
+</style>
