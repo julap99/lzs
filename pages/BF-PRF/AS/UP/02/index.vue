@@ -54,6 +54,17 @@
           <!-- Personal Information Section -->
           <div class="mb-6">
             <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
+
+            <FormKit
+                type="text"
+                name="kategori_asnaf"
+                label="Kategori Asnaf"
+                validation="required"
+                class=""
+                value="Miskin"
+                readonly="true"
+              />
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -2485,6 +2496,16 @@
                   required: 'Bil Utiliti adalah wajib',
                 }"
                 v-model="formData.bil_utiliti"
+              />
+
+              <FormKit
+                type="number"
+                name="jumlah_bantuan_diterima"
+                label="Jumlah Bantuan Diterima (RM)"
+                step="0.01"
+                min="0"
+                value="2000"
+                readonly="true"
               />
             </div>
           </div>
