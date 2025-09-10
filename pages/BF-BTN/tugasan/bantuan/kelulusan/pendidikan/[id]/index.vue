@@ -1468,8 +1468,123 @@
             
           </rs-card>
 
-          <!-- Section 7: Status Lawatan -->
+          <!-- Section 7: Maklumat Bajet -->
           <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Icon name="ph:check-circle" class="w-6 h-6 text-green-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Maklumat Bajet</h2>
+                  <p class="text-sm text-gray-500">Semakan bajet bantuan</p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Kod Bajet</label>
+                  <input
+                    type="text"
+                    v-model="budgetInfo.kodBajet"
+                    class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900"
+                    readonly
+                  />
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Bajet Semasa</label>
+                  <input
+                    type="text"
+                    v-model="budgetInfo.jumlahBajetSemasa"
+                    class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900"
+                    readonly
+                  />
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Bajet Mencukupi</label>
+                  <div class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 flex items-center">
+                    <rs-badge 
+                      v-if="budgetInfo.bajetMencukupi === 'Ya'" 
+                      variant="success"
+                      class="text-white font-semibold"
+                    >
+                      YA
+                    </rs-badge>
+                    <span v-else class="text-gray-900">{{ budgetInfo.bajetMencukupi }}</span>
+                  </div>
+                </div>
+                
+                <div class="pt-2">
+                  <rs-button variant="success" @click="checkBudget">
+                    Semakan Bajet
+                  </rs-button>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+          <!-- Section 8: Maklumat Kelulusan -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Icon name="ph:file-text" class="w-6 h-6 text-blue-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Maklumat Kelulusan</h2>
+                  <p class="text-sm text-gray-500">Keputusan kelulusan bantuan</p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Keputusan Kelulusan</label>
+                  <select
+                    v-model="approvalInfo.keputusanKelulusan"
+                    class="w-full p-3 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">Pilih keputusan kelulusan</option>
+                    <option value="lulus">Lulus</option>
+                    <option value="tidak_lulus">Tidak Lulus</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Catatan
+                    <span v-if="approvalInfo.keputusanKelulusan === 'tidak_lulus'" class="text-red-500 ml-1">*</span>
+                  </label>
+                  <textarea
+                    v-model="approvalInfo.catatan"
+                    rows="4"
+                    :class="[
+                      'w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                      approvalInfo.keputusanKelulusan === 'tidak_lulus' && !approvalInfo.catatan?.trim() 
+                        ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                        : 'border-gray-300'
+                    ]"
+                    :placeholder="approvalInfo.keputusanKelulusan === 'tidak_lulus' ? 'Catatan diperlukan untuk keputusan Tidak Lulus' : 'Boleh mengisi catatan'"
+                  ></textarea>
+                  <p v-if="approvalInfo.keputusanKelulusan === 'tidak_lulus' && !approvalInfo.catatan?.trim()" class="text-red-500 text-xs mt-1">
+                    Catatan diperlukan untuk keputusan Tidak Lulus
+                  </p>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+          <!-- Section 9: Status Lawatan -->
+          <!-- <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -1526,7 +1641,7 @@
               </div>
             </template>
             
-          </rs-card>
+          </rs-card> -->
 
           
 
@@ -1545,10 +1660,10 @@
               <rs-button
                 variant="primary"
                 @click="handleSelesaiDanHantar"
-                :disabled="processing || !hasStatusSokongan"
+                :disabled="processing || !hasStatusSokongan || !hasValidApprovalDecision"
                 :loading="processing && actionType === 'complete_submit'"
               >
-                Hantar Kelulusan
+                Hantar
               </rs-button>
 
               <rs-button
@@ -1559,6 +1674,13 @@
               >
                 Kembali
               </rs-button>
+            </div>
+            
+            <!-- Validation Message -->
+            <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p class="text-sm text-red-600">
+                Sila pastikan semua medan diperlukan telah diisi sebelum menghantar.
+              </p>
             </div>
           </rs-card>
 
@@ -1934,6 +2056,8 @@ const mockAssistanceData = {
     entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
     jumlahBantuan: 43000,
     tempohKekerapan: 1,
+    statusLawatan: "Sokong",
+    statusproses: "selesai",
   },
   "B300": {
     id: "B300",
@@ -1942,6 +2066,8 @@ const mockAssistanceData = {
     productpackage: "Sekolah Asrama - Tingkatan 1-5",
     entitlementproduct: "Dermasiswa Bulanan - RM 200",
     jumlahBantuan: 2400,
+    statusLawatan: "Sokong",
+    statusproses: "selesai",
   },
   "B307": {
     id: "B307",
@@ -1950,6 +2076,8 @@ const mockAssistanceData = {
     productpackage: "IPTA/IPTS - Diploma/Degree",
     entitlementproduct: "Dermasiswa Semester - RM 1500",
     jumlahBantuan: 3000,
+    statusLawatan: "Sokong",
+    statusproses: "selesai",
   }
 };
 
@@ -2195,6 +2323,19 @@ const paymentInfo = ref({
   noAkaun: "",
 });
 
+// NEW: Maklumat Bajet
+const budgetInfo = ref({
+  kodBajet: "A-200400-1000-1-P-1-B102",
+  jumlahBajetSemasa: "0.00",
+  bajetMencukupi: "",
+});
+
+// NEW: Maklumat Kelulusan
+const approvalInfo = ref({
+  keputusanKelulusan: "",
+  catatan: "",
+});
+
 const paymentMethodOptions = ref([
   { label: "-- Sila Pilih --", value: "" },
   { label: "EFT", value: "EFT" },
@@ -2287,6 +2428,17 @@ const jumlahKeseluruhan = computed(() => {
   const tempoh = parseInt(formData.value.tempohKekerapan) || 0
   return kadar * tempoh
 })
+
+// Check if a valid approval decision has been made
+const hasValidApprovalDecision = computed(() => {
+  if (approvalInfo.value.keputusanKelulusan === 'lulus') {
+    return true;
+  } else if (approvalInfo.value.keputusanKelulusan === 'tidak_lulus') {
+    // For "Tidak Lulus", catatan is required
+    return approvalInfo.value.catatan && approvalInfo.value.catatan.trim() !== '';
+  }
+  return false;
+});
 
 // Check if both status sokongan and status proses have valid data
 const hasStatusSokongan = computed(() => {
@@ -2691,6 +2843,16 @@ const handleSimpan = async () => {
 
 const handleBatal = () => {
   router.push("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad/NAS-2025-0002");
+};
+
+// Budget check function
+const checkBudget = () => {
+  // Set budget to 10 million when checking
+  budgetInfo.value.jumlahBajetSemasa = "RM 10,000,000.00";
+  
+  // Always set bajet mencukupi to "Ya"
+  budgetInfo.value.bajetMencukupi = "Ya";
+  toast.success("Bajet mencukupi untuk bantuan ini");
 };
 
 // Fetch application data on mount
