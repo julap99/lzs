@@ -3123,23 +3123,40 @@
               />
 
               <!-- Tempoh Menetap di Selangor -->
-              <FormKit
-                type="number"
-                name="tempoh_menetap_selangor_tanggungan"
-                label="Tempoh Menetap di Selangor (Tahun) "
-                placeholder="0"
-                min="0"
-                max="120"
-                validation="required|min:0|max:120"
-                :validation-messages="{
-                  required: 'Tempoh Menetap di Selangor adalah wajib',
-                  min: 'Tempoh tidak boleh kurang daripada 0 tahun',
-                  max: 'Tempoh tidak boleh melebihi 120 tahun',
-                }"
-                v-model="
-                  getCurrentTanggungan().tempoh_menetap_selangor_tanggungan
-                "
-              />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="number"
+                  name="tempoh_menetap_selangor_tanggungan_nilai"
+                  label="Tempoh Menetap di Selangor"
+                  placeholder="0"
+                  min="0"
+                  max="120"
+                  validation="required|min:0|max:120"
+                  :validation-messages="{
+                    required: 'Tempoh menetap adalah wajib',
+                    min: 'Tempoh menetap mesti 0 atau lebih',
+                    max: 'Tempoh tidak boleh melebihi 120',
+                  }"
+                  v-model="
+                    getCurrentTanggungan().tempoh_menetap_selangor_tanggungan_nilai
+                  "
+                />
+                <FormKit
+                  type="select"
+                  name="tempoh_menetap_selangor_tanggungan_unit"
+                  label="Unit Tempoh"
+                  placeholder="Pilih unit"
+                  :options="[
+                    { label: 'Hari', value: 'hari' },
+                    { label: 'Bulan', value: 'bulan' },
+                    { label: 'Tahun', value: 'tahun' },
+                  ]"
+                  validation="required"
+                  v-model="
+                    getCurrentTanggungan().tempoh_menetap_selangor_tanggungan_unit
+                  "
+                />
+              </div>
 
               <!-- Kelulusan Khas (ikuti gaya label Muallaf) -->
               <div class="space-y-2">
@@ -7013,6 +7030,23 @@ watch(
   }
 );
 
+// Keep legacy string `tempoh_menetap_selangor_tanggungan` in sync with split inputs for all tanggungan
+watch(
+  () => formData.value.tanggungan,
+  (tanggunganList) => {
+    if (tanggunganList) {
+      tanggunganList.forEach((tanggungan) => {
+        if (tanggungan.tempoh_menetap_selangor_tanggungan_nilai !== undefined && tanggungan.tempoh_menetap_selangor_tanggungan_unit) {
+          tanggungan.tempoh_menetap_selangor_tanggungan = String(tanggungan.tempoh_menetap_selangor_tanggungan_nilai);
+        } else {
+          tanggungan.tempoh_menetap_selangor_tanggungan = "";
+        }
+      });
+    }
+  },
+  { deep: true }
+);
+
 // Seed one education entry when masih_bersekolah === 'Y'
 watch(
   () => formData.value.masih_bersekolah,
@@ -7298,6 +7332,8 @@ const addTanggungan = (showNotification = true) => {
     no_telefon_rumah_tanggungan: "",
     emel_tanggungan: "",
     tempoh_menetap_selangor_tanggungan: "",
+    tempoh_menetap_selangor_tanggungan_nilai: "",
+    tempoh_menetap_selangor_tanggungan_unit: "",
     status_perkahwinan_tanggungan: "",
     lain_lain_status_perkahwinan: "",
     jumlah_tanggungan: "",
@@ -7817,6 +7853,8 @@ onMounted(() => {
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "rohana@email.com",
         tempoh_menetap_selangor_tanggungan: "20",
+        tempoh_menetap_selangor_tanggungan_nilai: "20",
+        tempoh_menetap_selangor_tanggungan_unit: "tahun",
         status_perkahwinan_tanggungan: "Berkahwin",
 
         // Special Approval for Minors
@@ -7955,7 +7993,9 @@ onMounted(() => {
         no_telefon_bimbit_tanggungan: "0197883456",
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "najwa@email.com",
-        tempoh_menetap_selangor_tanggungan: "23",
+        tempoh_menetap_selangor_tanggungan: "19",
+        tempoh_menetap_selangor_tanggungan_nilai: "19",
+        tempoh_menetap_selangor_tanggungan_unit: "tahun",
         status_perkahwinan_tanggungan: "Bujang",
 
         // Adult Status - Eligible for Head of Household
@@ -8094,7 +8134,9 @@ onMounted(() => {
         no_telefon_bimbit_tanggungan: "01299982378",
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "qistina@email.com",
-        tempoh_menetap_selangor_tanggungan: "14",
+        tempoh_menetap_selangor_tanggungan: "13",
+        tempoh_menetap_selangor_tanggungan_nilai: "13",
+        tempoh_menetap_selangor_tanggungan_unit: "tahun",
         status_perkahwinan_tanggungan: "Bujang",
 
         // Special Approval for Minors
