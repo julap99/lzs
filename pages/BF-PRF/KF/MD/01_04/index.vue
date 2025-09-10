@@ -117,6 +117,42 @@
         </template>
       </rs-card>
 
+      <!-- Kuadran Section -->
+      <rs-card v-if="hasKuadranData">
+        <template #header>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <h3 class="text-lg font-semibold">Maklumat Kuadran</h3>
+            </div>
+          </div>
+        </template>
+        <template #body>
+          <rs-table
+            class="mt-4"
+            :data="kuadranData"
+            :field="['kuadran','min_merit','max_merit','status_multidimensi','status_data','tarikhMula','tarikhTamat']"
+            :pageSize="10"
+            :showNoColumn="true"
+            :options="{
+              variant: 'default',
+              hover: true,
+            }"
+          >
+            <template v-slot:kuadran="data">{{ data.value.kuadran || 'N/A' }}</template>
+            <template v-slot:min_merit="data">{{ data.value.min_merit || 'N/A' }}</template>
+            <template v-slot:max_merit="data">{{ data.value.max_merit || 'N/A' }}</template>
+            <template v-slot:status_multidimensi="data">{{ data.value.status_multidimensi || 'N/A' }}</template>
+            <template v-slot:status_data="data">
+              <rs-badge :variant="getStatusVariant(data.value.status_data)">
+                {{ data.value.status_data || 'N/A' }}
+              </rs-badge>
+            </template>
+            <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+            <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
+          </rs-table>
+        </template>
+      </rs-card>
+
       <!-- Action Buttons Card -->
       <rs-card>
         <template #body>
@@ -196,6 +232,37 @@ const loading = ref(true);
 const error = ref(null);
 const selectedKifayah = ref(null);
 const allKifayahData = ref([]);
+
+// Computed property for kuadran data
+const kuadranData = computed(() => {
+  if (!selectedKifayah.value) return [];
+  
+  // Create an array with the selected kifayah data for the table
+  return [{
+    kuadran: selectedKifayah.value.kuadran || 'N/A',
+    min_merit: selectedKifayah.value.min_merit || 'N/A',
+    max_merit: selectedKifayah.value.max_merit || 'N/A',
+    status_multidimensi: selectedKifayah.value.status_multidimensi || 'N/A',
+    status_data: selectedKifayah.value.status_data || 'N/A',
+    tarikhMula: selectedKifayah.value.tarikhMula || 'N/A',
+    tarikhTamat: selectedKifayah.value.tarikhTamat || 'N/A'
+  }];
+});
+
+// Computed property to check if there's actual kuadran data
+const hasKuadranData = computed(() => {
+  if (!selectedKifayah.value) return false;
+  
+  // Check if any of the kuadran fields have meaningful data (not 'N/A' or empty)
+  const hasKuadran = selectedKifayah.value.kuadran && selectedKifayah.value.kuadran !== 'N/A';
+  const hasMinMerit = selectedKifayah.value.min_merit && selectedKifayah.value.min_merit !== 'N/A';
+  const hasMaxMerit = selectedKifayah.value.max_merit && selectedKifayah.value.max_merit !== 'N/A';
+  const hasStatusMultidimensi = selectedKifayah.value.status_multidimensi && selectedKifayah.value.status_multidimensi !== 'N/A';
+  const hasStatusData = selectedKifayah.value.status_data && selectedKifayah.value.status_data !== 'N/A';
+  
+  // Return true if at least one kuadran field has data
+  return hasKuadran || hasMinMerit || hasMaxMerit || hasStatusMultidimensi || hasStatusData;
+});
 
 // Default data (fallback if no data in localStorage)
 const defaultData = [

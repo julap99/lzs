@@ -55,7 +55,7 @@
               </rs-button>
               <rs-button
                 variant="secondary"
-                @click="navigateTo(`/BF-PRF/KF/MD/01_04?id=${selectedId}`)"
+                @click="navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`)"
                 class="px-6 py-3"
               >
                 <Icon name="mdi:chart-box" class="mr-2" /> Kuadran
