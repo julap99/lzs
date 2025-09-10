@@ -2517,7 +2517,7 @@
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Borang Tanggungan Asnaf</h2>
           <div class="text-sm text-gray-600">
-            Langkah {{ currentStepB }} dari {{ totalStepsB }}
+            Langkah {{ currentStepB }} dari {{ filteredStepsB.length }}
           </div>
         </div>
       </template>
@@ -2527,7 +2527,7 @@
         <div class="mb-6">
           <div class="flex justify-between mb-2">
             <div
-              v-for="step in stepsB"
+              v-for="step in filteredStepsB"
               :key="step.id"
               class="text-center flex-1 cursor-pointer relative group"
               :class="{ 'font-semibold': currentStepB >= step.id }"
@@ -2551,9 +2551,9 @@
             <div
               class="bg-primary h-2.5 rounded-full transition-all duration-300"
               :style="`width: ${
-                currentStepB >= totalStepsB
+                currentStepB >= filteredStepsB.length
                   ? 100
-                  : (currentStepB / totalStepsB) * 100
+                  : (currentStepB / filteredStepsB.length) * 100
               }%`"
             ></div>
           </div>
@@ -4398,7 +4398,16 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Maklumat Kemahiran Tanggungan</rs-button
+                >{{
+                  (() => {
+                    const currentTanggungan = getCurrentTanggungan();
+                    if (currentTanggungan) {
+                      const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+                      return age < 19 ? 'Maklumat Pekerjaan' : 'Maklumat Kemahiran Tanggungan';
+                    }
+                    return 'Maklumat Kemahiran Tanggungan';
+                  })()
+                }}</rs-button
               >
             </div>
           </div>
@@ -5494,6 +5503,21 @@ const stepsB = [
   { id: 10, label: "Pengesahan Bermastautin" },
   { id: 11, label: "Pegawai Pendaftar" },
 ];
+
+// Computed property to filter stepsB based on current tanggungan's age
+const filteredStepsB = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  if (!currentTanggungan) return stepsB;
+  
+  const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+  
+  // Hide Kemahiran tab (id: 6) if age is less than 19
+  if (age < 19) {
+    return stepsB.filter(step => step.id !== 6);
+  }
+  
+  return stepsB;
+});
 
 // Mock data for Sekolah Agama
 const sekolahAgamaOptions = [
@@ -7242,8 +7266,21 @@ const nextStepB = () => {
     formData.value.tanggungan = tanggunganList.value;
   }
 
-  if (currentStepB.value < totalStepsB) {
-    currentStepB.value++;
+  // Get the next step, skipping kemahiran if age < 19
+  let nextStep = currentStepB.value + 1;
+  const currentTanggungan = getCurrentTanggungan();
+  
+  if (currentTanggungan) {
+    const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+    
+    // Skip kemahiran step (id: 6) if age is less than 19
+    if (age < 19 && nextStep === 6) {
+      nextStep = 7; // Skip to Pekerjaan step
+    }
+  }
+
+  if (nextStep <= totalStepsB) {
+    currentStepB.value = nextStep;
   } else {
     // All steps completed, submit form
     submitForm();
@@ -7252,7 +7289,19 @@ const nextStepB = () => {
 
 const prevStepB = () => {
   if (currentStepB.value > 1) {
-    currentStepB.value--;
+    let prevStep = currentStepB.value - 1;
+    const currentTanggungan = getCurrentTanggungan();
+    
+    if (currentTanggungan) {
+      const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+      
+      // Skip kemahiran step (id: 6) if age is less than 19
+      if (age < 19 && prevStep === 6) {
+        prevStep = 5; // Skip to Kesihatan step
+      }
+    }
+    
+    currentStepB.value = prevStep;
   }
 };
 
@@ -8264,6 +8313,17 @@ const goToStepA = (stepNumber) => {
 };
 
 const goToStepB = (stepNumber) => {
+  const currentTanggungan = getCurrentTanggungan();
+  
+  if (currentTanggungan) {
+    const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+    
+    // Prevent navigation to kemahiran step (id: 6) if age is less than 19
+    if (age < 19 && stepNumber === 6) {
+      return; // Do not navigate to kemahiran step
+    }
+  }
+  
   // Allow direct navigation to any step
   currentStepB.value = stepNumber;
 };
