@@ -2,17 +2,17 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <div class="flex items-center justify-between mt-6 mb-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-800">Pengesahan Pendaftaran Cawangan</h1>
-        <p class="text-sm text-gray-500">No. Rujukan: {{ applicationData.refNumber }}</p>
+    <div class="mt-6 mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">Pengesahan Pendaftaran Cawangan</h1>
+          <p class="text-sm text-gray-500">No. Rujukan: {{ applicationData.refNumber }}</p>
+        </div>
+        <rs-badge :variant="getStatusBadgeVariant()">{{ applicationData.status }}</rs-badge>
       </div>
-      <rs-badge :variant="getStatusBadgeVariant()">{{ applicationData.status }}</rs-badge>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left Content -->
-      <div class="lg:col-span-2 space-y-6">
+    <div class="space-y-6">
         <!-- Maklumat Permohonan -->
         <rs-card>
           <template #header>
@@ -74,83 +74,112 @@
             <h2 class="text-md font-semibold text-gray-900">Dokumen Sokongan</h2>
           </template>
           <template #body>
-            <ul class="divide-y divide-gray-200">
-              <li v-for="(doc, index) in applicationData.documents" :key="index" class="py-4 flex items-center justify-between">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-for="(doc, index) in documents" :key="index" class="p-4 border border-gray-200 rounded-lg flex items-center justify-between">
                 <div class="flex items-center">
                   <Icon name="mdi:file-document-outline" class="text-blue-600 mr-3" size="1.25rem" />
                   <div>
                     <p class="font-medium text-gray-900">{{ doc.name }}</p>
-                    <p class="text-sm text-gray-500">{{ doc.size }}</p>
+                    <p class="text-sm text-gray-600" v-if="doc.filename">{{ doc.filename }}</p>
+                    <p class="text-xs text-gray-500" v-if="doc.size">{{ doc.size }}</p>
+                    <rs-badge v-if="!doc.filename && !doc.size" variant="warning">Tiada</rs-badge>
                   </div>
                 </div>
-                <rs-button variant="secondary-outline" size="sm" @click="viewDocument(doc.id)">
-                  <Icon name="mdi:download" size="1rem" class="mr-1" /> Muat Turun
-                </rs-button>
-              </li>
-            </ul>
+                <div class="flex items-center gap-2" v-if="doc.filename">
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="viewDocument(doc.name)">
+                    <Icon name="ph:download" size="1rem" />
+                  </rs-button>
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" title="Lihat" @click="viewDocument(doc.name)">
+                    <Icon name="ph:eye" size="1rem" />
+                  </rs-button>
+                </div>
+              </div>
+            </div>
           </template>
         </rs-card>
-      </div>
 
-      <!-- Sidebar Pengesahan -->
-      <div class="lg:col-span-1 space-y-6">
-        <rs-card class="sticky top-6">
+        <!-- Keputusan Pengesahan -->
+        <rs-card class="border-2 border-orange-200 bg-orange-50">
           <template #header>
             <h2 class="text-md font-semibold text-gray-900">Keputusan Pengesahan</h2>
           </template>
           <template #body>
-            <FormKit type="form" :actions="false" @submit="handleApprovalSubmit">
-              <div class="grid grid-cols-1 gap-6">
-                <FormKit
-                  type="radio"
-                  name="approvalStatus"
-                  label="Status Pengesahan"
-                  validation="required"
-                  :options="[
-                    { label: 'Lulus', value: 'approved' },
-                    { label: 'Tidak Lulus', value: 'rejected' }
-                  ]"
-                  v-model="approvalData.status"
-                  :validation-messages="{ required: 'Status pengesahan adalah wajib' }"
-                />
-
-                <FormKit
-                  v-if="approvalData.status === 'rejected'"
-                  type="textarea"
-                  name="justification"
-                  label="Justifikasi Penolakan"
-                  validation="required"
-                  placeholder="Sila nyatakan sebab penolakan permohonan cawangan ini"
-                  v-model="approvalData.justification"
-                  :validation-messages="{ required: 'Justifikasi diperlukan untuk penolakan' }"
-                />
-
-                <FormKit
-                  v-if="approvalData.status"
-                  type="textarea"
-                  name="comments"
-                  label="Catatan Tambahan (Pilihan)"
-                  placeholder="Tambah catatan atau ulasan..."
-                  v-model="approvalData.comments"
-                />
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-3">Status Pengesahan <span class="text-red-500">*</span></label>
+                <div class="space-y-2">
+                  <label class="flex items-center">
+                    <input v-model="approvalData.status" type="radio" value="Disahkan" class="mr-2 text-green-600 focus:ring-green-500" />
+                    <span class="text-sm font-medium text-gray-900">Disahkan</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input v-model="approvalData.status" type="radio" value="Perlu Pembetulan" class="mr-2 text-yellow-600 focus:ring-yellow-500" />
+                    <span class="text-sm font-medium text-gray-900">Perlu Pembetulan</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input v-model="approvalData.status" type="radio" value="Tidak Sah" class="mr-2 text-red-600 focus:ring-red-500" />
+                    <span class="text-sm font-medium text-gray-900">Tidak Sah</span>
+                  </label>
+                </div>
+                <div v-if="!approvalData.status" class="mt-1 text-sm text-red-600">Status pengesahan adalah wajib</div>
               </div>
 
-              <div class="mt-6 flex justify-end gap-4">
-                <rs-button variant="secondary-outline" @click="goBack">Kembali</rs-button>
-                <rs-button variant="primary" type="submit" :disabled="processing">
-                  <template v-if="processing">
-                    <Icon name="eos-icons:loading" class="animate-spin mr-1" size="1rem" /> Memproses...
-                  </template>
-                  <template v-else>
-                    <Icon name="material-symbols:check-circle" class="mr-1" size="1rem" /> Hantar Keputusan
-                  </template>
-                </rs-button>
+              <div v-if="approvalData.status === 'Perlu Pembetulan' || approvalData.status === 'Tidak Sah'">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  {{ approvalData.status === 'Perlu Pembetulan' ? 'Ulasan Pembetulan' : 'Justifikasi Penolakan' }} <span class="text-red-500">*</span>
+                </label>
+                <textarea v-model="approvalData.justification" :placeholder="approvalData.status === 'Perlu Pembetulan' ? 'Sila nyatakan perkara yang perlu diperbetulkan' : 'Sila nyatakan sebab penolakan permohonan ini'" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 min-h-[100px]" rows="4"></textarea>
+                <div v-if="!approvalData.justification" class="mt-1 text-sm text-red-600">Ulasan diperlukan untuk status ini</div>
               </div>
-            </FormKit>
+            </div>
           </template>
         </rs-card>
-      </div>
+
+        <!-- Action Buttons Outside Section -->
+        <div class="mt-6 flex justify-end gap-4">
+          <rs-button variant="secondary" @click="goBack">
+            <Icon name="ph:arrow-left" class="mr-1" size="1rem" />
+            Kembali
+          </rs-button>
+          <rs-button variant="primary" @click="showConfirmationModal = true" :disabled="processing" class="px-8 py-3">
+            <template v-if="processing">
+              <Icon name="eos-icons:loading" class="animate-spin mr-2" size="1rem" /> Memproses...
+            </template>
+            <template v-else>
+              <Icon name="material-symbols:check-circle" class="mr-2" size="1rem" /> Hantar Keputusan
+            </template>
+          </rs-button>
+        </div>
     </div>
+
+    <!-- Confirmation Modal -->
+    <rs-modal
+      v-model="showConfirmationModal"
+      title="Sahkan Keputusan Pengesahan"
+      size="md"
+    >
+      <template #body>
+        <div class="text-center">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Adakah anda pasti?</h3>
+          <p class="text-gray-600 mb-4">Anda akan menghantar keputusan pengesahan untuk permohonan ini. Tindakan ini tidak boleh dibatalkan.</p>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <p class="text-sm text-blue-800"><strong>Keputusan:</strong> {{ approvalData.status || 'Belum dipilih' }}</p>
+            <p v-if="approvalData.justification" class="text-sm text-blue-800 mt-1">
+              <strong>Ulasan:</strong> {{ approvalData.justification.substring(0, 100) }}{{ approvalData.justification.length > 100 ? '...' : '' }}
+            </p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <rs-button variant="secondary-outline" @click="showConfirmationModal = false">Batal</rs-button>
+          <rs-button variant="primary" @click="confirmSubmit" :loading="processing">
+            <Icon name="ph:check" class="w-4 h-4 mr-2" />
+            Ya, Hantar Keputusan
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -166,6 +195,7 @@ definePageMeta({
 const toast = useToast();
 const router = useRouter();
 const processing = ref(false);
+const showConfirmationModal = ref(false);
 
 const breadcrumb = ref([
   { name: 'Pengesahan', type: 'link', path: '/BF-PRF/OR/PB' },
@@ -206,9 +236,11 @@ const approvalData = ref({
 
 const getStatusBadgeVariant = () => {
   switch (applicationData.value.status) {
-    case 'Diluluskan':
+    case 'Disahkan':
       return 'success';
-    case 'Ditolak':
+    case 'Perlu Pembetulan':
+      return 'warning';
+    case 'Tidak Sah':
       return 'danger';
     case 'Menunggu Pengesahan':
       return 'warning';
@@ -223,28 +255,34 @@ const viewDocument = (documentId) => {
   // In real implementation, this would open the document in a new tab or modal
 };
 
+const confirmSubmit = async () => {
+  showConfirmationModal.value = false;
+  await handleApprovalSubmit();
+};
+
 const handleApprovalSubmit = async () => {
-  // Validate justification if rejection
-  if (approvalData.value.status === 'rejected' && !approvalData.value.justification) {
+  if (!approvalData.value.status) {
+    toast.error('Sila pilih status pengesahan');
+    return;
+  }
+  if ((approvalData.value.status === 'Perlu Pembetulan' || approvalData.value.status === 'Tidak Sah') && !approvalData.value.justification) {
+    toast.error('Ulasan diperlukan untuk status ini');
     return;
   }
 
   processing.value = true;
-
-  // Simulate API call to submit approval decision
   try {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Update application status based on approval decision
-    if (approvalData.value.status === 'approved') {
-      applicationData.value.status = 'Diluluskan';
-      toast.success('Permohonan cawangan telah berjaya diluluskan');
+    applicationData.value.status = approvalData.value.status;
+    if (approvalData.value.status === 'Disahkan') {
+      toast.success('Permohonan cawangan telah berjaya disahkan');
+    } else if (approvalData.value.status === 'Perlu Pembetulan') {
+      toast.success('Ulasan pembetulan telah direkodkan');
     } else {
-      applicationData.value.status = 'Ditolak';
-      toast.success('Keputusan penolakan telah direkodkan');
+      toast.success('Keputusan tidak sah telah direkodkan');
     }
 
-    // In real implementation, we would redirect to a list page after a short delay
     setTimeout(() => {
       processing.value = false;
       goBack();
@@ -260,8 +298,7 @@ const showErrorNotification = (message) => {
 };
 
 const goBack = () => {
-  // Navigate back to cawangan list
-  router.push('/BF-PRF/OR/PB');
+  navigateTo('/BF-PRF/OR/PB');
 };
 </script>
 

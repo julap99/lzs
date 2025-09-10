@@ -190,55 +190,24 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Dokumen Sokongan</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Sijil Pendaftaran:</span>
-                  <span v-if="hasDocument(cawanganData.registrationCertificate)" class="text-gray-900 font-semibold">{{ getDocumentName(cawanganData.registrationCertificate) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(cawanganData.registrationCertificate)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Sijil Pendaftaran')">
-                    <Icon name="ph:download" class="w-4 h-4" />
-                  </rs-button>
-                  <rs-button v-if="hasDocument(cawanganData.registrationCertificate)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Sijil Pendaftaran')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
-                  </rs-button>
+              <div v-for="(doc, index) in supportDocuments" :key="index" class="p-4 border border-gray-200 rounded-lg flex items-center justify-between">
+                <div class="flex items-center">
+                  <Icon name="mdi:file-document-outline" class="text-blue-600 mr-3" />
+                  <div>
+                    <p class="font-medium text-gray-900">{{ doc.name }}</p>
+                    <template v-if="doc.has">
+                      <p class="text-sm text-gray-600">{{ doc.filename }}</p>
+                      <p v-if="doc.size" class="text-xs text-gray-500">{{ doc.size }}</p>
+                    </template>
+                    <rs-badge v-else variant="warning">Tiada</rs-badge>
+                  </div>
                 </div>
-              </div>
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Surat Perlantikan:</span>
-                  <span v-if="hasDocument(cawanganData.appointmentLetter)" class="text-gray-900 font-semibold">{{ getDocumentName(cawanganData.appointmentLetter) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(cawanganData.appointmentLetter)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Surat Perlantikan')">
-                    <Icon name="ph:download" class="w-4 h-4" />
+                <div class="flex items-center gap-2" v-if="doc.has">
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" :title="`Muat Turun`" @click="handleDownload(doc.name)">
+                    <Icon name="ph:download" size="1rem" />
                   </rs-button>
-                  <rs-button v-if="hasDocument(cawanganData.appointmentLetter)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Surat Perlantikan')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Bukti Bank:</span>
-                  <span v-if="hasDocument(cawanganData.bankProof)" class="text-gray-900 font-semibold">{{ getDocumentName(cawanganData.bankProof) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(cawanganData.bankProof)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Bukti Bank')">
-                    <Icon name="ph:download" class="w-4 h-4" />
-                  </rs-button>
-                  <rs-button v-if="hasDocument(cawanganData.bankProof)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Bukti Bank')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Dokumen Tambahan:</span>
-                  <span v-if="hasDocument(cawanganData.additionalDocuments)" class="text-gray-900 font-semibold">{{ getDocumentName(cawanganData.additionalDocuments) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(cawanganData.additionalDocuments)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Dokumen Tambahan')">
-                    <Icon name="ph:download" class="w-4 h-4" />
-                  </rs-button>
-                  <rs-button v-if="hasDocument(cawanganData.additionalDocuments)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Dokumen Tambahan')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" :title="`Lihat`" @click="handleView(doc.name)">
+                    <Icon name="ph:eye" size="1rem" />
                   </rs-button>
                 </div>
               </div>
@@ -356,6 +325,22 @@ const formatDate = (dateString) => {
     return dateString
   }
 }
+
+const supportDocuments = computed(() => {
+  const rc = cawanganData.value.registrationCertificate
+  const ap = cawanganData.value.appointmentLetter
+  const bp = cawanganData.value.bankProof
+  const ad = cawanganData.value.additionalDocuments
+  const pick = (d) => (Array.isArray(d) ? d[0] : d) || {}
+  const f = (d) => (d && (Array.isArray(d) ? d.length > 0 : true))
+  const p1 = pick(rc), p2 = pick(ap), p3 = pick(bp), p4 = pick(ad)
+  return [
+    { name: 'Sijil Pendaftaran', has: f(rc), filename: f(rc) ? (p1.filename || p1.name) : '', size: p1.size || '' },
+    { name: 'Surat Perwakilan Kuasa', has: f(ap), filename: f(ap) ? (p2.filename || p2.name) : '', size: p2.size || '' },
+    { name: 'Bukti Bank', has: f(bp), filename: f(bp) ? (p3.filename || p3.name) : '', size: p3.size || '' },
+    { name: 'Dokumen Tambahan', has: f(ad), filename: f(ad) ? (p4.filename || p4.name) : '', size: p4.size || '' },
+  ]
+})
 
 const loadCawanganData = (id) => {
   const dataset = {
