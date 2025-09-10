@@ -329,6 +329,19 @@ export default [
         child: [],
         meta: {},
       },
+      {
+        title: "Laporan",
+        icon: "iconamoon:file-document",
+        path: "/BF-ADN/laporan",
+        child: [
+        {
+          title: "Laporan Status Aduan",
+          icon: "iconamoon:arrow-right-2-duotone",
+          path: "/BF-ADN/laporan/laporan-status-aduan",
+        }
+        ],
+        meta: {},
+      }
     ],
     meta: {
       auth: {
@@ -662,6 +675,34 @@ export default [
               title: "Laporan Baki Tabung Semasa",
               icon: "iconamoon:arrow-right-2-duotone",
               path: "/BF-TNI/laporan/laporan-baki-tabung-semasa",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Pengeluaran Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-pengeluaran-tunai",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Tambah Nilai Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-tambah-nilai-tunai",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Pemulangan Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-pemulangan-tunai-ke-tabung",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Tamat Hari",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-tamat-hari",
               child: [],
               meta: {},
             }
