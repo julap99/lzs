@@ -657,95 +657,84 @@ const defaultApplicantInfo = {
   statusMultidimensi: 'Miskin'
 }
 
-const defaultAidInfo = {
-  aid: 'Bantuan Asnaf',
-  aidProduct: 'Bantuan Kewangan Bulanan',
-  productPackage: 'Paket Asnaf Standard',
-  entitlementProduct: 'Bantuan RM 500/bulan',
-  catatanSebabMemohon: 'Memerlukan bantuan kewangan untuk keperluan asas keluarga',
-  kadarBantuan: '500.00',
-  tempohKekerapan: 'Bulanan',
-  tarikhMula: '2024-01-01',
-  tarikhTamat: '2024-12-31',
-  jumlahKeseluruhan: '6000.00',
-  kodBajet: 'BUD-2024-001',
-  penerima: 'Asnaf',
-  namaPenerima: 'Ahmad bin Abdullah',
-  kaedahPembayaran: 'Bank Transfer',
-  namaPemegangAkaun: 'Ahmad bin Abdullah',
-  bank: 'Maybank',
-  noAkaunBank: '1234567890',
-  sapCode: 'SAP-001'
-}
+// Dynamic aidInfo based on aidId
+const getAidInfo = (id) => {
+  if (id === 'B005') {
+    return {
+      aid: "Bantuan Baikpulih Rumah AM",
+      aidProduct: "Bantuan Baikpulih Rumah AM (Fakir)",
+      productPackage: "Baikpulih Rumah (Fakir)",
+      entitlementProduct: "Baikpulih Rumah (Fakir)",
+      catatanSebabMemohon:
+        "Memerlukan bantuan baikpulih rumah untuk keluarga fakir",
+      kadarBantuan: "5000.00",
+      tempohKekerapan: "Sekali Sahaja",
+      tarikhMula: "2024-01-01",
+      tarikhTamat: "2024-12-31",
+      jumlahKeseluruhan: "5000.00",
+      kodBajet: "BUD-2024-B005",
+      penerima: "Fakir",
+      namaPenerima: "Ahmad bin Abdullah",
+      kaedahPembayaran: "Bank Transfer",
+      namaPemegangAkaun: "Ahmad bin Abdullah",
+      bank: "Maybank",
+      noAkaunBank: "1234567890",
+      sapCode: "SAP-B005",
+    };
+  } else {
+    // Random values for other IDs
+    const randomAids = [
+      "Bantuan Pendidikan",
+      "Bantuan Kesihatan", 
+      "Bantuan Perniagaan",
+      "Bantuan Kecemasan",
+      "Bantuan Makanan"
+    ];
+    const randomProducts = [
+      "Bantuan Yuran Sekolah",
+      "Bantuan Rawatan Perubatan",
+      "Bantuan Modal Perniagaan", 
+      "Bantuan Kecemasan Keluarga",
+      "Bantuan Bekalan Makanan"
+    ];
+    const randomPackages = [
+      "Paket Pendidikan Standard",
+      "Paket Kesihatan Basic",
+      "Paket Perniagaan Mikro",
+      "Paket Kecemasan Segera", 
+      "Paket Makanan Bulanan"
+    ];
+    
+    const randomIndex = Math.floor(Math.random() * randomAids.length);
+    const randomAmount = (Math.random() * 2000 + 500).toFixed(2);
+    
+    return {
+      aid: randomAids[randomIndex],
+      aidProduct: randomProducts[randomIndex],
+      productPackage: randomPackages[randomIndex],
+      entitlementProduct: randomProducts[randomIndex],
+      catatanSebabMemohon:
+        "Memerlukan bantuan untuk keperluan keluarga",
+      kadarBantuan: randomAmount,
+      tempohKekerapan: "Bulanan",
+      tarikhMula: "2024-01-01",
+      tarikhTamat: "2024-12-31",
+      jumlahKeseluruhan: (parseFloat(randomAmount) * 12).toFixed(2),
+      kodBajet: `BUD-2024-${id}`,
+      penerima: "Asnaf",
+      namaPenerima: "Ahmad bin Abdullah",
+      kaedahPembayaran: "Bank Transfer",
+      namaPemegangAkaun: "Ahmad bin Abdullah",
+      bank: "Maybank",
+      noAkaunBank: "1234567890",
+      sapCode: `SAP-${id}`,
+    };
+  }
+};
 
-// B010 specific data
-const b010ApplicantInfo = {
-  namaPenuh: 'Muhammad Farhan bin Fitri',
-  noKadPengenalan: '940511-12-6045',
-  noTelefon: '+60123456789',
-  emel: 'farhan@example.com',
-  alamat: 'No. 123, Jalan Merdeka, Taman Merdeka, 50000 Kuala Lumpur',
-  statusHousehold: 'Aktif',
-  statusIndividu: 'Lulus',
-  statusMultidimensi: 'Miskin'
-}
+const aidInfo = ref(getAidInfo(aidId));
 
-const b010AidInfo = {
-  aid: 'B300 - (HQ) BANTUAN DERMASISWA MENENGAH (FAKIR)',
-  aidProduct: '(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)',
-  productPackage: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) - (FAKIR)',
-  entitlementProduct: 'Bantuan RM 80/bulan',
-  catatanSebabMemohon: 'Memerlukan bantuan kewangan untuk keperluan sekolah',
-  kadarBantuan: '80.00',
-  tempohKekerapan: 'Bulanan',
-  tarikhMula: '2025-01-01',
-  tarikhTamat: '2025-12-31',
-  jumlahKeseluruhan: '960.00',
-  kodBajet: 'AGHQ0101',
-  penerima: 'Asnaf',
-  namaPenerima: 'Fitri bin Fahrin',
-  kaedahPembayaran: 'Bank Transfer',
-  namaPemegangAkaun: 'Fitri bin Fahrin',
-  bank: 'Maybank',
-  noAkaunBank: '1234567890',
-  sapCode: 'SAP-001'
-}
-
-// B011 specific data
-const b011ApplicantInfo = {
-  namaPenuh: 'Muhammad Firdaus bin Amri',
-  noKadPengenalan: '900211-11-5041',
-  noTelefon: '+60126246789',
-  emel: 'firdaus@example.com',
-  alamat: 'No. 123, Jalan Indah Jaya, Taman Indah Jaya, 50000 Kuala Lumpur',
-  statusHousehold: 'Aktif',
-  statusIndividu: 'Lulus',
-  statusMultidimensi: 'Miskin'
-}
-
-const b011AidInfo = {
-  aid: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
-  aidProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
-  productPackage: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
-  entitlementProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
-  catatanSebabMemohon: 'Memerlukan bantuan kewangan untuk keperluan IPTA/IPTS',
-  kadarBantuan: '800.00',
-  tempohKekerapan: '7 Sem',
-  tarikhMula: '2025-01-01',
-  tarikhTamat: '2027-06-30',
-  jumlahKeseluruhan: '5600.00',
-  kodBajet: 'AGHQ0101',
-  penerima: 'Asnaf',
-  namaPenerima: 'Fitri bin Fahrin',
-  kaedahPembayaran: 'Bank Transfer',
-  namaPemegangAkaun: 'Muhammad Farhan bin Fitri',
-  bank: 'Maybank',
-  noAkaunBank: '1234567890',
-  sapCode: 'SAP-001'
-}
-
-// Default distribution items for most IDs
-const defaultDistributionItems = [
+const distributionItems = ref([
   {
     diNo: 'DI-2024-001',
     entitlementProduct: 'Bantuan RM 500/bulan',
