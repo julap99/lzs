@@ -346,7 +346,7 @@
             <rs-button
               type="button"
               variant="secondary"
-              @click="handleSaveStepA2"
+              @click="handleSaveStepA1"
               >Simpan</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -807,7 +807,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA3"
+                @click="handleSaveStepA2"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -993,7 +993,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA4"
+                @click="handleSaveStepA3"
               >
                 Simpan
               </rs-button>
@@ -1225,7 +1225,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA5"
+                @click="handleSaveStepA4"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1427,7 +1427,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA2"
+                @click="handleSaveStepA5"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1501,7 +1501,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA7"
+                @click="handleSaveStepA6"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1839,7 +1839,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA8"
+                @click="handleSaveStepA7"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1963,7 +1963,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA9"
+                @click="handleSaveStepA8"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2088,7 +2088,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA10"
+                @click="handleSaveStepA9"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2263,7 +2263,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA11"
+                @click="handleSaveStepA10"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -3212,7 +3212,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Maklumat Islam</rs-button
+                >Maklumat Pengislaman</rs-button
               >
             </div>
           </div>
@@ -8216,7 +8216,7 @@ const handleSave = async () => {
 const handleSaveStepA1 = async () => {
   try {
     console.log("Step A1 saved:", formData.value);
-    toast.success("Penilaian Awal berjaya disimpan");
+    toast.success("Maklumat Peribadi berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A1 error:", error);
@@ -8226,7 +8226,7 @@ const handleSaveStepA1 = async () => {
 const handleSaveStepA2 = async () => {
   try {
     console.log("Step A2 saved:", formData.value);
-    toast.success("Maklumat Peribadi berjaya disimpan");
+    toast.success("Maklumat Pendidikan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A2 error:", error);
@@ -8236,7 +8236,7 @@ const handleSaveStepA2 = async () => {
 const handleSaveStepA3 = async () => {
   try {
     console.log("Step A3 saved:", formData.value);
-    toast.success("Maklumat Islam berjaya disimpan");
+    toast.success("Maklumat Pengislaman berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A3 error:", error);
@@ -8245,7 +8245,7 @@ const handleSaveStepA3 = async () => {
 const handleSaveStepA4 = async () => {
   try {
     console.log("Step A4 saved:", formData.value);
-    toast.success("Maklumat Pendidikan berjaya disimpan");
+    toast.success("Maklumat Perbankan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A4 error:", error);
@@ -8255,7 +8255,7 @@ const handleSaveStepA4 = async () => {
 const handleSaveStepA5 = async () => {
   try {
     console.log("Step A5 saved:", formData.value);
-    toast.success("Maklumat Bank berjaya disimpan");
+    toast.success("Maklumat Kesihatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A5 error:", error);
@@ -8265,7 +8265,7 @@ const handleSaveStepA5 = async () => {
 const handleSaveStepA6 = async () => {
   try {
     console.log("Step A6 saved:", formData.value);
-    toast.success("Maklumat Kesihatan berjaya disimpan");
+    toast.success("Maklumat Kemahiran berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A6 error:", error);
@@ -8275,7 +8275,7 @@ const handleSaveStepA6 = async () => {
 const handleSaveStepA7 = async () => {
   try {
     console.log("Step A7 saved:", formData.value);
-    toast.success("Maklumat Kemahiran berjaya disimpan");
+    toast.success("Maklumat Alamat berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A7 error:", error);
@@ -8285,7 +8285,7 @@ const handleSaveStepA7 = async () => {
 const handleSaveStepA8 = async () => {
   try {
     console.log("Step A8 saved:", formData.value);
-    toast.success("Maklumat Alamat berjaya disimpan");
+    toast.success("Maklumat Pinjaman Harta berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A8 error:", error);
@@ -8295,7 +8295,7 @@ const handleSaveStepA8 = async () => {
 const handleSaveStepA9 = async () => {
   try {
     console.log("Step A9 saved:", formData.value);
-    toast.success("Maklumat Pekerjaan berjaya disimpan");
+    toast.success("Maklumat Pemilikan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A9 error:", error);
@@ -8355,7 +8355,7 @@ const handleSaveStepB1 = async () => {
 const handleSaveStepB2 = async () => {
   try {
     console.log("Step B2 saved:", formData.value);
-    toast.success("Maklumat Islam Tanggungan berjaya disimpan");
+    toast.success("Maklumat Pengislaman Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B2 error:", error);
@@ -8365,7 +8365,7 @@ const handleSaveStepB2 = async () => {
 const handleSaveStepB3 = async () => {
   try {
     console.log("Step B3 saved:", formData.value);
-    toast.success("Maklumat Bank Tanggungan berjaya disimpan");
+    toast.success("Maklumat Perbankan Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B3 error:", error);
@@ -8415,7 +8415,7 @@ const handleSaveStepB7 = async () => {
 const handleSaveStepB8 = async () => {
   try {
     console.log("Step B8 saved:", formData.value);
-    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+    toast.success("Maklumat Pengesahan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B8 error:", error);
