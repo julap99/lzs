@@ -189,7 +189,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute, onMounted } from "vue-router";
 import { useToast } from "vue-toastification";
 
 definePageMeta({
@@ -198,6 +198,7 @@ definePageMeta({
 
 const toast = useToast();
 const router = useRouter();
+const route = useRoute();
 const processing = ref(false);
 const showConfirmationModal = ref(false);
 
@@ -305,4 +306,15 @@ const showErrorNotification = (message) => {
 const handleBack = () => {
   navigateTo('/BF-PRF/TP/PP');
 };
+
+// Redirect shim: if this legacy non-dynamic page is hit directly, forward to dynamic version if id is provided, else back to list
+onMounted(() => {
+  const id = route.query?.id;
+  if (id && typeof id === 'string') {
+    navigateTo(`/BF-PRF/TP/PP/03/${id}`);
+  } else {
+    // leave page usable for manual testing; to force redirect uncomment:
+    // navigateTo('/BF-PRF/TP/PP')
+  }
+});
 </script>

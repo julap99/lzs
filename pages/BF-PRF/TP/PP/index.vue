@@ -457,60 +457,60 @@ const currentPage = ref(1);
 
 const recipientList = ref([
   {
-    noRujukan: 'RE-240511',
+    noRujukan: 'RE-202507-0011',
     namaRecipient: 'Ahmad Bin Abdullah',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '23/7/2025',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'RE-240511', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'RE-202507-0011', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'RE-240512',
+    noRujukan: 'RE-202506-0012',
     namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '15/6/2025',
     status: 'Disahkan',
-    tindakan: { id: 'RE-240512', status: 'Disahkan' },
+    tindakan: { id: 'RE-202506-0012', status: 'Disahkan' },
   },
   {
-    noRujukan: 'RE-240513',
+    noRujukan: 'RE-202505-0013',
     namaRecipient: 'Siti Fatimah Binti Ali',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '8/5/2025',
     status: 'Tidak Sah',
-    tindakan: { id: 'RE-240513', status: 'Tidak Sah' },
+    tindakan: { id: 'RE-202505-0013', status: 'Tidak Sah' },
   },
   {
-    noRujukan: 'RE-240517',
+    noRujukan: 'RE-202507-0017',
     namaRecipient: 'Mohd Zaki bin Hassan',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '20/7/2025',
     status: 'Dalam Pembetulan',
-    tindakan: { id: 'RE-240517', status: 'Dalam Pembetulan' },
+    tindakan: { id: 'RE-202507-0017', status: 'Dalam Pembetulan' },
   },
   {
-    noRujukan: 'RE-240514',
+    noRujukan: 'RE-202507-0014',
     namaRecipient: 'Klinik Kesihatan Sejahtera',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '30/7/2025',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'RE-240514', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'RE-202507-0014', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'RE-240515',
+    noRujukan: 'RE-202506-0015',
     namaRecipient: 'Zainab Binti Hassan',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '12/6/2025',
     status: 'Disahkan',
-    tindakan: { id: 'RE-240515', status: 'Disahkan' },
+    tindakan: { id: 'RE-202506-0015', status: 'Disahkan' },
   },
   {
-    noRujukan: 'RE-240516',
+    noRujukan: 'RE-202505-0016',
     namaRecipient: 'Pembekal Makanan Halal Sdn Bhd',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '25/5/2025',
     status: 'Tidak Sah',
-    tindakan: { id: 'RE-240516', status: 'Tidak Sah' },
+    tindakan: { id: 'RE-202505-0016', status: 'Tidak Sah' },
   },
 ]);
 
@@ -613,7 +613,7 @@ const performSearch = () => {
 // CRUD Operations
 const viewItem = (id) => navigateTo(`/BF-PRF/TP/PP/view/${id}`);
 const editItem = (id) => navigateTo(`/BF-PRF/TP/PP/kemaskini/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/TP/PP/03`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/TP/PP/03/${id}`);
 
 // Delete operations
 const confirmDelete = (id, item) => {

@@ -381,8 +381,9 @@ const breadcrumb = ref([
 const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
   { key: 'namaOrganisasi', label: 'Nama Organisasi', sortable: true },
-  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'jenisOrganisasi', label: 'Jenis Organisasi', sortable: true },
+  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
+  { key: 'jenisStruktur', label: 'Jenis Struktur', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
@@ -394,69 +395,76 @@ const tableKey = ref(0);
 // Mock data for Eksekutif role
 const organizationList = ref([
   {
-    noRujukan: 'ORG-240501',
+    noRujukan: 'ORG-202507-0001',
     namaOrganisasi: 'Syarikat Teknologi Maju Sdn Bhd',
     tarikhPermohonan: '23/7/2025',
     jenisOrganisasi: 'Swasta',
+    jenisStruktur: 'HQ',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240501', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'ORG-202507-0001', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'ORG-240502',
+    noRujukan: 'ORG-202506-0002',
     namaOrganisasi: 'Pertubuhan Amal Iman Malaysia',
     tarikhPermohonan: '15/6/2025',
     jenisOrganisasi: 'NGO',
+    jenisStruktur: 'HQ',
     status: 'Diluluskan',
-    tindakan: { id: 'ORG-240502', status: 'Diluluskan' },
+    tindakan: { id: 'ORG-202506-0002', status: 'Diluluskan' },
   },
   {
-    noRujukan: 'ORG-240503',
+    noRujukan: 'ORG-202505-0003',
     namaOrganisasi: 'Sekolah Menengah Tahfiz Al-Amin',
     tarikhPermohonan: '8/5/2025',
     jenisOrganisasi: 'IPT',
+    jenisStruktur: 'HQ',
     status: 'Diluluskan',
-    tindakan: { id: 'ORG-240503', status: 'Diluluskan' },
+    tindakan: { id: 'ORG-202505-0003', status: 'Diluluskan' },
   },
   {
-    noRujukan: 'ORG-240504',
+    noRujukan: 'ORG-202507-0004',
     namaOrganisasi: 'Institut Latihan Kemahiran Malaysia',
     tarikhPermohonan: '30/7/2025',
     jenisOrganisasi: 'Institut',
+    jenisStruktur: 'Cawangan',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240504', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'ORG-202507-0004', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'ORG-240505',
+    noRujukan: 'ORG-202506-0005',
     namaOrganisasi: 'Syarikat Pembangunan Hartanah Sdn Bhd',
     tarikhPermohonan: '12/6/2025',
     jenisOrganisasi: 'Swasta',
+    jenisStruktur: 'HQ',
     status: 'Ditolak',
-    tindakan: { id: 'ORG-240505', status: 'Ditolak' },
+    tindakan: { id: 'ORG-202506-0005', status: 'Ditolak' },
   },
   {
-    noRujukan: 'ORG-240506',
+    noRujukan: 'ORG-202505-0006',
     namaOrganisasi: 'Persatuan Belia Islam Malaysia',
     tarikhPermohonan: '25/5/2025',
     jenisOrganisasi: 'NGO',
+    jenisStruktur: 'HQ',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240506', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'ORG-202505-0006', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'ORG-240507',
+    noRujukan: 'ORG-202504-0007',
     namaOrganisasi: 'Universiti Teknologi Malaysia',
     tarikhPermohonan: '18/4/2025',
     jenisOrganisasi: 'IPT',
+    jenisStruktur: 'HQ',
     status: 'Ditolak',
-    tindakan: { id: 'ORG-240507', status: 'Ditolak' },
+    tindakan: { id: 'ORG-202504-0007', status: 'Ditolak' },
   },
-  // New mock entry for correction status
   {
-    noRujukan: 'ORG-240508',
+    noRujukan: 'ORG-202508-0008',
     namaOrganisasi: 'Yayasan Pendidikan Selangor',
     tarikhPermohonan: '05/8/2025',
     jenisOrganisasi: 'Yayasan',
+    jenisStruktur: 'Cawangan',
     status: 'Dalam Pembetulan',
-    tindakan: { id: 'ORG-240508', status: 'Dalam Pembetulan' },
+    tindakan: { id: 'ORG-202508-0008', status: 'Dalam Pembetulan' },
   },
 ]);
 
@@ -564,7 +572,7 @@ const performSearch = () => {
 // CRUD Operations
 const viewItem = (id) => navigateTo(`/BF-PRF/OR/PP/view/${id}`);
 const editItem = (id) => navigateTo(`/BF-PRF/OR/PP/kemaskini/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04/${id}`);
 
 // Delete operations
 const confirmDelete = (id, item) => {

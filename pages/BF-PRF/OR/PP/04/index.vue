@@ -9,7 +9,7 @@
       <div class="flex justify-between items-start">
         <div>
           <h1 class="text-2xl font-bold text-gray-800 mb-2">Pengesahan Pendaftaran Organisasi</h1>
-          <p class="text-sm text-gray-600">No. Rujukan: ORG{{ applicationData.refNumber }}</p>
+          <p class="text-sm text-gray-600">No. Rujukan: ORG-{{ applicationData.refNumber }}</p>
         </div>
         <div class="flex gap-2">
           <rs-badge :variant="getStatusBadgeVariant()">{{ applicationData.status }}</rs-badge>
@@ -230,7 +230,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute, onMounted } from "vue-router";
 import { useToast } from "vue-toastification";
 
 definePageMeta({
@@ -239,6 +239,7 @@ definePageMeta({
 
 const toast = useToast();
 const router = useRouter();
+const route = useRoute();
 const processing = ref(false);
 const showConfirmationModal = ref(false);
 
@@ -256,7 +257,7 @@ const breadcrumb = ref([
 
 // Mock application data - in real implementation this would be fetched from API
 const applicationData = ref({
-  refNumber: "2405001",
+  refNumber: "202505-0001",
   applicationDate: "15 Mei 2025",
   status: "Menunggu Pengesahan",
   organizationType: "Swasta",
@@ -372,5 +373,17 @@ const handleDownload = (doc) => {
 const handleView = (doc) => {
   toast.success(`Melihat dokumen ${doc.name}`);
 };
+
+// Redirect shim: if this legacy non-dynamic page is hit directly, forward to dynamic version if id is provided, else back to list
+onMounted(() => {
+  const id = route.query?.id;
+  if (id && typeof id === 'string') {
+    navigateTo(`/BF-PRF/OR/PP/04/${id}`);
+  } else {
+    // keep page usable if navigated from list, otherwise go back
+    // If you prefer hard redirect always, uncomment next line
+    // navigateTo('/BF-PRF/OR/PP')
+  }
+});
 </script>
 

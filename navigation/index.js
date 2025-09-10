@@ -999,30 +999,16 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Carian HQ",
+            title: "Carian Organisasi",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PP/01",
             child: [],
             meta: {},
           },
           {
-            title: "Senarai HQ",
+            title: "Senarai Organisasi",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PP",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Carian Cawangan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/OR/PB/01",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Senarai Cawangan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/OR/PB",
             child: [],
             meta: {},
           },
@@ -1742,16 +1728,7 @@ export default [
           }
         },
       },
-      {
-        title: "Carian Cawangan",
-        icon: "iconamoon:component-fill",
-        path: "/BF-PRF/OR/PB/01",
-        meta: {
-          auth: {
-            role: ["PenggunaLuar"]
-          }
-        },
-      },
+      // { title: "Carian Cawangan", icon: "iconamoon:component-fill", path: "/BF-PRF/OR/PB/01", meta: { auth: { role: ["PenggunaLuar"] } } },
       {
         title: "Carian Recipient",
         icon: "iconamoon:component-fill",

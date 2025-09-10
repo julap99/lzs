@@ -434,7 +434,7 @@ const loadExistingData = async () => {
   setTimeout(() => {
     // Mock existing data based on ID - replace with actual API call
     const mockData = {
-      'RE-240511': {
+      'RE-202507-0011': {
         jenisRecipient: "individu",
         namaPenuh: "Ahmad Bin Abdullah",
         jenisPengenalan: "mykad",
@@ -443,7 +443,7 @@ const loadExistingData = async () => {
         noAkaunBank: "1234567890",
         penamaAkaunBank: "Ahmad Bin Abdullah",
       },
-      'RE-240512': {
+      'RE-202506-0012': {
         jenisRecipient: "syarikat",
         namaSyarikat: "Pusat Dialisis Al-Falah Sdn Bhd",
         jenisPengenalan: "id_syarikat",
@@ -452,7 +452,7 @@ const loadExistingData = async () => {
         noAkaunBank: "9876543210",
         penamaAkaunBank: "Pusat Dialisis Al-Falah Sdn Bhd",
       },
-      'RE-240513': {
+      'RE-202505-0013': {
         jenisRecipient: "individu",
         namaPenuh: "Siti Fatimah Binti Ali",
         jenisPengenalan: "foreign_id",
@@ -461,7 +461,7 @@ const loadExistingData = async () => {
         noAkaunBank: "8765432109",
         penamaAkaunBank: "Siti Fatimah Binti Ali",
       },
-      'RE-240514': {
+      'RE-202507-0014': {
         jenisRecipient: "syarikat",
         namaSyarikat: "Klinik Kesihatan Sejahtera",
         jenisPengenalan: "id_syarikat",
@@ -470,7 +470,7 @@ const loadExistingData = async () => {
         noAkaunBank: "8765432109876",
         penamaAkaunBank: "Klinik Kesihatan Sejahtera",
       },
-      'RE-240515': {
+      'RE-202506-0015': {
         jenisRecipient: "individu",
         namaPenuh: "Zainab Binti Hassan",
         jenisPengenalan: "mykad",
@@ -479,7 +479,7 @@ const loadExistingData = async () => {
         noAkaunBank: "7654321098",
         penamaAkaunBank: "Zainab Binti Hassan",
       },
-      'RE-240516': {
+      'RE-202505-0016': {
         jenisRecipient: "syarikat",
         namaSyarikat: "Pembekal Makanan Halal Sdn Bhd",
         jenisPengenalan: "id_syarikat",
