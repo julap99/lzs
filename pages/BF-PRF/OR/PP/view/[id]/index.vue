@@ -57,7 +57,7 @@
                   </rs-badge>
                 </div>
             </div>
-                </div>
+          </div>
                 
           <!-- Maklumat Asas -->
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Asas</h3>
@@ -194,58 +194,28 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Dokumen Sokongan</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Sijil Pendaftaran:</span>
-                  <span v-if="hasDocument(organisasiData.registrationCertificate)" class="text-gray-900">{{ getDocumentName(organisasiData.registrationCertificate) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(organisasiData.registrationCertificate)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Sijil Pendaftaran')">
-                    <Icon name="ph:download" class="w-4 h-4" />
+              <div v-for="(doc, index) in supportDocuments" :key="index" class="p-4 border border-gray-200 rounded-lg flex items-center justify-between">
+                <div class="flex items-center">
+                  <Icon name="mdi:file-document-outline" class="text-blue-600 mr-3" />
+                  <div>
+                    <p class="font-medium text-gray-900">{{ doc.name }}</p>
+                    <template v-if="doc.has">
+                      <p class="text-sm text-gray-600">{{ doc.filename }}</p>
+                      <p v-if="doc.size" class="text-xs text-gray-500">{{ doc.size }}</p>
+                    </template>
+                    <rs-badge v-else variant="warning">Tiada</rs-badge>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2" v-if="doc.has">
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" :title="`Muat Turun`" @click="handleDownload(doc.name)">
+                    <Icon name="ph:download" size="1rem" />
                   </rs-button>
-                  <rs-button v-if="hasDocument(organisasiData.registrationCertificate)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Sijil Pendaftaran')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" :title="`Lihat`" @click="handleView(doc.name)">
+                    <Icon name="ph:eye" size="1rem" />
                   </rs-button>
                 </div>
               </div>
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Surat Perlantikan:</span>
-                  <span v-if="hasDocument(organisasiData.appointmentLetter)" class="text-gray-900">{{ getDocumentName(organisasiData.appointmentLetter) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(organisasiData.appointmentLetter)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Surat Perlantikan')">
-                    <Icon name="ph:download" class="w-4 h-4" />
-                  </rs-button>
-                  <rs-button v-if="hasDocument(organisasiData.appointmentLetter)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Surat Perlantikan')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Bukti Bank:</span>
-                  <span v-if="hasDocument(organisasiData.bankProof)" class="text-gray-900">{{ getDocumentName(organisasiData.bankProof) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(organisasiData.bankProof)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Bukti Bank')">
-                    <Icon name="ph:download" class="w-4 h-4" />
-                  </rs-button>
-                  <rs-button v-if="hasDocument(organisasiData.bankProof)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Bukti Bank')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Dokumen Tambahan:</span>
-                  <span v-if="hasDocument(organisasiData.additionalDocuments)" class="text-gray-900">{{ getDocumentName(organisasiData.additionalDocuments) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(organisasiData.additionalDocuments)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Dokumen Tambahan')">
-                    <Icon name="ph:download" class="w-4 h-4" />
-                  </rs-button>
-                  <rs-button v-if="hasDocument(organisasiData.additionalDocuments)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Dokumen Tambahan')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
+            </div>
           </div>
         </div>
 
@@ -256,7 +226,7 @@
             Kembali
           </rs-button>
           </div>
-        </div>
+      
       </template>
     </rs-card>
   </div>
@@ -307,8 +277,8 @@ const organisasiData = ref({
     paymentMethod: ''
   },
   registrationCertificate: { name: 'Sijil Pendaftaran Syarikat', filename: 'sijil_pendaftaran_ssm.pdf', size: '2.4 MB' },
-  appointmentLetter: { name: 'Surat Perlantikan', filename: 'surat_perlantikan_organisasi_2025.pdf', size: '1.2 MB' },
-  bankProof: null,
+  appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_kuasa.pdf', size: '1.8 MB' },
+  bankProof: { name: 'Penyata Bank', filename: 'penyata_bank_disember_2024.pdf', size: '1.1 MB' },
   additionalDocuments: null,
   status: '',
   tarikhPermohonan: ''
@@ -341,6 +311,51 @@ const getDocumentName = (document) => {
   if (typeof document === 'object' && (document.filename || document.name)) return document.filename || document.name
   return 'Tiada'
 }
+
+// Return "name + filename + size" where available, compact
+const getDocDisplay = (document) => {
+  if (!document) return 'Tiada'
+  const first = Array.isArray(document) ? document[0] : document
+  const name = first.name || '-'
+  const filename = first.filename ? ` (${first.filename})` : ''
+  const size = first.size ? ` • ${first.size}` : ''
+  return `${name}${filename}${size}`
+}
+
+const supportDocuments = computed(() => {
+  const docs = []
+  const rc = organisasiData.value.registrationCertificate
+  const ap = organisasiData.value.appointmentLetter
+  const bp = organisasiData.value.bankProof
+  const ad = organisasiData.value.additionalDocuments
+
+  docs.push({
+    name: 'Sijil Pendaftaran',
+    has: hasDocument(rc),
+    filename: hasDocument(rc) ? (Array.isArray(rc) ? rc[0].filename || rc[0].name : rc.filename || rc.name) : '',
+    size: hasDocument(rc) ? (Array.isArray(rc) ? rc[0].size : rc.size) : ''
+  })
+  docs.push({
+    name: 'Surat Perwakilan Kuasa',
+    has: hasDocument(ap),
+    filename: hasDocument(ap) ? (Array.isArray(ap) ? ap[0].filename || ap[0].name : ap.filename || ap.name) : '',
+    size: hasDocument(ap) ? (Array.isArray(ap) ? ap[0].size : ap.size) : ''
+  })
+  docs.push({
+    name: 'Bukti Bank',
+    has: hasDocument(bp),
+    filename: hasDocument(bp) ? (Array.isArray(bp) ? bp[0].filename || bp[0].name : bp.filename || bp.name) : '',
+    size: hasDocument(bp) ? (Array.isArray(bp) ? bp[0].size : bp.size) : ''
+  })
+  docs.push({
+    name: 'Dokumen Tambahan',
+    has: hasDocument(ad),
+    filename: hasDocument(ad) ? (Array.isArray(ad) ? ad[0].filename || ad[0].name : ad.filename || ad.name) : '',
+    size: hasDocument(ad) ? (Array.isArray(ad) ? ad[0].size : ad.size) : ''
+  })
+
+  return docs
+})
 
 const handleDownload = (documentType) => {
   alert(`Download ${documentType} - Ini adalah UI mockup prototype untuk presentation kepada client.`)
@@ -398,9 +413,9 @@ const loadOrganisasiData = (id) => {
         penamaBank: 'Syarikat Teknologi Maju Sdn Bhd',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_pendaftaran_ssm_2025.pdf' },
-      appointmentLetter: { name: 'Surat Perlantikan', filename: 'surat_perlantikan_organisasi_2025.pdf', size: '1.2 MB' },
-      bankProof: { name: 'bank_statement_jan_2025.pdf' },
+      registrationCertificate: { name: 'Sijil Pendaftaran Syarikat', filename: 'sijil_pendaftaran_ssm_2025.pdf', size: '2.4 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_organisasi_2025.pdf', size: '1.8 MB' },
+      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_jan_2025.pdf', size: '1.1 MB' },
       additionalDocuments: null,
       status: 'Menunggu Pengesahan',
       tarikhPermohonan: '23/7/2025'
@@ -439,9 +454,9 @@ const loadOrganisasiData = (id) => {
         penamaBank: 'Pertubuhan Amal Iman Malaysia',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_ros_2023.pdf' },
-      appointmentLetter: { name: 'surat_perlantikan_2025.pdf' },
-      bankProof: { name: 'bank_confirmation_letter.pdf' },
+      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_2023.pdf', size: '2.0 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_2025.pdf', size: '1.5 MB' },
+      bankProof: { name: 'Surat Pengesahan Bank', filename: 'bank_confirmation_letter.pdf', size: '0.9 MB' },
       additionalDocuments: null,
       status: 'Disahkan',
       tarikhPermohonan: '15/6/2025'
@@ -480,9 +495,9 @@ const loadOrganisasiData = (id) => {
         penamaBank: 'Sekolah Menengah Tahfiz Al-Amin',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_moe_2023.pdf' },
-      appointmentLetter: { name: 'surat_lantikan_2025.pdf' },
-      bankProof: { name: 'bank_letter_2025.pdf' },
+      registrationCertificate: { name: 'Sijil MOE', filename: 'sijil_moe_2023.pdf', size: '1.7 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_2025.pdf', size: '1.3 MB' },
+      bankProof: { name: 'Surat Bank', filename: 'bank_letter_2025.pdf', size: '0.8 MB' },
       additionalDocuments: null,
       status: 'Disahkan',
       tarikhPermohonan: '8/5/2025'
@@ -521,9 +536,9 @@ const loadOrganisasiData = (id) => {
         penamaBank: 'Institut Latihan Kemahiran Malaysia',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_ilkm_2023.pdf' },
-      appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
-      bankProof: { name: 'bank_verification_2025.pdf' },
+      registrationCertificate: { name: 'Sijil ILKM', filename: 'sijil_ilkm_2023.pdf', size: '2.1 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_cawangan_2025.pdf', size: '1.4 MB' },
+      bankProof: { name: 'Pengesahan Bank', filename: 'bank_verification_2025.pdf', size: '0.7 MB' },
       additionalDocuments: null,
       status: 'Perlu Pembetulan',
       tarikhPermohonan: '30/7/2025'
@@ -562,9 +577,9 @@ const loadOrganisasiData = (id) => {
         penamaBank: 'Syarikat Pembangunan Hartanah Sdn Bhd',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_ssm_2025.pdf' },
+      registrationCertificate: { name: 'Sijil SSM', filename: 'sijil_ssm_2025.pdf', size: '2.6 MB' },
       appointmentLetter: null,
-      bankProof: { name: 'bank_statement_feb_2025.pdf' },
+      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_feb_2025.pdf', size: '1.0 MB' },
       additionalDocuments: null,
       status: 'Tidak Sah',
       tarikhPermohonan: '12/6/2025'

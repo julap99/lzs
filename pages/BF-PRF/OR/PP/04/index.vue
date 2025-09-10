@@ -246,7 +246,7 @@ const breadcrumb = ref([
   {
     name: "Pengesahan",
     type: "link",
-    path: "/BF-PRF/OR/AP/01",
+    path: "/BF-PRF/OR/PP",
   },
   {
     name: "Pengesahan Pendaftaran Organisasi",
@@ -291,9 +291,11 @@ const approvalData = ref({
 
 const getStatusBadgeVariant = () => {
   switch (applicationData.value.status) {
-    case "Diluluskan":
+    case "Disahkan":
       return "success";
-    case "Ditolak":
+    case "Perlu Pembetulan":
+      return "warning";
+    case "Tidak Sah":
       return "danger";
     case "Menunggu Pengesahan":
       return "warning";
@@ -308,11 +310,19 @@ const confirmSubmit = async () => {
 };
 
 const handleApprovalSubmit = async () => {
-  // Validate justification if rejection
+  // Validate status selection
+  if (!approvalData.value.status) {
+    toast.error("Sila pilih status pengesahan");
+    return;
+  }
+
+  // Require justification for non-approval outcomes
   if (
-    approvalData.value.status === "rejected" &&
+    (approvalData.value.status === "Perlu Pembetulan" ||
+      approvalData.value.status === "Tidak Sah") &&
     !approvalData.value.justification
   ) {
+    toast.error("Ulasan diperlukan untuk status ini");
     return;
   }
 
@@ -323,17 +333,17 @@ const handleApprovalSubmit = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Update application status based on approval decision
-    if (approvalData.value.status === "approved") {
-      applicationData.value.status = "Diluluskan";
+    applicationData.value.status = approvalData.value.status;
 
-      toast.success("Permohonann telah berjaya diluluskan");
+    if (approvalData.value.status === "Disahkan") {
+      toast.success("Permohonan telah berjaya disahkan");
+    } else if (approvalData.value.status === "Perlu Pembetulan") {
+      toast.success("Ulasan pembetulan telah direkodkan");
     } else {
-      applicationData.value.status = "Ditolak";
-
-      toast.success("Keputusan penolakan telah direkodkan");
+      toast.success("Keputusan tidak sah telah direkodkan");
     }
 
-    // In real implementation, we would redirect to a list page after a short delay
+    // Redirect to list page after a short delay
     setTimeout(() => {
       processing.value = false;
       goBack();
@@ -350,8 +360,8 @@ const showErrorNotification = (message) => {
 };
 
 const goBack = () => {
-  // Navigate back to dashboard
-  router.push("/BF-PRF/OR/PP");
+  // Navigate back to list
+  navigateTo("/BF-PRF/OR/PP");
 };
 
 // Mock handlers for document actions
