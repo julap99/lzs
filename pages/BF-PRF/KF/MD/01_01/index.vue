@@ -45,7 +45,7 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PRF/KF/MD/01_02?id=${data.value.idHadKifayah}`)"
+              @click="navigateTo(`/BF-PRF/KF/MD/01_02?id=${data.value.no}`)"
               >Kemaskini
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -53,7 +53,7 @@
               variant="secondary"
               size="sm"
               class="!px-2 !py-1 ml-2"
-              @click="navigateTo({ path: '/BF-PRF/KF/HK/02_02', query: { id: data.value.idHadKifayah } })"
+              @click="navigateTo({ path: '/BF-PRF/KF/MD/01_04', query: { id: data.value.no } })"
               >Lihat
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -141,13 +141,13 @@ const loadData = () => {
           mergedData.push(validateDataItem(savedItem));
         }
       });
-      kifayahLimits.value = mergedData;
+      kifayahLimits.value = assignRowNumbers(mergedData);
     } else {
-      kifayahLimits.value = defaultData;
+      kifayahLimits.value = assignRowNumbers(defaultData);
     }
   } catch (error) {
     console.error('Error loading data:', error);
-    kifayahLimits.value = defaultData;
+    kifayahLimits.value = assignRowNumbers(defaultData);
   }
 };
 
@@ -170,6 +170,11 @@ const refreshTable = () => {
     console.log("Table refreshed, records:", kifayahLimits.value.length);
     console.log("Sample data:", kifayahLimits.value[0]);
   });
+};
+
+// Ensure each row has a sequential `no` field used as ID
+const assignRowNumbers = (items) => {
+  return (items || []).map((item, index) => ({ ...item, no: index + 1 }));
 };
 
 const formatDate = (dateString) => {

@@ -451,7 +451,7 @@ const permohonanData = ref([
 const lulusData = ref([
   {
     noBantuan: "B005",
-    namaBantuan: "Bantuan Kecemasan",
+    namaBantuan: "Bantuan BaikPulih Rumah AM (Miskin)",
     status: "Lulus",
     kekerapan: "Sekali",
     tarikhPermohonan: "2024-01-10",
