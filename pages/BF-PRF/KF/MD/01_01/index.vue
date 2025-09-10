@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Had Kifayah Utama</h2>
+          <h2 class="text-xl font-semibold">Senarai Multidimensi</h2>
           <div class="flex items-center gap-2">
             <rs-button variant="primary" @click="navigateTo('01_01/tambah')">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah Baharu
@@ -75,12 +75,12 @@ const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF/KF/HK/admin",
+    path: "/BF-PRF/KF/MD/admin",
   },
   {
-    name: "Konfigurasi Had Kifayah",
+    name: "Senarai Multidimensi",
     type: "current",
-    path: "/BF-PRF/KF/HK/admin",
+    path: "/BF-PRF/KF/MD/01_01",
   },
 ]);
 
@@ -122,7 +122,7 @@ const validateDataItem = (item) => {
 // Function to load data from localStorage
 const loadData = () => {
   try {
-    const savedData = localStorage.getItem('kifayahLimits');
+    const savedData = localStorage.getItem('multidimensi');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       // Validate and sanitize parsed data

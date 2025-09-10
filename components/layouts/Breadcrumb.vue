@@ -95,12 +95,12 @@ async function navigateMenu(path) {
             </span>
           </template>
           <template v-else>
-            <a
-              @click="navigateMenu(item.path)"
-              class="text-gray-500 hover:text-gray-700 cursor-pointer"
+            <NuxtLink
+              :to="item.path"
+              class="text-gray-500 hover:text-gray-700"
             >
               {{ item.name }}
-            </a>
+            </NuxtLink>
           </template>
         </li>
       </ol>

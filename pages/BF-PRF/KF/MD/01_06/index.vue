@@ -75,9 +75,19 @@ const breadcrumb = ref([
     path: "/BF-PRF/KF/HK/admin",
   },
   {
-    name: "Konfigurasi Had Kifayah",
+    name: "Senarai Multidimensi",
     type: "current",
-    path: "/BF-PRF/KF/HK/admin",
+    path: "/BF-PRF/KF/MD/01_01",
+  },
+  {
+    name: "Maklumat Multidimensi",
+    type: "current",
+    path: "/BF-PRF/KF/MD/01_02",
+  },
+  {
+    name: "Senarai Kuadran",
+    type: "current",
+    path: "/BF-PRF/KF/MD/01_06",
   },
 ]);
 
@@ -119,7 +129,7 @@ const validateDataItem = (item) => {
 // Function to load data from localStorage
 const loadData = () => {
   try {
-    const savedData = localStorage.getItem('kifayahLimits');
+    const savedData = localStorage.getItem('multidimensi');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       // Validate and sanitize parsed data
