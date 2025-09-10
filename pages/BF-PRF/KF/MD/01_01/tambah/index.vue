@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Tambah Had Kifayah Baharu</h2>
+          <h2 class="text-xl font-semibold">Tambah Multidimensi</h2>
           <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/MD/01_01')">
             <Icon name="material-symbols:arrow-back" class="mr-1" /> Kembali
           </rs-button>
@@ -127,7 +127,7 @@
 import { ref, reactive, onMounted } from "vue";
 
 definePageMeta({
-  title: "Tambah Had Kifayah",
+  title: "Tambah Multidimensi",
 });
 
 const breadcrumb = ref([
@@ -137,7 +137,7 @@ const breadcrumb = ref([
     path: "/BF-PRF/KF/MD/admin",
   },
   {
-    name: "Konfigurasi Had Kifayah",
+    name: "Senarai MultiDimensi",
     type: "link",
     path: "/BF-PRF/KF/MD/01_01",
   },
@@ -169,7 +169,7 @@ const statusOptions = [
 // Function to load existing data from localStorage
 const loadExistingData = () => {
   try {
-    const savedData = localStorage.getItem('kifayahLimits');
+    const savedData = localStorage.getItem('multidimensi');
     if (savedData) {
       return JSON.parse(savedData);
     }
@@ -216,7 +216,7 @@ const handleSubmit = async (formData) => {
     existingData.push(newRecord);
     
     // Save to localStorage
-    localStorage.setItem('kifayahLimits', JSON.stringify(existingData));
+    localStorage.setItem('multidimensi', JSON.stringify(existingData));
     
     // Show success message
     console.log('Data saved successfully:', newRecord);

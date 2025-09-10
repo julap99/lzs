@@ -221,9 +221,14 @@ const breadcrumb = ref([
     path: "/BF-PRF/KF/MD/01_01",
   },
   {
-    name: "Maklumat Had Kifayah",
+    name: "Multidimensi",
+    type: "link",
+    path: `/BF-PRF/KF/MD/01_02?id=${selectedId}`,
+  },
+  {
+    name: "Lihat Maklumat",
     type: "current",
-    path: "/BF-PRF/KF/MD/01_02",
+    path: `/BF-PRF/KF/MD/01_04?id=${selectedId}`,
   },
 ]);
 
@@ -305,7 +310,7 @@ const loadData = () => {
     loading.value = true;
     error.value = null;
     
-    const savedData = localStorage.getItem('kifayahLimits');
+    const savedData = localStorage.getItem('multidimensi');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       // Validate and sanitize parsed data

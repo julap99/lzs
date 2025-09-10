@@ -230,7 +230,7 @@ const initializeForm = () => {
 const handleSubmit = (formValues) => {
   try {
     // Get existing data from localStorage
-    const existingData = JSON.parse(localStorage.getItem('kifayahLimits') || '[]');
+    const existingData = JSON.parse(localStorage.getItem('multidimensi') || '[]');
     
     // Create new record with unique ID
     const newRecord = {
@@ -252,7 +252,7 @@ const handleSubmit = (formValues) => {
     existingData.push(newRecord);
 
     // Save updated data to localStorage
-    localStorage.setItem('kifayahLimits', JSON.stringify(existingData));
+    localStorage.setItem('multidimensi', JSON.stringify(existingData));
 
     // Show success message
     alert('Data kuadran berjaya disimpan!');

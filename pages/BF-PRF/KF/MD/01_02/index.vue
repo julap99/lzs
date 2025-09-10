@@ -237,12 +237,12 @@ const breadcrumb = ref([
     path: "/BF-PRF/KF/MD/admin",
   },
   {
-    name: "Konfigurasi Had Kifayah",
+    name: "Senarai Multidimensi",
     type: "link",
     path: "/BF-PRF/KF/MD/01_01",
   },
   {
-    name: "Maklumat Had Kifayah",
+    name: "Maklumat Multidimensi",
     type: "current",
     path: "/BF-PRF/KF/MD/01_02",
   },
@@ -315,7 +315,7 @@ const loadData = () => {
     loading.value = true;
     error.value = null;
     
-    const savedData = localStorage.getItem('kifayahLimits');
+    const savedData = localStorage.getItem('multidimensi');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       // Validate and sanitize parsed data
@@ -411,7 +411,7 @@ const handleSubmit = async (formData) => {
     }
     
     // Save to localStorage
-    localStorage.setItem('kifayahLimits', JSON.stringify(existingData));
+    localStorage.setItem('multidimensi', JSON.stringify(existingData));
     
     // Show success message
     console.log('Data saved successfully:', formData);
@@ -431,7 +431,7 @@ const handleSubmit = async (formData) => {
 // Function to load existing data from localStorage
 const loadExistingData = () => {
   try {
-    const savedData = localStorage.getItem('kifayahLimits');
+    const savedData = localStorage.getItem('multidimensi');
     if (savedData) {
       return JSON.parse(savedData);
     }
