@@ -38,29 +38,11 @@
       <!-- Main Information Card -->
       <rs-card>
         <template #header>
-          <div class="space-y-4">
-            <div class="flex justify-between items-center">
-              <h3 class="text-lg font-semibold">Maklumat Multidimensi</h3>
-              <rs-button variant="primary" @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)" class="px-6 py-3">
-                <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori Multidimensi
-              </rs-button>
-            </div>
-            <div class="flex justify-end space-x-4">
-              <rs-button
-                variant="primary"
-                @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)"
-                class="px-6 py-3"
-              >
-                <Icon name="mdi:eye" class="mr-2" /> Lihat
-              </rs-button>
-              <rs-button
-                variant="secondary"
-                @click="navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`)"
-                class="px-6 py-3"
-              >
-                <Icon name="mdi:chart-box" class="mr-2" /> Kuadran
-              </rs-button>
-            </div>
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold">Maklumat Multidimensi</h3>
+            <rs-button variant="primary" @click="navigateTo(`/BF-PRF/KF/MD/01_05?id=${selectedId}`)" class="px-6 py-3">
+              <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori
+            </rs-button>
           </div>
         </template>
         <template #body>
@@ -72,62 +54,101 @@
               v-model="formData"
             >
               <div class="grid grid-cols-1 gap-6">
-                <!-- Nama Had Kifayah -->
+                <!-- Kategori -->
                 <div>
                   <FormKit
                     type="text"
-                    name="namaHadKifayah"
-                    label="Nama"
-                    placeholder="Masukkan nama"
-                    :disabled="true"
-                    help=""
-                  />
-                </div>
-
-                <!-- Keterangan -->
-                <div>
-                  <FormKit
-                    type="textarea"
-                    name="keterangan"
-                    label="Keterangan"
-                    placeholder="Masukkan keterangan (opsional)"
-                    rows="3"
-                    :disabled="true"
-                    help=""
-                  />
-                </div>
-
-                <!-- Formula 19 -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="Formula_19"
-                    label="Formula 19"
-                    placeholder="Masukkan Formula 19"
+                    name="kategori"
+                    label="Kategori"
+                    placeholder="Masukkan kategori"
                     validation="required"
                     :validation-messages="{
-                      required: 'Formula 19 diperlukan'
+                      required: 'Kategori diperlukan'
                     }"
-                    help="Masukkan nilai Formula 19"
+                    help="Masukkan kategori multidimensi"
                   />
                 </div>
 
-                <!-- Formula 18 -->
+                <!-- Pemberat -->
                 <div>
                   <FormKit
                     type="text"
-                    name="Formula_18"
-                    label="Formula 18"
-                    placeholder="Masukkan Formula 18"
+                    name="pemberat"
+                    label="Pemberat"
+                    placeholder="Masukkan pemberat"
                     validation="required"
                     :validation-messages="{
-                      required: 'Formula 18 diperlukan'
+                      required: 'Pemberat diperlukan'
                     }"
-                    help="Masukkan nilai Formula 18"
+                    help="Masukkan nilai pemberat"
                   />
                 </div>
 
-                
+                <!-- Skor Tertinggi -->
+                <div>
+                  <FormKit
+                    type="text"
+                    name="skor_tertinggi"
+                    label="Skor Tertinggi"
+                    placeholder="Masukkan skor tertinggi"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Skor tertinggi diperlukan'
+                    }"
+                    help="Masukkan nilai skor tertinggi"
+                  />
+                </div>
+
+                <!-- Jadual Skor LOV -->
+                <div class="md:col-span-2">
+                  <div class="flex items-center justify-between mb-2">
+                    <label class="text-sm font-medium text-gray-700">Jadual Skor LOV</label>
+                    <rs-button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      @click="addJadualSkorRow"
+                      :disabled="jadualSkorRows.length >= 5"
+                      class="px-3 py-1"
+                    >
+                      <Icon name="mdi:plus" class="mr-1" size="16" />
+                      Tambah Baris
+                    </rs-button>
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <div 
+                      v-for="(row, index) in jadualSkorRows" 
+                      :key="index"
+                      class="flex items-center space-x-2"
+                    >
+                      <FormKit
+                        type="text"
+                        :name="`jadual_skor_lov_${index}`"
+                        :placeholder="`Jadual Skor LOV ${index + 1}`"
+                        v-model="row.value"
+                        validation="required"
+                        :validation-messages="{
+                          required: 'Jadual skor LOV diperlukan'
+                        }"
+                        class="flex-1"
+                      />
+                      <rs-button
+                        type="button"
+                        variant="danger"
+                        size="sm"
+                        @click="removeJadualSkorRow(index)"
+                        class="px-2 py-1"
+                      >
+                        <Icon name="mdi:delete" size="16" />
+                      </rs-button>
+                    </div>
+                  </div>
+                  
+                  <p class="text-xs text-gray-500 mt-1">
+                    Maksimum 5 baris. Baris yang ada: {{ jadualSkorRows.length }}/5
+                  </p>
+                </div>
 
                 <!-- Tarikh Mula -->
                 <div>
@@ -169,7 +190,7 @@
                     :validation-messages="{
                       required: 'Status diperlukan'
                     }"
-                    help="Pilih status Had Kifayah"
+                    help="Pilih status multidimensi"
                   />
                 </div>
               </div>
@@ -197,7 +218,6 @@
           </div>
         </template>
       </rs-card>
-
 
     </div>
 
@@ -257,15 +277,17 @@ const isSubmitting = ref(false);
 
 // Form data
 const formData = reactive({
-  namaHadKifayah: "",
-  keterangan: "",
-  Formula_19: "",
-  Formula_18: "",
-  
+  kategori: "",
+  pemberat: "",
+  skor_tertinggi: "",
+  jadual_skor_lov: "",
   tarikhMula: "",
   tarikhTamat: "",
   status: "",
 });
+
+// Dynamic rows for Jadual Skor LOV
+const jadualSkorRows = ref([]);
 
 // Status options
 const statusOptions = [
@@ -289,7 +311,9 @@ const defaultData = [
     tindakan: 1,
     keterangan: "Had kifayah untuk ketua keluarga",
     Formula_19: "Formula 19 Value",
-    Formula_18: "Formula 18 Value",
+    jadual_skor_lov: "Jadual Skor LOV Value",
+    pemberat: "Pemberat Value",
+    skor_tertinggi: "Skor Tertinggi Value",
   },
 ];
 
@@ -366,7 +390,11 @@ const assignRowNumbers = (items) => {
 
 // Navigation function
 const goBack = () => {
-  navigateTo('/BF-PRF/KF/MD/01_01');
+  if (selectedId) {
+    navigateTo(`/BF-PRF/KF/MD/01_02?id=${selectedId}`);
+  } else {
+    navigateTo('/BF-PRF/KF/MD/01_02');
+  }
 };
 
 // Handle form submission
@@ -377,18 +405,22 @@ const handleSubmit = async (formData) => {
     // Load existing data
     const existingData = loadExistingData();
     
+    // Collect jadual skor lov data from dynamic rows
+    const jadualSkorLovArray = jadualSkorRows.value.map(row => row.value).filter(value => value.trim() !== "");
+    
     // Find the current record and update it
-    const recordIndex = existingData.findIndex(item => item.idHadKifayah === selectedId);
+    const numericId = Number(selectedId);
+    const recordIndex = existingData.findIndex(item => item.no === numericId);
     
     if (recordIndex >= 0) {
       // Update existing record
       existingData[recordIndex] = {
         ...existingData[recordIndex],
-        namaHadKifayah: formData.namaHadKifayah,
-        keterangan: formData.keterangan,
-        Formula_19: formData.Formula_19,
-        Formula_18: formData.Formula_18,
-        
+        kategori: formData.kategori,
+        pemberat: formData.pemberat,
+        skor_tertinggi: formData.skor_tertinggi,
+        jadual_skor_lov: jadualSkorLovArray.join(", "), // Join array values with comma
+        jadual_skor_lov_array: jadualSkorLovArray, // Store as array for future use
         tarikhMula: formData.tarikhMula,
         tarikhTamat: formData.tarikhTamat,
         status: formData.status,
@@ -396,12 +428,14 @@ const handleSubmit = async (formData) => {
     } else {
       // Create new record if not found
       const newRecord = {
-        idHadKifayah: selectedId,
-        namaHadKifayah: formData.namaHadKifayah,
-        keterangan: formData.keterangan,
-        Formula_19: formData.Formula_19,
-        Formula_18: formData.Formula_18,
-        
+        idHadKifayah: `MD${Date.now().toString().slice(-6)}`,
+        namaHadKifayah: "New Record",
+        no: numericId,
+        kategori: formData.kategori,
+        pemberat: formData.pemberat,
+        skor_tertinggi: formData.skor_tertinggi,
+        jadual_skor_lov: jadualSkorLovArray.join(", "), // Join array values with comma
+        jadual_skor_lov_array: jadualSkorLovArray, // Store as array for future use
         tarikhMula: formData.tarikhMula,
         tarikhTamat: formData.tarikhTamat,
         status: formData.status,
@@ -415,10 +449,11 @@ const handleSubmit = async (formData) => {
     
     // Show success message
     console.log('Data saved successfully:', formData);
+    console.log('Jadual Skor LOV Array:', jadualSkorLovArray);
     alert('Data berjaya disimpan!');
     
     // Navigate back
-    await navigateTo('/BF-PRF/KF/MD/01_01');
+    await navigateTo('/BF-PRF/KF/MD/01_02');
     
   } catch (error) {
     console.error('Error saving data:', error);
@@ -444,14 +479,39 @@ const loadExistingData = () => {
 // Populate form with existing data
 const populateForm = () => {
   if (selectedKifayah.value) {
-    formData.namaHadKifayah = selectedKifayah.value.namaHadKifayah || "";
-    formData.keterangan = selectedKifayah.value.keterangan || "";
-    formData.Formula_19 = selectedKifayah.value.Formula_19 || "";
-    formData.Formula_18 = selectedKifayah.value.Formula_18 || "";
-    formData.kadarBerbayar = selectedKifayah.value.kadarBerbayar || "";
+    formData.kategori = selectedKifayah.value.kategori || "";
+    formData.pemberat = selectedKifayah.value.pemberat || "";
+    formData.skor_tertinggi = selectedKifayah.value.skor_tertinggi || "";
+    formData.jadual_skor_lov = selectedKifayah.value.jadual_skor_lov || "";
     formData.tarikhMula = selectedKifayah.value.tarikhMula || "";
     formData.tarikhTamat = selectedKifayah.value.tarikhTamat || "";
     formData.status = selectedKifayah.value.status || "";
+    
+    // Initialize jadual skor rows
+    if (selectedKifayah.value.jadual_skor_lov_array && Array.isArray(selectedKifayah.value.jadual_skor_lov_array)) {
+      jadualSkorRows.value = selectedKifayah.value.jadual_skor_lov_array.map((item, index) => ({ id: index, value: item }));
+    } else {
+      // Add one default row
+      jadualSkorRows.value = [{ id: 0, value: "" }];
+    }
+  } else {
+    // Add one default row if no existing data
+    jadualSkorRows.value = [{ id: 0, value: "" }];
+  }
+};
+
+// Add new row for Jadual Skor LOV
+const addJadualSkorRow = () => {
+  if (jadualSkorRows.value.length < 5) {
+    const newId = jadualSkorRows.value.length > 0 ? Math.max(...jadualSkorRows.value.map(row => row.id)) + 1 : 0;
+    jadualSkorRows.value.push({ id: newId, value: "" });
+  }
+};
+
+// Remove row from Jadual Skor LOV
+const removeJadualSkorRow = (index) => {
+  if (jadualSkorRows.value.length > 1) {
+    jadualSkorRows.value.splice(index, 1);
   }
 };
 

@@ -116,7 +116,7 @@
         <!-- Action Buttons -->
         <div class="flex justify-end gap-3 mt-6">
           <rs-button type="button" variant="primary" @click="lihatdata">
-            Lihat
+            Semakan Maklumat
           </rs-button>
           <rs-button type="button" variant="outline" @click="handleKembali">
             Kembali

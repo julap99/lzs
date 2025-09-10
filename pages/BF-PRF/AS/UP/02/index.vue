@@ -54,6 +54,17 @@
           <!-- Personal Information Section -->
           <div class="mb-6">
             <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
+
+            <FormKit
+                type="text"
+                name="kategori_asnaf"
+                label="Kategori Asnaf"
+                validation="required"
+                class=""
+                value="Miskin"
+                readonly="true"
+              />
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="select"
@@ -69,6 +80,16 @@
               />
 
               <FormKit
+                type="text"
+                name="id_pengenalan"
+                label="ID Pengenalan"
+                help="Mengikut Dokumen Pengenalan"
+                validation="required"
+                v-model="formData.no_pengenalan"
+              />
+
+
+              <FormKit
                 v-if="formData.jenis_id"
                 type="file"
                 name="dokumen_id"
@@ -77,15 +98,6 @@
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                 v-model="formData.dokumen_id"
-              />
-
-              <FormKit
-                type="text"
-                name="id_pengenalan"
-                label="ID Pengenalan"
-                help="Mengikut Dokumen Pengenalan"
-                validation="required"
-                v-model="formData.no_pengenalan"
               />
 
               <FormKit
@@ -346,7 +358,7 @@
             <rs-button
               type="button"
               variant="secondary"
-              @click="handleSaveStepA2"
+              @click="handleSaveStepA1"
               >Simpan</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -807,7 +819,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA3"
+                @click="handleSaveStepA2"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1004,7 +1016,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA4"
+                @click="handleSaveStepA3"
               >
                 Simpan
               </rs-button>
@@ -1236,7 +1248,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA5"
+                @click="handleSaveStepA4"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1438,7 +1450,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA2"
+                @click="handleSaveStepA5"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1512,7 +1524,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA7"
+                @click="handleSaveStepA6"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1850,7 +1862,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA8"
+                @click="handleSaveStepA7"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1974,7 +1986,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA9"
+                @click="handleSaveStepA8"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2099,7 +2111,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA10"
+                @click="handleSaveStepA9"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2274,7 +2286,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA11"
+                @click="handleSaveStepA10"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -2485,6 +2497,16 @@
                 }"
                 v-model="formData.bil_utiliti"
               />
+
+              <FormKit
+                type="number"
+                name="jumlah_bantuan_diterima"
+                label="Jumlah Bantuan Diterima (RM)"
+                step="0.01"
+                min="0"
+                value="2000"
+                readonly="true"
+              />
             </div>
           </div>
 
@@ -2516,7 +2538,7 @@
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Borang Tanggungan Asnaf</h2>
           <div class="text-sm text-gray-600">
-            Langkah {{ currentStepB }} dari {{ totalStepsB }}
+            Langkah {{ currentStepB }} dari {{ filteredStepsB.length }}
           </div>
         </div>
       </template>
@@ -2526,7 +2548,7 @@
         <div class="mb-6">
           <div class="flex justify-between mb-2">
             <div
-              v-for="step in stepsB"
+              v-for="step in filteredStepsB"
               :key="step.id"
               class="text-center flex-1 cursor-pointer relative group"
               :class="{ 'font-semibold': currentStepB >= step.id }"
@@ -2550,9 +2572,9 @@
             <div
               class="bg-primary h-2.5 rounded-full transition-all duration-300"
               :style="`width: ${
-                currentStepB >= totalStepsB
+                currentStepB >= filteredStepsB.length
                   ? 100
-                  : (currentStepB / totalStepsB) * 100
+                  : (currentStepB / filteredStepsB.length) * 100
               }%`"
             ></div>
           </div>
@@ -2931,7 +2953,7 @@
                 v-if="
                   parseInt(
                     calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
-                  ) > 18
+                  ) < 18
                 "
               >
                 <label class="block text-sm font-medium text-black-700 mb-4"
@@ -2949,7 +2971,7 @@
                 v-if="
                   parseInt(
                     calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
-                  ) > 18 && getCurrentTanggungan().mohon_ketua_keluarga
+                  ) < 18 && getCurrentTanggungan().mohon_ketua_keluarga
                 "
                 class="md:col-span-2"
               >
@@ -3117,23 +3139,40 @@
               />
 
               <!-- Tempoh Menetap di Selangor -->
-              <FormKit
-                type="number"
-                name="tempoh_menetap_selangor_tanggungan"
-                label="Tempoh Menetap di Selangor (Tahun) "
-                placeholder="0"
-                min="0"
-                max="120"
-                validation="required|min:0|max:120"
-                :validation-messages="{
-                  required: 'Tempoh Menetap di Selangor adalah wajib',
-                  min: 'Tempoh tidak boleh kurang daripada 0 tahun',
-                  max: 'Tempoh tidak boleh melebihi 120 tahun',
-                }"
-                v-model="
-                  getCurrentTanggungan().tempoh_menetap_selangor_tanggungan
-                "
-              />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="number"
+                  name="tempoh_menetap_selangor_tanggungan_nilai"
+                  label="Tempoh Menetap di Selangor"
+                  placeholder="0"
+                  min="0"
+                  max="120"
+                  validation="required|min:0|max:120"
+                  :validation-messages="{
+                    required: 'Tempoh menetap adalah wajib',
+                    min: 'Tempoh menetap mesti 0 atau lebih',
+                    max: 'Tempoh tidak boleh melebihi 120',
+                  }"
+                  v-model="
+                    getCurrentTanggungan().tempoh_menetap_selangor_tanggungan_nilai
+                  "
+                />
+                <FormKit
+                  type="select"
+                  name="tempoh_menetap_selangor_tanggungan_unit"
+                  label="Unit Tempoh"
+                  placeholder="Pilih unit"
+                  :options="[
+                    { label: 'Hari', value: 'hari' },
+                    { label: 'Bulan', value: 'bulan' },
+                    { label: 'Tahun', value: 'tahun' },
+                  ]"
+                  validation="required"
+                  v-model="
+                    getCurrentTanggungan().tempoh_menetap_selangor_tanggungan_unit
+                  "
+                />
+              </div>
 
               <!-- Kelulusan Khas (ikuti gaya label Muallaf) -->
               <div class="space-y-2">
@@ -4380,7 +4419,16 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Maklumat Kemahiran Tanggungan</rs-button
+                >{{
+                  (() => {
+                    const currentTanggungan = getCurrentTanggungan();
+                    if (currentTanggungan) {
+                      const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+                      return age < 19 ? 'Maklumat Pekerjaan' : 'Maklumat Kemahiran Tanggungan';
+                    }
+                    return 'Maklumat Kemahiran Tanggungan';
+                  })()
+                }}</rs-button
               >
             </div>
           </div>
@@ -5476,6 +5524,21 @@ const stepsB = [
   { id: 10, label: "Pengesahan Bermastautin" },
   { id: 11, label: "Pegawai Pendaftar" },
 ];
+
+// Computed property to filter stepsB based on current tanggungan's age
+const filteredStepsB = computed(() => {
+  const currentTanggungan = getCurrentTanggungan();
+  if (!currentTanggungan) return stepsB;
+  
+  const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+  
+  // Hide Kemahiran tab (id: 6) if age is less than 19
+  if (age < 19) {
+    return stepsB.filter(step => step.id !== 6);
+  }
+  
+  return stepsB;
+});
 
 // Mock data for Sekolah Agama
 const sekolahAgamaOptions = [
@@ -6987,6 +7050,23 @@ watch(
   }
 );
 
+// Keep legacy string `tempoh_menetap_selangor_tanggungan` in sync with split inputs for all tanggungan
+watch(
+  () => formData.value.tanggungan,
+  (tanggunganList) => {
+    if (tanggunganList) {
+      tanggunganList.forEach((tanggungan) => {
+        if (tanggungan.tempoh_menetap_selangor_tanggungan_nilai !== undefined && tanggungan.tempoh_menetap_selangor_tanggungan_unit) {
+          tanggungan.tempoh_menetap_selangor_tanggungan = String(tanggungan.tempoh_menetap_selangor_tanggungan_nilai);
+        } else {
+          tanggungan.tempoh_menetap_selangor_tanggungan = "";
+        }
+      });
+    }
+  },
+  { deep: true }
+);
+
 // Seed one education entry when masih_bersekolah === 'Y'
 watch(
   () => formData.value.masih_bersekolah,
@@ -7115,7 +7195,7 @@ watch(
           const age = parseInt(
             calculateAge(currentTanggungan.tarikh_lahir_tanggungan)
           );
-          if (Number.isFinite(age) && age > 18) {
+          if (Number.isFinite(age) && age < 18) {
             if (currentTanggungan.mohon_ketua_keluarga) {
               currentTanggungan.situasi_kelulusan_khas = "Profiling";
               currentTanggungan.kelulusan_khas = "Y";
@@ -7207,8 +7287,21 @@ const nextStepB = () => {
     formData.value.tanggungan = tanggunganList.value;
   }
 
-  if (currentStepB.value < totalStepsB) {
-    currentStepB.value++;
+  // Get the next step, skipping kemahiran if age < 19
+  let nextStep = currentStepB.value + 1;
+  const currentTanggungan = getCurrentTanggungan();
+  
+  if (currentTanggungan) {
+    const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+    
+    // Skip kemahiran step (id: 6) if age is less than 19
+    if (age < 19 && nextStep === 6) {
+      nextStep = 7; // Skip to Pekerjaan step
+    }
+  }
+
+  if (nextStep <= totalStepsB) {
+    currentStepB.value = nextStep;
   } else {
     // All steps completed, submit form
     submitForm();
@@ -7217,7 +7310,19 @@ const nextStepB = () => {
 
 const prevStepB = () => {
   if (currentStepB.value > 1) {
-    currentStepB.value--;
+    let prevStep = currentStepB.value - 1;
+    const currentTanggungan = getCurrentTanggungan();
+    
+    if (currentTanggungan) {
+      const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+      
+      // Skip kemahiran step (id: 6) if age is less than 19
+      if (age < 19 && prevStep === 6) {
+        prevStep = 5; // Skip to Kesihatan step
+      }
+    }
+    
+    currentStepB.value = prevStep;
   }
 };
 
@@ -7272,6 +7377,8 @@ const addTanggungan = (showNotification = true) => {
     no_telefon_rumah_tanggungan: "",
     emel_tanggungan: "",
     tempoh_menetap_selangor_tanggungan: "",
+    tempoh_menetap_selangor_tanggungan_nilai: "",
+    tempoh_menetap_selangor_tanggungan_unit: "",
     status_perkahwinan_tanggungan: "",
     lain_lain_status_perkahwinan: "",
     jumlah_tanggungan: "",
@@ -7792,6 +7899,8 @@ onMounted(() => {
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "rohana@email.com",
         tempoh_menetap_selangor_tanggungan: "20",
+        tempoh_menetap_selangor_tanggungan_nilai: "20",
+        tempoh_menetap_selangor_tanggungan_unit: "tahun",
         status_perkahwinan_tanggungan: "Berkahwin",
 
         // Special Approval for Minors
@@ -7931,6 +8040,8 @@ onMounted(() => {
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "najwa@email.com",
         tempoh_menetap_selangor_tanggungan: "23",
+        tempoh_menetap_selangor_tanggungan_nilai: "23",
+        tempoh_menetap_selangor_tanggungan_unit: "tahun",
         status_perkahwinan_tanggungan: "Bujang",
 
         // Adult Status - Eligible for Head of Household
@@ -8069,7 +8180,9 @@ onMounted(() => {
         no_telefon_bimbit_tanggungan: "01299982378",
         no_telefon_rumah_tanggungan: "038881234",
         emel_tanggungan: "qistina@email.com",
-        tempoh_menetap_selangor_tanggungan: "14",
+        tempoh_menetap_selangor_tanggungan: "13",
+        tempoh_menetap_selangor_tanggungan_nilai: "13",
+        tempoh_menetap_selangor_tanggungan_unit: "tahun",
         status_perkahwinan_tanggungan: "Bujang",
 
         // Special Approval for Minors
@@ -8221,6 +8334,17 @@ const goToStepA = (stepNumber) => {
 };
 
 const goToStepB = (stepNumber) => {
+  const currentTanggungan = getCurrentTanggungan();
+  
+  if (currentTanggungan) {
+    const age = parseInt(currentTanggungan.umur_tanggungan || calculateAge(currentTanggungan.tarikh_lahir_tanggungan));
+    
+    // Prevent navigation to kemahiran step (id: 6) if age is less than 19
+    if (age < 19 && stepNumber === 6) {
+      return; // Do not navigate to kemahiran step
+    }
+  }
+  
   // Allow direct navigation to any step
   currentStepB.value = stepNumber;
 };
@@ -8275,7 +8399,7 @@ const handleSave = async () => {
 const handleSaveStepA1 = async () => {
   try {
     console.log("Step A1 saved:", formData.value);
-    toast.success("Penilaian Awal berjaya disimpan");
+    toast.success("Maklumat Peribadi berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A1 error:", error);
@@ -8285,7 +8409,7 @@ const handleSaveStepA1 = async () => {
 const handleSaveStepA2 = async () => {
   try {
     console.log("Step A2 saved:", formData.value);
-    toast.success("Maklumat Peribadi berjaya disimpan");
+    toast.success("Maklumat Pendidikan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A2 error:", error);
@@ -8295,7 +8419,7 @@ const handleSaveStepA2 = async () => {
 const handleSaveStepA3 = async () => {
   try {
     console.log("Step A3 saved:", formData.value);
-    toast.success("Maklumat Islam berjaya disimpan");
+    toast.success("Maklumat Pengislaman berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A3 error:", error);
@@ -8304,7 +8428,7 @@ const handleSaveStepA3 = async () => {
 const handleSaveStepA4 = async () => {
   try {
     console.log("Step A4 saved:", formData.value);
-    toast.success("Maklumat Pendidikan berjaya disimpan");
+    toast.success("Maklumat Perbankan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A4 error:", error);
@@ -8314,7 +8438,7 @@ const handleSaveStepA4 = async () => {
 const handleSaveStepA5 = async () => {
   try {
     console.log("Step A5 saved:", formData.value);
-    toast.success("Maklumat Bank berjaya disimpan");
+    toast.success("Maklumat Kesihatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A5 error:", error);
@@ -8324,7 +8448,7 @@ const handleSaveStepA5 = async () => {
 const handleSaveStepA6 = async () => {
   try {
     console.log("Step A6 saved:", formData.value);
-    toast.success("Maklumat Kesihatan berjaya disimpan");
+    toast.success("Maklumat Kemahiran berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A6 error:", error);
@@ -8334,7 +8458,7 @@ const handleSaveStepA6 = async () => {
 const handleSaveStepA7 = async () => {
   try {
     console.log("Step A7 saved:", formData.value);
-    toast.success("Maklumat Kemahiran berjaya disimpan");
+    toast.success("Maklumat Alamat berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A7 error:", error);
@@ -8344,7 +8468,7 @@ const handleSaveStepA7 = async () => {
 const handleSaveStepA8 = async () => {
   try {
     console.log("Step A8 saved:", formData.value);
-    toast.success("Maklumat Alamat berjaya disimpan");
+    toast.success("Maklumat Pinjaman Harta berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A8 error:", error);
@@ -8354,7 +8478,7 @@ const handleSaveStepA8 = async () => {
 const handleSaveStepA9 = async () => {
   try {
     console.log("Step A9 saved:", formData.value);
-    toast.success("Maklumat Pekerjaan berjaya disimpan");
+    toast.success("Maklumat Pemilikan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A9 error:", error);
@@ -8414,7 +8538,7 @@ const handleSaveStepB1 = async () => {
 const handleSaveStepB2 = async () => {
   try {
     console.log("Step B2 saved:", formData.value);
-    toast.success("Maklumat Islam Tanggungan berjaya disimpan");
+    toast.success("Maklumat Pengislaman Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B2 error:", error);
@@ -8424,7 +8548,7 @@ const handleSaveStepB2 = async () => {
 const handleSaveStepB3 = async () => {
   try {
     console.log("Step B3 saved:", formData.value);
-    toast.success("Maklumat Bank Tanggungan berjaya disimpan");
+    toast.success("Maklumat Perbankan Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B3 error:", error);
@@ -8474,7 +8598,7 @@ const handleSaveStepB7 = async () => {
 const handleSaveStepB8 = async () => {
   try {
     console.log("Step B8 saved:", formData.value);
-    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+    toast.success("Maklumat Pengesahan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B8 error:", error);
