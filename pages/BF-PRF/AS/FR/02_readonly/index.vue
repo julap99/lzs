@@ -347,6 +347,7 @@
 
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
+            disabled
               type="button"
               variant="secondary"
               @click="handleSaveStepA2"
@@ -808,6 +809,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA3"
@@ -994,6 +996,7 @@
             </rs-button>
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA4"
@@ -1075,6 +1078,7 @@
                     Akaun Bank #{{ index + 1 }}
                   </h6>
                   <button
+                    disabled
                     type="button"
                     @click="removeBankAccount(index)"
                     class="text-red-500 hover:text-red-700"
@@ -1172,6 +1176,7 @@
 
               <div class="flex justify-center mt-4">
                 <rs-button
+                  disabled
                   variant="secondary"
                   @click="addBankAccount"
                   type="button"
@@ -1226,6 +1231,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA5"
@@ -1428,6 +1434,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA2"
@@ -1502,6 +1509,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA7"
@@ -1629,6 +1637,7 @@
                   class="flex-1"
                 />
                 <rs-button
+                  disabled
                   type="button"
                   variant="primary-outline"
                   @click="getLocation('addressInfo')"
@@ -1840,6 +1849,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA8"
@@ -1964,6 +1974,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA9"
@@ -2089,6 +2100,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA10"
@@ -2264,6 +2276,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA11"
@@ -2489,6 +2502,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepA11"
@@ -3192,13 +3206,14 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB1"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Maklumat Islam</rs-button
+                >Maklumat Pengislaman</rs-button
               >
             </div>
           </div>
@@ -3319,6 +3334,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB2"
@@ -3514,6 +3530,7 @@
                     >
                       <div class="flex justify-end items-center mb-2">
                         <button
+                         disabled
                           type="button"
                           @click="removePengenalanIdTanggungan(index, idIndex)"
                           class="text-red-500 hover:text-red-700"
@@ -3565,6 +3582,7 @@
 
               <div class="flex justify-center mt-4">
                 <rs-button
+                  disabled
                   variant="secondary"
                   @click="addBankAccountTanggungan"
                   type="button"
@@ -3627,6 +3645,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB3"
@@ -4121,6 +4140,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB4"
@@ -4357,6 +4377,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB5"
@@ -4429,6 +4450,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB6"
@@ -4642,13 +4664,13 @@
 
           <div class="flex justify-between gap-3 mt-6">
             <div class="flex gap-3">
-              <rs-button
+              <!-- <rs-button
                 type="button"
                 variant="secondary"
                 @click="addTanggungan"
               >
                 Tambah Tanggungan
-              </rs-button>
+              </rs-button> -->
               <rs-button
                 type="button"
                 variant="primary-outline"
@@ -4658,6 +4680,7 @@
             </div>
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB7"
@@ -4895,6 +4918,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled  
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB8"
@@ -5037,6 +5061,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB9"
@@ -5165,6 +5190,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB9"
@@ -5232,6 +5258,7 @@
             >
             <div class="flex gap-3">
               <rs-button
+                disabled
                 type="button"
                 variant="secondary"
                 @click="handleSaveStepB11"
@@ -5881,8 +5908,8 @@ const formData = ref({
     kariah: "",
     geolokasi: "",
     tempoh_menetap_selangor: "",
-    tempoh_menetap_selangor_nilai: "",
-    tempoh_menetap_selangor_unit: "",
+    tempoh_menetap_selangor_nilai: "28",
+    tempoh_menetap_selangor_unit: "tahun",
     kategori_menetap: "",
     kelulusan_khas: "",
     kursus_terpilih: "",
