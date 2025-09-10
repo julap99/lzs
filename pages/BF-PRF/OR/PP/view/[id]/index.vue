@@ -65,35 +65,35 @@
             <div class="grid grid-cols-2 gap-4">
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Nama Organisasi:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.organizationName }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.organizationName }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Jenis Organisasi:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.organizationType }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.organizationType }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">No. Pendaftaran:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.registrationNumber }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.registrationNumber }}</span>
                 </div>
               <div class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Status Pendaftaran:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.registrationStatus }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.registrationStatus }}</span>
               </div>
               <div v-if="organisasiData.struktur" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Struktur:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.struktur }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.struktur }}</span>
               </div>
               <div v-if="organisasiData.hq" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">HQ:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.hq }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.hq }}</span>
               </div>
               <div v-if="organisasiData.kariah" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Kariah:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.kariah }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.kariah }}</span>
                 </div>
               <div v-if="organisasiData.zone" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Kawasan/Zon:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.zone }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.zone }}</span>
               </div>
             </div>
           </div>
@@ -104,31 +104,31 @@
             <div class="grid grid-cols-2 gap-4">
               <div class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Alamat 1:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.addressLine1 || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.addressLine1 || '-' }}</span>
                 </div>
               <div v-if="organisasiData.alamat?.addressLine2" class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Alamat 2:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.addressLine2 }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.addressLine2 }}</span>
                 </div>
               <div v-if="organisasiData.alamat?.addressLine3" class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Alamat 3:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.addressLine3 }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.addressLine3 }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Poskod:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.postcode || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.postcode || '-' }}</span>
                 </div>
               <div class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Bandar:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.city || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.city || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Daerah:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.district || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.district || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Negeri:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.state || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.state || '-' }}</span>
               </div>
             </div>
           </div>
@@ -143,19 +143,19 @@
                   <div class="grid grid-cols-2 gap-4">
                     <div class="py-2 border-b border-gray-100">
                       <span class="font-medium text-gray-600">Nama:</span>
-                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.name }}</span>
+                      <span class="text-gray-900 ml-2">{{ wakil.name }}</span>
                     </div>
                     <div class="py-2 border-b border-gray-100">
                       <span class="font-medium text-gray-600">No. IC:</span>
-                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.ic }}</span>
+                      <span class="text-gray-900 ml-2">{{ wakil.ic }}</span>
                     </div>
                     <div class="py-2 border-b border-gray-100">
                       <span class="font-medium text-gray-600">No. Telefon:</span>
-                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.phoneNumber }}</span>
+                      <span class="text-gray-900 ml-2">{{ wakil.phoneNumber }}</span>
                     </div>
                     <div class="py-2 border-b border-gray-100">
                       <span class="font-medium text-gray-600">Emel:</span>
-                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.email }}</span>
+                      <span class="text-gray-900 ml-2">{{ wakil.email }}</span>
                     </div>
                   </div>
                 </div>
@@ -169,23 +169,23 @@
             <div class="grid grid-cols-2 gap-4">
               <div v-if="organisasiData.bank?.bankSameAsHQ" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Sama seperti HQ:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.bankSameAsHQ === 'ya' ? 'Ya' : 'Tidak' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.bankSameAsHQ === 'ya' ? 'Ya' : 'Tidak' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Nama Bank:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.bankName || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.bankName || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">No. Akaun Bank:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.bankAccountNumber || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.bankAccountNumber || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Nama Pemegang Akaun:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.penamaBank || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.penamaBank || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Kaedah Pembayaran:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.paymentMethod || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.paymentMethod || '-' }}</span>
               </div>
             </div>
           </div>
@@ -197,7 +197,7 @@
               <div class="py-2 border-b border-gray-100">
                 <div class="flex items-center gap-2">
                   <span class="font-medium text-gray-600">Sijil Pendaftaran:</span>
-                  <span v-if="hasDocument(organisasiData.registrationCertificate)" class="text-gray-900 font-semibold">{{ getDocumentName(organisasiData.registrationCertificate) }}</span>
+                  <span v-if="hasDocument(organisasiData.registrationCertificate)" class="text-gray-900">{{ getDocumentName(organisasiData.registrationCertificate) }}</span>
                   <rs-badge v-else variant="warning">Tiada</rs-badge>
                   <rs-button v-if="hasDocument(organisasiData.registrationCertificate)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Sijil Pendaftaran')">
                     <Icon name="ph:download" class="w-4 h-4" />
@@ -210,7 +210,7 @@
               <div class="py-2 border-b border-gray-100">
                 <div class="flex items-center gap-2">
                   <span class="font-medium text-gray-600">Surat Perlantikan:</span>
-                  <span v-if="hasDocument(organisasiData.appointmentLetter)" class="text-gray-900 font-semibold">{{ getDocumentName(organisasiData.appointmentLetter) }}</span>
+                  <span v-if="hasDocument(organisasiData.appointmentLetter)" class="text-gray-900">{{ getDocumentName(organisasiData.appointmentLetter) }}</span>
                   <rs-badge v-else variant="warning">Tiada</rs-badge>
                   <rs-button v-if="hasDocument(organisasiData.appointmentLetter)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Surat Perlantikan')">
                     <Icon name="ph:download" class="w-4 h-4" />
@@ -223,7 +223,7 @@
               <div class="py-2 border-b border-gray-100">
                 <div class="flex items-center gap-2">
                   <span class="font-medium text-gray-600">Bukti Bank:</span>
-                  <span v-if="hasDocument(organisasiData.bankProof)" class="text-gray-900 font-semibold">{{ getDocumentName(organisasiData.bankProof) }}</span>
+                  <span v-if="hasDocument(organisasiData.bankProof)" class="text-gray-900">{{ getDocumentName(organisasiData.bankProof) }}</span>
                   <rs-badge v-else variant="warning">Tiada</rs-badge>
                   <rs-button v-if="hasDocument(organisasiData.bankProof)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Bukti Bank')">
                     <Icon name="ph:download" class="w-4 h-4" />
@@ -236,7 +236,7 @@
               <div class="py-2 border-b border-gray-100">
                 <div class="flex items-center gap-2">
                   <span class="font-medium text-gray-600">Dokumen Tambahan:</span>
-                  <span v-if="hasDocument(organisasiData.additionalDocuments)" class="text-gray-900 font-semibold">{{ getDocumentName(organisasiData.additionalDocuments) }}</span>
+                  <span v-if="hasDocument(organisasiData.additionalDocuments)" class="text-gray-900">{{ getDocumentName(organisasiData.additionalDocuments) }}</span>
                   <rs-badge v-else variant="warning">Tiada</rs-badge>
                   <rs-button v-if="hasDocument(organisasiData.additionalDocuments)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Dokumen Tambahan')">
                     <Icon name="ph:download" class="w-4 h-4" />
@@ -306,8 +306,8 @@ const organisasiData = ref({
     penamaBank: '',
     paymentMethod: ''
   },
-  registrationCertificate: null,
-  appointmentLetter: null,
+  registrationCertificate: { name: 'Sijil Pendaftaran Syarikat', filename: 'sijil_pendaftaran_ssm.pdf', size: '2.4 MB' },
+  appointmentLetter: { name: 'Surat Perlantikan', filename: 'surat_perlantikan_organisasi_2025.pdf', size: '1.2 MB' },
   bankProof: null,
   additionalDocuments: null,
   status: '',
@@ -337,8 +337,8 @@ const hasDocument = (document) => {
 
 const getDocumentName = (document) => {
   if (!document) return 'Tiada'
-  if (Array.isArray(document) && document.length > 0) return document[0].name || 'Dilampirkan'
-  if (typeof document === 'object' && document.name) return document.name
+  if (Array.isArray(document) && document.length > 0) return document[0].filename || document[0].name || 'Dilampirkan'
+  if (typeof document === 'object' && (document.filename || document.name)) return document.filename || document.name
   return 'Tiada'
 }
 
@@ -399,7 +399,7 @@ const loadOrganisasiData = (id) => {
         paymentMethod: 'Bank Transfer'
       },
       registrationCertificate: { name: 'sijil_pendaftaran_ssm_2025.pdf' },
-      appointmentLetter: null,
+      appointmentLetter: { name: 'Surat Perlantikan', filename: 'surat_perlantikan_organisasi_2025.pdf', size: '1.2 MB' },
       bankProof: { name: 'bank_statement_jan_2025.pdf' },
       additionalDocuments: null,
       status: 'Menunggu Pengesahan',
