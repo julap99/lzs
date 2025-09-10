@@ -69,6 +69,16 @@
               />
 
               <FormKit
+                type="text"
+                name="id_pengenalan"
+                label="ID Pengenalan"
+                help="Mengikut Dokumen Pengenalan"
+                validation="required"
+                v-model="formData.no_pengenalan"
+              />
+
+
+              <FormKit
                 v-if="formData.jenis_id"
                 type="file"
                 name="dokumen_id"
@@ -77,15 +87,6 @@
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                 v-model="formData.dokumen_id"
-              />
-
-              <FormKit
-                type="text"
-                name="id_pengenalan"
-                label="ID Pengenalan"
-                help="Mengikut Dokumen Pengenalan"
-                validation="required"
-                v-model="formData.no_pengenalan"
               />
 
               <FormKit
@@ -2931,7 +2932,7 @@
                 v-if="
                   parseInt(
                     calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
-                  ) > 18
+                  ) < 18
                 "
               >
                 <label class="block text-sm font-medium text-black-700 mb-4"
@@ -2949,7 +2950,7 @@
                 v-if="
                   parseInt(
                     calculateAge(getCurrentTanggungan().tarikh_lahir_tanggungan)
-                  ) > 18 && getCurrentTanggungan().mohon_ketua_keluarga
+                  ) < 18 && getCurrentTanggungan().mohon_ketua_keluarga
                 "
                 class="md:col-span-2"
               >
@@ -7115,7 +7116,7 @@ watch(
           const age = parseInt(
             calculateAge(currentTanggungan.tarikh_lahir_tanggungan)
           );
-          if (Number.isFinite(age) && age > 18) {
+          if (Number.isFinite(age) && age < 18) {
             if (currentTanggungan.mohon_ketua_keluarga) {
               currentTanggungan.situasi_kelulusan_khas = "Profiling";
               currentTanggungan.kelulusan_khas = "Y";
