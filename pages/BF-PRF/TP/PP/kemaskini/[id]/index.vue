@@ -331,6 +331,9 @@ const referenceNumber = ref(
 // Confirmation modal state
 const showConfirmationModal = ref(false);
 
+// Guard to avoid resetting fields while initial data is being loaded
+const isInitializing = ref(true);
+
 const formData = ref({
   // Step 1: Maklumat Recipient
   jenisRecipient: "",
@@ -524,6 +527,8 @@ const loadExistingData = async () => {
     if (mockData[id]) {
       formData.value = { ...formData.value, ...mockData[id] };
     }
+    // Finish initialization so watchers can operate normally
+    isInitializing.value = false;
   }, 500);
 };
 
@@ -531,6 +536,7 @@ const loadExistingData = async () => {
 watch(
   () => formData.value.jenisRecipient,
   () => { 
+    if (isInitializing.value) return;
     formData.value.jenisPengenalan = "";
     formData.value.idPengenalan = "";
     formData.value.idSyarikat = "";
@@ -543,6 +549,7 @@ watch(
 watch(
   () => formData.value.jenisPengenalan,
   () => { 
+    if (isInitializing.value) return;
     formData.value.idPengenalan = "";
     formData.value.idSyarikat = "";
   }
