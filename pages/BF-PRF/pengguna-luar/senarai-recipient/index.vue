@@ -45,10 +45,11 @@
       <rs-table
         :data="filteredRecipientList"
         :columns="columns"
-        :loading="loading"
-        :pagination="pagination"
-        @page-change="handlePageChange"
-        @sort="handleSort"
+        :pageSize="10"
+        :showNoColumn="true"
+        :options="{ variant: 'default', hover: true, striped: true }"
+        :options-advanced="{ sortable: true, filterable: false }"
+        advanced
       >
         <template v-slot:status="{ text }">
           <rs-badge :variant="getStatusVariant(text)">
@@ -62,23 +63,26 @@
           </rs-badge>
         </template>
 
-        <template v-slot:tindakan="{ row }">
-          <div class="flex gap-2">
-            <rs-button
-              size="sm"
-              variant="primary-outline"
-              @click="handleLihat(row.tindakan.id)"
+        <template v-slot:tindakan="{ text }">
+          <div class="flex space-x-3">
+            <!-- View Button - Always available -->
+            <button
+              @click="handleLihat(text.id)"
+              title="Lihat"
+              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
             >
-              <Icon name="heroicons:eye" class="w-4 h-4" />
-            </rs-button>
-            <rs-button
-              v-if="row.status === 'Dalam Pembetulan'"
-              size="sm"
-              variant="warning-outline"
-              @click="handleKemaskini(row.tindakan.id)"
+              <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+            </button>
+            
+            <!-- Edit Button - Only for "Dalam Pembetulan" status -->
+            <button
+              v-if="text.status === 'Dalam Pembetulan'"
+              @click="handleKemaskini(text.id)"
+              title="Kemaskini"
+              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
             >
-              <Icon name="heroicons:pencil" class="w-4 h-4" />
-            </rs-button>
+              <Icon name="ic:outline-edit" size="20" class="text-warning" />
+            </button>
           </div>
         </template>
       </rs-table>
@@ -99,17 +103,9 @@ const breadcrumb = [
 ]
 
 // Data
-const loading = ref(false)
 const searchQuery = ref('')
 const statusFilter = ref('')
 const jenisRecipientFilter = ref('')
-
-// Pagination
-const pagination = ref({
-  page: 1,
-  perPage: 10,
-  total: 0
-})
 
 // Filter options
 const statusOptions = [
@@ -200,9 +196,6 @@ const filteredRecipientList = computed(() => {
     filtered = filtered.filter(item => item.jenisRecipient === jenisRecipientFilter.value)
   }
 
-  // Update pagination total
-  pagination.value.total = filtered.length
-
   return filtered
 })
 
@@ -215,14 +208,6 @@ const handleFilter = () => {
   // Filtering is handled by computed property
 }
 
-const handlePageChange = (page) => {
-  pagination.value.page = page
-}
-
-const handleSort = (column, direction) => {
-  // Sorting logic can be implemented here
-  console.log('Sort by:', column, direction)
-}
 
 const getStatusVariant = (status) => {
   const variants = {
@@ -253,6 +238,5 @@ const handleKemaskini = (id) => {
 // Lifecycle
 onMounted(() => {
   // Initialize data
-  pagination.value.total = recipientList.value.length
 })
 </script>
