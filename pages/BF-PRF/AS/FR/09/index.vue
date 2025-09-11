@@ -258,6 +258,19 @@
               />
             </section>
 
+            <section>
+              <h4 class="text-sm font-semibold text-gray-900 mb-3">
+                Kategori
+              </h4>
+              <FormKit
+                type="select"
+                name="kategori"
+                placeholder="Pilih kategori"
+                :options="kategoriOptions"
+                :classes="{ input: '!py-2.5' }"
+              />
+            </section>
+
             <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h4 class="text-sm font-semibold text-gray-900 mb-3">
@@ -452,6 +465,12 @@ const tingkahLakuAsnafOptions = ref([
   { label: "Beremosi", value: "beremosi" },
   { label: "Baran", value: "baran" },
   { label: "Lain-lain", value: "lain-lain" }
+]);
+
+const kategoriOptions = ref([
+  { label: "Musafir", value: "musafir" },
+  { label: "Mukim", value: "mukim" },
+  { label: "Bemastautin", value: "bemastautin" }
 ]);
 
 /* HELPERS */
