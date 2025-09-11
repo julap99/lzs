@@ -233,7 +233,7 @@ const getPlaceholder = () => {
   
   switch (formData.value.jenisPengenalan) {
     case "mykad": return "Contoh: 880101123456";
-    case "passport_no": return "Contoh: A12345678 (A untuk Selangor)";
+    case "passport_no": return "Contoh: A12345678";
     case "id_syarikat": return "Contoh: SY123456-X";
     default: return "Sila pilih jenis pengenalan dahulu";
   }
