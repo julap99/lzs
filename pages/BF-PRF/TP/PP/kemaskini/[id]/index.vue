@@ -82,7 +82,7 @@
           />
 
           <FormKit
-            v-if="['mykad', 'foreign_id'].includes(formData.jenisPengenalan)"
+            v-if="['mykad', 'passport_no'].includes(formData.jenisPengenalan)"
             type="text"
             name="idPengenalan"
             label="ID Pengenalan"
@@ -341,8 +341,8 @@ const steps = [
 const jenisPengenalanOptions = computed(() => {
   if (formData.value.jenisRecipient === "individu") {
     return [
-      { label: "MyKad", value: "mykad" },
-      { label: "Foreign ID", value: "foreign_id" },
+      { label: "ID Pengenalan", value: "mykad" },
+      { label: "Passport No", value: "passport_no" },
     ];
   } else if (formData.value.jenisRecipient === "syarikat") {
     return [
@@ -372,7 +372,7 @@ const bankOptions = [
 const getIdPlaceholder = () => {
   switch (formData.value.jenisPengenalan) {
     case "mykad": return "Contoh: 880101123456";
-    case "foreign_id": return "Contoh: A12345678";
+    case "passport_no": return "Contoh: A12345678 (A untuk Selangor)";
     default: return "Sila pilih jenis pengenalan dahulu";
   }
 };
@@ -455,8 +455,8 @@ const loadExistingData = async () => {
       'RE-202505-0013': {
         jenisRecipient: "individu",
         namaPenuh: "Siti Fatimah Binti Ali",
-        jenisPengenalan: "foreign_id",
-        idPengenalan: "FID123456789",
+        jenisPengenalan: "passport_no",
+        idPengenalan: "A12345678",
         namaBank: "CIMB Bank",
         noAkaunBank: "8765432109",
         penamaAkaunBank: "Siti Fatimah Binti Ali",

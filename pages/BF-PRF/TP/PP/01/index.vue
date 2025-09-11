@@ -180,8 +180,8 @@ const formData = ref({
 const jenisPengenalanOptions = computed(() => {
   if (formData.value.jenisRecipient === "individu") {
     return [
-      { label: "MyKad", value: "mykad" },
-      { label: "Foreign ID", value: "foreign_id" },
+      { label: "ID Pengenalan", value: "mykad" },
+      { label: "Passport No", value: "passport_no" },
     ];
   } else if (formData.value.jenisRecipient === "syarikat") {
     return [
@@ -212,7 +212,7 @@ const mockIndividuData = [
   {
     id: 'IND001',
     namaPenuh: 'Ahmad Bin Abdullah',
-    jenisPengenalan: 'MyKad',
+    jenisPengenalan: 'ID Pengenalan',
     idPengenalan: '880101-12-3456',
     tindakan: { id: 'IND001' }
   }
@@ -233,7 +233,7 @@ const getPlaceholder = () => {
   
   switch (formData.value.jenisPengenalan) {
     case "mykad": return "Contoh: 880101123456";
-    case "foreign_id": return "Contoh: A12345678";
+    case "passport_no": return "Contoh: A12345678 (A untuk Selangor)";
     case "id_syarikat": return "Contoh: SY123456-X";
     default: return "Sila pilih jenis pengenalan dahulu";
   }

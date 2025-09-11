@@ -8,12 +8,6 @@
           <div>
             <h2 class="text-xl font-semibold">Pengesahan Cawangan</h2>
           </div>
-          <div>
-            <rs-button variant="primary" @click="navigateTo('/BF-PRF/OR/PB/01')">
-              <Icon name="heroicons:plus" size="1rem" class="mr-2" />
-              Tambah Baru
-            </rs-button>
-          </div>
         </div>
       </template>
 
