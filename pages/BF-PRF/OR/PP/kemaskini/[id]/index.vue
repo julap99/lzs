@@ -1012,7 +1012,7 @@ const loadExistingData = async () => {
         zone: "Zon A",
         hq: "",
         representatives: [
-          { name: "Dato' Ahmad bin Hassan", ic: "750101014567", phoneNumber: "03-55123456", email: "ahmad.hassan@teknologimaju.com" },
+          { name: "Ahmad bin Hassan", ic: "750101014567", phoneNumber: "03-55123456", email: "ahmad.hassan@teknologimaju.com" },
           { name: "Siti Zainab binti Omar", ic: "820515023456", phoneNumber: "019-2345678", email: "zainab.omar@teknologimaju.com" }
         ],
         bankName: "CIMB Bank",
@@ -1112,7 +1112,7 @@ const loadExistingData = async () => {
         branch: "Ibu Pejabat",
         zone: "Zon KL",
         representatives: [
-          { name: "Dato Sri Azman bin Abdullah", ic: "680220078901", phoneNumber: "03-21234567", email: "azman@sph.com.my" }
+          { name: "Azman bin Abdullah", ic: "680220078901", phoneNumber: "03-21234567", email: "azman@sph.com.my" }
         ],
         bankName: "Public Bank",
         bankAccountNumber: "4567890123456",

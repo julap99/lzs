@@ -224,8 +224,8 @@ const applicationData = ref({
   jenisRecipient: "Individu", // atau "Syarikat"
   namaPenuh: "Ahmad Bin Abdullah", // for Individu
   namaSyarikat: "", // for Syarikat
-  jenisPengenalan: "MyKad", // MyKad, Foreign ID, ID Syarikat
-  idPengenalan: "880101-12-3456", // for MyKad/Foreign ID
+  jenisPengenalan: "ID Pengenalan", // ID Pengenalan, Passport No, ID Syarikat
+  idPengenalan: "880101-12-3456", // for ID Pengenalan/Passport No
   idSyarikat: "", // for ID Syarikat
   
   // Maklumat Akaun Bank

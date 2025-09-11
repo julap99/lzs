@@ -1706,7 +1706,7 @@ export default [
   // Pengguna Luar Menu
   {
     header: "Pengguna Luar",
-    description: "Menu Carian untuk Pengguna Luar",
+    description: "Menu untuk Pengguna Luar",
     child: [
       {
         title: "Dashboard",
@@ -1719,20 +1719,19 @@ export default [
         },
       },
       {
-        title: "Carian Organisasi",
+        title: "Senarai Organisasi",
         icon: "iconamoon:component-fill",
-        path: "/BF-PRF/OR/PP/01",
+        path: "/BF-PRF/pengguna-luar/senarai-organisasi",
         meta: {
           auth: {
             role: ["PenggunaLuar"]
           }
         },
       },
-      // { title: "Carian Cawangan", icon: "iconamoon:component-fill", path: "/BF-PRF/OR/PB/01", meta: { auth: { role: ["PenggunaLuar"] } } },
       {
-        title: "Carian Recipient",
+        title: "Senarai Recipient",
         icon: "iconamoon:component-fill",
-        path: "/BF-PRF/TP/PP/01",
+        path: "/BF-PRF/pengguna-luar/senarai-recipient",
         meta: {
           auth: {
             role: ["PenggunaLuar"]
