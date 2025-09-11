@@ -207,9 +207,9 @@ const paginationEnd = computed(() => {
 });
 
 const handleReview = (status) => {
-  if (status === "Menunggu Pengesahan") {
+  if (status === "Dalam Semakan") {
     navigateTo(`/BF-PRF/AS/FR/07_01`);
-  } else if (status === "Dalam Semakan") {
+  } else if (status === "Menunggu Pengesahan") {
     navigateTo(`/BF-PRF/AS/FR/07_01_copy`);
   }
   // }else if(status === "Tidak Lengkap"){
