@@ -5474,9 +5474,9 @@ const breadcrumb = ref([
     path: "/BF-PRF/AS",
   },
   {
-    name: " Pendaftaran Lengkap",
+    name: "Kemaskini",
     type: "current",
-    path: "/BF-PRF/AS/FR/02",
+    path: "/BF-PRF/AS/UP/02",
   },
 ]);
 
