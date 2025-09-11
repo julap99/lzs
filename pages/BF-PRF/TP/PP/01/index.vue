@@ -98,6 +98,11 @@
               :showNoColumn="true"
               :options="{ variant: 'default', hover: true, striped: true }"
             >
+              <template v-slot:status="{ text }">
+                <rs-badge :variant="getNPSStatusVariant(text)">
+                  {{ text }}
+                </rs-badge>
+              </template>
               <template v-slot:tindakan="{ text }">
                 <div class="flex space-x-2">
                   <rs-button
@@ -269,6 +274,14 @@ const getPlaceholder = () => {
     case "id_syarikat": return "Contoh: SY123456-X";
     default: return "Sila pilih jenis pengenalan dahulu";
   }
+};
+
+const getNPSStatusVariant = (status) => {
+  const variants = {
+    'Verified': 'success',
+    'Tidak Verified': 'warning',
+  };
+  return variants[status] || 'default';
 };
 
 const resetForm = () => {
