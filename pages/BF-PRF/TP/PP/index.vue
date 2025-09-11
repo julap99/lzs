@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-xl font-semibold">Pengesahan Recipient</h2>
+            <h2 class="text-xl font-semibold">Senarai Recipient</h2>
           </div>
         </div>
       </template>
