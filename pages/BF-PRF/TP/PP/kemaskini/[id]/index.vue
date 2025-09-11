@@ -167,11 +167,29 @@
 
           <FormKit
             type="file"
-            name="dokumenSokongan"
+            name="dokumenPengenalan"
+            label="Dokumen Pengenalan"
+            validation="required"
+            accept=".pdf,.jpg,.jpeg,.png"
+            v-model="formData.dokumenPengenalan"
+          />
+
+          <FormKit
+            type="file"
+            name="dokumenBank"
             label="Dokumen Sokongan Bank"
             validation="required"
             accept=".pdf,.jpg,.jpeg,.png"
-            v-model="formData.dokumenSokongan"
+            v-model="formData.dokumenBank"
+          />
+
+          <FormKit
+            type="file"
+            name="dokumenTambahan"
+            label="Dokumen Tambahan (jika ada)"
+            accept=".pdf,.jpg,.jpeg,.png"
+            multiple="true"
+            v-model="formData.dokumenTambahan"
           />
 
           <div class="flex justify-between mt-6">
@@ -327,8 +345,10 @@ const formData = ref({
   noAkaunBank: "",
   penamaAkaunBank: "",
 
-  // Step 3: Dokumen Sokongan
-  dokumenSokongan: null,
+  // Step 3: Dokumen Sokongan (selaras OR/PP/02)
+  dokumenPengenalan: null,
+  dokumenBank: null,
+  dokumenTambahan: [],
 });
 
 const steps = [
