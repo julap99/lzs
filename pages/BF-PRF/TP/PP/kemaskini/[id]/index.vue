@@ -432,19 +432,29 @@ const initialAttachments = ref({
 });
 
 // Attachment helpers for presentation
-const hasDokumenPengenalan = computed(() => {
-  const f = formData.value.dokumenPengenalan || initialAttachments.value.dokumenPengenalan;
-  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
-});
-const hasDokumenBank = computed(() => {
-  const f = formData.value.dokumenBank || initialAttachments.value.dokumenBank;
-  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
-});
 const dokumenTambahanCount = computed(() => {
   const f = formData.value.dokumenTambahan && formData.value.dokumenTambahan.length
     ? formData.value.dokumenTambahan
     : initialAttachments.value.dokumenTambahan;
   return Array.isArray(f) ? f.length : (f ? 1 : 0);
+});
+
+// More tolerant attachment presence check (for mocked objects)
+const isAttachmentPresent = (f) => {
+  if (!f) return false;
+  if (Array.isArray(f)) return f.length > 0;
+  if (typeof f === 'object') return Object.keys(f).length > 0 || !!f.name;
+  return !!f;
+};
+
+// Helpers using tolerant check
+const hasDokumenPengenalan = computed(() => {
+  const f = formData.value.dokumenPengenalan || initialAttachments.value.dokumenPengenalan;
+  return isAttachmentPresent(f);
+});
+const hasDokumenBank = computed(() => {
+  const f = formData.value.dokumenBank || initialAttachments.value.dokumenBank;
+  return isAttachmentPresent(f);
 });
 
 const goToStep = (stepNumber) => {
