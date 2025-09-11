@@ -97,10 +97,18 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 // Breadcrumb
-const breadcrumb = [
-  { title: 'Dashboard', path: '/BF-PRF/pengguna-luar/dashboard' },
-  { title: 'Senarai Recipient', path: '' }
-]
+const breadcrumb = ref([
+  {
+    name: "Pengguna Luar",
+    type: "link",
+    path: "/BF-PRF/pengguna-luar/dashboard",
+  },
+  {
+    name: "Senarai Recipient",
+    type: "current",
+    path: "/BF-PRF/pengguna-luar/senarai-recipient",
+  }
+])
 
 // Data
 const searchQuery = ref('')
