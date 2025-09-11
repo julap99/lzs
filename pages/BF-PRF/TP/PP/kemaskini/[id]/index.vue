@@ -319,7 +319,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
@@ -602,9 +602,27 @@ const loadExistingData = async () => {
         if (jp === 'id_syarikat' || jp === 'ssm' || jp === 'roc') incoming.jenisPengenalan = 'id_syarikat';
       }
       formData.value = { ...formData.value, ...incoming };
+      // Ensure parent and dependent selects are valid and visible after options compute
+      nextTick(() => {
+        // Validate jenisRecipient preselection
+        if (!['individu', 'syarikat'].includes(formData.value.jenisRecipient)) {
+          formData.value.jenisRecipient = 'individu';
+        }
+
+        const options = jenisPengenalanOptions.value || [];
+        if (
+          formData.value.jenisRecipient &&
+          options.length > 0 &&
+          !options.some(opt => opt.value === formData.value.jenisPengenalan)
+        ) {
+          formData.value.jenisPengenalan = options[0].value;
+        }
+        isInitializing.value = false;
+      });
+    } else {
+      // No mock match; end init to avoid locking watchers
+      isInitializing.value = false;
     }
-    // Finish initialization so watchers can operate normally
-    isInitializing.value = false;
   }, 500);
 };
 
