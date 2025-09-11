@@ -204,6 +204,7 @@ const syarikatColumns = [
   { key: 'namaSyarikat', label: 'Nama Syarikat', sortable: true },
   { key: 'jenisPengenalan', label: 'Jenis Pengenalan', sortable: true },
   { key: 'idSyarikat', label: 'ID Syarikat', sortable: true },
+  { key: 'status', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
 
@@ -224,6 +225,7 @@ const mockSyarikatData = [
     namaSyarikat: 'Pusat Dialisis Al-Falah Sdn Bhd',
     jenisPengenalan: 'ID Syarikat',
     idSyarikat: 'SY123456-X',
+    status: 'Verified',
     tindakan: { id: 'SYR001' }
   }
 ];
