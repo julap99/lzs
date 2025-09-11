@@ -607,8 +607,6 @@ watch(
     formData.value.jenisPengenalan = "";
     formData.value.idPengenalan = "";
     formData.value.idSyarikat = "";
-    formData.value.namaPenuh = "";
-    formData.value.namaSyarikat = "";
   }
 );
 
