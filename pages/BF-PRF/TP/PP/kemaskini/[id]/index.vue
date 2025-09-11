@@ -48,6 +48,7 @@
               { label: 'Syarikat', value: 'syarikat' },
             ]"
             v-model="formData.jenisRecipient"
+            :value="formData.jenisRecipient"
           />
 
           <FormKit
@@ -58,6 +59,7 @@
             validation="required"
             placeholder="Masukkan nama penuh"
             v-model="formData.namaPenuh"
+            :value="formData.namaPenuh"
           />
 
           <FormKit
@@ -68,6 +70,7 @@
             validation="required"
             placeholder="Masukkan nama syarikat"
             v-model="formData.namaSyarikat"
+            :value="formData.namaSyarikat"
           />
 
           <FormKit
@@ -78,6 +81,7 @@
             placeholder="Pilih jenis pengenalan"
             :options="jenisPengenalanOptions"
             v-model="formData.jenisPengenalan"
+            :value="formData.jenisPengenalan"
             :disabled="!formData.jenisRecipient"
           />
 
@@ -89,6 +93,7 @@
             validation="required"
             :placeholder="getIdPlaceholder()"
             v-model="formData.idPengenalan"
+            :value="formData.idPengenalan"
           />
 
           <FormKit
@@ -99,6 +104,7 @@
             validation="required"
             placeholder="Contoh: SY123456-X"
             v-model="formData.idSyarikat"
+            :value="formData.idSyarikat"
           />
 
           <div class="flex justify-end mt-6">
@@ -123,6 +129,7 @@
             placeholder="Pilih bank"
             :options="bankOptions"
             v-model="formData.namaBank"
+            :value="formData.namaBank"
           />
 
           <FormKit
@@ -132,6 +139,7 @@
             validation="required|length:10,16|number"
             placeholder="Masukkan nombor akaun bank (10-16 digit)"
             v-model="formData.noAkaunBank"
+            :value="formData.noAkaunBank"
           />
 
           <FormKit
@@ -141,6 +149,7 @@
             validation="required"
             placeholder="Masukkan nama pemilik akaun"
             v-model="formData.penamaAkaunBank"
+            :value="formData.penamaAkaunBank"
           />
 
           <div class="flex justify-between mt-6">
@@ -525,7 +534,21 @@ const loadExistingData = async () => {
     // Load data based on route ID
     const id = route.params.id;
     if (mockData[id]) {
-      formData.value = { ...formData.value, ...mockData[id] };
+      // Normalize mock values to expected option values to ensure fields render
+      const incoming = { ...mockData[id] };
+      const jr = String(incoming.jenisRecipient || '').toLowerCase().trim();
+      if (['individu', 'syarikat'].includes(jr)) {
+        incoming.jenisRecipient = jr;
+      }
+      const jp = String(incoming.jenisPengenalan || '').toLowerCase().trim();
+      if (jr === 'individu') {
+        // Accept aliases and normalize
+        if (jp === 'mykad' || jp === 'ic' || jp === 'kad_pengenalan') incoming.jenisPengenalan = 'mykad';
+        else if (jp === 'passport' || jp === 'passport no' || jp === 'passport_no') incoming.jenisPengenalan = 'passport_no';
+      } else if (jr === 'syarikat') {
+        if (jp === 'id_syarikat' || jp === 'ssm' || jp === 'roc') incoming.jenisPengenalan = 'id_syarikat';
+      }
+      formData.value = { ...formData.value, ...incoming };
     }
     // Finish initialization so watchers can operate normally
     isInitializing.value = false;
