@@ -1,7 +1,7 @@
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
-
+    <!-- Dynamic Page For Pengesahan Pendaftaran Organisasi -->
     <rs-card class="mt-4 p-6">
       <template #body>
         <!-- Status Summary Card -->
