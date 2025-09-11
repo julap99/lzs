@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Borang Permohonan Lengkap Online
+            Borang Permohonan Lengkap (kemaskini)
           </h2>
           <div class="text-sm text-gray-600">
             Langkah {{ currentStepA }} dari {{ totalStepsA }}
