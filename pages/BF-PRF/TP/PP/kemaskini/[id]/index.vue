@@ -424,17 +424,26 @@ const getIdPlaceholder = () => {
   }
 };
 
+// Preserve initial mock attachment metadata for presentation (file inputs reset on mount)
+const initialAttachments = ref({
+  dokumenPengenalan: null,
+  dokumenBank: null,
+  dokumenTambahan: [],
+});
+
 // Attachment helpers for presentation
 const hasDokumenPengenalan = computed(() => {
-  const f = formData.value.dokumenPengenalan;
+  const f = formData.value.dokumenPengenalan || initialAttachments.value.dokumenPengenalan;
   return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
 });
 const hasDokumenBank = computed(() => {
-  const f = formData.value.dokumenBank;
+  const f = formData.value.dokumenBank || initialAttachments.value.dokumenBank;
   return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
 });
 const dokumenTambahanCount = computed(() => {
-  const f = formData.value.dokumenTambahan;
+  const f = formData.value.dokumenTambahan && formData.value.dokumenTambahan.length
+    ? formData.value.dokumenTambahan
+    : initialAttachments.value.dokumenTambahan;
   return Array.isArray(f) ? f.length : (f ? 1 : 0);
 });
 
@@ -602,6 +611,12 @@ const loadExistingData = async () => {
         if (jp === 'id_syarikat' || jp === 'ssm' || jp === 'roc') incoming.jenisPengenalan = 'id_syarikat';
       }
       formData.value = { ...formData.value, ...incoming };
+      // Preserve initial attachments for presentation badges
+      initialAttachments.value = {
+        dokumenPengenalan: incoming.dokumenPengenalan || null,
+        dokumenBank: incoming.dokumenBank || null,
+        dokumenTambahan: incoming.dokumenTambahan || [],
+      };
       // Ensure parent and dependent selects are valid and visible after options compute
       nextTick(() => {
         // Validate jenisRecipient preselection
