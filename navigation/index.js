@@ -1746,6 +1746,62 @@ export default [
       },
     },
   },
+
+  // Masjid Menu
+  {
+    header: "Masjid",
+    description: "Jika Pengguna Luar adalah Organisasi Masjid",
+    child: [
+      {
+        title: "Mohon Bantuan",
+        icon: "heroicons:document-text",
+        path: "/BF-PRF/pengguna-luar/masjid/mohon-bantuan",
+        meta: {
+          auth: {
+            role: ["PenggunaLuar"]
+          }
+        },
+      },
+      {
+        title: "Tambah Penolong Amil",
+        icon: "heroicons:user-plus",
+        path: "/BF-PRF/pengguna-luar/masjid/tambah-penolong-amil",
+        meta: {
+          auth: {
+            role: ["PenggunaLuar"]
+          }
+        },
+      }
+    ],
+    meta: {
+      auth: {
+        role: ["PenggunaLuar"],
+      },
+    },
+  },
+
+  // Hospital Menu
+  {
+    header: "Hospital",
+    description: "Jika Pengguna Luar adalah Organisasi Hospital",
+    child: [
+      {
+        title: "Tambah Penolong Amil",
+        icon: "heroicons:user-plus",
+        path: "/BF-PRF/pengguna-luar/hospital/tambah-penolong-amil",
+        meta: {
+          auth: {
+            role: ["PenggunaLuar"]
+          }
+        },
+      }
+    ],
+    meta: {
+      auth: {
+        role: ["PenggunaLuar"],
+      },
+    },
+  },
   // Kitchen Sink
   {
     header: "Kitchen Sink",
