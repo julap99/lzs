@@ -142,7 +142,7 @@ const applications = ref([
   {
     noRujukan: "770319035991",
     namaPemohon: "ADNAN BIN ABU",
-    status: "Dalam Semakan",
+    status: "Menunggu Siasatan",
     tarikhTerima: "2024-03-19",
     namaPegawai: "Aminah binti Hassan",
     tindakan: "NAS-2025-0002",
@@ -222,10 +222,9 @@ const handleReview = (status) => {
 const getStatusVariant = (status) => {
   const variants = {
     baru: "info",
-    "dalam semakan": "warning",
     "tidak lengkap": "danger",
     "untuk siasatan": "secondary",
-    "dalam siasatan": "warning",
+    "menunggu siasatan": "warning",
     "selesai siasatan": "success",
    "menunggu pengesahan": "info",
   };
