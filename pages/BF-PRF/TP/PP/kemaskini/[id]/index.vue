@@ -487,6 +487,15 @@ const loadExistingData = async () => {
         namaBank: "Bank Islam",
         noAkaunBank: "7654321098765",
         penamaAkaunBank: "Pembekal Makanan Halal Sdn Bhd",
+      },
+      'RE-202507-0017': {
+        jenisRecipient: "individu",
+        namaPenuh: "Mohd Zaki bin Hassan",
+        jenisPengenalan: "mykad",
+        idPengenalan: "750512123456",
+        namaBank: "AmBank",
+        noAkaunBank: "6789012345678",
+        penamaAkaunBank: "Mohd Zaki bin Hassan",
       }
     };
 
