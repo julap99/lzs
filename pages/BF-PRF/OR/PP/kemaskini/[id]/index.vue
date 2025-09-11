@@ -699,7 +699,7 @@
 
           <!-- Step 3: Maklumat Perhubungan -->
           <div class="mt-4">
-            <h4 class="font-medium text-gray-900 mb-2">Step 3: Maklumat Perhubungan</h4>
+            <h4 class="font-medium text-gray-900 mb-2">Maklumat Perhubungan</h4>
             <div v-if="formData.representatives && formData.representatives.length" class="space-y-3 text-sm">
               <div v-for="(rep, i) in formData.representatives" :key="i" class="p-3 border rounded bg-gray-50">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -727,7 +727,7 @@
 
           <!-- Step 4: Maklumat Bank -->
           <div class="mt-4">
-            <h4 class="font-medium text-gray-900 mb-2">Step 4: Maklumat Bank</h4>
+            <h4 class="font-medium text-gray-900 mb-2">Maklumat Bank</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div v-if="formData.structure === 'cawangan'">
                 <label class="block text-gray-600 font-medium">Sama seperti HQ?</label>
@@ -752,7 +752,7 @@
 
           <!-- Step 5: Dokumen Sokongan -->
           <div class="mt-4">
-            <h4 class="font-medium text-gray-900 mb-2">Step 5: Dokumen Sokongan</h4>
+            <h4 class="font-medium text-gray-900 mb-2">Dokumen Sokongan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
                 <label class="block text-gray-600 font-medium">Sijil Pendaftaran SSM / ROS</label>
@@ -906,9 +906,9 @@ const steps = computed(() => {
   return [
     { id: 1, label: "Maklumat Organisasi" },
     { id: 2, label: "Alamat" },
-    { id: 3, label: "Perhubungan" },
-    { id: 4, label: "Bank" },
-    { id: 5, label: "Dokumen" },
+    { id: 3, label: "Maklumat Perhubungan" },
+    { id: 4, label: "Maklumat Bank" },
+    { id: 5, label: "Dokumen Sokongan" },
   ];
 });
 
