@@ -50,8 +50,9 @@
             type="text"
             name="registrationNumber"
             label="Nombor Pendaftaran Organisasi (SSM/ROS)"
-            validation="required"
-            placeholder="Contoh: 123456-A"
+            validation="required|matches:/^(\d{12}|PPM-\d{3}-\d{2}-\d{8})$/"
+            placeholder="Contoh: 201901000005 (SSM) atau PPM-001-10-14032020 (ROS)"
+            help="SSM: 12 digit angka | ROS: PPM-###-##-DDMMYYYY"
             v-model="formData.registrationNumber"
           />
 
@@ -996,7 +997,7 @@ const loadExistingData = async () => {
     const mockData = {
       'ORG-202507-0001': {
         organizationName: "Syarikat Teknologi Maju Sdn Bhd",
-        registrationNumber: "201801012345",
+        registrationNumber: "201901000005",
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1022,7 +1023,7 @@ const loadExistingData = async () => {
       },
       'ORG-202506-0002': {
         organizationName: "Pertubuhan Amal Iman Malaysia",
-        registrationNumber: "PPM-123/2020",
+        registrationNumber: "PPM-001-10-14032020",
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1047,7 +1048,7 @@ const loadExistingData = async () => {
       },
       'ORG-202505-0003': {
         organizationName: "Sekolah Menengah Tahfiz Al-Amin",
-        registrationNumber: "IPT-456/2019",
+        registrationNumber: "201903000456",
         organizationType: "institusi",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1072,7 +1073,7 @@ const loadExistingData = async () => {
       },
       'ORG-202507-0004': {
         organizationName: "Institut Latihan Kemahiran Malaysia - Cawangan Shah Alam",
-        registrationNumber: "INST-789/2018",
+        registrationNumber: "201804000789",
         organizationType: "institusi",
         registrationStatus: "berdaftar",
         structure: "cawangan",
@@ -1097,7 +1098,7 @@ const loadExistingData = async () => {
       },
       'ORG-202506-0005': {
         organizationName: "Syarikat Pembangunan Hartanah Sdn Bhd",
-        registrationNumber: "201901098765",
+        registrationNumber: "201901000123",
         organizationType: "agensi",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1120,7 +1121,7 @@ const loadExistingData = async () => {
       },
       'ORG-202505-0006': {
         organizationName: "Persatuan Belia Islam Malaysia",
-        registrationNumber: "ROS-456/2017",
+        registrationNumber: "PPM-456-03-25012017",
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1144,7 +1145,7 @@ const loadExistingData = async () => {
       },
       'ORG-202504-0007': {
         organizationName: "Universiti Teknologi Malaysia",
-        registrationNumber: "UTM-001/1975",
+        registrationNumber: "197501000001",
         organizationType: "institusi",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1167,7 +1168,7 @@ const loadExistingData = async () => {
       },
       'ORG-202505-0006': {
         organizationName: "Persatuan Belia Islam Malaysia",
-        registrationNumber: "ROS-456/2017",
+        registrationNumber: "PPM-456-03-25012017",
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1193,7 +1194,7 @@ const loadExistingData = async () => {
       },
       'ORG-202504-0007': {
         organizationName: "Universiti Teknologi Malaysia",
-        registrationNumber: "UTM-001/1975",
+        registrationNumber: "197501000001",
         organizationType: "institusi",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1218,7 +1219,7 @@ const loadExistingData = async () => {
       },
       'ORG-202508-0008': {
         organizationName: "Yayasan Pendidikan Selangor",
-        registrationNumber: "YPS-2023-008",
+        registrationNumber: "PPM-008-10-15012023",
         organizationType: "yayasan",
         registrationStatus: "berdaftar",
         structure: "cawangan",
