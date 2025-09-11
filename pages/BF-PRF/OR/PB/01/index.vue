@@ -187,7 +187,7 @@ const performSearch = async () => {
 
   setTimeout(() => {
     // Simulasi hasil carian berjaya (boleh ganti dgn API betul)
-    indukFound.value = Math.random() > 0.3;
+    indukFound.value = Math.random() >= 0.5; // 50% chance of finding HQ
     if (indukFound.value) {
       selectedIndukId.value = 'HQ-20250613-001'; // contoh ID HQ
       // Mock HQ information data

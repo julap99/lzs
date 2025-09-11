@@ -260,7 +260,7 @@ const performSearch = () => {
     processing.value = false;
     
     // Simulate search results - randomly return results or no results
-    const hasResults = Math.random() >= 0.3; // 70% chance of finding results
+    const hasResults = Math.random() >= 0.5; // 50% chance of finding results
     
     if (hasResults) {
       if (formData.value.jenisRecipient === 'individu') {
