@@ -225,7 +225,7 @@ const applicationData = ref({
   namaPenuh: "Ahmad Bin Abdullah", // for Individu
   namaSyarikat: "", // for Syarikat
   jenisPengenalan: "ID Pengenalan", // ID Pengenalan, Passport No, ID Syarikat
-  idPengenalan: "880101-12-3456", // for ID Pengenalan/Passport No
+  idPengenalan: "880101123456", // digits only ID Pengenalan
   idSyarikat: "", // for ID Syarikat
   
   // Maklumat Akaun Bank
