@@ -182,6 +182,11 @@
             accept=".pdf,.jpg,.jpeg,.png"
             v-model="formData.dokumenPengenalan"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasDokumenPengenalan ? 'success' : 'danger'">
+              {{ hasDokumenPengenalan ? 'Telah dilampirkan' : 'Tiada lampiran' }}
+            </rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -191,6 +196,11 @@
             accept=".pdf,.jpg,.jpeg,.png"
             v-model="formData.dokumenBank"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasDokumenBank ? 'success' : 'danger'">
+              {{ hasDokumenBank ? 'Telah dilampirkan' : 'Tiada lampiran' }}
+            </rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -200,6 +210,11 @@
             multiple="true"
             v-model="formData.dokumenTambahan"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="dokumenTambahanCount > 0 ? 'success' : 'warning'">
+              {{ dokumenTambahanCount > 0 ? (dokumenTambahanCount + ' dokumen') : 'Tiada dokumen tambahan' }}
+            </rs-badge>
+          </div>
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -409,6 +424,20 @@ const getIdPlaceholder = () => {
   }
 };
 
+// Attachment helpers for presentation
+const hasDokumenPengenalan = computed(() => {
+  const f = formData.value.dokumenPengenalan;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+const hasDokumenBank = computed(() => {
+  const f = formData.value.dokumenBank;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+const dokumenTambahanCount = computed(() => {
+  const f = formData.value.dokumenTambahan;
+  return Array.isArray(f) ? f.length : (f ? 1 : 0);
+});
+
 const goToStep = (stepNumber) => {
   // Allow navigation to any step within total steps (same as OR/PP/02 reference page)
   if (stepNumber <= totalSteps) {
@@ -474,6 +503,12 @@ const loadExistingData = async () => {
         namaBank: "Maybank",
         noAkaunBank: "1234567890",
         penamaAkaunBank: "Ahmad Bin Abdullah",
+        // Mocked attachment metadata for presentation only
+        dokumenPengenalan: { name: 'ic_ahmad.pdf', size: 123456, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_maybank.pdf', size: 234567, type: 'application/pdf' },
+        dokumenTambahan: [
+          { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' },
+        ],
       },
       'RE-202506-0012': {
         jenisRecipient: "syarikat",
@@ -483,6 +518,8 @@ const loadExistingData = async () => {
         namaBank: "Public Bank",
         noAkaunBank: "9876543210",
         penamaAkaunBank: "Pusat Dialisis Al-Falah Sdn Bhd",
+        dokumenPengenalan: { name: 'ssm_al_falah.pdf', size: 111111, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_public.pdf', size: 222222, type: 'application/pdf' },
       },
       'RE-202505-0013': {
         jenisRecipient: "individu",
@@ -492,6 +529,7 @@ const loadExistingData = async () => {
         namaBank: "CIMB Bank",
         noAkaunBank: "8765432109",
         penamaAkaunBank: "Siti Fatimah Binti Ali",
+        dokumenPengenalan: { name: 'passport_siti.jpg', size: 456789, type: 'image/jpeg' },
       },
       'RE-202507-0014': {
         jenisRecipient: "syarikat",
@@ -501,6 +539,8 @@ const loadExistingData = async () => {
         namaBank: "CIMB Bank",
         noAkaunBank: "8765432109876",
         penamaAkaunBank: "Klinik Kesihatan Sejahtera",
+        dokumenPengenalan: { name: 'ssm_klinik.pdf', size: 333333, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_cimb.pdf', size: 444444, type: 'application/pdf' },
       },
       'RE-202506-0015': {
         jenisRecipient: "individu",
@@ -510,6 +550,7 @@ const loadExistingData = async () => {
         namaBank: "Bank Islam",
         noAkaunBank: "7654321098",
         penamaAkaunBank: "Zainab Binti Hassan",
+        dokumenPengenalan: { name: 'ic_zainab.png', size: 98765, type: 'image/png' },
       },
       'RE-202505-0016': {
         jenisRecipient: "syarikat",
@@ -519,6 +560,8 @@ const loadExistingData = async () => {
         namaBank: "Bank Islam",
         noAkaunBank: "7654321098765",
         penamaAkaunBank: "Pembekal Makanan Halal Sdn Bhd",
+        dokumenPengenalan: { name: 'ssm_pembekal.pdf', size: 555555, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_bi.pdf', size: 666666, type: 'application/pdf' },
       },
       'RE-202507-0017': {
         jenisRecipient: "individu",
@@ -528,6 +571,7 @@ const loadExistingData = async () => {
         namaBank: "AmBank",
         noAkaunBank: "6789012345678",
         penamaAkaunBank: "Mohd Zaki bin Hassan",
+        dokumenPengenalan: { name: 'ic_zaki.pdf', size: 77777, type: 'application/pdf' },
       }
     };
 

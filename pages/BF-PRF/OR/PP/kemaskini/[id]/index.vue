@@ -495,6 +495,9 @@
             help="Muat naik sijil pendaftaran organisasi anda"
             v-model="formData.registrationCertificate"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasRegistrationCert ? 'success' : 'danger'">{{ hasRegistrationCert ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -505,6 +508,9 @@
             help="Muat naik surat lantikan rasmi"
             v-model="formData.appointmentLetter"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasAppointmentLetter ? 'success' : 'danger'">{{ hasAppointmentLetter ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -515,6 +521,9 @@
             help="Muat naik bukti pemilikan akaun bank seperti penyata bank"
             v-model="formData.bankProof"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasBankProof ? 'success' : 'danger'">{{ hasBankProof ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -525,6 +534,9 @@
             help="Muat naik dokumen tambahan yang berkaitan"
             v-model="formData.additionalDocuments"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="additionalDocsCount > 0 ? 'success' : 'warning'">{{ additionalDocsCount > 0 ? (additionalDocsCount + ' dokumen') : 'Tiada dokumen tambahan' }}</rs-badge>
+          </div>
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -1270,7 +1282,13 @@ const loadExistingData = async () => {
     // Load data based on route ID
     const id = route.params.id;
     if (mockData[id]) {
-      formData.value = { ...formData.value, ...mockData[id] };
+      // Attach presentation-only mock attachments so UI shows uploaded state
+      const incoming = { ...mockData[id] };
+      if (!incoming.registrationCertificate) incoming.registrationCertificate = { name: 'ssm.pdf', size: 123456, type: 'application/pdf' };
+      if (!incoming.appointmentLetter) incoming.appointmentLetter = { name: 'surat_lantikan.pdf', size: 223344, type: 'application/pdf' };
+      if (!incoming.bankProof) incoming.bankProof = { name: 'penyata_bank.pdf', size: 334455, type: 'application/pdf' };
+      if (!incoming.additionalDocuments) incoming.additionalDocuments = [ { name: 'dokumen_tambahan_1.pdf', size: 445566, type: 'application/pdf' } ];
+      formData.value = { ...formData.value, ...incoming };
     }
   }, 500);
 };
