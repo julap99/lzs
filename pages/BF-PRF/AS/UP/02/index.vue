@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">
-            Borang Permohonan Lengkap Online
+            Borang Permohonan Lengkap (kemaskini)
           </h2>
           <div class="text-sm text-gray-600">
             Langkah {{ currentStepA }} dari {{ totalStepsA }}
@@ -5474,9 +5474,9 @@ const breadcrumb = ref([
     path: "/BF-PRF/AS",
   },
   {
-    name: " Pendaftaran Lengkap",
+    name: "Kemaskini",
     type: "current",
-    path: "/BF-PRF/AS/FR/02",
+    path: "/BF-PRF/AS/UP/02",
   },
 ]);
 

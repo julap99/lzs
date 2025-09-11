@@ -1667,7 +1667,7 @@
 
               <!-- Kategori (Musafir/Mukim/Bermastautin) -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
+                <!-- <FormKit
                   type="select"
                   name="kategori_menetap"
                   label="Kategori"
@@ -1678,7 +1678,8 @@
                     { label: 'Bermastautin', value: 'bermastautin' },
                   ]"
                   v-model="formData.addressInfo.kategori_menetap"
-                />
+                  class="hidden"
+                /> -->
 
                 <div
                   v-if="
@@ -1704,7 +1705,7 @@
               </div>
             </div>
 
-            <div v-if="formData.adakah_muallaf === 'Y'" class="flex gap-2">
+            <!-- <div v-if="formData.adakah_muallaf === 'Y'" class="flex gap-2">
               <FormKit
                 type="text"
                 name="kursus_terpilih"
@@ -1723,7 +1724,7 @@
                 <i class="fas fa-list mr-2"></i>
                 Pilih Kursus
               </rs-button>
-            </div>
+            </div> -->
           </div>
 
           <!-- Maklumat Tempat Tinggal Section -->
