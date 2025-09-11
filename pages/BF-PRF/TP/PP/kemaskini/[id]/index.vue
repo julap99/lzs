@@ -520,6 +520,7 @@ const loadExistingData = async () => {
         penamaAkaunBank: "Pusat Dialisis Al-Falah Sdn Bhd",
         dokumenPengenalan: { name: 'ssm_al_falah.pdf', size: 111111, type: 'application/pdf' },
         dokumenBank: { name: 'penyata_bank_public.pdf', size: 222222, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       },
       'RE-202505-0013': {
         jenisRecipient: "individu",
@@ -530,6 +531,8 @@ const loadExistingData = async () => {
         noAkaunBank: "8765432109",
         penamaAkaunBank: "Siti Fatimah Binti Ali",
         dokumenPengenalan: { name: 'passport_siti.jpg', size: 456789, type: 'image/jpeg' },
+        dokumenBank: { name: 'penyata_bank_cimb.pdf', size: 210000, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       },
       'RE-202507-0014': {
         jenisRecipient: "syarikat",
@@ -541,6 +544,7 @@ const loadExistingData = async () => {
         penamaAkaunBank: "Klinik Kesihatan Sejahtera",
         dokumenPengenalan: { name: 'ssm_klinik.pdf', size: 333333, type: 'application/pdf' },
         dokumenBank: { name: 'penyata_bank_cimb.pdf', size: 444444, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       },
       'RE-202506-0015': {
         jenisRecipient: "individu",
@@ -551,6 +555,8 @@ const loadExistingData = async () => {
         noAkaunBank: "7654321098",
         penamaAkaunBank: "Zainab Binti Hassan",
         dokumenPengenalan: { name: 'ic_zainab.png', size: 98765, type: 'image/png' },
+        dokumenBank: { name: 'penyata_bank_bi.pdf', size: 200000, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       },
       'RE-202505-0016': {
         jenisRecipient: "syarikat",
@@ -562,6 +568,7 @@ const loadExistingData = async () => {
         penamaAkaunBank: "Pembekal Makanan Halal Sdn Bhd",
         dokumenPengenalan: { name: 'ssm_pembekal.pdf', size: 555555, type: 'application/pdf' },
         dokumenBank: { name: 'penyata_bank_bi.pdf', size: 666666, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       },
       'RE-202507-0017': {
         jenisRecipient: "individu",
@@ -572,6 +579,8 @@ const loadExistingData = async () => {
         noAkaunBank: "6789012345678",
         penamaAkaunBank: "Mohd Zaki bin Hassan",
         dokumenPengenalan: { name: 'ic_zaki.pdf', size: 77777, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_ambank.pdf', size: 205000, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       }
     };
 
