@@ -583,6 +583,135 @@ const loadOrganisasiData = (id) => {
       additionalDocuments: null,
       status: 'Tidak Sah',
       tarikhPermohonan: '12/6/2025'
+    },
+    'ORG-202505-0006': {
+      noRujukan: 'ORG-202505-0006',
+      organizationName: 'Persatuan Belia Islam Malaysia',
+      organizationType: 'NGO',
+      registrationNumber: 'ROS-456/2017',
+      registrationStatus: 'Berdaftar',
+      struktur: 'HQ',
+      hq: '',
+      kariah: 'MASJID PUCHONG',
+      zone: 'Zon Puchong',
+      alamat: {
+        addressLine1: 'No. 33, Jalan Belia 4/2',
+        addressLine2: 'Taman Belia Cemerlang',
+        addressLine3: '',
+        postcode: '47100',
+        city: 'Puchong',
+        district: 'Petaling',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Saudara Fikri bin Omar',
+          ic: '850610089012',
+          phoneNumber: '03-80123456',
+          email: 'fikri@pbim.org'
+        },
+        {
+          name: 'Saudari Nurul Ain binti Zaki',
+          ic: '870315091234',
+          phoneNumber: '019-7654321',
+          email: 'nurul@pbim.org'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: '',
+        bankName: 'AmBank',
+        bankAccountNumber: '6789012345678',
+        penamaBank: 'Persatuan Belia Islam Malaysia',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'Sijil ROS', filename: 'sijil_ros_2017.pdf', size: '1.9 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan', filename: 'surat_perwakilan_pbim.pdf', size: '1.2 MB' },
+      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_pbim.pdf', size: '0.9 MB' },
+      additionalDocuments: null,
+      status: 'Menunggu Pengesahan',
+      tarikhPermohonan: '25/5/2025'
+    },
+    'ORG-202504-0007': {
+      noRujukan: 'ORG-202504-0007',
+      organizationName: 'Universiti Teknologi Malaysia',
+      organizationType: 'IPT',
+      registrationNumber: 'UTM-001/1975',
+      registrationStatus: 'Berdaftar',
+      struktur: 'HQ',
+      hq: '',
+      kariah: 'MASJID UTM',
+      zone: 'Zon Johor',
+      alamat: {
+        addressLine1: '81310 UTM Skudai',
+        addressLine2: 'Johor Bahru',
+        addressLine3: '',
+        postcode: '81310',
+        city: 'Johor Bahru',
+        district: 'Johor Bahru',
+        state: 'Johor'
+      },
+      wakil: [
+        {
+          name: 'Prof. Dr. Ahmad Fauzi bin Ismail',
+          ic: '601205012345',
+          phoneNumber: '07-55345678',
+          email: 'fauzi@utm.my'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: '',
+        bankName: 'HSBC Bank',
+        bankAccountNumber: '7890123456789',
+        penamaBank: 'Universiti Teknologi Malaysia',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'Sijil UTM', filename: 'sijil_utm_1975.pdf', size: '3.1 MB' },
+      appointmentLetter: { name: 'Surat Lantikan', filename: 'surat_lantikan_utm.pdf', size: '2.2 MB' },
+      bankProof: { name: 'Pengesahan Bank', filename: 'bank_confirmation_utm.pdf', size: '1.3 MB' },
+      additionalDocuments: null,
+      status: 'Tidak Sah',
+      tarikhPermohonan: '18/4/2025'
+    },
+    'ORG-202508-0008': {
+      noRujukan: 'ORG-202508-0008',
+      organizationName: 'Yayasan Pendidikan Selangor',
+      organizationType: 'Yayasan',
+      registrationNumber: 'YPS-2023-008',
+      registrationStatus: 'Berdaftar',
+      struktur: 'Cawangan',
+      hq: 'Yayasan Pendidikan Selangor HQ',
+      kariah: 'MASJID SHAH ALAM',
+      zone: 'Zon Selangor',
+      alamat: {
+        addressLine1: 'No. 88, Jalan Pendidikan 2/1',
+        addressLine2: 'Taman Pendidikan Jaya',
+        addressLine3: 'Seksyen 2',
+        postcode: '40000',
+        city: 'Shah Alam',
+        district: 'Petaling',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Dato Dr. Siti Aisyah binti Hassan',
+          ic: '720315123456',
+          phoneNumber: '03-55123456',
+          email: 'aisyah@yps.edu.my'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: 'tidak',
+        bankName: 'Bank Islam',
+        bankAccountNumber: '1234567890123',
+        penamaBank: 'Yayasan Pendidikan Selangor',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'Sijil Yayasan', filename: 'sijil_yayasan_2023.pdf', size: '2.8 MB' },
+      appointmentLetter: { name: 'Surat Cawangan', filename: 'surat_cawangan_yps.pdf', size: '1.6 MB' },
+      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_yps.pdf', size: '1.0 MB' },
+      additionalDocuments: null,
+      status: 'Dalam Pembetulan',
+      tarikhPermohonan: '05/8/2025'
     }
   }
 

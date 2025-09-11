@@ -344,8 +344,8 @@ const supportDocuments = computed(() => {
 
 const loadCawanganData = (id) => {
   const dataset = {
-    'ORG-240504': {
-      noRujukan: 'ORG-240504',
+    'CB-240501': {
+      noRujukan: 'CB-240501',
       namaCawangan: 'Institut Latihan Kemahiran Malaysia - Cawangan Shah Alam',
       namaHQ: 'ILKM Shah Alam',
       jenisOrganisasi: 'Institut',
@@ -384,8 +384,8 @@ const loadCawanganData = (id) => {
       status: 'Menunggu Pengesahan',
       tarikhPermohonan: '30/7/2025'
     },
-    'ORG-240502': {
-      noRujukan: 'ORG-240502',
+    'CB-240502': {
+      noRujukan: 'CB-240502',
       namaCawangan: 'Pertubuhan Amal Iman Malaysia - Cawangan Klang',
       namaHQ: 'Pertubuhan Amal Iman Malaysia',
       jenisOrganisasi: 'NGO',
@@ -424,8 +424,8 @@ const loadCawanganData = (id) => {
       status: 'Disahkan',
       tarikhPermohonan: '15/6/2025'
     },
-    'ORG-240503': {
-      noRujukan: 'ORG-240503',
+    'CB-240503': {
+      noRujukan: 'CB-240503',
       namaCawangan: 'Sekolah Menengah Tahfiz Al-Amin - Cawangan Kajang',
       namaHQ: 'Sekolah Menengah Tahfiz Al-Amin',
       jenisOrganisasi: 'IPT',
@@ -464,8 +464,8 @@ const loadCawanganData = (id) => {
       status: 'Perlu Pembetulan',
       tarikhPermohonan: '8/5/2025'
     },
-    'ORG-240501': {
-      noRujukan: 'ORG-240501',
+    'CB-240504': {
+      noRujukan: 'CB-240504',
       namaCawangan: 'Syarikat Teknologi Maju Sdn Bhd - Cawangan Cyberjaya',
       namaHQ: 'Syarikat Teknologi Maju Sdn Bhd',
       jenisOrganisasi: 'Swasta',
