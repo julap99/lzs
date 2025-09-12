@@ -38,13 +38,14 @@
             />
 
             <!-- Status -->
-            <FormKit
-              type="text"
-              name="status"
-              label="Status"
-              v-model="formData.status"
-              
-            />
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Status</label
+              >
+              <rs-badge :variant="getStatusVariant(formData.status)">
+                {{ formData.status }}
+              </rs-badge>
+            </div>
 
             <!-- Jumlah Amaun -->
             <FormKit
@@ -943,6 +944,25 @@ onMounted(async () => {
     console.error('Error loading bantuan details:', error);
   }
 });
+
+// Methods
+const getStatusVariant = (status) => {
+  switch (status) {
+    case 'Draf':
+      return 'warning';
+    case 'Sedang Diproses':
+    case 'Dalam Proses':
+      return 'info';
+    case 'Ditolak':
+      return 'danger';
+    case 'Baru':
+      return 'primary';
+    case 'Selesai':
+      return 'success';
+    default:
+      return 'secondary';
+  }
+};
 
 // Damaged Data Table Configuration
 const damagedDataColumns = [
