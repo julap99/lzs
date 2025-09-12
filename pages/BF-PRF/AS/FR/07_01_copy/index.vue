@@ -2,81 +2,78 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
     <rs-card class="mt-4">
-    <template #header>
-      <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
-        <rs-badge
-          v-if="formData.status"
-          :variant="getStatusVariant(formData.status)"
-        >
-          {{ formData.status }}
-        </rs-badge>
-      </div>
-    </template>
-
-    <template #body>
-      <rs-fieldset class="mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Nama</label
-            >
-            <p class="text-gray-900">{{ formData.nama }}</p>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Alamat</label
-            >
-            <p class="text-gray-900">{{ formData.alamat }}</p>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Jenis Pengenalan</label
-            >
-            <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >No Pengenalan</label
-            >
-            <p class="text-gray-900">{{ formData.noPengenalan }}</p>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >No Telefon</label
-            >
-            <p class="text-gray-900">{{ formData.noTelefon }}</p>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >E-mel</label
-            >
-            <p class="text-gray-900">{{ formData.email }}</p>
-          </div>
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
+          <rs-badge
+            v-if="formData.status"
+            :variant="getStatusVariant(formData.status)">
+            {{ formData.status }}
+          </rs-badge>
         </div>
-      </rs-fieldset>
-    </template>
-  </rs-card>
+      </template>
 
-  <!-- ===== Pengesahan Status ===== -->
-  <rs-card class="mt-4">
-    <template #header>
-      <h2 class="text-xl font-semibold">Pengesahan Status</h2>
-    </template>
+      <template #body>
+        <rs-fieldset class="mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Nama</label
+              >
+              <p class="text-gray-900">{{ formData.nama }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Alamat</label
+              >
+              <p class="text-gray-900">{{ formData.alamat }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Jenis Pengenalan</label
+              >
+              <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >No Pengenalan</label
+              >
+              <p class="text-gray-900">{{ formData.noPengenalan }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >No Telefon</label
+              >
+              <p class="text-gray-900">{{ formData.noTelefon }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >E-mel</label
+              >
+              <p class="text-gray-900">{{ formData.email }}</p>
+            </div>
+          </div>
+        </rs-fieldset>
+      </template>
+    </rs-card>
 
-    <template #body>
-      <div class="space-y-6">
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <!-- ===== Pengesahan Status ===== -->
+    <rs-card class="mt-4">
+      <template #header>
+        <h2 class="text-xl font-semibold">Pengesahan Status</h2>
+      </template>
 
+      <template #body>
+        <div class="space-y-6">
+          <div
+            class="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <!-- S2: MAKLUMAT SYOR -->
             <section class="p-6">
               <h4
-                class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-              >
+                class="text-md font-semibold text-gray-900 mb-4 flex items-center">
                 <Icon
                   name="ph:clipboard-text"
-                  class="w-5 h-5 mr-2 text-green-600"
-                />
+                  class="w-5 h-5 mr-2 text-green-600" />
                 Maklumat Syor
               </h4>
 
@@ -96,19 +93,22 @@
                     {{ profilingData.bakiHadKifayahSah }}
                   </p> -->
 
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
+                  <label
+                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Peratusan Perbezaan
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.peratusanPerbezaan }}
                   </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
+                  <label
+                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Kategori Keluarga Asnaf
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.kategoriKeluargaAsnaf }}
                   </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
+                  <label
+                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Kategori Asnaf
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -119,8 +119,7 @@
                 <div class="hidden lg:block"></div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide font-bold"
-                  >
+                    class="block text-xs uppercase tracking-wide font-bold">
                     Pengenalan Id Tanggungan
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -133,8 +132,7 @@
                 </div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide font-bold"
-                  >
+                    class="block text-xs uppercase tracking-wide font-bold">
                     Kategori Tanggungan (Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -149,8 +147,7 @@
                 <div class="hidden lg:block"></div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide font-bold"
-                  >
+                    class="block text-xs uppercase tracking-wide font-bold">
                     Pengenalan Id Asnaf/Tanggungan
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -165,8 +162,7 @@
                 </div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide font-bold"
-                  >
+                    class="block text-xs uppercase tracking-wide font-bold">
                     Merit Individu(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -181,8 +177,7 @@
                 </div>
                 <div>
                   <label
-                    class="block text-xs uppercase tracking-wide font-bold"
-                  >
+                    class="block text-xs uppercase tracking-wide font-bold">
                     Status Multidimensi(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -197,21 +192,24 @@
                 </div>
                 <!-- Row 3 in one column -->
                 <div>
-                  <label class="block text-xs uppercase tracking-wide font-bold">
+                  <label
+                    class="block text-xs uppercase tracking-wide font-bold">
                     Merit Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.meritKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
+                  <label
+                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Status Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.statusMultidimensiKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
+                  <label
+                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Quadrant Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -224,8 +222,7 @@
             <!-- S3: TUGASAN SIASATAN -->
             <section class="p-6 bg-amber-50">
               <h4
-                class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-              >
+                class="text-md font-semibold text-gray-900 mb-4 flex items-center">
                 <Icon name="ph:user-gear" class="w-5 h-5 mr-2 text-amber-600" />
                 Tugasan Siasatan
               </h4>
@@ -233,8 +230,7 @@
               <!-- Status indicator -->
               <div
                 v-if="!profilingData.assignSiasatan"
-                class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg"
-              >
+                class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p class="text-sm text-yellow-800 flex items-center">
                   <Icon name="ph:info" class="w-4 h-4 mr-2" />
                   Pilih petugas siasatan untuk melihat bahagian Pengesahan
@@ -245,8 +241,7 @@
               <!-- Success indicator when value is selected -->
               <div
                 v-else
-                class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg"
-              >
+                class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <p class="text-sm text-green-800 flex items-center">
                   <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
                   Petugas siasatan telah dipilih:
@@ -258,49 +253,48 @@
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormKit
+                  readOnly="true"
                   type="select"
                   name="assignSiasatan"
                   label="Assign Siasatan"
+                  value="petugas_a"
                   :options="assignSiasatanOptions"
                   placeholder="Pilih petugas siasatan"
                   :classes="{
                     input: '!py-2.5',
                     label: 'text-sm font-medium text-gray-700',
                   }"
-                  v-model="profilingData.assignSiasatan"
-                />
+                  v-model="profilingData.assignSiasatan" />
                 <div class="md:col-span-2 flex items-end justify-end">
                   <rs-button
+                  disabled
                     variant="primary"
                     @click="handleTugasanHantar"
-                    class="px-6 py-2.5"
-                  >
+                    class="px-6 py-2.5">
                     <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" />
                     Hantar
                   </rs-button>
                 </div>
               </div>
             </section>
+          </div>
         </div>
-      </div>
-    </template>
-  </rs-card>
-  <rs-card class="mt-4">
-    <template #header>
-      <h2 class="text-xl font-semibold">Pengesahan Status</h2>
-    </template>
+      </template>
+    </rs-card>
+    <rs-card class="mt-4">
+      <template #header>
+        <h2 class="text-xl font-semibold">Pengesahan Status</h2>
+      </template>
 
-    <template #body>
+      <template #body>
         <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <!-- S2: MAKLUMAT SYOR -->
           <section class="p-6">
             <h4
-              class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-            >
+              class="text-md font-semibold text-gray-900 mb-4 flex items-center">
               <Icon
                 name="ph:clipboard-text"
-                class="w-5 h-5 mr-2 text-green-600"
-              />
+                class="w-5 h-5 mr-2 text-green-600" />
               Maklumat Syor
             </h4>
 
@@ -311,77 +305,78 @@
                   name="peratusanPerbezaan"
                   label="Peratusan Perbezaan"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.peratusanPerbezaan"
-                />
-                
+                  v-model="profilingData.peratusanPerbezaan" />
+
                 <FormKit
                   type="select"
                   name="kategoriKeluargaAsnaf"
                   label="Kategori Keluarga Asnaf"
                   :options="kategoriKeluargaOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.kategoriKeluargaAsnaf"
-                />
-                
+                  v-model="profilingData.kategoriKeluargaAsnaf" />
+
                 <FormKit
                   type="select"
                   name="kategoriAsnaf"
                   label="Kategori Asnaf"
                   :options="kategoriAsnafOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.kategoriAsnaf"
-                />
+                  v-model="profilingData.kategoriAsnaf" />
               </div>
-              
+
               <div class="hidden lg:block"></div>
               <div class="hidden lg:block"></div>
-              
+
               <div>
                 <FormKit
                   type="text"
                   name="pengenalanIdTanggungan1"
                   label="Pengenalan Id Tanggungan 1"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.pengenalanIdTanggungan1"
-                />
-                
+                  v-model="profilingData.pengenalanIdTanggungan1" />
+
                 <FormKit
                   type="text"
                   name="pengenalanIdTanggungan2"
                   label="Pengenalan Id Tanggungan 2"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.pengenalanIdTanggungan2"
-                />
-                
+                  v-model="profilingData.pengenalanIdTanggungan2" />
+
                 <FormKit
                   type="text"
                   name="pengenalanIdTanggungan3"
                   label="Pengenalan Id Tanggungan 3"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.pengenalanIdTanggungan3"
-                />
+                  v-model="profilingData.pengenalanIdTanggungan3" />
               </div>
-              
+
               <div>
-                <div class="grid gap-4 grid-cols-[1fr_160px] md:grid-cols-[1fr_200px]">
+                <div
+                  class="grid gap-4 grid-cols-[1fr_160px] md:grid-cols-[1fr_200px]">
                   <!-- Left column: all selects stacked -->
                   <div>
                     <FormKit
@@ -390,38 +385,39 @@
                       label="Kategori Tanggungan (Syor) 1"
                       :options="kategoriTanggunganOptions"
                       :classes="{
-                        label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
-                        input: '!py-2.5 !text-gray-900 !font-medium'
+                        label:
+                          'text-xs uppercase tracking-wide font-bold text-gray-700',
+                        input: '!py-2.5 !text-gray-900 !font-medium',
                       }"
-                      v-model="profilingData.kategoriTanggunganSyor1"
-                    />
+                      v-model="profilingData.kategoriTanggunganSyor1" />
                     <FormKit
                       type="select"
                       name="kategoriTanggunganSyor2"
                       label="Kategori Tanggungan (Syor) 2"
                       :options="kategoriTanggunganOptions"
                       :classes="{
-                        label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                        input: '!py-2.5 !text-gray-900 !font-medium'
+                        label:
+                          'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
+                        input: '!py-2.5 !text-gray-900 !font-medium',
                       }"
-                      v-model="profilingData.kategoriTanggunganSyor2"
-                    />
+                      v-model="profilingData.kategoriTanggunganSyor2" />
                     <FormKit
                       type="select"
                       name="kategoriTanggunganSyor3"
                       label="Kategori Tanggungan (Syor) 3"
                       :options="kategoriTanggunganOptions"
                       :classes="{
-                        label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                        input: '!py-2.5 !text-gray-900 !font-medium'
+                        label:
+                          'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
+                        input: '!py-2.5 !text-gray-900 !font-medium',
                       }"
-                      v-model="profilingData.kategoriTanggunganSyor3"
-                    />
+                      v-model="profilingData.kategoriTanggunganSyor3" />
                   </div>
 
                   <!-- Right column: header + checkboxes stacked -->
                   <div class="pt-1 w-[160px] md:w-[200px]">
-                    <div class="text-xs uppercase tracking-wide font-bold text-gray-700 mb-2 text-center">
+                    <div
+                      class="text-xs uppercase tracking-wide font-bold text-gray-700 mb-2 text-center">
                       Pelarasan
                     </div>
                     <div class="flex flex-col items-center gap-4">
@@ -430,65 +426,65 @@
                         name="tanggunganCheckbox1"
                         :classes="{
                           wrapper: 'flex items-center justify-center',
-                          input: 'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
-                          label: 'sr-only'
+                          input:
+                            'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
+                          label: 'sr-only',
                         }"
-                        v-model="profilingData.tanggunganCheckbox1"
-                      />
+                        v-model="profilingData.tanggunganCheckbox1" />
                       <FormKit
                         type="checkbox"
                         name="tanggunganCheckbox2"
                         :classes="{
                           wrapper: 'flex items-center justify-center',
-                          input: 'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
-                          label: 'sr-only'
+                          input:
+                            'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
+                          label: 'sr-only',
                         }"
-                        v-model="profilingData.tanggunganCheckbox2"
-                      />
+                        v-model="profilingData.tanggunganCheckbox2" />
                       <FormKit
                         type="checkbox"
                         name="tanggunganCheckbox3"
                         :classes="{
                           wrapper: 'flex items-center justify-center',
-                          input: 'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
-                          label: 'sr-only'
+                          input:
+                            'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
+                          label: 'sr-only',
                         }"
-                        v-model="profilingData.tanggunganCheckbox3"
-                      />
+                        v-model="profilingData.tanggunganCheckbox3" />
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               <!-- spacer to align like screenshot: leave empty third column on first row -->
               <div class="hidden lg:block"></div>
-              
+
               <div>
                 <FormKit
                   type="text"
                   name="pengenalanId"
                   label="Pengenalan Id Asnaf/Tanggungan"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.pengenalanId"
-                />
+                  v-model="profilingData.pengenalanId" />
               </div>
-              
+
               <div>
                 <FormKit
                   type="text"
                   name="merit"
                   label="Merit Individu(Syor)"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.merit"
-                />
+                  v-model="profilingData.merit" />
               </div>
-              
+
               <div>
                 <FormKit
                   type="select"
@@ -496,13 +492,13 @@
                   label="Status Multidimensi(Syor)"
                   :options="statusMultidimensiOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.multidimensi"
-                />
+                  v-model="profilingData.multidimensi" />
               </div>
-              
+
               <!-- Row 3 in one column -->
               <div>
                 <FormKit
@@ -510,11 +506,11 @@
                   name="meritKeluargaSyor"
                   label="Merit Keluarga(Syor)"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.meritKeluargaSyor"
-                />
+                  v-model="profilingData.meritKeluargaSyor" />
 
                 <FormKit
                   type="select"
@@ -522,11 +518,11 @@
                   label="Status Multidimensi Keluarga(Syor)"
                   :options="statusMultidimensiOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.statusMultidimensiKeluargaSyor"
-                />
+                  v-model="profilingData.statusMultidimensiKeluargaSyor" />
 
                 <FormKit
                   type="select"
@@ -534,11 +530,11 @@
                   label="Quadrant Multidimensi Keluarga(Syor)"
                   :options="quadrantMultidimensiOptions"
                   :classes="{
-                    label: 'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium'
+                    label:
+                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
+                    input: '!py-2.5 !text-gray-900 !font-medium',
                   }"
-                  v-model="profilingData.quadrantMultidimensiKeluargaSyor"
-                />
+                  v-model="profilingData.quadrantMultidimensiKeluargaSyor" />
               </div>
             </div>
           </section>
@@ -546,12 +542,8 @@
           <!-- Pengesahan Fields -->
           <section class="p-6 bg-gray-50 border-t border-gray-200">
             <h4
-              class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-            >
-              <Icon
-                name="ph:check-circle"
-                class="w-5 h-5 mr-2 text-blue-600"
-              />
+              class="text-md font-semibold text-gray-900 mb-4 flex items-center">
+              <Icon name="ph:check-circle" class="w-5 h-5 mr-2 text-blue-600" />
               Pengesahan
             </h4>
 
@@ -564,21 +556,19 @@
                 rows="4"
                 :classes="{
                   label: 'text-sm font-medium text-gray-700',
-                  input: '!py-3 !text-gray-900 !font-medium resize-none'
+                  input: '!py-3 !text-gray-900 !font-medium resize-none',
                 }"
-                v-model="profilingData.komenPengesahan"
-              />
-              
+                v-model="profilingData.komenPengesahan" />
+
               <FormKit
                 type="date"
                 name="tarikhPengesahan"
                 label="Tarikh Pengesahan"
                 :classes="{
                   label: 'text-sm font-medium text-gray-700',
-                  input: '!py-3 !text-gray-900 !font-medium'
+                  input: '!py-3 !text-gray-900 !font-medium',
                 }"
-                v-model="profilingData.tarikhPengesahan"
-              />
+                v-model="profilingData.tarikhPengesahan" />
 
               <FormKit
                 type="text"
@@ -588,10 +578,9 @@
                 readonly="true"
                 :classes="{
                   label: 'text-sm font-medium text-gray-700',
-                  input: '!py-3 !text-gray-900 !font-medium'
+                  input: '!py-3 !text-gray-900 !font-medium',
                 }"
-                v-model="profilingData.namaPengesah"
-              />
+                v-model="profilingData.namaPengesah" />
             </div>
 
             <div class="flex justify-between gap-3 mt-6">
@@ -603,15 +592,15 @@
                   <Icon name="ph:eye" class="w-4 h-4 mr-2" /> Siasatan
                 </rs-button>
                 <rs-button variant="success" @click="handleHantar">
-                  <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" /> Hantar
+                  <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" />
+                  Hantar
                 </rs-button>
               </div>
             </div>
           </section>
-
         </div>
-    </template>
-  </rs-card>
+      </template>
+    </rs-card>
   </div>
 </template>
 
@@ -623,7 +612,6 @@ const toast = useToast();
 
 /* PAGE META */
 definePageMeta({ title: "Maklumat Pemohon - Siasatan EOAD" });
-
 
 /* BREADCRUMB */
 const breadcrumb = ref([
@@ -644,7 +632,7 @@ const formData = ref({
   noPengenalan: "770319035991",
   noTelefon: "0191105544",
   email: "adnan.abu@gmail.com",
-  status: "Dalam Siasatan",
+  status: "Menunggu Pengesahan",
   keputusanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
@@ -655,8 +643,8 @@ const formData = ref({
 const profilingData = ref({
   pengenalanId: "770319035991",
   nama: "Adnan bin Abu",
-  merit:"0.69",
-  multidimensi:"Produktif C",
+  merit: "0.69",
+  multidimensi: "Produktif C",
   hadKifayahSyor: "50.81",
   kategoriKeluargaAsnafSyor: "Miskin",
   kategoriAsnafSyor: "Miskin",
@@ -668,15 +656,15 @@ const profilingData = ref({
   pengenalanIdTanggungan1: "801004035672",
   pengenalanIdTanggungan2: "060802030272",
   pengenalanIdTanggungan3: "091108030442",
-  merit1:"0.64",
-  merit2:"0.38",
-  merit3:"0.40",
-  multidimensi1:"Produktif C",
-  multidimensi2:"Tidak Produktif",
-  multidimensi3:"Tidak Produktif",
+  merit1: "0.64",
+  merit2: "0.38",
+  merit3: "0.40",
+  multidimensi1: "Produktif C",
+  multidimensi2: "Tidak Produktif",
+  multidimensi3: "Tidak Produktif",
   kategoriTanggunganSyor: "Tanggungan Utama",
   kategoriTanggunganSyor1: "Miskin",
-  kategoriTanggunganSyor2: "Miskin", 
+  kategoriTanggunganSyor2: "Miskin",
   kategoriTanggunganSyor3: "Miskin",
   tanggunganCheckbox1: false,
   tanggunganCheckbox2: false,
@@ -689,12 +677,11 @@ const profilingData = ref({
   kategoriKeluargaAsnaf: "Miskin",
   kategoriAsnaf: "Miskin",
   jumlahHadKifayahSah: "RM1968.00",
-  assignSiasatan: "",
+  assignSiasatan: "petugas_a",
   komenPengesahan: "",
   namaPengesah: "admin",
-  tarikhPengesahan: new Date().toISOString().split('T')[0], // Default to today's date
+  tarikhPengesahan: new Date().toISOString().split("T")[0], // Default to today's date
 });
-
 
 /* OPTIONS */
 const assignSiasatanOptions = ref([
@@ -736,27 +723,33 @@ const statusMultidimensiOptions = ref([
 const quadrantMultidimensiOptions = ref([
   { label: "Asnaf Produktif Sementara", value: "Asnaf Produktif Sementara" },
   { label: "Asnaf Produktif Tetap", value: "Asnaf Produktif Tetap" },
-  { label: "Asnaf Tidak Produktif Sementara", value: "Asnaf Tidak Produktif Sementara" },
-  { label: "Asnaf Tidak Produktif Tetap", value: "Asnaf Tidak Produktif Tetap" },
+  {
+    label: "Asnaf Tidak Produktif Sementara",
+    value: "Asnaf Tidak Produktif Sementara",
+  },
+  {
+    label: "Asnaf Tidak Produktif Tetap",
+    value: "Asnaf Tidak Produktif Tetap",
+  },
 ]);
 
-const handleTugasanHantar = () =>{
+const handleTugasanHantar = () => {
   toast.success("Tugasan telah diberikan kepada pegawai siasatan");
-  navigateTo('/BF-PRF/AS/FR/07_1');
-}
+  navigateTo("/BF-PRF/AS/FR/07_1");
+};
 
 const handleFormSubmit = (formData: any) => {
-  console.log('Form submitted:', formData);
+  console.log("Form submitted:", formData);
   toast.success("Maklumat Pengesahan Status part 2 telah disimpan");
-}
+};
 
 const handleFormReset = () => {
   // Reset to original values
   profilingData.value = {
     pengenalanId: "770319035991",
     nama: "Adnan bin Abu",
-    merit:"0.69",
-    multidimensi:"Produktif C",
+    merit: "0.69",
+    multidimensi: "Produktif C",
     hadKifayahSyor: "50.81",
     kategoriKeluargaAsnafSyor: "Miskin",
     kategoriAsnafSyor: "Miskin",
@@ -768,15 +761,15 @@ const handleFormReset = () => {
     pengenalanIdTanggungan1: "801004035672",
     pengenalanIdTanggungan2: "060802030272",
     pengenalanIdTanggungan3: "091108030442",
-    merit1:"0.64",
-    merit2:"0.38",
-    merit3:"0.40",
-    multidimensi1:"Produktif C",
-    multidimensi2:"Tidak Produktif",
-    multidimensi3:"Tidak Produktif",
+    merit1: "0.64",
+    merit2: "0.38",
+    merit3: "0.40",
+    multidimensi1: "Produktif C",
+    multidimensi2: "Tidak Produktif",
+    multidimensi3: "Tidak Produktif",
     kategoriTanggunganSyor: "Tanggungan Utama",
     kategoriTanggunganSyor1: "Miskin",
-    kategoriTanggunganSyor2: "Miskin", 
+    kategoriTanggunganSyor2: "Miskin",
     kategoriTanggunganSyor3: "Miskin",
     tanggunganCheckbox1: false,
     tanggunganCheckbox2: false,
@@ -789,29 +782,29 @@ const handleFormReset = () => {
     kategoriKeluargaAsnaf: "Miskin",
     kategoriAsnaf: "Miskin",
     jumlahHadKifayahSah: "RM1968.00",
-    assignSiasatan: "",
+    assignSiasatan: "petugas_a",
     komenPengesahan: "",
     namaPengesah: "admin",
-    tarikhPengesahan: new Date().toISOString().split('T')[0], // Default to today's date
+    tarikhPengesahan: new Date().toISOString().split("T")[0], // Default to today's date
   };
   toast.info("Form telah direset kepada nilai asal");
-}
+};
 
 const handleKembali = () => {
-  navigateTo('/BF-PRF/AS/FR/07_1');
-}
+  navigateTo("/BF-PRF/AS/FR/07_1");
+};
 
 const handleHantar = () => {
   toast.success("Maklumat Pengesahan Status telah disimpan");
-}
+};
 
 const handleLihat = () => {
-  navigateTo('/BF-PRF/AS/FR/09');
-}
+  navigateTo("/BF-PRF/AS/FR/09");
+};
 
 /* HELPERS */
 function getStatusVariant(status: string) {
-  if (status === "Dalam Siasatan") return "primary";
+  if (status === "Menunggu Pengesahan") return "primary";
   if (status === "Diluluskan") return "success";
   if (status === "Ditolak") return "danger";
   return "default";
@@ -821,5 +814,4 @@ function getAssignSiasatanLabel(value: string) {
   const option = assignSiasatanOptions.value.find((opt) => opt.value === value);
   return option ? option.label : value;
 }
-
 </script>

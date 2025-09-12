@@ -628,7 +628,7 @@
                       <template v-slot:actions="{ value }">
                         <rs-button
                           variant="primary"
-                          @click="editAssistance(value)"
+                          @click="editAssistance(value.actions)"
                         >
                           Edit
                         </rs-button>
@@ -845,8 +845,10 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 
 definePageMeta({
   title: "Maklumat Pemohon - Siasatan EOAD",
@@ -858,11 +860,11 @@ const breadcrumb = ref([
     type: "link",
     path: "/BF-BTN/tugasan",
   },
-  {
-    name: "Siasatan",
-    type: "link",
-    path: "/BF-BTN/tugasan",
-  },
+  // {
+  //   name: "Siasatan",
+  //   type: "link",
+  //   path: "/BF-BTN/tugasan",
+  // },
   {
     name: "Kelulusan Bantuan",
     type: "current",
@@ -1030,14 +1032,37 @@ const pembatalanColumns = [
 ];
 
 // Mock data for tables
-const assistanceApplications = ref([
-  {
+
+const assistanceApplications = ref([]);
+
+// Paparkan Bantuan Binaan Rumah hanya untuk id "btn-001"
+if (route.params.id === "btn-001") {
+  assistanceApplications.value.push({
     jenisBantuan: "B152 - Bantuan Binaan Rumah (Fakir)",
-    status: "Dalam Semakan",
+    status: "Perlu Diproses",
     sla: "3 hari lagi",
-    actions: "/",
-  },
-]);
+    actions: "/BF-BTN/tugasan/bantuan/kelulusan/B106",
+  });
+}
+
+// Tambah dua baris untuk id "btn-002" dalam tab Bantuan Baru
+if (route.params.id === "btn-002") {
+  assistanceApplications.value.push(
+    {
+      jenisBantuan: "(HQ) Bantuan Dermasiswa Sekolah Asrama (Fakir)",
+      status: "Perlu Diproses",
+      sla: "3 hari lagi",
+      actions: "/BF-BTN/tugasan/bantuan/kelulusan/pendidikan/B300",
+    },
+    {
+      jenisBantuan:
+        "(HQ) Dermasiswa IPT Dalam Negara (Fakir) - IPTA/IPTS",
+      status: "Perlu Diproses",
+      sla: "3 hari lagi",
+      actions: "/BF-BTN/tugasan/bantuan/kelulusan/pendidikan/B307",
+    }
+  );
+}
 
 const existingAssistance = ref([
   {
@@ -1208,8 +1233,10 @@ const addNewAssistance = () => {
   // Handle adding new assistance
 };
 
-const editAssistance = (row) => {
-  router.push(`/BF-BTN/tugasan/bantuan/kelulusan/B106`);
+const editAssistance = (path) => {
+  if (path && typeof path === "string") {
+    navigateTo(path);
+  }
 };
 
 const saveData = () => {
@@ -1262,6 +1289,7 @@ const toggleSelectAllPembatalan = () => {
 const getAssistanceStatusVariant = (status) => {
   const variants = {
     "dalam semakan": "warning",
+    "perlu diproses": "warning",
     lulus: "success",
     "tidak lulus": "danger",
   };

@@ -281,7 +281,7 @@ const performSearch = async () => {
     processing.value = false;
     
     // Mock data for demonstration - simulate finding a profile
-    profileExists.value = Math.random() >= 0.4; // 60% chance of finding profile
+    profileExists.value = Math.random() >= 0.5; // 50% chance of finding profile
     
     if (profileExists.value) {
       // Mock search result data (ID FR 3.2.1 - 3.2.5)

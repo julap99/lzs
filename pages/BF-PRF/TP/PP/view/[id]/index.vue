@@ -109,16 +109,24 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Dokumen Sokongan</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                <span class="font-medium text-gray-600">Dokumen Sokongan Bank:</span>
-                <div class="flex items-center gap-2">
-                  <span v-if="hasDocument(recipientData.dokumenSokongan)" class="text-gray-900 font-semibold">{{ getDocumentName(recipientData.dokumenSokongan) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(recipientData.dokumenSokongan)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Dokumen Sokongan Bank')">
-                    <Icon name="ph:download" class="w-4 h-4" />
+              <div v-for="(doc, index) in supportDocuments" :key="index" class="p-4 border border-gray-200 rounded-lg flex items-center justify-between">
+                <div class="flex items-center">
+                  <Icon name="mdi:file-document-outline" class="text-blue-600 mr-3" />
+                  <div>
+                    <p class="font-medium text-gray-900">{{ doc.name }}</p>
+                    <template v-if="doc.has">
+                      <p class="text-sm text-gray-600">{{ doc.filename }}</p>
+                      <p v-if="doc.size" class="text-xs text-gray-500">{{ doc.size }}</p>
+                    </template>
+                    <rs-badge v-else variant="warning">Tiada</rs-badge>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2" v-if="doc.has">
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" :title="`Muat Turun`" @click="handleDownload(doc.name)">
+                    <Icon name="ph:download" size="1rem" />
                   </rs-button>
-                  <rs-button v-if="hasDocument(recipientData.dokumenSokongan)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Dokumen Sokongan Bank')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" :title="`Lihat`" @click="handleView(doc.name)">
+                    <Icon name="ph:eye" size="1rem" />
                   </rs-button>
                 </div>
               </div>
@@ -258,10 +266,26 @@ const formatDate = (dateString) => {
   }
 }
 
+const supportDocuments = computed(() => {
+  const id = recipientData.value.identityDocument
+  const ds = recipientData.value.dokumenSokongan
+  const bd = recipientData.value.bankDocument
+  const ad = recipientData.value.additionalDocuments
+  const pick = (d) => (Array.isArray(d) ? d[0] : d) || {}
+  const f = (d) => (d && (Array.isArray(d) ? d.length > 0 : true))
+  const p1 = pick(id), p2 = pick(ds), p3 = pick(bd), p4 = pick(ad)
+  return [
+    { name: 'Dokumen Pengenalan', has: f(id), filename: f(id) ? (p1.filename || p1.name) : '', size: p1.size || '' },
+    { name: 'Dokumen Sokongan Bank', has: f(ds), filename: f(ds) ? (p2.filename || p2.name) : '', size: p2.size || '' },
+    { name: 'Dokumen Bank', has: f(bd), filename: f(bd) ? (p3.filename || p3.name) : '', size: p3.size || '' },
+    { name: 'Dokumen Tambahan', has: f(ad), filename: f(ad) ? (p4.filename || p4.name) : '', size: p4.size || '' },
+  ]
+})
+
 const loadRecipientData = (id) => {
   const dataset = {
-    'RE-240511': {
-      noRujukan: 'RE-240511',
+    'RE-202507-0011': {
+      noRujukan: 'RE-202507-0011',
       jenisRecipient: 'individu',
       namaPenuh: 'Ahmad Bin Abdullah',
       namaSyarikat: '',
@@ -281,29 +305,29 @@ const loadRecipientData = (id) => {
       status: 'Menunggu Pengesahan',
       tarikhPermohonan: '23/7/2025'
     },
-    'RE-240512': {
-      noRujukan: 'RE-240512',
+    'RE-202506-0012': {
+      noRujukan: 'RE-202506-0012',
       jenisRecipient: 'syarikat',
       namaPenuh: '',
-      namaSyarikat: 'Pusat Dialisis Al-Falah Sdn Bhd',
+      namaSyarikat: 'Pusat Dialisis As-Salam Shah Alam',
       jenisPengenalan: 'id_syarikat',
       idPengenalan: '',
-      idSyarikat: '123456-A',
+      idSyarikat: 'PPM-2021-015',
       bank: {
-        bankName: 'CIMB Bank',
-        bankAccountNumber: '8001234567890',
-        penamaBank: 'Pusat Dialisis Al-Falah Sdn Bhd',
+        bankName: 'Bank Islam',
+        bankAccountNumber: '1234567890123',
+        penamaBank: 'Pusat Dialisis As-Salam Shah Alam',
         paymentMethod: 'Bank Transfer'
       },
-      identityDocument: { name: 'sijil_ssm_2025.pdf' },
-      dokumenSokongan: { name: 'surat_pengesahan_bank_2025.pdf' },
-      bankDocument: { name: 'bank_confirmation_2025.pdf' },
+      identityDocument: { name: 'sijil_ros_dialisis_2021.pdf' },
+      dokumenSokongan: { name: 'surat_pengesahan_bank_dialisis_2025.pdf' },
+      bankDocument: { name: 'bank_confirmation_dialisis_2025.pdf' },
       additionalDocuments: null,
       status: 'Disahkan',
       tarikhPermohonan: '15/6/2025'
     },
-    'RE-240513': {
-      noRujukan: 'RE-240513',
+    'RE-202505-0013': {
+      noRujukan: 'RE-202505-0013',
       jenisRecipient: 'individu',
       namaPenuh: 'Siti Fatimah Binti Ali',
       namaSyarikat: '',
@@ -322,26 +346,89 @@ const loadRecipientData = (id) => {
       status: 'Tidak Sah',
       tarikhPermohonan: '8/5/2025'
     },
-    'RE-240514': {
-      noRujukan: 'RE-240514',
+    'RE-202507-0014': {
+      noRujukan: 'RE-202507-0014',
       jenisRecipient: 'syarikat',
       namaPenuh: '',
-      namaSyarikat: 'Klinik Kesihatan Sejahtera',
+      namaSyarikat: 'Klinik Kesihatan Al-Ikhlas',
       jenisPengenalan: 'id_syarikat',
       idPengenalan: '',
       idSyarikat: 'PPM-2023-001',
       bank: {
-        bankName: 'RHB Bank',
+        bankName: 'Bank Islam',
         bankAccountNumber: '3456789012345',
-        penamaBank: 'Klinik Kesihatan Sejahtera',
+        penamaBank: 'Klinik Kesihatan Al-Ikhlas',
         paymentMethod: 'Bank Transfer'
       },
-      identityDocument: { name: 'sijil_ros_2023.pdf' },
+      identityDocument: { name: 'sijil_ros_klinik_2023.pdf' },
       dokumenSokongan: { name: 'surat_pengesahan_bank_klinik.pdf' },
-      bankDocument: { name: 'bank_verification_2025.pdf' },
+      bankDocument: { name: 'bank_verification_klinik_2025.pdf' },
       additionalDocuments: null,
       status: 'Perlu Pembetulan',
       tarikhPermohonan: '30/7/2025'
+    },
+    'RE-202506-0015': {
+      noRujukan: 'RE-202506-0015',
+      jenisRecipient: 'individu',
+      namaPenuh: 'Zainab Binti Hassan',
+      namaSyarikat: '',
+      jenisPengenalan: 'ic',
+      idPengenalan: '820315234567',
+      idSyarikat: '',
+      bank: {
+        bankName: 'Public Bank',
+        bankAccountNumber: '4567890123456',
+        penamaBank: 'Zainab Binti Hassan',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'ic_zainab_hassan_2025.pdf' },
+      dokumenSokongan: { name: 'dokumen_sokongan_bank_zainab.pdf' },
+      bankDocument: { name: 'bank_statement_feb_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Disahkan',
+      tarikhPermohonan: '12/6/2025'
+    },
+    'RE-202505-0016': {
+      noRujukan: 'RE-202505-0016',
+      jenisRecipient: 'syarikat',
+      namaPenuh: '',
+      namaSyarikat: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
+      jenisPengenalan: 'id_syarikat',
+      idPengenalan: '',
+      idSyarikat: 'PPM-2022-008',
+      bank: {
+        bankName: 'Bank Islam',
+        bankAccountNumber: '2098765432109',
+        penamaBank: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'sijil_ros_pembekal_2022.pdf' },
+      dokumenSokongan: { name: 'surat_pengesahan_bank_pembekal.pdf' },
+      bankDocument: { name: 'bank_confirmation_pembekal.pdf' },
+      additionalDocuments: null,
+      status: 'Tidak Sah',
+      tarikhPermohonan: '25/5/2025'
+    },
+    'RE-202507-0017': {
+      noRujukan: 'RE-202507-0017',
+      jenisRecipient: 'individu',
+      namaPenuh: 'Mohd Zaki bin Hassan',
+      namaSyarikat: '',
+      jenisPengenalan: 'ic',
+      idPengenalan: '750512123456',
+      idSyarikat: '',
+      bank: {
+        bankName: 'AmBank',
+        bankAccountNumber: '6789012345678',
+        penamaBank: 'Mohd Zaki bin Hassan',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'ic_zaki_hassan_2025.pdf' },
+      dokumenSokongan: { name: 'dokumen_sokongan_bank_zaki.pdf' },
+      bankDocument: { name: 'bank_statement_jul_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Dalam Pembetulan',
+      tarikhPermohonan: '20/7/2025'
     }
   }
 

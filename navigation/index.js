@@ -329,6 +329,19 @@ export default [
         child: [],
         meta: {},
       },
+      {
+        title: "Laporan",
+        icon: "iconamoon:file-document",
+        path: "/BF-ADN/laporan",
+        child: [
+        {
+          title: "Laporan Status Aduan",
+          icon: "iconamoon:arrow-right-2-duotone",
+          path: "/BF-ADN/laporan/laporan-status-aduan",
+        }
+        ],
+        meta: {},
+      }
     ],
     meta: {
       auth: {
@@ -664,6 +677,34 @@ export default [
               path: "/BF-TNI/laporan/laporan-baki-tabung-semasa",
               child: [],
               meta: {},
+            },
+            {
+              title: "Laporan Pengeluaran Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-pengeluaran-tunai",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Tambah Nilai Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-tambah-nilai-tunai",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Pemulangan Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-pemulangan-tunai-ke-tabung",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Tamat Hari",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-tamat-hari",
+              child: [],
+              meta: {},
             }
           ],
           meta: {},
@@ -732,10 +773,45 @@ export default [
                 child: [],
                 meta: {},
               },
+              
             ],
             meta: {},
           },
-          
+          {
+            title: "Multidimensi",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/MD/01_01",
+                child: [],
+                meta: {},
+              },
+              {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/MD/02_01",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
+          {
+            title: "Kelulusan Data (RUU)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/RUU/01_01",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
         ],
         meta: {},
       },
@@ -978,30 +1054,16 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Carian HQ",
+            title: "Carian Organisasi",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PP/01",
             child: [],
             meta: {},
           },
           {
-            title: "Senarai HQ",
+            title: "Senarai Organisasi",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/OR/PP",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Carian Cawangan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/OR/PB/01",
-            child: [],
-            meta: {},
-          },
-          {
-            title: "Senarai Cawangan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/OR/PB",
             child: [],
             meta: {},
           },
@@ -1699,7 +1761,7 @@ export default [
   // Pengguna Luar Menu
   {
     header: "Pengguna Luar",
-    description: "Menu Carian untuk Pengguna Luar",
+    description: "Menu untuk Pengguna Luar",
     child: [
       {
         title: "Dashboard",
@@ -1712,9 +1774,9 @@ export default [
         },
       },
       {
-        title: "Carian Organisasi",
+        title: "Senarai Organisasi",
         icon: "iconamoon:component-fill",
-        path: "/BF-PRF/OR/PP/01",
+        path: "/BF-PRF/pengguna-luar/senarai-organisasi",
         meta: {
           auth: {
             role: ["PenggunaLuar"]
@@ -1722,9 +1784,32 @@ export default [
         },
       },
       {
-        title: "Carian Cawangan",
+        title: "Senarai Recipient",
         icon: "iconamoon:component-fill",
-        path: "/BF-PRF/OR/PB/01",
+        path: "/BF-PRF/pengguna-luar/senarai-recipient",
+        meta: {
+          auth: {
+            role: ["PenggunaLuar"]
+          }
+        },
+      }
+    ],
+    meta: {
+      auth: {
+        role: ["PenggunaLuar"],
+      },
+    },
+  },
+
+  // Masjid Menu
+  {
+    header: "Masjid",
+    description: "Jika Pengguna Luar adalah Organisasi - Masjid",
+    child: [
+      {
+        title: "Permohonan Bantuan",
+        icon: "heroicons:document-text",
+        path: "/BF-PRF/pengguna-luar/masjid/mohon-bantuan",
         meta: {
           auth: {
             role: ["PenggunaLuar"]
@@ -1732,9 +1817,32 @@ export default [
         },
       },
       {
-        title: "Carian Recipient",
-        icon: "iconamoon:component-fill",
-        path: "/BF-PRF/TP/PP/01",
+        title: "Daftar Penolong Amil",
+        icon: "heroicons:user-plus",
+        path: "/BF-PRF/pengguna-luar/masjid/tambah-penolong-amil",
+        meta: {
+          auth: {
+            role: ["PenggunaLuar"]
+          }
+        },
+      }
+    ],
+    meta: {
+      auth: {
+        role: ["PenggunaLuar"],
+      },
+    },
+  },
+
+  // Hospital Menu
+  {
+    header: "Hospital",
+    description: "Jika Pengguna Luar adalah Organisasi - Hospital",
+    child: [
+      {
+        title: "Daftar Penolong Amil",
+        icon: "heroicons:user-plus",
+        path: "/BF-PRF/pengguna-luar/hospital/tambah-penolong-amil",
         meta: {
           auth: {
             role: ["PenggunaLuar"]

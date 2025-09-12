@@ -30,10 +30,7 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
-            <rs-button variant="secondary" @click="goBack">
-              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
-            </rs-button>
+            <h2 class="text-xl font-semibold">Multidimensi</h2>
           </div>
         </template>
       </rs-card>
@@ -41,62 +38,165 @@
       <!-- Main Information Card -->
       <rs-card>
         <template #header>
-          <h3 class="text-lg font-semibold">Maklumat Asas</h3>
-        </template>
-        <template #body>
           <div class="space-y-4">
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Nama:</span>
-              <span class="text-sm text-gray-900">{{ selectedKifayah.namaHadKifayah }}</span>
+            <div class="flex justify-between items-center">
+              <h3 class="text-lg font-semibold">Maklumat Multidimensi</h3>
+              <rs-button variant="primary" @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)" class="px-6 py-3">
+                <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori Multidimensi
+              </rs-button>
             </div>
-            
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
-              <span class="text-sm text-gray-900">{{ selectedKifayah.keterangan || 'N/A' }}</span>
+            <div class="flex justify-end space-x-4">
+              <rs-button
+                variant="primary"
+                @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)"
+                class="px-6 py-3"
+              >
+                <Icon name="mdi:eye" class="mr-2" /> Lihat
+              </rs-button>
+              <rs-button
+                variant="secondary"
+                @click="navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`)"
+                class="px-6 py-3"
+              >
+                <Icon name="mdi:chart-box" class="mr-2" /> Kuadran
+              </rs-button>
             </div>
-            
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Pelarasan:</span>
-              <span class="text-sm text-gray-900 font-semibold">RM {{ formatCurrency(selectedKifayah.kadarBerbayar) }}</span>
-            </div>
-            
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Mula:</span>
-              <span class="text-sm text-gray-900">{{ formatDate(selectedKifayah.tarikhMula) }}</span>
-            </div>
-            
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Tamat:</span>
-              <span class="text-sm text-gray-900">{{ formatDate(selectedKifayah.tarikhTamat) }}</span>
-            </div>
-            
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Status:</span>
-              <rs-badge :variant="getStatusVariant(selectedKifayah.status)">
-                {{ selectedKifayah.status }}
-              </rs-badge>
-            </div>
-            
           </div>
         </template>
-      </rs-card>
-
-
-
-      <!-- Action Buttons Card -->
-      <rs-card>
         <template #body>
-          <div class="flex justify-end">
-            <rs-button v-if="false"
-              variant="primary" 
-              @click="navigateTo(`/BF-PRF/KF/HK/01_01/tambah_kategori?id=${selectedId}`)"
-              class="px-6 py-3"
+          <div class="max-w-4xl mx-auto">
+            <FormKit 
+              type="form" 
+              :actions="false" 
+              @submit="handleSubmit"
+              v-model="formData"
             >
-              <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori
-            </rs-button>
+              <div class="grid grid-cols-1 gap-6">
+                <!-- Nama Had Kifayah -->
+                <div>
+                  <FormKit
+                    type="text"
+                    name="namaHadKifayah"
+                    label="Nama"
+                    placeholder="Masukkan nama"
+                    help="Masukkan nama"
+                  />
+                </div>
+
+                <!-- Keterangan -->
+                <div>
+                  <FormKit
+                    type="textarea"
+                    name="keterangan"
+                    label="Keterangan"
+                    placeholder="Masukkan keterangan (opsional)"
+                    rows="3"
+                    help="Masukkan keterangan (opsional)"
+                  />
+                </div>
+
+                <!-- Formula 19 -->
+                <div>
+                  <FormKit
+                    type="text"
+                    name="Formula_19"
+                    label="Formula 19"
+                    placeholder="Masukkan Formula 19"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Formula 19 diperlukan'
+                    }"
+                    help="Masukkan nilai Formula 19"
+                  />
+                </div>
+
+                <!-- Formula 18 -->
+                <div>
+                  <FormKit
+                    type="text"
+                    name="Formula_18"
+                    label="Formula 18"
+                    placeholder="Masukkan Formula 18"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Formula 18 diperlukan'
+                    }"
+                    help="Masukkan nilai Formula 18"
+                  />
+                </div>
+
+                
+
+                <!-- Tarikh Mula -->
+                <div>
+                  <FormKit
+                    type="date"
+                    name="tarikhMula"
+                    label="Tarikh Mula"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Tarikh mula diperlukan'
+                    }"
+                    help="Pilih tarikh mula berkuatkuasa"
+                  />
+                </div>
+
+                <!-- Tarikh Tamat -->
+                <div>
+                  <FormKit
+                    type="date"
+                    name="tarikhTamat"
+                    label="Tarikh Tamat"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Tarikh tamat diperlukan'
+                    }"
+                    help="Pilih tarikh tamat"
+                  />
+                </div>
+
+                <!-- Status -->
+                <div>
+                  <FormKit
+                    type="select"
+                    name="status"
+                    label="Status"
+                    :options="statusOptions"
+                    placeholder="Pilih status"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Status diperlukan'
+                    }"
+                    help="Pilih status Had Kifayah"
+                  />
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex justify-end space-x-4 pt-6 border-t mt-8">
+                <rs-button 
+                  type="button" 
+                  variant="secondary" 
+                  @click="goBack"
+                >
+                  Batal
+                </rs-button>
+                <rs-button 
+                  btnType="submit" 
+                  variant="primary"
+                  :disabled="isSubmitting"
+                >
+                  <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
+                  <Icon v-else name="material-symbols:save" class="mr-2" />
+                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                </rs-button>
+              </div>
+            </FormKit>
           </div>
         </template>
       </rs-card>
+
+
     </div>
 
     <!-- Not Found State -->
@@ -132,17 +232,17 @@ const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF/KF/HK/admin",
+    path: "/BF-PRF/KF/MD/admin",
   },
   {
-    name: "Konfigurasi Had Kifayah",
+    name: "Senarai Multidimensi",
     type: "link",
-    path: "/BF-PRF/KF/HK/01_01",
+    path: "/BF-PRF/KF/MD/01_01",
   },
   {
-    name: "Maklumat Had Kifayah",
+    name: "Maklumat Multidimensi",
     type: "current",
-    path: "/BF-PRF/KF/HK/01_02",
+    path: "/BF-PRF/KF/MD/01_02",
   },
 ]);
 
@@ -151,6 +251,26 @@ const loading = ref(true);
 const error = ref(null);
 const selectedKifayah = ref(null);
 const allKifayahData = ref([]);
+const isSubmitting = ref(false);
+
+// Form data
+const formData = reactive({
+  namaHadKifayah: "",
+  keterangan: "",
+  Formula_19: "",
+  Formula_18: "",
+  
+  tarikhMula: "",
+  tarikhTamat: "",
+  status: "",
+});
+
+// Status options
+const statusOptions = [
+  { label: "Aktif", value: "Aktif" },
+  { label: "Tidak Aktif", value: "Tidak Aktif" },
+  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+];
 
 // Default data (fallback if no data in localStorage)
 const defaultData = [
@@ -166,6 +286,8 @@ const defaultData = [
     status: "Aktif",
     tindakan: 1,
     keterangan: "Had kifayah untuk ketua keluarga",
+    Formula_19: "Formula 19 Value",
+    Formula_18: "Formula 18 Value",
   },
 ];
 
@@ -191,7 +313,7 @@ const loadData = () => {
     loading.value = true;
     error.value = null;
     
-    const savedData = localStorage.getItem('kifayahLimits');
+    const savedData = localStorage.getItem('multidimensi');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       // Validate and sanitize parsed data
@@ -210,14 +332,15 @@ const loadData = () => {
           mergedData.push(validateDataItem(savedItem));
         }
       });
-      allKifayahData.value = mergedData;
+      allKifayahData.value = assignRowNumbers(mergedData);
     } else {
-      allKifayahData.value = defaultData;
+      allKifayahData.value = assignRowNumbers(defaultData);
     }
     
     // Find the selected item
     if (selectedId) {
-      selectedKifayah.value = allKifayahData.value.find(item => item.idHadKifayah === selectedId);
+      const numericId = Number(selectedId);
+      selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
       if (!selectedKifayah.value) {
         error.value = `Rekod dengan ID "${selectedId}" tidak ditemui.`;
       }
@@ -234,15 +357,110 @@ const loadData = () => {
   }
 };
 
+// Ensure each row has a sequential `no` field used as ID
+const assignRowNumbers = (items) => {
+  return (items || []).map((item, index) => ({ ...item, no: index + 1 }));
+};
+
 // Navigation function
 const goBack = () => {
-  navigateTo('/BF-PRF/KF/HK/02_01');
+  navigateTo('/BF-PRF/KF/MD/01_01');
+};
+
+// Handle form submission
+const handleSubmit = async (formData) => {
+  isSubmitting.value = true;
+  
+  try {
+    // Load existing data
+    const existingData = loadExistingData();
+    
+    // Find the current record and update it
+    const recordIndex = existingData.findIndex(item => item.idHadKifayah === selectedId);
+    
+    if (recordIndex >= 0) {
+      // Update existing record
+      existingData[recordIndex] = {
+        ...existingData[recordIndex],
+        namaHadKifayah: formData.namaHadKifayah,
+        keterangan: formData.keterangan,
+        Formula_19: formData.Formula_19,
+        Formula_18: formData.Formula_18,
+        
+        tarikhMula: formData.tarikhMula,
+        tarikhTamat: formData.tarikhTamat,
+        status: formData.status,
+      };
+    } else {
+      // Create new record if not found
+      const newRecord = {
+        idHadKifayah: selectedId,
+        namaHadKifayah: formData.namaHadKifayah,
+        keterangan: formData.keterangan,
+        Formula_19: formData.Formula_19,
+        Formula_18: formData.Formula_18,
+        
+        tarikhMula: formData.tarikhMula,
+        tarikhTamat: formData.tarikhTamat,
+        status: formData.status,
+        tindakan: existingData.length + 1,
+      };
+      existingData.push(newRecord);
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('multidimensi', JSON.stringify(existingData));
+    
+    // Show success message
+    console.log('Data saved successfully:', formData);
+    alert('Data berjaya disimpan!');
+    
+    // Navigate back
+    await navigateTo('/BF-PRF/KF/MD/01_01');
+    
+  } catch (error) {
+    console.error('Error saving data:', error);
+    alert('Ralat semasa menyimpan data.');
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+// Function to load existing data from localStorage
+const loadExistingData = () => {
+  try {
+    const savedData = localStorage.getItem('multidimensi');
+    if (savedData) {
+      return JSON.parse(savedData);
+    }
+  } catch (error) {
+    console.error('Error loading existing data:', error);
+  }
+  return [];
+};
+
+// Populate form with existing data
+const populateForm = () => {
+  if (selectedKifayah.value) {
+    formData.namaHadKifayah = selectedKifayah.value.namaHadKifayah || "";
+    formData.keterangan = selectedKifayah.value.keterangan || "";
+    formData.Formula_19 = selectedKifayah.value.Formula_19 || "";
+    formData.Formula_18 = selectedKifayah.value.Formula_18 || "";
+    formData.kadarBerbayar = selectedKifayah.value.kadarBerbayar || "";
+    formData.tarikhMula = selectedKifayah.value.tarikhMula || "";
+    formData.tarikhTamat = selectedKifayah.value.tarikhTamat || "";
+    formData.status = selectedKifayah.value.status || "";
+  }
 };
 
 
 // Make sure the data loads when component mounts
 onMounted(() => {
   loadData();
+  // Populate form after data is loaded
+  nextTick(() => {
+    populateForm();
+  });
 });
 
 // Also refresh when the page becomes visible

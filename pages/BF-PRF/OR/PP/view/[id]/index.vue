@@ -57,7 +57,7 @@
                   </rs-badge>
                 </div>
             </div>
-                </div>
+          </div>
                 
           <!-- Maklumat Asas -->
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Asas</h3>
@@ -65,35 +65,35 @@
             <div class="grid grid-cols-2 gap-4">
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Nama Organisasi:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.organizationName }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.organizationName }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Jenis Organisasi:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.organizationType }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.organizationType }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">No. Pendaftaran:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.registrationNumber }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.registrationNumber }}</span>
                 </div>
               <div class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Status Pendaftaran:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.registrationStatus }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.registrationStatus }}</span>
               </div>
               <div v-if="organisasiData.struktur" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Struktur:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.struktur }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.struktur }}</span>
               </div>
               <div v-if="organisasiData.hq" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">HQ:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.hq }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.hq }}</span>
               </div>
               <div v-if="organisasiData.kariah" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Kariah:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.kariah }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.kariah }}</span>
                 </div>
               <div v-if="organisasiData.zone" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Kawasan/Zon:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.zone }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.zone }}</span>
               </div>
             </div>
           </div>
@@ -104,31 +104,31 @@
             <div class="grid grid-cols-2 gap-4">
               <div class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Alamat 1:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.addressLine1 || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.addressLine1 || '-' }}</span>
                 </div>
               <div v-if="organisasiData.alamat?.addressLine2" class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Alamat 2:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.addressLine2 }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.addressLine2 }}</span>
                 </div>
               <div v-if="organisasiData.alamat?.addressLine3" class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Alamat 3:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.addressLine3 }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.addressLine3 }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Poskod:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.postcode || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.postcode || '-' }}</span>
                 </div>
               <div class="py-2 border-b border-gray-100">
                   <span class="font-medium text-gray-600">Bandar:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.city || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.city || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Daerah:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.district || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.district || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Negeri:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.alamat?.state || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.alamat?.state || '-' }}</span>
               </div>
             </div>
           </div>
@@ -143,19 +143,19 @@
                   <div class="grid grid-cols-2 gap-4">
                     <div class="py-2 border-b border-gray-100">
                       <span class="font-medium text-gray-600">Nama:</span>
-                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.name }}</span>
+                      <span class="text-gray-900 ml-2">{{ wakil.name }}</span>
                     </div>
                     <div class="py-2 border-b border-gray-100">
                       <span class="font-medium text-gray-600">No. IC:</span>
-                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.ic }}</span>
+                      <span class="text-gray-900 ml-2">{{ wakil.ic }}</span>
                     </div>
                     <div class="py-2 border-b border-gray-100">
                       <span class="font-medium text-gray-600">No. Telefon:</span>
-                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.phoneNumber }}</span>
+                      <span class="text-gray-900 ml-2">{{ wakil.phoneNumber }}</span>
                     </div>
                     <div class="py-2 border-b border-gray-100">
                       <span class="font-medium text-gray-600">Emel:</span>
-                      <span class="text-gray-900 ml-2 font-semibold">{{ wakil.email }}</span>
+                      <span class="text-gray-900 ml-2">{{ wakil.email }}</span>
                     </div>
                   </div>
                 </div>
@@ -169,23 +169,23 @@
             <div class="grid grid-cols-2 gap-4">
               <div v-if="organisasiData.bank?.bankSameAsHQ" class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Sama seperti HQ:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.bankSameAsHQ === 'ya' ? 'Ya' : 'Tidak' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.bankSameAsHQ === 'ya' ? 'Ya' : 'Tidak' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Nama Bank:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.bankName || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.bankName || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">No. Akaun Bank:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.bankAccountNumber || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.bankAccountNumber || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Nama Pemegang Akaun:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.penamaBank || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.penamaBank || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Kaedah Pembayaran:</span>
-                <span class="text-gray-900 ml-2 font-semibold">{{ organisasiData.bank?.paymentMethod || '-' }}</span>
+                <span class="text-gray-900 ml-2">{{ organisasiData.bank?.paymentMethod || '-' }}</span>
               </div>
             </div>
           </div>
@@ -194,58 +194,28 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Dokumen Sokongan</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Sijil Pendaftaran:</span>
-                  <span v-if="hasDocument(organisasiData.registrationCertificate)" class="text-gray-900 font-semibold">{{ getDocumentName(organisasiData.registrationCertificate) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(organisasiData.registrationCertificate)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Sijil Pendaftaran')">
-                    <Icon name="ph:download" class="w-4 h-4" />
+              <div v-for="(doc, index) in supportDocuments" :key="index" class="p-4 border border-gray-200 rounded-lg flex items-center justify-between">
+                <div class="flex items-center">
+                  <Icon name="mdi:file-document-outline" class="text-blue-600 mr-3" />
+                  <div>
+                    <p class="font-medium text-gray-900">{{ doc.name }}</p>
+                    <template v-if="doc.has">
+                      <p class="text-sm text-gray-600">{{ doc.filename }}</p>
+                      <p v-if="doc.size" class="text-xs text-gray-500">{{ doc.size }}</p>
+                    </template>
+                    <rs-badge v-else variant="warning">Tiada</rs-badge>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2" v-if="doc.has">
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" :title="`Muat Turun`" @click="handleDownload(doc.name)">
+                    <Icon name="ph:download" size="1rem" />
                   </rs-button>
-                  <rs-button v-if="hasDocument(organisasiData.registrationCertificate)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Sijil Pendaftaran')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
+                  <rs-button variant="secondary-outline" size="sm" class="!p-1 !w-8 !h-8" :title="`Lihat`" @click="handleView(doc.name)">
+                    <Icon name="ph:eye" size="1rem" />
                   </rs-button>
                 </div>
               </div>
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Surat Perlantikan:</span>
-                  <span v-if="hasDocument(organisasiData.appointmentLetter)" class="text-gray-900 font-semibold">{{ getDocumentName(organisasiData.appointmentLetter) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(organisasiData.appointmentLetter)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Surat Perlantikan')">
-                    <Icon name="ph:download" class="w-4 h-4" />
-                  </rs-button>
-                  <rs-button v-if="hasDocument(organisasiData.appointmentLetter)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Surat Perlantikan')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Bukti Bank:</span>
-                  <span v-if="hasDocument(organisasiData.bankProof)" class="text-gray-900 font-semibold">{{ getDocumentName(organisasiData.bankProof) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(organisasiData.bankProof)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Bukti Bank')">
-                    <Icon name="ph:download" class="w-4 h-4" />
-                  </rs-button>
-                  <rs-button v-if="hasDocument(organisasiData.bankProof)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Bukti Bank')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
-              <div class="py-2 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-600">Dokumen Tambahan:</span>
-                  <span v-if="hasDocument(organisasiData.additionalDocuments)" class="text-gray-900 font-semibold">{{ getDocumentName(organisasiData.additionalDocuments) }}</span>
-                  <rs-badge v-else variant="warning">Tiada</rs-badge>
-                  <rs-button v-if="hasDocument(organisasiData.additionalDocuments)" size="sm" variant="primary-outline" class="!p-1 !w-8 !h-8" title="Muat Turun" @click="handleDownload('Dokumen Tambahan')">
-                    <Icon name="ph:download" class="w-4 h-4" />
-                  </rs-button>
-                  <rs-button v-if="hasDocument(organisasiData.additionalDocuments)" size="sm" variant="secondary-outline" class="!p-1 !w-8 !h-8" title="Lihat" @click="handleView('Dokumen Tambahan')">
-                    <Icon name="ph:eye" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </div>
+            </div>
           </div>
         </div>
 
@@ -256,7 +226,7 @@
             Kembali
           </rs-button>
           </div>
-        </div>
+      
       </template>
     </rs-card>
   </div>
@@ -306,9 +276,9 @@ const organisasiData = ref({
     penamaBank: '',
     paymentMethod: ''
   },
-  registrationCertificate: null,
-  appointmentLetter: null,
-  bankProof: null,
+  registrationCertificate: { name: 'Sijil Pendaftaran Syarikat', filename: 'sijil_pendaftaran_ssm.pdf', size: '2.4 MB' },
+  appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_kuasa.pdf', size: '1.8 MB' },
+  bankProof: { name: 'Penyata Bank', filename: 'penyata_bank_disember_2024.pdf', size: '1.1 MB' },
   additionalDocuments: null,
   status: '',
   tarikhPermohonan: ''
@@ -337,10 +307,55 @@ const hasDocument = (document) => {
 
 const getDocumentName = (document) => {
   if (!document) return 'Tiada'
-  if (Array.isArray(document) && document.length > 0) return document[0].name || 'Dilampirkan'
-  if (typeof document === 'object' && document.name) return document.name
+  if (Array.isArray(document) && document.length > 0) return document[0].filename || document[0].name || 'Dilampirkan'
+  if (typeof document === 'object' && (document.filename || document.name)) return document.filename || document.name
   return 'Tiada'
 }
+
+// Return "name + filename + size" where available, compact
+const getDocDisplay = (document) => {
+  if (!document) return 'Tiada'
+  const first = Array.isArray(document) ? document[0] : document
+  const name = first.name || '-'
+  const filename = first.filename ? ` (${first.filename})` : ''
+  const size = first.size ? ` • ${first.size}` : ''
+  return `${name}${filename}${size}`
+}
+
+const supportDocuments = computed(() => {
+  const docs = []
+  const rc = organisasiData.value.registrationCertificate
+  const ap = organisasiData.value.appointmentLetter
+  const bp = organisasiData.value.bankProof
+  const ad = organisasiData.value.additionalDocuments
+
+  docs.push({
+    name: 'Sijil Pendaftaran',
+    has: hasDocument(rc),
+    filename: hasDocument(rc) ? (Array.isArray(rc) ? rc[0].filename || rc[0].name : rc.filename || rc.name) : '',
+    size: hasDocument(rc) ? (Array.isArray(rc) ? rc[0].size : rc.size) : ''
+  })
+  docs.push({
+    name: 'Surat Perwakilan Kuasa',
+    has: hasDocument(ap),
+    filename: hasDocument(ap) ? (Array.isArray(ap) ? ap[0].filename || ap[0].name : ap.filename || ap.name) : '',
+    size: hasDocument(ap) ? (Array.isArray(ap) ? ap[0].size : ap.size) : ''
+  })
+  docs.push({
+    name: 'Bukti Bank',
+    has: hasDocument(bp),
+    filename: hasDocument(bp) ? (Array.isArray(bp) ? bp[0].filename || bp[0].name : bp.filename || bp.name) : '',
+    size: hasDocument(bp) ? (Array.isArray(bp) ? bp[0].size : bp.size) : ''
+  })
+  docs.push({
+    name: 'Dokumen Tambahan',
+    has: hasDocument(ad),
+    filename: hasDocument(ad) ? (Array.isArray(ad) ? ad[0].filename || ad[0].name : ad.filename || ad.name) : '',
+    size: hasDocument(ad) ? (Array.isArray(ad) ? ad[0].size : ad.size) : ''
+  })
+
+  return docs
+})
 
 const handleDownload = (documentType) => {
   alert(`Download ${documentType} - Ini adalah UI mockup prototype untuk presentation kepada client.`)
@@ -364,19 +379,60 @@ const formatDate = (dateString) => {
 
 const loadOrganisasiData = (id) => {
   const dataset = {
-    'ORG-240501': {
-      noRujukan: 'ORG-240501',
-      organizationName: 'Syarikat Teknologi Maju Sdn Bhd',
-      organizationType: 'Swasta',
-      registrationNumber: '123456-A',
+    'ORG-202507-0001': {
+      noRujukan: 'ORG-202507-0001',
+      organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+      organizationType: 'Masjid',
+      registrationNumber: 'PPM-2020-001',
       registrationStatus: 'Berdaftar',
       struktur: 'HQ',
       hq: '',
-      kariah: 'MASJID PEKAN SHAH ALAM',
-      zone: '',
+      kariah: 'MASJID SULTAN SALAHUDDIN SHAH ALAM',
+      zone: 'Zon Shah Alam',
       alamat: {
-        addressLine1: 'No. 123, Jalan Teknologi 3/1',
-        addressLine2: 'Taman Teknologi Malaysia',
+        addressLine1: 'No. 1, Jalan Masjid',
+        addressLine2: 'Seksyen 2',
+        addressLine3: '',
+        postcode: '40000',
+        city: 'Shah Alam',
+        district: 'Petaling',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Ustaz Ahmad bin Abdullah',
+          ic: '800123456789',
+          phoneNumber: '03-55123456',
+          email: 'ahmad@masjidssa.gov.my'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: '',
+        bankName: 'Bank Islam',
+        bankAccountNumber: '1234567890123',
+        penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_masjid_2020.pdf', size: '2.4 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_masjid_2025.pdf', size: '1.8 MB' },
+      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_masjid_jan_2025.pdf', size: '1.1 MB' },
+      additionalDocuments: null,
+      status: 'Disahkan',
+      tarikhPermohonan: '15/7/2025'
+    },
+    'ORG-202506-0002': {
+      noRujukan: 'ORG-202506-0002',
+      organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
+      organizationType: 'Masjid',
+      registrationNumber: 'PPM-2020-001',
+      registrationStatus: 'Berdaftar',
+      struktur: 'Cawangan',
+      hq: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+      kariah: 'MASJID SULTAN SALAHUDDIN PJ',
+      zone: 'Zon Petaling Jaya',
+      alamat: {
+        addressLine1: 'No. 456, Jalan Masjid 2/3',
+        addressLine2: 'Taman Masjid Jaya',
         addressLine3: '',
         postcode: '47810',
         city: 'Petaling Jaya',
@@ -385,121 +441,80 @@ const loadOrganisasiData = (id) => {
       },
       wakil: [
         {
-          name: 'Encik Ahmad bin Abdullah',
-          ic: '800123456789',
-          phoneNumber: '03-12345678',
-          email: 'ahmad@teknologimaju.com'
-        }
-      ],
-      bank: {
-        bankSameAsHQ: '',
-        bankName: 'CIMB Bank',
-        bankAccountNumber: '8001234567890',
-        penamaBank: 'Syarikat Teknologi Maju Sdn Bhd',
-        paymentMethod: 'Bank Transfer'
-      },
-      registrationCertificate: { name: 'sijil_pendaftaran_ssm_2025.pdf' },
-      appointmentLetter: null,
-      bankProof: { name: 'bank_statement_jan_2025.pdf' },
-      additionalDocuments: null,
-      status: 'Menunggu Pengesahan',
-      tarikhPermohonan: '23/7/2025'
-    },
-    'ORG-240502': {
-      noRujukan: 'ORG-240502',
-      organizationName: 'Pertubuhan Amal Iman Malaysia',
-      organizationType: 'NGO',
-      registrationNumber: 'PPM-2023-001',
-      registrationStatus: 'Berdaftar',
-      struktur: 'HQ',
-      hq: '',
-      kariah: 'MASJID SHAH ALAM',
-      zone: '',
-      alamat: {
-        addressLine1: 'No. 456, Jalan Amal 2/3',
-        addressLine2: 'Taman Amal Jaya',
-        addressLine3: '',
-        postcode: '40000',
-        city: 'Shah Alam',
-        district: 'Petaling',
-        state: 'Selangor'
-      },
-      wakil: [
-        {
           name: 'Ustaz Mohd Zaki bin Hassan',
           ic: '750512123456',
-          phoneNumber: '03-98765432',
-          email: 'zaki@amaliman.org'
+          phoneNumber: '03-55123457',
+          email: 'zaki@masjidssa.gov.my'
         }
       ],
       bank: {
-        bankSameAsHQ: '',
+        bankSameAsHQ: 'tidak',
         bankName: 'Maybank',
         bankAccountNumber: '5123456789012',
-        penamaBank: 'Pertubuhan Amal Iman Malaysia',
+        penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan PJ',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_ros_2023.pdf' },
-      appointmentLetter: { name: 'surat_perlantikan_2025.pdf' },
-      bankProof: { name: 'bank_confirmation_letter.pdf' },
+      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_masjid_2020.pdf', size: '2.0 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_cawangan_2025.pdf', size: '1.5 MB' },
+      bankProof: { name: 'Surat Pengesahan Bank', filename: 'bank_confirmation_cawangan.pdf', size: '0.9 MB' },
       additionalDocuments: null,
       status: 'Disahkan',
-      tarikhPermohonan: '15/6/2025'
+      tarikhPermohonan: '16/7/2025'
     },
-    'ORG-240503': {
-      noRujukan: 'ORG-240503',
-      organizationName: 'Sekolah Menengah Tahfiz Al-Amin',
-      organizationType: 'IPT',
-      registrationNumber: 'IPT-2023-045',
+    'ORG-202505-0003': {
+      noRujukan: 'ORG-202505-0003',
+      organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+      organizationType: 'Masjid',
+      registrationNumber: 'PPM-2020-001',
       registrationStatus: 'Berdaftar',
-      struktur: 'HQ',
-      hq: '',
-      kariah: 'MASJID AL-AMIN',
-      zone: '',
+      struktur: 'Cawangan',
+      hq: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+      kariah: 'MASJID SULTAN SALAHUDDIN KLANG',
+      zone: 'Zon Klang',
       alamat: {
-        addressLine1: 'Lot 789, Jalan Pendidikan 5/2',
-        addressLine2: 'Taman Pendidikan Islam',
+        addressLine1: 'Lot 789, Jalan Masjid 5/2',
+        addressLine2: 'Taman Masjid Klang',
         addressLine3: '',
-        postcode: '43000',
-        city: 'Kajang',
-        district: 'Hulu Langat',
+        postcode: '41000',
+        city: 'Klang',
+        district: 'Klang',
         state: 'Selangor'
       },
       wakil: [
         {
           name: 'Ustazah Siti Fatimah binti Ali',
           ic: '820315234567',
-          phoneNumber: '03-55551234',
-          email: 'fatimah@tahfizalamin.edu.my'
+          phoneNumber: '03-55123458',
+          email: 'fatimah@masjidssa.gov.my'
         }
       ],
       bank: {
-        bankSameAsHQ: '',
+        bankSameAsHQ: 'tidak',
         bankName: 'Bank Islam',
         bankAccountNumber: '2098765432109',
-        penamaBank: 'Sekolah Menengah Tahfiz Al-Amin',
+        penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_moe_2023.pdf' },
-      appointmentLetter: { name: 'surat_lantikan_2025.pdf' },
-      bankProof: { name: 'bank_letter_2025.pdf' },
+      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_masjid_2020.pdf', size: '1.7 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_cawangan_2025.pdf', size: '1.3 MB' },
+      bankProof: { name: 'Surat Bank', filename: 'bank_letter_cawangan_2025.pdf', size: '0.8 MB' },
       additionalDocuments: null,
-      status: 'Disahkan',
-      tarikhPermohonan: '8/5/2025'
+      status: 'Menunggu Pengesahan',
+      tarikhPermohonan: '17/7/2025'
     },
-    'ORG-240504': {
-      noRujukan: 'ORG-240504',
-      organizationName: 'Institut Latihan Kemahiran Malaysia - Cawangan Shah Alam',
-      organizationType: 'Institut',
-      registrationNumber: 'ILKM-2023-012',
+    'ORG-202507-0004': {
+      noRujukan: 'ORG-202507-0004',
+      organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam',
+      organizationType: 'Masjid',
+      registrationNumber: 'PPM-2020-001',
       registrationStatus: 'Berdaftar',
       struktur: 'Cawangan',
-      hq: 'ILKM Shah Alam',
-      kariah: 'MASJID SHAH ALAM',
-      zone: 'Zon Selangor',
+      hq: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+      kariah: 'MASJID SULTAN SALAHUDDIN SHAH ALAM',
+      zone: 'Zon Shah Alam',
       alamat: {
-        addressLine1: 'No. 321, Jalan Kemahiran 4/1',
-        addressLine2: 'Taman Kemahiran Jaya',
+        addressLine1: 'No. 321, Jalan Masjid 4/1',
+        addressLine2: 'Taman Masjid Shah Alam',
         addressLine3: '',
         postcode: '40000',
         city: 'Shah Alam',
@@ -508,39 +523,39 @@ const loadOrganisasiData = (id) => {
       },
       wakil: [
         {
-          name: 'Encik Mohd Rashid bin Hassan',
+          name: 'Ustaz Mohd Rashid bin Hassan',
           ic: '700301067890',
-          phoneNumber: '03-55567890',
-          email: 'rashid@ilkm.gov.my'
+          phoneNumber: '03-55123459',
+          email: 'rashid@masjidssa.gov.my'
         }
       ],
       bank: {
         bankSameAsHQ: 'tidak',
         bankName: 'RHB Bank',
         bankAccountNumber: '3456789012345',
-        penamaBank: 'Institut Latihan Kemahiran Malaysia',
+        penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_ilkm_2023.pdf' },
-      appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
-      bankProof: { name: 'bank_verification_2025.pdf' },
+      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_masjid_2020.pdf', size: '2.1 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_cawangan_2025.pdf', size: '1.4 MB' },
+      bankProof: { name: 'Pengesahan Bank', filename: 'bank_verification_cawangan_2025.pdf', size: '0.7 MB' },
       additionalDocuments: null,
-      status: 'Perlu Pembetulan',
-      tarikhPermohonan: '30/7/2025'
+      status: 'Disahkan',
+      tarikhPermohonan: '18/7/2025'
     },
-    'ORG-240505': {
-      noRujukan: 'ORG-240505',
-      organizationName: 'Syarikat Pembangunan Hartanah Sdn Bhd',
-      organizationType: 'Swasta',
-      registrationNumber: '987654-B',
+    'ORG-202506-0005': {
+      noRujukan: 'ORG-202506-0005',
+      organizationName: 'Pertubuhan Kebajikan Islam Selangor',
+      organizationType: 'NGO',
+      registrationNumber: 'PPM-2018-045',
       registrationStatus: 'Berdaftar',
       struktur: 'HQ',
       hq: '',
-      kariah: 'MASJID PUCHONG',
+      kariah: 'MASJID AL-IKHLAS',
       zone: 'Zon Puchong',
       alamat: {
-        addressLine1: 'No. 654, Jalan Hartanah 6/3',
-        addressLine2: 'Taman Hartanah Maju',
+        addressLine1: 'No. 654, Jalan Kebajikan 6/3',
+        addressLine2: 'Taman Kebajikan Islam',
         addressLine3: '',
         postcode: '47100',
         city: 'Puchong',
@@ -549,25 +564,154 @@ const loadOrganisasiData = (id) => {
       },
       wakil: [
         {
-          name: 'Saudara Fikri bin Omar',
+          name: 'Ustaz Fikri bin Omar',
           ic: '850610089012',
-          phoneNumber: '03-80123456',
-          email: 'fikri@pbim.org'
+          phoneNumber: '03-55123460',
+          email: 'fikri@pki-selangor.org'
         }
       ],
       bank: {
         bankSameAsHQ: '',
         bankName: 'Public Bank',
         bankAccountNumber: '4567890123456',
-        penamaBank: 'Syarikat Pembangunan Hartanah Sdn Bhd',
+        penamaBank: 'Pertubuhan Kebajikan Islam Selangor',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_ssm_2025.pdf' },
-      appointmentLetter: null,
-      bankProof: { name: 'bank_statement_feb_2025.pdf' },
+      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_pki_2018.pdf', size: '2.6 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_pki_2025.pdf', size: '1.2 MB' },
+      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_pki_feb_2025.pdf', size: '1.0 MB' },
       additionalDocuments: null,
       status: 'Tidak Sah',
       tarikhPermohonan: '12/6/2025'
+    },
+    'ORG-202505-0006': {
+      noRujukan: 'ORG-202505-0006',
+      organizationName: 'Rumah Anak Yatim Darul Ehsan',
+      organizationType: 'NGO',
+      registrationNumber: 'PPM-2015-012',
+      registrationStatus: 'Berdaftar',
+      struktur: 'HQ',
+      hq: '',
+      kariah: 'MASJID AL-IKHLAS',
+      zone: 'Zon Puchong',
+      alamat: {
+        addressLine1: 'No. 33, Jalan Anak Yatim 4/2',
+        addressLine2: 'Taman Anak Yatim Cemerlang',
+        addressLine3: '',
+        postcode: '47100',
+        city: 'Puchong',
+        district: 'Petaling',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Ustaz Fikri bin Omar',
+          ic: '850610089012',
+          phoneNumber: '03-55123461',
+          email: 'fikri@rumah-yatim.org'
+        },
+        {
+          name: 'Ustazah Nurul Ain binti Zaki',
+          ic: '870315091234',
+          phoneNumber: '019-7654321',
+          email: 'nurul@rumah-yatim.org'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: '',
+        bankName: 'AmBank',
+        bankAccountNumber: '6789012345678',
+        penamaBank: 'Rumah Anak Yatim Darul Ehsan',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_rumah_yatim_2015.pdf', size: '1.9 MB' },
+      appointmentLetter: { name: 'Surat Perwakilan', filename: 'surat_perwakilan_rumah_yatim.pdf', size: '1.2 MB' },
+      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_rumah_yatim.pdf', size: '0.9 MB' },
+      additionalDocuments: null,
+      status: 'Menunggu Pengesahan',
+      tarikhPermohonan: '25/5/2025'
+    },
+    'ORG-202504-0007': {
+      noRujukan: 'ORG-202504-0007',
+      organizationName: 'Maahad Tahfiz Selangor',
+      organizationType: 'IPT',
+      registrationNumber: 'MTS-2019-008',
+      registrationStatus: 'Berdaftar',
+      struktur: 'HQ',
+      hq: '',
+      kariah: 'MASJID AL-AMIN',
+      zone: 'Zon Kajang',
+      alamat: {
+        addressLine1: 'No. 88, Jalan Tahfiz 2/1',
+        addressLine2: 'Taman Tahfiz Jaya',
+        addressLine3: '',
+        postcode: '43000',
+        city: 'Kajang',
+        district: 'Hulu Langat',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Ustaz Dr. Ahmad Fauzi bin Ismail',
+          ic: '601205012345',
+          phoneNumber: '03-55123462',
+          email: 'fauzi@maahad-tahfiz.edu.my'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: '',
+        bankName: 'Bank Islam',
+        bankAccountNumber: '7890123456789',
+        penamaBank: 'Maahad Tahfiz Selangor',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'Sijil Pendaftaran', filename: 'sijil_maahad_tahfiz_2019.pdf', size: '3.1 MB' },
+      appointmentLetter: { name: 'Surat Lantikan', filename: 'surat_lantikan_maahad.pdf', size: '2.2 MB' },
+      bankProof: { name: 'Pengesahan Bank', filename: 'bank_confirmation_maahad.pdf', size: '1.3 MB' },
+      additionalDocuments: null,
+      status: 'Tidak Sah',
+      tarikhPermohonan: '18/4/2025'
+    },
+    'ORG-202508-0008': {
+      noRujukan: 'ORG-202508-0008',
+      organizationName: 'Pusat Dialisis As-Salam Shah Alam',
+      organizationType: 'Kesihatan',
+      registrationNumber: 'PPM-2021-015',
+      registrationStatus: 'Berdaftar',
+      struktur: 'Cawangan',
+      hq: 'Pusat Dialisis As-Salam HQ',
+      kariah: 'MASJID SULTAN SALAHUDDIN SHAH ALAM',
+      zone: 'Zon Shah Alam',
+      alamat: {
+        addressLine1: 'No. 88, Jalan Kesihatan 2/1',
+        addressLine2: 'Taman Kesihatan Jaya',
+        addressLine3: 'Seksyen 2',
+        postcode: '40000',
+        city: 'Shah Alam',
+        district: 'Petaling',
+        state: 'Selangor'
+      },
+      wakil: [
+        {
+          name: 'Dr. Siti Aisyah binti Hassan',
+          ic: '720315123456',
+          phoneNumber: '03-55123463',
+          email: 'aisyah@dialisis-assalam.org'
+        }
+      ],
+      bank: {
+        bankSameAsHQ: 'tidak',
+        bankName: 'Bank Islam',
+        bankAccountNumber: '1234567890123',
+        penamaBank: 'Pusat Dialisis As-Salam Shah Alam',
+        paymentMethod: 'Bank Transfer'
+      },
+      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_dialisis_2021.pdf', size: '2.8 MB' },
+      appointmentLetter: { name: 'Surat Cawangan', filename: 'surat_cawangan_dialisis.pdf', size: '1.6 MB' },
+      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_dialisis.pdf', size: '1.0 MB' },
+      additionalDocuments: null,
+      status: 'Dalam Pembetulan',
+      tarikhPermohonan: '05/8/2025'
     }
   }
 

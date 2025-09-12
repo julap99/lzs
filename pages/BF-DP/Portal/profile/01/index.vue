@@ -136,7 +136,7 @@
                 <span v-else>{{ index + 1 }}</span>
               </div>
               <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
-                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}<span v-if="step.masa"> - {{ step.masa }}</span></div>
                 <div class="font-bold text-blue-800">{{ step.label }}</div>
                 <div class="text-sm mt-1">
                   SLA: {{ slaRules[step.label] }} hari |
@@ -152,7 +152,7 @@
               </div>
               <!-- Minimal content for Pengguna Luar: date + label only -->
               <div v-else class="ml-4 flex-1">
-                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}<span v-if="step.masa"> - {{ step.masa }}</span></div>
                 <div class="font-bold text-blue-800">{{ step.label }}</div>
               </div>
             </div>
@@ -233,6 +233,7 @@ const statusTimeline = [
   {
     label: 'Permohonan Dihantar',
     tarikh: '01-06-2025',
+    masa: '11:30',
     completed: true,
     catatan: 'Profil diterima untuk semakan.',
     namaPegawai: 'Sistem NAS',
@@ -241,6 +242,7 @@ const statusTimeline = [
   {
     label: 'Semakan Dokumen',
     tarikh: '02-06-2025',
+    masa: '09:45',
     completed: true,
     catatan: 'Semakan dokumen selesai.',
     namaPegawai: 'Pn. Suraya',
@@ -249,6 +251,7 @@ const statusTimeline = [
   {
     label: 'Penilaian Kelayakan',
     tarikh: '04-06-2025',
+    masa: '16:20',
     inProgress: true,
     catatan: 'Dalam proses penilaian.',
     namaPegawai: 'Ustaz Hakim',
@@ -258,6 +261,7 @@ const statusTimeline = [
     label: 'Sahkan Profil',
     notStarted: true,
     tarikh: '',
+    masa: '',
     catatan: 'Tiada tindakan direkodkan setakat ini.',
     namaPegawai: 'Belum Ditugaskan',
   },

@@ -1306,13 +1306,13 @@ const breadcrumb = ref([
     type: "link",
     path: "/BF-BTN/tugasan",
   },
+  // {
+  //   name: "Siasatan",
+  //   type: "link",
+  //   path: "/BF-BTN/tugasan",
+  // },
   {
     name: "Siasatan",
-    type: "link",
-    path: "/BF-BTN/tugasan",
-  },
-  {
-    name: "Siasatan EOAD",
     type: "current",
     path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
   },

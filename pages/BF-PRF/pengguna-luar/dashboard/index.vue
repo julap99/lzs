@@ -252,7 +252,7 @@ const pendingApplication = ref({
   statusPermohonan: "Perlu Pembetulan",
   tarikhPermohonan: "2025-01-15",
   tarikhUlasan: "2025-01-20",
-  ulasanEksekutif: "Sila kemaskini alamat organisasi & no telefon. Muat naik dokumen terkini jika perlu."
+  ulasanEksekutif: "Sila kemaskini alamat organisasi & no telefon. Sila memuat naik dokumen yang terkini."
 });
 
 // Alert state

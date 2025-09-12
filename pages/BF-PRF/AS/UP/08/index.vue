@@ -91,7 +91,7 @@
               <div class="mt-6 flex justify-end gap-4">
                 <rs-button
                   variant="primary-outline"
-                  @click="navigateTo('/BF-PRF/AS/FR/04')"
+                  @click="navigateTo('/BF-PRF/AS/UP/07')"
                 >
                   Kembali
                 </rs-button>
@@ -136,9 +136,9 @@ const breadcrumb = ref([
 
 // Sample data - should come from previous page/API
 const formData = ref({
-  icNumber: "880101121234",
-  name: "Ahmad bin Abdullah",
-  address: "No 12, Jalan Merdeka, 43000 Kajang, Selangor",
+  icNumber: "770319035991",
+  name: "ADNAN BIN ABU",
+  address: "No 12, Jalan Merdeka, 43000 Kajang, Selangor, Malaysia",
   familyCategory: "miskin", // Now editable by admin
   asnafStatus: null, // To be selected by admin
   dependentStatus: null, // To be selected by admin

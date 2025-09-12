@@ -192,7 +192,7 @@ const performSearch = async () => {
   setTimeout(() => {
     processing.value = false;
     // Randomize whether profile exists or not (50% chance)
-    profileExists.value = Math.random() >= 0.5;
+    profileExists.value = Math.random() >= 0.5; // 50% chance of finding profile
     searchCompleted.value = true;
   }, 1000);
 };

@@ -50,8 +50,9 @@
             type="text"
             name="registrationNumber"
             label="Nombor Pendaftaran Organisasi (SSM/ROS)"
-            validation="required"
-            placeholder="Contoh: 123456-A"
+            validation="required|matches:/^(\d{12}|PPM-\d{3}-\d{2}-\d{8})$/"
+            placeholder="Contoh: 201901000005 (SSM) atau PPM-001-10-14032020 (ROS)"
+            help="SSM: 12 digit angka | ROS: PPM-###-##-DDMMYYYY"
             v-model="formData.registrationNumber"
           />
 
@@ -494,6 +495,9 @@
             help="Muat naik sijil pendaftaran organisasi anda"
             v-model="formData.registrationCertificate"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasRegistrationCert ? 'success' : 'danger'">{{ hasRegistrationCert ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -504,6 +508,9 @@
             help="Muat naik surat lantikan rasmi"
             v-model="formData.appointmentLetter"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasAppointmentLetter ? 'success' : 'danger'">{{ hasAppointmentLetter ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -514,6 +521,9 @@
             help="Muat naik bukti pemilikan akaun bank seperti penyata bank"
             v-model="formData.bankProof"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasBankProof ? 'success' : 'danger'">{{ hasBankProof ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -524,6 +534,9 @@
             help="Muat naik dokumen tambahan yang berkaitan"
             v-model="formData.additionalDocuments"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="additionalDocsCount > 0 ? 'success' : 'warning'">{{ additionalDocsCount > 0 ? (additionalDocsCount + ' dokumen') : 'Tiada dokumen tambahan' }}</rs-badge>
+          </div>
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -699,7 +712,7 @@
 
           <!-- Step 3: Maklumat Perhubungan -->
           <div class="mt-4">
-            <h4 class="font-medium text-gray-900 mb-2">Step 3: Maklumat Perhubungan</h4>
+            <h4 class="font-medium text-gray-900 mb-2">Maklumat Perhubungan</h4>
             <div v-if="formData.representatives && formData.representatives.length" class="space-y-3 text-sm">
               <div v-for="(rep, i) in formData.representatives" :key="i" class="p-3 border rounded bg-gray-50">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -727,7 +740,7 @@
 
           <!-- Step 4: Maklumat Bank -->
           <div class="mt-4">
-            <h4 class="font-medium text-gray-900 mb-2">Step 4: Maklumat Bank</h4>
+            <h4 class="font-medium text-gray-900 mb-2">Maklumat Bank</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div v-if="formData.structure === 'cawangan'">
                 <label class="block text-gray-600 font-medium">Sama seperti HQ?</label>
@@ -752,7 +765,7 @@
 
           <!-- Step 5: Dokumen Sokongan -->
           <div class="mt-4">
-            <h4 class="font-medium text-gray-900 mb-2">Step 5: Dokumen Sokongan</h4>
+            <h4 class="font-medium text-gray-900 mb-2">Dokumen Sokongan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
                 <label class="block text-gray-600 font-medium">Sijil Pendaftaran SSM / ROS</label>
@@ -906,9 +919,9 @@ const steps = computed(() => {
   return [
     { id: 1, label: "Maklumat Organisasi" },
     { id: 2, label: "Alamat" },
-    { id: 3, label: "Perhubungan" },
-    { id: 4, label: "Bank" },
-    { id: 5, label: "Dokumen" },
+    { id: 3, label: "Maklumat Perhubungan" },
+    { id: 4, label: "Maklumat Bank" },
+    { id: 5, label: "Dokumen Sokongan" },
   ];
 });
 
@@ -994,138 +1007,140 @@ const loadExistingData = async () => {
   setTimeout(() => {
     // Mock existing data based on ID - replace with actual API call
     const mockData = {
-      'ORG-240501': {
-        organizationName: "Syarikat Teknologi Maju Sdn Bhd",
-        registrationNumber: "201801012345",
-        organizationType: "ngo",
+      'ORG-202507-0001': {
+        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah",
+        registrationNumber: "PPM-2021-001",
+        organizationType: "masjid",
         registrationStatus: "berdaftar",
         structure: "hq",
-        addressLine1: "No. 45, Jalan Teknologi 2/1",
-        addressLine2: "Taman Perindustrian Teknologi",
-        addressLine3: "Seksyen 2",
+        addressLine1: "No. 1, Jalan Masjid",
+        addressLine2: "Seksyen 14",
+        addressLine3: "",
         postcode: "40000",
         city: "Shah Alam",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID PEKAN SHAH ALAM",
-        branch: "Cawangan Utama",
+        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH",
+        branch: "",
         zone: "Zon A",
         hq: "",
         representatives: [
-          { name: "Dato' Ahmad bin Hassan", ic: "750101014567", phoneNumber: "03-55123456", email: "ahmad.hassan@teknologimaju.com" },
-          { name: "Siti Zainab binti Omar", ic: "820515023456", phoneNumber: "019-2345678", email: "zainab.omar@teknologimaju.com" }
+          { name: "Ustaz Ahmad bin Hassan", ic: "750101014567", phoneNumber: "03-55123456", email: "ahmad.hassan@masjid-selangor.gov.my" },
+          { name: "Siti Zainab binti Omar", ic: "820515023456", phoneNumber: "019-2345678", email: "zainab.omar@masjid-selangor.gov.my" }
         ],
-        bankName: "CIMB Bank",
-        bankAccountNumber: "8001234567890",
-        penamaBank: "Syarikat Teknologi Maju Sdn Bhd",
+        bankName: "Bank Islam",
+        bankAccountNumber: "1234567890123456",
+        penamaBank: "Masjid Sultan Salahuddin Abdul Aziz Shah",
         bankSameAsHQ: "",
       },
-      'ORG-240502': {
-        organizationName: "Pertubuhan Amal Iman Malaysia",
-        registrationNumber: "PPM-123/2020",
-        organizationType: "ngo",
+      'ORG-202506-0002': {
+        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya",
+        registrationNumber: "PPM-2021-002",
+        organizationType: "masjid",
         registrationStatus: "berdaftar",
-        structure: "hq",
-        addressLine1: "No. 88, Jalan Amal 1/3",
-        addressLine2: "Taman Iman Jaya",
+        structure: "cawangan",
+        addressLine1: "No. 88, Jalan Masjid PJ",
+        addressLine2: "Taman Masjid Jaya",
         addressLine3: "",
-        postcode: "53100",
-        city: "Kuala Lumpur",
-        district: "Kuala Lumpur",
-        state: "Wilayah Persekutuan Kuala Lumpur",
-        kariah: "MASJID WILAYAH KL",
-        branch: "Cawangan Utama",
+        postcode: "46000",
+        city: "Petaling Jaya",
+        district: "Petaling",
+        state: "Selangor",
+        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN PJ",
+        branch: "Cawangan Petaling Jaya",
         zone: "Zon B",
-        hq: "",
+        hq: "masjid_sultan_salahuddin_hq",
         representatives: [
-          { name: "Ustaz Ibrahim bin Yusof", ic: "730505045678", phoneNumber: "03-22345678", email: "ibrahim@amaliman.org" }
+          { name: "Ustaz Ibrahim bin Yusof", ic: "730505045678", phoneNumber: "03-22345678", email: "ibrahim@masjid-pj-selangor.gov.my" }
         ],
         bankName: "Maybank",
         bankAccountNumber: "5123456789012",
-        penamaBank: "Pertubuhan Amal Iman Malaysia",
-        bankSameAsHQ: "",
+        penamaBank: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan PJ",
+        bankSameAsHQ: "tidak",
       },
-      'ORG-240503': {
-        organizationName: "Sekolah Menengah Tahfiz Al-Amin",
-        registrationNumber: "IPT-456/2019",
-        organizationType: "institusi",
+      'ORG-202505-0003': {
+        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang",
+        registrationNumber: "PPM-2021-003",
+        organizationType: "masjid",
         registrationStatus: "berdaftar",
-        structure: "hq",
-        addressLine1: "No. 15, Jalan Pendidikan 5/1",
-        addressLine2: "Taman Ilmu",
+        structure: "cawangan",
+        addressLine1: "No. 15, Jalan Masjid Klang",
+        addressLine2: "Taman Masjid Klang",
         addressLine3: "Seksyen 5",
-        postcode: "28400",
-        city: "Mentakab",
-        district: "Temerloh",
-        state: "Pahang",
-        kariah: "MASJID TEMERLOH",
-        branch: "Sekolah Utama",
-        zone: "Zon Pahang",
-        hq: "",
+        postcode: "41000",
+        city: "Klang",
+        district: "Klang",
+        state: "Selangor",
+        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN KLANG",
+        branch: "Cawangan Klang",
+        zone: "Zon C",
+        hq: "masjid_sultan_salahuddin_hq",
         representatives: [
-          { name: "Dr. Ahmad Fauzi bin Abdul Rahman", ic: "650815056789", phoneNumber: "09-33456789", email: "fauzi@tahfizalamin.edu.my" }
+          { name: "Dr. Ahmad Fauzi bin Abdul Rahman", ic: "650815056789", phoneNumber: "03-33456789", email: "fauzi@masjid-klang-selangor.gov.my" }
         ],
         bankName: "Bank Islam",
         bankAccountNumber: "2098765432109",
-        penamaBank: "Sekolah Menengah Tahfiz Al-Amin",
-        bankSameAsHQ: "",
+        penamaBank: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang",
+        bankSameAsHQ: "tidak",
       },
-      'ORG-240504': {
-        organizationName: "Institut Latihan Kemahiran Malaysia - Cawangan Shah Alam",
-        registrationNumber: "INST-789/2018",
-        organizationType: "institusi",
+      'ORG-202507-0004': {
+        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam",
+        registrationNumber: "PPM-2021-004",
+        organizationType: "masjid",
         registrationStatus: "berdaftar",
         structure: "cawangan",
-        addressLine1: "No. 200, Jalan Kemahiran 3/7",
-        addressLine2: "Kawasan Perindustrian",
+        addressLine1: "No. 200, Jalan Masjid Shah Alam",
+        addressLine2: "Taman Masjid Shah Alam",
         addressLine3: "Seksyen 3",
         postcode: "40150",
         city: "Shah Alam",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID SHAH ALAM",
-        branch: "Institut Utama",
-        zone: "Zon Selangor",
-        hq: "uitm_shah_alam",
+        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN SHAH ALAM",
+        branch: "Cawangan Shah Alam",
+        zone: "Zon A",
+        hq: "masjid_sultan_salahuddin_hq",
         representatives: [
-          { name: "Encik Mohd Rashid bin Hassan", ic: "700301067890", phoneNumber: "03-55567890", email: "rashid@ilkm.gov.my" }
+          { name: "Encik Mohd Rashid bin Hassan", ic: "700301067890", phoneNumber: "03-55567890", email: "rashid@masjid-sa-selangor.gov.my" }
         ],
         bankName: "RHB Bank",
         bankAccountNumber: "3456789012345",
-        penamaBank: "Institut Latihan Kemahiran Malaysia",
+        penamaBank: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam",
         bankSameAsHQ: "tidak",
       },
-      'ORG-240505': {
-        organizationName: "Syarikat Pembangunan Hartanah Sdn Bhd",
-        registrationNumber: "201901098765",
-        organizationType: "agensi",
-        registrationStatus: "berdaftar",
-        structure: "hq",
-        addressLine1: "No. 77, Jalan Pembangunan 2/4",
-        addressLine2: "Pusat Komersial",
-        addressLine3: "Tingkat 15",
-        postcode: "50450",
-        city: "Kuala Lumpur",
-        district: "Kuala Lumpur",
-        state: "Wilayah Persekutuan Kuala Lumpur",
-        kariah: "MASJID BUKIT BINTANG",
-        branch: "Ibu Pejabat",
-        zone: "Zon KL",
-        representatives: [
-          { name: "Dato Sri Azman bin Abdullah", ic: "680220078901", phoneNumber: "03-21234567", email: "azman@sph.com.my" }
-        ],
-        bankName: "Public Bank",
-        bankAccountNumber: "4567890123456",
-        penamaBank: "Syarikat Pembangunan Hartanah Sdn Bhd",
-      },
-      'ORG-240506': {
-        organizationName: "Persatuan Belia Islam Malaysia",
-        registrationNumber: "ROS-456/2017",
+      'ORG-202506-0005': {
+        organizationName: "Pertubuhan Kebajikan Islam Selangor",
+        registrationNumber: "PPM-2022-001",
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
-        addressLine1: "No. 33, Jalan Belia 4/2",
-        addressLine2: "Taman Belia Cemerlang",
+        addressLine1: "No. 77, Jalan Kebajikan 2/4",
+        addressLine2: "Pusat Kebajikan Islam",
+        addressLine3: "Tingkat 15",
+        postcode: "47100",
+        city: "Puchong",
+        district: "Petaling",
+        state: "Selangor",
+        kariah: "MASJID PUCHONG",
+        branch: "Ibu Pejabat",
+        zone: "Zon Puchong",
+        hq: "",
+        representatives: [
+          { name: "Azman bin Abdullah", ic: "680220078901", phoneNumber: "03-21234567", email: "azman@pki-selangor.org.my" }
+        ],
+        bankName: "Public Bank",
+        bankAccountNumber: "4567890123456",
+        penamaBank: "Pertubuhan Kebajikan Islam Selangor",
+        bankSameAsHQ: "",
+      },
+      'ORG-202505-0006': {
+        organizationName: "Rumah Anak Yatim Darul Ehsan",
+        registrationNumber: "PPM-2022-002",
+        organizationType: "ngo",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "No. 33, Jalan Anak Yatim 4/2",
+        addressLine2: "Taman Anak Yatim Cemerlang",
         addressLine3: "",
         postcode: "47100",
         city: "Puchong",
@@ -1134,36 +1149,65 @@ const loadExistingData = async () => {
         kariah: "MASJID PUCHONG",
         branch: "Ibu Pejabat",
         zone: "Zon Puchong",
+        hq: "",
         representatives: [
-          { name: "Saudara Fikri bin Omar", ic: "850610089012", phoneNumber: "03-80123456", email: "fikri@pbim.org" },
-          { name: "Saudari Nurul Ain binti Zaki", ic: "870315091234", phoneNumber: "019-7654321", email: "nurul@pbim.org" }
+          { name: "Saudara Fikri bin Omar", ic: "850610089012", phoneNumber: "03-80123456", email: "fikri@ray-selangor.org.my" },
+          { name: "Saudari Nurul Ain binti Zaki", ic: "870315091234", phoneNumber: "019-7654321", email: "nurul@ray-selangor.org.my" }
         ],
         bankName: "AmBank",
         bankAccountNumber: "6789012345678",
-        penamaBank: "Persatuan Belia Islam Malaysia",
+        penamaBank: "Rumah Anak Yatim Darul Ehsan",
+        bankSameAsHQ: "",
       },
-      'ORG-240507': {
-        organizationName: "Universiti Teknologi Malaysia",
-        registrationNumber: "UTM-001/1975",
+      'ORG-202504-0007': {
+        organizationName: "Maahad Tahfiz Selangor",
+        registrationNumber: "PPM-2023-001",
         organizationType: "institusi",
         registrationStatus: "berdaftar",
         structure: "hq",
-        addressLine1: "81310 UTM Skudai",
-        addressLine2: "Johor Bahru",
-        addressLine3: "",
-        postcode: "81310",
-        city: "Johor Bahru",
-        district: "Johor Bahru",
-        state: "Johor",
-        kariah: "MASJID UTM",
-        branch: "Kampus Utama",
-        zone: "Zon Johor",
+        addressLine1: "No. 15, Jalan Tahfiz 5/1",
+        addressLine2: "Taman Ilmu Tahfiz",
+        addressLine3: "Seksyen 5",
+        postcode: "43000",
+        city: "Kajang",
+        district: "Hulu Langat",
+        state: "Selangor",
+        kariah: "MASJID KAJANG",
+        branch: "Sekolah Utama",
+        zone: "Zon Kajang",
+        hq: "",
         representatives: [
-          { name: "Prof. Dr. Ahmad Fauzi bin Ismail", ic: "601205012345", phoneNumber: "07-55345678", email: "fauzi@utm.my" }
+          { name: "Prof. Dr. Ahmad Fauzi bin Ismail", ic: "601205012345", phoneNumber: "03-33456789", email: "fauzi@maahad-tahfiz-selangor.edu.my" }
         ],
         bankName: "HSBC Bank",
         bankAccountNumber: "7890123456789",
-        penamaBank: "Universiti Teknologi Malaysia",
+        penamaBank: "Maahad Tahfiz Selangor",
+        bankSameAsHQ: "",
+      },
+      'ORG-202508-0008': {
+        organizationName: "Pusat Dialisis As-Salam Shah Alam",
+        registrationNumber: "PPM-2021-015",
+        organizationType: "kesihatan",
+        registrationStatus: "berdaftar",
+        structure: "cawangan",
+        addressLine1: "No. 88, Jalan Kesihatan 2/1",
+        addressLine2: "Taman Kesihatan Jaya",
+        addressLine3: "Seksyen 2",
+        postcode: "40000",
+        city: "Shah Alam",
+        district: "Petaling",
+        state: "Selangor",
+        kariah: "MASJID SHAH ALAM",
+        branch: "Cawangan Shah Alam",
+        zone: "Zon Selangor",
+        hq: "pusat_dialisis_as_salam_hq",
+        representatives: [
+          { name: "Dato Dr. Siti Aisyah binti Hassan", ic: "720315123456", phoneNumber: "03-55123456", email: "aisyah@dialisis-as-salam-selangor.gov.my" }
+        ],
+        bankName: "Bank Islam",
+        bankAccountNumber: "1234567890123",
+        penamaBank: "Pusat Dialisis As-Salam Shah Alam",
+        bankSameAsHQ: "tidak",
       },
       'ORG-NEW': {
         organizationName: "",
@@ -1193,7 +1237,13 @@ const loadExistingData = async () => {
     // Load data based on route ID
     const id = route.params.id;
     if (mockData[id]) {
-      formData.value = { ...formData.value, ...mockData[id] };
+      // Attach presentation-only mock attachments so UI shows uploaded state
+      const incoming = { ...mockData[id] };
+      if (!incoming.registrationCertificate) incoming.registrationCertificate = { name: 'ssm.pdf', size: 123456, type: 'application/pdf' };
+      if (!incoming.appointmentLetter) incoming.appointmentLetter = { name: 'surat_lantikan.pdf', size: 223344, type: 'application/pdf' };
+      if (!incoming.bankProof) incoming.bankProof = { name: 'penyata_bank.pdf', size: 334455, type: 'application/pdf' };
+      if (!incoming.additionalDocuments) incoming.additionalDocuments = [ { name: 'dokumen_tambahan_1.pdf', size: 445566, type: 'application/pdf' } ];
+      formData.value = { ...formData.value, ...incoming };
     }
   }, 500);
 };

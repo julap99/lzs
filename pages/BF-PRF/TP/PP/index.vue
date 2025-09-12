@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-xl font-semibold">Pengesahan Recipient</h2>
+            <h2 class="text-xl font-semibold">Senarai Recipient</h2>
           </div>
         </div>
       </template>
@@ -57,6 +57,12 @@
 
                 <template v-slot:status="{ text }">
                   <rs-badge :variant="getStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
+                <template v-slot:statusNPS="{ text }">
+                  <rs-badge :variant="getNPSStatusVariant(text)">
                     {{ text }}
                   </rs-badge>
                 </template>
@@ -136,6 +142,12 @@
                   </rs-badge>
                 </template>
 
+                <template v-slot:statusNPS="{ text }">
+                  <rs-badge :variant="getNPSStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
                     <!-- View Button - Always available -->
@@ -211,6 +223,12 @@
                   </rs-badge>
                 </template>
 
+                <template v-slot:statusNPS="{ text }">
+                  <rs-badge :variant="getNPSStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
                     <!-- View Button - Always available -->
@@ -282,6 +300,12 @@
 
                 <template v-slot:status="{ text }">
                   <rs-badge :variant="getStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
+                <template v-slot:statusNPS="{ text }">
+                  <rs-badge :variant="getNPSStatusVariant(text)">
                     {{ text }}
                   </rs-badge>
                 </template>
@@ -444,6 +468,7 @@ const columns = [
   { key: 'jenisRecipient', label: 'Jenis Recipient', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
+  { key: 'statusNPS', label: 'Status NPS', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
 
@@ -457,60 +482,67 @@ const currentPage = ref(1);
 
 const recipientList = ref([
   {
-    noRujukan: 'RE-240511',
+    noRujukan: 'RE-202507-0011',
     namaRecipient: 'Ahmad Bin Abdullah',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '23/7/2025',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'RE-240511', status: 'Menunggu Pengesahan' },
+    statusNPS: 'Verified',
+    tindakan: { id: 'RE-202507-0011', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'RE-240512',
-    namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
+    noRujukan: 'RE-202506-0012',
+    namaRecipient: 'Pusat Dialisis As-Salam Shah Alam',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '15/6/2025',
     status: 'Disahkan',
-    tindakan: { id: 'RE-240512', status: 'Disahkan' },
+    statusNPS: 'Verified',
+    tindakan: { id: 'RE-202506-0012', status: 'Disahkan' },
   },
   {
-    noRujukan: 'RE-240513',
+    noRujukan: 'RE-202505-0013',
     namaRecipient: 'Siti Fatimah Binti Ali',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '8/5/2025',
     status: 'Tidak Sah',
-    tindakan: { id: 'RE-240513', status: 'Tidak Sah' },
+    statusNPS: 'Tidak Verified',
+    tindakan: { id: 'RE-202505-0013', status: 'Tidak Sah' },
   },
   {
-    noRujukan: 'RE-240517',
+    noRujukan: 'RE-202507-0017',
     namaRecipient: 'Mohd Zaki bin Hassan',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '20/7/2025',
     status: 'Dalam Pembetulan',
-    tindakan: { id: 'RE-240517', status: 'Dalam Pembetulan' },
+    statusNPS: 'Tidak Verified',
+    tindakan: { id: 'RE-202507-0017', status: 'Dalam Pembetulan' },
   },
   {
-    noRujukan: 'RE-240514',
-    namaRecipient: 'Klinik Kesihatan Sejahtera',
+    noRujukan: 'RE-202507-0014',
+    namaRecipient: 'Klinik Kesihatan Al-Ikhlas',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '30/7/2025',
-    status: 'Menunggu Pengesahan',
-    tindakan: { id: 'RE-240514', status: 'Menunggu Pengesahan' },
+    status: 'Perlu Pembetulan',
+    statusNPS: 'Verified',
+    tindakan: { id: 'RE-202507-0014', status: 'Perlu Pembetulan' },
   },
   {
-    noRujukan: 'RE-240515',
+    noRujukan: 'RE-202506-0015',
     namaRecipient: 'Zainab Binti Hassan',
     jenisRecipient: 'Individu',
     tarikhPermohonan: '12/6/2025',
     status: 'Disahkan',
-    tindakan: { id: 'RE-240515', status: 'Disahkan' },
+    statusNPS: 'Verified',
+    tindakan: { id: 'RE-202506-0015', status: 'Disahkan' },
   },
   {
-    noRujukan: 'RE-240516',
-    namaRecipient: 'Pembekal Makanan Halal Sdn Bhd',
+    noRujukan: 'RE-202505-0016',
+    namaRecipient: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '25/5/2025',
     status: 'Tidak Sah',
-    tindakan: { id: 'RE-240516', status: 'Tidak Sah' },
+    statusNPS: 'Tidak Verified',
+    tindakan: { id: 'RE-202505-0016', status: 'Tidak Sah' },
   },
 ]);
 
@@ -571,6 +603,14 @@ const getStatusVariant = (status) => {
   return variants[status] || 'default';
 };
 
+const getNPSStatusVariant = (status) => {
+  const variants = {
+    'Verified': 'success',
+    'Tidak Verified': 'warning'
+  };
+  return variants[status] || 'default';
+};
+
 // Delete confirmation state
 const showDeleteModal = ref(false);
 const itemToDelete = ref(null);
@@ -613,7 +653,7 @@ const performSearch = () => {
 // CRUD Operations
 const viewItem = (id) => navigateTo(`/BF-PRF/TP/PP/view/${id}`);
 const editItem = (id) => navigateTo(`/BF-PRF/TP/PP/kemaskini/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/TP/PP/03`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/TP/PP/03/${id}`);
 
 // Delete operations
 const confirmDelete = (id, item) => {

@@ -8,12 +8,6 @@
           <div>
             <h2 class="text-xl font-semibold">Pengesahan Cawangan</h2>
           </div>
-          <div>
-            <rs-button variant="primary" @click="navigateTo('/BF-PRF/OR/PB/01')">
-              <Icon name="heroicons:plus" size="1rem" class="mr-2" />
-              Tambah Baru
-            </rs-button>
-          </div>
         </div>
       </template>
 
@@ -386,8 +380,8 @@ const currentPage = ref(1);
 const cawanganList = ref([
   {
     noRujukan: 'CB-240501',
-    namaCawangan: 'Institut Latihan Kemahiran Malaysia - Cawangan Shah Alam',
-    namaHQ: 'ILKM Shah Alam',
+    namaCawangan: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
+    namaHQ: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
     daerah: 'Petaling',
     tarikhPermohonan: '30/7/2025',
     status: 'Menunggu Pengesahan',
@@ -395,8 +389,8 @@ const cawanganList = ref([
   },
   {
     noRujukan: 'CB-240502',
-    namaCawangan: 'Pertubuhan Amal Iman Malaysia - Cawangan Klang',
-    namaHQ: 'Pertubuhan Amal Iman Malaysia',
+    namaCawangan: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+    namaHQ: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
     daerah: 'Klang',
     tarikhPermohonan: '15/6/2025',
     status: 'Diluluskan',
@@ -404,8 +398,8 @@ const cawanganList = ref([
   },
   {
     noRujukan: 'CB-240503',
-    namaCawangan: 'Sekolah Menengah Tahfiz Al-Amin - Cawangan Kajang',
-    namaHQ: 'Sekolah Menengah Tahfiz Al-Amin',
+    namaCawangan: 'Pertubuhan Kebajikan Islam Selangor - Cawangan Kajang',
+    namaHQ: 'Pertubuhan Kebajikan Islam Selangor',
     daerah: 'Hulu Langat',
     tarikhPermohonan: '8/5/2025',
     status: 'Ditolak',
@@ -413,8 +407,8 @@ const cawanganList = ref([
   },
   {
     noRujukan: 'CB-240504',
-    namaCawangan: 'Syarikat Teknologi Maju Sdn Bhd - Cawangan Cyberjaya',
-    namaHQ: 'Syarikat Teknologi Maju Sdn Bhd',
+    namaCawangan: 'Rumah Anak Yatim Darul Ehsan - Cawangan Cyberjaya',
+    namaHQ: 'Rumah Anak Yatim Darul Ehsan',
     daerah: 'Sepang',
     tarikhPermohonan: '12/6/2025',
     status: 'Menunggu Pengesahan',

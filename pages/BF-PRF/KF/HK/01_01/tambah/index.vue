@@ -88,11 +88,36 @@
               </div>
             </div>
 
-            <!-- Date and Status Section -->
+            <!-- Status Section -->
+            <div class="mb-8">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <Icon name="mdi:check-circle" class="mr-2 text-green-600" />
+                Status
+              </h3>
+              
+              <div class="grid grid-cols-1 gap-6">
+                <!-- Status -->
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-3"></label>
+                  <FormKit
+                    type="radio"
+                    name="status"
+                    :options="statusOptions"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Status diperlukan'
+                    }"
+                    help="Pilih status Had Kifayah"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Date Section -->
             <div class="mb-8">
               <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <Icon name="mdi:calendar" class="mr-2 text-purple-600" />
-                Tarikh dan Status
+                Tarikh
               </h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -110,24 +135,8 @@
                   />
                 </div>
 
-                <!-- Status -->
-                <div>
-                  <FormKit
-                    type="select"
-                    name="status"
-                    label="Status"
-                    :options="statusOptions"
-                    placeholder="Pilih status"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Status diperlukan'
-                    }"
-                    help="Pilih status Had Kifayah"
-                  />
-                </div>
-
                 <!-- Keterangan -->
-                <div class="md:col-span-2">
+                <div>
                   <FormKit
                     type="textarea"
                     name="keterangan"
@@ -208,9 +217,8 @@ const isSubmitting = ref(false);
 // removed kategori and jenisIsiRumah options
 
 const statusOptions = [
-  { label: "Aktif", value: "Aktif" },
-  { label: "Tidak Aktif", value: "Tidak Aktif" },
-  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+  { label: "Ya", value: "Ya" },
+  { label: "Tidak", value: "Tidak" },
 ];
 
 // Function to load existing data from localStorage
@@ -249,13 +257,16 @@ const handleSubmit = async (formData) => {
     // Load existing data
     const existingData = loadExistingData();
     
+    // Convert radio button values to display values
+    const statusDisplay = formData.status === "Ya" ? "Aktif" : "Tidak Aktif";
+    
     // Prepare new data
     const newRecord = {
       idHadKifayah: formData.idHadKifayah,
       namaHadKifayah: formData.namaHadKifayah,
       kadarBerbayar: parseFloat(formData.kadarBerbayar),
       tarikhMula: formData.tarikhMula,
-      status: formData.status,
+      status: statusDisplay,
       keterangan: formData.keterangan || "",
       tindakan: existingData.length + 1,
     };

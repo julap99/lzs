@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Had Kifayah Utama</h2>
+          <h2 class="text-xl font-semibold">Senarai Multidimensi</h2>
           <div class="flex items-center gap-2">
             <rs-button variant="primary" @click="navigateTo('01_01/tambah')">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah Baharu
@@ -45,7 +45,7 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PRF/KF/MD/01_02?id=${data.value.idHadKifayah}`)"
+              @click="navigateTo(`/BF-PRF/KF/MD/01_02?id=${data.value.no}`)"
               >Kemaskini
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -53,7 +53,7 @@
               variant="secondary"
               size="sm"
               class="!px-2 !py-1 ml-2"
-              @click="navigateTo({ path: '/BF-PRF/KF/HK/02_02', query: { id: data.value.idHadKifayah } })"
+              @click="navigateTo({ path: '/BF-PRF/KF/MD/01_04', query: { id: data.value.no } })"
               >Lihat
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -75,12 +75,12 @@ const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF/KF/HK/admin",
+    path: "/BF-PRF/KF/MD/admin",
   },
   {
-    name: "Konfigurasi Had Kifayah",
+    name: "Senarai Multidimensi",
     type: "current",
-    path: "/BF-PRF/KF/HK/admin",
+    path: "/BF-PRF/KF/MD/01_01",
   },
 ]);
 
@@ -122,7 +122,7 @@ const validateDataItem = (item) => {
 // Function to load data from localStorage
 const loadData = () => {
   try {
-    const savedData = localStorage.getItem('kifayahLimits');
+    const savedData = localStorage.getItem('multidimensi');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       // Validate and sanitize parsed data
@@ -141,13 +141,13 @@ const loadData = () => {
           mergedData.push(validateDataItem(savedItem));
         }
       });
-      kifayahLimits.value = mergedData;
+      kifayahLimits.value = assignRowNumbers(mergedData);
     } else {
-      kifayahLimits.value = defaultData;
+      kifayahLimits.value = assignRowNumbers(defaultData);
     }
   } catch (error) {
     console.error('Error loading data:', error);
-    kifayahLimits.value = defaultData;
+    kifayahLimits.value = assignRowNumbers(defaultData);
   }
 };
 
@@ -170,6 +170,11 @@ const refreshTable = () => {
     console.log("Table refreshed, records:", kifayahLimits.value.length);
     console.log("Sample data:", kifayahLimits.value[0]);
   });
+};
+
+// Ensure each row has a sequential `no` field used as ID
+const assignRowNumbers = (items) => {
+  return (items || []).map((item, index) => ({ ...item, no: index + 1 }));
 };
 
 const formatDate = (dateString) => {
