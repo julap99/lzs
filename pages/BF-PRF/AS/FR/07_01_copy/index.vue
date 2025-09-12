@@ -632,7 +632,7 @@ const formData = ref({
   noPengenalan: "770319035991",
   noTelefon: "0191105544",
   email: "adnan.abu@gmail.com",
-  status: "Dalam Siasatan",
+  status: "Menunggu Pengesahan",
   keputusanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
@@ -804,7 +804,7 @@ const handleLihat = () => {
 
 /* HELPERS */
 function getStatusVariant(status: string) {
-  if (status === "Dalam Siasatan") return "primary";
+  if (status === "Menunggu Pengesahan") return "primary";
   if (status === "Diluluskan") return "success";
   if (status === "Ditolak") return "danger";
   return "default";

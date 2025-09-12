@@ -2164,7 +2164,7 @@
 
             <!-- Income Source (shown only when working) -->
             <div class="mb-6">
-              <h5 class="text-md font-medium mb-3">Sumber Pendapatan</h5>
+              <h5 class="text-sm font-medium mb-3">Sumber Pendapatan</h5>
               <FormKit
                 type="checkbox"
                 name="sumber_pendapatan"

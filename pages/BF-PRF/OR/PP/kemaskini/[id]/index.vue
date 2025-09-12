@@ -50,8 +50,9 @@
             type="text"
             name="registrationNumber"
             label="Nombor Pendaftaran Organisasi (SSM/ROS)"
-            validation="required"
-            placeholder="Contoh: 123456-A"
+            validation="required|matches:/^(\d{12}|PPM-\d{3}-\d{2}-\d{8})$/"
+            placeholder="Contoh: 201901000005 (SSM) atau PPM-001-10-14032020 (ROS)"
+            help="SSM: 12 digit angka | ROS: PPM-###-##-DDMMYYYY"
             v-model="formData.registrationNumber"
           />
 
@@ -494,6 +495,9 @@
             help="Muat naik sijil pendaftaran organisasi anda"
             v-model="formData.registrationCertificate"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasRegistrationCert ? 'success' : 'danger'">{{ hasRegistrationCert ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -504,6 +508,9 @@
             help="Muat naik surat lantikan rasmi"
             v-model="formData.appointmentLetter"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasAppointmentLetter ? 'success' : 'danger'">{{ hasAppointmentLetter ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -514,6 +521,9 @@
             help="Muat naik bukti pemilikan akaun bank seperti penyata bank"
             v-model="formData.bankProof"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasBankProof ? 'success' : 'danger'">{{ hasBankProof ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
+          </div>
 
           <FormKit
             type="file"
@@ -524,6 +534,9 @@
             help="Muat naik dokumen tambahan yang berkaitan"
             v-model="formData.additionalDocuments"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="additionalDocsCount > 0 ? 'success' : 'warning'">{{ additionalDocsCount > 0 ? (additionalDocsCount + ' dokumen') : 'Tiada dokumen tambahan' }}</rs-badge>
+          </div>
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -699,7 +712,7 @@
 
           <!-- Step 3: Maklumat Perhubungan -->
           <div class="mt-4">
-            <h4 class="font-medium text-gray-900 mb-2">Step 3: Maklumat Perhubungan</h4>
+            <h4 class="font-medium text-gray-900 mb-2">Maklumat Perhubungan</h4>
             <div v-if="formData.representatives && formData.representatives.length" class="space-y-3 text-sm">
               <div v-for="(rep, i) in formData.representatives" :key="i" class="p-3 border rounded bg-gray-50">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -727,7 +740,7 @@
 
           <!-- Step 4: Maklumat Bank -->
           <div class="mt-4">
-            <h4 class="font-medium text-gray-900 mb-2">Step 4: Maklumat Bank</h4>
+            <h4 class="font-medium text-gray-900 mb-2">Maklumat Bank</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div v-if="formData.structure === 'cawangan'">
                 <label class="block text-gray-600 font-medium">Sama seperti HQ?</label>
@@ -752,7 +765,7 @@
 
           <!-- Step 5: Dokumen Sokongan -->
           <div class="mt-4">
-            <h4 class="font-medium text-gray-900 mb-2">Step 5: Dokumen Sokongan</h4>
+            <h4 class="font-medium text-gray-900 mb-2">Dokumen Sokongan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
                 <label class="block text-gray-600 font-medium">Sijil Pendaftaran SSM / ROS</label>
@@ -906,9 +919,9 @@ const steps = computed(() => {
   return [
     { id: 1, label: "Maklumat Organisasi" },
     { id: 2, label: "Alamat" },
-    { id: 3, label: "Perhubungan" },
-    { id: 4, label: "Bank" },
-    { id: 5, label: "Dokumen" },
+    { id: 3, label: "Maklumat Perhubungan" },
+    { id: 4, label: "Maklumat Bank" },
+    { id: 5, label: "Dokumen Sokongan" },
   ];
 });
 
@@ -996,7 +1009,7 @@ const loadExistingData = async () => {
     const mockData = {
       'ORG-202507-0001': {
         organizationName: "Syarikat Teknologi Maju Sdn Bhd",
-        registrationNumber: "201801012345",
+        registrationNumber: "201901000005",
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1022,7 +1035,7 @@ const loadExistingData = async () => {
       },
       'ORG-202506-0002': {
         organizationName: "Pertubuhan Amal Iman Malaysia",
-        registrationNumber: "PPM-123/2020",
+        registrationNumber: "PPM-001-10-14032020",
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1047,7 +1060,7 @@ const loadExistingData = async () => {
       },
       'ORG-202505-0003': {
         organizationName: "Sekolah Menengah Tahfiz Al-Amin",
-        registrationNumber: "IPT-456/2019",
+        registrationNumber: "201903000456",
         organizationType: "institusi",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1072,7 +1085,7 @@ const loadExistingData = async () => {
       },
       'ORG-202507-0004': {
         organizationName: "Institut Latihan Kemahiran Malaysia - Cawangan Shah Alam",
-        registrationNumber: "INST-789/2018",
+        registrationNumber: "201804000789",
         organizationType: "institusi",
         registrationStatus: "berdaftar",
         structure: "cawangan",
@@ -1097,7 +1110,7 @@ const loadExistingData = async () => {
       },
       'ORG-202506-0005': {
         organizationName: "Syarikat Pembangunan Hartanah Sdn Bhd",
-        registrationNumber: "201901098765",
+        registrationNumber: "201901000123",
         organizationType: "agensi",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1120,7 +1133,7 @@ const loadExistingData = async () => {
       },
       'ORG-202505-0006': {
         organizationName: "Persatuan Belia Islam Malaysia",
-        registrationNumber: "ROS-456/2017",
+        registrationNumber: "PPM-456-03-25012017",
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1144,7 +1157,7 @@ const loadExistingData = async () => {
       },
       'ORG-202504-0007': {
         organizationName: "Universiti Teknologi Malaysia",
-        registrationNumber: "UTM-001/1975",
+        registrationNumber: "197501000001",
         organizationType: "institusi",
         registrationStatus: "berdaftar",
         structure: "hq",
@@ -1164,6 +1177,82 @@ const loadExistingData = async () => {
         bankName: "HSBC Bank",
         bankAccountNumber: "7890123456789",
         penamaBank: "Universiti Teknologi Malaysia",
+      },
+      'ORG-202505-0006': {
+        organizationName: "Persatuan Belia Islam Malaysia",
+        registrationNumber: "PPM-456-03-25012017",
+        organizationType: "ngo",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "No. 33, Jalan Belia 4/2",
+        addressLine2: "Taman Belia Cemerlang",
+        addressLine3: "",
+        postcode: "47100",
+        city: "Puchong",
+        district: "Petaling",
+        state: "Selangor",
+        kariah: "MASJID PUCHONG",
+        branch: "Ibu Pejabat",
+        zone: "Zon Puchong",
+        hq: "",
+        representatives: [
+          { name: "Saudara Fikri bin Omar", ic: "850610089012", phoneNumber: "03-80123456", email: "fikri@pbim.org" },
+          { name: "Saudari Nurul Ain binti Zaki", ic: "870315091234", phoneNumber: "019-7654321", email: "nurul@pbim.org" }
+        ],
+        bankName: "AmBank",
+        bankAccountNumber: "6789012345678",
+        penamaBank: "Persatuan Belia Islam Malaysia",
+        bankSameAsHQ: "",
+      },
+      'ORG-202504-0007': {
+        organizationName: "Universiti Teknologi Malaysia",
+        registrationNumber: "197501000001",
+        organizationType: "institusi",
+        registrationStatus: "berdaftar",
+        structure: "hq",
+        addressLine1: "81310 UTM Skudai",
+        addressLine2: "Johor Bahru",
+        addressLine3: "",
+        postcode: "81310",
+        city: "Johor Bahru",
+        district: "Johor Bahru",
+        state: "Johor",
+        kariah: "MASJID UTM",
+        branch: "Kampus Utama",
+        zone: "Zon Johor",
+        hq: "",
+        representatives: [
+          { name: "Prof. Dr. Ahmad Fauzi bin Ismail", ic: "601205012345", phoneNumber: "07-55345678", email: "fauzi@utm.my" }
+        ],
+        bankName: "HSBC Bank",
+        bankAccountNumber: "7890123456789",
+        penamaBank: "Universiti Teknologi Malaysia",
+        bankSameAsHQ: "",
+      },
+      'ORG-202508-0008': {
+        organizationName: "Yayasan Pendidikan Selangor",
+        registrationNumber: "PPM-008-10-15012023",
+        organizationType: "yayasan",
+        registrationStatus: "berdaftar",
+        structure: "cawangan",
+        addressLine1: "No. 88, Jalan Pendidikan 2/1",
+        addressLine2: "Taman Pendidikan Jaya",
+        addressLine3: "Seksyen 2",
+        postcode: "40000",
+        city: "Shah Alam",
+        district: "Petaling",
+        state: "Selangor",
+        kariah: "MASJID SHAH ALAM",
+        branch: "Cawangan Shah Alam",
+        zone: "Zon Selangor",
+        hq: "yayasan_pendidikan_selangor_hq",
+        representatives: [
+          { name: "Dato Dr. Siti Aisyah binti Hassan", ic: "720315123456", phoneNumber: "03-55123456", email: "aisyah@yps.edu.my" }
+        ],
+        bankName: "Bank Islam",
+        bankAccountNumber: "1234567890123",
+        penamaBank: "Yayasan Pendidikan Selangor",
+        bankSameAsHQ: "tidak",
       },
       'ORG-NEW': {
         organizationName: "",
@@ -1193,7 +1282,13 @@ const loadExistingData = async () => {
     // Load data based on route ID
     const id = route.params.id;
     if (mockData[id]) {
-      formData.value = { ...formData.value, ...mockData[id] };
+      // Attach presentation-only mock attachments so UI shows uploaded state
+      const incoming = { ...mockData[id] };
+      if (!incoming.registrationCertificate) incoming.registrationCertificate = { name: 'ssm.pdf', size: 123456, type: 'application/pdf' };
+      if (!incoming.appointmentLetter) incoming.appointmentLetter = { name: 'surat_lantikan.pdf', size: 223344, type: 'application/pdf' };
+      if (!incoming.bankProof) incoming.bankProof = { name: 'penyata_bank.pdf', size: 334455, type: 'application/pdf' };
+      if (!incoming.additionalDocuments) incoming.additionalDocuments = [ { name: 'dokumen_tambahan_1.pdf', size: 445566, type: 'application/pdf' } ];
+      formData.value = { ...formData.value, ...incoming };
     }
   }, 500);
 };

@@ -1763,10 +1763,10 @@ export default [
   // Masjid Menu
   {
     header: "Masjid",
-    description: "Jika Pengguna Luar adalah Organisasi Masjid",
+    description: "Jika Pengguna Luar adalah Organisasi - Masjid",
     child: [
       {
-        title: "Mohon Bantuan",
+        title: "Permohonan Bantuan",
         icon: "heroicons:document-text",
         path: "/BF-PRF/pengguna-luar/masjid/mohon-bantuan",
         meta: {
@@ -1776,7 +1776,7 @@ export default [
         },
       },
       {
-        title: "Tambah Penolong Amil",
+        title: "Daftar Penolong Amil",
         icon: "heroicons:user-plus",
         path: "/BF-PRF/pengguna-luar/masjid/tambah-penolong-amil",
         meta: {
@@ -1796,10 +1796,10 @@ export default [
   // Hospital Menu
   {
     header: "Hospital",
-    description: "Jika Pengguna Luar adalah Organisasi Hospital",
+    description: "Jika Pengguna Luar adalah Organisasi - Hospital",
     child: [
       {
-        title: "Tambah Penolong Amil",
+        title: "Daftar Penolong Amil",
         icon: "heroicons:user-plus",
         path: "/BF-PRF/pengguna-luar/hospital/tambah-penolong-amil",
         meta: {

@@ -366,6 +366,69 @@ const loadRecipientData = (id) => {
       additionalDocuments: null,
       status: 'Perlu Pembetulan',
       tarikhPermohonan: '30/7/2025'
+    },
+    'RE-202506-0015': {
+      noRujukan: 'RE-202506-0015',
+      jenisRecipient: 'individu',
+      namaPenuh: 'Zainab Binti Hassan',
+      namaSyarikat: '',
+      jenisPengenalan: 'ic',
+      idPengenalan: '820315234567',
+      idSyarikat: '',
+      bank: {
+        bankName: 'Public Bank',
+        bankAccountNumber: '4567890123456',
+        penamaBank: 'Zainab Binti Hassan',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'ic_zainab_hassan_2025.pdf' },
+      dokumenSokongan: { name: 'dokumen_sokongan_bank_zainab.pdf' },
+      bankDocument: { name: 'bank_statement_feb_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Disahkan',
+      tarikhPermohonan: '12/6/2025'
+    },
+    'RE-202505-0016': {
+      noRujukan: 'RE-202505-0016',
+      jenisRecipient: 'syarikat',
+      namaPenuh: '',
+      namaSyarikat: 'Pembekal Makanan Halal Sdn Bhd',
+      jenisPengenalan: 'id_syarikat',
+      idPengenalan: '',
+      idSyarikat: '987654-B',
+      bank: {
+        bankName: 'Bank Islam',
+        bankAccountNumber: '2098765432109',
+        penamaBank: 'Pembekal Makanan Halal Sdn Bhd',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'sijil_ssm_pembekal_2025.pdf' },
+      dokumenSokongan: { name: 'surat_pengesahan_bank_pembekal.pdf' },
+      bankDocument: { name: 'bank_confirmation_pembekal.pdf' },
+      additionalDocuments: null,
+      status: 'Tidak Sah',
+      tarikhPermohonan: '25/5/2025'
+    },
+    'RE-202507-0017': {
+      noRujukan: 'RE-202507-0017',
+      jenisRecipient: 'individu',
+      namaPenuh: 'Mohd Zaki bin Hassan',
+      namaSyarikat: '',
+      jenisPengenalan: 'ic',
+      idPengenalan: '750512123456',
+      idSyarikat: '',
+      bank: {
+        bankName: 'AmBank',
+        bankAccountNumber: '6789012345678',
+        penamaBank: 'Mohd Zaki bin Hassan',
+        paymentMethod: 'Bank Transfer'
+      },
+      identityDocument: { name: 'ic_zaki_hassan_2025.pdf' },
+      dokumenSokongan: { name: 'dokumen_sokongan_bank_zaki.pdf' },
+      bankDocument: { name: 'bank_statement_jul_2025.pdf' },
+      additionalDocuments: null,
+      status: 'Dalam Pembetulan',
+      tarikhPermohonan: '20/7/2025'
     }
   }
 

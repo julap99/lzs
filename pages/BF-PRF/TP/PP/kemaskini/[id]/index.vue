@@ -48,6 +48,7 @@
               { label: 'Syarikat', value: 'syarikat' },
             ]"
             v-model="formData.jenisRecipient"
+            :value="formData.jenisRecipient"
           />
 
           <FormKit
@@ -58,6 +59,7 @@
             validation="required"
             placeholder="Masukkan nama penuh"
             v-model="formData.namaPenuh"
+            :value="formData.namaPenuh"
           />
 
           <FormKit
@@ -68,6 +70,7 @@
             validation="required"
             placeholder="Masukkan nama syarikat"
             v-model="formData.namaSyarikat"
+            :value="formData.namaSyarikat"
           />
 
           <FormKit
@@ -78,6 +81,7 @@
             placeholder="Pilih jenis pengenalan"
             :options="jenisPengenalanOptions"
             v-model="formData.jenisPengenalan"
+            :value="formData.jenisPengenalan"
             :disabled="!formData.jenisRecipient"
           />
 
@@ -89,6 +93,7 @@
             validation="required"
             :placeholder="getIdPlaceholder()"
             v-model="formData.idPengenalan"
+            :value="formData.idPengenalan"
           />
 
           <FormKit
@@ -99,6 +104,7 @@
             validation="required"
             placeholder="Contoh: SY123456-X"
             v-model="formData.idSyarikat"
+            :value="formData.idSyarikat"
           />
 
           <div class="flex justify-end mt-6">
@@ -123,6 +129,7 @@
             placeholder="Pilih bank"
             :options="bankOptions"
             v-model="formData.namaBank"
+            :value="formData.namaBank"
           />
 
           <FormKit
@@ -132,6 +139,7 @@
             validation="required|length:10,16|number"
             placeholder="Masukkan nombor akaun bank (10-16 digit)"
             v-model="formData.noAkaunBank"
+            :value="formData.noAkaunBank"
           />
 
           <FormKit
@@ -141,6 +149,7 @@
             validation="required"
             placeholder="Masukkan nama pemilik akaun"
             v-model="formData.penamaAkaunBank"
+            :value="formData.penamaAkaunBank"
           />
 
           <div class="flex justify-between mt-6">
@@ -167,12 +176,45 @@
 
           <FormKit
             type="file"
-            name="dokumenSokongan"
+            name="dokumenPengenalan"
+            label="Dokumen Pengenalan"
+            validation="required"
+            accept=".pdf,.jpg,.jpeg,.png"
+            v-model="formData.dokumenPengenalan"
+          />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasDokumenPengenalan ? 'success' : 'danger'">
+              {{ hasDokumenPengenalan ? 'Telah dilampirkan' : 'Tiada lampiran' }}
+            </rs-badge>
+          </div>
+
+          <FormKit
+            type="file"
+            name="dokumenBank"
             label="Dokumen Sokongan Bank"
             validation="required"
             accept=".pdf,.jpg,.jpeg,.png"
-            v-model="formData.dokumenSokongan"
+            v-model="formData.dokumenBank"
           />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="hasDokumenBank ? 'success' : 'danger'">
+              {{ hasDokumenBank ? 'Telah dilampirkan' : 'Tiada lampiran' }}
+            </rs-badge>
+          </div>
+
+          <FormKit
+            type="file"
+            name="dokumenTambahan"
+            label="Dokumen Tambahan (jika ada)"
+            accept=".pdf,.jpg,.jpeg,.png"
+            multiple="true"
+            v-model="formData.dokumenTambahan"
+          />
+          <div class="text-sm mt-1">
+            <rs-badge :variant="dokumenTambahanCount > 0 ? 'success' : 'warning'">
+              {{ dokumenTambahanCount > 0 ? (dokumenTambahanCount + ' dokumen') : 'Tiada dokumen tambahan' }}
+            </rs-badge>
+          </div>
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
@@ -277,7 +319,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
@@ -313,6 +355,9 @@ const referenceNumber = ref(
 // Confirmation modal state
 const showConfirmationModal = ref(false);
 
+// Guard to avoid resetting fields while initial data is being loaded
+const isInitializing = ref(true);
+
 const formData = ref({
   // Step 1: Maklumat Recipient
   jenisRecipient: "",
@@ -327,8 +372,10 @@ const formData = ref({
   noAkaunBank: "",
   penamaAkaunBank: "",
 
-  // Step 3: Dokumen Sokongan
-  dokumenSokongan: null,
+  // Step 3: Dokumen Sokongan (selaras OR/PP/02)
+  dokumenPengenalan: null,
+  dokumenBank: null,
+  dokumenTambahan: [],
 });
 
 const steps = [
@@ -376,6 +423,39 @@ const getIdPlaceholder = () => {
     default: return "Sila pilih jenis pengenalan dahulu";
   }
 };
+
+// Preserve initial mock attachment metadata for presentation (file inputs reset on mount)
+const initialAttachments = ref({
+  dokumenPengenalan: null,
+  dokumenBank: null,
+  dokumenTambahan: [],
+});
+
+// Attachment helpers for presentation
+const dokumenTambahanCount = computed(() => {
+  const f = formData.value.dokumenTambahan && formData.value.dokumenTambahan.length
+    ? formData.value.dokumenTambahan
+    : initialAttachments.value.dokumenTambahan;
+  return Array.isArray(f) ? f.length : (f ? 1 : 0);
+});
+
+// More tolerant attachment presence check (for mocked objects)
+const isAttachmentPresent = (f) => {
+  if (!f) return false;
+  if (Array.isArray(f)) return f.length > 0;
+  if (typeof f === 'object') return Object.keys(f).length > 0 || !!f.name;
+  return !!f;
+};
+
+// Helpers using tolerant check
+const hasDokumenPengenalan = computed(() => {
+  const f = formData.value.dokumenPengenalan || initialAttachments.value.dokumenPengenalan;
+  return isAttachmentPresent(f);
+});
+const hasDokumenBank = computed(() => {
+  const f = formData.value.dokumenBank || initialAttachments.value.dokumenBank;
+  return isAttachmentPresent(f);
+});
 
 const goToStep = (stepNumber) => {
   // Allow navigation to any step within total steps (same as OR/PP/02 reference page)
@@ -442,6 +522,12 @@ const loadExistingData = async () => {
         namaBank: "Maybank",
         noAkaunBank: "1234567890",
         penamaAkaunBank: "Ahmad Bin Abdullah",
+        // Mocked attachment metadata for presentation only
+        dokumenPengenalan: { name: 'ic_ahmad.pdf', size: 123456, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_maybank.pdf', size: 234567, type: 'application/pdf' },
+        dokumenTambahan: [
+          { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' },
+        ],
       },
       'RE-202506-0012': {
         jenisRecipient: "syarikat",
@@ -451,6 +537,9 @@ const loadExistingData = async () => {
         namaBank: "Public Bank",
         noAkaunBank: "9876543210",
         penamaAkaunBank: "Pusat Dialisis Al-Falah Sdn Bhd",
+        dokumenPengenalan: { name: 'ssm_al_falah.pdf', size: 111111, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_public.pdf', size: 222222, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       },
       'RE-202505-0013': {
         jenisRecipient: "individu",
@@ -460,6 +549,9 @@ const loadExistingData = async () => {
         namaBank: "CIMB Bank",
         noAkaunBank: "8765432109",
         penamaAkaunBank: "Siti Fatimah Binti Ali",
+        dokumenPengenalan: { name: 'passport_siti.jpg', size: 456789, type: 'image/jpeg' },
+        dokumenBank: { name: 'penyata_bank_cimb.pdf', size: 210000, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       },
       'RE-202507-0014': {
         jenisRecipient: "syarikat",
@@ -469,6 +561,9 @@ const loadExistingData = async () => {
         namaBank: "CIMB Bank",
         noAkaunBank: "8765432109876",
         penamaAkaunBank: "Klinik Kesihatan Sejahtera",
+        dokumenPengenalan: { name: 'ssm_klinik.pdf', size: 333333, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_cimb.pdf', size: 444444, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       },
       'RE-202506-0015': {
         jenisRecipient: "individu",
@@ -478,6 +573,9 @@ const loadExistingData = async () => {
         namaBank: "Bank Islam",
         noAkaunBank: "7654321098",
         penamaAkaunBank: "Zainab Binti Hassan",
+        dokumenPengenalan: { name: 'ic_zainab.png', size: 98765, type: 'image/png' },
+        dokumenBank: { name: 'penyata_bank_bi.pdf', size: 200000, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       },
       'RE-202505-0016': {
         jenisRecipient: "syarikat",
@@ -487,13 +585,68 @@ const loadExistingData = async () => {
         namaBank: "Bank Islam",
         noAkaunBank: "7654321098765",
         penamaAkaunBank: "Pembekal Makanan Halal Sdn Bhd",
+        dokumenPengenalan: { name: 'ssm_pembekal.pdf', size: 555555, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_bi.pdf', size: 666666, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
+      },
+      'RE-202507-0017': {
+        jenisRecipient: "individu",
+        namaPenuh: "Mohd Zaki bin Hassan",
+        jenisPengenalan: "mykad",
+        idPengenalan: "750512123456",
+        namaBank: "AmBank",
+        noAkaunBank: "6789012345678",
+        penamaAkaunBank: "Mohd Zaki bin Hassan",
+        dokumenPengenalan: { name: 'ic_zaki.pdf', size: 77777, type: 'application/pdf' },
+        dokumenBank: { name: 'penyata_bank_ambank.pdf', size: 205000, type: 'application/pdf' },
+        dokumenTambahan: [ { name: 'surat_sokongan.pdf', size: 345678, type: 'application/pdf' } ],
       }
     };
 
     // Load data based on route ID
     const id = route.params.id;
     if (mockData[id]) {
-      formData.value = { ...formData.value, ...mockData[id] };
+      // Normalize mock values to expected option values to ensure fields render
+      const incoming = { ...mockData[id] };
+      const jr = String(incoming.jenisRecipient || '').toLowerCase().trim();
+      if (['individu', 'syarikat'].includes(jr)) {
+        incoming.jenisRecipient = jr;
+      }
+      const jp = String(incoming.jenisPengenalan || '').toLowerCase().trim();
+      if (jr === 'individu') {
+        // Accept aliases and normalize
+        if (jp === 'mykad' || jp === 'ic' || jp === 'kad_pengenalan') incoming.jenisPengenalan = 'mykad';
+        else if (jp === 'passport' || jp === 'passport no' || jp === 'passport_no') incoming.jenisPengenalan = 'passport_no';
+      } else if (jr === 'syarikat') {
+        if (jp === 'id_syarikat' || jp === 'ssm' || jp === 'roc') incoming.jenisPengenalan = 'id_syarikat';
+      }
+      formData.value = { ...formData.value, ...incoming };
+      // Preserve initial attachments for presentation badges
+      initialAttachments.value = {
+        dokumenPengenalan: incoming.dokumenPengenalan || null,
+        dokumenBank: incoming.dokumenBank || null,
+        dokumenTambahan: incoming.dokumenTambahan || [],
+      };
+      // Ensure parent and dependent selects are valid and visible after options compute
+      nextTick(() => {
+        // Validate jenisRecipient preselection
+        if (!['individu', 'syarikat'].includes(formData.value.jenisRecipient)) {
+          formData.value.jenisRecipient = 'individu';
+        }
+
+        const options = jenisPengenalanOptions.value || [];
+        if (
+          formData.value.jenisRecipient &&
+          options.length > 0 &&
+          !options.some(opt => opt.value === formData.value.jenisPengenalan)
+        ) {
+          formData.value.jenisPengenalan = options[0].value;
+        }
+        isInitializing.value = false;
+      });
+    } else {
+      // No mock match; end init to avoid locking watchers
+      isInitializing.value = false;
     }
   }, 500);
 };
@@ -502,11 +655,10 @@ const loadExistingData = async () => {
 watch(
   () => formData.value.jenisRecipient,
   () => { 
+    if (isInitializing.value) return;
     formData.value.jenisPengenalan = "";
     formData.value.idPengenalan = "";
     formData.value.idSyarikat = "";
-    formData.value.namaPenuh = "";
-    formData.value.namaSyarikat = "";
   }
 );
 
@@ -514,6 +666,7 @@ watch(
 watch(
   () => formData.value.jenisPengenalan,
   () => { 
+    if (isInitializing.value) return;
     formData.value.idPengenalan = "";
     formData.value.idSyarikat = "";
   }

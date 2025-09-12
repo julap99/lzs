@@ -50,8 +50,9 @@
             type="text"
             name="registrationNumber"
             label="Nombor Pendaftaran Organisasi (SSM/ROS)"
-            validation="required"
-            placeholder="Contoh: 123456-A"
+            validation="required|matches:/^(\d{12}|PPM-\d{3}-\d{2}-\d{8})$/"
+            placeholder="Contoh: 201901000005 (SSM) atau PPM-001-10-14032020 (ROS)"
+            help="SSM: 12 digit angka | ROS: PPM-###-##-DDMMYYYY"
             v-model="formData.registrationNumber"
           />
 
