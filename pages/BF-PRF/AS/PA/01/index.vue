@@ -171,7 +171,7 @@
               </div>
 
               <div>
-                <h4 class="font-semibold mb-2">Dokumen Sokongan</h4>
+                <h4 class="font-semibold mb-2">Dokumen</h4>
                 <div class="overflow-x-auto">
                   <table class="min-w-full border border-gray-400 text-sm">
                     <thead>
@@ -256,41 +256,20 @@
                     type="button"
                     variant="primary"
                     @click="addDokumenRow"
-                    >Tambah Baris</rs-button
+                    >Tambah</rs-button
                   >
                   <rs-button
                     type="button"
                     variant="danger"
                     @click="removeDokumenRow"
                     :disabled="dokumenSokonganRows.length <= 1"
-                    >Buang Baris</rs-button
+                    >Buang</rs-button
                   >
                 </div>
               </div>
             </div>
 
             <FormKit type="textarea" name="catatan" label="Catatan" />
-
-            <!-- File Upload Section -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">
-                Muat naik dokumen sokongan (PDF, JPG, PNG)
-              </label>
-              <FormKit
-                type="file"
-                name="dokumen_sokongan"
-                multiple
-                accept=".pdf,.jpg,.jpeg,.png"
-                help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                validation-label="Dokumen"
-                validation-messages="{
-                  required: 'Sila muat naik sekurang-kurangnya satu dokumen',
-                  max: 'Saiz fail tidak boleh melebihi 5MB',
-                  mime: 'Format fail tidak dibenarkan'
-                }"
-              />
-            </div>
 
             <div class="flex justify-between gap-3 mt-6">
               <rs-button type="button" variant="secondary" @click="handleSave"
