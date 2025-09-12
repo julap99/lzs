@@ -329,6 +329,19 @@ export default [
         child: [],
         meta: {},
       },
+      {
+        title: "Laporan",
+        icon: "iconamoon:file-document",
+        path: "/BF-ADN/laporan",
+        child: [
+        {
+          title: "Laporan Status Aduan",
+          icon: "iconamoon:arrow-right-2-duotone",
+          path: "/BF-ADN/laporan/laporan-status-aduan",
+        }
+        ],
+        meta: {},
+      }
     ],
     meta: {
       auth: {
@@ -664,6 +677,34 @@ export default [
               path: "/BF-TNI/laporan/laporan-baki-tabung-semasa",
               child: [],
               meta: {},
+            },
+            {
+              title: "Laporan Pengeluaran Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-pengeluaran-tunai",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Tambah Nilai Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-tambah-nilai-tunai",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Pemulangan Tunai",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-pemulangan-tunai-ke-tabung",
+              child: [],
+              meta: {},
+            },
+            {
+              title: "Laporan Tamat Hari",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-TNI/laporan/laporan-tamat-hari",
+              child: [],
+              meta: {},
             }
           ],
           meta: {},
@@ -751,6 +792,20 @@ export default [
                 title: "Pelulus",
                 icon: "iconamoon:arrow-right-2-duotone",
                 path: "/BF-PRF/KF/MD/02_01",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
+          {
+            title: "Kelulusan Data (RUU)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/RUU/01_01",
                 child: [],
                 meta: {},
               },
