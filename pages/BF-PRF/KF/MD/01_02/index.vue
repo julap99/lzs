@@ -79,8 +79,7 @@
                     name="namaHadKifayah"
                     label="Nama"
                     placeholder="Masukkan nama"
-                    :disabled="true"
-                    help=""
+                    help="Masukkan nama"
                   />
                 </div>
 
@@ -92,8 +91,7 @@
                     label="Keterangan"
                     placeholder="Masukkan keterangan (opsional)"
                     rows="3"
-                    :disabled="true"
-                    help=""
+                    help="Masukkan keterangan (opsional)"
                   />
                 </div>
 
