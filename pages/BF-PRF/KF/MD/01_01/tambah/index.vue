@@ -32,14 +32,14 @@
                 <div>
                   <FormKit
                     type="text"
-                    name="namaHadKifayah"
-                    label="Nama Had Kifayah"
+                    name="namaMultidimensi"
+                    label="Nama MultiDimensi"
                     placeholder="Contoh: Ketua Keluarga"
                     validation="required"
                     :validation-messages="{
-                      required: 'Nama Had Kifayah diperlukan'
+                      required: 'Nama MultiDimensi diperlukan'
                     }"
-                    help="Masukkan nama lengkap Had Kifayah"
+                    help="Masukkan nama lengkap MultiDimensi"
                   />
                 </div>
 
