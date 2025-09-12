@@ -43,13 +43,14 @@
             />
 
             <!-- Status -->
-            <FormKit
-              type="text"
-              name="status"
-              label="Status"
-              v-model="formData.status"
-              disabled
-            />
+            <div class="formkit-field">
+              <label class="formkit-label">Status</label>
+              <div class="mt-1">
+                <rs-badge :variant="getStatusVariant(formData.status)">
+                  {{ formData.status }}
+                </rs-badge>
+              </div>
+            </div>
 
             <!-- Jumlah Amaun -->
             <FormKit
@@ -115,6 +116,7 @@
                 type="select"
                 name="aidProduct"
                 label="Aid Product"
+                v-model="formData.aidProduct"
                 :options="aidProductOptions"
                 searchable
                 :search-attributes="['label']"
@@ -123,12 +125,13 @@
                 :validation-messages="{
                   required: 'Sila pilih aid product',
                 }"
-                :disabled="!formData.jenisBantuan"
+                :disabled="!formData.aid"
               />
               <FormKit
                 type="select"
                 name="productPackage"
                 label="Product Package"
+                v-model="formData.productPackage"
                 :options="productPackageOptions"
                 searchable
                 :search-attributes="['label']"
@@ -138,6 +141,21 @@
                   required: 'Sila pilih product package',
                 }"
                 :disabled="!formData.aidProduct"
+              />
+              <FormKit
+                type="select"
+                name="productEntitlement"
+                label="Product Entitlement"
+                v-model="formData.productEntitlement"
+                :options="productEntitlementOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih product Entitlement',
+                }"
+                :disabled="!formData.productPackage"
               />
             <!-- Kategori Bantuan -->
             <!-- <FormKit
@@ -250,16 +268,24 @@
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
-            <rs-button variant="primary" @click="handleAddPayment">
-              <Icon name="material-symbols:add" class="mr-1" /> Tambah
-            </rs-button>
+
+            <div v-if="paymentList.length >= 1" class="flex justify-end">
+              <rs-button
+                variant="primary"
+                :disabled="selectedPayments.length === 0"
+                @click="handleSahkanSelected"
+              >
+                <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
+                Sahkan ({{ selectedPayments.length }})
+              </rs-button>
+            </div>
           </div>
         </template>
         <template #body>
           <!-- Debug info -->
-          <div class="mb-4 p-2 bg-gray-100 text-sm">
+          <!-- <div class="mb-4 p-2 bg-gray-100 text-sm">
             Debug: Payment list length: {{ paymentList.length }}
-          </div>
+          </div> -->
 
           <!-- Payment List -->
           <div
@@ -280,14 +306,27 @@
               :options-advanced="{ sortable: true, filterable: false }"
               advanced
             >
-              <template v-slot:actions="{ row }">
-                <div class="flex space-x-2 justify-center">
-                  <rs-button variant="info" size="sm" @click="handleEditPaymentModal(row)">
-                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" /> Lihat
-                  </rs-button>
-                  <rs-button variant="danger" size="sm" @click="handleDeletePayment(row)">
-                    <Icon name="material-symbols:delete" class="w-4 h-4" />
-                  </rs-button>
+              <template v-slot:amaun="{ text }">
+                {{ formatCurrency(text) }}
+              </template>
+              <!-- <template v-slot:status="{ text }">
+                 
+                <div class="formkit-field">
+                  <div class="mt-1">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </div>
+                </div>
+              </template> -->
+              <template v-slot:checkbox="{ value }">
+                <div class="flex justify-center">
+                  <input
+                    type="checkbox"
+                    :value="value.kod"
+                    v-model="selectedPayments"
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                  />
                 </div>
               </template>
             </rs-table>
@@ -352,17 +391,23 @@
                   </div>
                 </template>
 
-                <template v-slot:actions="{ value }">
-                  <div class="flex space-x-2 justify-center">
-                    <rs-button 
-                      variant="primary" 
-                      size="sm" 
-                      @click="handleKemaskiniDamagedData(value)"
-                      class="!px-3 !py-1"
-                    >
-                      <Icon name="material-symbols:edit" class="w-4 h-4 mr-1" />
-                      Kemaskini
-                    </rs-button>
+                <template v-slot:actions="{ value, index }">
+                  <div class="flex justify-end space-x-2">
+                    <!-- Edit button with tooltip -->
+                    <div class="relative" @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
+                      <rs-button 
+                        variant="info-text" 
+                        class="p-1 w-8 h-8"
+                        @click="handleKemaskiniDamagedData(value)"
+                      >
+                        <Icon name="ic:outline-edit" size="18" />
+                      </rs-button>
+                      <transition name="tooltip">
+                        <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
+                          Edit
+                        </span>
+                      </transition>
+                    </div>
                   </div>
                 </template>
              </rs-table>
@@ -382,9 +427,9 @@
         </template>
         <template #body>
           <!-- Debug info -->
-          <div class="mb-4 p-2 bg-gray-100 text-sm">
+          <!-- <div class="mb-4 p-2 bg-gray-100 text-sm">
             Debug: Recipient list length: {{ recipientList.length }}
-          </div>
+          </div> -->
 
           <!-- Recipient List -->
           <div
@@ -405,6 +450,10 @@
               :options-advanced="{ sortable: true, filterable: false }"
               advanced
             >
+              <template v-slot:amaun="{ text }">
+                {{ formatCurrency(text) }}
+              </template>
+            
               <template v-slot:actions="{ row }">
                 <div class="flex space-x-2 justify-center">
                   <rs-button variant="info" size="sm" @click="handleEditRecipientModal(row)">
@@ -929,10 +978,9 @@
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
-              type="select"
+              type="text"
               name="amaun"
               label="Amaun"
-              :options="validAmounts.map(amount => ({ label: fmt(amount), value: amount }))"
               v-model="editingPaymentForDefect.amaun"
               validation="required"
               :classes="{
@@ -966,20 +1014,95 @@
       </template>
     </rs-modal>
     
-    <!-- Duplicate List Modal -->
-    <DuplicateListModal
+    <!-- Duplicate List Modal (Inlined) -->
+    <rs-modal
       v-model="showDuplicateModal"
-      :rows="duplicateRows"
-      @close="onDuplicateClose"
-      @confirm="onDuplicateConfirm"
-      @open-application="onOpenApplication"
-    />
+      size="lg"
+      :closeable="true"
+      role="dialog"
+    >
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold">Senarai Data Duplicate</h3>
+        </div>
+      </template>
+
+      <template #body>
+        <div class="space-y-3">
+          <div class="max-w-xs">
+            <FormKit
+              ref="duplicateSearchRef"
+              type="text"
+              v-model="duplicateSearch"
+              placeholder="Search"
+              :classes="{ outer: 'mb-0' }"
+              :suffix-icon="'mdi:magnify'"
+            />
+          </div>
+
+          <div class="w-full overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+            <table class="min-w-full bg-white">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600">No</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Id Permohonan</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Aid</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Aid Product</th>
+                  <th class="px-4 py-2 text-right text-xs font-semibold text-gray-600">Jumlah Amaun</th>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600">Tarikh Mohon</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Status Permohonan</th>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600">Tindakan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(r, i) in filteredDuplicateRows" :key="r.id" class="border-t">
+                  <td class="px-4 py-2 text-sm">{{ i + 1 }}</td>
+                  <td class="px-4 py-2 text-sm">
+                    <button
+                      class="text-primary hover:underline"
+                      @click="onOpenApplication(r.idPermohonan)"
+                    >
+                      {{ r.idPermohonan }}
+                    </button>
+                  </td>
+                  <td class="px-4 py-2 text-sm">{{ r.aid }}</td>
+                  <td class="px-4 py-2 text-sm">{{ r.aidProduct }}</td>
+                  <td class="px-4 py-2 text-sm text-right">{{ fmt(r.jumlahAmaun) }}</td>
+                  <td class="px-4 py-2 text-sm text-center">{{ formatMsDate(r.tarikhMohon) }}</td>
+                  <td class="px-4 py-2 text-sm">{{ r.status }}</td>
+                  <td class="px-4 py-2 text-sm">
+                    <div class="flex justify-center">
+                      <FormKit
+                        type="checkbox"
+                        :value="r.idPermohonan"
+                        v-model="duplicateSelectedIds"
+                      />
+                    </div>
+                  </td>
+                </tr>
+                <tr v-if="filteredDuplicateRows.length === 0">
+                  <td class="px-4 py-6 text-center text-sm text-gray-500" colspan="8">Tiada data</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </template>
+
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <rs-button variant="secondary" @click="onDuplicateClose">Tutup</rs-button>
+          <rs-button variant="primary" :disabled="duplicateSelectedIds.length === 0" @click="onDuplicateConfirm(duplicateSelectedIds)">
+            Kemaskini
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted } from "vue";
-import DuplicateListModal from "~/components/DuplicateListModal.vue";
 
 definePageMeta({
   title: "Tambah Bulk Processing",
@@ -1010,20 +1133,26 @@ const formData = ref({
   penyiasat: "",
   cawangan: "",
   aidProduct: "",
+  productPackage: "",
+  productEntitlement: "",
   jenisBantuan: ""
 });
+
+// Tooltip state for action buttons
+const tooltips = ref({});
 
 // Load the bantuan data from JSON
 const bantuanData = ref({});
 
 // Import the bantuan data directly
-import bantuanJson from "./Grouped by Aid Code.json";
+import bantuanJson from "./Grouped by Aid Code - Normalized.json";
 
 // Set the bantuan data on component mount
 onMounted(() => {
   try {
     bantuanData.value = bantuanJson;
     console.log("Loaded bantuan data:", bantuanData.value);
+    console.log("Available aids:", Object.keys(bantuanData.value.bantuan || {}));
   } catch (error) {
     console.error("Error loading bantuan data:", error);
   }
@@ -1091,7 +1220,7 @@ const paymentColumns = [
   { key: "kod", label: "Kod" },
   { key: "idPermohonan", label: "ID Permohonan" },
   { key: "bayaranKepada", label: "Bayaran Kepada" },
-  { key: "asnaf", label: "Asnaf" },
+  { key: "asnaf", label: "Kategori Asnaf" },
   { key: "contributor", label: "Contributor" },
   { key: "recipient", label: "Recipient" },
   { key: "organization", label: "Organization" },
@@ -1099,9 +1228,8 @@ const paymentColumns = [
   { key: "tarikhBayaran", label: "Tarikh Bayaran" },
   { key: "bankName", label: "Bank" },
   { key: "bankAccount", label: "No. Akaun" },
-  { key: "status", label: "Status" },
   {
-    key: "actions",
+    key: "checkbox",
     label: "Tindakan",
     sortable: false,
     align: "center",
@@ -1131,6 +1259,8 @@ const selectedFile = ref(null);
 const selectedDocument = ref(null);
 const paymentList = ref([]);
 const recipientList = ref([]);
+const selectedPayments = ref([]);
+const confirmedPayments = ref([]);
 const isLoading = ref(false);
 const isSubmitting = ref(false);
 
@@ -1256,6 +1386,32 @@ const handleDocumentUpload = (event) => {
   }
 };
 
+// Persist selected/confirmed payments between actions
+onMounted(() => {
+  try {
+    const cachedSelected = localStorage.getItem('lzs_selected_payments');
+    const cachedConfirmed = localStorage.getItem('lzs_confirmed_payments');
+    if (cachedSelected) selectedPayments.value = JSON.parse(cachedSelected);
+    if (cachedConfirmed) confirmedPayments.value = JSON.parse(cachedConfirmed);
+  } catch (e) {
+    // ignore parsing errors
+  }
+});
+
+watch(selectedPayments, (val) => {
+  try {
+    localStorage.setItem('lzs_selected_payments', JSON.stringify(val));
+  } catch (e) {}
+}, { deep: true });
+
+const handleSahkanSelected = () => {
+  confirmedPayments.value = [...selectedPayments.value];
+  try {
+    localStorage.setItem('lzs_confirmed_payments', JSON.stringify(confirmedPayments.value));
+  } catch (e) {}
+  alert('success', `${confirmedPayments.value.length} bayaran telah disahkan untuk tindakan seterusnya.`);
+};
+
 const handleImport = async () => {
   try {
     isLoading.value = true;
@@ -1268,7 +1424,7 @@ const handleImport = async () => {
         amaun: 2400.0,
         agihanSemula: "Tidak",
         bulkProcessing: "BP-2025-00004",
-        kategoriAsnaf: "Fakir",
+        kategoriAsnaf: "Muallaf",
         bayaranKepada: "Asnaf",
         negeri: "Selangor",
         negara: "Malaysia",
@@ -1290,7 +1446,7 @@ const handleImport = async () => {
         amaun: 2400.0,
         agihanSemula: "Tidak",
         bulkProcessing: "BP-2025-00004",
-        kategoriAsnaf: "Fakir",
+        kategoriAsnaf: "Non-FM",
         bayaranKepada: "Asnaf",
         negeri: "Selangor",
         negara: "Malaysia",
@@ -1301,7 +1457,7 @@ const handleImport = async () => {
         amaun: 2400.0,
         agihanSemula: "Tidak",
         bulkProcessing: "BP-2025-00004",
-        kategoriAsnaf: "Fakir",
+        kategoriAsnaf: "Miskin",
         bayaranKepada: "Asnaf",
         negeri: "Selangor",
         negara: "Malaysia",
@@ -1313,71 +1469,66 @@ const handleImport = async () => {
         kod: "PT-2025-30371",
         idPermohonan: "PRM-2025-00001",
         bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
-        asnaf: "Fakir",
-        contributor: "",
+        asnaf: "Muallaf",
         recipient: "",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
         tarikhBayaran: "2025-04-17",
         bankName: "Maybank",
         bankAccount: "1623-44-889901",
-        status: "Dalam Proses",
+        checkbox: '',
       },
       {
         kod: "PT-2025-30372",
         idPermohonan: "PRM-2025-00002",           // ← duplicate key
         bayaranKepada: "Nur safiyya Binti Rosly",
         asnaf: "Fakir",
-        contributor: "",
         recipient: "",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
         tarikhBayaran: "2025-04-17",
         bankName: "Maybank",
         bankAccount: "16A3-44-889901",            // ← WRONG (letter)
-        status: "Dalam Proses",
+        checkbox: '',
       },
       {
         kod: "PT-2025-30373",
         idPermohonan: "PRM-2025-00003",
         bayaranKepada: "Mohd Nazrin Bin Mokhtar",
-        asnaf: "Fakir",
-        contributor: "",
+        asnaf: "Non-FM",
         recipient: "",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 240,                               // ← WRONG amount
         tarikhBayaran: "2025-04-17",
         bankName: "CIMB",
         bankAccount: "7600-11-222222",
-        status: "Dalam Proses",
+        checkbox: '',
       },
       {
         kod: "PT-2025-30374",
         idPermohonan: "PRM-2025-00004",
         bayaranKepada: "Intan Nadia Binti Mohd Zamri",
-        asnaf: "Fakir",
-        contributor: "",
+        asnaf: "Miskin", 
         recipient: "",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
         tarikhBayaran: "2025-04-17",
         bankName: "maybnk",                       // ← WRONG spelling
         bankAccount: "7600-11-333333",
-        status: "Dalam Proses",
+        checkbox: '',
       },
       {
         kod: "PT-2025-30375",
         idPermohonan: "PRM-2025-00002",           // ← duplicate of …30372
         bayaranKepada: "Nur safiyya Binti Rosly",
         asnaf: "Fakir",
-        contributor: "",
         recipient: "",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
         tarikhBayaran: "2025-04-17",
         bankName: "Maybank",
         bankAccount: "1623-44-889901",
-        status: "Dalam Proses",
+        checkbox: '',
       }
     ];
 
@@ -1412,16 +1563,32 @@ const aid = computed(() => {
   ];
 });
 
+// Reset dependent selections when parent changes
+watch(() => formData.value.aid, () => {
+  formData.value.aidProduct = "";
+  formData.value.productPackage = "";
+  formData.value.productEntitlement = "";
+});
+
+watch(() => formData.value.aidProduct, () => {
+  formData.value.productPackage = "";
+  formData.value.productEntitlement = "";
+});
+
+watch(() => formData.value.productPackage, () => {
+  formData.value.productEntitlement = "";
+});
+
 // Compute aid product options based on selected jenis bantuan
 const aidProductOptions = computed(() => {
-  if (!formData.value.jenisBantuan || !bantuanData.value.bantuan) {
+  if (!formData.value.aid || !bantuanData.value.bantuan) {
     return [{ label: "-- Pilih --", value: "", disabled: true }];
   }
 
-  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
-  if (!category) return [{ label: "-- Pilih --", value: "", disabled: true }];
+  const aidNode = bantuanData.value.bantuan[formData.value.aid];
+  if (!aidNode) return [{ label: "-- Pilih --", value: "", disabled: true }];
 
-  const options = Object.entries(category).map(([productName]) => ({
+  const options = Object.keys(aidNode).map((productName) => ({
     label: productName,
     value: productName,
   }));
@@ -1432,22 +1599,89 @@ const aidProductOptions = computed(() => {
   ];
 });
 
+// Get selected payment objects
+const selectedPaymentObjects = paymentList.value.filter(p => 
+  selectedPayments.value.includes(p.kod)
+);
+
+// Process selected payments
+const handleProcessSelected = () => {
+  console.log('Selected payments:', selectedPayments.value);
+  // Your logic here
+};
+
 // Compute product package options based on selected aid product
 const productPackageOptions = computed(() => {
-  if (!formData.value.jenisBantuan || !formData.value.aidProduct || !bantuanData.value.bantuan) {
+  console.log('=== Product Package Debug ===');
+  console.log('formData.aid:', formData.value.aid);
+  console.log('formData.aidProduct:', formData.value.aidProduct);
+  console.log('bantuanData.bantuan:', bantuanData.value.bantuan);
+  
+  if (!formData.value.aid || !formData.value.aidProduct || !bantuanData.value.bantuan) {
+    console.log('Early return: missing required data');
     return [{ label: "-- Pilih --", value: "", disabled: true }];
   }
-
-  const category = bantuanData.value.bantuan[formData.value.jenisBantuan];
-  if (!category || !category[formData.value.aidProduct]) {
+  
+  const aidNode = bantuanData.value.bantuan[formData.value.aid];
+  console.log('aidNode:', aidNode);
+  if (!aidNode || !aidNode[formData.value.aidProduct]) {
+    console.log('No aidNode or product found');
     return [{ label: "-- Pilih --", value: "", disabled: true }];
   }
-
-  const options = category[formData.value.aidProduct].map((pkg) => ({
-    label: pkg,
-    value: pkg,
+  
+  const productNode = aidNode[formData.value.aidProduct];
+  console.log('productNode:', productNode);
+  const options = Object.keys(productNode).map((pkg) => ({ 
+    label: pkg, 
+    value: pkg 
   }));
-
+  console.log('Final package options:', options);
+  
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+ 
+const productEntitlementOptions = computed(() => {
+  console.log('=== Product Entitlement Debug ===');
+  console.log('formData.aid:', formData.value.aid);
+  console.log('formData.aidProduct:', formData.value.aidProduct);
+  console.log('formData.productPackage:', formData.value.productPackage);
+  console.log('bantuanData.bantuan:', bantuanData.value.bantuan);
+  
+  if (!formData.value.aid || !formData.value.aidProduct || !formData.value.productPackage || !bantuanData.value.bantuan) {
+    console.log('Early return: missing required data');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const aidNode = bantuanData.value.bantuan[formData.value.aid];
+  console.log('aidNode:', aidNode);
+  if (!aidNode) {
+    console.log('No aidNode found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const productNode = aidNode[formData.value.aidProduct];
+  console.log('productNode:', productNode);
+  if (!productNode) {
+    console.log('No productNode found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const entitlements = productNode[formData.value.productPackage] || [];
+  console.log('entitlements:', entitlements);
+  if (!Array.isArray(entitlements) || entitlements.length === 0) {
+    console.log('No valid entitlements found');
+    return [{ label: "Tiada entitlements", value: "", disabled: true }];
+  }
+  
+  const options = entitlements.map((e) => ({ 
+    label: e, 
+    value: e 
+  }));
+  console.log('Final options:', options);
+  
   return [
     { label: "-- Pilih --", value: "", disabled: true },
     ...options.sort((a, b) => a.label.localeCompare(b.label))
@@ -1909,12 +2143,19 @@ const isBadAcc = (acc) => {
 const fmt = (n) =>
   new Intl.NumberFormat("ms-MY", { minimumFractionDigits: 0 }).format(n);
 
-const formatCurrency = (n) =>
-  new Intl.NumberFormat("ms-MY", { 
+const formatCurrency = (n) => {
+  // Convert to number and handle invalid values
+  const num = parseFloat(n);
+  if (isNaN(num) || num === null || num === undefined) {
+    return 'RM0.00';
+  }
+  
+  return new Intl.NumberFormat("ms-MY", { 
     style: 'currency', 
     currency: 'MYR',
     minimumFractionDigits: 2 
-  }).format(n);
+  }).format(num);
+};
 
 // State Management for Damaged Data
 const showViewDetailsModal = ref(false);
@@ -2057,10 +2298,10 @@ const handleSaveDamagedDataChanges = () => {
     alert("error", "Sila pilih nama bank yang sah");
     return;
   }
-  if (!validAmounts.includes(Number(ed.amaun))) {
-    alert("error", "Amaun mesti 1200 atau 2400 untuk demo ini");
-    return;
-  }
+  // if (!validAmounts.includes(Number(ed.amaun))) {
+  //   alert("error", "Amaun mesti 1200 atau 2400 untuk demo ini");
+  //   return;
+  // }
 
   // Find and update the payment row
   const idx = paymentList.value.findIndex(p => p.kod === ed.pointer);
@@ -2097,6 +2338,25 @@ const handleEditDamagedData = (data) => {
   alert("info", `Editing data for ${data.namaPenerima}`);
 };
 
+// Methods
+const getStatusVariant = (status) => {
+  switch (status) {
+    case 'Draf':
+      return 'warning';
+    case 'Sedang Diproses':
+    case 'Dalam Proses':
+      return 'info';
+    case 'Ditolak':
+      return 'danger';
+    case 'Baru':
+      return 'primary';
+    case 'Selesai':
+      return 'success';
+    default:
+      return 'secondary';
+  }
+};
+
 const handleKembali = () => {
   navigateTo('/BF-BTN/bantuan-bulk/cipta-bantuan-bulk');
 };
@@ -2124,6 +2384,28 @@ const handleHantar = async () => {
 // Duplicate Modal state and handlers
 const showDuplicateModal = ref(false);
 const duplicateRows = ref([]);
+const duplicateSearch = ref('');
+const duplicateSelectedIds = ref([]);
+const formatMsDate = (d) => {
+  try {
+    const date = d instanceof Date ? d : new Date(d);
+    if (Number.isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat('ms-MY', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
+  } catch {
+    return '';
+  }
+};
+const filteredDuplicateRows = computed(() => {
+  const q = (duplicateSearch.value || '').toString().toLowerCase();
+  if (!q) return duplicateRows.value;
+  return duplicateRows.value.filter(r =>
+    (r.idPermohonan || '').toString().toLowerCase().includes(q) ||
+    (r.aid || '').toString().toLowerCase().includes(q) ||
+    (r.aidProduct || '').toString().toLowerCase().includes(q) ||
+    (r.status || '').toString().toLowerCase().includes(q) ||
+    (r.tarikhMohon ? formatMsDate(r.tarikhMohon) : '').toLowerCase().includes(q)
+  );
+});
 
 const openDuplicateModalFor = (row) => {
   // Safety check - ensure this is a duplicate issue
@@ -2187,5 +2469,12 @@ const onOpenApplication = (idPermohonan) => {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   padding: 1rem;
   z-index: 10;
+}
+
+.tooltip-enter-active, .tooltip-leave-active {
+  transition: opacity 0.2s;
+}
+.tooltip-enter-from, .tooltip-leave-to {
+  opacity: 0;
 }
 </style>

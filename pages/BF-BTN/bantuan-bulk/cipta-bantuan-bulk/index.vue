@@ -12,7 +12,7 @@
         </div>
       </template>
 
-      <template #body>
+     <template #body>
         <!-- Main Table -->
         <rs-table
           :data="filteredBantuanList"
@@ -48,40 +48,52 @@
               {{ text }}
             </rs-badge>
           </template>
+          <template v-slot:actions="{ text, index }">
+                  <div class="flex justify-end space-x-2">
+                    <!-- Edit button with tooltip -->
+                    <div class="relative" @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
+                      <rs-button 
+                        variant="info-text" 
+                        class="p-1 w-8 h-8"
+                        @click="editBantuan(text)"
+                      >
+                        <Icon name="ic:outline-edit" size="18" />
+                      </rs-button>
+                      <transition name="tooltip">
+                        <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
+                          Edit
+                        </span>
+                      </transition>
+                    </div>
 
-          <template v-slot:tindakan="{ text }">
-            <div class="flex space-x-2">
-              <rs-button
-                v-if="text.status === 'Draf'"
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="editBantuan(text.id)"
-              >
-                <Icon name="material-symbols:edit" class="w-4 h-4 mr-1" />
-                Edit
-              </rs-button>
-              <rs-button
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="viewBantuan(text.id)"
-              >
-                <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" />
-                Lihat
-              </rs-button>
-              <rs-button
-                v-if="text.status === 'Draf'"
-                variant="danger"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="confirmDelete(text.id)"
-              >
-                <Icon name="material-symbols:delete" class="w-4 h-4 mr-1" />
-                Hapus
-              </rs-button> 
-            </div>
-          </template>
+                    <div class="relative" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
+                      <rs-button 
+                        variant="info-text" 
+                        class="p-1 w-8 h-8"
+                        @click="viewBantuan(text)"
+                      >
+                        <Icon name="ic:outline-visibility" size="18" />
+                      </rs-button>
+                      <transition name="tooltip">
+                        <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
+                          Lihat
+                        </span>
+                      </transition>
+                    </div>
+
+                    <div class="relative" @mouseenter="tooltips['delete'+index] = true" @mouseleave="tooltips['delete'+index] = false">
+                      <rs-button variant="danger-text" class="p-1 w-8 h-8" @click = "confirmDelete(text)">
+                        <Icon name="ic:outline-delete" size="18" />
+                      </rs-button>
+                      <transition name="tooltip">
+                        <span v-if="tooltips['delete'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
+                          Hapus
+                        </span>
+                      </transition>
+                    </div>
+                  </div>
+
+            </template>
         </rs-table>
 
         <!-- Pagination -->
@@ -219,9 +231,11 @@ const columns = [
     sortable: true,
   },
   {
-    key: 'tindakan',
-    label: 'Tindakan',
+    key: "actions",
+    label: "Tindakan",
     sortable: false,
+    align: "center",
+    width: "120px",
   },
 ];
 
@@ -234,7 +248,7 @@ const pageSize = ref(10);
 const currentPage = ref(1);
 const showDeleteModal = ref(false);
 const selectedBantuanId = ref(null);
-
+const tooltips = ref({});
 // Mock data (replace with actual API calls)
 const bantuanList = ref([
   {
@@ -245,7 +259,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM20,000.00',
     tarikhMohon: '01/03/2025',
     status: 'Draf',
-    tindakan: { id: 'BP-2025-00001', status: 'Draf' }
+    actions: 'BP-2025-00001'
   },
   {
     id: 'BP-2025-00002',
@@ -255,7 +269,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM23,000.00',
     tarikhMohon: '01/02/2025',
     status: 'Draf',
-    tindakan: { id: 'BP-2025-00002', status: 'Draf' }
+    actions: 'BP-2025-00002'
   },
   {
     id: 'BP-2025-00003',
@@ -265,7 +279,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM28,000.00',
     tarikhMohon: '02/02/2025',
     status: 'Draf',
-    tindakan: { id: 'BP-2025-00003', status: 'Draf' }
+    actions: 'BP-2025-00003'
   },
   {
     id: 'BP-2025-00004',
@@ -275,7 +289,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM35,000.00',
     tarikhMohon: '25/02/2025',
     status: 'Draf',
-    tindakan: { id: 'BP-2025-00004', status: 'Draf' }
+    actions: 'BP-2025-00004'
   },
 ]);
 
@@ -329,6 +343,10 @@ const getStatusVariant = (status) => {
 };
 
 const editBantuan = (id) => {
+  navigateTo(`cipta-bantuan-bulk/${id}/edit`);
+};
+
+const viewBantuan = (id) => {
   navigateTo(`cipta-bantuan-bulk/${id}`);
 };
 
@@ -354,5 +372,11 @@ const handleDelete = async () => {
   :deep(th) {
     @apply bg-gray-50 text-gray-600 font-medium;
   }
+}
+.tooltip-enter-active, .tooltip-leave-active {
+  transition: opacity 0.2s;
+}
+.tooltip-enter-from, .tooltip-leave-to {
+  opacity: 0;
 }
 </style>
