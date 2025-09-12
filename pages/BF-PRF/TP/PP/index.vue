@@ -492,7 +492,7 @@ const recipientList = ref([
   },
   {
     noRujukan: 'RE-202506-0012',
-    namaRecipient: 'Pusat Dialisis Al-Falah Sdn Bhd',
+    namaRecipient: 'Pusat Dialisis As-Salam Shah Alam',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '15/6/2025',
     status: 'Disahkan',
@@ -519,12 +519,12 @@ const recipientList = ref([
   },
   {
     noRujukan: 'RE-202507-0014',
-    namaRecipient: 'Klinik Kesihatan Sejahtera',
+    namaRecipient: 'Klinik Kesihatan Al-Ikhlas',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '30/7/2025',
-    status: 'Menunggu Pengesahan',
+    status: 'Perlu Pembetulan',
     statusNPS: 'Verified',
-    tindakan: { id: 'RE-202507-0014', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'RE-202507-0014', status: 'Perlu Pembetulan' },
   },
   {
     noRujukan: 'RE-202506-0015',
@@ -537,7 +537,7 @@ const recipientList = ref([
   },
   {
     noRujukan: 'RE-202505-0016',
-    namaRecipient: 'Pembekal Makanan Halal Sdn Bhd',
+    namaRecipient: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '25/5/2025',
     status: 'Tidak Sah',

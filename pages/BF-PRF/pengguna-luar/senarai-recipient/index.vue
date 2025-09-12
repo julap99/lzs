@@ -120,8 +120,9 @@ const statusOptions = [
   { label: 'Semua Status', value: '' },
   { label: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' },
   { label: 'Dalam Pembetulan', value: 'Dalam Pembetulan' },
-  { label: 'Telah Diluluskan', value: 'Telah Diluluskan' },
-  { label: 'Telah Ditolak', value: 'Telah Ditolak' }
+  { label: 'Disahkan', value: 'Disahkan' },
+  { label: 'Perlu Pembetulan', value: 'Perlu Pembetulan' },
+  { label: 'Tidak Sah', value: 'Tidak Sah' }
 ]
 
 const jenisRecipientOptions = [
@@ -142,6 +143,7 @@ const columns = [
 ]
 
 // Mock data - filtered for Pengguna Luar (only their recipients)
+// This represents recipients related to Masjid Sultan Salahuddin Abdul Aziz Shah
 const recipientList = ref([
   {
     noRujukan: 'RE-202507-0011',
@@ -153,31 +155,31 @@ const recipientList = ref([
     tindakan: { id: 'RE-202507-0011', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'RE-202507-0012',
-    namaRecipient: 'Siti Fatimah Binti Ali',
-    jenisRecipient: 'Individu',
-    tarikhPermohonan: '24/7/2025',
-    status: 'Dalam Pembetulan',
-    statusNPS: 'Tidak Verified',
-    tindakan: { id: 'RE-202507-0012', status: 'Dalam Pembetulan' },
+    noRujukan: 'RE-202506-0012',
+    namaRecipient: 'Pusat Dialisis As-Salam Shah Alam',
+    jenisRecipient: 'Syarikat',
+    tarikhPermohonan: '15/6/2025',
+    status: 'Disahkan',
+    statusNPS: 'Verified',
+    tindakan: { id: 'RE-202506-0012', status: 'Disahkan' },
   },
   {
-    noRujukan: 'RE-202507-0013',
-    namaRecipient: 'Muhammad Bin Hassan',
+    noRujukan: 'RE-202505-0013',
+    namaRecipient: 'Siti Fatimah Binti Ali',
     jenisRecipient: 'Individu',
-    tarikhPermohonan: '25/7/2025',
-    status: 'Telah Diluluskan',
-    statusNPS: 'Verified',
-    tindakan: { id: 'RE-202507-0013', status: 'Telah Diluluskan' },
+    tarikhPermohonan: '8/5/2025',
+    status: 'Tidak Sah',
+    statusNPS: 'Tidak Verified',
+    tindakan: { id: 'RE-202505-0013', status: 'Tidak Sah' },
   },
   {
     noRujukan: 'RE-202507-0014',
-    namaRecipient: 'ABC Sdn Bhd',
+    namaRecipient: 'Klinik Kesihatan Al-Ikhlas',
     jenisRecipient: 'Syarikat',
-    tarikhPermohonan: '26/7/2025',
-    status: 'Menunggu Pengesahan',
+    tarikhPermohonan: '30/7/2025',
+    status: 'Perlu Pembetulan',
     statusNPS: 'Verified',
-    tindakan: { id: 'RE-202507-0014', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'RE-202507-0014', status: 'Perlu Pembetulan' },
   },
 ])
 
@@ -220,9 +222,10 @@ const handleFilter = () => {
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Dalam Pembetulan': 'danger',
-    'Telah Diluluskan': 'success',
-    'Telah Ditolak': 'danger'
+    'Dalam Pembetulan': 'warning',
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
   }
   return variants[status] || 'default'
 }

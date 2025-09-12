@@ -120,8 +120,9 @@ const statusOptions = [
   { label: 'Semua Status', value: '' },
   { label: 'Menunggu Pengesahan', value: 'Menunggu Pengesahan' },
   { label: 'Dalam Pembetulan', value: 'Dalam Pembetulan' },
-  { label: 'Telah Diluluskan', value: 'Telah Diluluskan' },
-  { label: 'Telah Ditolak', value: 'Telah Ditolak' }
+  { label: 'Disahkan', value: 'Disahkan' },
+  { label: 'Perlu Pembetulan', value: 'Perlu Pembetulan' },
+  { label: 'Tidak Sah', value: 'Tidak Sah' }
 ]
 
 const jenisStrukturOptions = [
@@ -142,42 +143,43 @@ const columns = [
 ]
 
 // Mock data - filtered for Pengguna Luar (only their organization and branches)
+// This represents a user from Masjid Sultan Salahuddin Abdul Aziz Shah
 const organisasiList = ref([
   {
     noRujukan: 'ORG-202507-0001',
-    namaOrganisasi: 'Masjid Al-Ikhlas',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'HQ',
     tarikhPermohonan: '15/7/2025',
-    status: 'Telah Diluluskan',
-    tindakan: { id: 'ORG-202507-0001', status: 'Telah Diluluskan' },
+    status: 'Disahkan',
+    tindakan: { id: 'ORG-202507-0001', status: 'Disahkan' },
   },
   {
-    noRujukan: 'ORG-202507-0002',
-    namaOrganisasi: 'Masjid Al-Ikhlas - Cawangan Shah Alam',
+    noRujukan: 'ORG-202506-0002',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     tarikhPermohonan: '16/7/2025',
-    status: 'Dalam Pembetulan',
-    tindakan: { id: 'ORG-202507-0002', status: 'Dalam Pembetulan' },
+    status: 'Disahkan',
+    tindakan: { id: 'ORG-202506-0002', status: 'Disahkan' },
   },
   {
-    noRujukan: 'ORG-202507-0003',
-    namaOrganisasi: 'Masjid Al-Ikhlas - Cawangan Petaling Jaya',
+    noRujukan: 'ORG-202505-0003',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     tarikhPermohonan: '17/7/2025',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-202507-0003', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'ORG-202505-0003', status: 'Menunggu Pengesahan' },
   },
   {
     noRujukan: 'ORG-202507-0004',
-    namaOrganisasi: 'Masjid Al-Ikhlas - Cawangan Klang',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam',
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     tarikhPermohonan: '18/7/2025',
-    status: 'Telah Diluluskan',
-    tindakan: { id: 'ORG-202507-0004', status: 'Telah Diluluskan' },
+    status: 'Disahkan',
+    tindakan: { id: 'ORG-202507-0004', status: 'Disahkan' },
   },
 ])
 
@@ -220,9 +222,10 @@ const handleFilter = () => {
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Dalam Pembetulan': 'danger',
-    'Telah Diluluskan': 'success',
-    'Telah Ditolak': 'danger'
+    'Dalam Pembetulan': 'warning',
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
   }
   return variants[status] || 'default'
 }

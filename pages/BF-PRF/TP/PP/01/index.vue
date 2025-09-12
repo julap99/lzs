@@ -241,25 +241,25 @@ const mockIndividuData = [
 const mockSyarikatData = [
   {
     id: 'RE-202506-0012',
-    namaSyarikat: 'Pusat Dialisis Al-Falah Sdn Bhd',
+    namaSyarikat: 'Pusat Dialisis As-Salam Shah Alam',
     jenisPengenalan: 'ID Syarikat',
-    idSyarikat: '201801023456',
+    idSyarikat: 'PPM-2021-015',
     status: 'Verified',
     tindakan: { id: 'RE-202506-0012' }
   },
   {
     id: 'RE-202507-0014',
-    namaSyarikat: 'Klinik Kesihatan Sejahtera',
+    namaSyarikat: 'Klinik Kesihatan Al-Ikhlas',
     jenisPengenalan: 'ID Syarikat',
-    idSyarikat: '201902076543',
+    idSyarikat: 'PPM-2022-008',
     status: 'Tidak Verified',
     tindakan: { id: 'RE-202507-0014' }
   },
   {
     id: 'RE-202505-0016',
-    namaSyarikat: 'Pembekal Makanan Halal Sdn Bhd',
+    namaSyarikat: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
     jenisPengenalan: 'ID Syarikat',
-    idSyarikat: '201804154321',
+    idSyarikat: 'PPM-2022-008',
     status: 'Verified',
     tindakan: { id: 'RE-202505-0016' }
   }

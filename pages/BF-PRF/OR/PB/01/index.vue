@@ -192,9 +192,9 @@ const performSearch = async () => {
       selectedIndukId.value = 'HQ-20250613-001'; // contoh ID HQ
       // Mock HQ information data
       hqInfo.value = {
-        namaOrganisasi: formData.value.namaOrganisasi || 'Yayasan Pendidikan Islami Malaysia',
-        kodOrganisasi: formData.value.kodOrganisasi || 'SSM-123456-A',
-        zonNegeriStatus: 'Zon Tengah / Selangor / Aktif',
+        namaOrganisasi: formData.value.namaOrganisasi || 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+        kodOrganisasi: formData.value.kodOrganisasi || 'PPM-2021-001',
+        zonNegeriStatus: 'Zon A / Selangor / Aktif',
         statusProfil: 'Diluluskan'
       };
     } else {
