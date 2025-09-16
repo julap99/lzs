@@ -6,9 +6,6 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Tambah Kategori Had Kifayah</h2>
-          <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/HK/01_01')">
-            <Icon name="material-symbols:arrow-back" class="mr-1" /> Kembali
-          </rs-button>
         </div>
       </template>
 
@@ -53,7 +50,7 @@
                 <div>
                   <FormKit
                     type="text"
-                    name="bil"
+                    name="idLevel"
                     label="Id Level"
                     placeholder="Contoh: A1, B02, L3"
                     validation="required|matches:/^[a-zA-Z0-9]+$/"
@@ -163,45 +160,22 @@
                   </p>
                 </div>
 
-                <!-- Status (dua checkbox) Aktif / Tidak Aktif -->
+                <!-- Status (radio) Aktif / Tidak Aktif -->
                 <div class="md:col-span-2">
                   <div class="mb-2">
                     <label class="text-sm font-medium text-gray-700">Status</label>
                   </div>
-                  <div class="flex gap-6">
-                    <div class="flex items-center">
-                      <FormKit
-                        type="checkbox"
-                        name="statusAktif"
-                        label="Aktif"
-                        label-position="after"
-                        :classes="{ outer: 'm-0' }"
-                        help="Tandakan jika kategori ini aktif"
-                      />
-                    </div>
-                    <div class="flex items-center">
-                      <FormKit
-                        type="checkbox"
-                        name="statusTidakAktif"
-                        label="Tidak Aktif"
-                        label-position="after"
-                        :classes="{ outer: 'm-0' }"
-                        help="Tandakan jika kategori ini tidak aktif"
-                      />
-                    </div>
-                  </div>
-                  <p class="text-xs text-gray-500 mt-1">Sila pilih salah satu status sahaja.</p>
-                </div>
-
-                <!-- 5. Status Data -->
-                <div>
                   <FormKit
-                    type="text"
-                    name="statusData"
-                    label="Status Data"
-                    placeholder="Contoh: Draf / Disahkan / Arkib"
+                    type="radio"
+                    name="statusAktif"
+                    :options="[
+                      { label: 'Aktif', value: true },
+                      { label: 'Tidak Aktif', value: false }
+                    ]"
                     validation="required"
-                    :validation-messages="{ required: 'Status data diperlukan' }"
+                    :validation-messages="{ required: 'Status diperlukan' }"
+                    :classes="{ options: 'flex gap-6' }"
+                    help="Pilih status kategori"
                   />
                 </div>
 
@@ -216,28 +190,56 @@
                   />
                 </div>
 
+                <!-- 6b. Tarikh Tamat -->
+                <div>
+                  <FormKit
+                    type="date"
+                    name="tarikhTamat"
+                    label="Tarikh Tamat"
+                  />
+                </div>
+
+                <!-- 7. Status Data -->
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="text"
+                    name="statusData"
+                    label="Status Data"
+                    placeholder="Contoh: Draf / Disahkan / Arkib"
+                    validation="required"
+                    :validation-messages="{ required: 'Status data diperlukan' }"
+                  />
+                </div>
+
                 
               </div>
             </div>
 
             <!-- Butang Tindakan -->
-            <div class="flex justify-end space-x-4 pt-6 border-t">
-              <rs-button
-                type="button"
-                variant="secondary"
-                @click="navigateTo('/BF-PRF/KF/HK/01_01')"
-              >
-                Batal
-              </rs-button>
-              <rs-button
-                btnType="submit"
-                variant="primary"
-                :disabled="isSubmitting"
-              >
-                <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
-                <Icon v-else name="material-symbols:save" class="mr-2" />
-                {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
-              </rs-button>
+            <div class="flex justify-between items-center pt-6 border-t">
+              <div>
+                <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/HK/01_01')">
+                  <Icon name="material-symbols:arrow-back" class="mr-1" /> Kembali
+                </rs-button>
+              </div>
+              <div class="flex space-x-4">
+                <rs-button
+                  type="button"
+                  variant="secondary"
+                  @click="navigateTo('/BF-PRF/KF/HK/01_01')"
+                >
+                  Batal
+                </rs-button>
+                <rs-button
+                  btnType="submit"
+                  variant="primary"
+                  :disabled="isSubmitting"
+                >
+                  <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
+                  <Icon v-else name="material-symbols:save" class="mr-2" />
+                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                </rs-button>
+              </div>
             </div>
           </FormKit>
         </div>
@@ -319,13 +321,13 @@ const breadcrumb = ref([
 const formData = reactive({
   idHadKifayah: selectedId || "",
   levelHadKifayah: "",
-  bil: "",
+  idLevel: "",
   kategoriHadKifayah: "",
   hadKifayah: "",
-  statusAktif: false,
-  statusTidakAktif: false,
+  statusAktif: true,
   statusData: "",
   tarikhMula: "",
+  tarikhTamat: "",
 });
 
 // Dynamic indicators array
@@ -453,33 +455,24 @@ const cancelAddKategori = () => {
 const handleSubmit = async (payload) => {
   isSubmitting.value = true;
   try {
-    // Validate status mutual exclusivity
-    const bothChecked = (payload.statusAktif && payload.statusTidakAktif);
-    if (bothChecked) {
-      alert('Sila pilih hanya salah satu: Aktif atau Tidak Aktif.');
-      isSubmitting.value = false;
-      return;
-    }
-
     const existing = loadExistingCategories();
-    // Enforce mutual exclusivity on status checkboxes
-    const isAktif = payload.statusAktif === true || payload.statusAktif === 'true';
-    const isTidakAktif = payload.statusTidakAktif === true || payload.statusTidakAktif === 'true';
-    const resolvedStatusAktif = isAktif && !isTidakAktif ? true : (!isAktif && isTidakAktif ? false : isAktif);
-
+    // Resolve radio value (FormKit may yield boolean or string)
+    const resolvedStatusAktif = payload.statusAktif === true || payload.statusAktif === 'true';
+    
     // Combine all indicators into a single string
     const combinedIndicators = indicators.value.filter(ind => ind.trim() !== "").join("; ");
     
     const record = {
       idHadKifayah: selectedId || payload.idHadKifayah,
       levelHadKifayah: payload.levelHadKifayah,
-      bil: String(payload.bil),
+      idLevel: String(payload.idLevel),
       kategoriHadKifayah: payload.kategoriHadKifayah,
       hadKifayah: parseFloat(payload.hadKifayah),
       indicator: combinedIndicators,
       statusAktif: resolvedStatusAktif,
       statusData: payload.statusData,
       tarikhMula: payload.tarikhMula,
+      tarikhTamat: payload.tarikhTamat,
     };
     existing.push(record);
     localStorage.setItem('kifayahCategories', JSON.stringify(existing));

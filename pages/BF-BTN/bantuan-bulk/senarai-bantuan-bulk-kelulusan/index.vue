@@ -64,17 +64,22 @@
             </rs-badge>
           </template>
 
-          <template v-slot:tindakan="{ text }">
-            <div class="flex justify-center items-center gap-2">
-              <rs-button
-                variant="primary"
-                class="p-1 flex gap-2"
-                @click="handleProses(text)"
-              >
-                <Icon name="ph:eye" class="w-4 h-4" />
-                Lihat
-              </rs-button>
-            </div>
+          <template v-slot:tindakan="{ text, index}">
+            
+              <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
+                        <rs-button 
+                          variant="info-text" 
+                          class="p-1 w-8 h-8"
+                          @click="handleProses(text)"
+                        >
+                          <Icon name="ic:outline-visibility" size="18" />
+                        </rs-button>
+                        <transition name="tooltip">
+                          <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                            Lihat
+                          </span>
+                        </transition>
+                      </div>
           </template>
         </rs-table>
 
@@ -197,6 +202,7 @@ const filters = ref({
 });
 const currentPage = ref(1);
 const pageSize = ref(10);
+const tooltips = ref({});
 
 // Mock data - would be replaced with API call
 const bantuanBulkList = ref([
