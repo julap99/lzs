@@ -31,9 +31,6 @@
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
-            <rs-button variant="secondary" @click="goBack">
-              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
-            </rs-button>
           </div>
         </template>
       </rs-card>
@@ -51,8 +48,8 @@
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Jenis Isi Rumah:</span>
-              <span class="text-sm text-gray-900">{{ selectedKifayah.jenisIsiRumah || 'N/A' }}</span>
+              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.keterangan || selectedKifayah.jenisIsiRumah || 'N/A' }}</span>
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
@@ -66,16 +63,24 @@
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Tamat:</span>
+              <span class="text-sm text-gray-900">{{ formatDate(selectedKifayah.tarikhTamat) }}</span>
+            </div>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
               <span class="text-sm font-medium text-gray-600 w-40">Status:</span>
               <rs-badge :variant="getStatusVariant(selectedKifayah.status)">
                 {{ selectedKifayah.status }}
               </rs-badge>
             </div>
             
-            <div v-if="selectedKifayah.keterangan" class="flex items-start py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
-              <span class="text-sm text-gray-900 flex-1">{{ selectedKifayah.keterangan }}</span>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Status Data:</span>
+              <rs-badge :variant="getStatusDataVariant(selectedKifayah.statusData)">
+                {{ selectedKifayah.statusData }}
+              </rs-badge>
             </div>
+            
           </div>
         </template>
       </rs-card>
@@ -92,20 +97,20 @@
             :field="[
               'kategoriHadKifayah',
               'levelHadKifayah',
-              'bil',
+              'idLevel',
               'indicator',
               'hadKifayah',
               'statusAktif',
               'statusData',
-              'tarikhMula'
+              'tarikhMula',
+              'tarikhTamat'
             ]"
             :pageSize="10"
-            :showNoColumn="true"
             :options="{ variant: 'default', hover: true }"
           >
             <template v-slot:kategoriHadKifayah="data">{{ data.value.kategoriHadKifayah }}</template>
             <template v-slot:levelHadKifayah="data">{{ data.value.levelHadKifayah }}</template>
-            <template v-slot:bil="data">{{ data.value.bil }}</template>
+            <template v-slot:idLevel="data">{{ data.value.idLevel || data.value.bil }}</template>
             <template v-slot:indicator="data">{{ data.value.indicator }}</template>
             <template v-slot:hadKifayah="data">RM {{ formatCurrency(data.value.hadKifayah) }}</template>
             <template v-slot:statusAktif="data">
@@ -115,6 +120,7 @@
             </template>
             <template v-slot:statusData="data">{{ data.value.statusData }}</template>
             <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+            <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
           </rs-table>
         </template>
       </rs-card>
@@ -122,7 +128,10 @@
       <!-- Action Buttons Card -->
       <rs-card>
         <template #body>
-          <div class="flex justify-end">
+          <div class="flex justify-start">
+            <rs-button variant="secondary" @click="goBack">
+              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
+            </rs-button>
             <rs-button v-if="false"
               variant="primary" 
               @click="navigateTo(`/BF-PRF/KF/HK/01_01/tambah_kategori?id=${selectedId}`)"
@@ -196,10 +205,13 @@ const defaultData = [
     namaHadKifayah: "Ketua Keluarga",
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
+    keterangan: "Had kifayah untuk ketua keluarga",
     kadarBerbayar: 1215.00,
     kadarPercuma: 780.00,
     tarikhMula: "2025-01-01",
+    tarikhTamat: "2025-12-31",
     status: "Aktif",
+    statusData: "Draf",
     tindakan: 1,
   },
 ];
@@ -213,8 +225,12 @@ const validateDataItem = (item) => {
     kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
     // Ensure date is valid
     tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
+    tarikhTamat: item.tarikhTamat && !isNaN(new Date(item.tarikhTamat).getTime()) ? item.tarikhTamat : "2025-12-31",
     // Ensure status is valid
-    status: item.status || "Aktif"
+    status: item.status || "Aktif",
+    statusData: item.statusData || "Draf",
+    // Ensure keterangan is present with fallback to jenisIsiRumah for backward compatibility
+    keterangan: item.keterangan || item.jenisIsiRumah || "N/A"
   };
 };
 
@@ -224,10 +240,20 @@ const loadRelatedCategories = () => {
     const savedCategories = localStorage.getItem('kifayahCategories');
     if (savedCategories && selectedId) {
       const allCategories = JSON.parse(savedCategories);
-      // Filter categories that belong to the selected Had Kifayah
-      relatedCategories.value = allCategories.filter(category => 
+      // Filter categories that belong to the selected Had Kifayah and validate them
+      const filteredCategories = allCategories.filter(category => 
         category.idHadKifayah === selectedId
       );
+      // Validate each category to ensure all fields are present
+      relatedCategories.value = filteredCategories.map(category => ({
+        ...category,
+        // Ensure idLevel is present with fallback to bil
+        idLevel: category.idLevel || category.bil || '',
+        // Ensure tarikhTamat is present with fallback
+        tarikhTamat: category.tarikhTamat || "2025-12-31",
+        // Ensure statusData is present
+        statusData: category.statusData || "Draf"
+      }));
     } else {
       relatedCategories.value = [];
     }
@@ -350,6 +376,22 @@ const getStatusVariant = (status) => {
       return "danger";
     case "Menunggu Kelulusan":
       return "warning";
+    default:
+      return "default";
+  }
+};
+
+// Helper function to determine badge variant based on status data
+const getStatusDataVariant = (statusData) => {
+  switch (statusData) {
+    case "Draf":
+      return "default";
+    case "Menunggu Kelulusan":
+      return "warning";
+    case "Lulus":
+      return "success";
+    case "Tolak":
+      return "danger";
     default:
       return "default";
   }

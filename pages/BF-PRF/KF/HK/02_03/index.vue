@@ -51,8 +51,8 @@
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Jenis Isi Rumah:</span>
-              <span class="text-sm text-gray-900">{{ selectedKifayah.jenisIsiRumah || 'N/A' }}</span>
+              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.keterangan || 'N/A' }}</span>
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
@@ -66,16 +66,24 @@
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Tamat:</span>
+              <span class="text-sm text-gray-900">{{ formatDate(selectedKifayah.tarikhTamat) }}</span>
+            </div>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
               <span class="text-sm font-medium text-gray-600 w-40">Status:</span>
               <rs-badge :variant="getStatusVariant(selectedKifayah.status)">
                 {{ selectedKifayah.status }}
               </rs-badge>
             </div>
             
-            <div v-if="selectedKifayah.keterangan" class="flex items-start py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
-              <span class="text-sm text-gray-900 flex-1">{{ selectedKifayah.keterangan }}</span>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Status Data:</span>
+              <rs-badge :variant="getStatusVariant(selectedKifayah.statusData)">
+                {{ selectedKifayah.statusData || 'N/A' }}
+              </rs-badge>
             </div>
+            
           </div>
         </template>
       </rs-card>
@@ -92,20 +100,31 @@
             :field="[
               'kategoriHadKifayah',
               'levelHadKifayah',
-              'bil',
+              'idLevel',
               'indicator',
               'hadKifayah',
               'statusAktif',
               'statusData',
-              'tarikhMula'
+              'tarikhMula',
+              'tarikhTamat'
+            ]"
+            :columns="[
+              { key: 'kategoriHadKifayah', label: 'Kategori' },
+              { key: 'levelHadKifayah', label: 'Level Had Kifayah' },
+              { key: 'idLevel', label: 'Id Level' },
+              { key: 'indicator', label: 'Indicator' },
+              { key: 'hadKifayah', label: 'Had Kifayah' },
+              { key: 'statusAktif', label: 'Status Aktif' },
+              { key: 'statusData', label: 'Status Data' },
+              { key: 'tarikhMula', label: 'Tarikh Mula' },
+              { key: 'tarikhTamat', label: 'Tarikh Tamat' }
             ]"
             :pageSize="10"
-            :showNoColumn="true"
             :options="{ variant: 'default', hover: true }"
           >
             <template v-slot:kategoriHadKifayah="data">{{ data.value.kategoriHadKifayah }}</template>
             <template v-slot:levelHadKifayah="data">{{ data.value.levelHadKifayah }}</template>
-            <template v-slot:bil="data">{{ data.value.bil }}</template>
+            <template v-slot:idLevel="data">{{ data.value.idLevel || data.value.bil }}</template>
             <template v-slot:indicator="data">{{ data.value.indicator }}</template>
             <template v-slot:hadKifayah="data">RM {{ formatCurrency(data.value.hadKifayah) }}</template>
             <template v-slot:statusAktif="data">
@@ -115,6 +134,7 @@
             </template>
             <template v-slot:statusData="data">{{ data.value.statusData }}</template>
             <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+            <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
           </rs-table>
         </template>
       </rs-card>
@@ -274,10 +294,13 @@ const defaultData = [
     namaHadKifayah: "Ketua Keluarga",
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
+    keterangan: "Had kifayah untuk ketua keluarga",
     kadarBerbayar: 1215.00,
     kadarPercuma: 780.00,
     tarikhMula: "2025-01-01",
+    tarikhTamat: "2025-12-31",
     status: "Aktif",
+    statusData: "Draf",
     tindakan: 1,
   },
 ];
@@ -289,10 +312,15 @@ const validateDataItem = (item) => {
     // Ensure numeric values are valid
     kadarBerbayar: isNaN(parseFloat(item.kadarBerbayar)) ? 0 : parseFloat(item.kadarBerbayar),
     kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
-    // Ensure date is valid
+    // Ensure dates are valid
     tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
+    tarikhTamat: item.tarikhTamat && !isNaN(new Date(item.tarikhTamat).getTime()) ? item.tarikhTamat : "2025-12-31",
     // Ensure status is valid
-    status: item.status || "Aktif"
+    status: item.status || "Aktif",
+    // Ensure statusData is valid (fallback to legacy status if present)
+    statusData: item.statusData || item.status || "Draf",
+    // Ensure keterangan is present
+    keterangan: item.keterangan || item.jenisIsiRumah || ''
   };
 };
 
@@ -302,10 +330,20 @@ const loadRelatedCategories = () => {
     const savedCategories = localStorage.getItem('kifayahCategories');
     if (savedCategories && selectedId) {
       const allCategories = JSON.parse(savedCategories);
-      // Filter categories that belong to the selected Had Kifayah
-      relatedCategories.value = allCategories.filter(category => 
+      // Filter categories that belong to the selected Had Kifayah and validate them
+      const filteredCategories = allCategories.filter(category => 
         category.idHadKifayah === selectedId
       );
+      // Validate each category to ensure all fields are present
+      relatedCategories.value = filteredCategories.map(category => ({
+        ...category,
+        // Ensure tarikhTamat is present with fallback
+        tarikhTamat: category.tarikhTamat || "2025-12-31",
+        // Ensure idLevel is present with fallback to bil
+        idLevel: category.idLevel || category.bil || '',
+        // Ensure statusData is present
+        statusData: category.statusData || "Draf"
+      }));
     } else {
       relatedCategories.value = [];
     }
