@@ -13,129 +13,273 @@
       </template>
 
      <template #body>
-        <!-- Main Table -->
-        <rs-table
-          :data="filteredBantuanList"
-          :columns="columns"
-          :pageSize="pageSize"
-          :showNoColumn="true"
-          :showSearch="true"
-          :showFilter="true"
-          :options="{
-            variant: 'default',
-            hover: true,
-            striped: true,
-          }"
-          :options-advanced="{
-            sortable: true,
-            filterable: true,
-          }"
-          advanced
-        >
-          <!-- Custom column templates -->
-          <template v-slot:id="{ text }">
-            <a 
-              href="#" 
-              class="text-primary-600 hover:text-primary-800"
-              @click.prevent="viewBantuan(text)"
+        <!-- Tabs for different statuses -->
+        <RsTab variant="primary" type="default">
+          <RsTabItem title="Draf">
+            <rs-table
+              :data="filteredBantuanList('Draf')"
+              :columns="columns"
+              :pageSize="pageSize"
+              :showNoColumn="true"
+              :show-filter="true"
+              :show-search="true"
+              :options="{
+                variant: 'default',
+                hover: true,
+                striped: true,
+              }"
+              advanced
             >
-              {{ text }}
-            </a>
-          </template>
+              <template v-slot:id="data">
+                <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewBantuan(data.text)">
+                  {{ data.text }}
+                </a>
+              </template>
 
-          <template v-slot:status="{ text }">
-            <rs-badge :variant="getStatusVariant(text)">
-              {{ text }}
-            </rs-badge>
-          </template>
-          <template v-slot:actions="{ text, index }">
-                  <div class="flex justify-end space-x-2">
-                    <!-- Edit button with tooltip -->
-                    <div class="relative" @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
-                      <rs-button 
-                        variant="info-text" 
-                        class="p-1 w-8 h-8"
-                        @click="editBantuan(text)"
-                      >
-                        <Icon name="ic:outline-edit" size="18" />
-                      </rs-button>
-                      <transition name="tooltip">
-                        <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
-                          Edit
-                        </span>
-                      </transition>
-                    </div>
+              <template v-slot:tarikhMohon="data">
+                {{ formatDate(data.text) }}
+              </template>
 
-                    <div class="relative" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
-                      <rs-button 
-                        variant="info-text" 
-                        class="p-1 w-8 h-8"
-                        @click="viewBantuan(text)"
-                      >
-                        <Icon name="ic:outline-visibility" size="18" />
-                      </rs-button>
-                      <transition name="tooltip">
-                        <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
-                          Lihat
-                        </span>
-                      </transition>
-                    </div>
+              <template v-slot:jumlahAmaun="data">
+                <div class="font-medium text-left">
+                  {{ data.text }}
+                </div>
+              </template>
 
-                    <div class="relative" @mouseenter="tooltips['delete'+index] = true" @mouseleave="tooltips['delete'+index] = false">
-                      <rs-button variant="danger-text" class="p-1 w-8 h-8" @click = "confirmDelete(text)">
-                        <Icon name="ic:outline-delete" size="18" />
-                      </rs-button>
-                      <transition name="tooltip">
-                        <span v-if="tooltips['delete'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
-                          Hapus
-                        </span>
-                      </transition>
-                    </div>
+              <template v-slot:status="data">
+                <rs-badge :variant="getStatusVariant(data.text)">
+                  {{ data.text }}
+                </rs-badge>
+              </template>
+
+              <template v-slot:actions="{ text, index }">
+                <div class="flex justify-center items-center gap-2">
+                  <!-- Edit -->
+                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
+                    <rs-button 
+                      variant="info-text" 
+                      class="p-1 w-8 h-8"
+                      @click="editBantuan(text)"
+                    >
+                      <Icon name="ic:outline-edit" size="18" />
+                    </rs-button>
+                    <transition name="tooltip">
+                      <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                        Edit
+                      </span>
+                    </transition>
                   </div>
 
-            </template>
-        </rs-table>
+                  <!-- View -->
+                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
+                    <rs-button 
+                      variant="info-text" 
+                      class="p-1 w-8 h-8"
+                      @click="viewBantuan(text)"
+                    >
+                      <Icon name="ic:outline-visibility" size="18" />
+                    </rs-button>
+                    <transition name="tooltip">
+                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                        Lihat
+                      </span>
+                    </transition>
+                  </div>
 
-        <!-- Pagination -->
-        <div class="flex items-center justify-between px-5 mt-4">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-700">Baris per halaman:</span>
-            <FormKit
-              v-model="pageSize"
-              type="select"
-              :options="[10, 25, 50]"
-              :classes="{
-                wrapper: 'w-20',
-                outer: 'mb-0',
-                input: '!rounded-lg',
+                  <!-- Delete -->
+                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['delete'+index] = true" @mouseleave="tooltips['delete'+index] = false">
+                    <rs-button 
+                      variant="danger-text" 
+                      class="p-1 w-8 h-8"
+                      @click="confirmDelete(text)"
+                    >
+                      <Icon name="ic:outline-delete" size="18" />
+                    </rs-button>
+                    <transition name="tooltip">
+                      <span v-if="tooltips['delete'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                        Hapus
+                      </span>
+                    </transition>
+                  </div>
+                </div>
+              </template>
+            </rs-table>
+          </RsTabItem>
+
+          <RsTabItem title="Dalam Proses">
+            <rs-table
+              :data="filteredBantuanList('Dalam Proses')"
+              :columns="columns"
+              :pageSize="pageSize"
+              :showNoColumn="true"
+              :show-filter="true"
+              :show-search="true"
+              :options="{
+                variant: 'default',
+                hover: true,
+                striped: true,
               }"
-            />
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-700">
-              Menunjukkan {{ paginationStart }} hingga
-              {{ paginationEnd }} daripada {{ totalBantuan }} entri
-            </span>
-            <div class="flex gap-1">
-              <rs-button
-                variant="primary-outline"
-                class="!p-1 !w-8 !h-8"
-                :disabled="currentPage === 1"
-                @click="currentPage--"
-              >
-                <Icon name="ic:round-keyboard-arrow-left" />
-              </rs-button>
-              <rs-button
-                variant="primary-outline"
-                class="!p-1 !w-8 !h-8"
-                :disabled="currentPage === totalPages"
-                @click="currentPage++"
-              >
-                <Icon name="ic:round-keyboard-arrow-right" />
-              </rs-button>
-            </div>
-          </div>
-        </div>
+              advanced
+            >
+              <template v-slot:id="data">
+                <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewBantuan(data.text)">
+                  {{ data.text }}
+                </a>
+              </template>
+
+              <template v-slot:tarikhMohon="data">
+                {{ formatDate(data.text) }}
+              </template>
+
+              <template v-slot:jumlahAmaun="data">
+                <div class="font-medium text-left">
+                  {{ data.text }}
+                </div>
+              </template>
+
+              <template v-slot:status="data">
+                <rs-badge variant="info">
+                  {{ data.text }}
+                </rs-badge>
+              </template>
+
+              <template v-slot:actions="{ text, index }">
+                <div class="flex justify-center items-center gap-2">
+                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
+                    <rs-button 
+                      variant="info-text" 
+                      class="p-1 w-8 h-8"
+                      @click="viewBantuan(text)"
+                    >
+                      <Icon name="ic:outline-visibility" size="18" />
+                    </rs-button>
+                    <transition name="tooltip">
+                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                        Lihat
+                      </span>
+                    </transition>
+                  </div>
+                </div>
+              </template>
+            </rs-table>
+          </RsTabItem>
+
+          <RsTabItem title="Lulus">
+            <rs-table
+              :data="filteredBantuanList('Lulus')"
+              :columns="columns"
+              :pageSize="pageSize"
+              :showNoColumn="true"
+              :show-filter="true"
+              :show-search="true"
+              :options="{
+                variant: 'default',
+                hover: true,
+                striped: true,
+              }"
+              advanced
+            >
+              <template v-slot:id="data">
+                <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewBantuan(data.text)">
+                  {{ data.text }}
+                </a>
+              </template>
+
+              <template v-slot:tarikhMohon="data">
+                {{ formatDate(data.text) }}
+              </template>
+
+              <template v-slot:jumlahAmaun="data">
+                <div class="font-medium text-left">
+                  {{ data.text }}
+                </div>
+              </template>
+
+              <template v-slot:status="data">
+                <rs-badge variant="success">
+                  {{ data.text }}
+                </rs-badge>
+              </template>
+
+              <template v-slot:actions="{ text, index }">
+                <div class="flex justify-center items-center gap-2">
+                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
+                    <rs-button 
+                      variant="info-text" 
+                      class="p-1 w-8 h-8"
+                      @click="viewBantuan(text)"
+                    >
+                      <Icon name="ic:outline-visibility" size="18" />
+                    </rs-button>
+                    <transition name="tooltip">
+                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                        Lihat
+                      </span>
+                    </transition>
+                  </div>
+                </div>
+              </template>
+            </rs-table>
+          </RsTabItem>
+
+          <RsTabItem title="Ditolak">
+            <rs-table
+              :data="filteredBantuanList('Ditolak')"
+              :columns="columns"
+              :pageSize="pageSize"
+              :showNoColumn="true"
+              :show-filter="true"
+              :show-search="true"
+              :options="{
+                variant: 'default',
+                hover: true,
+                striped: true,
+              }"
+              advanced
+            >
+              <template v-slot:id="data">
+                <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewBantuan(data.text)">
+                  {{ data.text }}
+                </a>
+              </template>
+
+              <template v-slot:tarikhMohon="data">
+                {{ formatDate(data.text) }}
+              </template>
+
+              <template v-slot:jumlahAmaun="data">
+                <div class="font-medium text-left">
+                  {{ data.text }}
+                </div>
+              </template>
+
+              <template v-slot:status="data">
+                <rs-badge variant="danger">
+                  {{ data.text }}
+                </rs-badge>
+              </template>
+
+              <template v-slot:actions="{ text, index }">
+                <div class="flex justify-center items-center gap-2">
+                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
+                    <rs-button 
+                      variant="info-text" 
+                      class="p-1 w-8 h-8"
+                      @click="viewBantuan(text)"
+                    >
+                      <Icon name="ic:outline-visibility" size="18" />
+                    </rs-button>
+                    <transition name="tooltip">
+                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                        Lihat
+                      </span>
+                    </transition>
+                  </div>
+                </div>
+              </template>
+            </rs-table>
+          </RsTabItem>
+        </RsTab>
       </template>
     </rs-card>
 
@@ -278,7 +422,7 @@ const bantuanList = ref([
     aidProduct: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
     jumlahAmaun: 'RM28,000.00',
     tarikhMohon: '02/02/2025',
-    status: 'Draf',
+    status: 'Dalam Proses',
     actions: 'BP-2025-00003'
   },
   {
@@ -288,8 +432,48 @@ const bantuanList = ref([
     aidProduct: '(HQ) BANTUAN BANJIR (FAKIR)',
     jumlahAmaun: 'RM35,000.00',
     tarikhMohon: '25/02/2025',
-    status: 'Draf',
+    status: 'Dalam Proses',
     actions: 'BP-2025-00004'
+  },
+  {
+    id: 'BP-2025-00005',
+    tajuk: 'Bantuan Pendidikan Mac 2025',
+    aid: 'B315 - Bantuan Keperluan Pendidikan IPT (Miskin)',
+    aidProduct: '(HQ) KPIPT (Miskin) - Bantuan Wang Saku',
+    jumlahAmaun: 'RM45,000.00',
+    tarikhMohon: '15/03/2025',
+    status: 'Lulus',
+    actions: 'BP-2025-00005'
+  },
+  {
+    id: 'BP-2025-00006',
+    tajuk: 'Bantuan Kesihatan Feb 2025',
+    aid: 'B200 - Bantuan Kesihatan',
+    aidProduct: '(HQ) BANTUAN KESIHATAN',
+    jumlahAmaun: 'RM30,000.00',
+    tarikhMohon: '10/02/2025',
+    status: 'Lulus',
+    actions: 'BP-2025-00006'
+  },
+  {
+    id: 'BP-2025-00007',
+    tajuk: 'Bantuan Rumah Jan 2025',
+    aid: 'B100 - Bantuan Rumah',
+    aidProduct: '(HQ) BANTUAN RUMAH',
+    jumlahAmaun: 'RM50,000.00',
+    tarikhMohon: '05/01/2025',
+    status: 'Ditolak',
+    actions: 'BP-2025-00007'
+  },
+  {
+    id: 'BP-2025-00008',
+    tajuk: 'Bantuan Makanan Feb 2025',
+    aid: 'B150 - Bantuan Makanan',
+    aidProduct: '(HQ) BANTUAN MAKANAN',
+    jumlahAmaun: 'RM15,000.00',
+    tarikhMohon: '20/02/2025',
+    status: 'Ditolak',
+    actions: 'BP-2025-00008'
   },
 ]);
 
@@ -301,8 +485,13 @@ const statusOptions = [
 ];
 
 // Computed properties
-const filteredBantuanList = computed(() => {
+const filteredBantuanList = (status) => {
   let filtered = [...bantuanList.value];
+  
+  // Filter by status if provided
+  if (status) {
+    filtered = filtered.filter(item => item.status === status);
+  }
   
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
@@ -317,26 +506,32 @@ const filteredBantuanList = computed(() => {
   }
 
   return filtered;
-});
+};
 
-const totalBantuan = computed(() => filteredBantuanList.value.length);
+const totalBantuan = computed(() => bantuanList.value.length);
 const totalPages = computed(() => Math.ceil(totalBantuan.value / pageSize.value));
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
 const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalBantuan.value));
 
 // Methods
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  // Assuming dateString is in DD/MM/YYYY format
+  return dateString;
+};
+
 const getStatusVariant = (status) => {
   switch (status) {
     case 'Draf':
       return 'warning';
-    case 'Sedang Diproses':
-      return 'info';
+    case 'Lulus':
+      return 'success';
     case 'Ditolak':
       return 'danger';
+    case 'Dalam Proses':
+      return 'info';
     case 'Baru':
       return 'primary';
-    case '  ':
-      return 'success';
     default:
       return 'secondary';
   }
