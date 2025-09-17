@@ -1600,6 +1600,23 @@ export default [
         ],
         meta: {},
       },
+      {
+        title: "Pelaporan",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Dashboard",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/DA/dashboard",
+            child: [],
+            meta: {},
+          },
+         
+          
+          
+        ],
+        meta: {},
+      },
     ],
     meta: {
       auth: {
