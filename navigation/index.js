@@ -1246,6 +1246,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Kelulusan Khas",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/PB/KH/01",
+            child: [],
+            meta: {},
+          },
           // {
           //   title: "Bantuan Bulk",
           //   icon: "iconamoon:arrow-right-2-duotone",
