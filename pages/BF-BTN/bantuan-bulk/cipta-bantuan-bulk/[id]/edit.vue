@@ -575,12 +575,12 @@
 import { ref, computed, onMounted, watch } from 'vue';
 
 definePageMeta({
-  title: 'Lihat Bantuan Bulk',
+  title: 'Edit Bantuan Bulk',
 });
 
 // Route parameter
 const route = useRoute();
-const bantuanId = route.params.id;
+const id = route.params.id;
 
 const breadcrumb = ref([
   {
@@ -599,30 +599,158 @@ const breadcrumb = ref([
     path: '/BF-BTN/bantuan-bulk/cipta-bantuan-bulk',
   },
   {
-    name: `Lihat ${bantuanId}`,
+    name: `Edit ${id}`,
     type: 'current',
-    path: `/BF-BTN/bantuan-bulk/cipta-bantuan-bulk/${bantuanId}`,
+    path: `/BF-BTN/bantuan-bulk/cipta-bantuan-bulk/${id}/edit`,
   },
 ]);
 
-// Form data state (populated with mock data)
-const formData = ref({
-  kodBP: bantuanId,
-  tajuk: "Wang Saku Fakir Mac 2025",
-  kategoriAsnaf: "Fakir",
-  status: "Draf",
-  jumlahAmaun: "5,000.00",
-  catatan: "Tuntutan wang saku pelajar untuk bulan Mac 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.",
-  namaPegawai: "Ahmad bin Ali",
-  tarikhMohon: "15/01/2025 10:30 AM",
-  kategoriBantuan: "Bantuan Pendidikan",
-  subKategori: "Wang Saku",
-  bantuan: "Bantuan Pendidikan",
-  kodBantuan: "BTN-PENDIDIKAN-202501",
-  produkBantuan: "Wang Saku",
-  penyiasat: "Ahmad bin Hassan",
-  cawangan: "Cawangan Ibu Pejabat LZS"
-});
+// Mock data based on bantuan ID
+const getBantuanData = (id) => {
+  const data = {
+    'BP-2025-00001': {
+      kodBP: 'BP-2025-00001',
+      tajuk: 'Wang Saku Fakir Mac 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Draf',
+      jumlahAmaun: 'RM20,000.00',
+      catatan: 'Tuntutan wang saku pelajar untuk bulan Mac 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.',
+      namaPegawai: 'Ahmad bin Ali',
+      tarikhMohon: '01/03/2025',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+      produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00002': {
+      kodBP: 'BP-2025-00002',
+      tajuk: 'Wang Saku Fakir Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Draf',
+      jumlahAmaun: 'RM23,000.00',
+      catatan: 'Tuntutan wang saku pelajar untuk bulan Feb 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.',
+      namaPegawai: 'Ahmad bin Ali',
+      tarikhMohon: '01/02/2025',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+      produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00003': {
+      kodBP: 'BP-2025-00003',
+      tajuk: 'Wang Saku Miskin Feb 2025',
+      kategoriAsnaf: 'Miskin',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM28,000.00',
+      catatan: 'Tuntutan wang saku pelajar untuk bulan Feb 2025. Program ini bertujuan membantu pelajar miskin dalam memenuhi keperluan asas mereka.',
+      namaPegawai: 'Ahmad bin Ali',
+      tarikhMohon: '02/02/2025',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+      produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00004': {
+      kodBP: 'BP-2025-00004',
+      tajuk: 'Bantuan bencana Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM35,000.00',
+      catatan: 'Tuntutan bantuan bencana untuk bulan Feb 2025. Program ini bertujuan membantu mangsa bencana fakir dalam memenuhi keperluan asas mereka.',
+      namaPegawai: 'Ahmad bin Ali',
+      tarikhMohon: '25/02/2025',
+      kategoriBantuan: 'Bantuan Bencana',
+      subKategori: 'Bantuan Banjir',
+      bantuan: 'Bantuan Bencana',
+      kodBantuan: 'B146 - (HQ) BANTUAN BENCANA (FAKIR)',
+      produkBantuan: '(HQ) BANTUAN BANJIR (FAKIR)',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00005': {
+      kodBP: 'BP-2025-00005',
+      tajuk: 'Bantuan Pendidikan Mac 2025',
+      kategoriAsnaf: 'Miskin',
+      status: 'Lulus',
+      jumlahAmaun: 'RM45,000.00',
+      catatan: 'Tuntutan bantuan pendidikan untuk bulan Mac 2025. Program ini bertujuan membantu pelajar miskin dalam memenuhi keperluan asas mereka.',
+      namaPegawai: 'Ahmad bin Ali',
+      tarikhMohon: '15/03/2025',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B315 - Bantuan Keperluan Pendidikan IPT (Miskin)',
+      produkBantuan: '(HQ) KPIPT (Miskin) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00006': {
+      kodBP: 'BP-2025-00006',
+      tajuk: 'Bantuan Kesihatan Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Lulus',
+      jumlahAmaun: 'RM30,000.00',
+      catatan: 'Tuntutan bantuan kesihatan untuk bulan Feb 2025. Program ini bertujuan membantu pesakit fakir dalam memenuhi keperluan asas mereka.',
+      namaPegawai: 'Ahmad bin Ali',
+      tarikhMohon: '10/02/2025',
+      kategoriBantuan: 'Bantuan Kesihatan',
+      subKategori: 'Bantuan Kesihatan',
+      bantuan: 'Bantuan Kesihatan',
+      kodBantuan: 'B200 - Bantuan Kesihatan',
+      produkBantuan: '(HQ) BANTUAN KESIHATAN',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00007': {
+      kodBP: 'BP-2025-00007',
+      tajuk: 'Bantuan Rumah Jan 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Ditolak',
+      jumlahAmaun: 'RM50,000.00',
+      catatan: 'Tuntutan bantuan rumah untuk bulan Jan 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
+      namaPegawai: 'Ahmad bin Ali',
+      tarikhMohon: '05/01/2025',
+      kategoriBantuan: 'Bantuan Rumah',
+      subKategori: 'Bantuan Rumah',
+      bantuan: 'Bantuan Rumah',
+      kodBantuan: 'B100 - Bantuan Rumah',
+      produkBantuan: '(HQ) BANTUAN RUMAH',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00008': {
+      kodBP: 'BP-2025-00008',
+      tajuk: 'Bantuan Makanan Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Ditolak',
+      jumlahAmaun: 'RM15,000.00',
+      catatan: 'Tuntutan bantuan makanan untuk bulan Feb 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
+      namaPegawai: 'Ahmad bin Ali',
+      tarikhMohon: '20/02/2025',
+      kategoriBantuan: 'Bantuan Makanan',
+      subKategori: 'Bantuan Makanan',
+      bantuan: 'Bantuan Makanan',
+      kodBantuan: 'B150 - Bantuan Makanan',
+      produkBantuan: '(HQ) BANTUAN MAKANAN',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    }
+  };
+  
+  return data[id] || data['BP-2025-00001']; // Default to first record if ID not found
+};
+
+// Form data state (populated with data based on ID)
+const formData = ref(getBantuanData(id));
 
 // Options
 const kategoriAsnafOptions = [
@@ -771,7 +899,7 @@ const navigateBack = () => {
 };
 
 const editBantuan = () => {
-  navigateTo(`/BF-BTN/bantuan-bulk/cipta-bantuan-bulk/${bantuanId}/edit`);
+  navigateTo(`/BF-BTN/bantuan-bulk/cipta-bantuan-bulk/${id}/edit`);
 };
 
 const printDetails = () => {
@@ -933,13 +1061,13 @@ const alert = (type, message) => {
 onMounted(async () => {
   try {
     // In a real application, you would fetch data from API
-    // const response = await $fetch(`/api/bantuan-bulk/${bantuanId}`);
+    // const response = await $fetch(`/api/bantuan-bulk/${id}`);
     // formData.value = response.data;
     // paymentList.value = response.payments;
     // recipientList.value = response.recipients;
     // documentList.value = response.documents;
     
-    console.log(`Loading bantuan details for ID: ${bantuanId}`);
+    console.log(`Loading bantuan details for ID: ${id}`);
   } catch (error) {
     console.error('Error loading bantuan details:', error);
   }
