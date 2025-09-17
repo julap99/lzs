@@ -189,7 +189,7 @@ const columns = [
 // Options for filters
 const statusOptions = [
   { label: "Semua Status", value: "" },
-  { label: "Dalam Tindakan", value: "Dalam Tindakan" },
+  { label: "Dalam Proses", value: "Dalam Proses" },
   { label: "Selesai", value: "Selesai" },
   { label: "Ditolak", value: "Ditolak" },
 ];
@@ -211,7 +211,7 @@ const bantuanBulkList = ref([
     aidProduct: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
     jumlahAmaun: 'RM20,000.00',
     tarikhHantar: '03/03/2025',
-    status: "Dalam Tindakan",
+    status: "Dalam Proses",
     tindakan: "BP-2025-00001",
   },
   {
@@ -221,7 +221,7 @@ const bantuanBulkList = ref([
     aidProduct: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
     jumlahAmaun: 'RM23,000.00',
     tarikhHantar: '02/03/2025',
-    status: "Dalam Tindakan",
+    status: "Dalam Proses",
     tindakan: "BP-2025-00002",
   },
   {
@@ -231,7 +231,7 @@ const bantuanBulkList = ref([
     aidProduct: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
     jumlahAmaun: 'RM30,000.00',
     tarikhHantar: '01/03/2025',
-    status: "Dalam Tindakan",
+    status: "Dalam Proses",
     tindakan: "BP-2025-00004",
   },
 ]);
@@ -284,7 +284,7 @@ const handleProses = (kodBP) => {
 
 const getStatusVariant = (status) => {
   const variants = {
-    "Dalam Tindakan": "warning",
+    "Dalam Proses": "warning",
     "Selesai": "success",
     "Ditolak": "danger",
   };
