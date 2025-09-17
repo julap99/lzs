@@ -1503,7 +1503,8 @@
               :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
               validation="required"
               v-model="formData.tahap_kesihatan"
-              placeholder="Pilih tahap kesihatan" />
+              placeholder="Pilih tahap kesihatan"
+              help="Pilih status kesihatan semasa" />
           </div>
 
           <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
@@ -1519,7 +1520,8 @@
                 :options="['Terlantar', 'Tidak Terlantar']"
                 validation="required"
                 v-model="formData.keadaan_kesihatan_sakit"
-                placeholder="Pilih keadaan kesihatan" />
+              placeholder="Pilih keadaan kesihatan"
+              help="Nyatakan keupayaan fizikal harian" />
 
               <!-- Kos Penjagaan -->
               <FormKit
@@ -1529,7 +1531,8 @@
                 :options="['Berbayar', 'Tidak Berbayar']"
                 validation="required"
                 v-model="formData.kos_penjagaan_sakit"
-                placeholder="Pilih kos penjagaan" />
+              placeholder="Pilih kos penjagaan"
+              help="Adakah kos penjagaan bulanan dibayar?" />
             </div>
 
             <!-- Jumlah Perbelanjaan Bulanan -->
@@ -1558,7 +1561,8 @@
                 :options="['Sempurna', 'Cacat Mental', 'Cacat Fizikal']"
                 validation="required"
                 v-model="formData.kesempurnaan_fizikal"
-                placeholder="Pilih kesempurnaan fizikal" />
+              placeholder="Pilih kesempurnaan fizikal"
+              help="Pilih kategori OKU" />
 
               <!-- Sebab Kecacatan -->
               <FormKit
@@ -1568,7 +1572,8 @@
                 :options="['Sejak Lahir', 'Musibah']"
                 validation="required"
                 v-model="formData.sebab_kecacatan"
-                placeholder="Pilih sebab kecacatan" />
+              placeholder="Pilih sebab kecacatan"
+              help="Jika cacat, punca kecacatan" />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -1580,7 +1585,8 @@
                 :options="['Terlantar', 'Tidak Terlantar']"
                 validation="required"
                 v-model="formData.tahap_kecacatan"
-                placeholder="Pilih tahap kecacatan" />
+              placeholder="Pilih tahap kecacatan"
+              help="Tahap kebergantungan" />
 
               <!-- Jumlah Perbelanjaan Bulanan -->
               <FormKit
@@ -1607,7 +1613,8 @@
                 :options="['Terlantar', 'Tidak Terlantar']"
                 validation="required"
                 v-model="formData.keadaan_kesihatan_uzur"
-                placeholder="Pilih keadaan kesihatan" />
+              placeholder="Pilih keadaan kesihatan"
+              help="Nyatakan keupayaan fizikal harian" />
 
               <!-- Kos Penjagaan -->
               <FormKit
@@ -1617,7 +1624,8 @@
                 :options="['Berbayar', 'Tidak Berbayar']"
                 validation="required"
                 v-model="formData.kos_penjagaan_uzur"
-                placeholder="Pilih kos penjagaan" />
+              placeholder="Pilih kos penjagaan"
+              help="Adakah kos penjagaan bulanan dibayar?" />
             </div>
 
             <!-- Jumlah Perbelanjaan Bulanan -->
@@ -2258,16 +2266,16 @@
                 <div v-for="(item, index) in formData.pendapatan_lain_lain" :key="index" class="flex items-end gap-2">
                   <div class="flex-1">
 							<FormKit
-								type="money"
-                      :name="`pendapatan_lain_lain_${index}`"
-                      :label="`Pendapatan Lain-lain ${index + 1} (RM)`"
-                      step="0.01"
-                      min="0"
-                      validation="required"
-                      :validation-messages="{
-                        required: 'Pendapatan Lain-lain adalah wajib',
-                      }"
-                      v-model="formData.pendapatan_lain_lain[index].amount" />
+								type="number"
+                :name="`pendapatan_lain_lain_${index}`"
+                :label="`Pendapatan Lain-lain ${index + 1} (RM)`"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Pendapatan Lain-lain adalah wajib',
+                }"
+                v-model="formData.pendapatan_lain_lain[index].amount" />
                   </div>
 						
 						<rs-button
@@ -3947,7 +3955,8 @@
                 :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
                 validation="required"
                 v-model="getCurrentTanggungan().tahap_kesihatan_tanggungan"
-                placeholder="Pilih tahap kesihatan" />
+                placeholder="Pilih tahap kesihatan"
+                help="Pilih status kesihatan tanggungan" />
             </div>
 
             <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
@@ -3970,7 +3979,8 @@
                   v-model="
                     getCurrentTanggungan().keadaan_kesihatan_sakit_tanggungan
                   "
-                  placeholder="Pilih keadaan kesihatan" />
+                  placeholder="Pilih keadaan kesihatan"
+                  help="Nyatakan keupayaan fizikal harian" />
 
                 <!-- Kos Penjagaan -->
                 <FormKit
@@ -3982,7 +3992,8 @@
                   v-model="
                     getCurrentTanggungan().kos_penjagaan_sakit_tanggungan
                   "
-                  placeholder="Pilih kos penjagaan" />
+                  placeholder="Pilih kos penjagaan"
+                  help="Adakah kos penjagaan bulanan dibayar?" />
               </div>
 
               <!-- Jumlah Perbelanjaan Bulanan -->
@@ -4017,7 +4028,8 @@
                   v-model="
                     getCurrentTanggungan().kesempurnaan_fizikal_tanggungan
                   "
-                  placeholder="Pilih kesempurnaan fizikal" />
+                  placeholder="Pilih kesempurnaan fizikal"
+                  help="Pilih kategori OKU" />
 
                 <!-- Sebab Kecacatan -->
                 <FormKit
@@ -4027,7 +4039,8 @@
                   :options="['Sejak Lahir', 'Musibah']"
                   validation="required"
                   v-model="getCurrentTanggungan().sebab_kecacatan_tanggungan"
-                  placeholder="Pilih sebab kecacatan" />
+                  placeholder="Pilih sebab kecacatan"
+                  help="Jika cacat, punca kecacatan" />
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -4039,7 +4052,8 @@
                   :options="['Terlantar', 'Tidak Terlantar']"
                   validation="required"
                   v-model="getCurrentTanggungan().tahap_kecacatan_tanggungan"
-                  placeholder="Pilih tahap kecacatan" />
+                  placeholder="Pilih tahap kecacatan"
+                  help="Tahap kebergantungan" />
 
                 <!-- Jumlah Perbelanjaan Bulanan -->
                 <FormKit
@@ -4074,7 +4088,8 @@
                   v-model="
                     getCurrentTanggungan().keadaan_kesihatan_uzur_tanggungan
                   "
-                  placeholder="Pilih keadaan kesihatan" />
+                  placeholder="Pilih keadaan kesihatan"
+                  help="Nyatakan keupayaan fizikal harian" />
 
                 <!-- Kos Penjagaan -->
                 <FormKit
@@ -4084,7 +4099,8 @@
                   :options="['Berbayar', 'Tidak Berbayar']"
                   validation="required"
                   v-model="getCurrentTanggungan().kos_penjagaan_uzur_tanggungan"
-                  placeholder="Pilih kos penjagaan" />
+                  placeholder="Pilih kos penjagaan"
+                  help="Adakah kos penjagaan bulanan dibayar?" />
               </div>
 
               <!-- Jumlah Perbelanjaan Bulanan -->
