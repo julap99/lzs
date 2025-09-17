@@ -75,43 +75,37 @@
               </rs-badge>
             </div>
             
-            <!-- Multidimensi Details -->
-            <div class="pt-4">
-              <h4 class="text-md font-semibold mb-2">Multidimensi</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Kuadran:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.kuadran || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Min Merit:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.min_merit || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Max Merit:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.max_merit || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Status Multidimensi:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.status_multidimensi || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Kategori:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.kategori || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Pemberat:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.pemberat || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Skor Tertinggi:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.skor_tertinggi || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1 md:col-span-2">
-                  <span class="text-sm font-medium text-gray-600 w-40">Jadual Skor LOV:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.jadual_skor_lov || 'N/A' }}</span>
-                </div>
-              </div>
+            <!-- Kategori Multidimensi Details -->
+            <div v-if="hasKategoriData" class="pt-4">
+              <h4 class="text-md font-semibold mb-4">Kategori Multidimensi</h4>
+              <rs-table
+                class="mt-4"
+                :data="kategoriData"
+                :field="['kategori','pemberat','skor_tertinggi','jadual_skor_lov','tarikhMula','tarikhTamat','status','statusData']"
+                :pageSize="10"
+                :showNoColumn="false"
+                :options="{
+                  variant: 'default',
+                  hover: true,
+                }"
+              >
+                <template v-slot:kategori="data">{{ data.value.kategori || 'N/A' }}</template>
+                <template v-slot:pemberat="data">{{ data.value.pemberat || 'N/A' }}</template>
+                <template v-slot:skor_tertinggi="data">{{ data.value.skor_tertinggi || 'N/A' }}</template>
+                <template v-slot:jadual_skor_lov="data">{{ data.value.jadual_skor_lov || 'N/A' }}</template>
+                <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+                <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
+                <template v-slot:status="data">
+                  <rs-badge :variant="getStatusVariant(data.value.status)">
+                    {{ data.value.status || 'N/A' }}
+                  </rs-badge>
+                </template>
+                <template v-slot:statusData="data">
+                  <rs-badge :variant="getStatusVariant(data.value.statusData)">
+                    {{ data.value.statusData || 'N/A' }}
+                  </rs-badge>
+                </template>
+              </rs-table>
             </div>
           </div>
         </template>
@@ -254,6 +248,23 @@ const kuadranData = computed(() => {
 
 // Computed property to check if there's actual kuadran data
 const hasKuadranData = computed(() => Array.isArray(kuadranData.value) && kuadranData.value.length > 0);
+
+// Computed property for kategori data (read from multidimensi_kategori store by id)
+const kategoriData = computed(() => {
+  const id = selectedId;
+  if (!id) return [];
+  try {
+    const map = JSON.parse(localStorage.getItem('multidimensi_kategori') || '{}');
+    const list = Array.isArray(map[id]) ? map[id] : [];
+    return list;
+  } catch (e) {
+    console.error('Error reading multidimensi_kategori:', e);
+    return [];
+  }
+});
+
+// Computed property to check if there's actual kategori data
+const hasKategoriData = computed(() => Array.isArray(kategoriData.value) && kategoriData.value.length > 0);
 
 // Default data (fallback if no data in localStorage)
 const defaultData = [

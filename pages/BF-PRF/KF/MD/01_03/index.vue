@@ -212,23 +212,33 @@
               </div>
 
               <!-- Action Buttons -->
-              <div class="flex justify-end space-x-4 pt-6 border-t mt-8">
+              <div class="flex justify-between pt-6 border-t mt-8">
                 <rs-button 
                   type="button" 
                   variant="secondary" 
                   @click="goBack"
                 >
-                  Batal
+                  <Icon name="mdi:arrow-left" class="mr-2" />
+                  Kembali
                 </rs-button>
-                <rs-button 
-                  btnType="submit" 
-                  variant="primary"
-                  :disabled="isSubmitting"
-                >
-                  <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
-                  <Icon v-else name="material-symbols:save" class="mr-2" />
-                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
-                </rs-button>
+                <div class="flex space-x-4">
+                  <rs-button 
+                    type="button" 
+                    variant="secondary" 
+                    @click="goBack"
+                  >
+                    Batal
+                  </rs-button>
+                  <rs-button 
+                    btnType="submit" 
+                    variant="primary"
+                    :disabled="isSubmitting"
+                  >
+                    <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
+                    <Icon v-else name="material-symbols:save" class="mr-2" />
+                    {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                  </rs-button>
+                </div>
               </div>
             </FormKit>
           </div>
@@ -251,6 +261,8 @@ definePageMeta({
 // Get query parameters
 const route = useRoute();
 const selectedId = route.query.id;
+console.log('MD/01_03 - route.query:', route.query);
+console.log('MD/01_03 - selectedId:', selectedId);
 
 const breadcrumb = ref([
   {
@@ -395,10 +407,35 @@ const assignRowNumbers = (items) => {
 
 // Navigation function
 const goBack = () => {
-  if (selectedId) {
-    navigateTo(`/BF-PRF/KF/MD/01_02?id=${selectedId}`);
+  console.log('MD/01_03 goBack - selectedId:', selectedId);
+  console.log('MD/01_03 goBack - route.query:', route.query);
+  
+  // Try to get ID from multiple sources
+  let idToUse = selectedId;
+  
+  // If no ID from query, try to get it from localStorage or use the last accessed ID
+  if (!idToUse) {
+    // Try to get the most recent multidimensi ID from localStorage
+    try {
+      const savedData = localStorage.getItem('multidimensi');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        if (parsedData.length > 0) {
+          // Use the ID from the most recent record
+          idToUse = parsedData[parsedData.length - 1].idMultidimensi || parsedData[parsedData.length - 1].idHadKifayah;
+        }
+      }
+    } catch (error) {
+      console.error('Error getting ID from localStorage:', error);
+    }
+  }
+  
+  if (idToUse) {
+    console.log('Navigating to MD/01_04 with ID:', idToUse);
+    navigateTo(`/BF-PRF/KF/MD/01_04?id=${idToUse}`);
   } else {
-    navigateTo('/BF-PRF/KF/MD/01_02');
+    console.log('No ID found, navigating to MD/01_04 without ID');
+    navigateTo('/BF-PRF/KF/MD/01_04');
   }
 };
 
@@ -407,60 +444,56 @@ const handleSubmit = async (formData) => {
   isSubmitting.value = true;
   
   try {
-    // Load existing data
-    const existingData = loadExistingData();
+    // Get the selected ID from route query
+    const route = useRoute();
+    const selectedId = route.query.id;
+    
+    if (!selectedId) {
+      alert('ID tidak ditemukan. Sila kembali dan cuba lagi.');
+      return;
+    }
+    
+    // Load existing kategori data for this multidimensi ID
+    const existingKategoriData = JSON.parse(localStorage.getItem('multidimensi_kategori') || '{}');
+    const kategoriList = existingKategoriData[selectedId] || [];
     
     // Collect jadual skor lov data from dynamic rows
     const jadualSkorLovArray = jadualSkorRows.value.map(row => row.value).filter(value => value.trim() !== "");
     
-    // Find the current record and update it
-    const numericId = Number(selectedId);
-    const recordIndex = existingData.findIndex(item => item.no === numericId);
+    // Generate new ID for the record
+    const newId = `MDK${Date.now().toString().slice(-6)}`;
     
-    if (recordIndex >= 0) {
-      // Update existing record
-      existingData[recordIndex] = {
-        ...existingData[recordIndex],
-        kategori: formData.kategori,
-        pemberat: formData.pemberat,
-        skor_tertinggi: formData.skor_tertinggi,
-        jadual_skor_lov: jadualSkorLovArray.join(", "), // Join array values with comma
-        jadual_skor_lov_array: jadualSkorLovArray, // Store as array for future use
-        tarikhMula: formData.tarikhMula,
-        tarikhTamat: formData.tarikhTamat,
-        status: formData.status,
-        statusData: formData.statusData,
-      };
-    } else {
-      // Create new record if not found
-      const newRecord = {
-        idHadKifayah: `MD${Date.now().toString().slice(-6)}`,
-        namaHadKifayah: "New Record",
-        no: numericId,
-        kategori: formData.kategori,
-        pemberat: formData.pemberat,
-        skor_tertinggi: formData.skor_tertinggi,
-        jadual_skor_lov: jadualSkorLovArray.join(", "), // Join array values with comma
-        jadual_skor_lov_array: jadualSkorLovArray, // Store as array for future use
-        tarikhMula: formData.tarikhMula,
-        tarikhTamat: formData.tarikhTamat,
-        status: formData.status,
-        statusData: formData.statusData,
-        tindakan: existingData.length + 1,
-      };
-      existingData.push(newRecord);
-    }
+    // Create new record
+    const newRecord = {
+      idMultidimensi: selectedId,
+      idKategori: newId,
+      kategori: formData.kategori,
+      pemberat: formData.pemberat,
+      skor_tertinggi: formData.skor_tertinggi,
+      jadual_skor_lov: jadualSkorLovArray.join(", "), // Join array values with comma
+      jadual_skor_lov_array: jadualSkorLovArray, // Store as array for future use
+      tarikhMula: formData.tarikhMula,
+      tarikhTamat: formData.tarikhTamat,
+      status: formData.status,
+      statusData: formData.statusData,
+      tindakan: kategoriList.length + 1,
+      created_at: new Date().toISOString(),
+    };
     
-    // Save to localStorage
-    localStorage.setItem('multidimensi', JSON.stringify(existingData));
+    // Add new record to kategori data for this multidimensi ID
+    kategoriList.push(newRecord);
+    existingKategoriData[selectedId] = kategoriList;
+    
+    // Save to localStorage under multidimensi_kategori key
+    localStorage.setItem('multidimensi_kategori', JSON.stringify(existingKategoriData));
     
     // Show success message
-    console.log('Data saved successfully:', formData);
+    console.log('New kategori record created successfully:', newRecord);
     console.log('Jadual Skor LOV Array:', jadualSkorLovArray);
-    alert('Data berjaya disimpan!');
+    alert(`Data kategori berjaya disimpan dengan ID: ${newId}`);
     
-    // Navigate back
-    await navigateTo('/BF-PRF/KF/MD/01_02');
+    // Navigate to MD/01_04 to show the kategori data
+    await navigateTo(`/BF-PRF/KF/MD/01_04?id=${selectedId}`);
     
   } catch (error) {
     console.error('Error saving data:', error);
@@ -470,18 +503,6 @@ const handleSubmit = async (formData) => {
   }
 };
 
-// Function to load existing data from localStorage
-const loadExistingData = () => {
-  try {
-    const savedData = localStorage.getItem('multidimensi');
-    if (savedData) {
-      return JSON.parse(savedData);
-    }
-  } catch (error) {
-    console.error('Error loading existing data:', error);
-  }
-  return [];
-};
 
 // Populate form with existing data
 const populateForm = () => {
