@@ -2150,10 +2150,10 @@
           </h3>
 
           <!-- Income Information -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">
-              Maklumat Pendapatan dan Perbelanjaan
-            </h4>
+          <div class="mb-6">  
+
+            <!-- Pendapatan -->
+            <h5 class="text-md font-medium mb-2">Pendapatan</h5>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="number"
@@ -2216,30 +2216,7 @@
                 }"
                 v-model="formData.bantuan_jkm" />
 
-              <FormKit
-                type="number"
-                name="takaful"
-                label="Takaful (RM)"
-                step="0.01"
-                min="0"
-                validation="required"
-                :validation-messages="{
-                  required: 'Takaful adalah wajib',
-                }"
-                v-model="formData.takaful" />
-
-              <FormKit
-                type="number"
-                name="sewa_rumah_tanah_kedai"
-                label="Sewa Rumah / Tanah / Kedai (RM)"
-                step="0.01"
-                min="0"
-                validation="required"
-                :validation-messages="{
-                  required: 'Sewa Rumah / Tanah / Kedai adalah wajib',
-                }"
-                v-model="formData.sewa_rumah_tanah_kedai" />
-
+              
               <FormKit
                 type="number"
                 name="pendapatan_tanggungan_serumah"
@@ -2253,18 +2230,62 @@
                 }"
                 v-model="formData.pendapatan_tanggungan_serumah" />
 
-              <FormKit
+                <FormKit
                 type="number"
-                name="pendapatan_lain_lain"
-                label="Pendapatan Lain-lain (RM)"
+                name="total_pendapatan"
+                label="Total Pendapatan (RM)"
                 step="0.01"
                 min="0"
                 validation="required"
                 :validation-messages="{
-                  required: 'Pendapatan Lain-lain adalah wajib',
+                  required: 'Total Pendapatan adalah wajib',
                 }"
-                v-model="formData.pendapatan_lain_lain" />
+                v-model="formData.total_pendapatan" />
 
+              <!-- Pendapatan Lain-lain Repeater -->
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+						<rs-button
+							variant="success"
+							size="sm"
+							@click="addPendapatanLainLain"
+							type="button">
+                    <Icon name="mdi:plus" class="mr-1" size="1rem" />
+                    Tambah
+                  </rs-button>
+                </div>
+                
+                <div v-for="(item, index) in formData.pendapatan_lain_lain" :key="index" class="flex items-end gap-2">
+                  <div class="flex-1">
+							<FormKit
+								type="money"
+                      :name="`pendapatan_lain_lain_${index}`"
+                      :label="`Pendapatan Lain-lain ${index + 1} (RM)`"
+                      step="0.01"
+                      min="0"
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Pendapatan Lain-lain adalah wajib',
+                      }"
+                      v-model="formData.pendapatan_lain_lain[index].amount" />
+                  </div>
+						
+						<rs-button
+							v-if="formData.pendapatan_lain_lain.length > 1"
+							variant="danger"
+							size="sm"
+							@click="removePendapatanLainLain(index)"
+							type="button"
+							class="mb-1 mt-6">
+							<Icon name="mdi:delete" size="1rem" />
+						</rs-button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Perbelanjaan -->
+            <h5 class="text-md font-medium  mt-6 mb-2">Perbelanjaan</h5>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormKit
                 type="number"
                 name="perbelanjaan_makanan_minuman"
@@ -2324,6 +2345,30 @@
                   required: 'Bil Utiliti adalah wajib',
                 }"
                 v-model="formData.bil_utiliti" />
+
+              <FormKit
+                type="number"
+                name="takaful"
+                label="Takaful (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Takaful adalah wajib',
+                }"
+                v-model="formData.takaful" />
+
+              <FormKit
+                type="number"
+                name="sewa_rumah_tanah_kedai"
+                label="Sewa Rumah / Tanah / Kedai (RM)"
+                step="0.01"
+                min="0"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sewa Rumah / Tanah / Kedai adalah wajib',
+                }"
+                v-model="formData.sewa_rumah_tanah_kedai" />
             </div>
           </div>
 
@@ -5545,7 +5590,7 @@ const formData = ref({
   takaful: "",
   sewa_rumah_tanah_kedai: "",
   pendapatan_tanggungan_serumah: "",
-  pendapatan_lain_lain: "",
+  pendapatan_lain_lain: [{ amount: "" }],
   perbelanjaan_makanan_minuman: "",
   sewa_bayaran_pinjaman_perumahan: "",
   perbelanjaan_persekolahan_anak: "",
@@ -6007,6 +6052,17 @@ const addBankAccount = () => {
 
 const removeBankAccount = (index) => {
   formData.value.bank_accounts.splice(index, 1);
+};
+
+// Add/remove multiple pendapatan lain-lain entries
+const addPendapatanLainLain = () => {
+  formData.value.pendapatan_lain_lain.push({
+    amount: ""
+  });
+};
+
+const removePendapatanLainLain = (index) => {
+  formData.value.pendapatan_lain_lain.splice(index, 1);
 };
 
 // Helper to get swift code for a given bank value
@@ -7340,7 +7396,7 @@ onMounted(() => {
     takaful: "0.00",
     sewa_rumah_tanah_kedai: "0.00",
     pendapatan_tanggungan_serumah: "0.00",
-    pendapatan_lain_lain: "300.00",
+    pendapatan_lain_lain: [{ amount: "300.00" }],
     perbelanjaan_makanan_minuman: "500.00",
     sewa_bayaran_pinjaman_perumahan: "0.00",
     perbelanjaan_persekolahan_anak: "100.00",
