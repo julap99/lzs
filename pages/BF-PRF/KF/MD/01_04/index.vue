@@ -48,7 +48,7 @@
           <div class="space-y-4">
             <div class="flex items-center py-2 border-b border-gray-100">
               <span class="text-sm font-medium text-gray-600 w-40">Nama:</span>
-              <span class="text-sm text-gray-900">{{ selectedKifayah.namaHadKifayah }}</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.namaMultidimensi || selectedKifayah.namaHadKifayah }}</span>
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
@@ -238,42 +238,28 @@ const error = ref(null);
 const selectedKifayah = ref(null);
 const allKifayahData = ref([]);
 
-// Computed property for kuadran data
+// Computed property for kuadran data (read from multidimensi_kuadran store by id)
 const kuadranData = computed(() => {
-  if (!selectedKifayah.value) return [];
-  
-  // Create an array with the selected kifayah data for the table
-  return [{
-    kuadran: selectedKifayah.value.kuadran || 'N/A',
-    min_merit: selectedKifayah.value.min_merit || 'N/A',
-    max_merit: selectedKifayah.value.max_merit || 'N/A',
-    status_multidimensi: selectedKifayah.value.status_multidimensi || 'N/A',
-    status_data: selectedKifayah.value.status_data || 'N/A',
-    tarikhMula: selectedKifayah.value.tarikhMula || 'N/A',
-    tarikhTamat: selectedKifayah.value.tarikhTamat || 'N/A'
-  }];
+  const id = selectedId;
+  if (!id) return [];
+  try {
+    const map = JSON.parse(localStorage.getItem('multidimensi_kuadran') || '{}');
+    const list = Array.isArray(map[id]) ? map[id] : [];
+    return list;
+  } catch (e) {
+    console.error('Error reading multidimensi_kuadran:', e);
+    return [];
+  }
 });
 
 // Computed property to check if there's actual kuadran data
-const hasKuadranData = computed(() => {
-  if (!selectedKifayah.value) return false;
-  
-  // Check if any of the kuadran fields have meaningful data (not 'N/A' or empty)
-  const hasKuadran = selectedKifayah.value.kuadran && selectedKifayah.value.kuadran !== 'N/A';
-  const hasMinMerit = selectedKifayah.value.min_merit && selectedKifayah.value.min_merit !== 'N/A';
-  const hasMaxMerit = selectedKifayah.value.max_merit && selectedKifayah.value.max_merit !== 'N/A';
-  const hasStatusMultidimensi = selectedKifayah.value.status_multidimensi && selectedKifayah.value.status_multidimensi !== 'N/A';
-  const hasStatusData = selectedKifayah.value.status_data && selectedKifayah.value.status_data !== 'N/A';
-  
-  // Return true if at least one kuadran field has data
-  return hasKuadran || hasMinMerit || hasMaxMerit || hasStatusMultidimensi || hasStatusData;
-});
+const hasKuadranData = computed(() => Array.isArray(kuadranData.value) && kuadranData.value.length > 0);
 
 // Default data (fallback if no data in localStorage)
 const defaultData = [
   {
-    idHadKifayah: "HK001",
-    namaHadKifayah: "Ketua Keluarga",
+    idMultidimensi: "MD001",
+    namaMultidimensi: "Ketua Keluarga",
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
     kadarBerbayar: 1215.00,
@@ -292,6 +278,9 @@ const defaultData = [
 const validateDataItem = (item) => {
   return {
     ...item,
+    // Normalize IDs and names for multidimensi
+    idMultidimensi: item.idMultidimensi || item.idHadKifayah || `MD${Date.now().toString().slice(-6)}`,
+    namaMultidimensi: item.namaMultidimensi || item.namaHadKifayah || "",
     // Ensure numeric values are valid
     kadarBerbayar: isNaN(parseFloat(item.kadarBerbayar)) ? 0 : parseFloat(item.kadarBerbayar),
     kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
@@ -320,7 +309,7 @@ const loadData = () => {
       const mergedData = [...defaultData];
       validatedData.forEach(savedItem => {
         // Check if item already exists in default data
-        const existingIndex = mergedData.findIndex(item => item.idHadKifayah === savedItem.idHadKifayah);
+        const existingIndex = mergedData.findIndex(item => (item.idMultidimensi || item.idHadKifayah) === (savedItem.idMultidimensi || savedItem.idHadKifayah));
         if (existingIndex >= 0) {
           // Replace existing item
           mergedData[existingIndex] = validateDataItem(savedItem);
@@ -336,8 +325,13 @@ const loadData = () => {
     
     // Find the selected item
     if (selectedId) {
-      const numericId = Number(selectedId);
-      selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
+      // First try match by idMultidimensi or legacy idHadKifayah
+      selectedKifayah.value = allKifayahData.value.find(item => String(item.idMultidimensi || item.idHadKifayah) === String(selectedId));
+      // Fallback: support older navigation that used row number `no`
+      if (!selectedKifayah.value) {
+        const numericId = Number(selectedId);
+        selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
+      }
       if (!selectedKifayah.value) {
         error.value = `Rekod dengan ID "${selectedId}" tidak ditemui.`;
       }

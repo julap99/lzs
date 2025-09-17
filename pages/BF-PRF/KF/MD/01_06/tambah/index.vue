@@ -202,6 +202,10 @@ const breadcrumb = ref([
   },
 ]);
 
+// Route and selected multidimensi id
+const route = useRoute();
+const selectedId = route.query.id;
+
 // Form data
 const formData = reactive({
   kuadran: "",
@@ -229,12 +233,18 @@ const initializeForm = () => {
 // Handle form submission
 const handleSubmit = (formValues) => {
   try {
-    // Get existing data from localStorage
-    const existingData = JSON.parse(localStorage.getItem('multidimensi') || '[]');
-    
+    if (!selectedId) {
+      alert('Ralat: Tiada ID Multidimensi. Sila kembali melalui rekod yang betul.');
+      return;
+    }
+
+    // Read existing kuadran map keyed by idMultidimensi
+    const kuadranMap = JSON.parse(localStorage.getItem('multidimensi_kuadran') || '{}');
+    const list = Array.isArray(kuadranMap[selectedId]) ? kuadranMap[selectedId] : [];
+
     // Create new record with unique ID
     const newRecord = {
-      idHadKifayah: `KQ${Date.now().toString().slice(-6)}`, // Kuadran ID
+      idKuadran: `KQ${Date.now().toString().slice(-6)}`,
       kuadran: formValues.kuadran,
       min_merit: formValues.min_merit,
       max_merit: formValues.max_merit,
@@ -243,22 +253,18 @@ const handleSubmit = (formValues) => {
       status_data: formValues.status_data,
       tarikhMula: formValues.tarikhMula,
       tarikhTamat: formValues.tarikhTamat,
-      // Add other required fields for compatibility
-      namaHadKifayah: formValues.kuadran, // Use kuadran as name
-      keterangan: `Kuadran ${formValues.kuadran}`,
     };
 
-    // Add new record to existing data
-    existingData.push(newRecord);
-
-    // Save updated data to localStorage
-    localStorage.setItem('multidimensi', JSON.stringify(existingData));
+    // Push and save
+    list.push(newRecord);
+    kuadranMap[selectedId] = list;
+    localStorage.setItem('multidimensi_kuadran', JSON.stringify(kuadranMap));
 
     // Show success message
     alert('Data kuadran berjaya disimpan!');
 
     // Navigate back to list
-    navigateTo('/BF-PRF/KF/MD/01_06');
+    navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`);
   } catch (error) {
     console.error('Error saving data:', error);
     alert('Ralat semasa menyimpan data. Sila cuba lagi.');
@@ -267,7 +273,11 @@ const handleSubmit = (formValues) => {
 
 // Go back function
 const goBack = () => {
-  navigateTo('/BF-PRF/KF/MD/01_06');
+  if (selectedId) {
+    navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`);
+  } else {
+    navigateTo('/BF-PRF/KF/MD/01_06');
+  }
 };
 
 // Initialize form on component mount

@@ -25,7 +25,7 @@
     </div>
 
     <!-- Main Content -->
-    <div v-else-if="selectedKifayah" class="space-y-6">
+    <div v-else class="space-y-6">
       <!-- Header Card -->
       <rs-card>
         <template #header>
@@ -193,6 +193,22 @@
                     help="Pilih status multidimensi"
                   />
                 </div>
+
+                <!-- Status Data -->
+                <div>
+                  <FormKit
+                    type="select"
+                    name="statusData"
+                    label="Status Data"
+                    :options="statusDataOptions"
+                    placeholder="Pilih status data"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Status Data diperlukan'
+                    }"
+                    help="Pilih Status Data multidimensi"
+                  />
+                </div>
               </div>
 
               <!-- Action Buttons -->
@@ -221,26 +237,12 @@
 
     </div>
 
-    <!-- Not Found State -->
-    <div v-else class="mt-4">
-      <rs-card>
-        <template #body>
-          <div class="text-center py-8">
-            <Icon name="mdi:file-search" class="text-gray-400 mb-4" size="48px" />
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Rekod Tidak Ditemui</h3>
-            <p class="text-gray-600">Maklumat Had Kifayah dengan ID "{{ selectedId }}" tidak ditemui.</p>
-            <rs-button variant="primary" @click="goBack" class="mt-4">
-              <Icon name="mdi:arrow-left" class="mr-2" /> Kembali
-            </rs-button>
-          </div>
-        </template>
-      </rs-card>
-    </div>
+    
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onActivated, nextTick } from "vue";
+import { ref, reactive, computed, onMounted, onActivated, nextTick } from "vue";
 
 definePageMeta({
   title: "Maklumat Kategori Multidimensi",
@@ -289,6 +291,7 @@ const formData = reactive({
   tarikhMula: "",
   tarikhTamat: "",
   status: "",
+  statusData: "",
 });
 
 // Dynamic rows for Jadual Skor LOV
@@ -298,6 +301,12 @@ const jadualSkorRows = ref([]);
 const statusOptions = [
   { label: "Aktif", value: "Aktif" },
   { label: "Tidak Aktif", value: "Tidak Aktif" },
+  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+];
+
+// Status Data options
+const statusDataOptions = [
+  { label: "Draf", value: "Draf" },
   { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
 ];
 
@@ -368,16 +377,7 @@ const loadData = () => {
       allKifayahData.value = assignRowNumbers(defaultData);
     }
     
-    // Find the selected item
-    if (selectedId) {
-      const numericId = Number(selectedId);
-      selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
-      if (!selectedKifayah.value) {
-        error.value = `Rekod dengan ID "${selectedId}" tidak ditemui.`;
-      }
-    } else {
-      error.value = "ID Had Kifayah tidak disediakan.";
-    }
+    // Do not fetch by ID; allow page to render and create new entries
     
   } catch (error) {
     console.error('Error loading data:', error);
@@ -429,6 +429,7 @@ const handleSubmit = async (formData) => {
         tarikhMula: formData.tarikhMula,
         tarikhTamat: formData.tarikhTamat,
         status: formData.status,
+        statusData: formData.statusData,
       };
     } else {
       // Create new record if not found
@@ -444,6 +445,7 @@ const handleSubmit = async (formData) => {
         tarikhMula: formData.tarikhMula,
         tarikhTamat: formData.tarikhTamat,
         status: formData.status,
+        statusData: formData.statusData,
         tindakan: existingData.length + 1,
       };
       existingData.push(newRecord);
@@ -491,6 +493,7 @@ const populateForm = () => {
     formData.tarikhMula = selectedKifayah.value.tarikhMula || "";
     formData.tarikhTamat = selectedKifayah.value.tarikhTamat || "";
     formData.status = selectedKifayah.value.status || "";
+    formData.statusData = selectedKifayah.value.statusData || selectedKifayah.value.status || "Draf";
     
     // Initialize jadual skor rows
     if (selectedKifayah.value.jadual_skor_lov_array && Array.isArray(selectedKifayah.value.jadual_skor_lov_array)) {

@@ -6,9 +6,6 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Tambah Multidimensi</h2>
-          <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/MD/01_01')">
-            <Icon name="material-symbols:arrow-back" class="mr-1" /> Kembali
-          </rs-button>
         </div>
       </template>
 
@@ -79,42 +76,53 @@
                   />
                 </div>
 
-                <!-- Status -->
+                <!-- Status Data -->
                 <div>
                   <FormKit
                     type="select"
-                    name="status"
-                    label="Status"
-                    :options="statusOptions"
-                    placeholder="Pilih status"
+                    name="statusData"
+                    label="Status Data"
+                    :options="statusDataOptions"
+                    placeholder="Pilih status data"
                     validation="required"
                     :validation-messages="{
-                      required: 'Status diperlukan'
+                      required: 'Status Data diperlukan'
                     }"
-                    help="Pilih status Had Kifayah"
+                    help="Pilih Status Data untuk Multidimensi"
                   />
                 </div>
               </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex justify-end space-x-4 pt-6 border-t">
-              <rs-button 
-                type="button" 
-                variant="secondary" 
-                @click="navigateTo('/BF-PRF/KF/MD/01_01')"
-              >
-                Batal
-              </rs-button>
-              <rs-button 
-                btnType="submit" 
-                variant="primary"
-                :disabled="isSubmitting"
-              >
-                <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
-                <Icon v-else name="material-symbols:save" class="mr-2" />
-                {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
-              </rs-button>
+            <div class="flex justify-between pt-6 border-t">
+              <div>
+                <rs-button 
+                  type="button" 
+                  variant="secondary" 
+                  @click="navigateTo('/BF-PRF/KF/MD/01_01')"
+                >
+                  <Icon name="material-symbols:arrow-back" class="mr-1" /> Kembali
+                </rs-button>
+              </div>
+              <div class="flex space-x-4">
+                <rs-button 
+                  type="button" 
+                  variant="secondary" 
+                  @click="navigateTo('/BF-PRF/KF/MD/01_01')"
+                >
+                  Batal
+                </rs-button>
+                <rs-button 
+                  btnType="submit" 
+                  variant="primary"
+                  :disabled="isSubmitting"
+                >
+                  <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
+                  <Icon v-else name="material-symbols:save" class="mr-2" />
+                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                </rs-button>
+              </div>
             </div>
           </FormKit>
         </div>
@@ -150,19 +158,18 @@ const breadcrumb = ref([
 
 // Form data
 const formData = reactive({
-  namaHadKifayah: "",
+  namaMultidimensi: "",
   keterangan: "",
   tarikhMula: "",
-  status: "",
+  statusData: "",
 });
 
 // Form state
 const isSubmitting = ref(false);
 
-// Options for select fields
-const statusOptions = [
-  { label: "Aktif", value: "Aktif" },
-  { label: "Tidak Aktif", value: "Tidak Aktif" },
+// Options for Status Data field
+const statusDataOptions = [
+  { label: "Draf", value: "Draf" },
   { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
 ];
 
@@ -204,12 +211,16 @@ const handleSubmit = async (formData) => {
     
     // Prepare new data
     const newRecord = {
-      idHadKifayah: generateNextId(),
-      namaHadKifayah: formData.namaHadKifayah,
+      idMultidimensi: generateNextId(),
+      namaMultidimensi: formData.namaMultidimensi,
       tarikhMula: formData.tarikhMula,
-      status: formData.status,
+      statusData: formData.statusData,
       keterangan: formData.keterangan || "",
       tindakan: existingData.length + 1,
+      // Assign a stable row number `no` when creating
+      no: existingData.length > 0
+        ? Math.max(...existingData.map(i => Number(i.no) || 0)) + 1
+        : 1,
     };
     
     // Add to existing data
