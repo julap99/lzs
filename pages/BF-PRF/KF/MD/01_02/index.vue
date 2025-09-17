@@ -189,23 +189,33 @@
               </div>
 
               <!-- Action Buttons -->
-              <div class="flex justify-end space-x-4 pt-6 border-t mt-8">
+              <div class="flex justify-between pt-6 border-t mt-8">
                 <rs-button 
                   type="button" 
                   variant="secondary" 
                   @click="goBack"
                 >
-                  Batal
+                  <Icon name="mdi:arrow-left" class="mr-2" />
+                  Kembali
                 </rs-button>
-                <rs-button 
-                  btnType="submit" 
-                  variant="primary"
-                  :disabled="isSubmitting"
-                >
-                  <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
-                  <Icon v-else name="material-symbols:save" class="mr-2" />
-                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
-                </rs-button>
+                <div class="flex space-x-4">
+                  <rs-button 
+                    type="button" 
+                    variant="secondary" 
+                    @click="goBack"
+                  >
+                    Batal
+                  </rs-button>
+                  <rs-button 
+                    btnType="submit" 
+                    variant="primary"
+                    :disabled="isSubmitting"
+                  >
+                    <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
+                    <Icon v-else name="material-symbols:save" class="mr-2" />
+                    {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                  </rs-button>
+                </div>
               </div>
             </FormKit>
           </div>
