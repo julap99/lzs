@@ -1238,6 +1238,7 @@
                 help="Salinan dokumen rasmi pengislaman. Format: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 accept=".pdf,.jpg,.jpeg,.png"
                 validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                multiple
                 validation-label="Dokumen Pengislaman"
                 :validation-messages="{
                   required: 'Sila muat naik dokumen pengislaman',
@@ -1352,14 +1353,14 @@
                     v-model="account.nama_bank" />
 
                   <!-- Swift Code (Read Only) -->
-                  <FormKit
+                  <!-- <FormKit
                     v-if="account.nama_bank"
                     type="text"
                     :name="`bank${index}SwiftCode`"
                     label="Swift Code"
                     :value="getSwiftCodeForBank(account.nama_bank)"
                     readonly
-                    help="Swift Code dipaparkan secara automatik" />
+                    help="Swift Code dipaparkan secara automatik" /> -->
 
                   <!-- No. Akaun Bank -->
                   <FormKit
@@ -1769,10 +1770,11 @@
                 <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
-                    type="text"
+                    type="select"
                     name="jenis_pinjaman"
                     label="Jenis Pinjaman"
-                    placeholder="Sila masukkan jenis pinjaman"
+                    :options="jenisPinjamanOptions"
+                    placeholder="Sila Pilih Jenis Pinjaman"
                     v-model="formData.jenis_pinjaman" />
 
                   <FormKit
@@ -1852,20 +1854,20 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Pemilikan</rs-button
+                >Maklumat Pemilikan Aset</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 9: Maklumat Pemilikan -->
+        <!-- Section A Form - Step 9: Maklumat Pemilikan Aset -->
         <FormKit
           v-if="currentStepA === 9"
           type="form"
           @submit="nextStepA"
           :actions="false"
           id="sectionA10">
-          <h3 class="text-lg font-semibold mb-4">9. Maklumat Pemilikan</h3>
+          <h3 class="text-lg font-semibold mb-4">9. Maklumat Pemilikan Aset</h3>
 
           <h4 class="font-medium mb-2">Aset Cair</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1901,7 +1903,7 @@
               <FormKit
                 type="checkbox"
                 name="jenis_kenderaan"
-                :options="['Basikal', 'Kereta', 'Motosikal', 'Van', 'Lori']"
+                :options="['Kereta', 'Motosikal', 'Van', 'Lori']"
                 v-model="formData.jenis_kenderaan" />
             </div>
           </div>
@@ -2013,7 +2015,7 @@
             <h4 class="text-md font-medium mb-3">Butiran Pekerjaan</h4>
 
             <!-- Income Source (shown only when working) -->
-            <div class="mb-6">
+            <!-- <div class="mb-6">
               <h5 class="text-sm font-medium mb-3">Sumber Pendapatan</h5>
               <FormKit
                 type="checkbox"
@@ -2034,7 +2036,6 @@
                 }"
                 v-model="formData.sumber_pendapatan" />
 
-              <!-- Lain-lain Sumber Pendapatan (shown only when "Lain-lain" is selected) -->
               <div
                 v-if="
                   formData.sumber_pendapatan &&
@@ -2048,14 +2049,14 @@
                   placeholder="Nyatakan sumber pendapatan lain"
                   v-model="formData.lain_lain_sumber_pendapatan" />
               </div>
-            </div>
+            </div> -->
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
+              <!-- <FormKit
                 type="text"
                 name="jenis_pekerjaan"
                 label="Jenis Pekerjaan"
-                v-model="formData.jenis_pekerjaan" />
+                v-model="formData.jenis_pekerjaan" /> -->
 
               <FormKit
                 type="select"
@@ -2079,7 +2080,7 @@
                 v-model="formData.lain_lain_sektor" />
 
               <FormKit
-                type="text"
+                type="select"
                 name="jawatan"
                 label="Jawatan"
                 v-model="formData.jawatan" />
@@ -5107,7 +5108,7 @@ const stepsA = [
   { id: 6, label: "Kesihatan" },
   { id: 7, label: "Kemahiran" },
   { id: 8, label: "Pinjaman Harta" },
-  { id: 9, label: "Pemilikan" },
+  { id: 9, label: "Pemilikan Aset" },
   { id: 10, label: "Pekerjaan" },
   { id: 11, label: "Pendapatan & Perbelanjaan" },
 ];
@@ -5683,6 +5684,19 @@ onMounted(() => {
 // ============================================================================
 // OPTIONS DATA
 // ============================================================================
+
+// Jenis Pinjaman Options
+const jenisPinjamanOptions = [
+  { label: "Pinjaman Peribadi", value: "pinjaman-peribadi" },
+  { label: "Pinjaman Kereta", value: "pinjaman-kereta" },
+  { label: "Pinjaman Rumah", value: "pinjaman-rumah" },
+  { label: "Pinjaman Pendidikan", value: "pinjaman-pendidikan" },
+  { label: "Pinjaman Perniagaan", value: "pinjaman-perniagaan" },
+  { label: "Pinjaman Pertanian", value: "pinjaman-pertanian" },
+  { label: "Pinjaman Koperasi", value: "pinjaman-koperasi" },
+  { label: "Pinjaman Islamik", value: "pinjaman-islamik" },
+];
+
 // Payment Method Options for Main Applicant
 const paymentMethodOptionsMain = [
   { label: "Ya", value: "ya" },
