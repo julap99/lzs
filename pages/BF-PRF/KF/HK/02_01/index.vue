@@ -29,19 +29,19 @@
           class="mt-4"
           :key="tableKey"
           :data="kifayahLimits"
-          :field="['namaHadKifayah','tarikhMula','status','tindakan']"
+          :field='["namaHadKifayah","keterangan","tarikhMula","statusData","tindakan"]'
           :pageSize="10"
-          :showNoColumn="true"
           :options="{
             variant: 'default',
             hover: true,
           }"
         >
           <template v-slot:namaHadKifayah="data">{{ data.value.namaHadKifayah }}</template>
+          <template v-slot:keterangan="data">{{ data.value.keterangan || '—' }}</template>
           <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
-          <template v-slot:status="data">
-            <rs-badge :variant="getStatusVariant(data.value.status)">
-              {{ data.value.status }}
+          <template v-slot:statusData="data">
+            <rs-badge :variant="getStatusVariant(data.value.statusData)">
+              {{ data.value.statusData }}
             </rs-badge>
           </template>
           <template v-slot:tindakan="data">
@@ -100,10 +100,11 @@ const defaultData = [
     namaHadKifayah: "Ketua Keluarga",
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
+    keterangan: "Had kifayah untuk ketua keluarga",
     kadarBerbayar: 1215.00,
     kadarPercuma: 780.00,
     tarikhMula: "2025-01-01",
-    status: "Aktif",
+    statusData: "Draf",
     tindakan: 1,
   },
 ];
@@ -117,8 +118,10 @@ const validateDataItem = (item) => {
     kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
     // Ensure date is valid
     tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
-    // Ensure status is valid
-    status: item.status || "Aktif"
+    // Ensure statusData is valid (fallback to legacy status if present)
+    statusData: item.statusData || item.status || "Draf",
+    // Ensure keterangan present
+    keterangan: item.keterangan || ''
   };
 };
 
@@ -157,7 +160,7 @@ const loadData = () => {
 // Computed property to count pending approval items
 const pendingApprovalCount = computed(() => {
   return kifayahLimits.value.filter(
-    (item) => item.status === "Menunggu Kelulusan"
+    (item) => item.statusData === "Menunggu Kelulusan"
   ).length;
 });
 

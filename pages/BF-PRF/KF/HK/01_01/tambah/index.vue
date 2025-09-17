@@ -61,6 +61,28 @@
               </div>
             </div>
 
+            <!-- Keterangan Section -->
+            <div class="mb-8">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <Icon name="mdi:text" class="mr-2 text-blue-600" />
+                Keterangan
+              </h3>
+              
+              <div class="grid grid-cols-1 gap-6">
+                <!-- Keterangan -->
+                <div>
+                  <FormKit
+                    type="textarea"
+                    name="keterangan"
+                    label="Keterangan"
+                    placeholder="Masukkan keterangan tambahan (opsional)"
+                    rows="3"
+                    help="Keterangan atau nota tambahan untuk Had Kifayah ini"
+                  />
+                </div>
+              </div>
+            </div>
+
             <!-- Financial Information Section -->
             <div class="mb-8">
               <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -98,7 +120,7 @@
               <div class="grid grid-cols-1 gap-6">
                 <!-- Status -->
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-3"></label>
+                  <label class="block text-sm font-semibold text-gray-700 mb-3">Status</label>
                   <FormKit
                     type="radio"
                     name="status"
@@ -108,6 +130,22 @@
                       required: 'Status diperlukan'
                     }"
                     help="Pilih status Had Kifayah"
+                  />
+                </div>
+
+                <!-- Status Data -->
+                <div>
+                  <FormKit
+                    type="select"
+                    name="statusData"
+                    label="Status Data"
+                    :options="statusDataOptions"
+                    placeholder="Pilih status data"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Status data diperlukan'
+                    }"
+                    help="Pilih status data"
                   />
                 </div>
               </div>
@@ -135,15 +173,17 @@
                   />
                 </div>
 
-                <!-- Keterangan -->
+                <!-- Tarikh Tamat -->
                 <div>
                   <FormKit
-                    type="textarea"
-                    name="keterangan"
-                    label="Keterangan"
-                    placeholder="Masukkan keterangan tambahan (opsional)"
-                    rows="3"
-                    help="Keterangan atau nota tambahan untuk Had Kifayah ini"
+                    type="date"
+                    name="tarikhTamat"
+                    label="Tarikh Tamat"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Tarikh tamat diperlukan'
+                    }"
+                    help="Pilih tarikh tamat"
                   />
                 </div>
               </div>
@@ -204,10 +244,12 @@ const breadcrumb = ref([
 const formData = reactive({
   idHadKifayah: "",
   namaHadKifayah: "",
+  keterangan: "",
   kadarBerbayar: "",
   tarikhMula: "",
+  tarikhTamat: "",
   status: "",
-  keterangan: "",
+  statusData: "",
 });
 
 // Form state
@@ -219,6 +261,11 @@ const isSubmitting = ref(false);
 const statusOptions = [
   { label: "Ya", value: "Ya" },
   { label: "Tidak", value: "Tidak" },
+];
+
+const statusDataOptions = [
+  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+  { label: "Draf", value: "Draf" },
 ];
 
 // Function to load existing data from localStorage
@@ -264,10 +311,12 @@ const handleSubmit = async (formData) => {
     const newRecord = {
       idHadKifayah: formData.idHadKifayah,
       namaHadKifayah: formData.namaHadKifayah,
+      keterangan: formData.keterangan || "",
       kadarBerbayar: parseFloat(formData.kadarBerbayar),
       tarikhMula: formData.tarikhMula,
+      tarikhTamat: formData.tarikhTamat,
       status: statusDisplay,
-      keterangan: formData.keterangan || "",
+      statusData: formData.statusData,
       tindakan: existingData.length + 1,
     };
     

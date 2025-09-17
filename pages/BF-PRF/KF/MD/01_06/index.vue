@@ -7,7 +7,7 @@
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Senarai Kuadran</h2>
           <div class="flex items-center gap-2">
-            <rs-button variant="primary" @click="navigateTo('/BF-PRF/KF/MD/01_06/tambah')">
+            <rs-button variant="primary" @click="navigateTo(route.query.id ? `/BF-PRF/KF/MD/01_06/tambah?id=${route.query.id}` : '/BF-PRF/KF/MD/01_06/tambah')">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah Kuadran
             </rs-button>
           </div>
@@ -126,35 +126,21 @@ const validateDataItem = (item) => {
   };
 };
 
-// Function to load data from localStorage
+// Function to load Kuadran data by selected Multidimensi ID
 const loadData = () => {
   try {
-    const savedData = localStorage.getItem('multidimensi');
-    if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      // Validate and sanitize parsed data
-      const validatedData = parsedData.map(validateDataItem);
-      
-      // Merge with default data, giving priority to saved data
-      const mergedData = [...defaultData];
-      validatedData.forEach(savedItem => {
-        // Check if item already exists in default data
-        const existingIndex = mergedData.findIndex(item => item.idHadKifayah === savedItem.idHadKifayah);
-        if (existingIndex >= 0) {
-          // Replace existing item
-          mergedData[existingIndex] = validateDataItem(savedItem);
-        } else {
-          // Add new item
-          mergedData.push(validateDataItem(savedItem));
-        }
-      });
-      kifayahLimits.value = assignRowNumbers(mergedData);
+    const id = route.query.id;
+    if (id) {
+      const map = JSON.parse(localStorage.getItem('multidimensi_kuadran') || '{}');
+      const list = Array.isArray(map[id]) ? map[id] : [];
+      kifayahLimits.value = assignRowNumbers(list);
     } else {
-      kifayahLimits.value = assignRowNumbers(defaultData);
+      // No ID provided: show empty list (kuadran are scoped per multidimensi)
+      kifayahLimits.value = [];
     }
   } catch (error) {
-    console.error('Error loading data:', error);
-    kifayahLimits.value = assignRowNumbers(defaultData);
+    console.error('Error loading kuadran data:', error);
+    kifayahLimits.value = [];
   }
 };
 

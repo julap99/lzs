@@ -170,26 +170,52 @@
                     help="Pilih status Had Kifayah"
                   />
                 </div>
+
+                <!-- Status Data -->
+                <div>
+                  <FormKit
+                    type="select"
+                    name="statusData"
+                    label="Status Data"
+                    :options="statusDataOptions"
+                    placeholder="Pilih status data"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Status Data diperlukan'
+                    }"
+                    help="Pilih Status Data Multidimensi"
+                  />
+                </div>
               </div>
 
               <!-- Action Buttons -->
-              <div class="flex justify-end space-x-4 pt-6 border-t mt-8">
+              <div class="flex justify-between pt-6 border-t mt-8">
                 <rs-button 
                   type="button" 
                   variant="secondary" 
                   @click="goBack"
                 >
-                  Batal
+                  <Icon name="mdi:arrow-left" class="mr-2" />
+                  Kembali
                 </rs-button>
-                <rs-button 
-                  btnType="submit" 
-                  variant="primary"
-                  :disabled="isSubmitting"
-                >
-                  <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
-                  <Icon v-else name="material-symbols:save" class="mr-2" />
-                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
-                </rs-button>
+                <div class="flex space-x-4">
+                  <rs-button 
+                    type="button" 
+                    variant="secondary" 
+                    @click="goBack"
+                  >
+                    Batal
+                  </rs-button>
+                  <rs-button 
+                    btnType="submit" 
+                    variant="primary"
+                    :disabled="isSubmitting"
+                  >
+                    <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
+                    <Icon v-else name="material-symbols:save" class="mr-2" />
+                    {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                  </rs-button>
+                </div>
               </div>
             </FormKit>
           </div>
@@ -218,7 +244,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onActivated, nextTick } from "vue";
+import { ref, reactive, computed, onMounted, onActivated, nextTick } from "vue";
 
 definePageMeta({
   title: "Maklumat Had Kifayah",
@@ -263,12 +289,19 @@ const formData = reactive({
   tarikhMula: "",
   tarikhTamat: "",
   status: "",
+  statusData: "",
 });
 
 // Status options
 const statusOptions = [
   { label: "Aktif", value: "Aktif" },
   { label: "Tidak Aktif", value: "Tidak Aktif" },
+  { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+];
+
+// Status Data options
+const statusDataOptions = [
+  { label: "Draf", value: "Draf" },
   { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
 ];
 
@@ -339,13 +372,18 @@ const loadData = () => {
     
     // Find the selected item
     if (selectedId) {
-      const numericId = Number(selectedId);
-      selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
+      // Prefer matching by stable IDs first (string compare)
+      selectedKifayah.value = allKifayahData.value.find(item => String(item.idMultidimensi || item.idHadKifayah) === String(selectedId));
+      // Fallback to legacy numeric row selection
+      if (!selectedKifayah.value) {
+        const numericId = Number(selectedId);
+        selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
+      }
       if (!selectedKifayah.value) {
         error.value = `Rekod dengan ID "${selectedId}" tidak ditemui.`;
       }
     } else {
-      error.value = "ID Had Kifayah tidak disediakan.";
+      error.value = "ID Multidimensi tidak disediakan.";
     }
     
   } catch (error) {
@@ -357,9 +395,9 @@ const loadData = () => {
   }
 };
 
-// Ensure each row has a sequential `no` field used as ID
+// Ensure each row has a stable `no` field; preserve existing `no` if present
 const assignRowNumbers = (items) => {
-  return (items || []).map((item, index) => ({ ...item, no: index + 1 }));
+  return (items || []).map((item, index) => ({ ...item, no: item.no || index + 1 }));
 };
 
 // Navigation function
@@ -375,8 +413,8 @@ const handleSubmit = async (formData) => {
     // Load existing data
     const existingData = loadExistingData();
     
-    // Find the current record and update it
-    const recordIndex = existingData.findIndex(item => item.idHadKifayah === selectedId);
+    // Find the current record and update it (support both idMultidimensi and legacy idHadKifayah)
+    const recordIndex = existingData.findIndex(item => (item.idMultidimensi || item.idHadKifayah) == selectedId);
     
     if (recordIndex >= 0) {
       // Update existing record
@@ -390,11 +428,12 @@ const handleSubmit = async (formData) => {
         tarikhMula: formData.tarikhMula,
         tarikhTamat: formData.tarikhTamat,
         status: formData.status,
+        statusData: formData.statusData,
       };
     } else {
       // Create new record if not found
       const newRecord = {
-        idHadKifayah: selectedId,
+        idMultidimensi: selectedId,
         namaHadKifayah: formData.namaHadKifayah,
         keterangan: formData.keterangan,
         Formula_19: formData.Formula_19,
@@ -403,6 +442,7 @@ const handleSubmit = async (formData) => {
         tarikhMula: formData.tarikhMula,
         tarikhTamat: formData.tarikhTamat,
         status: formData.status,
+        statusData: formData.statusData,
         tindakan: existingData.length + 1,
       };
       existingData.push(newRecord);
@@ -450,6 +490,7 @@ const populateForm = () => {
     formData.tarikhMula = selectedKifayah.value.tarikhMula || "";
     formData.tarikhTamat = selectedKifayah.value.tarikhTamat || "";
     formData.status = selectedKifayah.value.status || "";
+    formData.statusData = selectedKifayah.value.statusData || selectedKifayah.value.status || "Draf";
   }
 };
 
