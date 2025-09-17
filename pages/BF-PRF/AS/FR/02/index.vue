@@ -336,7 +336,7 @@
             </div>
           </div>
 
-          <div class="flex justify-between gap-3 mt-6">
+          <div class="flex justify-end gap-3 mt-6">
             <rs-button
               type="button"
               variant="secondary"
@@ -349,14 +349,332 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 2: Maklumat Pendidikan -->
+        <!-- Section A Form - Step 2: Maklumat Alamat -->
         <FormKit
           v-if="currentStepA === 2"
           type="form"
           @submit="nextStepA"
           :actions="false"
+          id="sectionA8">
+          <h3 class="text-lg font-semibold mb-4">2. Maklumat Alamat</h3>
+
+          <!-- Alamat Section -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Alamat</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="md:col-span-2">
+                <FormKit
+                  type="textarea"
+                  name="alamat1"
+                  label="Alamat 1"
+                  validation="required"
+                  placeholder="Sila masukkan alamat 1"
+                  v-model="formData.addressInfo.alamat1"
+                  :validation-messages="{
+                    required: 'Alamat 1 adalah wajib',
+                  }" />
+
+                <FormKit
+                  type="textarea"
+                  name="alamat2"
+                  label="Alamat 2"
+                  placeholder="Sila masukkan alamat 2 (tidak wajib)"
+                  v-model="formData.addressInfo.alamat2"
+                  v-if="formData.addressInfo.alamat1" />
+
+                <FormKit
+                  type="textarea"
+                  name="alamat3"
+                  label="Alamat 3"
+                  placeholder="Sila masukkan alamat 3 (tidak wajib)"
+                  v-model="formData.addressInfo.alamat3"
+                  v-if="formData.addressInfo.alamat1" />
+              </div>
+
+              <FormKit
+                type="select"
+                name="negeri"
+                label="Negeri"
+                value="Selangor"
+                :options="negeriOptions"
+                v-model="formData.addressInfo.negeri" />
+
+              <FormKit
+                type="select"
+                name="daerah"
+                label="Daerah"
+                placeholder="Pilih daerah"
+                :options="daerahOptions"
+                validation="required"
+                v-model="formData.addressInfo.daerah"
+                :validation-messages="{
+                  required: 'Daerah adalah wajib',
+                }" />
+
+              <FormKit
+                type="select"
+                name="bandar"
+                label="Bandar"
+                placeholder="Pilih bandar"
+                :options="bandarOptions"
+                validation="required"
+                v-model="formData.addressInfo.bandar"
+                :validation-messages="{
+                  required: 'Bandar adalah wajib',
+                }" />
+
+              <FormKit
+                type="select"
+                name="poskod"
+                label="Poskod"
+                placeholder="Pilih poskod"
+                :options="poskodOptions"
+                validation="required"
+                v-model="formData.addressInfo.poskod"
+                :validation-messages="{
+                  required: 'Poskod adalah wajib',
+                }" />
+
+              <FormKit
+                type="select"
+                name="kariah"
+                label="Kariah"
+                placeholder="Pilih kariah"
+                :options="kariahOptions"
+                validation="required"
+                v-model="formData.addressInfo.kariah"
+                :validation-messages="{
+                  required: 'Kariah adalah wajib',
+                }" />
+
+              <div class="flex gap-2">
+                <FormKit
+                  v-model="formData.addressInfo.geolokasi"
+                  label="Geolokasi"
+                  type="text"
+                  class="flex-1" />
+                <rs-button
+                  type="button"
+                  variant="primary-outline"
+                  @click="getLocation('addressInfo')"
+                  class="whitespace-nowrap mt-7">
+                  <i class="fas fa-location-dot mr-2"></i>
+                  Dapatkan Lokasi
+                </rs-button>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="number"
+                  name="tempoh_menetap_selangor_nilai"
+                  label="Tempoh Menetap di Selangor"
+                  placeholder="0"
+                  min="0"
+                  validation="required|min:0"
+                  v-model="formData.addressInfo.tempoh_menetap_selangor_nilai"
+                  :validation-messages="{
+                    required: 'Tempoh menetap adalah wajib',
+                    min: 'Tempoh menetap mesti 0 atau lebih',
+                  }" />
+                <FormKit
+                  type="select"
+                  name="tempoh_menetap_selangor_unit"
+                  label="Unit Tempoh"
+                  placeholder="Pilih unit"
+                  :options="[
+                    { label: 'Hari', value: 'hari' },
+                    { label: 'Bulan', value: 'bulan' },
+                    { label: 'Tahun', value: 'tahun' },
+                  ]"
+                  validation="required"
+                  v-model="formData.addressInfo.tempoh_menetap_selangor_unit" />
+              </div>
+
+              <!-- Kategori (Musafir/Mukim/Bermastautin) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- <FormKit
+                  type="select"
+                  name="kategori_menetap"
+                  label="Kategori"
+                  placeholder="Pilih kategori"
+                  :options="[
+                    { label: 'Musafir', value: 'musafir' },
+                    { label: 'Mukim', value: 'mukim' },
+                    { label: 'Bermastautin', value: 'bermastautin' },
+                  ]"
+                  v-model="formData.addressInfo.kategori_menetap"
+                  class="hidden"
+                /> -->
+
+                <div
+                  v-if="
+                    ['musafir', 'mukim'].includes(
+                      formData.addressInfo.kategori_menetap
+                    )
+                  "
+                  class="space-y-2">
+                  <label class="block text-sm font-medium text-black-700"
+                    >Kelulusan Khas</label
+                  >
+                  <FormKit
+                    type="radio"
+                    name="kelulusan_khas"
+                    :options="[
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'T' },
+                    ]"
+                    v-model="formData.addressInfo.kelulusan_khas" />
+                </div>
+              </div>
+            </div>
+
+            <!-- <div v-if="formData.adakah_muallaf === 'Y'" class="flex gap-2">
+              <FormKit
+                type="text"
+                name="kursus_terpilih"
+                label="Kursus Terpilih"
+                placeholder="Pilih kursus dari senarai"
+                readonly
+                class="flex-1"
+                v-model="formData.addressInfo.kursus_terpilih"
+              />
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="openKursusModal"
+                class="whitespace-nowrap mt-7"
+              >
+                <i class="fas fa-list mr-2"></i>
+                Pilih Kursus
+              </rs-button>
+            </div> -->
+          </div>
+
+          <!-- Maklumat Tempat Tinggal Section -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Tempat Tinggal</h4>
+
+            <!-- Hidden field for ID type -->
+            <FormKit type="hidden" name="jenis_id_alamat" :value="jenisId" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="select"
+                name="status_kediaman"
+                label="Status Kediaman Tempat Tinggal"
+                :options="[
+                  'Milik Sendiri Tidak Berbayar',
+                  'Milik Sendiri Berbayar',
+                  'Sewa',
+                  'Kuarters Majikan',
+                  'Tumpang Rumah Ibu/Bapa/Mertua',
+                  'Pusaka',
+                  'Sumbangan LZS / PPRT / RISDA',
+                  'Lain-lain',
+                ]"
+                validation="required"
+                v-model="formData.addressInfo.status_kediaman"
+                :validation-messages="{
+                  required: 'Status kediaman adalah wajib',
+                }" />
+
+              <FormKit
+                type="text"
+                name="lain_lain_status_kediaman"
+                label="Lain-lain Status Kediaman Tempat Tinggal"
+                validation="required"
+                v-if="formData.addressInfo.status_kediaman === 'Lain-lain'"
+                placeholder="Nyatakan status kediaman lain"
+                v-model="formData.addressInfo.lain_lain_status_kediaman"
+                :validation-messages="{
+                  required: 'Sila nyatakan status kediaman lain',
+                }" />
+
+              <FormKit
+                type="select"
+                name="keadaan_kediaman"
+                label="Keadaan Kediaman"
+                :options="['Baik', 'Sempurna', 'Uzur', 'Separa Uzur']"
+                validation="required"
+                v-model="formData.addressInfo.keadaan_kediaman"
+                :validation-messages="{
+                  required: 'Keadaan kediaman adalah wajib',
+                }" />
+            </div>
+
+            <!-- Kos Tempat Tinggal Section -->
+            <div class="mt-6">
+              <!-- <h5 class="text-md font-medium mb-3">Kos Tempat Tinggal</h5> -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="number"
+                  name="kadar_bayaran_bulanan"
+                  label="Status Kediaman jika Milik Sendiri Berbayar"
+                  step="0.01"
+                  min="0"
+                  placeholder="Isi kadar bayaran bulanan (RM)"
+                  v-if="
+                    formData.addressInfo.status_kediaman ===
+                    'Milik Sendiri Berbayar'
+                  "
+                  v-model="formData.addressInfo.kadar_bayaran_bulanan" />
+
+                <FormKit
+                  type="number"
+                  name="kadar_sewa_bulanan"
+                  label="Status Kediaman jika Sewa"
+                  step="0.01"
+                  min="0"
+                  placeholder="Isi kadar sewa bulanan (RM)"
+                  v-if="formData.addressInfo.status_kediaman === 'Sewa'"
+                  v-model="formData.addressInfo.kadar_sewa_bulanan" />
+
+                <FormKit
+                  type="file"
+                  name="dokumen_perjanjian_sewa"
+                  label="Dokumen Perjanjian Sewa"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                  v-if="formData.addressInfo.status_kediaman === 'Sewa'"
+                  v-model="formData.addressInfo.dokumen_perjanjian_sewa"
+                  :validation-messages="{
+                    required:
+                      'Dokumen perjanjian sewa adalah wajib untuk status sewa',
+                  }" />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepA"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA2"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Maklumat Pendidikan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section A Form - Step 3: Maklumat Pendidikan -->
+        <FormKit
+          v-if="currentStepA === 3"
+          type="form"
+          @submit="nextStepA"
+          :actions="false"
           id="sectionA3">
-          <h3 class="text-lg font-semibold mb-4">2. Maklumat Pendidikan</h3>
+          <h3 class="text-lg font-semibold mb-4">3. Maklumat Pendidikan</h3>
 
           <!-- A. Maklumat Pendidikan Asas -->
           <div class="mb-8">
@@ -763,24 +1081,24 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA2"
+                @click="handleSaveStepA3"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Pengislaman</rs-button
+                >Maklumat Alamat</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 3: Maklumat Islam -->
+        <!-- Section A Form - Step 4: Maklumat Islam -->
         <FormKit
-          v-if="currentStepA === 3"
+          v-if="currentStepA === 4"
           type="form"
           @submit="nextStepA"
           :actions="false"
           id="sectionA4">
-          <h3 class="text-lg font-semibold mb-4">3. Maklumat Pengislaman</h3>
+          <h3 class="text-lg font-semibold mb-4">4. Maklumat Pengislaman</h3>
 
           <!-- Adakah anda seorang Muallaf? -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -941,7 +1259,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA3">
+                @click="handleSaveStepA4">
                 Simpan
               </rs-button>
               <rs-button type="submit" variant="primary" @click="nextStepA">
@@ -951,14 +1269,14 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 4: Maklumat Bank -->
+        <!-- Section A Form - Step 5: Maklumat Bank -->
         <FormKit
-          v-if="currentStepA === 4"
+          v-if="currentStepA === 5"
           type="form"
           @submit="nextStepA"
           :actions="false"
           id="sectionA5">
-          <h3 class="text-lg font-semibold mb-4">4. Maklumat Perbankan</h3>
+          <h3 class="text-lg font-semibold mb-4">5. Maklumat Perbankan</h3>
 
           <div class="mb-6">
             <!-- <h4 class="text-md font-medium mb-3">Maklumat Bank</h4> -->
@@ -1156,7 +1474,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA4"
+                @click="handleSaveStepA5"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1166,14 +1484,14 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 5: Maklumat Kesihatan -->
+        <!-- Section A Form - Step 6: Maklumat Kesihatan -->
         <FormKit
-          v-if="currentStepA === 5"
+          v-if="currentStepA === 6"
           type="form"
           @submit="nextStepA"
           :actions="false"
           id="sectionA6">
-          <h3 class="text-lg font-semibold mb-4">5. Maklumat Kesihatan</h3>
+          <h3 class="text-lg font-semibold mb-4">6. Maklumat Kesihatan</h3>
 
           <!-- Tahap Kesihatan -->
           <div class="mb-6">
@@ -1344,7 +1662,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepA5"
+                @click="handleSaveStepA6"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
@@ -1354,14 +1672,14 @@
           </div>
         </FormKit>
 
-        <!-- Section A Form - Step 6: Kemahiran -->
+        <!-- Section A Form - Step 7: Kemahiran -->
         <FormKit
-          v-if="currentStepA === 6"
+          v-if="currentStepA === 7"
           type="form"
           @submit="nextStepA"
           :actions="false"
           id="sectionA7">
-          <h3 class="text-lg font-semibold mb-4">6. Kemahiran</h3>
+          <h3 class="text-lg font-semibold mb-4">7. Kemahiran</h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-2">
@@ -1403,324 +1721,6 @@
             "
             placeholder="Nyatakan kemahiran lain"
             v-model="formData.lain_lain_kemahiran" />
-
-          <div class="flex justify-between gap-3 mt-6">
-            <rs-button
-              type="button"
-              variant="primary-outline"
-              @click="prevStepA"
-              >Kembali</rs-button
-            >
-            <div class="flex gap-3">
-              <rs-button
-                type="button"
-                variant="secondary"
-                @click="handleSaveStepA6"
-                >Simpan</rs-button
-              >
-              <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Alamat</rs-button
-              >
-            </div>
-          </div>
-        </FormKit>
-
-        <!-- Section A Form - Step 7: Maklumat Alamat -->
-        <FormKit
-          v-if="currentStepA === 7"
-          type="form"
-          @submit="nextStepA"
-          :actions="false"
-          id="sectionA8">
-          <h3 class="text-lg font-semibold mb-4">7. Maklumat Alamat</h3>
-
-          <!-- Alamat Section -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Alamat</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="md:col-span-2">
-                <FormKit
-                  type="textarea"
-                  name="alamat1"
-                  label="Alamat 1"
-                  validation="required"
-                  placeholder="Sila masukkan alamat 1"
-                  v-model="formData.addressInfo.alamat1"
-                  :validation-messages="{
-                    required: 'Alamat 1 adalah wajib',
-                  }" />
-
-                <FormKit
-                  type="textarea"
-                  name="alamat2"
-                  label="Alamat 2"
-                  placeholder="Sila masukkan alamat 2 (tidak wajib)"
-                  v-model="formData.addressInfo.alamat2"
-                  v-if="formData.addressInfo.alamat1" />
-
-                <FormKit
-                  type="textarea"
-                  name="alamat3"
-                  label="Alamat 3"
-                  placeholder="Sila masukkan alamat 3 (tidak wajib)"
-                  v-model="formData.addressInfo.alamat3"
-                  v-if="formData.addressInfo.alamat1" />
-              </div>
-
-              <FormKit
-                type="select"
-                name="negeri"
-                label="Negeri"
-                value="Selangor"
-                :options="negeriOptions"
-                v-model="formData.addressInfo.negeri" />
-
-              <FormKit
-                type="select"
-                name="daerah"
-                label="Daerah"
-                placeholder="Pilih daerah"
-                :options="daerahOptions"
-                validation="required"
-                v-model="formData.addressInfo.daerah"
-                :validation-messages="{
-                  required: 'Daerah adalah wajib',
-                }" />
-
-              <FormKit
-                type="select"
-                name="bandar"
-                label="Bandar"
-                placeholder="Pilih bandar"
-                :options="bandarOptions"
-                validation="required"
-                v-model="formData.addressInfo.bandar"
-                :validation-messages="{
-                  required: 'Bandar adalah wajib',
-                }" />
-
-              <FormKit
-                type="select"
-                name="poskod"
-                label="Poskod"
-                placeholder="Pilih poskod"
-                :options="poskodOptions"
-                validation="required"
-                v-model="formData.addressInfo.poskod"
-                :validation-messages="{
-                  required: 'Poskod adalah wajib',
-                }" />
-
-              <FormKit
-                type="select"
-                name="kariah"
-                label="Kariah"
-                placeholder="Pilih kariah"
-                :options="kariahOptions"
-                validation="required"
-                v-model="formData.addressInfo.kariah"
-                :validation-messages="{
-                  required: 'Kariah adalah wajib',
-                }" />
-
-              <div class="flex gap-2">
-                <FormKit
-                  v-model="formData.addressInfo.geolokasi"
-                  label="Geolokasi"
-                  type="text"
-                  class="flex-1" />
-                <rs-button
-                  type="button"
-                  variant="primary-outline"
-                  @click="getLocation('addressInfo')"
-                  class="whitespace-nowrap mt-7">
-                  <i class="fas fa-location-dot mr-2"></i>
-                  Dapatkan Lokasi
-                </rs-button>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="number"
-                  name="tempoh_menetap_selangor_nilai"
-                  label="Tempoh Menetap di Selangor"
-                  placeholder="0"
-                  min="0"
-                  validation="required|min:0"
-                  v-model="formData.addressInfo.tempoh_menetap_selangor_nilai"
-                  :validation-messages="{
-                    required: 'Tempoh menetap adalah wajib',
-                    min: 'Tempoh menetap mesti 0 atau lebih',
-                  }" />
-                <FormKit
-                  type="select"
-                  name="tempoh_menetap_selangor_unit"
-                  label="Unit Tempoh"
-                  placeholder="Pilih unit"
-                  :options="[
-                    { label: 'Hari', value: 'hari' },
-                    { label: 'Bulan', value: 'bulan' },
-                    { label: 'Tahun', value: 'tahun' },
-                  ]"
-                  validation="required"
-                  v-model="formData.addressInfo.tempoh_menetap_selangor_unit" />
-              </div>
-
-              <!-- Kategori (Musafir/Mukim/Bermastautin) -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- <FormKit
-                  type="select"
-                  name="kategori_menetap"
-                  label="Kategori"
-                  placeholder="Pilih kategori"
-                  :options="[
-                    { label: 'Musafir', value: 'musafir' },
-                    { label: 'Mukim', value: 'mukim' },
-                    { label: 'Bermastautin', value: 'bermastautin' },
-                  ]"
-                  v-model="formData.addressInfo.kategori_menetap"
-                  class="hidden"
-                /> -->
-
-                <div
-                  v-if="
-                    ['musafir', 'mukim'].includes(
-                      formData.addressInfo.kategori_menetap
-                    )
-                  "
-                  class="space-y-2">
-                  <label class="block text-sm font-medium text-black-700"
-                    >Kelulusan Khas</label
-                  >
-                  <FormKit
-                    type="radio"
-                    name="kelulusan_khas"
-                    :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'T' },
-                    ]"
-                    v-model="formData.addressInfo.kelulusan_khas" />
-                </div>
-              </div>
-            </div>
-
-            <!-- <div v-if="formData.adakah_muallaf === 'Y'" class="flex gap-2">
-              <FormKit
-                type="text"
-                name="kursus_terpilih"
-                label="Kursus Terpilih"
-                placeholder="Pilih kursus dari senarai"
-                readonly
-                class="flex-1"
-                v-model="formData.addressInfo.kursus_terpilih"
-              />
-              <rs-button
-                type="button"
-                variant="secondary"
-                @click="openKursusModal"
-                class="whitespace-nowrap mt-7"
-              >
-                <i class="fas fa-list mr-2"></i>
-                Pilih Kursus
-              </rs-button>
-            </div> -->
-          </div>
-
-          <!-- Maklumat Tempat Tinggal Section -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium mb-3">Maklumat Tempat Tinggal</h4>
-
-            <!-- Hidden field for ID type -->
-            <FormKit type="hidden" name="jenis_id_alamat" :value="jenisId" />
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormKit
-                type="select"
-                name="status_kediaman"
-                label="Status Kediaman Tempat Tinggal"
-                :options="[
-                  'Milik Sendiri Tidak Berbayar',
-                  'Milik Sendiri Berbayar',
-                  'Sewa',
-                  'Kuarters Majikan',
-                  'Tumpang Rumah Ibu/Bapa/Mertua',
-                  'Pusaka',
-                  'Sumbangan LZS / PPRT / RISDA',
-                  'Lain-lain',
-                ]"
-                validation="required"
-                v-model="formData.addressInfo.status_kediaman"
-                :validation-messages="{
-                  required: 'Status kediaman adalah wajib',
-                }" />
-
-              <FormKit
-                type="text"
-                name="lain_lain_status_kediaman"
-                label="Lain-lain Status Kediaman Tempat Tinggal"
-                validation="required"
-                v-if="formData.addressInfo.status_kediaman === 'Lain-lain'"
-                placeholder="Nyatakan status kediaman lain"
-                v-model="formData.addressInfo.lain_lain_status_kediaman"
-                :validation-messages="{
-                  required: 'Sila nyatakan status kediaman lain',
-                }" />
-
-              <FormKit
-                type="select"
-                name="keadaan_kediaman"
-                label="Keadaan Kediaman"
-                :options="['Baik', 'Sempurna', 'Uzur', 'Separa Uzur']"
-                validation="required"
-                v-model="formData.addressInfo.keadaan_kediaman"
-                :validation-messages="{
-                  required: 'Keadaan kediaman adalah wajib',
-                }" />
-            </div>
-
-            <!-- Kos Tempat Tinggal Section -->
-            <div class="mt-6">
-              <!-- <h5 class="text-md font-medium mb-3">Kos Tempat Tinggal</h5> -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="number"
-                  name="kadar_bayaran_bulanan"
-                  label="Status Kediaman jika Milik Sendiri Berbayar"
-                  step="0.01"
-                  min="0"
-                  placeholder="Isi kadar bayaran bulanan (RM)"
-                  v-if="
-                    formData.addressInfo.status_kediaman ===
-                    'Milik Sendiri Berbayar'
-                  "
-                  v-model="formData.addressInfo.kadar_bayaran_bulanan" />
-
-                <FormKit
-                  type="number"
-                  name="kadar_sewa_bulanan"
-                  label="Status Kediaman jika Sewa"
-                  step="0.01"
-                  min="0"
-                  placeholder="Isi kadar sewa bulanan (RM)"
-                  v-if="formData.addressInfo.status_kediaman === 'Sewa'"
-                  v-model="formData.addressInfo.kadar_sewa_bulanan" />
-
-                <FormKit
-                  type="file"
-                  name="dokumen_perjanjian_sewa"
-                  label="Dokumen Perjanjian Sewa"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                  validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                  v-if="formData.addressInfo.status_kediaman === 'Sewa'"
-                  v-model="formData.addressInfo.dokumen_perjanjian_sewa"
-                  :validation-messages="{
-                    required:
-                      'Dokumen perjanjian sewa adalah wajib untuk status sewa',
-                  }" />
-              </div>
-            </div>
-          </div>
 
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
@@ -5100,12 +5100,12 @@ const currentStepA = ref(1);
 const totalStepsA = 11;
 const stepsA = [
   { id: 1, label: "Peribadi" },
-  { id: 2, label: "Pendidikan" },
-  { id: 3, label: "Pengislaman" },
-  { id: 4, label: "Perbankan" },
-  { id: 5, label: "Kesihatan" },
-  { id: 6, label: "Kemahiran" },
-  { id: 7, label: "Alamat" },
+  { id: 2, label: "Alamat" },
+  { id: 3, label: "Pendidikan" },
+  { id: 4, label: "Pengislaman" },
+  { id: 5, label: "Perbankan" },
+  { id: 6, label: "Kesihatan" },
+  { id: 7, label: "Kemahiran" },
   { id: 8, label: "Pinjaman Harta" },
   { id: 9, label: "Pemilikan" },
   { id: 10, label: "Pekerjaan" },
@@ -7902,7 +7902,7 @@ const handleSaveStepA1 = async () => {
 const handleSaveStepA2 = async () => {
   try {
     console.log("Step A2 saved:", formData.value);
-    toast.success("Maklumat Pendidikan berjaya disimpan");
+    toast.success("Maklumat Alamat berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A2 error:", error);
@@ -7912,16 +7912,17 @@ const handleSaveStepA2 = async () => {
 const handleSaveStepA3 = async () => {
   try {
     console.log("Step A3 saved:", formData.value);
-    toast.success("Maklumat Pengislaman berjaya disimpan");
+    toast.success("Maklumat Pendidikan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A3 error:", error);
   }
 };
+
 const handleSaveStepA4 = async () => {
   try {
     console.log("Step A4 saved:", formData.value);
-    toast.success("Maklumat Perbankan berjaya disimpan");
+    toast.success("Maklumat Pengislaman berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A4 error:", error);
@@ -7931,7 +7932,7 @@ const handleSaveStepA4 = async () => {
 const handleSaveStepA5 = async () => {
   try {
     console.log("Step A5 saved:", formData.value);
-    toast.success("Maklumat Kesihatan berjaya disimpan");
+    toast.success("Maklumat Perbankan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A5 error:", error);
@@ -7941,7 +7942,7 @@ const handleSaveStepA5 = async () => {
 const handleSaveStepA6 = async () => {
   try {
     console.log("Step A6 saved:", formData.value);
-    toast.success("Maklumat Kemahiran berjaya disimpan");
+    toast.success("Maklumat Kesihatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A6 error:", error);
@@ -7951,12 +7952,13 @@ const handleSaveStepA6 = async () => {
 const handleSaveStepA7 = async () => {
   try {
     console.log("Step A7 saved:", formData.value);
-    toast.success("Maklumat Alamat berjaya disimpan");
+    toast.success("Maklumat Kemahiran berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step A7 error:", error);
   }
 };
+
 
 const handleSaveStepA8 = async () => {
   try {
