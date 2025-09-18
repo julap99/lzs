@@ -10,10 +10,10 @@
             <rs-button variant="primary" @click="navigateTo('/BF-PRF/KF/RUU/01_01/tambah_kategori')">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah Kategori Maklumat
             </rs-button>
-            <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/RUU/01_04/lihat')">
+            <rs-button variant="secondary" @click="navigateTo(`/BF-PRF/KF/RUU/01_02/01_02_lihat?kod=${selectedKategori === 'Peribadi' ? 1 : encodeURIComponent(selectedKategori)}`)">
               <Icon name="mdi:eye" class="mr-1" /> Lihat
             </rs-button>
-            <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/RUU/01_04/kemaskini')">
+            <rs-button variant="secondary" @click="navigateTo(`/BF-PRF/KF/RUU/01_01/kemaskini?kod=${selectedKategori === 'Peribadi' ? 1 : encodeURIComponent(selectedKategori)}`)">
               <Icon name="mdi:pencil" class="mr-1" /> Kemaskini
             </rs-button>
             <rs-button v-if="false" variant="secondary" @click="navigateTo('/BF-PRF/KF/RUU/01_01/tambah_kategori')">
@@ -27,7 +27,6 @@
         <div class="mb-4 flex items-center gap-3">
           <label class="text-sm font-medium">Kategori Maklumat</label>
           <select v-model="selectedKategori" class="border rounded px-2 py-1 text-sm">
-            <option value="">Semua</option>
             <option v-for="opt in kategoriOptions" :key="opt" :value="opt">{{ opt }}</option>
           </select>
         </div>
@@ -48,7 +47,7 @@
             hover: true,
           }"
         >
-          <template v-slot:namaRuuField="data">{{ data.value.namaRuuField || data.value.namaHadKifayah }}</template>
+          <template v-slot:namaRuuField="data">{{ data.value.namaRuuField }}</template>
           <template v-slot:namaNasField="data">{{ data.value.namaNasField || data.value.kategori || '-' }}</template>
           <template v-slot:kaedahKemaskini="data">{{ data.value.kaedahKemaskini || 'Manual' }}</template>
           <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
@@ -85,8 +84,8 @@ const breadcrumb = ref([
 
 // Table data and reactivity control
 const tableKey = ref(0);
-const kifayahLimits = ref([]);
-const selectedKategori = ref("");
+const kelulusanDataRuu = ref([]);
+const selectedKategori = ref("Peribadi");
 const kategoriOptions = [
   "Peribadi",
   "Alamat",
@@ -111,9 +110,10 @@ const kategoriOptions = [
 ];
 
 const filteredData = computed(() => {
-  if (!selectedKategori.value) return kifayahLimits.value;
-  return kifayahLimits.value.filter((item) => {
-    const kategori = item.namaNasField || item.kategori || "";
+  if (!selectedKategori.value) return kelulusanDataRuu.value;
+  return kelulusanDataRuu.value.filter((item) => {
+    // Prefer explicit kategori if present; fallback to legacy field
+    const kategori = item.kategori || item.namaNasField || "";
     return kategori === selectedKategori.value;
   });
 });
@@ -123,13 +123,15 @@ const defaultData = [
   {
     namaRuuField: "Identification Type",
     namaNasField: "Jenis ID",
+    kategori: "Peribadi",
     kaedahKemaskini: "Update asnaf with approval/verify",
-    tarikhMula: "2030-01-01",
+    tarikhMula: "2026-01-01",
     statusData: "Draf",
   },
   {
     namaRuuField: "Passport No",
     namaNasField: "Pengenalan ID",
+    kategori: "Peribadi",
     kaedahKemaskini: "Asnaf Review",
     tarikhMula: "2026-01-01",
     statusData: "Draf",
@@ -137,6 +139,7 @@ const defaultData = [
   {
     namaRuuField: "MyKad",
     namaNasField: "Pengenalan ID",
+    kategori: "Peribadi",
     kaedahKemaskini: "Asnaf Review",
     tarikhMula: "2026-01-01",
     statusData: "Draf",
@@ -160,7 +163,7 @@ const validateDataItem = (item) => {
 // Function to load data from localStorage
 const loadData = () => {
   try {
-    const savedData = localStorage.getItem('kifayahLimits');
+    const savedData = localStorage.getItem('kelulusanDataRuu');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       // Validate and sanitize parsed data
@@ -170,7 +173,7 @@ const loadData = () => {
       const mergedData = [...defaultData];
       validatedData.forEach(savedItem => {
         // Check if item already exists in default data
-        const existingIndex = mergedData.findIndex(item => item.idHadKifayah === savedItem.idHadKifayah);
+        const existingIndex = mergedData.findIndex(item => item.idRuu === savedItem.idRuu);
         if (existingIndex >= 0) {
           // Replace existing item
           mergedData[existingIndex] = validateDataItem(savedItem);
@@ -179,19 +182,19 @@ const loadData = () => {
           mergedData.push(validateDataItem(savedItem));
         }
       });
-      kifayahLimits.value = mergedData;
+      kelulusanDataRuu.value = mergedData;
     } else {
-      kifayahLimits.value = defaultData;
+      kelulusanDataRuu.value = defaultData;
     }
   } catch (error) {
     console.error('Error loading data:', error);
-    kifayahLimits.value = defaultData;
+    kelulusanDataRuu.value = defaultData;
   }
 };
 
 // Computed property to count pending approval items
 const pendingApprovalCount = computed(() => {
-  return kifayahLimits.value.filter(
+  return kelulusanDataRuu.value.filter(
     (item) => item.status === "Menunggu Kelulusan"
   ).length;
 });
@@ -211,9 +214,9 @@ onActivated(() => {
 const refreshTable = () => {
   nextTick(() => {
     tableKey.value++; // Force table to re-render
-    console.log("Table refreshed, records:", kifayahLimits.value.length);
+    console.log("Table refreshed, records:", kelulusanDataRuu.value.length);
     console.log("Pending approval:", pendingApprovalCount.value);
-    console.log("Sample data:", kifayahLimits.value[0]);
+    console.log("Sample data:", kelulusanDataRuu.value[0]);
   });
 };
 
