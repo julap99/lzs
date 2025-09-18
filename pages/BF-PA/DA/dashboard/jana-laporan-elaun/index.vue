@@ -124,13 +124,7 @@
 </template>
 
 <script setup lang="ts">
-/**
- * PA-DA-PD-02 (Bayaran Elaun) — Jana Laporan Bayaran Elaun Penolong Amil
- * - Header meta (tajuk, organisasi, masa jana, dijana oleh, tempoh, ringkasan penapis)
- * - Jadual read-only dengan kolum & format (MYR, mask akaun, tarikh DD/MM/YYYY)
- * - Kumpulan: Jenis Elaun → Kategori → Daerah (page-break setiap Jenis Elaun)
- * - Komponen perbezaan rekod vs sistem kewangan + rujukan batch
- */
+
 import { ref, reactive, computed } from 'vue'
 
 defineOptions({ name: 'PA-DA-PD-02-BayaranElaun' })
