@@ -6,10 +6,9 @@
     <h1>Jana Laporan</h1>
   </div>
 
-  
   <ClientOnly placeholder="Memuatkan…">
     <rs-tab v-model="activeTabIndex" :key="tabKey">
-      
+
       <rs-tab-item title="Laporan DOAA" :value="0">
         <rs-table
           :data="tableData"
@@ -21,33 +20,29 @@
           :options="{ variant: 'default', hover: true, striped: true }"
           :options-advanced="{ sortable: true }"
         >
-          
+
           <template #no="{ text }">
             <span>{{ text }}</span>
           </template>
 
-          
+
           <template #reportName="{ text }">
-            <span class="text-gray-800">{{ text }}</span>
+            <span>{{ text }}</span>
           </template>
 
-          
           <template #select="{ text }">
-            <!-- 'text' = value yang kita set dalam tableData (di sini: no) -->
-            <rs-button
-              variant="primary"
-              size="sm"
-              class="!px-3 !py-1"
-              @click="handleSelect(text)"
-              :aria-label="`Pilih No ${text}`"
-            >
-              Pilih
-            </rs-button>
+            <input
+              type="radio"
+              name="doaa-report"
+              :value="text"
+              v-model="selectedReport"
+              @change="handleSelect(text)"
+            />
           </template>
         </rs-table>
       </rs-tab-item>
 
-      
+
       <rs-tab-item title="Laporan DPCH" :value="1"></rs-tab-item>
       <rs-tab-item title="Laporan DPA"  :value="2"></rs-tab-item>
       <rs-tab-item title="Laporan DKEW" :value="3"></rs-tab-item>
@@ -55,7 +50,7 @@
     </rs-tab>
   </ClientOnly>
 
-  
+
   <div class="flex items-center justify-between px-5 mt-4">
     <div class="flex items-center gap-2">
       <span class="text-sm text-gray-700">Baris per halaman:</span>
@@ -94,6 +89,7 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { navigateTo } from '#app'
 
 definePageMeta({ title: 'Jana Laporan' })
 
@@ -102,8 +98,8 @@ const breadcrumb = [
   { name: 'Jana Laporan', type: 'current', path: '/reports/R5' },
 ]
 
-/** ========== FORCE DEFAULT TAB DOAA ========== **/
-const activeTabIndex = ref(0)  // 0 = DOAA
+/** ========== TAB SETUP ========== **/
+const activeTabIndex = ref(0)
 const tabKey = ref(0)
 onMounted(async () => {
   await nextTick()
@@ -111,47 +107,46 @@ onMounted(async () => {
   tabKey.value++
 })
 
-/** ========== TABLE SETUP (3 kolum sahaja) ========== **/
+/** ========== TABLE ========== **/
 const columns = [
   { key: 'no',         label: 'No.',          sortable: true  },
   { key: 'reportName', label: 'Nama Laporan', sortable: true  },
   { key: 'select',     label: 'Pilih',        sortable: false },
 ]
 
-/** Data baris (tanpa slug/path) */
 const rows = ref([
-  { no: 1, reportName: 'Laporan Bilangan Keseluruhan Asnaf/Bilangan Asnaf Aktif' },
-  { no: 2, reportName: 'Laporan Perbandingan Bilangan dan Perincian Asnaf yang baharu vs lama (New Exit)' },
-  { no: 3, reportName: 'Laporan Bantuan Asasi Bulanan' },
-  { no: 4, reportName: 'Laporan Prestasi Agihan' },
+  { no: 1, reportName: '' },
+  { no: 2, reportName: '' },
+  { no: 3, reportName: '' },
+  { no: 4, reportName: '' },
 ])
 
-/** Jadikan kolum 'select' memegang nombor baris (supaya slot { text } = no) */
 const tableData = computed(() =>
   rows.value.map(r => ({
     ...r,
-    select: r.no, // ini yang dihantar ke butang
+    select: r.no, // isi radio dengan no
   }))
 )
 
-/** Handler untuk setiap butang  */
+/** ========== RADIO PILIHAN ========== **/
+const selectedReport = ref(null)
+
 function handleSelect(no) {
   switch (no) {
     case 1:
-      return navigateTo('/reports/R5/Laporan-DOAA/Bilangan-Asnaf-Aktif')
+      return navigateTo('')
     case 2:
-      return navigateTo('/reports/R5/Laporan-DOAA/Perbandingan-Asnaf-New-Exit') 
+      return navigateTo('') 
     case 3:
-      return navigateTo('/reports/R5/Laporan-DOAA/Bantuan-Asasi-Bulanan')
+      return navigateTo('')
     case 4:
-      return navigateTo('/reports/R5/Laporan-DOAA/Prestasi-Agihan')
+      return navigateTo('')
     default:
       console.warn('Tiada tindakan ditetapkan untuk:', no)
   }
 }
 
-
-/** ========== PAGINATION (UI sahaja, belum slice data) ========== **/
+/** ========== PAGINATION ========== **/
 const pageSize = ref(10)
 const currentPage = ref(1)
 const totalRows = computed(() => tableData.value.length)

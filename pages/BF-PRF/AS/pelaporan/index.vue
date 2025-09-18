@@ -169,20 +169,52 @@ const go = (tab) => {
 </script>
 
 <style scoped>
-/* Kecil & center kolum PILIH (dengan showNoColumn = true, PILIH ialah kolum ke-3) */
-:deep(.table-content thead tr th:nth-child(3)),
-:deep(.table-content tbody tr td:nth-child(3)) {
-  min-width: 72px !important;
-  width: 72px !important;
-  max-width: 80px !important;
-  text-align: center;
+/* Umum: benarkan kolum mengecil & kekalkan satu baris */
+:deep(.table-content thead th),
+:deep(.table-content tbody td) {
+  min-width: 0 !important;
   white-space: nowrap;
-  padding-left: 0.75rem !important;
-  padding-right: 0.75rem !important;
 }
 
-/* Sedikit besar untuk radio dan center */
+/* ===== Kolum NO. (1) — cukup muat "No." ===== */
+:deep(.table-content colgroup col:first-child) { width: 26px !important; }
+:deep(.table-content thead tr th:first-child),
+:deep(.table-content tbody tr td:first-child) {
+  width: 26px !important;
+  min-width: 26px !important;
+  max-width: 26px !important;
+  text-align: center;
+  padding-left: 0.2rem !important;
+  padding-right: 0.2rem !important;
+}
+
+/* ===== Kolum PILIH (3) — cukup muat "Pilih" + radio ===== */
+:deep(.table-content colgroup col:nth-child(3)) { width: 44px !important; } /* paksa kecil */
+:deep(.table-content thead tr th:nth-child(3)),
+:deep(.table-content tbody tr td:nth-child(3)) {
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  text-align: center;
+  padding-left: 0.2rem !important;
+  padding-right: 0.2rem !important;
+  overflow: hidden;            /* elak 'berlapis' */
+  text-overflow: clip;
+}
+/* buang sebarang min-width dalaman yg mungkin datang dari rs-table */
+:deep(.table-content thead tr th:nth-child(3) *),
+:deep(.table-content tbody tr td:nth-child(3) *) {
+  min-width: 0 !important;
+}
+
+/* Radio lebih kecil & betul-betul tengah */
 :deep(.table-content tbody tr td:nth-child(3) input[type="radio"]) {
-  transform: scale(1.1);
+  transform: scale(0.9);
+  display: block;
+  margin: 0 auto;
 }
 </style>
+
+
+
+

@@ -2,8 +2,8 @@
   <div>
     <layouts-breadcrumb :items="breadcrumb" />
 
-    <!-- HEADER -->
-    <rs-card class="mt-4">
+    <!-- HEADER — papar hanya selepas Jana -->
+    <rs-card class="mt-4" v-if="hasGenerated">
       <template #body>
         <div class="flex items-start justify-between gap-6">
           <!-- Kiri: Logo + Tajuk -->
@@ -23,24 +23,67 @@
             </div>
           </div>
 
-          <!-- Kanan: Tarikh & Masa -->
+          <!-- Kanan: Tarikh & Masa jana -->
           <div class="text-sm text-right">
-            <div><span class="font-semibold">Tarikh:</span> {{ today }}</div>
-            <div><span class="font-semibold">Masa:</span> {{ now }}</div>
+            <div><span class="font-semibold">Tarikh:</span> {{ genDate }}</div>
+            <div><span class="font-semibold">Masa:</span> {{ genTime }}</div>
           </div>
         </div>
+      </template>
+    </rs-card>
+
+    <!-- PENAPIS / CARIAN -->
+    <rs-card class="mt-4">
+      <template #header>
+        <h2 class="text-base font-semibold">Penapis Laporan</h2>
+      </template>
+      <template #body>
+        <FormKit type="form" :actions="false" id="orgForm" @submit="onJana">
+          <div class="grid gap-6 md:grid-cols-3">
+            <!-- Daerah -->
+            <FormKit
+              type="select"
+              label="Daerah"
+              v-model="filters.daerah"
+              :options="daerahOptions"
+              placeholder="Semua"
+              :classes="fkClasses"
+            />
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-6 flex items-center gap-3 justify-end">
+            <rs-button
+              variant="primary-outline"
+              size="sm"
+              class="!h-9 !px-4 !py-2 !text-sm !rounded-xl !leading-none align-middle"
+              @click="onReset"
+            >
+              Reset
+            </rs-button>
+
+            <rs-button
+              variant="primary"
+              size="sm"
+              class="!h-9 !px-4 !py-2 !text-sm !rounded-xl !leading-none align-middle"
+              @click="submitForm('orgForm')"
+            >
+              Jana
+            </rs-button>
+          </div>
+        </FormKit>
       </template>
     </rs-card>
 
     <!-- HASIL + EXPORT -->
     <rs-card class="mt-4">
       <template #header>
-        <div class="flex justify-end gap-2">
+        <div class="flex justify-end gap-2 print:hidden">
           <rs-button
             variant="primary-outline"
             size="sm"
             class="flex items-center"
-            :disabled="!rows.length"
+            :disabled="!tableRows.length || !hasGenerated"
             @click="exportExcel"
           >
             Export Excel
@@ -49,7 +92,7 @@
             variant="primary"
             size="sm"
             class="flex items-center"
-            :disabled="!rows.length"
+            :disabled="!tableRows.length || !hasGenerated"
             @click="exportPDF"
           >
             Export PDF
@@ -58,9 +101,22 @@
       </template>
 
       <template #body>
-        <div class="table-wrapper">
+        <!-- Empty state sebelum Jana -->
+        <div
+          v-if="!hasGenerated"
+          class="rounded-2xl border border-dashed bg-white p-10 text-center text-gray-500"
+        >
+          <div class="flex flex-col items-center gap-2">
+            <Icon name="iconamoon:arrow-down-2-bold" class="h-8 w-8 opacity-60" />
+            <div class="-mt-2 text-xl leading-none">–</div>
+            <p class="mt-1 text-base">Sila jana laporan terlebih dahulu</p>
+          </div>
+        </div>
+
+        <!-- Jadual selepas Jana -->
+        <div v-else class="table-wrapper">
           <rs-table
-            :data="rows"
+            :data="tableRows"
             :columns="columns"
             :field="[
               'idOrganisasi','namaOrganisasi','jenisOrganisasi','daerah','alamat',
@@ -87,25 +143,31 @@
               outsideBorder: true
             }"
           >
-            <!-- ====== HEADER SLOTS (header ada kelas h-*) ====== -->
-            <template #header-idOrganisasi><span class="h-id">ID&nbsp;Organisasi</span></template>
-            <template #header-namaOrganisasi><span class="h-nama">Nama&nbsp;Organisasi</span></template>
-            <template #header-jenisOrganisasi><span class="h-jenis">Jenis&nbsp;Organisasi</span></template>
-            <template #header-daerah><span class="h-daerah">Daerah</span></template>
-            <template #header-alamat><span class="h-alamat">Alamat</span></template>
-            <template #header-telefon><span class="h-telefon">Telefon</span></template>
-            <template #header-tarikhPendaftaran><span class="h-tarikh">Tarikh&nbsp;Pendaftaran</span></template>
-            <template #header-status><span class="h-status">Status</span></template>
-
-            <!-- Paksa 2 baris tepat untuk header panjang -->
-            <template #header-pegawai>
-              <span class="h-pegawai">
-                <span>Pegawai</span><br />
-                <span>Bertanggungjawab</span>
-              </span>
+            <!-- ====== HEADER SLOTS ====== -->
+            <!-- Kekal sebaris walaupun 2 perkataan -->
+            <template #header-idOrganisasi>
+              <span class="h-one">ID Organisasi</span>
             </template>
 
-            <!-- ====== CELL SLOTS (data ada kelas col-*) ====== -->
+            <!-- 2 PERKATAAN → 2 BARIS TEPAT -->
+            <template #header-namaOrganisasi>
+              <span class="h-2lines"><span>Nama</span><br/><span>Organisasi</span></span>
+            </template>
+            <template #header-jenisOrganisasi>
+              <span class="h-2lines"><span>Jenis</span><br/><span>Organisasi</span></span>
+            </template>
+            <template #header-daerah><span class="h-one">Daerah</span></template>
+            <template #header-alamat><span class="h-one">Alamat</span></template>
+            <template #header-telefon><span class="h-one">Telefon</span></template>
+            <template #header-tarikhPendaftaran>
+              <span class="h-2lines"><span>Tarikh</span><br/><span>Pendaftaran</span></span>
+            </template>
+            <template #header-status><span class="h-one">Status</span></template>
+            <template #header-pegawai>
+              <span class="h-2lines"><span>Pegawai</span><br/><span>Bertanggungjawab</span></span>
+            </template>
+
+            <!-- ====== CELL SLOTS ====== -->
             <template #idOrganisasi="{ text }"><span class="col-id">{{ text }}</span></template>
             <template #namaOrganisasi="{ text }"><span class="col-nama">{{ text }}</span></template>
             <template #jenisOrganisasi="{ text }"><span class="col-jenis">{{ text }}</span></template>
@@ -114,10 +176,13 @@
             <template #telefon="{ text }"><span class="col-telefon">{{ text }}</span></template>
             <template #tarikhPendaftaran="{ text }"><span class="col-tarikh">{{ formatDMY(text) }}</span></template>
             <template #status="{ text }">
-              <div class="flex justify-center">
-                <rs-badge :variant="statusVariant(text)">{{ text }}</rs-badge>
+              <div class="w-full flex items-center justify-center">
+                <rs-badge :variant="statusVariant(text)" class="!whitespace-nowrap">
+                  {{ text }}
+                </rs-badge>
               </div>
             </template>
+
             <template #pegawai="{ text }"><span class="col-pegawai">{{ text }}</span></template>
           </rs-table>
         </div>
@@ -127,7 +192,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
@@ -136,13 +201,36 @@ definePageMeta({ title: 'Laporan Pendaftaran Agensi mengikut Jenis Organisasi' }
 /* Breadcrumb */
 const breadcrumb = [
   { name: 'Pelaporan', type: 'link', path: '/BF-PRF/AS/pelaporan/organisasi' },
-  { name: 'Organisasi', type: 'link', path: '/BF-PRF/AS/pelaporan/organisasi/pendaftaran-agensi' },
+  { name: 'Laporan Pendaftaran Organisasi', type: 'link', path: '/BF-PRF/AS/pelaporan/organisasi/pendaftaran-agensi' },
 ]
 
-/* Tarikh/Masa header */
-const nowDt = new Date()
-const today = `${String(nowDt.getDate()).padStart(2,'0')}/${String(nowDt.getMonth()+1).padStart(2,'0')}/${nowDt.getFullYear()}`
-const now   = `${String(nowDt.getHours()).padStart(2,'0')}:${String(nowDt.getMinutes()).padStart(2,'0')}:${String(nowDt.getSeconds()).padStart(2,'0')}`
+/* ========= State jana/report ========= */
+const hasGenerated = ref(false)
+const generatedAt  = ref(new Date())
+
+/* Tarikh/Masa dipapar di header selepas Jana */
+function pad(n){ return String(n).padStart(2,'0') }
+const genDate = computed(() => formatDMY(generatedAt.value))
+const genTime = computed(() => {
+  const d = new Date(generatedAt.value)
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+})
+
+/* ========= Penapis ========= */
+const filters = reactive({ daerah: '' })
+
+const daerahOptions = [
+  { value: '', label: 'Semua' },
+  { value: 'Gombak', label: 'Gombak' },
+  { value: 'Hulu Langat', label: 'Hulu Langat' },
+  { value: 'Klang', label: 'Klang' },
+  { value: 'Kuala Langat', label: 'Kuala Langat' },
+  { value: 'Kuala Selangor', label: 'Kuala Selangor' },
+  { value: 'Petaling', label: 'Petaling' },
+  { value: 'Sabak Bernam', label: 'Sabak Bernam' },
+  { value: 'Sepang', label: 'Sepang' },
+  { value: 'Shah Alam', label: 'Shah Alam' },
+]
 
 /* Kolum label untuk rs-table */
 const columns = [
@@ -174,63 +262,88 @@ const rows = ref([
   { idOrganisasi: 'ORG010', namaOrganisasi: 'Pusat Komuniti Hulu Langat', jenisOrganisasi: 'Institusi', daerah: 'Hulu Langat', alamat: 'Kajang',                         telefon: '03-87355555', tarikhPendaftaran: '2023-10-20', status: 'Aktif',       pegawai: 'Dr. Khalid bin Hamzah' },
 ])
 
-/* Helpers */
+/* Badge status */
 const statusVariant = (txt) => {
   const s = String(txt || '').trim().toLowerCase()
   if (s === 'aktif') return 'success'
   if (s === 'tidak aktif') return 'danger'
   return 'default'
 }
-const formatDMY = (iso) => {
-  if (!iso) return '-'
-  const d  = new Date(iso)
-  const dd = String(d.getDate()).padStart(2,'0')
-  const mm = String(d.getMonth()+1).padStart(2,'0')
-  const yy = d.getFullYear()
+
+/* Format DD/MM/YYYY — terima Date atau string */
+const formatDMY = (d) => {
+  if (!d) return '-'
+  const dt = (d instanceof Date) ? d : new Date(d)
+  const dd = String(dt.getDate()).padStart(2,'0')
+  const mm = String(dt.getMonth()+1).padStart(2,'0')
+  const yy = dt.getFullYear()
   return `${dd}/${mm}/${yy}`
 }
 
-/* Export Excel (CSV) */
+/* ====== Penapis data ====== */
+const filteredRows = computed(() => {
+  if (!filters.daerah) return rows.value
+  return rows.value.filter(r => r.daerah === filters.daerah)
+})
+
+/* Data untuk jadual (hasil tapisan) */
+const tableRows = computed(() => filteredRows.value)
+
+/* ====== Aksi Jana/Reset ====== */
+function onJana () {
+  generatedAt.value = new Date()
+  hasGenerated.value = true
+}
+
+function onReset () {
+  filters.daerah = ''
+  generatedAt.value = new Date()
+  hasGenerated.value = false
+}
+
+/* ====== Export Excel (CSV) — ikut gaya Aging ====== */
 function exportExcel () {
-  if (!rows.value.length) return
-  const header = ['No','ID Organisasi','Nama Organisasi','Jenis Organisasi','Daerah','Alamat','Telefon','Tarikh Pendaftaran','Status','Pegawai Bertanggungjawab']
-  const data = rows.value.map((r, i) => [
+  if (!tableRows.value.length) return
+  const header = [
+    'No','ID Organisasi','Nama Organisasi','Jenis Organisasi','Daerah',
+    'Alamat','Telefon','Tarikh Pendaftaran','Status','Pegawai Bertanggungjawab'
+  ]
+  const data = tableRows.value.map((r, i) => ([
     i + 1, r.idOrganisasi, r.namaOrganisasi, r.jenisOrganisasi, r.daerah,
     r.alamat, r.telefon, formatDMY(r.tarikhPendaftaran), r.status, r.pegawai
-  ])
+  ]))
+
   const csv = [header, ...data]
-    .map(a => a.map(x => `"${String(x).replace(/"/g,'""')}"`).join(','))
+    .map(row => row.map(x => `"${String(x).replace(/"/g,'""')}"`).join(','))
     .join('\r\n')
+
   const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' })
   const url  = URL.createObjectURL(blob)
-  const a = document.createElement('a'); a.href = url; a.download = `RO0001_Laporan_Pendaftaran_Agensi_${today}.csv`; a.click()
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `RO0001_Laporan_Pendaftaran_Agensi_${formatDMY(generatedAt.value)}.csv`
+  a.click()
   URL.revokeObjectURL(url)
 }
 
-/* Export PDF */
+/* ====== Export PDF — header hitam & bold + meta Tarikh/Daerah ====== */
 function exportPDF () {
-  if (!rows.value.length) return
+  if (!tableRows.value.length) return
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
 
-  // Tajuk + Tarikh/Masa
-  doc.setFontSize(14); doc.setFont('helvetica','bold')
-  doc.text('RO0001: Laporan Pendaftaran Agensi Mengikut Jenis Organisasi', doc.internal.pageSize.getWidth()/2, 12, { align: 'center' })
-  doc.setFontSize(10); doc.setFont('helvetica','normal')
-  doc.text(`Tarikh: ${today}`, doc.internal.pageSize.getWidth()-20, 8,  { align: 'right' })
-  doc.text(`Masa: ${now}`,     doc.internal.pageSize.getWidth()-20, 13, { align: 'right' })
-
   const head = [[
-    'No','ID Organisasi','Nama Organisasi','Jenis Organisasi','Daerah','Alamat','Telefon','Tarikh Pendaftaran','Status','Pegawai Bertanggungjawab'
+    'No','ID Organisasi','Nama Organisasi','Jenis Organisasi','Daerah',
+    'Alamat','Telefon','Tarikh Pendaftaran','Status','Pegawai Bertanggungjawab'
   ]]
-  const body = rows.value.map((r, i) => [
+  const body = tableRows.value.map((r, i) => ([
     i + 1, r.idOrganisasi, r.namaOrganisasi, r.jenisOrganisasi, r.daerah,
     r.alamat, r.telefon, formatDMY(r.tarikhPendaftaran), r.status, r.pegawai
-  ])
+  ]))
 
   autoTable(doc, {
     head, body, startY: 20,
     styles: { fontSize: 9, cellPadding: 2, valign: 'middle' },
-    headStyles: { fillColor: [240,240,240] },
+    headStyles: { fillColor: [240,240,240], textColor: [0,0,0], fontStyle: 'bold' },
     margin: { top: 16, left: 10, right: 10, bottom: 12 },
     columnStyles: {
       0: { halign: 'center', cellWidth: 10 },
@@ -243,64 +356,111 @@ function exportPDF () {
       7: { cellWidth: 28 },
       8: { cellWidth: 22 },
       9: { cellWidth: 40 },
-    }
+    },
+    didDrawPage: () => {
+      doc.setFontSize(14); doc.setFont('helvetica','bold')
+      doc.text('RO0001: Laporan Pendaftaran Agensi Mengikut Jenis Organisasi', doc.internal.pageSize.getWidth()/2, 10, { align:'center' })
+      doc.setFontSize(10); doc.setFont('helvetica','normal')
+      const meta = `Tarikh: ${formatDMY(generatedAt.value)}${filters.daerah ? '  |  Daerah: ' + filters.daerah : ''}`
+      doc.text(meta, doc.internal.pageSize.getWidth()/2, 15, { align:'center' })
+    },
   })
-  doc.save(`RO0001_Laporan_Pendaftaran_Agensi_${today}.pdf`)
+
+  doc.save(`RO0001_Laporan_Pendaftaran_Agensi_${formatDMY(generatedAt.value)}.pdf`)
+}
+
+/* ======================
+   Helpers / UI
+   ====================== */
+function submitForm (id) {
+  const form = document.getElementById(id)
+  if (!form) return
+  if (typeof form.requestSubmit === 'function') form.requestSubmit()
+  else {
+    const tmp = document.createElement('button'); tmp.type = 'submit'; tmp.style.display = 'none'
+    form.appendChild(tmp); tmp.click(); form.removeChild(tmp)
+  }
+}
+
+const fkClasses = {
+  outer: 'space-y-1',
+  label: 'text-sm font-medium text-gray-900',
+  inner: 'mt-1 formkit-disabled:opacity-60 rounded-xl border bg-white focus-within:ring-2 focus-within:ring-blue-500',
+  input: 'w-full rounded-xl border-0 px-3 py-2 text-sm placeholder-gray-400 focus:outline-none',
+  help: 'text-xs text-gray-500 mt-1',
+  messages: 'text-xs text-red-600 mt-1',
 }
 </script>
 
 <style scoped>
-.table-wrapper { overflow-x: visible; }
+/* ===== Elak scroll mendatar ===== */
+.table-wrapper { overflow-x: hidden; }
 
-/* Sel header & data konsisten */
-:deep(table) th, :deep(table) td {
+/* Balut kandungan dengan kemas (tanpa pecah huruf rawak) */
+:deep(table) th,
+:deep(table) td {
   white-space: normal;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: anywhere;
   vertical-align: middle;
 }
 
-/* ====== KOLUM NO. — sebaris & cukup ruang ====== */
+/* ===== Kolum No. — kemas & center ===== */
 :deep(thead tr th:first-child),
 :deep(tbody tr td:first-child) {
-  width: 64px; min-width: 64px; max-width: 64px;
-  text-align: center;
+  width: 56px; min-width: 56px; max-width: 56px;
+  text-align: center !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;          /* pastikan "No." tak wrap */
-  letter-spacing: normal;       /* elak jadi "N o ." */
+  letter-spacing: normal;
   line-height: 1.2;
 }
-
-/* ====== HEADER-ONLY STYLES (h-*) ====== */
-:deep(.h-id),
-:deep(.h-nama),
-:deep(.h-jenis),
-:deep(.h-daerah),
-:deep(.h-alamat),
-:deep(.h-telefon),
-:deep(.h-tarikh),
-:deep(.h-status) {
-  white-space: nowrap;          /* semua header pendek kekal 1 baris */
-  display: inline-block;
+/* Paksa align tengah jika header gunakan flex/ikon sort */
+:deep(thead tr th:first-child),
+:deep(thead tr th:first-child > *),
+:deep(thead tr th:first-child .flex),
+:deep(thead tr th:first-child .rs-th-inner) {
+  justify-content: center !important;
+  text-align: center !important;
 }
 
-/* Header Pegawai = tepat 2 baris (pakai <br/>) */
-:deep(.h-pegawai) {
+/* ===== HEADER STYLE ===== */
+/* 1) Header sebaris (single-word / khusus ID Organisasi) */
+:deep(.h-one) {
   display: inline-block;
-  white-space: normal;          /* benarkan pecah di <br> sahaja */
-  word-break: keep-all;
+  white-space: nowrap;
+}
+
+/* 2) Header 2 baris tepat:
+      - setiap <span> dalam .h-2lines -> nowrap
+      - hanya pecah di <br>, tak jadi 3 baris */
+:deep(.h-2lines) {
+  display: inline-block;
   line-height: 1.15;
+  white-space: normal;
+}
+:deep(.h-2lines > span) {
+  display: block;
+  white-space: nowrap;   /* elak wrap tambahan */
 }
 
-/* ====== CELL STYLES (col-*) — tak ganggu header ====== */
+/* ===== Cell width tuning (jimat ruang, masih mudah baca) ===== */
 :deep(.col-id)      { white-space: nowrap; }
-:deep(.col-nama)    { min-width: 220px; max-width: 260px; word-break: keep-all; }
-:deep(.col-jenis)   { white-space: nowrap; min-width: 150px; }
+:deep(.col-nama)    { min-width: 180px; max-width: 240px; word-break: keep-all; }
+:deep(.col-jenis)   { white-space: nowrap; min-width: 120px; }
 :deep(.col-daerah)  { white-space: nowrap; min-width: 110px; }
-:deep(.col-alamat)  { min-width: 220px; }            /* data alamat boleh balut */
+:deep(.col-alamat)  { min-width: 200px; max-width: 320px; }
 :deep(.col-telefon) { white-space: nowrap; }
 :deep(.col-tarikh)  { white-space: nowrap; }
-:deep(.col-pegawai) { min-width: 220px; word-break: keep-all; }
+:deep(.col-pegawai) { min-width: 180px; max-width: 260px; word-break: keep-all; }
 
-/* Cantikkan border rs-table (pilihan) */
+/* Border & footer */
 :deep(table.table-content) { border-color: rgb(var(--border-color)); }
+:deep(.table-footer) { border-top: 1px solid rgb(var(--border-color)); }
+
+@media print {
+  .print\:hidden { display: none !important; }
+}
 </style>
