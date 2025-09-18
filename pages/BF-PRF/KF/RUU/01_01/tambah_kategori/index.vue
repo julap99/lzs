@@ -25,76 +25,88 @@
               <div class="grid grid-cols-1 gap-6">
 
                 <!-- Kod -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="kod"
-                    label="Kod"
+                <div class="flex items-center gap-3">
+                  <label class="text-sm font-medium w-40">Kod :</label>
+                  <input 
+                    v-model="formData.kod" 
+                    type="text" 
                     placeholder="Contoh: 1"
-                    validation="required|matches:/^[a-zA-Z0-9]+$/"
-                    :validation-messages="{
-                      required: 'Kod diperlukan',
-                      matches: 'Hanya huruf dan nombor dibenarkan'
-                    }"
+                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    required
                   />
                 </div>
 
                 <!-- Kategori Maklumat -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="namaKategori"
-                    label="Kategori Maklumat"
+                <div class="flex items-center gap-3">
+                  <label class="text-sm font-medium w-40">Kategori Maklumat :</label>
+                  <input 
+                    v-model="formData.namaKategori" 
+                    type="text" 
                     placeholder="Contoh: Peribadi"
-                    validation="required"
-                    :validation-messages="{ required: 'Kategori Maklumat diperlukan' }"
+                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    required
                   />
                 </div>
 
                 <!-- Status (radio buttons) Aktif / Tidak Aktif -->
-                <div>
-                  <FormKit
-                    type="radio"
-                    name="status"
-                    label="Status :"
-                    :options="[
-                      { label: 'Aktif', value: 'Aktif' },
-                      { label: 'Tidak Aktif', value: 'Tidak Aktif' }
-                    ]"
-                    validation="required"
-                    :validation-messages="{ required: 'Status diperlukan' }"
-                  />
+                <div class="flex items-center gap-3">
+                  <label class="text-sm font-medium w-40">Status :</label>
+                  <div class="flex items-center gap-6">
+                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="status"
+                        value="Aktif"
+                        v-model="formData.status"
+                        class="text-blue-600 focus:ring-blue-500"
+                        required
+                      />
+                      Aktif
+                    </label>
+                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="status"
+                        value="Tidak Aktif"
+                        v-model="formData.status"
+                        class="text-blue-600 focus:ring-blue-500"
+                        required
+                      />
+                      Tidak Aktif
+                    </label>
+                  </div>
                 </div>
 
                 <!-- Status Data -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="statusData"
-                    label="Status data :"
+                <div class="flex items-center gap-3">
+                  <label class="text-sm font-medium w-40">Status data :</label>
+                  <input 
+                    v-model="formData.statusData" 
+                    type="text" 
                     placeholder="Contoh: Draf"
-                    validation="required"
-                    :validation-messages="{ required: 'Status data diperlukan' }"
+                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    required
                   />
                 </div>
 
                 <!-- Tarikh Mula -->
-                <div>
-                  <FormKit
-                    type="date"
-                    name="tarikhMula"
-                    label="Tarikh Mula :"
-                    validation="required"
-                    :validation-messages="{ required: 'Tarikh mula diperlukan' }"
+                <div class="flex items-center gap-3">
+                  <label class="text-sm font-medium w-40">Tarikh Mula :</label>
+                  <input 
+                    v-model="formData.tarikhMula" 
+                    type="date" 
+                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    required
                   />
                 </div>
 
                 <!-- Tarikh Tamat -->
-                <div>
-                  <FormKit
-                    type="date"
-                    name="tarikhTamat"
-                    label="Tarikh Tamat :"
+                <div class="flex items-center gap-3">
+                  <label class="text-sm font-medium w-40">Tarikh Tamat :</label>
+                  <input 
+                    v-model="formData.tarikhTamat" 
+                    type="date" 
+                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
 
@@ -184,8 +196,40 @@ const formData = reactive({
 
 const isSubmitting = ref(false);
 
+// Validation function
+const validateForm = () => {
+  if (!formData.kod) {
+    alert('Kod diperlukan');
+    return false;
+  }
+  if (!/^[a-zA-Z0-9]+$/.test(formData.kod)) {
+    alert('Hanya huruf dan nombor dibenarkan untuk Kod');
+    return false;
+  }
+  if (!formData.namaKategori) {
+    alert('Kategori Maklumat diperlukan');
+    return false;
+  }
+  if (!formData.status) {
+    alert('Status diperlukan');
+    return false;
+  }
+  if (!formData.statusData) {
+    alert('Status data diperlukan');
+    return false;
+  }
+  if (!formData.tarikhMula) {
+    alert('Tarikh mula diperlukan');
+    return false;
+  }
+  return true;
+};
+
+
 // Handle Tambah Kategori Maklumat
 const handleTambahKategori = async () => {
+  if (!validateForm()) return;
+  
   isSubmitting.value = true;
   try {
     const existing = loadExistingCategories();
@@ -194,6 +238,7 @@ const handleTambahKategori = async () => {
     const record = {
       kod: formData.kod,
       namaKategori: formData.namaKategori,
+      status: formData.status,
       statusAktif: isAktif,
       statusData: formData.statusData,
       tarikhMula: formData.tarikhMula,
@@ -214,8 +259,16 @@ const handleTambahKategori = async () => {
 const handleTambahMaklumatKelulusan = async () => {
   isSubmitting.value = true;
   try {
-    // Navigate to approval information form
-    await navigateTo('/BF-PRF/KF/RUU/01_01/tambah_maklumat_kelulusan');
+    const kategoriKod = String(formData.kod || '').trim();
+    if (!kategoriKod) {
+      alert('Sila isi Kod kategori dahulu.');
+      return;
+    }
+    // Pass selected kategori kod (and name) via query params
+    await navigateTo({
+      path: '/BF-PRF/KF/RUU/01_01/tambah_maklumat_kelulusan',
+      query: { kod: kategoriKod }
+    });
   } catch (e) {
     console.error('Error navigating:', e);
   } finally {
@@ -225,6 +278,8 @@ const handleTambahMaklumatKelulusan = async () => {
 
 // Handle Simpan
 const handleSimpan = async () => {
+  if (!validateForm()) return;
+  
   isSubmitting.value = true;
   try {
     const existing = loadExistingCategories();
@@ -233,6 +288,7 @@ const handleSimpan = async () => {
     const record = {
       kod: formData.kod,
       namaKategori: formData.namaKategori,
+      status: formData.status,
       statusAktif: isAktif,
       statusData: formData.statusData,
       tarikhMula: formData.tarikhMula,
@@ -314,4 +370,6 @@ onMounted(() => {
   border-color: #dc2626;
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
+
+
 </style>
