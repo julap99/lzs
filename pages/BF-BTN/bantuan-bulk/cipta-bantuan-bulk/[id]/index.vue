@@ -172,10 +172,6 @@
           </div>
         </template>
         <template #body>
-          <!-- Debug info -->
-          <div class="mb-4 p-2 bg-gray-100 text-sm">
-            Debug: Payment list length: {{ paymentList.length }}
-          </div>
 
           <!-- Payment List -->
           <div
@@ -211,39 +207,6 @@
         </template>
       </rs-card>
 
-      <!-- Maklumat Data Rosak Section -->
-      <rs-card>
-        <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
-        </template>
-        <template #body>
-          <rs-table
-            :data="damagedDataList"
-            :columns="damagedDataColumns"
-            :pageSize="5"
-            :showNoColumn="true"
-            :options="{ variant: 'default', hover: true, striped: true }"
-            :options-advanced="{ sortable: true, filterable: false }"
-            advanced
-          >
-            <template v-slot:default>
-              <div v-if="damagedDataList.length === 0" class="text-center py-8 text-gray-500">
-                Tiada maklumat data rosak. Klik "Tambah" untuk menambah maklumat data rosak.
-              </div>
-            </template>
-            <template v-slot:actions="{ row }">
-              <div class="flex space-x-2 justify-center">
-                <a :href="`/details/${row.namaPenerima}`" class="text-blue-500 hover:underline">
-                  {{ row.namaPenerima }}
-                </a>
-                <rs-button variant="primary" size="sm" @click="handleEditDamagedData(row)">
-                  Kemaskini
-                </rs-button>
-              </div>
-            </template>
-          </rs-table>
-        </template>
-      </rs-card>
 
       <!-- Maklumat Senarai Penerima Section -->
       <rs-card>
@@ -253,11 +216,6 @@
           </div>
         </template>
         <template #body>
-          <!-- Debug info -->
-          <div class="mb-4 p-2 bg-gray-100 text-sm">
-            Debug: Recipient list length: {{ recipientList.length }}
-          </div>
-
           <!-- Recipient List -->
           <div
             v-if="recipientList.length === 0"
