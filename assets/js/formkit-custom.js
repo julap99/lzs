@@ -6,7 +6,6 @@ import Toggle from "~/components/formkit/Toggle.vue";
 import Checkbox from "~/components/formkit/Checkbox.vue";
 import Radio from "~/components/formkit/Radio.vue";
 import Money from "~/components/formkit/Money.vue";
-import DateTimePicker from "~/components/formkit/DateTimePicker.vue";
 
 export default {
   otp: createInput(OneTimePassword, {
@@ -29,8 +28,5 @@ export default {
   }),
   money: createInput(Money, {
     props: ["disabled", "readonly"],
-  }),
-  date: createInput(DateTimePicker, {
-    props: ["minDate", "maxDate", "disabled", "placeholder"],
   }),
 };
