@@ -2448,9 +2448,9 @@
 
         <!-- Section B Form Steps -->
 
-        <!-- Tanggungan Selector and Management (Visible only during Steps 1-7) -->
+        <!-- Tanggungan Selector and Management (Visible only during Steps 1-9) -->
         <div
-          v-if="currentStepB >= 1 && currentStepB <= 7"
+          v-if="currentStepB >= 1 && currentStepB <= 9"
           class="mb-6 p-4 bg-gray-50 rounded-lg">
           <div class="flex justify-between items-center mb-4">
             <h4 class="text-lg font-semibold">Senarai Tanggungan</h4>
@@ -2564,7 +2564,8 @@
             </div>
           </div>
         </div>
-
+         
+        <!-- Section B Form - Step 1: Maklumat Peribadi Tanggungan -->
         <FormKit
           v-if="currentStepB === 1"
           type="form"
@@ -4458,19 +4459,205 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
-                >Pengesahan</rs-button
+                >Maklumat Pemilikan Aset</rs-button
               >
             </div>
           </div>
         </FormKit>
 
-        <!-- Section B Form - Step 8: Pengesahan -->
+        <!-- Section B Form - Step 8: Maklumat Pemilikan Aset (Tanggungan) -->
         <FormKit
           v-if="currentStepB === 8"
           type="form"
           @submit="nextStepB"
           :actions="false"
           id="sectionB8">
+          <h3 class="text-lg font-semibold mb-4">8. Maklumat Pemilikan Aset</h3>
+
+          <h4 class="font-medium mb-2">Aset Cair</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="number"
+              name="wang_simpanan_tanggungan"
+              label="Wang Simpanan (RM)"
+              step="0.01"
+              min="0"
+              v-model="getCurrentTanggungan().wang_simpanan" />
+
+            <FormKit
+              type="number"
+              name="emas_tanggungan"
+              label="Emas (RM)"
+              step="0.01"
+              min="0"
+              v-model="getCurrentTanggungan().emas" />
+
+            <FormKit
+              type="number"
+              name="saham_tanggungan"
+              label="Saham (RM)"
+              step="0.01"
+              min="0"
+              v-model="getCurrentTanggungan().saham" />
+          </div>
+
+          <h4 class="font-medium mb-2 mt-6">Aset Tidak Cair</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="kenderaan_tanggungan"
+              label="Kenderaan"
+              placeholder="Contoh: Proton Saga (2018)"
+              v-model="getCurrentTanggungan().kenderaan" />
+
+            <FormKit
+              type="text"
+              name="rumah_tanggungan"
+              label="Rumah / Harta Tanah"
+              placeholder="Contoh: Teres 2 tingkat, Shah Alam"
+              v-model="getCurrentTanggungan().rumah" />
+
+            <FormKit
+              type="text"
+              name="tanah_sawah_tanggungan"
+              label="Tanah / Sawah"
+              placeholder="Contoh: 1 ekar di Kuala Selangor"
+              v-model="getCurrentTanggungan().tanah_sawah" />
+
+            <FormKit
+              type="file"
+              name="dokumen_pemilikan_tanggungan"
+              label="Dokumen Sokongan Pemilikan"
+              accept=".pdf,.jpg,.jpeg,.png"
+              help="Format dibenarkan: PDF, JPG, PNG. Saiz maks: 5MB"
+              validation="max:5|mime:application/pdf,image/jpeg,image/png"
+              v-model="getCurrentTanggungan().dokumen_pemilikan" />
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepB"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB8"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepB"
+                >Maklumat Pemilikan Aset</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section B Form - Step 9: Maklumat Pinjaman Harta (Tanggungan) -->
+        <FormKit
+          v-if="currentStepB === 9"
+          type="form"
+          @submit="nextStepB"
+          :actions="false"
+          id="sectionB9">
+          <h3 class="text-lg font-semibold mb-4">9. Maklumat Pinjaman Harta</h3>
+
+          <div class="mb-6">
+            <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                name="nama_institusi_pemberi_pinjaman_tanggungan"
+                label="Nama Institusi / Individu Pemberi Pinjaman"
+                placeholder="Sila masukkan nama institusi atau individu"
+                v-model="getCurrentTanggungan().nama_institusi_pemberi_pinjaman" />
+
+              <div
+                v-if="getCurrentTanggungan().nama_institusi_pemberi_pinjaman"
+                class="md:col-span-2">
+                <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="select"
+                    name="jenis_pinjaman_tanggungan"
+                    label="Jenis Pinjaman"
+                    :options="jenisPinjamanOptions"
+                    placeholder="Sila Pilih Jenis Pinjaman"
+                    v-model="getCurrentTanggungan().jenis_pinjaman" />
+
+                  <FormKit
+                    type="number"
+                    name="amaun_bayaran_bulanan_tanggungan"
+                    label="Amaun Bayaran Bulanan (RM)"
+                    step="0.01"
+                    min="0"
+                    v-model="getCurrentTanggungan().amaun_bayaran_bulanan" />
+
+                  <FormKit
+                    type="number"
+                    name="jumlah_keseluruhan_perbelanjaan_tanggungan"
+                    label="Jumlah Keseluruhan Pinjaman (RM)"
+                    step="0.01"
+                    min="0"
+                    v-model="getCurrentTanggungan().jumlah_keseluruhan_perbelanjaan" />
+
+                  <FormKit
+                    type="date"
+                    name="tahun_mula_pinjaman_tanggungan"
+                    label="Tahun Mula Pinjaman"
+                    v-model="getCurrentTanggungan().tahun_mula_pinjaman" />
+
+                  <FormKit
+                    type="date"
+                    name="tahun_akhir_pinjaman_tanggungan"
+                    label="Tahun Akhir Pinjaman"
+                    v-model="getCurrentTanggungan().tahun_akhir_pinjaman" />
+
+                  <div class="md:col-span-2">
+                    <FormKit
+                      type="file"
+                      name="dokumen_perjanjian_pinjaman_tanggungan"
+                      label="Dokumen Perjanjian Pinjaman"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                      validation="max:5|mime:application/pdf,image/jpeg,image/png"
+                      v-model="getCurrentTanggungan().dokumen_perjanjian_pinjaman" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-3 mt-6">
+            <rs-button
+              type="button"
+              variant="primary-outline"
+              @click="prevStepB"
+              >Kembali</rs-button
+            >
+            <div class="flex gap-3">
+              <rs-button
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepB9"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepB"
+                >Pengesahan</rs-button
+              >
+            </div>
+          </div>
+        </FormKit>
+
+        <!-- Section B Form - Step 10: Pengesahan -->
+        <FormKit
+          v-if="currentStepB === 10"
+          type="form"
+          @submit="nextStepB"
+          :actions="false"
+          id="sectionB10">
           <h3 class="text-lg font-semibold mb-4">Maklumat Perakuan Pemohon</h3>
 
           <div class="mb-6" v-if="screenType === 'selfservice'">
@@ -4670,7 +4857,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepB8"
+                @click="handleSaveStepB10"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
@@ -4680,13 +4867,13 @@
           </div>
         </FormKit>
 
-        <!-- Section B Form - Step 9: Pengesahan Pendapatan -->
+        <!-- Section B Form - Step 11: Pengesahan Pendapatan -->
         <FormKit
-          v-if="currentStepB === 9"
+          v-if="currentStepB === 11"
           type="form"
           @submit="nextStepB"
           :actions="false"
-          id="sectionB9">
+          id="sectionB11">
           <h3 class="text-lg font-semibold mb-4">Pengesahan Pendapatan</h3>
 
           <!--Maklumat Penolong Amil yang membuat pengesahan pendapatan -->
@@ -4805,7 +4992,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepB9"
+                @click="handleSaveStepB11"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
@@ -4815,13 +5002,13 @@
           </div>
         </FormKit>
 
-        <!-- Section B Form - Step 10: Pengesahan Bermastautin -->
+        <!-- Section B Form - Step 12: Pengesahan Bermastautin -->
         <FormKit
-          v-if="currentStepB === 10"
+          v-if="currentStepB === 12"
           type="form"
           @submit="nextStepB"
           :actions="false"
-          id="sectionB10">
+          id="sectionB12">
           <h3 class="text-lg font-semibold mb-4">
             Maklumat Pengesahan Permastautin
           </h3>
@@ -4924,7 +5111,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepB9"
+                @click="handleSaveStepB12"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepB"
@@ -4934,13 +5121,13 @@
           </div>
         </FormKit>
 
-        <!-- Section B Form - Step 11: Pegawai Pendaftar -->
+        <!-- Section B Form - Step 13: Pegawai Pendaftar -->
         <FormKit
-          v-if="currentStepB === 11"
+          v-if="currentStepB === 13"
           type="form"
           @submit="submitForm"
           :actions="false"
-          id="sectionB10">
+          id="sectionB13">
           <h3 class="text-lg font-semibold mb-4">Maklumat Pegawai Pendaftar</h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4986,7 +5173,7 @@
               <rs-button
                 type="button"
                 variant="secondary"
-                @click="handleSaveStepB11"
+                @click="handleSaveStepB13"
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="handleSubmit"
@@ -5177,9 +5364,9 @@ const stepsA = [
   { id: 11, label: "Pendapatan & Perbelanjaan" },
 ];
 
-// Section B - Tanggungan Form Steps (11 steps with separate tabs for different info sections)
+// Section B - Tanggungan Form Steps (13 steps with separate tabs for different info sections)
 const currentStepB = ref(1);
-const totalStepsB = 11;
+const totalStepsB = 13;
 const stepsB = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Pengislaman" },
@@ -5188,15 +5375,17 @@ const stepsB = [
   { id: 5, label: "Kesihatan" },
   { id: 6, label: "Kemahiran" },
   { id: 7, label: "Pekerjaan" },
-  { id: 8, label: "Pengesahan" },
+  { id: 8, label: "Pemilikan Aset" },
+  { id: 9, label: "Pinjaman Harta" },
+  { id: 10, label: "Pengesahan" },
   {
-    id: 9,
+    id: 11,
     label: "Pengesahan Pendapatan",
     tooltip:
       "Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS",
   },
-  { id: 10, label: "Pengesahan Bermastautin" },
-  { id: 11, label: "Pegawai Pendaftar" },
+  { id: 12, label: "Pengesahan Bermastautin" },
+  { id: 13, label: "Pegawai Pendaftar" },
 ];
 
 // Computed property to filter stepsB based on current tanggungan's age
@@ -8185,7 +8374,7 @@ const handleSaveStepB7 = async () => {
 const handleSaveStepB8 = async () => {
   try {
     console.log("Step B8 saved:", formData.value);
-    toast.success("Maklumat Pengesahan berjaya disimpan");
+    toast.success("Maklumat Pemilikan Aset berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B8 error:", error);
@@ -8195,7 +8384,7 @@ const handleSaveStepB8 = async () => {
 const handleSaveStepB9 = async () => {
   try {
     console.log("Step B9 saved:", formData.value);
-    toast.success("Maklumat Pengesahan Pendapatan berjaya disimpan");
+    toast.success("Maklumat Pinjaman Harta berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B9 error:", error);
@@ -8205,7 +8394,7 @@ const handleSaveStepB9 = async () => {
 const handleSaveStepB10 = async () => {
   try {
     console.log("Step B10 saved:", formData.value);
-    toast.success("Maklumat Pengesahan Bermastautin berjaya disimpan");
+    toast.success("Maklumat Pengesahan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B10 error:", error);
@@ -8215,10 +8404,30 @@ const handleSaveStepB10 = async () => {
 const handleSaveStepB11 = async () => {
   try {
     console.log("Step B11 saved:", formData.value);
-    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+    toast.success("Maklumat Pengesahan Pendapatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step B11 error:", error);
+  }
+};
+
+const handleSaveStepB12 = async () => {
+  try {
+    console.log("Step B12 saved:", formData.value);
+    toast.success("Maklumat Pengesahan Bermastautin berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step B12 error:", error);
+  }
+};
+
+const handleSaveStepB13 = async () => {
+  try {
+    console.log("Step B13 saved:", formData.value);
+    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step B13 error:", error);
   }
 };
 
