@@ -292,7 +292,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, shallowRef, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router' // Use Nuxt router instead
 
 defineOptions({ name: 'PA-DA-PD-02-Index' })
 
@@ -842,18 +842,18 @@ function exportPDF(which: 'tugasan' | 'status' | 'elaun') {
 }
 
 /* ================== Router navigation ================== */
-const router = useRouter()
+// const router = useRouter() // Use navigateTo instead
 function goToJanaLaporan() {
-  router.push('/BF-PA/DA/dashboard/jana-laporan-pendaftaran')
+  navigateTo('/BF-PA/DA/dashboard/jana-laporan-pendaftaran')
 }
 function goToJanaLaporanElaun() {
-  router.push('/BF-PA/DA/dashboard/jana-laporan-elaun')
+  navigateTo('/BF-PA/DA/dashboard/jana-laporan-elaun')
 }
 function goToJanaLaporanTugasan() {
-  router.push('/BF-PA/DA/dashboard/jana-laporan-tugasan')
+  navigateTo('/BF-PA/DA/dashboard/jana-laporan-tugasan')
 }
 function goToJanaLaporanPenamatan() {
-  router.push('/BF-PA/DA/dashboard/jana-laporan-penamatan')
+  navigateTo('/BF-PA/DA/dashboard/jana-laporan-penamatan')
 }
 
 /* ================== watchers ================== */

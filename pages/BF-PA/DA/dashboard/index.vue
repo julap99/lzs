@@ -669,10 +669,10 @@ function slaClass(days: number | string) {
   if (n === 0) return 'text-warning-600 font-medium'
   return 'text-gray-700'
 }
-const router = useRouter()
+// const router = useRouter() // Use navigateTo instead
 
 function goToJanaLaporan() {
-  router.push('/BF-PA/DA/dashboard/jana-laporan-statistik')
+  navigateTo('/BF-PA/DA/dashboard/jana-laporan-statistik')
 }
 </script>
 
