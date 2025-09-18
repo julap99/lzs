@@ -7,9 +7,6 @@
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Had Kifayah Utama</h2>
           <div class="flex items-center gap-2">
-            <rs-button variant="primary" @click="navigateTo('01_01/tambah')">
-              <Icon name="material-symbols:add" class="mr-1" /> Tambah Baharu
-            </rs-button>
             <rs-button v-if="false" variant="secondary" @click="navigateTo('/BF-PRF/KF/HK/01_01/tambah_kategori')">
               <Icon name="mdi:folder-plus" class="mr-1" /> Tambah Kategori
             </rs-button>
