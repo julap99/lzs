@@ -298,7 +298,7 @@
 
           <div v-else class="space-y-3">    
             <rs-table
-              :data="paymentList"
+              :data="cleanPaymentList"
               :columns="paymentColumns"
               :pageSize="5"
               :showNoColumn="true"
@@ -354,63 +354,59 @@
             </div>
           </div>
           <div v-else>
-                         <!-- Data Table with the requested columns using rs-table component -->
-             <rs-table
-               :data="damagedDataList"
-               :columns="damagedDataColumns"
-               :pageSize="5"
-               :showNoColumn="false"
-               :options="{ variant: 'default', hover: true, striped: true }"
-               :options-advanced="{ sortable: true, filterable: false }"
-               advanced
-             >
-                               <!-- Custom column templates -->
-                <template v-slot:namaPenerima="{ text, value }">
-                  <!-- Check if this row has Duplikasi issue -->
-                  <button 
-                    v-if="value?.jenisMasalah?.includes('Duplikasi')"
-                    @click="openDuplicateModalFor(value)"
-                    class="text-blue-600 hover:text-blue-800 underline font-medium transition-colors duration-200 cursor-pointer"
-                  >
-                    {{ text }}
-                  </button>
-                  
-                  <!-- For non-duplicate issues, show disabled text -->
-                  <span 
-                    v-else
-                    class="text-gray-400 cursor-not-allowed select-none"
-                    :title="`Tidak boleh diklik - ${value?.jenisMasalah || 'Tiada maklumat'}`"
-                  >
-                    {{ text }}
-                  </span>
-                </template>
-
-                <template v-slot:catatan="{ text }">
-                  <div class="max-w-xs truncate" :title="text">
-                    {{ text }}
-                  </div>
-                </template>
-
-                <template v-slot:actions="{ value, index }">
-                  <div class="flex justify-end space-x-2">
-                    <!-- Edit button with tooltip -->
-                    <div class="relative" @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
-                      <rs-button 
-                        variant="info-text" 
-                        class="p-1 w-8 h-8"
-                        @click="handleKemaskiniDamagedData(value)"
+            <!-- Custom HTML table to allow conditional columns/values -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan</th>
+                    <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-28">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="(row, index) in damagedDataListGrouped" :key="row.id">
+                    <td class="px-4 py-2 text-sm text-gray-700">{{ index + 1 }}</td>
+                    <td class="px-4 py-2 text-sm">
+                      <button
+                        v-if="row.jenisMasalah?.includes('Duplikasi')"
+                        @click="openDuplicateModalFor(row)"
+                        class="text-blue-600 hover:text-blue-800 underline font-medium transition-colors duration-200 cursor-pointer"
                       >
-                        <Icon name="ic:outline-edit" size="18" />
-                      </rs-button>
-                      <transition name="tooltip">
-                        <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
-                          Edit
-                        </span>
-                      </transition>
-                    </div>
-                  </div>
-                </template>
-             </rs-table>
+                        {{ row.namaPenerima }}
+                      </button>
+                      <span
+                        v-else
+                        class="text-gray-700"
+                      >
+                        {{ row.namaPenerima }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 text-sm text-gray-600">
+                      <div class="max-w-xs truncate" :title="row.catatan">{{ row.catatan }}</div>
+                    </td>
+                    <td class="px-4 py-2 text-sm">
+                      <div class="relative flex items-center justify-center"
+                           @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
+                        <rs-button 
+                          variant="info-text" 
+                          class="p-1 w-8 h-8"
+                          @click="handleKemaskiniDamagedData(row)"
+                        >
+                          <Icon name="ic:outline-edit" size="18" />
+                        </rs-button>
+                        <transition name="tooltip">
+                          <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
+                            Edit
+                          </span>
+                        </transition>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -478,19 +474,46 @@
           <div class="space-y-4" :class="{ loading: isLoading }">
             <FormKit
               type="file"
-              name="documentFile"
+              name="documentFiles"
               label="Muat Naik Fail"
               accept=".pdf,.doc,.docx"
               help="Format fail: PDF, Word (.pdf, .doc, .docx)"
+              multiple
               @change="handleDocumentUpload"
             />
+            
+            <!-- Display selected files -->
+            <div v-if="selectedDocuments.length > 0" class="mt-4">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Fail yang dipilih:</h4>
+              <div class="space-y-2">
+                <div 
+                  v-for="(file, index) in selectedDocuments" 
+                  :key="index"
+                  class="flex items-center justify-between p-2 bg-gray-50 rounded border"
+                >
+                  <div class="flex items-center">
+                    <Icon name="material-symbols:description" class="mr-2 text-blue-500" />
+                    <span class="text-sm text-gray-700">{{ file.name }}</span>
+                    <span class="text-xs text-gray-500 ml-2">({{ formatFileSize(file.size) }})</span>
+                  </div>
+                  <rs-button
+                    variant="danger-text"
+                    size="sm"
+                    @click="removeFile(index)"
+                  >
+                    <Icon name="ic:outline-close" size="16" />
+                  </rs-button>
+                </div>
+              </div>
+            </div>
+            
             <rs-button
               variant="primary"
-              :disabled="!selectedDocument || isLoading"
+              :disabled="!selectedDocuments.length || isLoading"
               @click="handleDocumentImport"
             >
               <Icon name="material-symbols:upload" class="mr-1" />
-              {{ isLoading ? "Sedang Muat Naik..." : "Import" }}
+              {{ isLoading ? "Sedang Muat Naik..." : `Import ${selectedDocuments.length} Fail` }}
             </rs-button>
           </div>
         </template>
@@ -1256,7 +1279,7 @@ const recipientColumns = [
 
 // State Management
 const selectedFile = ref(null);
-const selectedDocument = ref(null);
+const selectedDocuments = ref([]);
 const paymentList = ref([]);
 const recipientList = ref([]);
 const selectedPayments = ref([]);
@@ -1370,17 +1393,18 @@ const handleFileUpload = (event) => {
 };
 
 const handleDocumentUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    if (
+  const files = Array.from(event.target.files);
+  if (files.length > 0) {
+    const validFiles = files.filter(file => 
       file.type === "application/pdf" ||
       file.type === "application/msword" ||
-      file.type ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ) {
-      selectedDocument.value = file;
+      file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    );
+    
+    if (validFiles.length === files.length) {
+      selectedDocuments.value = validFiles;
     } else {
-      alert("error", "Sila pilih fail PDF atau Word yang sah");
+      alert("error", "Sila pilih fail PDF atau Word yang sah sahaja");
       event.target.value = "";
     }
   }
@@ -1688,153 +1712,45 @@ const productEntitlementOptions = computed(() => {
   ];
 });
 
-/* const handleImport = async () => {
-  try {
-    isLoading.value = true;
-    // Here you would typically:
-    // 1. Create FormData and append the file
-    const formData = new FormData();
-    formData.append("file", selectedFile.value);
-
-    // 2. Make API call to backend
-    // const response = await $fetch('/api/bantuan-bulk/import', {
-    //   method: 'POST',
-    //   body: formData
-    // });
-
-    // 3. Update recipientList with the imported data
-    // recipientList.value = response.data;
-
-    // For demo, adding dummy data
-    recipientList.value.push({
-      namaPenuh: "Ali bin Abu",
-      amaun: 1000.0,
-      agihanSemula: "Ya",
-      bulkProcessing: "Tidak",
-      kategoriAsnaf: "Fakir",
-      bayaranKepada: "Individu",
-    });
-
-    paymentList.value = [
-      {
-        kod: "PT-2025-30371",
-        bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
-        asnaf: "Fakir",
-        contributor: "",
-        recipient: "",
-        organization: "AZMIDA TECHNICAL COLLEGE",
-        amaun: 2400.0,
-        tarikhBayaran: "2025-04-17",
-      },
-      {
-        kod: "PT-2025-30372",
-        bayaranKepada: "Nur safiyya Binti Rosly",
-        asnaf: "Fakir",
-        contributor: "",
-        recipient: "",
-        organization: "AZMIDA TECHNICAL COLLEGE",
-        amaun: 2400.0,
-        tarikhBayaran: "2025-04-17",
-      },
-      {
-        kod: "PT-2025-30373",
-        bayaranKepada: "Mohd Nazrin Bin Mokhtar",
-        asnaf: "Fakir",
-        contributor: "",
-        recipient: "",
-        organization: "AZMIDA TECHNICAL COLLEGE",
-        amaun: 2400.0,
-        tarikhBayaran: "2025-04-17",
-      },
-      {
-        kod: "PT-2025-30374",
-        bayaranKepada: "Intan Nadia Binti Mohd Zamri",
-        asnaf: "Fakir",
-        contributor: "",
-        recipient: "",
-        organization: "AZMIDA TECHNICAL COLLEGE",
-        amaun: 2400.0,
-        tarikhBayaran: "2025-04-17",
-      },
-    ];
-
-
-    paymentList.value.push = (
-      {
-        kod: "PT-2025-30371",
-        bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
-        asnaf: "Fakir",
-        contributor: "",
-        recipient: "",
-        organization: "AZMIDA TECHNICAL COLLEGE",
-        amaun: 2400.00,
-        tarikhBayaran: "17/4/2025",
-      },
-      {
-        kod: "PT-2025-30372",
-        bayaranKepada: "Nur safiyya Binti Rosly",
-        asnaf: "Fakir",
-        contributor: "",
-        recipient: "",
-        organization: "AZMIDA TECHNICAL COLLEGE",
-        amaun: 2400.00,
-        tarikhBayaran: "17/4/2025",
-      },
-      {
-        kod: "PT-2025-30373",
-        bayaranKepada: "Mohd Nazrin Bin Mokhtar",
-        asnaf: "Fakir",
-        contributor: "",
-        recipient: "",
-        organization: "AZMIDA TECHNICAL COLLEGE",
-        amaun: 2400.00,
-        tarikhBayaran: "17/4/2025",
-      },
-      {
-        kod: "PT-2025-30374",
-        bayaranKepada: "Intan Nadia Binti Mohd Zamri",
-        asnaf: "Fakir",
-        contributor: "",
-        recipient: "",
-        organization: "AZMIDA TECHNICAL COLLEGE",
-        amaun: 2400.00,
-        tarikhBayaran: "17/4/2025",
-      }
-    );
-
-    // Update total amount
-    formData.value.jumlahAmaun = formatNumber(totalAmount.value);
-
-    alert("success", "Fail berjaya diimport");
-  } catch (error) {
-    console.error("Error importing file:", error);
-    alert("error", "Gagal mengimport fail");
-  } finally {
-    isLoading.value = false;
-  }
-}; */
 
 const handleDocumentImport = async () => {
   try {
     isLoading.value = true;
     // Here you would typically:
-    // 1. Create FormData and append the file
+    // 1. Create FormData and append all files
     const formData = new FormData();
-    formData.append("document", selectedDocument.value);
+    selectedDocuments.value.forEach((file, index) => {
+      formData.append(`documents[${index}]`, file);
+    });
 
     // 2. Make API call to backend
-    // const response = await $fetch('/api/bantuan-bulk/upload-document', {
+    // const response = await $fetch('/api/bantuan-bulk/upload-documents', {
     //   method: 'POST',
     //   body: formData
     // });
 
-    alert("success", "Dokumen berjaya dimuat naik");
+    alert("success", `${selectedDocuments.value.length} dokumen berjaya dimuat naik`);
+    selectedDocuments.value = []; // Clear selected files after upload
   } catch (error) {
-    console.error("Error importing document:", error);
+    console.error("Error importing documents:", error);
     alert("error", "Gagal memuat naik dokumen");
   } finally {
     isLoading.value = false;
   }
+};
+
+// Helper function to format file size
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+// Function to remove a file from selected documents
+const removeFile = (index) => {
+  selectedDocuments.value.splice(index, 1);
 };
 
 // Helper function to generate unique ID
@@ -2221,6 +2137,45 @@ const damagedDataList = computed(() => {
   return out;
 });
 
+// Clean payment list: only rows with no defects
+const cleanPaymentList = computed(() => {
+  const rows = paymentList.value;
+  if (!rows?.length) return [];
+
+  const counts = rows.reduce((m, p) => {
+    m[p.idPermohonan] = (m[p.idPermohonan] || 0) + 1;
+    return m;
+  }, {});
+
+  return rows.filter(p => {
+    const hasDuplicate = (counts[p.idPermohonan] ?? 0) > 1;
+    const hasBadAcc = isBadAcc(p.bankAccount);
+    const badBank = !allowedBanks.map(normalizeBank).includes(normalizeBank(p.bankName));
+    const badAmount = !validAmounts.includes(Number(p.amaun));
+    return !(hasDuplicate || hasBadAcc || badBank || badAmount);
+  });
+});
+
+
+// Group duplicates by idPermohonan so only one representative row appears
+const damagedDataListGrouped = computed(() => {
+  const list = damagedDataList.value;
+  if (!list.length) return [];
+  const seen = new Set();
+  const grouped = [];
+  for (const row of list) {
+    const key = row.idPermohonan || row.pointer || row.id;
+    if ((row.jenisMasalah || '').includes('Duplikasi')) {
+      if (seen.has(key)) continue;
+      seen.add(key);
+      grouped.push(row);
+    } else {
+      grouped.push(row);
+    }
+  }
+  return grouped;
+});
+
 
 
 // Methods for Damaged Data
@@ -2427,6 +2382,8 @@ const openDuplicateModalFor = (row) => {
     tarikhMohon: p.tarikhBayaran,
     no: idx + 1,
   }));
+  // Reset selection each time modal opens
+  duplicateSelectedIds.value = [];
   showDuplicateModal.value = true;
 };
 
@@ -2434,11 +2391,40 @@ const onDuplicateClose = () => {
   showDuplicateModal.value = false;
 };
 
-const onDuplicateConfirm = (ids /* array of idPermohonan from the modal */) => {
-  // Remove all payment rows with the selected idPermohonan values
-  paymentList.value = paymentList.value.filter(p => !ids.includes(p.idPermohonan));
-  showDuplicateModal.value = false;
-  alert("success", "Rekod duplikasi telah dipadam & jadual dikemas kini.");
+const onDuplicateConfirm = (ids /* selected ids from the modal: could be idPermohonan or payment kod */) => {
+  try {
+    const selected = Array.isArray(ids) ? ids : [];
+    if (selected.length === 0) {
+      showDuplicateModal.value = false;
+      return;
+    }
+
+    const isIdPermohonanList = selected.every(v => typeof v === 'string' && v.startsWith('PRM-'));
+
+    if (isIdPermohonanList) {
+      // Remove all rows that belong to the chosen idPermohonan values
+      paymentList.value = paymentList.value.filter(p => !selected.includes(p.idPermohonan));
+    } else {
+      // Treat selections as payment kod(s). Also support a mixed list just in case.
+      const selectedKod = new Set(selected);
+      const selectedPermohonan = new Set(
+        selected.filter(v => typeof v === 'string' && v.startsWith('PRM-'))
+      );
+
+      paymentList.value = paymentList.value.filter(p => {
+        const matchKod = selectedKod.has(p.kod);
+        const matchPermohonan = selectedPermohonan.has(p.idPermohonan);
+        return !(matchKod || matchPermohonan);
+      });
+    }
+
+    showDuplicateModal.value = false;
+    duplicateSelectedIds.value = [];
+    alert("success", "Rekod duplikasi telah dipadam & jadual dikemas kini.");
+  } catch (e) {
+    console.error(e);
+    alert("error", "Gagal memadam rekod duplikasi");
+  }
 };
 
 const onOpenApplication = (idPermohonan) => {
