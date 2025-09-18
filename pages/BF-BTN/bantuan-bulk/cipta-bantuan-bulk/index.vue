@@ -70,22 +70,6 @@
                     </transition>
                   </div>
 
-                  <!-- View -->
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
-                    <rs-button 
-                      variant="info-text" 
-                      class="p-1 w-8 h-8"
-                      @click="viewBantuan(text)"
-                    >
-                      <Icon name="ic:outline-visibility" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Lihat
-                      </span>
-                    </transition>
-                  </div>
-
                   <!-- Delete -->
                   <div class="relative flex items-center justify-center" @mouseenter="tooltips['delete'+index] = true" @mouseleave="tooltips['delete'+index] = false">
                     <rs-button 
