@@ -60,15 +60,13 @@
             <span class="font-medium">{{ formatDate(data.text) }}</span>
           </template>
           <template v-slot:tindakan>
-            <rs-button
-              variant="primary" 
-              size="sm"
-              class="!px-2 !py-1"
+            <button
               @click="viewBantuanDetail()"
+              title="Lihat"
+              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
             >
-              Lihat Butiran
-              <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
-            </rs-button>
+              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+            </button>
           </template>
         </rs-table>
 

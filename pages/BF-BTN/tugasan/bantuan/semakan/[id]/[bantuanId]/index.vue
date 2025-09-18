@@ -17,10 +17,10 @@
             </p>
           </div>
           <rs-badge
-            :variant="getStatusVariant(formData.statusPermohonan)"
+            :variant="getStatusVariant(computedStatusPermohonan)"
             class="text-sm px-4 py-2"
           >
-            {{ formData.statusPermohonan }}
+            {{ computedStatusPermohonan }}
           </rs-badge>
         </div>
       </div>
@@ -199,6 +199,9 @@
                   <thead class="bg-gray-50">
                     <tr>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        No.
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Dokumen
                       </th>
                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -206,6 +209,9 @@
                       </th>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Catatan
                       </th>
                      
                     </tr>
@@ -216,6 +222,7 @@
                       :key="index"
                       class="hover:bg-gray-50"
                     >
+                      <td class="px-6 py-4 whitespace-nowrap">{{ index + 1 }}</td>
                       <td class="px-6 py-4">
                         <div class="text-sm font-medium text-gray-900">
                           {{ dokumen.nama }}
@@ -254,8 +261,22 @@
                               required: 'Status dokumen diperlukan'
                             }"
                             :classes="{ outer: 'mb-0' }"
+                            v-model="dokumen.status"
                           />
                         </div>
+                      </td>
+                      <td class="px-6 py-4">
+                        <FormKit
+                          type="textarea"
+                          :name="`dokumenSokongan.${index}.catatan`"
+                          placeholder="Masukkan catatan"
+                          :validation="dokumen.status === 'Tidak Lengkap' ? 'required' : ''"
+                          :validation-messages="{ required: 'Catatan diperlukan apabila status Tidak Lengkap' }"
+                          :disabled="dokumen.status !== 'Tidak Lengkap'"
+                          :classes="{ outer: 'mb-0' }"
+                          rows="2"
+                          v-model="dokumen.catatan"
+                        />
                       </td>
                     </tr>
                   </tbody>
@@ -510,18 +531,15 @@
               <div class="space-y-6">
                 <!-- Status Selection -->
                 <div class="space-y-1">
-                  <FormKit
-                    type="select"
-                    name="statusPermohonanBaru"
-                    label="Status Permohonan"
-                    :options="statusPermohonanOptions"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Status permohonan diperlukan'
-                    }"
-                    placeholder="Pilih status"
-                    :classes="{ outer: 'mb-0' }"
-                  />
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Status Permohonan</label>
+                  <div class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 flex items-center">
+                    <rs-badge 
+                      :variant="getStatusVariant(computedStatusPermohonan)"
+                      class="text-white font-semibold"
+                    >
+                      {{ computedStatusPermohonan }}
+                    </rs-badge>
+                  </div>
                 </div>
 
                 <!-- Catatan Pegawai -->
@@ -554,14 +572,14 @@
 
                 <!-- Section 7: Action Buttons -->
                 <div class="space-y-3 pt-4 border-t">
-                  <!-- <rs-button
+                  <rs-button
                     variant="info"
                     @click="handleSimpan"
                     class="w-full !py-3 text-sm font-medium"
                   >
                     <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
-                    Hantar Kelulusan
-                  </rs-button> -->
+                    Hantar
+                  </rs-button>
 
                   <rs-button
                     variant="primary"
@@ -769,12 +787,94 @@ const formData = ref({
   tarikhSemak: new Date(),
 });
 
+// Mock dataset keyed by bantuanId
+const mockByBantuanId = {
+  B300: {
+    jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    aid: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    aidProduct: "BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR))",
+    productPackage: "DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    entitlementProduct: "DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    segera: false,
+    kelulusanKhas: false,
+    tarikhPermohonan: new Date().toISOString(),
+    sla: "3h",
+    dokumenSokongan: [
+      { id: "surat-tawaran", nama: "Surat tawaran belajar daripada pihak sekolah/surat pengesahan belajar", status: "", url: "/path/to/doc1.pdf" },
+      { id: "salinan-akaun-bank", nama: "Salinan akaun bank pelajar yang mengandungi: Nama bank, Nama dan no akaun bank", status: "", url: "/path/to/doc2.pdf" },
+      { id: "kad-pengenalan-ketua-keluarga", nama: "Salinan kad pengenalan ketua keluarga/ penjaga", status: "", url: "/path/to/doc3.pdf" },
+      { id: "kad-pengenalan-pelajar", nama: "Salinan kad pengenalan/surat beranak pelajar", status: "", url: "/path/to/doc4.pdf" },
+    ],
+    statusSokongan: "",
+    catatanPengesyoran: "",
+    kadarBantuan: null,
+    tempohBantuan: "",
+    jumlahKeseluruhan: 0,
+    tarikhMula: "",
+    tarikhTamat: "",
+    penerima: "",
+    namaPenerima: "",
+    kaedahPembayaran: "",
+    namaBank: "",
+    noAkaunBank: "",
+    statusPermohonan: "Dalam Semakan",
+    statusPermohonanBaru: "",
+    catatanPegawai: "",
+    tarikhSemak: new Date(),
+  },
+  B307: {
+    jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+    aid: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+    aidProduct: "DERMASISWA IPT DALAM NEGARA (FAKIR)",
+    productPackage: "DERMASISWA IPT (FAKIR)",
+    entitlementProduct: "DERMASISWA IPT (FAKIR)",
+    segera: false,
+    kelulusanKhas: false,
+    tarikhPermohonan: new Date().toISOString(),
+    sla: "2h",
+    dokumenSokongan: [
+      { id: "surat-tawaran-ipt", nama: "SURAT TAWARAN BELAJAR IPT", status: "", url: "/path/to/doc1.pdf" },
+      { id: "struktur-yuran-pengajian", nama: "STRUKTUR YURAN PENGAJIAN", status: "", url: "/path/to/doc2.pdf" },
+      { id: "keputusan-spm-diploma", nama: "KEPUTUSAN SPM BAGI PERINGKAT DIPLOMA", status: "", url: "/path/to/doc3.pdf" },
+      { id: "salinan-maklumat-akaun-bank", nama: "SALINAN MAKLUMAT AKAUN BANK", status: "", url: "/path/to/doc4.pdf" },
+      { id: "sijil-berhenti-sekolah", nama: "SIJIL BERHENTI SEKOLAH BAGI PERMOHONAN 17 TAHUN DAN KE BAWAH", status: "", url: "/path/to/doc5.pdf" },
+      { id: "surat-pengesahan-belajar-ipt", nama: "SURAT PENGESAHAN BELAJAR DAN STATUS TAJAAN YANG DIKELUARKAN OLEH IPT", status: "", url: "/path/to/doc6.pdf" },
+      { id: "surat-kelulusan-tajaan-lzs", nama: "SURAT KELULUSAN TAJAAN DERMASISWA DARIPADA LZS", status: "", url: "/path/to/doc7.pdf" },
+      { id: "invois-yuran-rasmi-ipt", nama: "INVOIS YURAN RASMI DARIPADA IPT", status: "", url: "/path/to/doc8.pdf" },
+    ],
+    statusSokongan: "",
+    catatanPengesyoran: "",
+    kadarBantuan: null,
+    tempohBantuan: "",
+    jumlahKeseluruhan: 0,
+    tarikhMula: "",
+    tarikhTamat: "",
+    penerima: "",
+    namaPenerima: "",
+    kaedahPembayaran: "",
+    namaBank: "",
+    noAkaunBank: "",
+    statusPermohonan: "Dalam Semakan",
+    statusPermohonanBaru: "",
+    catatanPegawai: "",
+    tarikhSemak: new Date(),
+  },
+};
+
+onMounted(() => {
+  const bantuanId = String(route.params.bantuanId || "");
+  const record = mockByBantuanId[bantuanId];
+  if (record) {
+    Object.assign(formData.value, record);
+  }
+});
+
 // Configuration data
 const statusDokumenOptions = [
   { label: "-- Pilih Status --", value: "", disabled: true },
   { label: "Lengkap", value: "Lengkap" },
   { label: "Tidak Lengkap", value: "Tidak Lengkap" },
-  { label: "Tiada", value: "Tiada" },
+  { label: "Tiada Keperluan", value: "Tiada" },
 ];
 
 const statusSokonganOptions = [
@@ -805,6 +905,32 @@ const showBantuanDetails = computed(() => {
   return !showSiasatanSection.value || formData.value.statusSokongan === "Sokong";
 });
 
+// Computed status permohonan based on document statuses
+const computedStatusPermohonan = computed(() => {
+  const documents = formData.value.dokumenSokongan || [];
+  
+  if (documents.length === 0) {
+    return "Tiada Dokumen";
+  }
+  
+  // Check if any document is "Tidak Lengkap"
+  const hasTidakLengkap = documents.some(doc => doc.status === "Tidak Lengkap");
+  if (hasTidakLengkap) {
+    return "Tidak Lengkap";
+  }
+  
+  // Check if all documents are "Lengkap" or "Tiada Keperluan" (both are considered complete)
+  const allComplete = documents.every(doc => 
+    doc.status === "Lengkap" || doc.status === "Tiada"
+  );
+  if (allComplete) {
+    return "Lengkap";
+  }
+  
+  // If some documents are not selected or have other statuses
+  return "Dalam Semakan";
+});
+
 // Watch for changes in statusSokongan
 watch(() => formData.value.statusSokongan, (newValue) => {
   // If status changes to "Sokong", reset bantuan details fields
@@ -826,6 +952,7 @@ const getStatusVariant = (status) => {
     "tidak lengkap": "danger",
     "untuk siasatan": "secondary",
     lengkap: "success",
+    "tiada dokumen": "secondary",
   };
   return variants[status.toLowerCase()] || "default";
 };

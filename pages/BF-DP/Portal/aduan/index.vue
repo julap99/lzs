@@ -61,8 +61,8 @@
         <span class="font-medium">{{ data.text }}</span>
       </template>
 
-      <!-- Column: Nama Pengadu/Wakil -->
-      <template v-slot:namaPengadu="data">
+      <!-- Column: Nama Individu/Wakil -->
+      <template v-slot:namaIndividu="data">
         <span>{{ data.text }}</span>
       </template>
 
@@ -87,15 +87,13 @@
 
       <!-- Column: Lihat Butiran -->
       <template v-slot:tindakan>
-            <rs-button
-              variant="primary" 
-              size="sm"
-              class="!px-2 !py-1"
+            <button
               @click="viewAduanDetail()"
+              title="Lihat"
+              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
             >
-              Lihat Butiran
-              <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
-            </rs-button>
+              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+            </button>
           </template>
     </rs-table>
 
@@ -150,7 +148,7 @@ const searchSummary = ref({
 const aduanData = ref([
   {
     idPermohonan: "ADN-250823-000123",
-    namaPengadu: "Ahmad bin Ali",
+    namaIndividu: "Ahmad bin Ali",
     tarikhAduan: "2025-08-20",
     statusSemasa: "Aduan Baru",
     tarikhKemaskini: "2025-08-21",
@@ -158,7 +156,7 @@ const aduanData = ref([
   },
   {
     idPermohonan: "ADN-250823-000124",
-    namaPengadu: "Siti Aminah",
+    namaIndividu: "Siti Aminah",
     tarikhAduan: "2025-08-19",
     statusSemasa: "Dalam Tindakan - Siasatan Ringkas",
     tarikhKemaskini: "2025-08-22",
@@ -166,7 +164,7 @@ const aduanData = ref([
   },
   {
     idPermohonan: "ADN-250823-000125",
-    namaPengadu: "Rahman bin Ismail",
+    namaIndividu: "Rahman bin Ismail",
     tarikhAduan: "2025-08-18",
     statusSemasa: "Selesai",
     tarikhKemaskini: "2025-08-23",

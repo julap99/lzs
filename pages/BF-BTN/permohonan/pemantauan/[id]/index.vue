@@ -5,7 +5,9 @@
 
       <!-- Page Header -->
       <div class="mt-6 mb-8">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
           <div>
             <h1 class="text-2xl font-bold text-gray-900">Pemantauan Kerja</h1>
             <p class="mt-1 text-sm text-gray-600">
@@ -36,7 +38,9 @@
                   </div>
                 </div>
                 <div>
-                  <h2 class="text-lg font-semibold text-gray-900">Maklumat Permohonan</h2>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Maklumat Permohonan
+                  </h2>
                   <p class="text-sm text-gray-500">
                     Butiran asas permohonan bantuan (Paparan sahaja)
                   </p>
@@ -47,7 +51,9 @@
             <template #body>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700">ID Permohonan</label>
+                  <label class="text-sm font-medium text-gray-700"
+                    >ID Permohonan</label
+                  >
                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                     <span class="text-sm font-mono text-gray-900">{{
                       permohonanData.idPermohonan
@@ -67,7 +73,9 @@
                 </div>
 
                 <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700">Jenis Bantuan</label>
+                  <label class="text-sm font-medium text-gray-700"
+                    >Jenis Bantuan</label
+                  >
                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                     <span class="text-sm text-gray-900">{{
                       permohonanData.jenisBantuan
@@ -83,6 +91,269 @@
                     <span class="text-sm text-gray-900">{{
                       permohonanData.statusPermohonan
                     }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+          <!-- Section 2: Dokumen PR -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <div
+                      class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                    >
+                      <Icon name="ph:file-doc" class="w-6 h-6 text-green-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900">
+                      Dokumen PR (Perakuan Rundingan)
+                    </h2>
+                    <p class="text-sm text-gray-500">
+                      Akses dokumen PR untuk semakan dan kemaskini
+                    </p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <rs-badge
+                    :variant="getPRStatusVariant(formData.statusPR)"
+                    class="text-xs px-3 py-1"
+                  >
+                    {{ formData.statusPR }}
+                  </rs-badge>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-6">
+                <!-- PR Document Preview -->
+                <div class="border border-gray-200 rounded-lg">
+                  <div
+                    class="bg-gray-50 p-4 border-b border-gray-200 flex flex-col gap-2"
+                  >
+                    <div class="flex items-center">
+                      <Icon
+                        name="ph:file-doc"
+                        class="text-blue-600 mr-3"
+                        size="24"
+                      />
+                      <div>
+                        <h4 class="font-medium text-gray-900">
+                          {{ formData.namaDokumenPR }}
+                        </h4>
+                        <p class="text-sm text-gray-500">
+                          {{ formData.jenisDokumen }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex space-x-2">
+                      <div class="flex space-x-2">
+                        <rs-button
+                          variant="primary"
+                          @click="previewPR"
+                          class="!py-2 !px-4"
+                        >
+                          <Icon name="ph:eye" class="w-4 h-4 mr-2" />
+                          Preview PR
+                        </rs-button>
+
+                        <rs-button
+                          variant="success"
+                          @click="generateArahanKerja"
+                          class="!py-2 !px-4"
+                        >
+                          <Icon name="ph:file-plus" class="w-4 h-4 mr-2" />
+                          Jana Arahan Kerja
+                        </rs-button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="p-4 bg-white">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span class="font-medium text-gray-700"
+                          >Tarikh Dijana:</span
+                        >
+                        <span class="ml-2 text-gray-900">{{
+                          formatDate(formData.tarikhDijana)
+                        }}</span>
+                      </div>
+                      <div>
+                        <span class="font-medium text-gray-700"
+                          >Tarikh Kemaskini Terakhir:</span
+                        >
+                        <span class="ml-2 text-gray-900">{{
+                          formatDate(formData.tarikhKemaskiniTerakhir)
+                        }}</span>
+                      </div>
+                      <div>
+                        <span class="font-medium text-gray-700"
+                          >Tarikh Penyerahan:</span
+                        >
+                        <span class="ml-2 text-gray-900">{{
+                          formatDate(formData.tarikhPenyerahan)
+                        }}</span>
+                      </div>
+                      <div>
+                        <span class="font-medium text-gray-700">Alamat:</span>
+                        <span class="ml-2 text-gray-900">{{
+                          formData.alamatPenerima
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Work Items Management Section -->
+                <div class="space-y-4">
+                  <h3
+                    class="text-sm font-medium text-gray-900 flex items-center"
+                  >
+                    <Icon
+                      name="ph:list-checks"
+                      class="w-4 h-4 mr-2 text-blue-600"
+                    />
+                    Jadual Arahan Kerja (dari BQ)
+                  </h3>
+
+                  <div
+                    class="overflow-hidden border border-gray-200 rounded-lg"
+                  >
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Butiran Kerja
+                          </th>
+                          <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Kuantiti
+                          </th>
+                          <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Jumlah (RM)
+                          </th>
+                          <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Status ETD
+                          </th>
+                          <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Catatan KIV
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr
+                          v-for="item in workItems"
+                          :key="item.id"
+                          class="hover:bg-gray-50"
+                        >
+                          <td class="px-4 py-3">
+                            <div class="text-sm font-medium text-gray-900">
+                              {{ item.description }}
+                            </div>
+                            <div class="text-xs text-gray-500">
+                              {{ item.unitPrice }} per unit
+                            </div>
+                          </td>
+                          <td class="px-4 py-3 text-sm text-gray-900">
+                            {{ item.quantity }}
+                          </td>
+                          <td
+                            class="px-4 py-3 text-sm font-medium text-gray-900"
+                          >
+                            {{ item.totalPrice }}
+                          </td>
+                          <td class="px-4 py-3">
+                            <select
+                              v-model="item.status"
+                              @change="updateWorkItemStatus(item)"
+                              class="text-xs border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                              <option
+                                v-for="option in workItemStatusOptions"
+                                :key="option.value"
+                                :value="option.value"
+                              >
+                                {{ option.label }}
+                              </option>
+                            </select>
+                            <rs-badge
+                              :variant="getWorkItemStatusVariant(item.status)"
+                              class="text-xs ml-2"
+                            >
+                              {{ getWorkItemStatusText(item.status) }}
+                            </rs-badge>
+                          </td>
+                          <td class="px-4 py-3">
+                            <textarea
+                              v-if="item.status === 'kiv'"
+                              v-model="item.kivRemarks"
+                              placeholder="Catatan KIV..."
+                              rows="2"
+                              class="text-xs w-full border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            ></textarea>
+                            <span v-else class="text-xs text-gray-400">-</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Progress Indicators -->
+                <div class="space-y-4">
+                  <!-- PR Sections Progress -->
+                  <div class="space-y-2">
+                    <div class="flex justify-between text-sm text-gray-600">
+                      <span>Progress Seksyen PR</span>
+                      <span
+                        >{{ completedSections }} /
+                        {{ prSections.length }} Seksyen</span
+                      >
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        class="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                        :style="{
+                          width: `${
+                            (completedSections / prSections.length) * 100
+                          }%`,
+                        }"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <!-- Work Items Progress -->
+                  <div class="space-y-2">
+                    <div class="flex justify-between text-sm text-gray-600">
+                      <span>Progress Item Kerja</span>
+                      <span
+                        >{{ completedWorkItems }} /
+                        {{ workItems.length }} Item</span
+                      >
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        class="bg-green-500 h-2 rounded-full transition-all duration-300"
+                        :style="{
+                          width: `${workItemsProgress}%`,
+                        }"
+                      ></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -127,20 +398,31 @@
                 <rs-collapse>
                   <rs-collapse-item
                     v-for="(kad, index) in sortedKadPemantauan"
-                    :key="kad.id"
+                    :key="`kad-${kad.id}`"
                     type="card"
+                    :model-value="openAccordions.has(kad.id)"
+                    @update:model-value="
+                      (isOpen) => toggleAccordion(kad.id, isOpen)
+                    "
                   >
                     <template #title>
-                      <div class="flex items-center justify-between w-full pr-4">
+                      <div
+                        class="flex items-center justify-between w-full pr-4"
+                      >
                         <div class="flex items-center space-x-4">
                           <div class="flex items-center space-x-2">
-                            <Icon name="ph:calendar" class="w-4 h-4 text-gray-500" />
+                            <Icon
+                              name="ph:calendar"
+                              class="w-4 h-4 text-gray-500"
+                            />
                             <span class="font-medium text-gray-900">
                               {{ formatDateTime(kad.tarikhMasaPemantauan) }}
                             </span>
                           </div>
                           <rs-badge
-                            :variant="getProgressStatusVariant(kad.statusKemajuanKerja)"
+                            :variant="
+                              getProgressStatusVariant(kad.statusKemajuanKerja)
+                            "
                             class="text-xs"
                           >
                             {{ kad.statusKemajuanKerja }}
@@ -156,83 +438,117 @@
                             class="w-4 h-4 text-green-500"
                             title="Tuntutan Boleh Dibuat"
                           />
-                          <span class="text-xs text-gray-500"> #{{ index + 1 }} </span>
+                          <span class="text-xs text-gray-500">
+                            #{{ index + 1 }}
+                          </span>
                         </div>
                       </div>
                     </template>
 
                     <!-- Kad Content (Expandable Form) -->
-                    <div class="p-6 bg-gray-50 border-t">
+                    <div
+                      class="p-6 bg-gradient-to-br from-gray-50 to-gray-100 border-t"
+                    >
                       <FormKit
                         type="form"
                         :actions="false"
                         @submit="handleSaveKadPemantauan(kad.id, $event)"
+                        class="space-y-8"
                       >
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <!-- Tarikh & Masa Pemantauan -->
-                          <FormKit
-                            type="datetime-local"
-                            name="tarikhMasaPemantauan"
-                            label="Tarikh & Masa Pemantauan"
-                            validation="required"
-                            help="Pilih tarikh dan masa pemantauan dilakukan"
-                            :value="kad.tarikhMasaPemantauan"
-                            v-model="kad.tarikhMasaPemantauan"
-                          />
+                        <!-- Section 1: Maklumat Asas -->
+                        <div
+                          class="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
+                        >
+                          <h3
+                            class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+                          >
+                            <Icon
+                              name="ph:info"
+                              class="w-5 h-5 mr-2 text-blue-600"
+                            />
+                            Maklumat Pemantauan Asas
+                          </h3>
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Tarikh & Masa Pemantauan -->
+                            <FormKit
+                              type="datetime-local"
+                              name="tarikhMasaPemantauan"
+                              label="Tarikh & Masa Pemantauan"
+                              validation="required"
+                              help="Pilih tarikh dan masa pemantauan dilakukan"
+                              :value="kad.tarikhMasaPemantauan"
+                              v-model="kad.tarikhMasaPemantauan"
+                            />
 
-                          <!-- Status Kemajuan Kerja -->
-                          <FormKit
-                            type="select"
-                            name="statusKemajuanKerja"
-                            label="Status Kemajuan Kerja"
-                            validation="required"
-                            :options="statusKemajuanOptions"
-                            :value="kad.statusKemajuanKerja"
-                            v-model="kad.statusKemajuanKerja"
-                          />
+                            <!-- Status Kemajuan Kerja -->
+                            <FormKit
+                              type="select"
+                              name="statusKemajuanKerja"
+                              label="Status Kemajuan Kerja"
+                              validation="required"
+                              :options="statusKemajuanOptions"
+                              :value="kad.statusKemajuanKerja"
+                              v-model="kad.statusKemajuanKerja"
+                            />
 
-                          <!-- Peratusan Kemajuan Kerja -->
-                          <FormKit
-                            type="select"
-                            name="peratusanKemajuanKerja"
-                            label="Peratusan Kemajuan Kerja"
-                            validation="required"
-                            :options="peratusanKemajuanOptions"
-                            :value="kad.peratusanKemajuanKerja"
-                            v-model="kad.peratusanKemajuanKerja"
-                          />
+                            <!-- Peratusan Kemajuan Kerja -->
+                            <FormKit
+                              type="select"
+                              name="peratusanKemajuanKerja"
+                              label="Peratusan Kemajuan Kerja"
+                              validation="required"
+                              :options="peratusanKemajuanOptions"
+                              :value="kad.peratusanKemajuanKerja"
+                              v-model="kad.peratusanKemajuanKerja"
+                            />
 
-                          <!-- Memo Pemantauan -->
-                          <div class="space-y-2">
-                            <label class="text-sm font-medium text-gray-700">
-                              Memo Pemantauan <span class="text-red-500">*</span>
-                            </label>
-                            <div class="flex items-center space-x-2">
-                              <FormKit
-                                type="text"
-                                name="memoPemantauan"
-                                placeholder="Nama dokumen memo"
-                                validation="required"
-                                :value="kad.memoPemantauan"
-                                v-model="kad.memoPemantauan"
-                                :classes="{
-                                  outer: 'flex-1 mb-0',
-                                }"
-                              />
-                              <rs-button
-                                variant="primary-outline"
-                                type="button"
-                                @click="openMemoDocument(kad.memoPemantauan)"
-                                class="!py-2 !px-3"
-                              >
-                                <Icon name="ph:file-arrow-up" class="w-4 h-4" />
-                              </rs-button>
+                            <!-- Memo Pemantauan -->
+                            <div class="space-y-2">
+                              <label class="text-sm font-medium text-gray-700">
+                                Memo Pemantauan
+                                <span class="text-red-500">*</span>
+                              </label>
+                              <div class="flex items-center space-x-2">
+                                <FormKit
+                                  type="text"
+                                  name="memoPemantauan"
+                                  placeholder="Nama dokumen memo"
+                                  validation="required"
+                                  :value="kad.memoPemantauan"
+                                  v-model="kad.memoPemantauan"
+                                  :classes="{
+                                    outer: 'flex-1 mb-0',
+                                  }"
+                                />
+                                <rs-button
+                                  variant="primary-outline"
+                                  type="button"
+                                  @click="openMemoDocument(kad.memoPemantauan)"
+                                  class="!py-2 !px-3"
+                                >
+                                  <Icon
+                                    name="ph:file-arrow-up"
+                                    class="w-4 h-4"
+                                  />
+                                </rs-button>
+                              </div>
                             </div>
                           </div>
                         </div>
 
-                        <!-- Catatan / Isu Ditemui -->
-                        <div class="mt-6">
+                        <!-- Section 2: Catatan & Penemuan -->
+                        <div
+                          class="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
+                        >
+                          <h3
+                            class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+                          >
+                            <Icon
+                              name="ph:note"
+                              class="w-5 h-5 mr-2 text-amber-600"
+                            />
+                            Catatan & Penemuan
+                          </h3>
                           <FormKit
                             type="textarea"
                             name="catatanIsu"
@@ -245,9 +561,16 @@
                         </div>
 
                         <!-- Section 3: Lampiran Dokumen -->
-                        <div class="mt-8 border-t pt-6">
-                          <h3 class="text-lg font-medium text-gray-900 mb-4">
-                            <Icon name="ph:paperclip" class="w-5 h-5 mr-2 inline" />
+                        <div
+                          class="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
+                        >
+                          <h3
+                            class="text-lg font-semibold text-gray-900 mb-6 flex items-center"
+                          >
+                            <Icon
+                              name="ph:paperclip"
+                              class="w-5 h-5 mr-2 text-green-600"
+                            />
                             Lampiran Dokumen
                           </h3>
 
@@ -279,58 +602,130 @@
                             </div>
 
                             <!-- List of Selected Documents -->
-                            <div v-if="kad.dokumenLampiran && kad.dokumenLampiran.length > 0">
-                              <h4 class="font-medium text-gray-900 mb-3">Senarai Dokumen</h4>
-                              <div class="bg-gray-50 rounded-lg border">
-                                <div class="overflow-x-auto">
-                                  <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-100">
-                                      <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                          <FormKit
-                                            type="checkbox"
-                                            name="selectAll"
-                                            @change="toggleSelectAll(kad.id, $event)"
-                                            :value="isAllSelected(kad.id)"
-                                          />
-                                        </th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Dokumen</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarikh Kemaskini</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dikemaskini oleh</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                      <tr v-for="(dok, index) in kad.dokumenLampiran" :key="dok.id">
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                          <FormKit
-                                            type="checkbox"
-                                            :name="`selectDoc_${dok.id}`"
-                                            @change="toggleDocumentSelection(kad.id, dok.id, $event)"
-                                            :value="isDocumentSelected(kad.id, dok.id)"
-                                          />
-                                        </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ index + 1 }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ getDokumenLabel(dok.type) }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ formatDateTime(dok.tarikhKemaskini) }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ dok.dikemaskiniOleh }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                                          <rs-button
-                                            variant="primary-outline"
-                                            size="sm"
-                                            @click="editDocument(dok.type)"
-                                            class="!py-1 !px-2"
-                                          >
-                                            <Icon name="ph:pencil" class="w-3 h-3 mr-1" />
-                                            Kemaskini
-                                          </rs-button>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </div>
+                            <div
+                              v-if="
+                                kad.dokumenLampiran &&
+                                kad.dokumenLampiran.length > 0
+                              "
+                            >
+                              <h4 class="font-medium text-gray-900 mb-3">
+                                Senarai Dokumen
+                              </h4>
+                              <rs-table
+                                :data="
+                                  kad.dokumenLampiran.map((doc) => ({
+                                    ...doc,
+                                    actions: '',
+                                  }))
+                                "
+                                :columns="[
+                                  { key: 'id', label: 'No' },
+                                  { key: 'type', label: 'Nama Dokumen' },
+                                  {
+                                    key: 'tarikhKemaskini',
+                                    label: 'Tarikh Kemaskini',
+                                  },
+                                  {
+                                    key: 'dikemaskiniOleh',
+                                    label: 'Dikemaskini oleh',
+                                  },
+                                  { key: 'actions', label: 'Tindakan' },
+                                ]"
+                                :options="{
+                                  variant: 'default',
+                                  striped: true,
+                                  bordered: false,
+                                  hover: true,
+                                }"
+                                :optionsAdvanced="{
+                                  sortable: false,
+                                  filterable: false,
+                                  responsive: true,
+                                }"
+                                :show-no-column="false"
+                                :show-search="false"
+                                :advanced="false"
+                                :page-size="10"
+                              >
+                                <template #header-selectAll>
+                                  <FormKit
+                                    type="checkbox"
+                                    name="selectAll"
+                                    @change="toggleSelectAll(kad.id, $event)"
+                                    :value="isAllSelected(kad.id)"
+                                    :classes="{ outer: 'mb-0' }"
+                                  />
+                                </template>
+                                <template #id="{ value }">
+                                  <div class="flex items-center space-x-3">
+                                    <FormKit
+                                      type="checkbox"
+                                      :name="`selectDoc_${value.id}`"
+                                      @change="
+                                        toggleDocumentSelection(
+                                          kad.id,
+                                          value.id,
+                                          $event
+                                        )
+                                      "
+                                      :value="
+                                        isDocumentSelected(kad.id, value.id)
+                                      "
+                                      :classes="{ outer: 'mb-0' }"
+                                    />
+                                    <span class="text-sm text-gray-900">
+                                      {{
+                                        kad.dokumenLampiran.findIndex(
+                                          (d) => d.id === value.id
+                                        ) + 1
+                                      }}
+                                    </span>
+                                  </div>
+                                </template>
+                                <template #type="{ value }">
+                                  <span class="text-sm text-gray-900">{{
+                                    getDokumenLabel(value.type)
+                                  }}</span>
+                                </template>
+                                <template #tarikhKemaskini="{ value }">
+                                  <span class="text-sm text-gray-500">{{
+                                    formatDateTime(value.tarikhKemaskini)
+                                  }}</span>
+                                </template>
+                                <template #dikemaskiniOleh="{ value }">
+                                  <span class="text-sm text-gray-500">{{
+                                    value.dikemaskiniOleh
+                                  }}</span>
+                                </template>
+                                <template #actions="{ value }">
+                                  <div class="flex space-x-2">
+                                    <rs-button
+                                      variant="primary-outline"
+                                      size="sm"
+                                      @click="editDocument(value.type)"
+                                      class="!py-1 !px-2"
+                                    >
+                                      <Icon
+                                        name="ph:pencil"
+                                        class="w-3 h-3 mr-1"
+                                      />
+                                      Kemaskini
+                                    </rs-button>
+                                    <rs-button
+                                      variant="danger-outline"
+                                      size="sm"
+                                      @click="deleteDocument(kad.id, value.id)"
+                                      class="!py-1 !px-2"
+                                    >
+                                      <Icon
+                                        name="ph:trash"
+                                        class="w-3 h-3 mr-1"
+                                      />
+                                      Padam
+                                    </rs-button>
+                                  </div>
+                                </template>
+                              </rs-table>
                             </div>
 
                             <!-- Checkbox Serah kepada Kontraktor -->
@@ -349,7 +744,8 @@
                                 v-model="kad.serahKepadaKontraktor"
                               />
                               <p class="text-xs text-gray-500 mt-1">
-                                Bila berlaku integrasi dengan NPS, dokumen yang bertanda check sahaja akan diserahkan
+                                Bila berlaku integrasi dengan NPS, dokumen yang
+                                bertanda check sahaja akan diserahkan
                               </p>
                             </div>
 
@@ -368,59 +764,117 @@
                             </div>
 
                             <!-- List of Documents from Contractor -->
-                            <div v-if="kad.dokumenDariKontraktor && kad.dokumenDariKontraktor.length > 0">
-                              <h4 class="font-medium text-gray-900 mb-3">Senarai Dokumen daripada Kontraktor</h4>
-                              <div class="bg-blue-50 rounded-lg border">
-                                <div class="overflow-x-auto">
-                                  <table class="min-w-full divide-y divide-blue-200">
-                                    <thead class="bg-blue-100">
-                                      <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">No</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Nama Dokumen</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Tarikh Dicipta</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Tindakan</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody class="bg-blue-50 divide-y divide-blue-200">
-                                      <tr v-for="(dok, index) in kad.dokumenDariKontraktor" :key="dok.id">
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-blue-900">{{ index + 1 }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-blue-900">{{ dok.namaDokumen }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-blue-700">{{ formatDateTime(dok.tarikhDicipta) }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-blue-700">
-                                          <div class="flex space-x-2">
-                                            <rs-button
-                                              variant="primary-outline"
-                                              size="sm"
-                                              @click="uploadDocument(dok.id)"
-                                              class="!py-1 !px-2"
-                                            >
-                                              <Icon name="ph:upload" class="w-3 h-3 mr-1" />
-                                              Upload
-                                            </rs-button>
-                                            <rs-button
-                                              variant="info-outline"
-                                              size="sm"
-                                              @click="viewDocument(dok.id)"
-                                              class="!py-1 !px-2"
-                                            >
-                                              <Icon name="ph:eye" class="w-3 h-3 mr-1" />
-                                              Lihat
-                                            </rs-button>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
+                            <div
+                              v-if="
+                                kad.dokumenDariKontraktor &&
+                                kad.dokumenDariKontraktor.length > 0
+                              "
+                            >
+                              <h4 class="font-medium text-gray-900 mb-3">
+                                Senarai Dokumen daripada Kontraktor
+                              </h4>
+                              <div
+                                class="bg-blue-50 rounded-lg border border-blue-200"
+                              >
+                                <rs-table
+                                  :data="
+                                    kad.dokumenDariKontraktor.map(
+                                      (dok, index) => ({
+                                        ...dok,
+                                        no: index + 1,
+                                      })
+                                    )
+                                  "
+                                  :columns="[
+                                    { key: 'no', label: 'No' },
+                                    {
+                                      key: 'namaDokumen',
+                                      label: 'Nama Dokumen',
+                                    },
+                                    {
+                                      key: 'tarikhDicipta',
+                                      label: 'Tarikh Dicipta',
+                                    },
+                                    { key: 'actions', label: 'Tindakan' },
+                                  ]"
+                                  :options="{
+                                    variant: 'info',
+                                    striped: false,
+                                    bordered: false,
+                                    hover: true,
+                                  }"
+                                  :optionsAdvanced="{
+                                    sortable: false,
+                                    filterable: false,
+                                    responsive: true,
+                                  }"
+                                  :show-no-column="false"
+                                  :show-search="false"
+                                  :advanced="false"
+                                  :page-size="10"
+                                >
+                                  <template #no="{ value }">
+                                    <span
+                                      class="text-sm text-blue-900 font-medium"
+                                      >{{ value.no }}</span
+                                    >
+                                  </template>
+                                  <template #namaDokumen="{ value }">
+                                    <span
+                                      class="text-sm text-blue-900 font-medium"
+                                      >{{ value.namaDokumen }}</span
+                                    >
+                                  </template>
+                                  <template #tarikhDicipta="{ value }">
+                                    <span class="text-sm text-blue-700">{{
+                                      formatDateTime(value.tarikhDicipta)
+                                    }}</span>
+                                  </template>
+                                  <template #actions="{ value }">
+                                    <div class="flex space-x-2">
+                                      <rs-button
+                                        variant="primary-outline"
+                                        size="sm"
+                                        @click="uploadDocument()"
+                                        class="!py-1 !px-2"
+                                      >
+                                        <Icon
+                                          name="ph:upload"
+                                          class="w-3 h-3 mr-1"
+                                        />
+                                        Upload
+                                      </rs-button>
+                                      <rs-button
+                                        variant="info-outline"
+                                        size="sm"
+                                        @click="viewDocument()"
+                                        class="!py-1 !px-2"
+                                      >
+                                        <Icon
+                                          name="ph:eye"
+                                          class="w-3 h-3 mr-1"
+                                        />
+                                        Lihat
+                                      </rs-button>
+                                    </div>
+                                  </template>
+                                </rs-table>
                               </div>
                             </div>
                           </div>
                         </div>
 
                         <!-- Section 4: Tuntutan Boleh Dibuat -->
-                        <div class="mt-8 border-t pt-6">
-                          <h3 class="text-lg font-medium text-gray-900 mb-4">
-                            <Icon name="ph:receipt" class="w-5 h-5 mr-2 inline" />
+                        <div
+                          class="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
+                        >
+                          <h3
+                            class="text-lg font-semibold text-gray-900 mb-6 flex items-center"
+                          >
+                            <Icon
+                              name="ph:receipt"
+                              class="w-5 h-5 mr-2 text-purple-600"
+                            />
                             Tuntutan Boleh Dibuat
                           </h3>
 
@@ -439,14 +893,29 @@
                                 help="Tandakan jika kontraktor dibenarkan membuat tuntutan"
                                 :value="kad.tuntutanBolehDibuat"
                                 v-model="kad.tuntutanBolehDibuat"
-                                @change="toggleTuntutanBolehDibuat(kad.id, $event)"
+                                @change="
+                                  toggleTuntutanBolehDibuat(kad.id, $event)
+                                "
                               />
                             </div>
 
                             <!-- Kelulusan Tuntutan (Conditional) -->
-                            <div v-if="kad.tuntutanBolehDibuat">
-                              <h4 class="font-medium text-gray-900 mb-3">Kelulusan Tuntutan</h4>
-                              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div
+                              v-if="kad.tuntutanBolehDibuat"
+                              class="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200"
+                            >
+                              <h4
+                                class="font-medium text-purple-900 mb-4 flex items-center"
+                              >
+                                <Icon
+                                  name="ph:check-circle"
+                                  class="w-4 h-4 mr-2"
+                                />
+                                Kelulusan Tuntutan
+                              </h4>
+                              <div
+                                class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                              >
                                 <!-- Dropdown % Boleh Dituntut -->
                                 <FormKit
                                   type="select"
@@ -465,8 +934,14 @@
                                   name="statusKelulusanTuntutan"
                                   label="Status Kelulusan"
                                   :options="[
-                                    { label: 'Dalam Semakan', value: 'dalam-semakan' },
-                                    { label: 'Diluluskan', value: 'diluluskan' },
+                                    {
+                                      label: 'Dalam Semakan',
+                                      value: 'dalam-semakan',
+                                    },
+                                    {
+                                      label: 'Diluluskan',
+                                      value: 'diluluskan',
+                                    },
                                     { label: 'Ditolak', value: 'ditolak' },
                                   ]"
                                   help="Status kelulusan tuntutan"
@@ -480,17 +955,21 @@
 
                         <!-- Action Buttons -->
                         <div
-                          class="mt-8 flex items-center justify-end space-x-4 pt-6 border-t"
+                          class="flex items-center justify-end space-x-4 pt-6 bg-gray-50 -mx-6 -mb-6 px-6 pb-6 rounded-b-lg border-t"
                         >
                           <rs-button
                             variant="secondary-outline"
                             type="button"
-                            @click="cancelKadEdit(kad.id)"
+                            @click="cancelKadEdit()"
                           >
                             <Icon name="ph:x" class="w-4 h-4 mr-2" />
                             Batal
                           </rs-button>
-                          <rs-button variant="success" type="submit" :loading="isSaving">
+                          <rs-button
+                            variant="success"
+                            type="submit"
+                            :loading="isSaving"
+                          >
                             <Icon name="ph:floppy-disk" class="w-4 h-4 mr-2" />
                             Simpan Kad Pemantauan
                           </rs-button>
@@ -501,8 +980,14 @@
                 </rs-collapse>
 
                 <!-- Empty State -->
-                <div v-if="kadPemantauanList.length === 0" class="text-center py-12">
-                  <Icon name="ph:monitor" class="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <div
+                  v-if="kadPemantauanList.length === 0"
+                  class="text-center py-12"
+                >
+                  <Icon
+                    name="ph:monitor"
+                    class="w-16 h-16 text-gray-300 mx-auto mb-4"
+                  />
                   <h3 class="text-lg font-medium text-gray-900 mb-2">
                     Tiada Kad Pemantauan
                   </h3>
@@ -524,7 +1009,9 @@
           <!-- Quick Stats -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
-              <h3 class="text-lg font-semibold text-gray-900">Statistik Pemantauan</h3>
+              <h3 class="text-lg font-semibold text-gray-900">
+                Statistik Pemantauan
+              </h3>
             </template>
 
             <template #body>
@@ -537,7 +1024,9 @@
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="text-sm text-gray-600">Kemajuan Terakhir</span>
-                  <span class="font-semibold text-gray-900">{{ latestProgress }}</span>
+                  <span class="font-semibold text-gray-900">{{
+                    latestProgress
+                  }}</span>
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="text-sm text-gray-600">Status Tuntutan</span>
@@ -555,7 +1044,9 @@
           <!-- Recent Activity -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
-              <h3 class="text-lg font-semibold text-gray-900">Aktiviti Terkini</h3>
+              <h3 class="text-lg font-semibold text-gray-900">
+                Aktiviti Terkini
+              </h3>
             </template>
 
             <template #body>
@@ -565,7 +1056,9 @@
                   :key="activity.id"
                   class="flex items-start space-x-3 text-sm"
                 >
-                  <div class="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                  <div
+                    class="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2"
+                  ></div>
                   <div>
                     <p class="text-gray-900">{{ activity.description }}</p>
                     <p class="text-gray-500 text-xs">
@@ -596,7 +1089,8 @@
       <template #body>
         <div class="p-4">
           <p class="text-gray-600 mb-4">
-            Fungsi ini akan membuka paparan penuh untuk mengedit dokumen terpilih.
+            Fungsi ini akan membuka paparan penuh untuk mengedit dokumen
+            terpilih.
           </p>
           <div class="bg-blue-50 p-4 rounded-lg">
             <p class="text-blue-800 text-sm">
@@ -622,7 +1116,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useToast } from "vue-toastification";
 import { useRoute } from "vue-router";
 
@@ -642,6 +1136,9 @@ const selectedDocumentType = ref("");
 // Document management states
 const selectedDocumentForKad = ref({});
 const selectedDocumentsForKad = ref({});
+
+// Accordion state management
+const openAccordions = ref(new Set());
 
 // Breadcrumb
 const breadcrumb = ref([
@@ -671,6 +1168,192 @@ const permohonanData = ref({
   status: "Aktif",
 });
 
+// Form data for PR Document Section
+const formData = ref({
+  // Section 2: PR Document Info
+  namaDokumenPR: "ARAHAN KERJA BAGI MASJID AL-HIDAYAH",
+  jenisDokumen: "Perakuan Rundingan (PR)",
+  statusPR: "Dijanakan",
+  tarikhDijana: new Date(),
+  tarikhKemaskiniTerakhir: new Date(),
+  tarikhPenyerahan: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+  alamatPenerima: "No. 123, Jalan ABC, Taman XYZ, 50000 Kuala Lumpur",
+  
+  // BQ Reference
+  bqReference: "BQ-BNT-2024-001234",
+  bqAmount: "25,000.00",
+  workItemsCount: 8,
+});
+
+// Work Items from BQ with status management
+const workItems = ref([
+  {
+    id: 1,
+    description: "Pemasangan bumbung baru (zinc)",
+    quantity: "50 meter persegi",
+    unitPrice: "RM 25.00",
+    totalPrice: "RM 1,250.00",
+    status: "lulus",
+    kivRemarks: "",
+  },
+  {
+    id: 2,
+    description: "Pengecatan dinding dalam",
+    quantity: "200 meter persegi", 
+    unitPrice: "RM 8.00",
+    totalPrice: "RM 1,600.00",
+    status: "lulus",
+    kivRemarks: "",
+  },
+  {
+    id: 3,
+    description: "Pembaikan sistem paip air",
+    quantity: "1 set",
+    unitPrice: "RM 500.00", 
+    totalPrice: "RM 500.00",
+    status: "kiv",
+    kivRemarks: "Menunggu bahan khas dari pembekal",
+  },
+  {
+    id: 4,
+    description: "Pemasangan lampu LED",
+    quantity: "20 unit",
+    unitPrice: "RM 35.00",
+    totalPrice: "RM 700.00", 
+    status: "lulus",
+    kivRemarks: "",
+  },
+  {
+    id: 5,
+    description: "Pembaikan lantai keramik",
+    quantity: "30 meter persegi",
+    unitPrice: "RM 40.00",
+    totalPrice: "RM 1,200.00",
+    status: "gagal",
+    kivRemarks: "",
+  },
+  {
+    id: 6,
+    description: "Pemasangan pintu baharu",
+    quantity: "2 unit",
+    unitPrice: "RM 350.00", 
+    totalPrice: "RM 700.00",
+    status: "pending",
+    kivRemarks: "",
+  },
+  {
+    id: 7,
+    description: "Pengecatan luar bangunan",
+    quantity: "150 meter persegi",
+    unitPrice: "RM 12.00",
+    totalPrice: "RM 1,800.00",
+    status: "lulus",
+    kivRemarks: "",
+  },
+  {
+    id: 8,
+    description: "Pembaikan sistem elektrik",
+    quantity: "1 set",
+    unitPrice: "RM 800.00",
+    totalPrice: "RM 800.00",
+    status: "kiv",
+    kivRemarks: "Perlu permit dari JKR",
+  }
+]);
+
+// PR Sections configuration
+const prSections = ref([
+  {
+    name: "Nama Dokumen",
+    description: "Auto-generated template → ARAHAN KERJA BAGI ...",
+    status: "completed",
+    statusText: "Siap",
+    access: "view",
+    accessText: "V",
+    accessDescription: "Auto-generated template",
+  },
+  {
+    name: "Nama Penerima", 
+    description: "Auto-filled from applicant or contractor profile",
+    status: "completed",
+    statusText: "Siap",
+    access: "view",
+    accessText: "V",
+    accessDescription: "Auto-filled dari profil",
+  },
+  {
+    name: "Alamat",
+    description: "Auto-filled from applicant / contractor details",
+    status: "completed", 
+    statusText: "Siap",
+    access: "view",
+    accessText: "V", 
+    accessDescription: "Auto-filled dari butiran pemohon",
+  },
+  {
+    name: "Pengakuan Kontraktor",
+    description: "To be completed by contractor upon receiving the PR",
+    status: "pending",
+    statusText: "Menunggu",
+    access: "edit",
+    accessText: "C/U",
+    accessDescription: "Diisi oleh Kontraktor",
+  },
+  {
+    name: "Ruangan Tandatangan & Cop",
+    description: "To be signed and stamped post contractor confirmation", 
+    status: "pending",
+    statusText: "Menunggu",
+    access: "edit",
+    accessText: "C/U",
+    accessDescription: "Tandatangan & cop kontraktor",
+  },
+  {
+    name: "Jadual Arahan Kerja",
+    description: "Pre-filled from BQ → ETD can mark item status as Lulus / Gagal",
+    status: "completed",
+    statusText: "Siap",
+    access: "view",
+    accessText: "V",
+    accessDescription: "Disemak oleh ETD",
+  },
+  {
+    name: "Jadual Catatan (jika KIV)",
+    description: "Optional → ETD can add remarks if item status is KIV", 
+    status: "completed",
+    statusText: "Siap",
+    access: "view",
+    accessText: "V",
+    accessDescription: "Catatan KIV oleh ETD",
+  },
+  {
+    name: "Ruangan Pengesahan ETD",
+    description: "Digital signature + stamp by Pegawai Teknikal (ETD)",
+    status: "completed",
+    statusText: "Siap", 
+    access: "view",
+    accessText: "V",
+    accessDescription: "Disahkan oleh ETD",
+  },
+  {
+    name: "Ruangan Pengesahan Pemohon", 
+    description: "Digital signature, full name, and IC number of applicant",
+    status: "pending",
+    statusText: "Menunggu",
+    access: "edit",
+    accessText: "C/U",
+    accessDescription: "Tandatangan digital Pemohon",
+  },
+]);
+
+// Work Item Status Options
+const workItemStatusOptions = [
+  { label: "Belum Dinilai", value: "pending" },
+  { label: "Lulus", value: "lulus" }, 
+  { label: "Gagal", value: "gagal" },
+  { label: "KIV (Keep in View)", value: "kiv" },
+];
+
 const kadPemantauanList = ref([
   {
     id: 1,
@@ -680,8 +1363,18 @@ const kadPemantauanList = ref([
     peratusanKemajuanKerja: "50%",
     catatanIsu: "Kerja-kerja asas telah siap. Menunggu bahan binaan tambahan.",
     dokumenLampiran: [
-      { id: 1, type: "borang-laporan-harian", tarikhKemaskini: "2024-01-15T10:00", dikemaskiniOleh: "Pengurus Projek" },
-      { id: 2, type: "borang-lawatan-tapak", tarikhKemaskini: "2024-01-15T10:00", dikemaskiniOleh: "Pengurus Projek" },
+      {
+        id: 1,
+        type: "borang-laporan-harian",
+        tarikhKemaskini: "2024-01-15T10:00",
+        dikemaskiniOleh: "Pengurus Projek",
+      },
+      {
+        id: 2,
+        type: "borang-lawatan-tapak",
+        tarikhKemaskini: "2024-01-15T10:00",
+        dikemaskiniOleh: "Pengurus Projek",
+      },
     ],
     serahKepadaKontraktor: true,
     tuntutanBolehDibuat: true,
@@ -690,7 +1383,11 @@ const kadPemantauanList = ref([
     catatan: "Sila muat naik dokumen invois",
     dokumenDariKontraktor: [
       { id: 1, namaDokumen: "Invoice", tarikhDicipta: "2024-01-10T10:00" },
-      { id: 2, namaDokumen: "Laporan Kemajuan", tarikhDicipta: "2024-01-05T10:00" },
+      {
+        id: 2,
+        namaDokumen: "Laporan Kemajuan",
+        tarikhDicipta: "2024-01-05T10:00",
+      },
     ],
   },
   {
@@ -736,9 +1433,15 @@ const dokumenLampiranOptions = [
     value: "borang-penggunaan-pemeriksaan",
   },
   { label: "Borang Laporan Harian", value: "borang-laporan-harian" },
-  { label: "Permohonan Pemeriksaan Kerja", value: "permohonan-pemeriksaan-kerja" },
+  {
+    label: "Permohonan Pemeriksaan Kerja",
+    value: "permohonan-pemeriksaan-kerja",
+  },
   { label: "Borang Kepuasan Pelanggan", value: "borang-kepuasan-pelanggan" },
-  { label: "Borang Penilaian Prestasi Kontraktor", value: "borang-penilaian-prestasi" },
+  {
+    label: "Borang Penilaian Prestasi Kontraktor",
+    value: "borang-penilaian-prestasi",
+  },
   {
     label: "Borang Pemeriksaan Kecacatan Bangunan",
     value: "borang-pemeriksaan-kecacatan",
@@ -768,7 +1471,8 @@ const recentActivities = ref([
 // Computed
 const sortedKadPemantauan = computed(() => {
   return [...kadPemantauanList.value].sort(
-    (a, b) => new Date(b.tarikhMasaPemantauan) - new Date(a.tarikhMasaPemantauan)
+    (a, b) =>
+      new Date(b.tarikhMasaPemantauan) - new Date(a.tarikhMasaPemantauan)
   );
 });
 
@@ -829,6 +1533,11 @@ const addNewKadPemantauan = () => {
   selectedDocumentForKad.value[newKad.id] = null;
   selectedDocumentsForKad.value[newKad.id] = [];
 
+  // Open the new accordion by default
+  nextTick(() => {
+    openAccordions.value.add(newKad.id);
+  });
+
   // Add to recent activities
   recentActivities.value.unshift({
     id: Date.now(),
@@ -886,8 +1595,7 @@ const handleSaveKadPemantauan = async (kadId, formData) => {
   }
 };
 
-const cancelKadEdit = (kadId) => {
-  // Reset form or handle cancel logic
+const cancelKadEdit = () => {
   toast.info("Perubahan dibatalkan");
 };
 
@@ -902,8 +1610,34 @@ const openMemoDocument = (memoName) => {
 };
 
 const editDocument = (documentType) => {
-  selectedDocumentType.value = getDokumenLabel(documentType);
-  showDocumentModal.value = true;
+  // Map document types to their corresponding routes
+  const documentRoutes = {
+    "borang-penggunaan-pemeriksaan": `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/penggunaan-pemeriksaan-bahan`,
+    "borang-laporan-harian": `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/laporan-harian`,
+    "permohonan-pemeriksaan-kerja": `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/permohonan-pemeriksaan-kerja`,
+    "borang-kepuasan-pelanggan": `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/kepuasan-pelanggan`,
+    "borang-penilaian-prestasi": `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/penilaian-prestasi-kontraktor`,
+    "borang-pemeriksaan-kecacatan": `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/pemeriksaan-kecacatan-bangunan`,
+    "borang-lawatan-tapak": `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/lawatan-tapak`,
+    "surat-serah-kunci": `/BF-BTN/permohonan/pemantauan/${route.params.id}/borang/serah-kunci`,
+  };
+
+  const targetRoute = documentRoutes[documentType];
+
+  if (targetRoute) {
+    // Show loading message
+    toast.info(`Membuka ${getDokumenLabel(documentType)}...`);
+
+    // Navigate to the specific form page
+    navigateTo(targetRoute);
+  } else {
+    // Fallback: show modal for unknown document types
+    selectedDocumentType.value = getDokumenLabel(documentType);
+    showDocumentModal.value = true;
+    toast.warning(
+      `Borang untuk ${getDokumenLabel(documentType)} belum tersedia`
+    );
+  }
 };
 
 const proceedToEditDocument = () => {
@@ -917,13 +1651,25 @@ const getDokumenLabel = (value) => {
   return option ? option.label : value;
 };
 
+// Accordion state management methods
+const toggleAccordion = (kadId, isOpen) => {
+  if (isOpen) {
+    openAccordions.value.add(kadId);
+  } else {
+    openAccordions.value.delete(kadId);
+  }
+};
+
 // Document management methods
 const addSelectedDocument = (kadId) => {
   const selectedDoc = selectedDocumentForKad.value[kadId];
   if (!selectedDoc) return;
 
-  const kad = kadPemantauanList.value.find(k => k.id === kadId);
+  const kad = kadPemantauanList.value.find((k) => k.id === kadId);
   if (!kad) return;
+
+  // Store the current accordion state before making changes
+  const wasOpen = openAccordions.value.has(kadId);
 
   const newDoc = {
     id: Date.now(),
@@ -940,11 +1686,18 @@ const addSelectedDocument = (kadId) => {
   // Clear selection
   selectedDocumentForKad.value[kadId] = null;
 
+  // Restore accordion state after Vue's next tick
+  nextTick(() => {
+    if (wasOpen) {
+      openAccordions.value.add(kadId);
+    }
+  });
+
   toast.success("Dokumen berjaya ditambah");
 };
 
 const toggleSelectAll = (kadId, event) => {
-  const kad = kadPemantauanList.value.find(k => k.id === kadId);
+  const kad = kadPemantauanList.value.find((k) => k.id === kadId);
   if (!kad || !kad.dokumenLampiran) return;
 
   if (!selectedDocumentsForKad.value[kadId]) {
@@ -953,7 +1706,9 @@ const toggleSelectAll = (kadId, event) => {
 
   if (event) {
     // Select all
-    selectedDocumentsForKad.value[kadId] = kad.dokumenLampiran.map(doc => doc.id);
+    selectedDocumentsForKad.value[kadId] = kad.dokumenLampiran.map(
+      (doc) => doc.id
+    );
   } else {
     // Deselect all
     selectedDocumentsForKad.value[kadId] = [];
@@ -972,47 +1727,86 @@ const toggleDocumentSelection = (kadId, docId, event) => {
     }
   } else {
     // Remove from selection
-    selectedDocumentsForKad.value[kadId] = selectedDocumentsForKad.value[kadId].filter(id => id !== docId);
+    selectedDocumentsForKad.value[kadId] = selectedDocumentsForKad.value[
+      kadId
+    ].filter((id) => id !== docId);
   }
 };
 
 const isAllSelected = (kadId) => {
-  const kad = kadPemantauanList.value.find(k => k.id === kadId);
+  const kad = kadPemantauanList.value.find((k) => k.id === kadId);
   if (!kad || !kad.dokumenLampiran) return false;
-  
-  return selectedDocumentsForKad.value[kadId] && 
-         selectedDocumentsForKad.value[kadId].length === kad.dokumenLampiran.length;
+
+  return (
+    selectedDocumentsForKad.value[kadId] &&
+    selectedDocumentsForKad.value[kadId].length === kad.dokumenLampiran.length
+  );
 };
 
 const isDocumentSelected = (kadId, docId) => {
-  return selectedDocumentsForKad.value[kadId] && 
-         selectedDocumentsForKad.value[kadId].includes(docId);
+  return (
+    selectedDocumentsForKad.value[kadId] &&
+    selectedDocumentsForKad.value[kadId].includes(docId)
+  );
 };
 
 const toggleTuntutanBolehDibuat = (kadId, event) => {
-  const kad = kadPemantauanList.value.find(k => k.id === kadId);
+  const kad = kadPemantauanList.value.find((k) => k.id === kadId);
   if (!kad) return;
 
   if (event) {
     kad.tuntutanBolehDibuat = true;
     // Initialize default values when enabling claims
     if (!kad.statusKelulusanTuntutan) {
-      kad.statusKelulusanTuntutan = 'dalam-semakan';
+      kad.statusKelulusanTuntutan = "dalam-semakan";
     }
   } else {
     kad.tuntutanBolehDibuat = false;
-    kad.statusKelulusanTuntutan = 'ditolak';
+    kad.statusKelulusanTuntutan = "ditolak";
   }
 };
 
-const uploadDocument = (docId) => {
-  // Handle document upload
+const uploadDocument = () => {
   toast.info("Fungsi upload dokumen akan dibuka");
 };
 
-const viewDocument = (docId) => {
-  // Handle document view
+const viewDocument = () => {
   toast.info("Fungsi lihat dokumen akan dibuka");
+};
+
+const deleteDocument = (kadId, docId) => {
+  const kad = kadPemantauanList.value.find((k) => k.id === kadId);
+  if (!kad || !kad.dokumenLampiran) return;
+
+  // Store the current accordion state before making changes
+  const wasOpen = openAccordions.value.has(kadId);
+
+  // Find and remove the document
+  const docIndex = kad.dokumenLampiran.findIndex((doc) => doc.id === docId);
+  if (docIndex !== -1) {
+    const deletedDoc = kad.dokumenLampiran[docIndex];
+    kad.dokumenLampiran.splice(docIndex, 1);
+
+    // Remove from selected documents if it was selected
+    if (selectedDocumentsForKad.value[kadId]) {
+      selectedDocumentsForKad.value[kadId] = selectedDocumentsForKad.value[
+        kadId
+      ].filter((id) => id !== docId);
+    }
+
+    // Restore accordion state after Vue's next tick
+    nextTick(() => {
+      if (wasOpen) {
+        openAccordions.value.add(kadId);
+      }
+    });
+
+    toast.success(
+      `Dokumen "${getDokumenLabel(deletedDoc.type)}" berjaya dipadamkan`
+    );
+  } else {
+    toast.error("Dokumen tidak ditemui");
+  }
 };
 
 const formatDateTime = (dateTime) => {
@@ -1042,29 +1836,106 @@ const formatRelativeTime = (timestamp) => {
   }
 };
 
+const formatDate = (date) => {
+  if (!date) return '-';
+  return new Date(date).toLocaleDateString("ms-MY");
+};
+
+// PR Status methods
+const getPRStatusVariant = (status) => {
+  const variants = {
+    dijanakan: "info",
+    "dalam kemaskini": "warning", 
+    siap: "success",
+    diserahkan: "primary",
+    diterima: "success",
+    completed: "success",
+  };
+  return variants[status.toLowerCase()] || "default";
+};
+
+const previewPR = () => {
+  console.log("Opening PR document preview");
+  // In real implementation, this would open the PR editor/viewer
+};
+
+const generateArahanKerja = () => {
+  console.log("Generating Arahan Kerja document");
+  // In real implementation, this would generate the work order document
+};
+
+// Work item status methods
+const getWorkItemStatusVariant = (status) => {
+  switch (status) {
+    case "lulus":
+      return "success";
+    case "gagal":
+      return "danger";
+    case "kiv":
+      return "warning";
+    case "pending":
+      return "secondary";
+    default:
+      return "default";
+  }
+};
+
+const getWorkItemStatusText = (status) => {
+  switch (status) {
+    case "lulus":
+      return "Lulus";
+    case "gagal": 
+      return "Gagal";
+    case "kiv":
+      return "KIV";
+    case "pending":
+      return "Belum Dinilai";
+    default:
+      return "Tidak Diketahui";
+  }
+};
+
+const updateWorkItemStatus = (item) => {
+  console.log(`Updating work item ${item.id} status to ${item.status}`);
+  
+  // If status is not KIV, clear KIV remarks
+  if (item.status !== "kiv") {
+    item.kivRemarks = "";
+  }
+};
+
 // Lifecycle
 onMounted(() => {
   // Initialize component or fetch data
   console.log("Modul Pemantauan Kerja initialized");
-  
+
   // Initialize document selection tracking for each kad
-  kadPemantauanList.value.forEach(kad => {
+  kadPemantauanList.value.forEach((kad) => {
     selectedDocumentForKad.value[kad.id] = null;
     selectedDocumentsForKad.value[kad.id] = [];
   });
+
+  // Initialize accordion state - optionally open the first accordion
+  if (kadPemantauanList.value.length > 0) {
+    openAccordions.value.add(kadPemantauanList.value[0].id);
+  }
 });
 
 // Watch for changes in kad pemantauan list to initialize new ones
-watch(kadPemantauanList, (newList) => {
-  newList.forEach(kad => {
-    if (!selectedDocumentForKad.value.hasOwnProperty(kad.id)) {
-      selectedDocumentForKad.value[kad.id] = null;
-    }
-    if (!selectedDocumentsForKad.value.hasOwnProperty(kad.id)) {
-      selectedDocumentsForKad.value[kad.id] = [];
-    }
-  });
-}, { deep: true });
+watch(
+  kadPemantauanList,
+  (newList) => {
+    newList.forEach((kad) => {
+      if (!selectedDocumentForKad.value.hasOwnProperty(kad.id)) {
+        selectedDocumentForKad.value[kad.id] = null;
+      }
+      if (!selectedDocumentsForKad.value.hasOwnProperty(kad.id)) {
+        selectedDocumentsForKad.value[kad.id] = [];
+      }
+    });
+  },
+  { deep: true }
+);
 </script>
 
 <style lang="scss" scoped>
@@ -1074,18 +1945,23 @@ watch(kadPemantauanList, (newList) => {
 }
 
 .card {
-  @apply bg-white rounded-lg shadow-sm border border-gray-200;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  border: 1px solid rgb(229 231 235);
 }
 
 .card-header {
-  @apply p-6 border-b border-gray-200;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgb(229 231 235);
 }
 
 .card-body {
-  @apply p-6;
+  padding: 1.5rem;
 }
 
 .card-footer {
-  @apply p-6 border-t border-gray-200;
+  padding: 1.5rem;
+  border-top: 1px solid rgb(229 231 235);
 }
 </style>

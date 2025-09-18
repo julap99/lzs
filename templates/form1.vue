@@ -1,7 +1,5 @@
 <script setup>
-definePageMeta({
-  title: "Form 1",
-});
+import { ref } from 'vue';
 
 const param = ref({
   field1: "",

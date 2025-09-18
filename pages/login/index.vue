@@ -35,6 +35,9 @@ const login = async () => {
     } else if (username.value === "penolongamil") {
       userStore.setRoles(["PenolongAmil"]);
       navigateTo("/BF-PA/PP/penolong-amil");
+    } else if (username.value === "penggunaluar") {
+      userStore.setRoles(["PenggunaLuar"]);
+      navigateTo("/BF-PRF/pengguna-luar/dashboard");
     }
 
   // Simple redirect to dashboard

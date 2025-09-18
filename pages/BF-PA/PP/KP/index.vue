@@ -36,11 +36,53 @@
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">
-            Penamatan Jawatan
+            Perkhidmatan Penolong Amil
           </h1>
+
+          <!-- === Badge skop akses PIC === -->
+          <div v-if="currentRole === 'pic'" class="mt-1 text-xs text-gray-600">
+            Skop Akses PIC ({{ currentPICName }}):
+            <rs-badge variant="info" class="ml-1">
+              {{ picScope.institusi.join(', ') }} — {{ picScope.daerah.join(', ') }}
+            </rs-badge>
+          </div>
+          <!-- === tamat badge skop === -->
         </div>
         <div class="flex gap-2">
           <!-- Button removed as PP/KP doesn't handle adding new data/services -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Smart Filter Section -->
+    <div class="mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <FormKit
+          v-model="filters.searchQuery"
+          type="text"
+          placeholder="Cari nombor rujukan, nama calon, ID Pengenalan..."
+          :classes="{
+            input: '!py-2',
+          }"
+          class="md:col-span-2"
+        />
+        <div class="flex gap-2">
+          <rs-button
+            variant="primary"
+            @click="handleSearch"
+            class="!py-2 !px-6 whitespace-nowrap"
+          >
+            <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
+            Cari
+          </rs-button>
+          <rs-button
+            variant="secondary"
+            @click="clearFilters"
+            class="!py-2 !px-6 whitespace-nowrap"
+          >
+            <Icon name="ph:x-circle" class="w-4 h-4 mr-2" />
+            Set Semula
+          </rs-button>
         </div>
       </div>
     </div>
@@ -107,8 +149,8 @@
                           >
                             <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
                           </button>
-                          <!-- PYB Institusi specific actions -->
-                          <template v-if="currentRole === 'pyb-institusi'">
+                          <!-- PIC specific actions -->
+                          <template v-if="currentRole === 'pic'">
                             <button
                               v-if="request.status === 'aktif'"
                               @click="terminateService(request)"
@@ -125,8 +167,6 @@
                               <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                             </button>
                           </template>
-                          
-
                         </div>
                       </td>
                     </tr>
@@ -181,8 +221,8 @@
                           >
                             <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
                           </button>
-                          <!-- PYB Institusi specific actions -->
-                          <template v-if="currentRole === 'pyb-institusi'">
+                          <!-- PIC specific actions -->
+                          <template v-if="currentRole === 'pic'">
                             <button
                               @click="terminateService(request)"
                               title="Tamatkan"
@@ -198,8 +238,6 @@
                               <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                             </button>
                           </template>
-                          
-
                         </div>
                       </td>
                     </tr>
@@ -335,10 +373,56 @@
         
         <!-- Warning Letter Form -->
         <div class="space-y-6">
+          <!-- NEW: Warning reason dropdown -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Sebab Surat Amaran <span class="text-red-500">*</span>
+            </label>
+            <FormKit
+              type="select"
+              v-model="warningLetterData.reason"
+              :options="warningReasonOptions"
+              :classes="{
+                input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                wrapper: 'w-full'
+              }"
+              validation="required"
+              validation-label="Sebab surat amaran"
+            />
+          </div>
+
+          <!-- NEW: Custom reason when 'lain-lain' -->
+          <div v-if="warningLetterData.reason === 'lain-lain'">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Sebab Lain-lain <span class="text-red-500">*</span>
+            </label>
+            <FormKit
+              type="textarea"
+              v-model="warningLetterData.customReason"
+              placeholder="Nyatakan sebab khusus surat amaran..."
+              :classes="{
+                input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                wrapper: 'w-full'
+              }"
+              rows="4"
+              maxlength="500"
+              validation="required|length:10,500"
+              validation-label="Sebab lain-lain"
+            />
+            <div class="flex justify-between items-center mt-1">
+              <p class="text-xs text-gray-500">
+                Minimum 10 aksara, maksimum 500 aksara
+              </p>
+              <span class="text-xs" :class="getCounterClass(warningLetterData.customReason?.length || 0)">
+                {{ warningLetterData.customReason?.length || 0 }}/500
+              </span>
+            </div>
+          </div>
+
           <!-- File Upload Field -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              Muat Naik Minit Mesyuarat
+              Dokumen Sokongan
             </label>
             <FormKit
               type="file"
@@ -380,7 +464,7 @@
               <p class="text-xs text-gray-500">
                 Minimum 10 aksara, maksimum 500 aksara
               </p>
-              <span class="text-xs" :class="getNotesCounterClass()">
+              <span class="text-xs" :class="getCounterClass(warningLetterData.notes.length)">
                 {{ warningLetterData.notes.length }}/500
               </span>
             </div>
@@ -455,25 +539,64 @@
         
         <!-- Termination Form -->
         <div class="space-y-6">
-          <!-- Reason Selection -->
+          <!-- NEW: Category radio -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              Sebab Penamatan <span class="text-red-500">*</span>
+              Sebab Penamatan (Kategori) <span class="text-red-500">*</span>
+            </label>
+            <FormKit
+              type="radio"
+              v-model="terminateData.category"
+              :options="terminationCategoryOptions"
+              :classes="{
+                fieldset: 'space-y-2',
+                legend: 'sr-only',
+                options: 'flex flex-col md:flex-row md:space-x-6',
+                option: 'flex items-center space-x-2',
+                input: 'h-4 w-4 text-primary focus:ring-primary border-gray-300',
+                label: 'text-sm text-gray-700'
+              }"
+              validation="required"
+              validation-label="Kategori penamatan"
+            />
+          </div>
+
+          <!-- NEW: Reason dropdown based on category -->
+          <div v-if="terminateData.category === 'tukar_kariah'">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Sebab Tukar Kariah <span class="text-red-500">*</span>
             </label>
             <FormKit
               type="select"
               v-model="terminateData.reason"
-              :options="terminationReasonOptions"
+              :options="terminationReasonMoveOptions"
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
               }"
               validation="required"
-              validation-label="Sebab penamatan"
+              validation-label="Sebab tukar kariah"
             />
           </div>
 
-          <!-- Custom Reason Field (shown when "lain-lain" is selected) -->
+          <div v-else-if="terminateData.category === 'masalah_disiplin'">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Sebab Masalah Disiplin <span class="text-red-500">*</span>
+            </label>
+            <FormKit
+              type="select"
+              v-model="terminateData.reason"
+              :options="terminationReasonDisciplineOptions"
+              :classes="{
+                input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
+                wrapper: 'w-full'
+              }"
+              validation="required"
+              validation-label="Sebab masalah disiplin"
+            />
+          </div>
+
+          <!-- NEW: Custom reason when 'lain-lain' -->
           <div v-if="terminateData.reason === 'lain-lain'">
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Sebab Lain-lain <span class="text-red-500">*</span>
@@ -599,48 +722,27 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
-import { formatDate } from "~/utils/dateFormatter";
+import { ref, computed, watch } from "vue";
+import { Icon } from "#components";
 
 definePageMeta({
   title: "Perkhidmatan Penolong Amil",
   breadcrumb: [
-    {
-      name: "BF-PA",
-      type: "link",
-      path: "/BF-PA",
-    },
-    {
-      name: "PP",
-      type: "link",
-      path: "/BF-PA/PP",
-    },
-    {
-      name: "Perkhidmatan Penolong Amil",
-      type: "current",
-      path: "/BF-PA/PP/KP",
-    },
+    { name: "BF-PA", type: "link", path: "/BF-PA" },
+    { name: "PP", type: "link", path: "/BF-PA/PP" },
+    { name: "Perkhidmatan Penolong Amil", type: "current", path: "/BF-PA/PP/KP" },
   ],
 });
 
 // Enhanced reactive data
 const breadcrumb = ref([
-  {
-    name: "BF-PA",
-    type: "link",
-    path: "/BF-PA",
-  },
-  {
-    name: "PP",
-    type: "link",
-    path: "/BF-PA/PP",
-  },
-  {
-    name: "Perkhidmatan Penolong Amil",
-    type: "current",
-    path: "/BF-PA/PP/KP",
-  },
+  { name: "BF-PA", type: "link", path: "/BF-PA" },
+  { name: "PP", type: "link", path: "/BF-PA/PP" },
+  { name: "Perkhidmatan Penolong Amil", type: "current", path: "/BF-PA/PP/KP" },
 ]);
+
+// Search state to control when filters are applied
+const isSearchTriggered = ref(false);
 
 // Simplified filters
 const filters = ref({
@@ -676,16 +778,34 @@ const showWarningModal = ref(false);
 const warningLetterData = ref({
   file: null,
   notes: "",
+  reason: "",        // NEW
+  customReason: "",  // NEW
 });
 const currentWarningRequest = ref(null);
 const fileError = ref("");
 const isSubmitting = ref(false);
 
+// NEW: dropdown options untuk sebab surat amaran
+const warningReasonOptions = [
+  { label: "Prestasi kerja tidak memuaskan", value: "prestasi_tidak_memuaskan" },
+  { label: "Lewat menghantar laporan", value: "lewat_hantar_laporan" },
+  { label: "Aduan masyarakat", value: "aduan_masyarakat" },
+  { label: "Gagal mematuhi arahan", value: "gagal_mematuhi_arahan" },
+  { label: "Lain-lain", value: "lain-lain" },
+];
+// reset custom reason kalau bukan 'lain-lain'
+watch(() => warningLetterData.value.reason, () => {
+  if (warningLetterData.value.reason !== 'lain-lain') {
+    warningLetterData.value.customReason = '';
+  }
+});
+
 // Terminate Service Modal State
 const showTerminateModal = ref(false);
 const terminateData = ref({
-  reason: "",
-  customReason: "",
+  category: "",           // NEW: 'tukar_kariah' | 'masalah_disiplin'
+  reason: "",             // NEW: reason from selected category
+  customReason: "",       // NEW: when reason === 'lain-lain'
   supportingDocuments: null,
   additionalNotes: "",
   confirmation: false,
@@ -694,7 +814,46 @@ const currentTerminateRequest = ref(null);
 const terminateFileError = ref("");
 const isTerminateSubmitting = ref(false);
 
-// Enhanced options
+// NEW: radio options kategori penamatan
+const terminationCategoryOptions = [
+  { label: "Tukar Kariah", value: "tukar_kariah" },
+  { label: "Masalah Disiplin", value: "masalah_disiplin" },
+  { label: "Meninggal Dunia", value: "meninggal_dunia" },
+];
+
+// NEW: dropdown options sebab bagi Tukar Kariah
+const terminationReasonMoveOptions = [
+  { label: "Berpindah alamat/kariah", value: "berpindah_alamat" },
+  { label: "Pertukaran institusi (masjid/Masjid)", value: "pertukaran_institusi" },
+  { label: "Penggabungan/penutupan institusi", value: "penggabungan_penutupan" },
+  { label: "Pertukaran kategori (PAK → KPAK dll.)", value: "pertukaran_kategori" },
+  { label: "Lain-lain", value: "lain-lain" },
+];
+
+// NEW: dropdown options sebab bagi Masalah Disiplin
+const terminationReasonDisciplineOptions = [
+  { label: "Tidak hadir mesyuarat tanpa sebab munasabah", value: "tidak_hadir_mesyuarat" },
+  { label: "Gagal mematuhi arahan/peraturan", value: "gagal_mematuhi_arahan" },
+  { label: "Pelanggaran berulang kod etika", value: "pelanggaran_berulang" },
+  { label: "Tidak menunaikan tanggungjawab", value: "tidak_menunaikan_tanggungjawab" },
+  { label: "Tingkah laku tidak sesuai dengan imej institusi", value: "tingkah_laku_tidak_sesuai" },
+  { label: "Kemudaratan kepada kepentingan awam/agama", value: "kemudaratan_awam_agama" },
+  { label: "Lain-lain", value: "lain-lain" },
+];
+
+// kosongkan reason & customReason bila kategori bertukar
+watch(() => terminateData.value.category, () => {
+  terminateData.value.reason = "";
+  terminateData.value.customReason = "";
+});
+// kosongkan customReason bila reason bukan 'lain-lain'
+watch(() => terminateData.value.reason, () => {
+  if (terminateData.value.reason !== 'lain-lain') {
+    terminateData.value.customReason = "";
+  }
+});
+
+// Enhanced options (legacy filters/lists for table etc.)
 const statusOptions = [
   { label: "Sila pilih...", value: "" },
   { label: "Aktif", value: "aktif" },
@@ -707,68 +866,54 @@ const kategoriOptions = [
   { label: "Penolong Amil Fitrah", value: "fitrah" },
   { label: "Penolong Amil Padi", value: "padi" },
   { label: "Penolong Amil Kariah", value: "kariah" },
-  { label: "Penolong Amil Komuniti", value: "komuniti" },
+  { label: "Penolong Amil Kariah", value: "Kariah" },
 ];
 
 const institusiOptions = [
   { label: "Sila pilih...", value: "" },
   { label: "Masjid Al-Hidayah", value: "masjid_al_hidayah" },
-  { label: "Surau Al-Amin", value: "surau_al_amin" },
+  { label: "Masjid Al-Amin", value: "Masjid_al_amin" },
   { label: "Kompleks Islam", value: "kompleks_islam" },
 ];
 
 const sesiOptions = [
   { label: "Sila pilih...", value: "" },
   { label: "2023/2024", value: "2023/2024" },
-  { label: "2024/2025", value: "2024/2025" },
+  { label: "2025-2030", value: "2025-2030" },
   { label: "2025/2026", value: "2025/2026" },
 ];
 
 const daerahOptions = [
   { label: "Sila pilih...", value: "" },
-  { label: "Kuala Lumpur", value: "kuala_lumpur" },
-  { label: "Selangor", value: "selangor" },
-  { label: "Johor", value: "johor" },
-  { label: "Pahang", value: "pahang" },
-  { label: "Terengganu", value: "terengganu" },
-  { label: "Kedah", value: "kedah" },
-  { label: "Negeri Sembilan", value: "negeri_sembilan" },
-  { label: "Melaka", value: "melaka" },
-  { label: "Perak", value: "perak" },
-  { label: "Kelantan", value: "kelantan" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu_langat" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Selangor", value: "kuala_selangor" },
+  { label: "Hulu Selangor", value: "hulu_selangor" },
+  { label: "Sabak Bernam", value: "sabak_bernam" },
+  { label: "Sepang", value: "sepang" },
+  { label: "Kuala Langat", value: "kuala_langat" },
 ];
 
-const terminationReasonOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Tidak hadir mesyuarat tanpa sebab yang munasabah", value: "tidak_hadir_mesyuarat" },
-  { label: "Gagal mematuhi arahan dan peraturan yang ditetapkan", value: "gagal_mematuhi_arahan" },
-  { label: "Pelanggaran berulang terhadap kod etika perkhidmatan", value: "pelanggaran_berulang" },
-  { label: "Tidak menunaikan tanggungjawab sebagai Penolong Amil", value: "tidak_menunaikan_tanggungjawab" },
-  { label: "Tingkah laku yang tidak sesuai dengan imej institusi", value: "tingkah_laku_tidak_sesuai" },
-  { label: "Kemudaratan kepada kepentingan awam dan agama", value: "kemudaratan_kepentingan_awam" },
-  { label: "Lain-lain", value: "lain-lain" },
-];
-
-// Enhanced mock data with new structure
+// === DATA: Requests (contoh) ===
 const requests = ref([
   {
     id: "KP001",
     noRujukan: "KP-2024-001",
-    nama: "Ahmad bin Abdullah",
-    idPengenalan: "901231012345",
+    nama: "Ismail bin Hassan",
+    idPengenalan: "870625098765",
     kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Kuala Lumpur",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Hulu Langat",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
-    // Enhanced profile data
     jantina: "Lelaki",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
     alamat: "No. 123, Jalan Utama, Taman Seri Indah, 43000 Kajang, Selangor",
     negeri: "Selangor",
-    daerah: "Hulu Langat",
     bandar: "Kajang",
     poskod: "43000",
     noTelefon: "03-8736 1234",
@@ -788,19 +933,17 @@ const requests = ref([
     noRujukan: "KP-2024-002",
     nama: "Mohd Ali bin Hassan",
     idPengenalan: "850315045678",
-    kategori: "Penolong Amil Komuniti",
-    sesi: "2024/2025",
-    daerah: "Selangor",
-    institusi: "Kompleks Islam",
+    kategori: "Penolong Amil Kariah",
+    sesi: "2025-2030",
+    daerah: "Petaling",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
-    // Enhanced profile data
     jantina: "Lelaki",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 45, Jalan Masjid, Taman Islam, 40100 Shah Alam, Selangor",
+    alamat: "No. 45, Jalan Masjid, Seksyen 9, 40100 Shah Alam, Selangor",
     negeri: "Selangor",
-    daerah: "Petaling",
     bandar: "Shah Alam",
     poskod: "40100",
     noTelefon: "03-5510 2345",
@@ -821,20 +964,18 @@ const requests = ref([
     nama: "Fatimah binti Omar",
     idPengenalan: "920512078901",
     kategori: "Penolong Amil Fitrah",
-    sesi: "2024/2025",
-    daerah: "Perak",
-    institusi: "Masjid Al-Hidayah",
+    sesi: "2025-2030",
+    daerah: "Klang",
+    institusi: "Masjid Al-Amin",
     status: "suspended",
-    // Enhanced profile data
     jantina: "Perempuan",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 78, Jalan Sultan, Taman Diraja, 30000 Ipoh, Perak",
-    negeri: "Perak",
-    daerah: "Kinta",
-    bandar: "Ipoh",
-    poskod: "30000",
+    alamat: "No. 78, Jalan Sultan Abdul Aziz, 41200 Klang, Selangor",
+    negeri: "Selangor",
+    bandar: "Klang",
+    poskod: "41200",
     noTelefon: "05-255 1234",
     noTelefonBimbit: "014-567 8901",
     emel: "fatimah.omar@email.com",
@@ -853,20 +994,18 @@ const requests = ref([
     nama: "Siti Aminah binti Ismail",
     idPengenalan: "880723123456",
     kategori: "Penolong Amil Padi",
-    sesi: "2024/2025",
-    daerah: "Kedah",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Hulu Selangor",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
-    // Enhanced profile data
     jantina: "Perempuan",
     statusPerkahwinan: "Bujang",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 12, Kampung Padi, Mukim Alor Setar, 05000 Alor Setar, Kedah",
-    negeri: "Kedah",
-    daerah: "Alor Setar",
-    bandar: "Alor Setar",
-    poskod: "05000",
+    alamat: "No. 12, Taman Arif, 44000 Kuala Kubu Bharu, Selangor",
+    negeri: "Selangor",
+    bandar: "Kuala Kubu Bharu",
+    poskod: "44000",
     noTelefon: "04-733 4567",
     noTelefonBimbit: "015-678 9012",
     emel: "siti.aminah@email.com",
@@ -885,20 +1024,18 @@ const requests = ref([
     nama: "Zainal bin Ibrahim",
     idPengenalan: "870415234567",
     kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Kelantan",
-    institusi: "Kompleks Islam",
+    sesi: "2025-2030",
+    daerah: "Kuala Selangor",
+    institusi: "Masjid Al-Amin",
     status: "terminated",
-    // Enhanced profile data
     jantina: "Lelaki",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 56, Jalan Kota Bharu, Taman Islam, 15000 Kota Bharu, Kelantan",
-    negeri: "Kelantan",
-    daerah: "Kota Bharu",
-    bandar: "Kota Bharu",
-    poskod: "15000",
+    alamat: "No. 56, Jalan Raja Lumu, 45000 Kuala Selangor, Selangor",
+    negeri: "Selangor",
+    bandar: "Kuala Selangor",
+    poskod: "45000",
     noTelefon: "09-744 5678",
     noTelefonBimbit: "016-789 0123",
     emel: "zainal.ibrahim@email.com",
@@ -916,21 +1053,19 @@ const requests = ref([
     noRujukan: "KP-2024-006",
     nama: "Nurul Huda binti Ahmad",
     idPengenalan: "930625345678",
-    kategori: "Penolong Amil Komuniti",
-    sesi: "2024/2025",
-    daerah: "Terengganu",
-    institusi: "Masjid Al-Hidayah",
+    kategori: "Penolong Amil Kariah",
+    sesi: "2025-2030",
+    daerah: "Kuala Langat",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
-    // Enhanced profile data
     jantina: "Perempuan",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 89, Jalan Kuala Terengganu, Taman Islam, 20000 Kuala Terengganu, Terengganu",
-    negeri: "Terengganu",
-    daerah: "Kuala Terengganu",
-    bandar: "Kuala Terengganu",
-    poskod: "20000",
+    alamat: "No. 89, Jalan Sultan Alam Shah, 42700 Banting, Selangor",
+    negeri: "Selangor",
+    bandar: "Banting",
+    poskod: "42700",
     noTelefon: "09-622 6789",
     noTelefonBimbit: "017-890 1234",
     emel: "nurul.huda@email.com",
@@ -949,20 +1084,18 @@ const requests = ref([
     nama: "Abdul Rahman bin Hassan",
     idPengenalan: "890715456789",
     kategori: "Penolong Amil Fitrah",
-    sesi: "2024/2025",
-    daerah: "Pahang",
-    institusi: "Surau Al-Amin",
+    sesi: "2025-2030",
+    daerah: "Gombak",
+    institusi: "Masjid Al-Amin",
     status: "suspended",
-    // Enhanced profile data
     jantina: "Lelaki",
     statusPerkahwinan: "Bercerai",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 34, Jalan Kuantan, Taman Islam, 25000 Kuantan, Pahang",
-    negeri: "Pahang",
-    daerah: "Kuantan",
-    bandar: "Kuantan",
-    poskod: "25000",
+    alamat: "No. 34, Jalan Samudera, 68100 Batu Caves, Selangor",
+    negeri: "Selangor",
+    bandar: "Batu Caves",
+    poskod: "68100",
     noTelefon: "09-516 7890",
     noTelefonBimbit: "018-901 2345",
     emel: "abdul.rahman@email.com",
@@ -981,20 +1114,18 @@ const requests = ref([
     nama: "Noraini binti Mohamed",
     idPengenalan: "910318567890",
     kategori: "Penolong Amil Padi",
-    sesi: "2024/2025",
-    daerah: "Negeri Sembilan",
-    institusi: "Kompleks Islam",
+    sesi: "2025-2030",
+    daerah: "Sabak Bernam",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
-    // Enhanced profile data
     jantina: "Perempuan",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 67, Jalan Seremban, Taman Islam, 70000 Seremban, Negeri Sembilan",
-    negeri: "Negeri Sembilan",
-    daerah: "Seremban",
-    bandar: "Seremban",
-    poskod: "70000",
+    alamat: "No. 67, Jalan Perdana, 45200 Sabak Bernam, Selangor",
+    negeri: "Selangor",
+    bandar: "Sabak Bernam",
+    poskod: "45200",
     noTelefon: "06-762 8901",
     noTelefonBimbit: "019-012 3456",
     emel: "noraini.mohamed@email.com",
@@ -1013,27 +1144,25 @@ const requests = ref([
     nama: "Ismail bin Yusof",
     idPengenalan: "860420678901",
     kategori: "Penolong Amil Kariah",
-    sesi: "2024/2025",
-    daerah: "Melaka",
-    institusi: "Masjid Al-Hidayah",
+    sesi: "2025-2030",
+    daerah: "Sepang",
+    institusi: "Masjid Al-Amin",
     status: "terminated",
-    // Enhanced profile data
     jantina: "Lelaki",
     statusPerkahwinan: "Janda/Duda",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 23, Jalan Melaka, Taman Islam, 75000 Melaka, Melaka",
-    negeri: "Melaka",
-    daerah: "Melaka Tengah",
-    bandar: "Bandaraya Melaka",
-    poskod: "75000",
+    alamat: "No. 23, Jalan Teknokrat, 63000 Cyberjaya, Selangor",
+    negeri: "Selangor",
+    bandar: "Cyberjaya",
+    poskod: "63000",
     noTelefon: "06-283 9012",
     noTelefonBimbit: "011-123 4567",
     emel: "ismail.yusof@email.com",
     pekerjaan: "Pegawai Pelancongan",
     namaMajikan: "Lembaga Pelancongan Melaka",
     tahapPendidikan: "Diploma",
-    institusiPendidikan: "Kolej Komuniti Melaka",
+    institusiPendidikan: "Kolej Kariah Melaka",
     tarikhMulaPerkhidmatan: "10-02-2023",
     tempohPerkhidmatan: "1 tahun 2 bulan",
     jumlahSuratAmaran: "3",
@@ -1044,21 +1173,19 @@ const requests = ref([
     noRujukan: "KP-2024-010",
     nama: "Rohana binti Sulaiman",
     idPengenalan: "940712789012",
-    kategori: "Penolong Amil Komuniti",
-    sesi: "2024/2025",
-    daerah: "Johor",
-    institusi: "Surau Al-Amin",
+    kategori: "Penolong Amil Kariah",
+    sesi: "2025-2030",
+    daerah: "Petaling",
+    institusi: "Masjid Al-Amin",
     status: "aktif",
-    // Enhanced profile data
     jantina: "Perempuan",
     statusPerkahwinan: "Bujang",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 90, Jalan Johor Bahru, Taman Islam, 80000 Johor Bahru, Johor",
-    negeri: "Johor",
-    daerah: "Johor Bahru",
-    bandar: "Johor Bahru",
-    poskod: "80000",
+    alamat: "No. 90, Jalan SS 21/1, 47400 Petaling Jaya, Selangor",
+    negeri: "Selangor",
+    bandar: "Petaling Jaya",
+    poskod: "47400",
     noTelefon: "07-224 0123",
     noTelefonBimbit: "010-234 5678",
     emel: "rohana.sulaiman@email.com",
@@ -1071,7 +1198,170 @@ const requests = ref([
     jumlahSuratAmaran: "0",
     statusTerakhir: "Aktif"
   },
+  {
+  id: "KP011",
+  noRujukan: "KP-2024-011",
+  nama: "Hafiz bin Saadon",
+  idPengenalan: "950812086543",
+  kategori: "Penolong Amil Kariah",
+  sesi: "2025-2030",
+  daerah: "Hulu Langat",
+  institusi: "Masjid Al-Amin",
+  status: "aktif",
+  jantina: "Lelaki",
+  statusPerkahwinan: "Bujang",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 21, Jalan Reko, 43000 Kajang, Selangor",
+  negeri: "Selangor",
+  bandar: "Kajang",
+  poskod: "43000",
+  noTelefon: "03-8920 1122",
+  noTelefonBimbit: "012-889 2211",
+  emel: "hafiz.saadon@email.com",
+  pekerjaan: "Eksekutif",
+  namaMajikan: "Syarikat Perkhidmatan Kajang",
+  tahapPendidikan: "Ijazah Sarjana Muda",
+  institusiPendidikan: "Universiti Kebangsaan Malaysia",
+  tarikhMulaPerkhidmatan: "12-11-2023",
+  tempohPerkhidmatan: "1 tahun 9 bulan",
+  jumlahSuratAmaran: "0",
+  statusTerakhir: "Aktif"
+},{
+  id: "KP012",
+  noRujukan: "KP-2024-012",
+  nama: "Aisyah binti Zulkifli",
+  idPengenalan: "940106105432",
+  kategori: "Penolong Amil Fitrah",
+  sesi: "2025-2030",
+  daerah: "Hulu Langat",
+  institusi: "Masjid Al-Amin",
+  status: "suspended",
+  jantina: "Perempuan",
+  statusPerkahwinan: "Berkahwin",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 8, Jalan Delima, 43000 Kajang, Selangor",
+  negeri: "Selangor",
+  bandar: "Kajang",
+  poskod: "43000",
+  noTelefon: "03-8735 7788",
+  noTelefonBimbit: "013-772 8899",
+  emel: "aisyah.zulkifli@email.com",
+  pekerjaan: "Guru",
+  namaMajikan: "SK Saujana Impian",
+  tahapPendidikan: "Ijazah Sarjana Muda",
+  institusiPendidikan: "Universiti Malaya",
+  tarikhMulaPerkhidmatan: "05-03-2024",
+  tempohPerkhidmatan: "6 bulan",
+  jumlahSuratAmaran: "1",
+  statusTerakhir: "Dalam Pemerhatian"
+},{
+  id: "KP013",
+  noRujukan: "KP-2024-013",
+  nama: "Muhammad Faiz bin Razak",
+  idPengenalan: "900221086711",
+  kategori: "Penolong Amil Kariah",
+  sesi: "2025-2030",
+  daerah: "Petaling",
+  institusi: "Masjid Al-Amin",
+  status: "aktif",
+  jantina: "Lelaki",
+  statusPerkahwinan: "Berkahwin",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 5, Jalan Flora, 40100 Shah Alam, Selangor",
+  negeri: "Selangor",
+  bandar: "Shah Alam",
+  poskod: "40100",
+  noTelefon: "03-5523 2210",
+  noTelefonBimbit: "017-222 7788",
+  emel: "faiz.razak@email.com",
+  pekerjaan: "Pegawai IT",
+  namaMajikan: "Syarikat Teknologi Shah Alam",
+  tahapPendidikan: "Ijazah Sarjana Muda",
+  institusiPendidikan: "UiTM Shah Alam",
+  tarikhMulaPerkhidmatan: "10-01-2024",
+  tempohPerkhidmatan: "8 bulan",
+  jumlahSuratAmaran: "0",
+  statusTerakhir: "Aktif"
+},{
+  id: "KP014",
+  noRujukan: "KP-2024-014",
+  nama: "Zulaikha binti Salleh",
+  idPengenalan: "970904106532",
+  kategori: "Penolong Amil Padi",
+  sesi: "2025-2030",
+  daerah: "Hulu Langat",
+  institusi: "Masjid Al-Hidayah",
+  status: "terminated",
+  jantina: "Perempuan",
+  statusPerkahwinan: "Bujang",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 33, Jalan Bukit, 43000 Kajang, Selangor",
+  negeri: "Selangor",
+  bandar: "Kajang",
+  poskod: "43000",
+  noTelefon: "03-8734 9900",
+  noTelefonBimbit: "016-444 9911",
+  emel: "zulaikha.salleh@email.com",
+  pekerjaan: "Pegawai Pertanian",
+  namaMajikan: "LPP",
+  tahapPendidikan: "Diploma",
+  institusiPendidikan: "Politeknik Sultan Salahuddin Abdul Aziz Shah",
+  tarikhMulaPerkhidmatan: "22-05-2023",
+  tempohPerkhidmatan: "1 tahun 3 bulan",
+  jumlahSuratAmaran: "2",
+  statusTerakhir: "Telah Ditamatkan"
+}
+,{
+  id: "KP015",
+  noRujukan: "KP-2024-015",
+  nama: "Ali bin Bahri",
+  idPengenalan: "820304105432",
+  kategori: "Penolong Amil Kariah",
+  sesi: "2025-2030",
+  daerah: "Hulu Langat",
+  institusi: "Masjid Al-Amin",
+  status: "aktif",
+  jantina: "Lelaki",
+  statusPerkahwinan: "Berkahwin",
+  bangsa: "Melayu",
+  agama: "Islam",
+  alamat: "No. 14, Jalan Impian, 43000 Kajang, Selangor",
+  negeri: "Selangor",
+  bandar: "Kajang",
+  poskod: "43000",
+  noTelefon: "03-8737 2200",
+  noTelefonBimbit: "012-668 5522",
+  emel: "ali.bahri@email.com",
+  pekerjaan: "Pegawai Pentadbiran",
+  namaMajikan: "Majlis Agama Islam Selangor",
+  tahapPendidikan: "Ijazah Sarjana Muda",
+  institusiPendidikan: "Universiti Kebangsaan Malaysia",
+  tarikhMulaPerkhidmatan: "18-07-2023",
+  tempohPerkhidmatan: "2 tahun 1 bulan",
+  jumlahSuratAmaran: "0",
+  statusTerakhir: "Aktif"
+}
+
 ]);
+
+/* =========================================================
+   === SKOP PAPARAN PIC (Ali bin Ahad → Al-Amin @ Hulu Langat) ===
+   ========================================================= */
+const currentPICName = ref('Ali bin Ahad'); // contoh PIC aktif
+const picScope = ref({
+  institusi: ['Masjid Al-Amin'], // boleh lebih dari satu
+  daerah: ['Hulu Langat'],       // boleh lebih dari satu
+});
+// normalizer & helper untuk perbandingan yang robust
+const normalize = (s) =>
+  (s || '').toString().toLowerCase().replace(/[_-]/g, ' ').replace(/\s+/g, ' ').trim();
+const inList = (val, list) =>
+  !list?.length || list.map(normalize).includes(normalize(val));
+/* ======================================================= */
 
 // Enhanced computed properties with role-specific filtering
 const filteredRequests = computed(() => {
@@ -1082,8 +1372,8 @@ const filteredRequests = computed(() => {
     result = result.filter(request => request.status === activeStatusTab.value);
   }
   
-  // Apply search filter
-  if (filters.value.searchQuery) {
+  // Only apply search filter if search button was clicked
+  if (isSearchTriggered.value && filters.value.searchQuery) {
     const query = filters.value.searchQuery.toLowerCase();
     result = result.filter(request => 
       (request.noRujukan || request.rujukan)?.toLowerCase().includes(query) ||
@@ -1128,6 +1418,14 @@ const filteredRequests = computed(() => {
       (request.daerah || request.newDaerah)?.toLowerCase().includes(filters.value.daerah.toLowerCase())
     );
   }
+
+  // === Hadkan paparan jika role = PIC ===
+  if (currentRole.value === 'pic') {
+    result = result.filter((r) =>
+      inList(r.institusi || r.newInstitusi, picScope.value.institusi) &&
+      inList(r.daerah || r.newDaerah, picScope.value.daerah)
+    );
+  }
   
   return result;
 });
@@ -1139,33 +1437,45 @@ const paginatedRequests = computed(() => {
   return filteredRequests.value.slice(startIndex.value, endIndex.value);
 });
 
-// Form validation computed property
+// VALIDATION — Warning Letter Modal
 const isFormValid = computed(() => {
-  return warningLetterData.value.file && 
-         warningLetterData.value.notes && 
-         warningLetterData.value.notes.length >= 10 && 
-         warningLetterData.value.notes.length <= 500 && 
-         !fileError.value;
-});
+  const base =
+    warningLetterData.value.reason &&               // NEW
+    warningLetterData.value.file &&
+    warningLetterData.value.notes &&
+    warningLetterData.value.notes.length >= 10 &&
+    warningLetterData.value.notes.length <= 500 &&
+    !fileError.value;
 
-// Termination Form validation computed property
-const isTerminateFormValid = computed(() => {
-  if (terminateData.value.reason === "lain-lain") {
-    return terminateData.value.customReason && 
-           terminateData.value.customReason.length >= 10 && 
-           terminateData.value.customReason.length <= 500 && 
-           terminateData.value.supportingDocuments && 
-           terminateData.value.confirmation &&
-           !terminateFileError.value;
-  } else {
-    return terminateData.value.reason && 
-           terminateData.value.supportingDocuments && 
-           terminateData.value.confirmation &&
-           !terminateFileError.value;
+  if (!base) return false;
+
+  if (warningLetterData.value.reason === 'lain-lain') {
+    const l = warningLetterData.value.customReason?.length || 0;
+    return l >= 10 && l <= 500;
   }
+  return true;
 });
 
-// Enhanced helper functions
+// VALIDATION — Terminate Modal
+const isTerminateFormValid = computed(() => {
+  // require category + reason
+  if (!terminateData.value.category || !terminateData.value.reason) return false;
+
+  // custom reason length when reason === 'lain-lain'
+  if (terminateData.value.reason === 'lain-lain') {
+    const l = terminateData.value.customReason?.length || 0;
+    if (l < 10 || l > 500) return false;
+  }
+
+  // require file + confirmation
+  if (!terminateData.value.supportingDocuments || !terminateData.value.confirmation) return false;
+
+  if (terminateFileError.value) return false;
+
+  return true;
+});
+
+// Helpers
 const getStatusVariant = (status) => {
   const variants = {
     aktif: "success",
@@ -1195,22 +1505,24 @@ const getWarningCountVariant = (count) => {
   return "danger"; // 3 or more
 };
 
-// Helper method for status dashboard
 const getStatusCount = (status) => {
   return requests.value.filter(request => request.status === status).length;
 };
 
-// Helper method for tab requests
 const getTabRequests = (status) => {
   let result = [...requests.value];
-  
-  // Filter by status tab
-  if (status) {
-    result = result.filter(request => request.status === status);
+  if (status) result = result.filter(request => request.status === status);
+
+  // === Hadkan paparan jika role = PIC (untuk setiap tab) ===
+  if (currentRole.value === 'pic') {
+    result = result.filter((r) =>
+      inList(r.institusi || r.newInstitusi, picScope.value.institusi) &&
+      inList(r.daerah || r.newDaerah, picScope.value.daerah)
+    );
   }
   
-  // Apply search filter
-  if (filters.value.searchQuery) {
+  // Only apply search filter if search button was clicked
+  if (isSearchTriggered.value && filters.value.searchQuery) {
     const query = filters.value.searchQuery.toLowerCase();
     result = result.filter(request => 
       (request.noRujukan || request.rujukan)?.toLowerCase().includes(query) ||
@@ -1223,65 +1535,33 @@ const getTabRequests = (status) => {
     );
   }
   
-  // Apply status filter
-  if (filters.value.status) {
-    result = result.filter(request => request.status === filters.value.status);
-  }
-  
-  // Apply kategori filter
+  if (filters.value.status) result = result.filter(request => request.status === filters.value.status);
   if (filters.value.kategori) {
     result = result.filter(request => 
       (request.kategori || request.newKategori)?.toLowerCase().includes(filters.value.kategori.toLowerCase())
     );
   }
-  
-  // Apply institusi filter
   if (filters.value.institusi) {
     result = result.filter(request => 
       (request.institusi || request.newInstitusi)?.toLowerCase().includes(filters.value.institusi.toLowerCase())
     );
   }
-
-  // Apply sesi filter
   if (filters.value.sesi) {
     result = result.filter(request => 
       (request.sesi || request.newSesi)?.toLowerCase().includes(filters.value.sesi.toLowerCase())
     );
   }
-
-  // Apply daerah filter
   if (filters.value.daerah) {
     result = result.filter(request => 
       (request.daerah || request.newDaerah)?.toLowerCase().includes(filters.value.daerah.toLowerCase())
     );
   }
-  
   return result;
 };
 
-// Enhanced methods
-const clearFilters = () => {
-  filters.value = {
-    searchQuery: "",
-    status: "",
-    kategori: "",
-    institusi: "",
-    sesi: "",
-    daerah: "",
-  };
-  currentPage.value = 1;
-  showNotificationMessage("Penapis telah dikosongkan", "Semua penapis telah dikosongkan dan senarai telah dikemaskini.");
-};
-
-const applyFilters = () => {
-  currentPage.value = 1;
-  showNotificationMessage("Penapis telah digunakan", `${filteredRequests.value.length} rekod ditemui berdasarkan penapis yang dipilih.`);
-};
-
 const viewRequest = (request) => {
-  // Navigate to role-specific detail page based on current role
   const role = currentRole.value;
-  if (role === "pyb-institusi") {
+  if (role === "pic") {
     navigateTo(`/BF-PA/PP/KP/pyb-institusi/detail/${request.noRujukan || request.rujukan}`);
   } else {
     navigateTo(`/BF-PA/PP/KP/${role}/detail/${request.noRujukan || request.rujukan}`);
@@ -1293,54 +1573,22 @@ const editRequest = (request) => {
 };
 
 const exportData = () => {
-  // Simulate export functionality
   showNotificationMessage("Muat Turun Berjaya", "Data telah dieksport ke fail Excel.");
 };
 
-// PYB Institusi specific actions
+// PIC specific actions
 const terminateService = (request) => {
-  // Populate with comprehensive mock data for presentation
   currentTerminateRequest.value = {
-    // Basic request info
     ...request,
-    
-    // Personal Information
     nama: request.nama || "Ahmad bin Abdullah",
     idPengenalan: request.idPengenalan || "901231012345",
-    jantina: "Lelaki",
-    statusPerkahwinan: "Berkahwin",
-    bangsa: "Melayu",
-    agama: "Islam",
-    
-    // Contact Information
-    alamat: "No. 123, Jalan Utama, Taman Seri Indah, 43000 Kajang, Selangor",
-    negeri: "Selangor",
-    daerah: "Hulu Langat",
-    bandar: "Kajang",
-    poskod: "43000",
-    noTelefon: "03-8736 1234",
-    noTelefonBimbit: "012-345 6789",
-    emel: "ahmad.abdullah@email.com",
-    
-    // Service Information
     kategori: request.kategori || "Penolong Amil Kariah",
-    sesi: request.sesi || "2024/2025",
+    sesi: request.sesi || "2025-2030",
     institusi: request.institusi || "Masjid Al-Hidayah",
-    
-    // Employment & Education
-    pekerjaan: "Pegawai Kerajaan",
-    namaMajikan: "Jabatan Agama Islam Selangor",
-    tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Islam Antarabangsa Malaysia",
-    
-    // Additional context for termination
-    tarikhMulaPerkhidmatan: "15-01-2023",
-    tempohPerkhidmatan: "1 tahun 3 bulan",
-    jumlahSuratAmaran: "3",
-    statusTerakhir: "Final Warning"
   };
   
   terminateData.value = {
+    category: "",
     reason: "",
     customReason: "",
     supportingDocuments: null,
@@ -1351,74 +1599,37 @@ const terminateService = (request) => {
   showTerminateModal.value = true;
 };
 
-// Ketua Divisyen specific actions
 const approveService = (request) => {
   const statusText = request.status === 'aktif' ? 'Aktif' : 'Dalam Pemerhatian';
   showNotificationMessage(
     "Perkhidmatan Diluluskan", 
     `Perkhidmatan ${request.noRujukan || request.rujukan} untuk ${request.nama || request.penolongAmil?.nama} dengan status ${statusText} telah diluluskan.`
   );
-  
-  // In real app, this would update the approval status
-  // For now, just show notification
 };
 
-const validateNotes = () => {
-  // This function can be used for additional validation if needed
-  // The FormKit validation will handle the basic validation
-};
+const validateNotes = () => {};
+const validateConfirmation = () => {};
+const validateTerminationReason = () => {};
+const validateCustomReason = () => {};
+const validateAdditionalNotes = () => {};
 
-const validateConfirmation = () => {
-  // This function can be used for additional validation if needed
-  // The FormKit validation will handle the basic validation
-};
-
-const validateTerminationReason = () => {
-  // This function can be used for additional validation if needed
-  // The FormKit validation will handle the basic validation
-};
-
-const validateCustomReason = () => {
-  // This function can be used for additional validation if needed
-  // The FormKit validation will handle the basic validation
-};
-
-const validateAdditionalNotes = () => {
-  // This function can be used for additional validation if needed
-  // The FormKit validation will handle the basic validation
-};
-
-const getNotesCounterClass = () => {
-  const length = warningLetterData.value.notes.length;
-  if (length < 10) {
-    return 'text-red-500';
-  } else if (length > 450) {
-    return 'text-orange-500';
-  } else {
-    return 'text-gray-500';
-  }
+const getCounterClass = (length) => {
+  if (length < 10) return 'text-red-500';
+  if (length > 450) return 'text-orange-500';
+  return 'text-gray-500';
 };
 
 const getTerminateNotesCounterClass = () => {
   const customReasonLength = terminateData.value.customReason?.length || 0;
   const additionalNotesLength = terminateData.value.additionalNotes?.length || 0;
   const length = Math.max(customReasonLength, additionalNotesLength);
-  
-  if (length > 450) {
-    return 'text-orange-500';
-  } else {
-    return 'text-gray-500';
-  }
+  return length > 450 ? 'text-orange-500' : 'text-gray-500';
 };
-
-
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
   fileError.value = "";
-  
   if (file) {
-    // Check file size (5MB = 5 * 1024 * 1024 bytes)
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       fileError.value = "Saiz fail terlalu besar. Maksimum 5MB dibenarkan.";
@@ -1426,8 +1637,6 @@ const handleFileChange = (event) => {
       event.target.value = "";
       return;
     }
-    
-    // Check file type
     const allowedTypes = ['.pdf', '.doc', '.docx'];
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
     if (!allowedTypes.includes(fileExtension)) {
@@ -1436,27 +1645,19 @@ const handleFileChange = (event) => {
       event.target.value = "";
       return;
     }
-    
-    // File is valid
     warningLetterData.value.file = file;
   }
 };
 
 const sendWarningLetter = (request) => {
-  // Populate with comprehensive mock data for presentation
   currentWarningRequest.value = {
-    // Basic request info
     ...request,
-    
-    // Personal Information
     nama: request.nama || "Ahmad bin Abdullah",
     idPengenalan: request.idPengenalan || "901231012345",
     jantina: request.jantina || "Lelaki",
     statusPerkahwinan: request.statusPerkahwinan || "Berkahwin",
     bangsa: request.bangsa || "Melayu",
     agama: request.agama || "Islam",
-    
-    // Contact Information
     alamat: request.alamat || "No. 123, Jalan Utama, Taman Seri Indah, 43000 Kajang, Selangor",
     negeri: request.negeri || "Selangor",
     daerah: request.daerah || "Hulu Langat",
@@ -1465,19 +1666,9 @@ const sendWarningLetter = (request) => {
     noTelefon: request.noTelefon || "03-8736 1234",
     noTelefonBimbit: request.noTelefonBimbit || "012-345 6789",
     emel: request.emel || "ahmad.abdullah@email.com",
-    
-    // Service Information
     kategori: request.kategori || "Penolong Amil Kariah",
-    sesi: request.sesi || "2024/2025",
+    sesi: request.sesi || "2025-2030",
     institusi: request.institusi || "Masjid Al-Hidayah",
-    
-    // Employment & Education
-    pekerjaan: request.pekerjaan || "Pegawai Kerajaan",
-    namaMajikan: request.namaMajikan || "Jabatan Agama Islam Selangor",
-    tahapPendidikan: request.tahapPendidikan || "Ijazah Sarjana Muda",
-    institusiPendidikan: request.institusiPendidikan || "Universiti Islam Antarabangsa Malaysia",
-    
-    // Additional context for warning letter
     tarikhMulaPerkhidmatan: request.tarikhMulaPerkhidmatan || "15-01-2023",
     tempohPerkhidmatan: request.tempohPerkhidmatan || "1 tahun 3 bulan",
     jumlahSuratAmaran: request.jumlahSuratAmaran || "0",
@@ -1487,33 +1678,25 @@ const sendWarningLetter = (request) => {
   warningLetterData.value = {
     file: null,
     notes: "",
+    reason: "",
+    customReason: "",
   };
   fileError.value = "";
   showWarningModal.value = true;
 };
 
 const submitWarningLetter = async () => {
-  if (warningLetterData.value.file && warningLetterData.value.notes && !fileError.value) {
+  if (isFormValid.value) {
     isSubmitting.value = true;
-    
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Here you would typically send the data to your backend
-      // For now, we'll just show a success message
       showNotificationMessage(
         "Surat Amaran Dihantar", 
         `Surat amaran telah dihantar kepada ${currentWarningRequest.value?.nama || currentWarningRequest.value?.penolongAmil?.nama} untuk ${currentWarningRequest.value?.noRujukan || currentWarningRequest.value?.rujukan}.`
       );
-      
-      // Reset modal and close
       closeWarningModal();
     } catch (error) {
-      showNotificationMessage(
-        "Ralat", 
-        "Gagal menghantar surat amaran. Sila cuba lagi."
-      );
+      showNotificationMessage("Ralat", "Gagal menghantar surat amaran. Sila cuba lagi.");
     } finally {
       isSubmitting.value = false;
     }
@@ -1521,8 +1704,7 @@ const submitWarningLetter = async () => {
 };
 
 const closeWarningModal = () => {
-  // Check if user has entered data and confirm before closing
-  if ((warningLetterData.value.file || warningLetterData.value.notes) && !isSubmitting.value) {
+  if ((warningLetterData.value.file || warningLetterData.value.notes || warningLetterData.value.reason || warningLetterData.value.customReason) && !isSubmitting.value) {
     if (confirm('Anda pasti mahu menutup modal ini? Data yang telah dimasukkan akan hilang.')) {
       resetWarningModal();
     }
@@ -1536,6 +1718,8 @@ const resetWarningModal = () => {
   warningLetterData.value = {
     file: null,
     notes: "",
+    reason: "",
+    customReason: "",
   };
   currentWarningRequest.value = null;
   fileError.value = "";
@@ -1546,7 +1730,6 @@ const showNotificationMessage = (title, message) => {
   notificationTitle.value = title;
   notificationMessage.value = message;
   showNotification.value = true;
-  
   setTimeout(() => {
     hideNotification();
   }, 5000);
@@ -1560,9 +1743,7 @@ const hideNotification = () => {
 const handleTerminateFileChange = (event) => {
   const file = event.target.files[0];
   terminateFileError.value = "";
-  
   if (file) {
-    // Check file size (5MB = 5 * 1024 * 1024 bytes)
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       terminateFileError.value = "Saiz fail terlalu besar. Maksimum 5MB dibenarkan.";
@@ -1570,8 +1751,6 @@ const handleTerminateFileChange = (event) => {
       event.target.value = "";
       return;
     }
-    
-    // Check file type
     const allowedTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
     if (!allowedTypes.includes(fileExtension)) {
@@ -1580,8 +1759,6 @@ const handleTerminateFileChange = (event) => {
       event.target.value = "";
       return;
     }
-    
-    // File is valid
     terminateData.value.supportingDocuments = file;
   }
 };
@@ -1589,25 +1766,15 @@ const handleTerminateFileChange = (event) => {
 const submitTermination = async () => {
   if (isTerminateFormValid.value) {
     isTerminateSubmitting.value = true;
-    
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Here you would typically send the data to your backend
-      // For now, we'll just show a success message
       showNotificationMessage(
         "Perkhidmatan Ditamatkan", 
         `Perkhidmatan ${currentTerminateRequest.value?.noRujukan || currentTerminateRequest.value?.rujukan} untuk ${currentTerminateRequest.value?.nama || currentTerminateRequest.value?.penolongAmil?.nama} telah ditamatkan.`
       );
-      
-      // Reset modal and close
       closeTerminateModal();
     } catch (error) {
-      showNotificationMessage(
-        "Ralat", 
-        "Gagal menamatkan perkhidmatan. Sila cuba lagi."
-      );
+      showNotificationMessage("Ralat", "Gagal menamatkan perkhidmatan. Sila cuba lagi.");
     } finally {
       isTerminateSubmitting.value = false;
     }
@@ -1615,8 +1782,7 @@ const submitTermination = async () => {
 };
 
 const closeTerminateModal = () => {
-  // Check if user has entered data and confirm before closing
-  if ((terminateData.value.reason || terminateData.value.customReason || terminateData.value.supportingDocuments || terminateData.value.additionalNotes || terminateData.value.confirmation) && !isTerminateSubmitting.value) {
+  if ((terminateData.value.category || terminateData.value.reason || terminateData.value.customReason || terminateData.value.supportingDocuments || terminateData.value.additionalNotes || terminateData.value.confirmation) && !isTerminateSubmitting.value) {
     if (confirm('Anda pasti mahu menutup modal ini? Data yang telah dimasukkan akan hilang.')) {
       resetTerminateModal();
     }
@@ -1628,6 +1794,7 @@ const closeTerminateModal = () => {
 const resetTerminateModal = () => {
   showTerminateModal.value = false;
   terminateData.value = {
+    category: "",
     reason: "",
     customReason: "",
     supportingDocuments: null,
@@ -1639,41 +1806,34 @@ const resetTerminateModal = () => {
   isTerminateSubmitting.value = false;
 };
 
-// Role-based access control - removed canCreateRequest as PP/KP doesn't handle adding new data
-
+// Role-based
 const canEditRequest = (request) => {
-  // Only allow editing if status is pending or need_more_info
   return request.status === "pending" || request.status === "need_more_info";
 };
 
-// Role-based action control
 const canPerformAction = (request) => {
-  // Only PYB Institusi can perform actions (terminate, warning letter)
-  return currentRole.value === "pyb-institusi";
+  return currentRole.value === "pic";
 };
 
-// Enhanced helper functions
 const getRoleSpecificDescription = (role) => {
   const descriptions = {
     "pt": "Lihat maklumat Perkhidmatan Penolong Amil",
     "eksekutif": "Lihat maklumat Perkhidmatan Penolong Amil",
     "ketua-jabatan": "Lihat maklumat Perkhidmatan Penolong Amil",
     "ketua-divisyen": "Lihat dan meluluskan maklumat Perkhidmatan Penolong Amil",
-    "pyb-institusi": "Pengurusan maklumat Perkhidmatan Penolong Amil oleh PYB Institusi",
+    "pic": "Pengurusan maklumat Perkhidmatan Penolong Amil oleh PIC",
   };
   return descriptions[role] || "Peranan ini mempunyai kebolehan yang berbeza.";
 };
 
-// Role Switcher State
-const currentRole = ref("pyb-institusi"); // Default role changed to PYB Institusi
+const currentRole = ref("pic");
 const roleOptions = [
   { label: "PT", value: "pt" },
   { label: "Eksekutif", value: "eksekutif" },
   { label: "Ketua Jabatan", value: "ketua-jabatan" },
   { label: "Ketua Divisyen", value: "ketua-divisyen" },
-  { label: "PYB Institusi", value: "pyb-institusi" },
+  { label: "PIC", value: "pic" },
 ];
-
 
 const getRoleVariant = (role) => {
   const variants = {
@@ -1681,7 +1841,7 @@ const getRoleVariant = (role) => {
     "eksekutif": "success",
     "ketua-jabatan": "warning",
     "ketua-divisyen": "danger",
-    "pyb-institusi": "primary",
+    "pic": "primary",
   };
   return variants[role] || "default";
 };
@@ -1692,33 +1852,57 @@ const getRoleLabel = (role) => {
     "eksekutif": "Eksekutif",
     "ketua-jabatan": "Ketua Jabatan",
     "ketua-divisyen": "Ketua Divisyen",
-    "pyb-institusi": "PYB Institusi",
+    "pic": "PIC",
   };
   return labels[role] || role;
 };
-
-
 
 const handleRoleChange = () => {
   showNotificationMessage("Peranan Berubah", `User sekarang adalah "${getRoleLabel(currentRole.value)}".`);
 };
 
+// Search functionality
+const handleSearch = () => {
+  isSearchTriggered.value = true;
+  currentPage.value = 1; // Reset to first page when searching
+  
+  // Show notification when search is performed
+  if (filters.value.searchQuery) {
+    const searchResults = getTabRequests(activeStatusTab.value);
+    showNotificationMessage(
+      "Carian Dilakukan", 
+      `${searchResults.length} rekod ditemui untuk "${filters.value.searchQuery}".`
+    );
+  }
+};
 
+const clearFilters = () => {
+  filters.value = {
+    searchQuery: "",
+    status: "",
+    kategori: "",
+    institusi: "",
+    sesi: "",
+    daerah: "",
+  };
+  isSearchTriggered.value = false;
+  currentPage.value = 1;
+  showNotificationMessage("Penapis telah dikosongkan", "Semua penapis telah dikosongkan dan senarai telah dikemaskini.");
+};
 
-// Watch for status tab changes to reset pagination
+const applyFilters = () => {
+  currentPage.value = 1;
+  showNotificationMessage("Penapis telah digunakan", `${filteredRequests.value.length} rekod ditemui berdasarkan penapis yang dipilih.`);
+};
+
+// Watchers
 watch(activeStatusTab, () => {
   currentPage.value = 1;
 });
 
-// Watch for filter changes to update applied filters
 watch(filters, () => {
-  // Auto-apply filters after a delay
-  clearTimeout(window.filterTimeout);
-  window.filterTimeout = setTimeout(() => {
-    if (filters.value.searchQuery || filters.value.status || filters.value.kategori || filters.value.institusi || filters.value.sesi || filters.value.daerah) {
-      applyFilters();
-    }
-  }, 500);
+  // Remove automatic filter application during typing
+  // Filters are now only applied when search button is clicked
 }, { deep: true });
 </script>
 
@@ -1734,4 +1918,4 @@ watch(filters, () => {
   opacity: 0;
   transform: translateY(-10px);
 }
-</style> 
+</style>

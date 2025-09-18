@@ -1,10 +1,11 @@
 <template>
   <div class="signature-pad-container">
-    <div class="signature-pad-wrapper">
+    <div ref="signaturePadContainer" class="signature-pad-wrapper">
       <VueSignaturePad
         ref="signaturePad"
         :options="options"
         @end="onEnd"
+        @ready="resizeSignaturePad"
         class="signature-pad"
       />
     </div>
@@ -30,7 +31,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import VueSignaturePad from 'vue3-signature-pad';
 
 const props = defineProps({
@@ -40,9 +41,10 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'error']);
 
 const signaturePad = ref(null);
+const signaturePadContainer = ref(null);
 const hasSignature = ref(false);
 
 const options = {
@@ -63,31 +65,126 @@ const clear = () => {
 const save = () => {
   if (!signaturePad.value) return;
   
-  const { isEmpty, data } = signaturePad.value.saveSignature();
-  if (!isEmpty) {
-    emit('update:modelValue', data);
+  try {
+    const { isEmpty, data } = signaturePad.value.saveSignature();
+    if (!isEmpty) {
+      emit('update:modelValue', data);
+    } else {
+      emit('error', 'Signature is empty');
+    }
+  } catch (error) {
+    console.error('Error saving signature:', error);
+    emit('error', error.message || 'Failed to save signature');
   }
 };
 
 const onEnd = () => {
   hasSignature.value = !signaturePad.value?.isEmpty();
 };
+
+// Resize signature pad to fit container
+const resizeSignaturePad = async () => {
+  await nextTick();
+  
+  if (signaturePad.value && signaturePadContainer.value) {
+    try {
+      const container = signaturePadContainer.value;
+      const canvas = container.querySelector('canvas');
+      
+      if (canvas) {
+        // Get container dimensions
+        const containerWidth = container.clientWidth;
+        const containerHeight = 200; // Fixed height
+        
+        // Set canvas size
+        canvas.width = containerWidth;
+        canvas.height = containerHeight;
+        
+        // Update canvas style
+        canvas.style.width = containerWidth + 'px';
+        canvas.style.height = containerHeight + 'px';
+        
+        // Trigger resize on the signature pad
+        if (signaturePad.value.resizeCanvas) {
+          signaturePad.value.resizeCanvas();
+        }
+      }
+    } catch (error) {
+      console.error('Error resizing signature pad:', error);
+    }
+  }
+};
+
+// Initialize signature pad
+onMounted(() => {
+  setTimeout(() => {
+    resizeSignaturePad();
+  }, 100);
+  
+  // Listen for window resize
+  window.addEventListener('resize', resizeSignaturePad);
+});
+
+// Cleanup
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', resizeSignaturePad);
+});
 </script>
 
 <style lang="scss" scoped>
 .signature-pad-container {
-  @apply border rounded-lg p-4 bg-white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  width: 100%;
 }
 
 .signature-pad-wrapper {
-  @apply border rounded-lg overflow-hidden mb-4;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  position: relative;
+  width: 100%;
+  min-height: 200px;
 }
 
 .signature-pad {
-  @apply w-full h-48;
+  width: 100%;
+  height: 200px;
+  display: block;
+}
+
+:deep(canvas) {
+  width: 100% !important;
+  height: 200px !important;
+  display: block;
+  border-radius: 0.5rem;
 }
 
 .signature-pad-actions {
-  @apply flex justify-end;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+// Ensure proper sizing on mobile
+@media (max-width: 768px) {
+  .signature-pad-container {
+    padding: 0.75rem;
+  }
+  
+  .signature-pad-wrapper {
+    min-height: 180px;
+  }
+  
+  .signature-pad {
+    height: 180px;
+  }
+  
+  :deep(canvas) {
+    height: 180px !important;
+  }
 }
 </style> 

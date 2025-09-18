@@ -1,8 +1,4 @@
 <script setup>
-definePageMeta({
-  title: "Error Page",
-  layout: "empty",
-});
 
 const props = defineProps({
   error: Object,

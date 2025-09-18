@@ -281,7 +281,7 @@ const performSearch = async () => {
     processing.value = false;
     
     // Mock data for demonstration - simulate finding a profile
-    profileExists.value = Math.random() >= 0.4; // 60% chance of finding profile
+    profileExists.value = Math.random() >= 0.5; // 50% chance of finding profile
     
     if (profileExists.value) {
       // Mock search result data (ID FR 3.2.1 - 3.2.5)
@@ -303,8 +303,8 @@ const performSearch = async () => {
 
 const navigateNext = () => {
   if (profileExists.value) {
-    // Navigate to update profile page with mode=edit (ID FR 2.3)
-    navigateTo("/BF-PRF/OR/PP/03");
+    // Consistent behavior for all users: proceed to edit page
+    navigateTo("/BF-PRF/OR/PP/kemaskini/ORG-240501");
   } else {
     // Navigate to new registration page with mode=new (ID FR 2.4)
     navigateTo("/BF-PRF/OR/PP/02");

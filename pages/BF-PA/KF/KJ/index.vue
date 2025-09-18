@@ -552,6 +552,7 @@
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
+                  <th class="px-4 py-3"></th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Jawatan</th>
@@ -560,6 +561,9 @@
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="item in selectedItems" :key="item.tindakan" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <input type="checkbox" v-model="selectedMap[item.tindakan]" class="w-4 h-4" />
+                  </td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.namaJawatan }}</td>
@@ -599,7 +603,7 @@
             :loading="false"
           >
             <Icon name="ic:baseline-check" class="w-4 h-4 mr-2" />
-            Luluskan Semua ({{ selectedItems.length }})
+            Luluskan Terpilih ({{ selectedCount }})
           </rs-button>
         </div>
       </div>
@@ -699,7 +703,6 @@ const positionsList = ref([
     rujukan: "KJ-2024-001",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
     namaJawatan: "Ketua Penolong Amil",
-    kodSingkatan: "KPA",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
     tindakan: 1
@@ -707,8 +710,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-002",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaJawatan: "Penolong Ketua Amil",
-    kodSingkatan: "PKA",
+    namaJawatan: "Penolong Amil",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
     tindakan: 2
@@ -716,8 +718,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-003",
     kategoriPenolongAmil: "Penolong Amil Padi",
-    namaJawatan: "Ketua Penolong Amil Padi",
-    kodSingkatan: "KPAP",
+    namaJawatan: "Ketua Penolong Amil",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
     tindakan: 3
@@ -725,8 +726,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-004",
     kategoriPenolongAmil: "Penolong Amil Padi",
-    namaJawatan: "Penolong Amil Eksekutif",
-    kodSingkatan: "PAE",
+    namaJawatan: "Penolong Amil",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
     tindakan: 4
@@ -734,8 +734,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-005",
     kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaJawatan: "Ketua Penolong Amil Kariah",
-    kodSingkatan: "KPAK",
+    namaJawatan: "Ketua Penolong Amil",
     status: "Menunggu Pengesahan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 5
@@ -743,8 +742,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-006",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    namaJawatan: "Penolong Amil Koordinator",
-    kodSingkatan: "PAC",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 6
@@ -752,8 +750,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-007",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    namaJawatan: "Penolong Amil Pembantu",
-    kodSingkatan: "PAP",
+    namaJawatan: "Penolong Amil",
     status: "Tidak Aktif",
     tarikhKuatkuasa: "01-01-2023",
     tindakan: 7
@@ -761,8 +758,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-008",
     kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaJawatan: "Penolong Amil Pentadbir",
-    kodSingkatan: "PAPT",
+    namaJawatan: "Penolong Amil",
     status: "Tidak Aktif",
     tarikhKuatkuasa: "01-01-2023",
     tindakan: 8
@@ -771,8 +767,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-009",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaJawatan: "Penolong Amil Khas",
-    kodSingkatan: "PAK",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 9
@@ -780,8 +775,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-010",
     kategoriPenolongAmil: "Penolong Amil Padi",
-    namaJawatan: "Penolong Amil Senior",
-    kodSingkatan: "PAS",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 10
@@ -789,8 +783,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-011",
     kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaJawatan: "Penolong Amil Junior",
-    kodSingkatan: "PAJ",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 11
@@ -798,8 +791,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-012",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    namaJawatan: "Penolong Amil Trainee",
-    kodSingkatan: "PAT",
+    namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
     tarikhKuatkuasa: "", // Empty - not yet approved
     tindakan: 12
@@ -807,8 +799,7 @@ const positionsList = ref([
   {
     rujukan: "KJ-2024-013",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaJawatan: "Penolong Amil Supervisor",
-    kodSingkatan: "PASV",
+    namaJawatan: "Penolong Amil",
     status: "Ditolak Ketua Jabatan",
     tarikhKuatkuasa: "", // Empty - rejected
     tindakan: 13
@@ -832,11 +823,7 @@ const tableColumns = [
     name: 'Nama Jawatan',
     sortable: true,
   },
-  {
-    key: 'kodSingkatan',
-    name: 'Kod Singkatan',
-    sortable: true,
-  },
+
   {
     key: 'tarikhKuatkuasa',
     name: 'Tarikh Kuatkuasa',
@@ -954,8 +941,7 @@ const getTableDataByStatus = (statuses) => {
     result = result.filter(position => 
       position.rujukan.toLowerCase().includes(query) ||
       position.kategoriPenolongAmil.toLowerCase().includes(query) ||
-      position.namaJawatan.toLowerCase().includes(query) ||
-      position.kodSingkatan.toLowerCase().includes(query)
+      position.namaJawatan.toLowerCase().includes(query) 
     );
   }
   
@@ -1067,6 +1053,10 @@ const performSearch = () => {
 const showBulkApprovalModal = ref(false);
 const selectedItems = ref([]);
 const bulkApprovalNotes = ref("");
+const selectedMap = ref({});
+const selectedCount = computed(() => {
+  return selectedItems.value.filter(item => selectedMap.value[item.tindakan]).length;
+});
 
 const hasPendingApprovals = computed(() => {
   return positionsList.value.filter(position => 
@@ -1084,6 +1074,10 @@ const openBulkApprovalModal = () => {
   selectedItems.value = positionsList.value.filter(position => 
     position.status === 'Menunggu Kelulusan'
   );
+  selectedMap.value = {};
+  selectedItems.value.forEach(item => {
+    selectedMap.value[item.tindakan] = true;
+  });
   showBulkApprovalModal.value = true;
 };
 
@@ -1110,13 +1104,18 @@ const performBulkApproval = async () => {
     const year = currentDate.getFullYear();
     const formattedDate = `${day}-${month}-${year}`;
     
-    // Update all selected items
-    selectedItems.value.forEach(position => {
+    // Update only checked items
+    const toApprove = selectedItems.value.filter(item => selectedMap.value[item.tindakan]);
+    if (toApprove.length === 0) {
+      toast.warning('Sila pilih sekurang-kurangnya satu jawatan');
+      return;
+    }
+    toApprove.forEach(position => {
       position.status = 'Aktif';
       position.tarikhKuatkuasa = formattedDate;
     });
     
-    toast.success(`${selectedItems.value.length} jawatan berjaya diluluskan`);
+    toast.success(`${toApprove.length} jawatan berjaya diluluskan`);
     closeBulkApprovalModal();
     refreshTable();
   } catch (error) {

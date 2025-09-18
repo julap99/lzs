@@ -544,6 +544,7 @@
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
+                  <th class="px-4 py-3"></th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Sesi</th>
@@ -552,6 +553,9 @@
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="item in selectedItems" :key="item.tindakan" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <input type="checkbox" v-model="selectedMap[item.tindakan]" class="w-4 h-4" />
+                  </td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.namaSesi }}</td>
@@ -591,7 +595,7 @@
             :loading="false"
           >
             <Icon name="ic:baseline-check" class="w-4 h-4 mr-2" />
-            Luluskan Semua ({{ selectedItems.length }})
+            Luluskan Terpilih ({{ selectedCount }})
           </rs-button>
         </div>
       </div>
@@ -699,7 +703,7 @@ const sessionsList = ref([
   {
     rujukan: "KS-2024-001",
     kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaSesi: "Sesi 2025",
+    namaSesi: "2021-2025",
     tarikhMula: "01-01-2025",
     tarikhTamat: "31-12-2025",
     tarikhKuatkuasa: "01-01-2025",
@@ -709,7 +713,7 @@ const sessionsList = ref([
   {
     rujukan: "KS-2024-002",
     kategoriPenolongAmil: "Penolong Amil Padi",
-    namaSesi: "Sesi 2024",
+    namaSesi: "2021-2025",
     tarikhMula: "01-01-2024",
     tarikhTamat: "31-12-2024",
     tarikhKuatkuasa: "01-01-2024",
@@ -719,7 +723,7 @@ const sessionsList = ref([
   {
     rujukan: "KS-2024-003",
     kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaSesi: "Sesi 2023",
+    namaSesi: "2021-2025",
     tarikhMula: "01-01-2023",
     tarikhTamat: "31-12-2023",
     tarikhKuatkuasa: "01-01-2023",
@@ -729,63 +733,24 @@ const sessionsList = ref([
   {
     rujukan: "KS-2024-004",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    namaSesi: "Sesi 2026",
-    tarikhMula: "01-01-2026",
-    tarikhTamat: "31-12-2026",
+    namaSesi: "2021-2025",
+    tarikhMula: "01-01-2025",
+    tarikhTamat: "31-12-2025",
     tarikhKuatkuasa: "",
     status: "Menunggu Kelulusan",
     tindakan: 4
   },
   {
     rujukan: "KS-2024-005",
-    kategoriPenolongAmil: "Penolong Amil Wakaf",
-    namaSesi: "Sesi 2022",
+    kategoriPenolongAmil: "Penolong Amil Kariah",
+    namaSesi: "2021-2025",
     tarikhMula: "01-01-2022",
     tarikhTamat: "31-12-2022",
     tarikhKuatkuasa: "01-01-2022",
     status: "Tidak Aktif",
     tindakan: 5
   },
-  {
-    rujukan: "KS-2024-006",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
-    namaSesi: "Sesi 2027",
-    tarikhMula: "01-01-2027",
-    tarikhTamat: "31-12-2027",
-    tarikhKuatkuasa: "",
-    status: "Menunggu Pengesahan",
-    tindakan: 6
-  },
-  {
-    rujukan: "KS-2024-007",
-    kategoriPenolongAmil: "Penolong Amil Padi",
-    namaSesi: "Sesi 2028",
-    tarikhMula: "01-01-2028",
-    tarikhTamat: "31-12-2028",
-    tarikhKuatkuasa: "",
-    status: "Menunggu Pengesahan",
-    tindakan: 7
-  },
-  {
-    rujukan: "KS-2024-008",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaSesi: "Sesi 2021",
-    tarikhMula: "01-01-2021",
-    tarikhTamat: "31-12-2021",
-    tarikhKuatkuasa: "01-01-2021",
-    status: "Ditolak Ketua Jabatan",
-    tindakan: 8
-  },
-  {
-    rujukan: "KS-2024-009",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
-    namaSesi: "Sesi 2023 Khas",
-    tarikhMula: "01-07-2023",
-    tarikhTamat: "31-12-2023",
-    tarikhKuatkuasa: "",
-    status: "Ditolak Ketua Jabatan",
-    tindakan: 9
-  }
+  
 ]);
 
 // Table columns
@@ -1051,6 +1016,11 @@ const openBulkApprovalModal = () => {
   selectedItems.value = sessionsList.value.filter(session => 
     session.status === 'Menunggu Kelulusan'
   );
+  // Default all to checked
+  selectedMap.value = {};
+  selectedItems.value.forEach(item => {
+    selectedMap.value[item.tindakan] = true;
+  });
   showBulkApprovalModal.value = true;
 };
 
@@ -1059,6 +1029,12 @@ const closeBulkApprovalModal = () => {
   selectedItems.value = [];
   bulkApprovalNotes.value = "";
 };
+
+// Selection map and count for modal
+const selectedMap = ref({});
+const selectedCount = computed(() => {
+  return selectedItems.value.filter(item => selectedMap.value[item.tindakan]).length;
+});
 
 const performBulkApproval = async () => {
   if (!bulkApprovalNotes.value.trim()) {
@@ -1077,13 +1053,18 @@ const performBulkApproval = async () => {
     const year = currentDate.getFullYear();
     const formattedDate = `${day}-${month}-${year}`;
     
-    // Update all selected items
-    selectedItems.value.forEach(session => {
+    // Update only checked items
+    const toApprove = selectedItems.value.filter(item => selectedMap.value[item.tindakan]);
+    if (toApprove.length === 0) {
+      toast.warning('Sila pilih sekurang-kurangnya satu sesi');
+      return;
+    }
+    toApprove.forEach(session => {
       session.status = 'Aktif';
       session.tarikhKuatkuasa = formattedDate;
     });
     
-    toast.success(`${selectedItems.value.length} sesi berjaya diluluskan secara beramai-ramai`);
+    toast.success(`${toApprove.length} sesi berjaya diluluskan secara beramai-ramai`);
     closeBulkApprovalModal();
     refreshTable();
   } catch (error) {

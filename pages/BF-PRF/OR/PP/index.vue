@@ -4,15 +4,15 @@
 
     <rs-card class="mt-4">
       <template #header>
-                  <div class="flex justify-between items-center">
-            <div>
-              <h2 class="text-xl font-semibold">Senarai Pengesahan Organisasi</h2>
-            </div>
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-semibold">Senarai Organisasi</h2>
           </div>
+        </div>
       </template>
 
       <template #body>
-        <!-- Smart Filter Section -->
+        <!-- Search Section -->
         <div class="mb-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
@@ -26,10 +26,10 @@
               @click="performSearch"
               class="!py-2 !px-4"
             >
-              <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
               Cari
             </rs-button>
           </div>
+          
         </div>
 
         <!-- Tabbed Table Section -->
@@ -53,10 +53,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -66,27 +63,45 @@
                 </template>
 
                 <template v-slot:tindakan="{ text }">
-                  <div class="flex space-x-2">
-                    <rs-button
-                      v-if="canPerformAction(text.status)"
-                      variant="primary"
-                      size="sm"
-                      class="!px-2 !py-1"
-                      @click="handleSemakPengesahan(text.id)"
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
+                    <button
+                      @click="viewItem(text.id)"
+                      title="Lihat"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ph:check" class="w-4 h-4 mr-1" /> Semak
-                    </rs-button>
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                    </button>
+                    
+                    <!-- Edit Button - Available for all statuses -->
+                    <button
+                      @click="editItem(text.id)"
+                      title="Kemaskini"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                    </button>
+                    
+                    <!-- Semak Button - Only for pending items -->
+                    <button
+                      v-if="canPerformAction(text.status)"
+                      @click="handleSemakPengesahan(text.id)"
+                      title="Semak"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
+                    </button>
                   </div>
                 </template>
               </rs-table>
             </div>
           </rs-tab-item>
 
-          <rs-tab-item title="Dalam Semakan">
+          <rs-tab-item title="Dalam Pembetulan">
             <div class="p-4">
               <rs-table
-                :key="`table-${tableKey}-review`"
-                :data="getTableDataByStatus(['Dalam Semakan'])"
+                :key="`table-${tableKey}-correction`"
+                :data="getTableDataByStatus(['Dalam Pembetulan'])"
                 :columns="columns"
                 :pageSize="pageSize"
                 :showNoColumn="true"
@@ -101,10 +116,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -114,16 +126,24 @@
                 </template>
 
                 <template v-slot:tindakan="{ text }">
-                  <div class="flex space-x-2">
-                    <rs-button
-                      v-if="canPerformAction(text.status)"
-                      variant="primary"
-                      size="sm"
-                      class="!px-2 !py-1"
-                      @click="handleSemakPengesahan(text.id)"
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
+                    <button
+                      @click="viewItem(text.id)"
+                      title="Lihat"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ph:check" class="w-4 h-4 mr-1" /> Semak
-                    </rs-button>
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                    </button>
+                    
+                    <!-- Edit Button - User can update during correction -->
+                    <button
+                      @click="editItem(text.id)"
+                      title="Kemaskini"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                    </button>
                   </div>
                 </template>
               </rs-table>
@@ -149,10 +169,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -162,16 +179,15 @@
                 </template>
 
                 <template v-slot:tindakan="{ text }">
-                  <div class="flex space-x-2">
-                    <rs-button
-                      v-if="canPerformAction(text.status)"
-                      variant="primary"
-                      size="sm"
-                      class="!px-2 !py-1"
-                      @click="handleSemakPengesahan(text.id)"
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
+                    <button
+                      @click="viewItem(text.id)"
+                      title="Lihat"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ph:check" class="w-4 h-4 mr-1" /> Semak
-                    </rs-button>
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                    </button>
                   </div>
                 </template>
               </rs-table>
@@ -197,10 +213,7 @@
                 </template>
 
                 <template v-slot:tarikhPermohonan="{ text }">
-                  <div>
-                    <div class="font-medium">{{ formatDate(text) }}</div>
-                    <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-                  </div>
+                  <div class="font-medium">{{ formatDate(text) }}</div>
                 </template>
 
                 <template v-slot:status="{ text }">
@@ -210,16 +223,44 @@
                 </template>
 
                 <template v-slot:tindakan="{ text }">
-                  <div class="flex space-x-2">
-                    <rs-button
-                      v-if="canPerformAction(text.status)"
-                      variant="primary"
-                      size="sm"
-                      class="!px-2 !py-1"
-                      @click="handleSemakPengesahan(text.id)"
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
+                    <button
+                      @click="viewItem(text.id)"
+                      title="Lihat"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ph:check" class="w-4 h-4 mr-1" /> Semak
-                    </rs-button>
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                    </button>
+                    
+                    <!-- Edit Button - Available for all statuses -->
+                    <button
+                      @click="editItem(text.id)"
+                      title="Kemaskini"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                    </button>
+                    
+                    <!-- Semak Button - Only for pending items -->
+                    <button
+                      v-if="canPerformAction(text.status)"
+                      @click="handleSemakPengesahan(text.id)"
+                      title="Semak"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
+                    </button>
+                    
+                    <!-- Delete Button - Only for Eksekutif role -->
+                    <!-- 
+                    <button
+                      v-if="canDelete(text.status)"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-delete" size="20" class="text-danger" />
+                    </button>
+                    -->
                   </div>
                 </template>
               </rs-table>
@@ -253,6 +294,70 @@
         </div>
       </template>
     </rs-card>
+
+    <!-- Enhanced Delete Confirmation Modal -->
+    <rs-modal
+      v-model="showDeleteModal"
+      title="Sahkan Padam"
+      size="md"
+      position="center"
+    >
+      <template #body>
+        <div class="space-y-4">
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div class="flex items-center space-x-2">
+              <Icon name="ic:baseline-warning" class="w-5 h-5 text-red-600" />
+              <span class="font-medium text-red-800">Amaran Padam</span>
+            </div>
+            <p class="text-sm text-red-700 mt-2">
+              Anda akan memadam maklumat organisasi berikut:
+            </p>
+            <div class="mt-2 p-2 bg-white border rounded text-sm">
+              <strong>{{ itemToDelete?.noRujukan }}</strong> - {{ itemToDelete?.namaOrganisasi }}
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <label class="flex items-start space-x-3">
+              <input
+                type="checkbox"
+                v-model="deleteConfirmation.checkbox"
+                class="mt-1 w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+              />
+              <span class="text-sm text-gray-700">
+                Saya mengesahkan tindakan padam ini dan memahami bahawa tindakan ini tidak boleh dibuat asal
+              </span>
+            </label>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Taip "PADAM" untuk mengesahkan:
+              </label>
+              <FormKit
+                v-model="deleteConfirmation.text"
+                type="text"
+                placeholder="Taip PADAM"
+                :classes="{ input: '!py-2 text-center font-mono' }"
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end space-x-2">
+          <rs-button variant="primary-outline" @click="cancelDelete">
+            Batal
+          </rs-button>
+          <rs-button 
+            variant="danger" 
+            :disabled="!canConfirmDelete"
+            @click="confirmDeleteAction"
+          >
+            Padam
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -262,16 +367,17 @@ import { ref, computed } from 'vue';
 definePageMeta({ title: 'Senarai Pengesahan Organisasi' });
 
 const breadcrumb = ref([
-  { name: 'Pengesahan', type: 'link', path: '/BF-PRF/OR/AP/01' },
-  { name: 'Senarai Organisasi', type: 'current', path: '/BF-PRF/OR/AP/01' },
+  { name: 'Pengesahan', type: 'link', path: '/BF-PRF/OR/PP' },
+  { name: 'Senarai Organisasi', type: 'current', path: '/BF-PRF/OR/PP' },
 ]);
 
 // Columns definition
 const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
   { key: 'namaOrganisasi', label: 'Nama Organisasi', sortable: true },
-  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'jenisOrganisasi', label: 'Jenis Organisasi', sortable: true },
+  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
+  { key: 'jenisStruktur', label: 'Jenis Struktur', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
@@ -283,60 +389,76 @@ const tableKey = ref(0);
 // Mock data for Eksekutif role
 const organizationList = ref([
   {
-    noRujukan: 'ORG-240501',
-    namaOrganisasi: 'Syarikat Teknologi Maju Sdn Bhd',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'Swasta',
+    noRujukan: 'ORG-202507-0001',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+    tarikhPermohonan: '23/7/2025',
+    jenisOrganisasi: 'Masjid',
+    jenisStruktur: 'HQ',
+    status: 'Disahkan',
+    tindakan: { id: 'ORG-202507-0001', status: 'Disahkan' },
+  },
+  {
+    noRujukan: 'ORG-202506-0002',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
+    tarikhPermohonan: '15/6/2025',
+    jenisOrganisasi: 'Masjid',
+    jenisStruktur: 'Cawangan',
+    status: 'Disahkan',
+    tindakan: { id: 'ORG-202506-0002', status: 'Disahkan' },
+  },
+  {
+    noRujukan: 'ORG-202505-0003',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+    tarikhPermohonan: '8/5/2025',
+    jenisOrganisasi: 'Masjid',
+    jenisStruktur: 'Cawangan',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240501', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'ORG-202505-0003', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'ORG-240502',
-    namaOrganisasi: 'Pertubuhan Amal Iman Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    noRujukan: 'ORG-202507-0004',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam',
+    tarikhPermohonan: '30/7/2025',
+    jenisOrganisasi: 'Masjid',
+    jenisStruktur: 'Cawangan',
+    status: 'Disahkan',
+    tindakan: { id: 'ORG-202507-0004', status: 'Disahkan' },
+  },
+  {
+    noRujukan: 'ORG-202506-0005',
+    namaOrganisasi: 'Pertubuhan Kebajikan Islam Selangor',
+    tarikhPermohonan: '12/6/2025',
     jenisOrganisasi: 'NGO',
-    status: 'Dalam Semakan',
-    tindakan: { id: 'ORG-240502', status: 'Dalam Semakan' },
+    jenisStruktur: 'HQ',
+    status: 'Tidak Sah',
+    tindakan: { id: 'ORG-202506-0005', status: 'Tidak Sah' },
   },
   {
-    noRujukan: 'ORG-240503',
-    namaOrganisasi: 'Sekolah Menengah Tahfiz Al-Amin',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'IPT',
-    status: 'Diluluskan',
-    tindakan: { id: 'ORG-240503', status: 'Diluluskan' },
-  },
-  {
-    noRujukan: 'ORG-240504',
-    namaOrganisasi: 'Institut Latihan Kemahiran Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'Institut',
+    noRujukan: 'ORG-202505-0006',
+    namaOrganisasi: 'Rumah Anak Yatim Darul Ehsan',
+    tarikhPermohonan: '25/5/2025',
+    jenisOrganisasi: 'NGO',
+    jenisStruktur: 'HQ',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240504', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'ORG-202505-0006', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'ORG-240505',
-    namaOrganisasi: 'Syarikat Pembangunan Hartanah Sdn Bhd',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'Swasta',
-    status: 'Ditolak',
-    tindakan: { id: 'ORG-240505', status: 'Ditolak' },
-  },
-  {
-    noRujukan: 'ORG-240506',
-    namaOrganisasi: 'Persatuan Belia Islam Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
-    jenisOrganisasi: 'NGO',
-    status: 'Dalam Semakan',
-    tindakan: { id: 'ORG-240506', status: 'Dalam Semakan' },
-  },
-  {
-    noRujukan: 'ORG-240507',
-    namaOrganisasi: 'Universiti Teknologi Malaysia',
-    tarikhPermohonan: new Date().toISOString(),
+    noRujukan: 'ORG-202504-0007',
+    namaOrganisasi: 'Maahad Tahfiz Selangor',
+    tarikhPermohonan: '18/4/2025',
     jenisOrganisasi: 'IPT',
-    status: 'Diluluskan',
-    tindakan: { id: 'ORG-240507', status: 'Diluluskan' },
+    jenisStruktur: 'HQ',
+    status: 'Tidak Sah',
+    tindakan: { id: 'ORG-202504-0007', status: 'Tidak Sah' },
+  },
+  {
+    noRujukan: 'ORG-202508-0008',
+    namaOrganisasi: 'Pusat Dialisis As-Salam Shah Alam',
+    tarikhPermohonan: '05/8/2025',
+    jenisOrganisasi: 'Kesihatan',
+    jenisStruktur: 'Cawangan',
+    status: 'Dalam Pembetulan',
+    tindakan: { id: 'ORG-202508-0008', status: 'Dalam Pembetulan' },
   },
 ]);
 
@@ -381,23 +503,58 @@ const totalPages = computed(() => Math.ceil(totalOrganizations.value / pageSize.
 const paginationStart = computed(() => ((currentPage.value - 1) * pageSize.value) + 1);
 const paginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, totalOrganizations.value));
 
-const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY');
-const formatTime = (dateString) => new Date(dateString).toLocaleTimeString('ms-MY');
+const formatDate = (dateString) => {
+  // If it's already a formatted date string, return it as is
+  if (typeof dateString === 'string' && !dateString.includes('T')) {
+    return dateString;
+  }
+  // Otherwise, format it as a date
+  return new Date(dateString).toLocaleDateString('ms-MY');
+};
 
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Dalam Semakan': 'info',
-    'Diluluskan': 'success',
-    'Ditolak': 'danger'
+    'Dalam Pembetulan': 'warning',
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
   };
   return variants[status] || 'default';
 };
 
+// Delete confirmation state
+const showDeleteModal = ref(false);
+const itemToDelete = ref(null);
+const deleteConfirmation = ref({
+  checkbox: false,
+  text: ''
+});
+
+// User role simulation - for demo purposes
+const currentUserRole = ref('Eksekutif'); // Eksekutif, Pengurus, etc.
+
 // Action capabilities for Eksekutif role
 const canPerformAction = (status) => {
-  return ['Menunggu Pengesahan', 'Dalam Semakan'].includes(status);
+  return ['Menunggu Pengesahan'].includes(status);
 };
+
+// Edit permissions - all statuses can be edited (will go back to approval)
+const canEdit = (status) => {
+  return true; // All items can be edited
+};
+
+// Delete permissions - only Eksekutif role can delete
+const canDelete = (status) => {
+  const result = currentUserRole.value === 'Eksekutif';
+  return result;
+};
+
+// Computed property for delete confirmation validation
+const canConfirmDelete = computed(() => {
+  return deleteConfirmation.value.checkbox && 
+         deleteConfirmation.value.text === 'PADAM';
+});
 
 // Search function
 const performSearch = () => {
@@ -406,6 +563,56 @@ const performSearch = () => {
   currentPage.value = 1;
 };
 
-const viewOrganization = (id) => navigateTo(`/BF-PRF/OR/AP/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/06`);
+// CRUD Operations
+const viewItem = (id) => navigateTo(`/BF-PRF/OR/PP/view/${id}`);
+const editItem = (id) => navigateTo(`/BF-PRF/OR/PP/kemaskini/${id}`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04/${id}`);
+
+// Delete operations
+const confirmDelete = (id, item) => {
+  // Find the full item data from the table data by ID
+  // We need to look in the organizationList since that's the source data
+  const fullItem = organizationList.value.find(org => org.tindakan.id === id);
+  
+  itemToDelete.value = fullItem;
+  showDeleteModal.value = true;
+};
+
+const cancelDelete = () => {
+  showDeleteModal.value = false;
+  itemToDelete.value = null;
+  deleteConfirmation.value = {
+    checkbox: false,
+    text: ''
+  };
+};
+
+const confirmDeleteAction = () => {
+  if (!canConfirmDelete.value) return;
+  
+  // Remove item from the list
+  const index = organizationList.value.findIndex(
+    item => item.noRujukan === itemToDelete.value.noRujukan
+  );
+  
+  if (index !== -1) {
+    organizationList.value.splice(index, 1);
+    
+    // Log audit action (in real implementation, this would be an API call)
+    console.log('Audit Log:', {
+      action: 'DELETE',
+      user: currentUserRole.value,
+      item: itemToDelete.value,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Force table re-render
+    tableKey.value++;
+  }
+  
+  cancelDelete();
+};
+
+// Legacy function for backward compatibility
+const viewOrganization = (id) => viewItem(id);
 </script>

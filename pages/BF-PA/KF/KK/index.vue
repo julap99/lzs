@@ -548,6 +548,7 @@
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
+                  <th class="px-4 py-3"></th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Kategori</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod Singkatan</th>
@@ -556,6 +557,9 @@
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="item in selectedItems" :key="item.tindakan" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <input type="checkbox" v-model="selectedMap[item.tindakan]" class="w-4 h-4" />
+                  </td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ item.kodSingkatan }}</td>
@@ -595,7 +599,7 @@
             :loading="false"
           >
             <Icon name="ic:baseline-check" class="w-4 h-4 mr-2" />
-            Luluskan Semua ({{ selectedItems.length }})
+            Luluskan Terpilih ({{ selectedCount }})
           </rs-button>
         </div>
       </div>
@@ -717,109 +721,10 @@ const categoriesList = ref([
   {
     rujukan: "KK-2024-004",
     kategoriPenolongAmil: "Penolong Amil Komuniti",
-    kodSingkatan: "PK+",
+    kodSingkatan: "PAK+",
     status: "Aktif",
     tarikhKuatkuasa: "01-01-2024",
     tindakan: 4
-  },
-  {
-    rujukan: "KK-2024-005",
-    kategoriPenolongAmil: "Penolong Amil Wakaf",
-    kodSingkatan: "PAW",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 5
-  },
-  {
-    rujukan: "KK-2024-006",
-    kategoriPenolongAmil: "Penolong Amil Zakat Perniagaan",
-    kodSingkatan: "PAZP",
-    status: "Tidak Aktif",
-    tarikhKuatkuasa: "01-01-2024",
-    tindakan: 6
-  },
-  // Additional items for "Sedang Proses - Lulus" to showcase bulk approval
-  {
-    rujukan: "KK-2024-007",
-    kategoriPenolongAmil: "Penolong Amil Zakat Emas",
-    kodSingkatan: "PAZE",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 7
-  },
-  {
-    rujukan: "KK-2024-008",
-    kategoriPenolongAmil: "Penolong Amil Zakat Perkhidmatan",
-    kodSingkatan: "PAZPH",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 8
-  },
-  {
-    rujukan: "KK-2024-009",
-    kategoriPenolongAmil: "Penolong Amil Zakat Pelaburan",
-    kodSingkatan: "PAZPL",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 9
-  },
-  {
-    rujukan: "KK-2024-010",
-    kategoriPenolongAmil: "Penolong Amil Zakat Hartanah",
-    kodSingkatan: "PAZH",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 10
-  },
-  {
-    rujukan: "KK-2024-011",
-    kategoriPenolongAmil: "Penolong Amil Zakat Ternakan",
-    kodSingkatan: "PAZT",
-    status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
-    tindakan: 11
-  },
-  // NEW: Ketua Jabatan "Menunggu Pengesahan" data
-  {
-    rujukan: "KK-2024-012",
-    kategoriPenolongAmil: "Penolong Amil Zakat Perkhidmatan Digital",
-    kodSingkatan: "PAZPD",
-    status: "Menunggu Pengesahan",
-    tarikhKuatkuasa: "", // Empty - not yet verified
-    tindakan: 12
-  },
-  {
-    rujukan: "KK-2024-013",
-    kategoriPenolongAmil: "Penolong Amil Zakat Pendidikan",
-    kodSingkatan: "PAZPE",
-    status: "Menunggu Pengesahan",
-    tarikhKuatkuasa: "", // Empty - not yet verified
-    tindakan: 13
-  },
-  {
-    rujukan: "KK-2024-014",
-    kategoriPenolongAmil: "Penolong Amil Zakat Kesihatan",
-    kodSingkatan: "PAZK",
-    status: "Menunggu Pengesahan",
-    tarikhKuatkuasa: "", // Empty - not yet verified
-    tindakan: 14
-  },
-  // NEW: Ketua Divisyen "Sedang Proses - Ditolak" data
-  {
-    rujukan: "KK-2024-015",
-    kategoriPenolongAmil: "Penolong Amil Zakat Teknologi",
-    kodSingkatan: "PAZTK",
-    status: "Ditolak Ketua Jabatan",
-    tarikhKuatkuasa: "", // Empty - rejected
-    tindakan: 15
-  },
-  {
-    rujukan: "KK-2024-016",
-    kategoriPenolongAmil: "Penolong Amil Zakat Pelancongan",
-    kodSingkatan: "PAZPLN",
-    status: "Ditolak Ketua Jabatan",
-    tarikhKuatkuasa: "", // Empty - rejected
-    tindakan: 16
   }
 ]);
 
@@ -1063,6 +968,10 @@ const performSearch = () => {
 const showBulkApprovalModal = ref(false);
 const selectedItems = ref([]);
 const bulkApprovalNotes = ref("");
+const selectedMap = ref({});
+const selectedCount = computed(() => {
+  return selectedItems.value.filter(item => selectedMap.value[item.tindakan]).length;
+});
 
 const hasPendingApprovals = computed(() => {
   return categoriesList.value.filter(category => 
@@ -1080,6 +989,10 @@ const openBulkApprovalModal = () => {
   selectedItems.value = categoriesList.value.filter(category => 
     category.status === 'Menunggu Kelulusan'
   );
+  selectedMap.value = {};
+  selectedItems.value.forEach(item => {
+    selectedMap.value[item.tindakan] = true;
+  });
   showBulkApprovalModal.value = true;
 };
 
@@ -1106,13 +1019,18 @@ const performBulkApproval = async () => {
     const year = currentDate.getFullYear();
     const formattedDate = `${day}-${month}-${year}`;
     
-    // Update all selected items
-    selectedItems.value.forEach(category => {
+    // Update only checked items
+    const toApprove = selectedItems.value.filter(item => selectedMap.value[item.tindakan]);
+    if (toApprove.length === 0) {
+      toast.warning('Sila pilih sekurang-kurangnya satu kategori');
+      return;
+    }
+    toApprove.forEach(category => {
       category.status = 'Aktif';
       category.tarikhKuatkuasa = formattedDate;
     });
     
-    toast.success(`${selectedItems.value.length} kategori berjaya diluluskan`);
+    toast.success(`${toApprove.length} kategori berjaya diluluskan`);
     closeBulkApprovalModal();
     refreshTable();
   } catch (error) {

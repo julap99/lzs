@@ -1,517 +1,322 @@
-<!-- 
-  RTMF SCREEN: PA-PE-ET
-  PURPOSE: Dashboard Elaun Tahunan — Pengurusan Berasaskan Peranan
-  DESCRIPTION: Dashboard berasaskan peranan untuk pengurusan elaun tahunan dengan aliran kerja kelulusan
-  ROUTE: /BF-PA/PE/ET
+<!--
+  SCREEN: BF-PA/PE — Laporan Penolong Amil (Ringkas)
+  SCENARIO: Ali bin Ahmad (PAK) — tanpa banyak filter
+  TABS: Tugasan Hari Ini | Mesyuarat Saya (bulan ini) | Elaun Tahunan (tahun ini)
 -->
 <template>
   <div>
-
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <rs-card class="mt-4">
       <template #header>
-        <div>
-          <h2 class="text-xl font-semibold"> Elaun Tahunan</h2>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-semibold">Laporan Penolong Amil</h2>
+            <p class="text-sm text-gray-500">
+              Ali bin Ahmad • PAK • {{ todayHuman }}
+            </p>
+          </div>
+          <div class="text-xs text-gray-500">Dikemas kini: {{ lastUpdated }}</div>
         </div>
       </template>
 
       <template #body>
-        <!-- Bahagian Penapis Pintar -->
-        <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4 mb-4">
-            <FormKit
-              v-model="filters.searchQuery"
-              type="text"
-              placeholder="Cari rujukan, tahun, atau jenis elaun..."
-              :classes="{
-                input: '!py-2',
-              }"
-              class="flex-1"
-            />
-            <FormKit
-              v-model="filters.year"
-              type="select"
-              :options="yearOptions"
-              placeholder="Tahun"
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-            <FormKit
-              v-model="filters.type"
-              type="select"
-              :options="typeOptions"
-              placeholder="Jenis Elaun"
-              :classes="{
-                input: '!py-2',
-              }"
-            />
-            <div class="flex gap-2">
-              <rs-button
-                variant="primary"
-                @click="performSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-search" class="w-4 h-4 mr-2" />
-                Cari
-              </rs-button>
-              <rs-button
-                variant="secondary-outline"
-                @click="clearSearch"
-                class="flex items-center whitespace-nowrap"
-              >
-                <Icon name="ic:baseline-refresh" class="w-4 h-4 mr-2" />
-                Set Semula
-              </rs-button>
+        <!-- KPI Ringkas (tiada filter) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+          <div class="p-4 rounded-xl border">
+            <div class="text-xs text-gray-500">Tugasan Hari Ini</div>
+            <div class="text-2xl font-semibold">{{ kpi.tugasan.aktiviti }} aktiviti</div>
+            <div class="text-sm text-gray-600">RM {{ formatCurrency(kpi.tugasan.amount) }}</div>
+          </div>
+          <div class="p-4 rounded-xl border">
+            <div class="text-xs text-gray-500">Mesyuarat (bulan ini)</div>
+            <div class="text-2xl font-semibold">{{ kpi.mesyuarat.aktiviti }} kehadiran</div>
+            <div class="text-sm">
+              <span class="text-gray-600">RM {{ formatCurrency(kpi.mesyuarat.amount) }}</span>
+              <span class="mx-2">•</span>
+              <span class="text-emerald-600">Dibayar: RM {{ formatCurrency(kpi.mesyuarat.paid) }}</span>
             </div>
           </div>
-          
-
-
-          
-
+          <div class="p-4 rounded-xl border">
+            <div class="text-xs text-gray-500">Elaun Tahunan (tahun ini)</div>
+            <div class="text-2xl font-semibold">RM {{ formatCurrency(kpi.tahunan.amount) }}</div>
+            <div class="text-sm">
+              <span class="text-emerald-600">Dibayar: RM {{ formatCurrency(kpi.tahunan.paid) }}</span>
+              <span class="mx-2">•</span>
+              <span class="text-amber-600">Belum: RM {{ formatCurrency(kpi.tahunan.unpaid) }}</span>
+            </div>
+          </div>
         </div>
 
-
-
-        <!-- Bahagian Jadual Bertab -->
-        <!-- Tab Eksekutif -->
-        <div v-if="currentRole === 'eksekutif'">
-          <rs-tab v-model="activeTab" class="mt-4">
-            <rs-tab-item title="Draf">
-              <div class="p-4">
-                <div class="flex justify-between items-center mb-4">
-                  <h3 class="text-lg font-semibold text-gray-700 flex items-center">
-                    <Icon name="ic:baseline-description" class="mr-2" size="20" />
-                    Senarai elaun yang dalam draf
-                  </h3>
-                </div>
-                <div class="overflow-x-auto rounded-lg border">
-                  <table class="min-w-full text-sm divide-y">
-                    <thead class="bg-gray-50 text-left">
-                      <tr>
-                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y bg-white">
-                      <tr v-for="item in getTableDataByStatus(['DRAF'])" :key="item.id" class="hover:bg-gray-50">
-                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
-                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
-                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
-                        <td class="px-4 py-3">
-                          <rs-badge :variant="getStatusVariant(item.status)">
-                            {{ item.status }}
-                          </rs-badge>
-                        </td>
-                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
-                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
-                        <td class="px-4 py-3">
-                          <div class="flex space-x-3">
-                            <button
-                              @click="viewAllowance(item)"
-                              title="Lihat"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                                                            <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                              </button>
-                            <button
-                              @click="editAllowance(item)"
-                              title="Kemaskini"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:outline-edit" class="w-5 h-5 text-secondary" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr v-if="getTableDataByStatus(['DRAF']).length === 0" class="hover:bg-gray-50">
-                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
-                          Tiada elaun dalam draf.
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-          </div>
-          </div>
-            </rs-tab-item>
-
-            <rs-tab-item title="Sedang Proses">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-blue-700 flex items-center">
-                  <Icon name="ic:baseline-schedule" class="mr-2" size="20" />
-                  Senarai elaun yang sedang dalam proses
-                </h3>
-                <div class="overflow-x-auto rounded-lg border">
-                  <table class="min-w-full text-sm divide-y">
-                    <thead class="bg-gray-50 text-left">
-                      <tr>
-                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y bg-white">
-                      <tr v-for="item in getTableDataByStatus(['SEDANG PROSES', 'MENUNGGU KELULUSAN'])" :key="item.id" class="hover:bg-gray-50">
-                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
-                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
-                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
-                        <td class="px-4 py-3">
-                          <rs-badge :variant="getStatusVariant(item.status)">
-                            {{ item.status }}
-                          </rs-badge>
-                        </td>
-                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
-                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
-                        <td class="px-4 py-3">
-                          <div class="flex space-x-3">
-                            <button
-                              @click="viewAllowance(item)"
-                              title="Lihat"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr v-if="getTableDataByStatus(['SEDANG PROSES', 'MENUNGGU KELULUSAN']).length === 0" class="hover:bg-gray-50">
-                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
-                          Tiada elaun dalam proses.
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+        <!-- Tabs (ringkas) -->
+        <rs-tab v-model="activeTab">
+          <!-- TUGASAN HARI INI -->
+          <rs-tab-item title="Tugasan Hari Ini">
+            <div class="p-2">
+              <div class="overflow-x-auto rounded-lg border">
+                <table class="min-w-full text-sm divide-y">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-4 py-2">Status</th>
+                      <th class="px-4 py-2">Jenis Elaun</th>
+                      <th class="px-4 py-2">Kod Bajet</th>
+                      <th class="px-4 py-2 text-right">Amaun aktiviti (RM)</th>
+                      <th class="px-4 py-2 text-right">Bil. Borang</th>
+                      <th class="px-4 py-2 text-right">Jumlah Elaun (RM)</th>
+                      <th class="px-4 py-2">Status Pembayaran</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y bg-white">
+                    <tr v-for="row in tugasanHariIni" :key="row.id" class="hover:bg-gray-50">
+                      <td class="px-4 py-2"><rs-badge :variant="variantAktif(row.status)">{{ row.status }}</rs-badge></td>
+                      <td class="px-4 py-2">{{ row.jenisElaun }}</td>
+                      <td class="px-4 py-2">{{ row.kodBajet }}</td>
+                      <td class="px-4 py-2 text-right">RM {{ formatCurrency(row.amaun) }}</td>
+                      <td class="px-4 py-2 text-right">{{ row.aktiviti }}</td>
+                      <td class="px-4 py-2 text-right font-medium">RM {{ formatCurrency(row.jumlah) }}</td>
+                      <td class="px-4 py-2">
+                        <rs-badge :variant="variantBayaran(row.paymentStatus)">{{ row.paymentStatus }}</rs-badge>
+                      </td>
+                    </tr>
+                    <tr v-if="!tugasanHariIni.length">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="7">Tiada tugasan untuk hari ini.</td>
+                    </tr>
+                  </tbody>
+                  <tfoot v-if="tugasanHariIni.length" class="bg-gray-50">
+                    <tr>
+                      <td class="px-4 py-3 font-semibold" colspan="4">Jumlah</td>
+                      <td class="px-4 py-3 text-right font-semibold">{{ sumaktiviti(tugasanHariIni) }}</td>
+                      <td class="px-4 py-3 text-right font-semibold">RM {{ formatCurrency(sumAmount(tugasanHariIni)) }}</td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
               </div>
-            </rs-tab-item>
+            </div>
+          </rs-tab-item>
 
-            <rs-tab-item title="Lulus">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
-                  <Icon name="ic:baseline-check-circle" class="mr-2" size="20" />
-                  Senarai elaun yang telah diluluskan
-                </h3>
-                <div class="overflow-x-auto rounded-lg border">
-                  <table class="min-w-full text-sm divide-y">
-                    <thead class="bg-gray-50 text-left">
-                      <tr>
-                        <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Tahun</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Jenis Elaun</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Status</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Bilangan Penerima</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Jumlah Elaun (RM)</th>
-                        <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y bg-white">
-                      <tr v-for="item in getTableDataByStatus(['LULUS'])" :key="item.id" class="hover:bg-gray-50">
-                        <td class="px-4 py-3 text-gray-900">{{ item.rujukan }}</td>
-                        <td class="px-4 py-3 text-gray-900">{{ item.year }}</td>
-                        <td class="px-4 py-3 text-gray-900">{{ item.typeLabel }}</td>
-                        <td class="px-4 py-3">
-                          <rs-badge :variant="getStatusVariant(item.status)">
-                            {{ item.status }}
-                          </rs-badge>
-                        </td>
-                        <td class="px-4 py-3 text-gray-900">{{ item.count }}</td>
-                        <td class="px-4 py-3 text-gray-900 font-medium">RM {{ formatCurrency(item.totalAmount) }}</td>
-                        <td class="px-4 py-3">
-                          <div class="flex space-x-3">
-                            <button
-                              @click="viewAllowance(item)"
-                              title="Lihat"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr v-if="getTableDataByStatus(['LULUS']).length === 0" class="hover:bg-gray-50">
-                        <td class="px-4 py-6 text-center text-gray-500" colspan="7">
-                          Tiada elaun yang diluluskan.
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+          <!-- MESYUARAT SAYA (BULAN INI) -->
+          <rs-tab-item title="Mesyuarat Saya">
+            <div class="p-2">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+                <rs-card class="md:col-span-3">
+                  <template #header>
+                    <h3 class="text-lg font-semibold">Elaun Mesyuarat / Kehadiran — Bulan Ini</h3>
+                  </template>
+                  <template #body>
+                    <div class="overflow-x-auto rounded-lg border">
+                      <table class="min-w-full text-sm divide-y">
+                        <thead class="bg-gray-50 text-left">
+                          <tr>
+                            <th class="px-4 py-2">Tarikh</th>
+                            <th class="px-4 py-2">Jenis Elaun</th>
+                            <th class="px-4 py-2">Kod Bajet</th>
+                            <th class="px-4 py-2 text-right">Amaun (RM)</th>
+                            <th class="px-4 py-2">Hadir</th>
+                            <th class="px-4 py-2">Status Pembayaran</th>
+                            <th class="px-4 py-2 text-right">Jumlah (RM)</th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y bg-white">
+                          <tr v-for="row in mesyuaratBulanIni" :key="row.id" class="hover:bg-gray-50">
+                            <td class="px-4 py-2">{{ fmt(row.tarikh) }}</td>
+                            <td class="px-4 py-2">{{ row.jenisElaun }}</td>
+                            <td class="px-4 py-2">{{ row.kodBajet }}</td>
+                            <td class="px-4 py-2 text-right">RM {{ formatCurrency(row.amaun) }}</td>
+                            <td class="px-4 py-2">
+                              <rs-badge :variant="row.statusHadir === 'Disahkan' ? 'success' : 'secondary'">{{ row.statusHadir }}</rs-badge>
+                            </td>
+                            <td class="px-4 py-2">
+                              <rs-badge :variant="variantBayaran(row.paymentStatus)">
+                                {{ row.paymentStatus }}
+                              </rs-badge>
+                            </td>
+                            <td class="px-4 py-2 text-right font-medium">RM {{ formatCurrency(row.jumlah) }}</td>
+                          </tr>
+                          <tr v-if="!mesyuaratBulanIni.length">
+                            <td class="px-4 py-6 text-center text-gray-500" colspan="7">Tiada kehadiran bulan ini.</td>
+                          </tr>
+                        </tbody>
+                        <tfoot v-if="mesyuaratBulanIni.length" class="bg-gray-50">
+                          <tr>
+                            <td class="px-4 py-3 font-semibold" colspan="5">Jumlah</td>
+                            <td class="px-4 py-3 font-semibold">
+                              <span class="text-emerald-600">Dibayar: RM {{ formatCurrency(sumPaid(mesyuaratBulanIni)) }}</span>
+                            </td>
+                            <td class="px-4 py-3 text-right font-semibold">RM {{ formatCurrency(sumAmount(mesyuaratBulanIni)) }}</td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </template>
+                </rs-card>
+
+                <!-- Aktiviti yang dihadiri (ringkas) -->
+                <rs-card>
+                  <template #header>
+                    <h3 class="text-lg font-semibold">Aktiviti Dihadiri</h3>
+                  </template>
+                  <template #body>
+                    <ul class="space-y-2">
+                      <li v-for="row in mesyuaratBulanIni" :key="row.id" class="flex items-start">
+                        <Icon name="ic:baseline-event" class="mt-0.5 mr-2" />
+                        <div>
+                          <div class="text-sm font-medium">{{ row.program || row.jenisElaun }}</div>
+                          <div class="text-xs text-gray-500">{{ fmt(row.tarikh) }} • {{ row.kategoriPA }}</div>
+                        </div>
+                      </li>
+                    </ul>
+                  </template>
+                </rs-card>
               </div>
-            </rs-tab-item>
-          </rs-tab>
-        </div>
+            </div>
+          </rs-tab-item>
+
+          <!-- ELAUN TAHUNAN (TAHUN INI) -->
+          <rs-tab-item title="Elaun Tahunan">
+            <div class="p-2">
+              <div class="overflow-x-auto rounded-lg border">
+                <table class="min-w-full text-sm divide-y">
+                  <thead class="bg-gray-50 text-left">
+                    <tr>
+                      <th class="px-4 py-2">Jenis Elaun Tahunan</th>
+                      <th class="px-4 py-2">Kod Bajet</th>
+                      <th class="px-4 py-2 text-right">Amaun aktiviti (RM)</th>
+                      <th class="px-4 py-2 text-right">aktiviti (YTD)</th>
+                      <th class="px-4 py-2 text-right">Jumlah Elaun (RM)</th>
+                      <th class="px-4 py-2">Status</th>
+                      <th class="px-4 py-2">Status Pembayaran</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y bg-white">
+                    <tr v-for="row in tahunanTahunIni" :key="row.id" class="hover:bg-gray-50">
+                      <td class="px-4 py-2">{{ row.jenisElaun }}</td>
+                      <td class="px-4 py-2">{{ row.kodBajet }}</td>
+                      <td class="px-4 py-2 text-right">RM {{ formatCurrency(row.amaun) }}</td>
+                      <td class="px-4 py-2 text-right">{{ row.aktiviti }}</td>
+                      <td class="px-4 py-2 text-right font-medium">RM {{ formatCurrency(row.jumlah) }}</td>
+                      <td class="px-4 py-2"><rs-badge :variant="variantAktif(row.status)">{{ row.status }}</rs-badge></td>
+                      <td class="px-4 py-2">
+                        <rs-badge :variant="variantBayaran(row.paymentStatus)">{{ row.paymentStatus }}</rs-badge>
+                      </td>
+                    </tr>
+                    <tr v-if="!tahunanTahunIni.length">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="7">Tiada elaun tahunan untuk tahun ini.</td>
+                    </tr>
+                  </tbody>
+                  <tfoot v-if="tahunanTahunIni.length" class="bg-gray-50">
+                    <tr>
+                      <td class="px-4 py-3 font-semibold" colspan="4">Jumlah</td>
+                      <td class="px-4 py-3 text-right font-semibold">RM {{ formatCurrency(sumAmount(tahunanTahunIni)) }}</td>
+                      <td class="px-4 py-3 font-semibold" colspan="2">
+                        <span class="text-emerald-600 mr-3">Dibayar: RM {{ formatCurrency(sumPaid(tahunanTahunIni)) }}</span>
+                        <span class="text-amber-600">Belum: RM {{ formatCurrency(sumUnpaid(tahunanTahunIni)) }}</span>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </rs-tab-item>
+        </rs-tab>
       </template>
     </rs-card>
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick, computed, watch, onMounted } from "vue";
-import { useToast } from "vue-toastification";
-import { useRouter } from "vue-router";
+import { ref, computed } from "vue";
 import { Icon } from "#components";
-import { FormKit } from "@formkit/vue";
 import LayoutsBreadcrumb from "~/components/layouts/Breadcrumb.vue";
 
-const toast = useToast();
-const router = useRouter();
-
-definePageMeta({
-  title: "Dashboard Elaun Tahunan",
-});
+definePageMeta({ title: "Laporan Penolong Amil (Ringkas)" });
 
 const breadcrumb = [
-  { name: 'Laman Utama', path: '/' },
-  { name: 'Modul BF-PA', path: '/BF-PA' },
-  { name: 'Pengurusan Elaun', path: '/BF-PA/PE' },
-  { name: 'Elaun Tahunan', path: null }
+  { name: "Laman Utama", path: "/" },
+  { name: "Modul BF-PA", path: "/BF-PA" },
+  { name: "Laporan Penolong Amil", path: null },
 ];
 
-// Role Simulator State
-const currentRole = ref("eksekutif"); // Default role
+const now = new Date();
+const todayISO = now.toISOString().slice(0,10); // YYYY-MM-DD
+const todayHuman = now.toLocaleDateString("ms-MY", { weekday: "long", day: "2-digit", month: "short", year: "numeric" });
+const lastUpdated = now.toLocaleString("ms-MY");
 
-
-
-// Filters
-const filters = ref({
-  searchQuery: "",
-  year: "",
-  type: "",
-});
-
-// Filter options
-const currentYear = new Date().getFullYear();
-const yearOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "2024", value: 2024 },
-  { label: "2025", value: 2025 }
-];
-
-const typeOptions = [
-  { label: "Sila pilih...", value: "" },
-  { label: "Elaun Tahunan KPAK", value: "ET-KPAK" },
-  { label: "Elaun Tahunan KPAF", value: "ET-KPAF" },
-  { label: "Anugerah Penolong Amil", value: "ET-ANUG" },
-  { label: "Ketua Penolong Amil Kariah (KPAK) terbaik", value: "ANUG-KPAK" },
-  { label: "Penolong Amil Kariah (PAK) terbaik", value: "ANUG-PAK" },
-  { label: "Ketua Penolong Amil Fitrah (KPAF) terbaik", value: "ANUG-KPAF" },
-  { label: "Penolong Amil Fitrah (PAF) terbaik", value: "ANUG-PAF" },
-  { label: "Penolong Amil Padi (PAP) terbaik", value: "ANUG-PAP" },
-  { label: "Penolong Amil Komuniti (PAK+) terbaik", value: "ANUG-PAKPLUS" }
-];
-
-// Table data and reactivity control
-const tableKey = ref(0);
-const activeTab = ref(0);
-
-// Sample data for demonstration
-const allowancesList = ref([
-  {
-    id: "ET-2024-001",
-    rujukan: "ET-2024-001",
-    year: 2024,
-    type: "ET-KPAK",
-    typeLabel: "Elaun Tahunan KPAK",
-    status: "DRAF",
-    count: 25,
-    totalAmount: 12500.00,
-    budget: 10000.00,
-    excessAmount: 2500.00,
-    createdBy: "eksekutif",
-    createdAt: "2024-01-15T10:00:00Z",
-    submittedAt: null,
-    approvedByKJ: null,
-    approvedAtKJ: null,
-    approvedByKD: null,
-    approvedAtKD: null,
-    notes: ""
-  },
-  {
-    id: "ET-2024-002",
-    rujukan: "ET-2024-002",
-    year: 2024,
-    type: "ET-KPAF",
-    typeLabel: "Elaun Tahunan KPAF",
-    status: "SEDANG PROSES",
-    count: 30,
-    totalAmount: 9000.00,
-    budget: 10000.00,
-    excessAmount: 0.00,
-    createdBy: "eksekutif",
-    createdAt: "2024-01-16T14:30:00Z",
-    submittedAt: "2024-01-16T15:00:00Z",
-    approvedByKJ: null,
-    approvedAtKJ: null,
-    approvedByKD: null,
-    approvedAtKD: null,
-    notes: ""
-  },
-  {
-    id: "ET-2024-003",
-    rujukan: "ET-2024-003",
-    year: 2024,
-    type: "ET-ANUG",
-    typeLabel: "Anugerah Penolong Amil",
-    status: "PERLU PENGESAHAN",
-    count: 15,
-    totalAmount: 15000.00,
-    budget: 10000.00,
-    excessAmount: 5000.00,
-    createdBy: "eksekutif",
-    createdAt: "2024-01-17T09:15:00Z",
-    submittedAt: "2024-01-17T10:00:00Z",
-    approvedByKJ: null,
-    approvedAtKJ: null,
-    approvedByKD: null,
-    approvedAtKD: null,
-    notes: "Elaun melebihi bajet - memerlukan pengesahan"
-  },
-  {
-    id: "ET-2024-004",
-    rujukan: "ET-2024-004",
-    year: 2024,
-    type: "ANUG-KPAK",
-    typeLabel: "Ketua Penolong Amil Kariah (KPAK) terbaik",
-    status: "LULUS",
-    count: 5,
-    totalAmount: 5000.00,
-    budget: 10000.00,
-    excessAmount: 0.00,
-    createdBy: "eksekutif",
-    createdAt: "2024-01-18T11:00:00Z",
-    submittedAt: "2024-01-18T12:00:00Z",
-    approvedByKJ: "KJ001",
-    approvedAtKJ: "2024-01-19T10:00:00Z",
-    approvedByKD: "KD001",
-    approvedAtKD: "2024-01-20T14:00:00Z",
-    notes: "Diluluskan sepenuhnya"
-  },
-  {
-    id: "ET-2024-005",
-    rujukan: "ET-2024-005",
-    year: 2024,
-    type: "ET-KPAK",
-    typeLabel: "Elaun Tahunan KPAK",
-    status: "DRAF",
-    count: 20,
-    totalAmount: 10000.00,
-    budget: 10000.00,
-    excessAmount: 0.00,
-    createdBy: "eksekutif",
-    createdAt: "2024-01-20T08:00:00Z",
-    submittedAt: null,
-    approvedByKJ: null,
-    approvedAtKJ: null,
-    approvedByKD: null,
-    approvedAtKD: null,
-    notes: "Draf baru untuk KPAK"
-  },
-  {
-    id: "ET-2024-006",
-    rujukan: "ET-2024-006",
-    year: 2024,
-    type: "ET-KPAF",
-    typeLabel: "Elaun Tahunan KPAF",
-    status: "SEDANG PROSES",
-    count: 18,
-    totalAmount: 5400.00,
-    budget: 10000.00,
-    excessAmount: 0.00,
-    createdBy: "eksekutif",
-    createdAt: "2024-01-21T09:00:00Z",
-    submittedAt: "2024-01-21T10:00:00Z",
-    approvedByKJ: null,
-    approvedAtKJ: null,
-    approvedByKD: null,
-    approvedAtKD: null,
-    notes: "Dalam proses kelulusan"
-  }
+// ========== DATA (MOCK UNTUK ALI — PAK) ==========
+// Tugasan Hari Ini (bilangan borang)
+const tugasanHariIni = ref([
+  rowTask("BANCIAN BARU : PER BORANG PERMOHONAN", "PAK", 30, "B34106", "AKTIF", 5, "BELUM DIBAYAR"),
+  rowTask("KEMASKINI : PER BORANG PERMOHONAN", "PAK", 20, "B34106", "AKTIF", 3, "BELUM DIBAYAR"),
+  rowTask("PERMOHONAN BANTUAN : PER BORANG PERMOHONAN", "PAK", 20, "B34106", "AKTIF", 2, "BELUM DIBAYAR"),
 ]);
 
+// Mesyuarat / Kehadiran (bulan ini - setiap satunya 1 aktiviti)
+const mesyuaratBulanIni = ref([
+  rowMeet("01/09/2025", "KEHADIRAN DALAM DAERAH 1/2 HARI", "PAK", 50, "B31702", "Disahkan", "SUDAH DIBAYAR", "02/09/2025", "Mesyuarat Kariah"),
+  rowMeet("05/09/2025", "KEHADIRAN DALAM DAERAH 1 HARI", "PAK", 100, "B31702", "Disahkan", "BELUM DIBAYAR", null, "Bengkel PA Daerah"),
+  rowMeet("10/09/2025", "KEHADIRAN LUAR DAERAH 1/2 HARI", "PAK", 100, "B31702", "Disahkan", "BELUM DIBAYAR", null, "Lawatan Antardaerah"),
+]);
 
-// Helper functions
-function getStatusVariant(status) {
-  switch (status) {
-    case 'DRAF': return 'secondary';
-    case 'SEDANG PROSES': return 'info';
-    case 'MENUNGGU KELULUSAN': return 'warning';
-    case 'PERLU PENGESAHAN': return 'warning';
-    case 'LULUS': return 'success';
-    case 'DITOLAK': return 'danger';
-    default: return 'secondary';
+// Elaun Tahunan (tahun ini — aktiviti = penerima/aktiviti layak/YTD)
+const tahunanTahunIni = ref([
+  rowAnnual("KHAS - 48 AKTIVITI/TAHUN", "PAK", 400, "B31702", "AKTIF", 1, "BELUM DIBAYAR"),
+  rowAnnual("TAHUNAN KETUA PENOLONG AMIL", "PAK", 500, "B31702", "AKTIF", 1, "SUDAH DIBAYAR", "2025-01-31"),
+  rowAnnual("ANUGERAH PENOLONG AMIL TERBAIK", "PAK", 400, "B31702", "AKTIF", 0, "—"),
+]);
+
+function rowTask(jenisElaun, kategoriPA, amaun, kodBajet, status, aktiviti, paymentStatus){
+  return {
+    id: `TASK-${jenisElaun}`.replace(/\s+/g,"_"),
+    jenisElaun, kategoriPA, amaun, kodBajet, status, aktiviti,
+    jumlah: amaun * aktiviti,
+    paymentStatus
+  };
+}
+function rowMeet(tarikh, jenisElaun, kategoriPA, amaun, kodBajet, statusHadir, paymentStatus, paidAt=null, program=null){
+  return {
+    id: `MEET-${tarikh}-${jenisElaun}`.replace(/\s+/g,"_"),
+    tarikh, jenisElaun, kategoriPA, amaun, kodBajet, statusHadir,
+    aktiviti: 1,
+    jumlah: amaun * 1,
+    paymentStatus, paidAt, program
+  };
+}
+function rowAnnual(jenisElaun, kategoriPA, amaun, kodBajet, status, aktiviti, paymentStatus, paidAt=null){
+  return {
+    id: `ANNUAL-${jenisElaun}`.replace(/\s+/g,"_"),
+    jenisElaun, kategoriPA, amaun, kodBajet, status, aktiviti,
+    jumlah: amaun * aktiviti,
+    paymentStatus, paidAt
+  };
+}
+
+// ========== KPI (ringkas) ==========
+const kpi = computed(() => ({
+  tugasan: {
+    aktiviti: sumaktiviti(tugasanHariIni.value),
+    amount: sumAmount(tugasanHariIni.value),
+  },
+  mesyuarat: {
+    aktiviti: mesyuaratBulanIni.value.length,
+    amount: sumAmount(mesyuaratBulanIni.value),
+    paid: sumPaid(mesyuaratBulanIni.value),
+  },
+  tahunan: {
+    amount: sumAmount(tahunanTahunIni.value),
+    paid: sumPaid(tahunanTahunIni.value),
+    get unpaid(){ return this.amount - this.paid; }
   }
-}
+}));
+const activeTab = ref(0);
 
-function formatCurrency(amount) {
-  return Number(amount || 0).toLocaleString('en-MY', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-}
+// ========== HELPERS ==========
+function formatCurrency(n){ return Number(n||0).toLocaleString("en-MY",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function sumaktiviti(arr){ return arr.reduce((s,r)=>s+Number(r.aktiviti||0),0); }
+function sumAmount(arr){ return arr.reduce((s,r)=>s+Number(r.jumlah||0),0); }
+function sumPaid(arr){ return arr.reduce((s,r)=>s+(r.paymentStatus==='SUDAH DIBAYAR'?Number(r.jumlah||0):0),0); }
+function sumUnpaid(arr){ return arr.reduce((s,r)=>s+(r.paymentStatus==='BELUM DIBAYAR'?Number(r.jumlah||0):0),0); }
+function variantAktif(status){ return status==='AKTIF' ? 'success':'secondary'; }
+function variantBayaran(s){ return s==='SUDAH DIBAYAR' ? 'success' : (s==='BELUM DIBAYAR' ? 'warning' : 'secondary'); }
+function fmt(iso){ return new Date(iso).toLocaleDateString('ms-MY',{day:'2-digit',month:'short',year:'numeric'}); }
 
-function getTableDataByStatus(statuses) {
-  let filteredData = allowancesList.value.filter(item => 
-    statuses.includes(item.status)
-  );
-
-  // Apply search filters
-  if (filters.value.searchQuery) {
-    const query = filters.value.searchQuery.toLowerCase();
-    filteredData = filteredData.filter(item =>
-      item.rujukan.toLowerCase().includes(query) ||
-      item.typeLabel.toLowerCase().includes(query)
-    );
-  }
-
-  if (filters.value.year) {
-    filteredData = filteredData.filter(item => item.year === filters.value.year);
-  }
-
-  if (filters.value.type) {
-    filteredData = filteredData.filter(item => item.type === filters.value.type);
-  }
-
-  return filteredData;
-}
-
-function performSearch() {
-  tableKey.value++;
-  toast.success('Carian berjaya dilakukan');
-}
-
-function clearSearch() {
-  filters.value.searchQuery = "";
-  filters.value.year = "";
-  filters.value.type = "";
-  tableKey.value++;
-  toast.success('Filter telah diset semula');
-}
-
-function viewAllowance(allowance) {
-  router.push(`/BF-PA/PE/ET/03?id=${allowance.id}&year=${allowance.year}&type=${allowance.type}`);
-}
-
-function editAllowance(allowance) {
-  router.push(`/BF-PA/PE/ET/04?id=${allowance.id}&year=${allowance.year}&type=${allowance.type}`);
-}
-
-// Watch for role changes
-watch(currentRole, () => {
-  activeTab.value = 0; // Reset to first tab when role changes
-});
 </script>
-
-<style scoped>
-/* Add any additional styles here */
-</style> 

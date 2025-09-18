@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Carian Profil Third-Party</h2>
+          <h2 class="text-xl font-semibold">Carian Profil Recipient</h2>
         </div>
       </template>
 
@@ -14,25 +14,37 @@
         <div class="mb-6">
           <h3 class="text-lg font-medium mb-4">Maklumat Carian</h3>
           <FormKit type="form" :actions="false" @submit="handleSubmit">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormKit
                 type="select"
-                name="kategori"
-                label="Kategori Profil"
+                name="jenisRecipient"
+                label="Jenis Recipient"
                 validation="required"
-                :options="kategoriOptions"
-                placeholder="Pilih kategori"
-                v-model="formData.kategori"
-                :validation-messages="{ required: 'Kategori adalah wajib' }"
+                :options="jenisRecipientOptions"
+                placeholder="Pilih jenis recipient"
+                v-model="formData.jenisRecipient"
+                :validation-messages="{ required: 'Jenis Recipient adalah wajib' }"
+              />
+              <FormKit
+                type="select"
+                name="jenisPengenalan"
+                label="Jenis Pengenalan"
+                validation="required"
+                :options="jenisPengenalanOptions"
+                placeholder="Pilih jenis pengenalan"
+                v-model="formData.jenisPengenalan"
+                :validation-messages="{ required: 'Jenis Pengenalan adalah wajib' }"
+                :disabled="!formData.jenisRecipient"
               />
               <FormKit
                 type="text"
-                name="noId"
-                label="Nombor Pengenalan / Kod Syarikat"
+                name="noPengenalan"
+                label="No Pengenalan / Kod Vendor / ID Syarikat"
                 validation="required"
-                v-model="formData.noId"
+                v-model="formData.noPengenalan"
                 :placeholder="getPlaceholder()"
-                :validation-messages="{ required: 'Nombor ID adalah wajib' }"
+                :validation-messages="{ required: 'No Pengenalan adalah wajib' }"
+                :disabled="!formData.jenisPengenalan"
               />
             </div>
 
@@ -40,7 +52,8 @@
               <rs-button variant="primary-outline" @click="resetForm">Reset</rs-button>
               <rs-button variant="primary" :disabled="processing" @click="validateAndSearch">
                 <span v-if="processing">
-                  <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
+                  <Icon name="eos-icons:loading" class="animate-spin mr-1" size="1rem" />
+                  Mencari...
                 </span>
                 <span v-else>Cari</span>
               </rs-button>
@@ -48,40 +61,93 @@
           </FormKit>
         </div>
 
-        <!-- Result Section -->
+        <!-- Search Results Section -->
         <div v-if="searchCompleted" class="mt-6">
-          <rs-card :variant="profileExists ? 'success' : 'warning'" class="mb-4">
-            <template #body>
-              <div class="flex items-center">
-                <div class="mr-4">
-                  <Icon
-                    :name="profileExists ? 'mdi:check-circle' : 'mdi:alert-circle'"
-                    size="2rem"
-                    :class="profileExists ? 'text-green-600' : 'text-amber-600'"
-                  />
+          <!-- Results Found -->
+          <div v-if="searchResults.length > 0">
+            <h3 class="text-lg font-medium mb-4">Hasil Carian</h3>
+            
+            <!-- Results for Individu -->
+            <rs-table
+              v-if="formData.jenisRecipient === 'individu'"
+              :data="searchResults"
+              :columns="individuColumns"
+              :pageSize="10"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+            >
+              <template v-slot:tindakan="{ text }">
+                <div class="flex space-x-2">
+                  <rs-button
+                    variant="primary"
+                    size="sm"
+                    @click="navigateToUpdate(text.id)"
+                  >
+                    Kemaskini Profil
+                  </rs-button>
                 </div>
-                <div>
-                  <h3 class="text-lg font-medium">
-                    {{ profileExists ? "Profil Ditemui" : "Profil Tidak Ditemui" }}
-                  </h3>
-                  <p class="text-sm mt-1">
-                    {{
-                      profileExists
-                        ? "Profil telah wujud dalam sistem. Anda boleh teruskan ke kemaskini."
-                        : "Profil belum wujud. Anda perlu meneruskan ke proses pendaftaran baharu."
-                    }}
-                  </p>
+              </template>
+            </rs-table>
+
+            <!-- Results for Syarikat -->
+            <rs-table
+              v-if="formData.jenisRecipient === 'syarikat'"
+              :data="searchResults"
+              :columns="syarikatColumns"
+              :pageSize="10"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+            >
+              <template v-slot:status="{ text }">
+                <rs-badge :variant="getNPSStatusVariant(text)">
+                  {{ text }}
+                </rs-badge>
+              </template>
+              <template v-slot:tindakan="{ text }">
+                <div class="flex space-x-2">
+                  <rs-button
+                    variant="primary"
+                    size="sm"
+                    @click="navigateToUpdate(text.id)"
+                  >
+                    Kemaskini Profil
+                  </rs-button>
                 </div>
-              </div>
-            </template>
-            <template #footer>
-              <div class="flex justify-end">
-                <rs-button variant="primary" @click="navigateNext">
-                  {{ profileExists ? "Kemaskini Profil" : "Pendaftaran Baharu" }}
-                </rs-button>
-              </div>
-            </template>
-          </rs-card>
+              </template>
+            </rs-table>
+          </div>
+
+          <!-- No Results Found -->
+          <div v-else>
+            <rs-card variant="warning" class="mb-4">
+              <template #body>
+                <div class="flex items-center">
+                  <div class="mr-4">
+                    <Icon
+                      name="mdi:alert-circle"
+                      size="2rem"
+                      class="text-amber-600"
+                    />
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-medium">
+                      Rekod Tidak Dijumpai
+                    </h3>
+                    <p class="text-sm mt-1">
+                      Rekod tidak dijumpai dalam Sistem NAS. Teruskan ke Pendaftaran Baru.
+                    </p>
+                  </div>
+                </div>
+              </template>
+              <template #footer>
+                <div class="flex justify-end">
+                  <rs-button variant="primary" @click="navigateToRegistration">
+                    Pendaftaran Baru
+                  </rs-button>
+                </div>
+              </template>
+            </rs-card>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -89,44 +155,145 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 
-definePageMeta({ title: "Carian Profil Third-Party" });
+definePageMeta({ title: "Carian Profil Recipient" });
 
 const router = useRouter();
 const processing = ref(false);
 const searchCompleted = ref(false);
-const profileExists = ref(false);
+const searchResults = ref([]);
 
 const breadcrumb = ref([
-  { name: "Profil Third-Party", type: "link", path: "/BF-PRF/TP/PP/01" },
+  { name: "Profil Recipient", type: "link", path: "/BF-PRF/TP/PP/01" },
   { name: "Carian Profil", type: "current", path: "/BF-PRF/TP/PP/01" },
 ]);
 
-const kategoriOptions = [
-  { label: "Recipient (Individu)", value: "recipient" },
-  { label: "Syarikat (Syarikat/Entiti)", value: "vendor" },
+const jenisRecipientOptions = [
+  { label: "Individu", value: "individu" },
+  { label: "Syarikat", value: "syarikat" },
 ];
 
-const formData = ref({ kategori: "", noId: "" });
+const formData = ref({ 
+  jenisRecipient: "", 
+  jenisPengenalan: "", 
+  noPengenalan: "" 
+});
+
+// Computed options for Jenis Pengenalan based on Jenis Recipient
+const jenisPengenalanOptions = computed(() => {
+  if (formData.value.jenisRecipient === "individu") {
+    return [
+      { label: "ID Pengenalan", value: "mykad" },
+      { label: "Passport No", value: "passport_no" },
+    ];
+  } else if (formData.value.jenisRecipient === "syarikat") {
+    return [
+      { label: "ID Syarikat", value: "id_syarikat" },
+    ];
+  }
+  return [];
+});
+
+// Table columns for Individu results
+const individuColumns = [
+  { key: 'namaPenuh', label: 'Nama Penuh', sortable: true },
+  { key: 'jenisPengenalan', label: 'Jenis Pengenalan', sortable: true },
+  { key: 'idPengenalan', label: 'ID Pengenalan', sortable: true },
+  { key: 'tindakan', label: 'Tindakan', sortable: false },
+];
+
+// Table columns for Syarikat results
+const syarikatColumns = [
+  { key: 'namaSyarikat', label: 'Nama Syarikat', sortable: true },
+  { key: 'jenisPengenalan', label: 'Jenis Pengenalan', sortable: true },
+  { key: 'idSyarikat', label: 'ID Syarikat', sortable: true },
+  { key: 'status', label: 'Status', sortable: true },
+  { key: 'tindakan', label: 'Tindakan', sortable: false },
+];
+
+// Mock data for search results (align with kemaskini dynamic IDs)
+const mockIndividuData = [
+  {
+    id: 'RE-202507-0011',
+    namaPenuh: 'Ahmad Bin Abdullah',
+    jenisPengenalan: 'ID Pengenalan',
+    idPengenalan: '880101123456',
+    tindakan: { id: 'RE-202507-0011' }
+  },
+  {
+    id: 'RE-202505-0013',
+    namaPenuh: 'Siti Fatimah Binti Ali',
+    jenisPengenalan: 'Passport No',
+    idPengenalan: 'A12345678',
+    tindakan: { id: 'RE-202505-0013' }
+  },
+  {
+    id: 'RE-202506-0015',
+    namaPenuh: 'Zainab Binti Hassan',
+    jenisPengenalan: 'ID Pengenalan',
+    idPengenalan: '850720025678',
+    tindakan: { id: 'RE-202506-0015' }
+  }
+];
+
+const mockSyarikatData = [
+  {
+    id: 'RE-202506-0012',
+    namaSyarikat: 'Pusat Dialisis As-Salam Shah Alam',
+    jenisPengenalan: 'ID Syarikat',
+    idSyarikat: 'PPM-2021-015',
+    status: 'Verified',
+    tindakan: { id: 'RE-202506-0012' }
+  },
+  {
+    id: 'RE-202507-0014',
+    namaSyarikat: 'Klinik Kesihatan Al-Ikhlas',
+    jenisPengenalan: 'ID Syarikat',
+    idSyarikat: 'PPM-2022-008',
+    status: 'Tidak Verified',
+    tindakan: { id: 'RE-202507-0014' }
+  },
+  {
+    id: 'RE-202505-0016',
+    namaSyarikat: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
+    jenisPengenalan: 'ID Syarikat',
+    idSyarikat: 'PPM-2022-008',
+    status: 'Verified',
+    tindakan: { id: 'RE-202505-0016' }
+  }
+];
 
 const getPlaceholder = () => {
-  switch (formData.value.kategori) {
-    case "recipient": return "Contoh: 880101121234";
-    case "vendor": return "Contoh: SY123456";
-    default: return "Sila pilih kategori dahulu";
+  if (!formData.value.jenisPengenalan) return "Sila pilih jenis pengenalan dahulu";
+  
+  switch (formData.value.jenisPengenalan) {
+    case "mykad": return "Contoh: 880101123456";
+    case "passport_no": return "Contoh: A12345678";
+    case "id_syarikat": return "Contoh: SY123456-X";
+    default: return "Sila pilih jenis pengenalan dahulu";
   }
 };
 
+const getNPSStatusVariant = (status) => {
+  const variants = {
+    'Verified': 'success',
+    'Tidak Verified': 'warning',
+  };
+  return variants[status] || 'default';
+};
+
 const resetForm = () => {
-  formData.value.kategori = "";
-  formData.value.noId = "";
+  formData.value.jenisRecipient = "";
+  formData.value.jenisPengenalan = "";
+  formData.value.noPengenalan = "";
   searchCompleted.value = false;
+  searchResults.value = [];
 };
 
 const validateAndSearch = () => {
-  if (!formData.value.kategori || !formData.value.noId) return;
+  if (!formData.value.jenisRecipient || !formData.value.jenisPengenalan || !formData.value.noPengenalan) return;
   performSearch();
 };
 
@@ -136,22 +303,64 @@ const performSearch = () => {
 
   setTimeout(() => {
     processing.value = false;
-    profileExists.value = Math.random() >= 0.5;
+    
+    // Simulate search results - randomly return results or no results
+    const hasResults = Math.random() >= 0.5; // 50% chance of finding results
+    
+    if (hasResults) {
+      if (formData.value.jenisRecipient === 'individu') {
+        searchResults.value = mockIndividuData.filter(item => 
+          item.idPengenalan.includes(formData.value.noPengenalan.replace(/[-\s]/g, ''))
+        );
+        // If no exact match, show all mock data for demo
+        if (searchResults.value.length === 0) {
+          searchResults.value = mockIndividuData;
+        }
+      } else {
+        searchResults.value = mockSyarikatData.filter(item => 
+          item.idSyarikat.toLowerCase().includes(formData.value.noPengenalan.toLowerCase())
+        );
+        // If no exact match, show all mock data for demo
+        if (searchResults.value.length === 0) {
+          searchResults.value = mockSyarikatData;
+        }
+      }
+    } else {
+      searchResults.value = [];
+    }
+    
     searchCompleted.value = true;
   }, 1000);
 };
 
-const navigateNext = () => {
-  if (profileExists.value) {
-    router.push("/BF-PRF/TP/PP/03");
-  } else {
-    router.push("/BF-PRF/TP/PP/02");
-  }
+const navigateToUpdate = (id) => {
+  // Consistent behavior for all users: proceed to edit page
+  router.push(`/BF-PRF/TP/PP/kemaskini/${id}`);
 };
 
+const navigateToRegistration = () => {
+  router.push("/BF-PRF/TP/PP/02");
+};
+
+// Watch for changes in jenisRecipient to reset dependent fields
 watch(
-  () => formData.value.kategori,
-  () => { formData.value.noId = ""; }
+  () => formData.value.jenisRecipient,
+  () => { 
+    formData.value.jenisPengenalan = "";
+    formData.value.noPengenalan = "";
+    searchCompleted.value = false;
+    searchResults.value = [];
+  }
+);
+
+// Watch for changes in jenisPengenalan to reset ID field
+watch(
+  () => formData.value.jenisPengenalan,
+  () => { 
+    formData.value.noPengenalan = "";
+    searchCompleted.value = false;
+    searchResults.value = [];
+  }
 );
 </script>
 

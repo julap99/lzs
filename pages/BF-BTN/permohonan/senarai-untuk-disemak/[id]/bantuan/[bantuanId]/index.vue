@@ -659,7 +659,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { formatDate } from "~/utils/dateFormatter.js";
 
@@ -693,14 +693,14 @@ const breadcrumb = ref([
   },
 ]);
 
-// Form data
+// Form data (flat). Will be populated from mockByBantuanId
 const formData = ref({
   // Section 1: Maklumat Bantuan
-  jenisBantuan: "B125 - BANTUAN BAIKPULIH RUMAH (MISKIN)",
-  aid: "B125 - BANTUAN BAIKPULIH RUMAH (MISKIN)",
-  aidProduct: "BANTUAN BAIKPULIH RUMAH (MISKIN)",
-  productPackage: "BAIKPULIH RUMAH (MISKIN)",
-  entitlementProduct: "BAIKPULIH RUMAH (MISKIN)",
+  jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+  aid: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+  aidProduct: "BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR))",
+  productPackage: "DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+  entitlementProduct: "DERMASISWA SEKOLAH ASRAMA (FAKIR)",
   segera: false,
   kelulusanKhas: false,
   tarikhPermohonan: new Date().toISOString(),
@@ -767,6 +767,82 @@ const formData = ref({
   statusPermohonanBaru: "",
   catatanPegawai: "",
   tarikhSemak: new Date(),
+});
+
+// Mock dataset keyed by bantuanId
+const mockByBantuanId = {
+  B300: {
+    jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    aid: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    aidProduct: "BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR))",
+    productPackage: "DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    entitlementProduct: "DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    segera: false,
+    kelulusanKhas: false,
+    tarikhPermohonan: new Date().toISOString(),
+    sla: "3h",
+    dokumenSokongan: [
+      { id: "surat-sewa", nama: "Surat Perjanjian Sewa", status: "", url: "/path/to/doc1.pdf" },
+      { id: "bank-tuan-rumah", nama: "Maklumat Bank Tuan Rumah", status: "", url: "/path/to/doc2.pdf" },
+      { id: "bukti-pemilikan", nama: "Bukti Pemilikan (Salinan bil utiliti: Air, Api, Cukai Pintu, atau lain-lain)", status: "", url: "/path/to/doc3.pdf" },
+      { id: "surat-kuasa", nama: "Surat Kuasa Wakil (jika bilik/rumah diurus wakil/ejen, bukan tuan rumah sendiri)", status: "", url: "/path/to/doc4.pdf" },
+    ],
+    statusSokongan: "",
+    catatanPengesyoran: "",
+    kadarBantuan: null,
+    tempohBantuan: "",
+    jumlahKeseluruhan: 0,
+    tarikhMula: "",
+    tarikhTamat: "",
+    penerima: "",
+    namaPenerima: "",
+    kaedahPembayaran: "",
+    namaBank: "",
+    noAkaunBank: "",
+    statusPermohonan: "Dalam Semakan",
+    statusPermohonanBaru: "",
+    catatanPegawai: "",
+    tarikhSemak: new Date(),
+  },
+  B307: {
+    jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+    aid: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+    aidProduct: "DERMASISWA IPT DALAM NEGARA (FAKIR)",
+    productPackage: "DERMASISWA IPT (FAKIR)",
+    entitlementProduct: "DERMASISWA IPT (FAKIR)",
+    segera: false,
+    kelulusanKhas: false,
+    tarikhPermohonan: new Date().toISOString(),
+    sla: "2h",
+    dokumenSokongan: [
+      { id: "surat-sewa", nama: "Surat Perjanjian Sewa", status: "", url: "/path/to/doc1.pdf" },
+      { id: "bank-tuan-rumah", nama: "Maklumat Bank Tuan Rumah", status: "", url: "/path/to/doc2.pdf" },
+    ],
+    statusSokongan: "",
+    catatanPengesyoran: "",
+    kadarBantuan: null,
+    tempohBantuan: "",
+    jumlahKeseluruhan: 0,
+    tarikhMula: "",
+    tarikhTamat: "",
+    penerima: "",
+    namaPenerima: "",
+    kaedahPembayaran: "",
+    namaBank: "",
+    noAkaunBank: "",
+    statusPermohonan: "Dalam Semakan",
+    statusPermohonanBaru: "",
+    catatanPegawai: "",
+    tarikhSemak: new Date(),
+  },
+};
+
+onMounted(() => {
+  const bantuanId = String(route.params.bantuanId || "");
+  const record = mockByBantuanId[bantuanId];
+  if (record) {
+    Object.assign(formData.value, record);
+  }
 });
 
 // Configuration data

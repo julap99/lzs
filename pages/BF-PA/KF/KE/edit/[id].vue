@@ -64,7 +64,7 @@
                     </td>
                     <td class="p-3 border">
                       <input 
-                        type="number" 
+                        type="text" 
                         v-model="elaun.amaun" 
                         class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="0"
@@ -460,9 +460,23 @@ const formData = ref({
       tarikh: '2025-01-01'
     },
     {
+      jenis: 'Ketua Penolong Amil Fitrah (KPAF) terbaik,',
+      amaun: 450-700,
+      kod: 'B34108',
+      status: 'TIDAK AKTIF',
+      tarikh: '' // Not active yet
+    },
+    {
+      jenis: 'Penolong Amil Fitrah (PAF) terbaik',
+      amaun: 450-700,
+      kod: 'B34109',
+      status: 'TIDAK AKTIF',
+      tarikh: '' // Not active yet
+    },
+    {
       jenis: 'Elaun Tahunan KPAF',
       amaun: 300,
-      kod: 'B34108',
+      kod: 'B31702',
       status: 'AKTIF',
       tarikh: '2025-01-01'
     }
@@ -757,7 +771,7 @@ onMounted(async () => {
     
     // Mock original data - what was in system before changes
     const loadedData = {
-      kategoriPenolongAmil: 'Penolong Amil Fitrah',
+      kategoriPenolongAmil: 'Penolong Amil Kariah',
       maklumatElaun: [
         {
           jenis: 'Elaun Bancian Baru : per borang permohonan',
@@ -830,8 +844,15 @@ onMounted(async () => {
           tarikh: '2025-01-01'
         },
         {
-          jenis: 'Elaun Tahunan KPAF', // Added: new elaun type
-          amaun: 300,
+          jenis: 'Anugerah Ketua Penolong Amil Terbaik', // Added: new elaun type
+          amaun: 400 - 750,
+          kod: 'B34108',
+          status: 'AKTIF',
+          tarikh: '2025-01-01'
+        },
+         {
+          jenis: 'Anugerah Penolong Amil Terbaik', // Added: new elaun type
+          amaun: 400 - 750,
           kod: 'B34108',
           status: 'AKTIF',
           tarikh: '2025-01-01'
@@ -839,8 +860,8 @@ onMounted(async () => {
       ],
       maklumatElaunKhas: [
         {
-          jenis: 'KHAS - 48 AKTIVITI/TAHUN',
-          kategoriPA: 'PAF',
+          jenis: 'Khas - 48 Aktiviti/Tahun',
+          kategoriPA: 'PAK',
           amaun: 400, // Modified: increased from 350 to 400
           kod: 'B31702',
           status: 'AKTIF',

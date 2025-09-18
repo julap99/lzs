@@ -11,15 +11,6 @@
       </template>
 
       <template #body>
-        <!-- Search Section -->
-        <div class="mb-4">
-          <rs-input
-            v-model="searchQuery"
-            placeholder="Cari..."
-            prepend-icon="ic:outline-search"
-          />
-        </div>
-
         <!-- Table Section -->
         <rs-table
           :data="filteredApplications"
@@ -33,7 +24,7 @@
           }"
           :options-advanced="{
             sortable: true,
-            filterable: true,
+            filterable: false,
           }"
           advanced
         >
@@ -128,7 +119,7 @@ const currentPage = ref(1);
 // Mock data - would be replaced with API call
 const applications = ref([
   {
-    nama: "Ahmad bin Abdullah",
+    nama: "Adnan bin Abu",
     tarikhMohon: "2024-03-20",
     jenisPendaftaran: "Pendaftaran Lengkap  ",
     status: "Menunggu Kelulusan",

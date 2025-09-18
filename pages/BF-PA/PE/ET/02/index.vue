@@ -48,7 +48,16 @@
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
                 <tr>
-                  <th class="px-4 py-3 font-medium text-gray-900">Pilih</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">
+                    <FormKit
+                      v-model="selectAllCandidates"
+                      type="checkbox"
+                      :classes="{
+                        input: '!w-4 !h-4',
+                      }"
+                      @change="toggleSelectAllCandidates"
+                    />
+                  </th>
                   <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
@@ -61,6 +70,10 @@
               <tbody class="divide-y bg-white">
                 <tr v-for="row in pagedRows" :key="row.paId" class="hover:bg-gray-50">
                   <td class="px-4 py-3">
+                    <template v-if="isInRecipients(row.paId) || row._selected">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">Telah Dipilih</span>
+                    </template>
+                    <template v-else>
                     <FormKit
                       v-model="row._checked"
                       type="checkbox"
@@ -68,6 +81,7 @@
                         input: '!w-4 !h-4',
                       }"
                     />
+                    </template>
                   </td>
                   <td class="px-4 py-3 font-medium text-gray-900">{{ row.name }}</td>
                   <td class="px-4 py-3 text-gray-900">{{ row.ic }}</td>
@@ -76,7 +90,12 @@
                   <td class="px-4 py-3">
                     <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
                       <li v-for="a in aggregateActivities(row.activities)" :key="a.name">
-                        <span class="font-medium">{{ a.name }}</span>
+                        <button 
+                          @click="openAllowanceModal(a.name)"
+                          class="font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                        >
+                          {{ a.name }}
+                        </button>
                       </li>
                       <li v-if="!row.activities || !row.activities.length" class="list-none text-gray-500">
                         Tiada rekod aktiviti.
@@ -84,14 +103,14 @@
                     </ul>
                   </td>
                   <td class="px-4 py-3">
-                    <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
-                      <li v-for="a in aggregateActivities(row.activities)" :key="a.name">
+                    <div>
+                      <div v-for="a in aggregateActivities(row.activities)" :key="a.name" class="text-sm">
                         <span class="font-medium">{{ a.count }}</span>
-                      </li>
-                      <li v-if="!row.activities || !row.activities.length" class="list-none text-gray-500">
+                      </div>
+                      <div v-if="!row.activities || !row.activities.length" class="text-gray-500">
                         —
-                      </li>
-                    </ul>
+                      </div>
+                    </div>
                   </td>
                   <td class="px-4 py-3 text-gray-900">
                     {{ totalActivityCount(row.activities) }}
@@ -152,6 +171,8 @@
             <div class="text-xs text-gray-500">Status: <b>{{ statusLabel }}</b></div>
           </div>
 
+          
+
           <div class="overflow-x-auto rounded-lg border">
             <table class="min-w-full text-sm divide-y">
               <thead class="bg-gray-50 text-left">
@@ -164,11 +185,16 @@
                       Elaun (RM)
                     </div>
                   </th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
-                <tr v-for="(r, index) in recipients" :key="r.paId" class="hover:bg-gray-50">
+                <tr v-for="(r, index) in recipients" :key="r.paId" 
+                    :class="[
+                      'hover:bg-gray-50',
+                      r._cancelled ? 'bg-red-50 opacity-60' : ''
+                    ]">
                   <td class="px-4 py-3 font-medium text-gray-900">
                     <span>{{ r.name }}</span>
                   </td>
@@ -194,8 +220,21 @@
                     <template v-else>
                       <div class="flex items-center gap-2">
                         <span class="font-semibold">{{ r.allowance.toFixed(2) }}</span>
+                        <Icon 
+                          v-if="r._allowanceNotes" 
+                          name="ic:baseline-info" 
+                          class="text-blue-500 cursor-help" 
+                          size="16"
+                          :title="r._allowanceNotes"
+                        />
                       </div>
                     </template>
+                  </td>
+                  <td class="px-4 py-3">
+                    <div v-if="r._allowanceNotes" class="text-xs text-gray-600 max-w-xs truncate" :title="r._allowanceNotes">
+                      {{ r._allowanceNotes }}
+                    </div>
+                    <span v-else class="text-xs text-gray-400">—</span>
                   </td>
                   <td class="px-4 py-3 text-left">
                     <div class="flex items-center justify-start gap-2">
@@ -239,14 +278,14 @@
                   </td>
                 </tr>
                 <tr v-if="recipients.length === 0" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="5">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="6">
                     Tiada penerima dipilih lagi. Tandakan dan klik 'Pilih'.
                   </td>
                 </tr>
               </tbody>
               <tfoot class="bg-gray-50">
                 <tr>
-                  <td class="px-4 py-3 text-right font-medium" colspan="3">Jumlah (RM)</td>
+                  <td class="px-4 py-3 text-right font-medium" colspan="4">Jumlah (RM)</td>
                   <td class="px-4 py-3 font-semibold">{{ totalAllowance.toFixed(2) }}</td>
                 </tr>
               </tfoot>
@@ -335,6 +374,188 @@
         </div>
       </div>
     </div>
+
+    <!-- Note: Form-based activities modal removed - moved to AB2 module -->
+
+    <!-- Special Activity Modal -->
+    <div v-if="showSpecialModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-hidden">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold">Pembatalan Pembayaran Elaun Khas</h3>
+            <button 
+              @click="closeSpecialModal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <Icon name="ic:baseline-close" size="24" />
+            </button>
+          </div>
+          
+          <div class="overflow-x-auto rounded-lg border">
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900 w-16">Checkbox</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama Aktiviti</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Tarikh</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kadar Elaun</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="(item, index) in specialModalData" :key="index" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-model="item._modalChecked"
+                      type="checkbox"
+                      :classes="{
+                        input: '!w-4 !h-4',
+                      }"
+                    />
+                  </td>
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ item.namaAktiviti }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.tarikh }}</td>
+                  <td class="px-4 py-3 text-gray-900">RM {{ item.kadarElaun.toFixed(2) }}</td>
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-if="item._modalChecked"
+                      v-model="item._modalCatatan"
+                      type="textarea"
+                      rows="2"
+                      placeholder="Masukkan catatan pembatalan..."
+                      :classes="{ input: '!py-2 !px-2 text-xs' }"
+                    />
+                    <input
+                      v-else
+                      type="text"
+                      disabled
+                      :value="item._modalCatatan"
+                      class="w-full py-2 px-2 text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="flex items-center justify-end gap-3 mt-6">
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              @click="closeSpecialModal"
+            >
+              Batal
+            </rs-button>
+            <rs-button
+              variant="primary"
+              size="sm"
+              @click="applySpecialChanges"
+              :disabled="!hasSpecialChanges"
+            >
+              <Icon name="ic:baseline-check" class="mr-2" />
+              Simpan
+            </rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Award Activities Modal -->
+    <div v-if="showAwardModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-hidden">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold">Pembatalan Maklumat Anugerah Penolong Amil</h3>
+            <button 
+              @click="closeAwardModal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <Icon name="ic:baseline-close" size="24" />
+            </button>
+          </div>
+          
+          <div class="overflow-x-auto rounded-lg border">
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900 w-16">Checkbox</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">No</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama Aktiviti</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Tarikh</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kadar Elaun</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="(item, index) in awardModalData" :key="index" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-model="item._modalChecked"
+                      type="checkbox"
+                      :classes="{
+                        input: '!w-4 !h-4',
+                      }"
+                    />
+                  </td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.no }}</td>
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ item.namaAktiviti }}</td>
+                  <td class="px-4 py-3 text-gray-900">{{ item.tarikh }}</td>
+                  <td class="px-4 py-3 w-48">
+                    <FormKit
+                      v-if="item._modalChecked"
+                      v-model.number="item._modalKadarElaun"
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      :classes="{
+                        input: '!py-1 !px-2',
+                      }"
+                    />
+                    <span v-else class="font-semibold">RM {{ item.kadarElaun.toFixed(2) }}</span>
+                  </td>
+                  <td class="px-4 py-3">
+                    <FormKit
+                      v-if="item._modalChecked"
+                      v-model="item._modalCatatan"
+                      type="textarea"
+                      rows="2"
+                      placeholder="Masukkan catatan pembatalan..."
+                      :classes="{ input: '!py-2 !px-2 text-xs' }"
+                    />
+                    <input
+                      v-else
+                      type="text"
+                      disabled
+                      :value="item._modalCatatan"
+                      class="w-full py-2 px-2 text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="flex items-center justify-end gap-3 mt-6">
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              @click="closeAwardModal"
+            >
+              Batal
+            </rs-button>
+            <rs-button
+              variant="primary"
+              size="sm"
+              @click="applyAwardChanges"
+              :disabled="!hasAwardChanges"
+            >
+              <Icon name="ic:baseline-check" class="mr-2" />
+              Simpan
+            </rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -392,9 +613,7 @@ const query = reactive({
 const typeOptions = {
   'ET-KPAK': 'Elaun Tahunan KPAK',
   'ET-KPAF': 'Elaun Tahunan KPAF',
-  'ET-ANUG': 'Elaun Khas - 48 aktiviti/tahun',
-  'ET-BANCIAN': 'Elaun Bancian Baru : per borang permohonan',
-  'ET-KEMASKINI': 'Elaun Kemaskini/permohonan bantuan : per borang permohonan',
+  'ET-KHAS': 'Elaun Khas - 48 Aktiviti/Tahun',
   'ANUG-KPAK': 'Ketua Penolong Amil Kariah (KPAK) terbaik',
   'ANUG-PAK': 'Penolong Amil Kariah (PAK) terbaik',
   'ANUG-KPAF': 'Ketua Penolong Amil Fitrah (KPAF) terbaik',
@@ -410,9 +629,7 @@ const typeLabel = computed(() => typeOptions[query.type] || '');
 const fixedAllowanceByType = { 
   'ET-KPAK': 500, 
   'ET-KPAF': 300, 
-  'ET-ANUG': 400,
-  'ET-BANCIAN': 30,
-  'ET-KEMASKINI': 20
+  'ET-KHAS': 400
 };
 
 // Editable allowances with range validation
@@ -483,6 +700,47 @@ const saving = ref(false);
 const showSubmitModal = ref(false);
 const submitNotes = ref('');
 
+// Activity-specific modal states
+const showSpecialModal = ref(false);
+const showAwardModal = ref(false);
+const selectedActivity = ref('');
+
+// Activity-specific modal data
+const specialModalData = ref([]);
+const awardModalData = ref([]);
+
+// Bulk selection state for Maklumat Penerima section
+const selectAllCandidates = ref(false);
+
+// Filtering state removed per request
+
+// Mock data generators for different modal types
+// Note: Form-based activities (BANCIAN, KEMASKINI, PERMOHONAN BANTUAN) moved to AB2 module
+
+function generateSpecialModalData() {
+  return [
+    { namaAktiviti: 'Program Qiamullail', tarikh: '2024-01-15', kadarElaun: 50.00, catatan: 'Program qiamullail bulanan', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Program Tazkirah', tarikh: '2024-01-20', kadarElaun: 30.00, catatan: 'Tazkirah mingguan', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Kutipan Zakat Fitrah', tarikh: '2024-03-15', kadarElaun: 25.00, catatan: 'Kutipan zakat fitrah', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Agihan Bantuan Asnaf', tarikh: '2024-02-10', kadarElaun: 40.00, catatan: 'Agihan bantuan bulanan', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Program Pendidikan', tarikh: '2024-01-25', kadarElaun: 35.00, catatan: 'Program pendidikan kanak-kanak', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Kutipan Zakat Harta', tarikh: '2024-02-05', kadarElaun: 45.00, catatan: 'Kutipan zakat harta', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Program Kesihatan', tarikh: '2024-01-30', kadarElaun: 20.00, catatan: 'Program kesihatan komuniti', _modalChecked: false, _modalCatatan: 'Tiada' },
+    { namaAktiviti: 'Majlis Hari Raya', tarikh: '2024-04-10', kadarElaun: 60.00, catatan: 'Majlis hari raya komuniti', _modalChecked: false, _modalCatatan: 'Tiada' }
+  ];
+}
+
+function generateAwardModalData() {
+  return [
+    { no: 1, namaAktiviti: 'Ketua Penolong Amil Kariah (KPAK) terbaik', tarikh: '2024-12-31', kadarElaun: 500.00, catatan: 'Anugerah untuk prestasi cemerlang tahun 2024', _modalChecked: false, _modalKadarElaun: 500.00, _modalCatatan: 'Tiada' },
+    { no: 2, namaAktiviti: 'Penolong Amil Kariah (PAK) terbaik', tarikh: '2024-12-31', kadarElaun: 400.00, catatan: 'Anugerah untuk komitmen tinggi dalam tugas', _modalChecked: false, _modalKadarElaun: 400.00, _modalCatatan: 'Tiada' },
+    { no: 3, namaAktiviti: 'Ketua Penolong Amil Fitrah (KPAF) terbaik', tarikh: '2024-12-31', kadarElaun: 450.00, catatan: 'Anugerah untuk kepimpinan yang berkesan', _modalChecked: false, _modalKadarElaun: 450.00, _modalCatatan: 'Tiada' },
+    { no: 4, namaAktiviti: 'Penolong Amil Fitrah (PAF) terbaik', tarikh: '2024-12-31', kadarElaun: 350.00, catatan: 'Anugerah untuk dedikasi dalam kutipan fitrah', _modalChecked: false, _modalKadarElaun: 350.00, _modalCatatan: 'Tiada' },
+    { no: 5, namaAktiviti: 'Penolong Amil Padi (PAP) terbaik', tarikh: '2024-12-31', kadarElaun: 300.00, catatan: 'Anugerah untuk kecemerlangan dalam kutipan padi', _modalChecked: false, _modalKadarElaun: 300.00, _modalCatatan: 'Tiada' },
+    { no: 6, namaAktiviti: 'Penolong Amil Komuniti (PAK+) terbaik', tarikh: '2024-12-31', kadarElaun: 400.00, catatan: 'Anugerah untuk perkhidmatan komuniti yang cemerlang', _modalChecked: false, _modalKadarElaun: 400.00, _modalCatatan: 'Tiada' }
+  ];
+}
+
 // Missing category options for editing
 const categoryOptions = [
   { label: 'KPAK', value: 'KPAK' },
@@ -543,28 +801,13 @@ function getMockCandidates(year, type) {
       { paId: `PA${year}003`, name: 'Fatimah binti Hassan', ic: '810723127890', category: 'KPAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}004`, name: 'Aishah binti Ibrahim', ic: '840812062345', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
     ],
-    'ET-ANUG': [
+    'ET-KHAS': [
       { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}003`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}004`, name: 'Abdul Rahman bin Hassan', ic: '780812063456', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
       { paId: `PA${year}006`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAP', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false }
-    ],
-    'ET-BANCIAN': [
-      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520149012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}004`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false }
-    ],
-    'ET-KEMASKINI': [
-      { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}002`, name: 'Mohd Zain bin Ismail', ic: '750315085678', category: 'KPAK', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}003`, name: 'Abdul Rahman bin Hassan', ic: '820520149012', category: 'KPAK', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}004`, name: 'Siti Aminah binti Omar', ic: '820520149012', category: 'KPAF', parish: 'Kariah Masjid Al-Hidayah', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}005`, name: 'Nor Azizah binti Ahmad', ic: '830615083456', category: 'PAF', parish: 'Kariah Masjid Al-Amin', activities: generateSimpleActivities(), _checked: false },
-      { paId: `PA${year}006`, name: 'Mohd Faiz bin Omar', ic: '790325127890', category: 'PAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false }
     ],
     'ANUG-KPAK': [
       { paId: `PA${year}001`, name: 'Ahmad bin Abdullah', ic: '800101011234', category: 'KPAK', parish: 'Kariah Masjid Sultan Salahuddin', activities: generateSimpleActivities(), _checked: false },
@@ -623,27 +866,45 @@ function getMockCandidates(year, type) {
   return mockData[type] || [];
 }
 
-// Simple activity generation - much simpler than before
+// Activity classification system for ET module (Yearly/Special Allowances)
+const activityCategories = {
+  SPECIAL: [
+    'KHAS - 48 AKTIVITI/TAHUN'
+  ],
+  AWARD: [
+    'Ketua Penolong Amil Kariah (KPAK) terbaik',
+    'Penolong Amil Kariah (PAK) terbaik',
+    'Ketua Penolong Amil Fitrah (KPAF) terbaik',
+    'Penolong Amil Fitrah (PAF) terbaik',
+    'Penolong Amil Padi (PAP) terbaik',
+    'Penolong Amil Komuniti (PAK+) terbaik'
+  ]
+};
+
+// Enhanced activity generation for ET module (Yearly/Special Allowances only)
 function generateSimpleActivities() {
   const activityPool = [
-    { name: 'Taklimat', count: 3 },
-    { name: 'Kutipan Fitrah', count: 2 },
-    { name: 'Agihan Tunai', count: 1 },
-    { name: 'Mesyuarat Kariah', count: 4 },
-    { name: 'Audit Tunai', count: 2 },
-    { name: 'Program Komuniti', count: 3 },
-    { name: 'Edaran Bantuan', count: 1 },
-    { name: 'Bimbingan Asnaf', count: 2 }
+    // Special activity
+    { name: 'KHAS - 48 AKTIVITI/TAHUN', count: 1, category: 'SPECIAL' },
+    
+    // Award activities
+    { name: 'Ketua Penolong Amil Kariah (KPAK) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Penolong Amil Kariah (PAK) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Ketua Penolong Amil Fitrah (KPAF) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Penolong Amil Fitrah (PAF) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Penolong Amil Padi (PAP) terbaik', count: 1, category: 'AWARD' },
+    { name: 'Penolong Amil Komuniti (PAK+) terbaik', count: 1, category: 'AWARD' }
   ];
   
-  // Randomly select 3-5 activities
-  const selectedCount = Math.floor(Math.random() * 3) + 3; // 3-5 activities
+  // Randomly select 2-4 activities (reduced since we have fewer activity types)
+  const selectedCount = Math.floor(Math.random() * 3) + 2; // 2-4 activities
   const shuffled = [...activityPool].sort(() => 0.5 - Math.random());
   
   return shuffled.slice(0, selectedCount).map((activity, index) => ({
     id: `A${index + 1}`,
     name: activity.name,
-    count: activity.count
+    count: activity.count,
+    category: activity.category
   }));
 }
 
@@ -652,9 +913,7 @@ function getCategoryFilterText() {
   const categoryMapping = {
     'ET-KPAK': ['KPAK'],
     'ET-KPAF': ['KPAF'],
-    'ET-ANUG': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'],
-    'ET-BANCIAN': ['KPAK', 'KPAF', 'PAK', 'PAF'],
-    'ET-KEMASKINI': ['KPAK', 'KPAF', 'PAK', 'PAF'],
+    'ET-KHAS': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'],
     'ANUG-KPAK': ['KPAK'],         // Anugerah KPAK - only KPAK
     'ANUG-PAK': ['PAK'],           // Anugerah PAK - only PAK
     'ANUG-KPAF': ['KPAF'],         // Anugerah KPAF - only KPAF
@@ -687,8 +946,12 @@ function loadDraftRecipients() {
       
       if (savedRecipients) {
         const parsed = JSON.parse(savedRecipients);
-        // Ensure all loaded recipients have _checked: false
-        recipients.value = parsed.map(r => ({ ...r, _checked: false }));
+        // Ensure all loaded recipients have _checked: false and load notes
+        recipients.value = parsed.map(r => ({ 
+          ...r, 
+          _checked: false,
+          _allowanceNotes: r._allowanceNotes || ''
+        }));
       }
     }
   } catch (error) {
@@ -703,9 +966,7 @@ const baseRows = computed(() => {
   const categoryMapping = {
     'ET-KPAK': ['KPAK'],           // Elaun Tahunan KPAK - only KPAK
     'ET-KPAF': ['KPAF'],           // Elaun Tahunan KPAF - only KPAF  
-    'ET-ANUG': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'], // Anugerah - all categories
-    'ET-BANCIAN': ['KPAK', 'KPAF', 'PAK', 'PAF'],
-    'ET-KEMASKINI': ['KPAK', 'KPAF', 'PAK', 'PAF'],
+    'ET-KHAS': ['PAK', 'KPAK', 'PAF', 'KPAF', 'PAP', 'PAK+'], // Elaun Khas - all categories
     'ANUG-KPAK': ['KPAK'],         // Anugerah KPAK - only KPAK
     'ANUG-PAK': ['PAK'],           // Anugerah PAK - only PAK
     'ANUG-KPAF': ['KPAF'],         // Anugerah KPAF - only KPAF
@@ -771,14 +1032,22 @@ function commitSelected() {
     }
     
     if (!map.has(s.paId)) {
-      map.set(s.paId, { ...s, allowance, _checked: false });
+      map.set(s.paId, { ...s, allowance, _checked: false, _selected: true });
+    } else {
+      // Mark as selected if already exists
+      const existing = map.get(s.paId);
+      map.set(s.paId, { ...existing, _selected: true });
     }
   });
   
   // Remove unchecked recipients from the list
   const uncheckedItems = filteredRows.value.filter(r => !r._checked);
   uncheckedItems.forEach(s => {
-    map.delete(s.paId);
+    // Do not auto-remove; simply ignore if not selected
+    if (map.has(s.paId)) {
+      const existing = map.get(s.paId);
+      map.set(s.paId, { ...existing, _selected: existing?._selected || false });
+    }
   });
   
   recipients.value = Array.from(map.values());
@@ -788,14 +1057,12 @@ function commitSelected() {
   
   // Show success message
   const addedCount = selectedItems.filter(s => !isInRecipients(s.paId)).length;
-  const removedCount = uncheckedItems.filter(s => isInRecipients(s.paId)).length;
-  
-  if (addedCount > 0 && removedCount > 0) {
-    toast.success(`${addedCount} penerima ditambah, ${removedCount} penerima dibuang`);
-  } else if (addedCount > 0) {
-    toast.success(`${addedCount} penerima ditambah ke senarai`);
-  } else if (removedCount > 0) {
-    toast.success(`${removedCount} penerima dibuang dari senarai`);
+  if (addedCount > 0) {
+    toast.success(`${addedCount} penerima ditambah & ditanda sebagai 'Telah Dipilih'`);
+  } else if (selectedItems.length > 0) {
+    toast.success(`${selectedItems.length} penerima ditanda sebagai 'Telah Dipilih'`);
+  } else {
+    toast.info('Tiada perubahan dibuat');
   }
 }
 
@@ -814,6 +1081,8 @@ const totalAllowance = computed(() => recipients.value.reduce((sum, r) => sum + 
 const canSubmit = computed(() => recipients.value.length > 0 && recipients.value.every(r => isFinite(r.allowance) && Number(r.allowance) >= 0));
 const status = ref('DRAF');
 const statusLabel = computed(() => status.value === 'MENUNGGU KELULUSAN' ? 'menunggu kelulusan' : status.value.toLowerCase());
+
+
 
 // Computed property to show allowance type information
 const allowanceTypeInfo = computed(() => {
@@ -909,7 +1178,8 @@ function persistRecipients() {
     ic: r.ic,
     category: r.category,
     parish: r.parish,
-    allowance: Number(r.allowance) || 0
+    allowance: Number(r.allowance) || 0,
+    _allowanceNotes: r._allowanceNotes || ''
   }));
   
   localStorage.setItem(key, JSON.stringify(compact));
@@ -1074,8 +1344,105 @@ function cancelEdit(recipient) {
   recipient._isEditing = false;
   toast.info('Penyuntingan dibatalkan');
 }
+
+// Enhanced allowance change modal functions
+function openAllowanceModal(activityName) {
+  selectedActivity.value = activityName;
+  
+  // Determine activity category and prepare appropriate data
+  if (activityCategories.SPECIAL.includes(activityName)) {
+    specialModalData.value = generateSpecialModalData();
+    showSpecialModal.value = true;
+  } else if (activityCategories.AWARD.includes(activityName)) {
+    awardModalData.value = generateAwardModalData();
+    showAwardModal.value = true;
+  }
+}
+
+function closeSpecialModal() {
+  showSpecialModal.value = false;
+  selectedActivity.value = '';
+  specialModalData.value = [];
+}
+
+function closeAwardModal() {
+  showAwardModal.value = false;
+  selectedActivity.value = '';
+  awardModalData.value = [];
+}
+
+function applySpecialChanges() {
+  // Apply changes from special modal
+  const changedItems = specialModalData.value.filter(r => r._modalChecked);
+  if (changedItems.length > 0) {
+    // For special activities, we can mark all recipients as having cancelled special activities
+    recipients.value.forEach(recipient => {
+      recipient._cancelledSpecialActivities = true;
+      recipient._cancellationDate = new Date().toISOString().split('T')[0];
+      recipient._cancellationReason = 'Aktiviti khas dibatalkan';
+    });
+    toast.success(`${changedItems.length} aktiviti khas telah diproses`);
+  }
+  closeSpecialModal();
+}
+
+function applyAwardChanges() {
+  // Apply changes from award modal
+  const changedItems = awardModalData.value.filter(r => r._modalChecked);
+  if (changedItems.length > 0) {
+    // For award activities, mark recipients as having cancelled awards
+    recipients.value.forEach(recipient => {
+      recipient._cancelledAwards = true;
+      recipient._cancellationDate = new Date().toISOString().split('T')[0];
+      recipient._cancellationReason = 'Anugerah dibatalkan';
+    });
+    toast.success(`${changedItems.length} anugerah telah diproses untuk pembatalan`);
+  }
+  closeAwardModal();
+}
+
+// Computed properties for modal changes
+const hasSpecialChanges = computed(() => {
+  return specialModalData.value.some(r => r._modalChecked);
+});
+
+const hasAwardChanges = computed(() => {
+  return awardModalData.value.some(r => r._modalChecked);
+});
+
+// filteredRecipients removed per request
+
+// Bulk selection functions for Maklumat Penerima section
+function toggleSelectAllCandidates() {
+  const shouldSelect = selectAllCandidates.value;
+  pagedRows.value.forEach(row => {
+    row._checked = shouldSelect;
+  });
+}
+
+// Watch for changes in individual checkboxes to update select all state
+watch(() => filteredRows.value.map(r => r._checked), (newValues) => {
+  const totalRows = filteredRows.value.length;
+  const checkedRows = newValues.filter(Boolean).length;
+  
+  if (checkedRows === 0) {
+    selectAllCandidates.value = false;
+  } else if (checkedRows === totalRows) {
+    selectAllCandidates.value = true;
+  } else {
+    selectAllCandidates.value = false; // Indeterminate state
+  }
+}, { deep: true });
+
+// Ensure header checkbox drives visible row checkboxes reliably
+watch(selectAllCandidates, (val) => {
+  pagedRows.value.forEach(row => {
+    if (!isInRecipients(row.paId) && !row._selected) {
+      row._checked = val;
+    }
+  });
+});
 </script>
 
 <style scoped>
-/* gaya ringkas, ikut Tailwind */
 </style>  

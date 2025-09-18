@@ -11,7 +11,7 @@
               Laporan Gambar
             </h1>
             <p class="mt-1 text-sm text-gray-600">
-              Muat naik gambar lokasi dan dokumentasi siasatan lapangan
+              Muat naik gambar lokasi dan dokumentasi siasatan
             </p>
           </div>
           <rs-button
@@ -27,80 +27,7 @@
 
       <div class="space-y-6">
         <!-- Upload Section -->
-        <rs-card class="shadow-sm border-0 bg-white">
-          <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="flex-shrink-0">
-                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <Icon name="ph:upload" class="w-6 h-6 text-orange-600" />
-                </div>
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold text-gray-900">
-                  Muat Naik Gambar Lokasi
-                </h2>
-                <p class="text-sm text-gray-500">
-                  Gambar dokumentasi siasatan lapangan
-                </p>
-              </div>
-            </div>
-          </template>
-
-          <template #body>
-            <div class="space-y-6">
-              <!-- File Upload -->
-              <div>
-                <FormKit
-                  type="file"
-                  label="Pilih Gambar"
-                  multiple
-                  accept="image/*"
-                  @change="handleFileChange"
-                  help="Format yang diterima: JPG, PNG, GIF. Maksimum 5MB setiap file."
-                />
-              </div>
-
-              <!-- Upload Queue -->
-              <div v-if="uploadQueue.length > 0" class="space-y-3">
-                <h3 class="text-sm font-medium text-gray-900">Senarai Fail untuk Dimuat Naik:</h3>
-                <div class="space-y-2">
-                  <div
-                    v-for="(file, index) in uploadQueue"
-                    :key="index"
-                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border"
-                  >
-                    <div class="flex items-center space-x-3">
-                      <Icon name="ph:image" class="w-5 h-5 text-gray-400" />
-                      <div>
-                        <p class="text-sm font-medium text-gray-900">{{ file.name }}</p>
-                        <p class="text-xs text-gray-500">{{ formatFileSize(file.size) }}</p>
-                      </div>
-                    </div>
-                    <rs-button
-                      size="xs"
-                      variant="danger-outline"
-                      @click="removeFromQueue(index)"
-                    >
-                      <Icon name="ph:trash" class="w-4 h-4" />
-                    </rs-button>
-                  </div>
-                </div>
-                
-                <div class="flex justify-end">
-                  <rs-button
-                    variant="primary"
-                    @click="uploadFiles"
-                    :loading="uploading"
-                    :disabled="uploading"
-                  >
-                    <Icon name="ph:upload" class="w-4 h-4 mr-2" />
-                    Muat Naik Semua
-                  </rs-button>
-                </div>
-              </div>
-            </div>
-          </template>
-        </rs-card>
+        
 
         <!-- Uploaded Images Gallery -->
         <rs-card class="shadow-sm border-0 bg-white">
@@ -113,10 +40,10 @@
               </div>
               <div>
                 <h2 class="text-lg font-semibold text-gray-900">
-                  Gambar Yang Dimuat Naik
+                  Senarai Gambar
                 </h2>
                 <p class="text-sm text-gray-500">
-                  Senarai gambar lokasi dengan catatan
+                  Gambar lokasi yang telah dimuat naik berserta catatan
                 </p>
               </div>
             </div>
@@ -129,19 +56,38 @@
                 :key="index"
                 class="border border-gray-200 rounded-lg p-4"
               >
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  <!-- Image Preview -->
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                  <!-- Image Preview or Upload -->
                   <div class="space-y-2">
-                    <div class="aspect-square rounded-lg overflow-hidden border border-gray-200">
+                    <div v-if="image.url || image.previewUrl" class="aspect-square rounded-lg overflow-hidden border border-gray-200">
                       <img
-                        :src="image.url"
+                        :src="image.url || image.previewUrl"
                         :alt="image.catatan"
                         class="w-full h-full object-cover cursor-pointer"
                         @click="previewImage(image)"
                       />
                     </div>
+                    <div v-else class="aspect-square rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+                      <div class="text-center">
+                        <Icon name="ph:image" class="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p class="text-sm text-gray-500">Pilih Gambar</p>
+                      </div>
+                    </div>
+                    
+                    <!-- File Upload for New Images -->
+                    <div v-if="!image.url && !image.previewUrl" class="mt-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        @change="(event) => handleImageUpload(event.target.files, index)"
+                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                      />
+                      <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG, GIF. Maksimum 5MB</p>
+                    </div>
+                    
                     <div class="flex space-x-2">
                       <rs-button
+                        v-if="image.url || image.previewUrl"
                         size="xs"
                         variant="primary-outline"
                         @click="previewImage(image)"
@@ -169,20 +115,47 @@
                       rows="3"
                       placeholder="Masukkan catatan untuk gambar ini..."
                       @input="updateImage(index, 'catatan', $event)"
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Catatan gambar diperlukan'
+                      }"
                     />
                     
-                    <div class="text-xs text-gray-500">
+                    <div v-if="image.filename" class="text-xs text-gray-500">
                       <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
                       Masa Upload: {{ formatDateTime(image.masaUpload) }}
                     </div>
                   </div>
+
+                  <!-- Empty space to maintain grid alignment -->
+                  <div class="flex items-end justify-end">
+                    <!-- Empty space -->
+                  </div>
                 </div>
               </div>
             </div>
+
+            <!-- Add Image Button Section -->
+            <div v-if="uploadedImages.length > 0" class="mt-6 flex justify-end">
+              <rs-button
+                variant="primary-outline"
+                @click="addNewImageRow"
+              >
+                <Icon name="ph:plus" class="w-4 h-4 mr-2" />
+                Tambah Gambar
+              </rs-button>
+            </div>
             
             <div v-else class="text-center py-8 text-gray-500">
-              <Icon name="ph:image" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
-              <p>Tiada gambar dimuat naik. Sila muat naik gambar menggunakan bahagian di atas.</p>
+              <Icon name="ph:image" class="w-12 h-12 mx-auto mb-4 text-gray-400" />
+              <p class="text-sm mb-4">Tiada gambar dimuat naik</p>
+              <rs-button
+                variant="primary-outline"
+                @click="addNewImageRow"
+              >
+                <Icon name="ph:plus" class="w-4 h-4 mr-2" />
+                Tambah Gambar
+              </rs-button>
             </div>
           </template>
         </rs-card>
@@ -321,6 +294,64 @@ const removeFromQueue = (index) => {
   uploadQueue.value.splice(index, 1);
 };
 
+const addNewImageRow = () => {
+  uploadedImages.value.push({
+    url: "",
+    previewUrl: "",
+    selectedFile: null,
+    catatan: "",
+    masaUpload: new Date().toISOString(),
+    filename: "",
+  });
+};
+
+const handleImageUpload = (files, index) => {
+  console.log("handleImageUpload called with files:", files, "index:", index);
+  
+  if (files && files.length > 0) {
+    const file = files[0];
+    console.log("Selected file:", file.name, "type:", file.type, "size:", file.size);
+    
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(`Fail ${file.name} terlalu besar. Maksimum 5MB.`);
+      return;
+    }
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error(`Fail ${file.name} bukan format gambar yang sah.`);
+      return;
+    }
+    
+    // For prototype: Use the provided image URL as preview
+    const prototypeImageUrl = "https://scontent.fkul15-1.fna.fbcdn.net/v/t1.6435-9/33329554_977230942444481_7069764250821984256_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=aaBrdlbl59IQ7kNvwE6jMmQ&_nc_oc=AdnbrTw2Rn9tldpzOVKpBgphwK7rWl48XtKzEpTttB8OBlHPTwZvKR5ukqM4LVmFHy1eTiNuSePyz9M_cjo3bW9V&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=BKm2aBWiZlWNrZ3-_j4TQg&oh=00_AfaErw9xQ-ns0-Ifu8lFSXBFYlylqSNc5de16qOPcEeluw&oe=68E2A1A0";
+    
+    console.log("Setting previewUrl for index", index);
+    
+    // Update the image object with preview
+    uploadedImages.value[index] = {
+      ...uploadedImages.value[index],
+      previewUrl: prototypeImageUrl,
+      filename: file.name,
+      masaUpload: new Date().toISOString(),
+    };
+    
+    console.log("Updated uploadedImages:", uploadedImages.value[index]);
+    
+    // Simulate upload process (in real app, this would be an API call)
+    setTimeout(() => {
+      uploadedImages.value[index] = {
+        ...uploadedImages.value[index],
+        url: prototypeImageUrl, // Use prototype image as final URL
+        previewUrl: null, // Clear preview URL
+      };
+      console.log("Upload completed for index", index);
+      toast.success("Gambar berjaya dimuat naik");
+    }, 1000); // 1 second delay to show the upload process
+  }
+};
+
 const uploadFiles = async () => {
   if (uploadQueue.value.length === 0) return;
   
@@ -375,9 +406,28 @@ const formatDateTime = (dateString) => {
   return new Date(dateString).toLocaleString('ms-MY');
 };
 
+const validateImages = () => {
+  // Check if there are any images without catatan
+  const imagesWithoutCatatan = uploadedImages.value.filter(image => 
+    image.url && (!image.catatan || image.catatan.trim() === '')
+  );
+  
+  if (imagesWithoutCatatan.length > 0) {
+    toast.error(` ${imagesWithoutCatatan.length} catatan gambar belum diisi`);
+    return false;
+  }
+  
+  return true;F
+};
+
 const handleSave = async () => {
   try {
     processing.value = true;
+    
+    // Validate all images have catatan
+    if (!validateImages()) {
+      return;
+    }
     
     // Implement save functionality
     console.log("Saving images:", uploadedImages.value);
@@ -393,6 +443,11 @@ const handleSave = async () => {
 
 const handleSaveAndReturn = async () => {
   try {
+    // Validate all images have catatan before proceeding
+    if (!validateImages()) {
+      return;
+    }
+    
     await handleSave();
     handleBack();
   } catch (error) {
@@ -401,7 +456,7 @@ const handleSaveAndReturn = async () => {
 };
 
 const handleBack = () => {
-  router.push(`/BF-BTN/permohonan/senarai-siasatan-lapangan/${route.params.id}`);
+  router.push(`/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`);
 };
 
 // Load existing data on mount
@@ -411,14 +466,14 @@ onMounted(async () => {
     // This is mock data for now
     uploadedImages.value = [
       {
-        url: "/img/placeholder-image.jpg",
-        catatan: "Keadaan semasa rumah pemohon",
+        url: "https://scontent.fkul10-1.fna.fbcdn.net/v/t1.6435-9/33382272_977231325777776_3291633360509599744_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=tsi5WpsPCREQ7kNvwEe3GJk&_nc_oc=Adl4_F7yjD2xX6siXLa_NANICn4Cak1Wmni5VBa7XhbSYIByOReFS3wwQc7n0JHnBqz05IBIajWiWh8LE9coTq0L&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=4p3_JCn3HWweiLZBezB58w&oh=00_AfZFYLhw-KRbw3goXGgJkj7ewaf54KBCnG0_XXcl4y3TWQ&oe=68E1A4D7",
+        catatan: "Keadaan dinding papan rumah",
         masaUpload: new Date().toISOString(),
         filename: "rumah_depan.jpg",
       },
       {
-        url: "/img/placeholder-image.jpg",
-        catatan: "Bahagian bumbung yang rosak",
+        url: "https://scontent.fkul15-1.fna.fbcdn.net/v/t39.30808-6/309943384_196941696025849_726196766864978484_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=IyNAhW7CUkgQ7kNvwHTA3nK&_nc_oc=AdmN3PYsmtpYr9gnvcQLzYd-zejr8nOaNfL2SkYiGIJsfKhvEWLi_gLtezJSzXrXrSpit_KvkUj1zjOCHOKl8Y4n&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=aY79tE8vuTPag6wRgWP07g&oh=00_AfZvZmX3DPqOBnADSlF0Occy0BA6qGPavBKb7ME7Qre1eQ&oe=68C01482",
+        catatan: "Pandangan depan rumah",
         masaUpload: new Date().toISOString(),
         filename: "bumbung_rosak.jpg",
       },

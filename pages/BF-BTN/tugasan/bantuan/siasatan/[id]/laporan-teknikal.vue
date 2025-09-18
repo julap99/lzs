@@ -7,12 +7,12 @@
       <div class="mt-6 mb-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">
+            <!-- <h1 class="text-2xl font-bold text-gray-900">
               Laporan Teknikal
             </h1>
             <p class="mt-1 text-sm text-gray-600">
               Analisis teknikal dan cadangan kerja berdasarkan siasatan lapangan
-            </p>
+            </p> -->
           </div>
           <rs-button
             variant="primary-outline"
@@ -37,7 +37,7 @@
               </div>
               <div>
                 <h2 class="text-lg font-semibold text-gray-900">
-                  Laporan Teknikal Siasatan
+                  Laporan Teknikal
                 </h2>
                 <p class="text-sm text-gray-500">
                   Lengkapkan analisis teknikal berdasarkan dapatan lapangan
@@ -54,6 +54,71 @@
               v-model="formData"
             >
               <div class="space-y-6">
+
+                <!-- Status Kediaman and Tapak Rumah - Side by Side -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <FormKit
+                    type="text"
+                    name="StatusKediaman"
+                    label="Status Kediaman"
+                    v-model="formData.StatusKediaman"
+                    rows="6"
+                    placeholder="Masukkan status kediaman berdasarkan pemerhatian di lokasi..."
+                    readonly
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="TapakRumah"
+                    label="Tapak Rumah"
+                    v-model="formData.TapakRumah"
+                    rows="6"
+                    placeholder="Masukkan status tapak rumah berdasarkan pemerhatian di lokasi..."
+                    readonly
+                  />
+                </div>
+
+                <!-- Binaan Rumah and Keadaan Rumah - Side by Side -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <FormKit
+                    type="select"
+                    name="BinaanRumah"
+                    label="Binaan Rumah"
+                    v-model="formData.BinaanRumah"
+                    validation="required"
+                    placeholder="Pilih jenis binaan rumah..."
+                    :options="[
+                      { label: 'Separa Batu', value: 'Separa Batu' },
+                      { label: 'Rumah Kayu', value: 'Rumah Kayu' },
+                      { label: 'Rumah Batu', value: 'Rumah Batu' },
+                      { label: 'Rumah Kayu & Batu', value: 'Rumah Kayu & Batu' },
+                      { label: 'Rumah Papan', value: 'Rumah Papan' },
+                      { label: 'Rumah Zink', value: 'Rumah Zink' },
+                      { label: 'Rumah Konkrit', value: 'Rumah Konkrit' },
+                      { label: 'Rumah Campuran', value: 'Rumah Campuran' }
+                    ]"
+                  />
+
+                  <FormKit
+                    type="select"
+                    name="KeadaanRumah"
+                    label="Keadaan Rumah"
+                    v-model="formData.KeadaanRumah"
+                    validation="required"
+                    placeholder="Pilih keadaan rumah..."
+                    :options="[
+                      { label: 'Separa Uzur', value: 'Separa Uzur' },
+                      { label: 'Baik', value: 'Baik' },
+                      { label: 'Sangat Baik', value: 'Sangat Baik' },
+                      { label: 'Uzur', value: 'Uzur' },
+                      { label: 'Sangat Uzur', value: 'Sangat Uzur' },
+                      { label: 'Rosak Teruk', value: 'Rosak Teruk' },
+                      { label: 'Tidak Selamat Didiami', value: 'Tidak Selamat Didiami' },
+                      { label: 'Memerlukan Baik Pulih Segera', value: 'Memerlukan Baik Pulih Segera' }
+                    ]"
+                  />
+                </div>
+
                 <!-- Latar Belakang -->
                 <div class="space-y-2">
                   <FormKit
@@ -62,12 +127,12 @@
                     label="Latar Belakang"
                     v-model="formData.latarBelakang"
                     rows="6"
-                    help="Maklumat dari profiling, boleh diedit jika perlu"
+                    help="" 
                     placeholder="Masukkan latar belakang kes..."
                   />
                   <div class="text-xs text-gray-500">
                     <Icon name="ph:info" class="w-4 h-4 inline mr-1" />
-                    Maklumat ini diambil dari profiling dan boleh dikemaskini mengikut keperluan.
+                    Maklumat ini diringkaskan daripada profiling dan boleh dikemaskini mengikut keperluan.
                   </div>
                 </div>
 
@@ -160,6 +225,17 @@
                     />
                   </div>
 
+                  <div class="mt-6">
+                    <FormKit
+                      type="textarea"
+                      name="LokasiTapak"
+                      label="Lokasi Tapak"
+                      v-model="formData.LokasiTapak"
+                      rows="4"
+                      placeholder="Lokasi Tapak"
+                    />
+                  </div>
+
                   <!-- Catatan Tambahan -->
                   <div class="mt-6">
                     <FormKit
@@ -168,7 +244,7 @@
                       label="Catatan Tambahan"
                       v-model="formData.catatanTambahan"
                       rows="4"
-                      placeholder="Catatan tambahan yang relevan..."
+                      placeholder="Catatan Tambahan"
                     />
                   </div>
                 </div>
@@ -177,89 +253,6 @@
           </template>
         </rs-card>
 
-        <!-- Preview Laporan -->
-        <rs-card class="shadow-sm border-0 bg-white">
-          <template #header>
-            <div class="flex items-center space-x-3">
-              <div class="flex-shrink-0">
-                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Icon name="ph:eye" class="w-6 h-6 text-blue-600" />
-                </div>
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold text-gray-900">
-                  Preview Laporan Teknikal
-                </h2>
-                <p class="text-sm text-gray-500">
-                  Paparan laporan untuk semakan sebelum disimpan
-                </p>
-              </div>
-            </div>
-          </template>
-
-          <template #body>
-            <div class="space-y-6 border rounded-lg p-6 bg-gray-50">
-              <div class="text-center border-b pb-4">
-                <h3 class="text-xl font-bold text-gray-900">LAPORAN TEKNIKAL SIASATAN LAPANGAN</h3>
-                <p class="text-sm text-gray-600 mt-2">
-                  ID Permohonan: {{ route.params.id }}
-                </p>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                <div>
-                  <strong>Tarikh Siasatan:</strong> {{ formData.tarikhSiasatan || 'Belum diisi' }}
-                </div>
-                <div>
-                  <strong>Masa Siasatan:</strong> {{ formData.masaSiasatan || 'Belum diisi' }}
-                </div>
-                <div>
-                  <strong>Cuaca:</strong> {{ getCuacaLabel(formData.cuacaSiasatan) }}
-                </div>
-                <div>
-                  <strong>Keadaan Lokasi:</strong> {{ getKeadaanLokasiLabel(formData.keadaanLokasi) }}
-                </div>
-              </div>
-
-              <div class="space-y-4">
-                <div>
-                  <h4 class="font-semibold text-gray-900">1. LATAR BELAKANG</h4>
-                  <p class="text-sm text-gray-700 mt-2">
-                    {{ formData.latarBelakang || 'Belum diisi' }}
-                  </p>
-                </div>
-
-                <div>
-                  <h4 class="font-semibold text-gray-900">2. KEPERLUAN</h4>
-                  <p class="text-sm text-gray-700 mt-2">
-                    {{ formData.keperluan || 'Belum diisi' }}
-                  </p>
-                </div>
-
-                <div>
-                  <h4 class="font-semibold text-gray-900">3. CADANGAN</h4>
-                  <p class="text-sm text-gray-700 mt-2">
-                    {{ formData.cadangan || 'Belum diisi' }}
-                  </p>
-                </div>
-
-                <div>
-                  <h4 class="font-semibold text-gray-900">4. NILAI KERJA DICADANGKAN</h4>
-                  <p class="text-lg font-bold text-gray-900 mt-2">
-                    RM {{ formData.nilaiKerja.toLocaleString() }}
-                  </p>
-                </div>
-
-                <div v-if="formData.catatanTambahan">
-                  <h4 class="font-semibold text-gray-900">5. CATATAN TAMBAHAN</h4>
-                  <p class="text-sm text-gray-700 mt-2">
-                    {{ formData.catatanTambahan }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </template>
-        </rs-card>
 
         <!-- Action Buttons -->
         <rs-card class="shadow-sm border-0 bg-white">
@@ -300,6 +293,174 @@
         </rs-card>
       </div>
     </div>
+
+    <!-- PDF Preview Modal -->
+    <div v-if="showPDFModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">Preview Laporan Teknikal</h3>
+          <button @click="showPDFModal = false" class="text-gray-400 hover:text-gray-600">
+            <Icon name="ph:x" class="w-6 h-6" />
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6">
+          <div class="space-y-6 border rounded-lg p-6 bg-gray-50">
+            <div class="text-center border-b pb-4">
+              <h3 class="text-xl font-bold text-gray-900">LAPORAN TEKNIKAL</h3>
+              <p class="text-sm text-gray-600 mt-2">
+                ID Permohonan: {{ route.params.id }}
+              </p>
+            </div>
+
+            <!-- Two-column layout for main content -->
+            <div class="space-y-2">
+              
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-1">
+                <div class="border-b pb-1">
+                  <h4 class="font-semibold text-gray-900 text-sm">MAKLUMAT ASNAF</h4>
+                </div>
+                <div class="lg:col-span-3 border-b pb-2">
+                  <p class="text-sm text-gray-700 whitespace-pre-wrap">
+                    Nama Asnaf : Mohd Rosli Bin Saad<br>
+                    Jenis Pengenalan : MyKad<br>
+                    No Pengenalan : 770319035991<br>
+                    Umur : 50 Tahun<br>
+                    Pendapatan : RM 670.00 <br>
+                    Kesihatan : Sihat <br>
+                    Status Kediaman : Milik Sendiri Tidak Berbayar <br>
+                    Tapak Rumah : {{ formData.TapakRumah || 'Belum diisi' }}<br>
+                    Binaan Rumah : {{ formData.BinaanRumah || 'Belum diisi' }}<br>
+                    Keadaan Rumah : {{ formData.KeadaanRumah || 'Belum diisi' }}<br>
+                    Bilangan Isirumah : 2 Orang
+                  </p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-1">
+                <div class="border-b pb-1">
+                  <h4 class="font-semibold text-gray-900 text-sm">JENIS BANTUAN</h4>
+                </div>
+                <div class="lg:col-span-3 border-b pb-2">
+                  <p class="text-sm text-gray-700 whitespace-pre-wrap">
+                    Bantuan Baikpulih Rumah (Fakir)
+                  </p>
+                </div>
+              </div>
+              <!-- LATAR BELAKANG Section -->
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-1">
+                <div class="border-b pb-1">
+                  <h4 class="font-semibold text-gray-900 text-sm">LATAR BELAKANG</h4>
+                </div>
+                <div class="lg:col-span-3 border-b pb-2">
+                  <p class="text-sm text-gray-700 whitespace-pre-wrap">
+                    {{ formData.latarBelakang || 'Belum diisi' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- KEPERLUAN Section -->
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-1">
+                <div class="border-b pb-1">
+                  <h4 class="font-semibold text-gray-900 text-sm">KEPERLUAN</h4>
+                </div>
+                <div class="lg:col-span-3 border-b pb-2">
+                  <p class="text-sm text-gray-700 whitespace-pre-wrap">
+                    {{ formData.keperluan || 'Belum diisi' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- CADANGAN Section -->
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-1">
+                <div class="border-b pb-1">
+                  <h4 class="font-semibold text-gray-900 text-sm">CADANGAN</h4>
+                </div>
+                <div class="lg:col-span-3 border-b pb-2">
+                  <p class="text-sm text-gray-700 whitespace-pre-wrap">
+                    {{ formData.cadangan || 'Belum diisi' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- LOKASI TAPAK Section -->
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-1">
+                <div class="border-b pb-1">
+                  <h4 class="font-semibold text-gray-900 text-sm">LOKASI TAPAK</h4>
+                </div>
+                <div class="lg:col-span-3 border-b pb-2">
+                  <p class="text-sm text-gray-700">
+                    {{ formData.LokasiTapak || 'Belum diisi' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- NILAI KERJA Section -->
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-1">
+                <div class="border-b pb-1">
+                  <h4 class="font-semibold text-gray-900 text-sm">NILAI KERJA</h4>
+                </div>
+                <div class="lg:col-span-3 border-b pb-2">
+                  <div class="space-y-1">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-900">NILAI KERJA BANGUNAN:</span>
+                      <span class="text-sm text-gray-700">RM {{ formData.nilaiKerja.toLocaleString() }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-900">NILAI KERJA TAMBAHAN:</span>
+                      <span class="text-sm text-gray-700">RM 0.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-900">GST 6%:</span>
+                      <span class="text-sm text-gray-700">RM 0.00</span>
+                    </div>
+                    <div class="flex justify-between border-t pt-1">
+                      <span class="text-sm font-bold text-gray-900">JUMLAH:</span>
+                      <span class="text-sm font-bold text-gray-900">RM {{ formData.nilaiKerja.toLocaleString() }}</span>
+                    </div>
+                    <div class="mt-2">
+                      <p class="text-sm text-gray-700">
+                        {{ formData.catatanTambahan || 'Belum diisi' }}
+                      </p>
+                    </div>
+                    <div class="mt-1">
+                      <p class="text-sm font-bold text-gray-900">
+                        <strong>Ringgit Malaysia : {{ numberToWords(formData.nilaiKerja).toUpperCase() }}</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Signature Section -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+              <div class="text-left">
+                <p class="text-sm text-gray-700 mb-8">Disediakan Oleh</p>
+                
+                  <p class="text-sm font-semibold text-gray-900">Ahmad bin Ali</p>
+                  <p class="text-sm text-gray-700">Eksekutif Teknikal Daerah Kuala Selangor</p>
+                  <p class="text-sm text-gray-700">Jabatan Pengurusan Operasi Agihan Daerah</p>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+          <rs-button variant="secondary" @click="showPDFModal = false">
+            Tutup
+          </rs-button>
+          <rs-button variant="primary" @click="generateActualPDF">
+            <Icon name="ph:file-pdf" class="w-4 h-4 mr-2" />
+            Cetak PDF
+          </rs-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -312,6 +473,7 @@ const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 const processing = ref(false);
+const showPDFModal = ref(false);
 
 definePageMeta({
   title: "Laporan Teknikal - Siasatan Lapangan",
@@ -331,7 +493,7 @@ const breadcrumb = ref([
   {
     name: "Kemaskini Siasatan",
     type: "link",
-    path: `/BF-BTN/permohonan/senarai-siasatan-lapangan/${route.params.id}`,
+    path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
   },
   {
     name: "Laporan Teknikal",
@@ -351,6 +513,11 @@ const formData = ref({
   cuacaSiasatan: "",
   keadaanLokasi: "",
   catatanTambahan: "",
+  LokasiTapak: "",
+  StatusKediaman: "Milik Sendiri Tidak Berbayar",
+  TapakRumah: "Milik Sendiri",
+  BinaanRumah: "Separa Batu",
+  KeadaanRumah: "Separa Uzur",
 });
 
 // Dropdown options
@@ -392,8 +559,19 @@ const handleSave = async () => {
     processing.value = true;
     
     // Validate required fields
-    if (!formData.value.keperluan || !formData.value.cadangan) {
-      toast.error("Sila lengkapkan medan-medan yang diperlukan");
+    const requiredFields = [
+      { field: 'keperluan', label: 'Keperluan' },
+      { field: 'cadangan', label: 'Cadangan' },
+      { field: 'BinaanRumah', label: 'Binaan Rumah' },
+      { field: 'KeadaanRumah', label: 'Keadaan Rumah' },
+      { field: 'TapakRumah', label: 'Tapak Rumah' }
+    ];
+    
+    const missingFields = requiredFields.filter(field => !formData.value[field.field]);
+    
+    if (missingFields.length > 0) {
+      const fieldNames = missingFields.map(field => field.label).join(', ');
+      toast.error(`Sila lengkapkan medan-medan yang diperlukan: ${fieldNames}`);
       return;
     }
     
@@ -413,10 +591,27 @@ const handleGeneratePDF = async () => {
   try {
     processing.value = true;
     
-    // Implement PDF generation functionality
-    console.log("Generating PDF for:", formData.value);
+    // Open PDF preview modal
+    showPDFModal.value = true;
+    
+    toast.success("Preview laporan teknikal dibuka");
+  } catch (error) {
+    toast.error("Ralat semasa membuka preview");
+    console.error(error);
+  } finally {
+    processing.value = false;
+  }
+};
+
+const generateActualPDF = async () => {
+  try {
+    processing.value = true;
+    
+    // Implement actual PDF generation functionality
+    console.log("Generating actual PDF for:", formData.value);
     
     toast.success("PDF laporan teknikal telah dijana");
+    showPDFModal.value = false;
   } catch (error) {
     toast.error("Ralat semasa menjana PDF");
     console.error(error);
@@ -435,7 +630,7 @@ const handleSaveAndReturn = async () => {
 };
 
 const handleBack = () => {
-  router.push(`/BF-BTN/permohonan/senarai-siasatan-lapangan/${route.params.id}`);
+  router.push(`/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`);
 };
 
 // Load existing data on mount
@@ -444,21 +639,90 @@ onMounted(async () => {
     // Load existing data from API
     // This is mock data for now
     formData.value = {
-      latarBelakang: "Berdasarkan profiling, pemohon tinggal di rumah yang memerlukan kerja-kerja baik pulih bumbung dan dinding yang rosak akibat cuaca. Pemohon merupakan seorang balu dengan 2 orang anak yang masih bersekolah.",
-      keperluan: "",
-      cadangan: "",
-      nilaiKerja: 25000, // This would be calculated from BQ
+      StatusKediaman: "Milik Sendiri Tidak Berbayar",
+      TapakRumah: "Milik Sendiri",
+      latarBelakang: `1. Keterangan Harta Benda:
+Binaan rumah daripada separa batu dan kayu.
+
+2. Status hakmilik tanah seperti berikut :
+No Lot : 3439
+Mukim : JERAM
+Daerah : KUALA SELANGOR
+Nama Pemilik : MOHD ROSLI BIN SAAD
+ANG Bahagian : 1/14
+Luas : 1.1635 HEKTAR
+Lain-lain : - NIL-
+
+3. Maklumat Isirumah :
+Ketua Keluarga : Pemohon (MISKIN)
+Pasangan : 1 orang isteri tinggal bersama
+Tanggungan : - NIL-
+Lain-lain : - NIL-`,
+      keperluan: `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
+Keadaan rumah tidak sempuma.
+
+Pemohon tidak mepunyai pendapatan yang mencukupi untuk membaiki kerosakan yang berlaku dirumahnya.
+Untuk rekod, rumah masih dalam keadaan baik untuk diduduki dan sesuai untuk dibaikpulih.`,
+      cadangan: `Dicadangkan kerja-kerja baikpulih berikut :
+
+1. Meroboh bahagian rumah yang rosak dan retak.
+2. Membina semula struktur bangunan rumah yang baru.
+3. Membaikpulih dan menaiktaraf pendawalan elektrik bahagian rumah yang terlibat.`,
+      nilaiKerja: 43000, // This would be calculated from BQ
       tarikhSiasatan: new Date().toISOString().split('T')[0], // Today's date
       masaSiasatan: "",
       cuacaSiasatan: "",
       keadaanLokasi: "",
-      catatanTambahan: "",
+      catatanTambahan: "Tempoh masa kerja yang dicadangkan tidak termasuk kerja-kerja tambahan adalah selama 8 MINGGU",
+      LokasiTapak: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+      // BinaanRumah: "Separa Batu",
+      // KeadaanRumah: "Separa Uzur",
     };
   } catch (error) {
     toast.error("Ralat semasa memuatkan data laporan teknikal");
     console.error(error);
   }
 });
+
+const numberToWords = (amount) => {
+  if (!amount || amount === 0) return "TIADA RINGGIT SAHAJA";
+  const num = Math.round(amount);
+  const ones = ['', 'SATU', 'DUA', 'TIGA', 'EMPAT', 'LIMA', 'ENAM', 'TUJUH', 'LAPAN', 'SEMBILAN'];
+  const teens = ['SEPULUH', 'SEBELAS', 'DUA BELAS', 'TIGA BELAS', 'EMPAT BELAS', 'LIMA BELAS', 'ENAM BELAS', 'TUJUH BELAS', 'LAPAN BELAS', 'SEMBILAN BELAS'];
+  const tens = ['', '', 'DUA PULUH', 'TIGA PULUH', 'EMPAT PULUH', 'LIMA PULUH', 'ENAM PULUH', 'TUJUH PULUH', 'LAPAN PULUH', 'SEMBILAN PULUH'];
+
+  const convertToWords = (n) => {
+    if (n === 0) return '';
+    if (n < 10) return ones[n];
+    if (n < 20) return teens[n - 10];
+    if (n < 100) {
+      const ten = Math.floor(n / 10);
+      const one = n % 10;
+      return tens[ten] + (one > 0 ? ' ' + ones[one] : '');
+    }
+    if (n < 1000) {
+      const hundred = Math.floor(n / 100);
+      const remainder = n % 100;
+      return (hundred === 1 ? 'SERATUS' : ones[hundred] + ' RATUS') +
+             (remainder > 0 ? ' ' + convertToWords(remainder) : '');
+    }
+    if (n < 1000000) {
+      const thousand = Math.floor(n / 1000);
+      const remainder = n % 1000;
+      return (thousand === 1 ? 'SERIBU' : convertToWords(thousand) + ' RIBU') +
+             (remainder > 0 ? ' ' + convertToWords(remainder) : '');
+    }
+    if (n < 1000000000) {
+      const million = Math.floor(n / 1000000);
+      const remainder = n % 1000000;
+      return (million === 1 ? 'SEJUTA' : convertToWords(million) + ' JUTA') +
+             (remainder > 0 ? ' ' + convertToWords(remainder) : '');
+    }
+    return 'NOMBOR TERLALU BESAR';
+  };
+
+  return convertToWords(num) + ' RINGGIT SAHAJA';
+};
 </script>
 
 <style lang="scss" scoped>
