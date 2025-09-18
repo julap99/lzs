@@ -15,6 +15,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: "static",
     compatibilityDate: '2025-08-13',
+    prerender: false
   },
   modules: isStatic
     ? [
