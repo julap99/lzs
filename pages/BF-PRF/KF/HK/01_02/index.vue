@@ -29,12 +29,7 @@
       <!-- Header Card -->
       <rs-card>
         <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
-            <rs-button variant="secondary" @click="goBack">
-              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
-            </rs-button>
-          </div>
+          <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
         </template>
       </rs-card>
 
