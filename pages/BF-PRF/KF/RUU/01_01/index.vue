@@ -10,10 +10,10 @@
             <rs-button variant="primary" @click="navigateTo('/BF-PRF/KF/RUU/01_01/tambah_kategori')">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah Kategori Maklumat
             </rs-button>
-            <rs-button variant="secondary" @click="navigateTo(`/BF-PRF/KF/RUU/01_02/01_02_lihat?kod=${selectedKategori === 'Peribadi' ? 1 : encodeURIComponent(selectedKategori)}`)">
+            <rs-button variant="secondary" @click="navigateTo(`/BF-PRF/KF/RUU/01_02/01_02_lihat?kod=${getKodForKategori(selectedKategori)}`)">
               <Icon name="mdi:eye" class="mr-1" /> Lihat
             </rs-button>
-            <rs-button variant="secondary" @click="navigateTo(`/BF-PRF/KF/RUU/01_01/kemaskini?kod=${selectedKategori === 'Peribadi' ? 1 : encodeURIComponent(selectedKategori)}`)">
+            <rs-button variant="secondary" @click="navigateTo(`/BF-PRF/KF/RUU/01_01/kemaskini?kod=${getKodForKategori(selectedKategori)}`)">
               <Icon name="mdi:pencil" class="mr-1" /> Kemaskini
             </rs-button>
             <rs-button v-if="false" variant="secondary" @click="navigateTo('/BF-PRF/KF/RUU/01_01/tambah_kategori')">
@@ -27,7 +27,7 @@
         <div class="mb-4 flex items-center gap-3">
           <label class="text-sm font-medium">Kategori Maklumat</label>
           <select v-model="selectedKategori" class="border rounded px-2 py-1 text-sm">
-            <option v-for="opt in kategoriOptions" :key="opt" :value="opt">{{ opt }}</option>
+            <option v-for="opt in kategoriOptions" :key="opt.kod" :value="opt.value">{{ opt.value }}</option>
           </select>
         </div>
         <!-- Updated Table Section with requested columns -->
@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onActivated, nextTick } from "vue";
+import { ref, computed, onMounted, onActivated, nextTick, watch } from "vue";
 
 definePageMeta({
   title: "Konfigurasi Kelulusan Data (RUU)",
@@ -85,65 +85,82 @@ const breadcrumb = ref([
 // Table data and reactivity control
 const tableKey = ref(0);
 const kelulusanDataRuu = ref([]);
+const allData = ref([]); // Store all data for filtering
 const selectedKategori = ref("Peribadi");
-const kategoriOptions = [
-  "Peribadi",
-  "Alamat",
-  "Pendidikan",
-  "Pengislaman",
-  "Perbankan",
-  "Kesihatan",
-  "Kemahiran",
-  "Alamat",
-  "Kediaman/Tempat Tinggal",
-  "Pinjaman Harta",
-  "Pemilikan Aset",
-  "Pekerjaan",
-  "Pendapatan dan Perbelanjaan Seisi Rumah",
-  "Peribadi Tanggungan",
-  "Pengislaman Tanggungan",
-  "Perbankan Tanggungan",
-  "Pendidikan Tanggungan",
-  "Kesihatan Tanggungan",
-  "Kemahiran Tanggungan",
-  "Pekerjaan Tanggungan",
-];
+const kategoriOptions = ref([
+  { value: "Peribadi", kod: "1" },
+  { value: "Alamat", kod: "2" },
+  { value: "Pendidikan", kod: "3" },
+  { value: "Pengislaman", kod: "4" },
+  { value: "Perbankan", kod: "5" },
+  { value: "Kesihatan", kod: "6" },
+  { value: "Kemahiran", kod: "7" },
+  { value: "Kediaman/Tempat Tinggal", kod: "8" },
+  { value: "Pinjaman Harta", kod: "9" },
+  { value: "Pemilikan Aset", kod: "10" },
+  { value: "Pekerjaan", kod: "11" },
+  { value: "Pendapatan dan Perbelanjaan Seisi Rumah", kod: "12" },
+  { value: "Peribadi Tanggungan", kod: "13" },
+  { value: "Pengislaman Tanggungan", kod: "14" },
+  { value: "Perbankan Tanggungan", kod: "15" },
+  { value: "Pendidikan Tanggungan", kod: "16" },
+  { value: "Kesihatan Tanggungan", kod: "17" },
+  { value: "Kemahiran Tanggungan", kod: "18" },
+  { value: "Pekerjaan Tanggungan", kod: "19" },
+]);
 
 const filteredData = computed(() => {
-  if (!selectedKategori.value) return kelulusanDataRuu.value;
-  return kelulusanDataRuu.value.filter((item) => {
-    // Prefer explicit kategori if present; fallback to legacy field
-    const kategori = item.kategori || item.namaNasField || "";
-    return kategori === selectedKategori.value;
-  });
+  // Only show data for "Peribadi" category, empty for all other categories
+  if (selectedKategori.value === "Peribadi") {
+    return allData.value;
+  }
+  return []; // Empty array for all other categories
 });
+
+// Helper function to get kod for a given kategori
+const getKodForKategori = (kategori) => {
+  const option = kategoriOptions.value.find(opt => opt.value === kategori);
+  return option ? option.kod : "1"; // Default to "1" if not found
+};
 
 // Default data (fallback if no data in localStorage)
 const defaultData = [
   {
-    namaRuuField: "Identification Type",
-    namaNasField: "Jenis ID",
-    kategori: "Peribadi",
-    kaedahKemaskini: "Update asnaf with approval/verify",
-    tarikhMula: "2026-01-01",
-    statusData: "Draf",
+    id: 'default_1',
+    namaRuuField: 'Identification Type',
+    namaNasField: 'Jenis ID',
+    kategori: 'Peribadi',
+    kaedahKemaskini: 'Update asnaf with approval/verify',
+    tarikhMula: '2026-01-01',
+    statusData: 'Draf',
+    status: 'Aktif',
+    kod: '1',
+    tarikhTamat: ''
   },
   {
-    namaRuuField: "Passport No",
-    namaNasField: "Pengenalan ID",
-    kategori: "Peribadi",
-    kaedahKemaskini: "Asnaf Review",
-    tarikhMula: "2026-01-01",
-    statusData: "Draf",
+    id: 'default_2',
+    namaRuuField: 'Passport No',
+    namaNasField: 'Pengenalan ID',
+    kategori: 'Peribadi',
+    kaedahKemaskini: 'Asnaf Review',
+    tarikhMula: '2026-01-01',
+    statusData: 'Draf',
+    status: 'Aktif',
+    kod: '2',
+    tarikhTamat: ''
   },
   {
-    namaRuuField: "MyKad",
-    namaNasField: "Pengenalan ID",
-    kategori: "Peribadi",
-    kaedahKemaskini: "Asnaf Review",
-    tarikhMula: "2026-01-01",
-    statusData: "Draf",
-  },
+    id: 'default_3',
+    namaRuuField: 'MyKad',
+    namaNasField: 'Pengenalan ID',
+    kategori: 'Peribadi',
+    kaedahKemaskini: 'Asnaf Review',
+    tarikhMula: '2026-01-01',
+    statusData: 'Draf',
+    status: 'Aktif',
+    kod: '3',
+    tarikhTamat: ''
+  }
 ];
 
 // Function to validate and sanitize data item
@@ -160,63 +177,83 @@ const validateDataItem = (item) => {
   };
 };
 
+// Function to load saved categories from localStorage
+const loadSavedCategories = () => {
+  try {
+    const savedCategories = localStorage.getItem('kategoriMaklumat');
+    if (savedCategories) {
+      const parsedCategories = JSON.parse(savedCategories);
+      const savedCategoryNames = parsedCategories.map(cat => cat.namaKategori).filter(Boolean);
+      
+      // Merge with existing options, avoiding duplicates
+      const existingOptions = [...kategoriOptions.value];
+      savedCategoryNames.forEach(categoryName => {
+        const exists = existingOptions.some(opt => opt.value === categoryName);
+        if (!exists) {
+          // Generate next available kod
+          const nextKod = String(existingOptions.length + 1);
+          existingOptions.push({ value: categoryName, kod: nextKod });
+        }
+      });
+      kategoriOptions.value = existingOptions;
+    }
+  } catch (error) {
+    console.error('Error loading saved categories:', error);
+  }
+};
+
 // Function to load data from localStorage
 const loadData = () => {
   try {
-    const savedData = localStorage.getItem('kelulusanDataRuu');
-    if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      // Validate and sanitize parsed data
-      const validatedData = parsedData.map(validateDataItem);
-      
-      // Merge with default data, giving priority to saved data
-      const mergedData = [...defaultData];
-      validatedData.forEach(savedItem => {
-        // Check if item already exists in default data
-        const existingIndex = mergedData.findIndex(item => item.idRuu === savedItem.idRuu);
-        if (existingIndex >= 0) {
-          // Replace existing item
-          mergedData[existingIndex] = validateDataItem(savedItem);
-        } else {
-          // Add new item
-          mergedData.push(validateDataItem(savedItem));
-        }
-      });
-      kelulusanDataRuu.value = mergedData;
-    } else {
-      kelulusanDataRuu.value = defaultData;
-    }
+    // Only load default Peribadi data - other categories will be empty
+    allData.value = defaultData;
+    kelulusanDataRuu.value = defaultData;
   } catch (error) {
     console.error('Error loading data:', error);
+    allData.value = defaultData;
     kelulusanDataRuu.value = defaultData;
   }
 };
 
 // Computed property to count pending approval items
 const pendingApprovalCount = computed(() => {
-  return kelulusanDataRuu.value.filter(
+  return filteredData.value.filter(
     (item) => item.status === "Menunggu Kelulusan"
   ).length;
 });
 
+// Watch for category selection changes and update table data
+watch(selectedKategori, (newCategory) => {
+  if (newCategory === "Peribadi") {
+    kelulusanDataRuu.value = allData.value;
+  } else {
+    kelulusanDataRuu.value = []; // Empty for all other categories
+  }
+  refreshTable();
+});
+
 // Make sure the table refreshes when component mounts
 onMounted(() => {
+  loadSavedCategories();
   loadData();
   refreshTable();
 });
 
 // Also refresh when the page becomes visible (when returning from form)
 onActivated(() => {
+  loadSavedCategories();
   loadData();
+  // Reset to Peribadi category when returning to the page
+  selectedKategori.value = "Peribadi";
   refreshTable();
 });
 
 const refreshTable = () => {
   nextTick(() => {
     tableKey.value++; // Force table to re-render
-    console.log("Table refreshed, records:", kelulusanDataRuu.value.length);
+    console.log("Table refreshed, records:", filteredData.value.length);
     console.log("Pending approval:", pendingApprovalCount.value);
-    console.log("Sample data:", kelulusanDataRuu.value[0]);
+    console.log("Sample data:", filteredData.value[0]);
   });
 };
 
