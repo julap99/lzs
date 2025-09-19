@@ -33,44 +33,40 @@
               />
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              <FormKit
-                type="number"
-                name="income"
-                label="Pendapatan (RM)"
-                validation="required"
-                v-model="formData.income"
-                :validation-messages="{
-                  required: 'Pendapatan adalah wajib',
-                }"
-                placeholder="Masukkan jumlah pendapatan"
-              />
-
-              <FormKit
-                type="number"
-                name="dependentsIncome"
-                label="Pendapatan Tanggungan (RM)"
-                validation="required"
-                v-model="formData.dependentsIncome"
-                :validation-messages="{
-                  required: 'Pendapatan tanggungan adalah wajib',
-                }"
-                placeholder="Masukkan jumlah pendapatan tanggungan"
-              />
-            </div>
-
+            <!-- Sebelum Kemaskini -->
             <div class="mt-6">
               <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="text-xl font-semibold">
-                  Hasil Pengiraan Had Kifayah
-                </h3>
+                <h3 class="text-xl font-semibold">Sebelum Kemaskini</h3>
                 <div class="text-lg font-semibold">
-                  
-                  <!-- Household Breakdown Table -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <FormKit
+                      type="number"
+                      name="income"
+                      label="Pendapatan (RM)"
+                      validation="required"
+                      v-model="formData.income"
+                      :validation-messages="{
+                        required: 'Pendapatan adalah wajib',
+                      }"
+                      placeholder="Masukkan jumlah pendapatan"
+                    />
+
+                    <FormKit
+                      type="number"
+                      name="dependentsIncome"
+                      label="Pendapatan Tanggungan (RM)"
+                      validation="required"
+                      v-model="formData.dependentsIncome"
+                      :validation-messages="{
+                        required: 'Pendapatan tanggungan adalah wajib',
+                      }"
+                      placeholder="Masukkan jumlah pendapatan tanggungan"
+                    />
+                  </div>
                   <div class="overflow-x-auto mb-2 text-sm">
-                    <rs-table 
-                      :field="tableFields" 
-                      :data="tableData" 
+                    <rs-table
+                      :field="tableFields"
+                      :data="tableData"
                       :options="{
                         variant: 'default',
                         striped: true,
@@ -81,20 +77,99 @@
                       class="mb-2 border border-gray-300 text-sm"
                     >
                     </rs-table>
-                    
-                    <!-- Footer row as separate div since rs-table might not support footer slot -->
                     <div class="bg-blue-100 font-bold p-2 text-end border border-blue-300 text-sm">
                       <div class="mr-20">
-                      <span>Jumlah Had Kifayah: RM1968.00</span>
+                        <span>Jumlah Had Kifayah: RM{{ kifayahLimit }}.00</span>
+                      </div>
                     </div>
-                    </div>
-                    
-                  <div class="mb-2 text-sm">Baki Pendapatan: Jumlah Pendapatan Keluarga - Jumlah Had Kifayah = 1000 - 1968 = -968</div>
-                  <div class="mb-2 text-sm">Peratusan Perbezaan: (Pendapatan Isi Rumah / Jumlah Had Kifayah) × 100 = (1000 / 1968) × 100 = 50.81% </div>
-                  <div class="mb-2 text-sm">Kategori Keluarga Asnaf: Miskin </div>
-                  <div class="mb-4 text-sm">Kategori Asnaf: Miskin</div>
-
+                    <div class="mb-2 text-sm">Pendapatan Isi Rumah: Pendapatan + Pendapatan Tanggungan = {{ Number(formData.income) || 0 }} + {{ Number(formData.dependentsIncome) || 0 }} = {{ totalIncomeAsal }}</div>
+                    <div class="mb-2 text-sm">Baki Pendapatan: {{ totalIncomeAsal }} - {{ kifayahLimit }} = {{ bakiPendapatanAsal }}</div>
+                    <div class="mb-2 text-sm">Peratusan Perbezaan: ({{ totalIncomeAsal }} / {{ kifayahLimit }}) × 100 = {{ peratusanPendapatanAsal.toFixed(2) }}%</div>
+                    <div class="mb-2 text-sm">Kategori Keluarga Asnaf: {{ kategoriKeluargaAsal }}</div>
+                    <div class="mb-4 text-sm">Kategori Asnaf: {{ kategoriAsnafAsal }}</div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selepas Kemaskini (Latest) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+              <FormKit
+                type="number"
+                name="incomeBaru"
+                label="Pendapatan Terkini (RM)"
+                validation="required"
+                v-model="formDataUpdated.income"
+                :validation-messages="{
+                  required: 'Pendapatan adalah wajib',
+                }"
+                placeholder="Masukkan jumlah pendapatan"
+              />
+
+              <FormKit
+                type="number"
+                name="dependentsIncomeBaru"
+                label="Pendapatan Tanggungan Terkini (RM)"
+                validation="required"
+                v-model="formDataUpdated.dependentsIncome"
+                :validation-messages="{
+                  required: 'Pendapatan tanggungan adalah wajib',
+                }"
+                placeholder="Masukkan jumlah pendapatan tanggungan"
+              />
+            </div>
+
+            <div class="mt-6">
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-xl font-semibold">Selepas Kemaskini</h3>
+                <div class="text-lg font-semibold">
+                  <div class="overflow-x-auto mb-2 text-sm">
+                    <rs-table
+                      :field="tableFields"
+                      :data="tableData"
+                      :options="{
+                        variant: 'default',
+                        striped: true,
+                        borderless: false,
+                        hover: true
+                      }"
+                      basic
+                      class="mb-2 border border-gray-300 text-sm"
+                    >
+                    </rs-table>
+                    <div class="bg-blue-100 font-bold p-2 text-end border border-blue-300 text-sm">
+                      <div class="mr-20">
+                        <span>Jumlah Had Kifayah: RM{{ kifayahLimit }}.00</span>
+                      </div>
+                    </div>
+                    <div class="mb-2 text-sm">Pendapatan Isi Rumah: Pendapatan + Pendapatan Tanggungan = {{ Number(formDataUpdated.income) || 0 }} + {{ Number(formDataUpdated.dependentsIncome) || 0 }} = {{ totalIncomeBaru }}</div>
+                    <div class="mb-2 text-sm">Baki Pendapatan: {{ totalIncomeBaru }} - {{ kifayahLimit }} = {{ bakiPendapatanBaru }}</div>
+                    <div class="mb-2 text-sm">Peratusan Perbezaan: ({{ totalIncomeBaru }} / {{ kifayahLimit }}) × 100 = {{ peratusanPendapatanBaru.toFixed(2) }}%</div>
+                    <div class="mb-2 text-sm">Kategori Keluarga Asnaf: {{ kategoriKeluargaBaru }}</div>
+                    <div class="mb-4 text-sm">Kategori Asnaf: {{ kategoriAsnafBaru }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Perbandingan Ringkas -->
+            <div class="mt-6">
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-xl font-semibold">Perbandingan (Sebelum vs Selepas)</h3>
+                <div class="overflow-x-auto text-sm mt-2">
+                  <rs-table
+                    :field="comparisonFields"
+                    :data="comparisonData"
+                    :options="{
+                      variant: 'default',
+                      striped: true,
+                      borderless: false,
+                      hover: true
+                    }"
+                    basic
+                    class="mb-2 border border-gray-300 text-sm"
+                  >
+                  </rs-table>
                 </div>
               </div>
             </div>
@@ -154,6 +229,12 @@ const formData = ref({
   dependentsIncome: 0,
 });
 
+// Latest (selepas kemaskini)
+const formDataUpdated = ref({
+  income: 900,
+  dependentsIncome: 0,
+});
+
 const kifayahLimit = ref(null);
 
 // Table data for rs-table
@@ -168,8 +249,10 @@ const tableData = ref([
 
 // Computed values for calculation and categorization
 const totalIncome = computed(() => {
-  // Pendapatan Isi Rumah
-  return Number(formData.value.income) || 0;
+  // Pendapatan Isi Rumah = Pendapatan + Pendapatan Tanggungan
+  const income = Number(formData.value.income) || 0;
+  const dependents = Number(formData.value.dependentsIncome) || 0;
+  return income + dependents;
 });
 
 const bakiPendapatan = computed(() => {
@@ -192,6 +275,80 @@ const kategoriKeluarga = computed(() => {
 });
 
 const kategoriAsnaf = computed(() => kategoriKeluarga.value);
+
+// Aliases for Sebelum (asal)
+const totalIncomeAsal = computed(() => totalIncome.value);
+const bakiPendapatanAsal = computed(() => bakiPendapatan.value);
+const peratusanPendapatanAsal = computed(() => peratusanPendapatan.value);
+const kategoriKeluargaAsal = computed(() => kategoriKeluarga.value);
+const kategoriAsnafAsal = computed(() => kategoriAsnaf.value);
+
+// Computations for Selepas (baru)
+const totalIncomeBaru = computed(() => {
+  const income = Number(formDataUpdated.value.income) || 0;
+  const dependents = Number(formDataUpdated.value.dependentsIncome) || 0;
+  return income + dependents;
+});
+
+const bakiPendapatanBaru = computed(() => {
+  if (!kifayahLimit.value) return 0;
+  return totalIncomeBaru.value - kifayahLimit.value;
+});
+
+const peratusanPendapatanBaru = computed(() => {
+  if (!kifayahLimit.value || kifayahLimit.value === 0) return 0;
+  return (totalIncomeBaru.value / kifayahLimit.value) * 100;
+});
+
+const kategoriKeluargaBaru = computed(() => {
+  if (!kifayahLimit.value || kifayahLimit.value === 0) return '-';
+  if (peratusanPendapatanBaru.value < 50) return 'Fakir';
+  if (peratusanPendapatanBaru.value <= 100) return 'Miskin';
+  return 'Non-FM';
+});
+
+const kategoriAsnafBaru = computed(() => kategoriKeluargaBaru.value);
+
+// Comparison table
+const comparisonFields = ref(['Metrik', 'Sebelum', 'Selepas', 'Perubahan']);
+const comparisonData = computed(() => {
+  const diffIncome = (totalIncomeBaru.value - totalIncomeAsal.value) || 0;
+  const diffBaki = (bakiPendapatanBaru.value - bakiPendapatanAsal.value) || 0;
+  const diffPct = (peratusanPendapatanBaru.value - peratusanPendapatanAsal.value) || 0;
+
+  return [
+    {
+      Metrik: 'Pendapatan (RM)',
+      Sebelum: Number(totalIncomeAsal.value).toFixed(2),
+      Selepas: Number(totalIncomeBaru.value).toFixed(2),
+      Perubahan: (diffIncome >= 0 ? '+' : '') + diffIncome.toFixed(2),
+    },
+    {
+      Metrik: 'Baki Pendapatan (RM)',
+      Sebelum: Number(bakiPendapatanAsal.value).toFixed(2),
+      Selepas: Number(bakiPendapatanBaru.value).toFixed(2),
+      Perubahan: (diffBaki >= 0 ? '+' : '') + diffBaki.toFixed(2),
+    },
+    {
+      Metrik: 'Peratusan (%)',
+      Sebelum: Number(peratusanPendapatanAsal.value).toFixed(2),
+      Selepas: Number(peratusanPendapatanBaru.value).toFixed(2),
+      Perubahan: (diffPct >= 0 ? '+' : '') + diffPct.toFixed(2),
+    },
+    {
+      Metrik: 'Kategori Keluarga',
+      Sebelum: kategoriKeluargaAsal.value,
+      Selepas: kategoriKeluargaBaru.value,
+      Perubahan: kategoriKeluargaAsal.value === kategoriKeluargaBaru.value ? '-' : `${kategoriKeluargaAsal.value} → ${kategoriKeluargaBaru.value}`,
+    },
+    {
+      Metrik: 'Kategori Asnaf',
+      Sebelum: kategoriAsnafAsal.value,
+      Selepas: kategoriAsnafBaru.value,
+      Perubahan: kategoriAsnafAsal.value === kategoriAsnafBaru.value ? '-' : `${kategoriAsnafAsal.value} → ${kategoriAsnafBaru.value}`,
+    },
+  ];
+});
 
 const resetForm = () => {
   formData.value = {
