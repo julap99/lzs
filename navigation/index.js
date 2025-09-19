@@ -934,7 +934,7 @@ export default [
           {
             title: "Self Service Pendaftaran Pantas Perseorangan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/QS-S/02",
+            path: "/BF-PRF/AS/QS-S/02/selfbencana",
             child: [],
             meta: {},
           },
