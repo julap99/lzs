@@ -1507,6 +1507,20 @@ export default [
         ],
         meta: {},
       },
+      {
+        title: "Pelaporan",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Senarai Laporan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/pelaporan/senarai-laporan",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
     ],
     meta: {
       auth: {
