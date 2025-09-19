@@ -934,7 +934,7 @@ export default [
           {
             title: "Self Service Pendaftaran Pantas Perseorangan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/QS-S/02",
+            path: "/BF-PRF/AS/QS-S/02/selfbencana",
             child: [],
             meta: {},
           },
@@ -1501,6 +1501,20 @@ export default [
             title: "Senarai Kelulusan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-kelulusan",
+            child: [],
+            meta: {},
+          },
+        ],
+        meta: {},
+      },
+      {
+        title: "Pelaporan",
+        icon: "iconamoon:component-fill",
+        child: [
+          {
+            title: "Senarai Laporan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/pelaporan/senarai-laporan",
             child: [],
             meta: {},
           },

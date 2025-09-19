@@ -29,7 +29,7 @@
               striped: true,
             }"
             :options-advanced="{
-              sortable: true,
+              sortable: false,
               filterable: true,
             }"
           >
@@ -179,7 +179,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "peribadi",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pendidikan",
@@ -187,7 +187,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pendidikan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pengislaman",
@@ -195,7 +195,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pengislaman",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Perbankan",
@@ -203,7 +203,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "perbankan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Kesihatan",
@@ -211,7 +211,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "kesihatan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Kemahiran",
@@ -219,7 +219,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "kemahiran",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Alamat dan Tempat Tinggal",
@@ -227,7 +227,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "alamat",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pinjaman",
@@ -235,7 +235,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pinjaman",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pemilikan Aset",
@@ -243,7 +243,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "aset",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pemilikan Barangan Rumah",
@@ -251,7 +251,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "barang",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pekerjaan Ketua Keluarga",
@@ -259,7 +259,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pekerjaan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pendapatan dan Perbelanjaan Seisi Rumah",
@@ -267,7 +267,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pendapatan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Waris",
@@ -275,7 +275,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "waris",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Peribadi Tanggungan",
@@ -283,7 +283,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "peribadi_tanggungan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pengislaman Tanggungan",
@@ -291,7 +291,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pengislaman_tanggungan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pendidikan Tanggungan",
@@ -299,7 +299,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pendidikan_tanggungan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Kesihatan Tanggungan",
@@ -307,7 +307,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "kesihatan_tanggungan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Kemahiran Tanggungan",
@@ -315,7 +315,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "kemahiran_tanggungan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pekerjaan Tanggungan",
@@ -323,7 +323,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pekerjaan_tanggungan",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Perakuan Ketua Keluarga",
@@ -331,7 +331,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "perakuan_ketua_keluarga",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pengesahan Permastautin",
@@ -339,7 +339,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pengesahan_permastautin",
-    selected: "Ya",
+    selected: "",
   },
   {
     label: "Pengesahan Pendapatan",
@@ -347,7 +347,7 @@ const semakanRows = ref([
     tidak: "",
     tidakBerkenaan: "",
     name: "pengesahan_pendapatan",
-    selected: "Ya",
+    selected: "",
   },
 ]);
 

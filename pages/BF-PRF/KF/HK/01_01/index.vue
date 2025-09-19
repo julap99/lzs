@@ -178,8 +178,6 @@ const pendingApprovalCount = computed(() => {
 
 // Make sure the table refreshes when component mounts
 onMounted(() => {
-  // Clear existing localStorage to force new structure
-  localStorage.removeItem('kifayahLimits');
   loadData();
   refreshTable();
 });

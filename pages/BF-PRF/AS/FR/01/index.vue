@@ -557,12 +557,12 @@ const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF",
+    path: "/BF-PRF/AS/FR/01",
   },
   {
     name: "Asnaf",
     type: "link",
-    path: "/BF-PRF/AS",
+    path: "/BF-PRF/AS/FR/01",
   },
   {
     name: "Carian Profil",
