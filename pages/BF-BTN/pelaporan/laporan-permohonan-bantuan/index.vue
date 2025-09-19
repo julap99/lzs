@@ -11,38 +11,47 @@
       </div>
       <div class="p-5">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <FormKit
-            type="select"
-            label="Kategori Asnaf"
-            v-model="form.kategoriAsnaf"
-            :options="kategoriAsnafOptions"
-            placeholder="Pilih kategori"
-            :searchable="true"
-          />
-          <FormKit
-            type="select"
-            label="Kod Bantuan"
-            v-model="form.kodBantuan"
-            :options="kodBantuanOptions"
-            placeholder="Cari kod bantuan..."
-            :searchable="true"
-          />
-          <FormKit
-            type="select"
-            label="Daerah"
-            v-model="form.daerah"
-            :options="daerahOptions"
-            placeholder="Pilih daerah"
-            :searchable="true"
-          />
-          <FormKit
-            type="select"
-            label="Kariah"
-            v-model="form.kariah"
-            :options="kariahOptions"
-            placeholder="Pilih kariah"
-            :searchable="true"
-          />
+          <div class="formkit-field">
+            <label class="formkit-label">Kategori Asnaf</label>
+            <v-select 
+              v-model="form.kategoriAsnaf"
+              :options="kategoriAsnafOptions"
+              placeholder="Pilih kategori"
+              :searchable="true"
+              :clearable="true"
+            />
+          </div>
+          <div class="formkit-field">
+            <label class="formkit-label">Kod Bantuan</label>
+            <v-select 
+              v-model="form.kodBantuan"
+              :options="kodBantuanOptions"
+              placeholder="Cari kod bantuan..."
+              :searchable="true"
+              :clearable="true"
+              :filterable="true"
+            />
+          </div>
+          <div class="formkit-field">
+            <label class="formkit-label">Daerah</label>
+            <v-select 
+              v-model="form.daerah"
+              :options="daerahOptions"
+              placeholder="Pilih daerah"
+              :searchable="true"
+              :clearable="true"
+            />
+          </div>
+          <div class="formkit-field">
+            <label class="formkit-label">Kariah</label>
+            <v-select 
+              v-model="form.kariah"
+              :options="kariahOptions"
+              placeholder="Pilih kariah"
+              :searchable="true"
+              :clearable="true"
+            />
+          </div>
           <FormKit
             type="date"
             label="Tarikh Mula"
@@ -117,6 +126,7 @@ const form = reactive({
   tarikhMula: '',
   tarikhAkhir: '',
 })
+
 
 const kategoriAsnafOptions = [
   { label: 'Fakir', value: 'Fakir' },
