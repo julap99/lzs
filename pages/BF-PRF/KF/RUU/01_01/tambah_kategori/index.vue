@@ -186,11 +186,11 @@ const breadcrumb = ref([
 ]);
 
 const formData = reactive({
-  kod: "1",
-  namaKategori: "Peribadi",
-  status: "Tidak Aktif",
-  statusData: "Draf",
-  tarikhMula: "2026-01-01",
+  kod: "",
+  namaKategori: "",
+  status: "",
+  statusData: "",
+  tarikhMula: "",
   tarikhTamat: "",
 });
 
@@ -232,6 +232,9 @@ const handleTambahKategori = async () => {
   
   isSubmitting.value = true;
   try {
+    // Save form data to localStorage
+    localStorage.setItem('kategoriMaklumatForm', JSON.stringify(formData));
+    
     const existing = loadExistingCategories();
     const isAktif = formData.status === 'Aktif';
 
@@ -282,6 +285,9 @@ const handleSimpan = async () => {
   
   isSubmitting.value = true;
   try {
+    // Save form data to localStorage
+    localStorage.setItem('kategoriMaklumatForm', JSON.stringify(formData));
+    
     const existing = loadExistingCategories();
     const isAktif = formData.status === 'Aktif';
 
@@ -316,11 +322,16 @@ const loadExistingCategories = () => {
 };
 
 onMounted(() => {
-  // Pre-fill form with sample data as shown in image
-  formData.kod = "1";
-  formData.namaKategori = "Peribadi";
-  formData.statusData = "Draf";
-  formData.tarikhMula = "2026-01-01";
+  // Load saved data from localStorage if available
+  const savedData = localStorage.getItem('kategoriMaklumatForm');
+  if (savedData) {
+    try {
+      const parsedData = JSON.parse(savedData);
+      Object.assign(formData, parsedData);
+    } catch (e) {
+      console.error('Error loading saved form data:', e);
+    }
+  }
 });
 </script>
 

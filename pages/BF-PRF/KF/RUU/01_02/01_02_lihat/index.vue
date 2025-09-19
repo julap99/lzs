@@ -76,7 +76,9 @@
           <h3 class="text-lg font-semibold">Maklumat Kelulusan Data (RUU)</h3>
         </template>
         <template #body>
+          <!-- Show table if data exists -->
           <rs-table
+            v-if="ruuData.length > 0"
             class="mt-2"
             :data="ruuData"
             :field="['namaRuuField','namaNasField','kaedahKemaskini','status','statusData','tarikhMula','tarikhTamat']"
@@ -94,6 +96,13 @@
             <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
             <template v-slot:tarikhTamat="data">{{ data.value.tarikhTamat ? formatDate(data.value.tarikhTamat) : '' }}</template>
           </rs-table>
+          
+          <!-- Show message when no data available -->
+          <div v-else class="text-center py-8">
+            <Icon name="mdi:database-off" class="text-gray-400 mb-4" size="48px" />
+            <h4 class="text-lg font-medium text-gray-900 mb-2">Tiada Data Tersedia</h4>
+            <p class="text-gray-600">Tiada maklumat kelulusan data (RUU) untuk kategori <strong>{{ info.kategori }}</strong> pada masa ini.</p>
+          </div>
         </template>
       </rs-card>
 
@@ -139,49 +148,88 @@ const info = ref({
   tarikhTamat: "",
 });
 
-// Table mock data
-const ruuData = ref([
-  {
-    namaRuuField: "Identification Type",
-    namaNasField: "Jenis ID",
-    kaedahKemaskini: "Update asnaf with approval/verify",
-    status: "Tidak Aktif",
-    statusData: "Draf",
-    tarikhMula: "2026-01-01",
-    tarikhTamat: "",
-  },
-  {
-    namaRuuField: "Passport No",
-    namaNasField: "Pengenalan ID",
-    kaedahKemaskini: "Asnaf Review",
-    status: "Tidak Aktif",
-    statusData: "Draf",
-    tarikhMula: "2026-01-01",
-    tarikhTamat: "",
-  },
-  {
-    namaRuuField: "MyKad",
-    namaNasField: "Pengenalan ID",
-    kaedahKemaskini: "Asnaf Review",
-    status: "Tidak Aktif",
-    statusData: "Draf",
-    tarikhMula: "2026-01-01",
-    tarikhTamat: "",
-  },
-]);
+// Table data - will be populated based on kod parameter
+const ruuData = ref([]);
+
+// Kategori mapping data (based on BF-PRF/KF/RUU/01_01)
+const kategoriMapping = [
+  { kod: "1", kategori: "Peribadi" },
+  { kod: "2", kategori: "Alamat" },
+  { kod: "3", kategori: "Pendidikan" },
+  { kod: "4", kategori: "Pengislaman" },
+  { kod: "5", kategori: "Perbankan" },
+  { kod: "6", kategori: "Kesihatan" },
+  { kod: "7", kategori: "Kemahiran" },
+  { kod: "8", kategori: "Kediaman/Tempat Tinggal" },
+  { kod: "9", kategori: "Pinjaman Harta" },
+  { kod: "10", kategori: "Pemilikan Aset" },
+  { kod: "11", kategori: "Pekerjaan" },
+  { kod: "12", kategori: "Pendapatan dan Perbelanjaan Seisi Rumah" },
+  { kod: "13", kategori: "Peribadi Tanggungan" },
+  { kod: "14", kategori: "Pengislaman Tanggungan" },
+  { kod: "15", kategori: "Perbankan Tanggungan" },
+  { kod: "16", kategori: "Pendidikan Tanggungan" },
+  { kod: "17", kategori: "Kesihatan Tanggungan" },
+  { kod: "18", kategori: "Kemahiran Tanggungan" },
+  { kod: "19", kategori: "Pekerjaan Tanggungan" },
+];
+
+// Function to get kategori description by kod
+const getKategoriByKod = (kod) => {
+  const mapping = kategoriMapping.find(item => item.kod === kod);
+  return mapping ? mapping.kategori : "Peribadi"; // Default to Peribadi if not found
+};
+
+// Default data for different categories
+const getDefaultDataByKod = (kod) => {
+  // Only Peribadi has data currently
+  if (kod === "1" || kod === "Peribadi") {
+    return [
+      {
+        namaRuuField: "Identification Type",
+        namaNasField: "Jenis ID",
+        kaedahKemaskini: "Update asnaf with approval/verify",
+        status: "Aktif",
+        statusData: "Draf",
+        tarikhMula: "2026-01-01",
+        tarikhTamat: "",
+      },
+      {
+        namaRuuField: "Passport No",
+        namaNasField: "Pengenalan ID",
+        kaedahKemaskini: "Asnaf Review",
+        status: "Aktif",
+        statusData: "Draf",
+        tarikhMula: "2026-01-01",
+        tarikhTamat: "",
+      },
+      {
+        namaRuuField: "MyKad",
+        namaNasField: "Pengenalan ID",
+        kaedahKemaskini: "Asnaf Review",
+        status: "Aktif",
+        statusData: "Draf",
+        tarikhMula: "2026-01-01",
+        tarikhTamat: "",
+      },
+    ];
+  }
+  
+  // For all other categories, return empty array (no data available)
+  return [];
+};
 
 onMounted(() => {
   try {
-    const kod = route.query.kod ? String(route.query.kod) : "";
+    const kod = route.query.kod ? String(route.query.kod) : "1";
     info.value.kod = kod;
-    // Map kod '1' to Peribadi else use provided text
-    if (kod === "1" || kod === "Peribadi") {
-      info.value.kategori = "Peribadi";
-    } else if (kod) {
-      info.value.kategori = decodeURIComponent(kod);
-    } else {
-      info.value.kategori = "Peribadi";
-    }
+    
+    // Get kategori description based on kod using mapping
+    info.value.kategori = getKategoriByKod(kod);
+    
+    // Load data based on kod parameter
+    ruuData.value = getDefaultDataByKod(kod);
+    
   } catch (e) {
     error.value = "Ralat memuatkan maklumat.";
   } finally {
