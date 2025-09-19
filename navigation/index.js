@@ -1173,6 +1173,13 @@ export default [
         meta: {},
       },
       {
+        title: "Mohon Bantuan",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-BTN/mohon-bantuan",
+        child: [],
+        meta: {},
+      },
+      {
         title: "Bantuan",
         icon: "iconamoon:arrow-right-2-duotone",
         path: "/BF-BTN/bantuan",
