@@ -40,6 +40,7 @@
                 <div class="text-lg font-semibold">
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <FormKit
+                    readonly
                       type="number"
                       name="income"
                       label="Pendapatan (RM)"
@@ -52,6 +53,7 @@
                     />
 
                     <FormKit
+                      readonly
                       type="number"
                       name="dependentsIncome"
                       label="Pendapatan Tanggungan (RM)"
