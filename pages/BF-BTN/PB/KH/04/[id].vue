@@ -137,43 +137,43 @@ const breadcrumb = ref([
 // Mock data - get details from KH-02 data
 const details = [
   {
-    noRujukan: 'KH20250721001',
+    noRujukan: 'B102',
     nama: 'Ahmad Bin Ali',
     noKp: '850101-10-1234',
     aidName: 'Barangan Dapur Asas',
   },
   {
-    noRujukan: 'KH20250722005',
+    noRujukan: 'B300',
     nama: 'Siti Aminah',
     noKp: '900303-10-9999',
     aidName: 'Sewa Rumah',
   },
   {
-    noRujukan: 'KH20250723003',
+    noRujukan: 'B307',
     nama: 'Mohd Razak bin Ibrahim',
     noKp: '780315-08-5678',
     aidName: 'Bantuan Perubatan',
   },
   {
-    noRujukan: 'KH20250724004',
+    noRujukan: 'B201',
     nama: 'Fatimah binti Omar',
     noKp: '920505-12-3456',
     aidName: 'Bantuan Pendidikan',
   },
   {
-    noRujukan: 'KH20250725001',
+    noRujukan: 'B305',
     nama: 'Rashid Bin Omar',
     noKp: '880912-05-7890',
     aidName: 'Bantuan Makanan',
   },
   {
-    noRujukan: 'KH20250726002',
+    noRujukan: 'B108',
     nama: 'Aishah Bt Abdullah',
     noKp: '850203-11-2468',
     aidName: 'Bantuan Rumah',
   },
   {
-    noRujukan: 'KH20250727003',
+    noRujukan: 'B402',
     nama: 'Ismail Bin Ahmad',
     noKp: '900101-03-1357',
     aidName: 'Bantuan Kenderaan',

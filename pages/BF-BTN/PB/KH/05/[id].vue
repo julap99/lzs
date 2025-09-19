@@ -324,7 +324,7 @@ const breadcrumb = ref([
 // Mock data - matches KH-01 status exactly
 const details = [
   {
-    noRujukan: 'KH20250721001',
+    noRujukan: 'B102',
     maklumatBantuan: {
       aid: 'Barangan Dapur Asas',
       aidProduct: 'Pakej Asas',
@@ -346,7 +346,7 @@ const details = [
     status: 'Menunggu'
   },
   {
-    noRujukan: 'KH20250722005',
+    noRujukan: 'B300',
     maklumatBantuan: {
       aid: 'Sewa Rumah',
       aidProduct: 'Sewa Bulanan',
@@ -368,7 +368,7 @@ const details = [
     status: 'Menunggu'
   },
   {
-    noRujukan: 'KH20250723003',
+    noRujukan: 'B307',
     maklumatBantuan: {
       aid: 'Bantuan Perubatan',
       aidProduct: 'Rawatan Khas',
@@ -390,7 +390,7 @@ const details = [
     status: 'Lulus'
   },
   {
-    noRujukan: 'KH20250724004',
+    noRujukan: 'B201',
     maklumatBantuan: {
       aid: 'Bantuan Pendidikan',
       aidProduct: 'Yuran Sekolah',
@@ -412,7 +412,7 @@ const details = [
     status: 'Tidak Lulus'
   },
   {
-    noRujukan: 'KH20250725001',
+    noRujukan: 'B305',
     maklumatBantuan: {
       aid: 'Bantuan Makanan',
       aidProduct: 'Pakej Makanan',
@@ -434,7 +434,7 @@ const details = [
     status: 'Menunggu'
   },
   {
-    noRujukan: 'KH20250726002',
+    noRujukan: 'B108',
     maklumatBantuan: {
       aid: 'Bantuan Rumah',
       aidProduct: 'Baik Pulih Rumah',
@@ -456,7 +456,7 @@ const details = [
     status: 'Lulus'
   },
   {
-    noRujukan: 'KH20250727003',
+    noRujukan: 'B402',
     maklumatBantuan: {
       aid: 'Bantuan Kenderaan',
       aidProduct: 'Baik Pulih Motor',

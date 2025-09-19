@@ -1729,6 +1729,10 @@ const toast = useToast();
 const processing = ref(false);
 const actionType = ref("");
 
+// Special Approval Logic
+const isSpecialApproval = computed(() => route.query.specialApproval === 'true');
+const sourceModule = computed(() => route.query.source);
+
 definePageMeta({
   title: "Siasatan Lapangan",
 });
@@ -2058,6 +2062,11 @@ const mockAssistanceData = {
     tempohKekerapan: 1,
     statusLawatan: "Sokong",
     statusproses: "selesai",
+    // Special approval flags (when coming from KH module)
+    segera: false,
+    kelulusankhas: false,
+    sebabSegera: "",
+    situasikelulusankhas: "",
   },
   "B300": {
     id: "B300",
@@ -2068,6 +2077,11 @@ const mockAssistanceData = {
     jumlahBantuan: 2400,
     statusLawatan: "Sokong",
     statusproses: "selesai",
+    // Special approval flags (when coming from KH module)
+    segera: false,
+    kelulusankhas: false,
+    sebabSegera: "",
+    situasikelulusankhas: "",
   },
   "B307": {
     id: "B307",
@@ -2078,6 +2092,11 @@ const mockAssistanceData = {
     jumlahBantuan: 3000,
     statusLawatan: "Sokong",
     statusproses: "selesai",
+    // Special approval flags (when coming from KH module)
+    segera: false,
+    kelulusankhas: false,
+    sebabSegera: "",
+    situasikelulusankhas: "",
   }
 };
 
@@ -2855,6 +2874,65 @@ const checkBudget = () => {
   toast.success("Bajet mencukupi untuk bantuan ini");
 };
 
+// Function to populate special approval data for all sections
+const populateSpecialApprovalData = (selectedType) => {
+  // Section 2: Dokumen Sokongan
+  if (selectedType === 'B102') {
+    dokumenSokongan.value = [
+      { jenis: "Kad Pengenalan", filename: "kad_pengenalan.pdf", url: "#", status: "lengkap" },
+      { jenis: "Penyata Pendapatan", filename: "penyata_pendapatan.pdf", url: "#", status: "lengkap" },
+      { jenis: "Surat Pengesahan", filename: "surat_pengesahan.pdf", url: "#", status: "lengkap" }
+    ];
+  } else if (selectedType === 'B300') {
+    dokumenSokongan.value = [
+      { jenis: "Surat tawaran belajar daripada pihak sekolah/surat pengesahan belajar", filename: "surat_tawaran_belajar_sekolah.pdf", url: "#", status: "lengkap" },
+      { jenis: "Kad Pengenalan", filename: "kad_pengenalan.pdf", url: "#", status: "lengkap" },
+      { jenis: "Penyata Pendapatan", filename: "penyata_pendapatan.pdf", url: "#", status: "lengkap" }
+    ];
+  } else if (selectedType === 'B307') {
+    dokumenSokongan.value = [
+      { jenis: "SURAT TAWARAN BELAJAR IPT", filename: "surat_tawaran_belajar_ipt.pdf", url: "#", status: "lengkap" },
+      { jenis: "Kad Pengenalan", filename: "kad_pengenalan.pdf", url: "#", status: "lengkap" },
+      { jenis: "Penyata Pendapatan", filename: "penyata_pendapatan.pdf", url: "#", status: "lengkap" }
+    ];
+  }
+  
+  // Section 3: Maklumat Penerima Bayaran
+  paymentInfo.value = {
+    kaedah: "EFT",
+    noId: "850101-10-1234",
+    namaPenerima: "Ahmad Bin Ali",
+    namaAkaun: "Ahmad Bin Ali",
+    bank: "Maybank",
+    noAkaun: "1234567890"
+  };
+  
+  // Section 4: Maklumat Bajet
+  budgetInfo.value = {
+    kodBajet: "A-200400-1000-1-P-1-" + selectedType,
+    jumlahBajetSemasa: "100000.00",
+    bajetMencukupi: "Ya"
+  };
+  
+  // Section 5: Maklumat Kelulusan
+  approvalInfo.value = {
+    keputusanKelulusan: "lulus",
+    catatan: "Diluluskan berdasarkan keperluan mendesak dan situasi kelulusan khas"
+  };
+  
+  // Section 7: Maklumat Penerima Manfaat (jika tanggungan)
+  dependentSelection.value = {
+    nama: selectedType === 'B300' ? 'SITI' : selectedType === 'B307' ? 'ALI' : 'FATIMAH'
+  };
+  
+  // Section 8: Keputusan Siasatan
+  investigationDecision.value = {
+    status: "Sokong",
+    catatan: "Layak mengikut kriteria kelulusan khas",
+    itemBantuan: selectedType === 'B102' ? 'Beras 10kg x 2' : selectedType === 'B300' ? 'Wang Saku Bulanan' : 'Rawatan Hospital'
+  };
+};
+
 // Fetch application data on mount
 onMounted(() => {
   console.log("onMounted executed"); // Debug log
@@ -2886,6 +2964,34 @@ onMounted(() => {
   if (mockAssistanceData[selectedType]) {
     Object.assign(formData.value, mockAssistanceData[selectedType]);
     console.log("Loaded assistance by id:", selectedType, formData.value);
+    
+    // If this is a special approval case, modify the data accordingly
+    if (isSpecialApproval.value) {
+      // Enable special approval flags
+      formData.value.segera = true;
+      formData.value.kelulusankhas = true;
+      
+      // Set appropriate special approval data based on the type
+      if (selectedType === 'B102') {
+        formData.value.sebabSegera = "Kecemasan keluarga - kehilangan sumber pendapatan utama";
+        formData.value.situasikelulusankhas = "Melebihi kadar Had Kifayah";
+        formData.value.jumlahBantuan = 1800;
+        formData.value.tempohKekerapan = 6;
+      } else if (selectedType === 'B300') {
+        formData.value.sebabSegera = "Kecemasan pendidikan - memerlukan bantuan segera";
+        formData.value.situasikelulusankhas = "Tidak memenuhi syarat minimum permohonan bantuan";
+        formData.value.jumlahBantuan = 500;
+        formData.value.tempohKekerapan = 1;
+      } else if (selectedType === 'B307') {
+        formData.value.sebabSegera = "Kecemasan perubatan - memerlukan rawatan segera";
+        formData.value.situasikelulusankhas = "Jenis bantuan tidak tersenarai di dalam GPSKAZ/ Perkara yang melibatkan kepentingan akidah Islam dan nyawa";
+        formData.value.jumlahBantuan = 1000;
+        formData.value.tempohKekerapan = 1;
+      }
+      
+      // Auto-populate other sections for special approval
+      populateSpecialApprovalData(selectedType);
+    }
   } else {
     console.warn("Assistance type not found, using fallback:", selectedType);
   }

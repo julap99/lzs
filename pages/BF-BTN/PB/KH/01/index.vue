@@ -322,60 +322,60 @@ const tableColumns = [
 // Mock list lives inside this page
 const rows = ref([
   {
-    noRujukan: 'KH20250721001',
+    noRujukan: 'B102',
     namaPemohon: 'Ahmad Bin Ali',
     tarikhTerima: '2025-07-21',
     status: 'Menunggu',
     pegawai: 'Noraini',
-    tindakan: { noRujukan: 'KH20250721001', status: 'Menunggu' },
+    tindakan: { noRujukan: 'B102', status: 'Menunggu' },
   },
   {
-    noRujukan: 'KH20250722005',
+    noRujukan: 'B300',
     namaPemohon: 'Siti Aminah',
     tarikhTerima: '2025-07-22',
     status: 'Menunggu',
     pegawai: 'Hafiz',
-    tindakan: { noRujukan: 'KH20250722005', status: 'Menunggu' },
+    tindakan: { noRujukan: 'B300', status: 'Menunggu' },
   },
   {
-    noRujukan: 'KH20250723003',
+    noRujukan: 'B307',
     namaPemohon: 'Mohd Razak bin Ibrahim',
     tarikhTerima: '2025-07-23',
     status: 'Lulus',
     pegawai: 'Aminah',
-    tindakan: { noRujukan: 'KH20250723003', status: 'Lulus' },
+    tindakan: { noRujukan: 'B307', status: 'Lulus' },
   },
   {
-    noRujukan: 'KH20250724004',
+    noRujukan: 'B201',
     namaPemohon: 'Fatimah binti Omar',
     tarikhTerima: '2025-07-24',
     status: 'Tidak Lulus',
     pegawai: 'Zul',
-    tindakan: { noRujukan: 'KH20250724004', status: 'Tidak Lulus' },
+    tindakan: { noRujukan: 'B201', status: 'Tidak Lulus' },
   },
   {
-    noRujukan: 'KH20250725001',
+    noRujukan: 'B305',
     namaPemohon: 'Rashid Bin Omar',
     tarikhTerima: '2025-07-25',
     status: 'Menunggu',
     pegawai: 'Noraini',
-    tindakan: { noRujukan: 'KH20250725001', status: 'Menunggu' },
+    tindakan: { noRujukan: 'B305', status: 'Menunggu' },
   },
   {
-    noRujukan: 'KH20250726002',
+    noRujukan: 'B108',
     namaPemohon: 'Aishah Bt Abdullah',
     tarikhTerima: '2025-07-26',
     status: 'Lulus',
     pegawai: 'Hafiz',
-    tindakan: { noRujukan: 'KH20250726002', status: 'Lulus' },
+    tindakan: { noRujukan: 'B108', status: 'Lulus' },
   },
   {
-    noRujukan: 'KH20250727003',
+    noRujukan: 'B402',
     namaPemohon: 'Ismail Bin Ahmad',
     tarikhTerima: '2025-07-27',
     status: 'Tidak Lulus',
     pegawai: 'Zul',
-    tindakan: { noRujukan: 'KH20250727003', status: 'Tidak Lulus' },
+    tindakan: { noRujukan: 'B402', status: 'Tidak Lulus' },
   },
 ])
 
@@ -438,7 +438,8 @@ function lihat(noRujukan) {
 }
 
 function semak(noRujukan) {
-  navigateTo(`/BF-BTN/PB/KH/02/${encodeURIComponent(noRujukan)}`)
+  // Route to normal approval form with special approval context
+  navigateTo(`/BF-BTN/tugasan/bantuan/kelulusan/pendidikan/${encodeURIComponent(noRujukan)}?specialApproval=true&source=KH`)
 }
 
 function notifikasiKeputusan(noRujukan) {
