@@ -157,7 +157,7 @@
     </rs-tab>
   </div>
 </template>
-
+  
 <script setup>
 import { reactive, inject, defineComponent, h } from 'vue'
 import { useRouter } from 'vue-router'
@@ -183,12 +183,11 @@ const rows = reactive({
     { namaLaporan: 'Surat Kelulusan Bantuan' },
   ],
   tuntutan: [
-    { namaLaporan: 'Senarai Tuntutan Tergendala' },
-    { namaLaporan: 'Tuntutan Selesai Mengikut Tempoh' },
+    { namaLaporan: 'Laporan Senarai Permohonan Tuntutan' },
   ],
   program: [
-    { namaLaporan: 'Program Bantuan Berkala' },
-    { namaLaporan: 'Analitik Program Mengikut Bajet' },
+    { namaLaporan: 'Laporan Senarai Program' },
+    { namaLaporan: 'Laporan Kehadiran Peserta' },
   ],
 })
 
@@ -214,6 +213,9 @@ function onPick(row) {
     case 'Surat Kelulusan Bantuan':
       route = '/BF-BTN/pelaporan/surat-kelulusan-bantuan'
       break
+    case 'Laporan Senarai Permohonan Tuntutan':
+      route = '/BF-BTN/pelaporan/laporan-senarai-permohonan-tuntutan'
+      break
     default:
       console.warn('Unknown report selected:', reportName)
       return
@@ -228,9 +230,23 @@ function onPick(row) {
 
 // Program route handler
 function onPickProgram(row) {
-  // For now, go to laporan senarai program index
+  const reportName = row?.namaLaporan
+  let route = ''
+
+  switch (reportName) {
+    case 'Laporan Senarai Program':
+      route = '/BF-BTN/pelaporan/laporan-senarai-program'
+      break
+    case 'Laporan Kehadiran Peserta':
+      route = '/BF-BTN/pelaporan/laporan-kehadiran-peserta'
+      break
+    default:
+      console.warn('Unknown program report selected:', reportName)
+      return
+  }
+
   try {
-    router.push('/BF-BTN/pelaporan/laporan-senarai-program')
+    router.push(route)
   } catch (e) {
     console.warn('Router unavailable', e)
   }
