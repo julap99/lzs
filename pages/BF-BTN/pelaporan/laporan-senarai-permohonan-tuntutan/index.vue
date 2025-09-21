@@ -2,13 +2,9 @@
   <div class="p-6 space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-semibold">Laporan Senarai Program</h1>
-        <p class="text-sm text-gray-500">Sub Modul: Mengurus Pelaporan (Program)</p>
+        <h1 class="text-2xl font-semibold">Laporan Senarai Permohonan Tuntutan</h1>
+        <p class="text-sm text-gray-500">Sub Modul: Mengurus Pelaporan (Tuntutan)</p>
       </div>
-      <!-- <div class="flex items-center gap-2">
-        <rs-button variant="secondary" @click="exportPDF">PDF</rs-button>
-        <rs-button variant="success" @click="exportExcel">Excel</rs-button>
-      </div> -->
     </div>
 
     <!-- 3.1 Kriteria Carian -->
@@ -18,10 +14,11 @@
       </div>
       <div class="p-5">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <FormKit type="text" label="Jenis Laporan" v-model="filters.namaLaporan" placeholder="Laporan Senarai Program" value="Program" readonly/>
+          <!-- 3.1.1 Jenis Laporan (Read-only) -->
+          <FormKit type="text" label="Jenis Laporan" v-model="filters.jenisLaporan" placeholder="Tuntutan" value="Tuntutan" readonly/>
 
           <!-- 3.1.2 Nama Laporan (Read-only) -->
-          <FormKit type="text" label="Nama Laporan" v-model="filters.namaLaporan" placeholder="Laporan Senarai Program" value="Laporan Senarai Program" readonly/>
+          <FormKit type="text" label="Nama Laporan" v-model="filters.namaLaporan" placeholder="Laporan Senarai Permohonan Tuntutan" value="Laporan Senarai Permohonan Tuntutan" readonly/>
 
           <!-- 3.1.3 Tarikh Dari -->
           <FormKit type="date" label="Tarikh Dari" v-model="filters.tarikhDari" :classes="{ input: '!py-2' }" />
@@ -60,15 +57,15 @@
         <!-- Actions -->
         <div class="mt-6 flex flex-wrap items-center gap-2">
           <rs-button class="bg-gray-500 text-white hover:bg-gray-600" variant="gray" @click="resetFilters">Reset</rs-button>
-          <rs-button variant="primary" @click="searchPrograms">Cari</rs-button>
+          <rs-button variant="primary" @click="searchTuntutan">Cari</rs-button>
         </div>
       </div>
     </div>
 
-    <!-- 3.2 Laporan Senarai Program -->
+    <!-- 3.2 Laporan Senarai Tuntutan -->
     <div class="rounded-2xl border border-gray-200 bg-white shadow-sm" v-if="paparHasil">
       <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-        <h2 class="text-lg font-semibold">Laporan Senarai Program</h2>
+        <h2 class="text-lg font-semibold">Laporan Senarai Tuntutan</h2>
         <div class="flex items-center gap-2">
           <rs-button variant="secondary" @click="exportPDF">PDF</rs-button>
           <rs-button variant="success" @click="exportExcel">Excel</rs-button>
@@ -76,7 +73,7 @@
       </div>
       <div class="p-5">
         <rs-table
-          :field="['bil','kodProgram','namaProgram','lokasiProgram','daerah','tarikhProgram','bilPeserta','status']"
+          :field="['bil','noTuntutan','aid','aidProduct','daerah','cawangan','tarikhPermohonan','statusPermohonan','jumlahTuntutan']"
           :columns="columns"
           :data="filteredRows"
           :advanced="true"
@@ -87,10 +84,13 @@
           :options-advanced="{ sortable: true, filterable: true, responsive: true, outsideBorder: true }"
           :page-size="pageSize"
         >
-          <template #status="{ text }">
-            <rs-badge :variant="getStatusClass(text)">
+          <template #statusPermohonan="{ text }">
+            <rs-badge :variant="getStatusVariant(text)">
               {{ text }}
             </rs-badge>
+          </template>
+          <template #jumlahTuntutan="{ text }">
+            {{ formatCurrency(text) }}
           </template>
         </rs-table>
       </div>
@@ -98,7 +98,7 @@
   </div>
 
   <!-- PDF Modal -->
-  <rs-modal v-model="showPDFModal" title="Laporan Senarai Program" size="xl" position="center">
+  <rs-modal v-model="showPDFModal" title="Laporan Senarai Permohonan Tuntutan" size="xl" position="center">
     <template #body>
       <div class="space-y-6">
         <!-- Report Header -->
@@ -114,7 +114,7 @@
             </div>
           </div>
           <div class="text-right text-sm text-gray-600">
-            <div class="font-semibold text-gray-900 mb-2">RP0001 Laporan Senarai Program Tahun 2025</div>
+            <div class="font-semibold text-gray-900 mb-2">RT0001 Laporan Senarai Permohonan Tuntutan Tahun 2025</div>
             <div>Tarikh: {{ new Date().toLocaleDateString('ms-MY') }}</div>
             <div>Masa: {{ new Date().toLocaleTimeString('ms-MY') }}</div>
           </div>
@@ -124,7 +124,7 @@
         <div class="space-y-4">
           <div class="text-center">
             <h2 class="text-xl font-bold text-gray-900">
-              LAPORAN SENARAI PROGRAM TAHUN 2025
+              LAPORAN SENARAI PERMOHONAN TUNTUTAN TAHUN 2025
             </h2>
           </div>
 
@@ -134,29 +134,31 @@
               <thead>
                 <tr class="bg-blue-50">
                   <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Bil</th>
-                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Kod Program</th>
-                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Nama Program</th>
-                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Lokasi Program</th>
+                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">No. Tuntutan</th>
+                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Aid</th>
+                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Aid Product</th>
                   <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Daerah</th>
-                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Tarikh Program</th>
-                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Bilangan Peserta</th>
-                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Status</th>
+                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Cawangan</th>
+                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Tarikh Permohonan</th>
+                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Status Permohonan</th>
+                  <th class="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">Jumlah Tuntutan (RM)</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(row, index) in filteredRows" :key="index" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
                   <td class="border border-gray-300 px-3 py-2 text-sm">{{ row.bil }}</td>
-                  <td class="border border-gray-300 px-3 py-2 text-sm font-medium text-blue-600">{{ row.kodProgram }}</td>
-                  <td class="border border-gray-300 px-3 py-2 text-sm">{{ row.namaProgram }}</td>
-                  <td class="border border-gray-300 px-3 py-2 text-sm">{{ row.lokasiProgram }}</td>
+                  <td class="border border-gray-300 px-3 py-2 text-sm font-medium text-blue-600">{{ row.noTuntutan }}</td>
+                  <td class="border border-gray-300 px-3 py-2 text-sm">{{ row.aid }}</td>
+                  <td class="border border-gray-300 px-3 py-2 text-sm">{{ row.aidProduct }}</td>
                   <td class="border border-gray-300 px-3 py-2 text-sm">{{ row.daerah }}</td>
-                  <td class="border border-gray-300 px-3 py-2 text-sm">{{ row.tarikhProgram }}</td>
-                  <td class="border border-gray-300 px-3 py-2 text-sm text-center">{{ row.bilPeserta }}</td>
+                  <td class="border border-gray-300 px-3 py-2 text-sm">{{ row.cawangan }}</td>
+                  <td class="border border-gray-300 px-3 py-2 text-sm">{{ row.tarikhPermohonan }}</td>
                   <td class="border border-gray-300 px-3 py-2 text-sm">
-                    <span :class="getStatusClass(row.status)" class="px-2 py-1 rounded-full text-xs font-medium">
-                      {{ row.status }}
+                    <span :class="getStatusClass(row.statusPermohonan)" class="px-2 py-1 rounded-full text-xs font-medium">
+                      {{ row.statusPermohonan }}
                     </span>
                   </td>
+                  <td class="border border-gray-300 px-3 py-2 text-sm text-right font-medium">{{ formatCurrency(row.jumlahTuntutan) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -167,16 +169,16 @@
             <h3 class="font-semibold text-gray-900 mb-2">Ringkasan Laporan:</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div>
-                <span class="font-semibold text-gray-700">Jumlah Program:</span>
+                <span class="font-semibold text-gray-700">Jumlah Tuntutan:</span>
                 <span class="text-gray-900 ml-2">{{ filteredRows.length }}</span>
               </div>
               <div>
-                <span class="font-semibold text-gray-700">Jumlah Peserta:</span>
-                <span class="text-gray-900 ml-2">{{ filteredRows.reduce((sum, row) => sum + row.bilPeserta, 0) }}</span>
+                <span class="font-semibold text-gray-700">Jumlah Nilai (RM):</span>
+                <span class="text-gray-900 ml-2">{{ formatCurrency(filteredRows.reduce((sum, row) => sum + row.jumlahTuntutan, 0)) }}</span>
               </div>
               <div>
-                <span class="font-semibold text-gray-700">Program Selesai:</span>
-                <span class="text-gray-900 ml-2">{{ filteredRows.filter(row => row.status === 'Selesai').length }}</span>
+                <span class="font-semibold text-gray-700">Tuntutan Lulus:</span>
+                <span class="text-gray-900 ml-2">{{ filteredRows.filter(row => row.statusPermohonan === 'Lulus').length }}</span>
               </div>
             </div>
           </div>
@@ -202,6 +204,8 @@
 import { reactive, ref } from 'vue'
 
 const filters = reactive({
+  jenisLaporan: 'Tuntutan',
+  namaLaporan: 'Laporan Senarai Permohonan Tuntutan',
   tarikhDari: '',
   tarikhHingga: '',
   tahun: '',
@@ -231,13 +235,14 @@ const cawanganOptions = [
 
 const columns = [
   { key: 'bil', label: 'Bil' },
-  { key: 'kodProgram', label: 'Kod Program' },
-  { key: 'namaProgram', label: 'Nama Program' },
-  { key: 'lokasiProgram', label: 'Lokasi Program' },
+  { key: 'noTuntutan', label: 'No. Tuntutan' },
+  { key: 'aid', label: 'Aid' },
+  { key: 'aidProduct', label: 'Aid Product' },
   { key: 'daerah', label: 'Daerah' },
-  { key: 'tarikhProgram', label: 'Tarikh Program' },
-  { key: 'bilPeserta', label: 'Bilangan Peserta' },
-  { key: 'status', label: 'Status' },
+  { key: 'cawangan', label: 'Cawangan' },
+  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan' },
+  { key: 'statusPermohonan', label: 'Status Permohonan' },
+  { key: 'jumlahTuntutan', label: 'Jumlah Tuntutan (RM)' },
 ]
 
 const allRows = ref(generateMockRows())
@@ -249,18 +254,18 @@ const showPDFModal = ref(false)
 function norm(s) { return (s || '').toString().trim().toUpperCase() }
 function toISO(d) { return d ? new Date(d + 'T00:00:00') : null }
 
-function searchPrograms() {
+function searchTuntutan() {
   const rows = allRows.value
   let start = toISO(filters.tarikhDari)
   let end = toISO(filters.tarikhHingga)
   if (start && end && start > end) [start, end] = [end, start]
 
   filteredRows.value = rows.filter(r => {
-    if (filters.tahun && String(new Date(r.tarikhProgram).getFullYear()) !== String(filters.tahun)) return false
+    if (filters.tahun && String(new Date(r.tarikhPermohonan).getFullYear()) !== String(filters.tahun)) return false
     if (filters.daerah && norm(r.daerah) !== norm(filters.daerah)) return false
     if (filters.cawangan && norm(r.cawangan) !== norm(filters.cawangan)) return false
     if (start || end) {
-      const t = new Date(r.tarikhProgram)
+      const t = new Date(r.tarikhPermohonan)
       if (start && t < start) return false
       if (end && t > end) return false
     }
@@ -286,25 +291,26 @@ function exportPDF() {
 function exportExcel() { 
   // Convert data to CSV
   const csvData = convertToCSV(filteredRows.value)
-  downloadCSV(csvData, 'laporan-senarai-program.csv')
+  downloadCSV(csvData, 'laporan-senarai-permohonan-tuntutan.csv')
 }
 
 // Convert data to CSV format
 function convertToCSV(data) {
   if (!data || data.length === 0) return ''
   
-  const headers = ['Bil', 'Kod Program', 'Nama Program', 'Lokasi Program', 'Daerah', 'Tarikh Program', 'Bilangan Peserta', 'Status']
+  const headers = ['Bil', 'No. Tuntutan', 'Aid', 'Aid Product', 'Daerah', 'Cawangan', 'Tarikh Permohonan', 'Status Permohonan', 'Jumlah Tuntutan (RM)']
   const csvContent = [
     headers.join(','),
     ...data.map(row => [
       row.bil,
-      `"${row.kodProgram}"`,
-      `"${row.namaProgram}"`,
-      `"${row.lokasiProgram}"`,
+      `"${row.noTuntutan}"`,
+      `"${row.aid}"`,
+      `"${row.aidProduct}"`,
       `"${row.daerah}"`,
-      `"${row.tarikhProgram}"`,
-      row.bilPeserta,
-      `"${row.status}"`
+      `"${row.cawangan}"`,
+      `"${row.tarikhPermohonan}"`,
+      `"${row.statusPermohonan}"`,
+      row.jumlahTuntutan
     ].join(','))
   ].join('\n')
   
@@ -327,15 +333,42 @@ function downloadCSV(csvContent, filename) {
 // Get status class for styling
 function getStatusClass(status) {
   switch (status) {
-    case 'Selesai':
+    case 'Lulus':
       return 'bg-green-100 text-green-800'
     case 'Dalam Proses':
       return 'bg-yellow-100 text-yellow-800'
+    case 'Ditolak':
+      return 'bg-red-100 text-red-800'
     case 'Draf':
       return 'bg-gray-100 text-gray-800'
     default:
       return 'bg-gray-100 text-gray-800'
   }
+}
+
+// Get status variant for rs-badge
+function getStatusVariant(status) {
+  switch (status) {
+    case 'Lulus':
+      return 'success'
+    case 'Dalam Proses':
+      return 'warning'
+    case 'Ditolak':
+      return 'danger'
+    case 'Draf':
+      return 'secondary'
+    default:
+      return 'secondary'
+  }
+}
+
+// Format currency
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('ms-MY', { 
+    style: 'currency', 
+    currency: 'MYR',
+    minimumFractionDigits: 2 
+  }).format(amount)
 }
 
 // Download PDF (placeholder - you can integrate with a PDF library like jsPDF)
@@ -350,36 +383,58 @@ function generateMockRows() {
   return [
     {
       bil: 1,
-      kodProgram: 'PG-2025-1001',
-      namaProgram: 'Program Bersama DYMM 2025',
-      lokasiProgram: 'Masjid Tengku Ampuan Jemaah Bukit Jelutong Jalan Mimbar U8/2 Bukit Jelutong, 40150, Shah Alam, Selangor.',
+      noTuntutan: 'TNT-2025-001',
+      aid: 'B102',
+      aidProduct: 'Bantuan Makanan',
       daerah: 'Shah Alam',
-      
-      tarikhProgram: '1/12/2025',
-      bilPeserta: 400,
-      status: 'Selesai',
+      cawangan: 'HQ',
+      tarikhPermohonan: '15/1/2025',
+      statusPermohonan: 'Lulus',
+      jumlahTuntutan: 1200.00,
     },
     {
       bil: 2,
-      kodProgram: 'PG-2025-1002',
-      namaProgram: 'Program SJK 2025',
-      lokasiProgram: 'No 2650, Persiaran Kayangan, Seksyen 7, 40000 Shah Alam, Selangor',
-      daerah: 'Shah Alam',
-      
-      tarikhProgram: '5/6/2025',
-      bilPeserta: 150,
-      status: 'Selesai',
+      noTuntutan: 'TNT-2025-002',
+      aid: 'B103',
+      aidProduct: 'Bantuan Kewangan',
+      daerah: 'Gombak',
+      cawangan: 'CAW1',
+      tarikhPermohonan: '20/1/2025',
+      statusPermohonan: 'Dalam Proses',
+      jumlahTuntutan: 2400.00,
     },
     {
       bil: 3,
-      kodProgram: 'PG-2025-1003',
-      namaProgram: 'Program Kerjaya 2025',
-      lokasiProgram: 'KM 24, Jalan Pahang Lama, 53100 Gombak, Selangor',
-      daerah: 'Gombak',
-      
-      tarikhProgram: '1/2/2025',
-      bilPeserta: 50,
-      status: 'Selesai',
+      noTuntutan: 'TNT-2025-003',
+      aid: 'B104',
+      aidProduct: 'Bantuan Pendidikan',
+      daerah: 'Petaling',
+      cawangan: 'CAW2',
+      tarikhPermohonan: '25/1/2025',
+      statusPermohonan: 'Ditolak',
+      jumlahTuntutan: 1800.00,
+    },
+    {
+      bil: 4,
+      noTuntutan: 'TNT-2025-004',
+      aid: 'B105',
+      aidProduct: 'Bantuan Perubatan',
+      daerah: 'Klang',
+      cawangan: 'HQ',
+      tarikhPermohonan: '30/1/2025',
+      statusPermohonan: 'Lulus',
+      jumlahTuntutan: 3000.00,
+    },
+    {
+      bil: 5,
+      noTuntutan: 'TNT-2025-005',
+      aid: 'B106',
+      aidProduct: 'Bantuan Rumah',
+      daerah: 'Hulu Langat',
+      cawangan: 'CAW1',
+      tarikhPermohonan: '5/2/2025',
+      statusPermohonan: 'Draf',
+      jumlahTuntutan: 5000.00,
     },
   ]
 }
@@ -388,5 +443,3 @@ function generateMockRows() {
 <style scoped>
 button:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(59,130,246,0.5); }
 </style>
-
-
