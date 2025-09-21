@@ -25,8 +25,7 @@
               sortable: true,
               filterable: false,
             }"
-            advanced
-          >
+            advanced>
             <template #header-tindakan>
               <div class="text-center w-full">Aksi</div>
             </template>
@@ -41,8 +40,7 @@
                 <rs-button
                   variant="primary"
                   class="p-1 flex gap-2"
-                  @click="handleReview(value.status)"
-                >
+                  @click="handleReview(value.status)">
                   Semak
                 </rs-button>
               </div>
@@ -61,8 +59,7 @@
                   wrapper: 'w-20',
                   outer: 'mb-0',
                   input: '!rounded-lg',
-                }"
-              />
+                }" />
             </div>
             <div class="flex items-center gap-2">
               <span class="text-sm text-gray-700">
@@ -88,12 +85,12 @@ const breadcrumb = ref([
   {
     name: "Permohonan Bantuan",
     type: "link",
-    path: "/BF-BTN/senarai",
+    path: "/BF-PRF/AS/FR/07_1",
   },
   {
     name: "Senarai",
     type: "current",
-    path: "/BF-BTN/senarai",
+    path: "/BF-PRF/AS/FR/07_1",
   },
 ]);
 
@@ -181,7 +178,7 @@ const filteredApplications = computed(() => {
     noRujukan: app.noRujukan,
     namaPemohon: app.namaPemohon,
     status: app.status,
-    tindakan: app.noRujukan, // Use noRujukan as tindakan for the button
+    tindakan: app, // Pass the full app object for the button
   }));
 
   // Apply pagination
@@ -207,7 +204,8 @@ const paginationEnd = computed(() => {
 });
 
 const handleReview = (status) => {
-  if (status === "Dalam Semakan") {
+  console.log("handleReview called with status:", status);
+  if (status === "Menunggu Siasatan") {
     navigateTo(`/BF-PRF/AS/FR/07_01`);
   } else if (status === "Menunggu Pengesahan") {
     navigateTo(`/BF-PRF/AS/FR/07_01_copy`);
@@ -226,7 +224,7 @@ const getStatusVariant = (status) => {
     "untuk siasatan": "secondary",
     "menunggu siasatan": "warning",
     "selesai siasatan": "success",
-   "menunggu pengesahan": "info",
+    "menunggu pengesahan": "info",
   };
   return variants[status.toLowerCase()] || "default";
 };
