@@ -344,7 +344,7 @@
               >Simpan</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Maklumat Pendidikan</rs-button
+              >Maklumat Alamat</rs-button
             >
           </div>
         </FormKit>
@@ -1085,7 +1085,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Alamat</rs-button
+                >Maklumat Pengislaman</rs-button
               >
             </div>
           </div>

@@ -23,8 +23,8 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Permohonan</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Tarikh Permohonan" :value="applicationData.applicationDate" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Jenis Organisasi" :value="applicationData.organizationType" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Tarikh Permohonan" v-model="applicationData.applicationDate" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Jenis Organisasi" v-model="applicationData.organizationType" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -32,9 +32,9 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Organisasi</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Nama Organisasi" :value="applicationData.organizationName" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="No. Pendaftaran" :value="applicationData.registrationNumber" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Email" :value="applicationData.email" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Nama Organisasi" v-model="applicationData.organizationName" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="No. Pendaftaran" v-model="applicationData.registrationNumber" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Email" v-model="applicationData.email" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -42,12 +42,12 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Alamat</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Alamat 1" :value="applicationData.addressLine1" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Negeri" :value="applicationData.state" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Alamat 2" :value="applicationData.addressLine2" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Bandar" :value="applicationData.city" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Alamat 3" :value="applicationData.addressLine3" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Poskod" :value="applicationData.postcode" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Alamat 1" v-model="applicationData.addressLine1" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Negeri" v-model="applicationData.state" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Alamat 2" v-model="applicationData.addressLine2" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Bandar" v-model="applicationData.city" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Alamat 3" v-model="applicationData.addressLine3" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Poskod" v-model="applicationData.postcode" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -55,9 +55,9 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Pegawai Dihubungi</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Nama Pegawai" :value="applicationData.contactPerson" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Telefon" :value="applicationData.contactPhone" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Email" :value="applicationData.contactEmail" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Nama Pegawai" v-model="applicationData.contactPerson" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Telefon" v-model="applicationData.contactPhone" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Email" v-model="applicationData.contactEmail" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -65,10 +65,10 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Bank</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Nama Bank" :value="applicationData.bankName" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Nombor Akaun Bank" :value="applicationData.bankAccountNumber" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Penama Akaun Bank" :value="applicationData.penamaBank" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Kaedah Pembayaran" :value="applicationData.paymentMethod" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Nama Bank" v-model="applicationData.bankName" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Nombor Akaun Bank" v-model="applicationData.bankAccountNumber" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Penama Akaun Bank" v-model="applicationData.penamaBank" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Kaedah Pembayaran" v-model="applicationData.paymentMethod" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -179,7 +179,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -416,13 +416,26 @@ const handleView = (doc) => {
   toast.success(`Melihat dokumen ${doc.name}`);
 };
 
-onMounted(() => {
+const loadApplicationData = () => {
   const id = route.params.id;
+  
   if (dataset[id]) {
-    applicationData.value = { ...applicationData.value, ...dataset[id] };
+    // Direct assignment to ensure data is loaded
+    Object.assign(applicationData.value, dataset[id]);
   } else {
     // Fallback minimal mock using id
     applicationData.value.refNumber = id;
+  }
+};
+
+onMounted(() => {
+  loadApplicationData();
+});
+
+// Watch for route changes
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    loadApplicationData();
   }
 });
 </script>

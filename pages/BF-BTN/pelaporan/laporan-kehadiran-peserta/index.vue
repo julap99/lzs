@@ -273,14 +273,31 @@ function searchKehadiran() {
   if (start && end && start > end) [start, end] = [end, start]
 
   filteredRows.value = rows.filter(r => {
-    if (filters.tahun && String(new Date(r.tarikhMasaKehadiran.split(' ')[0]).getFullYear()) !== String(filters.tahun)) return false
-    if (filters.kodProgram && norm(r.kodProgram) !== norm(filters.kodProgram)) return false
-    if (filters.namaProgram && norm(r.namaProgram) !== norm(filters.namaProgram)) return false
+    // Year filter - check if year matches
+    if (filters.tahun && filters.tahun.trim() !== '') {
+      const rowYear = new Date(r.tarikhMasaKehadiran.split(' ')[0]).getFullYear()
+      if (String(rowYear) !== String(filters.tahun)) return false
+    }
+    
+    // Program code filter - check if kodProgram matches (case insensitive)
+    if (filters.kodProgram && filters.kodProgram.trim() !== '') {
+      const selectedKod = typeof filters.kodProgram === 'object' ? filters.kodProgram.value : filters.kodProgram
+      if (norm(r.kodProgram) !== norm(selectedKod)) return false
+    }
+    
+    // Program name filter - check if namaProgram matches (case insensitive)
+    if (filters.namaProgram && filters.namaProgram.trim() !== '') {
+      const selectedNama = typeof filters.namaProgram === 'object' ? filters.namaProgram.value : filters.namaProgram
+      if (norm(r.namaProgram) !== norm(selectedNama)) return false
+    }
+    
+    // Date range filter
     if (start || end) {
       const t = new Date(r.tarikhMasaKehadiran.split(' ')[0])
       if (start && t < start) return false
       if (end && t > end) return false
     }
+    
     return true
   })
   paparHasil.value = true
@@ -412,16 +429,16 @@ function generateMockRows() {
   return [
     {
       bil: 1,
-      nama: 'Ahmad bin Abdullah',
-      noKadPengenalan: '850101-10-1234',
-      kategoriAsnaf: 'Fakir',
-      daerah: 'Shah Alam',
-      kariah: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
-      jenisBantuan: 'Bantuan Makanan',
+      nama: 'Abdullah bin Saad',
+      noKadPengenalan: '670102-10-3453',
+      kategoriAsnaf: 'Miskin',
+      daerah: 'Klang',
+      kariah: 'Masjid Bukit Belimbing, Klang',
+      jenisBantuan: 'RAMADHAN & RAYA DYMM',
       statusAsnaf: 'Aktif',
       statusKehadiran: 'Hadir',
       tarikhMasaKehadiran: '15/1/2025 09:00',
-      namaPetugasKaunter: 'Siti Aisyah binti Mohd',
+      namaPetugasKaunter: 'Siti Noraini binti Omar',
       kodProgram: 'PRG-001',
       namaProgram: 'Program Bantuan Makanan',
     },
@@ -430,13 +447,13 @@ function generateMockRows() {
       nama: 'Fatimah binti Hassan',
       noKadPengenalan: '920315-08-5678',
       kategoriAsnaf: 'Miskin',
-      daerah: 'Gombak',
-      kariah: 'Masjid Al-Amin',
-      jenisBantuan: 'Bantuan Pendidikan',
+      daerah: 'Klang',
+      kariah: 'Masjid Sultan Ibrahim',
+      jenisBantuan: 'RAMADHAN & RAYA DYMM',
       statusAsnaf: 'Aktif',
       statusKehadiran: 'Tidak Hadir',
       tarikhMasaKehadiran: '20/1/2025 10:30',
-      namaPetugasKaunter: 'Mohd Ali bin Ahmad',
+      namaPetugasKaunter: 'Siti Noraini binti Omar',
       kodProgram: 'PRG-002',
       namaProgram: 'Program Bantuan Pendidikan',
     },
@@ -444,14 +461,14 @@ function generateMockRows() {
       bil: 3,
       nama: 'Omar bin Ibrahim',
       noKadPengenalan: '780425-12-9012',
-      kategoriAsnaf: 'Fakir',
-      daerah: 'Petaling',
-      kariah: 'Masjid Al-Ikhlas',
-      jenisBantuan: 'Bantuan Perubatan',
+      kategoriAsnaf: 'Miskin',
+      daerah: 'KLANG',
+      kariah: 'Masjid Sultan Ibrahim',
+      jenisBantuan: 'RAMADHAN & RAYA DYMM',
       statusAsnaf: 'Dalam Proses',
       statusKehadiran: 'Lewat',
       tarikhMasaKehadiran: '25/1/2025 11:15',
-      namaPetugasKaunter: 'Nurul Huda binti Yusof',
+      namaPetugasKaunter: 'Siti Noraini binti Omar',
       kodProgram: 'PRG-003',
       namaProgram: 'Program Bantuan Perubatan',
     },
@@ -459,14 +476,14 @@ function generateMockRows() {
       bil: 4,
       nama: 'Aminah binti Kassim',
       noKadPengenalan: '880712-05-3456',
-      kategoriAsnaf: 'Miskin',
+      kategoriAsnaf: 'Fakir',
       daerah: 'Klang',
       kariah: 'Masjid Sultan Ibrahim',
-      jenisBantuan: 'Bantuan Kewangan',
+      jenisBantuan: 'RAMADHAN & RAYA DYMM',
       statusAsnaf: 'Aktif',
       statusKehadiran: 'Hadir',
       tarikhMasaKehadiran: '30/1/2025 14:00',
-      namaPetugasKaunter: 'Ahmad Fauzi bin Ismail',
+      namaPetugasKaunter: 'Mohd Omar bin Manaf',
       kodProgram: 'PRG-004',
       namaProgram: 'Program Bantuan Kewangan',
     },
@@ -475,13 +492,13 @@ function generateMockRows() {
       nama: 'Hassan bin Ali',
       noKadPengenalan: '750203-14-7890',
       kategoriAsnaf: 'Fakir',
-      daerah: 'Hulu Langat',
-      kariah: 'Masjid Al-Muttaqin',
-      jenisBantuan: 'Bantuan Rumah',
+      daerah: 'Klang',
+      kariah: 'Masjid Sultan Ibrahim',
+      jenisBantuan: 'RAMADHAN & RAYA DYMM',
       statusAsnaf: 'Tidak Aktif',
       statusKehadiran: 'Tidak Hadir',
       tarikhMasaKehadiran: '5/2/2025 16:30',
-      namaPetugasKaunter: 'Siti Nurhaliza binti Ahmad',
+      namaPetugasKaunter: 'Mohd Omar bin Manaf',
       kodProgram: 'PRG-005',
       namaProgram: 'Program Bantuan Rumah',
     },
