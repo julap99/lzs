@@ -969,7 +969,7 @@ export default [
           {
             title: "Penilaian Awal",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/PA/01",
+            path: "/BF-PRF/AS/PA-1",
             child: [],
             meta: {},
           },

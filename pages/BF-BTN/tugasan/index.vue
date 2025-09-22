@@ -118,7 +118,7 @@
               </h3> -->
 
               <!-- Simulasi Peranan -->
-              <div class="mb-4 flex items-center gap-3">
+              <!-- <div class="mb-4 flex items-center gap-3">
                 <label class="text-sm text-gray-700 font-medium"
                   >Simulasi Peranan</label
                 >
@@ -133,7 +133,7 @@
                   }"
                   @change="onChangeSimulasiPeranan"
                 />
-              </div>
+              </div> -->
 
               <!-- Sub-tabs for Bantuan -->
               <rs-tab variant="secondary" type="border" class="mb-6">
@@ -1035,6 +1035,7 @@ const applications = ref([
     namaPegawai: "Aminah binti Hassan",
     tindakan: "NAS-2025-0002",
   },
+  
 ]);
 
 // Mock data for Siasatan tab - would be replaced with API call
@@ -1057,6 +1058,16 @@ const siasatanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 2",
     noRujukan: "NAS-2025-0002",
     tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0002",
+  },
+  {
+    pemohon: "Mohd Amin bin Mohd Ali (650101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 3,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan ",
+    noRujukan: "NAS-2025-0003",
+    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0003",
   },
 ]);
 

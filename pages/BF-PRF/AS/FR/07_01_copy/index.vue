@@ -68,130 +68,62 @@
           <div
             class="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <!-- S2: MAKLUMAT SYOR -->
-            <section class="p-6">
-              <h4
-                class="text-md font-semibold text-gray-900 mb-4 flex items-center">
-                <Icon
-                  name="ph:clipboard-text"
-                  class="w-5 h-5 mr-2 text-green-600" />
-                Maklumat Syor
-              </h4>
+            <div
+              class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <!-- Maklumat Syor -->
+              <section class="p-6">
+                <h4
+                  class="text-md font-semibold text-gray-900 mb-4 flex items-center">
+                  <Icon
+                    name="ph:clipboard-text"
+                    class="w-5 h-5 mr-2 text-green-600" />
+                  Maklumat Syor
+                </h4>
 
-              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div>
-                  <!-- <label class="block text-xs uppercase tracking-wide">
-                   Jumlah Had Kifayah
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.jumlahHadKifayahSah }}
-                  </p>
+                <!-- Summary Information -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div>
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Peratusan Perbezaan
+                    </label>
+                    <p class="text-gray-900 font-medium">
+                      {{ profilingData.peratusanPerbezaan }}
+                    </p>
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Kategori Keluarga Asnaf
+                    </label>
+                    <p class="text-gray-900 font-medium">
+                      {{ profilingData.kategoriKeluargaAsnaf }}
+                    </p>
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Kategori Asnaf
+                    </label>
+                    <p class="text-gray-900 font-medium">
+                      {{ profilingData.kategoriAsnaf }}
+                    </p>
+                  </div>
+                </div>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4">
-                    Baki Pendapatan
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.bakiHadKifayahSah }}
-                  </p> -->
-
-                  <label
-                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
-                    Peratusan Perbezaan
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.peratusanPerbezaan }}
-                  </p>
-                  <label
-                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
-                    Kategori Keluarga Asnaf
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.kategoriKeluargaAsnaf }}
-                  </p>
-                  <label
-                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
-                    Kategori Asnaf
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.kategoriAsnaf }}
-                  </p>
-                </div>
-                <div class="hidden lg:block"></div>
-                <div class="hidden lg:block"></div>
-                <div>
-                  <label
-                    class="block text-xs uppercase tracking-wide font-bold">
-                    Pengenalan Id Tanggungan
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.pengenalanIdTanggungan1 }}
-                    <br />
-                    {{ profilingData.pengenalanIdTanggungan2 }}
-                    <br />
-                    {{ profilingData.pengenalanIdTanggungan3 }}
-                  </p>
-                </div>
-                <div>
-                  <label
-                    class="block text-xs uppercase tracking-wide font-bold">
-                    Kategori Tanggungan (Syor)
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.kategoriKeluargaAsnafSyor }}
-                    <br />
-                    {{ profilingData.kategoriKeluargaAsnafSyor }}
-                    <br />
-                    {{ profilingData.kategoriKeluargaAsnafSyor }}
-                  </p>
-                </div>
-                <!-- spacer to align like screenshot: leave empty third column on first row -->
-                <div class="hidden lg:block"></div>
-                <div>
-                  <label
-                    class="block text-xs uppercase tracking-wide font-bold">
-                    Pengenalan Id Asnaf/Tanggungan
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.pengenalanId }}
-                    <br />
-                    {{ profilingData.pengenalanIdTanggungan1 }}
-                    <br />
-                    {{ profilingData.pengenalanIdTanggungan2 }}
-                    <br />
-                    {{ profilingData.pengenalanIdTanggungan3 }}
-                  </p>
-                </div>
-                <div>
-                  <label
-                    class="block text-xs uppercase tracking-wide font-bold">
-                    Merit Individu(Syor)
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.merit }}
-                    <br />
-                    {{ profilingData.merit1 }}
-                    <br />
-                    {{ profilingData.merit2 }}
-                    <br />
-                    {{ profilingData.merit3 }}
-                  </p>
-                </div>
-                <div>
-                  <label
-                    class="block text-xs uppercase tracking-wide font-bold">
-                    Status Multidimensi(Syor)
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.multidimensi }}
-                    <br />
-                    {{ profilingData.multidimensi1 }}
-                    <br />
-                    {{ profilingData.multidimensi2 }}
-                    <br />
-                    {{ profilingData.multidimensi3 }}
-                  </p>
-                </div>
+                <!-- Table for Individual Data -->
+                <rs-table
+                  :headers="tableHeaders"
+                  :data="tableData"
+                  :classes="{
+                    table: 'min-w-full',
+                    thead: 'bg-gray-50',
+                    tbody: 'bg-white divide-y divide-gray-200',
+                    th: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                    td: 'px-6 py-4 whitespace-nowrap text-sm text-gray-900',
+                  }" />
                 <!-- Row 3 in one column -->
-                <div>
+                <div class="mt-4">
                   <label
                     class="block text-xs uppercase tracking-wide font-bold">
                     Merit Keluarga(Syor)
@@ -216,8 +148,8 @@
                     {{ profilingData.quadrantMultidimensiKeluargaSyor }}
                   </p>
                 </div>
-              </div>
-            </section>
+              </section>
+            </div>
 
             <!-- S3: TUGASAN SIASATAN -->
             <section class="p-6 bg-amber-50">
@@ -267,7 +199,7 @@
                   v-model="profilingData.assignSiasatan" />
                 <div class="md:col-span-2 flex items-end justify-end">
                   <rs-button
-                  disabled
+                    disabled
                     variant="primary"
                     @click="handleTugasanHantar"
                     class="px-6 py-2.5">
@@ -605,7 +537,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -681,7 +613,54 @@ const profilingData = ref({
   komenPengesahan: "",
   namaPengesah: "admin",
   tarikhPengesahan: new Date().toISOString().split("T")[0], // Default to today's date
+  dependents: [
+    {
+      pengenalanId: "801004035672",
+      nama: "ROHANA BINTI AHMAD",
+      merit: "0.64",
+      multidimensi: "Produktif C",
+    },
+    {
+      pengenalanId: "060802030272",
+      nama: "NUR NAJWA BINTI ADNAN",
+      merit: "0.38",
+      multidimensi: "Tidak Produktif",
+    },
+    {
+      pengenalanId: "091108030442",
+      nama: "NUR QISTINA BINTI ADNAN",
+      merit: "0.40",
+      multidimensi: "Tidak Produktif",
+    },
+  ],
 });
+
+const tableData = computed(() => {
+  // Main applicant
+  const mainApplicant = {
+    pengenalanId: profilingData.value.pengenalanId,
+    nama: profilingData.value.nama,
+    merit: profilingData.value.merit,
+    multidimensi: profilingData.value.multidimensi,
+  };
+
+  // Combine main applicant and dependents
+  return [mainApplicant, ...profilingData.value.dependents].map((person) => ({
+    pengenalanId: person.pengenalanId,
+    nama: person.nama,
+    kategori: profilingData.value.kategoriAsnafSyor,
+    meritIndividu: person.merit,
+    statusMultidimensi: person.multidimensi,
+  }));
+});
+
+const tableHeaders = ref([
+  { key: "pengenalanId", label: "Pengenalan ID" },
+  { key: "nama", label: "Nama" },
+  { key: "kategori", label: "Kategori" },
+  { key: "meritIndividu", label: "Merit Individu" },
+  { key: "statusMultidimensi", label: "Status Multidimensi" },
+]);
 
 /* OPTIONS */
 const assignSiasatanOptions = ref([
@@ -786,6 +765,26 @@ const handleFormReset = () => {
     komenPengesahan: "",
     namaPengesah: "admin",
     tarikhPengesahan: new Date().toISOString().split("T")[0], // Default to today's date
+    dependents: [
+      {
+        pengenalanId: "801004035672",
+        nama: "ROHANA BINTI AHMAD",
+        merit: "0.64",
+        multidimensi: "Produktif C",
+      },
+      {
+        pengenalanId: "060802030272",
+        nama: "NUR NAJWA BINTI ADNAN",
+        merit: "0.38",
+        multidimensi: "Tidak Produktif",
+      },
+      {
+        pengenalanId: "091108030442",
+        nama: "NUR QISTINA BINTI ADNAN",
+        merit: "0.40",
+        multidimensi: "Tidak Produktif",
+      },
+    ],
   };
   toast.info("Form telah direset kepada nilai asal");
 };
