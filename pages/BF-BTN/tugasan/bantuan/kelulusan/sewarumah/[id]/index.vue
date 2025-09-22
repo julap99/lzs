@@ -234,15 +234,15 @@
                      </div>
                    </div>
                    <div>
-                     <h2 class="text-lg font-semibold text-gray-900">{{ route.params.id === 'B300' ? 'Maklumat Penerima Manfaat & Kediaman' : 'Maklumat Penerima Manfaat & Pendidikan' }}</h2>
+                    <h2 class="text-lg font-semibold text-gray-900">{{ route.params.id === 'B300' ? 'Maklumat Kediaman' : 'Maklumat Penerima Manfaat & Pendidikan' }}</h2>
                      <p class="text-sm text-gray-500">{{ educationInfo.tablefor }}</p>
                    </div>
                  </div>
                </template>
   
                <template #body>
-                 <!-- Penerima Manfaat (merged on top) -->
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Penerima Manfaat (B307 sahaja) -->
+                <div v-if="isB307" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                    <div class="space-y-1">
                      <label class="text-sm font-medium text-gray-700">Nama</label>
                      <FormKit
@@ -255,21 +255,45 @@
                      />
                    </div>
   
-                   <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
                      <label class="text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                        <span class="text-sm text-gray-900">{{ selectedDependent?.noKadPengenalan || '-' }}</span>
                      </div>
                    </div>
   
-                   <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
                      <label class="text-sm font-medium text-gray-700">Hubungan</label>
                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                        <span class="text-sm text-gray-900">{{ selectedDependent?.hubungan || '-' }}</span>
                      </div>
                    </div>
                  </div>
-                 <!-- /Penerima Manfaat -->
+                <!-- /Penerima Manfaat -->
+
+                <!-- Maklumat Kediaman inputs (B300) -->
+                <div v-if="isB300" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Status Kediaman Tempat Tinggal</label>
+                    <select v-model="housingInputsB300.statusKediaman" class="w-full p-3 bg-gray-50 rounded-lg border">
+                      <option>Sewa</option>
+                      <option>Sendiri</option>
+                      <option>Keluarga</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Keadaan Kediaman</label>
+                    <select v-model="housingInputsB300.keadaanKediaman" class="w-full p-3 bg-gray-50 rounded-lg border">
+                      <option>Baik</option>
+                      <option>Sederhana</option>
+                      <option>Teruk</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1 md:col-span-2">
+                    <label class="text-sm font-medium text-gray-700">Kadar Sewa Bulanan (RM)</label>
+                    <input v-model="housingInputsB300.kadarSewa" class="w-full p-3 bg-gray-50 rounded-lg border" />
+                  </div>
+                </div>
   
                  <div class="overflow-x-auto">
                    <table class="min-w-full divide-y divide-gray-200">
@@ -2043,7 +2067,7 @@
     },
     "B300": {
       id: "B300",
-      aid: "B300 - Bantuan Sewa Rumah (Fakir)",
+      aid: "B112 - Bantuan Sewa Rumah (Fakir)",
       aidproduct: "Bantuan Sewa Rumah (Fakir)",
       productpackage: "Sewaan_Rumah", // Default to Sewaan Rumah Bulanan
       entitlementproduct: "", // Using checkbox system instead
@@ -2375,15 +2399,16 @@
     B300: {
       tablefor: "BANTUAN SEWA RUMAH (FAKIR)",
       fields: {
-        "Jenis Kediaman": "Rumah Sewa",
-        "Alamat Kediaman": "No. 456, Jalan Harmoni, Taman Seri Kembangan, 43300 Seri Kembangan, Selangor",
-        "Status Pemilikan": "Sewa",
-        "Nama Tuan Rumah": "Ahmad bin Hassan",
-        "Kadar Sewa Bulanan": "RM 800",
-        "Tempoh Sewa": "12 Bulan",
-        "Tarikh Mula Sewa": "01/01/2025",
-        "Tarikh Tamat Sewa": "31/12/2025",
-        "Catatan": "Rumah dalam keadaan baik dan sesuai untuk didiami",
+        "Alamat 1": "Jalan Rajawali,",
+        "Alamat 2": "Kampung Bukit Kuching,",
+        "Alamat 3": "-",
+        "Negeri": "Selangor",
+        "Daerah": "Kuala Selangor",
+        "Bandar": "Jeram",
+        "Poskod": "45800",
+        "Kariah": "Masjid Al-Taqwa",
+        "Geolokasi": "-",
+        "Tempoh Menetap di Selangor": "3 Tahun",
       },
     },
     B307: {
@@ -2443,6 +2468,13 @@
     const kadar = parseFloat(formData.value.jumlahBantuan) || 0
     const tempoh = parseInt(formData.value.tempohKekerapan) || 0
     return kadar * tempoh
+  })
+
+  // Local state for B300 housing inputs displayed in Maklumat Kediaman section
+  const housingInputsB300 = reactive({
+    statusKediaman: 'Sewa',
+    keadaanKediaman: 'Baik',
+    kadarSewa: '800',
   })
   
   // Check if a valid approval decision has been made
