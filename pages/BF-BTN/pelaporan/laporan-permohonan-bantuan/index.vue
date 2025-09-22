@@ -72,7 +72,8 @@
             Cari
           </rs-button>
           <rs-button
-            class="bg-gray-500 text-white hover:bg-gray-600"variant="gray"
+            class="bg-gray-500 text-white hover:bg-gray-600"
+            variant="gray"
             @click="resetForm"
           >
             Reset
