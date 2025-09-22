@@ -1,3 +1,5 @@
+																	  
+
 <template>
   <div>
       <LayoutsBreadcrumb :items="breadcrumb" />
@@ -114,7 +116,8 @@
             <!-- Main Tabs -->
             <rs-tab variant="primary" type="card">
               <rs-tab-item title="Profiling" active>
-                <div class="p-6">
+                <!-- Profiling Tab Content -->
+				<div class="p-6">
                   <rs-table
                     :data="profilingFilteredApplications"
                     :columns="profilingColumns"
@@ -174,7 +177,9 @@
                       </span>
                     </div>
                   </div>
-                </div>
+                </div>		   
+
+                
               </rs-tab-item>
 
               <rs-tab-item title="Bantuan">
@@ -986,7 +991,31 @@ const mockByNoBantuan = {
     masaLawatan: "",
     catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
     gambarLokasi: null,
-  }
+  },
+  "NAS-2025-0003": {
+    // Personal Information
+    noBantuan: "NAS-2025-0001",
+    nama: "Mohd Amin bin Ali",
+    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "650101121234",
+    noTelefon: "0193456789",
+    email: "amin@gmail.com",
+    statusKeluarga: "Fakir",
+    statusIndividu: "Fakir",
+    statusMultidimensi: "Asnaf Tidak Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: null,
+  },
+  
 };
 
 // Mock investigation data
@@ -1032,7 +1061,7 @@ const mockInvestigationData = {
     assistanceApplications: [
       {
         id: "B300",
-        jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+        jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA} (FAKIR)",
         status: "Perlu Diproses",
         sla: "5 hari lagi",
         actions: "/",
@@ -1044,6 +1073,37 @@ const mockInvestigationData = {
         sla: "2 hari lagi",
         actions: "/",
       }
+    ]
+  },
+   "NAS-2025-0003": {
+    jenisPekerjaan: "Pesara guru",
+    statusKediaman: "Rumah Sendiri",
+    jumlahBayaranRumah: "RM0",
+    bilTanggungan: "3 Orang (2 Anak + Isteri )",
+    statusTanggungan: "Anak sakit kronik , Isteri tidak bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+    assistanceApplications: [
+      {
+        id: "B112",
+        jenisBantuan: "B112 - Bantuan Sewaan/Ansuran Rumah (Fakir)",
+        status: "Perlu Diproses",
+        sla: "5 hari lagi",
+        actions: "/",
+      },
+      // {
+      //   id: "B307",
+      //   jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+      //   status: "Perlu Diproses",
+      //   sla: "2 hari lagi",
+      //   actions: "/",
+      // }
     ]
   }
 };
@@ -1192,7 +1252,7 @@ const getProfilingStatusVariant = (status) => {
     "dalam semakan": "secondary",
   };
   return variants[status.toLowerCase()] || "default";
-};
+};								
 
 // Dropdown options
 const keadaanSiasatanOptions = [

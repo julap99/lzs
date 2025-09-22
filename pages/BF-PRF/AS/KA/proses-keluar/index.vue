@@ -23,7 +23,7 @@
               <FormKit
                 v-model="searchQuery"
                 type="text"
-                placeholder="Cari Nama Asnaf atau No. Telefon..."
+                placeholder="Cari Nama, No. Telefon, Pengenalan ID, Kariah atau Daerah..."
                 :classes="{
                   input: '!py-2',
                 }"
@@ -56,13 +56,36 @@
           }"
           :options-advanced="{
             sortable: true,
-            filterable: true,
+            filterable: false,
           }"
           advanced
         >
           <!-- Custom slot for kategori -->
           <template v-slot:kategori="data">
             {{ data.text }}
+          </template>
+
+          <!-- Custom slot for tarikhTamatProgram -->
+          <template v-slot:tarikhTamatProgram="data">
+            {{ formatDate(data.text) }}
+          </template>
+
+          <!-- Custom slot for tarikhAkhirKemaskini -->
+          <template v-slot:tarikhAkhirKemaskini="data">
+            {{ formatDate(data.text) }}
+          </template>
+
+          <!-- Custom slot for peratusHadkifayah -->
+          <template v-slot:peratusHadkifayah="data">
+            <div class="flex items-center">
+              <!-- <div class="w-full bg-gray-200 rounded-full h-2 mr-2">
+                <div 
+                  class="bg-blue-600 h-2 rounded-full" 
+                  :style="{ width: data.text + '%' }"
+                ></div>
+              </div> -->
+              <span class="text-sm font-medium">{{ data.text }}%</span>
+            </div>
           </template>
 
           <!-- Custom slot for tindakan -->
@@ -170,10 +193,16 @@ const breadcrumb = ref([
 
 // Table fields configuration
 const tableFields = [
+  "jenisPengenalanId",
+  "pengenalanId", 
   "namaAsnaf",
   "kategori",
-  "tarikhTamatPembangunan",
+  "tarikhTamatProgram",
   "noTelefon",
+  "kariah",
+  "daerah",
+  "tarikhAkhirKemaskini",
+  "peratusHadkifayah",
   "tindakan"
 ];
 
@@ -198,58 +227,100 @@ const router = useRouter();
 // Sample data - Replace with actual API call
 const asnafList = ref([
   {
+    jenisPengenalanId: "Kad Pengenalan",
+    pengenalanId: "900101-01-0001",
     namaAsnaf: "Ahmad bin Abdullah",
     kategori: "Fakir",
-    tarikhTamatPembangunan: "2025-05-15",
+    tarikhTamatProgram: "2025-05-15",
     noTelefon: "0123456789",
+    kariah: "Masjid Al-Ikhlas",
+    daerah: "Kuala Lumpur",
+    tarikhAkhirKemaskini: "2024-12-15",
+    peratusHadkifayah: 85,
     tindakan: { id: "ASN-2024-001" },
     isProcessed: false
   },
   {
+    jenisPengenalanId: "Kad Pengenalan",
+    pengenalanId: "900202-02-0002",
     namaAsnaf: "Siti binti Ali",
     kategori: "Miskin",
-    tarikhTamatPembangunan: "2025-06-20",
+    tarikhTamatProgram: "2025-06-20",
     noTelefon: "0123456788",
+    kariah: "Masjid Al-Amin",
+    daerah: "Selangor",
+    tarikhAkhirKemaskini: "2024-12-10",
+    peratusHadkifayah: 92,
     tindakan: { id: "ASN-2024-002" },
     isProcessed: false
   },
   {
+    jenisPengenalanId: "Kad Pengenalan",
+    pengenalanId: "900303-03-0003",
     namaAsnaf: "Mohammad bin Hassan",
     kategori: "Fakir",
-    tarikhTamatPembangunan: "2025-06-10",
+    tarikhTamatProgram: "2025-06-10",
     noTelefon: "0123456787",
+    kariah: "Masjid Al-Falah",
+    daerah: "Johor",
+    tarikhAkhirKemaskini: "2024-12-05",
+    peratusHadkifayah: 78,
     tindakan: { id: "ASN-2024-003" },
     isProcessed: false
   },
   {
+    jenisPengenalanId: "Kad Pengenalan",
+    pengenalanId: "900404-04-0004",
     namaAsnaf: "Fatimah binti Omar",
     kategori: "Miskin",
-    tarikhTamatPembangunan: "2025-04-25",
+    tarikhTamatProgram: "2025-04-25",
     noTelefon: "0123456786",
+    kariah: "Masjid Al-Hidayah",
+    daerah: "Penang",
+    tarikhAkhirKemaskini: "2024-12-01",
+    peratusHadkifayah: 88,
     tindakan: { id: "ASN-2024-004" },
     isProcessed: false
   },
   {
+    jenisPengenalanId: "Kad Pengenalan",
+    pengenalanId: "900505-05-0005",
     namaAsnaf: "Abdul Rahman bin Ismail",
     kategori: "Fakir",
-    tarikhTamatPembangunan: "2025-06-14",
+    tarikhTamatProgram: "2025-06-14",
     noTelefon: "0123456785",
+    kariah: "Masjid Al-Muttaqin",
+    daerah: "Perak",
+    tarikhAkhirKemaskini: "2024-11-28",
+    peratusHadkifayah: 95,
     tindakan: { id: "ASN-2024-005" },
     isProcessed: false
   },
   {
+    jenisPengenalanId: "Kad Pengenalan",
+    pengenalanId: "900606-06-0006",
     namaAsnaf: "Zainab binti Ahmad",
     kategori: "Miskin",
-    tarikhTamatPembangunan: "2025-05-30",
+    tarikhTamatProgram: "2025-05-30",
     noTelefon: "0123456784",
+    kariah: "Masjid Al-Mujahidin",
+    daerah: "Kedah",
+    tarikhAkhirKemaskini: "2024-11-25",
+    peratusHadkifayah: 82,
     tindakan: { id: "ASN-2024-006" },
     isProcessed: false
   },
   {
+    jenisPengenalanId: "Kad Pengenalan",
+    pengenalanId: "900707-07-0007",
     namaAsnaf: "Ibrahim bin Yusof",
     kategori: "Fakir",
-    tarikhTamatPembangunan: "2025-09-05",
+    tarikhTamatProgram: "2025-09-05",
     noTelefon: "0123456783",
+    kariah: "Masjid Al-Mustaqim",
+    daerah: "Kelantan",
+    tarikhAkhirKemaskini: "2024-11-20",
+    peratusHadkifayah: 90,
     tindakan: { id: "ASN-2024-007" },
     isProcessed: false
   },
@@ -258,9 +329,13 @@ const asnafList = ref([
 // Computed properties
 const filteredAsnafList = computed(() => {
   return asnafList.value.filter((asnaf) => {
+    const searchTerm = searchQuery.value.toLowerCase();
     const matchesSearch = searchQuery.value === "" || 
-      asnaf.namaAsnaf.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      (asnaf.noTelefon && asnaf.noTelefon.includes(searchQuery.value));
+      asnaf.namaAsnaf.toLowerCase().includes(searchTerm) ||
+      (asnaf.noTelefon && asnaf.noTelefon.includes(searchQuery.value)) ||
+      (asnaf.pengenalanId && asnaf.pengenalanId.toLowerCase().includes(searchTerm)) ||
+      (asnaf.kariah && asnaf.kariah.toLowerCase().includes(searchTerm)) ||
+      (asnaf.daerah && asnaf.daerah.toLowerCase().includes(searchTerm));
     
     const matchesKategori = filters.value.kategori === "" || 
       asnaf.kategori === filters.value.kategori;
