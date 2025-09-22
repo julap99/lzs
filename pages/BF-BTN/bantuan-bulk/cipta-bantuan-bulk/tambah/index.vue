@@ -218,15 +218,13 @@
               v-model="formData.penyiasat"
             />
 
-            <!-- Cawangan -->
-            <FormKit
-              type="select"
-              name="cawangan"
-              label="Cawangan"
-              :options="cawanganOptions"
-              placeholder="Pilih cawangan"
-              validation="required"
+            <!-- Cawangan (CustomSelect) -->
+            <CustomSelect
               v-model="formData.cawangan"
+              :options="cawanganOptions"
+              label="Cawangan"
+              search-placeholder="Cari cawangan..."
+              :disabled="false"
             />
           </div>
         </template>
@@ -251,6 +249,8 @@
             />
 
             <!-- Import Button -->
+            <div class="flex items-center gap-2">
+              <!-- Import Button -->
             <rs-button
               variant="primary"
               :disabled="!selectedFile || isLoading"
@@ -259,6 +259,17 @@
               <Icon name="material-symbols:upload" class="mr-1" />
               {{ isLoading ? "Sedang Import..." : "Import" }}
             </rs-button>
+            
+            <!-- Download Payable To CSV Template -->
+            <rs-button
+              variant="secondary"
+              :disabled="isLoading"
+              @click="downloadPayableToTemplate"
+            >
+              <Icon name="material-symbols:download" class="mr-1" />
+              Format Maklumat
+            </rs-button>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -269,16 +280,26 @@
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
 
-            <div v-if="paymentList.length >= 1" class="flex justify-end">
-              <rs-button
-                variant="primary"
-                :disabled="selectedPayments.length === 0"
-                @click="handleSahkanSelected"
-              >
-                <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
-                Sahkan ({{ selectedPayments.length }})
-              </rs-button>
-            </div>
+            <div v-if="paymentList.length >= 1" class="flex items-center gap-2">
+
+                <rs-button
+                  
+                  variant="primary"
+                  @click="handleAddPayment"
+                >
+                  <Icon name="material-symbols:add" class="w-4 h-4 mr-1" />
+                  Tambah
+                </rs-button>
+
+                <rs-button
+                  variant="primary"
+                  :disabled="selectedPayments.length === 0"
+                  @click="handleSahkanSelected"
+                >
+                  <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
+                  Sahkan ({{ selectedPayments.length }})
+                </rs-button>
+              </div>
           </div>
         </template>
         <template #body>
@@ -549,7 +570,7 @@
     </div>
 
     <!-- Payment Modal -->
-    <rs-modal
+<rs-modal
       v-model="showPaymentModal"
       :title="
         paymentModalMode === 'add'
@@ -1010,17 +1031,6 @@
                 input: '!py-2',
               }"
             />
-            
-            <FormKit
-              type="text"
-              name="status"
-              label="Status"
-              :value="editingPaymentForDefect.status"
-              disabled
-              :classes="{
-                input: '!py-2',
-              }"
-            />
           </div>
         </div>
       </template>
@@ -1143,7 +1153,7 @@ const formData = ref({
   kodBP: "",
   tajuk: "",
   kategoriAsnaf: "",
-  status: "Dalam Proses",
+  status: "Baru",
   jumlahAmaun: "0.00",
   catatan: "",
   namaPegawai: "",
@@ -1490,7 +1500,7 @@ const handleImport = async () => {
 
     paymentList.value = [
       {
-        kod: "-",
+        kod: "PT-2025-30371",
         idPermohonan: "PRM-2025-00001",
         bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
         asnaf: "Muallaf",
