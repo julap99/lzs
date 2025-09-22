@@ -188,7 +188,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import kariahData from './kariah-data.json'
+import kariahData from '../kariah-data.json'
 
 const filters = reactive({
   tarikhDari: '',

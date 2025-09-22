@@ -171,6 +171,9 @@ const bantuanList = ref([
   { noBantuan:'APP-2025-001482', maklumatBantuan:'(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS', pemohon:AYAH, namaPenerimaManfaat:'MOHD FARHAN BIN ALI', noKPPemohon:'940511146045', namaPenerima:'MOHD FARHAN BIN ALI', tarikhMohon:new Date(Date.now()-86400000).toISOString(), tindakan:{ noBantuan:'APP-2025-001482' } },
   { noBantuan:'APP-2025-001483', maklumatBantuan:'(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)', pemohon:AYAH, namaPenerimaManfaat:'ZAINAB BINTI ALI', noKPPemohon:'920511146555', namaPenerima:'SEKOLAH MENENGAH SAINS BANTING', tarikhMohon:new Date(Date.now()-172800000).toISOString(), tindakan:{ noBantuan:'APP-2025-001483' } },
   { noBantuan:'APP-2025-001484', maklumatBantuan:'(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)', pemohon:AYAH, namaPenerimaManfaat:'ZAINAB BINTI ALI', noKPPemohon:'920511146555', namaPenerima:'ALI BIN MOHAMED', tarikhMohon:new Date(Date.now()-259200000).toISOString(), tindakan:{ noBantuan:'APP-2025-001484' } },
+  // Tuntutan Dialisis mock data
+  { noBantuan:'APP-2025-001485', maklumatBantuan:'(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)', pemohon:AYAH, namaPenerimaManfaat:'AHMAD BIN HASSAN', noKPPemohon:'850315123456', namaPenerima:'HOSPITAL SELAYANG', tarikhMohon:new Date(Date.now()-345600000).toISOString(), tindakan:{ noBantuan:'APP-2025-001485' } },
+  { noBantuan:'APP-2025-001486', maklumatBantuan:'(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)', pemohon:AYAH, namaPenerimaManfaat:'FATIMAH BINTI MOHAMED', noKPPemohon:'880420234567', namaPenerima:'HOSPITAL KUALA LUMPUR', tarikhMohon:new Date(Date.now()-432000000).toISOString(), tindakan:{ noBantuan:'APP-2025-001486' } },
 ])
 
 const searchQuery = ref('')

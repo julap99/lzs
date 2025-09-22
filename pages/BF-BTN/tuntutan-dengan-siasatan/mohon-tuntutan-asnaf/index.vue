@@ -152,7 +152,7 @@ definePageMeta({
 const columns = [
   { key: 'no', label: 'No' },
   { key: 'noBantuan', label: 'No. Bantuan', sortable: true },
-  { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
+  { key: 'maklumatBantuan', label: 'Jenis Bantuan', sortable: true },
   { key: 'pemohon', label: 'Pemohon', sortable: true }, // Ayah
   { key: 'namaPenerimaManfaat', label: 'Nama Penerima Manfaat', sortable: true },
   { key: 'noKPPemohon', label: 'No. KP Pemohon', sortable: true },
@@ -209,6 +209,27 @@ const bantuanList = ref([
     namaPenerima: 'ALI BIN MOHAMED',
     tarikhMohon: new Date(Date.now() - 259200000).toISOString(),
     tindakan: { noBantuan: 'APP-2025-001484' },
+  },
+  // Tuntutan Dialisis mock data
+  {
+    noBantuan: 'APP-2025-001485',
+    maklumatBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
+    pemohon: AYAH,
+    namaPenerimaManfaat: 'AHMAD BIN HASSAN',
+    noKPPemohon: '850315123456',
+    namaPenerima: 'HOSPITAL SELAYANG',
+    tarikhMohon: new Date(Date.now() - 345600000).toISOString(),
+    tindakan: { noBantuan: 'APP-2025-001485' },
+  },
+  {
+    noBantuan: 'APP-2025-001486',
+    maklumatBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
+    pemohon: AYAH,
+    namaPenerimaManfaat: 'FATIMAH BINTI MOHAMED',
+    noKPPemohon: '880420234567',
+    namaPenerima: 'HOSPITAL KUALA LUMPUR',
+    tarikhMohon: new Date(Date.now() - 432000000).toISOString(),
+    tindakan: { noBantuan: 'APP-2025-001486' },
   },
 ])
 
