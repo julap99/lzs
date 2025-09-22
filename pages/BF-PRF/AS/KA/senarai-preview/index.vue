@@ -14,7 +14,7 @@
         <div class="mb-6">
           <h3 class="text-lg font-medium mb-4">Carian Asnaf</h3>
           <FormKit type="form" :actions="false" @submit="handleSubmit">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <FormKit
                 type="select"
                 name="kariah"
@@ -30,23 +30,46 @@
 
               <FormKit
                 type="select"
-                name="kategoriAsnaf"
-                label="Kategori Asnaf"
-                :options="kategoriAsnafOptions"
-                placeholder="Pilih Kategori Asnaf"
-                v-model="formData.kategoriAsnaf"
+                name="daerah"
+                label="Daerah"
+                :options="daerahOptions"
+                placeholder="Pilih Daerah"
+                v-model="formData.daerah"
                 :validation-messages="{
-                  required: 'Kategori Asnaf adalah wajib',
+                  required: 'Daerah adalah wajib',
                 }"
               />
 
               <FormKit
-                type="text"
-                name="noKp"
-                label="No KP"
-                v-model="formData.noKp"
-                placeholder="Masukkan No KP (Opsional)"
+                type="date"
+                name="tarikhAkhir"
+                label="Tarikh Akhir"
+                v-model="formData.tarikhAkhir"
+                placeholder="Pilih Tarikh Akhir"
               />
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Had Kifayah</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="number"
+                    name="hadKifayahMinima"
+                    label="Minima"
+                    v-model="formData.hadKifayahMinima"
+                    placeholder="Masukkan Minima"
+                  />
+
+                  <FormKit
+                    type="number"
+                    name="hadKifayahMaksima"
+                    label="Maksima"
+                    v-model="formData.hadKifayahMaksima"
+                    placeholder="Masukkan Maksima"
+                  />
+                </div>
+              </div>
+
+              
             </div>
 
             <div class="mt-6 flex justify-end gap-4">
@@ -86,6 +109,7 @@
         </div>
       </template>
 
+      <!-- use standard html table because of the checkbox (rs-table is not working properly with checkbox)  -->
       <template #body>
         <div v-if="searchResults.length > 0">
           <!-- Table -->
@@ -93,49 +117,79 @@
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
+                  <th class="px-6 py-3 text-left text-xs uppercase tracking-wider">
+                    Jenis Pengenalan ID
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs uppercase tracking-wider">
+                    Pengenalan ID
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs uppercase tracking-wider">
+                    Nama
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs uppercase tracking-wider">
+                    Kariah
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs uppercase tracking-wider">
+                    Daerah
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs uppercase tracking-wider">
+                    Tarikh Akhir
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs uppercase tracking-wider">
+                    % Had Kifayah
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs uppercase tracking-wider">
+                    Tindakan
+                  </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     <input
                       type="checkbox"
-                      v-model="selectAll"
+                      :checked="selectAll"
                       @change="toggleSelectAll"
                       class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nama Asnaf
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kariah
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kategori Asnaf
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tarikh Akhir Review
                   </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="(item, index) in searchResults" :key="index" class="hover:bg-gray-50">
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <input
-                      type="checkbox"
-                      v-model="selectedItems"
-                      :value="item.id"
-                      class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
+                    {{ item.jenisPengenalanId || 'IC' }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {{ item.namaAsnaf }}
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.pengenalanId || item.noKp || '123456789012' }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.nama || item.namaAsnaf }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.kariah }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ item.kategoriAsnaf }}
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.daerah }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td class="px-6 py-4 whitespace-nowrap">
                     {{ formatDate(item.tarikh) }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.hadKifayah || '85%' }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <rs-button
+                      variant="primary"
+                      size="sm"
+                      @click="handleSemak"
+                    >
+                      Semak
+                    </rs-button>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      :checked="selectedItems.includes(item.id)"
+                      @change="toggleItemSelection(item.id)"
+                      class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -221,25 +275,37 @@ const kariahOptions = [
   { label: "Kariah D", value: "kariah_d" },
 ];
 
-const kategoriAsnafOptions = [
-  { label: "Fakir", value: "fakir" },
-  { label: "Miskin", value: "miskin" },
+const daerahOptions = [
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu_langat" },
+  { label: "Hulu Selangor", value: "hulu_selangor" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Langat", value: "kuala_langat" },
+  { label: "Kuala Selangor", value: "kuala_selangor" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Sabak Bernam", value: "sabak_bernam" },
+  { label: "Sepang", value: "sepang" },
 ];
 
 const formData = ref({
   kariah: "",
-  kategoriAsnaf: "",
-  noKp: "",
+  daerah: "",
+  hadKifayahMinima: "",
+  hadKifayahMaksima: "",
+  tarikhAkhir: "",
 });
 
 const searchResults = ref([]);
+
 
 const toast = useToast();
 
 const resetForm = () => {
   formData.value.kariah = "";
-  formData.value.kategoriAsnaf = "";
-  formData.value.noKp = "";
+  formData.value.daerah = "";
+  formData.value.hadKifayahMinima = "";
+  formData.value.hadKifayahMaksima = "";
+  formData.value.tarikhAkhir = "";
   searchCompleted.value = false;
   selectedItems.value = [];
   selectAll.value = false;
@@ -247,7 +313,7 @@ const resetForm = () => {
 
 const validateAndSearch = () => {
   // Allow search if at least one field is filled
-  if (!formData.value.kariah && !formData.value.kategoriAsnaf && !formData.value.noKp) {
+  if (!formData.value.kariah && !formData.value.daerah && !formData.value.hadKifayahMinima && !formData.value.hadKifayahMaksima && !formData.value.tarikhAkhir) {
     return;
   }
 
@@ -290,22 +356,36 @@ const generateMockData = () => {
     "Kariah D"
   ];
 
-  const mockKategori = [
-    "Fakir",
-    "Miskin"
+  const mockDaerah = [
+    "Gombak",
+    "Hulu Langat",
+    "Hulu Selangor",
+    "Klang",
+    "Kuala Langat",
+    "Kuala Selangor",
+    "Petaling",
+    "Sabak Bernam",
+    "Sepang"
   ];
 
   // Generate 3-8 random records
   const count = Math.floor(Math.random() * 6) + 3;
   const results = [];
 
+  const jenisPengenalanOptions = [ 'Foreign ID', 'MyKad'];
+  const hadKifayahOptions = ['75%', '80%', '85%', '90%', '95%'];
+
   for (let i = 0; i < count; i++) {
     results.push({
       id: i + 1,
-      namaAsnaf: mockNames[Math.floor(Math.random() * mockNames.length)],
+      jenisPengenalanId: jenisPengenalanOptions[Math.floor(Math.random() * jenisPengenalanOptions.length)],
+      pengenalanId: Math.floor(Math.random() * 900000000000) + 100000000000, // 12-digit number
+      nama: mockNames[Math.floor(Math.random() * mockNames.length)],
+      namaAsnaf: mockNames[Math.floor(Math.random() * mockNames.length)], // Keep for backward compatibility
       kariah: mockKariah[Math.floor(Math.random() * mockKariah.length)],
-      kategoriAsnaf: mockKategori[Math.floor(Math.random() * mockKategori.length)],
+      daerah: mockDaerah[Math.floor(Math.random() * mockDaerah.length)],
       tarikh: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000),
+      hadKifayah: hadKifayahOptions[Math.floor(Math.random() * hadKifayahOptions.length)],
     });
   }
 
@@ -321,12 +401,25 @@ const formatDate = (date) => {
 };
 
 const toggleSelectAll = () => {
+  selectAll.value = !selectAll.value;
   if (selectAll.value) {
-    selectedItems.value = searchResults.value.map(item => item.id);
+    // If selectAll is true, select all items
+    selectedItems.value = [...searchResults.value.map(item => item.id)];
   } else {
+    // If selectAll is false, deselect all items
     selectedItems.value = [];
   }
 };
+
+const toggleItemSelection = (itemId) => {
+  const index = selectedItems.value.indexOf(itemId);
+  if (index > -1) {
+    selectedItems.value.splice(index, 1);
+  } else {
+    selectedItems.value.push(itemId);
+  }
+};
+
 
 const handleHantar = () => {
   if (selectedItems.value.length === 0) {
@@ -349,12 +442,25 @@ const handleSubmit = (data) => {
   validateAndSearch();
 };
 
+const handleSemak = () => {
+  navigateTo("/BF-PRF/AS/FR/02_readonly");
+};
+
 // Watch for changes in selected items to update select all checkbox
 watch(selectedItems, (newValue) => {
   if (searchResults.value.length > 0) {
     selectAll.value = newValue.length === searchResults.value.length;
   }
 }, { deep: true });
+
+// Watch for changes in selectAll to update selectedItems
+watch(selectAll, (newValue) => {
+  if (newValue) {
+    selectedItems.value = [...searchResults.value.map(item => item.id)];
+  } else {
+    selectedItems.value = [];
+  }
+});
 </script>
 
 <style lang="scss" scoped>
