@@ -267,7 +267,7 @@
               @click="downloadPayableToTemplate"
             >
               <Icon name="material-symbols:download" class="mr-1" />
-              Format Maklumat
+              Template Format Excel
             </rs-button>
             </div>
           </div>
