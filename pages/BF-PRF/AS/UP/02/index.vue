@@ -4460,6 +4460,7 @@
                     name="pengesahan_pendapatan_tanggungan"
                     label="Muat naik pengesahan pendapatan / penyata gaji"
                     accept=".pdf,.jpg,.jpeg,.png"
+                    multiple
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                     :validation-messages="{
@@ -4565,6 +4566,7 @@
               type="file"
               name="dokumen_pemilikan_tanggungan"
               label="Dokumen Sokongan Pemilikan"
+              multiple
               accept=".pdf,.jpg,.jpeg,.png"
               help="Format dibenarkan: PDF, JPG, PNG. Saiz maks: 5MB"
               validation="max:5|mime:application/pdf,image/jpeg,image/png"
@@ -4657,6 +4659,7 @@
                       type="file"
                       name="dokumen_perjanjian_pinjaman_tanggungan"
                       label="Dokumen Perjanjian Pinjaman"
+                      multiple
                       accept=".pdf,.jpg,.jpeg,.png"
                       help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                       validation="max:5|mime:application/pdf,image/jpeg,image/png"
