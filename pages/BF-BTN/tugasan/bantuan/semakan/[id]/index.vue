@@ -494,7 +494,27 @@ const mockByNoRujukan = {
       { id: 'B112', jenisBantuan: 'B112 - BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)', status: 'Lengkap', sla: '2h', tindakan: '' },
     ],
     statusPermohonanBaru: '',
-    catatanUmumPegawai: 'Dipanjangkan kepada Jabatan Pendidikan untuk semakan lanjut',
+    catatanUmumPegawai: 'Dipanjangkan kepada EOAD untuk semakan lanjut',
+  },
+  'NAS-2025-0004': {
+    noRujukan: 'NAS-2025-0004',
+    nama: 'Amirul Hakim bin Zainuddin',
+    alamat: '12, Jalan SS 7/13, Petaling Jaya, 47301 Petaling Jaya, Selangor',
+    kariah: 'Masjid Al-Taqwa',
+    daerah: 'Kuala Selangor',
+    jenisPengenalan: 'MyKad',
+    noPengenalan: '791230104321',
+    noTelefon: '0190000123',
+    email: 'hakim@email.com',
+    statusKeluarga: 'Fakir',
+    statusIndividu: 'Fakir',
+    statusMultidimensi: 'Asnaf Tidak Produktif',
+    status: 'Dalam Semakan',
+    senaraiBantuan: [
+      { id: 'B103', jenisBantuan: 'B103 - (HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)', status: 'Lengkap', sla: '2h', tindakan: '' },
+    ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Dipanjangkan kepada Jabatan Perubatan untuk semakan lanjut',
   },
 };
 

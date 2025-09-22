@@ -345,7 +345,7 @@
            </rs-card>
 
          <!-- NEW: Maklumat kediaman -->
-<rs-card v-if="kediamanInfo" class="shadow-sm border-0 bg-white">
+<rs-card v-if="kediamanInfo && !isB103" class="shadow-sm border-0 bg-white">
   <template #header>
     <div class="flex items-center space-x-3">
       <div class="flex-shrink-0">
@@ -413,6 +413,153 @@
   </template>
 </rs-card>
 
+         <!-- NEW: Maklumat Penerima Manfaat & Kesihatan for B103 -->
+         <rs-card v-if="isB103" class="shadow-sm border-0 bg-white">
+           <template #header>
+             <div class="flex items-center space-x-3">
+               <div class="flex-shrink-0">
+                 <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                   <Icon name="ph:heart" class="w-6 h-6 text-green-600" />
+                 </div>
+               </div>
+               <div>
+                 <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Manfaat & Kesihatan</h2>
+                 <p class="text-sm text-gray-500">B103 - Bantuan Perubatan Dialisis (Fakir)</p>
+               </div>
+             </div>
+           </template>
+
+           <template #body>
+             <div class="space-y-6">
+               <!-- Beneficiary Information -->
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                   <FormKit
+                     type="select"
+                     name="namaPenerima"
+                     label="Nama"
+                     v-model="formData.healthInfo.namaPenerima"
+                     :options="beneficiaryOptions"
+                     placeholder="Sila pilih nama penerima"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+                 <div>
+                   <FormKit
+                     type="select"
+                     name="jenisPengenalan"
+                     label="Jenis Pengenalan"
+                     v-model="formData.healthInfo.jenisPengenalan"
+                     :options="[
+                       { label: 'MyKad', value: 'MyKad' },
+                       { label: 'MyKid', value: 'MyKid' },
+                       { label: 'Passport', value: 'Passport' }
+                     ]"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+                 <div>
+                   <FormKit
+                     type="text"
+                     name="noPengenalan"
+                     label="No Pengenalan"
+                     v-model="formData.healthInfo.noPengenalan"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+                 <div>
+                   <FormKit
+                     type="text"
+                     name="hubungan"
+                     label="Hubungan"
+                     v-model="formData.healthInfo.hubungan"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+               </div>
+
+               <!-- Health Information -->
+               <div class="border-t pt-6">
+                 <h3 class="text-md font-semibold text-gray-800 mb-4">Maklumat Kesihatan</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   <div>
+                     <FormKit
+                       type="select"
+                       name="tahapKesihatan"
+                       label="Tahap Kesihatan"
+                       v-model="formData.healthInfo.tahapKesihatan"
+                       :options="[
+                         { label: 'Sihat', value: 'Sihat' },
+                         { label: 'Sakit Kronik', value: 'Sakit Kronik' },
+                         { label: 'Kurang Upaya', value: 'Kurang Upaya' }
+                       ]"
+                       :classes="{ outer: 'mb-0' }"
+                     />
+                   </div>
+                   <div v-if="formData.healthInfo.tahapKesihatan && formData.healthInfo.tahapKesihatan !== 'Sihat'">
+                     <FormKit
+                       type="text"
+                       name="jenisPenyakit"
+                       label="Jenis Penyakit"
+                       v-model="formData.healthInfo.jenisPenyakit"
+                       placeholder="Nyatakan jenis penyakit"
+                       :classes="{ outer: 'mb-0' }"
+                     />
+                   </div>
+                 </div>
+               </div>
+
+               <!-- Chronic Illness Information -->
+               <div v-if="formData.healthInfo.tahapKesihatan === 'Sakit Kronik'" class="border-t pt-6">
+                 <h4 class="text-md font-semibold text-gray-800 mb-4">Maklumat Sakit Kronik</h4>
+                 
+                 <div class="space-y-4">
+                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div>
+                       <FormKit
+                         type="select"
+                         name="keadaanKesihatan"
+                         label="Keadaan Kesihatan"
+                         v-model="formData.healthInfo.keadaanKesihatan"
+                         :options="[
+                           { label: 'Tidak Terlantar', value: 'Tidak Terlantar' },
+                           { label: 'Separuh Terlantar', value: 'Separuh Terlantar' },
+                           { label: 'Terlantar Sepenuhnya', value: 'Terlantar Sepenuhnya' }
+                         ]"
+                         :classes="{ outer: 'mb-0' }"
+                       />
+                     </div>
+                     <div>
+                       <FormKit
+                         type="select"
+                         name="kosPenjagaan"
+                         label="Kos Penjagaan"
+                         v-model="formData.healthInfo.kosPenjagaan"
+                         :options="[
+                           { label: 'Berbayar', value: 'Berbayar' },
+                           { label: 'Tidak Berbayar', value: 'Tidak Berbayar' }
+                         ]"
+                         :classes="{ outer: 'mb-0' }"
+                       />
+                     </div>
+                   </div>
+                   
+                   <div>
+                     <FormKit
+                       type="text"
+                       name="jumlahPerbelanjaan"
+                       label="Jumlah Perbelanjaan Bulanan (RM)"
+                       v-model="formData.healthInfo.jumlahPerbelanjaan"
+                       placeholder="Format: 9999.99"
+                       :classes="{ outer: 'mb-0' }"
+                     />
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </template>
+         </rs-card>
+
            <!-- NEW: Senarai Entitlement Product Cards -->
            <rs-card v-if="isB300OrB307OrB112" class="shadow-sm border-0 bg-white">
              <template #header>
@@ -461,11 +608,12 @@
                      </div>
 
                       <!-- Editable Sections (only when editing)
-                           Hidden for B112 when editing Sewaan_Rumah/Belian_Rumah because we show external box -->
+                           Hidden for B112 when editing Sewaan_Rumah/Belian_Rumah and B103 when editing HEMODIALISIS/SUNTIKAN_EPO because we show external box -->
                       <div
                         v-if="
                           product.status === 'sedang_edit' && !(
-                            isB112 && (product.code === 'Sewaan_Rumah' || product.code === 'Belian_Rumah')
+                            (isB112 && (product.code === 'Sewaan_Rumah' || product.code === 'Belian_Rumah')) ||
+                            (isB103 && (product.code === 'HEMODIALISIS' || product.code === 'SUNTIKAN_EPO'))
                           )
                         "
                         class="mt-4 space-y-4"
@@ -760,14 +908,17 @@
 
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <div class="col-span-1 space-y-6">
-          <div v-if="isB112Editing">
+          <div v-if="isB112Editing || isB103Editing">
             <!-- B112 Edit panel shown first when editing -->
             <div ref="externalEditorEl">
             <rs-card
               v-if="
-                String(route.params.id || '').toUpperCase() === 'B112' &&
+                (String(route.params.id || '').toUpperCase() === 'B112' &&
                 editingProductIndex >= 0 &&
-                ['Sewaan_Rumah','Belian_Rumah'].includes(selectedEntitlementProducts[editingProductIndex]?.code)
+                ['Sewaan_Rumah','Belian_Rumah'].includes(selectedEntitlementProducts[editingProductIndex]?.code)) ||
+                (String(route.params.id || '').toUpperCase() === 'B103' &&
+                editingProductIndex >= 0 &&
+                ['HEMODIALISIS','SUNTIKAN_EPO'].includes(selectedEntitlementProducts[editingProductIndex]?.code))
               "
               class="shadow-sm border-0 bg-white"
             >
@@ -961,7 +1112,7 @@
             </rs-card>
             </div>
 
-            <!-- Dokumen Sokongan rendered after edit panel during B112 editing -->
+            <!-- Dokumen Sokongan rendered after edit panel during B112/B103 editing -->
             <rs-card class="shadow-sm border-0 bg-white">
               <template #header>
                 <div class="flex items-center space-x-3">
@@ -1020,7 +1171,7 @@
           </div>
 
           <div v-else>
-            <!-- Not editing B112: just show Dokumen Sokongan (no edit panel) -->
+            <!-- Not editing B112/B103: just show Dokumen Sokongan (no edit panel) -->
             <rs-card class="shadow-sm border-0 bg-white">
               <template #header>
                 <div class="flex items-center space-x-3">
@@ -1072,7 +1223,7 @@
           <div v-if="visibleTabs.length" class="bg-white">
             <!-- Custom Tab Navigation -->
              <button
-  v-for="(tab, index) in visibleTabs.filter(t => !(route.params.id.toUpperCase() === 'B112' && t.id === 'bq'))"
+  v-for="(tab, index) in visibleTabs.filter(t => !((route.params.id.toUpperCase() === 'B112' || route.params.id.toUpperCase() === 'B103') && t.id === 'bq'))"
   :key="index"
   @click="activeTab = tab.id"
   :class="[
@@ -1104,7 +1255,7 @@
             <div class="tab-content">
               <!-- BQ Tab -->
               <!-- <div v-if="activeTab === 'bq' && isB1"> -->
-              <div v-if="activeTab === 'bq' && isB1 && route.params.id.toUpperCase() !== 'B112'">
+              <div v-if="activeTab === 'bq' && isB1 && route.params.id.toUpperCase() !== 'B112' && route.params.id.toUpperCase() !== 'B103'">
 
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
@@ -1425,7 +1576,7 @@
           </rs-card> -->
 
           <!-- NEW: Maklumat Penerima Bayaran -->
-          <rs-card v-if="!isB102 && !isB300 && !isB307 && !isB112" class="shadow-sm border-0 bg-white">
+          <rs-card v-if="!isB102 && !isB300 && !isB307 && !isB112 && !isB103" class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -1485,7 +1636,7 @@
 
           
 
-          <rs-card v-if="!isB300 && !isB307 && !isB112" class="shadow-sm border-0 bg-white">
+          <rs-card v-if="!isB300 && !isB307 && !isB112 && !isB103" class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -1984,9 +2135,10 @@ const isB102 = computed(() => String(route.params.id || '').toUpperCase() === 'B
 const isB300 = computed(() => String(route.params.id || '').toUpperCase() === 'B300');
 const isB307 = computed(() => String(route.params.id || '').toUpperCase() === 'B307');
 const isB112 = computed(() => String(route.params.id || '').toUpperCase() === 'B112');
+const isB103 = computed(() => String(route.params.id || '').toUpperCase() === 'B103');
 const visibleTabs = computed(() => {
   if (!isB1.value) return []
-  if (isB112.value) return tabs.filter(t => t.id === 'bq')
+  if (isB112.value || isB103.value) return tabs.filter(t => t.id === 'bq')
   return tabs
 });
 
@@ -2025,6 +2177,16 @@ const productPackageOptions = computed(() => {
       { label: 'Ansuran Belian Rumah Bulanan (Fakir)', value: 'BeliaSewaan_Rumahn_Rumah' },
       { label: 'Sewaan Rumah Bulanan', value: '' },
     ];  
+  } else if (id === 'B103') {
+    return [
+      { label: '-- Sila Pilih --', value: '' },
+      { label: '(GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)', value: 'HEMODIALISIS_DAN_EPO' },
+      { label: '(GL) (HQ) HEMODIALISIS SAHAJA (FAKIR)', value: 'HEMODIALISIS_SAHAJA' },
+      { label: '(GL) (HQ) SUNTIKAN EPO SAHAJA (FAKIR)', value: 'SUNTIKAN_EPO_SAHAJA' },
+      { label: '(PTJ) (GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)', value: 'PTJ_HEMODIALISIS_DAN_EPO' },
+      { label: '(PTJ) (GL) (HQ) HEMODIALISIS SAHAJA (FAKIR)', value: 'PTJ_HEMODIALISIS_SAHAJA' },
+      { label: '(PTJ) (GL) (HQ) SUNTIKAN EPO SAHAJA (FAKIR)', value: 'PTJ_SUNTIKAN_EPO_SAHAJA' },
+    ];
   } else {
     // Default options for B102 and others
     return [
@@ -2096,13 +2258,19 @@ const b112EntitlementOptions = ref([
   { label: 'Sewaan Rumah Bulanan', value: 'Sewaan_Rumah' },
 ]);
 
+// B103 Entitlement Product options for checkboxes
+const b103EntitlementOptions = ref([
+  { label: '(GL) (HQ) HEMODIALISIS (FAKIR)', value: 'HEMODIALISIS' },
+  { label: '(GL) (HQ) SUNTIKAN EPO (FAKIR)', value: 'SUNTIKAN_EPO' },
+]);
+
 // Editing state
 const editingProductIndex = ref(-1);
 
-// Check if current ID is B300 or B307 or B112
+// Check if current ID is B300 or B307 or B112 or B103
 const isB300OrB307OrB112= computed(() => {
   const id = String(route.params.id || '').toUpperCase();
-  return id === 'B300' || id === 'B307' || id === 'B112';
+  return id === 'B300' || id === 'B307' || id === 'B112' || id === 'B103';
 });
 
 // Get the appropriate entitlement options based on route ID
@@ -2114,6 +2282,8 @@ const currentEntitlementOptions = computed(() => {
     return b307EntitlementOptions.value;
   } else if (id === 'B112'){
     return b112EntitlementOptions.value;
+  } else if (id === 'B103'){
+    return b103EntitlementOptions.value;
   }
   return [];
 });
@@ -2202,6 +2372,14 @@ const mockAssistanceData = {
     productpackage: "",
     entitlementproduct: "",
     jumlahBantuan: 3000,
+  },
+   "B103": {
+    id: "B103",
+    aid: "B103 - Bantuan Perubatan Dialisis (Fakir)",
+    aidproduct: "Kategori Hemodialisis (Fakir)",
+    productpackage: "",
+    entitlementproduct: "",
+    jumlahBantuan: 1800,
   }
 };
 
@@ -2220,6 +2398,19 @@ const formData = ref({
     status_kediaman: "SEWA",   // default to option value
     keadaan_kediaman: "Baik",  // default
     kadar_sewa: "800",         // default example
+  },
+
+  // 👇 Added Health Information for B103
+  healthInfo: {
+    namaPenerima: "Nur Najihah binti Mazlan",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "850315-10-1234",
+    hubungan: "Isteri",
+    tahapKesihatan: "Sakit Kronik",
+    jenisPenyakit: "Diabetes",
+    keadaanKesihatan: "Tidak Terlantar",
+    kosPenjagaan: "Berbayar",
+    jumlahPerbelanjaan: "300",
   },
 });
 
@@ -2266,6 +2457,33 @@ const initializeDokumenSokongan = () => {
       {
         jenis: "Salinan kad pengenalan ketua keluarga/ penjaga",
         filename: "salinan_ic_ketua_keluarga.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+    ];
+  } else if (id === 'B103') {
+    dokumenSokongan.value = [
+      {
+        jenis: "Dokumen akuan/ pengesahan dari pihak hospital/ pusat dialisis (panel LZS)  berkaitan maklumat lengkap pesakit dan rawatan yang diperlukan adalah yang terkini.",
+        filename: "borang-pengesahanh.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan dokumen kemasukan yang sah (bukan warganegara sahaja)",
+        filename: "salinan-ic.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Sebutharga kos rawatan yang diperlukan dari pusat rawatan.",
+        filename: "surat-sebutharga.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Surat pengesahan agensi luar, sekiranya terima tajaan.",
+        filename: "maklumat-agensi.pdf",
         url: "#",
         status: "lengkap",
       },
@@ -2544,11 +2762,70 @@ const kediamanByAid={
         "Tempoh Menetap di Selangor": "3 Tahun",
       },
   },
+  B103: {
+    tablefor: "B103 - Bantuan Perubatan Dialisis (Fakir)",
+      fields: {
+        "Alamat 1": "Jalan Perubatan,",
+        "Alamat 2": "Kampung Kesihatan,",
+        "Alamat 3": "-",
+        "Negeri": "Selangor",
+        "Daerah": "Kuala Selangor",
+        "Bandar": "Jeram",
+        "Poskod": "45800 ",
+        "Kariah": "Masjid Al-Taqwa",
+        "Geolokasi": "-",
+        "Tempoh Menetap di Selangor": "2 Tahun",
+      },
+  },
 };
 
 const kediamanInfo = computed(() => {
   const id = String(route.params.id || '').toUpperCase();
   return kediamanByAid[id] || null;
+});
+
+// Beneficiary options for B103
+const beneficiaryOptions = ref([
+  { label: 'Nur Najihah binti Mazlan (Isteri)', value: 'Nur Najihah binti Mazlan' },
+  { label: 'Amir Helmi bin Amirul Hakim (Anak)', value: 'Amir Helmi bin Amirul Hakim' },
+  { label: 'Amira Hasya binti Amirul Hakim (Anak)', value: 'Amira Hasya binti Amirul Hakim' },
+]);
+
+// Beneficiary data mapping
+const beneficiaryData = {
+  'Nur Najihah binti Mazlan': {
+    noPengenalan: '850315-10-1234',
+    hubungan: 'Isteri'
+  },
+  'Amir Helmi bin Amirul Hakim': {
+    noPengenalan: '120512-10-5678',
+    hubungan: 'Anak'
+  },
+  'Amira Hasya binti Amirul Hakim': {
+    noPengenalan: '150815-10-9012',
+    hubungan: 'Anak'
+  }
+};
+
+// Function to update beneficiary info when name is selected
+const updateBeneficiaryInfo = (selectedName) => {
+  console.log('updateBeneficiaryInfo called with:', selectedName); // Debug log
+  console.log('beneficiaryData:', beneficiaryData); // Debug log
+  if (selectedName && beneficiaryData[selectedName]) {
+    const data = beneficiaryData[selectedName];
+    console.log('Found data:', data); // Debug log
+    formData.value.healthInfo.noPengenalan = data.noPengenalan;
+    formData.value.healthInfo.hubungan = data.hubungan;
+    console.log('Updated formData:', formData.value.healthInfo); // Debug log
+  } else {
+    console.log('No data found for:', selectedName); // Debug log
+  }
+};
+
+// Watch for namaPenerima changes and auto-fill beneficiary info
+watch(() => formData.value.healthInfo.namaPenerima, (newName) => {
+  console.log('Nama changed to:', newName); // Debug log
+  updateBeneficiaryInfo(newName);
 });
 
 // NEW: Education info (read-only) for B300/B307
@@ -2706,7 +2983,8 @@ const editProduct = (index) => {
   toast.info(`Mengedit product: ${selectedEntitlementProducts.value[index].name}`);
   const id = String(route.params.id || '').toUpperCase()
   const code = selectedEntitlementProducts.value[index]?.code
-  if (id === 'B112' && (code === 'Sewaan_Rumah' || code === 'Belian_Rumah')) {
+  if ((id === 'B112' && (code === 'Sewaan_Rumah' || code === 'Belian_Rumah')) ||
+      (id === 'B103' && (code === 'HEMODIALISIS' || code === 'SUNTIKAN_EPO'))) {
     nextTick(() => {
       externalEditorEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
@@ -3200,6 +3478,14 @@ const isB112Editing = computed(() => {
   const idx = editingProductIndex.value;
   const code = selectedEntitlementProducts.value[idx]?.code;
   return id === 'B112' && idx >= 0 && ['Sewaan_Rumah', 'Belian_Rumah'].includes(code);
+});
+
+// Helper: whether B103 edit panel is active
+const isB103Editing = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  const idx = editingProductIndex.value;
+  const code = selectedEntitlementProducts.value[idx]?.code;
+  return id === 'B103' && idx >= 0 && ['HEMODIALISIS', 'SUNTIKAN_EPO'].includes(code);
 });
 
 // Fetch application data on mount
