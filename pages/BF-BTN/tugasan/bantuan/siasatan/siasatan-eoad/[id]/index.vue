@@ -234,7 +234,7 @@
                     <!-- </div> -->
 
                     <div class="flex justify-end">
-                      <rs-button variant="primary">Sahkan</rs-button>
+                      <rs-button variant="primary" @click="confirmRecommendedAid">Sahkan</rs-button>
                   </div>
                   </rs-tab-item>
 
@@ -244,6 +244,16 @@
                     <!-- <div
                     class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
                   > -->
+                    <div class="flex justify-end mb-3">
+                      <rs-button variant="primary" @click="getLatestOtherAgencyAssistance">
+                        Dapatkan Data Bantuan Terkini
+                      </rs-button>
+                    </div>
+                    <div class="flex justify-end mb-4">
+                      <span class="text-xs text-gray-500">
+                        Kemaskini terakhir: {{ formatDateTimeLocal(lastOtherAgencyFetchAt) }}
+                      </span>
+                    </div>
                     <rs-table
                       :data="otherAgencyAssistance"
                       :columns="otherAgencyColumns"
@@ -341,7 +351,7 @@
                         </rs-table>
 
                         <div class="flex justify-end">
-                          <rs-button variant="primary">Sahkan</rs-button>
+                          <rs-button variant="primary" @click="confirmPerubahanAid">Sahkan</rs-button>
                         </div>
                   </div>
                 </div>
@@ -389,8 +399,17 @@
                         </template>
                       </rs-table>
 
+                      <div v-if="anyPembatalanSelected" class="mt-4">
+                        <FormKit
+                          type="textarea"
+                          label="Justifikasi Pembatalan"
+                          placeholder="Nyatakan justifikasi pembatalan..."
+                          v-model="justifikasiPembatalan"
+                        />
+                      </div>
+
                       <div class="flex justify-end">
-                        <rs-button variant="primary">Sahkan</rs-button>
+                        <rs-button variant="primary" :disabled="!canConfirmPembatalan">Sahkan</rs-button>
                       </div>
                     </div>
                   </rs-tab-item>
@@ -1388,6 +1407,68 @@ const otherAgencyAssistance = ref([
   },
 ]);
 
+// Track last fetch date for "Bantuan daripada Agensi"
+const lastOtherAgencyFetchAt = ref(new Date());
+
+// Initialize last fetch date based on current data
+const initializeLastOtherAgencyFetchAt = () => {
+  try {
+    const dates = otherAgencyAssistance.value
+      .map(item => new Date(item.tarikhDiperoleh))
+      .filter(d => !isNaN(d.getTime()));
+    if (dates.length > 0) {
+      lastOtherAgencyFetchAt.value = new Date(Math.max(...dates.map(d => d.getTime())));
+    }
+  } catch (e) {
+    // fallback to now
+    lastOtherAgencyFetchAt.value = new Date();
+  }
+};
+initializeLastOtherAgencyFetchAt();
+
+// Local datetime formatter (DD-MM-YYYY HH:MM)
+const formatDateTimeLocal = (date) => {
+  const d = date instanceof Date ? date : new Date(date);
+  if (isNaN(d.getTime())) return '';
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+};
+
+// Update table with latest mock data for "Bantuan daripada Agensi"
+const getLatestOtherAgencyAssistance = () => {
+  otherAgencyAssistance.value = [
+    {
+      namaBantuan: "Program Kasih Siswa (dKasih)",
+      jumlah: "1,500",
+      kekerapan: "One-off",
+      tahun: "2025",
+      tarikhDiperoleh: "9/22/2025",
+      dataDaripada: "ICU",
+    },
+    {
+      namaBantuan: "Sumbangan Asas Rahmah (SARA)",
+      jumlah: "2,400",
+      kekerapan: "Berkala",
+      tahun: "2025",
+      tarikhDiperoleh: "9/22/2025",
+      dataDaripada: "ICU",
+    },
+    {
+      namaBantuan: "Bantuan Prihatin Rakyat (BPR)",
+      jumlah: "1,000",
+      kekerapan: "One-off",
+      tahun: "2025",
+      tarikhDiperoleh: "9/22/2025",
+      dataDaripada: "JPM",
+    },
+  ];
+  lastOtherAgencyFetchAt.value = new Date();
+};
+
 // Recommended Aid data (Syor)
 const recommendedAid = ref([
   {
@@ -1427,6 +1508,23 @@ const recommendedAid = ref([
   },
 ]);
 
+// Move selected Syor items to Bantuan Baru and remove from Syor
+const confirmRecommendedAid = () => {
+  const selected = recommendedAid.value.filter(r => r.terimaCadangan);
+  if (selected.length === 0) return;
+
+  const newApps = selected.map(r => ({
+    id: r.aid?.match(/\[(.*?)\]/)?.[1] || r.aid || `NEW-${Date.now()}`,
+    jenisBantuan: r.aidProduct || r.aid || 'Bantuan Baharu',
+    status: 'Perlu Diproses',
+    sla: '-'
+  }));
+
+  assistanceApplications.value = [...assistanceApplications.value, ...newApps];
+  recommendedAid.value = recommendedAid.value.filter(r => !r.terimaCadangan);
+  selectAllSyor.value = false;
+};
+
 const selectAllSyor = ref(false);
 
 // Perubahan Bantuan - mock data
@@ -1447,57 +1545,57 @@ const bantuanPerubahanKadar = ref([
     terimaCadangan: false,
   },
   {
-    aid: "[B601] BANTUAN PENDIDIKAN (FISABILILLAH)",
-    aidProduct: "BANTUAN PENDIDIKAN (FISABILILLAH)",
-    productPackage: "(EFT) YURAN PENDIDIKAN (FISABILILLAH)",
-    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FISABILILLAH)",
+    aid: "[B601] BANTUAN PENDIDIKAN (FAKIR)",
+    aidProduct: "BANTUAN PENDIDIKAN (FAKIR)",
+    productPackage: "(EFT) YURAN PENDIDIKAN (FAKIR)",
+    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FAKIR)",
     terimaCadangan: false,
   },
-  {
-    aid: "[B503] BANTUAN MAKANAN BULANAN (FAKIR)",
-    aidProduct: "MAKANAN BULANAN (FAKIR)",
-    productPackage: "(VCASH) BANTUAN BULANAN (FAKIR)",
-    entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (FAKIR)",
-    terimaCadangan: false,
-  },
-  {
-    aid: "[B701] BANTUAN BENCANA (MISKIN)",
-    aidProduct: "BANTUAN BENCANA (MISKIN)",
-    productPackage: "(CASH) BANTUAN SEGERA (MISKIN)",
-    entitlementProduct: "(CASH) BENCANA ALAM (MISKIN)",
-    terimaCadangan: false,
-  },
+  // {
+  //   aid: "[B503] BANTUAN MAKANAN BULANAN (FAKIR)",
+  //   aidProduct: "MAKANAN BULANAN (FAKIR)",
+  //   productPackage: "(VCASH) BANTUAN BULANAN (FAKIR)",
+  //   entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (FAKIR)",
+  //   terimaCadangan: false,
+  // },
+  // {
+  //   aid: "[B701] BANTUAN BENCANA (FAKIR)",
+  //   aidProduct: "BANTUAN BENCANA (FAKIR)",
+  //   productPackage: "(CASH) BANTUAN SEGERA (FAKIR)",
+  //   entitlementProduct: "(CASH) BENCANA ALAM (FAKIR)",
+  //   terimaCadangan: false,
+  // },
 ]);
 
 const bantuanPembatalan = ref([
   {
-    aid: "[B601] BANTUAN PENDIDIKAN (FISABILILLAH)",
-    aidProduct: "BANTUAN PENDIDIKAN (FISABILILLAH)",
-    productPackage: "(EFT) YURAN PENDIDIKAN (FISABILILLAH)",
-    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FISABILILLAH)",
+    aid: "[B601] BANTUAN PENDIDIKAN (MISKIN)",
+    aidProduct: "BANTUAN PENDIDIKAN (MISKIN)",
+    productPackage: "(EFT) YURAN PENDIDIKAN (MISKIN)",
+    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (MISKIN)",
     batalBantuan: false,
   },
   {
-    aid: "[B503] BANTUAN MAKANAN BULANAN (FAKIR)",
-    aidProduct: "BANTUAN MAKANAN BULANAN (FAKIR)",
-    productPackage: "(VCASH) BANTUAN BULANAN (FAKIR)",
-    entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (FAKIR)",
+    aid: "[B503] BANTUAN MAKANAN BULANAN (MISKIN)",
+    aidProduct: "BANTUAN MAKANAN BULANAN (MISKIN)",
+    productPackage: "(VCASH) BANTUAN BULANAN (MISKIN)",
+    entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (MISKIN)",
     batalBantuan: false,
   },
   {
-    aid: "[B304] BANTUAN KEPERLUAN HIDUP (GHARIMIN)",
-    aidProduct: "BANTUAN KEPERLUAN HIDUP (GHARIMIN)",
-    productPackage: "(VCASH) BANTUAN BULANAN (GHARIMIN)",
-    entitlementProduct: "(VCASH) BAYARAN BULANAN KELUARGA (GHARIMIN)",
+    aid: "[B304] BANTUAN KEPERLUAN HIDUP (MISKIN)",
+    aidProduct: "BANTUAN KEPERLUAN HIDUP (MISKIN)",
+    productPackage: "(VCASH) BANTUAN BULANAN (MISKIN)",
+    entitlementProduct: "(VCASH) BAYARAN BULANAN KELUARGA (MISKIN)",
     batalBantuan: false,
   },
-  {
-    aid: "[B701] BANTUAN BENCANA (MISKIN)",
-    aidProduct: "BANTUAN BENCANA (MISKIN)",
-    productPackage: "(CASH) BANTUAN SEGERA (MISKIN)",
-    entitlementProduct: "(CASH) BENCANA ALAM (MISKIN)",
-    batalBantuan: false,
-  },
+  // {
+  //   aid: "[B701] BANTUAN BENCANA (MISKIN)",
+  //   aidProduct: "BANTUAN BENCANA (MISKIN)",
+  //   productPackage: "(CASH) BANTUAN SEGERA (MISKIN)",
+  //   entitlementProduct: "(CASH) BENCANA ALAM (MISKIN)",
+  //   batalBantuan: false,
+  // },
   {
     aid: "[B205] BANTUAN PERUBATAN DIALISIS (MISKIN)",
     aidProduct: "BANTUAN PERUBATAN DIALISIS (MISKIN)",
@@ -1506,6 +1604,19 @@ const bantuanPembatalan = ref([
     batalBantuan: false,
   },
 ]);
+
+// Textarea model for pembatalan justification
+const justifikasiPembatalan = ref("");
+
+// Show textarea only when there is at least one checked cancellation
+const anyPembatalanSelected = computed(() =>
+  bantuanPembatalan.value.some((row) => row.batalBantuan)
+);
+
+// Enable Sahkan only when at least one selected and justification filled
+const canConfirmPembatalan = computed(() => {
+  return anyPembatalanSelected.value && String(justifikasiPembatalan.value).trim().length > 0;
+});
 
 const selectAllPerubahan = ref(false);
 const selectAllPembatalan = ref(false);
@@ -1564,6 +1675,23 @@ const toggleSelectAllPerubahan = () => {
   bantuanPerubahanKadar.value.forEach((row) => {
     row.terimaCadangan = selectAllPerubahan.value;
   });
+};
+
+// Move selected Perubahan items to Bantuan Baru and remove from Perubahan list
+const confirmPerubahanAid = () => {
+  const selected = bantuanPerubahanKadar.value.filter(r => r.terimaCadangan);
+  if (selected.length === 0) return;
+
+  const newApps = selected.map(r => ({
+    id: r.aid?.match(/\[(.*?)\]/)?.[1] || r.aid || `NEW-${Date.now()}`,
+    jenisBantuan: r.aidProduct || r.aid || 'Bantuan Baharu',
+    status: 'Perlu Diproses',
+    sla: '-'
+  }));
+
+  assistanceApplications.value = [...assistanceApplications.value, ...newApps];
+  bantuanPerubahanKadar.value = bantuanPerubahanKadar.value.filter(r => !r.terimaCadangan);
+  selectAllPerubahan.value = false;
 };
 
 const toggleSelectAllPembatalan = () => {
