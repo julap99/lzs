@@ -5327,17 +5327,17 @@ const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF/AS/FR/02",
+    path: "/BF-PRF/AS/UP/02",
   },
   {
     name: "Asnaf",
     type: "link",
-    path: "/BF-PRF/AS/FR/02",
+    path: "/BF-PRF/AS/UP/02",
   },
   {
-    name: " Pendaftaran Lengkap",
+    name: "Kemaskini",
     type: "current",
-    path: "/BF-PRF/AS/FR/02",
+    path: "/BF-PRF/AS/UP/02",
   },
 ]);
 
