@@ -1242,10 +1242,39 @@ const penyiasatOptions = [
 ];
 
 const cawanganOptions = [
-  { label: "Cawangan Ibu Pejabat LZS", value: "hq" },
-  { label: "Cawangan Kuala Selangor", value: "kualaSelangor" },
-  { label: "Cawangan Klang", value: "klang" },
-  { label: "Cawangan Damansara", value: "damansara" },
+  // Gombak
+  { label: "Taman Melawati (Gombak)", value: "Taman Melawati" },
+  { label: "Bandar Baru Selayang (Gombak)", value: "Bandar Baru Selayang" },
+  { label: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)", value: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)" },
+  // Hulu Langat
+  { label: "Kajang (Hulu Langat)", value: "Kajang" },
+  { label: "Bandar Baru Bangi (Hulu Langat)", value: "Bandar Baru Bangi" },
+  { label: "Bandar Baru Ampang (Hulu Langat)", value: "Bandar Baru Ampang" },
+  { label: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)", value: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)" },
+  { label: "UNIVERSITI TENAGA NASIONAL (UNITEN)", value: "UNIVERSITI TENAGA NASIONAL (UNITEN)" },
+  { label: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)", value: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)" },
+  { label: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)", value: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)" },
+  // Kuala Selangor
+  { label: "UNIVERSITI SELANGOR (UNISEL)", value: "UNIVERSITI SELANGOR (UNISEL)" },
+  { label: "Cawangan Zakat LZS, Kuala Selangor", value: "Cawangan Zakat LZS, Kuala Selangor" },
+  // Sabak Bernam
+  { label: "Cawangan Zakat LZS, Sungai Besar", value: "Cawangan Zakat LZS, Sungai Besar" },
+  // Petaling
+  { label: "UNIVERSITI TEKNOLOGI MARA (UiTM)", value: "UNIVERSITI TEKNOLOGI MARA (UiTM)" },
+  { label: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)", value: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)" },
+  { label: "UNIVERSITI PUTRA MALAYSIA (UPM)", value: "UNIVERSITI PUTRA MALAYSIA (UPM)" },
+  { label: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)", value: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)" },
+  { label: "Damansara (Petaling)", value: "Damansara" },
+  { label: "Cawangan Ibu Pejabat LZS", value: "Cawangan Ibu Pejabat LZS" },
+  // Sepang
+  { label: "UNIVERSITI MULTIMEDIA (MMU)", value: "UNIVERSITI MULTIMEDIA (MMU)" },
+  { label: "Saujana KLIA", value: "Saujana KLIA" },
+  // Kuala Langat
+  { label: "Banting", value: "Banting" },
+  // Hulu Selangor
+  { label: "Kuala Kubu Bharu", value: "Kuala Kubu Bharu" },
+  // Klang
+  { label: "Kompleks MAIS Klang", value: "Kompleks MAIS Klang" },
 ];
 
 // Payment Table Configuration
