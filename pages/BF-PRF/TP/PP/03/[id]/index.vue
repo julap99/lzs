@@ -135,7 +135,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from 'vue-toastification'
 
@@ -269,12 +269,24 @@ const handleApprovalSubmit = async () => {
 
 const handleBack = () => navigateTo('/BF-PRF/TP/PP')
 
-onMounted(() => {
+const loadApplicationData = () => {
   const id = route.params.id
   if (dataset[id]) {
-    applicationData.value = { ...applicationData.value, ...dataset[id] }
+    // Direct assignment to ensure data is loaded
+    Object.assign(applicationData.value, dataset[id])
   } else {
     applicationData.value.refNumber = id
+  }
+}
+
+onMounted(() => {
+  loadApplicationData()
+})
+
+// Watch for route changes
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    loadApplicationData()
   }
 })
 </script>
