@@ -856,7 +856,7 @@
   <!-- Modal: Tugas Kepada -->
   <div
     v-if="isAssignModalOpen"
-    class="fixed inset-0 z-50 z-[9999] flex items-center justify-center"
+    class="fixed inset-0 z-50 flex items-center justify-center"
   >
     <div class="absolute inset-0 bg-black/50" @click="closeAssignModal"></div>
     <div class="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
