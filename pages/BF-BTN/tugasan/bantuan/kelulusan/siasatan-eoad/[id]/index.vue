@@ -1114,18 +1114,91 @@ const breadcrumb = ref([
    
   
 
+// Load applicant data based on ID
+const loadApplicantData = (applicantId) => {
+  const applicantDatabase = {
+    "btn-001": {
+      nama: "Ahmad bin Hassan",
+      alamat: "No. 123, Jalan Merdeka, Taman Seri Jaya, 43000 Kajang, Selangor",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "880701121234",
+      noTelefon: "0123456789",
+      email: "ahmad.hassan@gmail.com",
+      statusKeluarga: "Fakir",
+      statusIndividu: "Fakir",
+      statusMultidimensi: "Asnaf Tidak Produktif",
+      status: "Dalam Siasatan",
+    },
+    "btn-002": {
+      nama: "Muhammad Farhan bin Fitri",
+      alamat: "No. 789, Jalan Pendidikan, Taman Ilmu, 50000 Kuala Lumpur",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "970707077788",
+      noTelefon: "0134567890",
+      email: "muhammad.farhan@gmail.com",
+      statusKeluarga: "Fakir",
+      statusIndividu: "Fakir",
+      statusMultidimensi: "Asnaf Tidak Produktif",
+      status: "Dalam Siasatan",
+    },
+    "btn-003": {
+      nama: "Alia Natasha binti Hussain",
+      alamat: "No. 456, Jalan Harmoni, Taman Seri Kembangan, 43300 Seri Kembangan, Selangor",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "971207020568",
+      noTelefon: "0198765432",
+      email: "alia.natasha@gmail.com",
+      statusKeluarga: "Fakir",
+      statusIndividu: "Fakir",
+      statusMultidimensi: "Asnaf Tidak Produktif",
+      status: "Dalam Siasatan",
+    }
+  };
+
+  return applicantDatabase[applicantId] || applicantDatabase["btn-003"]; // Default to Alia if not found
+};
+
+// Load investigation data based on ID
+const loadInvestigationData = (applicantId) => {
+  const investigationDatabase = {
+    "btn-001": {
+      jenisPekerjaan: "Tidak Bekerja",
+      statusKediaman: "Rumah Sendiri",
+      jumlahBayaranRumah: "RM0",
+      bilTanggungan: "2 Orang (Isteri dan Anak)",
+      statusTanggungan: "Isteri tidak bekerja, Anak masih sekolah",
+      catatanPenilianAwal: "Pemohon memerlukan bantuan binaan rumah kerana rumah sedia ada dalam keadaan uzur dan tidak selamat untuk didiami",
+    },
+    "btn-002": {
+      jenisPekerjaan: "Pelajar",
+      statusKediaman: "Asrama",
+      jumlahBayaranRumah: "RM0",
+      bilTanggungan: "Tidak ada",
+      statusTanggungan: "Pelajar IPT",
+      catatanPenilianAwal: "Pemohon Muhammad Farhan adalah pelajar IPT yang memerlukan bantuan dermasiswa untuk menampung kos pengajian dan kehidupan di asrama",
+    },
+    "btn-003": {
+      jenisPekerjaan: "Tidak Bekerja",
+      statusKediaman: "Rumah Sewa",
+      jumlahBayaranRumah: "RM800",
+      bilTanggungan: "1 Orang (Ibu)",
+      statusTanggungan: "Tidak Bekerja, Bergantung kepada anak",
+      catatanPenilianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    }
+  };
+
+  return investigationDatabase[applicantId] || investigationDatabase["btn-003"]; // Default to Alia if not found
+};
+
 // Form data
 const formData = ref({
-  // Personal Information
-  nama: "Mohd Rosli bin Saad",
-  alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
-			 
-			 
-			 
+  // Personal Information - will be loaded dynamically
+  nama: "",
+  alamat: "",
   jenisPengenalan: "MyKad",
-  noPengenalan: "810101121234",
-  noTelefon: "0123456789",
-  email: "rosli@gmail.com",
+  noPengenalan: "",
+  noTelefon: "",
+  email: "",
   statusKeluarga: "Fakir",
   statusIndividu: "Fakir",
   statusMultidimensi: "Asnaf Tidak Produktif",
@@ -1139,18 +1212,17 @@ const formData = ref({
   gambarLokasi: null,
 });
 
-// Investigation form data
+// Investigation form data - will be loaded dynamically
 const investigationData = ref({
-  jenisPekerjaan: "Bekerja sebagai tukang sapu di sekolah",
-  statusKediaman: "Rumah Sewa",
-  jumlahBayaranRumah: "RM500",
-  bilTanggungan: "2 Orang (Anak)",
-  statusTanggungan: "Masih Bersekolah, Tidak Bekerja",
+  jenisPekerjaan: "",
+  statusKediaman: "",
+  jumlahBayaranRumah: "",
+  bilTanggungan: "",
+  statusTanggungan: "",
   keadaanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
-  catatanPenilianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
-						   
+  catatanPenilianAwal: "",
   gambarLokasi: [],
   catatanLawatanETD: "",
   statusLawatan: "",
@@ -1448,6 +1520,16 @@ if (route.params.id === "btn-002") {
       actions: "/BF-BTN/tugasan/bantuan/kelulusan/pendidikan/B307",
     }
   );
+}
+
+// Tambah bantuan untuk Alia Natasha binti Hussain (btn-003)
+if (route.params.id === "btn-003") {
+  assistanceApplications.value.push({
+    jenisBantuan: "B300 - Bantuan Sewa Rumah (Fakir)",
+    status: "Perlu Diproses",
+    sla: "2 hari lagi",
+    actions: "/BF-BTN/tugasan/bantuan/kelulusan/sewarumah/B300",
+  });
 }
 
 const existingAssistance = ref([
@@ -1993,7 +2075,19 @@ const submitProfiling = async () => {
 													 
 																				
 	 
-   
+// Initialize applicant data based on route parameter
+const currentApplicantId = route.params.id;
+const applicantInfo = loadApplicantData(currentApplicantId);
+const investigationInfo = loadInvestigationData(currentApplicantId);
+
+// Load the applicant data into formData
+Object.assign(formData.value, applicantInfo);
+
+// Load the investigation data into investigationData
+Object.assign(investigationData.value, investigationInfo);
+
+console.log("Loaded applicant data for:", currentApplicantId, applicantInfo);
+console.log("Loaded investigation data for:", currentApplicantId, investigationInfo);
    
 </script>
 

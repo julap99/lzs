@@ -1149,6 +1149,15 @@ const kelulusanData = ref([
     noRujukan: "NAS-2025-0402",
     tindakan: "bantuan/kelulusan/siasatan-eoad/btn-002",
   },
+  {
+    pemohon: "Alia Natasha binti Hussain (971207-02-0568)",
+    kariah: "Masjid As-Salam",
+    daerah: "Seri Kembangan",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0403",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-003",
+  },
 ]);
 
 // Mock data for Selesai sub-tab (own dataset, same format)
