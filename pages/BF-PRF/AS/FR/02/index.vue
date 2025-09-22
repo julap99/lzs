@@ -633,6 +633,7 @@
                   type="file"
                   name="dokumen_perjanjian_sewa"
                   label="Dokumen Perjanjian Sewa"
+                  multiple
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1947,6 +1948,7 @@
             type="file"
             name="dokumen_pemilikan"
             label="Upload dokumen pemilikan"
+            multiple
             accept=".pdf,.jpg,.jpeg,.png"
             help="Jika ada wang simpanan > 0, rumah kedai > 0, atau tanah/sawah > 0, dokumen adalah wajib"
             :validation="
@@ -4620,6 +4622,7 @@
                       type="file"
                       name="dokumen_perjanjian_pinjaman_tanggungan"
                       label="Dokumen Perjanjian Pinjaman"
+                      multiple
                       accept=".pdf,.jpg,.jpeg,.png"
                       help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                       validation="max:5|mime:application/pdf,image/jpeg,image/png"

@@ -633,6 +633,7 @@
                   type="file"
                   name="dokumen_perjanjian_sewa"
                   label="Dokumen Perjanjian Sewa"
+                  multiple
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1834,6 +1835,7 @@
                       accept=".pdf,.jpg,.jpeg,.png"
                       help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                       validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                      multiple
                       v-model="formData.dokumen_perjanjian_pinjaman"
                       :validation-messages="{
                         required: 'Dokumen perjanjian pinjaman adalah wajib',
@@ -1947,6 +1949,7 @@
             name="dokumen_pemilikan"
             label="Upload dokumen pemilikan"
             accept=".pdf,.jpg,.jpeg,.png"
+            multiple
             help="Jika ada wang simpanan > 0, rumah kedai > 0, atau tanah/sawah > 0, dokumen adalah wajib"
             :validation="
               Number(formData.wang_simpanan) > 0 ||
