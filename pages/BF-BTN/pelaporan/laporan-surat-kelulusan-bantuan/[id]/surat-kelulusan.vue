@@ -3,7 +3,7 @@
     <!-- Header: Logo + Title -->
     <div class="flex items-center justify-between mb-6">
       <!-- 3.1.1 Logo LZS -->
-      <img src="/lzs-logo.png" alt="Logo LZS" class="h-12 w-auto" />
+      <img src="/assets/img/logo/lzs-logo.jpg" alt="Logo LZS" class="h-12 w-auto" />
       <div class="text-right">
         <h1 class="text-xl font-semibold">Surat Kelulusan Bantuan</h1>
       </div>
@@ -106,6 +106,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import lzsLogo from '~/assets/img/logo/lzs-logo.jpg'
 
 /** Ambil ID dari route (noRujukan) */
 const route = useRoute()
