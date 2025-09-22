@@ -61,11 +61,6 @@
                   </rs-badge>
                 </template>
 
-                <template v-slot:statusNPS="{ text }">
-                  <rs-badge :variant="getNPSStatusVariant(text)">
-                    {{ text }}
-                  </rs-badge>
-                </template>
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
@@ -142,11 +137,6 @@
                   </rs-badge>
                 </template>
 
-                <template v-slot:statusNPS="{ text }">
-                  <rs-badge :variant="getNPSStatusVariant(text)">
-                    {{ text }}
-                  </rs-badge>
-                </template>
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
@@ -223,11 +213,6 @@
                   </rs-badge>
                 </template>
 
-                <template v-slot:statusNPS="{ text }">
-                  <rs-badge :variant="getNPSStatusVariant(text)">
-                    {{ text }}
-                  </rs-badge>
-                </template>
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
@@ -304,11 +289,6 @@
                   </rs-badge>
                 </template>
 
-                <template v-slot:statusNPS="{ text }">
-                  <rs-badge :variant="getNPSStatusVariant(text)">
-                    {{ text }}
-                  </rs-badge>
-                </template>
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
@@ -468,7 +448,6 @@ const columns = [
   { key: 'jenisRecipient', label: 'Jenis Recipient', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
-  { key: 'statusNPS', label: 'Status NPS', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
 
@@ -487,7 +466,6 @@ const recipientList = ref([
     jenisRecipient: 'Individu',
     tarikhPermohonan: '23/7/2025',
     status: 'Menunggu Pengesahan',
-    statusNPS: 'Verified',
     tindakan: { id: 'RE-202507-0011', status: 'Menunggu Pengesahan' },
   },
   {
@@ -496,7 +474,6 @@ const recipientList = ref([
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '15/6/2025',
     status: 'Disahkan',
-    statusNPS: 'Verified',
     tindakan: { id: 'RE-202506-0012', status: 'Disahkan' },
   },
   {
@@ -505,7 +482,6 @@ const recipientList = ref([
     jenisRecipient: 'Individu',
     tarikhPermohonan: '8/5/2025',
     status: 'Tidak Sah',
-    statusNPS: 'Tidak Verified',
     tindakan: { id: 'RE-202505-0013', status: 'Tidak Sah' },
   },
   {
@@ -514,7 +490,6 @@ const recipientList = ref([
     jenisRecipient: 'Individu',
     tarikhPermohonan: '20/7/2025',
     status: 'Dalam Pembetulan',
-    statusNPS: 'Tidak Verified',
     tindakan: { id: 'RE-202507-0017', status: 'Dalam Pembetulan' },
   },
   {
@@ -523,7 +498,6 @@ const recipientList = ref([
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '30/7/2025',
     status: 'Perlu Pembetulan',
-    statusNPS: 'Verified',
     tindakan: { id: 'RE-202507-0014', status: 'Perlu Pembetulan' },
   },
   {
@@ -532,7 +506,6 @@ const recipientList = ref([
     jenisRecipient: 'Individu',
     tarikhPermohonan: '12/6/2025',
     status: 'Disahkan',
-    statusNPS: 'Verified',
     tindakan: { id: 'RE-202506-0015', status: 'Disahkan' },
   },
   {
@@ -541,7 +514,6 @@ const recipientList = ref([
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '25/5/2025',
     status: 'Tidak Sah',
-    statusNPS: 'Tidak Verified',
     tindakan: { id: 'RE-202505-0016', status: 'Tidak Sah' },
   },
 ]);
@@ -603,13 +575,6 @@ const getStatusVariant = (status) => {
   return variants[status] || 'default';
 };
 
-const getNPSStatusVariant = (status) => {
-  const variants = {
-    'Verified': 'success',
-    'Tidak Verified': 'warning'
-  };
-  return variants[status] || 'default';
-};
 
 // Delete confirmation state
 const showDeleteModal = ref(false);
