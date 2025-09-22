@@ -211,7 +211,7 @@ function onPick(row) {
       route = '/BF-BTN/pelaporan/laporan-status-siasatan-lapangan'
       break
     case 'Surat Kelulusan Bantuan':
-      route = '/BF-BTN/pelaporan/surat-kelulusan-bantuan'
+      route = '/BF-BTN/pelaporan/laporan-surat-kelulusan-bantuan'
       break
     case 'Laporan Senarai Permohonan Tuntutan':
       route = '/BF-BTN/pelaporan/laporan-senarai-permohonan-tuntutan'
