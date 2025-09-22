@@ -35,9 +35,11 @@
             <v-select 
               v-model="filters.kodProgram"
               :options="kodProgramOptions"
-              placeholder="Pilih kod program"
+               placeholder="Cari atau pilih kod program"
               :searchable="true"
               :clearable="true"
+              label="label"
+              :reduce="option => option.value"
             />
           </div>
 
@@ -47,9 +49,11 @@
             <v-select 
               v-model="filters.namaProgram"
               :options="namaProgramOptions"
-              placeholder="Pilih nama program"
+               placeholder="Cari atau pilih nama program"
               :searchable="true"
               :clearable="true"
+              label="label"
+              :reduce="option => option.value"
             />
           </div>
         </div>
@@ -281,14 +285,12 @@ function searchKehadiran() {
     
     // Program code filter - check if kodProgram matches (case insensitive)
     if (filters.kodProgram && filters.kodProgram.trim() !== '') {
-      const selectedKod = typeof filters.kodProgram === 'object' ? filters.kodProgram.value : filters.kodProgram
-      if (norm(r.kodProgram) !== norm(selectedKod)) return false
+      if (norm(r.kodProgram) !== norm(filters.kodProgram)) return false
     }
     
     // Program name filter - check if namaProgram matches (case insensitive)
     if (filters.namaProgram && filters.namaProgram.trim() !== '') {
-      const selectedNama = typeof filters.namaProgram === 'object' ? filters.namaProgram.value : filters.namaProgram
-      if (norm(r.namaProgram) !== norm(selectedNama)) return false
+      if (norm(r.namaProgram) !== norm(filters.namaProgram)) return false
     }
     
     // Date range filter

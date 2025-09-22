@@ -619,6 +619,16 @@
                   "
                   v-model="formData.addressInfo.kadar_bayaran_bulanan" />
 
+                  <FormKit
+                  type="file"
+                  name=""
+                  multiple
+                  label="Lampiran Tambahan"
+                  v-if="
+                    formData.addressInfo.status_kediaman ===
+                    'Milik Sendiri Berbayar'
+                  "/>
+
                 <FormKit
                   type="number"
                   name="kadar_sewa_bulanan"
@@ -633,6 +643,7 @@
                   type="file"
                   name="dokumen_perjanjian_sewa"
                   label="Dokumen Perjanjian Sewa"
+                  multiple
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1832,6 +1843,7 @@
                       type="file"
                       name="dokumen_perjanjian_pinjaman"
                       label="Dokumen Perjanjian Pinjaman"
+                      multiple
                       accept=".pdf,.jpg,.jpeg,.png"
                       help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                       validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1946,7 +1958,8 @@
           <FormKit
             type="file"
             name="dokumen_pemilikan"
-            label="Upload dokumen pemilikan"
+            label="dokumen pemilikan"
+            multiple
             accept=".pdf,.jpg,.jpeg,.png"
             help="Jika ada wang simpanan > 0, rumah kedai > 0, atau tanah/sawah > 0, dokumen adalah wajib"
             :validation="
@@ -2114,6 +2127,7 @@
                   type="file"
                   name="pengesahan_pendapatan"
                   label="Muat naik pengesahan pendapatan / penyata gaji ketua keluarga"
+                  multiple
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="max:5|mime:application/pdf,image/jpeg,image/png"
@@ -4423,6 +4437,7 @@
                     name="pengesahan_pendapatan_tanggungan"
                     label="Muat naik pengesahan pendapatan / penyata gaji"
                     accept=".pdf,.jpg,.jpeg,.png"
+                    multiple
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                     :validation-messages="{
@@ -4620,6 +4635,7 @@
                       type="file"
                       name="dokumen_perjanjian_pinjaman_tanggungan"
                       label="Dokumen Perjanjian Pinjaman"
+                      multiple
                       accept=".pdf,.jpg,.jpeg,.png"
                       help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                       validation="max:5|mime:application/pdf,image/jpeg,image/png"
