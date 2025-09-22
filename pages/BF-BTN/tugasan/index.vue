@@ -1104,6 +1104,15 @@ const semakanData = ref([
     noRujukan: "NAS-2025-0001",
     tindakan: "bantuan/semakan/NAS-2025-0001",
   },
+  {
+    pemohon: "Mohd Amin bin Mohd Ali (650101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0003",
+    tindakan: "bantuan/semakan/NAS-2025-0003",
+  },
 ]);
 
 // Mock data for Sokongan sub-tab (own dataset, same format)
