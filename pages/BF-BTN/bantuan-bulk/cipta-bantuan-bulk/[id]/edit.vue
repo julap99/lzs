@@ -1650,7 +1650,7 @@ const handleImport = async () => {
 
     paymentList.value = [
       {
-        kod: "PT-2025-30371",
+        kod: "-",
         idPermohonan: "PRM-2025-00001",
         bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
         asnaf: "Muallaf",

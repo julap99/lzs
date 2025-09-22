@@ -43,18 +43,6 @@
               :clearable="true"
             />
           </div>
-
-          <!-- 3.1.7 Cawangan (v-select) -->
-          <div class="formkit-field">
-            <label class="formkit-label">Cawangan</label>
-            <v-select 
-              v-model="filters.cawangan"
-              :options="cawanganOptions"
-              placeholder="Pilih cawangan"
-              :searchable="true"
-              :clearable="true"
-            />
-          </div>
         </div>
 
         <!-- Actions -->
@@ -200,34 +188,17 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import kariahData from './kariah-data.json'
 
 const filters = reactive({
   tarikhDari: '',
   tarikhHingga: '',
   tahun: '',
   daerah: '',
-  cawangan: '',
 })
 
-const daerahOptions = [
-  { label: 'Am', value: 'AM' },
-  { label: 'Gombak', value: 'GOMBAK' },
-  { label: 'Hq', value: 'HQ' },
-  { label: 'Hulu Langat', value: 'HULU LANGAT' },
-  { label: 'Hulu Selangor', value: 'HULU SELANGOR' },
-  { label: 'Klang', value: 'KLANG' },
-  { label: 'Kuala Langat', value: 'KUALA LANGAT' },
-  { label: 'Kuala Selangor', value: 'KUALA SELANGOR' },
-  { label: 'Petaling', value: 'PETALING' },
-  { label: 'Sabak Bernam', value: 'SABAK BERNAM' },
-  { label: 'Sepang', value: 'SEPANG' },
-]
+const daerahOptions = kariahData.daerahOptions
 
-const cawanganOptions = [
-  { label: 'HQ', value: 'HQ' },
-  { label: 'Cawangan 1', value: 'CAW1' },
-  { label: 'Cawangan 2', value: 'CAW2' },
-]
 
 const columns = [
   { key: 'bil', label: 'Bil' },
@@ -258,7 +229,6 @@ function searchPrograms() {
   filteredRows.value = rows.filter(r => {
     if (filters.tahun && String(new Date(r.tarikhProgram).getFullYear()) !== String(filters.tahun)) return false
     if (filters.daerah && norm(r.daerah) !== norm(filters.daerah)) return false
-    if (filters.cawangan && norm(r.cawangan) !== norm(filters.cawangan)) return false
     if (start || end) {
       const t = new Date(r.tarikhProgram)
       if (start && t < start) return false
@@ -274,7 +244,6 @@ function resetFilters() {
   filters.tarikhHingga = ''
   filters.tahun = ''
   filters.daerah = ''
-  filters.cawangan = ''
   filteredRows.value = []
   paparHasil.value = false
 }
