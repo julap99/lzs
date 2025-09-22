@@ -273,14 +273,31 @@ function searchKehadiran() {
   if (start && end && start > end) [start, end] = [end, start]
 
   filteredRows.value = rows.filter(r => {
-    if (filters.tahun && String(new Date(r.tarikhMasaKehadiran.split(' ')[0]).getFullYear()) !== String(filters.tahun)) return false
-    if (filters.kodProgram && norm(r.kodProgram) !== norm(filters.kodProgram)) return false
-    if (filters.namaProgram && norm(r.namaProgram) !== norm(filters.namaProgram)) return false
+    // Year filter - check if year matches
+    if (filters.tahun && filters.tahun.trim() !== '') {
+      const rowYear = new Date(r.tarikhMasaKehadiran.split(' ')[0]).getFullYear()
+      if (String(rowYear) !== String(filters.tahun)) return false
+    }
+    
+    // Program code filter - check if kodProgram matches (case insensitive)
+    if (filters.kodProgram && filters.kodProgram.trim() !== '') {
+      const selectedKod = typeof filters.kodProgram === 'object' ? filters.kodProgram.value : filters.kodProgram
+      if (norm(r.kodProgram) !== norm(selectedKod)) return false
+    }
+    
+    // Program name filter - check if namaProgram matches (case insensitive)
+    if (filters.namaProgram && filters.namaProgram.trim() !== '') {
+      const selectedNama = typeof filters.namaProgram === 'object' ? filters.namaProgram.value : filters.namaProgram
+      if (norm(r.namaProgram) !== norm(selectedNama)) return false
+    }
+    
+    // Date range filter
     if (start || end) {
       const t = new Date(r.tarikhMasaKehadiran.split(' ')[0])
       if (start && t < start) return false
       if (end && t > end) return false
     }
+    
     return true
   })
   paparHasil.value = true
