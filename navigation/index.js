@@ -1147,18 +1147,6 @@ export default [
     header: "BF-BTN",
     description: "Pengurusan Bantuan",
     child: [
-            {
-        title: "test",
-        icon: "iconamoon:component-fill",
-        path: "/BF-BTN/test",
-        meta: {},
-      },
-      {
-        title: "testing",
-        icon: "iconamoon:component-fill",
-        path: "/BF-BTN/testing",
-        meta: {},
-      },
       {
         title: "Konfigurasi",
         icon: "iconamoon:component-fill",
