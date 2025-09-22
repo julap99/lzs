@@ -358,6 +358,7 @@ const breadcrumb = ref([
 const columns: TableColumn[] = [
   { key: 'idPermohonan', label: 'ID Permohonan', sortable: true },
   { key: 'noGL', label: 'No. GL', sortable: true },
+  { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
   { key: 'pegawaiETD', label: 'Pegawai ETD/EOAD', sortable: true },
   { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
@@ -374,6 +375,7 @@ type Row = {
   id: string
   idPermohonan: string
   noGL: string
+  maklumatBantuan: string
   pegawaiETD: string
   tarikhPermohonan: string
   amaunTuntutan: number
@@ -387,6 +389,7 @@ const baseRows = computed<Row[]>(() =>
     id: x.id,
     idPermohonan: x.idPermohonan,
     noGL: x.noGL,
+    maklumatBantuan: x.bantuanData?.jenisBantuan || '-',
     pegawaiETD: x.pegawaiETD,
     tarikhPermohonan: x.tarikhPermohonan,
     amaunTuntutan: x.amaunTuntutan,

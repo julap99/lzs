@@ -154,7 +154,14 @@ const baseList = ref<TuntutanListItem[]>([
 ])
 
 const tuntutanList = ref<Row[]>(
-  baseList.value.map((r) => ({ ...r, tindakan: { noTuntutan: r.noTuntutan, status: r.statusPermohonan } }))
+  baseList.value.map((r, idx) => ({
+    ...r,
+    maklumatBantuan:
+      idx % 2 === 0
+        ? '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)'
+        : '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR) (B103)',
+    tindakan: { noTuntutan: r.noTuntutan, status: r.statusPermohonan },
+  }))
 )
 
 /** ========== Table config ========== */
@@ -162,6 +169,7 @@ const columns = [
   { key: 'noTuntutan', label: 'No. Tuntutan / ID Tuntutan', sortable: true },
   { key: 'noGL', label: 'No. GL', sortable: true },
   { key: 'namaPemohon', label: 'Nama Pemohon / Institusi', sortable: true },
+  { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
   { key: 'tarikhTuntutan', label: 'Tarikh Tuntutan', sortable: true },
   { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
   { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },

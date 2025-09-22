@@ -170,6 +170,7 @@
               :field="fieldsInv"
               :columns="columnsInv"
               advanced
+              :autoFields="false"
               :showSearch="false"
               :showFilter="false"
               :options="{
