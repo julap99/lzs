@@ -1204,13 +1204,12 @@
                 type="date"
                 name="tarikh_mukallaf"
                 label="Tarikh Mukallaf"
-                value="2025-01-04"
                 placeholder="DD/MM/YYYY"
                 :validation-messages="{
                   required: 'Tarikh mukallaf diperlukan',
                   matches: 'Format tarikh tidak sah',
                 }"
-                readonly
+                
               />
             </div>
 
@@ -1220,13 +1219,12 @@
                 type="date"
                 name="tarikh_had_taklif_muallaf"
                 label="Tarikh Had Taklif"
-                value="2025-01-01"
                 :validation-messages="{
                   required: 'Tarikh Had Taklif diperlukan',
                   matches: 'Format tarikh tidak sah',
                 }"
                 :model-value="tarikhHadTaklifMuallaf"
-                readonly
+                
               />
             </div>
 
@@ -3129,6 +3127,28 @@
                     "
                   /> -->
 
+                  <FormKit
+                type="date"
+                name="tarikh_mukallaf"
+                label="Tarikh Mukallaf"
+                placeholder="DD/MM/YYYY"
+                :validation-messages="{
+                  required: 'Tarikh mukallaf diperlukan',
+                  matches: 'Format tarikh tidak sah',
+                }"
+              />
+
+              <FormKit
+                type="date"
+                name="tarikh_had_taklif_muallaf"
+                label="Tarikh Had Taklif"
+                :validation-messages="{
+                  required: 'Tarikh Had Taklif diperlukan',
+                  matches: 'Format tarikh tidak sah',
+                }"
+                :model-value="tarikhHadTaklifMuallaf" 
+              />
+
                   <!-- Tarikh Masuk Islam -->
                   <FormKit
                     type="date"
@@ -3157,14 +3177,14 @@
                     v-model="getCurrentTanggungan().nama_lain_tanggungan" />
 
                   <!-- Tarikh Keluar Muallaf (Auto-calculated) -->
-                  <!-- <FormKit
+                  <FormKit
                     type="text"
                     name="tarikh_keluar_muallaf_tanggungan"
                     label="Tarikh Keluar Muallaf"
                     :value="calculateTarikhKeluarMuallafTanggungan()"
                     readonly
                     help="Dikira secara automatik: Tarikh Masuk Islam + 5 tahun ATAU Tarikh Masuk KFAM + 5 tahun (pilih yang lebih lewat)"
-                  /> -->
+                  />
 
                   <!-- Dokumen Pengislaman -->
 
