@@ -450,7 +450,7 @@ const mockByNoRujukan = {
     statusMultidimensi: 'Asnaf Tidak Produktif',
     status: 'Dalam Siasatan',
   senaraiBantuan: [
-      { id: 'B112', jenisBantuan: 'B112 - BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)', status: 'Lengkap', sla: '2h', tindakan: '' },
+      { id: 'B300', jenisBantuan: 'B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)', status: 'Lengkap', sla: '2h', tindakan: '' },
       { id: 'B307', jenisBantuan: 'B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS', status: 'Lengkap', sla: '3h', tindakan: '' },
     ],
     statusPermohonanBaru: '',
