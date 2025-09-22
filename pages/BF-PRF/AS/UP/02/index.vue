@@ -619,6 +619,16 @@
                   "
                   v-model="formData.addressInfo.kadar_bayaran_bulanan" />
 
+                  <FormKit
+                  type="file"
+                  name=""
+                  multiple
+                  label="Lampiran Tambahan"
+                  v-if="
+                    formData.addressInfo.status_kediaman ===
+                    'Milik Sendiri Berbayar'
+                  "/>
+
                 <FormKit
                   type="number"
                   name="kadar_sewa_bulanan"
@@ -2117,6 +2127,7 @@
                   name="pengesahan_pendapatan"
                   label="Muat naik pengesahan pendapatan / penyata gaji ketua keluarga"
                   accept=".pdf,.jpg,.jpeg,.png"
+                  multiple
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="max:5|mime:application/pdf,image/jpeg,image/png"
                   :validation-messages="{
@@ -3130,27 +3141,6 @@
                     "
                   /> -->
 
-                  <FormKit
-                type="date"
-                name="tarikh_mukallaf"
-                label="Tarikh Mukallaf"
-                placeholder="DD/MM/YYYY"
-                :validation-messages="{
-                  required: 'Tarikh mukallaf diperlukan',
-                  matches: 'Format tarikh tidak sah',
-                }"
-              />
-
-              <FormKit
-                type="date"
-                name="tarikh_had_taklif_muallaf"
-                label="Tarikh Had Taklif"
-                :validation-messages="{
-                  required: 'Tarikh Had Taklif diperlukan',
-                  matches: 'Format tarikh tidak sah',
-                }"
-                :model-value="tarikhHadTaklifMuallaf" 
-              />
 
                   <!-- Tarikh Masuk Islam -->
                   <FormKit
@@ -3180,14 +3170,37 @@
                     v-model="getCurrentTanggungan().nama_lain_tanggungan" />
 
                   <!-- Tarikh Keluar Muallaf (Auto-calculated) -->
-                  <FormKit
+                  <!-- <FormKit
                     type="text"
                     name="tarikh_keluar_muallaf_tanggungan"
                     label="Tarikh Keluar Muallaf"
                     :value="calculateTarikhKeluarMuallafTanggungan()"
                     readonly
                     help="Dikira secara automatik: Tarikh Masuk Islam + 5 tahun ATAU Tarikh Masuk KFAM + 5 tahun (pilih yang lebih lewat)"
-                  />
+                  /> -->
+
+                  
+                  <FormKit
+                type="date"
+                name="tarikh_mukallaf"
+                label="Tarikh Mukallaf"
+                placeholder="DD/MM/YYYY"
+                :validation-messages="{
+                  required: 'Tarikh mukallaf diperlukan',
+                  matches: 'Format tarikh tidak sah',
+                }"
+              />
+
+              <FormKit
+                type="date"
+                name="tarikh_had_taklif_muallaf"
+                label="Tarikh Had Taklif"
+                :validation-messages="{
+                  required: 'Tarikh Had Taklif diperlukan',
+                  matches: 'Format tarikh tidak sah',
+                }"
+                :model-value="tarikhHadTaklifMuallaf" 
+              />
 
                   <!-- Dokumen Pengislaman -->
 

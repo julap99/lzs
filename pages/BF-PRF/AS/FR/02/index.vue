@@ -619,6 +619,16 @@
                   "
                   v-model="formData.addressInfo.kadar_bayaran_bulanan" />
 
+                  <FormKit
+                  type="file"
+                  name=""
+                  multiple
+                  label="Lampiran Tambahan"
+                  v-if="
+                    formData.addressInfo.status_kediaman ===
+                    'Milik Sendiri Berbayar'
+                  "/>
+
                 <FormKit
                   type="number"
                   name="kadar_sewa_bulanan"
@@ -2116,6 +2126,7 @@
                   type="file"
                   name="pengesahan_pendapatan"
                   label="Muat naik pengesahan pendapatan / penyata gaji ketua keluarga"
+                  multiple
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="max:5|mime:application/pdf,image/jpeg,image/png"
