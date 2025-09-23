@@ -331,6 +331,34 @@ export default [
         meta: {},
       },
       {
+        title: "Mengurus Konfigurasi",
+        icon: "iconamoon:file-document",
+        path: "/BF-ADN/KF",
+        child: [
+          {
+            title: "Senarai Kategori Masalah",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-ADN/KF/kategori-masalah",
+          },
+          {
+            title: "Semakan Kelulusan Kategori Masalah",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-ADN/KF/semakan-kelulusan-kategori-masalah",
+          },
+          {
+            title: "Senarai Validasi Input",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-ADN/KF/validasi-input",
+          },
+          {
+            title: "Senarai Permohonan Kelulusan Kawalan Validasi",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-ADN/KF/senarai-permohonan-kelulusan-kawalan-validasi",
+          }
+        ],
+        meta: {},
+      },
+      {
         title: "Laporan",
         icon: "iconamoon:file-document",
         path: "/BF-ADN/laporan",
