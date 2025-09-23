@@ -61,12 +61,12 @@
           <template #noKPPemohon="{ text }"><div>{{ text }}</div></template>
           <template #namaPenerima="{ text }"><div>{{ text }}</div></template>
           <template #tarikhMohon="{ text }"><div>{{ formatDate(text) }}</div></template>
-          <template #tindakan="{ text, value }">
+          <template #tindakan="{ text, value, row }">
             <rs-button
               variant="ghost"
               size="sm"
               class="text-blue-600 hover:text-blue-800"
-              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/${(value || text)?.noBantuan || value || text}`)"
+              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/${row.noBantuan}`)"
               title="Mohon Tuntutan"
             >
               <Icon name="material-symbols:add" size="24" />
