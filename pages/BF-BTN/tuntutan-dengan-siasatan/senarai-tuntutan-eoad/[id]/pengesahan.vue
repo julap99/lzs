@@ -206,10 +206,10 @@ const detailsById: Record<string, TuntutanDetail> = {
   },
   'TUN-2024-003': {
     noTuntutan: 'TUN-2024-003',
-    pemohon: { nama: 'Sekolah Agama Rakyat Al-Amin', noId: 'VND-2211', noTelefon: '03-7777 2211', kategoriAsnaf: 'Miskin' },
-    bantuan: { noBantuan: 'B620', noGL: 'GL-003-2024', aid: 'BANTUAN PENDIDIKAN', aidProduct: 'MEJA & KERUSI PELAJAR', productPackage: 'PAKEJ PERABOT KELAS (30 SET)', entitlementProduct: 'ENTITLEMENT PENDIDIKAN' },
-    tuntutan: { noInvois: 'INV-2024-003', noInvoisPelanggan: 'CUST-INV-3344', tajuk: 'Pembekalan Meja & Kerusi Pelajar', tahun: '2024', catatan: 'Penghantaran siap.', penerimaBayaran: 'Pendidikan Maju Enterprise', mop: 'EFT', namaPenerima: 'PENDIDIKAN MAJU ENTERPRISE', bank: 'RHB', noAkaun: '2121 3344 5566', tarikhJangkaan: '2025-07-10', tarikhCipta: new Date(Date.now() - 172800000).toISOString(), amaunRm: 12000 },
-    dokumenSokongan: [{ id: 'DOC-201', nama: 'DO_AlAmin.pdf', url: '/documents/do_alamin.pdf' }, { id: 'DOC-202', nama: 'GL_003_2024.pdf', url: '/documents/gl_003.pdf' }, { id: 'DOC-203', nama: 'Invoice_INV-2024-003.pdf', url: '/documents/inv_003.pdf' }],
+    pemohon: { nama: 'PUSAT HEMODIALISIS PERMATA SDN. BHD.', noId: 'VND-2211', noTelefon: '03-7777 2211', kategoriAsnaf: 'Miskin' },
+    bantuan: { noBantuan: 'B103', noGL: 'GL-003-2024', aid: 'BANTUAN PERUBATAN DIALISIS', aidProduct: 'HEMODIALISIS', productPackage: 'PAKEJ HEMODIALISIS DAN SUNTIKAN EPO', entitlementProduct: 'ENTITLEMENT HEMODIALISIS' },
+    tuntutan: { noInvois: 'INV-2024-003', noInvoisPelanggan: 'CUST-INV-3344', tajuk: 'Pembekalan Peralatan Hemodialisis', tahun: '2024', catatan: 'Termasuk pemasangan dan latihan.', penerimaBayaran: 'Pusat Hemodialisis Permata Sdn Bhd', mop: 'EFT', namaPenerima: 'PUSAT HEMODIALISIS PERMATA SDN BHD', bank: 'CIMB', noAkaun: '8001 2345 6789', tarikhJangkaan: '2025-07-10', tarikhCipta: new Date(Date.now() - 172800000).toISOString(), amaunRm: 12000 },
+    dokumenSokongan: [{ id: 'DOC-201', nama: 'GL_Dialisis_GL-003.pdf', url: '/documents/gl_dialisis_003.pdf' }, { id: 'DOC-202', nama: 'GL_003_2024.pdf', url: '/documents/gl_003.pdf' }, { id: 'DOC-203', nama: 'Invoice_Dialisis_INV-2024-003.pdf', url: '/documents/inv_dialisis_003.pdf' }],
   },
   'TUN-2024-004': {
     noTuntutan: 'TUN-2024-004',
