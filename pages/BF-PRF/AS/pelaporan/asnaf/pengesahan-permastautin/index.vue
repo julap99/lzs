@@ -60,9 +60,15 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">No Telefon (HP) (R):</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">No Telefon (HP):</label>
             <input v-model="formData.telefon" type="text" class="form-input w-full p-2 border rounded" />
           </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">No Telefon (R):</label>
+            <input v-model="formData.telefonRumah" type="text" class="form-input w-full p-2 border rounded" />
+          </div>
+
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Tempoh Masa Telah Menetap (Tahun/Bulan/Hari):</label>
@@ -142,6 +148,7 @@ const formData = ref({
   alamatKadPengenalan: '',
   alamatSekarang: '',
   telefon: '',
+  telefonRumah: '',
   tempohMasaMenetap: '',
   namaPegawai: '',
   noKPPegawai: '',

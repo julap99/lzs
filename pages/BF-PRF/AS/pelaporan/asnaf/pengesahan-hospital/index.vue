@@ -1,125 +1,82 @@
 <template>
   <div class="p-6 space-y-6">
+    <!-- Breadcrumb -->
     <layouts-breadcrumb :items="breadcrumb" />
 
-    <!-- Toolbar tindakan -->
-    <div class="no-print flex items-center justify-end gap-2">
-      <rs-button variant="secondary-outline" @click="onReset">Reset</rs-button>
-      <rs-button variant="primary" @click="openPreview">Lihat Contoh Borang</rs-button>
-    </div>
-
-    <!-- Report Header Section (opsyenal untuk halaman, bukan PDF) -->
-    <rs-card class="mb-2">
-      <template #body>
-        <div class="space-y-4">
-          <div class="flex justify-start">
-            <img
-              src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png"
-              alt="LZS Logo"
-              class="h-16"
-            />
-          </div>
-          <div class="space-y-2">
-            <p class="text-sm font-bold">RP0004</p>
-            <p class="text-lg font-semibold">Surat Pengesahan Asnaf – Hospital</p>
-          </div>
-        </div>
+    <!-- CARD: Filter Carian -->
+    <rs-card class="mt-4">
+      <template #header>
+        <h1 class="text-xl font-bold">Carian Surat Pengesahan Asnaf – Hospital</h1>
       </template>
-    </rs-card>
 
-    <!-- ===================== BAHAGIAN A (rs-card #1) ===================== -->
-    <rs-card class="mb-6">
       <template #body>
-        <div class="space-y-4">
-          <h3 class="text-lg font-semibold">BAHAGIAN A — MAKLUMAT ASNAF</h3>
-
-          <div class="grid gap-4 md:grid-cols-2">
-            <FormKit type="text" label="Nama Asnaf (Ketua Keluarga)" v-model="form.asnaf.nama" />
-            <FormKit type="text" label="No. Kad Pengenalan Asnaf" v-model="form.asnaf.ic" />
-          </div>
-
-          <div class="grid gap-4">
-            <FormKit
-              type="textarea"
-              label="Alamat (baris demi baris)"
-              v-model="form.asnaf.alamat"
-              :rows="3"
-            />
-          </div>
-
-          <div class="grid gap-4 md:grid-cols-3">
-            <FormKit type="text" label="Daerah" v-model="form.asnaf.daerah" />
+        <FormKit type="form" :actions="false" id="carianForm" @submit.prevent="onJanaSurat">
+          <div class="grid gap-6 md:grid-cols-4">
+            <!-- No. K/P Asnaf -->
             <FormKit
               type="text"
-              label="Tempoh Status Asnaf"
-              v-model="form.asnaf.tempoh"
-              placeholder="cth: ASNAF MISKIN TAHUN 2025"
+              label="No. K/P Asnaf"
+              v-model="filters.noKpAsnaf"
+              :classes="fkClasses"
+              placeholder="Masukkan No. K/P Asnaf"
             />
-            <FormKit type="text" label="No. Rujukan (auto)" v-model="noRujukan" disabled />
-          </div>
 
-          <!-- Maklumat Pesakit (tanpa tanggungan) -->
-          <div class="space-y-2">
-            <div class="font-medium">Maklumat Pesakit</div>
-            <div class="grid gap-4 md:grid-cols-2">
-              <FormKit type="text" label="Nama Pesakit" v-model="form.pesakit.nama" />
-              <FormKit type="text" label="No. Kad Pengenalan Pesakit" v-model="form.pesakit.ic" />
-            </div>
-          </div>
-        </div>
-      </template>
-    </rs-card>
-
-    <!-- ===================== BAHAGIAN B (rs-card #2) ===================== -->
-    <rs-card class="mb-6">
-      <template #body>
-        <div class="space-y-4">
-          <h3 class="text-lg font-semibold">BAHAGIAN B — MAKLUMAT PEGAWAI YANG MENGESAHKAN</h3>
-
-          <div class="grid gap-4 md:grid-cols-2">
-            <FormKit type="text" label="Nama Pegawai" v-model="form.pegawai.nama" />
-            <FormKit type="text" label="Jawatan" v-model="form.pegawai.jawatan" />
-          </div>
-
-          <div class="grid gap-4">
+            <!-- No. K/P Tanggungan -->
             <FormKit
-              type="textarea"
-              label="Nama & Alamat Pegawai/Pejabat"
-              v-model="form.pegawai.alamat"
-              :rows="3"
+              type="text"
+              label="No. K/P Tanggungan"
+              v-model="filters.noKpTanggungan"
+              :classes="fkClasses"
+              placeholder="Masukkan No. K/P Tanggungan"
             />
           </div>
 
-          <div class="grid gap-6 md:grid-cols-2">
-            <div>
-              <label class="block text-sm font-medium mb-1">Tandatangan (imej)</label>
-              <input type="file" accept="image/*" @change="onFile($event, 'ttd')" class="rs-input-file" />
-              <div v-if="img.ttd" class="mt-2 p-2 border rounded w-fit">
-                <img :src="img.ttd" alt="Tandatangan" class="h-16 object-contain" />
-              </div>
-            </div>
+          <!-- Actions -->
+          <div class="mt-6 flex items-center gap-3 justify-end">
+            <!-- Butang Reset -->
+            <rs-button
+              variant="secondary-outline"
+              size="sm"
+              class="!h-9 !px-4 !py-2 !text-sm !rounded-xl !leading-none align-middle"
+              @click="onReset"
+            >
+              Reset
+            </rs-button>
 
-            <div>
-              <label class="block text-sm font-medium mb-1">Cop Rasmi (imej)</label>
-              <input type="file" accept="image/*" @change="onFile($event, 'cop')" class="rs-input-file" />
-              <div v-if="img.cop" class="mt-2 p-2 border rounded w-fit">
-                <img :src="img.cop" alt="Cop Rasmi" class="h-16 object-contain" />
-              </div>
-            </div>
+            <!-- Butang Jana Surat -->
+            <rs-button
+              variant="primary"
+              size="sm"
+              class="!h-9 !px-4 !py-2 !text-sm !rounded-xl !leading-none align-middle"
+              @click="onJanaSurat"
+            >
+              Jana Surat
+            </rs-button>
           </div>
-        </div>
+        </FormKit>
       </template>
     </rs-card>
 
-    <!-- =================== MODAL: SURAT BERISI SAHAJA =================== -->
-    <rs-modal v-model="showPreview" title="Surat Pengesahan Asnaf – Hospital" size="xl" position="center">
+    <!-- RESULTS CARD: Surat -->
+    <rs-card v-if="showSurat" class="mt-4">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold">Surat Pengesahan Status Asnaf – Hospital</h1>
+          <rs-button variant="primary" @click="downloadSuratTawaran">
+            <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
+            Muat Turun PDF
+          </rs-button>
+        </div>
+      </template>
+
       <template #body>
-        <!-- Seluruh surat berada dalam satu pembalut untuk rujukan visual -->
         <div id="print-surat-hospital-modal" class="space-y-6 font-serif text-sm leading-relaxed print-page">
-          <!-- Report Header (surat) -->
+
+          <!-- Report Header Section -->
           <rs-card class="mb-6">
             <template #body>
               <div class="space-y-4">
+                <!-- Logo LZS -->
                 <div class="flex justify-start">
                   <img
                     src="https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png"
@@ -127,6 +84,7 @@
                     class="h-16"
                   />
                 </div>
+                <!-- Report Details -->
                 <div class="space-y-2">
                   <p class="text-sm font-bold">RP0004</p>
                   <p class="text-lg font-semibold">Surat Pengesahan Asnaf – Hospital</p>
@@ -142,7 +100,7 @@
                 <div class="text-sm"><span class="font-semibold">Rujukan kami: </span><span class="font-semibold">{{ noRujukan }}</span></div>
                 <div class="text-sm"><span class="font-semibold">Tarikh: </span><span class="font-semibold">{{ formatDate(generatedAt) }}</span></div>
                 <div class="text-sm"><span class="font-semibold">{{ formatDateHijri(generatedAt) }}</span></div>
-                <p class="text-xl text-gray-700 mb-3 arabic">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎</p>
+                <p class="text-xl text-gray-700 mb-3 arabic">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكَاتُهُ‎</p>
               </div>
 
               <div class="mt-6 text-left space-y-1">
@@ -154,7 +112,7 @@
             </template>
           </rs-card>
 
-          <!-- Kandungan Surat (preview visual) -->
+          <!-- Kandungan Surat -->
           <rs-card class="mb-6">
             <template #body>
               <div class="space-y-4 text-sm text-[rgb(var(--text-color))]">
@@ -192,7 +150,9 @@
                     </tr>
                     <tr>
                       <td class="p-2 border-t border-r border-gray-800 font-medium align-top">Alamat</td>
-                      <td class="p-2 border-t border-gray-800 whitespace-pre-line align-top" colspan="2">{{ alamatJoin }}</td>
+                      <td class="p-2 border-t border-gray-800 whitespace-pre-line align-top" colspan="2">
+                        NO. 21, JALAN ARQWAN 4B, TAMAN DESA ULU YAM, 44300 BATANG KALI, SELANGOR DARUL EHSAN
+                      </td>
                     </tr>
                     <tr>
                       <td class="p-2 border-t border-r border-gray-800 font-medium align-top">Tempoh Status Asnaf</td>
@@ -238,268 +198,91 @@
           </rs-card>
         </div>
       </template>
-
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <rs-button variant="secondary-outline" @click="showPreview = false">Tutup</rs-button>
-          <rs-button variant="primary" @click="downloadSuratHospital">
-            <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
-            Muat Turun
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
+    </rs-card>
   </div>
 </template>
 
+
 <script setup>
+// Data & Functions for Filter & Surat Generation
 import { ref, computed } from 'vue'
-import { jsPDF } from 'jspdf'
-import autoTable from 'jspdf-autotable'
 
-definePageMeta({ title: 'Surat Pengesahan Asnaf – Hospital' })
-
-/* ---------- Breadcrumb ---------- */
 const breadcrumb = [
   { name: 'Pelaporan', type: 'link', path: '/BF-PRF/AS/pelaporan' },
   { name: 'Surat Pengesahan Hospital', type: 'link', path: '/BF-PRF/AS/pelaporan/asnaf/pengesahan-hospital' },
 ]
 
-/* ---------- Alamat rasmi LZS ---------- */
+const filters = ref({
+  noKpAsnaf: '',
+  noKpTanggungan: ''
+})
+
+const showSurat = ref(false)
+
 const orgHeader = {
-  name: 'Lembaga Zakat Selangor (MAIS)',
+  name: "Lembaga Zakat Selangor (MAIS)",
   address: [
-    'Menara Zakat Sultan Idris Shah,',
-    'No. 1, Persiaran Bandar Raya, Seksyen 14,',
-    '40000 Shah Alam, Selangor Darul Ehsan.',
+    "Menara Zakat Sultan Idris Shah,",
+    "No. 1, Persiaran Bandar Raya, Seksyen 14,",
+    "40000 Shah Alam, Selangor Darul Ehsan."
   ],
-  tel: '+603 8314 2222',
-  fax: '+603 8314 2233/2244',
+  tel: "+603 8314 2222",
+  fax: "+603 8314 2233/2244"
 }
 
-/* ---------- Borang State (A & B) ---------- */
-const form = ref({
-  asnaf:   { nama: '', ic: '', alamat: '', daerah: '', tempoh: '' },
-  pesakit: { nama: '', ic: '' },
-  pegawai: { nama: '', jawatan: '', alamat: '' },
-})
+const today = new Date()
+const noRujukan = `RP0004/${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}/1234`
 
-/* ---------- Default Surat (fallback jika borang kosong) ---------- */
-const suratDefault = ref({
-  daerah: 'Hulu Selangor',
-  ketua:   { nama: 'MUHAMMAD NASRIM BIN MOHD NASIR', ic: '104271140061' },
-  pesakit: { nama: 'MUHAMMAD SHAARNAS ANAQI BIN MUHAMMAD NASMI', ic: '211107101507' },
-  alamat: [
-    'NO. 21,',
-    'JALAN ARQWAN 4B',
-    'TAMAN DESA ULU YAM',
-    '44300 BATANG KALI',
-    'SELANGOR DARUL EHSAN',
-  ],
-  tempohAsnaf: 'ASNAF MISKIN TAHUN 2025',
-})
-
-/* ---------- View Surat (gabung borang + default) ---------- */
-const suratView = computed(() => {
-  const a = form.value.asnaf
-  const p = form.value.pesakit
-  const addr = a.alamat?.trim()
-    ? a.alamat.split('\n').map(s => s.trim()).filter(Boolean)
-    : suratDefault.value.alamat
-  return {
-    daerah: a.daerah || suratDefault.value.daerah,
-    ketua:  { nama: a.nama || suratDefault.value.ketua.nama, ic: a.ic || suratDefault.value.ketua.ic },
-    pesakit:{ nama: p.nama || suratDefault.value.pesakit.nama, ic: p.ic || suratDefault.value.pesakit.ic },
-    alamat: addr,
-    tempohAsnaf: a.tempoh || suratDefault.value.tempohAsnaf,
-  }
-})
-
-/* ---------- Helpers ---------- */
-const alamatJoin = computed(() => (suratView.value.alamat || []).join('\n'))
-
-/* ---------- Auto tarikh & rujukan ---------- */
-const generatedAt = ref(new Date())
-const noRujukan   = ref(generateNoRujukan())
-function generateNoRujukan() {
-  const now = new Date()
-  const yyyy = now.getFullYear()
-  const mm = String(now.getMonth() + 1).padStart(2, '0')
-  const dd = String(now.getDate()).padStart(2, '0')
-  const rand = Math.floor(1000 + Math.random() * 9000)
-  return `RP0004/${yyyy}${mm}${dd}/${rand}`
-}
 function formatDate(date) {
   return new Date(date).toLocaleDateString('ms-MY', { day: '2-digit', month: 'long', year: 'numeric' })
 }
+
 function formatDateHijri(date) {
   const opts = { day: '2-digit', month: 'long', year: 'numeric' }
   try { return new Intl.DateTimeFormat('ms-MY-u-ca-islamic', opts).format(date) }
   catch { return new Intl.DateTimeFormat('en-u-ca-islamic', opts).format(date) }
 }
 
-/* ---------- Upload imej (untuk pratayang UI) ---------- */
-const img = ref({ ttd: '', cop: '' })
-function onFile (e, which) {
-  const file = e.target.files?.[0]
-  if (!file) return
-  const reader = new FileReader()
-  reader.onload = () => { img.value[which] = reader.result }
-  reader.readAsDataURL(file)
-}
+const suratView = computed(() => ({
+  daerah: "Hulu Selangor",
+  ketua: { nama: "MUHAMMAD NASMI BIN MOHD NASIR", ic: "104271140061" },
+  pesakit: { nama: "MUHAMMAD SHAARNAS ANAQI BIN MUHAMMAD NASMI", ic: "211107101507" },
+  alamat: [
+    "NO. 21,",
+    "JALAN ARQWAN 4B",
+    "TAMAN DESA ULU YAM",
+    "44300 BATANG KALI",
+    "SELANGOR DARUL EHSAN"
+  ],
+  tempohAsnaf: "ASNAF MISKIN TAHUN 2025",
 
-/* ---------- Modal Preview ---------- */
-const showPreview = ref(false)
-function openPreview () { showPreview.value = true }
+  // Fix alamatJoin to correctly join address lines
+  alamatJoin: function() {
+    return this.alamat.join('\n'); // Join address lines with a newline for proper formatting
+  }
+}))
 
-/* ---------- Export PDF (Muat Turun) ---------- */
-async function downloadSuratHospital () {
+function downloadSuratTawaran () {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
-  const pageWidth  = doc.internal.pageSize.getWidth()
-  const pageHeight = doc.internal.pageSize.getHeight()
-  const margin = 15
-  let y = margin
-
-  // (Opsyenal) logo – cuba render, skip jika CORS block
-  async function addLogo() {
-    try {
-      const url = 'https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png'
-      const img = new Image(); img.crossOrigin = 'anonymous'; img.src = url
-      await new Promise(res => { img.onload = res; img.onerror = res })
-      const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height
-      cv.getContext('2d').drawImage(img, 0, 0)
-      doc.addImage(cv.toDataURL('image/png'), 'PNG', margin, y, 28, 28)
-    } catch {}
-    y += 32
-  }
-  await addLogo()
-
-  // Header
-  doc.setFont('helvetica','bold'); doc.setFontSize(10)
-  doc.text('RP0004', margin, y); y += 6
-  doc.setFontSize(14)
-  doc.text('Surat Pengesahan Asnaf – Hospital', pageWidth/2, y, { align:'center' }); y += 10
-
-  doc.setFontSize(10); doc.setFont('helvetica','normal')
-  doc.text(`Rujukan kami: ${noRujukan.value}`, margin, y); y += 6
-  doc.text(`Tarikh: ${formatDate(generatedAt.value)}`, margin, y); y += 6
-  doc.text(`${formatDateHijri(generatedAt.value)}`, margin, y); y += 8
-
-  // Alamat LZS
-  doc.setFont('helvetica','bold'); doc.text(orgHeader.name, margin, y); y += 5
-  doc.setFont('helvetica','normal')
-  orgHeader.address.forEach(ln => { doc.text(ln, margin, y); y += 5 })
-  doc.text(`Tel: ${orgHeader.tel}`, margin, y); y += 5
-  doc.text(`Faks: ${orgHeader.fax}`, margin, y); y += 10
-
-  const lineH = 5
-  function addPara(txt) {
-    const lines = doc.splitTextToSize(txt, pageWidth - margin*2)
-    // page break
-    if (y + lines.length*lineH > pageHeight - margin) { doc.addPage(); y = margin }
-    doc.text(lines, margin, y); y += lines.length*lineH + 2
-  }
-
-  addPara('Tuan/Puan,')
-
-  // Tajuk (garis bawah tebal)
-  doc.setFont('helvetica','bold')
-  const tajuk = 'PENGESAHAN STATUS ASNAF FAKIR MISKIN DAN MUALLAF BAGI MENDAPAT PENGECUALIAN PEMBAYARAN CAJ RAWATAN HOSPITAL DAN KEMUDAHAN RAWATAN PERUBATAN PESAKIT LUAR DAN WAD KELAS 3'
-  const tLines = doc.splitTextToSize(tajuk, pageWidth - margin*2)
-  doc.text(tLines, margin, y)
-  y += tLines.length*lineH
-  doc.setLineWidth(0.5); doc.line(margin, y, pageWidth - margin, y); y += 4
-  doc.setFont('helvetica','normal')
-
-  addPara('1. Semoga surat ini menemui tuan/puan di dalam kemanisan iman serta memperoleh rahmat daripada Allah s.w.t. Amin.')
-
-  addPara(`2. Adalah dimaklumkan bahawa penama di bawah adalah merupakan seorang penerima bantuan Asnaf Fakir Miskin dan Muallaf Daerah ${suratView.value.daerah}. Untuk makluman pihak tuan/puan, Lembaga Zakat Selangor (MAIS) (selepas ini dirujuk sebagai “LZS”) diberi kuasa oleh Majlis Agama Islam Selangor untuk mengagihkan wang zakat kepada asnaf fakir miskin dan muallaf di Negeri Selangor.`)
-
-  // Jadual maklumat asnaf
-  const alamat = alamatJoin.value
-  autoTable(doc, {
-    startY: y,
-    theme: 'grid',
-    styles: { fontSize: 10, cellPadding: 2, lineColor: [0,0,0], lineWidth: 0.2 },
-    headStyles: { fillColor: [255,255,255], textColor: [0,0,0] },
-    body: [
-      [
-        { content: 'Nama Asnaf / Kad Pengenalan (Ketua Keluarga)', styles: { fontStyle: 'bold' } },
-        { content: suratView.value.ketua.nama },
-        { content: suratView.value.ketua.ic },
-      ],
-      [
-        { content: 'Nama Pesakit / Kad Pengenalan', styles: { fontStyle: 'bold' } },
-        { content: suratView.value.pesakit.nama },
-        { content: suratView.value.pesakit.ic },
-      ],
-      [
-        { content: 'Alamat', styles: { fontStyle: 'bold' } },
-        { content: alamat, colSpan: 2 },
-      ],
-      [
-        { content: 'Tempoh Status Asnaf', styles: { fontStyle: 'bold' } },
-        { content: suratView.value.tempohAsnaf, colSpan: 2 },
-      ],
-    ],
-    columnStyles: {
-      0: { cellWidth: 80 },
-      1: { cellWidth: (pageWidth - margin*2 - 80)/2 },
-      2: { cellWidth: (pageWidth - margin*2 - 80)/2 },
-    },
-    margin: { left: margin, right: margin },
-  })
-  y = doc.lastAutoTable.finalY + 8
-
-  addPara('3. Dengan ini segala hormatnya kami merujuk kepada Surat Pekeliling Bahagian Kewangan (Unit Pengurusan Hasil) Bilangan 14 Tahun 2004 yang menyatakan bahawa golongan fakir dan miskin yang menerima bantuan bulanan di bawah peruntukan zakat dari Majlis Agama Islam Negeri merupakan golongan yang sama tarafnya dengan golongan yang mendapat bantuan Jabatan Kebajikan Masyarakat.')
-
-  addPara('4. Oleh yang demikian, golongan fakir dan miskin yang menerima bantuan bulanan dari Majlis Agama Islam Negeri adalah dikecualikan daripada bayaran caj rawatan hospital dan kemudahan perubatan pesakit luar dan wad Kelas 3 di mana-mana Hospital/Klinik Kesihatan seperti yang dinyatakan dalam surat Kementerian Kewangan Bil. KPK(PS) 096/28/2793 Jld.3 Sk. 6/2004(3) bertarikh 5 Mei 2004.')
-
-  addPara('5. Sehubungan itu, adalah dihargai agar pihak tuan/puan dapat mengecualikan bayaran caj rawatan hospital dan kemudahan rawatan perubatan pesakit luar dan wad Kelas 3 kepada penerima bantuan zakat yang dinyatakan di atas. Sebarang pertanyaan berkaitan perkara di atas, sila hubungi Talian Zakat Selangor 1-300-88-4343.')
-
-  addPara('6. Sekian,')
-
-  // Tandatangan
-  y += 4
-  doc.setFont('helvetica','bold'); doc.text('Yang benar,', margin, y); y += 6
-  doc.text('LEMBAGA ZAKAT SELANGOR (MAIS)', margin, y); y += 16
-  doc.text('MOHD AQMAL BIN JAIS', margin, y); y += 5
-  doc.setFont('helvetica','normal')
-  addPara(`Ketua Operasi Agihan Daerah ${suratView.value.daerah}`)
-
+  doc.text("Surat Pengesahan Asnaf – Hospital", 10, 10)
   doc.save('Surat_Pengesahan_Asnaf_Hospital.pdf')
-  showPreview.value = false
 }
 
-/* ---------- Reset ---------- */
-function onReset () {
-  form.value = {
-    asnaf:   { nama: '', ic: '', alamat: '', daerah: '', tempoh: '' },
-    pesakit: { nama: '', ic: '' },
-    pegawai: { nama: '', jawatan: '', alamat: '' },
-  }
-  img.value = { ttd: '', cop: '' }
-  generatedAt.value = new Date()
-  noRujukan.value = generateNoRujukan()
+const onJanaSurat = () => {
+  showSurat.value = true
+}
+
+const onReset = () => {
+  filters.value.noKpAsnaf = ''
+  filters.value.noKpTanggungan = ''
+  showSurat.value = false
 }
 </script>
 
 <style>
-/* ===== Paparan & Cetak tajam (untuk preview UI) ===== */
 .report-table { border-collapse: collapse; }
 .report-table th, .report-table td { border: 1px solid #000; padding: 8px; vertical-align: top; }
 .report-table th { font-weight: 700; color: #000; text-align: left; }
 .arabic { font-family: "Amiri", "Scheherazade New", "Noto Naskh Arabic", serif; letter-spacing: 0; }
-.print-page { max-width: 180mm; margin: 0 auto; }
-
-/* (Masih ada rules print jika nak cetak pratayang) */
-@media print {
-  @page { size: A4; margin: 15mm; }
-  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; color: #000 !important; }
-  body.printing-surat-only * { visibility: hidden; }
-  body.printing-surat-only #print-surat-hospital-modal,
-  body.printing-surat-only #print-surat-hospital-modal * { visibility: visible; }
-  body.printing-surat-only #print-surat-hospital-modal { position: absolute; inset: 0; width: 100%; }
-  .report-table, .report-table tr, .report-table th, .report-table td { page-break-inside: avoid; }
-}
+.print-page { max-width: 200mm; margin: 0 auto; }
 </style>
