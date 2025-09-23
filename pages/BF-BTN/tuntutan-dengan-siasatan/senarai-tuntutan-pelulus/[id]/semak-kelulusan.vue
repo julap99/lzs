@@ -369,7 +369,7 @@ const pemohonView = computed(() => {
 })
 
 const breadcrumb = ref([
-  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
+  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
   { name: 'Senarai Tuntutan Pelulus', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
   { name: 'Semakan & Kelulusan', type: 'current', path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${paramId.value}/semak-kelulusan` },
 ])

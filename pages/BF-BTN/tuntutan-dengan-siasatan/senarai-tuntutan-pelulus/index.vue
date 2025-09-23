@@ -350,7 +350,7 @@ const items = ref<TuntutanItem[]>([
 
 /** ========= Page ========= */
 const breadcrumb = ref([
-  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
+  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
   { name: 'Senarai Tuntutan Pelulus', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
 ])
 

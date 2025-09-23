@@ -482,14 +482,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useNuxtApp, navigateTo, useRoute } from '#app'
-import RsTable from '~/components/RsTable.vue'
 
 definePageMeta({ title: 'Mohon Tuntutan (TDS-01)' })
 const { $swal } = useNuxtApp()
 
 const breadcrumb = ref([
-  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
-  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
   { name: 'Mohon Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan' }
 ])
 

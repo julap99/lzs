@@ -325,12 +325,12 @@ const breadcrumb = ref([
   {
     name: 'Pengurusan Bantuan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan',
   },
   {
     name: 'Tuntutan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan',
   },
   {
     name: 'Mohon Tuntutan',
