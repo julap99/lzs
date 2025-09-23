@@ -103,26 +103,8 @@ const breadcrumb = ref([
 const tableKey = ref(0);
 const kifayahLimits = ref([]);
 
-// Default data (fallback if no data in localStorage)
-const defaultData = [
-  // Section A: Proses Profiling
-  {
-    idHadKifayah: "HK001",
-    idPP: "PP-0001",
-    kodProses: "PP001",
-    namaProses: "Proses Profiling Utama",
-    namaHadKifayah: "Ketua Keluarga", // Keep for backward compatibility
-    keterangan: "Proses profiling untuk ketua keluarga",
-    kategori: "Utama",
-    jenisIsiRumah: "Ketua Keluarga",
-    kadarBerbayar: 1215.00,
-    kadarPercuma: 780.00,
-    tarikhMula: "2025-01-01",
-    status: "Aktif",
-    statusData: "Draf",
-    tindakan: 1,
-  },
-];
+// Default data (empty array - no hardcoded data)
+const defaultData = [];
 
 // Function to validate and sanitize data item
 const validateDataItem = (item) => {
@@ -153,23 +135,9 @@ const loadData = () => {
       const parsedData = JSON.parse(savedData);
       // Validate and sanitize parsed data
       const validatedData = parsedData.map(validateDataItem);
-      
-      // Merge with default data, giving priority to saved data
-      const mergedData = [...defaultData];
-      validatedData.forEach(savedItem => {
-        // Check if item already exists in default data
-        const existingIndex = mergedData.findIndex(item => item.idHadKifayah === savedItem.idHadKifayah);
-        if (existingIndex >= 0) {
-          // Replace existing item
-          mergedData[existingIndex] = validateDataItem(savedItem);
-        } else {
-          // Add new item
-          mergedData.push(validateDataItem(savedItem));
-        }
-      });
-      kifayahLimits.value = mergedData;
+      kifayahLimits.value = validatedData;
     } else {
-      kifayahLimits.value = defaultData;
+      kifayahLimits.value = [];
     }
     
     // Ensure all items have statusData field
@@ -183,7 +151,7 @@ const loadData = () => {
     });
   } catch (error) {
     console.error('Error loading data:', error);
-    kifayahLimits.value = defaultData;
+    kifayahLimits.value = [];
   }
 };
 
