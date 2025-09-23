@@ -61,15 +61,15 @@
           <template #noKPPemohon="{ text }"><div>{{ text }}</div></template>
           <template #namaPenerima="{ text }"><div>{{ text }}</div></template>
           <template #tarikhMohon="{ text }"><div>{{ formatDate(text) }}</div></template>
-          <template #tindakan="{ text, value, row }">
+          <template #tindakan="{ value }">
             <rs-button
               variant="ghost"
               size="sm"
               class="text-blue-600 hover:text-blue-800"
-              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/${row.noBantuan}`)"
+              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/${value.noBantuan}`)"
               title="Mohon Tuntutan"
             >
-              <Icon name="material-symbols:add" size="24" />
+              +
             </rs-button>
           </template>
         </RsTable>
@@ -103,6 +103,10 @@
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import { navigateTo } from '#app'
+import RsButton from '~/components/RsButton.vue'
+import RsCard from '~/components/RsCard.vue'
+import RsTable from '~/components/RsTable.vue'
+import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue'
 
 definePageMeta({
   title: 'Borang Tambah Carian',
