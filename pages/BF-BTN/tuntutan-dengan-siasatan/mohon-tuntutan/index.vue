@@ -1082,28 +1082,19 @@ function hydrateFromSelectedBantuan(row) {
 const route = useRoute()
 
 onMounted(() => {
-  let selected = null
-  try {
-    const raw = sessionStorage.getItem('NAS_SELECTED_BANTUAN')
-    if (raw) selected = JSON.parse(raw)
-  } catch (e) {
-    console.warn('Cannot parse NAS_SELECTED_BANTUAN', e)
-  }
-
-  if (!selected && (route.query?.noBantuan || route.query?.namaPemohon || route.query?.pemohon)) {
-    selected = {
-      noBantuan: route.query.noBantuan,
-      pemohon: route.query.pemohon,
-      namaPemohon: route.query.namaPemohon,
-      noKPPemohon: route.query.noKPPemohon,
-      maklumatBantuan: route.query.maklumatBantuan,
-      namaPenerimaManfaat: route.query.namaPenerimaManfaat,
-      namaPenerima: route.query.namaPenerima,
-      status: route.query.status
+  // Sokong pra-isi melalui query params sahaja (tanpa session/local storage)
+  const q = route.query || {}
+  if (q.noBantuan || q.namaPemohon || q.pemohon) {
+    const selected = {
+      noBantuan: q.noBantuan,
+      pemohon: q.pemohon,
+      namaPemohon: q.namaPemohon,
+      noKPPemohon: q.noKPPemohon,
+      maklumatBantuan: q.maklumatBantuan,
+      namaPenerimaManfaat: q.namaPenerimaManfaat,
+      namaPenerima: q.namaPenerima,
+      status: q.status
     }
-  }
-
-  if (selected) {
     hydrateFromSelectedBantuan(selected)
   }
 
