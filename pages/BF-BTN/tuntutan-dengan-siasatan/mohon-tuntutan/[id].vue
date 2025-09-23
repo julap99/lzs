@@ -213,6 +213,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { useNuxtApp, navigateTo, useRoute } from '#app'
 import RsTable from '~/components/RsTable.vue'
+import RsTab from '~/components/RsTab.vue'
+import RsTabItem from '~/components/RsTabItem.vue'
+import RsModal from '~/components/RsModal.vue'
+import RsButton from '~/components/RsButton.vue'
+import RsBadge from '~/components/RsBadge.vue'
+import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue'
 
 definePageMeta({ title: 'Mohon Tuntutan (Dinamik)' })
 
