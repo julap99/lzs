@@ -103,10 +103,6 @@
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import { navigateTo } from '#app'
-import RsButton from '~/components/RsButton.vue'
-import RsCard from '~/components/RsCard.vue'
-import RsTable from '~/components/RsTable.vue'
-import LayoutsBreadcrumb from '~/components/layouts/Breadcrumb.vue'
 
 definePageMeta({
   title: 'Borang Tambah Carian',
