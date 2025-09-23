@@ -17,11 +17,14 @@
           <div class="mb-6">
             <FormKit
               type="radio"
-              name="kaedah_pembayaran"
-              :options="paymentMethodOptionsMain"
+              name="ada_akaun_bank"
+              :options="[
+                { label: 'Ya', value: 'Y' },
+                { label: 'Tidak', value: 'T' },
+              ]"
               validation="required"
               :disabled="readOnly"
-              v-model="formData.kaedah_pembayaran"
+              v-model="formData.ada_akaun_bank"
               :validation-messages="{
                 required: 'Sila pilih sama ada anda mempunyai akaun bank',
               }"
@@ -52,7 +55,7 @@
       </div>
 
       <!-- A. Jika mempunyai akaun bank -->
-      <div v-if="formData.kaedah_pembayaran === 'ya'" class="mb-6">
+      <div v-if="formData.ada_akaun_bank === 'Y'" class="mb-6">
         <h5 class="text-md font-medium mb-4">Maklumat Akaun Bank</h5>
 
         <div
@@ -170,7 +173,7 @@
       </div>
 
       <!-- B. Jika tidak mempunyai akaun bank -->
-      <div v-if="formData.kaedah_pembayaran === 'tidak'" class="mb-6">
+      <div v-if="formData.ada_akaun_bank === 'T'" class="mb-6">
         <h5 class="text-md font-medium mb-4">Sebab Tiada Akaun Bank</h5>
         <div class="md:col-span-2">
           <FormKit
@@ -236,10 +239,6 @@ const props = defineProps({
   formData: {
     type: Object,
     required: true
-  },
-  paymentMethodOptionsMain: {
-    type: Array,
-    default: () => []
   },
   bankOptions: {
     type: Array,

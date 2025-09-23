@@ -20,11 +20,14 @@
             <div class="mb-6">
               <FormKit
                 type="radio"
-                name="kaedah_pembayaran_tanggungan"
-                :options="paymentMethodOptionsMain"
+                name="ada_akaun_bank_tanggungan"
+                :options="[
+                  { label: 'Ya', value: 'Y' },
+                  { label: 'Tidak', value: 'T' },
+                ]"
                 validation="required"
                 v-model="
-                  getCurrentTanggungan().kaedah_pembayaran_tanggungan
+                  getCurrentTanggungan().ada_akaun_bank_tanggungan
                 "
                 :validation-messages="{
                   required:
@@ -59,7 +62,7 @@
       <!-- A. Jika mempunyai akaun bank -->
       <div
         v-if="
-          getCurrentTanggungan().kaedah_pembayaran_tanggungan === 'ya'
+          getCurrentTanggungan().ada_akaun_bank_tanggungan === 'Y'
         "
         class="mb-6"
       >
@@ -244,7 +247,7 @@
       <!-- B. Jika tidak mempunyai akaun bank -->
       <div
         v-if="
-          getCurrentTanggungan().kaedah_pembayaran_tanggungan === 'tidak'
+          getCurrentTanggungan().ada_akaun_bank_tanggungan === 'T'
         "
         class="mb-6"
       >
@@ -309,10 +312,6 @@ const props = defineProps({
   getCurrentTanggungan: {
     type: Function,
     required: true
-  },
-  paymentMethodOptionsMain: {
-    type: Array,
-    default: () => []
   },
   bankOptions: {
     type: Array,

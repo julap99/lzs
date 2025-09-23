@@ -23,8 +23,7 @@
               :key="step.id"
               class="text-center flex-1"
               :class="{ 'font-semibold': currentStepA >= step.id }"
-              @click="goToStepA(step.id)"
-            >
+              @click="goToStepA(step.id)">
               {{ step.label }}
             </div>
           </div>
@@ -35,8 +34,7 @@
                 currentStepA >= totalStepsA
                   ? 100
                   : (currentStepA / totalStepsA) * 100
-              }%`"
-            ></div>
+              }%`"></div>
           </div>
         </div>
 
@@ -47,8 +45,7 @@
           :isteri-list="isteriList"
           :get-countries="getCountries"
           @next-step="nextStepA"
-          @save-step="handleSaveStepA1"
-        />
+          @save-step="handleSaveStepA1" />
 
         <!-- Section A Form - Step 2: Maklumat Alamat -->
         <AlamatForms
@@ -63,8 +60,7 @@
           @next-step="nextStepA"
           @prev-step="prevStepA"
           @save-step="handleSaveStepA2"
-          @get-location="getLocation('addressInfo')"
-        />
+          @get-location="getLocation('addressInfo')" />
 
         <!-- Section A Form - Step 3: Maklumat Pendidikan -->
         <PendidikanForms
@@ -76,8 +72,7 @@
           @save-step="handleSaveStepA3"
           @add-education-entry="addEducationEntry"
           @remove-education-entry="removeEducationEntry"
-          @select-school="onSelectSchool"
-        />
+          @select-school="onSelectSchool" />
 
         <!-- Section A Form - Step 4: Maklumat Islam -->
         <PengislamanForms
@@ -86,14 +81,12 @@
           :islamic-dates-validation="islamicDatesValidation"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA4"
-        />
+          @save-step="handleSaveStepA4" />
 
         <!-- Section A Form - Step 5: Maklumat Bank -->
         <PerbankanForms
           v-if="currentStepA === 5"
           :form-data="formData"
-          :payment-method-options-main="paymentMethodOptionsMain"
           :bank-options="bankOptions"
           :no-payment-reason-options="noPaymentReasonOptions"
           :show-lain-lain-sebab-tiada-akaun="showLainLainSebabTiadaAkaun"
@@ -101,8 +94,7 @@
           @prev-step="prevStepA"
           @save-step="handleSaveStepA5"
           @add-bank-account="addBankAccount"
-          @remove-bank-account="removeBankAccount"
-        />
+          @remove-bank-account="removeBankAccount" />
 
         <!-- Section A Form - Step 6: Maklumat Kesihatan -->
         <KesihatanForms
@@ -110,8 +102,7 @@
           :form-data="formData"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA6"
-        />
+          @save-step="handleSaveStepA6" />
 
         <!-- Section A Form - Step 7: Kemahiran -->
         <KemahiranForms
@@ -119,8 +110,7 @@
           :form-data="formData"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA7"
-        />
+          @save-step="handleSaveStepA7" />
 
         <!-- Section A Form - Step 8: Maklumat Pinjaman Harta -->
         <PinjamanHartaForms
@@ -129,8 +119,7 @@
           :jenis-pinjaman-options="jenisPinjamanOptions"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA8"
-        />
+          @save-step="handleSaveStepA8" />
 
         <!-- Section A Form - Step 9: Maklumat Pemilikan Aset -->
         <PemilikanAsetForms
@@ -138,8 +127,7 @@
           :form-data="formData"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA9"
-        />
+          @save-step="handleSaveStepA9" />
 
         <!-- Section A Form - Step 10: Maklumat Pekerjaan -->
         <PekerjaanForms
@@ -149,8 +137,7 @@
           :show-lain-lain-sektor="showLainLainSektor"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA10"
-        />
+          @save-step="handleSaveStepA10" />
 
         <!-- Section A Form - Step 11: Maklumat Pendapatan & Perbelanjaan -->
         <PendapatanPerbelanjaanForms
@@ -160,8 +147,7 @@
           @prev-step="prevStepA"
           @save-step="handleSaveStepA11"
           @add-pendapatan-lain-lain="addPendapatanLainLain"
-          @remove-pendapatan-lain-lain="removePendapatanLainLain"
-        />
+          @remove-pendapatan-lain-lain="removePendapatanLainLain" />
       </template>
     </rs-card>
 
@@ -184,19 +170,16 @@
               :key="step.id"
               class="text-center flex-1 cursor-pointer relative group"
               :class="{ 'font-semibold': currentStepB >= step.id }"
-              @click="goToStepB(step.id)"
-            >
+              @click="goToStepB(step.id)">
               {{ step.label }}
               <!-- Tooltip for Pengesahan Pendapatan -->
               <div
                 v-if="step.tooltip"
-                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 max-w-xs"
-              >
+                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 max-w-xs">
                 {{ step.tooltip }}
                 <!-- Arrow -->
                 <div
-                  class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"
-                ></div>
+                  class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
               </div>
             </div>
           </div>
@@ -207,8 +190,7 @@
                 currentStepB >= filteredStepsB.length
                   ? 100
                   : (currentStepB / filteredStepsB.length) * 100
-              }%`"
-            ></div>
+              }%`"></div>
           </div>
         </div>
 
@@ -216,8 +198,7 @@
         <!-- Tanggungan Selector and Management (Visible only during Steps 1-9) -->
         <div
           v-if="currentStepB >= 1 && currentStepB <= 9"
-          class="mb-6 p-4 bg-gray-50 rounded-lg"
-        >
+          class="mb-6 p-4 bg-gray-50 rounded-lg">
           <div class="flex justify-between items-center mb-4">
             <h4 class="text-lg font-semibold">Senarai Tanggungan</h4>
             <rs-button
@@ -225,8 +206,7 @@
               variant="primary"
               @click="addTanggungan"
               class="text-sm"
-              :disabled="tanggunganList.length >= 3"
-            >
+              :disabled="tanggunganList.length >= 3">
               + Tambah Tanggungan
               {{ tanggunganList.length >= 3 ? "(Maksimum 3)" : "" }}
             </rs-button>
@@ -235,8 +215,7 @@
           <!-- Tanggungan Cards Display -->
           <div
             v-if="tanggunganList.length > 0"
-            class="grid grid-cols-1 md:grid-cols-3 gap-4"
-          >
+            class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div
               v-for="(tanggungan, index) in tanggunganList"
               :key="tanggungan.id"
@@ -254,8 +233,7 @@
                   currentTanggunganIndex !== index &&
                   !isTanggunganComplete(tanggungan),
               }"
-              @click="selectTanggungan(index)"
-            >
+              @click="selectTanggungan(index)">
               <!-- Card Header -->
               <div class="flex justify-between items-start mb-3">
                 <div class="flex-1 text-center">
@@ -278,8 +256,7 @@
                       isTanggunganComplete(tanggungan),
                     'bg-yellow-100 text-yellow-800':
                       !isTanggunganComplete(tanggungan),
-                  }"
-                >
+                  }">
                   {{
                     isTanggunganComplete(tanggungan)
                       ? "Lengkap"
@@ -308,8 +285,7 @@
               <div class="flex gap-2 mt-4">
                 <button
                   @click.stop="selectTanggungan(index)"
-                  class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-                >
+                  class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
                   {{
                     currentTanggunganIndex === index ? "Sedang Edit" : "Edit"
                   }}
@@ -335,7 +311,7 @@
             </div>
           </div>
         </div>
-      
+
         <!-- Section B Form - Step 1: Maklumat Peribadi Tanggungan -->
         <TanggunganPeribadiForms
           v-if="currentStepB === 1"
@@ -354,26 +330,25 @@
           :calculate-total-tanggungan="calculateTotalTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB1"
-        />
-          
+          @save-step="handleSaveStepB1" />
+
         <!-- Section B Form - Step 2: Maklumat Islam Tanggungan -->
         <TanggunganPengislamanForms
           v-if="currentStepB === 2"
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB2"
-        />
+          @save-step="handleSaveStepB2" />
 
         <!-- Section B Form - Step 3: Maklumat Bank Tanggungan -->
         <TanggunganPerbankanForms
           v-if="currentStepB === 3"
           :get-current-tanggungan="getCurrentTanggungan"
-          :payment-method-options-main="paymentMethodOptionsMain"
           :bank-options="bankOptions"
           :no-payment-reason-options="noPaymentReasonOptions"
-          :show-lain-lain-sebab-tiada-akaun-tanggungan="showLainLainSebabTiadaAkaunTanggungan"
+          :show-lain-lain-sebab-tiada-akaun-tanggungan="
+            showLainLainSebabTiadaAkaunTanggungan
+          "
           :get-swift-code-for-bank="getSwiftCodeForBank"
           @next-step="nextStepB"
           @prev-step="prevStepB"
@@ -381,8 +356,7 @@
           @add-bank-account-tanggungan="addBankAccountTanggungan"
           @remove-bank-account-tanggungan="removeBankAccountTanggungan"
           @add-pengenalan-id-tanggungan="addPengenalanIdTanggungan"
-          @remove-pengenalan-id-tanggungan="removePengenalanIdTanggungan"
-        />
+          @remove-pengenalan-id-tanggungan="removePengenalanIdTanggungan" />
 
         <!-- Section B Form - Step 4: Maklumat Pendidikan Tanggungan -->
         <TanggunganPendidikanForms
@@ -394,8 +368,7 @@
           @save-step="handleSaveStepB4"
           @add-education-entry-tanggungan="addEducationEntryTanggungan"
           @remove-education-entry-tanggungan="removeEducationEntryTanggungan"
-          @on-select-school-tanggungan="onSelectSchoolTanggungan"
-        />
+          @on-select-school-tanggungan="onSelectSchoolTanggungan" />
 
         <!-- Section B Form - Step 5: Maklumat Kesihatan Tanggungan -->
         <TanggunganKesihatanForms
@@ -403,18 +376,15 @@
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB5"
-        />
+          @save-step="handleSaveStepB5" />
 
-        
         <!-- Section B Form - Step 6: Maklumat Kemahiran Tanggungan -->
         <TanggunganKemahiranForms
           v-if="currentStepB === 6"
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB6"
-        />
+          @save-step="handleSaveStepB6" />
 
         <!-- Section B Form - Step 7: Maklumat Pekerjaan Tanggungan -->
         <TanggunganPekerjaanForms
@@ -423,8 +393,7 @@
           :show-lain-lain-sektor-tanggungan="showLainLainSektorTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB7"
-        />
+          @save-step="handleSaveStepB7" />
 
         <!-- Section B Form - Step 8: Maklumat Pemilikan Aset (Tanggungan) -->
         <TanggunganPemilikanAsetForms
@@ -432,8 +401,7 @@
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB8"
-        />
+          @save-step="handleSaveStepB8" />
 
         <!-- Section B Form - Step 9: Maklumat Pinjaman Harta (Tanggungan) -->
         <TanggunganPinjamanHartaForms
@@ -442,8 +410,7 @@
           :jenis-pinjaman-options="jenisPinjamanOptions"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB9"
-        />
+          @save-step="handleSaveStepB9" />
 
         <!-- Section B Form - Step 10: Pengesahan -->
         <TanggunganPengesahanForms
@@ -456,8 +423,7 @@
           @next-step="nextStepB"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB10"
-          @update:dibantu-penolong-amil="dibantuPenolongAmil = $event"
-        />       
+          @update:dibantu-penolong-amil="dibantuPenolongAmil = $event" />
 
         <!-- Section B Form - Step 11: Pengesahan Pendapatan -->
         <TanggunganPengesahanPendapatanForms
@@ -465,8 +431,7 @@
           :form-data="formData"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB11"
-        />
+          @save-step="handleSaveStepB11" />
 
         <!-- Section B Form - Step 12: Pengesahan Bermastautin -->
         <TanggunganPengesahanBermastauntinForms
@@ -477,19 +442,17 @@
           @next-step="nextStepB"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB12"
-          @download-document="downloadDocument"
-        />
+          @download-document="downloadDocument" />
 
         <!-- Section B Form - Step 13: Pegawai Pendaftar -->
         <TanggunganPegawaiPendaftarForms
           v-if="currentStepB === 13"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB13"
-          @submit-form="handleSubmit"
-        />
+          @submit-form="handleSubmit" />
       </template>
     </rs-card>
-</div>
+  </div>
 </template>
 
 <script setup>
@@ -952,7 +915,7 @@ const formData = ref({
   no_akaun_bank: "",
   nama_pemegang_akaun: "",
   swift_code: "",
-  kaedah_pembayaran: "",
+  ada_akaun_bank: "",
   sebab_tiada_akaun: "",
   lain_lain_sebab_tiada_akaun: "",
   sebab_tunai: "",
@@ -1159,12 +1122,6 @@ const jenisPinjamanOptions = [
   { label: "Pinjaman Pertanian", value: "pinjaman-pertanian" },
   { label: "Pinjaman Koperasi", value: "pinjaman-koperasi" },
   { label: "Pinjaman Islamik", value: "pinjaman-islamik" },
-];
-
-// Payment Method Options for Main Applicant
-const paymentMethodOptionsMain = [
-  { label: "Ya", value: "ya" },
-  { label: "Tidak", value: "tidak" },
 ];
 
 // Payment Method Options for Tanggungan (keeping original)
@@ -1975,9 +1932,9 @@ watch(
 
 // Ensure at least one bank account entry when method is 'ya'
 watch(
-  () => formData.value.kaedah_pembayaran,
+  () => formData.value.ada_akaun_bank,
   (method) => {
-    if (method === "ya" && formData.value.bank_accounts.length === 0) {
+    if (method === "Y" && formData.value.bank_accounts.length === 0) {
       addBankAccount();
     }
   },
@@ -2285,6 +2242,12 @@ const nextStepB = () => {
 };
 
 const prevStepB = () => {
+  // If already at first step of Section B, go back to Section A
+  if (currentStepB.value === 1) {
+    prevSection();
+    return;
+  }
+
   if (currentStepB.value > 1) {
     let prevStep = currentStepB.value - 1;
     const currentTanggungan = getCurrentTanggungan();
@@ -2386,7 +2349,7 @@ const addTanggungan = (showNotification = true) => {
     swift_code_tanggungan: "",
     no_akaun_bank_tanggungan: "",
     nama_pemegang_akaun_tanggungan: "",
-    kaedah_pembayaran_tanggungan: "",
+    ada_akaun_bank_tanggungan: "",
     sebab_tiada_akaun_tanggungan: "",
     lain_lain_sebab_tiada_akaun_tanggungan: "",
     // Multiple bank accounts for tanggungan (new)
@@ -2764,7 +2727,7 @@ onMounted(() => {
     adakah_muallaf: "T",
 
     // Mock data for Maklumat Perbankan
-    kaedah_pembayaran: "ya",
+    ada_akaun_bank: "Y",
     bank_accounts: [
       {
         nama_bank: "bank-islam",
@@ -3188,7 +3151,7 @@ onMounted(() => {
         swift_code_tanggungan: "",
         no_akaun_bank_tanggungan: "",
         nama_pemegang_akaun_tanggungan: "",
-        kaedah_pembayaran_tanggungan: "tiada",
+        ada_akaun_bank_tanggungan: "T",
         sebab_tiada_akaun_tanggungan: "bukan-warganegara",
 
         // Pendidikan Tanggungan
