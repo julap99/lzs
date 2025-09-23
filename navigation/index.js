@@ -96,6 +96,7 @@ export default [
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/analytics/A5",
             child: [],
+            meta: {},
           },
         ],
         meta: {},
@@ -259,14 +260,14 @@ export default [
         role: ["Developer"],
       },
     },
-  }, 
+  },
 
   // BF-DP
   {
     header: "BF-DP",
     description: "Dashboard & Pelaporan",
     child: [
-   
+
       {
         title: "Tracking & Monitoring",
         icon: "iconamoon:component-fill",
@@ -334,21 +335,72 @@ export default [
         icon: "iconamoon:file-document",
         path: "/BF-ADN/laporan",
         child: [
-        {
-          title: "Laporan Status Aduan",
-          icon: "iconamoon:arrow-right-2-duotone",
-          path: "/BF-ADN/laporan/laporan-status-aduan",
-        }
+          {
+            title: "Laporan Status Aduan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-ADN/laporan/laporan-status-aduan",
+          }
+        ],
+      },
+      {
+        title: "Mengurus Konfigurasi",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-ADN/laporan/mengurus-konfigurasi",
+        child: [
+          {
+            title: "Senarai SLA",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KS/01/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Permohonan Kelulusan SLA",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KS/02/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Butiran Permohonan Kelulusan SLA",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KS/02/03",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Kategori Masalah",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KT/01/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Permohonan Kelulusan Kategori",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KT/02/01",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Butiran Permohonan Kategori Masalah",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KT/02/03",
+            child: [],
+            meta: {},
+          }
         ],
         meta: {},
-      }
+      },
+
+
     ],
     meta: {
       auth: {
         role: ["Developer"],
       },
     },
-  }, 
+  },
 
   // BF-PTPC
   // {
@@ -411,7 +463,6 @@ export default [
   //       ],
   //       meta: {},
   //     },
-  //   ],
   // },
 
   // BF-TNI
@@ -523,6 +574,7 @@ export default [
             meta: {},
           },
         ],
+        meta: {},
       },
       {
         title: "Pemulangan Tunai",
@@ -575,8 +627,8 @@ export default [
           // Removed old implementation - now using TNI-KO-KT workflow
         ],
         meta: {},
-      }, 
- 
+      },
+
       /* {
         title: "Semakan Asnaf",
         icon: "iconamoon:search-duotone",
@@ -658,57 +710,57 @@ export default [
         ],
         meta: {},
       },
-      
+
       {
-          title: "Laporan",
-          icon: "iconamoon:component-fill",
-          path: "/BF-TNI/laporan",
-          child: [
-            {
-              title: "Laporan Serahan Bantuan Tunai",
-              icon: "iconamoon:arrow-right-2-duotone",
-              path: "/BF-TNI/laporan/serahan-bantuan-tunai",
-              child: [],
-              meta: {},
-            },
-            {
-              title: "Laporan Baki Tabung Semasa",
-              icon: "iconamoon:arrow-right-2-duotone",
-              path: "/BF-TNI/laporan/laporan-baki-tabung-semasa",
-              child: [],
-              meta: {},
-            },
-            {
-              title: "Laporan Pengeluaran Tunai",
-              icon: "iconamoon:arrow-right-2-duotone",
-              path: "/BF-TNI/laporan/laporan-pengeluaran-tunai",
-              child: [],
-              meta: {},
-            },
-            {
-              title: "Laporan Tambah Nilai Tunai",
-              icon: "iconamoon:arrow-right-2-duotone",
-              path: "/BF-TNI/laporan/laporan-tambah-nilai-tunai",
-              child: [],
-              meta: {},
-            },
-            {
-              title: "Laporan Pemulangan Tunai",
-              icon: "iconamoon:arrow-right-2-duotone",
-              path: "/BF-TNI/laporan/laporan-pemulangan-tunai-ke-tabung",
-              child: [],
-              meta: {},
-            },
-            {
-              title: "Laporan Tamat Hari",
-              icon: "iconamoon:arrow-right-2-duotone",
-              path: "/BF-TNI/laporan/laporan-tamat-hari",
-              child: [],
-              meta: {},
-            }
-          ],
-          meta: {},
-        },
+        title: "Laporan",
+        icon: "iconamoon:component-fill",
+        path: "/BF-TNI/laporan",
+        child: [
+          {
+            title: "Laporan Serahan Bantuan Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/laporan/serahan-bantuan-tunai",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Laporan Baki Tabung Semasa",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/laporan/laporan-baki-tabung-semasa",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Laporan Pengeluaran Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/laporan/laporan-pengeluaran-tunai",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Laporan Tambah Nilai Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/laporan/laporan-tambah-nilai-tunai",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Laporan Pemulangan Tunai",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/laporan/laporan-pemulangan-tunai-ke-tabung",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Laporan Tamat Hari",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-TNI/laporan/laporan-tamat-hari",
+            child: [],
+            meta: {},
+          }
+        ],
+        meta: {},
+      },
 
       // {
       //   title: "Mengurus Tunai",
@@ -773,7 +825,7 @@ export default [
                 child: [],
                 meta: {},
               },
-              
+
             ],
             meta: {},
           },
@@ -831,7 +883,7 @@ export default [
                 child: [],
                 meta: {},
               },
-               {
+              {
                 title: "Pelulus",
                 icon: "iconamoon:arrow-right-2-duotone",
                 path: "/BF-PRF/KF/SHI/02_01",
@@ -1017,7 +1069,7 @@ export default [
             child: [],
             meta: {},
           },
-          
+
           {
             title: "Pengesahan Kategori Asnaf",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -1045,7 +1097,7 @@ export default [
           //   child: [],
           //   meta: {},
           // },
-         
+
           {
             title: "Family Tree",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -1053,7 +1105,7 @@ export default [
             child: [],
             meta: {},
           },
-          
+
           {
             title: "Senarai Pre-Review",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -1143,7 +1195,7 @@ export default [
   },
 
   // BF-BTN
-   {
+  {
     header: "BF-BTN",
     description: "Pengurusan Bantuan",
     child: [
@@ -1431,35 +1483,35 @@ export default [
                 title: "Pemohon",
                 icon: "iconamoon:arrow-right-2-duotone",
                 child: [
-                        {
-                          title: "Senarai Tuntutan (Vendor)",
-                          icon: "iconamoon:arrow-right-2-duotone",
-                          path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
-                          child: [],
-                          meta: {},
-                        },
-                        {
-                          title: "Mohon Tuntutan (Vendor)",
-                          icon: "iconamoon:arrow-right-2-duotone",
-                          path: "/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan",
-                          child: [],
-                          meta: {},
-                        },
-                        {
-                          title: "Senarai Tuntutan (Asnaf)",
-                          icon: "iconamoon:arrow-right-2-duotone",
-                          path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
-                          child: [],
-                          meta: {},
-                        },
-                        {
-                          title: "Mohon Tuntutan (Asnaf)",
-                          icon: "iconamoon:arrow-right-2-duotone",
-                          path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf",
-                          child: [],
-                          meta: {},
-                        },
-                     ],
+                  {
+                    title: "Senarai Tuntutan (Vendor)",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+                    child: [],
+                    meta: {},
+                  },
+                  {
+                    title: "Mohon Tuntutan (Vendor)",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan",
+                    child: [],
+                    meta: {},
+                  },
+                  {
+                    title: "Senarai Tuntutan (Asnaf)",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
+                    child: [],
+                    meta: {},
+                  },
+                  {
+                    title: "Mohon Tuntutan (Asnaf)",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf",
+                    child: [],
+                    meta: {},
+                  },
+                ],
                 meta: {},
               },
               {
@@ -1475,23 +1527,23 @@ export default [
                   },
                 ],
                 meta: {},
-               },
-               {
-            title: "Pelulus",
-            icon: "iconamoon:arrow-right-2-duotone",
-            child: [
+              },
               {
-                title: "Senarai Tuntutan (Pelulus)",
+                title: "Pelulus",
                 icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus",
-                child: [],
+                child: [
+                  {
+                    title: "Senarai Tuntutan (Pelulus)",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus",
+                    child: [],
+                    meta: {},
+                  },
+                ],
                 meta: {},
-             },
+              },
             ],
             meta: {},
-          },
-              ],
-              meta: {},
           },
         ],
         meta: {},
@@ -1586,7 +1638,7 @@ export default [
         ],
         meta: {},
       },
-      
+
       {
         title: "Penolong Amil",
         icon: "iconamoon:component-fill",
@@ -1622,7 +1674,7 @@ export default [
         ],
         meta: {},
       },
-      
+
       {
         title: "Pengurusan Elaun",
         icon: "iconamoon:component-fill",
@@ -1641,7 +1693,7 @@ export default [
             child: [],
             meta: {},
           },
-          
+
           {
             title: "Elaun Tahunan",
             icon: "iconamoon:arrow-right-2-duotone",
@@ -1663,9 +1715,9 @@ export default [
             child: [],
             meta: {},
           },
-         
-          
-          
+
+
+
         ],
         meta: {},
       },
