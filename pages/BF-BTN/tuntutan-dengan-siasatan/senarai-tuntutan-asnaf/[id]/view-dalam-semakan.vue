@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Lihat Tuntutan GL (Dalam Semakan)</h2>
+          <h2 class="text-xl font-semibold">Maklumat Tuntutan</h2>
           <rs-button
             variant="secondary"
             @click="handleBack"
@@ -175,7 +175,7 @@
 import { ref, onMounted } from "vue";
 
 definePageMeta({
-  title: "Lihat Tuntutan GL (Dalam Semakan)",
+  title: "Maklumat Tuntutan",
 });
 
 const route = useRoute();

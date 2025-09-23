@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Edit Tuntutan GL (Draf)</h2>
+          <h2 class="text-xl font-semibold">Maklumat Tuntutan</h2>
           <div class="flex gap-2">
             <rs-button
               variant="secondary"
@@ -166,7 +166,7 @@ import { ref, onMounted } from "vue";
 import { useNuxtApp } from "#app";
 
 definePageMeta({
-  title: "Edit Tuntutan GL (Draf)",
+  title: "Maklumat Tuntutan",
 });
 
 const { $swal } = useNuxtApp();
