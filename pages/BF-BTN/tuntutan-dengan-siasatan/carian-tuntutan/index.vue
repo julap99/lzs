@@ -66,7 +66,7 @@
               variant="ghost"
               size="sm"
               class="text-blue-600 hover:text-blue-800"
-              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/${value || text}`)"
+              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/${(value || text)?.noBantuan || value || text}`)"
               title="Mohon Tuntutan"
             >
               <Icon name="material-symbols:add" size="24" />
