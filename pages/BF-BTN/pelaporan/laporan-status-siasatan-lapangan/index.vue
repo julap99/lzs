@@ -253,7 +253,8 @@ function exportExcel() {
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
-  const stamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 12)
+  // Use RegExp constructor to avoid Tailwind JIT mis-parsing /[-:T]/ as an arbitrary property class
+  const stamp = new Date().toISOString().replace(new RegExp('[-:T]', 'g'), '').slice(0, 12)
   a.href = url
   a.download = `Laporan_Status_Siasatan_Lapangan_${stamp}.csv`
   a.click()
