@@ -516,6 +516,26 @@ const mockByNoRujukan = {
     statusPermohonanBaru: '',
     catatanUmumPegawai: 'Dipanjangkan kepada Jabatan Perubatan untuk semakan lanjut',
   },
+  'NAS-2025-0005': {
+    noRujukan: 'NAS-2025-0005',
+    nama: 'Maryam binti Abdullah',
+    alamat: '45, Jalan Perdana 2/3, Seksyen 2, 40000 Shah Alam, Selangor',
+    kariah: 'Masjid An-Nur',
+    daerah: 'Shah Alam',
+    jenisPengenalan: 'MyKad',
+    noPengenalan: '920815082567',
+    noTelefon: '0176543210',
+    email: 'maryam@email.com',
+    statusKeluarga: 'Mualaf',
+    statusIndividu: 'Mualaf',
+    statusMultidimensi: 'Asnaf Mualaf',
+    status: 'Dalam Semakan',
+          senaraiBantuan: [
+            { id: 'B135', jenisBantuan: 'B135 - (HQ) SAGUHATI GALAKAN SAUDARA BARU (MUALAF)', status: 'Dalam Semakan', sla: '3h', tindakan: '' },
+          ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Pemohon baru memeluk Islam 6 bulan yang lalu. Memerlukan bantuan sara hidup dan pendidikan agama.',
+  },
 };
 
 // Flat reactive form state to be populated from mock
