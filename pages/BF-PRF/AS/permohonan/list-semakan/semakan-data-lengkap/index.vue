@@ -27,7 +27,9 @@
             <div
               class="bg-primary h-2.5 rounded-full transition-all duration-300"
               :style="`width: ${
-                currentStepA >= totalStepsA ? 100 : (currentStepA / totalStepsA) * 100
+                currentStepA >= totalStepsA
+                  ? 100
+                  : (currentStepA / totalStepsA) * 100
               }%`"
             ></div>
           </div>
@@ -59,6 +61,38 @@
             :read-only="true"
           />
 
+          <PendidikanForms
+            v-if="currentStepA === 3"
+            :form-data="formData"
+            :get-filtered-school-options="getFilteredSchoolOptions"
+            :show-footer-buttons="false"
+            :read-only="true"
+            @add-education-entry="addEducationEntry"
+            @remove-education-entry="removeEducationEntry"
+            @select-school="onSelectSchool"
+          />
+
+          <PengislamanForms
+            v-if="currentStepA === 4"
+            :form-data="formData"
+            :islamic-dates-validation="islamicDatesValidation"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <PerbankanForms
+            v-if="currentStepA === 5"
+            :form-data="formData"
+            :payment-method-options-main="paymentMethodOptionsMain"
+            :bank-options="bankOptions"
+            :no-payment-reason-options="noPaymentReasonOptions"
+            :show-lain-lain-sebab-tiada-akaun="showLainLainSebabTiadaAkaun"
+            :show-footer-buttons="false"
+            :read-only="true"
+            @add-bank-account="addBankAccount"
+            @remove-bank-account="removeBankAccount"
+          />
+
           <!-- Komen Penyemak and Dokumen Lengkap outside table -->
           <div class="mb-4 flex flex-col gap-4">
             <div>
@@ -74,15 +108,15 @@
 
             <div>
               <label class="font-bold block mb-2">Dokumen Lengkap?</label>
-                             <FormKit
-                 type="radio"
-                 name="dokumen_lengkap"
-                 v-model="dokumenLengkap"
-                 :options="[
-                   { label: 'Ya', value: 'Ya' },
-                   { label: 'Tidak', value: 'Tidak' },
-                 ]"
-               />
+              <FormKit
+                type="radio"
+                name="dokumen_lengkap"
+                v-model="dokumenLengkap"
+                :options="[
+                  { label: 'Ya', value: 'Ya' },
+                  { label: 'Tidak', value: 'Tidak' },
+                ]"
+              />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -140,6 +174,9 @@ import { ref, watch, watchEffect } from "vue";
 import { useToast } from "vue-toastification";
 import PeribadiForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PeribadiForms.vue";
 import AlamatForms from "~/components/forms/borang-permohonan-lengkap/SectionA/AlamatForms.vue";
+import PengislamanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PengislamanForms.vue";
+import PendidikanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PendidikanForms.vue";
+import PerbankanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PerbankanForms.vue";
 
 const toast = useToast();
 
@@ -223,7 +260,7 @@ const formData = ref({
   status_poligami: "tidak",
   bilangan_isteri: "",
   isteri_list: [],
-  
+
   addressInfo: {
     alamat1: "No 12, Jalan Mawar 3/2",
     alamat2: "Taman Mawar",
@@ -245,6 +282,27 @@ const formData = ref({
     kadar_sewa_bulanan: 800,
     dokumen_perjanjian_sewa: [],
   },
+
+  adakah_muallaf: "T",
+
+  masih_bersekolah: "T",
+  pendidikan_tertinggi: "Peringkat Rendah",
+  lain_pendidikan_tertinggi: "",
+  tahap_pendidikan: ["Peringkat Rendah"],
+
+  kaedah_pembayaran: "ya",
+    bank_accounts: [
+      {
+        nama_bank: "bank-islam",
+        no_akaun_bank: "3063020371170",
+        nama_pemegang_akaun: "adnan bin abu",
+        jenis_akaun: "individu",
+        id_pengenalan: "801004035672",
+        nama_bersama: "",
+        hubungan: "",
+      },
+    ],
+
 });
 
 const isteriList = ref([]);
@@ -275,6 +333,94 @@ const bandarOptions = ["Shah Alam", "Subang Jaya", "Kota Damansara"];
 const poskodOptions = ["40100", "40000", "40460"];
 const kariahOptions = ["Seksyen 7", "Seksyen 13", "Bukit Jelutong"];
 
+const islamicDatesValidation = { isValid: true, message: "" };
+
+// Minimal helpers for PendidikanForms
+const getFilteredSchoolOptions = (kategori) => {
+  if (kategori === "IPT") {
+    return ["UM", "UiTM", "UKM"];
+  }
+  if (kategori === "SRK") {
+    return ["SK Seksyen 7", "SK Seksyen 13"];
+  }
+  if (kategori === "SRA") {
+    return ["SRA Seksyen 7", "SRA Seksyen 13"];
+  }
+  return [];
+};
+
+const addEducationEntry = () => {
+  if (!formData.value.education_entries) formData.value.education_entries = [];
+  formData.value.education_entries.push({
+    jenis_sekolah: "",
+    kategori_sekolah: "",
+    tarikh_mula_pengajian: "",
+    tarikh_tamat_pengajian: "",
+    tahun_bersekolah: "",
+    tahun_tingkatan: "",
+    nama_sekolah: "",
+    sekolah_rendah_kategori: [],
+    alamat_sekolah_1: "",
+    alamat_sekolah_2: "",
+    alamat_sekolah_3: "",
+    daerah_sekolah: "",
+    bandar_sekolah: "",
+    poskod_sekolah: "",
+    bidang_kursus: "",
+    jurusan_bidang: "",
+    pembiayaan_pengajian: [],
+    lain_pembiayaan: "",
+    catatan: "",
+  });
+};
+
+const removeEducationEntry = (index) => {
+  if (formData.value.education_entries) {
+    formData.value.education_entries.splice(index, 1);
+  }
+};
+
+const onSelectSchool = (index, value) => {
+  if (
+    formData.value.education_entries &&
+    formData.value.education_entries[index]
+  ) {
+    formData.value.education_entries[index].nama_sekolah = value;
+  }
+};
+
+// Minimal banking helpers/options
+const paymentMethodOptionsMain = [
+  { label: "Ya", value: "ya" },
+  { label: "Tidak", value: "tidak" },
+];
+const bankOptions = ["Maybank", "CIMB", "Bank Islam", "RHB"];
+const noPaymentReasonOptions = [
+{ label: "Bukan Warganegara", value: "bukan-warganegara" },
+  { label: "Sakit Terlantar", value: "sakit" },
+  { label: "Lain-lain", value: "lain-lain" },
+];
+const showLainLainSebabTiadaAkaun = false;
+
+const addBankAccount = () => {
+  if (!formData.value.bank_accounts) formData.value.bank_accounts = [];
+  formData.value.bank_accounts.push({
+    nama_bank: "",
+    no_akaun_bank: "",
+    nama_pemegang_akaun: "",
+    jenis_akaun: "individu",
+    id_pengenalan: "",
+    nama_bersama: "",
+    hubungan: "",
+  });
+};
+
+const removeBankAccount = (index) => {
+  if (formData.value.bank_accounts) {
+    formData.value.bank_accounts.splice(index, 1);
+  }
+};
+
 const komenPenyemak = ref("");
 const disemakOleh = ref("penyemak");
 const tarikhSemakan = ref(
@@ -285,17 +431,15 @@ const tarikhSemakan = ref(
   })
 );
 
-
-
 const handleHantar = () => {
-  if (dokumenLengkap.value === 'Tidak') {
-    toast.success('Notifikasi sudah dihantar ke pemohon.');
-    navigateTo('/BF-PRF/AS/permohonan/list-semakan');
-    return; 
+  if (dokumenLengkap.value === "Tidak") {
+    toast.success("Notifikasi sudah dihantar ke pemohon.");
+    navigateTo("/BF-PRF/AS/permohonan/list-semakan");
+    return;
   }
-  
-  toast.success('Notifikasi sudah dihantar ke pemohon.');
-  navigateTo('/BF-PRF/AS/FR/04');
+
+  toast.success("Notifikasi sudah dihantar ke pemohon.");
+  navigateTo("/BF-PRF/AS/FR/04");
 };
 
 const handleSimpanDraf = () => {
@@ -307,7 +451,4 @@ const handleKembali = () => {
 };
 
 const dokumenLengkap = ref("");
-
-
 </script>
-

@@ -26,6 +26,7 @@
             required:
               'Sila pilih sama ada anda seorang muallaf atau tidak',
           }"
+          :disabled="readOnly"
           v-model="formData.adakah_muallaf"
         />
       </div>
@@ -45,6 +46,7 @@
             matches:
               'Format tarikh tidak sah. Sila gunakan format DD/MM/YYYY',
           }"
+          :disabled="readOnly"
           v-model="formData.tarikh_masuk_islam"
         />
       </div>
@@ -63,6 +65,7 @@
             matches:
               'Format tarikh tidak sah. Sila gunakan format DD/MM/YYYY',
           }"
+          :disabled="readOnly"
           v-model="formData.tarikh_masuk_kfam"
         />
       </div>
@@ -91,6 +94,7 @@
           :validation-messages="{
             required: 'Sila masukkan nama lain',
           }"
+          :disabled="readOnly"
           v-model="formData.nama_lain"
         />
       </div>
@@ -111,16 +115,18 @@
             max: 'Saiz fail tidak boleh melebihi 5MB',
             mime: 'Format fail tidak sah. Sila pilih fail PDF, JPG, atau PNG',
           }"
+          :disabled="readOnly"
           v-model="formData.dokumen_pengislaman"
         />
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div class="flex justify-between gap-3 mt-6" v-if="showFooterButtons">
       <rs-button
         type="button"
         variant="primary-outline"
         @click="$emit('prev-step')"
+        :disabled="readOnly"
       >
         Kembali
       </rs-button>
@@ -129,10 +135,11 @@
           type="button"
           variant="secondary"
           @click="$emit('save-step')"
+          :disabled="readOnly"
         >
           Simpan
         </rs-button>
-        <rs-button type="button" variant="primary" @click="$emit('next-step')">
+        <rs-button type="button" variant="primary" @click="$emit('next-step')" :disabled="readOnly">
           Maklumat Perbankan
         </rs-button>
       </div>
@@ -150,6 +157,14 @@ const props = defineProps({
   islamicDatesValidation: {
     type: Object,
     default: () => ({ isValid: true, message: '' })
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
+  },
+  readOnly: {
+    type: Boolean,
+    default: false
   }
 })
 

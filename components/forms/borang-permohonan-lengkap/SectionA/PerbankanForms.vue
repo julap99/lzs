@@ -20,6 +20,7 @@
               name="kaedah_pembayaran"
               :options="paymentMethodOptionsMain"
               validation="required"
+              :disabled="readOnly"
               v-model="formData.kaedah_pembayaran"
               :validation-messages="{
                 required: 'Sila pilih sama ada anda mempunyai akaun bank',
@@ -43,6 +44,7 @@
                 { label: 'Ya', value: 'Y' },
                 { label: 'Tidak', value: 'T' },
               ]"
+              :disabled="readOnly"
               v-model="formData.muflis_disenarai_hitam"
             />
           </div>
@@ -80,6 +82,7 @@
               placeholder="Pilih nama bank"
               :options="bankOptions"
               validation="required"
+              :disabled="readOnly"
               v-model="account.nama_bank"
             />
 
@@ -89,6 +92,7 @@
               :name="`bank${index}NoAkaun`"
               label="No. Akaun Bank"
               validation="required"
+              :disabled="readOnly"
               v-model="account.no_akaun_bank"
             />
 
@@ -98,6 +102,7 @@
               :name="`bank${index}NamaPemegang`"
               label="Nama Pemegang Akaun "
               validation="required"
+              :disabled="readOnly"
               v-model="account.nama_pemegang_akaun"
             />
 
@@ -112,6 +117,7 @@
                 { label: 'Bersama', value: 'bersama' },
               ]"
               validation="required"
+              :disabled="readOnly"
               v-model="account.jenis_akaun"
             />
 
@@ -122,6 +128,7 @@
               :name="`bank${index}IdPengenalan`"
               label="Pengenalan Id "
               validation="required"
+              :disabled="readOnly"
               v-model="account.id_pengenalan"
             />
 
@@ -132,6 +139,7 @@
               :name="`bank${index}NamaBersama`"
               label="Nama "
               validation="required"
+              :disabled="readOnly"
               v-model="account.nama_bersama"
             />
 
@@ -142,6 +150,7 @@
               :name="`bank${index}Hubungan`"
               label="Hubungan "
               validation="required"
+              :disabled="readOnly"
               v-model="account.hubungan"
             />
           </div>
@@ -152,6 +161,7 @@
             variant="secondary"
             @click="$emit('add-bank-account')"
             type="button"
+            :disabled="readOnly"
           >
             <Icon name="mdi:plus" class="mr-1" size="1rem" />
             Tambah Akaun Bank
@@ -171,6 +181,7 @@
             validation="required"
             placeholder="Pilih sebab tiada akaun bank"
             v-model="formData.sebab_tiada_akaun"
+            :disabled="readOnly"
             :validation-messages="{
               required: 'Sila pilih sebab tiada akaun bank',
             }"
@@ -185,6 +196,7 @@
             label="Lain-lain Sebab Tiada Akaun"
             placeholder="Sila nyatakan sebab lain"
             validation="required"
+            :disabled="readOnly"
             :validation-messages="{
               required: 'Sila nyatakan sebab lain',
             }"
@@ -194,11 +206,12 @@
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div class="flex justify-between gap-3 mt-6" v-if="showFooterButtons">
       <rs-button
         type="button"
         variant="primary-outline"
         @click="$emit('prev-step')"
+        :disabled="readOnly"
         >Kembali</rs-button
       >
       <div class="flex gap-3">
@@ -206,9 +219,10 @@
           type="button"
           variant="secondary"
           @click="$emit('save-step')"
+          :disabled="readOnly"
           >Simpan</rs-button
         >
-        <rs-button type="button" variant="primary" @click="$emit('next-step')"
+        <rs-button type="button" variant="primary" @click="$emit('next-step')" :disabled="readOnly"
           >Maklumat Kesihatan</rs-button
         >
       </div>
@@ -236,6 +250,14 @@ const props = defineProps({
     default: () => []
   },
   showLainLainSebabTiadaAkaun: {
+    type: Boolean,
+    default: false
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
+  },
+  readOnly: {
     type: Boolean,
     default: false
   }
