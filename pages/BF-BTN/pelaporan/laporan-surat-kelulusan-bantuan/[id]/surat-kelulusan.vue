@@ -118,23 +118,80 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, reactive, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
-// Hardcoded mock data (edit freely)
-const surat = {
-  noRujukan: 'AAP-2025-00163686',
-  tarikh: '06 Mar 2025',
-  penerimaNama: 'SITI NORHANI',
-  penerimaAlamat: 'BANDAR BARU PERDANA, SHAH ALAM',
-  kodBantuan: 'B105',
-  permohonanBantuan: 'BANTUAN KEPERLUAN HIDUP (MUALLAF)',
-  kategoriAsnaf: 'Muallaf',
-  penerimaBayaran: 'SITI NORHANI',
-  kadarBantuan: 'RM5,000.00 SAHAJA',
-  kaedahPenyaluran: 'Akaun',
-  kadarBantuanSebulan: null, // Only for recurring
-  tempohBantuan: null // Only for recurring
+// Selected surat state populated from route params
+const surat = reactive({
+  noRujukan: '',
+  tarikh: '',
+  penerimaNama: '',
+  penerimaAlamat: '',
+  kodBantuan: '',
+  permohonanBantuan: '',
+  kategoriAsnaf: '',
+  penerimaBayaran: '',
+  kadarBantuan: null,
+  kadarBantuanSebulan: null,
+  tempohBantuan: null,
+  kaedahPenyaluran: ''
+})
+
+const allSurat = {
+  'AAP-2025-00163683': {
+    noRujukan: 'AAP-2025-00163683',
+    tarikh: '03 Mar 2025',
+    penerimaNama: 'JONATHAN BALAN SOLOMON',
+    penerimaAlamat: 'KAMARAH BINTI YAKUB BLOK B-07-23 KOMPLEKS SURIA KINRARA',
+    kodBantuan: 'B102',
+    permohonanBantuan: 'BANTUAN KEPERLUAN HIDUP (FAKIR)',
+    kategoriAsnaf: 'Fakir',
+    penerimaBayaran: 'JONATHAN BALAN SOLOMON',
+    kadarBantuan: 'RM4,400.00 SAHAJA',
+    kaedahPenyaluran: 'Akaun',
+    tindakan: true
+  },
+  'AAP-2025-00163684': {
+    noRujukan: 'AAP-2025-00163684',
+    tarikh: '04 Mar 2025',
+    penerimaNama: 'MARYAM ALI',
+    penerimaAlamat: 'KAMARAH BINTI YAKUB BLOK B-07-24 KOMPLEKS SURIA KINRARA',
+    kodBantuan: 'B103',
+    permohonanBantuan: 'BANTUAN KEPERLUAN HIDUP (MISKIN)',
+    kategoriAsnaf: 'Miskin',
+    penerimaBayaran: 'MARYAM ALI',
+    kadarBantuanSebulan: 'RM4,400.00 SAHAJA',
+    tempohBantuan: '10 bulan',
+    kaedahPenyaluran: 'Akaun',
+    tindakan: true
+  },
+  'AAP-2025-00163685': {
+    noRujukan: 'AAP-2025-00163685',
+    tarikh: '05 Mar 2025',
+    penerimaNama: 'ALI MUHAMMAD',
+    penerimaAlamat: 'LOT 25, JALAN TEBRAU, KUALA LUMPUR',
+    kodBantuan: 'B104',
+    permohonanBantuan: 'BANTUAN KEPERLUAN HIDUP (MISKIN)',
+    kategoriAsnaf: 'Miskin',
+    penerimaBayaran: 'ALI MUHAMMAD',
+    kadarBantuanSebulan: 'RM4,400.00 SAHAJA',
+    tempohBantuan: '12 bulan',
+    kaedahPenyaluran: 'Tunai',
+    tindakan: true
+  },
+  'AAP-2025-00163686': {
+    noRujukan: 'AAP-2025-00163686',
+    tarikh: '06 Mar 2025',
+    penerimaNama: 'SITI NORHANI',
+    penerimaAlamat: 'BANDAR BARU PERDANA, SHAH ALAM',
+    kodBantuan: 'B105',
+    permohonanBantuan: 'BANTUAN KEPERLUAN HIDUP (MUALLAF)',
+    kategoriAsnaf: 'Muallaf',
+    penerimaBayaran: 'SITI NORHANI',
+    kadarBantuan: 'RM5,000.00 SAHAJA',
+    kaedahPenyaluran: 'Akaun',
+    tindakan: true
+  }
 }
 
 const isOneOff = computed(() => !!surat.kadarBantuan && !surat.kadarBantuanSebulan)
@@ -171,6 +228,25 @@ const jumlahKeseluruhanDisplay = computed(() =>
 )
 
 const router = useRouter()
+const route = useRoute()
+
+// Function to hydrate surat data
+const hydrateSurat = () => {
+  const key = route.params?.id || ''
+  console.log('Loading surat for key:', key)
+  
+  const found = allSurat[key] || Object.values(allSurat)[0]
+  console.log('Found surat data:', found)
+  
+  Object.assign(surat, found)
+}
+
+// Initial hydration
+hydrateSurat()
+
+// Watch for route changes to update surat data
+watch(() => route.params?.id, hydrateSurat)
+
 function goBack() { router.back() }
 function printPage() { if (typeof window !== 'undefined') window.print() }
 </script>

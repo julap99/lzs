@@ -168,6 +168,6 @@ const getStatusVariant = (status) => {
 };
 
 const handleSemak = (id) => {
-  navigateTo('/BF-PRF/AS/permohonan/semakan-data');
+  navigateTo('/BF-PRF/AS/permohonan/list-semakan/semakan-data-lengkap');
 };
 </script>
