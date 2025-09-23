@@ -24,7 +24,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:person-outline" class="mr-2" />
             Maklumat Pemohon
           </div>
         </template>
@@ -43,7 +42,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:info-outline" class="mr-2" />
             Maklumat Bantuan
           </div>
         </template>
@@ -64,7 +62,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:info-outline" class="mr-2" />
             Maklumat Tuntutan
           </div>
         </template>
@@ -72,7 +69,9 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormKit type="text" label="Nombor GL" :modelValue="row.noGL" :disabled="true" />
             <FormKit type="text" label="Nombor Invoice" :modelValue="noInvois" :disabled="true" />
+            <FormKit type="text" label="Amaun GL (RM)" :modelValue="`RM ${formatNumber(row.amaunGL)}`" :disabled="true" />
             <FormKit type="text" label="Amaun Tuntutan (RM)" :modelValue="`RM ${formatNumber(row.amaunTuntutan)}`" :disabled="true" />
+            <FormKit type="text" label="Baki Amaun (RM)" :modelValue="`RM ${formatNumber(row.bakiAmaun)}`" :disabled="true" />
             <FormKit type="text" label="Tarikh Mohon Tuntutan" :modelValue="formatDate(row.tarikhPermohonan)" :disabled="true" />
             <FormKit type="text" label="Catatan Tambahan" :modelValue="catatanTambahan" :disabled="true" />
           </div>
@@ -83,7 +82,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:description" class="mr-2" />
             Maklumat Dokumen Sokongan
           </div>
         </template>
@@ -107,7 +105,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:fact-check-outline" class="mr-2" />
             Keputusan Siasatan
           </div>
         </template>
@@ -121,60 +118,12 @@
         </template>
       </rs-card>
 
-      <!-- Section 5: Semakan Maklumat -->
-      <rs-card>
-        <template #header>
-          <div class="flex items-center">
-            <Icon name="material-symbols:insights" class="mr-2" />
-            Semakan Maklumat
-          </div>
-        </template>
-        <template #body>
-          <div class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Status GL</label>
-              <rs-badge :variant="row.statusGL === 'Lulus' ? 'success' : 'danger'">
-                {{ row.statusGL }}
-              </rs-badge>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Perbandingan Amaun GL vs Tuntutan</label>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <StatBox title="Amaun GL" :value="`RM ${formatNumber(row.amaunGL)}`" />
-                <StatBox title="Amaun Tuntutan" :value="`RM ${formatNumber(row.amaunTuntutan)}`" />
-                <StatBox title="Perbezaan" :value="`RM ${formatNumber(Math.abs(row.amaunGL - row.amaunTuntutan))}`" :classValue="row.amaunTuntutan > row.amaunGL ? 'text-danger' : 'text-success'" />
-              </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh & Dokumen Perkhidmatan</label>
-              <div class="space-y-2">
-                <div>Tarikh: {{ row.tarikhPerkhidmatan ? formatDate(row.tarikhPerkhidmatan) : '-' }}</div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <a v-for="(doc, i) in (row.dokumenPerkhidmatan || [])" :key="i" :href="doc.url" target="_blank" class="text-primary-600 hover:text-primary-800 flex items-center">
-                    <Icon name="material-symbols:file-present-outline" class="mr-1" />
-                    {{ doc.name }}
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Lampiran Lain</label>
-              <div class="flex items-center flex-wrap gap-2">
-                <a v-for="(doc, i) in (row.lampiranLain || [])" :key="i" :href="doc.url" target="_blank" class="text-primary-600 hover:text-primary-800 flex items-center">
-                  <Icon name="material-symbols:file-present-outline" class="mr-1" />
-                  {{ doc.name }}
-                </a>
-              </div>
-            </div>
-          </div>
-        </template>
-      </rs-card>
+      <!-- Section 5: Semakan Maklumat (removed per backlog) -->
 
       <!-- Section 6: Maklumat Kelulusan (3.6) -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:approval-outline" class="mr-2" />
             Maklumat Kelulusan
           </div>
         </template>
@@ -215,6 +164,8 @@
             <div class="flex justify-between"><span class="font-medium">ID Permohonan:</span><span>{{ row?.idPermohonan }}</span></div>
             <div class="flex justify-between"><span class="font-medium">No. GL:</span><span>{{ row?.noGL }}</span></div>
             <div class="flex justify-between"><span class="font-medium">Amaun Tuntutan:</span><span>RM {{ formatNumber(row?.amaunTuntutan || 0) }}</span></div>
+            <div class="flex justify-between"><span class="font-medium">Amaun GL:</span><span>RM {{ formatNumber(row?.amaunGL || 0) }}</span></div>
+            <div class="flex justify-between"><span class="font-medium">Baki Amaun:</span><span>RM {{ formatNumber(row?.bakiAmaun || 0) }}</span></div>
             <div class="flex justify-between"><span class="font-medium">Status GL:</span><span>{{ row?.statusGL }}</span></div>
             <div class="flex justify-between"><span class="font-medium">Catatan:</span><span>{{ form.catatan || '-' }}</span></div>
           </div>
@@ -235,6 +186,7 @@
 
 <script setup lang="ts">
 import { ref, computed, defineComponent, h } from 'vue'
+import { navigateTo } from '#app'
 
 // =====================================
 // Inline Types (from former mock module)
@@ -265,6 +217,7 @@ type TuntutanItem = {
   noInvois?: string
   amaunTuntutan: number
   amaunGL: number
+  bakiAmaun: number
   tarikhPermohonan: string
   pegawaiETD: string
   statusGL: 'Lulus' | 'Tidak Lulus'
@@ -295,7 +248,7 @@ const createPemohonMock = (overrides: Partial<Pemohon> = {}): Pemohon => ({ ...p
 const _items = ref<TuntutanItem[]>([
   {
     id: 'TDS-2024-001', idPermohonan: 'TDS-2024-001', noGL: 'GL-2024-001', noInvois: 'INV-2024-001',
-    amaunTuntutan: 5000, amaunGL: 6000, tarikhPermohonan: '2024-03-20T09:30:00', pegawaiETD: 'Sarah binti Omar', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-03-15T00:00:00',
+    amaunTuntutan: 5000, amaunGL: 6000, bakiAmaun: 1000, tarikhPermohonan: '2024-03-20T09:30:00', pegawaiETD: 'Sarah binti Omar', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-03-15T00:00:00',
     dokumenSokongan: [{ name: 'GL_Report_2024.pdf', url: '#' }, { name: 'Invoice_INV-2024-001.pdf', url: '#' }],
     dokumenPerkhidmatan: [{ name: 'Surat Pengesahan Perkhidmatan.pdf', url: '#' }], lampiranLain: [{ name: 'Gambar Lokasi.jpg', url: '#' }],
     bantuanData: { kodBantuan: 'B400', jenisBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA', bahanBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', pakejBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA', kelayakanBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA' },
@@ -305,7 +258,7 @@ const _items = ref<TuntutanItem[]>([
   },
   {
     id: 'TDS-2024-002', idPermohonan: 'TDS-2024-002', noGL: 'GL-2024-002', noInvois: 'INV-2024-145',
-    amaunTuntutan: 3000, amaunGL: 2500, tarikhPermohonan: '2024-04-02T11:00:00', pegawaiETD: 'Ahmad Faiz', statusGL: 'Tidak Lulus', tarikhPerkhidmatan: '2024-03-29T00:00:00',
+    amaunTuntutan: 3000, amaunGL: 2500, bakiAmaun: -500, tarikhPermohonan: '2024-04-02T11:00:00', pegawaiETD: 'Ahmad Faiz', statusGL: 'Tidak Lulus', tarikhPerkhidmatan: '2024-03-29T00:00:00',
     dokumenSokongan: [{ name: 'Resit Pembelian.pdf', url: '#' }], dokumenPerkhidmatan: [], lampiranLain: [],
     bantuanData: { kodBantuan: 'B210', jenisBantuan: '(HQ) BANTUAN TUNAI KECEMASAN', bahanBantuan: '(HQ) BANTUAN WANG TUNAI', pakejBantuan: 'Pakej Tunai', kelayakanBantuan: 'Kecemasan - Maks RM2500' },
     pemohon: createPemohonMock({ nama: 'Syarikat Berkat Niaga', noId: 'VND-20002', telefon: '012-345 6789', email: 'akaun@berkatniaga.com', alamat: 'No. 8, Jalan Perniagaan 3, 81200 Johor Bahru, Johor' }),
@@ -314,7 +267,7 @@ const _items = ref<TuntutanItem[]>([
   },
   {
     id: 'TDS-2024-003', idPermohonan: 'TDS-2024-003', noGL: 'GL-2024-003', noInvois: 'INV-2024-223',
-    amaunTuntutan: 2000, amaunGL: 2000, tarikhPermohonan: '2024-04-10T14:30:00', pegawaiETD: 'Noraini Zulkifli', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-04-05T00:00:00',
+    amaunTuntutan: 2000, amaunGL: 2000, bakiAmaun: 0, tarikhPermohonan: '2024-04-10T14:30:00', pegawaiETD: 'Noraini Zulkifli', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-04-05T00:00:00',
     dokumenSokongan: [{ name: 'Invoice Barang.pdf', url: '#' }], dokumenPerkhidmatan: [{ name: 'Surat Syor.pdf', url: '#' }], lampiranLain: [],
     bantuanData: { kodBantuan: 'B330', jenisBantuan: '(HQ) BANTUAN BARANGAN KEGUNAAN HARIAN', bahanBantuan: 'BARANGAN DAPUR', pakejBantuan: 'Pakej Barangan RM2000', kelayakanBantuan: 'Isi Rumah' },
     pemohon: createPemohonMock({ nama: 'Ali bin Ahmad', noId: '910101-14-5677', telefon: '013-888 1122', email: 'ali.ahmad@example.com', alamat: 'No. 21, Jalan Mawar 2, Taman Mawar, 40400 Shah Alam, Selangor' }),
@@ -323,7 +276,7 @@ const _items = ref<TuntutanItem[]>([
   },
   {
     id: 'TDS-2024-004', idPermohonan: 'TDS-2024-004', noGL: 'GL-2024-004', noInvois: 'INV-2024-417',
-    amaunTuntutan: 8000, amaunGL: 10000, tarikhPermohonan: '2024-05-05T10:15:00', pegawaiETD: 'Mohd Yazid', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-05-01T00:00:00',
+    amaunTuntutan: 8000, amaunGL: 10000, bakiAmaun: 2000, tarikhPermohonan: '2024-05-05T10:15:00', pegawaiETD: 'Mohd Yazid', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-05-01T00:00:00',
     dokumenSokongan: [{ name: 'Quotation Peralatan.pdf', url: '#' }], dokumenPerkhidmatan: [{ name: 'Surat Pengesahan.pdf', url: '#' }], lampiranLain: [{ name: 'Gambar Lokasi.jpg', url: '#' }],
     bantuanData: { kodBantuan: 'B500', jenisBantuan: '(HQ) BANTUAN PEMBINAAN RUMAH', bahanBantuan: 'BAHAN BINAAN', pakejBantuan: 'Pakej Rumah Asnaf', kelayakanBantuan: 'Keluarga Asnaf Fakir Miskin' },
     pemohon: createPemohonMock({ nama: 'Keluarga Pn. Zainab', noId: '800202-10-2233', telefon: '017-222 3344', email: 'zainab.keluarga@example.com', alamat: 'Kg. Seri Makmur, 27000 Jerantut, Pahang' }),
@@ -332,7 +285,7 @@ const _items = ref<TuntutanItem[]>([
   },
   {
     id: 'TDS-2024-005', idPermohonan: 'TDS-2024-005', noGL: 'GL-2024-005', noInvois: 'INV-2024-590',
-    amaunTuntutan: 1200, amaunGL: 1500, tarikhPermohonan: '2024-05-15T09:00:00', pegawaiETD: 'Siti Aminah', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-05-12T00:00:00',
+    amaunTuntutan: 1200, amaunGL: 1500, bakiAmaun: 300, tarikhPermohonan: '2024-05-15T09:00:00', pegawaiETD: 'Siti Aminah', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-05-12T00:00:00',
     dokumenSokongan: [], dokumenPerkhidmatan: [], lampiranLain: [],
     bantuanData: { kodBantuan: 'B110', jenisBantuan: '(HQ) BANTUAN PERUBATAN', bahanBantuan: 'RAWATAN KLINIK', pakejBantuan: 'Rawatan Kesihatan', kelayakanBantuan: 'Asnaf - Pesakit Kronik' },
     pemohon: createPemohonMock({ nama: 'Klinik Kasih', noId: 'VND-30005', telefon: '03-7788 9090', email: 'akaun@klinikkasih.my', alamat: '19, Jalan Sehat, 46050 Petaling Jaya, Selangor' }),
@@ -368,7 +321,7 @@ const pemohonView = computed(() => {
 })
 
 const breadcrumb = ref([
-  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
+  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
   { name: 'Senarai Tuntutan Pelulus', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
   { name: 'Semakan & Kelulusan', type: 'current', path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${paramId.value}/semak-kelulusan` },
 ])

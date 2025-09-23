@@ -1,5 +1,7 @@
 <template>
   <div class="p-6 space-y-6">
+    <LayoutsBreadcrumb :items="breadcrumb" />
+    <!-- Title -->
     <div>
       <h1 class="text-2xl font-semibold">Laporan Surat Kelulusan Bantuan</h1>
     </div>
@@ -38,7 +40,7 @@
           />
         </div>
 
-        <div class="mt-6 flex justify-between">
+        <div class="mt-6 flex gap-3">
           <rs-button variant="primary" @click="onSearch">Cari</rs-button>
           <rs-button
             variant="secondary"
@@ -53,7 +55,7 @@
 
     <!-- Senarai Surat -->
     <div
-      v-if="filteredResults.length"
+      v-if="showTable && filteredResults.length"
       class="rounded-2xl border border-gray-200 bg-white shadow-sm"
     >
       <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
@@ -70,20 +72,26 @@
           :options="{ variant: 'default', striped: true, bordered: false, hover: true }"
         >
           <!-- Tindakan -->
-          <template #tindakan="{ row }">
-            <rs-button
-              variant="ghost"
-              size="sm"
-              class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
-              @click="goToSurat(row.noRujukan)"
-              title="Lihat Surat Kelulusan Bantuan"
-              aria-label="Lihat Surat Kelulusan Bantuan"
-            >
-              <Icon name="material-symbols:visibility-outline" class="w-5 h-5" />
-            </rs-button>
+          <template #tindakan="{ value }">
+            <div class="flex justify-center items-center">
+              <rs-button
+                variant="info-text"
+                class="p-1 w-8 h-8"
+                @click="navigateTo(`/BF-BTN/pelaporan/laporan-surat-kelulusan-bantuan/${value.noRujukan}/surat-kelulusan`)"
+                title="Lihat"
+                aria-label="Lihat"
+              >
+                <Icon name="ic:outline-visibility" size="18" />
+              </rs-button>
+            </div>
           </template>
+                  
         </rs-table>
       </div>
+    </div>
+
+    <div v-else class="text-sm text-gray-500">
+      Tiada data untuk paparan. Sila gunakan carian atau semak mock data.
     </div>
   </div>
 </template>
@@ -94,19 +102,13 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// 🚀 Pergi ke page surat-kelulusan
-function goToSurat(id) {
-  if (!id) return
-  const surat = allSurat.find(s => s.noRujukan === id)
-  router.push({
-    path: `/BF-BTN/pelaporan/laporan-surat-kelulusan-bantuan/${id}/surat-kelulusan`,
-    state: { surat }
-  })
-}
+const breadcrumb = ref([
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/pelaporan' },
+  { name: 'Laporan', type: 'link', path: '/BF-BTN/pelaporan' },
+  { name: 'Laporan Surat Kelulusan Bantuan', type: 'current', path: '/BF-BTN/pelaporan/laporan-surat-kelulusan-bantuan' },
+])
 
-const form = reactive({ noRujukan: '', kategoriAsnaf: '', kodBantuan: '' })
-
-// 🔹 Mock data
+// 🔹 Mock data (selaras dengan halaman surat)
 const allSurat = [
   {
     noRujukan: 'AAP-2025-00163683',
@@ -130,7 +132,7 @@ const allSurat = [
     permohonanBantuan: 'BANTUAN KEPERLUAN HIDUP (MISKIN)',
     kategoriAsnaf: 'Miskin',
     penerimaBayaran: 'MARYAM ALI',
-    kadarBantuanSebulan: 'RM300.00',
+    kadarBantuanSebulan: 'RM4,400.00 SAHAJA',
     tempohBantuan: '10 bulan',
     kaedahPenyaluran: 'Akaun',
     tindakan: true
@@ -144,7 +146,7 @@ const allSurat = [
     permohonanBantuan: 'BANTUAN KEPERLUAN HIDUP (MISKIN)',
     kategoriAsnaf: 'Miskin',
     penerimaBayaran: 'ALI MUHAMMAD',
-    kadarBantuanSebulan: 'RM250.00',
+    kadarBantuanSebulan: 'RM4,400.00 SAHAJA',
     tempohBantuan: '12 bulan',
     kaedahPenyaluran: 'Tunai',
     tindakan: true
@@ -164,12 +166,15 @@ const allSurat = [
   }
 ]
 
-// Dropdown options
+// 🔎 Carian form
+const form = reactive({ noRujukan: '', kategoriAsnaf: '', kodBantuan: '' })
+
+// 🔽 Dropdown options
 const noRujukanOptions = allSurat.map(s => ({ label: s.noRujukan, value: s.noRujukan }))
 const kategoriAsnafOptions = [...new Set(allSurat.map(s => s.kategoriAsnaf))].map(v => ({ label: v, value: v }))
 const kodBantuanOptions = [...new Set(allSurat.map(s => s.kodBantuan))].map(v => ({ label: v, value: v }))
 
-// Table
+// 📋 Table settings
 const filteredResults = ref([])
 const pageSize = ref(5)
 const columns = [
@@ -180,23 +185,55 @@ const columns = [
   { key: 'tindakan', label: 'Tindakan' }
 ]
 
+// To control table visibility before search
+const showTable = ref(false)
+
+// 🔍 Actions
 function onSearch() {
   filteredResults.value = allSurat.filter(s =>
     (!form.noRujukan || s.noRujukan === form.noRujukan) &&
     (!form.kategoriAsnaf || s.kategoriAsnaf === form.kategoriAsnaf) &&
     (!form.kodBantuan || s.kodBantuan === form.kodBantuan)
   )
+  console.log('Filtered results:', filteredResults.value)
+  showTable.value = true  // Show the table after search
 }
+
 function onReset() {
   form.noRujukan = ''
   form.kategoriAsnaf = ''
   form.kodBantuan = ''
   filteredResults.value = allSurat.slice()
+  showTable.value = false  // Hide the table after reset
 }
 
-// Debug: tunjuk semua route
+// 🚀 Navigate directly to the surat page
+// 🚀 Navigate directly to the surat page (robust)
+// function goToSurat(id) {
+//   if (!id) return
+//   const path = `/BF-BTN/pelaporan/laporan-surat-kelulusan-bantuan/${id.noRujukan}/surat-kelulusan`
+//   if (typeof navigateTo === 'function') return navigateTo(path)
+//   router.push(path)
+// }
+
 onMounted(() => {
-  console.log('ROUTES:', router.getRoutes().map(r => r.path))
   filteredResults.value = allSurat.slice()
+  console.log('On mount - allSurat:', allSurat)
+  console.log('On mount - filteredResults:', filteredResults.value)
 })
 </script>
+
+
+<style lang="scss" scoped>
+.rs-table {
+  :deep(th) {
+    @apply bg-gray-50 text-gray-600 font-medium;
+  }
+}
+.tooltip-enter-active, .tooltip-leave-active {
+  transition: opacity 0.2s;
+}
+.tooltip-enter-from, .tooltip-leave-to {
+  opacity: 0;
+}
+</style>

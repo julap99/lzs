@@ -3,15 +3,7 @@
       <LayoutsBreadcrumb :items="breadcrumb" />
   
       <div class="grid lg:grid-cols-3 gap-6 mt-4">
-        <div class="lg:col-span-2">
-      <rs-card>
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Permohonan Bantuan</h2>
-          </div>
-        </template>
-  
-        <template #body>
+        <div class="lg:col-span-2 space-y-6">
           <FormKit
             type="form"
             @submit="handleSubmit"
@@ -19,9 +11,12 @@
             v-model="formData"
           >
             <!-- 3.1 Maklumat Pemohon -->
-            <div class="mb-8">
-              <h3 class="text-lg font-medium mb-4">3.1 Maklumat Pemohon</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <rs-card>
+              <template #header>
+                <h3 class="text-lg font-medium">Maklumat Pemohon</h3>
+              </template>
+              <template #body>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="text"
                   name="tarikhPermohonan"
@@ -71,49 +66,57 @@
                   :value="userProfile.statusMultidimensi"
                   disabled
                 />
-              </div>
-            </div>
+                </div>
+              </template>
+            </rs-card>
 
             <!-- 3.2 Maklumat Penerima Manfaat (jika tanggungan) -->
-            <div class="mb-8">
-              <h3 class="text-lg font-medium mb-4">3.2 Maklumat Penerima Manfaat (jika tanggungan)</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <rs-card>
+              <template #header>
+                <h3 class="text-lg font-medium">Maklumat Penerima Manfaat (jika tanggungan)</h3>
+              </template>
+              <template #body>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="select"
                   name="penerimaManfaatNama"
                   label="Nama"
                   :options="dependentsOptions"
-                  :value="selectedDependentId"
+                  v-model="selectedDependentId"
                   @input="onDependentChange"
                 />
                 <FormKit
                   type="text"
                   name="penerimaManfaatJenisPengenalan"
                   label="Jenis Pengenalan"
-                  :value="selectedDependent?.jenisPengenalan || ''"
+                  v-model="penerimaManfaatJenisPengenalan"
                   disabled
                 />
                 <FormKit
                   type="text"
                   name="penerimaManfaatNoPengenalan"
                   label="No. Pengenalan"
-                  :value="selectedDependent?.noPengenalan || ''"
+                  v-model="penerimaManfaatNoPengenalan"
                   disabled
                 />
                 <FormKit
                   type="text"
                   name="penerimaManfaatHubungan"
                   label="Hubungan"
-                  :value="selectedDependent?.hubungan || ''"
+                  v-model="penerimaManfaatHubungan"
                   disabled
                 />
-              </div>
-            </div>
+                </div>
+              </template>
+            </rs-card>
   
             <!-- 3.3 Maklumat Permohonan Bantuan -->
-            <div class="mb-8">
-              <h3 class="text-lg font-medium mb-4">3.3 Maklumat Permohonan Bantuan</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <rs-card>
+              <template #header>
+                <h3 class="text-lg font-medium">Maklumat Permohonan Bantuan</h3>
+              </template>
+              <template #body>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="text"
                   name="noBantuan"
@@ -182,13 +185,17 @@
                   }"
                   :rows="4"
                 />
-              </div>
-            </div>
+                </div>
+              </template>
+            </rs-card>
 
             <!-- 3.4 Maklumat Kadar Bantuan -->
-            <div class="mb-8">
-              <h3 class="text-lg font-medium mb-4">3.4 Maklumat Kadar Bantuan</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <rs-card>
+              <template #header>
+                <h3 class="text-lg font-medium">Maklumat Kadar Bantuan</h3>
+              </template>
+              <template #body>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="number"
                   name="kadarBantuan"
@@ -203,7 +210,6 @@
                     number: 'Nilai mesti nombor',
                     min: 'Nilai tidak boleh negatif',
                   }"
-                  help="Nilai maksimum: RM {{ maxKadarBantuan.toLocaleString() }}"
                 />
 
                 <FormKit
@@ -227,32 +233,42 @@
                   v-model="formData.tarikhMula"
                   validation="required"
                   :validation-messages="{ required: 'Sila pilih tarikh mula' }"
+                  :key="`tarikh-mula-${formData.tarikhMula || 'empty'}`"
                 />
 
-                <FormKit
-                  type="date"
-                  name="tarikhTamat"
-                  label="Tarikh Tamat"
-                  :value="computedTarikhTamat"
-                  disabled
-                  help="Auto diisi berdasarkan tarikh mula dan tempoh"
-                />
+                <div class="formkit-outer">
+                  <label class="formkit-label">Tarikh Tamat</label>
+                  <div class="formkit-wrapper">
+                    <input
+                      type="date"
+                      v-model="formData.tarikhTamat"
+                      disabled
+                      class="formkit-input"
+                    />
+                  </div>
+                  <div class="formkit-help">Auto diisi berdasarkan tarikh mula dan tempoh</div>
+                </div>
 
                 <FormKit
                   type="text"
                   name="jumlahKeseluruhan"
                   label="Jumlah Keseluruhan Bantuan Diterima"
                   :value="jumlahKeseluruhanFormatted"
+                  :key="`jumlah-${formData.kadarBantuan || 0}-${formData.tempoh || 0}`"
                   disabled
                   help="Kadar x Tempoh/Kekerapan"
                 />
-              </div>
-            </div>
+                </div>
+              </template>
+            </rs-card>
 
-            <!-- 3.4 Maklumat Penerima Bayaran -->
-            <div class="mb-8">
-              <h3 class="text-lg font-medium mb-4">3.4 Maklumat Penerima Bayaran</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 3.5 Maklumat Penerima Bayaran -->
+            <rs-card>
+              <template #header>
+                <h3 class="text-lg font-medium">Maklumat Penerima Bayaran</h3>
+              </template>
+              <template #body>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
                   type="select"
                   name="kategoriPenerimaBayaran"
@@ -264,6 +280,7 @@
                 />
 
                 <FormKit
+                  v-if="showJenisPengenalan"
                   type="select"
                   name="jenisPengenalanPenerima"
                   label="Jenis Pengenalan"
@@ -274,26 +291,6 @@
                 />
 
                 <FormKit
-                  type="text"
-                  name="noPengenalanPenerima"
-                  label="No Pengenalan"
-                  v-model="formData.noPengenalanPenerima"
-                  validation="required"
-                  :validation-messages="{ required: 'Sila masukkan no pengenalan' }"
-                  @blur="autoRetrieveRecipient"
-                />
-
-                <FormKit
-                  type="text"
-                  name="namaPenerimaBayaran"
-                  label="Nama Penerima Bayaran"
-                  v-model="formData.namaPenerimaBayaran"
-                  validation="required"
-                  :validation-messages="{ required: 'Sila masukkan nama penerima bayaran' }"
-                />
-
-                <FormKit
-                  v-if="isStaff"
                   type="select"
                   name="kaedahPembayaran"
                   label="Kaedah Pembayaran"
@@ -301,6 +298,41 @@
                   :options="paymentMethodOptions"
                   validation="required"
                   :validation-messages="{ required: 'Sila pilih kaedah pembayaran' }"
+                />
+
+                <template v-if="showRegistrationDropdown">
+                  <FormKit
+                    type="select"
+                    name="noPendaftaran"
+                    label="No Pendaftaran"
+                    v-model="formData.noPengenalanPenerima"
+                    :options="registrationOptions"
+                    validation="required"
+                    :validation-messages="{ required: 'Sila pilih no pendaftaran' }"
+                    @input="loadRecipientByRegistration"
+                    @change="loadRecipientByRegistration"
+                    @update:modelValue="loadRecipientByRegistration"
+                  />
+                </template>
+                <template v-else>
+                  <FormKit
+                    type="text"
+                    name="noPengenalanPenerima"
+                    :label="noIdLabel"
+                    v-model="formData.noPengenalanPenerima"
+                    validation="required"
+                    :validation-messages="{ required: 'Sila masukkan maklumat ini' }"
+                    @blur="autoRetrieveRecipient"
+                  />
+                </template>
+
+                <FormKit
+                  type="text"
+                  name="namaPenerimaBayaran"
+                  :label="namaLabel"
+                  v-model="formData.namaPenerimaBayaran"
+                  validation="required"
+                  :validation-messages="{ required: 'Sila masukkan maklumat ini' }"
                 />
 
                 <FormKit
@@ -332,114 +364,79 @@
                   validation="required"
                   :validation-messages="{ required: 'Sila masukkan no. akaun bank' }"
                 />
-              </div>
-            </div>
+                </div>
+              </template>
+            </rs-card>
 
-            <!-- 3.5 Dokumen Sokongan -->
-            <div class="mb-8">
-              <h3 class="text-lg font-medium mb-4">3.5 Dokumen Sokongan</h3>
-              <div class="overflow-x-auto">
-                <table class="min-w-full text-left text-sm">
-                  <thead>
+            <!-- 3.6 Dokumen Sokongan -->
+            <rs-card>
+              <template #header>
+                <h3 class="text-lg font-medium">Dokumen Sokongan</h3>
+                <p class="text-sm text-gray-600">Semak status dokumen yang diperlukan</p>
+              </template>
+              <template #body>
+                <div class="overflow-x-auto">
+                <table class="min-w-full text-left text-sm border border-gray-200 rounded-lg">
+                  <thead class="bg-gray-50">
                     <tr class="border-b">
-                      <th class="py-2 px-2">No</th>
-                      <th class="py-2 px-2">Dokumen</th>
-                      <th class="py-2 px-2">Keterangan Dokumen</th>
-                      <th class="py-2 px-2">Keperluan Dokumen</th>
-                      <th v-if="showReturnFields" class="py-2 px-2">Status</th>
-                      <th v-if="showReturnFields" class="py-2 px-2">Catatan</th>
-                      <th class="py-2 px-2">Tindakan</th>
+                      <th class="py-3 px-4 font-medium text-gray-900">NO.</th>
+                      <th class="py-3 px-4 font-medium text-gray-900">DOKUMEN</th>
+                      <th class="py-3 px-4 font-medium text-gray-900">ACTION</th>
+                      <th class="py-3 px-4 font-medium text-gray-900">STATUS</th>
+                      <th class="py-3 px-4 font-medium text-gray-900">CATATAN</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr v-for="(doc, idx) in documents" :key="doc.id" class="border-b">
-                      <td class="py-2 px-2">{{ idx + 1 }}</td>
-                      <td class="py-2 px-2">{{ doc.nama }}</td>
-                      <td class="py-2 px-2">{{ doc.keterangan }}</td>
-                      <td class="py-2 px-2">{{ doc.keperluan }}</td>
-                      <td v-if="showReturnFields" class="py-2 px-2">
-                        <FormKit type="select" :options="statusDokumenOptions" v-model="doc.status" />
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="(doc, idx) in documents" :key="doc.id" class="hover:bg-gray-50">
+                      <td class="py-3 px-4 text-gray-900">{{ idx + 1 }}</td>
+                      <td class="py-3 px-4 text-gray-900">{{ doc.nama }}</td>
+                      <td class="py-3 px-4">
+                        <div class="flex space-x-2">
+                          <button 
+                            @click="previewDoc(doc)" 
+                            class="w-8 h-8 rounded-full border-2 border-teal-500 text-teal-500 hover:bg-teal-50 flex items-center justify-center"
+                            :disabled="!doc.files?.length"
+                          >
+                            <Icon name="ph:eye" class="w-4 h-4" />
+                          </button>
+                          <button 
+                            @click="downloadTemplate(doc)" 
+                            class="w-8 h-8 rounded-full border-2 border-teal-500 text-teal-500 hover:bg-teal-50 flex items-center justify-center"
+                          >
+                            <Icon name="ph:download" class="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
-                      <td v-if="showReturnFields" class="py-2 px-2">
-                        <FormKit type="text" placeholder="Catatan" v-model="doc.catatan" />
+                      <td class="py-3 px-4">
+                        <FormKit 
+                          type="select" 
+                          :options="statusDokumenOptions" 
+                          v-model="doc.status"
+                          placeholder="-- Pilih Status --"
+                          class="w-full"
+                        />
                       </td>
-                      <td class="py-2 px-2 space-x-2">
-                        <rs-button size="sm" @click="triggerUpload(doc)">Upload</rs-button>
-                        <rs-button size="sm" variant="secondary" v-if="doc.canDownload" @click="downloadTemplate(doc)">Download</rs-button>
-                        <rs-button size="sm" variant="secondary" @click="previewDoc(doc)" :disabled="!doc.files?.length">Lihat</rs-button>
-                        <rs-button size="sm" variant="secondary" v-if="doc.isDigitalForm" @click="editDigitalForm(doc)">Edit</rs-button>
-                        <input class="hidden" type="file" :multiple="true" :ref="el => setDocInputRef(el, doc.id)" @change="onDocFilesSelected($event, doc)" />
+                      <td class="py-3 px-4">
+                        <FormKit 
+                          type="textarea" 
+                          v-model="doc.catatan" 
+                          placeholder="Masukkan catatan"
+                          :rows="2"
+                          class="w-full"
+                        />
                       </td>
                     </tr>
                   </tbody>
                 </table>
-              </div>
-            </div>
-
-            <!-- 3.6 Maklumat Tindakan (Sidebar-like section) -->
-            <rs-card class="shadow-sm border-0 bg-white sticky top-6 mt-4">
-              <template #header>
-                <div class="flex items-center space-x-3">
-                  <div class="flex-shrink-0">
-                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                      <Icon name="ph:clipboard-text" class="w-6 h-6 text-red-600" />
-                    </div>
-                  </div>
-                  <div>
-                    <h2 class="text-lg font-semibold text-gray-900">3.6 Maklumat Tindakan</h2>
-                    <p class="text-sm text-gray-500">Pilih tindakan dan kemaskini catatan</p>
-                  </div>
-                </div>
-              </template>
-              <template #body>
-                <div class="space-y-4">
-                  <div v-if="showBorangSiasatanButton">
-                    <rs-button variant="secondary" @click="openBorangSiasatanTunai">
-                      Borang Siasatan Tunai (Kaunter Ekspres)
-                    </rs-button>
-                  </div>
-
-                  <FormKit
-                    v-if="showTindakanDropdown"
-                    type="select"
-                    name="tindakan"
-                    label="Tindakan"
-                    v-model="formData.tindakan"
-                    :options="tindakanOptions"
-                  />
-
-                  <FormKit
-                    type="text"
-                    name="catatan"
-                    label="Catatan"
-                    v-model="formData.catatan"
-                  />
-
-                  <div class="flex justify-end gap-2 pt-2">
-                    <rs-button variant="secondary" @click="onSave">Simpan</rs-button>
-                    <rs-button variant="primary" @click="handleSubmit(formData)">Hantar Permohonan</rs-button>
-                    <rs-button @click="handleCancel">Kembali</rs-button>
-                  </div>
                 </div>
               </template>
             </rs-card>
-  
-            <!-- Action Buttons -->
-            <div class="flex justify-end space-x-4">
-              <rs-button variant="secondary" @click="handleCancel">
-                Batal
-              </rs-button>
-              <rs-button type="submit" variant="primary" @click="handleSubmit">
-                Hantar Permohonan
-              </rs-button>
-            </div>
+
           </FormKit>
-        </template>
-      </rs-card>
         </div>
 
         <div class="lg:col-span-1 space-y-6">
-          <!-- 3.6 Maklumat Tindakan (Sidebar) -->
+          <!-- 3.7 Maklumat Tindakan (Sidebar) -->
           <rs-card class="shadow-sm border-0 bg-white sticky top-6">
             <template #header>
               <div class="flex items-center space-x-3">
@@ -449,7 +446,7 @@
                   </div>
                 </div>
                 <div>
-                  <h2 class="text-lg font-semibold text-gray-900">3.6 Maklumat Tindakan</h2>
+                  <h2 class="text-lg font-semibold text-gray-900">Maklumat Tindakan</h2>
                   <p class="text-sm text-gray-500">Pilih tindakan dan kemaskini catatan</p>
                 </div>
               </div>
@@ -524,8 +521,6 @@
       <rs-modal
         v-model="showConfirmationModal"
         title="Pengesahan"
-        :show-close="true"
-        @close="handleCancel"
         position="center"
         ok-title="Ya, Hantar"
         :ok-callback="confirmSubmit"
@@ -542,7 +537,7 @@
   </template>
   
   <script setup>
-  import { ref, computed, onMounted } from "vue";
+  import { ref, computed, onMounted, watch, nextTick } from "vue";
   import { useRouter } from "vue-router";
   import CustomSelect from '~/components/CustomSelect.vue';
   
@@ -552,19 +547,28 @@
   });
   
   const router = useRouter();
-  const formData = ref({});
+  const formData = ref({
+    tarikhMula: '',
+    tempoh: '',
+    kadarBantuan: '',
+    tarikhTamat: '',
+    penerimaManfaatNama: '',
+    penerimaManfaatJenisPengenalan: '',
+    penerimaManfaatNoPengenalan: '',
+    penerimaManfaatHubungan: ''
+  });
   const showSuccessModal = ref(false);
   const showConfirmationModal = ref(false);
   const nomorRujukan = ref("");
   
   // Mock user profile data - replace with actual data from your auth system
   const userProfile = ref({
-    nama: "Ahmad bin Abdullah",
+    nama: "Muhammad Ali bin Abu",
     noKadPengenalan: "901231012345",
-    statusHousehold: "Miskin",
-    statusIndividu: "Asnaf Fakir",
-    jenisPengenalan: "No. Kad Pengenalan",
-    statusMultidimensi: "B40",
+    statusHousehold: "Fakir",
+    statusIndividu: "Fakir",
+    jenisPengenalan: "MyKad",
+    statusMultidimensi: "Asnaf Tidak Produktif",
   });
   
   // Mock staff check - replace with actual auth check
@@ -598,28 +602,85 @@
     },
     {
       id: "1",
-      nama: "Ali bin Abu",
-      jenisPengenalan: "No. Kad Pengenalan",
-      noPengenalan: "050101010101",
-      hubungan: "Anak",
+      nama: "Muhammad Ali bin Abu",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "901231-01-2345",
+      hubungan: "Diri Sendiri",
     },
     {
       id: "2",
-      nama: "Siti binti Ali",
-      jenisPengenalan: "No. Kad Pengenalan",
-      noPengenalan: "080202020202",
+      nama: "Siti Nurliza binti Ahmad",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "901215-02-2346",
+      hubungan: "Isteri",
+    },
+    {
+      id: "3",
+      nama: "Siti binti Muhammad Ali",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "201203-03-2348",
+      hubungan: "Anak",
+    },
+    {
+      id: "4",
+      nama: "Ahmadi bin Muhammad Ali",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "201504-04-2347",
       hubungan: "Anak",
     },
   ]);
   const selectedDependentId = ref("");
+  const penerimaManfaatJenisPengenalan = ref("");
+  const penerimaManfaatNoPengenalan = ref("");
+  const penerimaManfaatHubungan = ref("");
+  
   const dependentsOptions = computed(() =>
     dependents.value.map((d) => ({ label: d.nama, value: d.id, disabled: !!d.disabled }))
   );
-  const selectedDependent = computed(() =>
-    dependents.value.find((d) => d.id === selectedDependentId.value)
-  );
+  const selectedDependent = computed(() => {
+    const found = dependents.value.find((d) => d.id === selectedDependentId.value);
+    console.log('Selected dependent computed:', found);
+    return found;
+  });
   const onDependentChange = (value) => {
     selectedDependentId.value = value;
+    console.log('Selected dependent ID:', value);
+    
+    if (value) {
+      const selectedDep = dependents.value.find(d => d.id === value);
+      if (selectedDep) {
+        // Special handling for Muhammad Ali bin Abu - generate random No. Kad Pengenalan
+        if (value === "1") { // Muhammad Ali bin Abu
+          // Generate realistic Malaysian IC format: YYMMDD-XX-XXXX
+          // Last digit should be odd for male
+          const year = "90";
+          const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+          const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+          const state = String(Math.floor(Math.random() * 99) + 1).padStart(2, '0');
+          const randomDigits = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+          const lastDigit = String(Math.floor(Math.random() * 5) * 2 + 1); // Odd number (1,3,5,7,9)
+          const randomNo = `${year}${month}${day}-${state}-${randomDigits}${lastDigit}`;
+          selectedDep.noPengenalan = randomNo;
+          console.log('Updated Muhammad Ali data:', selectedDep);
+        }
+        
+        // Update the form fields
+        penerimaManfaatJenisPengenalan.value = selectedDep.jenisPengenalan || '';
+        penerimaManfaatNoPengenalan.value = selectedDep.noPengenalan || '';
+        penerimaManfaatHubungan.value = selectedDep.hubungan || '';
+        
+        console.log('Updated form fields:', {
+          jenisPengenalan: penerimaManfaatJenisPengenalan.value,
+          noPengenalan: penerimaManfaatNoPengenalan.value,
+          hubungan: penerimaManfaatHubungan.value
+        });
+      }
+    } else {
+      // Clear fields if no selection
+      penerimaManfaatJenisPengenalan.value = '';
+      penerimaManfaatNoPengenalan.value = '';
+      penerimaManfaatHubungan.value = '';
+    }
   };
   
   // Compute jenis bantuan options from the JSON data
@@ -689,16 +750,64 @@
   // 3.4 Maklumat Kadar Bantuan helpers
   const maxKadarBantuan = computed(() => {
     // Prototype rule: base on statusHousehold and number of dependents
-    const base = userProfile.value.statusHousehold === "Miskin" ? 800 : 600;
+    const base = userProfile.value.statusHousehold === "Fakir" ? 800 : 600;
     const dependentCount = Math.max(0, dependents.value.length - 1); // exclude placeholder
     return base + dependentCount * 50;
   });
   const computedTarikhTamat = computed(() => {
-    if (!formData.value.tarikhMula || !formData.value.tempoh) return "";
-    const start = new Date(formData.value.tarikhMula);
-    const end = new Date(start);
-    end.setMonth(end.getMonth() + Number(formData.value.tempoh));
-    return end.toISOString().slice(0, 10);
+    try {
+      console.log('Computed: tarikhMula =', formData.value.tarikhMula, 'tempoh =', formData.value.tempoh);
+      
+      if (!formData.value.tarikhMula || !formData.value.tempoh) {
+        console.log('Computed: Missing values, returning empty');
+        return "";
+      }
+      
+      const start = new Date(formData.value.tarikhMula);
+      if (isNaN(start.getTime())) {
+        console.log('Computed: Invalid start date');
+        return "";
+      }
+      
+      const end = new Date(start);
+      const tempohValue = Number(formData.value.tempoh);
+      if (isNaN(tempohValue) || tempohValue <= 0) {
+        console.log('Computed: Invalid tempoh value:', tempohValue);
+        return "";
+      }
+      
+      end.setMonth(end.getMonth() + tempohValue);
+      if (isNaN(end.getTime())) {
+        console.log('Computed: Invalid end date');
+        return "";
+      }
+      
+      const result = end.toISOString().slice(0, 10);
+      console.log('Computed: Result =', result);
+      return result;
+    } catch (error) {
+      console.error('Error calculating tarikh tamat:', error);
+      return "";
+    }
+  });
+
+  // Watch for changes in computedTarikhTamat and update formData.tarikhTamat
+  watch(computedTarikhTamat, (newValue) => {
+    console.log('Watcher: computedTarikhTamat changed to:', newValue);
+    formData.value.tarikhTamat = newValue;
+    console.log('Watcher: formData.tarikhTamat set to:', formData.value.tarikhTamat);
+  }, { immediate: true });
+
+  // Also watch for changes in tarikhMula and tempoh to force update
+  watch([() => formData.value.tarikhMula, () => formData.value.tempoh], async () => {
+    console.log('Direct update triggered');
+    const newValue = computedTarikhTamat.value;
+    formData.value.tarikhTamat = newValue;
+    console.log('Direct update: formData.tarikhTamat set to:', newValue);
+    
+    // Force DOM update
+    await nextTick();
+    console.log('After nextTick: formData.tarikhTamat =', formData.value.tarikhTamat);
   });
   const jumlahKeseluruhan = computed(() => {
     const kadar = Number(formData.value.kadarBantuan || 0);
@@ -722,6 +831,67 @@
     { label: "No SSM", value: "SSM" },
     { label: "No ROS", value: "ROS" },
   ];
+  const showJenisPengenalan = computed(() => (formData.value.kategoriPenerimaBayaran || '').toUpperCase() !== 'RECIPIENT');
+  const noIdLabel = computed(() => {
+    const kategori = (formData.value.kategoriPenerimaBayaran || '').toUpperCase();
+    if (kategori === 'ORGANISASI') return 'No Pendaftaran';
+    if (kategori === 'RECIPIENT') return 'No. Rujukan';
+    return 'No Kad Pengenalan';
+  });
+  const namaLabel = computed(() => {
+    const kategori = (formData.value.kategoriPenerimaBayaran || '').toUpperCase();
+    if (kategori === 'ORGANISASI') return 'Nama Institusi/Syarikat';
+    if (kategori === 'RECIPIENT') return 'Nama Penerima';
+    return 'Nama Penerima';
+  });
+
+  // Registration dropdown for Organisasi (mirror siasatan behavior)
+  const showRegistrationDropdown = computed(() => (formData.value.kategoriPenerimaBayaran || '').toUpperCase() === 'ORGANISASI');
+  const registrationOptions = ref([
+    { label: '-- Sila Pilih --', value: '' },
+    { label: 'ABA1234 - SM Sains Kuala Selangor', value: 'ABA1234' },
+    { label: 'WBA5678 - SM Sains Hulu Selangor', value: 'WBA5678' },
+    { label: 'CBA9012 - Sekolah Seri Puteri, Cyberjaya', value: 'CBA9012' },
+    { label: 'DGA3456 - Kolej Islam Sultan Alam Shah (KISAS)', value: 'DGA3456' },
+    { label: 'EHA7890 - SBP Integrasi Gombak', value: 'EHA7890' },
+    { label: 'UMA1122 - Universiti Malaya (UM)', value: 'UMA1122' },
+    { label: 'UPM3344 - Universiti Putra Malaysia (UPM)', value: 'UPM3344' },
+    { label: 'UKM5566 - Universiti Kebangsaan Malaysia (UKM)', value: 'UKM5566' },
+    { label: 'UITM7788 - Universiti Teknologi MARA (UiTM)', value: 'UITM7788' },
+    { label: 'USM9900 - Universiti Sains Malaysia (USM)', value: 'USM9900' },
+  ]);
+  const registrationData = {
+    'ABA1234': { namaPenerima: 'SM Sains Kuala Selangor', namaPemegangAkaun: 'SM Sains Kuala Selangor', bank: 'Maybank', noAkaunBank: '114422336699' },
+    'WBA5678': { namaPenerima: 'SM Sains Hulu Selangor', namaPemegangAkaun: 'SM Sains Hulu Selangor', bank: 'Maybank', noAkaunBank: '223344556677' },
+    'CBA9012': { namaPenerima: 'Sekolah Seri Puteri, Cyberjaya', namaPemegangAkaun: 'Sekolah Seri Puteri, Cyberjaya', bank: 'Maybank', noAkaunBank: '334455667788' },
+    'DGA3456': { namaPenerima: 'Kolej Islam Sultan Alam Shah (KISAS)', namaPemegangAkaun: 'Kolej Islam Sultan Alam Shah (KISAS)', bank: 'Maybank', noAkaunBank: '445566778899' },
+    'EHA7890': { namaPenerima: 'SBP Integrasi Gombak', namaPemegangAkaun: 'SBP Integrasi Gombak', bank: 'Maybank', noAkaunBank: '556677889900' },
+    'UMA1122': { namaPenerima: 'Universiti Malaya (UM)', namaPemegangAkaun: 'Universiti Malaya (UM)', bank: 'Maybank', noAkaunBank: '667788990011' },
+    'UPM3344': { namaPenerima: 'Universiti Putra Malaysia (UPM)', namaPemegangAkaun: 'Universiti Putra Malaysia (UPM)', bank: 'Maybank', noAkaunBank: '778899001122' },
+    'UKM5566': { namaPenerima: 'Universiti Kebangsaan Malaysia (UKM)', namaPemegangAkaun: 'Universiti Kebangsaan Malaysia (UKM)', bank: 'Maybank', noAkaunBank: '889900112233' },
+    'UITM7788': { namaPenerima: 'Universiti Teknologi MARA (UiTM)', namaPemegangAkaun: 'Universiti Teknologi MARA (UiTM)', bank: 'Maybank', noAkaunBank: '990011223344' },
+    'USM9900': { namaPenerima: 'Universiti Sains Malaysia (USM)', namaPemegangAkaun: 'Universiti Sains Malaysia (USM)', bank: 'Maybank', noAkaunBank: '101112131415' },
+  };
+  const loadRecipientByRegistration = () => {
+    const reg = formData.value.noPengenalanPenerima;
+    if (registrationData[reg]) {
+      formData.value.namaPenerimaBayaran = registrationData[reg].namaPenerima;
+      formData.value.namaPemegangAkaun = registrationData[reg].namaPemegangAkaun;
+      formData.value.bank = registrationData[reg].bank;
+      formData.value.noAkaunBank = registrationData[reg].noAkaunBank;
+      // Ensure payment method enables bank fields for demo
+      if (!showBankFields.value) {
+        formData.value.kaedahPembayaran = 'EFT';
+      }
+    }
+  };
+
+  // Ensure auto-fill also triggers when the selected registration changes
+  watch(() => formData.value.noPengenalanPenerima, (val) => {
+    if ((formData.value.kategoriPenerimaBayaran || '').toUpperCase() === 'ORGANISASI') {
+      loadRecipientByRegistration();
+    }
+  });
   const paymentMethodOptions = [
     { label: "EFT", value: "EFT" },
     { label: "Vcash", value: "VCASH" },
@@ -739,21 +909,88 @@
       formData.value.namaPenerimaBayaran = "Nama Penerima Mock";
       if (showBankFields.value) {
         formData.value.namaPemegangAkaun = "Nama Penerima Mock";
-        formData.value.bank = "BANK MOCK";
+        formData.value.bank = "Maybank";
         formData.value.noAkaunBank = "1234567890";
       }
     }
   };
 
+  // Prefill recipient fields when category changes (mirror investigation page behavior)
+  const prefillRecipientByCategory = (kategori) => {
+    const k = (kategori || '').toUpperCase();
+    if (k === 'ASNAF') {
+      formData.value.jenisPengenalanPenerima = 'MYKAD';
+      formData.value.noPengenalanPenerima = userProfile.value.noKadPengenalan || '';
+      formData.value.namaPenerimaBayaran = userProfile.value.nama || '';
+      formData.value.kaedahPembayaran = 'EFT';
+      formData.value.namaPemegangAkaun = formData.value.namaPenerimaBayaran || '';
+      formData.value.bank = 'Maybank';
+      formData.value.noAkaunBank = '1234567890';
+    } else if (k === 'ORGANISASI') {
+      formData.value.jenisPengenalanPenerima = 'SSM';
+      formData.value.noPengenalanPenerima = '';
+      formData.value.namaPenerimaBayaran = '';
+      formData.value.kaedahPembayaran = 'EFT';
+      formData.value.namaPemegangAkaun = '';
+      formData.value.bank = '';
+      formData.value.noAkaunBank = '';
+    } else if (k === 'RECIPIENT') {
+      formData.value.jenisPengenalanPenerima = '';
+      formData.value.noPengenalanPenerima = '';
+      formData.value.namaPenerimaBayaran = '';
+      formData.value.kaedahPembayaran = 'EFT';
+      formData.value.namaPemegangAkaun = '';
+      formData.value.bank = '';
+      formData.value.noAkaunBank = '';
+    } else {
+      // default reset
+      formData.value.jenisPengenalanPenerima = '';
+      formData.value.noPengenalanPenerima = '';
+      formData.value.namaPenerimaBayaran = '';
+      formData.value.kaedahPembayaran = '';
+      formData.value.namaPemegangAkaun = '';
+      formData.value.bank = '';
+      formData.value.noAkaunBank = '';
+    }
+  };
+
+  watch(() => formData.value.kategoriPenerimaBayaran, (newVal) => {
+    prefillRecipientByCategory(newVal);
+  });
+
   // 3.5 Dokumen Sokongan (prototype docs config)
   const documents = ref([
-    { id: "DOC1", nama: "BORANG PENGESAHAN PENJAGAAN ANAK", keterangan: "Borang digital", keperluan: "Wajib", isDigitalForm: true, canDownload: false, files: [] },
-    { id: "DOC2", nama: "BORANG RANCANGAN PERNIAGAAN", keterangan: "Borang digital", keperluan: "Wajib", isDigitalForm: true, canDownload: false, files: [] },
-    { id: "DOC3", nama: "BORANG PERMOHONAN PENGANGKUTAN SEKOLAH", keterangan: "Borang digital", keperluan: "Tambahan", isDigitalForm: true, canDownload: false, files: [] },
-    { id: "DOC4", nama: "BORANG PENGESAHAN KESIHATAN", keterangan: "Diisi oleh doktor", keperluan: "Tambahan", isDigitalForm: false, canDownload: true, files: [] },
-    { id: "DOC5", nama: "Kertas Kerja Pelaksanaan & Cadangan Program", keterangan: "Diisi oleh agensi", keperluan: "Tambahan", isDigitalForm: false, canDownload: true, files: [] },
+    { 
+      id: "DOC1", 
+      nama: "Surat tawaran belajar daripada pihak sekolah/surat pengesahan belajar", 
+      status: "", 
+      catatan: "", 
+      files: [] 
+    },
+    { 
+      id: "DOC2", 
+      nama: "Salinan akaun bank pelajar yang mengandungi: Nama bank, Nama dan no akaun bank", 
+      status: "", 
+      catatan: "", 
+      files: [] 
+    },
+    { 
+      id: "DOC3", 
+      nama: "Salinan kad pengenalan ketua keluarga/ penjaga", 
+      status: "", 
+      catatan: "", 
+      files: [] 
+    },
+    { 
+      id: "DOC4", 
+      nama: "Salinan kad pengenalan/surat beranak pelajar", 
+      status: "", 
+      catatan: "", 
+      files: [] 
+    },
   ]);
   const statusDokumenOptions = [
+    { label: "-- Pilih Status --", value: "", disabled: true },
     { label: "Lengkap", value: "LENGKAP" },
     { label: "Tidak Lengkap", value: "TIDAK_LENGKAP" },
     { label: "Tiada Keperluan", value: "TIADA_KEPERLUAN" },
@@ -776,11 +1013,11 @@
     alert(`Muat turun templat untuk ${doc.nama}`);
   };
   const previewDoc = (doc) => {
-    if (!doc.files || doc.files.length === 0) return;
+    if (!doc.files || doc.files.length === 0) {
+      alert(`Tiada fail untuk dipratonton untuk ${doc.nama}`);
+      return;
+    }
     alert(`Pratonton ${doc.files.length} fail untuk ${doc.nama}`);
-  };
-  const editDigitalForm = (doc) => {
-    alert(`Buka borang digital: ${doc.nama}`);
   };
 
   // 3.6 Maklumat Tindakan helpers
@@ -789,8 +1026,8 @@
     return method === 'TUNAI_KAUNTER' || method === 'TUNAI_LAPANGAN';
   });
   const showTindakanDropdown = computed(() => {
-    // Show if Aid equals 'Bantuan Perubatan'
-    return (formData.value.jenisBantuan || '').toLowerCase().includes('perubatan');
+    // Show only if Aid exactly equals 'Bantuan Perubatan' (case-insensitive)
+    return (formData.value.jenisBantuan || '').trim().toLowerCase() === 'bantuan perubatan';
   });
   const tindakanOptions = [
     { label: 'Hantar ke Al-Amal', value: 'AL_AMAL' },
@@ -836,7 +1073,7 @@
   };
 
   // Auto generate No. Bantuan (mock)
-  const noBantuan = ref(`NB-${Date.now()}`);
+  const noBantuan = ref("AA-2025-000001");
   
   // Form submission handler
   const handleSubmit = async (formData) => {

@@ -127,6 +127,17 @@
       </template>
     </rs-card>
 
+    <!-- Divider and Back Action -->
+    <div class="border-t border-gray-200 my-6"></div>
+    <div class="flex items-center justify-between mt-4">
+      <div>
+        <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan')">
+          <Icon name="material-symbols:arrow-back" class="w-4 h-4 mr-1" /> Kembali
+        </rs-button>
+      </div>
+      <div></div>
+    </div>
+
     <!-- (Opsyenal) Butang Bulk; biar kekal jika diperlukan -->
     <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
       <rs-button variant="success" @click="handleBulkApproval" :disabled="processing">
@@ -314,12 +325,12 @@ const breadcrumb = ref([
   {
     name: 'Pengurusan Bantuan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan',
   },
   {
     name: 'Tuntutan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan',
   },
   {
     name: 'Mohon Tuntutan',
