@@ -7,9 +7,6 @@
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Maklumat Proses Profiling</h2>
           <div class="flex items-center gap-2">
-            <rs-button variant="primary" @click="navigateTo('01_01/tambah')">
-              <Icon name="material-symbols:add" class="mr-1" /> Tambah Baharu
-            </rs-button>
             <rs-button v-if="false" variant="secondary" @click="navigateTo('/BF-PRF/KF/HK/01_01/tambah_kategori')">
               <Icon name="mdi:folder-plus" class="mr-1" /> Tambah Kategori
             </rs-button>
@@ -60,25 +57,17 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PRF/KF/PP/01_02?id=${data.value.idPP || data.value.kodProses || data.value.idHadKifayah}`)"
-              >Kemaskini
+              @click="navigateTo(`/BF-PRF/KF/PP/02_03?id=${data.value.idPP}`)"
+              >Kelulusan
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
             <rs-button
               variant="secondary"
               size="sm"
               class="!px-2 !py-1 ml-2"
-              @click="navigateTo({ path: '/BF-PRF/KF/PP/01_01/lihat', query: { id: data.value.idPP || data.value.kodProses || data.value.idHadKifayah } })"
+              @click="navigateTo({ path: '/BF-PRF/KF/PP/02_02', query: { id: data.value.idPP } })"
               >Lihat
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
-            </rs-button>
-            <rs-button
-              variant="danger"
-              size="sm"
-              class="!px-2 !py-1 ml-2"
-              @click="deleteRecord(data.value.idPP || data.value.kodProses || data.value.idHadKifayah)"
-              >Buang
-              <Icon name="mdi:delete" class="ml-1" size="1rem" />
             </rs-button>
           </template>
         </rs-table>
@@ -170,53 +159,6 @@ const pendingApprovalCount = computed(() => {
   ).length;
 });
 
-// Function to delete a record
-const deleteRecord = (idPP) => {
-  if (!idPP) {
-    console.error('No ID provided for deletion');
-    return;
-  }
-
-  // Show confirmation dialog
-  if (confirm('Adakah anda pasti mahu memadamkan rekod ini?')) {
-    try {
-      // Load current data from localStorage
-      const savedData = localStorage.getItem('prosesProfiling');
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        
-        // Filter out the record with matching idPP
-        const filteredData = parsedData.filter(item => 
-          (item.idPP || item.kodProses || item.idHadKifayah) !== idPP
-        );
-        
-        // Save updated data back to localStorage
-        localStorage.setItem('prosesProfiling', JSON.stringify(filteredData));
-        
-        // Update the local data
-        kifayahLimits.value = filteredData.map(validateDataItem);
-        
-        // Refresh the table
-        refreshTable();
-        
-        // Show success message
-        const { $toast } = useNuxtApp();
-        if ($toast) {
-          $toast.success('Rekod berjaya dipadamkan');
-        } else {
-          alert('Rekod berjaya dipadamkan');
-        }
-        
-        console.log('Record deleted successfully:', idPP);
-      } else {
-        console.log('No data found in localStorage');
-      }
-    } catch (error) {
-      console.error('Error deleting record:', error);
-      alert('Ralat semasa memadamkan rekod');
-    }
-  }
-};
 
 // Make sure the table refreshes when component mounts
 onMounted(() => {
