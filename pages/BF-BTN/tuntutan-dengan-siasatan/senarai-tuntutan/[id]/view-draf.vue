@@ -27,23 +27,6 @@
 
       <template #body>
         <form @submit.prevent="handleSubmit">
-          <!-- Section 1: Pilih GL -->
-          <div class="mb-8">
-            <h3 class="text-lg font-medium mb-4">Pilih GL</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormKit
-                v-model="formData.noGL"
-                type="select"
-                label="Nombor GL"
-                :options="[{ label: 'Sila Pilih...', value: '' }, ...glOptions]"
-                validation="required"
-                :validation-messages="{
-                  required: 'Sila pilih Nombor GL'
-                }"
-                @change="handleGLChange"
-              />
-            </div>
-          </div>
 
           <!-- Section 2: Maklumat Bantuan -->
           <div class="mb-8">

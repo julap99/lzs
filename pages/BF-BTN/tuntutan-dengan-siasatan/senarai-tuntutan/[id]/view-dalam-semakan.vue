@@ -17,18 +17,6 @@
       </template>
 
       <template #body>
-        <!-- Section 1: Pilih GL -->
-        <div class="mb-8">
-          <h3 class="text-lg font-medium mb-4">Pilih GL</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Nombor GL
-              </label>
-              <p class="text-gray-900">{{ tuntutanData.noGL }}</p>
-            </div>
-          </div>
-        </div>
 
         <!-- Section 2: Maklumat Bantuan -->
         <div class="mb-8">
