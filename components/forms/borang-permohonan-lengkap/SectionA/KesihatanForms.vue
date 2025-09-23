@@ -3,8 +3,7 @@
     type="form"
     @submit="$emit('next-step')"
     :actions="false"
-    id="sectionA6"
-  >
+    id="sectionA6">
     <h3 class="text-lg font-semibold mb-4">6. Maklumat Kesihatan</h3>
 
     <!-- Tahap Kesihatan -->
@@ -18,7 +17,7 @@
         v-model="formData.tahap_kesihatan"
         placeholder="Pilih tahap kesihatan"
         help="Pilih status kesihatan semasa"
-      />
+        :disabled="readOnly" />
     </div>
 
     <!-- A. Jika Tahap Kesihatan = "Sakit Kronik" -->
@@ -36,7 +35,7 @@
           v-model="formData.keadaan_kesihatan_sakit"
           placeholder="Pilih keadaan kesihatan"
           help="Nyatakan keupayaan fizikal harian"
-        />
+          :disabled="readOnly" />
 
         <!-- Kos Penjagaan -->
         <FormKit
@@ -48,7 +47,7 @@
           v-model="formData.kos_penjagaan_sakit"
           placeholder="Pilih kos penjagaan"
           help="Adakah kos penjagaan bulanan dibayar?"
-        />
+          :disabled="readOnly" />
       </div>
 
       <!-- Jumlah Perbelanjaan Bulanan -->
@@ -61,7 +60,7 @@
           placeholder="9999.99"
           v-model="formData.perbelanjaan_bulanan_sakit"
           help="Format: 9999.99"
-        />
+          :disabled="readOnly" />
       </div>
     </div>
 
@@ -80,7 +79,7 @@
           v-model="formData.kesempurnaan_fizikal"
           placeholder="Pilih kesempurnaan fizikal"
           help="Pilih kategori OKU"
-        />
+          :disabled="readOnly" />
 
         <!-- Sebab Kecacatan -->
         <FormKit
@@ -92,7 +91,7 @@
           v-model="formData.sebab_kecacatan"
           placeholder="Pilih sebab kecacatan"
           help="Jika cacat, punca kecacatan"
-        />
+          :disabled="readOnly" />
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -106,7 +105,7 @@
           v-model="formData.tahap_kecacatan"
           placeholder="Pilih tahap kecacatan"
           help="Tahap kebergantungan"
-        />
+          :disabled="readOnly" />
 
         <!-- Jumlah Perbelanjaan Bulanan -->
         <FormKit
@@ -117,7 +116,7 @@
           placeholder="9999.99"
           v-model="formData.perbelanjaan_bulanan_oku"
           help="Format: 9999.99"
-        />
+          :disabled="readOnly" />
       </div>
     </div>
 
@@ -136,7 +135,7 @@
           v-model="formData.keadaan_kesihatan_uzur"
           placeholder="Pilih keadaan kesihatan"
           help="Nyatakan keupayaan fizikal harian"
-        />
+          :disabled="readOnly" />
 
         <!-- Kos Penjagaan -->
         <FormKit
@@ -148,7 +147,7 @@
           v-model="formData.kos_penjagaan_uzur"
           placeholder="Pilih kos penjagaan"
           help="Adakah kos penjagaan bulanan dibayar?"
-        />
+          :disabled="readOnly" />
       </div>
 
       <!-- Jumlah Perbelanjaan Bulanan -->
@@ -161,17 +160,14 @@
           placeholder="9999.99"
           v-model="formData.perbelanjaan_bulanan_uzur"
           help="Format: 9999.99"
-        />
+          :disabled="readOnly" />
       </div>
     </div>
 
     <!-- D. Upload Dokumen Sokongan (Jika Tahap Kesihatan ≠ "Sihat") -->
     <div
-      v-if="
-        formData.tahap_kesihatan && formData.tahap_kesihatan !== 'Sihat'
-      "
-      class="mb-6"
-    >
+      v-if="formData.tahap_kesihatan && formData.tahap_kesihatan !== 'Sihat'"
+      class="mb-6">
       <h5 class="text-lg font-semibold mb-4">Dokumen Sokongan</h5>
 
       <FormKit
@@ -183,14 +179,15 @@
         help="Format yang dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB"
         validation="required"
         v-model="formData.dokumen_sokongan_kesihatan"
-      />
+        :disabled="readOnly" />
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div class="flex justify-between gap-3 mt-6" v-if="showFooterButtons">
       <rs-button
         type="button"
         variant="primary-outline"
         @click="$emit('prev-step')"
+        :disabled="readOnly"
         >Kembali</rs-button
       >
       <div class="flex gap-3">
@@ -198,9 +195,14 @@
           type="button"
           variant="secondary"
           @click="$emit('save-step')"
+          :disabled="readOnly"
           >Simpan</rs-button
         >
-        <rs-button type="button" variant="primary" @click="$emit('next-step')"
+        <rs-button
+          type="button"
+          variant="primary"
+          @click="$emit('next-step')"
+          :disabled="readOnly"
           >Maklumat Kemahiran</rs-button
         >
       </div>
@@ -213,10 +215,18 @@
 const props = defineProps({
   formData: {
     type: Object,
-    required: true
-  }
-})
+    required: true,
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true,
+  },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 // Emits
-const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
+const emit = defineEmits(["next-step", "prev-step", "save-step"]);
 </script>

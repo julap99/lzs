@@ -3,8 +3,7 @@
     type="form"
     @submit="$emit('next-step')"
     :actions="false"
-    id="sectionA11"
-  >
+    id="sectionA11">
     <h3 class="text-lg font-semibold mb-4">10. Maklumat Pekerjaan</h3>
 
     <!-- Hidden field for ID type -->
@@ -29,7 +28,7 @@
             :validation-messages="{
               required: 'Sila pilih status pekerjaan',
             }"
-          />
+            :disabled="readOnly" />
         </div>
       </div>
     </div>
@@ -51,7 +50,7 @@
             'Lain-lain',
           ]"
           v-model="formData.sektor_pekerjaan"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           v-if="showLainLainSektor"
@@ -59,14 +58,14 @@
           name="lain_lain_sektor"
           label="Lain-lain Sektor Pekerjaan"
           v-model="formData.lain_lain_sektor"
-        />
+          :disabled="readOnly" />
 
         <FormKit
-          type="select"
+          type="text"
           name="jawatan"
           label="Jawatan"
           v-model="formData.jawatan"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="select"
@@ -75,7 +74,7 @@
           placeholder="Pilih status jawatan"
           :options="['Tetap', 'Kontrak', 'Sementara']"
           v-model="formData.status_jawatan"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -84,7 +83,7 @@
           step="0.01"
           min="0"
           v-model="formData.pendapatan_kasar"
-        />
+          :disabled="readOnly" />
 
         <div class="md:col-span-2">
           <FormKit
@@ -100,16 +99,17 @@
               mime: 'Format fail tidak dibenarkan',
             }"
             v-model="formData.pengesahan_pendapatan"
-          />
+            :disabled="readOnly" />
         </div>
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div class="flex justify-between gap-3 mt-6" v-if="showFooterButtons">
       <rs-button
         type="button"
         variant="primary-outline"
         @click="$emit('prev-step')"
+        :disabled="readOnly"
         >Kembali</rs-button
       >
       <div class="flex gap-3">
@@ -117,9 +117,14 @@
           type="button"
           variant="secondary"
           @click="$emit('save-step')"
+          :disabled="readOnly"
           >Simpan</rs-button
         >
-        <rs-button type="button" variant="primary" @click="$emit('next-step')"
+        <rs-button
+          type="button"
+          variant="primary"
+          @click="$emit('next-step')"
+          :disabled="readOnly"
           >Maklumat Pendapatan & Perbelanjaan</rs-button
         >
       </div>
@@ -132,18 +137,26 @@
 const props = defineProps({
   formData: {
     type: Object,
-    required: true
+    required: true,
   },
   jenisId: {
     type: String,
-    default: ''
+    default: "",
   },
   showLainLainSektor: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true,
+  },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 // Emits
-const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
+const emit = defineEmits(["next-step", "prev-step", "save-step"]);
 </script>

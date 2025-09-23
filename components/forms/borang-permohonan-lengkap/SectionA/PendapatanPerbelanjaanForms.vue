@@ -3,8 +3,7 @@
     type="form"
     @submit="$emit('next-step')"
     :actions="false"
-    id="sectionA12"
-  >
+    id="sectionA12">
     <h3 class="text-lg font-semibold mb-4">
       11. Maklumat Pendapatan & Perbelanjaan
     </h3>
@@ -25,7 +24,7 @@
             required: 'Gaji / Elaun / Pendapatan Diperoleh adalah wajib',
           }"
           v-model="formData.gaji_elaun_pendapatan"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -35,11 +34,10 @@
           min="0"
           validation="required"
           :validation-messages="{
-            required:
-              'Pendapatan Isteri/Suami/Ibubapa/Penjaga adalah wajib',
+            required: 'Pendapatan Isteri/Suami/Ibubapa/Penjaga adalah wajib',
           }"
           v-model="formData.pendapatan_isteri_suami_ibubapa_penjaga"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -52,7 +50,7 @@
             required: 'Pencen / PERKESO adalah wajib',
           }"
           v-model="formData.pencen_perkeso"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -65,7 +63,7 @@
             required: 'Sumbangan Anak-anak adalah wajib',
           }"
           v-model="formData.sumbangan_anak_anak"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -78,7 +76,7 @@
             required: 'Bantuan Jabatan Kebajikan Masyarakat adalah wajib',
           }"
           v-model="formData.bantuan_jkm"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -88,11 +86,10 @@
           min="0"
           validation="required"
           :validation-messages="{
-            required:
-              'Pendapatan Tanggungan yang Tinggal Serumah adalah wajib',
+            required: 'Pendapatan Tanggungan yang Tinggal Serumah adalah wajib',
           }"
           v-model="formData.pendapatan_tanggungan_serumah"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -105,7 +102,7 @@
             required: 'Total Pendapatan adalah wajib',
           }"
           v-model="formData.total_pendapatan"
-        />
+          :disabled="readOnly" />
 
         <!-- Pendapatan Lain-lain Repeater -->
         <div class="space-y-3">
@@ -114,8 +111,7 @@
               variant="success"
               size="sm"
               @click="$emit('add-pendapatan-lain-lain')"
-              type="button"
-            >
+              type="button">
               <Icon name="mdi:plus" class="mr-1" size="1rem" />
               Tambah
             </rs-button>
@@ -124,8 +120,7 @@
           <div
             v-for="(item, index) in formData.pendapatan_lain_lain"
             :key="index"
-            class="flex items-end gap-2"
-          >
+            class="flex items-end gap-2">
             <div class="flex-1">
               <FormKit
                 type="number"
@@ -138,7 +133,7 @@
                   required: 'Pendapatan Lain-lain adalah wajib',
                 }"
                 v-model="formData.pendapatan_lain_lain[index].amount"
-              />
+                :disabled="readOnly" />
             </div>
 
             <rs-button
@@ -147,8 +142,7 @@
               size="sm"
               @click="$emit('remove-pendapatan-lain-lain', index)"
               type="button"
-              class="mb-1 mt-6"
-            >
+              class="mb-1 mt-6">
               <Icon name="mdi:delete" size="1rem" />
             </rs-button>
           </div>
@@ -169,7 +163,7 @@
             required: 'Perbelanjaan Makanan dan Minuman adalah wajib',
           }"
           v-model="formData.perbelanjaan_makanan_minuman"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -182,7 +176,7 @@
             required: 'Sewa / Bayaran Pinjaman Perumahan adalah wajib',
           }"
           v-model="formData.sewa_bayaran_pinjaman_perumahan"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -195,7 +189,7 @@
             required: 'Perbelanjaan Persekolahan Anak adalah wajib',
           }"
           v-model="formData.perbelanjaan_persekolahan_anak"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -208,7 +202,7 @@
             required: 'Pengangkutan / Tambang Bas Sekolah adalah wajib',
           }"
           v-model="formData.pengangkutan_tambang_bas_sekolah"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -221,7 +215,7 @@
             required: 'Bil Utiliti adalah wajib',
           }"
           v-model="formData.bil_utiliti"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -234,7 +228,7 @@
             required: 'Takaful adalah wajib',
           }"
           v-model="formData.takaful"
-        />
+          :disabled="readOnly" />
 
         <FormKit
           type="number"
@@ -247,15 +241,16 @@
             required: 'Sewa Rumah / Tanah / Kedai adalah wajib',
           }"
           v-model="formData.sewa_rumah_tanah_kedai"
-        />
+          :disabled="readOnly" />
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div class="flex justify-between gap-3 mt-6" v-if="showFooterButtons">
       <rs-button
         type="button"
         variant="primary-outline"
         @click="$emit('prev-step')"
+        :disabled="readOnly"
         >Kembali</rs-button
       >
       <div class="flex gap-3">
@@ -263,9 +258,14 @@
           type="button"
           variant="secondary"
           @click="$emit('save-step')"
+          :disabled="readOnly"
           >Simpan</rs-button
         >
-        <rs-button type="button" variant="primary" @click="$emit('next-step')"
+        <rs-button
+          type="button"
+          variant="primary"
+          @click="$emit('next-step')"
+          :disabled="readOnly"
           >Maklumat Tanggungan</rs-button
         >
       </div>
@@ -278,16 +278,24 @@
 const props = defineProps({
   formData: {
     type: Object,
-    required: true
-  }
-})
+    required: true,
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true,
+  },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 // Emits
 const emit = defineEmits([
-  'next-step', 
-  'prev-step', 
-  'save-step', 
-  'add-pendapatan-lain-lain',
-  'remove-pendapatan-lain-lain'
-])
+  "next-step",
+  "prev-step",
+  "save-step",
+  "add-pendapatan-lain-lain",
+  "remove-pendapatan-lain-lain",
+]);
 </script>

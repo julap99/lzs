@@ -3,8 +3,7 @@
     type="form"
     @submit="$emit('next-step')"
     :actions="false"
-    id="sectionA9"
-  >
+    id="sectionA9">
     <h3 class="text-lg font-semibold mb-4">8. Maklumat Pinjaman Harta</h3>
 
     <div class="mb-6">
@@ -16,13 +15,12 @@
           label="Nama Institusi / Individu Pemberi Pinjaman"
           placeholder="Sila masukkan nama institusi atau individu"
           v-model="formData.nama_institusi_pemberi_pinjaman"
-        />
+          :disabled="readOnly" />
 
         <!-- Conditional fields - only show when nama institusi is filled -->
         <div
           v-if="formData.nama_institusi_pemberi_pinjaman"
-          class="md:col-span-2"
-        >
+          class="md:col-span-2">
           <h4 class="text-md font-medium mb-3">Maklumat Pinjaman</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
@@ -32,7 +30,7 @@
               :options="jenisPinjamanOptions"
               placeholder="Sila Pilih Jenis Pinjaman"
               v-model="formData.jenis_pinjaman"
-            />
+              :disabled="readOnly" />
 
             <FormKit
               type="number"
@@ -42,7 +40,7 @@
               min="0"
               placeholder="0.00"
               v-model="formData.amaun_bayaran_bulanan"
-            />
+              :disabled="readOnly" />
 
             <FormKit
               type="number"
@@ -56,7 +54,7 @@
               :validation-messages="{
                 required: 'Jumlah keseluruhan perbelanjaan adalah wajib',
               }"
-            />
+              :disabled="readOnly" />
 
             <FormKit
               type="date"
@@ -67,7 +65,7 @@
               :validation-messages="{
                 required: 'Tahun mula pinjaman adalah wajib',
               }"
-            />
+              :disabled="readOnly" />
 
             <FormKit
               type="date"
@@ -78,7 +76,7 @@
               :validation-messages="{
                 required: 'Tahun akhir pinjaman adalah wajib',
               }"
-            />
+              :disabled="readOnly" />
 
             <div class="md:col-span-2">
               <FormKit
@@ -95,18 +93,19 @@
                   max: 'Saiz fail tidak boleh melebihi 5MB',
                   mime: 'Format fail tidak dibenarkan',
                 }"
-              />
+                :disabled="readOnly" />
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div class="flex justify-between gap-3 mt-6" v-if="showFooterButtons">
       <rs-button
         type="button"
         variant="primary-outline"
         @click="$emit('prev-step')"
+        :disabled="readOnly"
         >Kembali</rs-button
       >
       <div class="flex gap-3">
@@ -114,9 +113,14 @@
           type="button"
           variant="secondary"
           @click="$emit('save-step')"
+          :disabled="readOnly"
           >Simpan</rs-button
         >
-        <rs-button type="button" variant="primary" @click="$emit('next-step')"
+        <rs-button
+          type="button"
+          variant="primary"
+          @click="$emit('next-step')"
+          :disabled="readOnly"
           >Maklumat Pemilikan Aset</rs-button
         >
       </div>
@@ -129,14 +133,22 @@
 const props = defineProps({
   formData: {
     type: Object,
-    required: true
+    required: true,
   },
   jenisPinjamanOptions: {
     type: Array,
-    default: () => []
-  }
-})
+    default: () => [],
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true,
+  },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 // Emits
-const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
+const emit = defineEmits(["next-step", "prev-step", "save-step"]);
 </script>

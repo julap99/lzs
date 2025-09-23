@@ -2,10 +2,13 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <rs-card class="mt-4" v-if="currentSection === 'A'">
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Semakan Data Permohonan</h2>
+          <div class="text-sm text-gray-600">
+            Langkah {{ currentStepA }} dari {{ totalStepsA }}
+          </div>
         </div>
       </template>
 
@@ -18,8 +21,7 @@
               :key="step.id"
               class="text-center flex-1 cursor-pointer"
               :class="{ 'font-semibold': currentStepA >= step.id }"
-              @click="goToStepA(step.id)"
-            >
+              @click="goToStepA(step.id)">
               {{ step.label }}
             </div>
           </div>
@@ -30,8 +32,7 @@
                 currentStepA >= totalStepsA
                   ? 100
                   : (currentStepA / totalStepsA) * 100
-              }%`"
-            ></div>
+              }%`"></div>
           </div>
         </div>
 
@@ -45,8 +46,7 @@
             :show-footer-buttons="false"
             :read-only="true"
             @next-step="nextStepA"
-            @save-step="handleSaveStepA1"
-          />
+            @save-step="handleSaveStepA1" />
 
           <AlamatForms
             v-if="currentStepA === 2"
@@ -58,8 +58,7 @@
             :kariah-options="kariahOptions"
             :jenis-id="formData.jenis_id"
             :show-footer-buttons="false"
-            :read-only="true"
-          />
+            :read-only="true" />
 
           <PendidikanForms
             v-if="currentStepA === 3"
@@ -69,16 +68,14 @@
             :read-only="true"
             @add-education-entry="addEducationEntry"
             @remove-education-entry="removeEducationEntry"
-            @select-school="onSelectSchool"
-          />
+            @select-school="onSelectSchool" />
 
           <PengislamanForms
             v-if="currentStepA === 4"
             :form-data="formData"
             :islamic-dates-validation="islamicDatesValidation"
             :show-footer-buttons="false"
-            :read-only="true"
-          />
+            :read-only="true" />
 
           <PerbankanForms
             v-if="currentStepA === 5"
@@ -90,8 +87,70 @@
             :show-footer-buttons="false"
             :read-only="true"
             @add-bank-account="addBankAccount"
-            @remove-bank-account="removeBankAccount"
-          />
+            @remove-bank-account="removeBankAccount" />
+
+          <KesihatanForms
+            v-if="currentStepA === 6"
+            :form-data="formData"
+            :show-footer-buttons="false"
+            :read-only="true"
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA6" />
+
+          <KemahiranForms
+            v-if="currentStepA === 7"
+            :form-data="formData"
+            :show-footer-buttons="false"
+            :read-only="true"
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA7" />
+
+          <PinjamanHartaForms
+            v-if="currentStepA === 8"
+            :form-data="formData"
+            :jenis-pinjaman-options="jenisPinjamanOptions"
+            :show-footer-buttons="false"
+            :read-only="true"
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA8" />
+
+          <PemilikanAsetForms
+            v-if="currentStepA === 9"
+            :form-data="formData"
+            :show-footer-buttons="false"
+            :read-only="true"
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA9" />
+
+          <PekerjaanForms
+            v-if="currentStepA === 10"
+            :form-data="formData"
+            :jenis-id="formData.jenis_id"
+            :show-lain-lain-sektor="false"
+            :show-footer-buttons="false"
+            :read-only="true"
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA10" />
+
+          <PendapatanPerbelanjaanForms
+            v-if="currentStepA === 11"
+            :form-data="formData"
+            :show-footer-buttons="false"
+            :read-only="true"
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA11" />
+
+          <div v-if="currentStepA === 11" class="mt-6 flex justify-end">
+            <rs-button type="button" variant="primary" @click="goToSectionB">
+              Ke Seksyen B: Tanggungan
+            </rs-button>
+          </div>
 
           <!-- Komen Penyemak and Dokumen Lengkap outside table -->
           <div class="mb-4 flex flex-col gap-4">
@@ -102,8 +161,7 @@
                 name="komen_penyemak"
                 v-model="komenPenyemak"
                 :rows="3"
-                placeholder="Masukkan komen penyemak"
-              />
+                placeholder="Masukkan komen penyemak" />
             </div>
 
             <div>
@@ -115,8 +173,7 @@
                 :options="[
                   { label: 'Ya', value: 'Ya' },
                   { label: 'Tidak', value: 'Tidak' },
-                ]"
-              />
+                ]" />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -126,8 +183,7 @@
                   name="disemak_oleh"
                   label="Disemak Oleh"
                   v-model="disemakOleh"
-                  :readonly="true"
-                />
+                  :readonly="true" />
               </div>
               <div>
                 <FormKit
@@ -135,8 +191,7 @@
                   name="tarikh_semakan"
                   label="Tarikh Semakan"
                   v-model="tarikhSemakan"
-                  :readonly="true"
-                />
+                  :readonly="true" />
               </div>
             </div>
           </div>
@@ -148,8 +203,7 @@
             v-if="currentStepA > 1"
             type="button"
             variant="primary-outline"
-            @click="prevStepA"
-          >
+            @click="prevStepA">
             {{ stepsA[currentStepA - 2].label }}
           </rs-button>
 
@@ -159,10 +213,47 @@
             v-if="currentStepA < totalStepsA"
             type="button"
             variant="primary"
-            @click="nextStepA"
-          >
+            @click="nextStepA">
             {{ stepsA[currentStepA].label }}
           </rs-button>
+        </div>
+      </template>
+    </rs-card>
+
+    <rs-card class="mt-4" v-if="currentSection === 'B'">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Tanggungan</h2>
+          <div class="text-sm text-gray-600">
+            Langkah {{ currentStepB }} dari {{ totalStepsB }}
+          </div>
+        </div>
+      </template>
+
+      <template #body>
+        <!-- Stepper (Section B - Tanggungan) -->
+        <div class="mt-2" ref="sectionBRef">
+          <div class="mb-6">
+            <div class="flex justify-between mb-2">
+              <div
+                v-for="step in stepsB"
+                :key="step.id"
+                class="text-center flex-1 cursor-pointer"
+                :class="{ 'font-semibold': currentStepB >= step.id }"
+                @click="goToStepB(step.id)">
+                {{ step.label }}
+              </div>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                class="bg-primary h-2.5 rounded-full transition-all duration-300"
+                :style="`width: ${
+                  currentStepB >= totalStepsB
+                    ? 100
+                    : (currentStepB / totalStepsB) * 100
+                }%`"></div>
+            </div>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -177,6 +268,12 @@ import AlamatForms from "~/components/forms/borang-permohonan-lengkap/SectionA/A
 import PengislamanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PengislamanForms.vue";
 import PendidikanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PendidikanForms.vue";
 import PerbankanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PerbankanForms.vue";
+import KesihatanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/KesihatanForms.vue";
+import KemahiranForms from "~/components/forms/borang-permohonan-lengkap/SectionA/KemahiranForms.vue";
+import PinjamanHartaForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PinjamanHartaForms.vue";
+import PemilikanAsetForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PemilikanAsetForms.vue";
+import PekerjaanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PekerjaanForms.vue";
+import PendapatanPerbelanjaanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PendapatanPerbelanjaanForms.vue";
 
 const toast = useToast();
 
@@ -221,6 +318,9 @@ const goToStepA = (stepId) => {
 const nextStepA = () => {
   if (currentStepA.value < totalStepsA) {
     currentStepA.value++;
+  } else if (currentStepA.value === totalStepsA) {
+    // When Section A is complete, move to Section B (like AS/FR/02)
+    goToSectionB();
   }
 };
 
@@ -232,6 +332,30 @@ const prevStepA = () => {
 
 const handleSaveStepA1 = () => {
   toast.success("Maklumat Peribadi disimpan");
+};
+
+const handleSaveStepA6 = () => {
+  toast.success("Maklumat Kesihatan disimpan");
+};
+
+const handleSaveStepA7 = () => {
+  toast.success("Maklumat Kemahiran disimpan");
+};
+
+const handleSaveStepA8 = () => {
+  toast.success("Maklumat Pinjaman disimpan");
+};
+
+const handleSaveStepA9 = () => {
+  toast.success("Maklumat Pemilikan Aset disimpan");
+};
+
+const handleSaveStepA10 = () => {
+  toast.success("Maklumat Pekerjaan disimpan");
+};
+
+const handleSaveStepA11 = () => {
+  toast.success("Maklumat Pendapatan & Perbelanjaan disimpan");
 };
 
 const formData = ref({
@@ -290,19 +414,22 @@ const formData = ref({
   lain_pendidikan_tertinggi: "",
   tahap_pendidikan: ["Peringkat Rendah"],
 
-  kaedah_pembayaran: "ya",
-    bank_accounts: [
-      {
-        nama_bank: "bank-islam",
-        no_akaun_bank: "3063020371170",
-        nama_pemegang_akaun: "adnan bin abu",
-        jenis_akaun: "individu",
-        id_pengenalan: "801004035672",
-        nama_bersama: "",
-        hubungan: "",
-      },
-    ],
+  ada_akaun_bank: "Y",
+  bank_accounts: [
+    {
+      nama_bank: "bank-islam",
+      no_akaun_bank: "3063020371170",
+      nama_pemegang_akaun: "adnan bin abu",
+      jenis_akaun: "individu",
+      id_pengenalan: "801004035672",
+      nama_bersama: "",
+      hubungan: "",
+    },
+  ],
 
+  tahap_kesihatan: "Sihat",
+
+  kemahiran: ["Perniagaan"],
 });
 
 const isteriList = ref([]);
@@ -396,11 +523,19 @@ const paymentMethodOptionsMain = [
 ];
 const bankOptions = ["Maybank", "CIMB", "Bank Islam", "RHB"];
 const noPaymentReasonOptions = [
-{ label: "Bukan Warganegara", value: "bukan-warganegara" },
+  { label: "Bukan Warganegara", value: "bukan-warganegara" },
   { label: "Sakit Terlantar", value: "sakit" },
   { label: "Lain-lain", value: "lain-lain" },
 ];
 const showLainLainSebabTiadaAkaun = false;
+
+const jenisPinjamanOptions = [
+  { label: "Perumahan", value: "perumahan" },
+  { label: "Kenderaan", value: "kenderaan" },
+  { label: "Peribadi", value: "peribadi" },
+  { label: "Pendidikan", value: "pendidikan" },
+  { label: "Lain-lain", value: "lain-lain" },
+];
 
 const addBankAccount = () => {
   if (!formData.value.bank_accounts) formData.value.bank_accounts = [];
@@ -451,4 +586,54 @@ const handleKembali = () => {
 };
 
 const dokumenLengkap = ref("");
+
+// Section B (Tanggungan) stepper state - match AS/FR/02 (13 steps)
+const currentStepB = ref(1);
+const totalStepsB = 13;
+const stepsB = [
+  { id: 1, label: "Peribadi" },
+  { id: 2, label: "Pengislaman" },
+  { id: 3, label: "Perbankan" },
+  { id: 4, label: "Pendidikan" },
+  { id: 5, label: "Kesihatan" },
+  { id: 6, label: "Kemahiran" },
+  { id: 7, label: "Pekerjaan" },
+  { id: 8, label: "Pemilikan Aset" },
+  { id: 9, label: "Pinjaman Harta" },
+  { id: 10, label: "Pengesahan" },
+  { id: 11, label: "Pengesahan Pendapatan" },
+  { id: 12, label: "Pengesahan Bermastautin" },
+  { id: 13, label: "Pegawai Pendaftar" },
+];
+
+const goToStepB = (stepId) => {
+  currentStepB.value = stepId;
+};
+
+const nextStepB = () => {
+  if (currentStepB.value < totalStepsB) {
+    currentStepB.value++;
+  }
+};
+
+const prevStepB = () => {
+  if (currentStepB.value > 1) {
+    currentStepB.value--;
+  }
+};
+
+// Navigate to Section B from Section A step 11
+const sectionBRef = ref(null);
+const currentSection = ref("A");
+const goToSectionB = () => {
+  currentSection.value = "B";
+  currentStepB.value = 1;
+  // Scroll to Section B stepper
+  if (
+    sectionBRef.value &&
+    typeof sectionBRef.value.scrollIntoView === "function"
+  ) {
+    sectionBRef.value.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+};
 </script>

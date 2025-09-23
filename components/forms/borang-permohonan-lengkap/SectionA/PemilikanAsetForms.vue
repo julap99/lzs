@@ -3,8 +3,7 @@
     type="form"
     @submit="$emit('next-step')"
     :actions="false"
-    id="sectionA10"
-  >
+    id="sectionA10">
     <h3 class="text-lg font-semibold mb-4">9. Maklumat Pemilikan Aset</h3>
 
     <h4 class="font-medium mb-2">Aset Cair</h4>
@@ -17,7 +16,7 @@
         step="0.01"
         min="0"
         v-model="formData.wang_simpanan"
-      />
+        :disabled="readOnly" />
 
       <FormKit
         type="number"
@@ -26,7 +25,7 @@
         step="0.01"
         min="0"
         v-model="formData.emas"
-      />
+        :disabled="readOnly" />
 
       <FormKit
         type="number"
@@ -35,7 +34,7 @@
         step="0.01"
         min="0"
         v-model="formData.saham"
-      />
+        :disabled="readOnly" />
     </div>
 
     <h4 class="font-medium mb-2 mt-4">Aset Tidak Cair</h4>
@@ -49,13 +48,11 @@
           name="jenis_kenderaan"
           :options="['Kereta', 'Motosikal', 'Van', 'Lori']"
           v-model="formData.jenis_kenderaan"
-        />
+          :disabled="readOnly" />
       </div>
     </div>
     <FormKit
-      v-if="
-        formData.jenis_kenderaan && formData.jenis_kenderaan.length > 0
-      "
+      v-if="formData.jenis_kenderaan && formData.jenis_kenderaan.length > 0"
       type="number"
       name="kenderaan_total"
       label="Kenderaan (total unit)"
@@ -66,7 +63,7 @@
         min: 'Masukkan sekurang-kurangnya 1 unit',
       }"
       v-model="formData.kenderaan_total"
-    />
+      :disabled="readOnly" />
 
     <FormKit
       type="number"
@@ -74,7 +71,7 @@
       label="Rumah Kedai (unit)"
       min="0"
       v-model="formData.rumah_kedai"
-    />
+      :disabled="readOnly" />
 
     <FormKit
       type="number"
@@ -83,7 +80,7 @@
       step="0.01"
       min="0"
       v-model="formData.tanah_sawah"
-    />
+      :disabled="readOnly" />
 
     <FormKit
       type="file"
@@ -105,13 +102,14 @@
         mime: 'Format fail tidak dibenarkan',
       }"
       v-model="formData.dokumen_pemilikan"
-    />
+      :disabled="readOnly" />
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div class="flex justify-between gap-3 mt-6" v-if="showFooterButtons">
       <rs-button
         type="button"
         variant="primary-outline"
         @click="$emit('prev-step')"
+        :disabled="readOnly"
         >Kembali</rs-button
       >
       <div class="flex gap-3">
@@ -119,9 +117,14 @@
           type="button"
           variant="secondary"
           @click="$emit('save-step')"
+          :disabled="readOnly"
           >Simpan</rs-button
         >
-        <rs-button type="button" variant="primary" @click="$emit('next-step')"
+        <rs-button
+          type="button"
+          variant="primary"
+          @click="$emit('next-step')"
+          :disabled="readOnly"
           >Maklumat Pekerjaan</rs-button
         >
       </div>
@@ -134,10 +137,18 @@
 const props = defineProps({
   formData: {
     type: Object,
-    required: true
-  }
-})
+    required: true,
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true,
+  },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 // Emits
-const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
+const emit = defineEmits(["next-step", "prev-step", "save-step"]);
 </script>
