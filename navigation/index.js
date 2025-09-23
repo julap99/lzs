@@ -830,6 +830,13 @@ export default [
                 child: [],
                 meta: {},
               },
+               {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/SHI/02_01",
+                child: [],
+                meta: {},
+              },
             ],
             meta: {},
           },

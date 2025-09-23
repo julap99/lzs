@@ -35,16 +35,15 @@
             <div class="col-span-8">
               <!-- Keterangan -->
               <FormKit type="textarea" name="keterangan" label="Keterangan" placeholder="Kategori Fakir" rows="4"
-                validation="required" :validation-messages="{ required: 'Keterangan tidak boleh kosong', }"
+                validation="required" :validation-messages="{ required: 'Keterangan tidak boleh kosong' }"
                 v-model="newStatus.keterangan" />
             </div>
 
-            <div class="col-span-2">
+            <div class="col-span-2 grid items-center justify-start">
               <!-- Jenis -->
               <FormKit type="select" name="jenis" label="Jenis" placeholder="Pilih jenis" :options="jenisOptions"
-                validation="required" :validation-messages="{
-                  required: 'Sila pilih jenis',
-                }" v-model="newStatus.jenis" />
+                validation="required" :validation-messages="{ required: 'Sila pilih jenis' }" v-model="newStatus.jenis"
+                :classes="{ outer: 'm-0 w-full' }" />
             </div>
           </div>
 
@@ -223,7 +222,7 @@ const allowedKodValues = ["F", "M", "NFM", "G", "MM"];
 const allowedNamaValues = [
   "fakir",
   "miskin",
-  "nonfakir miskin",
+  "non fakir miskin",
   "gharimin",
   "muallaf",
 ];
