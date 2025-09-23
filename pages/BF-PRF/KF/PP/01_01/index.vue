@@ -37,7 +37,16 @@
             hover: true,
           }"
         >
-          <template v-slot:kodProses="data">{{ data.value.kodProses || data.value.idHadKifayah }}</template>
+          <template v-slot:kodProses="data">
+            <div v-if="data.value.kodProsesList && data.value.kodProsesList.length > 0" class="space-y-1">
+              <div v-for="(kod, index) in data.value.kodProsesList" :key="index" class="text-sm">
+                <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-1 mb-1">
+                  {{ kod.value || kod }}
+                </span>
+              </div>
+            </div>
+            <span v-else>{{ data.value.kodProses || data.value.idHadKifayah }}</span>
+          </template>
           <template v-slot:namaProses="data">{{ data.value.namaProses || data.value.namaHadKifayah }}</template>
           <template v-slot:keterangan="data">{{ data.value.keterangan || 'N/A' }}</template>
           <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
@@ -51,7 +60,7 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PRF/KF/HK/01_02?id=${data.value.idHadKifayah}`)"
+              @click="navigateTo(`/BF-PRF/KF/PP/01_02?id=${data.value.idPP || data.value.kodProses || data.value.idHadKifayah}`)"
               >Kemaskini
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>

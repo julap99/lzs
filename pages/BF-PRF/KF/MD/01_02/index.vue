@@ -25,202 +25,142 @@
     </div>
 
     <!-- Main Content -->
-    <div v-else-if="selectedKifayah" class="space-y-6">
+    <div v-else-if="selectedMultidimensi" class="space-y-6">
       <!-- Header Card -->
       <rs-card>
         <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Multidimensi</h2>
-          </div>
+          <h2 class="text-xl font-semibold">Multidimensi</h2>
         </template>
       </rs-card>
+
+      <!-- Action Buttons Below Title Card -->
+      <div class="flex justify-end gap-3">
+        <rs-button
+          variant="primary"
+          @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)"
+          class="px-6 py-3"
+        >
+          <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori Multidimensi
+        </rs-button>
+        <rs-button
+          variant="secondary"
+          @click="navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`)"
+          class="px-6 py-3"
+        >
+          <Icon name="mdi:chart-box" class="mr-2" /> Kuadran
+        </rs-button>
+      </div>
 
       <!-- Main Information Card -->
       <rs-card>
         <template #header>
-          <div class="space-y-4">
-            <div class="flex justify-between items-center">
-              <h3 class="text-lg font-semibold">Maklumat Multidimensi</h3>
-              <rs-button variant="primary" @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)" class="px-6 py-3">
-                <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori Multidimensi
-              </rs-button>
-            </div>
-            <div class="flex justify-end space-x-4">
-              <rs-button
-                variant="primary"
-                @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)"
-                class="px-6 py-3"
-              >
-                <Icon name="mdi:eye" class="mr-2" /> Lihat
-              </rs-button>
-              <rs-button
-                variant="secondary"
-                @click="navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`)"
-                class="px-6 py-3"
-              >
-                <Icon name="mdi:chart-box" class="mr-2" /> Kuadran
-              </rs-button>
-            </div>
-          </div>
+          <h3 class="text-lg font-semibold">Maklumat Multidimensi</h3>
         </template>
         <template #body>
-          <div class="max-w-4xl mx-auto">
-            <FormKit 
-              type="form" 
-              :actions="false" 
-              @submit="handleSubmit"
-              v-model="formData"
-            >
-              <div class="grid grid-cols-1 gap-6">
-                <!-- Nama Had Kifayah -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="namaHadKifayah"
-                    label="Nama"
-                    placeholder="Masukkan nama"
-                    help="Masukkan nama"
-                  />
-                </div>
-
-                <!-- Keterangan -->
-                <div>
-                  <FormKit
-                    type="textarea"
-                    name="keterangan"
-                    label="Keterangan"
-                    placeholder="Masukkan keterangan (opsional)"
-                    rows="3"
-                    help="Masukkan keterangan (opsional)"
-                  />
-                </div>
-
-                <!-- Formula 19 -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="Formula_19"
-                    label="Formula 19"
-                    placeholder="Masukkan Formula 19"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Formula 19 diperlukan'
-                    }"
-                    help="Masukkan nilai Formula 19"
-                  />
-                </div>
-
-                <!-- Formula 18 -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="Formula_18"
-                    label="Formula 18"
-                    placeholder="Masukkan Formula 18"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Formula 18 diperlukan'
-                    }"
-                    help="Masukkan nilai Formula 18"
-                  />
-                </div>
-
-                
-
-                <!-- Tarikh Mula -->
-                <div>
-                  <FormKit
-                    type="date"
-                    name="tarikhMula"
-                    label="Tarikh Mula"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Tarikh mula diperlukan'
-                    }"
-                    help="Pilih tarikh mula berkuatkuasa"
-                  />
-                </div>
-
-                <!-- Tarikh Tamat -->
-                <div>
-                  <FormKit
-                    type="date"
-                    name="tarikhTamat"
-                    label="Tarikh Tamat"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Tarikh tamat diperlukan'
-                    }"
-                    help="Pilih tarikh tamat"
-                  />
-                </div>
-
-                <!-- Status -->
-                <div>
-                  <FormKit
-                    type="select"
-                    name="status"
-                    label="Status"
-                    :options="statusOptions"
-                    placeholder="Pilih status"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Status diperlukan'
-                    }"
-                    help="Pilih status Had Kifayah"
-                  />
-                </div>
-
-                <!-- Status Data -->
-                <div>
-                  <FormKit
-                    type="select"
-                    name="statusData"
-                    label="Status Data"
-                    :options="statusDataOptions"
-                    placeholder="Pilih status data"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Status Data diperlukan'
-                    }"
-                    help="Pilih Status Data Multidimensi"
-                  />
-                </div>
-              </div>
-
-              <!-- Action Buttons -->
-              <div class="flex justify-between pt-6 border-t mt-8">
-                <rs-button 
-                  type="button" 
-                  variant="secondary" 
-                  @click="goBack"
-                >
-                  <Icon name="mdi:arrow-left" class="mr-2" />
-                  Kembali
-                </rs-button>
-                <div class="flex space-x-4">
-                  <rs-button 
-                    type="button" 
-                    variant="secondary" 
-                    @click="goBack"
-                  >
-                    Batal
-                  </rs-button>
-                  <rs-button 
-                    btnType="submit" 
-                    variant="primary"
-                    :disabled="isSubmitting"
-                  >
-                    <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
-                    <Icon v-else name="material-symbols:save" class="mr-2" />
-                    {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
-                  </rs-button>
-                </div>
-              </div>
-            </FormKit>
+          <div class="space-y-4">
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Nama:</span>
+              <span class="text-sm text-gray-900">{{ selectedMultidimensi.namaHadKifayah }}</span>
+            </div>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
+              <span class="text-sm text-gray-900">{{ selectedMultidimensi.keterangan || 'N/A' }}</span>
+            </div>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Formula 19:</span>
+              <span class="text-sm text-gray-900">{{ selectedMultidimensi.Formula_19 || 'N/A' }}</span>
+            </div>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Formula 18:</span>
+              <span class="text-sm text-gray-900">{{ selectedMultidimensi.Formula_18 || 'N/A' }}</span>
+            </div>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Mula:</span>
+              <span class="text-sm text-gray-900">{{ formatDate(selectedMultidimensi.tarikhMula) }}</span>
+            </div>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Tamat:</span>
+              <span class="text-sm text-gray-900">{{ formatDate(selectedMultidimensi.tarikhTamat) }}</span>
+            </div>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Status:</span>
+              <rs-badge :variant="getStatusVariant(selectedMultidimensi.status)">
+                {{ selectedMultidimensi.status }}
+              </rs-badge>
+            </div>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Status Data:</span>
+              <rs-badge :variant="getStatusVariant(selectedMultidimensi.statusData || selectedMultidimensi.status)">
+                {{ selectedMultidimensi.statusData || selectedMultidimensi.status || 'Draf' }}
+              </rs-badge>
+            </div>
           </div>
         </template>
       </rs-card>
+
+      <!-- Edit Maklumat Button -->
+      <div class="flex justify-end">
+        <rs-button variant="primary" class="px-6 py-3" @click="openEditMaklumatAsas">
+          <Icon name="mdi:pencil" class="mr-2" /> Kemaskini Maklumat
+        </rs-button>
+      </div>
+
+      <!-- Edit Maklumat Modal -->
+      <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40" @click="closeEditMaklumatAsas"></div>
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-xl mx-4">
+          <div class="px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Kemaskini Maklumat Multidimensi</h3>
+          </div>
+          <div class="px-6 py-4 space-y-4">
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Nama</label>
+              <input v-model="editForm.namaHadKifayah" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Keterangan</label>
+              <input v-model="editForm.keterangan" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Formula 19</label>
+              <input v-model="editForm.Formula_19" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Formula 18</label>
+              <input v-model="editForm.Formula_18" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Tarikh Mula</label>
+              <input v-model="editForm.tarikhMula" type="date" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Tarikh Tamat</label>
+              <input v-model="editForm.tarikhTamat" type="date" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Status</label>
+              <select v-model="editForm.status" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Aktif">Aktif</option>
+                <option value="Tidak Aktif">Tidak Aktif</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+              </select>
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Status Data</label>
+              <select v-model="editForm.statusData" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Draf">Draf</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+              </select>
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t flex justify-end gap-2">
+            <rs-button variant="secondary" @click="closeEditMaklumatAsas">Batal</rs-button>
+            <rs-button variant="primary" @click="saveMaklumatAsas">
+              <Icon name="mdi:content-save" class="mr-2" /> Simpan
+            </rs-button>
+          </div>
+        </div>
+      </div>
 
 
     </div>
@@ -275,9 +215,20 @@ const breadcrumb = ref([
 // State management
 const loading = ref(true);
 const error = ref(null);
-const selectedKifayah = ref(null);
-const allKifayahData = ref([]);
+const selectedMultidimensi = ref(null);
+const allMultidimensiData = ref([]);
 const isSubmitting = ref(false);
+const showEditModal = ref(false);
+const editForm = ref({
+  namaHadKifayah: '',
+  keterangan: '',
+  Formula_19: '',
+  Formula_18: '',
+  tarikhMula: '',
+  tarikhTamat: '',
+  status: 'Aktif',
+  statusData: 'Draf'
+});
 
 // Form data
 const formData = reactive({
@@ -365,21 +316,21 @@ const loadData = () => {
           mergedData.push(validateDataItem(savedItem));
         }
       });
-      allKifayahData.value = assignRowNumbers(mergedData);
+      allMultidimensiData.value = assignRowNumbers(mergedData);
     } else {
-      allKifayahData.value = assignRowNumbers(defaultData);
+      allMultidimensiData.value = assignRowNumbers(defaultData);
     }
     
     // Find the selected item
     if (selectedId) {
       // Prefer matching by stable IDs first (string compare)
-      selectedKifayah.value = allKifayahData.value.find(item => String(item.idMultidimensi || item.idHadKifayah) === String(selectedId));
+      selectedMultidimensi.value = allMultidimensiData.value.find(item => String(item.idMultidimensi || item.idHadKifayah) === String(selectedId));
       // Fallback to legacy numeric row selection
-      if (!selectedKifayah.value) {
+      if (!selectedMultidimensi.value) {
         const numericId = Number(selectedId);
-        selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
+        selectedMultidimensi.value = allMultidimensiData.value.find(item => item.no === numericId);
       }
-      if (!selectedKifayah.value) {
+      if (!selectedMultidimensi.value) {
         error.value = `Rekod dengan ID "${selectedId}" tidak ditemui.`;
       }
     } else {
@@ -389,7 +340,7 @@ const loadData = () => {
   } catch (error) {
     console.error('Error loading data:', error);
     error.value = "Ralat semasa memuatkan data.";
-    allKifayahData.value = defaultData;
+    allMultidimensiData.value = defaultData;
   } finally {
     loading.value = false;
   }
@@ -403,6 +354,58 @@ const assignRowNumbers = (items) => {
 // Navigation function
 const goBack = () => {
   navigateTo('/BF-PRF/KF/MD/01_01');
+};
+
+// Edit modal handlers (mirror HK behaviour, adapted to MD fields)
+const openEditMaklumatAsas = () => {
+  if (!selectedMultidimensi.value) return;
+  editForm.value = {
+    namaHadKifayah: selectedMultidimensi.value.namaHadKifayah || '',
+    keterangan: selectedMultidimensi.value.keterangan || '',
+    Formula_19: selectedMultidimensi.value.Formula_19 || '',
+    Formula_18: selectedMultidimensi.value.Formula_18 || '',
+    tarikhMula: selectedMultidimensi.value.tarikhMula || '',
+    tarikhTamat: selectedMultidimensi.value.tarikhTamat || '',
+    status: selectedMultidimensi.value.status || 'Aktif',
+    statusData: selectedMultidimensi.value.statusData || selectedMultidimensi.value.status || 'Draf'
+  };
+  showEditModal.value = true;
+};
+
+const closeEditMaklumatAsas = () => {
+  showEditModal.value = false;
+};
+
+const saveMaklumatAsas = () => {
+  if (!selectedMultidimensi.value) return;
+  // Update the selected item
+  const updated = {
+    ...selectedMultidimensi.value,
+    ...editForm.value,
+  };
+  selectedMultidimensi.value = updated;
+
+  // Persist back into the array kept in localStorage ("multidimensi")
+  try {
+    const savedDataRaw = localStorage.getItem('multidimensi');
+    let all = [];
+    if (savedDataRaw) {
+      all = JSON.parse(savedDataRaw);
+    }
+    const idx = all.findIndex(item => String(item.idMultidimensi || item.idHadKifayah) === String(selectedId));
+    if (idx >= 0) {
+      all[idx] = { ...all[idx], ...updated };
+    } else {
+      all.push({ ...(updated || {}), idMultidimensi: selectedId });
+    }
+    localStorage.setItem('multidimensi', JSON.stringify(all));
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Maklumat telah dikemaskini');
+  } catch (e) {
+    console.error('Gagal menyimpan data multidimensi:', e);
+  }
+
+  showEditModal.value = false;
 };
 
 // Handle form submission
@@ -481,16 +484,16 @@ const loadExistingData = () => {
 
 // Populate form with existing data
 const populateForm = () => {
-  if (selectedKifayah.value) {
-    formData.namaHadKifayah = selectedKifayah.value.namaHadKifayah || "";
-    formData.keterangan = selectedKifayah.value.keterangan || "";
-    formData.Formula_19 = selectedKifayah.value.Formula_19 || "";
-    formData.Formula_18 = selectedKifayah.value.Formula_18 || "";
-    formData.kadarBerbayar = selectedKifayah.value.kadarBerbayar || "";
-    formData.tarikhMula = selectedKifayah.value.tarikhMula || "";
-    formData.tarikhTamat = selectedKifayah.value.tarikhTamat || "";
-    formData.status = selectedKifayah.value.status || "";
-    formData.statusData = selectedKifayah.value.statusData || selectedKifayah.value.status || "Draf";
+  if (selectedMultidimensi.value) {
+    formData.namaHadKifayah = selectedMultidimensi.value.namaHadKifayah || "";
+    formData.keterangan = selectedMultidimensi.value.keterangan || "";
+    formData.Formula_19 = selectedMultidimensi.value.Formula_19 || "";
+    formData.Formula_18 = selectedMultidimensi.value.Formula_18 || "";
+    formData.kadarBerbayar = selectedMultidimensi.value.kadarBerbayar || "";
+    formData.tarikhMula = selectedMultidimensi.value.tarikhMula || "";
+    formData.tarikhTamat = selectedMultidimensi.value.tarikhTamat || "";
+    formData.status = selectedMultidimensi.value.status || "";
+    formData.statusData = selectedMultidimensi.value.statusData || selectedMultidimensi.value.status || "Draf";
   }
 };
 
