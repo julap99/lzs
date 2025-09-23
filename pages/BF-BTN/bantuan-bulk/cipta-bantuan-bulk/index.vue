@@ -420,24 +420,24 @@ const bantuanList = ref([
     actions: 'BP-2025-00004'
   },
   {
-    id: 'BP-2025-00005',
-    tajuk: 'Bantuan Pendidikan Mac 2025',
-    aid: 'B315 - Bantuan Keperluan Pendidikan IPT (Miskin)',
-    aidProduct: '(HQ) KPIPT (Miskin) - Bantuan Wang Saku',
-    jumlahAmaun: 'RM45,000.00',
-    tarikhMohon: '15/03/2025',
+    id: 'BP-2025-01617',
+    tajuk: 'TUNTUTAN KFAM APRIL 2025 - PELAJAR',
+    aid: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+    aidProduct: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+    jumlahAmaun: 'RM44,390.00',
+    tarikhMohon: '04/05/2025',
     status: 'Lulus',
-    actions: 'BP-2025-00005'
+    actions: 'BP-2025-01617'
   },
   {
-    id: 'BP-2025-00006',
-    tajuk: 'Bantuan Kesihatan Feb 2025',
-    aid: 'B200 - Bantuan Kesihatan',
-    aidProduct: '(HQ) BANTUAN KESIHATAN',
-    jumlahAmaun: 'RM30,000.00',
-    tarikhMohon: '10/02/2025',
+    id: 'BP-2025-01589',
+    tajuk: 'TUNTUTAN KFAM APRIL 2025 - GURU',
+    aid: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
+    aidProduct: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
+    jumlahAmaun: 'RM54,710.00',
+    tarikhMohon: '30/04/2025',
     status: 'Lulus',
-    actions: 'BP-2025-00006'
+    actions: 'BP-2025-01589'
   },
   {
     id: 'BP-2025-00007',
