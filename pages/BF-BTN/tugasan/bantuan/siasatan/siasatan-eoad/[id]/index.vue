@@ -1031,7 +1031,31 @@ const mockByNoBantuan = {
     keputusanSiasatan: "",
     tarikhLawatan: "",
     masaLawatan: "",
-    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai pembayaran rumah sewa bulanan yang tidak mampu dibayarnya. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: null,
+  },
+  
+  "NAS-2025-0004": {
+    // Personal Information
+    noBantuan: "NAS-2025-0004",
+    nama: "Amirul Hakim bin Zainuddin",
+    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "791230104321",
+    noTelefon: "0193456789",
+    email: "hakim@gmail.com",
+    statusKeluarga: "Fakir",
+    statusIndividu: "Fakir",
+    statusMultidimensi: "Asnaf Tidak Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan kesihatannya yang mengalami sakit buah pinggang dan memerlukan rawatan dialisis. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
     gambarLokasi: null,
   },
   
@@ -1112,6 +1136,37 @@ const mockInvestigationData = {
       {
         id: "B112",
         jenisBantuan: "B112 - Bantuan Sewaan/Ansuran Rumah (Fakir)",
+        status: "Perlu Diproses",
+        sla: "5 hari lagi",
+        actions: "/",
+      },
+      // {
+      //   id: "B307",
+      //   jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+      //   status: "Perlu Diproses",
+      //   sla: "2 hari lagi",
+      //   actions: "/",
+      // }
+    ]
+  },
+   "NAS-2025-0004": {
+    jenisPekerjaan: "Pesara guru",
+    statusKediaman: "Rumah Sendiri",
+    jumlahBayaranRumah: "RM0",
+    bilTanggungan: "3 Orang (2 Anak + Isteri )",
+    statusTanggungan: "Anak sakit kronik , Isteri tidak bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+    assistanceApplications: [
+      {
+        id: "B103",
+        jenisBantuan: "B103 - Bantuan Perubatan Dialisis (Fakir)",
         status: "Perlu Diproses",
         sla: "5 hari lagi",
         actions: "/",
