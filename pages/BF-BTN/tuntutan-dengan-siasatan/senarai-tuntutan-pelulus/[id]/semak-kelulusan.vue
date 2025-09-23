@@ -24,7 +24,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:person-outline" class="mr-2" />
             Maklumat Pemohon
           </div>
         </template>
@@ -43,7 +42,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:info-outline" class="mr-2" />
             Maklumat Bantuan
           </div>
         </template>
@@ -64,7 +62,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:info-outline" class="mr-2" />
             Maklumat Tuntutan
           </div>
         </template>
@@ -85,7 +82,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:description" class="mr-2" />
             Maklumat Dokumen Sokongan
           </div>
         </template>
@@ -109,7 +105,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:fact-check-outline" class="mr-2" />
             Keputusan Siasatan
           </div>
         </template>
@@ -127,7 +122,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:insights" class="mr-2" />
             Semakan Maklumat
           </div>
         </template>
@@ -177,7 +171,6 @@
       <rs-card>
         <template #header>
           <div class="flex items-center">
-            <Icon name="material-symbols:approval-outline" class="mr-2" />
             Maklumat Kelulusan
           </div>
         </template>
