@@ -225,8 +225,8 @@ definePageMeta({ title: 'Mohon Tuntutan (Dinamik)' })
 const { $swal } = useNuxtApp()
 
 const breadcrumb = ref([
-  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
-  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
   { name: 'Mohon Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan' }
 ])
 
