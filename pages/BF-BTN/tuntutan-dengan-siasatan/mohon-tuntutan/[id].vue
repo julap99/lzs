@@ -226,7 +226,200 @@ const breadcrumb = ref([
 
 const route = useRoute()
 
-// Mock data keyed by noBantuan (inline, no external files)
+// Form data
+const formData = ref({
+  namaPemohon: '',
+  noPengenalan: '',
+  emailPemohon: '',
+  noTelefonPemohon: '',
+  kategoriAsnaf: 'Fakir',
+  statusHousehold: 'Fakir',
+  statusIndividu: 'Fakir',
+  statusMultidimensi: 'Produktif',
+  noBtn: '',
+  noGL: '',
+  noInvois: 'INV-2025-00124',
+  kodBantuan: '',
+  aid: 'B307 - (HQ) BANTUAN DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+  aidProduct: 'Dermasiswa IPT Dalam Negara (Fakir) ',
+  productPackage: '',
+  entitlementProduct: '',
+  amaunTuntutan: '',
+  tarikh: '',
+  catatan: '',
+  dokumenSokongan: [],
+  tarikhMula: '2025-09-22',
+  tarikhAkhir: '2026-09-22',
+  penerimaBayaran: '',
+  mop: '',
+  namaPenerima: '',
+  bank: '',
+  noAkaun: '',
+  tarikhJangkaanPembayaran: '',
+  tarikhDicipta: '04/04/2025 03:45 PM'
+})
+
+// DI table schema
+const fieldsDI = ['diNo', 'entitlementProduct', 'penerima', 'bulan', 'tahun', 'status', 'amaun']
+const columnsDI = [
+  { key: 'diNo', label: 'DI No' },
+  { key: 'entitlementProduct', label: 'Entitlement Product' },
+  { key: 'penerima', label: 'Penerima' },
+  { key: 'bulan', label: 'Bulan' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'status', label: 'Status' },
+  { key: 'amaun', label: 'Amaun (RM)' }
+]
+
+// GL table schema
+const fieldsGL = ['glNo', 'diNo', 'createdDate', 'penerimaBayaran', 'status', 'bulan', 'tahun', 'amaun', 'invoiceCount', 'invoiceTotal', 'currentBalance', 'tindakan']
+const columnsGL = [
+  { key: 'glNo', label: 'GL No' },
+  { key: 'diNo', label: 'DI No' },
+  { key: 'createdDate', label: 'Tarikh Dicipta' },
+  { key: 'penerimaBayaran', label: 'Penerima Bayaran' },
+  { key: 'status', label: 'Status' },
+  { key: 'bulan', label: 'Bulan' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'amaun', label: 'Amaun (RM)' },
+  { key: 'invoiceCount', label: 'Bil Invois' },
+  { key: 'invoiceTotal', label: 'Jumlah Invois (RM)' },
+  { key: 'currentBalance', label: 'Baki (RM)' },
+  { key: 'tindakan', label: 'Tindakan' }
+]
+
+// Invoice table schema
+const fieldsInv = [
+  'invoiceNo',
+  'title',
+  'tahun',
+  'semester',
+  'diNo',
+  'glNo',
+  'paNo',
+  'statusKelulusan',
+  'amaun'
+]
+
+const columnsInv = [
+  { key: 'invoiceNo', label: 'Invoice No' },
+  { key: 'title', label: 'Tajuk' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'semester', label: 'Semester' },
+  { key: 'diNo', label: 'DI No' },
+  { key: 'glNo', label: 'GL No' },
+  { key: 'paNo', label: 'PA No' },
+  { key: 'statusKelulusan', label: 'Status Kelulusan' },
+  { key: 'amaun', label: 'Amaun (RM)' }
+]
+
+// Payment Advice table schema
+const fieldsPA = ['paNo', 'createdDate', 'penerimaBayaran', 'status', 'bulan', 'tahun', 'amaun']
+const columnsPA = [
+  { key: 'paNo', label: 'PA No' },
+  { key: 'createdDate', label: 'Tarikh Dicipta' },
+  { key: 'penerimaBayaran', label: 'Penerima Bayaran' },
+  { key: 'status', label: 'Status' },
+  { key: 'bulan', label: 'Bulan' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'amaun', label: 'Amaun (RM)' }
+]
+
+// Dokumen table schema
+const fieldsDoc = ['name', 'nameFile', 'uploadDate', 'tindakan']
+const columnsDoc = [
+  { key: 'name', label: 'Nama Dokumen' },
+  { key: 'nameFile', label: 'Nama File' },
+  { key: 'uploadDate', label: 'Tarikh Muat Naik' },
+  { key: 'tindakan', label: 'Tindakan' }
+]
+
+const noBtnOptions = ref([
+  { label: 'NAS-2025-00012', value: 'NAS-2025-00012' },
+  { label: 'NAS-2025-00014', value: 'NAS-2025-00014' }
+])
+
+const distributionItems = ref([
+  {
+    diNo: 'DI-001',
+    entitlementProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+    penerima: 'IPTA',
+    bulan: 'MAC',
+    tahun: '2025',
+    status: 'Aktif',
+    amaun: '1500.00'
+  }
+])
+
+const documents = ref([
+  { 
+    name: 'Lampiran Invoice 1', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00124.pdf', 
+    uploadDate: '22/09/2025',
+    tindakan: 1
+  },
+  { 
+    name: 'Lampiran Invoice 2', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00125.pdf', 
+    uploadDate: '21/09/2025',
+    tindakan: 2
+  },
+  { 
+    name: 'Lampiran Invoice 3', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00126.pdf', 
+    uploadDate: '20/09/2025',
+    tindakan: 3
+  },
+  { 
+    name: 'Lampiran Invoice 4', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00127.pdf', 
+    uploadDate: '19/09/2025',
+    tindakan: 4
+  }
+])
+
+// GL state
+const guaranteeLetters = ref([
+  {
+    glNo: 'GL-001',
+    diNo: 'DI-001',
+    createdDate: '15/01/2025',
+    penerimaBayaran: 'IPTA',
+    status: 'AKTIF',
+    bulan: 'MAC',
+    tahun: '2025',
+    amaun: '1500.00'
+  }
+])
+
+const invoices = ref([])
+
+// Modal state
+const showInvoiceModal = ref(false)
+const selectedGlNo = ref('')
+const newInvoice = ref({
+  invoiceNo: 'INV-2025-00124',
+  tahun: '2025',
+  semester: '',
+  tajuk: '',
+  cgpa: '',
+  penerimaBayaran: 'IPTA',
+  mop: 'EFT',
+  namaPenerima: 'IPTA',
+  bank: 'CIMB',
+  noAkaun: '8001234567',
+  amaun: '',
+  lampiran: [],
+  catatan: ''
+})
+
+const semesterOptions = [
+  { label: 'Semester 1', value: '1' },
+  { label: 'Semester 2', value: '2' },
+  { label: 'Semester 3', value: '3' }
+]
+
+// Mock data based by noBantuan 
 const mockData = {
   'APP-2025-001481': {
     pemohon: 'ALI BIN MOHAMED',
@@ -270,6 +463,168 @@ const mockData = {
     namaPenerimaManfaat: 'FATIMAH BINTI MOHAMED',
     namaPenerima: 'HOSPITAL KUALA LUMPUR'
   }
+}
+
+// Computed properties
+const glRows = computed(() =>
+  guaranteeLetters.value.map((gl) => {
+    const glTotal = toNum(gl.amaun)
+    const invTotal = sumInvoicesByGL(gl.glNo)
+    const balance = Math.max(glTotal - invTotal, 0)
+    return {
+      ...gl,
+      invoiceCount: invoices.value.filter((i) => i.glNo === gl.glNo).length,
+      invoiceTotal: invTotal.toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      currentBalance: balance.toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    }
+  })
+)
+
+const filteredInvoices = computed(() => {
+  if (!selectedGlNo.value) return invoices.value
+  return invoices.value.filter(inv => inv.glNo === selectedGlNo.value)
+})
+
+// Helper functions
+const toMYR = (n) => {
+  if (n == null || n === '') return '0.00'
+  const num = typeof n === 'number' ? n : Number(String(n).replace(/,/g, ''))
+  return isNaN(num) ? '0.00' : num.toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+const toNum = (n) => {
+  if (n == null || n === '') return 0
+  const num = typeof n === 'number' ? n : Number(String(n).replace(/,/g, ''))
+  return isNaN(num) ? 0 : num
+}
+
+const sumInvoicesByGL = (glNo) => {
+  return invoices.value
+    .filter(inv => inv.glNo === glNo)
+    .reduce((sum, inv) => sum + toNum(inv.amaun), 0)
+}
+
+const getGlBalance = (glNo) => {
+  const gl = guaranteeLetters.value.find(g => g.glNo === glNo)
+  if (!gl) return 0
+  const glTotal = toNum(gl.amaun)
+  const invTotal = sumInvoicesByGL(glNo)
+  return Math.max(glTotal - invTotal, 0)
+}
+
+const formatSemester = (sem) => {
+  const map = { '1': 'Semester 1', '2': 'Semester 2', '3': 'Semester 3' }
+  return map[sem] || sem
+}
+
+const getStatusVariant = (status) => {
+  const variants = {
+    'Fakir': 'danger',
+    'Miskin': 'warning', 
+    'Non-Fakir Miskin': 'success',
+    'Produktif': 'success',
+    'Tidak Produktif': 'danger',
+    'Produktif Sementara': 'warning',
+    'Produktif Tegar': 'info'
+  }
+  return variants[status] || 'secondary'
+}
+
+const hydrateFromSelectedBantuan = (selected) => {
+  if (selected.pemohon) formData.value.namaPemohon = selected.pemohon
+  if (selected.noKPPemohon) formData.value.noPengenalan = selected.noKPPemohon
+  if (selected.maklumatBantuan) formData.value.aidProduct = selected.maklumatBantuan
+  if (selected.namaPenerimaManfaat) formData.value.namaPenerimaManfaat = selected.namaPenerimaManfaat
+  if (selected.namaPenerima) formData.value.namaPenerima = selected.namaPenerima
+}
+
+const populateFormDataFromSession = () => {
+  // Default mock data if no preset found
+  formData.value.namaPemohon = 'ALI BIN MOHAMED'
+  formData.value.noPengenalan = '940511146045'
+  formData.value.emailPemohon = 'ali.mohamed@email.com'
+  formData.value.noTelefonPemohon = '0123456789'
+  formData.value.kategoriAsnaf = 'Fakir'
+  formData.value.statusHousehold = 'Fakir'
+  formData.value.statusIndividu = 'Fakir'
+  formData.value.statusMultidimensi = 'Produktif'
+}
+
+const applyGlFilter = (glNo) => {
+  selectedGlNo.value = glNo
+}
+
+const openInvoiceModal = (glNo) => {
+  selectedGlNo.value = glNo
+  showInvoiceModal.value = true
+  newInvoice.value.glNo = glNo
+}
+
+const createInvoice = () => {
+  const invoice = {
+    invoiceNo: newInvoice.value.invoiceNo,
+    title: newInvoice.value.tajuk,
+    tahun: newInvoice.value.tahun,
+    semester: newInvoice.value.semester,
+    diNo: 'DI-001',
+    glNo: selectedGlNo.value,
+    paNo: '',
+    statusKelulusan: 'Menunggu Kelulusan',
+    amaun: newInvoice.value.amaun
+  }
+  
+  invoices.value.push(invoice)
+  
+  // Add uploaded files to documents
+  if (newInvoice.value.lampiran && newInvoice.value.lampiran.length > 0) {
+    newInvoice.value.lampiran.forEach((file, index) => {
+      documents.value.push({
+        name: `Lampiran Invoice ${documents.value.length + 1}`,
+        nameFile: file.name,
+        uploadDate: new Date().toLocaleDateString('ms-MY'),
+        tindakan: documents.value.length + 1
+      })
+    })
+  }
+  
+  showInvoiceModal.value = false
+  newInvoice.value = {
+    invoiceNo: 'INV-2025-00124',
+    tahun: '2025',
+    semester: '',
+    tajuk: '',
+    cgpa: '',
+    penerimaBayaran: 'IPTA',
+    mop: 'EFT',
+    namaPenerima: 'IPTA',
+    bank: 'CIMB',
+    noAkaun: '8001234567',
+    amaun: '',
+    lampiran: [],
+    catatan: ''
+  }
+}
+
+const viewDocument = (doc) => {
+  console.log('View document:', doc)
+}
+
+const handleSaveDraft = () => {
+  $swal.fire({
+    title: 'Draf Disimpan',
+    text: 'Tuntutan telah disimpan sebagai draf.',
+    icon: 'success',
+    confirmButtonText: 'OK'
+  })
+}
+
+const handleSubmit = () => {
+  $swal.fire({
+    title: 'Tuntutan Dihantar',
+    text: 'Tuntutan telah berjaya dihantar untuk semakan.',
+    icon: 'success',
+    confirmButtonText: 'OK'
+  })
 }
 
 // Hydrate entirely from :id preset, fallback to default session mock if unknown
