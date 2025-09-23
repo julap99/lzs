@@ -745,6 +745,10 @@
                                <option value="UKM5566">UKM5566 - Universiti Kebangsaan Malaysia (UKM)</option>
                                <option value="UITM7788">UITM7788 - Universiti Teknologi MARA (UiTM)</option>
                                <option value="USM9900">USM9900 - Universiti Sains Malaysia (USM)</option>
+                               <!-- Dialysis Centers for B103 -->
+                               <option v-if="isB103" value="DDC001">DDC001 - PUSAT DIALISIS DAVITA TANJUNG KARANG</option>
+                               <option v-if="isB103" value="FDB002">FDB002 - FORESIGHT DIALYSIS BANDAR PUNCAK ALAM</option>
+                               <option v-if="isB103" value="WAN003">WAN003 - KLINIK DAN PUSAT DIALISIS WAQAF AN NUR</option>
                              </select>
                            </div>
                            
@@ -2407,7 +2411,7 @@ const formData = ref({
     noPengenalan: "850315-10-1234",
     hubungan: "Isteri",
     tahapKesihatan: "Sakit Kronik",
-    jenisPenyakit: "Diabetes",
+    jenisPenyakit: "Sakit Buah Pinggang",
     keadaanKesihatan: "Tidak Terlantar",
     kosPenjagaan: "Berbayar",
     jumlahPerbelanjaan: "300",
@@ -3265,6 +3269,25 @@ const loadPenerimaByRegistration = (productIndex) => {
         namaPemegangAkaun: 'Universiti Sains Malaysia (USM)',
         bank: 'MAYBANK',
         noAkaunBank: '1234567890'
+      },
+      // Dialysis Centers for B103
+      'DDC001': {
+        namaPenerima: 'PUSAT DIALISIS DAVITA TANJUNG KARANG',
+        namaPemegangAkaun: 'PUSAT DIALISIS DAVITA TANJUNG KARANG',
+        bank: 'MAYBANK',
+        noAkaunBank: '1234567890'
+      },
+      'FDB002': {
+        namaPenerima: 'FORESIGHT DIALYSIS BANDAR PUNCAK ALAM',
+        namaPemegangAkaun: 'FORESIGHT DIALYSIS BANDAR PUNCAK ALAM',
+        bank: 'CIMB',
+        noAkaunBank: '8000123456'
+      },
+      'WAN003': {
+        namaPenerima: 'KLINIK DAN PUSAT DIALISIS WAQAF AN NUR',
+        namaPemegangAkaun: 'KLINIK DAN PUSAT DIALISIS WAQAF AN NUR',
+        bank: 'RHB',
+        noAkaunBank: '123456789012'
       }
     };
     
