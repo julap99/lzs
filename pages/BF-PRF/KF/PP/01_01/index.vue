@@ -37,7 +37,16 @@
             hover: true,
           }"
         >
-          <template v-slot:kodProses="data">{{ data.value.kodProses || data.value.idHadKifayah }}</template>
+          <template v-slot:kodProses="data">
+            <div v-if="data.value.kodProsesList && data.value.kodProsesList.length > 0" class="space-y-1">
+              <div v-for="(kod, index) in data.value.kodProsesList" :key="index" class="text-sm">
+                <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-1 mb-1">
+                  {{ kod.value || kod }}
+                </span>
+              </div>
+            </div>
+            <span v-else>{{ data.value.kodProses || data.value.idHadKifayah }}</span>
+          </template>
           <template v-slot:namaProses="data">{{ data.value.namaProses || data.value.namaHadKifayah }}</template>
           <template v-slot:keterangan="data">{{ data.value.keterangan || 'N/A' }}</template>
           <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
@@ -51,7 +60,7 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PRF/KF/HK/01_02?id=${data.value.idHadKifayah}`)"
+              @click="navigateTo(`/BF-PRF/KF/PP/01_02?id=${data.value.idPP || data.value.kodProses || data.value.idHadKifayah}`)"
               >Kemaskini
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -94,26 +103,8 @@ const breadcrumb = ref([
 const tableKey = ref(0);
 const kifayahLimits = ref([]);
 
-// Default data (fallback if no data in localStorage)
-const defaultData = [
-  // Section A: Proses Profiling
-  {
-    idHadKifayah: "HK001",
-    idPP: "PP-0001",
-    kodProses: "PP001",
-    namaProses: "Proses Profiling Utama",
-    namaHadKifayah: "Ketua Keluarga", // Keep for backward compatibility
-    keterangan: "Proses profiling untuk ketua keluarga",
-    kategori: "Utama",
-    jenisIsiRumah: "Ketua Keluarga",
-    kadarBerbayar: 1215.00,
-    kadarPercuma: 780.00,
-    tarikhMula: "2025-01-01",
-    status: "Aktif",
-    statusData: "Draf",
-    tindakan: 1,
-  },
-];
+// Default data (empty array - no hardcoded data)
+const defaultData = [];
 
 // Function to validate and sanitize data item
 const validateDataItem = (item) => {
@@ -144,23 +135,9 @@ const loadData = () => {
       const parsedData = JSON.parse(savedData);
       // Validate and sanitize parsed data
       const validatedData = parsedData.map(validateDataItem);
-      
-      // Merge with default data, giving priority to saved data
-      const mergedData = [...defaultData];
-      validatedData.forEach(savedItem => {
-        // Check if item already exists in default data
-        const existingIndex = mergedData.findIndex(item => item.idHadKifayah === savedItem.idHadKifayah);
-        if (existingIndex >= 0) {
-          // Replace existing item
-          mergedData[existingIndex] = validateDataItem(savedItem);
-        } else {
-          // Add new item
-          mergedData.push(validateDataItem(savedItem));
-        }
-      });
-      kifayahLimits.value = mergedData;
+      kifayahLimits.value = validatedData;
     } else {
-      kifayahLimits.value = defaultData;
+      kifayahLimits.value = [];
     }
     
     // Ensure all items have statusData field
@@ -174,7 +151,7 @@ const loadData = () => {
     });
   } catch (error) {
     console.error('Error loading data:', error);
-    kifayahLimits.value = defaultData;
+    kifayahLimits.value = [];
   }
 };
 

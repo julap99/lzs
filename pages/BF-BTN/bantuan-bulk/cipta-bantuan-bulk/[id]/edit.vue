@@ -46,9 +46,9 @@
             <div class="formkit-field">
               <label class="formkit-label">Status</label>
               <div class="mt-1">
-                <rs-badge :variant="getStatusVariant(formData.status)">
-                  {{ formData.status }}
-                </rs-badge>
+              <rs-badge :variant="getStatusVariant(formData.status)">
+                {{ formData.status }}
+              </rs-badge>
               </div>
             </div>
 
@@ -112,7 +112,7 @@
                 search-placeholder="Cari aid..."
                 :disabled="false"
               />
-              <FormKit
+            <FormKit
                 type="select"
                 name="aidProduct"
                 label="Aid Product"
@@ -127,7 +127,7 @@
                 }"
                 :disabled="!formData.aid"
               />
-              <FormKit
+            <FormKit
                 type="select"
                 name="productPackage"
                 label="Product Package"
@@ -142,7 +142,7 @@
                 }"
                 :disabled="!formData.aidProduct"
               />
-              <FormKit
+            <FormKit
                 type="select"
                 name="productEntitlement"
                 label="Product Entitlement"
@@ -156,7 +156,7 @@
                   required: 'Sila pilih product Entitlement',
                 }"
                 :disabled="!formData.productPackage"
-              />
+            />
 
             <!-- Penyiasat -->
             <FormKit
@@ -169,15 +169,13 @@
               v-model="formData.penyiasat"
             />
 
-            <!-- Cawangan -->
-            <FormKit
-              type="select"
-              name="cawangan"
-              label="Cawangan"
-              :options="cawanganOptions"
-              placeholder="Pilih cawangan"
-              validation="required"
+            <!-- Cawangan (CustomSelect) -->
+            <CustomSelect
               v-model="formData.cawangan"
+              :options="cawanganOptions"
+              label="Cawangan"
+              search-placeholder="Cari cawangan..."
+              :disabled="false"
             />
           </div>
         </template>
@@ -201,7 +199,8 @@
               @change="handleFileUpload"
             />
 
-            <!-- Import Button -->
+            <div class="flex items-center gap-2">
+              <!-- Import Button -->
             <rs-button
               variant="primary"
               :disabled="!selectedFile || isLoading"
@@ -210,6 +209,18 @@
               <Icon name="material-symbols:upload" class="mr-1" />
               {{ isLoading ? "Sedang Import..." : "Import" }}
             </rs-button>
+            
+            <!-- Download Payable To CSV Template -->
+            <rs-button
+              variant="secondary"
+              :disabled="isLoading"
+              @click="downloadPayableToTemplate"
+            >
+              <Icon name="material-symbols:download" class="mr-1" />
+              Template Format Excel
+            </rs-button>
+            </div>
+            
           </div>
         </template>
       </rs-card>
@@ -220,7 +231,17 @@
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
 
-            <div v-if="paymentList.length >= 1" class="flex justify-end">
+            <div v-if="paymentList.length >= 1" class="flex items-center gap-2">
+
+              <rs-button
+                
+                variant="primary"
+                @click="handleAddPayment"
+              >
+                <Icon name="material-symbols:add" class="w-4 h-4 mr-1" />
+                Tambah
+              </rs-button>
+
               <rs-button
                 variant="primary"
                 :disabled="selectedPayments.length === 0"
@@ -229,7 +250,7 @@
                 <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
                 Sahkan ({{ selectedPayments.length }})
               </rs-button>
-            </div>
+              </div>
           </div>
         </template>
         <template #body>
@@ -242,7 +263,7 @@
             bayaran.
           </div>
 
-          <div v-else class="space-y-3">    
+          <div v-else class="space-y-3">
             <rs-table
               :data="cleanPaymentList"
               :columns="paymentColumns"
@@ -274,14 +295,14 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
+          <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
           </div>
         </template>
         <template #body>
-          <div v-if="damagedDataList.length === 0" class="text-center py-8 text-gray-500">
+              <div v-if="damagedDataList.length === 0" class="text-center py-8 text-gray-500">
             <div v-if="paymentList.length === 0">
               Tiada maklumat data rosak. Sila import data terlebih dahulu untuk melihat data rosak.
-            </div>
+              </div>
             <div v-else>
               Tiada maklumat data rosak. Semua data dalam keadaan baik.
             </div>
@@ -307,7 +328,7 @@
                         @click="openDuplicateModalFor(row)"
                         class="text-blue-600 hover:text-blue-800 underline font-medium transition-colors duration-200 cursor-pointer"
                       >
-                        {{ row.namaPenerima }}
+                  {{ row.namaPenerima }}
                       </button>
                       <span
                         v-else
@@ -328,7 +349,7 @@
                           @click="handleKemaskiniDamagedData(row)"
                         >
                           <Icon name="ic:outline-edit" size="18" />
-                        </rs-button>
+                </rs-button>
                         <transition name="tooltip">
                           <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
                             Edit
@@ -340,7 +361,7 @@
                 </tbody>
               </table>
             </div>
-          </div>
+              </div>
         </template>
       </rs-card>
 
@@ -423,7 +444,7 @@
                     <Icon name="material-symbols:description" class="mr-2 text-blue-500" />
                     <span class="text-sm text-gray-700">{{ file.name }}</span>
                     <span class="text-xs text-gray-500 ml-2">({{ formatFileSize(file.size) }})</span>
-                  </div>
+          </div>
                   <rs-button
                     variant="danger-text"
                     size="sm"
@@ -447,22 +468,22 @@
             <!-- Existing uploaded documents -->
             <div v-if="documentList.length > 0" class="mt-6 space-y-3">
               <h4 class="text-sm font-medium text-gray-700">Dokumen sedia ada:</h4>
-              <div
-                v-for="(document, index) in documentList"
+            <div
+              v-for="(document, index) in documentList"
                 :key="document.id || index"
-                class="flex items-center justify-between p-3 border rounded-lg bg-gray-50"
-              >
-                <div class="flex items-center space-x-3">
-                  <Icon name="material-symbols:description" class="w-8 h-8 text-blue-500" />
-                  <div>
-                    <p class="font-medium text-gray-900">{{ document.name }}</p>
-                    <p class="text-sm text-gray-500">{{ document.size }} • {{ document.uploadDate }}</p>
-                  </div>
+              class="flex items-center justify-between p-3 border rounded-lg bg-gray-50"
+            >
+              <div class="flex items-center space-x-3">
+                <Icon name="material-symbols:description" class="w-8 h-8 text-blue-500" />
+                <div>
+                  <p class="font-medium text-gray-900">{{ document.name }}</p>
+                  <p class="text-sm text-gray-500">{{ document.size }} • {{ document.uploadDate }}</p>
                 </div>
+              </div>
                 <div class="flex items-center space-x-2">
                   <rs-button variant="info-text" size="sm" :title="'Muat turun'" aria-label="Muat turun">
                     <Icon name="material-symbols:download" class="w-4 h-4" />
-                  </rs-button>
+              </rs-button>
                 </div>
               </div>
             </div>
@@ -478,15 +499,15 @@
             Kembali
           </rs-button>
           <div class="flex space-x-2">
-          <rs-button
+            <rs-button
             variant="primary"
             @click="handleSave"
             :disabled="isSubmitting"
-          >
-             <Icon name="ph:floppy-disk" class="w-4 h-4 mr-1" />
+            >
+              <Icon name="ph:floppy-disk" class="w-4 h-4 mr-1" />
             {{ isSubmitting ? "Sedang Simpan..." : "Simpan" }}
-          </rs-button>
-          <rs-button
+            </rs-button>
+            <rs-button
               variant="primary"
               @click="handleHantar"
               :disabled="isSubmitting"
@@ -494,7 +515,7 @@
               <Icon name="ph:paper-plane-tilt" class="w-4 h-4 mr-1" />
               Hantar
             </rs-button>
-            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -961,17 +982,6 @@
                input: '!py-2',
              }"
            />
-           
-           <FormKit
-             type="text"
-             name="status"
-             label="Status"
-             :value="editingPaymentForDefect.status"
-             disabled
-             :classes="{
-               input: '!py-2',
-             }"
-           />
          </div>
        </div>
      </template>
@@ -1068,10 +1078,10 @@
          <rs-button variant="secondary" @click="onDuplicateClose">Tutup</rs-button>
          <rs-button variant="primary" :disabled="duplicateSelectedIds.length === 0" @click="onDuplicateConfirm(duplicateSelectedIds)">
            Kemaskini
-         </rs-button>
-       </div>
-     </template>
-   </rs-modal>
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -1288,10 +1298,39 @@ const penyiasatOptions = [
 ];
 
 const cawanganOptions = [
-  { label: "Cawangan Ibu Pejabat LZS", value: "hq" },
-  { label: "Cawangan Kuala Selangor", value: "kualaSelangor" },
-  { label: "Cawangan Klang", value: "klang" },
-  { label: "Cawangan Damansara", value: "damansara" },
+  // Gombak
+  { label: "Taman Melawati (Gombak)", value: "Taman Melawati" },
+  { label: "Bandar Baru Selayang (Gombak)", value: "Bandar Baru Selayang" },
+  { label: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)", value: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)" },
+  // Hulu Langat
+  { label: "Kajang (Hulu Langat)", value: "Kajang" },
+  { label: "Bandar Baru Bangi (Hulu Langat)", value: "Bandar Baru Bangi" },
+  { label: "Bandar Baru Ampang (Hulu Langat)", value: "Bandar Baru Ampang" },
+  { label: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)", value: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)" },
+  { label: "UNIVERSITI TENAGA NASIONAL (UNITEN)", value: "UNIVERSITI TENAGA NASIONAL (UNITEN)" },
+  { label: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)", value: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)" },
+  { label: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)", value: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)" },
+  // Kuala Selangor
+  { label: "UNIVERSITI SELANGOR (UNISEL)", value: "UNIVERSITI SELANGOR (UNISEL)" },
+  { label: "Cawangan Zakat LZS, Kuala Selangor", value: "Cawangan Zakat LZS, Kuala Selangor" },
+  // Sabak Bernam
+  { label: "Cawangan Zakat LZS, Sungai Besar", value: "Cawangan Zakat LZS, Sungai Besar" },
+  // Petaling
+  { label: "UNIVERSITI TEKNOLOGI MARA (UiTM)", value: "UNIVERSITI TEKNOLOGI MARA (UiTM)" },
+  { label: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)", value: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)" },
+  { label: "UNIVERSITI PUTRA MALAYSIA (UPM)", value: "UNIVERSITI PUTRA MALAYSIA (UPM)" },
+  { label: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)", value: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)" },
+  { label: "Damansara (Petaling)", value: "Damansara" },
+  { label: "Cawangan Ibu Pejabat LZS", value: "Cawangan Ibu Pejabat LZS" },
+  // Sepang
+  { label: "UNIVERSITI MULTIMEDIA (MMU)", value: "UNIVERSITI MULTIMEDIA (MMU)" },
+  { label: "Saujana KLIA", value: "Saujana KLIA" },
+  // Kuala Langat
+  { label: "Banting", value: "Banting" },
+  // Hulu Selangor
+  { label: "Kuala Kubu Bharu", value: "Kuala Kubu Bharu" },
+  // Klang
+  { label: "Kompleks MAIS Klang", value: "Kompleks MAIS Klang" },
 ];
 
 // Payment Table Configuration
@@ -1650,7 +1689,7 @@ const handleImport = async () => {
 
     paymentList.value = [
       {
-        kod: "-",
+        kod: "PT-2025-30371",
         idPermohonan: "PRM-2025-00001",
         bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
         asnaf: "Muallaf",
@@ -2230,6 +2269,30 @@ const handleKembali = () => {
   navigateTo('/BF-BTN/bantuan-bulk/cipta-bantuan-bulk');
 };
 
+// Download CSV template for Maklumat Bayaran Kepada (Payable To)
+const downloadPayableToTemplate = () => {
+  try {
+    // Use the same column labels as the Payable To table, excluding action columns
+    const headers = paymentColumns
+      .filter((c) => c.key !== 'checkbox')
+      .map((c) => c.label);
+
+    const csvContent = headers.join(',') + '\n';
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'format-maklumat-payable-to.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.error('Gagal muat turun format CSV:', e);
+    alert('error', 'Gagal memuat turun format CSV');
+  }
+};
+
 const handleSave = async () => {
   try {
     isSubmitting.value = true;
@@ -2299,7 +2362,7 @@ const handleSahkanSelected = () => {
   pointer-events: none;
 }
 
-.form-actions {
+  .form-actions {
   position: sticky;
   bottom: 0;
   background-color: white;

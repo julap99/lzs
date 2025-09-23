@@ -820,27 +820,27 @@ export default [
             meta: {},
           },
           {
-            title: "Proses Profiling",
+            title: "Household / Individu",
+
             icon: "iconamoon:arrow-right-2-duotone",
             child: [
               {
                 title: "Admin",
                 icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-PRF/KF/PP/01_01",
+                path: "/BF-PRF/KF/SHI/01_01",
                 child: [],
                 meta: {},
               },
-              {
+               {
                 title: "Pelulus",
                 icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-PRF/KF/PP/02_01",
+                path: "/BF-PRF/KF/SHI/02_01",
                 child: [],
                 meta: {},
               },
-              
             ],
             meta: {},
-          }
+          },
         ],
         meta: {},
       },
@@ -1147,18 +1147,6 @@ export default [
     header: "BF-BTN",
     description: "Pengurusan Bantuan",
     child: [
-            {
-        title: "test",
-        icon: "iconamoon:component-fill",
-        path: "/BF-BTN/test",
-        meta: {},
-      },
-      {
-        title: "testing",
-        icon: "iconamoon:component-fill",
-        path: "/BF-BTN/testing",
-        meta: {},
-      },
       {
         title: "Konfigurasi",
         icon: "iconamoon:component-fill",

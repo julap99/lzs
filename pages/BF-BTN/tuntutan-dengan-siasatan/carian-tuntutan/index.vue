@@ -61,15 +61,15 @@
           <template #noKPPemohon="{ text }"><div>{{ text }}</div></template>
           <template #namaPenerima="{ text }"><div>{{ text }}</div></template>
           <template #tarikhMohon="{ text }"><div>{{ formatDate(text) }}</div></template>
-          <template #tindakan="{ text, value }">
+          <template #tindakan="{ value }">
             <rs-button
               variant="ghost"
               size="sm"
               class="text-blue-600 hover:text-blue-800"
-              @click="saveSelectedAndGo(value || text)"
+              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/${value.noBantuan}`)"
               title="Mohon Tuntutan"
             >
-              <Icon name="material-symbols:add" size="24" />
+              +
             </rs-button>
           </template>
         </RsTable>
@@ -110,9 +110,9 @@ definePageMeta({
 })
 
 const breadcrumb = ref([
-  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
-  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan' },
-  { name: 'Mohon Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf' },
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
+  { name: 'Carian Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan' },
 ])
 
 /* ---------------- Form ---------------- */
@@ -227,5 +227,4 @@ watch([pageSize, totalBantuan], () => {
 })
 
 const formatDate = d => new Date(d).toLocaleDateString('ms-MY')
-const saveSelectedAndGo = row => navigateTo('/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan')
 </script>

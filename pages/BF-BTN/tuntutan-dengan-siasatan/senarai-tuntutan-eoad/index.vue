@@ -148,13 +148,20 @@ const breadcrumb = ref([
 const baseList = ref<TuntutanListItem[]>([
   { noTuntutan: 'TUN-2024-001', noGL: 'GL-001-2024', namaPemohon: 'Ahmad bin Abdullah', tarikhTuntutan: new Date().toISOString(), amaunTuntutan: 5000.0, statusPermohonan: 'Dalam Semakan' },
   { noTuntutan: 'TUN-2024-002', noGL: 'GL-002-2024', namaPemohon: 'Masjid Al-Hidayah', tarikhTuntutan: new Date(Date.now() - 86400000).toISOString(), amaunTuntutan: 8000.0, statusPermohonan: 'Dalam Semakan' },
-  { noTuntutan: 'TUN-2024-003', noGL: 'GL-003-2024', namaPemohon: 'Sekolah Agama Rakyat Al-Amin', tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(), amaunTuntutan: 12000.0, statusPermohonan: 'Dalam Semakan' },
+  { noTuntutan: 'TUN-2024-003', noGL: 'GL-003-2024', namaPemohon: 'PUSAT HEMODIALISIS PERMATA SDN. BHD.', tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(), amaunTuntutan: 12000.0, statusPermohonan: 'Dalam Semakan' },
   { noTuntutan: 'TUN-2024-004', noGL: 'GL-004-2024', namaPemohon: 'Surau Kampung Baru', tarikhTuntutan: new Date(Date.now() - 259200000).toISOString(), amaunTuntutan: 3500.0, statusPermohonan: 'Dalam Semakan' },
   { noTuntutan: 'TUN-2024-005', noGL: 'GL-005-2024', namaPemohon: 'Pusat Tahfiz Al-Quran', tarikhTuntutan: new Date(Date.now() - 345600000).toISOString(), amaunTuntutan: 15000.0, statusPermohonan: 'Dalam Semakan' },
 ])
 
 const tuntutanList = ref<Row[]>(
-  baseList.value.map((r) => ({ ...r, tindakan: { noTuntutan: r.noTuntutan, status: r.statusPermohonan } }))
+  baseList.value.map((r, idx) => ({
+    ...r,
+    maklumatBantuan:
+      idx % 2 === 0
+        ? '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)'
+        : '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR) (B103)',
+    tindakan: { noTuntutan: r.noTuntutan, status: r.statusPermohonan },
+  }))
 )
 
 /** ========== Table config ========== */
@@ -162,6 +169,7 @@ const columns = [
   { key: 'noTuntutan', label: 'No. Tuntutan / ID Tuntutan', sortable: true },
   { key: 'noGL', label: 'No. GL', sortable: true },
   { key: 'namaPemohon', label: 'Nama Pemohon / Institusi', sortable: true },
+  { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
   { key: 'tarikhTuntutan', label: 'Tarikh Tuntutan', sortable: true },
   { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
   { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },

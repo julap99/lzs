@@ -1063,11 +1063,21 @@ const siasatanData = ref([
     pemohon: "Mohd Amin bin Mohd Ali (650101-01-1234)",
     kariah: "Masjid Al-Taqwa",
     daerah: "Kuala Selangor",
-    bilanganBantuan: 3,
+    bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     jenistugasan: "Bantuan ",
     noRujukan: "NAS-2025-0003",
     tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0003",
+  },
+  {
+    pemohon: "Amirul Hakim bin Zainuddin (791230-10-4321)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan ",
+    noRujukan: "NAS-2025-0004",
+    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0004",
   },
 ]);
 
@@ -1104,6 +1114,24 @@ const semakanData = ref([
     noRujukan: "NAS-2025-0001",
     tindakan: "bantuan/semakan/NAS-2025-0001",
   },
+  {
+    pemohon: "Amirul Hakim bin Zainuddin (791230-10-4321)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0004",
+    tindakan: "bantuan/semakan/NAS-2025-0004",
+  },
+  {
+    pemohon: "Mohd Amin bin Mohd Ali (650101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0003",
+    tindakan: "bantuan/semakan/NAS-2025-0003",
+  },
 ]);
 
 // Mock data for Sokongan sub-tab (own dataset, same format)
@@ -1139,6 +1167,15 @@ const kelulusanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0402",
     tindakan: "bantuan/kelulusan/siasatan-eoad/btn-002",
+  },
+  {
+    pemohon: "Alia Natasha binti Hussain (971207-02-0568)",
+    kariah: "Masjid As-Salam",
+    daerah: "Seri Kembangan",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0403",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-003",
   },
 ]);
 

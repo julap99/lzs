@@ -304,7 +304,7 @@ const breadcrumb = ref([
   {
     name: "Tuntutan dengan Siasatan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
   },
   {
     name: "Senarai Tuntutan",

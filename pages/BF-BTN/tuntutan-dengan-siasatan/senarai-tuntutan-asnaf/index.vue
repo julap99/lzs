@@ -295,7 +295,7 @@ const breadcrumb = ref([
   {
     name: "Tuntutan dengan Siasatan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
   },
   {
     name: "Senarai Tuntutan",
@@ -391,8 +391,8 @@ const allTuntutan = ref([
     id: "TUN-2024-003",
     noTuntutan: "TUN-2024-003",
     noGL: "GL-003",
-    namaPemohon: "Sekolah Agama Rakyat Al-Amin",
-    jenisBantuan: "Bantuan Pendidikan",
+    namaPemohon: "PUSAT HEMODIALISIS PERMATA SDN. BHD.",
+    jenisBantuan: "Bantuan Perubatan Dialisis",
     amaunTuntutan: 12000.0,
     tarikhTuntutan: "2024-03-15",
     statusPermohonan: "Dalam Semakan",

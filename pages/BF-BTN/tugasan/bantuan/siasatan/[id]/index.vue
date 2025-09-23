@@ -345,7 +345,7 @@
            </rs-card>
 
          <!-- NEW: Maklumat kediaman -->
-<rs-card v-if="kediamanInfo" class="shadow-sm border-0 bg-white">
+<rs-card v-if="kediamanInfo && !isB103" class="shadow-sm border-0 bg-white">
   <template #header>
     <div class="flex items-center space-x-3">
       <div class="flex-shrink-0">
@@ -413,6 +413,153 @@
   </template>
 </rs-card>
 
+         <!-- NEW: Maklumat Penerima Manfaat & Kesihatan for B103 -->
+         <rs-card v-if="isB103" class="shadow-sm border-0 bg-white">
+           <template #header>
+             <div class="flex items-center space-x-3">
+               <div class="flex-shrink-0">
+                 <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                   <Icon name="ph:heart" class="w-6 h-6 text-green-600" />
+                 </div>
+               </div>
+               <div>
+                 <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Manfaat & Kesihatan</h2>
+                 <p class="text-sm text-gray-500">B103 - Bantuan Perubatan Dialisis (Fakir)</p>
+               </div>
+             </div>
+           </template>
+
+           <template #body>
+             <div class="space-y-6">
+               <!-- Beneficiary Information -->
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                   <FormKit
+                     type="select"
+                     name="namaPenerima"
+                     label="Nama"
+                     v-model="formData.healthInfo.namaPenerima"
+                     :options="beneficiaryOptions"
+                     placeholder="Sila pilih nama penerima"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+                 <div>
+                   <FormKit
+                     type="select"
+                     name="jenisPengenalan"
+                     label="Jenis Pengenalan"
+                     v-model="formData.healthInfo.jenisPengenalan"
+                     :options="[
+                       { label: 'MyKad', value: 'MyKad' },
+                       { label: 'MyKid', value: 'MyKid' },
+                       { label: 'Passport', value: 'Passport' }
+                     ]"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+                 <div>
+                   <FormKit
+                     type="text"
+                     name="noPengenalan"
+                     label="No Pengenalan"
+                     v-model="formData.healthInfo.noPengenalan"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+                 <div>
+                   <FormKit
+                     type="text"
+                     name="hubungan"
+                     label="Hubungan"
+                     v-model="formData.healthInfo.hubungan"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+               </div>
+
+               <!-- Health Information -->
+               <div class="border-t pt-6">
+                 <h3 class="text-md font-semibold text-gray-800 mb-4">Maklumat Kesihatan</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   <div>
+                     <FormKit
+                       type="select"
+                       name="tahapKesihatan"
+                       label="Tahap Kesihatan"
+                       v-model="formData.healthInfo.tahapKesihatan"
+                       :options="[
+                         { label: 'Sihat', value: 'Sihat' },
+                         { label: 'Sakit Kronik', value: 'Sakit Kronik' },
+                         { label: 'Kurang Upaya', value: 'Kurang Upaya' }
+                       ]"
+                       :classes="{ outer: 'mb-0' }"
+                     />
+                   </div>
+                   <div v-if="formData.healthInfo.tahapKesihatan && formData.healthInfo.tahapKesihatan !== 'Sihat'">
+                     <FormKit
+                       type="text"
+                       name="jenisPenyakit"
+                       label="Jenis Penyakit"
+                       v-model="formData.healthInfo.jenisPenyakit"
+                       placeholder="Nyatakan jenis penyakit"
+                       :classes="{ outer: 'mb-0' }"
+                     />
+                   </div>
+                 </div>
+               </div>
+
+               <!-- Chronic Illness Information -->
+               <div v-if="formData.healthInfo.tahapKesihatan === 'Sakit Kronik'" class="border-t pt-6">
+                 <h4 class="text-md font-semibold text-gray-800 mb-4">Maklumat Sakit Kronik</h4>
+                 
+                 <div class="space-y-4">
+                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div>
+                       <FormKit
+                         type="select"
+                         name="keadaanKesihatan"
+                         label="Keadaan Kesihatan"
+                         v-model="formData.healthInfo.keadaanKesihatan"
+                         :options="[
+                           { label: 'Tidak Terlantar', value: 'Tidak Terlantar' },
+                           { label: 'Separuh Terlantar', value: 'Separuh Terlantar' },
+                           { label: 'Terlantar Sepenuhnya', value: 'Terlantar Sepenuhnya' }
+                         ]"
+                         :classes="{ outer: 'mb-0' }"
+                       />
+                     </div>
+                     <div>
+                       <FormKit
+                         type="select"
+                         name="kosPenjagaan"
+                         label="Kos Penjagaan"
+                         v-model="formData.healthInfo.kosPenjagaan"
+                         :options="[
+                           { label: 'Berbayar', value: 'Berbayar' },
+                           { label: 'Tidak Berbayar', value: 'Tidak Berbayar' }
+                         ]"
+                         :classes="{ outer: 'mb-0' }"
+                       />
+                     </div>
+                   </div>
+                   
+                   <div>
+                     <FormKit
+                       type="text"
+                       name="jumlahPerbelanjaan"
+                       label="Jumlah Perbelanjaan Bulanan (RM)"
+                       v-model="formData.healthInfo.jumlahPerbelanjaan"
+                       placeholder="Format: 9999.99"
+                       :classes="{ outer: 'mb-0' }"
+                     />
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </template>
+         </rs-card>
+
            <!-- NEW: Senarai Entitlement Product Cards -->
            <rs-card v-if="isB300OrB307OrB112" class="shadow-sm border-0 bg-white">
              <template #header>
@@ -461,11 +608,12 @@
                      </div>
 
                       <!-- Editable Sections (only when editing)
-                           Hidden for B112 when editing Sewaan_Rumah/Belian_Rumah because we show external box -->
+                           Hidden for B112 when editing Sewaan_Rumah/Belian_Rumah and B103 when editing HEMODIALISIS/SUNTIKAN_EPO because we show external box -->
                       <div
                         v-if="
                           product.status === 'sedang_edit' && !(
-                            isB112 && (product.code === 'Sewaan_Rumah' || product.code === 'Belian_Rumah')
+                            (isB112 && (product.code === 'Sewaan_Rumah' || product.code === 'Belian_Rumah')) ||
+                            (isB103 && (product.code === 'HEMODIALISIS' || product.code === 'SUNTIKAN_EPO'))
                           )
                         "
                         class="mt-4 space-y-4"
@@ -574,7 +722,7 @@
                                <option value="">-- Sila Pilih --</option>
                                <option value="asnaf">Asnaf</option>
                                <option value="organisasi">Organisasi</option>
-                               <option value="third_party">Third Party</option>
+                               <option value="third_party">Recipient</option>
                              </select>
                            </div>
                            
@@ -714,122 +862,66 @@
            </rs-card>
       </div>
 
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <div class="col-span-1 space-y-6">
-          <!-- Section 2: Dokumen Sokongan (Read-only) -->
-          <rs-card class="shadow-sm border-0 bg-white">
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon
-                      name="ph:folder-open"
-                      class="w-6 h-6 text-green-600"
-                    />
-                  </div>
+          <!-- Modal: Tambah Penerima Baharu -->
+          <rs-modal v-model="showAddRegistration" title="Tambah Penerima Baharu">
+            <div class="space-y-3">
+              <div>
+                <label class="text-xs font-medium text-gray-600">Nama Penuh</label>
+                <input v-model="newRegistration.namaPenuh" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-medium text-gray-600">Jenis Pengenalan</label>
+                  <select v-model="newRegistration.jenisPengenalan" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md">
+                    <option value="IC">MyKad</option>
+                    <option value="SSM">SSM</option>
+                    <option value="PASSPORT">Passport</option>
+                  </select>
                 </div>
                 <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Dokumen Sokongan
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Dokumen yang dikemukakan oleh pemohon
-                  </p>
+                  <label class="text-xs font-medium text-gray-600">No Pengenalan</label>
+                  <input v-model="newRegistration.noPengenalan" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
                 </div>
               </div>
-            </template>
-
-            <template #body>
-              <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Dokumen
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Status
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Aksi
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr
-                      v-for="(dokumen, index) in dokumenSokongan"
-                      :key="index"
-                      class="hover:bg-gray-50"
-                    >
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ dokumen.jenis }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <FormKit
-                          type="select"
-                          :options="statusDokumenOptions"
-                          v-model="dokumen.status"
-                          :classes="{
-                            input: 'text-sm px-4 py-3 border-gray-300 rounded-md min-w-[120px]',
-                          }"
-                          outer-class="mb-0"
-                          wrapper-class="mb-0"
-                          inner-class="mb-0"
-                        />
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                      >
-                        <div class="flex items-center space-x-2">
-                          <rs-button
-                            variant="primary"
-                            @click="previewDocument(dokumen)"
-                          >
-                            <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                          </rs-button>
-                          <rs-button
-                            variant="success"
-                            @click="downloadDocument(dokumen)"
-                          >
-                            <Icon name="ph:download" class="w-4 h-4 mr-1" />
-                          </rs-button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr v-if="dokumenSokongan.length === 0">
-                      <td
-                        colspan="3"
-                        class="px-6 py-4 text-center text-sm text-gray-500"
-                      >
-                        Tiada dokumen dijumpai.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-medium text-gray-600">Nama Pemegang Akaun</label>
+                  <input v-model="newRegistration.namaPemegangAkaun" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
+                </div>
+                <div>
+                  <label class="text-xs font-medium text-gray-600">Bank</label>
+                  <input v-model="newRegistration.bank" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
+                </div>
+              </div>
+              <div>
+                <label class="text-xs font-medium text-gray-600">No Akaun Bank</label>
+                <input v-model="newRegistration.noAkaun" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
+              </div>
+            </div>
+            <template #footer>
+              <div class="flex justify-end gap-2">
+                <rs-button variant="secondary" @click="showAddRegistration = false">Batal</rs-button>
+                <rs-button variant="success" @click="saveNewRegistration">Simpan</rs-button>
               </div>
             </template>
-          </rs-card>
+          </rs-modal>
 
-          <!-- B112: External editor box (one box) for Belian/Sewaan Rumah Bulanan -->
-          <div ref="externalEditorEl">
-          <rs-card
-            v-if="
-              String(route.params.id || '').toUpperCase() === 'B112' &&
-              editingProductIndex >= 0 &&
-              ['Sewaan_Rumah','Belian_Rumah'].includes(selectedEntitlementProducts[editingProductIndex]?.code)
-            "
-            class="shadow-sm border-0 bg-white"
-          >
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="col-span-1 space-y-6">
+          <div v-if="isB112Editing || isB103Editing">
+            <!-- B112 Edit panel shown first when editing -->
+            <div ref="externalEditorEl">
+            <rs-card
+              v-if="
+                (String(route.params.id || '').toUpperCase() === 'B112' &&
+                editingProductIndex >= 0 &&
+                ['Sewaan_Rumah','Belian_Rumah'].includes(selectedEntitlementProducts[editingProductIndex]?.code)) ||
+                (String(route.params.id || '').toUpperCase() === 'B103' &&
+                editingProductIndex >= 0 &&
+                ['HEMODIALISIS','SUNTIKAN_EPO'].includes(selectedEntitlementProducts[editingProductIndex]?.code))
+              "
+              class="shadow-sm border-0 bg-white"
+            >
             
 
           <template #body>
@@ -912,8 +1004,27 @@
                         <option value="">-- Sila Pilih --</option>
                         <option value="asnaf">Asnaf</option>
                         <option value="organisasi">Organisasi</option>
-                        <option value="third_party">Third Party</option>
+                        <option value="third_party">Recipient</option>
                       </select>
+                    </div>
+
+                    <!-- No Pendaftaran dropdown for Organisasi/Recipient -->
+                    <div class="md:col-span-2" v-if="editingPBKategori === 'organisasi' || editingPBKategori === 'third_party'">
+                      <div class="flex items-end gap-2">
+                        <div class="flex-1">
+                          <label class="text-xs font-medium text-gray-600">No Pengenalan/No Pendaftaran <span class="text-red-500">*</span></label>
+                          <select
+                            v-model="editingPBNoPendaftaran"
+                            @change="loadEditingPenerimaByRegistration"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          >
+                            <option value="">-- Sila Pilih --</option>
+                            <option v-for="opt in registrationOptions" :key="opt" :value="opt">{{ opt }}</option>
+                          </select>
+                        </div>
+                        <rs-badge :variant="editingPBStatus === 'unverified' ? 'warning' : 'success'" class="mb-0.5">{{ editingPBStatus || 'verified' }}</rs-badge>
+                        <rs-button variant="primary" class="!py-2" @click="showAddRegistration = true">Tambah Baru</rs-button>
+                      </div>
                     </div>
 
                     <div class="md:col-span-2">
@@ -934,22 +1045,35 @@
                       </select>
                     </div>
 
-                    <div>
-                      <label class="text-xs font-medium text-gray-600">No Kad Pengenalan/No Pendaftaran <span class="text-red-500">*</span></label>
-                      <input
-                        v-model="editingPBNoKp"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Masukkan no. kad pengenalan"
-                      />
+                    <div v-if="editingPBKategori !== 'organisasi' && editingPBKategori !== 'third_party'" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="text-xs font-medium text-gray-600">Nama Penerima <span class="text-red-500">*</span></label>
+                        <select
+                          v-model="editingPBNama"
+                          @change="loadEditingAsnafByName"
+                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="">-- Sila Pilih --</option>
+                          <option v-for="opt in asnafNameOptions" :key="opt" :value="opt">{{ opt }}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="text-xs font-medium text-gray-600">No Kad Pengenalan <span class="text-red-500">*</span></label>
+                        <input
+                          v-model="editingPBNoKp"
+                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="Masukkan no. kad pengenalan"
+                        />
+                      </div>
                     </div>
-                    <div>
+                    <!-- <div>
                       <label class="text-xs font-medium text-gray-600">Nama Penerima<span class="text-red-500">*</span></label>
                       <input
                         v-model="editingPBNama"
                         class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Masukkan nama penerima"
                       />
-                    </div>
+                    </div> -->
 
                     <div>
                       <label class="text-xs font-medium text-gray-600">Nama Pemegang Akaun <span class="text-red-500">*</span></label>
@@ -985,13 +1109,121 @@
                 </div>
               </div>
             </template>
-          </rs-card>
+            </rs-card>
+            </div>
+
+            <!-- Dokumen Sokongan rendered after edit panel during B112/B103 editing -->
+            <rs-card class="shadow-sm border-0 bg-white">
+              <template #header>
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <div
+                      class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                    >
+                      <Icon
+                        name="ph:folder-open"
+                        class="w-6 h-6 text-green-600"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900">
+                      Dokumen Sokongan
+                    </h2>
+                    <p class="text-sm text-gray-500">
+                      Dokumen yang dikemukakan oleh pemohon
+                    </p>
+                  </div>
+                </div>
+              </template>
+
+              <template #body>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="(dokumen, index) in dokumenSokongan" :key="index" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-normal break-words">{{ dokumen.jenis }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <FormKit type="select" :options="statusDokumenOptions" v-model="dokumen.status" :classes="{ input: 'text-sm px-4 py-3 border-gray-300 rounded-md min-w-[120px]' }" outer-class="mb-0" wrapper-class="mb-0" inner-class="mb-0" />
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div class="flex items-center space-x-2">
+                            <rs-button variant="primary" @click="previewDocument(dokumen)"><Icon name="ph:eye" class="w-4 h-4 mr-1" /></rs-button>
+                            <rs-button variant="success" @click="downloadDocument(dokumen)"><Icon name="ph:download" class="w-4 h-4 mr-1" /></rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="dokumenSokongan.length === 0">
+                        <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">Tiada dokumen dijumpai.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+            </rs-card>
+          </div>
+
+          <div v-else>
+            <!-- Not editing B112/B103: just show Dokumen Sokongan (no edit panel) -->
+            <rs-card class="shadow-sm border-0 bg-white">
+              <template #header>
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Icon name="ph:folder-open" class="w-6 h-6 text-green-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900">Dokumen Sokongan</h2>
+                    <p class="text-sm text-gray-500">Dokumen yang dikemukakan oleh pemohon</p>
+                  </div>
+                </div>
+              </template>
+
+              <template #body>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="(dokumen, index) in dokumenSokongan" :key="index" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-normal break-words">{{ dokumen.jenis }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <FormKit type="select" :options="statusDokumenOptions" v-model="dokumen.status" :classes="{ input: 'text-sm px-4 py-3 border-gray-300 rounded-md min-w-[120px]' }" outer-class="mb-0" wrapper-class="mb-0" inner-class="mb-0" />
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div class="flex items-center space-x-2">
+                            <rs-button variant="primary" @click="previewDocument(dokumen)"><Icon name="ph:eye" class="w-4 h-4 mr-1" /></rs-button>
+                            <rs-button variant="success" @click="downloadDocument(dokumen)"><Icon name="ph:download" class="w-4 h-4 mr-1" /></rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="dokumenSokongan.length === 0">
+                        <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">Tiada dokumen dijumpai.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+            </rs-card>
           </div>
           <!-- BQ, Laporan Gambar, Laporan Teknikal in Tabs -->
           <div v-if="visibleTabs.length" class="bg-white">
             <!-- Custom Tab Navigation -->
              <button
-  v-for="(tab, index) in visibleTabs.filter(t => !(route.params.id.toUpperCase() === 'B112' && t.id === 'bq'))"
+  v-for="(tab, index) in visibleTabs.filter(t => !((route.params.id.toUpperCase() === 'B112' || route.params.id.toUpperCase() === 'B103') && t.id === 'bq'))"
   :key="index"
   @click="activeTab = tab.id"
   :class="[
@@ -1023,7 +1255,7 @@
             <div class="tab-content">
               <!-- BQ Tab -->
               <!-- <div v-if="activeTab === 'bq' && isB1"> -->
-              <div v-if="activeTab === 'bq' && isB1 && route.params.id.toUpperCase() !== 'B112'">
+              <div v-if="activeTab === 'bq' && isB1 && route.params.id.toUpperCase() !== 'B112' && route.params.id.toUpperCase() !== 'B103'">
 
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
@@ -1344,7 +1576,7 @@
           </rs-card> -->
 
           <!-- NEW: Maklumat Penerima Bayaran -->
-          <rs-card v-if="!isB102 && !isB300 && !isB307 && !isB112" class="shadow-sm border-0 bg-white">
+          <rs-card v-if="!isB102 && !isB300 && !isB307 && !isB112 && !isB103" class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -1404,7 +1636,7 @@
 
           
 
-          <rs-card v-if="!isB300 && !isB307 && !isB112" class="shadow-sm border-0 bg-white">
+          <rs-card v-if="!isB300 && !isB307 && !isB112 && !isB103" class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -1903,9 +2135,10 @@ const isB102 = computed(() => String(route.params.id || '').toUpperCase() === 'B
 const isB300 = computed(() => String(route.params.id || '').toUpperCase() === 'B300');
 const isB307 = computed(() => String(route.params.id || '').toUpperCase() === 'B307');
 const isB112 = computed(() => String(route.params.id || '').toUpperCase() === 'B112');
+const isB103 = computed(() => String(route.params.id || '').toUpperCase() === 'B103');
 const visibleTabs = computed(() => {
   if (!isB1.value) return []
-  if (isB112.value) return tabs.filter(t => t.id === 'bq')
+  if (isB112.value || isB103.value) return tabs.filter(t => t.id === 'bq')
   return tabs
 });
 
@@ -1944,6 +2177,16 @@ const productPackageOptions = computed(() => {
       { label: 'Ansuran Belian Rumah Bulanan (Fakir)', value: 'BeliaSewaan_Rumahn_Rumah' },
       { label: 'Sewaan Rumah Bulanan', value: '' },
     ];  
+  } else if (id === 'B103') {
+    return [
+      { label: '-- Sila Pilih --', value: '' },
+      { label: '(GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)', value: 'HEMODIALISIS_DAN_EPO' },
+      { label: '(GL) (HQ) HEMODIALISIS SAHAJA (FAKIR)', value: 'HEMODIALISIS_SAHAJA' },
+      { label: '(GL) (HQ) SUNTIKAN EPO SAHAJA (FAKIR)', value: 'SUNTIKAN_EPO_SAHAJA' },
+      { label: '(PTJ) (GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)', value: 'PTJ_HEMODIALISIS_DAN_EPO' },
+      { label: '(PTJ) (GL) (HQ) HEMODIALISIS SAHAJA (FAKIR)', value: 'PTJ_HEMODIALISIS_SAHAJA' },
+      { label: '(PTJ) (GL) (HQ) SUNTIKAN EPO SAHAJA (FAKIR)', value: 'PTJ_SUNTIKAN_EPO_SAHAJA' },
+    ];
   } else {
     // Default options for B102 and others
     return [
@@ -2015,13 +2258,19 @@ const b112EntitlementOptions = ref([
   { label: 'Sewaan Rumah Bulanan', value: 'Sewaan_Rumah' },
 ]);
 
+// B103 Entitlement Product options for checkboxes
+const b103EntitlementOptions = ref([
+  { label: '(GL) (HQ) HEMODIALISIS (FAKIR)', value: 'HEMODIALISIS' },
+  { label: '(GL) (HQ) SUNTIKAN EPO (FAKIR)', value: 'SUNTIKAN_EPO' },
+]);
+
 // Editing state
 const editingProductIndex = ref(-1);
 
-// Check if current ID is B300 or B307 or B112
+// Check if current ID is B300 or B307 or B112 or B103
 const isB300OrB307OrB112= computed(() => {
   const id = String(route.params.id || '').toUpperCase();
-  return id === 'B300' || id === 'B307' || id === 'B112';
+  return id === 'B300' || id === 'B307' || id === 'B112' || id === 'B103';
 });
 
 // Get the appropriate entitlement options based on route ID
@@ -2033,6 +2282,8 @@ const currentEntitlementOptions = computed(() => {
     return b307EntitlementOptions.value;
   } else if (id === 'B112'){
     return b112EntitlementOptions.value;
+  } else if (id === 'B103'){
+    return b103EntitlementOptions.value;
   }
   return [];
 });
@@ -2061,7 +2312,8 @@ const selectedEntitlementProducts = computed(() => {
           namaPenerima: '',
           namaPemegangAkaun: '',
           bank: '',
-          noAkaunBank: ''
+          noAkaunBank: '',
+          status: 'verified'
         },
         kadarBantuan: {
           kadarBantuan: 0,
@@ -2120,6 +2372,14 @@ const mockAssistanceData = {
     productpackage: "",
     entitlementproduct: "",
     jumlahBantuan: 3000,
+  },
+   "B103": {
+    id: "B103",
+    aid: "B103 - Bantuan Perubatan Dialisis (Fakir)",
+    aidproduct: "Kategori Hemodialisis (Fakir)",
+    productpackage: "",
+    entitlementproduct: "",
+    jumlahBantuan: 1800,
   }
 };
 
@@ -2135,9 +2395,22 @@ const formData = ref({
 
    // 👇 Added Maklumat Kediaman
   addressInfo: {
-    status_kediaman: "Sewa",   // default
+    status_kediaman: "SEWA",   // default to option value
     keadaan_kediaman: "Baik",  // default
     kadar_sewa: "800",         // default example
+  },
+
+  // 👇 Added Health Information for B103
+  healthInfo: {
+    namaPenerima: "Nur Najihah binti Mazlan",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "850315-10-1234",
+    hubungan: "Isteri",
+    tahapKesihatan: "Sakit Kronik",
+    jenisPenyakit: "Diabetes",
+    keadaanKesihatan: "Tidak Terlantar",
+    kosPenjagaan: "Berbayar",
+    jumlahPerbelanjaan: "300",
   },
 });
 
@@ -2148,7 +2421,74 @@ const dokumenSokongan = ref([]);
 const initializeDokumenSokongan = () => {
   const id = String(route.params.id || '').toUpperCase();
   
-  if (id === 'B300') {
+  if (id === 'B112') {
+    // Dokumen Sokongan for B112 (Sewaan/Beli Rumah) as per screenshot
+    dokumenSokongan.value = [
+      {
+        jenis: "Borang Maklumat Sewa Rumah/ Tunggakan Sewa Rumah",
+        filename: "borang_maklumat_sewa_rumah.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan kad pengenalan pemilik rumah/wakil/ surat pengesahan institusi atau dokumen perjanjian sewaan rumah/ bilik",
+        filename: "salinan_ic_pemilik_rumah.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Surat kuasa bagi wakil yang menguruskan bilik/rumah yang disewa daripada tuan rumah (wajib, jika menggunakan wakil/ejen)",
+        filename: "surat_kuasa_wakil.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Maklumat bank terkini tuan rumah/ bilik yang mengandungi: Nama bank, Nama dan No akaun penerima",
+        filename: "maklumat_bank_tuan_rumah.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Bukti pemilikan seperti Salinan Bil Utiliti (Api/Air/Cukai Pintu Rumah Yang Di sewa atau lain-lain). Jika nama pemilik dan penerima bayaran berbeza, perlu dilampirkan bukti pertalian (bukti berdokumen)",
+        filename: "bukti_pemilikan_utiliti.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan kad pengenalan ketua keluarga/ penjaga",
+        filename: "salinan_ic_ketua_keluarga.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+    ];
+  } else if (id === 'B103') {
+    dokumenSokongan.value = [
+      {
+        jenis: "Dokumen akuan/ pengesahan dari pihak hospital/ pusat dialisis (panel LZS)  berkaitan maklumat lengkap pesakit dan rawatan yang diperlukan adalah yang terkini.",
+        filename: "borang-pengesahanh.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan dokumen kemasukan yang sah (bukan warganegara sahaja)",
+        filename: "salinan-ic.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Sebutharga kos rawatan yang diperlukan dari pusat rawatan.",
+        filename: "surat-sebutharga.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Surat pengesahan agensi luar, sekiranya terima tajaan.",
+        filename: "maklumat-agensi.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+    ];
+  } else if (id === 'B300') {
     dokumenSokongan.value = [
       {
         jenis: "Surat tawaran belajar daripada pihak sekolah/surat pengesahan belajar",
@@ -2417,9 +2757,24 @@ const kediamanByAid={
         "Daerah": "Kuala Selangor",
         "Bandar": "Jeram",
         "Poskod": "45800 ",
-        "Kariah": "-",
+        "Kariah": "Masjid Al-Taqwa",
         "Geolokasi": "-",
-
+        "Tempoh Menetap di Selangor": "3 Tahun",
+      },
+  },
+  B103: {
+    tablefor: "B103 - Bantuan Perubatan Dialisis (Fakir)",
+      fields: {
+        "Alamat 1": "Jalan Perubatan,",
+        "Alamat 2": "Kampung Kesihatan,",
+        "Alamat 3": "-",
+        "Negeri": "Selangor",
+        "Daerah": "Kuala Selangor",
+        "Bandar": "Jeram",
+        "Poskod": "45800 ",
+        "Kariah": "Masjid Al-Taqwa",
+        "Geolokasi": "-",
+        "Tempoh Menetap di Selangor": "2 Tahun",
       },
   },
 };
@@ -2427,6 +2782,50 @@ const kediamanByAid={
 const kediamanInfo = computed(() => {
   const id = String(route.params.id || '').toUpperCase();
   return kediamanByAid[id] || null;
+});
+
+// Beneficiary options for B103
+const beneficiaryOptions = ref([
+  { label: 'Nur Najihah binti Mazlan (Isteri)', value: 'Nur Najihah binti Mazlan' },
+  { label: 'Amir Helmi bin Amirul Hakim (Anak)', value: 'Amir Helmi bin Amirul Hakim' },
+  { label: 'Amira Hasya binti Amirul Hakim (Anak)', value: 'Amira Hasya binti Amirul Hakim' },
+]);
+
+// Beneficiary data mapping
+const beneficiaryData = {
+  'Nur Najihah binti Mazlan': {
+    noPengenalan: '850315-10-1234',
+    hubungan: 'Isteri'
+  },
+  'Amir Helmi bin Amirul Hakim': {
+    noPengenalan: '120512-10-5678',
+    hubungan: 'Anak'
+  },
+  'Amira Hasya binti Amirul Hakim': {
+    noPengenalan: '150815-10-9012',
+    hubungan: 'Anak'
+  }
+};
+
+// Function to update beneficiary info when name is selected
+const updateBeneficiaryInfo = (selectedName) => {
+  console.log('updateBeneficiaryInfo called with:', selectedName); // Debug log
+  console.log('beneficiaryData:', beneficiaryData); // Debug log
+  if (selectedName && beneficiaryData[selectedName]) {
+    const data = beneficiaryData[selectedName];
+    console.log('Found data:', data); // Debug log
+    formData.value.healthInfo.noPengenalan = data.noPengenalan;
+    formData.value.healthInfo.hubungan = data.hubungan;
+    console.log('Updated formData:', formData.value.healthInfo); // Debug log
+  } else {
+    console.log('No data found for:', selectedName); // Debug log
+  }
+};
+
+// Watch for namaPenerima changes and auto-fill beneficiary info
+watch(() => formData.value.healthInfo.namaPenerima, (newName) => {
+  console.log('Nama changed to:', newName); // Debug log
+  updateBeneficiaryInfo(newName);
 });
 
 // NEW: Education info (read-only) for B300/B307
@@ -2584,7 +2983,8 @@ const editProduct = (index) => {
   toast.info(`Mengedit product: ${selectedEntitlementProducts.value[index].name}`);
   const id = String(route.params.id || '').toUpperCase()
   const code = selectedEntitlementProducts.value[index]?.code
-  if (id === 'B112' && (code === 'Sewaan_Rumah' || code === 'Belian_Rumah')) {
+  if ((id === 'B112' && (code === 'Sewaan_Rumah' || code === 'Belian_Rumah')) ||
+      (id === 'B103' && (code === 'HEMODIALISIS' || code === 'SUNTIKAN_EPO'))) {
     nextTick(() => {
       externalEditorEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
@@ -2694,6 +3094,87 @@ const editingPBNoAkaun = computed({
   get: () => currentEditingProductData.value?.penerimaBayaran.noAkaunBank ?? '',
   set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.noAkaunBank = val }
 })
+const editingPBStatus = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.status ?? 'verified',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.status = val }
+})
+
+// Registration dropdown for B112 edit panel (mimic B300/B307)
+const registrationOptions = ref(['800101101234 -Ahmad bin Saif','202201012345(1234567-W) -Syarikat Maju Jaya','550303109999 -Noraini bt Yusuf'])
+const editingPBNoPendaftaran = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.noPendaftaran ?? '',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.noPendaftaran = val }
+})
+
+const loadEditingPenerimaByRegistration = () => {
+  const d = currentEditingProductData.value
+  if (!d) return
+  const no = d.penerimaBayaran.noPendaftaran
+  const registrationData = {
+    '800101101234 -Ahmad bin Saif': { namaPenerima: 'Ahmad bin Ali', namaPemegangAkaun: 'Ahmad bin Ali', bank: 'MAYBANK', noAkaunBank: '162345678901' },
+    '202201012345(1234567-W) -Syarikat Maju Jaya': { namaPenerima: 'Syarikat Maju Jaya', namaPemegangAkaun: 'Syarikat Maju Jaya', bank: 'CIMB', noAkaunBank: '8000123456' },
+    '550303109999 -Noraini bt Yusuf': { namaPenerima: 'Noraini bt Yusuf', namaPemegangAkaun: 'Noraini bt Yusuf', bank: 'RHB', noAkaunBank: '123456789012' },
+  }
+  if (registrationData[no]) {
+    d.penerimaBayaran.namaPenerima = registrationData[no].namaPenerima
+    d.penerimaBayaran.namaPemegangAkaun = registrationData[no].namaPemegangAkaun
+    d.penerimaBayaran.noKadPengenalan = no
+    d.penerimaBayaran.bank = registrationData[no].bank
+    d.penerimaBayaran.noAkaunBank = registrationData[no].noAkaunBank
+  }
+}
+
+// Auto-fill when kategori penerima = asnaf (same behavior as B300/B307)
+watch(() => editingPBKategori.value, (val) => {
+  const d = currentEditingProductData.value
+  if (!d) return
+  if (val === 'asnaf') {
+    d.penerimaBayaran.namaPenerima = 'Mohd Amin bin Mohd Ali'
+    d.penerimaBayaran.namaPemegangAkaun = 'Mohd Amin bin Mohd Ali'
+    d.penerimaBayaran.noKadPengenalan = '650101-01-1234'
+    d.penerimaBayaran.bank = 'MAYBANK'
+    d.penerimaBayaran.noAkaunBank = '1234567890'
+  }
+})
+
+// Asnaf name/ID options and autofill mapping
+const asnafDirectory = [
+  { name: 'Mohd Amin bin Mohd Ali', id: '800101101234', bank: 'MAYBANK', akaun: '1234567890' },
+  { name: 'Fatimah Bt Zulkifli', id: '890202022222', bank: 'CIMB', akaun: '8000123456' },
+  { name: 'Siti Binti Amin', id: '990303033333', bank: 'RHB', akaun: '123450987654' },
+]
+const asnafNameOptions = ref(asnafDirectory.map(x => x.name))
+
+const loadEditingAsnafByName = () => {
+  const d = currentEditingProductData.value
+  if (!d) return
+  const entry = asnafDirectory.find(x => x.name === d.penerimaBayaran.namaPenerima)
+  if (!entry) return
+  d.penerimaBayaran.noKadPengenalan = entry.id
+  d.penerimaBayaran.namaPemegangAkaun = entry.name
+  d.penerimaBayaran.bank = entry.bank
+  d.penerimaBayaran.noAkaunBank = entry.akaun
+}
+
+// Add new registration modal state and handler
+const showAddRegistration = ref(false)
+const newRegistration = ref({ namaPenuh:'', jenisPengenalan:'IC', noPengenalan:'', namaPemegangAkaun:'', bank:'', noAkaun:'' })
+const saveNewRegistration = () => {
+  const label = `${newRegistration.value.noPengenalan} -${newRegistration.value.namaPenuh}`
+  if (!registrationOptions.value.includes(label)) registrationOptions.value.push(label)
+  const d = currentEditingProductData.value
+  if (d) {
+    d.penerimaBayaran.noPendaftaran = label
+    d.penerimaBayaran.namaPenerima = newRegistration.value.namaPenuh
+    d.penerimaBayaran.namaPemegangAkaun = newRegistration.value.namaPemegangAkaun || newRegistration.value.namaPenuh
+    d.penerimaBayaran.noKadPengenalan = newRegistration.value.noPengenalan
+    d.penerimaBayaran.bank = newRegistration.value.bank
+    d.penerimaBayaran.noAkaunBank = newRegistration.value.noAkaun
+    d.penerimaBayaran.status = 'unverified'
+  }
+  showAddRegistration.value = false
+  newRegistration.value = { namaPenuh:'', jenisPengenalan:'IC', noPengenalan:'', namaPemegangAkaun:'', bank:'', noAkaun:'' }
+}
 
 // Load penerima data based on category selection
 const loadPenerimaData = (productIndex) => {
@@ -2990,6 +3471,22 @@ const handleSimpan = async () => {
 const handleBatal = () => {
   router.push("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad/NAS-2025-0002");
 };
+
+// Helper: whether B112 edit panel is active
+const isB112Editing = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  const idx = editingProductIndex.value;
+  const code = selectedEntitlementProducts.value[idx]?.code;
+  return id === 'B112' && idx >= 0 && ['Sewaan_Rumah', 'Belian_Rumah'].includes(code);
+});
+
+// Helper: whether B103 edit panel is active
+const isB103Editing = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  const idx = editingProductIndex.value;
+  const code = selectedEntitlementProducts.value[idx]?.code;
+  return id === 'B103' && idx >= 0 && ['HEMODIALISIS', 'SUNTIKAN_EPO'].includes(code);
+});
 
 // Fetch application data on mount
 onMounted(() => {
