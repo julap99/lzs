@@ -437,9 +437,9 @@
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Senarai Penerima (Beneficiary List)</h2>
-            <rs-button variant="primary" @click="handleAddRecipient">
+            <!-- <rs-button variant="primary" @click="handleAddRecipient">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah
-            </rs-button>
+            </rs-button> -->
           </div>
         </template>
         <template #body>
@@ -1528,12 +1528,12 @@ const handleImport = async () => {
     ];
 
     paymentList.value = [
-      {
+    {
         kod: "PT-2025-30371",
         idPermohonan: "PRM-2025-00001",
-        bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
+        bayaranKepada: "recipient",
         asnaf: "Muallaf",
-        recipient: "",
+        recipient: "Nur Hazimah Binti Mohd Hafiz",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
         tarikhBayaran: "2025-04-17",
@@ -1544,9 +1544,9 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30372",
         idPermohonan: "PRM-2025-00002",           // ← duplicate key
-        bayaranKepada: "Nur safiyya Binti Rosly",
+        bayaranKepada: "recipient",
         asnaf: "Fakir",
-        recipient: "",
+        recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
         tarikhBayaran: "2025-04-17",
@@ -1557,9 +1557,9 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30373",
         idPermohonan: "PRM-2025-00003",
-        bayaranKepada: "Mohd Nazrin Bin Mokhtar",
+        bayaranKepada: "recipient",
         asnaf: "Non-FM",
-        recipient: "",
+        recipient: "Mohd Nazrin Bin Mokhtar",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 240,                               // ← WRONG amount
         tarikhBayaran: "2025-04-17",
@@ -1570,9 +1570,9 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30374",
         idPermohonan: "PRM-2025-00004",
-        bayaranKepada: "Intan Nadia Binti Mohd Zamri",
+        bayaranKepada: "recipient",
         asnaf: "Miskin", 
-        recipient: "",
+        recipient: "Intan Nadia Binti Mohd Zamri",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
         tarikhBayaran: "2025-04-17",
@@ -1583,9 +1583,9 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30375",
         idPermohonan: "PRM-2025-00002",           // ← duplicate of …30372
-        bayaranKepada: "Nur safiyya Binti Rosly",
+        bayaranKepada: "recipient",
         asnaf: "Fakir",
-        recipient: "",
+        recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
         tarikhBayaran: "2025-04-17",
