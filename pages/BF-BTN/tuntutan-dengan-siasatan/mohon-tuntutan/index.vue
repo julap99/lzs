@@ -366,14 +366,24 @@
           </RsTabItem>
         </RsTab>
 
+        <!-- Divider -->
+        <div class="border-t border-gray-200 my-6"></div>
+
         <!-- Actions -->
-        <div class="flex justify-end gap-4 mt-6">
-          <rs-button type="button" variant="secondary" @click="handleSaveDraft">
-            <Icon name="material-symbols:save" class="w-4 h-4 mr-1" /> Simpan
-          </rs-button>
-          <rs-button type="button" variant="primary" @click="handleSubmit">
-            <Icon name="material-symbols:send" class="w-4 h-4 mr-1" /> Hantar Tuntutan
-          </rs-button>
+        <div class="flex items-center justify-between mt-4">
+          <div>
+            <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan')">
+              <Icon name="material-symbols:arrow-back" class="w-4 h-4 mr-1" /> Kembali
+            </rs-button>
+          </div>
+          <div class="flex gap-4">
+            <rs-button type="button" variant="secondary" @click="handleSaveDraft">
+              <Icon name="material-symbols:save" class="w-4 h-4 mr-1" /> Simpan
+            </rs-button>
+            <rs-button type="button" variant="primary" @click="handleSubmit">
+              <Icon name="material-symbols:send" class="w-4 h-4 mr-1" /> Hantar Tuntutan
+            </rs-button>
+          </div>
         </div>
       </template>
     </rs-card>
