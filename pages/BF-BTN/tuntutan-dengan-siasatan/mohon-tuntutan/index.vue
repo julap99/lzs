@@ -49,7 +49,50 @@
           
           <RsTabItem title="Maklumat Bantuan">
             <h3 class="text-lg font-medium mb-4">Maklumat Bantuan</h3>
+            <!-- Maklumat Asnaf -->
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+              <h4 class="text-md font-medium mb-4">Maklumat Asnaf</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Nama</label>
+                  <p class="mt-1 text-gray-600">{{ formData.namaPemohon }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
+                  <p class="mt-1 text-gray-600">{{ formData.noPengenalan }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">No. Telefon</label>
+                  <p class="mt-1 text-gray-600">{{ formData.noTelefonPemohon }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Emel</label>
+                  <p class="mt-1 text-gray-600">{{ formData.emailPemohon }}</p>
+                </div>
 
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Status Household</label>
+                  <rs-badge :variant="getStatusVariant(formData.statusHousehold)">
+                    {{ formData.statusHousehold }}
+                  </rs-badge>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Status Individu</label>
+                  <rs-badge :variant="getStatusVariant(formData.statusIndividu)">
+                    {{ formData.statusIndividu }}
+                  </rs-badge>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Status Multidimensi</label>
+                  <rs-badge :variant="getStatusVariant(formData.statusMultidimensi)">
+                    {{ formData.statusMultidimensi }}
+                  </rs-badge>
+                </div>
+              </div>
+            </div>
+
+
+ <!--  Maklumat Jenis Bantuan Here-->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit
                 v-model="formData.aidProduct"

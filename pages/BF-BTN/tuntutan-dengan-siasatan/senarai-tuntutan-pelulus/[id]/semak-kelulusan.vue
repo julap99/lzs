@@ -235,6 +235,7 @@
 
 <script setup lang="ts">
 import { ref, computed, defineComponent, h } from 'vue'
+import { navigateTo } from '#app'
 
 // =====================================
 // Inline Types (from former mock module)
