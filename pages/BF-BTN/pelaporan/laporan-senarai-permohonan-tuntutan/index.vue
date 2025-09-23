@@ -202,6 +202,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import kariahData from '../kariah-data.json'
 
 const filters = reactive({
   jenisLaporan: 'Tuntutan',
@@ -213,19 +214,7 @@ const filters = reactive({
   cawangan: '',
 })
 
-const daerahOptions = [
-  { label: 'Am', value: 'AM' },
-  { label: 'Gombak', value: 'GOMBAK' },
-  { label: 'Hq', value: 'HQ' },
-  { label: 'Hulu Langat', value: 'HULU LANGAT' },
-  { label: 'Hulu Selangor', value: 'HULU SELANGOR' },
-  { label: 'Klang', value: 'KLANG' },
-  { label: 'Kuala Langat', value: 'KUALA LANGAT' },
-  { label: 'Kuala Selangor', value: 'KUALA SELANGOR' },
-  { label: 'Petaling', value: 'PETALING' },
-  { label: 'Sabak Bernam', value: 'SABAK BERNAM' },
-  { label: 'Sepang', value: 'SEPANG' },
-]
+const daerahOptions = kariahData.daerahOptions
 
 const cawanganOptions = [
   { label: 'HQ', value: 'HQ' },
@@ -261,14 +250,31 @@ function searchTuntutan() {
   if (start && end && start > end) [start, end] = [end, start]
 
   filteredRows.value = rows.filter(r => {
-    if (filters.tahun && String(new Date(r.tarikhPermohonan).getFullYear()) !== String(filters.tahun)) return false
-    if (filters.daerah && norm(r.daerah) !== norm(filters.daerah)) return false
-    if (filters.cawangan && norm(r.cawangan) !== norm(filters.cawangan)) return false
+    // Year filter - check if year matches
+    if (filters.tahun && filters.tahun.trim() !== '') {
+      const rowYear = new Date(r.tarikhPermohonan).getFullYear()
+      if (String(rowYear) !== String(filters.tahun)) return false
+    }
+    
+    // District filter - check if daerah matches (case insensitive)
+    if (filters.daerah && filters.daerah.trim() !== '') {
+      const selectedDaerah = typeof filters.daerah === 'object' ? filters.daerah.value : filters.daerah
+      if (norm(r.daerah) !== norm(selectedDaerah)) return false
+    }
+    
+    // Branch filter - check if cawangan matches (case insensitive)
+    if (filters.cawangan && filters.cawangan.trim() !== '') {
+      const selectedCawangan = typeof filters.cawangan === 'object' ? filters.cawangan.value : filters.cawangan
+      if (norm(r.cawangan) !== norm(selectedCawangan)) return false
+    }
+    
+    // Date range filter
     if (start || end) {
       const t = new Date(r.tarikhPermohonan)
       if (start && t < start) return false
       if (end && t > end) return false
     }
+    
     return true
   })
   paparHasil.value = true

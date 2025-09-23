@@ -25,18 +25,79 @@
                 <label class="block text-sm font-medium text-gray-700">Kategori Asnaf</label>
                 <p class="mt-1 text-gray-600">{{ formData.kategoriAsnaf }}</p>
               </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Status Household</label>
+                <rs-badge :variant="getStatusVariant(formData.statusHousehold)">
+                  {{ formData.statusHousehold }}
+                </rs-badge>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Status Individu</label>
+                <rs-badge :variant="getStatusVariant(formData.statusIndividu)">
+                  {{ formData.statusIndividu }}
+                </rs-badge>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Status Multidimensi</label>
+                <rs-badge :variant="getStatusVariant(formData.statusMultidimensi)">
+                  {{ formData.statusMultidimensi }}
+                </rs-badge>
+              </div>
             </div>
           </RsTabItem>
 
           
           <RsTabItem title="Maklumat Bantuan">
             <h3 class="text-lg font-medium mb-4">Maklumat Bantuan</h3>
+            <!-- Maklumat Asnaf -->
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+              <h4 class="text-md font-medium mb-4">Maklumat Asnaf</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Nama</label>
+                  <p class="mt-1 text-gray-600">{{ formData.namaPemohon }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
+                  <p class="mt-1 text-gray-600">{{ formData.noPengenalan }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">No. Telefon</label>
+                  <p class="mt-1 text-gray-600">{{ formData.noTelefonPemohon }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Emel</label>
+                  <p class="mt-1 text-gray-600">{{ formData.emailPemohon }}</p>
+                </div>
 
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Status Household</label>
+                  <rs-badge :variant="getStatusVariant(formData.statusHousehold)">
+                    {{ formData.statusHousehold }}
+                  </rs-badge>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Status Individu</label>
+                  <rs-badge :variant="getStatusVariant(formData.statusIndividu)">
+                    {{ formData.statusIndividu }}
+                  </rs-badge>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Status Multidimensi</label>
+                  <rs-badge :variant="getStatusVariant(formData.statusMultidimensi)">
+                    {{ formData.statusMultidimensi }}
+                  </rs-badge>
+                </div>
+              </div>
+            </div>
+
+
+ <!--  Maklumat Jenis Bantuan Here-->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit
-                v-model="formData.noBtn"
+                v-model="formData.aidProduct"
                 type="text"
-                label="No. Bantuan"
+                label="Jenis Bantuan"
                 readonly
                 :classes="{ input: 'bg-gray-100 cursor-not-allowed' }"
               />
@@ -44,14 +105,6 @@
 
             <div class="bg-gray-50 p-4 rounded-lg mb-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Kekal Aid & Aid Product -->
-                <FormKit v-model="formData.aid" type="text" label="Aid" disabled />
-                <FormKit v-model="formData.aidProduct" type="text" label="Aid Product" disabled />
-
-                <!-- PADAM dua baris di bawah (jika ada) -->
-                <!-- <FormKit v-model="formData.productPackage" type="text" label="Product Package" disabled /> -->
-                <!-- <FormKit v-model="formData.entitlementProduct" type="text" label="Entitlement Product" disabled /> -->
-
                 <FormKit v-model="formData.tarikhMula" type="date" label="Tarikh Mula" readonly />
                 <FormKit v-model="formData.tarikhAkhir" type="date" label="Tarikh Akhir" readonly />
               </div>
@@ -160,6 +213,7 @@
               :field="fieldsInv"
               :columns="columnsInv"
               advanced
+              :autoFields="false"
               :showSearch="false"
               :showFilter="false"
               :options="{
@@ -218,7 +272,7 @@
                     : text === 'REJECTED'
                     ? 'danger'
                     : 'warning'">
-                  {{ text || 'PENDING' }}
+                  {{ text || 'Menunggu Kelulusan' }}
                 </rs-badge>
               </template>
 
@@ -228,13 +282,13 @@
           </RsTabItem>
 
           
-          <RsTabItem title="Maklumat Bayaran">
+          <RsTabItem title="Payment Advice">
             <div class="flex items-center justify-between mb-2">
-              <h3 class="text-lg font-medium">Maklumat Bayaran</h3>
+              <h3 class="text-lg font-medium">Payment Advice</h3>
             </div>
 
             <RsTable
-              :data="paTableData"
+              :data="[]"
               :field="fieldsPA"
               :columns="columnsPA"
               advanced
@@ -293,6 +347,7 @@
               :pageSize="10"
               :showNoColumn="true"
               :sort="{ column: 'uploadDate', direction: 'desc' }"
+              :autoFields="false"
             >
               <template #tindakan="{ value }">
                 <div class="text-center">
@@ -300,7 +355,7 @@
                     variant="ghost"
                     size="sm"
                     class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
-                    @click="viewDocument(value.id)"
+                    @click="viewDocument(value)"
                     title="Lihat Dokumen"
                   >
                     <Icon name="material-symbols:visibility" class="w-5 h-5" />
@@ -311,14 +366,24 @@
           </RsTabItem>
         </RsTab>
 
+        <!-- Divider -->
+        <div class="border-t border-gray-200 my-6"></div>
+
         <!-- Actions -->
-        <div class="flex justify-end gap-4 mt-6">
-          <rs-button type="button" variant="secondary" @click="handleSaveDraft">
-            <Icon name="material-symbols:save" class="w-4 h-4 mr-1" /> Simpan
-          </rs-button>
-          <rs-button type="button" variant="primary" @click="handleSubmit">
-            <Icon name="material-symbols:send" class="w-4 h-4 mr-1" /> Hantar Tuntutan
-          </rs-button>
+        <div class="flex items-center justify-between mt-4">
+          <div>
+            <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan')">
+              <Icon name="material-symbols:arrow-back" class="w-4 h-4 mr-1" /> Kembali
+            </rs-button>
+          </div>
+          <div class="flex gap-4">
+            <rs-button type="button" variant="secondary" @click="handleSaveDraft">
+              <Icon name="material-symbols:save" class="w-4 h-4 mr-1" /> Simpan
+            </rs-button>
+            <rs-button type="button" variant="primary" @click="handleSubmit">
+              <Icon name="material-symbols:send" class="w-4 h-4 mr-1" /> Hantar Tuntutan
+            </rs-button>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -380,8 +445,26 @@
             type="file"
             label="Muat Naik Lampiran"
             accept=".pdf,.doc,.docx"
-            help="Lampiran apa yang perlu dimasukkan"
+            multiple
+            help="Lampiran apa yang perlu dimasukkan (boleh muat naik berbilang fail)"
           />
+          
+          <!-- Display selected files -->
+          <div v-if="newInvoice.lampiran && newInvoice.lampiran.length > 0" class="mt-2">
+            <p class="text-sm text-gray-600 mb-2">Fail yang dipilih ({{ newInvoice.lampiran.length }}):</p>
+            <div class="space-y-1">
+              <div 
+                v-for="(file, index) in newInvoice.lampiran" 
+                :key="index"
+                class="flex items-center text-sm text-gray-700 bg-gray-50 px-3 py-2 rounded"
+              >
+                <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                {{ file.name }}
+              </div>
+            </div>
+          </div>
 
           <FormKit v-model="newInvoice.catatan" type="textarea" label="Catatan" rows="3" placeholder="Masukkan catatan tambahan jika perlu..." />
         </div>
@@ -399,14 +482,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useNuxtApp, navigateTo, useRoute } from '#app'
-import RsTable from '~/components/RsTable.vue'
 
 definePageMeta({ title: 'Mohon Tuntutan (TDS-01)' })
 const { $swal } = useNuxtApp()
 
 const breadcrumb = ref([
-  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
-  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan' },
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
   { name: 'Mohon Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan' }
 ])
 
@@ -416,6 +498,9 @@ const formData = ref({
   emailPemohon: '',
   noTelefonPemohon: '',
   kategoriAsnaf: 'Fakir',
+  statusHousehold: 'Fakir',
+  statusIndividu: 'Fakir',
+  statusMultidimensi: 'Produktif',
   noBtn: '',
   noGL: '',
   noInvois: 'INV-2025-00124',
@@ -433,8 +518,8 @@ const formData = ref({
   tarikh: '',
   catatan: '',
   dokumenSokongan: [],
-  tarikhMula: '',
-  tarikhAkhir: '',
+  tarikhMula: '2025-09-22',
+  tarikhAkhir: '2026-09-22',
   penerimaBayaran: '',
   mop: '',
   namaPenerima: '',
@@ -528,7 +613,32 @@ const distributionItems = ref([
   }
 ])
 
-const documents = ref([{ id: 1, name: 'Invoice 940411145465', nameFile: 'Invoice 940411145465.pdf', uploadDate: '04/04/2025' }])
+const documents = ref([
+  { 
+    name: 'Lampiran Invoice 1', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00124.pdf', 
+    uploadDate: '22/09/2025',
+    tindakan: 1
+  },
+  { 
+    name: 'Lampiran Invoice 2', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00125.pdf', 
+    uploadDate: '21/09/2025',
+    tindakan: 2
+  },
+  { 
+    name: 'Lampiran Invoice 3', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00126.pdf', 
+    uploadDate: '20/09/2025',
+    tindakan: 3
+  },
+  { 
+    name: 'Lampiran Invoice 4', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00127.pdf', 
+    uploadDate: '19/09/2025',
+    tindakan: 4
+  }
+])
 
 // GL state
 const guaranteeLetters = ref([
@@ -607,7 +717,7 @@ const newInvoice = ref({
   bank: '',
   noAkaun: '',
   amaun: null,
-  lampiran: null
+  lampiran: []
 })
 const formatSemester = (v) => (v ? `Semester ${v}` : '—')
 const maskAcc = (v) => {
@@ -628,7 +738,7 @@ function openInvoiceModal(glNo) {
   const fallbackPenerima = formData.value.penerimaBayaran || 'VENDOR / INSTITUSI'
   const defaultMop = formData.value.mop || 'EFT'
   const defaultBank = formData.value.bank || 'CIMB'
-  const defaultAcc = formData.value.noAkaun || '8000xxxxxx'
+  const defaultAcc = formData.value.noAkaun || '8001234567'
 
   const base = {
     invoiceNo: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000 + 10000)}`,
@@ -711,8 +821,8 @@ function createInvoice() {
     mop: newInvoice.value.mop || formData.value.mop || 'EFT',         // modal or defaults
     namaPenerima: newInvoice.value.namaPenerima || formData.value.namaPenerima || (gl.penerimaBayaran || 'VENDOR / INSTITUSI'),
     bank: newInvoice.value.bank || formData.value.bank || 'CIMB',     // modal or defaults
-    noAkaun: newInvoice.value.noAkaun || formData.value.noAkaun || '8000xxxxxx',
-    statusKelulusan: 'PENDING',                                        // initial status
+    noAkaun: newInvoice.value.noAkaun || formData.value.noAkaun || '8001234567',
+    statusKelulusan: 'Menunggu Kelulusan',                            // initial status
     amaun: amount                       // modal
   }
   invoices.value = [invRow, ...invoices.value]
@@ -729,6 +839,17 @@ function createInvoice() {
   }
   paymentAdvices.value = [...paymentAdvices.value, paRow]
 
+  // 3.5) Add uploaded lampiran files to documents array
+  if (newInvoice.value.lampiran && newInvoice.value.lampiran.length > 0) {
+    const newDocuments = newInvoice.value.lampiran.map((file, index) => ({
+      name: `Lampiran Invoice ${documents.value.length + index + 1}`,
+      nameFile: file.name || `Lampiran_Invoice_${newInvoice.value.invoiceNo}_${index + 1}.pdf`,
+      uploadDate: new Date().toLocaleDateString('ms-MY'),
+      tindakan: documents.value.length + index + 1
+    }))
+    documents.value = [...documents.value, ...newDocuments]
+  }
+
   // 4) Mark GL SELESAI when fully invoiced
   const totalInv = sumInvoicesByGL(gl.glNo)
   const glTotal = toNum(gl.amaun)
@@ -740,7 +861,8 @@ function createInvoice() {
   // 5) Focus invoice/PA lists on this GL (integration)
   activeGlFilter.value = gl.glNo || null
 
-  // 6) Close modal + toast
+  // 6) Clear the lampiran files and close modal + toast
+  newInvoice.value.lampiran = []
   showInvoiceModal.value = false
   $swal.fire({ icon: 'success', title: 'Berjaya!', text: 'Invois telah dicipta' })
 }
@@ -780,7 +902,7 @@ const handlenoBtnChange = async (value) => {
       mop: 'EFT',
       namaPenerima: 'VENDOR B',
       bank: 'CIMB',
-      noAkaun: '8000xxxxxx',
+      noAkaun: '8001234567',
       dokumenDefault: 'contoh.pdf'
     }
   }
@@ -959,28 +1081,19 @@ function hydrateFromSelectedBantuan(row) {
 const route = useRoute()
 
 onMounted(() => {
-  let selected = null
-  try {
-    const raw = sessionStorage.getItem('NAS_SELECTED_BANTUAN')
-    if (raw) selected = JSON.parse(raw)
-  } catch (e) {
-    console.warn('Cannot parse NAS_SELECTED_BANTUAN', e)
-  }
-
-  if (!selected && (route.query?.noBantuan || route.query?.namaPemohon || route.query?.pemohon)) {
-    selected = {
-      noBantuan: route.query.noBantuan,
-      pemohon: route.query.pemohon,
-      namaPemohon: route.query.namaPemohon,
-      noKPPemohon: route.query.noKPPemohon,
-      maklumatBantuan: route.query.maklumatBantuan,
-      namaPenerimaManfaat: route.query.namaPenerimaManfaat,
-      namaPenerima: route.query.namaPenerima,
-      status: route.query.status
+  // Sokong pra-isi melalui query params sahaja (tanpa session/local storage)
+  const q = route.query || {}
+  if (q.noBantuan || q.namaPemohon || q.pemohon) {
+    const selected = {
+      noBantuan: q.noBantuan,
+      pemohon: q.pemohon,
+      namaPemohon: q.namaPemohon,
+      noKPPemohon: q.noKPPemohon,
+      maklumatBantuan: q.maklumatBantuan,
+      namaPenerimaManfaat: q.namaPenerimaManfaat,
+      namaPenerima: q.namaPenerima,
+      status: q.status
     }
-  }
-
-  if (selected) {
     hydrateFromSelectedBantuan(selected)
   }
 
@@ -988,6 +1101,19 @@ onMounted(() => {
     populateFormDataFromSession()
   }
 })
+
+const getStatusVariant = (status) => {
+  const variants = {
+    'Fakir': 'danger',
+    'Miskin': 'warning', 
+    'Non-Fakir Miskin': 'secondary',
+    'Produktif': 'success',
+    'Tidak Produktif': 'danger',
+    'Produktif Sementara': 'warning',
+    'Produktif Tegar': 'primary'
+  }
+  return variants[status] || 'default'
+}
 
 // Shared GL filter
 const activeGlFilter = ref(null)

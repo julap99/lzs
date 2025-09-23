@@ -57,7 +57,7 @@
                 v-model="formData"
               >
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div class="space-y-1">
+                  <!-- <div class="space-y-1">
                     <label class="text-sm font-medium text-gray-700">
                       Jenis Bantuan
                     </label>
@@ -66,7 +66,7 @@
                         formData.jenisBantuan
                       }}</span>
                     </div>
-                  </div>
+                  </div> -->
 
                   <div class="space-y-1">
                     <FormKit
@@ -98,7 +98,7 @@
                     />
                   </div>
 
-                  <div class="space-y-1">
+                  <!-- <div class="space-y-1">
                     <FormKit
                       type="text"
                       name="productPackage"
@@ -111,9 +111,9 @@
                       :classes="{ outer: 'mb-0' }"
                       v-model="formData.productPackage"
                     />
-                  </div>
+                  </div> -->
 
-                  <div class="space-y-1">
+                  <!-- <div class="space-y-1">
                     <FormKit
                       type="text"
                       name="entitlementProduct"
@@ -126,25 +126,27 @@
                       :classes="{ outer: 'mb-0' }"
                       v-model="formData.entitlementProduct"
                     />
-                  </div>
+                  </div> -->
 
-                  <div class="space-y-1 md:col-span-2">
+                  <!-- <div class="space-y-1 md:col-span-2">
                     <FormKit
                       type="checkbox"
                       name="segera"
                       label="SEGERA"
                       :classes="{ outer: 'mb-0' }"
                     />
-                  </div>
+                  </div> -->
 
-                  <div class="space-y-1 md:col-span-2">
+                  
+
+                  <!-- <div class="space-y-1 md:col-span-2">
                     <FormKit
                       type="checkbox"
                       name="kelulusanKhas"
                       label="Kelulusan Khas"
                       :classes="{ outer: 'mb-0' }"
                     />
-                  </div>
+                  </div> -->
 
                   <div class="space-y-1">
                     <label class="text-sm font-medium text-gray-700">
@@ -155,7 +157,7 @@
                         formatDate(formData.tarikhPermohonan)
                       }}</span>
                     </div>
-                    <p class="text-xs text-gray-500">Format: DD-MM-YYYY</p>
+                    <!-- <p class="text-xs text-gray-500">Format: DD-MM-YYYY</p> -->
                   </div>
 
                   <div class="space-y-1">
@@ -166,6 +168,67 @@
                       <span class="text-sm text-gray-900">{{ formData.sla }}</span>
                     </div>
                   </div>
+
+                  <!-- Toggle Button SEGERA -->
+                  <div class="mt-6 flex items-center">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" v-model="formData.segera" class="sr-only peer">
+                      <div
+                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                              peer-checked:bg-green-500 peer-checked:after:translate-x-full 
+                              after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                              after:bg-white after:border-gray-300 after:border after:rounded-full 
+                              after:h-5 after:w-5 after:transition-all"
+                      ></div>
+                      <span class="ml-3 text-sm font-medium text-gray-700">SEGERA</span>
+                    </label>
+                  </div>
+
+                  <!-- Toggle Button Kelulusan Khas -->
+                  <div class="mt-6 flex items-center">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" v-model="formData.kelulusankhas" class="sr-only peer">
+                      <div
+                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                              peer-checked:bg-green-500 peer-checked:after:translate-x-full 
+                              after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                              after:bg-white after:border-gray-300 after:border after:rounded-full 
+                              after:h-5 after:w-5 after:transition-all"
+                      ></div>
+                      <span class="ml-3 text-sm font-medium text-gray-700">Kelulusan Khas</span>
+                    </label>
+                  </div>
+                  
+                </div>
+
+                <!-- Nyatakan Sebab (only shown if segera checked) -->
+                    <div v-if="formData.segera" class="mt-4 space-y-1">
+                      <label class="text-sm font-medium text-gray-700">Nyatakan Sebab</label>
+                      <textarea
+                        v-model="formData.sebabSegera"
+                        rows="3"
+                        class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                        placeholder="Nyatakan sebab di sini..."
+                      ></textarea>
+                    </div>
+
+                    <!-- Situasi Kelulusan Khas -->
+                <div v-if="formData.kelulusankhas" class="mt-4 space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Situasi</label>
+                  <select
+                    v-model="formData.situasikelulusankhas"
+                    class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  >
+                    <option disabled value="">-- Sila pilih situasi --</option>
+                    <option>Umur, sama ada melebihi atau di bawah umur</option>
+                    <option>Tempoh masa terikatnya pemohon dengan sesuatu kelayakan bantuan</option>
+                    <option>Tidak memenuhi syarat minimum permohonan bantuan</option>
+                    <option>Pendapatan isi rumah yang melebihi jadual kelayakan pendapatan isi rumah yang ditetapkan</option>
+                    <option>Melebihi kadar Had Kifayah</option>
+                    <option>Lain-lain permohonan yang tidak memenuhi syarat dan kelayakan dalam GPSKAZ</option>
+                    <option>Permohonan berulang bagi bantuan yang bersifat sekali kelulusan dalam tempoh masa tertentu</option>
+                    <option>Jenis bantuan tidak tersenarai di dalam GPSKAZ/ Perkara yang melibatkan kepentingan akidah Islam dan nyawa</option>
+                  </select>
                 </div>
               </FormKit>
             </template>
@@ -822,6 +885,77 @@ const mockByBantuanId = {
     catatanPegawai: "",
     tarikhSemak: new Date(),
   },
+
+  B112: {
+    jenisBantuan: "B112 - BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)",
+    aid: "B112 - BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)",
+    aidProduct: "BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)",
+    productPackage: "BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)",
+    entitlementProduct: "BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)",
+    segera: false,
+    kelulusanKhas: false,
+    tarikhPermohonan: new Date().toISOString(),
+    sla: "3h",
+    dokumenSokongan: [
+      { id: "borang-maklumat", nama: "Borang Maklumat Sewa Rumah/ Tunggakan Sewa Rumah.", status: "", url: "/path/to/doc1.pdf" },
+      { id: "salinan-ic", nama: "Salinan kad pengenalan pemilik rumah/wakil/ surat pengesahan institusi atau dokumen perjanjian sewaan rumah/ bilik.", status: "", url: "/path/to/doc2.pdf" },
+      { id: "surat-kuasa", nama: "Surat kuasa bagi wakil yang menguruskan bilik/rumah yang disewa daripada tuan rumah (wajib, jika menggunakan wakil/ejen)", status: "", url: "/path/to/doc3.pdf" },
+      { id: "maklumat-bank", nama: "Maklumat bank terkini tuan rumah/bilik yang mengandungi: -Nama Bank Nama dan No akaun penerima", status: "", url: "/path/to/doc4.pdf" },
+      { id: "bukti-pemilikan", nama: "Bukti pemilikan seperti Salinan Bil Utiliti (Api/Air/Cukai Pintu Rumah Yang Di Sewa atau lain-lain). Jika nama pemilik dan Penerima bayaran berbeza, perlu dilampirkan bukti pertalian (bukti berdokumen).", status: "", url: "/path/to/doc5.pdf" },
+    ],
+    statusSokongan: "",
+    catatanPengesyoran: "",
+    kadarBantuan: null,
+    tempohBantuan: "",
+    jumlahKeseluruhan: 0,
+    tarikhMula: "",
+    tarikhTamat: "",
+    penerima: "",
+    namaPenerima: "",
+    kaedahPembayaran: "",
+    namaBank: "",
+    noAkaunBank: "",
+    statusPermohonan: "Dalam Semakan",
+    statusPermohonanBaru: "",
+    catatanPegawai: "",
+    tarikhSemak: new Date(),
+  },
+
+  B103: {
+    jenisBantuan: "B103 - (HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)",
+    aid: "B103 - (HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)",
+    aidProduct: "(HQ) KATEGORI HEMODIALISIS (FAKIR)",
+    productPackage: "BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)",
+    entitlementProduct: "BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)",
+    segera: false,
+    kelulusanKhas: false,
+    tarikhPermohonan: new Date().toISOString(),
+    sla: "3h",
+    dokumenSokongan: [
+      { id: "borang-pengesahan", nama: "Dokumen akuan/ pengesahan dari pihak hospital/ pusat dialisis (panel LZS)  berkaitan maklumat lengkap pesakit dan rawatan yang diperlukan adalah yang terkini.", status: "", url: "/path/to/doc1.pdf" },
+      { id: "salinan-ic", nama: "Salinan dokumen kemasukan yang sah (bukan warganegara sahaja).", status: "", url: "/path/to/doc2.pdf" },
+      { id: "surat-sebutharga", nama: "Sebutharga kos rawatan yang diperlukan dari pusat rawatan.", status: "", url: "/path/to/doc3.pdf" },
+      { id: "maklumat-agensi", nama: "Surat pengesahan agensi luar, sekiranya terima tajaan.", status: "", url: "/path/to/doc4.pdf" },
+      ],
+    statusSokongan: "",
+    catatanPengesyoran: "",
+    kadarBantuan: null,
+    tempohBantuan: "",
+    jumlahKeseluruhan: 0,
+    tarikhMula: "",
+    tarikhTamat: "",
+    penerima: "",
+    namaPenerima: "",
+    kaedahPembayaran: "",
+    namaBank: "",
+    noAkaunBank: "",
+    statusPermohonan: "Dalam Semakan",
+    statusPermohonanBaru: "",
+    catatanPegawai: "",
+    tarikhSemak: new Date(),
+  },
+
+
   B307: {
     jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
     aid: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
