@@ -98,6 +98,33 @@
               />
 
               <FormKit
+                v-model="formData.amaunGL"
+                type="number"
+                label="Amaun GL (RM)"
+                validation="required|number|min:0"
+                :validation-messages="{
+                  required: 'Sila masukkan amaun GL',
+                  number: 'Sila masukkan nilai yang sah',
+                  min: 'Amaun tidak boleh negatif'
+                }"
+                step="0.01"
+                min="0"
+              />
+
+              <FormKit
+                v-model="formData.bakiAmaun"
+                type="number"
+                label="Baki Amaun (RM)"
+                validation="required|number"
+                :validation-messages="{
+                  required: 'Sila masukkan baki amaun',
+                  number: 'Sila masukkan nilai yang sah'
+                }"
+                step="0.01"
+                :disabled="true"
+              />
+
+              <FormKit
                 v-model="formData.tarikh"
                 type="date"
                 label="Tarikh"
@@ -199,6 +226,8 @@ const formData = ref({
   pakejBantuan: "",
   kelayakanBantuan: "",
   amaunTuntutan: "",
+  amaunGL: "",
+  bakiAmaun: "",
   tarikh: "",
   catatanTambahan: "",
   dokumenSokongan: [],
@@ -219,6 +248,8 @@ const glDataMapping = {
     pakejBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
     kelayakanBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
     amaunTuntutan: 5000.00,
+    amaunGL: 6000.00,
+    bakiAmaun: 1000.00,
     dokumenDefault: 'GL_Bantuan_Sumbangan_Karpet.pdf'
   },
   'GL-2025-002': {
@@ -228,6 +259,8 @@ const glDataMapping = {
     pakejBantuan: '(GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)',
     kelayakanBantuan: '(GL) (HQ) HEMODIALISIS (FAKIR)',
     amaunTuntutan: 1500.00,
+    amaunGL: 1500.00,
+    bakiAmaun: 0.00,
     dokumenDefault: 'GL_Bantuan_Perubatan_Dialisis.pdf'
   }
 };
@@ -245,6 +278,8 @@ const loadTuntutanData = async () => {
       id: route.params.id,
       noGL: "GL-2025-001",
       amaunTuntutan: 5000.00,
+      amaunGL: 6000.00,
+      bakiAmaun: 1000.00,
       tarikh: "2024-03-20",
       catatanTambahan: "Catatan tambahan untuk draf ini...",
       dokumenSokongan: []

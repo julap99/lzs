@@ -76,6 +76,18 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
+                Amaun GL (RM)
+              </label>
+              <p class="text-gray-900">RM {{ formatNumber(tuntutanData.amaunGL) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Baki Amaun (RM)
+              </label>
+              <p class="text-gray-900">RM {{ formatNumber(tuntutanData.bakiAmaun) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
                 Tarikh
               </label>
               <p class="text-gray-900">{{ formatDate(tuntutanData.tarikh) }}</p>
@@ -196,6 +208,8 @@ const MOCK_DB = {
       id: "TUN-2024-001",
       noGL: "GL-001",
       amaunTuntutan: 5000.0,
+      amaunGL: 6000.0,
+      bakiAmaun: 1000.0,
       tarikh: "2024-03-20",
       catatanTambahan: "Catatan untuk TUN-2024-001...",
       tarikhHantar: "2024-03-21T08:00:00",
@@ -221,6 +235,8 @@ const MOCK_DB = {
       id: "TUN-2024-002",
       noGL: "GL-002",
       amaunTuntutan: 8000.0,
+      amaunGL: 8500.0,
+      bakiAmaun: 500.0,
       tarikh: "2024-03-18",
       catatanTambahan: "Catatan untuk TUN-2024-002...",
       tarikhHantar: "2024-03-19T09:15:00",
@@ -246,6 +262,8 @@ const MOCK_DB = {
       id: "TUN-2024-003",
       noGL: "GL-003",
       amaunTuntutan: 12000.0,
+      amaunGL: 12000.0,
+      bakiAmaun: 0.0,
       tarikh: "2024-03-15",
       catatanTambahan: "Catatan untuk TUN-2024-003...",
       tarikhHantar: "2024-03-16T10:30:00",
@@ -271,6 +289,8 @@ const MOCK_DB = {
       id: "TUN-2024-004",
       noGL: "GL-004",
       amaunTuntutan: 3500.0,
+      amaunGL: 4000.0,
+      bakiAmaun: 500.0,
       tarikh: "2024-03-12",
       catatanTambahan: "Catatan untuk TUN-2024-004...",
       tarikhHantar: "2024-03-13T09:10:00",
@@ -295,6 +315,8 @@ const MOCK_DB = {
       id: "TUN-2024-005",
       noGL: "GL-005",
       amaunTuntutan: 15000.0,
+      amaunGL: 15000.0,
+      bakiAmaun: 0.0,
       tarikh: "2024-03-10",
       catatanTambahan: "Catatan untuk TUN-2024-005...",
       tarikhHantar: "2024-03-11T10:30:00",
@@ -320,6 +342,8 @@ const MOCK_DB = {
       id: "TUN-2024-006",
       noGL: "GL-006",
       amaunTuntutan: 25000.0,
+      amaunGL: 25000.0,
+      bakiAmaun: 0.0,
       tarikh: "2024-03-22",
       catatanTambahan: "Catatan untuk TUN-2024-006...",
       tarikhHantar: "2024-03-23T11:45:00",
@@ -345,6 +369,8 @@ const MOCK_DB = {
       id: "TUN-2024-007",
       noGL: "GL-007",
       amaunTuntutan: 18000.0,
+      amaunGL: 20000.0,
+      bakiAmaun: 2000.0,
       tarikh: "2024-03-19",
       catatanTambahan: "Catatan untuk TUN-2024-007...",
       tarikhHantar: "2024-03-20T14:20:00",
@@ -370,6 +396,8 @@ const MOCK_DB = {
       id: "TUN-2024-008",
       noGL: "GL-008",
       amaunTuntutan: 15000.0,
+      amaunGL: 15000.0,
+      bakiAmaun: 0.0,
       tarikh: "2024-03-25",
       catatanTambahan: "Catatan untuk TUN-2024-008...",
       tarikhHantar: "2024-03-26T16:10:00",
@@ -396,6 +424,8 @@ const tuntutanData = ref({
   id: "",
   noGL: "",
   amaunTuntutan: 0,
+  amaunGL: 0,
+  bakiAmaun: 0,
   tarikh: "",
   catatanTambahan: "",
   tarikhHantar: "",

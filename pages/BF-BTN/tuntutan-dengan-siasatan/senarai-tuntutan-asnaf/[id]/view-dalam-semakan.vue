@@ -88,6 +88,18 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
+                Amaun GL (RM)
+              </label>
+              <p class="text-gray-900">RM {{ formatNumber(tuntutanData.amaunGL) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Baki Amaun (RM)
+              </label>
+              <p class="text-gray-900">RM {{ formatNumber(tuntutanData.bakiAmaun) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
                 Tarikh
               </label>
               <p class="text-gray-900">{{ formatDate(tuntutanData.tarikh) }}</p>
@@ -208,6 +220,8 @@ const MOCK_DB = {
       id: "TUN-2024-003",
       noGL: "GL-003",
       amaunTuntutan: 12000.0,
+      amaunGL: 12000.0,
+      bakiAmaun: 0.0,
       tarikh: "2024-03-15",
       catatanTambahan: "Catatan untuk TUN-2024-003...",
       tarikhHantar: "2024-03-16T10:30:00",
@@ -233,6 +247,8 @@ const MOCK_DB = {
       id: "TUN-2024-004",
       noGL: "GL-004",
       amaunTuntutan: 3500.0,
+      amaunGL: 4000.0,
+      bakiAmaun: 500.0,
       tarikh: "2024-03-12",
       catatanTambahan: "Catatan untuk TUN-2024-004...",
       tarikhHantar: "2024-03-13T09:10:00",
@@ -258,6 +274,8 @@ const tuntutanData = ref({
   id: "",
   noGL: "",
   amaunTuntutan: 0,
+  amaunGL: 0,
+  bakiAmaun: 0,
   tarikh: "",
   catatanTambahan: "",
   tarikhHantar: "",
