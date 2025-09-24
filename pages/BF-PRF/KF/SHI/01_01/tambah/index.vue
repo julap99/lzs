@@ -131,13 +131,20 @@
               <Icon name="iconamoon:arrow-left-1" class="mr-1" /> Kembali
             </RsButton>
 
-            <RsButton type="button" variant="primary" :disabled="isSubmitting" @click="node.submit()">
+            <RsButton type="button" variant="primary" :disabled="isSubmitting"
+              @click="submitMode = 'tambah'; node.submit()">
               <Icon name="ic:baseline-add" class="mr-1" /> Tambah
             </RsButton>
 
             <RsButton type="button" variant="info-outline" @click="navigateTo('/BF-PRF/KF/SHI/01_03')">
               <Icon name="ic:outline-edit" class="mr-1" /> Kemaskini
             </RsButton>
+
+            <RsButton type="button" variant="info" :disabled="isSubmitting"
+              @click="submitMode = 'simpan'; node.submit()">
+              <Icon name="material-symbols:save-outline" class="mr-1" /> Simpan
+            </RsButton>
+
           </div>
 
         </FormKit>
@@ -174,6 +181,8 @@ const breadcrumb = ref([
 const STORAGE_KEY = 'shi-rows-v1';
 const toast = useToast();
 const isSubmitting = ref(false);
+const submitMode = ref('tambah')
+
 
 function genId() {
   return (globalThis.crypto?.randomUUID?.())
@@ -281,7 +290,11 @@ async function onTambah() {
     rows.push(record);
     saveRows(rows);
 
-    toast.success('Rekod berjaya ditambah');
+    toast.success(
+      submitMode.value === 'simpan'
+        ? 'Rekod berjaya disimpan'
+        : 'Rekod berjaya ditambah'
+    ),
     await navigateTo('/BF-PRF/KF/SHI/01_01');
   } finally {
     isSubmitting.value = false;

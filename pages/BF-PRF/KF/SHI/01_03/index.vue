@@ -49,7 +49,7 @@
               <span class="font-medium">{{ formatDate(text) }}</span>
             </template>
 
-            <!-- Status -->
+            <!-- Status Data -->
             <template #statusData="{ text }">
               <rs-badge :variant="getStatusVariant(text)">{{ text }}</rs-badge>
             </template>

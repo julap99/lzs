@@ -85,8 +85,7 @@
 import { ref, onMounted } from "vue";
 import { useToast } from "vue-toastification";
 
-definePageMeta({ title: "Konfigurasi Status Household / Individu", middleware: ["auth", "approver"]
- });
+definePageMeta({ title: "Konfigurasi Status Household / Individu"});;
 
 /* ----------------- UI basics ----------------- */
 const breadcrumb = ref([
