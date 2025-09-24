@@ -821,6 +821,7 @@ export default [
           },
           {
             title: "Household / Individu",
+
             icon: "iconamoon:arrow-right-2-duotone",
             child: [
               {
@@ -1530,7 +1531,7 @@ export default [
           {
             title: "Senarai Laporan",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/pelaporan/senarai-laporan",
+            path: "/BF-BTN/pelaporan",
             child: [],
             meta: {},
           },

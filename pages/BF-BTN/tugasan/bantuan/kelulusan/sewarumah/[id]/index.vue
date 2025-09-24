@@ -224,25 +224,25 @@
             </template>
           </rs-card>
   
-           <!-- NEW: Maklumat Pendidikan (read-only, shown for B300/B307) -->
+           <!-- NEW: Maklumat Pendidikan/Housing (read-only, shown for B300/B307) -->
            <rs-card v-if="educationInfo" class="shadow-sm border-0 bg-white">
                <template #header>
                  <div class="flex items-center space-x-3">
                    <div class="flex-shrink-0">
-                     <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
-                       <Icon name="ph:graduation-cap" class="w-6 h-6 text-cyan-600" />
+                     <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="route.params.id === 'B300' ? 'bg-green-100' : 'bg-cyan-100'">
+                       <Icon :name="route.params.id === 'B300' ? 'ph:house' : 'ph:graduation-cap'" :class="route.params.id === 'B300' ? 'w-6 h-6 text-green-600' : 'w-6 h-6 text-cyan-600'" />
                      </div>
                    </div>
                    <div>
-                     <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Manfaat & Pendidikan</h2>
+                    <h2 class="text-lg font-semibold text-gray-900">{{ route.params.id === 'B300' ? 'Maklumat Kediaman' : 'Maklumat Penerima Manfaat & Pendidikan' }}</h2>
                      <p class="text-sm text-gray-500">{{ educationInfo.tablefor }}</p>
                    </div>
                  </div>
                </template>
   
                <template #body>
-                 <!-- Penerima Manfaat (merged on top) -->
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Penerima Manfaat (B307 sahaja) -->
+                <div v-if="isB307" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                    <div class="space-y-1">
                      <label class="text-sm font-medium text-gray-700">Nama</label>
                      <FormKit
@@ -255,21 +255,45 @@
                      />
                    </div>
   
-                   <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
                      <label class="text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                        <span class="text-sm text-gray-900">{{ selectedDependent?.noKadPengenalan || '-' }}</span>
                      </div>
                    </div>
   
-                   <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
                      <label class="text-sm font-medium text-gray-700">Hubungan</label>
                      <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                        <span class="text-sm text-gray-900">{{ selectedDependent?.hubungan || '-' }}</span>
                      </div>
                    </div>
                  </div>
-                 <!-- /Penerima Manfaat -->
+                <!-- /Penerima Manfaat -->
+
+                <!-- Maklumat Kediaman inputs (B300) -->
+                <div v-if="isB300" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Status Kediaman Tempat Tinggal</label>
+                    <select v-model="housingInputsB300.statusKediaman" class="w-full p-3 bg-gray-50 rounded-lg border">
+                      <option>Sewa</option>
+                      <option>Sendiri</option>
+                      <option>Keluarga</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700">Keadaan Kediaman</label>
+                    <select v-model="housingInputsB300.keadaanKediaman" class="w-full p-3 bg-gray-50 rounded-lg border">
+                      <option>Baik</option>
+                      <option>Sederhana</option>
+                      <option>Teruk</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1 md:col-span-2">
+                    <label class="text-sm font-medium text-gray-700">Kadar Sewa Bulanan (RM)</label>
+                    <input v-model="housingInputsB300.kadarSewa" class="w-full p-3 bg-gray-50 rounded-lg border" />
+                  </div>
+                </div>
   
                  <div class="overflow-x-auto">
                    <table class="min-w-full divide-y divide-gray-200">
@@ -496,7 +520,7 @@
                                  <option value="">-- Sila Pilih --</option>
                                  <option value="asnaf">Asnaf</option>
                                  <option value="organisasi">Organisasi</option>
-                                 <option value="third_party">Third Party</option>
+                                 <option value="third_party">Recipient</option>
                                </select>
                              </div>
                              
@@ -692,7 +716,7 @@
                         class="hover:bg-gray-50"
                       >
                         <td
-                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                          class="px-6 py-4 text-sm text-gray-900 whitespace-normal break-words"
                         >
                           {{ dokumen.jenis }}
                         </td>
@@ -1786,12 +1810,8 @@
     if (id === 'B300') {
       return [
         { label: '-- Sila Pilih --', value: '' },
-        { label: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_KEPERLUAN' },
-        { label: '(HQ) TUNTUTAN PROGRAM (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_PROGRAM' },
-        { label: '(HQ) WANG PERSEDIAAN SEKOLAH ASRAMA (FAKIR)', value: 'WANG_PERSEDIAAN' },
-        { label: '(HQ) WANG SAKU SEKOLAH ASRAMA (FAKIR)', value: 'WANG_SAKU' },
-        { label: '(HQ) YURAN SEKOLAH ASRAMA (FAKIR)', value: 'YURAN' }
-        
+        { label: 'Ansuran Belian Rumah Bulanan (Fakir)', value: 'Belian_Rumah' },
+        { label: 'Sewaan Rumah Bulanan', value: 'Sewaan_Rumah' },
       ];
     } else if (id === 'B307') {
       return [
@@ -1842,13 +1862,10 @@
     }
   });
   
-  // B300 Entitlement Product options for checkboxes
+  // B300 Entitlement Product options for checkboxes (same as B112)
   const b300EntitlementOptions = ref([
-    { label: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_KEPERLUAN' },
-    { label: '(HQ) TUNTUTAN PROGRAM (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_PROGRAM' },
-    { label: '(HQ) WANG PERSEDIAAN SEKOLAH ASRAMA (FAKIR)', value: 'wang_persediaan_sekolah_asrama' },
-    { label: '(HQ) WANG SAKU SEKOLAH ASRAMA (FAKIR)', value: 'wang_saku_sekolah_asrama' },
-    { label: '(HQ) YURAN SEKOLAH ASRAMA (FAKIR)', value: 'yuran_sekolah_asrama' }
+    { label: 'Ansuran Belian Rumah Bulanan (Fakir)', value: 'Belian_Rumah' },
+    { label: 'Sewaan Rumah Bulanan', value: 'Sewaan_Rumah' },
   ]);
   
   // B307 Entitlement Product options for checkboxes
@@ -1880,65 +1897,45 @@
   
   // Reactive data for entitlement products
   const entitlementProductsData = ref([
-    // B300 Cards
+    // B300 Housing Cards
     {
-      code: 'wang_persediaan_sekolah_asrama',
+      code: 'Belian_Rumah',
       penerimaBayaran: {
         kategoriPenerima: 'asnaf',
         noPendaftaran: '',
         kaedahPembayaran: 'EFT',
-        noKadPengenalan: '880701121234',
-        namaPenerima: 'Siti binti Amin',
-        namaPemegangAkaun: 'Siti binti Amin',
+        noKadPengenalan: '971207-02-0568',
+        namaPenerima: 'Alia Natasha binti Hussain',
+        namaPemegangAkaun: 'Alia Natasha binti Hussain',
         bank: 'MAYBANK',
-        noAkaunBank: '1234567890'
+        noAkaunBank: '5642-1234-5678'
       },
       kadarBantuan: {
-        kadarBantuan: 300,
-        tempohKekerapan: 1,
+        kadarBantuan: 500,
+        tempohKekerapan: 12,
         tarikhMula: '2025-01-01',
-        tarikhTamat: '2025-01-31',
-        jumlahKeseluruhan: 'RM 300.00'
+        tarikhTamat: '2025-12-31',
+        jumlahKeseluruhan: 'RM 6,000.00'
       }
     },
     {
-      code: 'wang_saku_sekolah_asrama',
+      code: 'Sewaan_Rumah',
       penerimaBayaran: {
         kategoriPenerima: 'asnaf',
         noPendaftaran: '',
         kaedahPembayaran: 'EFT',
-        noKadPengenalan: '880701121234',
-        namaPenerima: 'Siti binti Amin',
-        namaPemegangAkaun: 'Siti binti Amin',
+        noKadPengenalan: '971207-02-0568',
+        namaPenerima: 'Alia Natasha binti Hussain',
+        namaPemegangAkaun: 'Alia Natasha binti Hussain',
         bank: 'MAYBANK',
-        noAkaunBank: '1234567890'
+        noAkaunBank: '5642-1234-5678'
       },
       kadarBantuan: {
-        kadarBantuan: 80,
-        tempohKekerapan: 11,
+        kadarBantuan: 800,
+        tempohKekerapan: 12,
         tarikhMula: '2025-01-01',
-        tarikhTamat: '2025-11-30',
-        jumlahKeseluruhan: 'RM 880.00'
-      }
-    },
-    {
-      code: 'yuran_sekolah_asrama',
-      penerimaBayaran: {
-        kategoriPenerima: 'organisasi',
-        noPendaftaran: 'ABA1234',
-        kaedahPembayaran: 'EFT',
-        noKadPengenalan: 'ABA1234',
-        namaPenerima: 'SM Sains Kuala Selangor',
-        namaPemegangAkaun: 'SM Sains Kuala Selangor',
-        bank: 'MAYBANK',
-        noAkaunBank: '1234567890'
-      },
-      kadarBantuan: {
-        kadarBantuan: 2000,
-        tempohKekerapan: 1,
-        tarikhMula: '2025-01-01',
-        tarikhTamat: '2025-01-31',
-        jumlahKeseluruhan: 'RM 2,000.00'
+        tarikhTamat: '2025-12-31',
+        jumlahKeseluruhan: 'RM 9,600.00'
       }
     },
     // B307 Cards
@@ -2041,7 +2038,7 @@
       return {
         name: name,
         code: value,
-        category: 'Pendidikan',
+        category: String(route.params.id || '').toUpperCase() === 'B300' ? 'Housing' : 'Pendidikan',
         status: index === editingProductIndex.value ? 'sedang_edit' : 'lengkap',
         penerimaBayaran: productData.penerimaBayaran,
         kadarBantuan: productData.kadarBantuan
@@ -2070,11 +2067,11 @@
     },
     "B300": {
       id: "B300",
-      aid: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
-      aidproduct: "Bantuan Dermasiswa Sekolah Asrama (Fakir)",
-      productpackage: "Sekolah Asrama - Tingkatan 1-5",
-      entitlementproduct: "Dermasiswa Bulanan - RM 200",
-      jumlahBantuan: 2400,
+      aid: "B112 - Bantuan Sewa Rumah (Fakir)",
+      aidproduct: "Bantuan Sewa Rumah (Fakir)",
+      productpackage: "Sewaan_Rumah", // Default to Sewaan Rumah Bulanan
+      entitlementproduct: "", // Using checkbox system instead
+      jumlahBantuan: 3000,
       statusLawatan: "Sokong",
       statusproses: "selesai",
       // Special approval flags (when coming from KH module)
@@ -2110,6 +2107,7 @@
     entitlementProducts: [], // For B300 checkbox selections
     jumlahBantuan: 0,
   });
+
   
   // Section 2: Dokumen Sokongan
   const dokumenSokongan = ref([]);
@@ -2121,14 +2119,32 @@
     if (id === 'B300') {
       dokumenSokongan.value = [
         {
-          jenis: "Surat tawaran belajar daripada pihak sekolah/surat pengesahan belajar",
-          filename: "surat_tawaran_belajar_sekolah.pdf",
+          jenis: "Borang Maklumat Sewa Rumah/ Tunggakan Sewa Rumah",
+          filename: "borang_maklumat_sewa_rumah.pdf",
           url: "#",
           status: "lengkap",
         },
         {
-          jenis: "Salinan akaun bank pelajar yang mengandungi: Nama bank, Nama dan no akaun bank",
-          filename: "salinan_akaun_bank_pelajar.pdf",
+          jenis: "Salinan kad pengenalan pemilik rumah/wakil/ surat pengesahan institusi atau dokumen perjanjian sewaan rumah/ bilik",
+          filename: "salinan_kad_pengenalan_pemilik_rumah.pdf",
+          url: "#",
+          status: "lengkap",
+        },
+        {
+          jenis: "Surat kuasa bagi wakil yang menguruskan bilik/rumah yang disewa daripada tuan rumah (wajib, jika menggunakan wakil/ejen)",
+          filename: "surat_kuasa_wakil.pdf",
+          url: "#",
+          status: "lengkap",
+        },
+        {
+          jenis: "Maklumat bank terkini tuan rumah/ bilik yang mengandungi: Nama bank, Nama dan No akaun penerima",
+          filename: "maklumat_bank_tuan_rumah.pdf",
+          url: "#",
+          status: "lengkap",
+        },
+        {
+          jenis: "Bukti pemilikan seperti Salinan Bil Utiliti (Api/Air/Cukai Pintu Rumah Yang Di sewa atau lain-lain). Jika nama pemilik dan penerima bayaran berbeza, perlu dilampirkan bukti pertalian (bukti berdokumen)",
+          filename: "bukti_pemilikan_bil_utiliti.pdf",
           url: "#",
           status: "lengkap",
         },
@@ -2138,12 +2154,12 @@
           url: "#",
           status: "lengkap",
         },
-        {
-          jenis: "Salinan kad pengenalan/surat beranak pelajar",
-          filename: "salinan_kad_pengenalan_pelajar.pdf",
-          url: "#",
-          status: "lengkap",
-        },
+        // {
+        //   jenis: "Salinan kad pengenalan/surat beranak pelajar",
+        //   filename: "salinan_kad_pengenalan_pelajar.pdf",
+        //   url: "#",
+        //   status: "lengkap",
+        // },
       ];
     } else if (id === 'B307') {
       dokumenSokongan.value = [
@@ -2323,11 +2339,13 @@
     { label: "-- Sila Pilih --", value: "" },
     { label: "Ali Bin Amin", value: "ALI" },
     { label: "Siti Binti Amin", value: "SITI" },
+    { label: "Alia Natasha binti Hussain", value: "ALIA_NATASHA" },
   ]);
   
   const dependentsDirectory = {
     ALI: { noKadPengenalan: "010101-01-0101", hubungan: "Anak" },
     SITI: { noKadPengenalan: "020202-02-0202", hubungan: "Anak" },
+    ALIA_NATASHA: { noKadPengenalan: "971207-02-0568", hubungan: "Sendiri" },
   };
   
   const selectedDependent = computed(() => dependentsDirectory[dependentSelection.value.nama] || null);
@@ -2376,20 +2394,21 @@
   
   const supportDateTime = computed(() => new Date().toLocaleString("ms-MY"));
   
-  // NEW: Education info (read-only) for B300/B307
-  const educationByAid = {
+  // NEW: Housing info (read-only) for B300 (aligned with B112)
+  const housingByAid = {
     B300: {
-      tablefor: "(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+      tablefor: "BANTUAN SEWA RUMAH (FAKIR)",
       fields: {
-        "Jenis Sekolah/Institusi": "Peringkat Tinggi",
-        "Kategori Sekolah/Institusi": "SBP",
-        "Tahun Bersekolah": "2025",
-        "Tahun/Tingkatan/Tahun Pengajian/Semester": "Tingkatan 4",
-        "Nama Sekolah/ Institusi": "Sekolah Menengah Sains Kuala Selangor",
-        "Tempat Tinggal Semasa Belajar": "Tidak Tinggal Bersama Keluarga",
-        "Maklumat Asrama/Rumah Sewa": "Asrama Puteri",
-        "Pembiayaan Pengajian": "Tiada",
-        "Catatan": "Masih Bersekolah di Tingkatan 4",
+        "Alamat 1": "Jalan Rajawali,",
+        "Alamat 2": "Kampung Bukit Kuching,",
+        "Alamat 3": "-",
+        "Negeri": "Selangor",
+        "Daerah": "Kuala Selangor",
+        "Bandar": "Jeram",
+        "Poskod": "45800",
+        "Kariah": "Masjid Al-Taqwa",
+        "Geolokasi": "-",
+        "Tempoh Menetap di Selangor": "3 Tahun",
       },
     },
     B307: {
@@ -2415,6 +2434,9 @@
   
   const educationInfo = computed(() => {
     const id = String(route.params.id || '').toUpperCase();
+    if (id === 'B300') {
+      return housingByAid[id] || null;
+    }
     return educationByAid[id] || null;
   });
   
@@ -2446,6 +2468,13 @@
     const kadar = parseFloat(formData.value.jumlahBantuan) || 0
     const tempoh = parseInt(formData.value.tempohKekerapan) || 0
     return kadar * tempoh
+  })
+
+  // Local state for B300 housing inputs displayed in Maklumat Kediaman section
+  const housingInputsB300 = reactive({
+    statusKediaman: 'Sewa',
+    keadaanKediaman: 'Baik',
+    kadarSewa: '800',
   })
   
   // Check if a valid approval decision has been made
@@ -2885,9 +2914,11 @@
       ];
     } else if (selectedType === 'B300') {
       dokumenSokongan.value = [
-        { jenis: "Surat tawaran belajar daripada pihak sekolah/surat pengesahan belajar", filename: "surat_tawaran_belajar_sekolah.pdf", url: "#", status: "lengkap" },
-        { jenis: "Kad Pengenalan", filename: "kad_pengenalan.pdf", url: "#", status: "lengkap" },
-        { jenis: "Penyata Pendapatan", filename: "penyata_pendapatan.pdf", url: "#", status: "lengkap" }
+        { jenis: "Borang Maklumat Sewa Rumah/ Tunggakan Sewa Rumah", filename: "borang_maklumat_sewa_rumah.pdf", url: "#", status: "lengkap" },
+        { jenis: "Salinan kad pengenalan pemilik rumah/wakil/ surat pengesahan institusi atau dokumen perjanjian sewaan rumah/ bilik", filename: "salinan_kad_pengenalan_pemilik_rumah.pdf", url: "#", status: "lengkap" },
+        { jenis: "Surat kuasa bagi wakil yang menguruskan bilik/rumah yang disewa daripada tuan rumah (wajib, jika menggunakan wakil/ejen)", filename: "surat_kuasa_wakil.pdf", url: "#", status: "lengkap" },
+        { jenis: "Maklumat bank terkini tuan rumah/ bilik yang mengandungi: Nama bank, Nama dan No akaun penerima", filename: "maklumat_bank_tuan_rumah.pdf", url: "#", status: "lengkap" },
+        { jenis: "Bukti pemilikan seperti Salinan Bil Utiliti (Api/Air/Cukai Pintu Rumah Yang Di sewa atau lain-lain). Jika nama pemilik dan penerima bayaran berbeza, perlu dilampirkan bukti pertalian (bukti berdokumen)", filename: "bukti_pemilikan_bil_utiliti.pdf", url: "#", status: "lengkap" }
       ];
     } else if (selectedType === 'B307') {
       dokumenSokongan.value = [
@@ -2922,17 +2953,18 @@
     
     // Section 7: Maklumat Penerima Manfaat (jika tanggungan)
     dependentSelection.value = {
-      nama: selectedType === 'B300' ? 'SITI' : selectedType === 'B307' ? 'ALI' : 'FATIMAH'
+      nama: selectedType === 'B300' ? 'ALIA_NATASHA' : selectedType === 'B307' ? 'ALI' : 'FATIMAH'
     };
     
     // Section 8: Keputusan Siasatan
     investigationDecision.value = {
       status: "Sokong",
       catatan: "Layak mengikut kriteria kelulusan khas",
-      itemBantuan: selectedType === 'B102' ? 'Beras 10kg x 2' : selectedType === 'B300' ? 'Wang Saku Bulanan' : 'Rawatan Hospital'
+      itemBantuan: selectedType === 'B102' ? 'Beras 10kg x 2' : selectedType === 'B300' ? 'Bantuan Sewa Rumah Bulanan' : 'Rawatan Hospital'
     };
   };
   
+
   // Fetch application data on mount
   onMounted(() => {
     console.log("onMounted executed"); // Debug log
@@ -2965,6 +2997,7 @@
       Object.assign(formData.value, mockAssistanceData[selectedType]);
       console.log("Loaded assistance by id:", selectedType, formData.value);
       
+      
       // If this is a special approval case, modify the data accordingly
       if (isSpecialApproval.value) {
         // Enable special approval flags
@@ -2978,10 +3011,10 @@
           formData.value.jumlahBantuan = 1800;
           formData.value.tempohKekerapan = 6;
         } else if (selectedType === 'B300') {
-          formData.value.sebabSegera = "Kecemasan pendidikan - memerlukan bantuan segera";
+          formData.value.sebabSegera = "Kecemasan kediaman - memerlukan bantuan sewa rumah segera";
           formData.value.situasikelulusankhas = "Tidak memenuhi syarat minimum permohonan bantuan";
-          formData.value.jumlahBantuan = 500;
-          formData.value.tempohKekerapan = 1;
+          formData.value.jumlahBantuan = 800;
+          formData.value.tempohKekerapan = 12;
         } else if (selectedType === 'B307') {
           formData.value.sebabSegera = "Kecemasan perubatan - memerlukan rawatan segera";
           formData.value.situasikelulusankhas = "Jenis bantuan tidak tersenarai di dalam GPSKAZ/ Perkara yang melibatkan kepentingan akidah Islam dan nyawa";
@@ -2996,12 +3029,11 @@
       console.warn("Assistance type not found, using fallback:", selectedType);
     }
   
-    // Auto-select entitlement products for B300
+    // Auto-select entitlement products for B300 (aligned with B112)
     if (selectedType === 'B300') {
       formData.value.entitlementProducts = [
-        'wang_persediaan_sekolah_asrama',
-        'wang_saku_sekolah_asrama', 
-        'yuran_sekolah_asrama'
+        'Belian_Rumah',
+        'Sewaan_Rumah'
       ];
     }
   
@@ -3016,7 +3048,7 @@
   
     // Set initial nama based on route ID
     if (selectedType === 'B300') {
-      dependentSelection.value.nama = 'SITI';
+      dependentSelection.value.nama = 'ALIA_NATASHA';
     } else if (selectedType === 'B307') {
       dependentSelection.value.nama = 'ALI';
     }

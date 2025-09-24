@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Lihat Tuntutan GL (Dalam Semakan)</h2>
+          <h2 class="text-xl font-semibold">Maklumat Tuntutan</h2>
           <rs-button
             variant="secondary"
             @click="handleBack"
@@ -85,6 +85,18 @@
                 Amaun Tuntutan (RM)
               </label>
               <p class="text-gray-900">RM {{ formatNumber(tuntutanData.amaunTuntutan) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Amaun GL (RM)
+              </label>
+              <p class="text-gray-900">RM {{ formatNumber(tuntutanData.amaunGL) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Baki Amaun (RM)
+              </label>
+              <p class="text-gray-900">RM {{ formatNumber(tuntutanData.bakiAmaun) }}</p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -175,7 +187,7 @@
 import { ref, onMounted } from "vue";
 
 definePageMeta({
-  title: "Lihat Tuntutan GL (Dalam Semakan)",
+  title: "Maklumat Tuntutan",
 });
 
 const route = useRoute();
@@ -184,7 +196,7 @@ const breadcrumb = ref([
   {
     name: "Tuntutan dengan Siasatan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
   },
   {
     name: "Senarai Tuntutan",
@@ -208,23 +220,25 @@ const MOCK_DB = {
       id: "TUN-2024-003",
       noGL: "GL-003",
       amaunTuntutan: 12000.0,
+      amaunGL: 12000.0,
+      bakiAmaun: 0.0,
       tarikh: "2024-03-15",
       catatanTambahan: "Catatan untuk TUN-2024-003...",
       tarikhHantar: "2024-03-16T10:30:00",
-      pemohon: "Sekolah Agama Rakyat Al-Amin",
+      pemohon: "PUSAT HEMODIALISIS PERMATA SDN. BHD.",
       pegawaiSemakan: "Siti Aminah binti Omar",
       dokumenSokongan: [
-        { id: "DOC-003-1", nama: "GL_Karpet_AlAmin.pdf", url: "/documents/GL_Karpet_AlAmin.pdf" },
-        { id: "DOC-003-2", nama: "Invoice_AlAmin_Mar2024.pdf", url: "/documents/Invoice_AlAmin_Mar2024.pdf" },
+        { id: "DOC-003-1", nama: "GL_Dialisis_GL-003.pdf", url: "/documents/GL_Dialisis_GL-003.pdf" },
+        { id: "DOC-003-2", nama: "Invoice_Dialisis_INV-2024-003.pdf", url: "/documents/Invoice_Dialisis_INV-2024-003.pdf" },
       ],
       status: "Dalam Semakan",
     },
     bantuan: {
-      kodBantuan: "B400",
-      jenisBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
-      bahanBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA",
-      pakejBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
-      kelayakanBantuan: "(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA",
+      kodBantuan: "B103",
+      jenisBantuan: "(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)",
+      bahanBantuan: "(HQ) KATEGORI HEMODIALISIS (FAKIR)",
+      pakejBantuan: "(GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)",
+      kelayakanBantuan: "(GL) (HQ) HEMODIALISIS (FAKIR)",
     },
   },
 
@@ -233,6 +247,8 @@ const MOCK_DB = {
       id: "TUN-2024-004",
       noGL: "GL-004",
       amaunTuntutan: 3500.0,
+      amaunGL: 4000.0,
+      bakiAmaun: 500.0,
       tarikh: "2024-03-12",
       catatanTambahan: "Catatan untuk TUN-2024-004...",
       tarikhHantar: "2024-03-13T09:10:00",
@@ -258,6 +274,8 @@ const tuntutanData = ref({
   id: "",
   noGL: "",
   amaunTuntutan: 0,
+  amaunGL: 0,
+  bakiAmaun: 0,
   tarikh: "",
   catatanTambahan: "",
   tarikhHantar: "",

@@ -45,12 +45,9 @@
               <FormKit
                 type="text"
                 name="nama_penuh"
-                label="Nama Penuh *"
-                validation="required"
-                validation-label="Nama Penuh"
-                validation-messages="{
-                  required: 'Sila masukkan nama penuh'
-                }"
+                label="Nama Penuh"
+                v-model="formData.nama_penuh"
+                readonly
               />
 
               <!-- Jenis Pengenalan & No Pengenalan Row -->
@@ -59,30 +56,24 @@
                 <FormKit
                   type="select"
                   name="jenis_pengenalan"
-                  label="Jenis Pengenalan *"
+                  label="Jenis Pengenalan"
+                  v-model="formData.jenis_pengenalan"
                   :options="[
                     { label: 'Mykad/MyKid', value: 'mykad' },
                     { label: 'NRIC (lama)/Tentera/Polis', value: 'nric_lama' },
                     { label: 'ID Luar Negara', value: 'id_luar_negara' },
                     { label: 'No. Sijil Beranak', value: 'sijil_beranak' }
                   ]"
-                  validation="required"
-                  validation-label="Jenis Pengenalan"
-                  validation-messages="{
-                    required: 'Sila pilih jenis pengenalan'
-                  }"
+                  readonly
                 />
 
                 <!-- No Pengenalan -->
                 <FormKit
                   type="text"
                   name="no_pengenalan"
-                  label="No Pengenalan *"
-                  validation="required"
-                  validation-label="No Pengenalan"
-                  validation-messages="{
-                    required: 'Sila masukkan nombor pengenalan'
-                  }"
+                  label="No Pengenalan"
+                  v-model="formData.no_pengenalan"
+                  readonly
                 />
               </div>
 
@@ -93,19 +84,18 @@
                   type="email"
                   name="emel"
                   label="Emel"
+                  v-model="formData.emel"
                   placeholder="email@example.com"
+                  readonly
                 />
 
                 <!-- No Telefon -->
                 <FormKit
                   type="text"
                   name="no_telefon"
-                  label="No Telefon *"
-                  validation="required"
-                  validation-label="No Telefon"
-                  validation-messages="{
-                    required: 'Sila masukkan nombor telefon'
-                  }"
+                  label="No Telefon"
+                  v-model="formData.no_telefon"
+                  readonly
                 />
               </div>
             </div>
@@ -134,66 +124,99 @@
               <label class="block text-sm font-medium text-gray-700">
                 Apakah keperluan tuan/puan mendesak sekarang ini?
               </label>
-              <FormKit
-                type="radio"
-                name="keperluan_mendesak"
-                v-model="formData.keperluan_mendesak"
-                :options="[
-                  /* { label: 'Perubatan kritikal', value: 'perubatan_kritikal' },
-                  { label: 'Bencana', value: 'bencana' },
-                  { label: 'Kematian', value: 'kematian' },
-                  {
-                    label: 'Konflik keluarga (tiada tempat bergantung)',
-                    value: 'konflik_keluarga',
-                  }, 
-                  {
-                    label: 'Tiada tempat tinggal',
-                    value: 'tiada_tempat_tinggal',
-                  },
-                  {
-                    label: 'Terputus bekalan makanan',
-                    value: 'terputus_bekalan_makanan',
-                  },
-                  {
-                    label: 'Masih ada bekalan makanan',
-                    value: 'masih_ada_bekalan_makanan',
-                  },
-                  {
-                    label: 'Tiada sumber pendapatan',
-                    value: 'tiada_sumber_pendapatan',
-                  },
-                  {
-                    label: 'Mempunyai tempat tinggal',
-                    value: 'mempunyai_tempat_tinggal',
-                  },
-                  {
-                    label: 'Pendapatan berkurangan',
-                    value: 'pendapatan_berkurangan',
-                  },
-                  { label: 'Keperluan Lain', value: 'keperluan_lain' },
-                  {
-                    label: 'Selain dari di atas',
-                    value: 'selain_dari_di_atas',
-                  }, */
-                  {
-                    label: 'Terputus bekalan makanan / Tiada tempat tinggal',
-                    value: 'merah',
-                  },
-                  {
-                    label: 'Masih ada bekalan makanan / Mempunyai tempat tinggal / Tiada sumber pendapatan',
-                    value: 'kuning',
-                  },
-                  {
-                    label: 'Pendapatan berkurangan / Keperluan lain',
-                    value: 'hijau',
-                  },
-                ]"
-                validation="required"
-                validation-label="Jawapan"
-                validation-messages="{
-                  required: 'Sila pilih satu jawapan'
-                }"
-              />
+              
+              <!-- Level 1: Main Categories -->
+              <div class="space-y-3">
+                <!-- Merah Option -->
+                <div>
+                  <label class="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      v-model="formData.keperluan_kategori"
+                      value="merah"
+                      class="text-primary focus:ring-primary"
+                    />
+                    <span class="text-sm font-medium text-gray-700">
+                      Terputus bekalan makanan / Tiada tempat tinggal
+                    </span>
+                  </label>
+                  
+                  <!-- Sub Options for Merah -->
+                  <div v-if="formData.keperluan_kategori === 'merah'" class="mt-2 ml-6 space-y-2">
+                    <FormKit
+                      type="radio"
+                      name="keperluan_mendesak"
+                      v-model="formData.keperluan_mendesak"
+                      :options="getSubOptions('merah')"
+                      validation="required"
+                      validation-label="Jawapan"
+                      validation-messages="{
+                        required: 'Sila pilih satu jawapan'
+                      }"
+                    />
+                  </div>
+                </div>
+
+                <!-- Kuning Option -->
+                <div>
+                  <label class="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      v-model="formData.keperluan_kategori"
+                      value="kuning"
+                      class="text-primary focus:ring-primary"
+                    />
+                    <span class="text-sm font-medium text-gray-700">
+                      Masih ada bekalan makanan / Mempunyai tempat tinggal / Tiada sumber pendapatan
+                    </span>
+                  </label>
+                  
+                  <!-- Sub Options for Kuning -->
+                  <div v-if="formData.keperluan_kategori === 'kuning'" class="mt-2 ml-6 space-y-2">
+                    <FormKit
+                      type="radio"
+                      name="keperluan_mendesak"
+                      v-model="formData.keperluan_mendesak"
+                      :options="getSubOptions('kuning')"
+                      validation="required"
+                      validation-label="Jawapan"
+                      validation-messages="{
+                        required: 'Sila pilih satu jawapan'
+                      }"
+                    />
+                  </div>
+                </div>
+
+                <!-- Hijau Option -->
+                <div>
+                  <label class="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      v-model="formData.keperluan_kategori"
+                      value="hijau"
+                      class="text-primary focus:ring-primary"
+                    />
+                    <span class="text-sm font-medium text-gray-700">
+                      Pendapatan berkurangan / Keperluan lain
+                    </span>
+                  </label>
+                  
+                  <!-- Sub Options for Hijau -->
+                  <div v-if="formData.keperluan_kategori === 'hijau'" class="mt-2 ml-6 space-y-2">
+                    <FormKit
+                      type="radio"
+                      name="keperluan_mendesak"
+                      v-model="formData.keperluan_mendesak"
+                      :options="getSubOptions('hijau')"
+                      validation="required"
+                      validation-label="Jawapan"
+                      validation-messages="{
+                        required: 'Sila pilih satu jawapan'
+                      }"
+                    />
+                  </div>
+                </div>
+              </div>
 
               <!-- Additional input for "Keperluan Lain / Selain dari di atas" -->
               <div v-if="showLainInput" class="mt-4">
@@ -396,6 +419,56 @@
         </FormKit>
       </template>
     </rs-card>
+
+    <!-- Confirmation Modal for New User -->
+    <rs-modal
+      v-model="showNewUserModal"
+      title="Penilaian Awal Berjaya"
+      position="center"
+      size="md"
+    >
+      <template #body>
+        <div class="p-4">
+          <p class="text-gray-700 mb-4">
+            Maklumat penilaian awal anda telah berjaya dihantar. Untuk memudahkan urusan bantuan, 
+            anda boleh melengkapkan borang pendaftaran secara lengkap.
+          </p>
+          <p class="text-gray-700">
+            Adakah anda ingin meneruskan proses melengkapkan borang pendaftaran tersebut?
+          </p>
+        </div>
+      </template>
+
+      <template #footer>
+        <div class="p-4 flex justify-end gap-3">
+          <rs-button variant="secondary" @click="onNewUserCancel">Tidak</rs-button>
+          <rs-button variant="primary" @click="onNewUserContinue">Ya, Teruskan</rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Confirmation Modal for Existing User -->
+    <rs-modal
+      v-model="showExistingUserModal"
+      title="Penilaian Awal Berjaya"
+      position="center"
+      size="md"
+    >
+      <template #body>
+        <div class="p-4">
+          <p class="text-gray-700">
+            Penilaian awal anda telah berjaya dihantar. Sila kemaskini maklumat anda untuk 
+            memastikan rekod yang terkini dan tepat.
+          </p>
+        </div>
+      </template>
+
+      <template #footer>
+        <div class="p-4 flex justify-end gap-3">
+          <rs-button variant="primary" @click="onExistingUserContinue">Kemaskini Maklumat</rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -417,15 +490,20 @@ const breadcrumb = ref([
 
 const currentRole = ref("new_user");
 
+// Modal states
+const showNewUserModal = ref(false);
+const showExistingUserModal = ref(false);
+
 const formData = ref({
   // Maklumat Individu
-  nama_penuh: "",
-  jenis_pengenalan: "",
-  no_pengenalan: "",
-  emel: "",
-  no_telefon: "",
+  nama_penuh: "Ahmad Bin Abdullah",
+  jenis_pengenalan: "mykad",
+  no_pengenalan: "901234567890",
+  emel: "ahmad.abdullah@email.com",
+  no_telefon: "0123456789",
   // Penilaian Awal
   komitmen_tinggi: "",
+  keperluan_kategori: "",
   keperluan_mendesak: "",
   lain_keperluan: "",
 });
@@ -450,27 +528,44 @@ const handleRoleChange = () => {
   refreshTable(); */
 };
 
-// Show extra input when "keperluan_lain" or "selain_dari_di_atas" is selected
+// Get sub-options based on selected category
+function getSubOptions(category) {
+  const options = {
+    merah: [
+      { label: 'Terputus bekalan makanan', value: 'terputus_bekalan_makanan' },
+      { label: 'Tiada tempat tinggal', value: 'tiada_tempat_tinggal' }
+    ],
+    kuning: [
+      { label: 'Masih ada bekalan makanan', value: 'masih_ada_bekalan_makanan' },
+      { label: 'Mempunyai tempat tinggal', value: 'mempunyai_tempat_tinggal' },
+      { label: 'Tiada sumber pendapatan', value: 'tiada_sumber_pendapatan' }
+    ],
+    hijau: [
+      { label: 'Pendapatan berkurangan', value: 'pendapatan_berkurangan' },
+      { label: 'Perubatan Kritikal', value: 'perubatan_kritikal' },
+      { label: 'Bencana', value: 'bencana' }
+    ]
+  };
+  return options[category] || [];
+}
+
+// Show extra input when "keperluan_lain" is selected (no longer applicable)
 const showLainInput = computed(() => {
-  const value = formData.value.keperluan_mendesak;
-  return value === "keperluan_lain" || value === "selain_dari_di_atas";
+  return false; // No longer using keperluan_lain option
 });
 
 // Show doc info when certain keperluan are selected
 const shouldShowDocInfo = computed(() => {
   const value = formData.value.keperluan_mendesak;
   const triggerValues = [
-    /* "perubatan_kritikal",
-    "bencana",
-    "kematian",
-    "konflik_keluarga",
-    "tiada_tempat_tinggal",
     "terputus_bekalan_makanan",
+    "tiada_tempat_tinggal", 
+    "masih_ada_bekalan_makanan",
+    "mempunyai_tempat_tinggal",
     "tiada_sumber_pendapatan",
-    "pendapatan_berkurangan", */
-    "merah",
-    "kuning",
-    "hijau"
+    "pendapatan_berkurangan",
+    "perubatan_kritikal",
+    "bencana"
   ];
   return triggerValues.includes(value);
 });
@@ -565,8 +660,9 @@ function downloadTemplate(jenis) {
 // Determine if both Penilaian Awal questions are completed
 const isPenilaianAwalComplete = computed(() => {
   const answeredKomitmen = !!formData.value.komitmen_tinggi;
+  const answeredKategori = !!formData.value.keperluan_kategori;
   const answeredKeperluan = !!formData.value.keperluan_mendesak;
-  return answeredKomitmen && answeredKeperluan;
+  return answeredKomitmen && answeredKategori && answeredKeperluan;
 });
 
 function handleSave() {
@@ -584,22 +680,41 @@ function handleNext() {
     return;
   }
   
-  // Redirect logic based on role and urgency level
+  // Show appropriate modal based on role
   if (currentRole.value === "existing_user") {
-    navigateTo("/BF-PRF/AS/UP/02");
+    showExistingUserModal.value = true;
   } else if (currentRole.value === "new_user") {
-    if (formData.value.keperluan_mendesak === "merah") {
-      navigateTo("/BF-PRF/AS/PA-1/QR");
-    } else if (formData.value.keperluan_mendesak === "kuning" || formData.value.keperluan_mendesak === "hijau") {
-      navigateTo("/BF-PRF/AS/PA-1/FR");
-    } else {
-      // Fallback to original path if no match
-      navigateTo("/BF-PRF/AS/PA-1/UP");
-    }
+    showNewUserModal.value = true;
   } else {
     // Default fallback
+    showExistingUserModal.value = true;
+  }
+}
+
+// Modal handler functions
+function onNewUserContinue() {
+  showNewUserModal.value = false;
+  
+  // Redirect based on urgency level
+  if (formData.value.keperluan_kategori === "merah") {
+    navigateTo("/BF-PRF/AS/QS/02");
+  } else if (formData.value.keperluan_kategori === "kuning" || formData.value.keperluan_kategori === "hijau") {
+    navigateTo("/BF-PRF/AS/FR/02");
+  } else {
+    // Fallback
     navigateTo("/BF-PRF/AS/PA-1/UP");
   }
+}
+
+function onNewUserCancel() {
+  showNewUserModal.value = false;
+  // Could redirect to dashboard or stay on current page
+  navigateTo("/dashboard/dashboard-asnaf");
+}
+
+function onExistingUserContinue() {
+  showExistingUserModal.value = false;
+  navigateTo("/BF-PRF/AS/UP/02");
 }
 
 </script>

@@ -127,6 +127,17 @@
       </template>
     </rs-card>
 
+    <!-- Divider and Back Action -->
+    <div class="border-t border-gray-200 my-6"></div>
+    <div class="flex items-center justify-between mt-4">
+      <div>
+        <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan')">
+          <Icon name="material-symbols:arrow-back" class="w-4 h-4 mr-1" /> Kembali
+        </rs-button>
+      </div>
+      <div></div>
+    </div>
+
     <!-- (Opsyenal) Butang Bulk; biar kekal jika diperlukan -->
     <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
       <rs-button variant="success" @click="handleBulkApproval" :disabled="processing">
@@ -152,7 +163,7 @@ definePageMeta({
 const columns = [
   { key: 'no', label: 'No' },
   { key: 'noBantuan', label: 'No. Bantuan', sortable: true },
-  { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
+  { key: 'maklumatBantuan', label: 'Jenis Bantuan', sortable: true },
   { key: 'pemohon', label: 'Pemohon', sortable: true }, // Ayah
   { key: 'namaPenerimaManfaat', label: 'Nama Penerima Manfaat', sortable: true },
   { key: 'noKPPemohon', label: 'No. KP Pemohon', sortable: true },
@@ -209,6 +220,27 @@ const bantuanList = ref([
     namaPenerima: 'ALI BIN MOHAMED',
     tarikhMohon: new Date(Date.now() - 259200000).toISOString(),
     tindakan: { noBantuan: 'APP-2025-001484' },
+  },
+  // Tuntutan Dialisis mock data
+  {
+    noBantuan: 'APP-2025-001485',
+    maklumatBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
+    pemohon: AYAH,
+    namaPenerimaManfaat: 'AHMAD BIN HASSAN',
+    noKPPemohon: '850315123456',
+    namaPenerima: 'HOSPITAL SELAYANG',
+    tarikhMohon: new Date(Date.now() - 345600000).toISOString(),
+    tindakan: { noBantuan: 'APP-2025-001485' },
+  },
+  {
+    noBantuan: 'APP-2025-001486',
+    maklumatBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
+    pemohon: AYAH,
+    namaPenerimaManfaat: 'FATIMAH BINTI MOHAMED',
+    noKPPemohon: '880420234567',
+    namaPenerima: 'HOSPITAL KUALA LUMPUR',
+    tarikhMohon: new Date(Date.now() - 432000000).toISOString(),
+    tindakan: { noBantuan: 'APP-2025-001486' },
   },
 ])
 
@@ -293,12 +325,12 @@ const breadcrumb = ref([
   {
     name: 'Pengurusan Bantuan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan',
   },
   {
     name: 'Tuntutan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan',
   },
   {
     name: 'Mohon Tuntutan',

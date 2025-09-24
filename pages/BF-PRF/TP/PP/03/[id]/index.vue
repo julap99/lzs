@@ -23,14 +23,14 @@
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit type="text" label="No. Rujukan" :value="applicationData.refNumber" disabled />
-            <FormKit type="text" label="Tarikh Permohonan" :value="applicationData.applicationDate" disabled />
-            <FormKit type="text" label="Jenis Recipient" :value="applicationData.jenisRecipient" disabled />
-            <FormKit v-if="applicationData.jenisRecipient === 'Individu'" type="text" label="Nama Penuh" :value="applicationData.namaPenuh" disabled />
-            <FormKit v-if="applicationData.jenisRecipient === 'Syarikat'" type="text" label="Nama Syarikat" :value="applicationData.namaSyarikat" disabled />
-            <FormKit type="text" label="Jenis Pengenalan" :value="applicationData.jenisPengenalan" disabled />
-            <FormKit v-if="applicationData.jenisPengenalan !== 'ID Syarikat'" type="text" label="ID Pengenalan" :value="applicationData.idPengenalan" disabled />
-            <FormKit v-if="applicationData.jenisPengenalan === 'ID Syarikat'" type="text" label="ID Syarikat" :value="applicationData.idSyarikat" disabled />
+            <FormKit type="text" label="No. Rujukan" v-model="applicationData.refNumber" readonly />
+            <FormKit type="text" label="Tarikh Permohonan" v-model="applicationData.applicationDate" readonly />
+            <FormKit type="text" label="Jenis Recipient" v-model="applicationData.jenisRecipient" readonly />
+            <FormKit v-if="applicationData.jenisRecipient === 'Individu'" type="text" label="Nama Penuh" v-model="applicationData.namaPenuh" readonly />
+            <FormKit v-if="applicationData.jenisRecipient === 'Syarikat'" type="text" label="Nama Syarikat" v-model="applicationData.namaSyarikat" readonly />
+            <FormKit type="text" label="Jenis Pengenalan" v-model="applicationData.jenisPengenalan" readonly />
+            <FormKit v-if="applicationData.jenisPengenalan !== 'ID Syarikat'" type="text" label="ID Pengenalan" v-model="applicationData.idPengenalan" readonly />
+            <FormKit v-if="applicationData.jenisPengenalan === 'ID Syarikat'" type="text" label="ID Syarikat" v-model="applicationData.idSyarikat" readonly />
           </div>
         </template>
       </rs-card>
@@ -42,9 +42,9 @@
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit type="text" label="Nama Bank" :value="applicationData.namaBank" disabled />
-            <FormKit type="text" label="No Akaun Bank" :value="applicationData.noAkaunBank" disabled />
-            <FormKit type="text" label="Penama Akaun Bank" :value="applicationData.penamaAkaunBank" disabled />
+            <FormKit type="text" label="Nama Bank" v-model="applicationData.namaBank" readonly />
+            <FormKit type="text" label="No Akaun Bank" v-model="applicationData.noAkaunBank" readonly />
+            <FormKit type="text" label="Penama Akaun Bank" v-model="applicationData.penamaAkaunBank" readonly />
           </div>
         </template>
       </rs-card>
@@ -135,7 +135,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from 'vue-toastification'
 
@@ -169,7 +169,7 @@ const applicationData = ref({
   documents: [],
 })
 
-const dataset = {
+const mockData = {
   'RE-202507-0011': {
     refNumber: 'RE-202507-0011',
     applicationDate: '23/7/2025',
@@ -269,12 +269,24 @@ const handleApprovalSubmit = async () => {
 
 const handleBack = () => navigateTo('/BF-PRF/TP/PP')
 
-onMounted(() => {
+const loadApplicationData = () => {
   const id = route.params.id
-  if (dataset[id]) {
-    applicationData.value = { ...applicationData.value, ...dataset[id] }
+  if (mockData[id]) {
+    // Direct assignment to ensure data is loaded
+    Object.assign(applicationData.value, mockData[id])
   } else {
     applicationData.value.refNumber = id
+  }
+}
+
+onMounted(() => {
+  loadApplicationData()
+})
+
+// Watch for route changes
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    loadApplicationData()
   }
 })
 </script>

@@ -344,7 +344,7 @@
               >Simpan</rs-button
             >
             <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Maklumat Pendidikan</rs-button
+              >Maklumat Alamat</rs-button
             >
           </div>
         </FormKit>
@@ -619,6 +619,16 @@
                   "
                   v-model="formData.addressInfo.kadar_bayaran_bulanan" />
 
+                  <FormKit
+                  type="file"
+                  name=""
+                  multiple
+                  label="Lampiran Tambahan"
+                  v-if="
+                    formData.addressInfo.status_kediaman ===
+                    'Milik Sendiri Berbayar'
+                  "/>
+
                 <FormKit
                   type="number"
                   name="kadar_sewa_bulanan"
@@ -633,6 +643,7 @@
                   type="file"
                   name="dokumen_perjanjian_sewa"
                   label="Dokumen Perjanjian Sewa"
+                  multiple
                   accept=".pdf,.jpg,.jpeg,.png"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
@@ -1085,7 +1096,7 @@
                 >Simpan</rs-button
               >
               <rs-button type="submit" variant="primary" @click="nextStepA"
-                >Maklumat Alamat</rs-button
+                >Maklumat Pengislaman</rs-button
               >
             </div>
           </div>
@@ -1199,23 +1210,22 @@
             </div> -->
 
             <!-- Tarikh Keluar Muallaf -->
-            <!-- <div v-if="formData.adakah_muallaf === 'Y'">
+            <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
-                type="text"
-                name="tarikh_keluar_muallaf"
-                label="Tarikh Keluar Muallaf"
+                type="date"
+                name="tarikh_mukallaf"
+                label="Tarikh Mukallaf"
                 placeholder="DD/MM/YYYY"
                 :validation-messages="{
-                  required: 'Tarikh Keluar Muallaf diperlukan',
+                  required: 'Tarikh mukallaf diperlukan',
                   matches: 'Format tarikh tidak sah',
                 }"
-                :model-value="tarikhKeluarMuallaf"
-                readonly
+                
               />
-            </div> -->
+            </div>
 
             <!-- Tarikh Keluar KFAM -->
-            <!-- <div v-if="formData.adakah_muallaf === 'Y'">
+            <div v-if="formData.adakah_muallaf === 'Y'">
               <FormKit
                 type="date"
                 name="tarikh_had_taklif_muallaf"
@@ -1225,9 +1235,9 @@
                   matches: 'Format tarikh tidak sah',
                 }"
                 :model-value="tarikhHadTaklifMuallaf"
-                readonly
+                
               />
-            </div> -->
+            </div>
 
             <!-- Dokumen Pengislaman -->
             <div v-if="formData.adakah_muallaf === 'Y'">
@@ -1835,6 +1845,7 @@
                       accept=".pdf,.jpg,.jpeg,.png"
                       help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                       validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                      multiple
                       v-model="formData.dokumen_perjanjian_pinjaman"
                       :validation-messages="{
                         required: 'Dokumen perjanjian pinjaman adalah wajib',
@@ -1948,6 +1959,7 @@
             name="dokumen_pemilikan"
             label="Upload dokumen pemilikan"
             accept=".pdf,.jpg,.jpeg,.png"
+            multiple
             help="Jika ada wang simpanan > 0, rumah kedai > 0, atau tanah/sawah > 0, dokumen adalah wajib"
             :validation="
               Number(formData.wang_simpanan) > 0 ||
@@ -2115,6 +2127,7 @@
                   name="pengesahan_pendapatan"
                   label="Muat naik pengesahan pendapatan / penyata gaji ketua keluarga"
                   accept=".pdf,.jpg,.jpeg,.png"
+                  multiple
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                   validation="max:5|mime:application/pdf,image/jpeg,image/png"
                   :validation-messages="{
@@ -3128,6 +3141,7 @@
                     "
                   /> -->
 
+
                   <!-- Tarikh Masuk Islam -->
                   <FormKit
                     type="date"
@@ -3164,6 +3178,29 @@
                     readonly
                     help="Dikira secara automatik: Tarikh Masuk Islam + 5 tahun ATAU Tarikh Masuk KFAM + 5 tahun (pilih yang lebih lewat)"
                   /> -->
+
+                  
+                  <FormKit
+                type="date"
+                name="tarikh_mukallaf"
+                label="Tarikh Mukallaf"
+                placeholder="DD/MM/YYYY"
+                :validation-messages="{
+                  required: 'Tarikh mukallaf diperlukan',
+                  matches: 'Format tarikh tidak sah',
+                }"
+              />
+
+              <FormKit
+                type="date"
+                name="tarikh_had_taklif_muallaf"
+                label="Tarikh Had Taklif"
+                :validation-messages="{
+                  required: 'Tarikh Had Taklif diperlukan',
+                  matches: 'Format tarikh tidak sah',
+                }"
+                :model-value="tarikhHadTaklifMuallaf" 
+              />
 
                   <!-- Dokumen Pengislaman -->
 
@@ -4423,6 +4460,7 @@
                     name="pengesahan_pendapatan_tanggungan"
                     label="Muat naik pengesahan pendapatan / penyata gaji"
                     accept=".pdf,.jpg,.jpeg,.png"
+                    multiple
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
                     :validation-messages="{
@@ -4528,6 +4566,7 @@
               type="file"
               name="dokumen_pemilikan_tanggungan"
               label="Dokumen Sokongan Pemilikan"
+              multiple
               accept=".pdf,.jpg,.jpeg,.png"
               help="Format dibenarkan: PDF, JPG, PNG. Saiz maks: 5MB"
               validation="max:5|mime:application/pdf,image/jpeg,image/png"
@@ -4620,6 +4659,7 @@
                       type="file"
                       name="dokumen_perjanjian_pinjaman_tanggungan"
                       label="Dokumen Perjanjian Pinjaman"
+                      multiple
                       accept=".pdf,.jpg,.jpeg,.png"
                       help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                       validation="max:5|mime:application/pdf,image/jpeg,image/png"
@@ -5327,17 +5367,17 @@ const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF/AS/FR/02",
+    path: "/BF-PRF/AS/UP/02",
   },
   {
     name: "Asnaf",
     type: "link",
-    path: "/BF-PRF/AS/FR/02",
+    path: "/BF-PRF/AS/UP/02",
   },
   {
-    name: " Pendaftaran Lengkap",
+    name: "Kemaskini",
     type: "current",
-    path: "/BF-PRF/AS/FR/02",
+    path: "/BF-PRF/AS/UP/02",
   },
 ]);
 

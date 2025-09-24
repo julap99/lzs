@@ -218,15 +218,13 @@
               v-model="formData.penyiasat"
             />
 
-            <!-- Cawangan -->
-            <FormKit
-              type="select"
-              name="cawangan"
-              label="Cawangan"
-              :options="cawanganOptions"
-              placeholder="Pilih cawangan"
-              validation="required"
+            <!-- Cawangan (CustomSelect) -->
+            <CustomSelect
               v-model="formData.cawangan"
+              :options="cawanganOptions"
+              label="Cawangan"
+              search-placeholder="Cari cawangan..."
+              :disabled="false"
             />
           </div>
         </template>
@@ -251,6 +249,8 @@
             />
 
             <!-- Import Button -->
+            <div class="flex items-center gap-2">
+              <!-- Import Button -->
             <rs-button
               variant="primary"
               :disabled="!selectedFile || isLoading"
@@ -259,6 +259,17 @@
               <Icon name="material-symbols:upload" class="mr-1" />
               {{ isLoading ? "Sedang Import..." : "Import" }}
             </rs-button>
+            
+            <!-- Download Payable To CSV Template -->
+            <rs-button
+              variant="secondary"
+              :disabled="isLoading"
+              @click="downloadPayableToTemplate"
+            >
+              <Icon name="material-symbols:download" class="mr-1" />
+              Template Format Excel
+            </rs-button>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -269,16 +280,26 @@
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
 
-            <div v-if="paymentList.length >= 1" class="flex justify-end">
-              <rs-button
-                variant="primary"
-                :disabled="selectedPayments.length === 0"
-                @click="handleSahkanSelected"
-              >
-                <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
-                Sahkan ({{ selectedPayments.length }})
-              </rs-button>
-            </div>
+            <div v-if="paymentList.length >= 1" class="flex items-center gap-2">
+
+                <rs-button
+                  
+                  variant="primary"
+                  @click="handleAddPayment"
+                >
+                  <Icon name="material-symbols:add" class="w-4 h-4 mr-1" />
+                  Tambah
+                </rs-button>
+
+                <rs-button
+                  variant="primary"
+                  :disabled="selectedPayments.length === 0"
+                  @click="handleSahkanSelected"
+                >
+                  <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
+                  Sahkan ({{ selectedPayments.length }})
+                </rs-button>
+              </div>
           </div>
         </template>
         <template #body>
@@ -549,7 +570,7 @@
     </div>
 
     <!-- Payment Modal -->
-    <rs-modal
+<rs-modal
       v-model="showPaymentModal"
       :title="
         paymentModalMode === 'add'
@@ -1010,17 +1031,6 @@
                 input: '!py-2',
               }"
             />
-            
-            <FormKit
-              type="text"
-              name="status"
-              label="Status"
-              :value="editingPaymentForDefect.status"
-              disabled
-              :classes="{
-                input: '!py-2',
-              }"
-            />
           </div>
         </div>
       </template>
@@ -1143,7 +1153,7 @@ const formData = ref({
   kodBP: "",
   tajuk: "",
   kategoriAsnaf: "",
-  status: "Dalam Proses",
+  status: "Baru",
   jumlahAmaun: "0.00",
   catatan: "",
   namaPegawai: "",
@@ -1232,10 +1242,39 @@ const penyiasatOptions = [
 ];
 
 const cawanganOptions = [
-  { label: "Cawangan Ibu Pejabat LZS", value: "hq" },
-  { label: "Cawangan Kuala Selangor", value: "kualaSelangor" },
-  { label: "Cawangan Klang", value: "klang" },
-  { label: "Cawangan Damansara", value: "damansara" },
+  // Gombak
+  { label: "Taman Melawati (Gombak)", value: "Taman Melawati" },
+  { label: "Bandar Baru Selayang (Gombak)", value: "Bandar Baru Selayang" },
+  { label: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)", value: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)" },
+  // Hulu Langat
+  { label: "Kajang (Hulu Langat)", value: "Kajang" },
+  { label: "Bandar Baru Bangi (Hulu Langat)", value: "Bandar Baru Bangi" },
+  { label: "Bandar Baru Ampang (Hulu Langat)", value: "Bandar Baru Ampang" },
+  { label: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)", value: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)" },
+  { label: "UNIVERSITI TENAGA NASIONAL (UNITEN)", value: "UNIVERSITI TENAGA NASIONAL (UNITEN)" },
+  { label: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)", value: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)" },
+  { label: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)", value: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)" },
+  // Kuala Selangor
+  { label: "UNIVERSITI SELANGOR (UNISEL)", value: "UNIVERSITI SELANGOR (UNISEL)" },
+  { label: "Cawangan Zakat LZS, Kuala Selangor", value: "Cawangan Zakat LZS, Kuala Selangor" },
+  // Sabak Bernam
+  { label: "Cawangan Zakat LZS, Sungai Besar", value: "Cawangan Zakat LZS, Sungai Besar" },
+  // Petaling
+  { label: "UNIVERSITI TEKNOLOGI MARA (UiTM)", value: "UNIVERSITI TEKNOLOGI MARA (UiTM)" },
+  { label: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)", value: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)" },
+  { label: "UNIVERSITI PUTRA MALAYSIA (UPM)", value: "UNIVERSITI PUTRA MALAYSIA (UPM)" },
+  { label: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)", value: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)" },
+  { label: "Damansara (Petaling)", value: "Damansara" },
+  { label: "Cawangan Ibu Pejabat LZS", value: "Cawangan Ibu Pejabat LZS" },
+  // Sepang
+  { label: "UNIVERSITI MULTIMEDIA (MMU)", value: "UNIVERSITI MULTIMEDIA (MMU)" },
+  { label: "Saujana KLIA", value: "Saujana KLIA" },
+  // Kuala Langat
+  { label: "Banting", value: "Banting" },
+  // Hulu Selangor
+  { label: "Kuala Kubu Bharu", value: "Kuala Kubu Bharu" },
+  // Klang
+  { label: "Kompleks MAIS Klang", value: "Kompleks MAIS Klang" },
 ];
 
 // Payment Table Configuration

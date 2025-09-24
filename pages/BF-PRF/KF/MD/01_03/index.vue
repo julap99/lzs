@@ -431,11 +431,11 @@ const goBack = () => {
   }
   
   if (idToUse) {
-    console.log('Navigating to MD/01_04 with ID:', idToUse);
-    navigateTo(`/BF-PRF/KF/MD/01_04?id=${idToUse}`);
+    console.log('Navigating to MD/01_02 with ID:', idToUse);
+    navigateTo(`/BF-PRF/KF/MD/01_02?id=${idToUse}`);
   } else {
-    console.log('No ID found, navigating to MD/01_04 without ID');
-    navigateTo('/BF-PRF/KF/MD/01_04');
+    console.log('No ID found, navigating to MD/01_02 without ID');
+    navigateTo('/BF-PRF/KF/MD/01_02');
   }
 };
 
