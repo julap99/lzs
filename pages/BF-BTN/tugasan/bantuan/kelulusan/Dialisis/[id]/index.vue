@@ -376,10 +376,9 @@
                     <div class="mt-3 flex gap-2">
                       <rs-button
                         v-if="product.status !== 'sedang_edit'"
-                        variant="primary-outline"
+                        variant="primary"
                         size="sm"
                         @click="editDialysisProduct(index)"
-                        class="text-xs px-2 py-1"
                       >
                         Edit
                       </rs-button>
@@ -388,27 +387,24 @@
                         variant="success"
                         size="sm"
                         @click="saveDialysisProduct(index)"
-                        class="text-xs px-2 py-1"
                       >
                         Simpan
                       </rs-button>
                       <rs-button
                         v-if="product.status === 'sedang_edit'"
-                        variant="secondary-outline"
+                        variant="secondary"
                         size="sm"
                         @click="cancelDialysisEdit()"
-                        class="text-xs px-2 py-1"
                       >
                         Batal
                       </rs-button>
-                      <rs-button
-                        variant="danger-outline"
-                        size="sm"
+                      <button
                         @click="removeDialysisProduct(index)"
-                        class="text-xs px-2 py-1"
+                        class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
+                        title="Padam"
                       >
-                        Padam
-                      </rs-button>
+                        <Icon name="ph:trash" class="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
 
@@ -448,48 +444,63 @@
                       </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div>
-                        <label class="text-xs font-medium text-gray-600">Kadar Bantuan</label>
-                        <input
-                          v-model="editingKadarBantuanKadar"
-                          type="number"
-                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="0"
-                        />
+                    <div class="space-y-3">
+                      <!-- Row 1: Kadar Bantuan & Tempoh/Kekerapan -->
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label class="text-xs font-medium text-gray-600">Kadar Bantuan</label>
+                          <div class="relative">
+                            <input
+                              v-model="editingKadarBantuanKadar"
+                              type="number"
+                              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="Masukkan kadar bantuan"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label class="text-xs font-medium text-gray-600">Tempoh/Kekerapan</label>
+                          <input
+                            v-model="editingKadarBantuanTempoh"
+                            type="number"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Masukkan bilangan tempoh/kekerapan"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label class="text-xs font-medium text-gray-600">Tempoh/Kekerapan</label>
-                        <input
-                          v-model="editingKadarBantuanTempoh"
-                          type="number"
-                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="0"
-                        />
+
+                      <!-- Row 2: Tarikh Mula & Tarikh Tamat -->
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label class="text-xs font-medium text-gray-600">Tarikh Mula</label>
+                          <div class="relative">
+                            <input
+                              v-model="editingKadarBantuanTarikhMula"
+                              type="date"
+                              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <Icon name="ph:calendar" class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                          </div>
+                        </div>
+                        <div>
+                          <label class="text-xs font-medium text-gray-600">Tarikh Tamat</label>
+                          <div class="relative">
+                            <input
+                              v-model="editingKadarBantuanTarikhTamat"
+                              type="date"
+                              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <Icon name="ph:calendar" class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                          </div>
+                        </div>
                       </div>
+
+                      <!-- Row 3: Jumlah Keseluruhan (read-only) -->
                       <div>
-                        <label class="text-xs font-medium text-gray-600">Tarikh Mula</label>
-                        <input
-                          v-model="editingKadarBantuanTarikhMula"
-                          type="date"
-                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label class="text-xs font-medium text-gray-600">Tarikh Tamat</label>
-                        <input
-                          v-model="editingKadarBantuanTarikhTamat"
-                          type="date"
-                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                    </div>
-                    <div class="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-green-800">Jumlah Keseluruhan:</span>
-                        <span class="text-lg font-bold text-green-900">
+                        <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
+                        <div class="w-full px-3 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md text-gray-700 font-medium">
                           {{ calculateEditingTotal() }}
-                        </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -595,13 +606,9 @@
                   </div>
 
                   <!-- Action Buttons -->
-                  <div class="flex justify-end space-x-3 pt-4 border-t">
-                    <rs-button variant="secondary-outline" @click="cancelDialysisEdit">
-                      Batal
-                    </rs-button>
-                    <rs-button variant="success" @click="saveDialysisProductEdit">
-                      Simpan Perubahan
-                    </rs-button>
+                  <div class="flex items-center justify-end gap-2">
+                    <rs-button variant="success" @click="saveDialysisProductEdit">Simpan</rs-button>
+                    <rs-button variant="secondary" @click="cancelDialysisEdit">Batal</rs-button>
                   </div>
                 </div>
               </template>
@@ -887,20 +894,46 @@
               </div>
             </template>
           </rs-card>
-          </div>
-        </div>
+          
+          <!-- Action Buttons - Always under Maklumat Kelulusan -->
+            <rs-card class="p-4 mt-4">
+              <div class="flex flex-col sm:flex-row gap-3 justify-end">
+                <rs-button
+                  variant="success"
+                  @click="handleSimpan"
+                  :disabled="processing"
+                  :loading="processing && actionType === 'simpan'"
+                >
+                  Simpan
+                </rs-button>
 
-          <!-- Action Buttons -->
-          <div class="mt-8 flex justify-end space-x-4">
-            <rs-button variant="secondary-outline" @click="goBack">
-              Kembali
-            </rs-button>
-            <rs-button variant="success" @click="handleLulus" :loading="processing">
-              Lulus
-            </rs-button>
-            <rs-button variant="danger" @click="handleTolak" :loading="processing">
-              Tolak
-            </rs-button>
+                <rs-button
+                  variant="primary"
+                  @click="handleHantar"
+                  :disabled="processing"
+                  :loading="processing && actionType === 'hantar'"
+                >
+                  Hantar
+                </rs-button>
+
+                <rs-button
+                  variant="danger"
+                  @click="goBack"
+                  :disabled="processing"
+                  :loading="processing"
+                >
+                  Kembali
+                </rs-button>
+              </div>
+              
+              <!-- Validation Message -->
+              <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p class="text-sm text-red-600">
+                  Sila pastikan semua medan diperlukan telah diisi sebelum menghantar.
+                </p>
+              </div>
+            </rs-card>
+          </div>
         </div>
       </div>
     </div>
@@ -942,9 +975,9 @@ const formData = ref({
   // Bantuan info
   aid: "B103 - (HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)",
   aidproduct: "(HQ) KATEGORI HEMODIALISIS (FAKIR)",
-  productpackage: "",
+  productpackage: "HEMODIALISIS_DAN_EPO",
   entitlementproduct: "",
-  entitlementProducts: [], // For B103 checkbox selections
+  entitlementProducts: ['HEMODIALISIS', 'SUNTIKAN_EPO'], // For B103 checkbox selections - both selected by default
   
   // Pemohon info - will be loaded based on route param
   nama: "",
@@ -1022,6 +1055,7 @@ const beneficiaryData = {
 
 const processing = ref(false)
 const editingProductIndex = ref(-1)
+const actionType = ref('')
 
 // Editing form data for Kadar Bantuan
 const editingKadarBantuanKadar = ref('')
@@ -1178,7 +1212,7 @@ const cancelDialysisEdit = () => {
   editingPBBank.value = ''
   editingPBNoAkaunBank.value = ''
   console.log('Edit dibatalkan')
-  toast.warning('Edit dibatalkan')
+  toast.info('Edit dibatalkan')
 }
 
 // Calculate total for editing form
@@ -1313,6 +1347,48 @@ const handleTolak = async () => {
     console.error("Error rejecting assistance:", error)
   } finally {
     processing.value = false
+  }
+}
+
+// New action handlers to match sewarumah page
+const handleSimpan = async () => {
+  processing.value = true
+  actionType.value = 'simpan'
+  try {
+    console.log("Simpan bantuan dialisis", formData.value)
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    toast.success('Data telah disimpan')
+  } catch (error) {
+    console.error("Error saving assistance:", error)
+    toast.error('Gagal menyimpan data')
+  } finally {
+    processing.value = false
+    actionType.value = ''
+  }
+}
+
+const handleHantar = async () => {
+  processing.value = true
+  actionType.value = 'hantar'
+  try {
+    console.log("Hantar bantuan dialisis", formData.value)
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    toast.success('Bantuan dialisis telah dihantar')
+    
+    // Navigate back or show success message
+    await router.push("/BF-BTN/tugasan")
+  } catch (error) {
+    console.error("Error submitting assistance:", error)
+    toast.error('Gagal menghantar bantuan')
+  } finally {
+    processing.value = false
+    actionType.value = ''
   }
 }
 

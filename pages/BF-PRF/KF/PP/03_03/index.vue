@@ -26,7 +26,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- 3.6.2 Nama Pendaftaran -->
             <FormKit
-              type="select"
+              type="text"
               name="namaPendaftaran"
               label="Nama Pendaftaran"
               validation="required"
@@ -38,7 +38,7 @@
               type="text"
               name="kodProses"
               label="Kod Proses"
-              placeholder="cth: PP001"
+              placeholder="cth: KP001"
               validation="required|matches:/^[A-Za-z0-9_-]+$/"
               :validation-messages="{ matches: 'Hanya huruf/nombor/penghubung/garis bawah dibenarkan.' }"
             />
