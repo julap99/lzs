@@ -18,11 +18,6 @@
       </template>
 
       <template #body>
-        <!-- Debug info - remove in production -->
-        <div class="mb-4 p-2 bg-gray-100 rounded">
-          <p>Jumlah Konfigurasi: {{ kifayahLimits.length }}</p>
-          <p>Kelulusan Menunggu: {{ pendingApprovalCount }}</p>
-        </div>
 
         <!-- Table Section: 6 columns (+ actions). Id Komponen Profiling is hidden per requirements -->
         <rs-table
@@ -70,35 +65,55 @@
           </template>
 
           <!-- Actions (not part of 3.6.x, kept for UX) -->
-          <template v-slot:actions="data">
-            <div class="flex flex-col items-center space-y-2">
-              <rs-button
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="navigateTo(`/BF-PRF/KF/PP/03_03?id=${data.value.idKomponenProfiling}`)"
-              >
-                <Icon name="mdi:pen" size="1.5rem" />
-              </rs-button>
+          <template v-slot:actions="{ text, index }">
+            <div class="flex justify-center items-center gap-2">
+              <!-- Edit -->
+              <div class="relative flex items-center justify-center" @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
+                <rs-button 
+                  variant="info-text" 
+                  class="p-1 w-8 h-8"
+                  @click="navigateTo(`/BF-PRF/KF/PP/03_03?id=${data.value.idKomponenProfiling}`)"
+                >
+                  <Icon name="ic:outline-edit" size="18" />
+                </rs-button>
+                <transition name="tooltip">
+                  <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                    Edit
+                  </span>
+                </transition>
+              </div>
 
-              <rs-button
-                variant="secondary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="navigateTo({ path: '/BF-PRF/KF/PP/03_04', query: { id: data.value.idKomponenProfiling } })"
-              >
-                <Icon name="mdi:eye" size="1.5rem" />
-              </rs-button>
+              <!-- View -->
+              <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
+                <rs-button 
+                  variant="info-text" 
+                  class="p-1 w-8 h-8"
+                  @click="navigateTo({ path: '/BF-PRF/KF/PP/03_04', query: { id: data.value.idKomponenProfiling } })"
+                >
+                  <Icon name="ic:outline-visibility" size="18" />
+                </rs-button>
+                <transition name="tooltip">
+                  <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                    Lihat
+                  </span>
+                </transition>
+              </div>
 
-              <!-- Delete Button -->
-              <rs-button
-                variant="danger"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="deleteItem(data.value.idKomponenProfiling)"
-              >
-                <Icon name="mdi:delete" size="1.5rem" />
-              </rs-button>
+              <!-- Delete -->
+              <div class="relative flex items-center justify-center" @mouseenter="tooltips['delete'+index] = true" @mouseleave="tooltips['delete'+index] = false">
+                <rs-button 
+                  variant="danger-text" 
+                  class="p-1 w-8 h-8"
+                  @click="deleteItem(data.value.idKomponenProfiling)"
+                >
+                  <Icon name="ic:outline-delete" size="18" />
+                </rs-button>
+                <transition name="tooltip">
+                  <span v-if="tooltips['delete'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                    Hapus
+                  </span>
+                </transition>
+              </div>
             </div>
           </template>
         </rs-table>
@@ -122,6 +137,9 @@ const breadcrumb = ref([
 // Table data and reactivity control
 const tableKey = ref(0);
 const kifayahLimits = ref([]);
+
+// Tooltips state
+const tooltips = ref({});
 
 // Default data (empty array - no hardcoded data)
 const defaultData = [];
@@ -233,3 +251,15 @@ const deleteItem = (id) => {
   }
 };
 </script>
+
+<style scoped>
+.tooltip-enter-active,
+.tooltip-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.tooltip-enter-from,
+.tooltip-leave-to {
+  opacity: 0;
+}
+</style>
