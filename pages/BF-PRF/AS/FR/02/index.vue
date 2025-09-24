@@ -317,14 +317,6 @@
           :get-current-tanggungan="getCurrentTanggungan"
           :current-tanggungan-index="currentTanggunganIndex"
           :form-data="formData"
-          :show-lain-lain-hubungan="showLainLainHubungan"
-          :show-dokumen-surat-nikah="showDokumenSuratNikah"
-          :show-lain-lain-warganegara="showLainLainWarganegara"
-          :show-passport-fields="showPassportFields"
-          :show-passport-expiry-warning="showPassportExpiryWarning"
-          :show-lain-lain-agama="showLainLainAgama"
-          :show-lain-lain-bangsa="showLainLainBangsa"
-          :show-lain-lain-status-perkahwinan="showLainLainStatusPerkahwinan"
           :calculate-age="calculateAge"
           :calculate-total-tanggungan="calculateTotalTanggungan"
           @next-step="nextStepB"
@@ -345,19 +337,9 @@
         <TanggunganPerbankanForms
           v-if="currentStepB === 3"
           :get-current-tanggungan="getCurrentTanggungan"
-          :bank-options="bankOptions"
-          :no-payment-reason-options="noPaymentReasonOptions"
-          :show-lain-lain-sebab-tiada-akaun-tanggungan="
-            showLainLainSebabTiadaAkaunTanggungan
-          "
-          :get-swift-code-for-bank="getSwiftCodeForBank"
           @next-step="nextStepB"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB3"
-          @add-bank-account-tanggungan="addBankAccountTanggungan"
-          @remove-bank-account-tanggungan="removeBankAccountTanggungan"
-          @add-pengenalan-id-tanggungan="addPengenalanIdTanggungan"
-          @remove-pengenalan-id-tanggungan="removePengenalanIdTanggungan"
         />
 
         <!-- Section B Form - Step 4: Maklumat Pendidikan Tanggungan -->
@@ -1088,13 +1070,6 @@ onMounted(() => {
 // OPTIONS DATA
 // ============================================================================
 
-// No Payment Reason Options
-const noPaymentReasonOptions = [
-  { label: "Bukan Warganegara", value: "bukan-warganegara" },
-  { label: "Sakit Terlantar", value: "sakit" },
-  { label: "Lain-lain", value: "lain-lain" },
-];
-
 // Bank Options with SWIFT Codes
 const bankOptions = [
   { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
@@ -1205,42 +1180,12 @@ const pakOfficersByKariah = {
   ],
 };
 
-// ============================================================================
-// COMPUTED PROPERTIES
-// ============================================================================
-// (Penilaian Awal removed)
-
-const showLainLainSektor = computed(() => {
-  return formData.value.sektor_pekerjaan === "Lain-lain";
-});
-
 const showLainLainSektorTanggungan = computed(() => {
   const currentTanggungan = getCurrentTanggungan();
   return currentTanggungan?.sektor_pekerjaan === "Lain-lain";
 });
 
-const showLainLainSebabTiadaAkaun = computed(() => {
-  return formData.value.sebab_tiada_akaun === "lain-lain";
-});
-
-const showLainLainSebabTiadaAkaunTanggungan = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.sebab_tiada_akaun_tanggungan === "lain-lain";
-});
-
-const showLainLainSumberPendapatan = computed(() => {
-  return (
-    formData.value.sumber_pendapatan &&
-    formData.value.sumber_pendapatan.includes("Lain-lain")
-  );
-});
-
-const selectedBankSwiftCode = computed(() => {
-  const selectedBank = bankOptions.find(
-    (bank) => bank.value === formData.value.nama_bank
-  );
-  return selectedBank ? selectedBank.swiftCode : "";
-});
+// moved into TanggunganPerbankanForms
 
 // Add/remove multiple bank accounts and helper
 const addBankAccount = () => {
@@ -1255,177 +1200,8 @@ const addBankAccount = () => {
   });
 };
 
-const removeBankAccount = (index) => {
-  formData.value.bank_accounts.splice(index, 1);
-};
-
-// Add/remove multiple pendapatan lain-lain entries
-const addPendapatanLainLain = () => {
-  formData.value.pendapatan_lain_lain.push({
-    amount: "",
-  });
-};
-
-const removePendapatanLainLain = (index) => {
-  formData.value.pendapatan_lain_lain.splice(index, 1);
-};
-
-// Helper to get swift code for a given bank value
-const getSwiftCodeForBank = (bankValue) => {
-  const selectedBank = bankOptions.find((bank) => bank.value === bankValue);
-  return selectedBank ? selectedBank.swiftCode : "";
-};
-
-const selectedBankSwiftCodeTanggungan = computed(() => {
-  const selectedBank = bankOptions.find(
-    (bank) => bank.value === formData.value.nama_bank_tanggungan
-  );
-  return selectedBank ? selectedBank.swiftCode : "";
-});
-
-const selectedDaerah = computed(() => {
-  const daerah = daerahOptions.find(
-    (d) => d.value === formData.value.addressInfo.daerah
-  );
-  return daerah ? daerah.label : "";
-});
-
-// Show doc info when certain keperluan are selected
-const shouldShowDocInfo = computed(() => {
-  const list = formData.value.keperluan_mendesak || [];
-  const triggerValues = [
-    "perubatan_kritikal",
-    "bencana",
-    "konflik_keluarga",
-    "tiada_tempat_tinggal",
-    "terputus_bekalan_makanan",
-    "masih_ada_bekalan_makanan",
-    "tiada_sumber_pendapatan",
-    "pendapatan_berkurangan",
-    "selain_dari_di_atas",
-  ];
-  return Array.isArray(list) && list.some((v) => triggerValues.includes(v));
-});
-
-// Check if perubatan kritikal is selected
-const isPerubatanKritikal = computed(() => {
-  const list = formData.value.keperluan_mendesak || [];
-  return Array.isArray(list) && list.includes("perubatan_kritikal");
-});
-
-// Dokumen Sokongan table state
-const dokumenSokonganRows = ref([
-  { id: 1, jenis: "", keterangan: "", file: null },
-]);
-
-const jenisDokumenOptions = computed(() => {
-  const baseOptions = [
-    {
-      label: "Pengesahan Pendapatan / Slip Gaji",
-      value: "pengesahan_pendapatan",
-    },
-    { label: "Penyata KWSP", value: "penyata_kwsp" },
-    { label: "Lain-lain", value: "lain" },
-  ];
-
-  if (isPerubatanKritikal.value) {
-    return [
-      {
-        label: "Borang Pengesahan Kesihatan",
-        value: "borang_pengesahan_kesihatan",
-      },
-      {
-        label: "Pengesahan Pendapatan / Slip Gaji",
-        value: "pengesahan_pendapatan",
-      },
-      {
-        label: "Pengesahan Pegawai Dietetik/Rehab",
-        value: "pengesahan_dietetik",
-      },
-      { label: "Penyata KWSP", value: "penyata_kwsp" },
-      { label: "GL/Surat Kelulusan Sebelum Ini", value: "gl_surat_kelulusan" },
-      { label: "Sebut Harga", value: "sebut_harga" },
-      { label: "Lain-lain", value: "lain" },
-    ];
-  } else {
-    return [
-      ...baseOptions,
-      { label: "Surat Temujanji Perubatan", value: "surat_temujanji" },
-      { label: "Bil Utiliti", value: "bil_utiliti" },
-      { label: "Bil/Resit Berkaitan", value: "bil_resit" },
-      { label: "Surat Tuntutan Hutang", value: "surat_tuntutan" },
-      {
-        label: "Laporan Polis/Bomba/Pihak Berkuasa",
-        value: "laporan_berkuasa",
-      },
-      { label: "Gambar Bukti Kejadian", value: "gambar_bukti" },
-    ];
-  }
-});
-
-function addDokumenRow() {
-  const nextId = dokumenSokonganRows.value.length
-    ? Math.max(...dokumenSokonganRows.value.map((r) => r.id)) + 1
-    : 1;
-  dokumenSokonganRows.value.push({
-    id: nextId,
-    jenis: "",
-    keterangan: "",
-    file: null,
-  });
-}
-
-function removeDokumenRow() {
-  if (dokumenSokonganRows.value.length > 1) {
-    dokumenSokonganRows.value.pop();
-  }
-}
-
-function onFileChange(index, event) {
-  const files = event?.target?.files;
-  dokumenSokonganRows.value[index].file = files && files[0] ? files[0] : null;
-}
-
-function getTemplateUrl(jenis) {
-  // Map jenis to template URLs if available; return empty to disable when not available
-  const map = {
-    // Perubatan Kritikal templates
-    borang_pengesahan_kesihatan: "",
-    pengesahan_dietetik: "",
-    gl_surat_kelulusan: "",
-    sebut_harga: "",
-    // Common templates
-    pengesahan_pendapatan: "",
-    penyata_kwsp: "",
-    // Other cases templates
-    surat_temujanji: "",
-    bil_utiliti: "",
-    bil_resit: "",
-    surat_tuntutan: "",
-    laporan_berkuasa: "",
-    gambar_bukti: "",
-  };
-  return map[jenis] || "";
-}
-
-function downloadTemplate(jenis) {
-  const url = getTemplateUrl(jenis);
-  if (!url) return;
-  window.open(url, "_blank");
-}
-
 const pakOfficersOptionsBantuan = computed(() => {
   const selectedKariah = formData.value.pengesahan.kariah_bantuan;
-  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
-});
-
-const pakOfficersOptionsHubungan = computed(() => {
-  const selectedKariah = formData.value.pengesahan.kariah_hubungan_pak;
-  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
-});
-
-const pakOfficersOptionsBermastautin = computed(() => {
-  const selectedKariah = formData.value.pengesahan.kariah_bermastautin;
   return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
 });
 
@@ -1444,116 +1220,8 @@ const uploadedDocuments = computed(() => {
   return documents;
 });
 
-// Computed properties for tanggungan conditional fields
-const showLainLainHubungan = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.hubungan_pemohon === "Lain-lain";
-});
-const showDokumenSuratNikah = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.hubungan_pemohon === "Pasangan Pemohon";
-});
-
-const showLainLainWarganegara = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.warganegara_tanggungan === "Lain-lain";
-});
-
-const showPassportFields = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return (
-    currentTanggungan?.warganegara_tanggungan === "Lain-lain" &&
-    currentTanggungan?.jenis_pengenalan_tanggungan === "ForeignId"
-  );
-});
-
-const showLainLainAgama = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.agama_tanggungan === "Lain-lain";
-});
-
-const showLainLainBangsa = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.bangsa_tanggungan === "Lain-lain";
-});
-
-const showLainLainStatusPerkahwinan = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.status_perkahwinan_tanggungan === "Lain-lain";
-});
-
-// Computed property to check if tanggungan is Muallaf
-const isTanggunganMuallaf = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.adakah_muallaf_tanggungan === "Y";
-});
-
-// Computed property to check if passport is expired
-const isPassportExpired = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  if (
-    !currentTanggungan?.tarikh_tamat_pasport ||
-    currentTanggungan?.warganegara_tanggungan === "Malaysia"
-  ) {
-    return false;
-  }
-
-  try {
-    const expiryDate = new Date(currentTanggungan.tarikh_tamat_pasport);
-    const today = new Date();
-    return expiryDate < today;
-  } catch (error) {
-    return false;
-  }
-});
-
-// Computed property to show passport expiry warning
-const showPassportExpiryWarning = computed(() => {
-  return isPassportExpired.value;
-});
-
-// Helper function to get Swift Code for current tanggungan
-const getSelectedBankSwiftCodeTanggungan = () => {
-  const currentTanggungan = getCurrentTanggungan();
-  if (!currentTanggungan?.nama_bank_tanggungan) return "";
-  const selectedBank = bankOptions.find(
-    (bank) => bank.value === currentTanggungan.nama_bank_tanggungan
-  );
-  return selectedBank ? selectedBank.swiftCode : "";
-};
-
-// Computed property to validate Islamic dates for tanggungan
-const islamicDatesValidationTanggungan = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  if (
-    !currentTanggungan?.adakah_muallaf_tanggungan ||
-    currentTanggungan.adakah_muallaf_tanggungan !== "Y"
-  ) {
-    return { isValid: true, message: "" };
-  }
-
-  const tarikhMasukIslam = currentTanggungan.tarikh_masuk_islam_tanggungan;
-  const tarikhMasukKFAM = currentTanggungan.tarikh_masuk_kfam_tanggungan;
-
-  if (tarikhMasukIslam && tarikhMasukKFAM) {
-    try {
-      const islamDate = new Date(tarikhMasukIslam);
-      const kfamDate = new Date(tarikhMasukKFAM);
-
-      if (kfamDate < islamDate) {
-        return {
-          isValid: false,
-          message:
-            "Tarikh Masuk KFAM tidak boleh lebih awal daripada Tarikh Masuk Islam",
-        };
-      }
-    } catch (error) {
-      console.error("Error validating Islamic dates:", error);
-    }
-  }
-
-  return { isValid: true, message: "" };
-});
+// showLainLainHubungan moved into TanggunganPeribadiForms
+// moved into TanggunganPeribadiForms
 
 // Computed property for calculating Tarikh Keluar Muallaf
 const tarikhKeluarMuallaf = computed(() => {
@@ -1622,44 +1290,6 @@ const tarikhKeluarMuallaf = computed(() => {
   }
 
   return "";
-});
-
-// Computed property for validating Islamic dates
-const islamicDatesValidation = computed(() => {
-  if (formData.value.adakah_muallaf !== "Y") {
-    return { isValid: true, message: "" };
-  }
-
-  const tarikhMasukIslam = formData.value.tarikh_masuk_islam;
-  const tarikhMasukKFAM = formData.value.tarikh_masuk_kfam;
-
-  if (tarikhMasukIslam && tarikhMasukKFAM) {
-    const [day1, month1, year1] = tarikhMasukIslam.split("/");
-    const [day2, month2, year2] = tarikhMasukKFAM.split("/");
-
-    if (day1 && month1 && year1 && day2 && month2 && year2) {
-      const islamDate = new Date(
-        parseInt(year1),
-        parseInt(month1) - 1,
-        parseInt(day1)
-      );
-      const kfamDate = new Date(
-        parseInt(year2),
-        parseInt(month2) - 1,
-        parseInt(day2)
-      );
-
-      if (kfamDate < islamDate) {
-        return {
-          isValid: false,
-          message:
-            "Tarikh Masuk KFAM tidak boleh lebih awal daripada Tarikh Masuk Islam",
-        };
-      }
-    }
-  }
-
-  return { isValid: true, message: "" };
 });
 
 // ============================================================================
@@ -2086,10 +1716,6 @@ const nextSection = () => {
 
 const prevSection = () => {
   currentSection.value = 1;
-};
-
-const goToPeribadi = () => {
-  currentStepB.value = 1;
 };
 
 // ============================================================================
@@ -3012,12 +2638,10 @@ const goToStepB = (stepNumber) => {
 
 const handleSubmit = async () => {
   try {
-    console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
     router.push("/BF-PRF/AS/FR/01");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
-    console.error("Submission error:", error);
   }
 };
 

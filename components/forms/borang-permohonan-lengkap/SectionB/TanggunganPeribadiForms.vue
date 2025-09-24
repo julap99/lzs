@@ -548,6 +548,8 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 // Props
 const props = defineProps({
   getCurrentTanggungan: {
@@ -562,38 +564,7 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  showLainLainHubungan: {
-    type: Boolean,
-    default: false
-  },
-  showDokumenSuratNikah: {
-    type: Boolean,
-    default: false
-  },
-  showLainLainWarganegara: {
-    type: Boolean,
-    default: false
-  },
-  showPassportFields: {
-    type: Boolean,
-    default: false
-  },
-  showPassportExpiryWarning: {
-    type: Boolean,
-    default: false
-  },
-  showLainLainAgama: {
-    type: Boolean,
-    default: false
-  },
-  showLainLainBangsa: {
-    type: Boolean,
-    default: false
-  },
-  showLainLainStatusPerkahwinan: {
-    type: Boolean,
-    default: false
-  },
+  // Conditional flags moved into component
   calculateAge: {
     type: Function,
     required: true
@@ -606,4 +577,57 @@ const props = defineProps({
 
 // Emits
 const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
+
+// Local computed flags moved from page
+const showLainLainHubungan = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  return current?.hubungan_pemohon === 'Lain-lain'
+})
+
+const showDokumenSuratNikah = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  return current?.hubungan_pemohon === 'Pasangan Pemohon'
+})
+
+const showLainLainWarganegara = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  return current?.warganegara_tanggungan === 'Lain-lain'
+})
+
+const showPassportFields = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  return current?.warganegara_tanggungan === 'Lain-lain' && current?.jenis_pengenalan_tanggungan === 'ForeignId'
+})
+
+const showLainLainAgama = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  return current?.agama_tanggungan === 'Lain-lain'
+})
+
+const showLainLainBangsa = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  return current?.bangsa_tanggungan === 'Lain-lain'
+})
+
+const showLainLainStatusPerkahwinan = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  return current?.status_perkahwinan_tanggungan === 'Lain-lain'
+})
+
+// Check if passport is expired (non-Malaysian with expiry date in past)
+const isPassportExpired = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  if (!current?.tarikh_tamat_pasport || current?.warganegara_tanggungan === 'Malaysia') {
+    return false
+  }
+  try {
+    const expiryDate = new Date(current.tarikh_tamat_pasport)
+    const today = new Date()
+    return expiryDate < today
+  } catch (error) {
+    return false
+  }
+})
+
+const showPassportExpiryWarning = computed(() => isPassportExpired.value)
 </script>

@@ -79,7 +79,7 @@
             </h6>
             <button
               type="button"
-              @click="$emit('remove-bank-account-tanggungan', index)"
+              @click="removeBankAccount(index)"
               class="text-red-500 hover:text-red-700"
             >
               <Icon name="mdi:delete" size="1.1rem" />
@@ -99,7 +99,7 @@
             />
 
             <!-- Swift Code (Read Only) -->
-            <FormKit
+            <!-- <FormKit
               v-if="account.nama_bank"
               type="text"
               :name="`bankTanggungan${index}SwiftCode`"
@@ -107,7 +107,7 @@
               :value="getSwiftCodeForBank(account.nama_bank)"
               readonly
               help="Swift Code dipaparkan secara automatik"
-            />
+            /> -->
 
             <!-- No. Akaun Bank -->
             <FormKit
@@ -184,7 +184,7 @@
                 <div class="flex justify-end items-center mb-2">
                   <button
                     type="button"
-                    @click="$emit('remove-pengenalan-id-tanggungan', index, idIndex)"
+                    @click="removePengenalanId(index, idIndex)"
                     class="text-red-500 hover:text-red-700"
                   >
                     <Icon name="mdi:delete" size="1rem" />
@@ -222,7 +222,7 @@
                   type="button"
                   variant="secondary"
                   size="sm"
-                  @click="$emit('add-pengenalan-id-tanggungan', index)"
+                  @click="addPengenalanId(index)"
                 >
                   <Icon name="mdi:plus" class="mr-1" size="0.8rem" />
                   Tambah Pengenalan ID
@@ -235,7 +235,7 @@
         <div class="flex justify-center mt-4">
           <rs-button
             variant="secondary"
-            @click="$emit('add-bank-account-tanggungan')"
+            @click="addBankAccount"
             type="button"
           >
             <Icon name="mdi:plus" class="mr-1" size="1rem" />
@@ -307,38 +307,100 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 // Props
 const props = defineProps({
   getCurrentTanggungan: {
     type: Function,
     required: true
   },
-  bankOptions: {
-    type: Array,
-    default: () => []
-  },
-  noPaymentReasonOptions: {
-    type: Array,
-    default: () => []
-  },
-  showLainLainSebabTiadaAkaunTanggungan: {
-    type: Boolean,
-    default: false
-  },
-  getSwiftCodeForBank: {
-    type: Function,
-    required: true
-  }
+
 })
 
-// Emits
+// Emits (navigation + save only)
 const emit = defineEmits([
   'next-step', 
   'prev-step', 
-  'save-step', 
-  'add-bank-account-tanggungan', 
-  'remove-bank-account-tanggungan',
-  'add-pengenalan-id-tanggungan',
-  'remove-pengenalan-id-tanggungan'
+  'save-step'
 ])
+
+// Local options: Sebab Tiada Akaun Bank
+const noPaymentReasonOptions = [
+  { label: 'Bukan Warganegara', value: 'bukan-warganegara' },
+  { label: 'Sakit Terlantar', value: 'sakit' },
+  { label: 'Lain-lain', value: 'lain-lain' }
+]
+
+// Local options: Bank list with SWIFT codes
+const bankOptions = [
+  { label: 'Maybank', value: 'maybank', swiftCode: 'MBBEMYKL' },
+  { label: 'CIMB', value: 'cimb', swiftCode: 'CIBBMYKL' },
+  { label: 'RHB', value: 'rhb', swiftCode: 'RHBBMYKL' },
+  { label: 'Bank Islam', value: 'bank-islam', swiftCode: 'BIMBMYKL' },
+  { label: 'Bank Rakyat', value: 'bank-rakyat', swiftCode: 'BKRMYKL' },
+  { label: 'Public Bank', value: 'public-bank', swiftCode: 'PBBEMYKL' },
+  { label: 'Hong Leong Bank', value: 'hong-leong', swiftCode: 'HLBBMYKL' },
+  { label: 'Ambank', value: 'ambank', swiftCode: 'ARBKMYKL' },
+  { label: 'BSN', value: 'bsn', swiftCode: 'BSNAMYKL' },
+  { label: 'Affin Bank', value: 'affin', swiftCode: 'PHBMMYKL' },
+  { label: 'UOB', value: 'uob', swiftCode: 'UOVBMYKL' },
+  { label: 'OCBC', value: 'ocbc', swiftCode: 'OCBCMYKL' },
+  { label: 'Standard Chartered', value: 'standard-chartered', swiftCode: 'SCBLMYKL' },
+  { label: 'Alliance Bank', value: 'alliance', swiftCode: 'MFBBMYKL' },
+  { label: 'Agrobank', value: 'agrobank', swiftCode: 'AGOBMYKL' }
+]
+
+// Local computed: show input for Lain-lain sebab
+const showLainLainSebabTiadaAkaunTanggungan = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  return current?.sebab_tiada_akaun === 'lain-lain' || current?.sebab_tiada_akaun_tanggungan === 'lain-lain'
+})
+
+// Local helper to get swift code for selected bank
+// const getSwiftCodeForBank = (bankValue) => {
+//   const selectedBank = bankOptions.find((bank) => bank.value === bankValue)
+//   return selectedBank ? selectedBank.swiftCode : ''
+// }
+
+// Local handlers for accounts and pengenalan IDs
+const addBankAccount = () => {
+  const current = props.getCurrentTanggungan?.()
+  if (!current) return
+  if (!Array.isArray(current.bank_accounts)) current.bank_accounts = []
+  current.bank_accounts.push({
+    nama_bank: '',
+    no_akaun_bank: '',
+    nama_pemegang_akaun: '',
+    jenis_akaun: 'individu',
+    id_pengenalan: '',
+    nama_bersama: '',
+    hubungan: '',
+    pengenalan_ids: []
+  })
+}
+
+const removeBankAccount = (index) => {
+  const current = props.getCurrentTanggungan?.()
+  if (!current || !Array.isArray(current.bank_accounts)) return
+  current.bank_accounts.splice(index, 1)
+}
+
+const addPengenalanId = (accountIndex) => {
+  const current = props.getCurrentTanggungan?.()
+  if (!current || !Array.isArray(current.bank_accounts)) return
+  const account = current.bank_accounts[accountIndex]
+  if (!account) return
+  if (!Array.isArray(account.pengenalan_ids)) account.pengenalan_ids = []
+  if (account.pengenalan_ids.length >= 2) return
+  account.pengenalan_ids.push({ id: '', nama: '', hubungan: '' })
+}
+
+const removePengenalanId = (accountIndex, idIndex) => {
+  const current = props.getCurrentTanggungan?.()
+  if (!current || !Array.isArray(current.bank_accounts)) return
+  const account = current.bank_accounts[accountIndex]
+  if (!account || !Array.isArray(account.pengenalan_ids)) return
+  account.pengenalan_ids.splice(idIndex, 1)
+}
 </script>
