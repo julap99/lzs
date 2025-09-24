@@ -254,18 +254,23 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 // Props
 const props = defineProps({
   getCurrentTanggungan: {
     type: Function,
     required: true
   },
-  showLainLainSektorTanggungan: {
-    type: Boolean,
-    default: false
-  }
+  // flag moved into component
 })
 
 // Emits
 const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
+
+// Local computed: show Lain-lain sector input
+const showLainLainSektorTanggungan = computed(() => {
+  const current = props.getCurrentTanggungan?.()
+  return current?.sektor_pekerjaan === 'Lain-lain'
+})
 </script>

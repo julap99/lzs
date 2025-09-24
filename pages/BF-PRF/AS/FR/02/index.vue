@@ -373,7 +373,6 @@
         <TanggunganPekerjaanForms
           v-if="currentStepB === 7"
           :get-current-tanggungan="getCurrentTanggungan"
-          :show-lain-lain-sektor-tanggungan="showLainLainSektorTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB7"
@@ -392,7 +391,6 @@
         <TanggunganPinjamanHartaForms
           v-if="currentStepB === 9"
           :get-current-tanggungan="getCurrentTanggungan"
-          :jenis-pinjaman-options="jenisPinjamanOptions"
           @next-step="nextStepB"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB9"
@@ -969,10 +967,7 @@ const pakOfficersByKariah = {
   ],
 };
 
-const showLainLainSektorTanggungan = computed(() => {
-  const currentTanggungan = getCurrentTanggungan();
-  return currentTanggungan?.sektor_pekerjaan === "Lain-lain";
-});
+// moved into TanggunganPekerjaanForms
 
 // moved into TanggunganPerbankanForms
 

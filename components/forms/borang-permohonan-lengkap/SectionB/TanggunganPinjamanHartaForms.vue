@@ -114,13 +114,19 @@ const props = defineProps({
   getCurrentTanggungan: {
     type: Function,
     required: true
-  },
-  jenisPinjamanOptions: {
-    type: Array,
-    default: () => []
   }
 })
 
 // Emits
 const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
+
+// Local options: jenis pinjaman
+const jenisPinjamanOptions = [
+  { label: 'Pinjaman Rumah', value: 'Pinjaman Rumah' },
+  { label: 'Pinjaman Kereta', value: 'Pinjaman Kereta' },
+  { label: 'Pinjaman Peribadi', value: 'Pinjaman Peribadi' },
+  { label: 'Sewa Beli', value: 'Sewa Beli' },
+  { label: 'Pinjaman Pendidikan', value: 'Pinjaman Pendidikan' },
+  { label: 'Lain-lain', value: 'Lain-lain' }
+]
 </script>
