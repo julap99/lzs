@@ -931,12 +931,20 @@ export default [
                 icon: "iconamoon:arrow-right-2-duotone",
                 child: [
                   {
-                    title: "Konfigurasi Had Kifayah",
+                    title: "Konfigurasi Proses Profiling",
                     icon: "iconamoon:arrow-right-2-duotone",
                     path: "/BF-PRF/KF/PP/01_01",
                     child: [],
                     meta: {},
                   },
+                  
+                ],
+                meta: {},
+              },
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                child: [
                   {
                     title: "Konfigurasi Komponen Profiling",
                     icon: "iconamoon:arrow-right-2-duotone",
@@ -950,8 +958,30 @@ export default [
                {
                 title: "Pelulus",
                 icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-PRF/KF/SHI/02_01",
-                child: [],
+                child: [
+                  {
+                    title: "Konfigurasi Proses Profiling",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-PRF/KF/PP/02_01",
+                    child: [],
+                    meta: {},
+                  },
+                  
+                ],
+                meta: {},
+              },
+              {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                child: [
+                  {
+                    title: "Konfigurasi Komponen Profiling",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-PRF/KF/PP/04_01",
+                    child: [],
+                    meta: {},
+                  },
+                ],
                 meta: {},
               },
             ],
