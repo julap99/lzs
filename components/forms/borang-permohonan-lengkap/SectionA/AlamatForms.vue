@@ -123,7 +123,7 @@
           <rs-button
             type="button"
             variant="primary-outline"
-            @click="$emit('get-location')"
+            @click="getLocation"
             :disabled="readOnly"
             class="whitespace-nowrap mt-7"
           >
@@ -334,6 +334,11 @@
 </template>
 
 <script setup>
+
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
+
 // Props
 const props = defineProps({
   formData: {
@@ -350,13 +355,35 @@ const props = defineProps({
   }
 })
 
-// Address options - moved from parent component
-const negeriOptions = ["Selangor", "Wilayah Persekutuan", "Perak"];
+const negeriOptions = [
+  "Selangor",
+  "Wilayah Persekutuan",
+  "Perlis",
+  "Kedah",
+  "Pulau Pinang",
+  "Perak",
+  "Kelantan",
+  "Terengganu",
+  "Pahang",
+  "Johor",
+  "Melaka",
+  "Negeri Sembilan",
+  "Sabah",
+  "Sarawak"
+];
+
+
 const daerahOptions = ["Petaling", "Klang", "Gombak"];
 const bandarOptions = ["Shah Alam", "Subang Jaya", "Kota Damansara"];
 const poskodOptions = ["40100", "40000", "40460"];
 const kariahOptions = ["Seksyen 7", "Seksyen 13", "Bukit Jelutong"];
 
+// Get location function - moved from parent component
+const getLocation = () => {
+  props.formData.addressInfo.geolokasi = "Lokasi semasa";
+  toast.success("Lokasi berjaya diperoleh!");
+};
+
 // Emits
-const emit = defineEmits(['next-step', 'prev-step', 'save-step', 'get-location'])
+const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
 </script>

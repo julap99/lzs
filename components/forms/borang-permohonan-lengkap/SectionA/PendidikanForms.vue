@@ -508,19 +508,170 @@ const props = defineProps({
   }
 })
 
-// Education-related functions - moved from parent component
-const getFilteredSchoolOptions = (kategori) => {
-  if (kategori === "IPT") {
-    return ["UM", "UiTM", "UKM"];
-  }
-  if (kategori === "SRK") {
-    return ["SK Seksyen 7", "SK Seksyen 13"];
-  }
-  if (kategori === "SRA") {
-    return ["SRA Seksyen 7", "SRA Seksyen 13"];
-  }
-  return [];
+const sekolahAgamaOptions = [
+  // Sekolah Rendah Agama (SRA)
+  {
+    label: "SRA Al-Amin Kuala Lumpur",
+    value: "sra-al-amin-kl",
+    kategori: "SRA",
+    alamat1: "Jalan Ampang, Kuala Lumpur",
+    alamat2: "Wilayah Persekutuan",
+    alamat3: "50450 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50450",
+  },
+  {
+    label: "SRA Seksyen 7",
+    value: "sra-seksyen-7",
+    kategori: "SRA",
+    alamat1: "Jalan Seksyen 7",
+    alamat2: "Shah Alam",
+    alamat3: "40000 Shah Alam",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40000",
+  },
+  {
+    label: "SRA Seksyen 13",
+    value: "sra-seksyen-13",
+    kategori: "SRA",
+    alamat1: "Jalan Seksyen 13",
+    alamat2: "Shah Alam",
+    alamat3: "40000 Shah Alam",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40000",
+  },
+  // Kelas Al-Quran dan Fardu Ain (KAFA)
+  {
+    label: "KAFA Masjid Al-Amin",
+    value: "kafa-masjid-al-amin",
+    kategori: "KAFA",
+    alamat1: "Masjid Al-Amin, Jalan Ampang",
+    alamat2: "Kuala Lumpur",
+    alamat3: "50450 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50450",
+  },
+  {
+    label: "KAFA Seksyen 7",
+    value: "kafa-seksyen-7",
+    kategori: "KAFA",
+    alamat1: "Masjid Seksyen 7",
+    alamat2: "Shah Alam",
+    alamat3: "40000 Shah Alam",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40000",
+  },
+  // Sekolah Menengah (SEK.MEN)
+  {
+    label: "SMK Seksyen 7",
+    value: "smk-seksyen-7",
+    kategori: "SEK.MEN",
+    alamat1: "Jalan Seksyen 7",
+    alamat2: "Shah Alam",
+    alamat3: "40000 Shah Alam",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40000",
+  },
+  {
+    label: "SMK Seksyen 13",
+    value: "smk-seksyen-13",
+    kategori: "SEK.MEN",
+    alamat1: "Jalan Seksyen 13",
+    alamat2: "Shah Alam",
+    alamat3: "40000 Shah Alam",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40000",
+  },
+  // Institusi Pengajian Tinggi (IPT)
+  {
+    label: "Universiti Malaya (UM)",
+    value: "um",
+    kategori: "IPT",
+    alamat1: "Jalan Universiti",
+    alamat2: "Kuala Lumpur",
+    alamat3: "50603 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50603",
+  },
+  {
+    label: "Universiti Teknologi MARA (UiTM)",
+    value: "uitm",
+    kategori: "IPT",
+    alamat1: "Jalan Ilmu",
+    alamat2: "Shah Alam",
+    alamat3: "40450 Shah Alam",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40450",
+  },
+  {
+    label: "Universiti Kebangsaan Malaysia (UKM)",
+    value: "ukm",
+    kategori: "IPT",
+    alamat1: "Jalan Bangi",
+    alamat2: "Bangi",
+    alamat3: "43600 Bangi",
+    daerah: "Hulu Langat",
+    bandar: "Bangi",
+    poskod: "43600",
+  },
+];
+
+const sekolahKebangsaanOptions = [
+  // Sekolah Rendah Kebangsaan (SRK)
+  {
+    label: "SK Taman Tun Dr Ismail",
+    value: "sk-ttdi",
+    kategori: "SRK",
+    alamat1: "Jalan TTD1, Taman Tun Dr Ismail",
+    alamat2: "Kuala Lumpur",
+    alamat3: "60000 Kuala Lumpur",
+    daerah: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "60000",
+  },
+  {
+    label: "SK Seksyen 7",
+    value: "sk-seksyen-7",
+    kategori: "SRK",
+    alamat1: "Jalan Seksyen 7",
+    alamat2: "Shah Alam",
+    alamat3: "40000 Shah Alam",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40000",
+  },
+  {
+    label: "SK Seksyen 13",
+    value: "sk-seksyen-13",
+    kategori: "SRK",
+    alamat1: "Jalan Seksyen 13",
+    alamat2: "Shah Alam",
+    alamat3: "40000 Shah Alam",
+    daerah: "Petaling",
+    bandar: "Shah Alam",
+    poskod: "40000",
+  },
+];
+
+// Combined school options
+const schoolOptions = [...sekolahAgamaOptions, ...sekolahKebangsaanOptions];
+
+// Education-related functions - following AS/UP/02 implementation
+const getFilteredSchoolOptions = (kategoriSekolah) => {
+  if (!kategoriSekolah) return schoolOptions;
+  return schoolOptions.filter((school) => school.kategori === kategoriSekolah);
 };
+
+
 
 const addEducationEntry = () => {
   if (!props.formData.education_entries) props.formData.education_entries = [];
@@ -553,13 +704,32 @@ const removeEducationEntry = (index) => {
   }
 };
 
-const onSelectSchool = (index, value) => {
-  if (
-    props.formData.education_entries &&
-    props.formData.education_entries[index]
-  ) {
-    props.formData.education_entries[index].nama_sekolah = value;
+const onSelectSchool = (index, selectedValue) => {
+  const selected = schoolOptions.find((s) => s.value === selectedValue);
+  if (!selected) return;
+  const entry = props.formData.education_entries[index];
+  if (!entry) return;
+
+  // Auto-check kategori sekolah based on selected school
+  entry.kategori_sekolah = selected.kategori;
+
+  // Auto-check sekolah rendah kategori if it's a religious school
+  if (selected.kategori === "SRA" || selected.kategori === "KAFA") {
+    entry.sekolah_rendah_kategori = ["agama"];
+  } else if (selected.kategori === "SRK" || selected.kategori === "SEK.MEN") {
+    entry.sekolah_rendah_kategori = ["kebangsaan"];
+  } else if (selected.kategori === "IPT") {
+    // IPT doesn't need sekolah rendah kategori
+    entry.sekolah_rendah_kategori = [];
   }
+
+  // Populate address fields
+  entry.alamat_sekolah_1 = selected.alamat1 || "";
+  entry.alamat_sekolah_2 = selected.alamat2 || "";
+  entry.alamat_sekolah_3 = selected.alamat3 || "";
+  entry.daerah_sekolah = selected.daerah || "";
+  entry.bandar_sekolah = selected.bandar || "";
+  entry.poskod_sekolah = selected.poskod || "";
 };
 
 // Emits

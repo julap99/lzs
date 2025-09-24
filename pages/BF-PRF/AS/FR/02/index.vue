@@ -23,7 +23,8 @@
               :key="step.id"
               class="text-center flex-1"
               :class="{ 'font-semibold': currentStepA >= step.id }"
-              @click="goToStepA(step.id)">
+              @click="goToStepA(step.id)"
+            >
               {{ step.label }}
             </div>
           </div>
@@ -34,7 +35,8 @@
                 currentStepA >= totalStepsA
                   ? 100
                   : (currentStepA / totalStepsA) * 100
-              }%`"></div>
+              }%`"
+            ></div>
           </div>
         </div>
 
@@ -42,59 +44,45 @@
         <PeribadiForms
           v-if="currentStepA == 1"
           :form-data="formData"
-          :isteri-list="isteriList"
-          :get-countries="getCountries"
           @next-step="nextStepA"
-          @save-step="handleSaveStepA1" />
+          @save-step="handleSaveStepA1"
+        />
 
         <!-- Section A Form - Step 2: Maklumat Alamat -->
         <AlamatForms
           v-if="currentStepA === 2"
           :form-data="formData"
-          :negeri-options="negeriOptions"
-          :daerah-options="daerahOptions"
-          :bandar-options="bandarOptions"
-          :poskod-options="poskodOptions"
-          :kariah-options="kariahOptions"
-          :jenis-id="jenisId"
           @next-step="nextStepA"
           @prev-step="prevStepA"
           @save-step="handleSaveStepA2"
-          @get-location="getLocation('addressInfo')" />
+        />
 
         <!-- Section A Form - Step 3: Maklumat Pendidikan -->
         <PendidikanForms
           v-if="currentStepA === 3"
           :form-data="formData"
-          :get-filtered-school-options="getFilteredSchoolOptions"
           @next-step="nextStepA"
           @prev-step="prevStepA"
           @save-step="handleSaveStepA3"
-          @add-education-entry="addEducationEntry"
-          @remove-education-entry="removeEducationEntry"
-          @select-school="onSelectSchool" />
+        />
 
         <!-- Section A Form - Step 4: Maklumat Islam -->
         <PengislamanForms
           v-if="currentStepA === 4"
           :form-data="formData"
-          :islamic-dates-validation="islamicDatesValidation"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA4" />
+          @save-step="handleSaveStepA4"
+        />
 
         <!-- Section A Form - Step 5: Maklumat Bank -->
         <PerbankanForms
           v-if="currentStepA === 5"
           :form-data="formData"
-          :bank-options="bankOptions"
-          :no-payment-reason-options="noPaymentReasonOptions"
-          :show-lain-lain-sebab-tiada-akaun="showLainLainSebabTiadaAkaun"
           @next-step="nextStepA"
           @prev-step="prevStepA"
           @save-step="handleSaveStepA5"
-          @add-bank-account="addBankAccount"
-          @remove-bank-account="removeBankAccount" />
+        />
 
         <!-- Section A Form - Step 6: Maklumat Kesihatan -->
         <KesihatanForms
@@ -102,7 +90,8 @@
           :form-data="formData"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA6" />
+          @save-step="handleSaveStepA6"
+        />
 
         <!-- Section A Form - Step 7: Kemahiran -->
         <KemahiranForms
@@ -110,16 +99,17 @@
           :form-data="formData"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA7" />
+          @save-step="handleSaveStepA7"
+        />
 
         <!-- Section A Form - Step 8: Maklumat Pinjaman Harta -->
         <PinjamanHartaForms
           v-if="currentStepA === 8"
           :form-data="formData"
-          :jenis-pinjaman-options="jenisPinjamanOptions"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA8" />
+          @save-step="handleSaveStepA8"
+        />
 
         <!-- Section A Form - Step 9: Maklumat Pemilikan Aset -->
         <PemilikanAsetForms
@@ -127,17 +117,17 @@
           :form-data="formData"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA9" />
+          @save-step="handleSaveStepA9"
+        />
 
         <!-- Section A Form - Step 10: Maklumat Pekerjaan -->
         <PekerjaanForms
           v-if="currentStepA === 10"
           :form-data="formData"
-          :jenis-id="jenisId"
-          :show-lain-lain-sektor="showLainLainSektor"
           @next-step="nextStepA"
           @prev-step="prevStepA"
-          @save-step="handleSaveStepA10" />
+          @save-step="handleSaveStepA10"
+        />
 
         <!-- Section A Form - Step 11: Maklumat Pendapatan & Perbelanjaan -->
         <PendapatanPerbelanjaanForms
@@ -146,8 +136,7 @@
           @next-step="nextStepA"
           @prev-step="prevStepA"
           @save-step="handleSaveStepA11"
-          @add-pendapatan-lain-lain="addPendapatanLainLain"
-          @remove-pendapatan-lain-lain="removePendapatanLainLain" />
+        />
       </template>
     </rs-card>
 
@@ -170,16 +159,19 @@
               :key="step.id"
               class="text-center flex-1 cursor-pointer relative group"
               :class="{ 'font-semibold': currentStepB >= step.id }"
-              @click="goToStepB(step.id)">
+              @click="goToStepB(step.id)"
+            >
               {{ step.label }}
               <!-- Tooltip for Pengesahan Pendapatan -->
               <div
                 v-if="step.tooltip"
-                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 max-w-xs">
+                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 max-w-xs"
+              >
                 {{ step.tooltip }}
                 <!-- Arrow -->
                 <div
-                  class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                  class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"
+                ></div>
               </div>
             </div>
           </div>
@@ -190,7 +182,8 @@
                 currentStepB >= filteredStepsB.length
                   ? 100
                   : (currentStepB / filteredStepsB.length) * 100
-              }%`"></div>
+              }%`"
+            ></div>
           </div>
         </div>
 
@@ -198,7 +191,8 @@
         <!-- Tanggungan Selector and Management (Visible only during Steps 1-9) -->
         <div
           v-if="currentStepB >= 1 && currentStepB <= 9"
-          class="mb-6 p-4 bg-gray-50 rounded-lg">
+          class="mb-6 p-4 bg-gray-50 rounded-lg"
+        >
           <div class="flex justify-between items-center mb-4">
             <h4 class="text-lg font-semibold">Senarai Tanggungan</h4>
             <rs-button
@@ -206,7 +200,8 @@
               variant="primary"
               @click="addTanggungan"
               class="text-sm"
-              :disabled="tanggunganList.length >= 3">
+              :disabled="tanggunganList.length >= 3"
+            >
               + Tambah Tanggungan
               {{ tanggunganList.length >= 3 ? "(Maksimum 3)" : "" }}
             </rs-button>
@@ -215,7 +210,8 @@
           <!-- Tanggungan Cards Display -->
           <div
             v-if="tanggunganList.length > 0"
-            class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            class="grid grid-cols-1 md:grid-cols-3 gap-4"
+          >
             <div
               v-for="(tanggungan, index) in tanggunganList"
               :key="tanggungan.id"
@@ -233,7 +229,8 @@
                   currentTanggunganIndex !== index &&
                   !isTanggunganComplete(tanggungan),
               }"
-              @click="selectTanggungan(index)">
+              @click="selectTanggungan(index)"
+            >
               <!-- Card Header -->
               <div class="flex justify-between items-start mb-3">
                 <div class="flex-1 text-center">
@@ -256,7 +253,8 @@
                       isTanggunganComplete(tanggungan),
                     'bg-yellow-100 text-yellow-800':
                       !isTanggunganComplete(tanggungan),
-                  }">
+                  }"
+                >
                   {{
                     isTanggunganComplete(tanggungan)
                       ? "Lengkap"
@@ -285,7 +283,8 @@
               <div class="flex gap-2 mt-4">
                 <button
                   @click.stop="selectTanggungan(index)"
-                  class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
+                  class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                >
                   {{
                     currentTanggunganIndex === index ? "Sedang Edit" : "Edit"
                   }}
@@ -330,7 +329,8 @@
           :calculate-total-tanggungan="calculateTotalTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB1" />
+          @save-step="handleSaveStepB1"
+        />
 
         <!-- Section B Form - Step 2: Maklumat Islam Tanggungan -->
         <TanggunganPengislamanForms
@@ -338,7 +338,8 @@
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB2" />
+          @save-step="handleSaveStepB2"
+        />
 
         <!-- Section B Form - Step 3: Maklumat Bank Tanggungan -->
         <TanggunganPerbankanForms
@@ -356,7 +357,8 @@
           @add-bank-account-tanggungan="addBankAccountTanggungan"
           @remove-bank-account-tanggungan="removeBankAccountTanggungan"
           @add-pengenalan-id-tanggungan="addPengenalanIdTanggungan"
-          @remove-pengenalan-id-tanggungan="removePengenalanIdTanggungan" />
+          @remove-pengenalan-id-tanggungan="removePengenalanIdTanggungan"
+        />
 
         <!-- Section B Form - Step 4: Maklumat Pendidikan Tanggungan -->
         <TanggunganPendidikanForms
@@ -368,7 +370,8 @@
           @save-step="handleSaveStepB4"
           @add-education-entry-tanggungan="addEducationEntryTanggungan"
           @remove-education-entry-tanggungan="removeEducationEntryTanggungan"
-          @on-select-school-tanggungan="onSelectSchoolTanggungan" />
+          @on-select-school-tanggungan="onSelectSchoolTanggungan"
+        />
 
         <!-- Section B Form - Step 5: Maklumat Kesihatan Tanggungan -->
         <TanggunganKesihatanForms
@@ -376,7 +379,8 @@
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB5" />
+          @save-step="handleSaveStepB5"
+        />
 
         <!-- Section B Form - Step 6: Maklumat Kemahiran Tanggungan -->
         <TanggunganKemahiranForms
@@ -384,7 +388,8 @@
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB6" />
+          @save-step="handleSaveStepB6"
+        />
 
         <!-- Section B Form - Step 7: Maklumat Pekerjaan Tanggungan -->
         <TanggunganPekerjaanForms
@@ -393,7 +398,8 @@
           :show-lain-lain-sektor-tanggungan="showLainLainSektorTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB7" />
+          @save-step="handleSaveStepB7"
+        />
 
         <!-- Section B Form - Step 8: Maklumat Pemilikan Aset (Tanggungan) -->
         <TanggunganPemilikanAsetForms
@@ -401,7 +407,8 @@
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB8" />
+          @save-step="handleSaveStepB8"
+        />
 
         <!-- Section B Form - Step 9: Maklumat Pinjaman Harta (Tanggungan) -->
         <TanggunganPinjamanHartaForms
@@ -410,7 +417,8 @@
           :jenis-pinjaman-options="jenisPinjamanOptions"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB9" />
+          @save-step="handleSaveStepB9"
+        />
 
         <!-- Section B Form - Step 10: Pengesahan -->
         <TanggunganPengesahanForms
@@ -423,7 +431,8 @@
           @next-step="nextStepB"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB10"
-          @update:dibantu-penolong-amil="dibantuPenolongAmil = $event" />
+          @update:dibantu-penolong-amil="dibantuPenolongAmil = $event"
+        />
 
         <!-- Section B Form - Step 11: Pengesahan Pendapatan -->
         <TanggunganPengesahanPendapatanForms
@@ -431,7 +440,8 @@
           :form-data="formData"
           @next-step="nextStepB"
           @prev-step="prevStepB"
-          @save-step="handleSaveStepB11" />
+          @save-step="handleSaveStepB11"
+        />
 
         <!-- Section B Form - Step 12: Pengesahan Bermastautin -->
         <TanggunganPengesahanBermastauntinForms
@@ -442,14 +452,16 @@
           @next-step="nextStepB"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB12"
-          @download-document="downloadDocument" />
+          @download-document="downloadDocument"
+        />
 
         <!-- Section B Form - Step 13: Pegawai Pendaftar -->
         <TanggunganPegawaiPendaftarForms
           v-if="currentStepB === 13"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB13"
-          @submit-form="handleSubmit" />
+          @submit-form="handleSubmit"
+        />
       </template>
     </rs-card>
   </div>
@@ -579,14 +591,6 @@ const filteredStepsB = computed(() => {
 
   return stepsB;
 });
-
-const getCountries = {
-  Malaysia: "Malaysia",
-  Singapore: "Singapore",
-  Indonesia: "Indonesia",
-  Thailand: "Thailand",
-  Brunei: "Brunei",
-};
 
 // Mock data for Sekolah Agama
 const sekolahAgamaOptions = [
@@ -794,40 +798,13 @@ const getFilteredSchoolOptions = (kategoriSekolah) => {
 // ============================================================================
 // FORM STATE VARIABLES
 // ============================================================================
-// Health Status Variables
-const healthStatus = ref("");
-const healthStatusTanggungan = ref("");
 
 // Relationship Variables
 const dibantuPenolongAmil = ref("");
-const hubunganKakitanganLZS = ref("");
-const hubunganPAK = ref("");
-const hubunganPemohon = ref("");
-
-// ID Type Variables
-const jenisId = ref(null);
-const jenisIdTanggungan = ref("");
-const agama = ref("");
-const bangsa = ref("");
-
-// Islamic Information Variables
-const tarikhMasukIslam = ref(null);
-const tarikhMasukIslamTanggungan = ref(null);
-// Polygamy Variables
-const statusPoligami = ref(null);
-const isteriList = ref([]);
-// Payment Variables
-const caraPembayaran = ref(null);
-const paymentMethod = ref("");
 
 // Modal Variables
 const showKursusModal = ref(false);
 const selectedKelas = ref(null);
-
-// Employment form reactive variables
-const employmentStatus = ref("");
-const employmentSector = ref("");
-const employmentIncomeSource = ref([]);
 
 // Tanggungan Management Variables
 const currentTanggunganIndex = ref(0);
@@ -1112,24 +1089,6 @@ onMounted(() => {
 // OPTIONS DATA
 // ============================================================================
 
-// Jenis Pinjaman Options
-const jenisPinjamanOptions = [
-  { label: "Pinjaman Peribadi", value: "pinjaman-peribadi" },
-  { label: "Pinjaman Kereta", value: "pinjaman-kereta" },
-  { label: "Pinjaman Rumah", value: "pinjaman-rumah" },
-  { label: "Pinjaman Pendidikan", value: "pinjaman-pendidikan" },
-  { label: "Pinjaman Perniagaan", value: "pinjaman-perniagaan" },
-  { label: "Pinjaman Pertanian", value: "pinjaman-pertanian" },
-  { label: "Pinjaman Koperasi", value: "pinjaman-koperasi" },
-  { label: "Pinjaman Islamik", value: "pinjaman-islamik" },
-];
-
-// Payment Method Options for Tanggungan (keeping original)
-const paymentMethodOptions = [
-  { label: "Akaun", value: "akaun" },
-  { label: "Tiada", value: "tiada" },
-];
-
 // No Payment Reason Options
 const noPaymentReasonOptions = [
   { label: "Bukan Warganegara", value: "bukan-warganegara" },
@@ -1171,65 +1130,6 @@ const daerahOptions = [
   { label: "Petaling", value: "petaling" },
   { label: "Sabak Bernam", value: "sabak-bernam" },
   { label: "Sepang", value: "sepang" },
-];
-
-// City Options based on Districts
-const bandarOptions = [
-  { label: "Shah Alam", value: "shah-alam", daerah: "petaling" },
-  { label: "Petaling Jaya", value: "petaling-jaya", daerah: "petaling" },
-  { label: "Subang Jaya", value: "subang-jaya", daerah: "petaling" },
-  { label: "Klang", value: "klang", daerah: "klang" },
-  { label: "Port Klang", value: "port-klang", daerah: "klang" },
-  { label: "Kajang", value: "kajang", daerah: "hulu-langat" },
-  { label: "Bangi", value: "bangi", daerah: "hulu-langat" },
-  { label: "Hulu Langat", value: "hulu-langat", daerah: "hulu-langat" },
-  {
-    label: "Kuala Selangor",
-    value: "kuala-selangor",
-    daerah: "kuala-selangor",
-  },
-  {
-    label: "Tanjung Karang",
-    value: "tanjung-karang",
-    daerah: "kuala-selangor",
-  },
-  { label: "Sepang", value: "sepang", daerah: "sepang" },
-  { label: "Cyberjaya", value: "cyberjaya", daerah: "sepang" },
-  { label: "Putrajaya", value: "putrajaya", daerah: "sepang" },
-  { label: "Gombak", value: "gombak", daerah: "gombak" },
-  { label: "Rawang", value: "rawang", daerah: "gombak" },
-  { label: "Hulu Selangor", value: "hulu-selangor", daerah: "hulu-selangor" },
-  {
-    label: "Kuala Kubu Bharu",
-    value: "kuala-kubu-bharu",
-    daerah: "hulu-selangor",
-  },
-  { label: "Kuala Langat", value: "kuala-langat", daerah: "kuala-langat" },
-  { label: "Banting", value: "banting", daerah: "kuala-langat" },
-  { label: "Sabak Bernam", value: "sabak-bernam", daerah: "sabak-bernam" },
-  { label: "Sekinchan", value: "sekinchan", daerah: "sabak-bernam" },
-];
-
-// Postal Code Options based on Cities
-const poskodOptions = [
-  { label: "40000", value: "40000", bandar: "shah-alam" },
-  { label: "41000", value: "41000", bandar: "klang" },
-  { label: "42000", value: "42000", bandar: "port-klang" },
-  { label: "43000", value: "43000", bandar: "kajang" },
-  { label: "44000", value: "44000", bandar: "bangi" },
-  { label: "45000", value: "45000", bandar: "kuala-selangor" },
-  { label: "46000", value: "46000", bandar: "tanjung-karang" },
-  { label: "47000", value: "47000", bandar: "sepang" },
-  { label: "48000", value: "48000", bandar: "cyberjaya" },
-  { label: "49000", value: "49000", bandar: "putrajaya" },
-  { label: "50000", value: "50000", bandar: "gombak" },
-  { label: "51000", value: "51000", bandar: "rawang" },
-  { label: "52000", value: "52000", bandar: "hulu-selangor" },
-  { label: "53000", value: "53000", bandar: "kuala-kubu-bharu" },
-  { label: "54000", value: "54000", bandar: "kuala-langat" },
-  { label: "55000", value: "55000", bandar: "banting" },
-  { label: "56000", value: "56000", bandar: "sabak-bernam" },
-  { label: "57000", value: "57000", bandar: "sekinchan" },
 ];
 
 // Mosque Parish Options
@@ -1305,76 +1205,6 @@ const pakOfficersByKariah = {
     { label: "Ustaz Ismail bin Hassan", value: "ustaz-ismail-hassan" },
   ],
 };
-
-// Negeri Options
-const negeriOptions = [
-  { label: "Selangor", value: "selangor" },
-  { label: "Johor", value: "johor" },
-  { label: "Kedah", value: "kedah" },
-  { label: "Kelantan", value: "kelantan" },
-  { label: "Melaka", value: "melaka" },
-  { label: "Negeri Sembilan", value: "negeri-sembilan" },
-  { label: "Pahang", value: "pahang" },
-  { label: "Perak", value: "perak" },
-  { label: "Perlis", value: "perlis" },
-  { label: "Sabah", value: "sabah" },
-  { label: "Sarawak", value: "sarawak" },
-  { label: "Terengganu", value: "terengganu" },
-];
-
-// KFAM Classes List Data
-const kfamClassesList = ref([
-  {
-    id: 1,
-    nama_pengajar: "Ustaz Ahmad bin Abdullah",
-    kelulusan: "Sarjana Syariah, UIAM",
-    no_telefon: "012-345 6789",
-    tempat_mengajar: "Masjid Al-Hidayah",
-    alamat_tempat: "No. 123, Jalan Utama, Taman Seri",
-    daerah: "Petaling Jaya",
-    bahasa_penghantar: "Bahasa Melayu",
-  },
-  {
-    id: 2,
-    nama_pengajar: "Ustazah Siti binti Mohamed",
-    kelulusan: "Sarjana Usuluddin, UM",
-    no_telefon: "012-987 6543",
-    tempat_mengajar: "Surau Al-Iman",
-    alamat_tempat: "No. 456, Jalan Kedua, Taman Damai",
-    daerah: "Shah Alam",
-    bahasa_penghantar: "Bahasa Melayu",
-  },
-  {
-    id: 3,
-    nama_pengajar: "Ustaz Mohd Ali bin Hassan",
-    kelulusan: "Sarjana Fiqh, UKM",
-    no_telefon: "012-555 1234",
-    tempat_mengajar: "Masjid Al-Rahman",
-    alamat_tempat: "No. 789, Jalan Ketiga, Taman Harmoni",
-    daerah: "Klang",
-    bahasa_penghantar: "Bahasa Arab",
-  },
-  {
-    id: 4,
-    nama_pengajar: "Ustazah Nurul Huda binti Ismail",
-    kelulusan: "Sarjana Tafsir, UIA",
-    no_telefon: "012-777 8888",
-    tempat_mengajar: "Surau Al-Nur",
-    alamat_tempat: "No. 321, Jalan Keempat, Taman Ceria",
-    daerah: "Subang Jaya",
-    bahasa_penghantar: "Bahasa Melayu",
-  },
-  {
-    id: 5,
-    nama_pengajar: "Ustaz Abdul Rahman bin Omar",
-    kelulusan: "Sarjana Hadith, USM",
-    no_telefon: "012-999 0000",
-    tempat_mengajar: "Masjid Al-Amin",
-    alamat_tempat: "No. 654, Jalan Kelima, Taman Indah",
-    daerah: "Kajang",
-    bahasa_penghantar: "Bahasa Arab",
-  },
-]);
 
 // ============================================================================
 // COMPUTED PROPERTIES
@@ -1859,6 +1689,7 @@ watch(
     }
   }
 );
+
 watch(
   () => formData.value.tarikh_lahir,
   (newVal) => {
@@ -1869,15 +1700,6 @@ watch(
     }
   },
   { immediate: true }
-);
-// Watch formData.bilangan_isteri to update both isteriList and formData.isteri_list
-watch(
-  () => formData.value.bilangan_isteri,
-  (newVal) => {
-    const count = parseInt(newVal) || 0;
-    isteriList.value = Array(count).fill({});
-    formData.value.isteri_list = Array(count).fill({ no_kp: "", nama: "" });
-  }
 );
 
 // Watch for kategori sekolah changes to clear nama sekolah selection
@@ -1907,14 +1729,6 @@ watch(
   },
   { deep: true }
 );
-
-watch(statusPoligami, (newVal) => {
-  if (newVal !== "ya") {
-    isteriList.value = [];
-    formData.value.bilangan_isteri = "";
-    formData.value.isteri_list = [];
-  }
-});
 
 watch(
   () => formData.value.nama_bank,
@@ -2473,21 +2287,6 @@ const addTanggungan = (showNotification = true) => {
   }
 };
 
-const removeTanggungan = (index) => {
-  if (tanggunganList.value.length > 1) {
-    tanggunganList.value.splice(index, 1);
-    formData.value.tanggungan = tanggunganList.value;
-
-    if (currentTanggunganIndex.value >= tanggunganList.value.length) {
-      currentTanggunganIndex.value = tanggunganList.value.length - 1;
-    }
-
-    toast.success("Tanggungan berjaya dibuang");
-  } else {
-    toast.error("Sekurang-kurangnya satu tanggungan diperlukan");
-  }
-};
-
 const selectTanggungan = (index) => {
   // Save current tanggungan data before switching
   if (getCurrentTanggungan()) {
@@ -2521,10 +2320,6 @@ const selectTanggungan = (index) => {
   );
 };
 
-const toggleTanggunganSummary = () => {
-  showTanggunganSummary.value = !showTanggunganSummary.value;
-};
-
 // Helper functions for simplified interface
 const isTanggunganComplete = (tanggungan) => {
   return (
@@ -2542,27 +2337,6 @@ const getCompletedCount = () => {
 
 const getIncompleteCount = () => {
   return tanggunganList.value.filter((t) => !isTanggunganComplete(t)).length;
-};
-
-const getCompletionPercentage = () => {
-  if (tanggunganList.value.length === 0) return 0;
-  return Math.round((getCompletedCount() / tanggunganList.value.length) * 100);
-};
-const getTanggunganSummary = () => {
-  if (tanggunganList.value.length === 3) {
-    return {
-      total: 3,
-      completed: getCompletedCount(),
-      incomplete: getIncompleteCount(),
-      list: tanggunganList.value.map((t, index) => ({
-        number: index + 1,
-        name: t.nama_tanggungan || "Nama belum diisi",
-        relationship: t.hubungan_pemohon || "Hubungan belum diisi",
-        status: isTanggunganComplete(t) ? "Lengkap" : "Tidak Lengkap",
-      })),
-    };
-  }
-  return null;
 };
 
 const getCurrentTanggungan = () => {
@@ -3633,35 +3407,6 @@ const addEducationEntry = () => {
   });
 };
 
-const removeEducationEntry = (index) => {
-  formData.value.education_entries.splice(index, 1);
-};
-
-const onSelectSchool = (index, selectedValue) => {
-  const selected = schoolOptions.find((s) => s.value === selectedValue);
-  if (!selected) return;
-  const entry = formData.value.education_entries[index];
-  if (!entry) return;
-
-  // Auto-check kategori sekolah based on selected school
-  entry.kategori_sekolah = selected.kategori;
-
-  // Auto-check sekolah rendah kategori if it's a religious school
-  if (selected.kategori === "SRA" || selected.kategori === "KAFA") {
-    entry.sekolah_rendah_kategori = ["agama"];
-  } else if (selected.kategori === "SRK" || selected.kategori === "SEK.MEN") {
-    entry.sekolah_rendah_kategori = ["kebangsaan"];
-  }
-
-  // Populate address fields
-  entry.alamat_sekolah_1 = selected.alamat1 || "";
-  entry.alamat_sekolah_2 = selected.alamat2 || "";
-  entry.alamat_sekolah_3 = selected.alamat3 || "";
-  entry.daerah_sekolah = selected.daerah || "";
-  entry.bandar_sekolah = selected.bandar || "";
-  entry.poskod_sekolah = selected.poskod || "";
-};
-
 // ============================================================================
 // TANGGUNGAN EDUCATION ENTRIES MANAGEMENT FUNCTIONS
 // ============================================================================
@@ -3777,71 +3522,6 @@ const removePengenalanIdTanggungan = (accountIndex, idIndex) => {
   if (account && account.pengenalan_ids) {
     account.pengenalan_ids.splice(idIndex, 1);
   }
-};
-
-// ============================================================================
-// LOCATION & UTILITY FUNCTIONS
-// ============================================================================
-const getLocation = (field) => {
-  if (field === "addressInfo") {
-    formData.value.addressInfo.geolokasi = "Lokasi semasa";
-  } else {
-    formData.value[field].geolokasi = "Lokasi semasa";
-  }
-  toast.success("Lokasi berjaya diperoleh!");
-};
-
-// ============================================================================
-// KFAM MODAL FUNCTIONS
-// ============================================================================
-const openKursusModal = () => {
-  if (!formData.value.addressInfo.location && !selectedDaerah.value) {
-    toast.error("Sila pilih lokasi atau daerah terlebih dahulu");
-    return;
-  }
-  showKursusModal.value = true;
-  selectedKelas.value = null;
-};
-
-const closeKursusModal = () => {
-  showKursusModal.value = false;
-  selectedKelas.value = null;
-};
-
-const selectKelas = (kelas) => {
-  selectedKelas.value = kelas;
-};
-
-const confirmKelasSelection = () => {
-  if (selectedKelas.value) {
-    formData.value.addressInfo.kursus_terpilih = `${selectedKelas.value.nama_pengajar} - ${selectedKelas.value.tempat_mengajar}`;
-    formData.value.addressInfo.selectedKelas = selectedKelas.value;
-    toast.success("Kelas KFAM berjaya dipilih!");
-    closeKursusModal();
-  }
-};
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
-const getKariahLabel = (value) => {
-  const kariah = kariahOptions.find((k) => k.value === value);
-  return kariah ? kariah.label : "";
-};
-
-const getPakOfficerLabel = (value) => {
-  // Search through all PAK officers to find the matching one
-  for (const kariah in pakOfficersByKariah) {
-    const officer = pakOfficersByKariah[kariah].find((o) => o.value === value);
-    if (officer) return officer.label;
-  }
-  return "";
-};
-
-const downloadDocument = (doc) => {
-  // This would typically trigger a download
-  console.log("Downloading document:", doc.name);
-  toast.success(`Muat turun ${doc.name} bermula`);
 };
 </script>
 

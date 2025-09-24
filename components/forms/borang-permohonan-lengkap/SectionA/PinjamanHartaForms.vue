@@ -147,11 +147,14 @@ const props = defineProps({
 
 // Loan type options - moved from parent component
 const jenisPinjamanOptions = [
-  { label: "Perumahan", value: "perumahan" },
-  { label: "Kenderaan", value: "kenderaan" },
-  { label: "Peribadi", value: "peribadi" },
-  { label: "Pendidikan", value: "pendidikan" },
-  { label: "Lain-lain", value: "lain-lain" },
+  { label: "Pinjaman Peribadi", value: "pinjaman-peribadi" },
+  { label: "Pinjaman Kereta", value: "pinjaman-kereta" },
+  { label: "Pinjaman Rumah", value: "pinjaman-rumah" },
+  { label: "Pinjaman Pendidikan", value: "pinjaman-pendidikan" },
+  { label: "Pinjaman Perniagaan", value: "pinjaman-perniagaan" },
+  { label: "Pinjaman Pertanian", value: "pinjaman-pertanian" },
+  { label: "Pinjaman Koperasi", value: "pinjaman-koperasi" },
+  { label: "Pinjaman Islamik", value: "pinjaman-islamik" },
 ];
 
 // Emits
