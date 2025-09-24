@@ -297,7 +297,7 @@ onMounted(() => {
 
 /* ----------------------------- UI helpers ---------------------------- */
 const breadcrumb = ref([
-  { name: "Profiling", type: "link", path: "/BF-PRF/KF/SHI/admin" },
+  { name: "Profiling", type: "link", path: "/BF-PRF/KF/SHI/01_01" },
   { name: "Konfigurasi Status Household / Individu", type: "link", path: "/BF-PRF/KF/SHI/01_01/" },
   { name: "Kemaskini", type: "current", path: "/BF-PRF/KF/SHI/01_03" },
 ]);
