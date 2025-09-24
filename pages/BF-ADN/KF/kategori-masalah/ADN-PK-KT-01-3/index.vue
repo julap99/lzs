@@ -2,83 +2,75 @@
   <div>
     <layouts-breadcrumb :items="breadcrumb" />
 
-    <!-- Butiran Konfigurasi Kategori Masalah Semasa -->
+    <!-- BUTIRAN SEMASA -->
     <rs-card class="mt-4">
       <template #header>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <Icon name="ic:outline-info" class="mr-2" />
-            Butiran Konfigurasi Kategori Masalah Semasa
-          </div>
-          <rs-button variant="secondary" @click="goBack">Kembali</rs-button>
-        </div>
+        <h2 class="text-lg font-semibold">Butiran Konfigurasi Kategori Masalah Semasa</h2>
       </template>
 
       <template #body>
-        <div class="p-2">
-          <h2 class="text-2xl font-bold mb-4">{{ current?.namaMasalah ?? '-' }}</h2>
+        <div v-if="data" class="p-4 md:p-6 bg-white border-l-4 border-blue-600 rounded">
+          <div class="text-2xl font-extrabold mb-4">{{ data.namaMasalah }}</div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Tahap Aduan -->
             <div>
-              <div class="text-sm text-gray-500">Tahap Aduan:</div>
-              <div class="mt-1">
-                <rs-badge :variant="tahapVariant(current?.tahapAduan)">
-                  {{ labelTahap(current?.tahapAduan) }}
-                </rs-badge>
-              </div>
+              <div class="text-sm font-semibold">Tahap Aduan:</div>
+              <div class="text-gray-800">{{ tahapDisplay(data.tahapAduan) }}</div>
             </div>
-
-            <!-- Nama Kategori -->
             <div>
-              <div class="text-sm text-gray-500">Nama Kategori:</div>
-              <div class="mt-1 font-semibold">
-                {{ current?.namaMasalah ?? '-' }}
-              </div>
+              <div class="text-sm font-semibold">Nama Kategori:</div>
+              <div class="text-gray-800">{{ data.namaMasalah }}</div>
             </div>
-
-            <!-- Status -->
             <div>
-              <div class="text-sm text-gray-500">Status:</div>
-              <div class="mt-1">
-                <rs-badge :variant="statusVariant(current?.status)">
-                  {{ current?.status ?? '-' }}
-                </rs-badge>
-              </div>
+              <div class="text-sm font-semibold">Status:</div>
+              <rs-badge :variant="getStatusVariant(data.status)" class="!px-3 !py-1 !rounded-full">
+                {{ data.status }}
+              </rs-badge>
             </div>
           </div>
+        </div>
+
+        <div v-else class="py-16 text-center">
+          <div class="text-lg font-semibold mb-2">Rekod tidak dijumpai</div>
+          <div class="text-gray-600">Semak semula pautan atau kembali ke senarai.</div>
         </div>
       </template>
     </rs-card>
 
-    <!-- Senarai Perubahan (Mock) -->
+    <!-- SENARAI PERUBAHAN -->
     <rs-card class="mt-6">
       <template #header>
-        <div class="flex items-center">
-          <Icon name="ic:outline-list" class="mr-2" />
-          Senarai Perubahan
-        </div>
+        <h2 class="text-lg font-semibold">Senarai Perubahan</h2>
       </template>
 
       <template #body>
         <rs-table
-          :data="changeRows"
-          :columns="changeColumns"
-          :advanced="true"
-          :showSearch="true"
-          :showFilter="true"
+          :data="rows"
+          :columns="tableColumns"
+          :advanced="false"
+          :showSearch="false"
+          :showFilter="false"
           :showNoColumn="false"
           :pageSize="10"
           class="table-wrapper"
         >
+          <!-- Badge kolum Status -->
           <template #status="{ text }">
-            <rs-badge :variant="statusVariant(text)">{{ text }}</rs-badge>
+            <rs-badge :variant="getStatusVariant(text)" class="!px-3 !py-1 !rounded-full">
+              {{ text }}
+            </rs-badge>
           </template>
+
+          <!-- Badge kolum Status Permohonan -->
           <template #statusPermohonan="{ text }">
-            <rs-badge :variant="text === 'Diluluskan' ? 'success' : 'warning'">{{ text }}</rs-badge>
+            <rs-badge :variant="text === 'Diluluskan' ? 'success' : 'warning'" class="!px-3 !py-1 !rounded-full">
+              {{ text }}
+            </rs-badge>
           </template>
+
+          <!-- Format Tahap Aduan -->
           <template #tahapAduan="{ text }">
-            <rs-badge :variant="tahapVariant(text)">{{ labelTahap(text) }}</rs-badge>
+            {{ tahapDisplay(text) }}
           </template>
         </rs-table>
       </template>
@@ -93,111 +85,74 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 
-/** Breadcrumb */
-const breadcrumb = computed(() => ([
+const breadcrumb = [
   { name: 'Mengurus Konfigurasi', type: 'link', path: '/BF-ADN/KF' },
   { name: 'Senarai Kategori Masalah', type: 'link', path: '/BF-ADN/KF/kategori-masalah' },
-  { name: 'Butiran Kategori Masalah', type: 'text', path: '/BF-ADN/KF/kategori-masalah/ADN-PK-KT-01-3' },
-]))
-
-/** Mock sumber data (sementara) */
-const list = [
-  { id: 1, tahapAduan: 'Hijau',  namaMasalah: 'Masalah Sosial Am',       status: 'Tidak Aktif' },
-  { id: 2, tahapAduan: 'Kuning', namaMasalah: 'Kurang Sumber Pendapatan', status: 'Aktif' },
-  { id: 3, tahapAduan: 'Merah',  namaMasalah: 'Tiada Tempat Tinggal',     status: 'Aktif' },
+  { name: 'Butiran Kategori', type: 'text', path: '/BF-ADN/KF/kategori-masalah/ADN-PK-KT-01-3' },
 ]
 
-/** Ambil ID dari params (fallback ke query) */
+// ===== Mock utama (ikut senarai kamu) =====
+const mockById = {
+  1: { id: 1, namaMasalah: 'Masalah Sosial Am',        tahapAduan: 'Hijau',  status: 'Tidak Aktif' },
+  2: { id: 2, namaMasalah: 'Kurang Sumber Pendapatan', tahapAduan: 'Kuning', status: 'Aktif' },
+  3: { id: 3, namaMasalah: 'Tiada Tempat Tinggal',     tahapAduan: 'Merah',  status: 'Aktif' },
+}
+
+// ===== Ambil kategoriId dari query/params (robust) =====
 const kategoriId = computed(() => {
-  const p = route.params.kategoriId ?? route.query.kategoriId
-  const n = Number(p)
+  const src = route.query.kategoriId ?? route.params.kategoriId ?? route.query.id ?? route.params.id
+  const raw = Array.isArray(src) ? src[0] : src
+  const n = Number(raw)
   return Number.isFinite(n) ? n : null
 })
 
-/** Rekod semasa berdasarkan ID */
-const current = computed(() => list.find(x => x.id === kategoriId.value))
+const data = computed(() => (kategoriId.value != null ? mockById[kategoriId.value] : null))
 
-/** Helpers untuk badge label/variant */
-function tahapVariant(t) {
-  if (t === 'Merah')  return 'danger'
-  if (t === 'Kuning') return 'warning'
-  if (t === 'Hijau')  return 'success'
-  return 'secondary'
+// ===== Senarai perubahan (mock ikut contoh UI) =====
+const changeHistoryById = {
+  1: [
+    { no: '1',           kategoriMasalah: 'Masalah Sosial Am',   tahapAduan: 'Hijau',  status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_X', tarikhKemaskini: '2025-09-10', catatan: 'Semakan semula skop masalah', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-12' },
+    { no: 'KM-V1-0002',  kategoriMasalah: 'Isu Sosial Ringan',   tahapAduan: 'Hijau',  status: 'Aktif',       dikemaskiniOleh: 'Eksekutif_Y', tarikhKemaskini: '2025-09-06', catatan: 'Aktifkan sementara',           statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-08' },
+    { no: 'KM-V1-0003',  kategoriMasalah: 'Persekitaran Tidak Sihat', tahapAduan: 'Kuning', status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_Z', tarikhKemaskini: '2025-08-30', catatan: 'Nonaktif untuk semakan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-01' },
+  ],
+  2: [
+    { no: '1',           kategoriMasalah: 'Kurang Sumber Pendapatan', tahapAduan: 'Kuning', status: 'Aktif', dikemaskiniOleh: 'Eksekutif_A', tarikhKemaskini: '2025-09-10', catatan: 'Penetapan kadar bantuan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-12' },
+    { no: 'KM-V1-0002',  kategoriMasalah: 'Tiada Makanan',            tahapAduan: 'Merah',  status: 'Aktif', dikemaskiniOleh: 'Eksekutif_B', tarikhKemaskini: '2025-09-06', catatan: 'Tambah label kritikal',  statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-08' },
+    { no: 'KM-V1-0003',  kategoriMasalah: 'Pekerjaan Tidak Stabil',   tahapAduan: 'Kuning', status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_C', tarikhKemaskini: '2025-08-30', catatan: 'Dinonaktifkan sementara', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-01' },
+  ],
+  3: [
+    { no: '1',           kategoriMasalah: 'Tiada Tempat Tinggal', tahapAduan: 'Merah',  status: 'Aktif',       dikemaskiniOleh: 'Eksekutif_A', tarikhKemaskini: '2025-09-10', catatan: 'Kemaskini tahap aduan dan penerangan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-12' },
+    { no: 'KM-V1-0002',  kategoriMasalah: 'Tiada Makanan',        tahapAduan: 'Merah',  status: 'Aktif',       dikemaskiniOleh: 'Eksekutif_B', tarikhKemaskini: '2025-09-06', catatan: 'Penetapan semula label kategori',     statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-08' },
+    { no: 'KM-V1-0003',  kategoriMasalah: 'Kekurangan Sumber Pendapatan', tahapAduan: 'Kuning', status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_C', tarikhKemaskini: '2025-08-30', catatan: 'Dinonaktifkan sementara untuk semakan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-01' },
+  ],
 }
-function statusVariant(s) {
-  if (s === 'Aktif') return 'success'
-  if (s === 'Tidak Aktif') return 'danger'
-  return 'secondary'
-}
-function labelTahap(t) {
+
+const rows = computed(() => (data.value ? changeHistoryById[data.value.id] : []))
+
+// Definisi kolum jadual
+const tableColumns = [
+  { key: 'no',               label: '#',                 sortable: false },
+  { key: 'kategoriMasalah',  label: 'Kategori Masalah',  sortable: true  },
+  { key: 'tahapAduan',       label: 'Tahap Aduan',       sortable: true  },
+  { key: 'status',           label: 'Status',            sortable: true  },
+  { key: 'dikemaskiniOleh',  label: 'Dikemaskini Oleh',  sortable: true  },
+  { key: 'tarikhKemaskini',  label: 'Tarikh Kemaskini',  sortable: true  },
+  { key: 'catatan',          label: 'Catatan Kemaskini', sortable: false },
+  { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true  },
+  { key: 'diluluskanOleh',   label: 'Diluluskan Oleh',   sortable: true  },
+  { key: 'tarikhKelulusan',  label: 'Tarikh Kelulusan',  sortable: true  },
+]
+
+// Helpers
+function tahapDisplay(t) {
   if (t === 'Merah')  return 'Kelas 1 (Merah)'
   if (t === 'Kuning') return 'Kelas 2 (Kuning)'
   if (t === 'Hijau')  return 'Kelas 3 (Hijau)'
-  return '-'
+  return t
 }
-
-/** Jadual mock Senarai Perubahan */
-const changeColumns = [
-  { key: 'no',              label: '#',                   sortable: false },
-  { key: 'kategoriMasalah', label: 'Kategori Masalah',    sortable: true  },
-  { key: 'tahapAduan',      label: 'Tahap Aduan',         sortable: true  },
-  { key: 'status',          label: 'Status',              sortable: true  },
-  { key: 'dikemaskiniOleh', label: 'Dikemaskini Oleh',    sortable: true  },
-  { key: 'tarikhKemaskini', label: 'Tarikh Kemaskini',    sortable: true  },
-  { key: 'catatan',         label: 'Catatan Kemaskini',   sortable: false },
-  { key: 'statusPermohonan',label: 'Status Permohonan',   sortable: true  },
-  { key: 'diluluskanOleh',  label: 'Diluluskan Oleh',     sortable: true  },
-  { key: 'tarikhKelulusan', label: 'Tarikh Kelulusan',    sortable: true  },
-]
-
-/* Data mock – ubah ikut suka; hanya untuk acah-acah paparan */
-const changeRows = computed(() => {
-  // contoh: baris pertama ikut current untuk nampak konsisten
-  const first = current.value ? {
-    no: 1,
-    kategoriMasalah: current.value.namaMasalah,
-    tahapAduan: current.value.tahapAduan,
-    status: current.value.status,
-    dikemaskiniOleh: 'Eksekutif_A',
-    tarikhKemaskini: '2025-09-10',
-    catatan: 'Kemaskini tahap aduan dan penerangan',
-    statusPermohonan: 'Diluluskan',
-    diluluskanOleh: 'Ketua Jabatan',
-    tarikhKelulusan: '2025-09-12',
-  } : null
-
-  const others = [
-    {
-      no: 'KM-V1-0002',
-      kategoriMasalah: 'Tiada Makanan',
-      tahapAduan: 'Merah',
-      status: 'Aktif',
-      dikemaskiniOleh: 'Eksekutif_B',
-      tarikhKemaskini: '2025-09-06',
-      catatan: 'Penetapan semula label kategori',
-      statusPermohonan: 'Diluluskan',
-      diluluskanOleh: 'Ketua Jabatan',
-      tarikhKelulusan: '2025-09-08',
-    },
-    {
-      no: 'KM-V1-0003',
-      kategoriMasalah: 'Kekurangan Sumber Pendapatan',
-      tahapAduan: 'Kuning',
-      status: 'Tidak Aktif',
-      dikemaskiniOleh: 'Eksekutif_C',
-      tarikhKemaskini: '2025-08-30',
-      catatan: 'Dinonaktifkan sementara untuk semakan',
-      statusPermohonan: 'Diluluskan',
-      diluluskanOleh: 'Ketua Jabatan',
-      tarikhKelulusan: '2025-09-01',
-    }
-  ]
-
-  return first ? [first, ...others] : others
-})
-
-/** Back nav */
-function goBack() {
-  router.push('/BF-ADN/KF/kategori-masalah')
+function getStatusVariant(s) {
+  if (s === 'Aktif') return 'success'
+  if (s === 'Tidak Aktif') return 'danger'
+  return 'secondary'
 }
 </script>
